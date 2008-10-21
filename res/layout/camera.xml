@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal">
+
+    <SurfaceView
+            android:id="@+id/camera_preview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            />
+          
+    <ImageView
+    		android:id="@+id/blackout"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent"
+    		android:visibility="invisible" 
+    />
+
+    <ImageView
+        android:id="@+id/focus_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_camera_indicator_auto_focus_green"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="6dip"
+        android:layout_marginTop="6dip"
+        android:scaleType="center"/>
+    
+    <TextView
+    		android:id="@+id/hint_toast"
+    		android:layout_alignParentRight="true"
+    	    android:layout_alignParentTop="true"
+	    	android:background="@drawable/popup_camera_toast"
+            android:layout_width="200dip"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/camera_button_hint"
+            android:textSize="18sp"
+            android:visibility="visible"/>
+
+	<AbsoluteLayout 
+	    	android:background="#CC666666"
+			android:visibility="invisible"
+			android:id="@+id/post_picture_panel"
+    		android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" 
+   			android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="false">
+        <View android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@android:drawable/divider_horizontal_dark" />
+        <LinearLayout 
+        		android:paddingLeft="7dip"
+        		android:paddingRight="7dip"
+        		android:paddingTop="6dip"
+        		android:paddingBottom="6dip"
+        		android:layout_width="fill_parent" 
+        		android:layout_height="wrap_content" 
+       			android:background="#00000000"
+        		android:orientation="horizontal">
+    	    <Button
+                android:id="@+id/save"
+                android:textSize="18sp"
+                android:drawableTop="@android:drawable/ic_menu_save"
+                android:layout_width="112dip"
+                android:layout_height="wrap_content"
+                android:text="@string/camera_keep"
+            />
+            <View android:layout_width="6dip" android:layout_height="6dip" />
+            <Button
+                android:id="@+id/setas"
+                android:textSize="18sp"
+                android:drawableTop="@android:drawable/ic_menu_set_as"
+                android:layout_width="112dip"
+                android:layout_height="wrap_content"
+                android:text="@string/camera_set"
+            />
+            <View android:layout_width="6dip" android:layout_height="6dip" />
+    	    <Button
+                android:id="@+id/share"
+                android:textSize="18sp"
+                android:drawableTop="@android:drawable/ic_menu_share"
+                android:layout_width="112dip"
+                android:layout_height="wrap_content"
+            	android:text="@string/camera_share"
+            />
+            <View android:layout_width="6dip" android:layout_height="6dip" />
+            <Button
+            	android:id="@+id/discard"
+                android:textSize="18sp"
+                android:drawableTop="@android:drawable/ic_menu_delete"
+            	android:layout_width="112dip"
+            	android:layout_height="wrap_content"
+                android:text="@string/camera_toss"
+            />
+        </LinearLayout>
+    </AbsoluteLayout>
+</RelativeLayout>
+

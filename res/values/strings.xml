@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- General strings -->
+
+    <string name="all_images">All pictures</string>
+
+    <string name="image_count"><xliff:g id="counter">%d</xliff:g> pictures</string>
+    <string name="camera_label">Camera</string>
+    <string name="gallery_picker_label">Pictures</string>
+    <string name="gallery_label">Pictures</string>
+    <string name="crop_label">Crop picture</string>
+    <string name="view_label">View picture</string>
+    <string name="view_video_label">View video</string>
+    <string name="preferences_label">Camera settings</string>
+	<string name="picasa_upload_label">Picasa upload</string>
+	<string name="youtube_upload_label">YouTube upload</string>
+	
+    <string name="ok">OK</string>
+    <string name="stop">Stop</string>
+    <string name="record">Record</string>
+    <string name="wait">Please wait\u2026</string>
+    <string name="no_storage">Please insert an SD card before using the camera.</string>
+    <string name="not_enough_space">Your SD card is full.</string>
+    <string name="no_images">Your album is empty.</string>
+    <string name="wallpaper">Setting wallpaper, please wait\u2026</string>
+    <string name="gallery_small">Small</string>
+    <string name="gallery_large">Large</string>
+
+    <!-- Settings stuff -->
+    <string name="high">High</string>
+    <string name="med">Medium</string>
+    <string name="low">Low</string>
+
+    <string name="best_res">High</string>
+    <string name="medium_res">Medium</string>
+    <string name="low_res">Low</string>
+
+    <string name="sec1">1 sec</string>
+    <string name="sec2">2 secs</string>
+    <string name="sec3">3 secs</string>
+    <string name="sec4">4 secs</string>
+    <string name="sec5">5 secs</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="savingImage">Saving picture\u2026</string>
+	<string name="runningFaceDetection">Please wait\u2026</string>
+
+    
+    <!-- Menu stuff -->
+    <string name="flip_orientation">Flip orientation</string>
+    <string name="settings">Settings</string>
+    <string name="zoom">Zoom</string>
+    <string name="testexif">Test Exif</string>
+    
+    <string name="view">View</string>
+    <string name="delete">Delete</string>
+    <string name="details">Details</string>
+    <string name="rotate">Rotate</string>
+    <string name="rotate_left">Rotate left</string>
+    <string name="rotate_right">Rotate right</string>
+    <string name="set_wallpaper">Set as wallpaper</string>
+    <string name="slide_show">Slideshow</string>
+    
+    <string name="confirm_delete">Confirm delete</string>
+    <string name="deny_delete">Cancel"</string>
+    
+    <string name="upload">Upload</string>
+    <string name="upload_all">Upload all</string>
+	<string name="uploading_photos">Uploading pictures</string>
+	<string name="uploading_photos_2">Uploading pictures</string>
+	<string name="uploading_videos">Uploading videos</string>
+	<string name="uploading_videos_2">Uploading videos</string>
+	<string name="uploadingNPhotos">Uploading <xliff:g id="counter">%d</xliff:g> pictures</string>
+	<string name="uploadingNVideos">Uploading <xliff:g id="counter">%d</xliff:g> videos</string>
+	    
+    <string name="preview">Preview</string>
+    <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    
+    <string name="crop_help">Hold ALT to resize.</string>
+    <string name="crop_save_text">Save</string>
+    <string name="crop_discard_text">Discard</string>
+    
+    <string name="camera_mode_text">Mode</string>
+    <string name="camera_record_text">Record</string>
+
+    <string name="camera_keep">Save</string>
+    <string name="confirm_delete_title">Delete</string>
+    <string name="confirm_delete_message">The picture will be deleted.</string>
+
+    <string name="camera_toss">Delete</string>
+    <string name="camera_share">Share</string>
+    <string name="camera_set">Set as</string>
+    <string name="camera_crop">Crop</string>
+    <string name="camera_done">New picture</string>
+    
+    <string name="camera_tossing">Deleting\u2026</string>
+    <string name="camera_keeping">Keeping\u2026</string>
+    <string name="camera_flash_setting">Flash setting</string>
+
+    <string name="no_way_to_share_image">This picture cannot be saved.</string>
+    <string name="no_way_to_share_video">This video cannot be shared.</string>
+
+    <string name="autocrop_before_query">Crop before?</string>
+    <string name="autocrop_yes">Yes</string>
+    <string name="autocrop_no">Yes</string>
+    <string name="video_play">Play</string>
+    <string name="share_youtube">YouTube</string>
+
+	<string name="camera_switch_to_video">Switch to video</string>
+	<string name="camera_switch_to_photo">Switch to picture</string>
+
+    <string name="camera_NoStorageView_text">Please insert an SD card before using the camera.</string>
+    <string name="camera_ZoomIn_text">Zoom in</string>
+    <string name="camera_ZoomOut_text">Zoom out</string>
+    <string name="camera_movie_record_counter_text">01:30:00</string>
+    <string name="camera_gallery_photos_text">Pictures</string>
+    <string name="camera_gallery_videos_text">Video Album</string>
+    
+    <string name="camera_shareby_email">Email</string>
+    <string name="camera_shareby_mms">MMS</string>
+    <string name="camera_shareby_picasa">Picasaweb</string>
+    <string name="camera_shareby_picasa_all">Picasaweb (all pictures)</string>
+    
+    <string name="camera_flash_auto">AutoFlash</string>
+    <string name="camera_flash_on">Flash ON</string>
+    <string name="camera_flash_off">Flash OFF</string>
+    
+    <string name="camera_pick_wallpaper">Pictures</string>
+    <string name="camera_setas_wallpaper">Wallpaper</string>
+
+    <string name="camera_setas_wallpaper_drm">Purchased pictures</string>
+    <string name="camera_setas_contact">Contact picture</string>
+    <string name="camera_setas_myfave">myFaves</string>
+    
+    <string name="camera_selectphoto">Select this picture</string>
+    <string name="camera_takenewphoto">Capture new picture</string>
+
+    <string name="camera_selectvideo">Select this video</string>
+    <string name="camera_takenewvideo">Capture new video</string>
+    <string name="camera_playvideo">Play</string>
+
+    <string name="pref_gallery_category">General settings</string>
+    <string name="pref_slideshow_category">Slideshow settings</string>
+    <string name="pref_camera_category">Camera</string>
+
+    <string name="pref_gallery_size_title">Picture size</string>
+    <string name="pref_gallery_size_summary">Select the display size of pictures</string>
+    <string name="pref_gallery_size_dialogtitle">Picture size</string>
+    <string-array name="pref_gallery_size_choices">
+        <item>Large</item>
+        <item>Small</item>
+    </string-array>
+
+    <string-array name="pref_gallery_size_values">
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+    <string name="default_value_pref_gallery_size">1</string>
+
+    <string name="pref_gallery_sort_title">Picture sort</string>
+    <string name="pref_gallery_sort_summary">Select the sort order of pictures</string>
+    <string name="pref_gallery_sort_dialogtitle">Picture sort</string>
+    <string-array name="pref_gallery_sort_choices">
+        <item>Newest first</item>
+        <item>Newest last</item>
+    </string-array>
+
+    <string-array name="pref_gallery_sort_values">
+        <item>descending</item>
+        <item>ascending</item>
+    </string-array>
+    <string name="default_value_pref_gallery_sort">descending</string>
+
+    <string name="pref_gallery_slideshow_interval_title">Slideshow interval</string>
+    <string name="pref_gallery_slideshow_interval_summary">Select how long each slide displays in the show</string>
+    <string name="pref_gallery_slideshow_interval_dialogtitle">Slideshow interval</string>
+    <string-array name="pref_gallery_slideshow_interval_choices">
+    	<item>2 seconds</item>
+        <item>3 seconds</item>
+        <item>4 seconds</item>
+    </string-array>
+
+    <string-array name="pref_gallery_slideshow_interval_values">
+    	<item>"2"</item>
+        <item>"3"</item>
+        <item>"4"</item>
+    </string-array>
+    <string name="default_value_pref_gallery_slideshow_interval">"2"</string>
+    
+    <string name="pref_gallery_slideshow_transition_title">Slideshow transition</string>
+    <string name="pref_gallery_slideshow_transition_summary">Select the effect used when moving from one slide to the next</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle">Slideshow transition</string>
+    <string-array name="pref_gallery_slideshow_transition_choices">
+    	<item>Fade in &amp; out</item>
+        <item>Slide left - right</item>
+        <item>Slide up - down</item>
+        <item>Random selection</item>
+    </string-array>
+
+    <string-array name="pref_gallery_slideshow_transition_values">
+    	<item>"0"</item>
+    	<item>"1"</item>
+        <item>"2"</item>
+        <item>"-1"</item>
+    </string-array>
+    <string name="default_value_pref_gallery_slideshow_transition">"0"</string>
+    
+    <string name="pref_gallery_slideshow_repeat_title">Repeat slideshow</string>
+    <string name="pref_gallery_slideshow_repeat_summary">Play slideshow more than once</string>
+    <string name="pref_gallery_slideshow_repeat_dialogtitle">Repeat slideshow?</string>
+    
+    <string name="pref_gallery_slideshow_shuffle_title">Shuffle slides</string>
+    <string name="pref_gallery_slideshow_shuffle_summary">Show pictures in random order</string>
+    <string name="pref_gallery_slideshow_shuffle_dialogtitle">Shuffle pictures?</string>
+    
+    <string name="pref_camera_autoupload_title">Auto-upload pictures</string>
+    <string name="pref_camera_autoupload_summary">Upload pictures to Picasa automatically</string>
+
+    <string name="pref_camera_recordlocation_title">Store location in pictures</string>
+    <string name="pref_camera_recordlocation_summary">Record location in picture data</string>
+
+    <string name="pref_camera_shuttersound_title">Play shutter sound</string>
+    <string name="pref_camera_shuttersound_summary">Play a sound when taking a picture</string>
+
+    <string name="pref_camera_upload_albumname_title">Picasa album name</string>
+    <string name="pref_camera_upload_albumname_summary">Name the destination album for your pictures (<xliff:g id="summary">%s</xliff:g>)</string>
+    <string name="pref_camera_upload_albumname_dialogtitle">Picasa album name</string>
+
+    <string name="pref_camera_postpicturemenu_title">Prompt after capture</string>
+    <string name="pref_camera_postpicturemenu_summary">Display action menu (save, delete, ...) after capture</string>
+
+    <string name="camerasettings_preferred_view_label">Preferred view:</string>
+    <string name="camerasettings">Settings</string>
+    <string name="camerasettings_autoupload_label">Automatically upload pictures to Web</string>
+    <string name="camerasettings_test2_label">test2:</string>
+    <string name="camerasettings_test3_label">test3:</string>
+    <string name="camerasettings_play_click_sound_label">Shutter sound</string>
+    <string name="camerasettings_resolution_label">Resolution:</string>
+    <string name="camerasettings_test4_label">test4:</string>
+    <string name="camerasettings_duration_label">Duration:</string>
+    <string name="camerasettings_use_sd_card_label">Save pictures to SD card</string>
+    <string name="camerasettings_image_quality_label">Picture quality:</string>
+    <string name="camerasettings_on">On</string>
+    <string name="camerasettings_off">Off</string>
+    <string name="camerasettings_yes">Yes</string>
+    <string name="camerasettings_no">No</string>
+    <string name="camerasettings_done">Done</string>
+
+    <string name="gallerysettings_duration">Duration of each slide in slideshows</string>
+
+    <!-- The actual seconds are hardwired in GallerySettings.java. These are just labels. -->
+    <string name="gallerysettings_speed1">1 second</string>
+    <string name="gallerysettings_speed2">3 seconds</string>
+    <string name="gallerysettings_speed3">5 seconds</string>
+
+    <string name="image_gallery_status_text"></string>
+    <string name="image_gallery_NoImageView_text">No pictures found.</string>
+    <string name="video_gallery_NoImageView_text">No videos found.</string>
+
+	<string name="image_gallery_picker_images">Pictures</string>
+	<string name="image_gallery_picker_videos">Videos</string>
+
+    <string name="pref_gallery_confirm_delete_title">Confirm deletions</string>
+    <string name="pref_gallery_confirm_delete_summary">Show confirmation before deleting pictures</string>
+
+    <string name="viewimage_gps_latitude_label_text">GPS latitude</string>
+    <string name="viewimage_res_label_text">Resolution</string>
+    <string name="viewimage_make_label_text">Make</string>
+    <string name="viewimage_comments_text"></string>
+    <string name="viewimage_digitalzoom_text"></string>
+    <string name="viewimage_orientation_label_text">Orientation</string>
+    <string name="viewimage_res_text"></string>
+    <string name="viewimage_gps_longitude_label_text">GPS longitude</string>
+    <string name="viewimage_model_text"></string>
+    <string name="viewimage_gps_longitude_text"></string>
+    <string name="viewimage_make_text"></string>
+    <string name="viewimage_status_text">Press Enter or Space to zoom.</string>
+    <string name="viewimage_comments_label_text">Comments</string>
+    <string name="viewimage_flash_text"></string>
+    <string name="viewimage_digitalzoom_label_text">Digital zoom</string>
+    <string name="viewimage_orientation_text"></string>
+    <string name="viewimage_flash_label_text">Flash used</string>
+    <string name="viewimage_gps_latitude_text"></string>
+    <string name="viewimage_datetaken_text"></string>
+    <string name="viewimage_model_label_text">From</string>
+    <string name="viewimage_datetaken_label_text">Date</string>
+
+    <string name="camera_zoom_3_text">Zoom 4x</string>
+    <string name="camera_zoom_2_text">Zoom 2x</string>
+    <string name="camera_zoom_1_text">Zoom 1.3x</string>
+    <string name="camera_zoom_normal_text">1x</string>
+    
+    <!-- Details stuff -->
+    <string name="details_title_text">myvideo</string>
+    <string name="details_uploaded_text">Successfully uploaded</string>
+    <string name="details_tags_text">monster</string>
+    <string name="details_category_label">Category:</string>
+    <string name="details_description_label">Description:</string>
+    <string name="details_publicView_text">Public</string>
+    <string name="details_tags_label">Tags:</string>
+    <string name="details_description_text">testdescription</string>
+    <string name="details_title_label">Title:</string>
+    <string name="details_save_text">Save</string>
+    <string name="details_language_label">Language:</string>
+    <string name="details_privateView_text">Private</string>
+    
+    <!-- Upload stuff -->
+    <string name="upload_default_tags_text">video</string>
+    <string name="upload_default_description_text">description goes here</string>
+    <string name="upload_default_category_text">Entertainment</string>
+    
+    <string name="details_panel_title">Details</string>
+	
+	<string name="details_file_size">File size:</string>
+	<string name="details_image_resolution">Resolution:</string>
+	<string name="details_date_taken">Date taken:</string>
+	
+	<string name="context_menu_header">Picture options</string>
+
+	<string name="multiface_crop_help">Tap a face to begin.</string>	    
+	<string name="camera_button_hint">Press Capture button to take picture.</string>
+	
+	<string name="photos_gallery_title">Pictures</string>
+	<string name="videos_gallery_title">Videos</string>
+	<string name="pick_photos_gallery_title">Select picture</string>
+	<string name="pick_videos_gallery_title">Select video</string>
+    
+    <!-- YouTube upload stuff -->
+    <string name="upload_info_title">Title:</string>
+    <string name="upload_info_description">Description:</string>
+    <string name="upload_info_category">Category:</string>
+    <string name="upload_info_tags">Tags:</string>
+    <string name="upload_info_upload">Upload</string>
+    <string name="upload_info_private">If unchecked, only you can see the movie</string>
+    <string name="upload_dialog_title">Upload to YouTube - type video details</string>
+    
+    <string name="loading_progress_format_string"><xliff:g id="counter">%d</xliff:g> remaining</string>
+    
+    <string name="space_remaining_k"><xliff:g id="counter">%d</xliff:g>K</string>
+
+    <!-- Displayed in the title of the chooser for things to do with an image that
+         is to be sent to another application. -->
+    <string name="sendImage">Share picture via</string>
+    <string name="setImage">Set picture as</string>
+    
+    <!-- Displayed in the title of the chooser for things to do with a video that
+         is to be sent to another application. -->
+    <string name="sendVideo">Share video via</string>
+</resources>
