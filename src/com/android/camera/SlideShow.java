@@ -60,21 +60,21 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
     private int mCurrentPosition = 0;
     private ImageView mSwitcher;
     private boolean mPosted = false;
-    
+
     @Override
     protected void onCreate(Bundle icicle)
     {
         super.onCreate(icicle);
         Window wp = getWindow();
         wp.setFlags(FLAG_KEEP_SCREEN_ON, FLAG_KEEP_SCREEN_ON);
-        
+
         setContentView(R.layout.slide_show);
-        
+
         mSwitcher = (ImageView)findViewById(R.id.imageview);
         if (android.util.Config.LOGV)
             Log.v(TAG, "mSwitcher " + mSwitcher);
     }
-    
+
     @Override
     protected void onResume()
     {
@@ -86,13 +86,13 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
         }
         loadImage();
     }
-    
+
     @Override
     protected void onPause() {
         super.onPause();
         cancelPost();
     }
-    
+
     static public class ImageViewTouch extends ImageView {
         class xy {
             public xy(float xIn, float yIn) {
@@ -108,26 +108,26 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
             float x,y;
             long timeAdded;
         }
-        
+
         SlideShow mSlideShow;
         Paint mPaints[] = new Paint[1];
         ArrayList<xy> mPoints = new ArrayList<xy>();
         boolean mDown;
-        
+
         public ImageViewTouch(Context context) {
             super(context);
             mSlideShow = (SlideShow) context;
             setScaleType(ImageView.ScaleType.CENTER);
             setupPaint();
         }
-        
+
         public ImageViewTouch(Context context, AttributeSet attrs) {
             super(context, attrs);
             mSlideShow = (SlideShow) context;
             setScaleType(ImageView.ScaleType.CENTER);
             setupPaint();
         }
-        
+
         private void setupPaint() {
             for (int i = 0; i < mPaints.length; i++) {
                 Paint p = new Paint();
@@ -138,7 +138,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
                 mPaints[i] = p;
             }
         }
-        
+
         private void addEvent(MotionEvent event) {
             long now = System.currentTimeMillis();
             mPoints.add(new xy(event));
@@ -151,7 +151,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
                 mPoints.remove(0);
             }
         }
-        
+
         public boolean onTouchEvent(MotionEvent event) {
             addEvent(event);
             switch (event.getAction()) {
@@ -182,7 +182,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
                 long delta = now - ev.timeAdded;
                 if (delta > sLag)
                     continue;
-                
+
                 int alpha2 = Math.max(0, 255 - (255 * (int)delta / sLag));
                 if (alpha2 == 0)
                     continue;
@@ -195,7 +195,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
         }
     }
 
-    
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
@@ -203,14 +203,14 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
                 cancelPost();
                 loadPreviousImage();
                 return true;
-                
+
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 cancelPost();
                 loadNextImage();
                 return true;
-                
+
             case KeyEvent.KEYCODE_DPAD_CENTER:
-                if (mPosted) 
+                if (mPosted)
                     cancelPost();
                 else
                     loadNextImage();
@@ -218,12 +218,12 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
         }
         return super.onKeyDown(keyCode, event);
     }
-    
+
     private void cancelPost() {
         mHandler.removeCallbacks(mNextImageRunnable);
         mPosted = false;
     }
-    
+
     private void post() {
         mHandler.postDelayed(mNextImageRunnable, sNextImageInterval);
         mPosted = true;
@@ -233,7 +233,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
         ImageManager.IImage image = mImageList.getImageAt(mCurrentPosition);
         if (image == null)
             return;
-        
+
         Bitmap bitmap = image.thumbBitmap();
         if (bitmap == null)
             return;
@@ -241,7 +241,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
         mSwitcher.setImageDrawable(new BitmapDrawable(bitmap));
         post();
     }
-    
+
     private Runnable mNextImageRunnable = new Runnable() {
         public void run() {
             if (android.util.Config.LOGV)
@@ -249,13 +249,13 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
             loadNextImage();
         }
     };
-    
+
     private void loadNextImage() {
         if (++mCurrentPosition >= mImageList.getCount())
             mCurrentPosition = 0;
         loadImage();
     }
-    
+
     private void loadPreviousImage() {
         if (mCurrentPosition == 0)
             mCurrentPosition = mImageList.getCount() - 1;
@@ -272,7 +272,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
         i.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         return i;
     }
-    
+
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -286,22 +286,22 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
 
         public void checkThumbnails(ThumbCheckCallback cb) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void commitChanges() {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void removeOnChangeListener(OnChange changeCallback) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void setOnChangeListener(OnChange changeCallback, Handler h) {
             // TODO Auto-generated method stub
-            
+
         }
 
         private ArrayList<FileImage> mImages = new ArrayList<FileImage>();
@@ -320,7 +320,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
             public long imageId() {
                 return mId;
             }
-            
+
             public String getDataPath() {
                 return mPath;
             }
@@ -332,7 +332,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
             public IGetBitmap_cancelable fullSizeBitmap_cancelable(int targetWidthOrHeight) {
                 return null;
             }
-            
+
             public Bitmap thumbBitmap() {
                 Bitmap b = fullSizeBitmap(320);
                 Matrix m = new Matrix();
@@ -341,7 +341,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
                 Bitmap scaledBitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
                 return scaledBitmap;
             }
-            
+
             public Bitmap miniThumbBitmap() {
                 return thumbBitmap();
             }
@@ -416,7 +416,11 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
         public int getCount() {
             return mImages.size();
         }
-        
+
+        public boolean isEmpty() {
+            return mImages.isEmpty();
+        }
+
         public void deactivate() {
             // nothing to do here
         }

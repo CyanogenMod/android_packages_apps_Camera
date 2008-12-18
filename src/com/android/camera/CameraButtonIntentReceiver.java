@@ -19,11 +19,9 @@ package com.android.camera;
 import android.content.Context;
 import android.content.Intent;
 import android.content.BroadcastReceiver;
-import android.util.Config;
-import android.util.Log;
 import android.view.KeyEvent;
 
-class CameraButtonIntentReceiver extends BroadcastReceiver {
+public class CameraButtonIntentReceiver extends BroadcastReceiver {
     public CameraButtonIntentReceiver() {
     }
     

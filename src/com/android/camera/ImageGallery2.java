@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -51,10 +52,13 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.widget.Scroller;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import com.android.camera.ImageManager.IImage;
 
 public class ImageGallery2 extends Activity {
     private static final String TAG = "ImageGallery2";
@@ -66,10 +70,11 @@ public class ImageGallery2 extends Activity {
     public final static int VIEW_MSG = 3;
 
     private static final String INSTANCE_STATE_TAG = "scrollY";
-    
+
     private Dialog mMediaScanningDialog;
-    
+
     private MenuItem mFlipItem;
+    private MenuItem mSlideShowItem;
     private SharedPreferences mPrefs;
 
     public ImageGallery2() {
@@ -115,11 +120,15 @@ public class ImageGallery2 extends Activity {
                         }
                     });
 
-                    menu.setHeaderTitle(R.string.context_menu_header);
-                    if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
+                    boolean isImage = ImageManager.isImage(mSelectedImageGetter.getCurrentImage());
+
+                    menu.setHeaderTitle(isImage ? R.string.context_menu_header
+                            : R.string.video_context_menu_header);
+                    if ((mInclusion & (ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS)) != 0) {
                         MenuHelper.MenuItemsResult r = MenuHelper.addImageMenuItems(
                                 menu,
                                 MenuHelper.INCLUDE_ALL,
+                                isImage,
                                 ImageGallery2.this,
                                 mHandler,
                                 mDeletePhotoRunnable,
@@ -136,37 +145,15 @@ public class ImageGallery2 extends Activity {
                         if (r != null)
                             r.gettingReadyToOpen(menu, mSelectedImageGetter.getCurrentImage());
 
-                        addSlideShowMenu(menu, 1000);
-                    }
-
-                    if ((mInclusion & ImageManager.INCLUDE_VIDEOS) != 0) {
-                        MenuHelper.MenuItemsResult r = MenuHelper.addVideoMenuItems(
-                                menu,
-                                MenuHelper.INCLUDE_ALL,
-                                ImageGallery2.this,
-                                mHandler,
-                                mSelectedImageGetter,
-                                new Runnable() {
-                                    public void run() {
-                                        ImageManager.IImage image = mSelectedImageGetter.getCurrentImage();
-                                        if (image != null) {
-                                            mGvs.clearCache();
-                                            mAllImages.removeImage(mSelectedImageGetter.getCurrentImage());
-                                            mGvs.invalidate();
-                                            mGvs.start();
-                                            mNoImagesView.setVisibility(mAllImages.getCount() > 0 ? View.GONE : View.VISIBLE);
-                                        }
-                                    }
-                                },
-                                null, null);
-                        if (r != null)
-                            r.gettingReadyToOpen(menu, mSelectedImageGetter.getCurrentImage());
+                        if (isImage) {
+                            addSlideShowMenu(menu, 1000);
+                        }
                     }
                 }
             });
         }
     }
-    
+
     private MenuItem addSlideShowMenu(Menu menu, int position) {
         return menu.add(0, 207, position, R.string.slide_show)
         .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -194,7 +181,7 @@ public class ImageGallery2 extends Activity {
         })
         .setIcon(android.R.drawable.ic_menu_slideshow);
     }
-    
+
     private Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             mGvs.clearCache();
@@ -204,7 +191,7 @@ public class ImageGallery2 extends Activity {
             mNoImagesView.setVisibility(mAllImages.getCount() > 0 ? View.GONE : View.VISIBLE);
         }
     };
-    
+
     private SelectedImageGetter mSelectedImageGetter = new SelectedImageGetter() {
         public Uri getCurrentImageUri() {
             ImageManager.IImage image = getCurrentImage();
@@ -227,20 +214,20 @@ public class ImageGallery2 extends Activity {
         super.onConfigurationChanged(newConfig);
         mTargetScroll = mGvs.getScrollY();
     }
-        
+
     private Runnable mLongPressCallback = new Runnable() {
         public void run() {
             mGvs.showContextMenu();
         }
     };
-    
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             // The keyUp doesn't get called when the longpress menu comes up. We only get here when the user
             // lets go of the center key before the longpress menu comes up.
             mHandler.removeCallbacks(mLongPressCallback);
-            
+
             // open the photo
             if (mSelectedImageGetter.getCurrentImage() != null) {
                 mGvs.onSelect(mGvs.mCurrentSelection);
@@ -282,7 +269,8 @@ public class ImageGallery2 extends Activity {
                     mHandler.postDelayed(mLongPressCallback, ViewConfiguration.getLongPressTimeout());
                     break;
                 case KeyEvent.KEYCODE_DEL:
-                    MenuHelper.deletePhoto(this, mDeletePhotoRunnable);
+                    MenuHelper.deleteImage(this, mDeletePhotoRunnable,
+                            mSelectedImageGetter.getCurrentImage());
                     break;
                 default:
                     handled = false;
@@ -402,10 +390,10 @@ public class ImageGallery2 extends Activity {
         }
         if (scanning) {
             mMediaScanningDialog = ProgressDialog.show(
-                    this, 
-                    null, 
-                    getResources().getString(R.string.wait), 
-                    true, 
+                    this,
+                    null,
+                    getResources().getString(R.string.wait),
+                    true,
                     true);
             mAllImages = ImageManager.instance().emptyImageList();
         } else {
@@ -418,7 +406,7 @@ public class ImageGallery2 extends Activity {
             checkThumbnails();
         }
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
@@ -431,7 +419,7 @@ public class ImageGallery2 extends Activity {
         super.onRestoreInstanceState(state);
         mTargetScroll = state.getInt(INSTANCE_STATE_TAG, 0);
     }
-    
+
     int mTargetScroll;
 
     @Override
@@ -474,7 +462,7 @@ public class ImageGallery2 extends Activity {
                     rebake(true, false);
                 } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
                     Toast.makeText(ImageGallery2.this, getResources().getString(R.string.wait), 5000);
-                    rebake(false, true);   
+                    rebake(false, true);
                 } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
                     if (Config.LOGV)
                         Log.v(TAG, "rebake because of ACTION_MEDIA_SCANNER_FINISHED");
@@ -489,10 +477,10 @@ public class ImageGallery2 extends Activity {
         registerReceiver(mReceiver, intentFilter);
 
         MenuHelper.requestOrientation(this, mPrefs);
-        
+
         rebake(false, ImageManager.isMediaScannerScanning(this));
     }
-    
+
     private void stopCheckingThumbnails() {
         mStopThumbnailChecking = true;
         if (mThumbnailCheckThread != null) {
@@ -523,7 +511,7 @@ public class ImageGallery2 extends Activity {
                         if (mStopThumbnailChecking) {
                             return false;
                         }
-                        
+
                         if (!mLayoutComplete) {
                             return true;
                         }
@@ -563,11 +551,11 @@ public class ImageGallery2 extends Activity {
                     Log.v(TAG, "check thumbnails thread finishing; took " + (t2-t1));
             }
         });
-        
+
         mThumbnailCheckThread.setName("check_thumbnails");
         mThumbnailCheckThread.start();
         mThumbnailCheckThread.toBackground();
-        
+
         ImageManager.IImageList list = allImages(true);
         mNoImagesView.setVisibility(list.getCount() > 0 ? View.GONE : View.VISIBLE);
     }
@@ -575,21 +563,12 @@ public class ImageGallery2 extends Activity {
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         MenuItem item;
-        if (false) {
-            if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
-                item = menu.add(0, 0, 0, R.string.upload_all);
-                item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        UploadAction.uploadImage(ImageGallery2.this, null);
-                        return true;
-                    }
-                });
-                item.setIcon(android.R.drawable.ic_menu_upload);
-            }
-        }
-        addSlideShowMenu(menu, 0);
+        MenuHelper.addCaptureMenuItems(menu, this);
+        if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
+            mSlideShowItem = addSlideShowMenu(menu, 5);
 
-        mFlipItem = MenuHelper.addFlipOrientation(menu, this, mPrefs);
+            mFlipItem = MenuHelper.addFlipOrientation(menu, this, mPrefs);
+        }
 
         item = menu.add(0, 0, 1000, R.string.camerasettings);
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -605,13 +584,30 @@ public class ImageGallery2 extends Activity {
 
         return true;
     }
-    
-    @Override 
+
+    @Override
     public boolean onPrepareOptionsMenu(android.view.Menu menu) {
-        int keyboard = getResources().getConfiguration().keyboardHidden;
-        mFlipItem.setEnabled(keyboard == android.content.res.Configuration.KEYBOARDHIDDEN_YES);
+        if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
+            boolean imageSelected = isImageSelected();
+            boolean videoSelected = isVideoSelected();
+            int keyboard = getResources().getConfiguration().keyboardHidden;
+            mFlipItem.setEnabled(imageSelected
+                    && (keyboard == android.content.res.Configuration.KEYBOARDHIDDEN_YES));
+            // TODO: Only enable slide show if there is at least one image in the folder.
+            mSlideShowItem.setEnabled(!videoSelected);
+        }
 
         return true;
+    }
+
+    private boolean isImageSelected() {
+        IImage image = mSelectedImageGetter.getCurrentImage();
+        return (image != null) && ImageManager.isImage(image);
+    }
+
+    private boolean isVideoSelected() {
+        IImage image = mSelectedImageGetter.getCurrentImage();
+        return (image != null) && ImageManager.isVideo(image);
     }
 
     private synchronized ImageManager.IImageList allImages(boolean assumeMounted) {
@@ -636,12 +632,22 @@ public class ImageGallery2 extends Activity {
                             leftText.setText(R.string.photos_gallery_title);
                     }
                     if (type.equals("vnd.android.cursor.dir/video") || type.equals("video/*")) {
+                        mInclusion = ImageManager.INCLUDE_VIDEOS;
+                        if (isPickIntent())
+                            leftText.setText(R.string.pick_videos_gallery_title);
+                        else
+                            leftText.setText(R.string.videos_gallery_title);
                     }
                 }
                 Bundle extras = intent.getExtras();
                 String title = extras!= null ? extras.getString("windowTitle") : null;
                 if (title != null && title.length() > 0) {
                     leftText.setText(title);
+                }
+
+                if (extras != null) {
+                    mInclusion = (ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS)
+                        & extras.getInt("mediaTypes", mInclusion);
                 }
 
                 if (extras != null && extras.getBoolean("pick-drm")) {
@@ -651,7 +657,8 @@ public class ImageGallery2 extends Activity {
                 }
             }
             if (Config.LOGV)
-                Log.v(TAG, "computing images... mSortAscending is " + mSortAscending + "; assumeMounted is " + assumeMounted);
+                Log.v(TAG, "computing images... mSortAscending is " + mSortAscending
+                        + "; assumeMounted is " + assumeMounted);
             Uri uri = getIntent().getData();
             if (!assumeMounted) {
                 mAllImages = ImageManager.instance().emptyImageList();
@@ -758,7 +765,7 @@ public class ImageGallery2 extends Activity {
                         velocityY = maxVelocity;
                     else if (velocityY < -maxVelocity)
                         velocityY = -maxVelocity;
-                    
+
                     select(-1);
                     if (mFling) {
                         mScroller = new Scroller(getContext());
@@ -891,8 +898,8 @@ public class ImageGallery2 extends Activity {
 
             if (mGallery.isFinishing() || mGallery.mPausing) {
                 return;
-            }            
-            
+            }
+
             clearCache();
 
             mCurrentSpec = mCellSizeChoices[mSizeChoice];
@@ -905,7 +912,7 @@ public class ImageGallery2 extends Activity {
 
             mCurrentSpec.mLeftEdgePadding = ((right - left) - ((mCurrentSpec.mColumns - 1) * mCurrentSpec.mCellSpacing) - (mCurrentSpec.mColumns * mCurrentSpec.mCellWidth)) / 2;
             mCurrentSpec.mRightEdgePadding = mCurrentSpec.mLeftEdgePadding;
-            
+
             int rows = (mGallery.mAllImages.getCount() + mCurrentSpec.mColumns - 1) / mCurrentSpec.mColumns;
             mMaxScrollY = mCurrentSpec.mCellSpacing + (rows * (mCurrentSpec.mCellSpacing + mCurrentSpec.mCellHeight)) - (bottom - top) + mMaxOvershoot;
             mMinScrollY = 0 - mMaxOvershoot;
@@ -950,9 +957,10 @@ public class ImageGallery2 extends Activity {
 
             private int mWorkCounter = 0;
             private boolean mDone = false;
-            
+
             private Thread mWorkerThread;
-            private Bitmap mErrorBitmap;
+            private Bitmap mMissingImageThumbnailBitmap;
+            private Bitmap mMissingVideoThumbnailBitmap;
 
             public void dump() {
                 synchronized (ImageBlockManager.this) {
@@ -1027,12 +1035,20 @@ public class ImageGallery2 extends Activity {
             }
 
             // Create this bitmap lazily, and only once for all the ImageBlocks to use
-            public Bitmap getErrorBitmap() {
-                if (mErrorBitmap == null) {
-                    mErrorBitmap = BitmapFactory.decodeResource(GridViewSpecial.this.getResources(),
-                            android.R.drawable.ic_menu_report_image);
+            public Bitmap getErrorBitmap(ImageManager.IImage image) {
+                if (ImageManager.isImage(image)) {
+                    if (mMissingImageThumbnailBitmap == null) {
+                        mMissingImageThumbnailBitmap = BitmapFactory.decodeResource(GridViewSpecial.this.getResources(),
+                                R.drawable.ic_missing_thumbnail_picture);
+                    }
+                    return mMissingImageThumbnailBitmap;
+                } else {
+                    if (mMissingVideoThumbnailBitmap == null) {
+                        mMissingVideoThumbnailBitmap = BitmapFactory.decodeResource(GridViewSpecial.this.getResources(),
+                                R.drawable.ic_missing_thumbnail_video);
+                    }
+                    return mMissingVideoThumbnailBitmap;
                 }
-                return mErrorBitmap;
             }
 
             private ImageBlock getBlockForPos(int pos) {
@@ -1299,6 +1315,7 @@ public class ImageGallery2 extends Activity {
                 int     mRequestedMask;   // columns which have been requested to the loader
                 int     mCompletedMask;   // columns which have been completed from the loader
                 boolean mIsVisible;
+                Drawable mVideoOverlay;
 
                 public void dump(StringBuilder line1, StringBuilder line2) {
                     synchronized (ImageBlock.this) {
@@ -1315,7 +1332,7 @@ public class ImageGallery2 extends Activity {
                     mBlockNumber = -1;
                     mCellOutline = GridViewSpecial.this.getResources().getDrawable(android.R.drawable.gallery_thumb);
                 }
-                
+
                 private void recycleBitmaps() {
                     synchronized (ImageBlock.this) {
                         mBitmap.recycle();
@@ -1434,13 +1451,13 @@ public class ImageGallery2 extends Activity {
                         // change in the future.
                         int w = mCurrentSpec.mCellWidth;
                         int h = mCurrentSpec.mCellHeight;
-                        
+
                         int bw = b.getWidth();
                         int bh = b.getHeight();
 
                         int deltaW = bw - w;
                         int deltaH = bh - h;
-                        
+
                         if (deltaW < 10 && deltaH < 10) {
                             int halfDeltaW = deltaW / 2;
                             int halfDeltaH = deltaH / 2;
@@ -1460,7 +1477,7 @@ public class ImageGallery2 extends Activity {
                         }
                     } else {
                         // If the thumbnail cannot be drawn, put up an error icon instead
-                        Bitmap error = mImageBlockManager.getErrorBitmap();
+                        Bitmap error = mImageBlockManager.getErrorBitmap(image);
                         int width = error.getWidth();
                         int height = error.getHeight();
                         Rect source = new Rect(0, 0, width, height);
@@ -1468,6 +1485,19 @@ public class ImageGallery2 extends Activity {
                         int top = (mCurrentSpec.mCellHeight - height) / 2 + yPos;
                         Rect dest = new Rect(left, top, left + width, top + height);
                         mCanvas.drawBitmap(error, source, dest, mPaint);
+                    }
+                    if (ImageManager.isVideo(image)) {
+                        if (mVideoOverlay == null) {
+                            mVideoOverlay = getResources().getDrawable(
+                                    R.drawable.ic_gallery_video_overlay);
+                        }
+                        int width = mVideoOverlay.getIntrinsicWidth();
+                        int height = mVideoOverlay.getIntrinsicHeight();
+                        int left = (mCurrentSpec.mCellWidth - width) / 2 + xPos;
+                        int top = (mCurrentSpec.mCellHeight - height) / 2 + yPos;
+                        Rect newBounds = new Rect(left, top, left + width, top + height);
+                        mVideoOverlay.setBounds(newBounds);
+                        mVideoOverlay.draw(mCanvas);
                     }
                     paintSel(base + baseOffset, xPos, yPos);
                 }
@@ -1524,7 +1554,7 @@ public class ImageGallery2 extends Activity {
 //                                      Log.v(TAG, "wanted block " + mBlockNumber + " but got " + startBlock);
                                         return;
                                     }
-                                    
+
                                     if (mBitmap == null) {
                                         return;
                                     }
@@ -1644,11 +1674,11 @@ public class ImageGallery2 extends Activity {
                     }
                     Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
 
-                    // this should be unnecessary but if you remove this line then executing 
-                    // the subsequent startActivity causes the user to have to choose among
-                    // ViewImage and a number of bogus entries (like attaching the image to
-                    // a contact).
-                    intent.setClass(mContext, ViewImage.class);
+                    if (img instanceof ImageManager.VideoObject) {
+                        intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
+                                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    }
+
                     try {
                         mContext.startActivity(intent);
                     } catch (Exception ex) {

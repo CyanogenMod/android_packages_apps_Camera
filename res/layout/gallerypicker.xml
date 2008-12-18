@@ -24,8 +24,8 @@
             android:layout_height="fill_parent" 
             android:paddingTop="2dip"
 	        android:numColumns="auto_fit"
-    	    android:columnWidth="160dp"
-        	android:stretchMode="spacingWidth"
+    	    android:columnWidth="148dp"
+        	android:stretchMode="spacingWidthUniform"
             android:drawSelectorOnTop="false" />
 
 </AbsoluteLayout>

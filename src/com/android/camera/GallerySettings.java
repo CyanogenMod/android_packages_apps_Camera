@@ -25,7 +25,7 @@ import android.content.Context;
 /**
  *  GallerySettings
  */
-class GallerySettings extends CameraSettings
+public class GallerySettings extends CameraSettings
 {
     public GallerySettings()
     {

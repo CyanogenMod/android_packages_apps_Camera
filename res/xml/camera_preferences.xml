@@ -19,7 +19,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-      android:title="@string/pref_camera_category">
+      android:title="@string/pref_camera_general_settings_category">
 <!--            
         <CheckBoxPreference
                 android:key="pref_camera_autoupload_key"
@@ -49,5 +49,16 @@
                 android:summary="@string/pref_camera_postpicturemenu_summary"
                 android:defaultValue="true"/>
     </PreferenceCategory>
-
+    
+    <PreferenceCategory
+      android:title="@string/pref_camera_videoquality_category">
+        <ListPreference
+                android:key="pref_camera_videoquality_key"
+                android:defaultValue="@string/pref_camera_videoquality_default"
+                android:title="@string/pref_camera_videoquality_title"
+                android:summary="@string/pref_camera_videoquality_summary"
+                android:entries="@array/pref_camera_videoquality_entries"
+                android:entryValues="@array/pref_camera_videoquality_entryvalues"
+                android:dialogTitle="@string/pref_camera_videoquality_dialogtitle" />
+    </PreferenceCategory>
 </PreferenceScreen>

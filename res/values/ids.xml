@@ -17,17 +17,6 @@
 */
 -->
 <resources>
-    <item type="id" name="autoupload" />
-    <item type="id" name="duration" />
-    <item type="id" name="imagequality" />
-    <item type="id" name="playclicksound" />
-    <item type="id" name="preferred_gallery_view" />
-    <item type="id" name="resolution" />
-    <item type="id" name="t2" />
-    <item type="id" name="t3" />
-    <item type="id" name="t4" />
-    <item type="id" name="usesd" />
-    <item type="id" name="slideshowdelay" />
 </resources>
 
         
