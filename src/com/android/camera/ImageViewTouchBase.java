@@ -13,6 +13,7 @@ import android.util.Config;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.view.KeyEvent;
 import android.widget.ImageView;
 
 abstract public class ImageViewTouchBase extends ImageView {
@@ -89,6 +90,17 @@ abstract public class ImageViewTouchBase extends ImageView {
             setBaseMatrix(mBitmapDisplayed, mBaseMatrix);
             setImageMatrix(getImageViewMatrix());
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && getScale() > 1.0f) {
+            // If we're zoomed in, pressing Back jumps out to show the entire image, otherwise Back
+            // returns the user to the gallery.
+            zoomTo(1.0f);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     protected Handler mHandler = new Handler();

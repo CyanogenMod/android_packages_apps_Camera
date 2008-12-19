@@ -376,35 +376,35 @@ public class HighlightView
         float heightUnits = widthUnits;
 
         switch (keyCode)
-    	{    	
-		case KeyEvent.KEYCODE_DPAD_LEFT:
-			if (mMode == ModifyMode.Move)
-				moveBy(-widthUnits, 0);
-			else if (mMode == ModifyMode.Grow)
-				growBy(-widthUnits, 0);
-			break;
-		
-		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			if (mMode == ModifyMode.Move)
-				moveBy(widthUnits, 0);
+        {       
+        case KeyEvent.KEYCODE_DPAD_LEFT:
+            if (mMode == ModifyMode.Move)
+                moveBy(-widthUnits, 0);
             else if (mMode == ModifyMode.Grow)
-				growBy(widthUnits, 0);
-			break;
-	
-		case KeyEvent.KEYCODE_DPAD_UP:
-			if (mMode == ModifyMode.Move)
-				moveBy(0, -heightUnits);
+                growBy(-widthUnits, 0);
+            break;
+        
+        case KeyEvent.KEYCODE_DPAD_RIGHT:
+            if (mMode == ModifyMode.Move)
+                moveBy(widthUnits, 0);
             else if (mMode == ModifyMode.Grow)
-				growBy(0, -heightUnits);
-			break;
+                growBy(widthUnits, 0);
+            break;
+    
+        case KeyEvent.KEYCODE_DPAD_UP:
+            if (mMode == ModifyMode.Move)
+                moveBy(0, -heightUnits);
+            else if (mMode == ModifyMode.Grow)
+                growBy(0, -heightUnits);
+            break;
 
-		case KeyEvent.KEYCODE_DPAD_DOWN:
-			if (mMode == ModifyMode.Move)
-				moveBy(0, heightUnits);
+        case KeyEvent.KEYCODE_DPAD_DOWN:
+            if (mMode == ModifyMode.Move)
+                moveBy(0, heightUnits);
             else if (mMode == ModifyMode.Grow)
-				growBy(0, heightUnits);
-			break;
-    	}
+                growBy(0, heightUnits);
+            break;
+        }
     }
     
     enum ModifyMode { None, Move,Grow };

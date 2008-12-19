@@ -5,9 +5,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="com.google.android.googleapps.permission.GOOGLE_AUTH.lh2"/>
-    <uses-permission android:name="com.google.android.googleapps.permission.GOOGLE_AUTH.youtube"/>
-    <uses-permission android:name="com.google.android.googleapps.permission.GOOGLE_AUTH.YouTubeUser"/>
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <application android:icon="@drawable/ic_launcher_camera"
@@ -34,11 +31,26 @@
                 <action android:name="android.media.action.IMAGE_CAPTURE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.media.action.STILL_IMAGE_CAMERA" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
-
+        <activity android:name="VideoCamera"
+                android:configChanges="orientation|keyboardHidden"
+                android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+                android:screenOrientation="landscape"
+                android:clearTaskOnLaunch="true"
+                android:taskAffinity="android.task.camera">
+            <intent-filter>
+                <action android:name="android.media.action.VIDEO_CAMERA" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name="GalleryPicker" android:label="@string/gallery_picker_label"
                 android:configChanges="orientation|keyboardHidden"
                 android:icon="@drawable/ic_launcher_gallery"
+                android:clearTaskOnLaunch="true"
                 android:taskAffinity="android.task.pictures">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,7 +71,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/image" />
             </intent-filter>
-
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.dir/video" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <category android:name="android.intent.category.OPENABLE" />
@@ -75,6 +91,7 @@
                 <action android:name="android.intent.action.PICK" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PICK" />
@@ -106,18 +123,33 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
-
-<!--
-        <activity android:name="ViewVideo" android:label="@string/view_video_label">
+        <activity android:name="MovieView"
+                android:label="@string/movieviewlabel"
+                android:screenOrientation="landscape"
                 android:configChanges="orientation|keyboardHidden"
                 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
-            <intent-filter>
+             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="rtsp" />
+             </intent-filter>
+             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="video/*" />
-            </intent-filter>
+             </intent-filter>
+             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" />
+                <data android:mimeType="video/mp4" />
+                <data android:mimeType="video/3gp" />
+                <data android:mimeType="video/3gpp" />
+                <data android:mimeType="video/3gpp2" />
+             </intent-filter>
         </activity>
--->
 
         <activity android:name="CameraSettings" android:label="@string/preferences_label">
             <intent-filter>
@@ -141,16 +173,6 @@
             </intent-filter>
         </activity>
 
-<!--
-        <activity android:name="PwaUpload" android:label="@string/picasa_upload_label">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <data android:mimeType="image/*" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
--->
         <activity android:name=".Wallpaper"
             android:label="@string/camera_setas_wallpaper"
             android:icon="@drawable/ic_launcher_gallery">
@@ -179,29 +201,6 @@
             <!--</intent-filter>-->
         <!--</activity>-->
 
-<!--
-        <activity android:name="YouTubeUpload" android:label="@string/youtube_upload_label">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name="YouTubeUpload"
-            android:label="YouTubeUpload"
-            android:theme="@android:style/Theme.Light">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name="ErrorScreen" android:label="@string/error_label">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
--->
     </application>
 </manifest>
 

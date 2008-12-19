@@ -16,8 +16,16 @@
 
 package com.android.camera;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -46,11 +54,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
 import android.os.SystemClock;
-import android.pim.DateFormat;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Video;
+import android.text.format.DateFormat;
 import android.util.Config;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -69,57 +76,60 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 public class Camera extends Activity implements View.OnClickListener, SurfaceHolder.Callback {
-    
+
     private static final String TAG = "camera";
-    
+
     private static final boolean DEBUG = false;
-    
+
     private static final int CROP_MSG = 1;
     private static final int KEEP = 2;
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
-    
+
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
+    private static final int POST_PICTURE_ALERT_TIMEOUT = 6 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
     private static final int NO_STORAGE_ERROR = -1;
     private static final int CANNOT_STAT_ERROR = -2;
-    
+
     public static final int MENU_SWITCH_TO_VIDEO = 0;
-    public static final int MENU_FLASH_SETTING = 1;
-    public static final int MENU_FLASH_AUTO = 2;
-    public static final int MENU_FLASH_ON = 3;
-    public static final int MENU_FLASH_OFF = 4;
-    public static final int MENU_SETTINGS = 5;
-    public static final int MENU_GALLERY_PHOTOS = 6;
+    public static final int MENU_SWITCH_TO_CAMERA = 1;
+    public static final int MENU_FLASH_SETTING = 2;
+    public static final int MENU_FLASH_AUTO = 3;
+    public static final int MENU_FLASH_ON = 4;
+    public static final int MENU_FLASH_OFF = 5;
+    public static final int MENU_SETTINGS = 6;
+    public static final int MENU_GALLERY_PHOTOS = 7;
+    public static final int MENU_GALLERY_VIDEOS = 8;
     public static final int MENU_SAVE_SELECT_PHOTOS = 30;
     public static final int MENU_SAVE_NEW_PHOTO = 31;
     public static final int MENU_SAVE_SELECTVIDEO = 32;
     public static final int MENU_SAVE_TAKE_NEW_VIDEO = 33;
     public static final int MENU_SAVE_GALLERY_PHOTO = 34;
-    public static final int MENU_SAVE_GALLERY_VIDEO_PHOTO = 35; 
-    public static final int MENU_SAVE_CAMERA_DONE = 36; 
+    public static final int MENU_SAVE_GALLERY_VIDEO_PHOTO = 35;
+    public static final int MENU_SAVE_CAMERA_DONE = 36;
     public static final int MENU_SAVE_CAMERA_VIDEO_DONE = 37;
-    
+
     Toast mToast;
     OrientationListener mOrientationListener;
     int mLastOrientation = OrientationListener.ORIENTATION_UNKNOWN;
     SharedPreferences mPreferences;
-    
+
     static final int IDLE = 1;
     static final int SNAPSHOT_IN_PROGRESS = 2;
     static final int SNAPSHOT_COMPLETED = 3;
-    
+
     int mStatus = IDLE;
+    static final String sTempCropFilename = "crop-temp";
 
     android.hardware.Camera mCameraDevice;
-    SurfaceView mSurfaceView;
+    VideoPreview mSurfaceView;
     SurfaceHolder mSurfaceHolder = null;
     ImageView mBlackout = null;
 
+    int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
     int mViewFinderWidth, mViewFinderHeight;
     boolean mPreviewing = false;
 
@@ -127,7 +137,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
     Capturer mCaptureObject;
     ImageCapture mImageCapture = null;
-    
+
     boolean mPausing = false;
 
     boolean mIsFocusing = false;
@@ -139,43 +149,39 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     boolean mDidRegister = false;
 
     int mCurrentZoomIndex = 0;
-    
-    private static final int STILL_MODE = 1;
-    private static final int VIDEO_MODE = 2;
-    private int mMode = STILL_MODE;
 
     ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
-    
+
     boolean mMenuSelectionMade;
-    
+
     View mPostPictureAlert;
     LocationManager mLocationManager = null;
 
     private Animation mFocusBlinkAnimation;
     private View mFocusIndicator;
     private ToneGenerator mFocusToneGenerator;
-    
+
+
     private ShutterCallback mShutterCallback = new ShutterCallback();
     private RawPictureCallback mRawPictureCallback = new RawPictureCallback();
-    private JpegPictureCallback mJpegPictureCallback = new JpegPictureCallback();
     private AutoFocusCallback mAutoFocusCallback = new AutoFocusCallback();
     private long mShutterPressTime;
     private int mPicturesRemaining;
 
     private boolean mKeepAndRestartPreview;
 
-    private Handler mHandler = new MainHandler(); 
+    private Handler mHandler = new MainHandler();
     private ProgressDialog mSavingProgress;
-    
+
     interface Capturer {
-    	Uri getLastCaptureUri();
-    	void onSnap();
+        Uri getLastCaptureUri();
+        void onSnap();
         void dismissFreezeFrame(boolean keep);
-    	void cancelSave();
-    	void cancelAutoDismiss();
-    	void setDone(boolean wait);
+        void cancelSave();
+        void cancelAutoDismiss();
+        void setDone(boolean wait);
     }
-    
+
     private void cancelSavingNotification() {
         if (mToast != null) {
             mToast.cancel();
@@ -194,15 +200,15 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                         mSavingProgress.cancel();
                         mSavingProgress = null;
                     }
-                    
+
                     mKeepAndRestartPreview = true;
-                    
+
                     if (msg.obj != null) {
                         mHandler.post((Runnable)msg.obj);
                     }
                     break;
                 }
-            
+
                 case RESTART_PREVIEW: {
                     if (mStatus == SNAPSHOT_IN_PROGRESS) {
                         // We are still in the processing of taking the picture, wait.
@@ -210,11 +216,12 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                         // TODO remove polling
                         mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, 100);
                     } else if (mStatus == SNAPSHOT_COMPLETED){
+                        hidePostPictureAlert();
                         mCaptureObject.dismissFreezeFrame(true);
                     }
                     break;
                 }
-                
+
                 case CLEAR_SCREEN_DELAY: {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     break;
@@ -222,13 +229,13 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             }
         }
     };
-    
+
     LocationListener [] mLocationListeners = new LocationListener[] {
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
 
-    
+
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -248,17 +255,17 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             }
         }
     };
-    
+
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
         boolean mValid = false;
         String mProvider;
-        
+
         public LocationListener(String provider) {
             mProvider = provider;
             mLastLocation = new Location(mProvider);
         }
-        
+
         public void onLocationChanged(Location newLocation) {
             if (newLocation.getLatitude() == 0.0 && newLocation.getLongitude() == 0.0) {
                 // Hack to filter out 0.0,0.0 locations
@@ -267,7 +274,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             mLastLocation.set(newLocation);
             mValid = true;
         }
-        
+
         public void onProviderEnabled(String provider) {
         }
 
@@ -280,12 +287,12 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 mValid = false;
             }
         }
-        
+
         public Location current() {
             return mValid ? mLastLocation : null;
         }
     };
-    
+
     private long mRawPictureCallbackTime;
 
     private boolean mImageSavingItem = false;
@@ -302,25 +309,31 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             }
         }
     };
-    
-    private final class RawPictureCallback implements PictureCallback { 
+
+    private final class RawPictureCallback implements PictureCallback {
         public void onPictureTaken(byte [] rawData, android.hardware.Camera camera) {
             if (Config.LOGV)
                 Log.v(TAG, "got RawPictureCallback...");
             mRawPictureCallbackTime = System.currentTimeMillis();
             mBlackout.setVisibility(View.INVISIBLE);
             if (!isPickIntent() && mPreferences.getBoolean("pref_camera_postpicturemenu_key", true)) {
-                mPostPictureAlert.setVisibility(View.VISIBLE);
+                showPostPictureAlert();
             }
         }
     };
-    
+
     private final class JpegPictureCallback implements PictureCallback {
+        Location mLocation;
+
+        public JpegPictureCallback(Location loc) {
+            mLocation = loc;
+        }
+
         public void onPictureTaken(byte [] jpegData, android.hardware.Camera camera) {
             if (Config.LOGV)
                 Log.v(TAG, "got JpegPictureCallback...");
 
-            mImageCapture.storeImage(jpegData, camera);
+            mImageCapture.storeImage(jpegData, camera, mLocation);
 
             mStatus = SNAPSHOT_COMPLETED;
 
@@ -335,15 +348,15 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             if (mKeepAndRestartPreview) {
                 mKeepAndRestartPreview = false;
                 mPostPictureAlert.setVisibility(View.INVISIBLE);
-                
+
                 // Post this message so that we can finish processing the request. This also
                 // prevents the preview from showing up before mPostPictureAlert is dismissed.
                 mHandler.sendEmptyMessage(RESTART_PREVIEW);
             }
-            
+
         }
     };
-    
+
     private final class AutoFocusCallback implements android.hardware.Camera.AutoFocusCallback {
         public void onAutoFocus(boolean focused, android.hardware.Camera camera) {
             mIsFocusing = false;
@@ -354,42 +367,44 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                     mCaptureObject.onSnap();
                     clearFocus();
                 } else {
-                    mFocusToneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2);
+                    ToneGenerator tg = mFocusToneGenerator;
+                    if (tg != null)
+                       tg.startTone(ToneGenerator.TONE_PROP_BEEP2);
                 }
                 mCaptureOnFocus = false;
             }
             updateFocusIndicator();
         }
     };
-    
+
     private class ImageCapture implements Capturer {
-        
+
         private boolean mCancel = false;
         private boolean mCapturing = false;
-        
+
         private Uri mLastContentUri;
         private ImageManager.IAddImage_cancelable mAddImageCancelable;
 
         Bitmap mCaptureOnlyBitmap;
-        
+
         /** These member variables are used for various debug timings */
         private long mThreadTimeStart;
         private long mThreadTimeEnd;
         private long mWallTimeStart;
         private long mWallTimeEnd;
-        
+
 
         public ImageCapture() {
         }
 
-        /** 
+        /**
          * This method sets whether or not we are capturing a picture. This method must be called
          * with the ImageCapture.this lock held.
          */
         public void setCapturingLocked(boolean capturing) {
             mCapturing = capturing;
         }
-        
+
         /*
          * Tell the ImageCapture thread to exit when possible.
          */
@@ -409,7 +424,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             } else {
                 Toast.makeText(Camera.this, R.string.camera_tossing, Toast.LENGTH_SHORT).show();
             }
-            
+
             if (mStatus == SNAPSHOT_IN_PROGRESS) {
                 // If we are still in the process of taking a picture, then just post a message.
                 mHandler.sendEmptyMessage(RESTART_PREVIEW);
@@ -417,31 +432,31 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 restartPreview();
             }
         }
-        
+
         private void startTiming() {
             mWallTimeStart = SystemClock.elapsedRealtime();
             mThreadTimeStart = Debug.threadCpuTimeNanos();
         }
-        
+
         private void stopTiming() {
             mThreadTimeEnd = Debug.threadCpuTimeNanos();
             mWallTimeEnd = SystemClock.elapsedRealtime();
         }
-        
-        private void storeImage(byte[] data) {
+
+        private void storeImage(byte[] data, Location loc) {
             try {
                 if (DEBUG) {
                     startTiming();
                 }
-                    
+                long dateTaken = System.currentTimeMillis();
                 mLastContentUri = ImageManager.instance().addImage(
                         Camera.this,
                         mContentResolver,
-                        DateFormat.format("yyyy-MM-dd kk.mm.ss", System.currentTimeMillis()).toString(), 
+                        createName(dateTaken),
                         "",
-                        System.currentTimeMillis(),
+                        dateTaken,
                         // location for the database goes here
-                        null,
+                        loc,
                         0,   // the dsp will use the right orientation so don't "double set it"
                         ImageManager.CAMERA_IMAGE_BUCKET_NAME,
                         null);
@@ -456,46 +471,46 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                     mAddImageCancelable.get();
                     mAddImageCancelable = null;
                 }
-                
+
                 if (DEBUG) {
                     stopTiming();
                     Log.d(TAG, "Storing image took " + (mWallTimeEnd - mWallTimeStart) + " ms. " +
-                            "Thread time was " + ((mThreadTimeEnd - mThreadTimeStart) / 1000000) + 
+                            "Thread time was " + ((mThreadTimeEnd - mThreadTimeStart) / 1000000) +
                             " ms.");
                 }
             } catch (Exception ex) {
                 Log.e(TAG, "Exception while compressing image.", ex);
             }
         }
-        
-        public void storeImage(byte[] data, android.hardware.Camera camera) {
+
+        public void storeImage(byte[] data, android.hardware.Camera camera, Location loc) {
             boolean captureOnly = isPickIntent();
-            
+
             if (!captureOnly) {
-                storeImage(data);
+                storeImage(data, loc);
                 sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", mLastContentUri));
             } else {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 4;
-                
+
                 if (DEBUG) {
                     startTiming();
                 }
-                
+
                 mCaptureOnlyBitmap = BitmapFactory.decodeByteArray(data, 0, data.length, options);
-                
+
                 if (DEBUG) {
                     stopTiming();
                     Log.d(TAG, "Decoded mCaptureOnly bitmap (" + mCaptureOnlyBitmap.getWidth() +
-                            "x" + mCaptureOnlyBitmap.getHeight() + " ) in " + 
-                            (mWallTimeEnd - mWallTimeStart) + " ms. Thread time was " +  
+                            "x" + mCaptureOnlyBitmap.getHeight() + " ) in " +
+                            (mWallTimeEnd - mWallTimeStart) + " ms. Thread time was " +
                             ((mThreadTimeEnd - mThreadTimeStart) / 1000000) + " ms.");
                 }
-                
+
                 openOptionsMenu();
             }
-            
-            
+
+
             mCapturing = false;
             if (mPausing) {
                 closeCamera();
@@ -510,9 +525,9 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             if (!mCapturing) {
                 return;
             }
-            
+
             mCancel = true;
-            
+
             if (mAddImageCancelable != null) {
                 mAddImageCancelable.cancel();
             }
@@ -526,25 +541,25 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             if (mCameraDevice == null) {
                 return;
             }
-            
+
             mCancel = false;
             mCapturing = true;
 
             capture(captureOnly);
         }
-      
+
         public Uri getLastCaptureUri() {
             return mLastContentUri;
         }
-        
+
         public Bitmap getLastBitmap() {
             return mCaptureOnlyBitmap;
         }
-        
+
         private void capture(boolean captureOnly) {
             mPreviewing = false;
             mCaptureOnlyBitmap = null;
-            
+
             final int latchedOrientation = ImageManager.roundOrientation(mLastOrientation + 90);
 
             Boolean recordLocation = mPreferences.getBoolean("pref_camera_recordlocation_key", false);
@@ -554,35 +569,38 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             // get large. 85 is a good compromise between the two.
             parameters.set("jpeg-quality", 85);
             parameters.set("rotation", latchedOrientation);
+
+            parameters.remove("gps-latitude");
+            parameters.remove("gps-longitude");
+            parameters.remove("gps-altitude");
+            parameters.remove("gps-timestamp");
+
             if (loc != null) {
-                parameters.set("gps-latitude",  String.valueOf(loc.getLatitude()));
-                parameters.set("gps-longitude", String.valueOf(loc.getLongitude()));
-                parameters.set("gps-altitude",  String.valueOf(loc.getAltitude()));
-                parameters.set("gps-timestamp", String.valueOf(loc.getTime()));
-            } else {
-                parameters.remove("gps-latitude");
-                parameters.remove("gps-longitude");
-                parameters.remove("gps-altitude");
-                parameters.remove("gps-timestamp");
+                double lat = loc.getLatitude();
+                double lon = loc.getLongitude();
+
+                if (lat != 0D && lon != 0d) {
+                    parameters.set("gps-latitude",  String.valueOf(lat));
+                    parameters.set("gps-longitude", String.valueOf(lon));
+                    if (loc.hasAltitude())
+                        parameters.set("gps-altitude",  String.valueOf(loc.getAltitude()));
+                    if (loc.getTime() != 0)
+                        parameters.set("gps-timestamp", String.valueOf(loc.getTime()));
+                } else {
+                    loc = null;
+                }
             }
 
             Size pictureSize = parameters.getPictureSize();
-            Size previewSize = parameters.getPreviewSize();
 
             // resize the SurfaceView to the aspect-ratio of the still image
             // and so that we can see the full image that was taken
-            ViewGroup.LayoutParams lp = mSurfaceView.getLayoutParams();
-            if (pictureSize.width*previewSize.height < previewSize.width*pictureSize.height) {
-                lp.width = (pictureSize.width * previewSize.height) / pictureSize.height; 
-            } else {
-                lp.height = (pictureSize.height * previewSize.width) / pictureSize.width; 
-            }
-            mSurfaceView.requestLayout();
+            mSurfaceView.setAspectRatio(pictureSize.width, pictureSize.height);
 
             mCameraDevice.setParameters(parameters);
-       
-            mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback, mJpegPictureCallback);
-            
+
+            mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback, new JpegPictureCallback(loc));
+
             mBlackout.setVisibility(View.VISIBLE);
             // Comment this out for now until we can decode the preview frame. This currently
             // just animates black-on-black because the surface flinger blacks out the surface
@@ -612,7 +630,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 showStorageToast();
                 return;
             }
-            
+
             mStatus = SNAPSHOT_IN_PROGRESS;
 
             mKeepAndRestartPreview = !mPreferences.getBoolean("pref_camera_postpicturemenu_key", true);
@@ -624,6 +642,11 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 mImageCapture.initiate(false);
             }
         }
+    }
+
+
+    static private String createName(long dateTaken) {
+        return DateFormat.format("yyyy-MM-dd kk.mm.ss", dateTaken).toString();
     }
 
     static public Matrix GetDisplayMatrix(Bitmap b, ImageView v) {
@@ -649,12 +672,12 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
     private void postAfterKeep(final Runnable r) {
         Resources res = getResources();
-        
+
         if (mSavingProgress != null) {
-            mSavingProgress = ProgressDialog.show(this, res.getString(R.string.savingImage), 
+            mSavingProgress = ProgressDialog.show(this, res.getString(R.string.savingImage),
                     res.getString(R.string.wait));
         }
-        
+
         Message msg = mHandler.obtainMessage(KEEP);
         msg.obj = r;
         msg.sendToTarget();
@@ -672,38 +695,35 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
         //setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         requestWindowFeature(Window.FEATURE_PROGRESS);
-        
+
         Window win = getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.camera);
 
-        mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
-        
+        mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
+
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
         // assume that when it is set, the surface is also set.
         SurfaceHolder holder = mSurfaceView.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        
+
         mBlackout = (ImageView) findViewById(R.id.blackout);
         mBlackout.setBackgroundDrawable(new ColorDrawable(0xFF000000));
 
         mPostPictureAlert = findViewById(R.id.post_picture_panel);
         View b;
-        
-        b = findViewById(R.id.save);
-        b.setOnClickListener(this);
-        
+
         b = findViewById(R.id.discard);
         b.setOnClickListener(this);
-        
+
         b = findViewById(R.id.share);
         b.setOnClickListener(this);
 
         b = findViewById(R.id.setas);
         b.setOnClickListener(this);
-        
+
         try {
             mClickSound = new MediaPlayer();
             AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.camera_click);
@@ -719,27 +739,27 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         } catch (Exception ex) {
             Log.w(TAG, "Couldn't create click sound", ex);
         }
-        
+
         mOrientationListener = new OrientationListener(this) {
             public void onOrientationChanged(int orientation) {
                 mLastOrientation = orientation;
             }
         };
-        
+
         mFocusIndicator = findViewById(R.id.focus_indicator);
         mFocusBlinkAnimation = AnimationUtils.loadAnimation(this, R.anim.auto_focus_blink);
         mFocusBlinkAnimation.setRepeatCount(Animation.INFINITE);
         mFocusBlinkAnimation.setRepeatMode(Animation.REVERSE);
     }
-    
+
     @Override
     public void onStart() {
         super.onStart();
-        
+
         final View hintView = findViewById(R.id.hint_toast);
         if (hintView != null)
             hintView.setVisibility(View.GONE);
-        
+
         Thread t = new Thread(new Runnable() {
             public void run() {
                 final boolean storageOK = calculatePicturesRemaining() > 0;
@@ -761,7 +781,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                             hintView.setVisibility(View.GONE);
                         }
                     }, 3000);
-                } else {            
+                } else {
                     mHandler.post(new Runnable() {
                         public void run() {
                             hintView.setVisibility(View.GONE);
@@ -773,15 +793,17 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         });
         t.start();
     }
-    
+
     public void onClick(View v) {
         switch (v.getId()) {
+        /*
             case R.id.save: {
-                mPostPictureAlert.setVisibility(View.INVISIBLE);
+                mPostPictureAlert.setVisibility(View.GONE);
                 postAfterKeep(null);
                 break;
             }
-                
+         */
+
             case R.id.discard: {
                 if (mCaptureObject != null) {
                     mCaptureObject.cancelSave();
@@ -791,12 +813,12 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                     }
                     mCaptureObject.dismissFreezeFrame(true);
                 }
-                mPostPictureAlert.setVisibility(View.INVISIBLE);
+                mPostPictureAlert.setVisibility(View.GONE);
                 break;
             }
-            
+
             case R.id.share: {
-                mPostPictureAlert.setVisibility(View.INVISIBLE);
+                mPostPictureAlert.setVisibility(View.GONE);
                 postAfterKeep(new Runnable() {
                     public void run() {
                         Uri u = mCaptureObject.getLastCaptureUri();
@@ -807,15 +829,15 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                         try {
                             startActivity(Intent.createChooser(intent, getText(R.string.sendImage)));
                         } catch (android.content.ActivityNotFoundException ex) {
-                            Toast.makeText(Camera.this, R.string.no_way_to_share_video, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Camera.this, R.string.no_way_to_share_image, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
                 break;
             }
-            
+
             case R.id.setas: {
-                mPostPictureAlert.setVisibility(View.INVISIBLE);
+                mPostPictureAlert.setVisibility(View.GONE);
                 postAfterKeep(new Runnable() {
                     public void run() {
                         Uri u = mCaptureObject.getLastCaptureUri();
@@ -831,9 +853,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             }
         }
     }
-    
-    void keepVideo() {
-    };
 
     private void showStorageToast() {
         String noStorageText = null;
@@ -854,13 +873,9 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     public void onResume() {
         super.onResume();
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
-        
+
         mPausing = false;
         mOrientationListener.enable();
-
-        if (isPickIntent()) {
-            mMode = STILL_MODE;
-        }
 
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
@@ -874,14 +889,19 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         mImageCapture = new ImageCapture();
 
         restartPreview();
-        
+
         if (mPreferences.getBoolean("pref_camera_recordlocation_key", false))
             startReceivingLocationUpdates();
-        
+
         updateFocusIndicator();
 
-        mFocusToneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM, FOCUS_BEEP_VOLUME);
-        
+        try {
+            mFocusToneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM, FOCUS_BEEP_VOLUME);
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Exception caught while creating local tone generator: " + e);
+            mFocusToneGenerator = null;
+        }
+
         mBlackout.setVisibility(View.INVISIBLE);
     }
 
@@ -905,7 +925,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
         mPausing = true;
         mOrientationListener.disable();
-        
+
         stopPreview();
 
         if (!mImageCapture.mCapturing) {
@@ -916,8 +936,11 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             mDidRegister = false;
         }
         stopReceivingLocationUpdates();
-        mFocusToneGenerator.release();
-        mFocusToneGenerator = null;
+
+        if (mFocusToneGenerator != null) {
+            mFocusToneGenerator.release();
+            mFocusToneGenerator = null;
+        }
 
         super.onPause();
     }
@@ -935,6 +958,10 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 }
                 setResult(resultCode, intent);
                 finish();
+
+                File path = getFileStreamPath(sTempCropFilename);
+                path.delete();
+
                 break;
             }
         }
@@ -950,13 +977,13 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             }
         }
     }
-    
+
     private void clearFocus() {
         mIsFocusing = false;
         mIsFocused = false;
         mIsFocusButtonPressed = false;
     }
-    
+
     private void updateFocusIndicator() {
         mHandler.post(new Runnable() {
             public void run() {
@@ -976,10 +1003,12 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         });
     }
 
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 if (mStatus == SNAPSHOT_IN_PROGRESS || mStatus == SNAPSHOT_COMPLETED) {
@@ -1049,12 +1078,10 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        if (mMode == STILL_MODE) {
-            // if we're creating the surface, start the preview as well.
-            boolean preview = holder.isCreating();
-            setViewFinder(w, h, preview);
-            mCaptureObject = mImageCapture;
-        }
+        // if we're creating the surface, start the preview as well.
+        boolean preview = holder.isCreating();
+        setViewFinder(w, h, preview);
+        mCaptureObject = mImageCapture;
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
@@ -1065,7 +1092,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         stopPreview();
         mSurfaceHolder = null;
     }
-    
+
     private void closeCamera() {
         if (mCameraDevice != null) {
             mCameraDevice.release();
@@ -1073,26 +1100,23 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             mPreviewing = false;
         }
     }
-    
+
     private boolean ensureCameraDevice() {
         if (mCameraDevice == null) {
             mCameraDevice = android.hardware.Camera.open();
         }
         return mCameraDevice != null;
     }
-    
+
     private void restartPreview() {
-        SurfaceView surfaceView = mSurfaceView;
-        if (surfaceView == null || 
+        VideoPreview surfaceView = mSurfaceView;
+        if (surfaceView == null ||
                 surfaceView.getWidth() == 0 || surfaceView.getHeight() == 0) {
             return;
         }
         // make sure the surfaceview fills the whole screen when previewing
-        ViewGroup.LayoutParams lp = surfaceView.getLayoutParams();
-        lp.width = ViewGroup.LayoutParams.FILL_PARENT;
-        lp.height = ViewGroup.LayoutParams.FILL_PARENT;
-        surfaceView.requestLayout();
-        setViewFinder(mViewFinderWidth, mViewFinderHeight, true);
+        surfaceView.setAspectRatio(VideoPreview.DONT_CARE);
+        setViewFinder(mOriginalViewFinderWidth, mOriginalViewFinderHeight, true);
         mStatus = IDLE;
 
         // Calculate this in advance of each shot so we don't add to shutter latency. It's true that
@@ -1102,37 +1126,41 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         // let the user take a picture, and delete that file if needed to save the new photo.
         calculatePicturesRemaining();
     }
-    
+
     private void setViewFinder(int w, int h, boolean startPreview) {
         if (mPausing)
             return;
-        
-        if (mPreviewing && 
-                w == mViewFinderWidth && 
+
+        if (mPreviewing &&
+                w == mViewFinderWidth &&
                 h == mViewFinderHeight) {
             return;
         }
-        
+
         if (!ensureCameraDevice())
             return;
-        
+
         if (mSurfaceHolder == null)
             return;
-        
+
         if (isFinishing())
             return;
-        
+
         if (mPausing)
             return;
-        
+
         // remember view finder size
         mViewFinderWidth = w;
         mViewFinderHeight = h;
+        if (mOriginalViewFinderHeight == 0) {
+            mOriginalViewFinderWidth = w;
+            mOriginalViewFinderHeight = h;
+        }
 
         if (startPreview == false)
             return;
 
-        /* 
+        /*
          * start the preview if we're asked to...
          */
 
@@ -1140,21 +1168,31 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         // stop the preview first (this will blank the screen).
         if (mPreviewing)
             stopPreview();
-        
+
         // this blanks the screen if the surface changed, no-op otherwise
-        mCameraDevice.setPreviewDisplay(mSurfaceHolder);
-        
+        try {
+            mCameraDevice.setPreviewDisplay(mSurfaceHolder);
+        } catch (IOException exception) {
+            mCameraDevice.release();
+            mCameraDevice = null;
+            // TODO: add more exception handling logic here
+            return;
+        }
 
         // request the preview size, the hardware may not honor it,
         // if we depended on it we would have to query the size again
         android.hardware.Camera.Parameters p = mCameraDevice.getParameters();
         p.setPreviewSize(w, h);
-        mCameraDevice.setParameters(p);
-        
-        
+        try {
+            mCameraDevice.setParameters(p);
+        } catch (IllegalArgumentException e) {
+            // Ignore this error, it happens in the simulator.
+        }
+
+
         final long wallTimeStart = SystemClock.elapsedRealtime();
         final long threadTimeStart = Debug.threadCpuTimeNanos();
-    
+
         final Object watchDogSync = new Object();
         Thread watchDog = new Thread(new Runnable() {
             public void run() {
@@ -1169,7 +1207,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                     }
                     if (mPreviewing)
                         break;
-                    
+
                     int delay = (int) (SystemClock.elapsedRealtime() - wallTimeStart) / 1000;
                     if (delay >= next_warning) {
                         if (delay < 120) {
@@ -1194,19 +1232,24 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
         if (Config.LOGV)
             Log.v(TAG, "calling mCameraDevice.startPreview");
-        mCameraDevice.startPreview();
+        try {
+            mCameraDevice.startPreview();
+        } catch (Throwable e) {
+            // TODO: change Throwable to IOException once android.hardware.Camera.startPreview
+            // properly declares that it throws IOException.
+        }
         mPreviewing = true;
-        
+
         synchronized (watchDogSync) {
             watchDogSync.notify();
         }
-        
+
         long threadTimeEnd = Debug.threadCpuTimeNanos();
         long wallTimeEnd = SystemClock.elapsedRealtime();
         if ((wallTimeEnd - wallTimeStart) > 3000) {
             Log.w(TAG, "startPreview() to " + (wallTimeEnd - wallTimeStart) + " ms. Thread time was"
                     + (threadTimeEnd - threadTimeStart) / 1000000 + " ms.");
-        }        
+        }
     }
 
     private void stopPreview() {
@@ -1217,10 +1260,13 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     }
 
     void gotoGallery() {
-        Uri target = mMode == STILL_MODE ? Images.Media.INTERNAL_CONTENT_URI
-                                                : Video.Media.INTERNAL_CONTENT_URI;
+        Uri target = Images.Media.INTERNAL_CONTENT_URI;
         Intent intent = new Intent(Intent.ACTION_VIEW, target);
-        startActivity(intent);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "Could not start gallery activity", e);
+        }
     }
 
     void keep() {
@@ -1236,27 +1282,27 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             mCaptureObject.cancelSave();
         }
     };
-    
+
     private ImageManager.IImage getImageForURI(Uri uri) {
         ImageManager.IImageList list = ImageManager.instance().allImages(
                 this,
-                mContentResolver, 
-                dataLocation(), 
-                ImageManager.INCLUDE_IMAGES, 
+                mContentResolver,
+                dataLocation(),
+                ImageManager.INCLUDE_IMAGES,
                 ImageManager.SORT_ASCENDING);
         ImageManager.IImage image = list.getImageForUri(uri);
         list.deactivate();
         return image;
     }
-    
-    
+
+
     private void startReceivingLocationUpdates() {
         if (mLocationManager != null) {
             try {
                 mLocationManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER, 
-                        1000, 
-                        0F, 
+                        LocationManager.NETWORK_PROVIDER,
+                        1000,
+                        0F,
                         mLocationListeners[1]);
             } catch (java.lang.SecurityException ex) {
                 // ok
@@ -1267,9 +1313,9 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             }
             try {
                 mLocationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, 
-                        1000, 
-                        0F, 
+                        LocationManager.GPS_PROVIDER,
+                        1000,
+                        0F,
                         mLocationListeners[0]);
             } catch (java.lang.SecurityException ex) {
                 // ok
@@ -1280,7 +1326,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             }
         }
     }
-    
+
     private void stopReceivingLocationUpdates() {
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
@@ -1292,18 +1338,20 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             }
         }
     }
-    
+
     private Location getCurrentLocation() {
         Location l = null;
-        
-        // go in worst to best order
-        for (int i = 0; i < mLocationListeners.length && l == null; i++) {
+
+        // go in best to worst order
+        for (int i = 0; i < mLocationListeners.length; i++) {
             l = mLocationListeners[i].current();
+            if (l != null)
+                break;
         }
-        
+
         return l;
     }
-    
+
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         super.onOptionsMenuClosed(menu);
@@ -1315,7 +1363,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             mHandler.sendEmptyMessage(RESTART_PREVIEW);
         }
     }
-    
+
     @Override
     public boolean onMenuOpened(int featureId, Menu menu) {
         if (featureId == Window.FEATURE_OPTIONS_PANEL) {
@@ -1327,28 +1375,25 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         }
         return super.onMenuOpened(featureId, menu);
     }
-    
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
         mMenuSelectionMade = false;
-        
+
         for (int i = 1; i <= MenuHelper.MENU_ITEM_MAX; i++) {
             if (i != MenuHelper.GENERIC_ITEM) {
                 menu.setGroupVisible(i, false);
             }
         }
-        
-        if (mMode == STILL_MODE) {
-            if (mStatus == SNAPSHOT_IN_PROGRESS || mStatus == SNAPSHOT_COMPLETED) {
-                menu.setGroupVisible(MenuHelper.IMAGE_SAVING_ITEM, true);
-                mImageSavingItem = true;
-            } else {
-                menu.setGroupVisible(MenuHelper.IMAGE_MODE_ITEM, true);
-                mImageSavingItem = false;
-            }
-        } else if (mMode == VIDEO_MODE) {
+
+        if (mStatus == SNAPSHOT_IN_PROGRESS || mStatus == SNAPSHOT_COMPLETED) {
+            menu.setGroupVisible(MenuHelper.IMAGE_SAVING_ITEM, true);
+            mImageSavingItem = true;
+        } else {
+            menu.setGroupVisible(MenuHelper.IMAGE_MODE_ITEM, true);
+            mImageSavingItem = false;
         }
 
         if (mCaptureObject != null)
@@ -1361,7 +1406,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         String action = getIntent().getAction();
         return (Intent.ACTION_PICK.equals(action) || MediaStore.ACTION_IMAGE_CAPTURE.equals(action));
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -1372,39 +1417,106 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                     Bitmap bitmap = mImageCapture.getLastBitmap();
                     mCaptureObject.setDone(true);
 
-                    // TODO scale the image down to something ridiculous until IPC gets straightened out
-                    float scale = .5F;
-                    Matrix m = new Matrix();
-                    m.setScale(scale, scale);
+                    String cropValue = null;
+                    Uri saveUri = null;
 
-                    bitmap = Bitmap.createBitmap(bitmap, 0, 0,
-                            bitmap.getWidth(),
-                            bitmap.getHeight(), 
-                            m, true);
-                    
                     Bundle myExtras = getIntent().getExtras();
-                    String cropValue = myExtras != null ? myExtras.getString("crop") : null;
-                    if (cropValue != null) {
+                    if (myExtras != null) {
+                        saveUri = (Uri) myExtras.getParcelable("output");
+                        cropValue = myExtras.getString("crop");
+                    }
+
+
+                    if (cropValue == null) {
+                        /*
+                         * First handle the no crop case -- just return the value.  If the caller
+                         * specifies a "save uri" then write the data to it's stream.  Otherwise,
+                         * pass back a scaled down version of the bitmap directly in the extras.
+                         */
+                        if (saveUri != null) {
+                            OutputStream outputStream = null;
+                            try {
+                                outputStream = mContentResolver.openOutputStream(saveUri);
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
+                                outputStream.close();
+
+                                setResult(RESULT_OK);
+                                finish();
+                            } catch (IOException ex) {
+                                //
+                            } finally {
+                                if (outputStream != null) {
+                                    try {
+                                        outputStream.close();
+                                    } catch (IOException ex) {
+
+                                    }
+                                }
+                            }
+                        } else {
+                            float scale = .5F;
+                            Matrix m = new Matrix();
+                            m.setScale(scale, scale);
+
+                            bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                                    bitmap.getWidth(),
+                                    bitmap.getHeight(),
+                                    m, true);
+
+                            setResult(RESULT_OK, new Intent("inline-data").putExtra("data", bitmap));
+                            finish();
+                        }
+                    }
+                    else {
+                        /*
+                         * Save the image to a temp file and invoke the cropper
+                         */
+                        Uri tempUri = null;
+                        FileOutputStream tempStream = null;
+                        try {
+                            File path = getFileStreamPath(sTempCropFilename);
+                            path.delete();
+                            tempStream = openFileOutput(sTempCropFilename, 0);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, tempStream);
+                            tempStream.close();
+                            tempUri = Uri.fromFile(path);
+                        } catch (FileNotFoundException ex) {
+                            setResult(Activity.RESULT_CANCELED);
+                            finish();
+                            return true;
+                        } catch (IOException ex) {
+                            setResult(Activity.RESULT_CANCELED);
+                            finish();
+                            return true;
+                        } finally {
+                            if (tempStream != null) {
+                                try {
+                                    tempStream.close();
+                                } catch (IOException ex) {
+
+                                }
+                            }
+                        }
+
                         Bundle newExtras = new Bundle();
                         if (cropValue.equals("circle"))
                             newExtras.putString("circleCrop", "true");
-                        newExtras.putParcelable("data", bitmap);
+                        if (saveUri != null)
+                            newExtras.putParcelable("output", saveUri);
+                        else
+                            newExtras.putBoolean("return-data", true);
 
                         Intent cropIntent = new Intent();
                         cropIntent.setClass(Camera.this, CropImage.class);
+                        cropIntent.setData(tempUri);
                         cropIntent.putExtras(newExtras);
+
                         startActivityForResult(cropIntent, CROP_MSG);
-                    } else {
-                        Bundle extras = new Bundle();
-                        extras.putParcelable("data", bitmap);
-                        setResult(RESULT_OK, new Intent("inline-data")
-                                .putExtra("data", bitmap));
-                        finish();
                     }
                     return true;
                 }
             });
-            
+
             menu.add(MenuHelper.IMAGE_SAVING_ITEM, MENU_SAVE_NEW_PHOTO, 0, R.string.camera_takenewphoto).setOnMenuItemClickListener(new OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     keep();
@@ -1422,9 +1534,10 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             MenuHelper.addImageMenuItems(
                     menu,
                     MenuHelper.INCLUDE_ALL & ~MenuHelper.INCLUDE_ROTATE_MENU,
+                    true,
                     Camera.this,
                     mHandler,
-                    
+
                     // Handler for deletion
                     new Runnable() {
                         public void run() {
@@ -1461,20 +1574,12 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 }
             });
             gallery.setIcon(android.R.drawable.ic_menu_gallery);
-
-            mGalleryItems.add(menu.add(MenuHelper.VIDEO_SAVING_ITEM, MENU_SAVE_GALLERY_VIDEO_PHOTO, 0, R.string.camera_gallery_photos_text).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    keepVideo();
-                    gotoGallery();
-                    return true;
-                }
-            }));
-        }       
+        }
         return true;
     }
-    
+
     SelectedImageGetter mSelectedImageGetter =
-        new SelectedImageGetter() { 
+        new SelectedImageGetter() {
             public ImageManager.IImage getCurrentImage() {
                 return getImageForURI(getCurrentImageUri());
             }
@@ -1502,16 +1607,29 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         }
         return mPicturesRemaining;
     }
-    
+
     private void addBaseMenuItems(Menu menu) {
-        MenuItem gallery = menu.add(MenuHelper.IMAGE_MODE_ITEM, MENU_GALLERY_PHOTOS, 0, R.string.camera_gallery_photos_text).setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                gotoGallery();
-                return true;
-            }
-        });
-        gallery.setIcon(android.R.drawable.ic_menu_gallery);
-        mGalleryItems.add(gallery);
+        MenuHelper.addSwitchModeMenuItem(menu, this, true);
+        {
+            MenuItem gallery = menu.add(MenuHelper.IMAGE_MODE_ITEM, MENU_GALLERY_PHOTOS, 0, R.string.camera_gallery_photos_text).setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    gotoGallery();
+                    return true;
+                }
+            });
+            gallery.setIcon(android.R.drawable.ic_menu_gallery);
+            mGalleryItems.add(gallery);
+        }
+        {
+            MenuItem gallery = menu.add(MenuHelper.VIDEO_MODE_ITEM, MENU_GALLERY_VIDEOS, 0, R.string.camera_gallery_photos_text).setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    gotoGallery();
+                    return true;
+                }
+            });
+            gallery.setIcon(android.R.drawable.ic_menu_gallery);
+            mGalleryItems.add(gallery);
+        }
 
         MenuItem item = menu.add(MenuHelper.GENERIC_ITEM, MENU_SETTINGS, 0, R.string.settings).setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
@@ -1523,5 +1641,20 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         });
         item.setIcon(android.R.drawable.ic_menu_preferences);
     }
+
+    private void showPostPictureAlert() {
+        mPostPictureAlert.setVisibility(View.VISIBLE);
+        mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, POST_PICTURE_ALERT_TIMEOUT);
+    }
+
+    private void hidePostPictureAlert() {
+        cancelRestartPreviewTimeout();
+        mPostPictureAlert.setVisibility(View.INVISIBLE);
+    }
+
+    private void cancelRestartPreviewTimeout() {
+        mHandler.removeMessages(RESTART_PREVIEW);
+    }
+
 }
 

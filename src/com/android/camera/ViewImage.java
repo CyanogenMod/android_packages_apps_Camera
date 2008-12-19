@@ -102,8 +102,8 @@ public class ViewImage extends Activity
     private Animation mHidePrevImageViewAnimation = new AlphaAnimation(1F, 0F);
     private Animation mShowNextImageViewAnimation = new AlphaAnimation(0F, 1F);
     private Animation mShowPrevImageViewAnimation = new AlphaAnimation(0F, 1F);
-    
-    
+
+
     static final int sPadding = 20;
     static final int sHysteresis = sPadding * 2;
     static final int sBaseScrollDuration = 1000; // ms
@@ -127,17 +127,17 @@ public class ViewImage extends Activity
 
     Runnable mDismissOnScreenControlsRunnable;
     ZoomControls mZoomControls;
-    
+
     public ViewImage() {
     }
-    
+
     private void updateNextPrevControls() {
         boolean showPrev =  mCurrentPosition > 0;
         boolean showNext = mCurrentPosition < mAllImages.getCount() - 1;
-        
+
         boolean prevIsVisible = mPrevImageView.getVisibility() == View.VISIBLE;
         boolean nextIsVisible = mNextImageView.getVisibility() == View.VISIBLE;
-        
+
         if (showPrev && !prevIsVisible) {
             Animation a = mShowPrevImageViewAnimation;
             a.setDuration(500);
@@ -205,7 +205,7 @@ public class ViewImage extends Activity
             mDismissOnScreenControlsRunnable = new Runnable() {
                 public void run() {
                     mZoomControls.hide();
-                    
+
                     if (mNextImageView.getVisibility() == View.VISIBLE) {
                         Animation a = mHideNextImageViewAnimation;
                         a.setDuration(500);
@@ -213,7 +213,7 @@ public class ViewImage extends Activity
                         mNextImageView.setAnimation(a);
                         mNextImageView.setVisibility(View.INVISIBLE);
                     }
-                    
+
                     if (mPrevImageView.getVisibility() == View.VISIBLE) {
                         Animation a = mHidePrevImageViewAnimation;
                         a.setDuration(500);
@@ -252,14 +252,14 @@ public class ViewImage extends Activity
 
     static public class ImageViewTouch extends ImageViewTouchBase {
         private ViewImage mViewImage;
-        
+
         private static int TOUCH_STATE_REST = 0;
         private static int TOUCH_STATE_LEFT_PRESS = 1;
-        private static int TOUCH_STATE_RIGHT_PRESS = 2;  
-        private static int TOUCH_STATE_PANNING = 3;  
-        
+        private static int TOUCH_STATE_RIGHT_PRESS = 2;
+        private static int TOUCH_STATE_PANNING = 3;
+
         private static int TOUCH_AREA_WIDTH = 60;
-        
+
         private int mTouchState = TOUCH_STATE_REST;
 
         public ImageViewTouch(Context context) {
@@ -300,7 +300,7 @@ public class ViewImage extends Activity
                     mLastYTouchPos = y;
                     mTouchState = TOUCH_STATE_REST;
                     break;
-                case MotionEvent.ACTION_MOVE: 
+                case MotionEvent.ACTION_MOVE:
                     if (x < TOUCH_AREA_WIDTH) {
                         if (mTouchState == TOUCH_STATE_REST) {
                             mTouchState = TOUCH_STATE_LEFT_PRESS;
@@ -325,10 +325,10 @@ public class ViewImage extends Activity
                         mTouchState = TOUCH_STATE_PANNING;
                         viewImage.mPrevImageView.setPressed(false);
                         viewImage.mNextImageView.setPressed(false);
-                        
+
                         int deltaX;
                         int deltaY;
-                        
+
                         if (mLastXTouchPos == -1) {
                             deltaX = 0;
                             deltaY = 0;
@@ -342,7 +342,7 @@ public class ViewImage extends Activity
 
                         if (mBitmapDisplayed == null)
                             return true;
-                        
+
                         if (deltaX != 0) {
                             // Second.  Pan to whatever degree is possible.
                             if (getScale() > 1F) {
@@ -357,7 +357,7 @@ public class ViewImage extends Activity
                     int nextImagePos = -1;
                     if (mTouchState == TOUCH_STATE_LEFT_PRESS && x < TOUCH_AREA_WIDTH) {
                         nextImagePos = viewImage.mCurrentPosition - 1;
-                    } else if (mTouchState == TOUCH_STATE_RIGHT_PRESS && 
+                    } else if (mTouchState == TOUCH_STATE_RIGHT_PRESS &&
                            x > viewWidth - TOUCH_AREA_WIDTH) {
                         nextImagePos = viewImage.mCurrentPosition + 1;
                     }
@@ -546,7 +546,7 @@ public class ViewImage extends Activity
     private void animateScrollTo(int xNew, int yNew) {
         mScroller.startScrollTo(xNew, yNew);
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -564,9 +564,8 @@ public class ViewImage extends Activity
             });
             item.setIcon(android.R.drawable.ic_menu_slideshow);
         }
-        
+
         mFlipItem = MenuHelper.addFlipOrientation(menu, ViewImage.this, mPrefs);
-        mFlipItem.setIcon(android.R.drawable.ic_menu_always_landscape_portrait);
 
         final SelectedImageGetter selectedImageGetter = new SelectedImageGetter() {
             public ImageManager.IImage getCurrentImage() {
@@ -581,6 +580,7 @@ public class ViewImage extends Activity
         mImageMenuRunnable = MenuHelper.addImageMenuItems(
                 menu,
                 MenuHelper.INCLUDE_ALL,
+                true,
                 ViewImage.this,
                 mHandler,
                 mDeletePhotoRunnable,
@@ -641,7 +641,7 @@ public class ViewImage extends Activity
             setImage(mCurrentPosition);
         }
     };
-    
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
@@ -663,7 +663,7 @@ public class ViewImage extends Activity
     private boolean isCurrentImageShareable() {
         IImage image = mAllImages.getImageAt(mCurrentPosition);
         if (image != null){
-        	Uri uri = image.fullSizeImageUri();
+            Uri uri = image.fullSizeImageUri();
             String fullUri = uri.toString();
             return fullUri.startsWith(MediaStore.Images.Media.INTERNAL_CONTENT_URI.toString()) ||
                     fullUri.startsWith(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString());
@@ -674,10 +674,12 @@ public class ViewImage extends Activity
     @Override
     public void onConfigurationChanged(android.content.res.Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        for (ImageViewTouchBase iv: mImageViews) {
-            iv.setImageBitmapResetBase(null, false, true);
+        if (newConfig.orientation != getResources().getConfiguration().orientation) {
+            for (ImageViewTouchBase iv: mImageViews) {
+                iv.setImageBitmapResetBase(null, false, true);
+            }
+            MenuHelper.requestOrientation(this, mPrefs);
         }
-        MenuHelper.requestOrientation(this, mPrefs);
     }
 
     @Override
@@ -839,7 +841,7 @@ public class ViewImage extends Activity
                                         if (mLoad != null) {
                                             long t1;
                                             if (Config.LOGV) t1 = System.currentTimeMillis();
-                                            
+
                                             Bitmap b = null;
                                             try {
                                                 b = mLoad.get();
@@ -941,7 +943,7 @@ public class ViewImage extends Activity
             for (ImageViewTouchBase ivtb : mImageViews)
                 ivtb.dump();
         }
-        
+
         if (!mFirst) {
             if (left) {
                 mImageViews[2].copyFrom(mImageViews[1]);
@@ -977,7 +979,7 @@ public class ViewImage extends Activity
         } else {
             mScroller.scrollTo(to, 0);
         }
-        
+
         ImageGetterCallback cb = new ImageGetterCallback() {
             public void completed(boolean wasCanceled) {
                 mImageViews[1].setFocusableInTouchMode(true);
@@ -1064,7 +1066,7 @@ public class ViewImage extends Activity
             mSlideShowImageViews[i].setImageBitmapResetBase(null, true, true);
             mSlideShowImageViews[i].setVisibility(View.INVISIBLE);
         }
-        
+
         Uri uri = getIntent().getData();
 
         if (Config.LOGV)
@@ -1132,7 +1134,7 @@ public class ViewImage extends Activity
             for (ImageViewTouchBase ivt: mImageViews) {
                 ivt.clear();
             }
-            
+
             if (false) {
                 Log.v(TAG, "current is " + this.mSlideShowImageCurrent);
                 this.mSlideShowImageViews[0].dump();
@@ -1161,7 +1163,7 @@ public class ViewImage extends Activity
                 Log.v(TAG, "read prefs...  animidx: " + mAnimationIndex);
                 Log.v(TAG, "read prefs... interval: " + mSlideShowInterval);
             }
-            
+
             if (mUseShuffleOrder) {
                 generateShuffleOrder();
             }
@@ -1345,16 +1347,16 @@ public class ViewImage extends Activity
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
         ImageManager.IImage image = mAllImages.getImageAt(mCurrentPosition);
-          
+
         if (image != null){
-        	Uri uri = image.fullSizeImageUri();
-        	String bucket = null;
-        	if(getIntent()!= null && getIntent().getData()!=null)
-        		bucket = getIntent().getData().getQueryParameter("bucketId");
-        	
-        	if(bucket!=null)
-        		uri = uri.buildUpon().appendQueryParameter("bucketId", bucket).build();
-        	
+            Uri uri = image.fullSizeImageUri();
+            String bucket = null;
+            if(getIntent()!= null && getIntent().getData()!=null)
+                bucket = getIntent().getData().getQueryParameter("bucketId");
+
+            if(bucket!=null)
+                uri = uri.buildUpon().appendQueryParameter("bucketId", bucket).build();
+
             b.putString("uri", uri.toString());
         }
         if (mMode == MODE_SLIDESHOW)
@@ -1364,8 +1366,15 @@ public class ViewImage extends Activity
     @Override
     public void onResume()
     {
-    	super.onResume();
-        
+        super.onResume();
+
+        // normally this will never be zero but if one "backs" into this
+        // activity after removing the sdcard it could be zero.  in that
+        // case just "finish" since there's nothing useful that can happen.
+        if (mAllImages.getCount() == 0) {
+            finish();
+        }
+
         ImageManager.IImage image = mAllImages.getImageAt(mCurrentPosition);
 
         String sortOrder = mPrefs.getString("pref_gallery_sort_key", null);
@@ -1376,7 +1385,7 @@ public class ViewImage extends Activity
         if (sortAscending != mSortAscending) {
             init(image.fullSizeImageUri());
         }
-        
+
         if (mGetter == null) {
             makeGetter();
         }
@@ -1394,20 +1403,13 @@ public class ViewImage extends Activity
          });
         setImage(mCurrentPosition);
 
-        // normally this will never be zero but if one "backs" into this
-        // activity after removing the sdcard it could be zero.  in that
-        // case just "finish" since there's nothing useful that can happen.
-        if (mAllImages.getCount() == 0) {
-            finish();
-        } else {
-            MenuHelper.requestOrientation(this, mPrefs);
-        }
+        MenuHelper.requestOrientation(this, mPrefs);
     }
 
     @Override
     public void onPause()
     {
-    	super.onPause();
+        super.onPause();
 
         mGetter.cancelCurrent();
         mGetter.stop();
@@ -1415,18 +1417,18 @@ public class ViewImage extends Activity
         setMode(MODE_NORMAL);
 
         mAllImages.deactivate();
-        
+
         for (ImageViewTouchBase iv: mImageViews) {
             iv.recycleBitmaps();
             iv.setImageBitmap(null, true);
         }
-        
+
         for (ImageViewTouchBase iv: mSlideShowImageViews) {
             iv.recycleBitmaps();
             iv.setImageBitmap(null, true);
         }
     }
-    
+
     @Override
     public void onStop() {
         super.onStop();

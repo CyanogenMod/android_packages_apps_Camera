@@ -59,7 +59,7 @@ public class ExifInterface {
     private HashMap<String, String> mCachedAttributes = null;
 
     static {
-	    System.loadLibrary("exif");
+        System.loadLibrary("exif");
     }
 
     public ExifInterface(String fileName) {

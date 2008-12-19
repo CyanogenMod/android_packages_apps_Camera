@@ -25,8 +25,11 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.location.Location;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -36,8 +39,10 @@ import android.provider.DrmStore;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
+import android.provider.MediaStore.Video.VideoColumns;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.MediaColumns;
+import android.provider.MediaStore.Video;
 import android.util.Config;
 import android.util.Log;
 
@@ -69,7 +74,7 @@ public class ImageManager {
     private static final String TAG = "ImageManager";
 
     private static final int MINI_THUMB_DATA_FILE_VERSION = 3;
-    
+
     static public void debug_where(String tag, String msg) {
         try {
             throw new Exception();
@@ -98,11 +103,11 @@ public class ImageManager {
     private static int computeSampleSize(BitmapFactory.Options options, int target) {
         int w = options.outWidth;
         int h = options.outHeight;
-        
+
         int candidateW = w / target;
         int candidateH = h / target;
         int candidate = Math.max(candidateW, candidateH);
-        
+
         if (candidate == 0)
             return 1;
 
@@ -110,7 +115,7 @@ public class ImageManager {
             if ((w > target) && (w / candidate) < target)
                 candidate -= 1;
         }
-        
+
         if (candidate > 1) {
             if ((h > target) && (h / candidate) < target)
                 candidate -= 1;
@@ -121,7 +126,7 @@ public class ImageManager {
 
         return candidate;
     }
-    /* 
+    /*
      * All implementors of ICancelable should inherit from BaseCancelable
      * since it provides some convenience methods such as acknowledgeCancel
      * and checkCancel.
@@ -129,10 +134,10 @@ public class ImageManager {
     public abstract class BaseCancelable implements ICancelable {
         boolean mCancel = false;
         boolean mFinished = false;
-        
+
         /*
          * Subclasses should call acknowledgeCancel when they're finished with
-         * their operation.  
+         * their operation.
          */
         protected void acknowledgeCancel() {
             synchronized (this) {
@@ -161,7 +166,7 @@ public class ImageManager {
                 } catch (InterruptedException ex) {
                     // now what???  TODO
                 }
-                
+
                 return retVal;
             }
         }
@@ -205,13 +210,13 @@ public class ImageManager {
         protected BaseImage(long id, long miniThumbId, ContentResolver cr, BaseImageList container, int cursorRow) {
             mContentResolver = cr;
             mId              = id;
-            mMiniThumbMagic     = miniThumbId;
+            mMiniThumbMagic  = miniThumbId;
             mContainer       = container;
             mCursorRow       = cursorRow;
         }
-        
+
         abstract Bitmap.CompressFormat compressionType();
-        
+
         public void commitChanges() {
             Cursor c = getCursor();
             synchronized (c) {
@@ -221,7 +226,7 @@ public class ImageManager {
                 }
             }
         }
-        
+
         /**
          * Take a given bitmap and compress it to a file as described
          * by the Uri parameter.
@@ -248,7 +253,7 @@ public class ImageManager {
                     }
                     return false;
                 }
-                
+
                 public boolean get() {
                     try {
                         long t1 = System.currentTimeMillis();
@@ -297,7 +302,7 @@ public class ImageManager {
                 return false;
             if (!(other instanceof Image))
                 return false;
-            
+
             return fullSizeImageUri().equals(((Image)other).fullSizeImageUri());
         }
 
@@ -327,11 +332,11 @@ public class ImageManager {
                 ParcelFileDescriptor mPFD;
                 BitmapFactory.Options mOptions = new BitmapFactory.Options();
                 long mCancelInitiationTime;
-                
+
                 public LoadBitmapCancelable(ParcelFileDescriptor pfdInput) {
                     mPFD = pfdInput;
                 }
-                
+
                 public boolean doCancelWork() {
                     if (VERBOSE)
                         Log.v(TAG, "requesting bitmap load cancel");
@@ -339,7 +344,7 @@ public class ImageManager {
                     mOptions.requestCancelDecode();
                     return true;
                 }
-                
+
                 public Bitmap get() {
                     try {
                         Bitmap b = makeBitmap(targetWidthHeight, fullSizeImageUri(), mPFD, mOptions);
@@ -386,7 +391,7 @@ public class ImageManager {
                 return null;
             }
         }
-        
+
         public long fullSizeImageId() {
             return mId;
         }
@@ -394,11 +399,11 @@ public class ImageManager {
         public Uri fullSizeImageUri() {
             return mContainer.contentUri(mId);
         }
-        
+
         public IImageList getContainer() {
             return mContainer;
         }
-        
+
         Cursor getCursor() {
             return mContainer.getCursor();
         }
@@ -411,7 +416,7 @@ public class ImageManager {
                 return c.getLong(mContainer.indexDateTaken());
             }
         }
-        
+
         protected int getDegreesRotated() {
             return 0;
         }
@@ -597,7 +602,7 @@ public class ImageManager {
                 }
             }
         }
-        
+
         public int getHeight() {
             ParcelFileDescriptor input = null;
             try {
@@ -660,7 +665,7 @@ public class ImageManager {
         protected Bitmap makeBitmap(int targetWidthHeight, Uri uri, ParcelFileDescriptor pfdInput, BitmapFactory.Options options) {
             return mContainer.makeBitmap(targetWidthHeight, uri, pfdInput, options);
         }
-        
+
         /* (non-Javadoc)
          * @see com.android.camera.IImage#thumb1()
          */
@@ -702,7 +707,7 @@ public class ImageManager {
                 return null;
             }
         }
-        
+
         public void onRemove() {
             mContainer.mCache.remove(mId);
         }
@@ -736,7 +741,7 @@ public class ImageManager {
                 }
             }
         }
-        
+
         /* (non-Javadoc)
          * @see com.android.camera.IImage#setName()
          */
@@ -748,7 +753,7 @@ public class ImageManager {
                 }
             }
         }
-        
+
         public void setPicasaId(String id) {
             Cursor c = null;
             try {
@@ -772,7 +777,7 @@ public class ImageManager {
                     c.close();
             }
         }
-        
+
         /* (non-Javadoc)
          * @see com.android.camera.IImage#thumbUri()
          */
@@ -782,7 +787,7 @@ public class ImageManager {
             uri = uri.buildUpon().appendQueryParameter("thumb", "1").build();
             return uri;
         }
-        
+
         @Override
         public String toString() {
             return fullSizeImageUri().toString();
@@ -810,16 +815,17 @@ public class ImageManager {
             mSort = sort;
             mUri = uri;
             mBaseUri = uri;
+            mBucketId = bucketId;
 
             mContentResolver = cr;
         }
-        
+
         String randomAccessFilePath(int version) {
             String directoryName = Environment.getExternalStorageDirectory().toString() + "/dcim/.thumbnails";
             String path = directoryName + "/.thumbdata" + version + "-" + mUri.hashCode();
             return path;
         }
-        
+
         RandomAccessFile miniThumbDataFile() {
             if (mMiniThumbData == null) {
                 String path = randomAccessFilePath(MINI_THUMB_DATA_FILE_VERSION);
@@ -834,7 +840,7 @@ public class ImageManager {
                 try {
                     mMiniThumbData = new RandomAccessFile(f, "rw");
                 } catch (IOException ex) {
-                    
+
                 }
             }
             return mMiniThumbData;
@@ -853,14 +859,14 @@ public class ImageManager {
                     return thumb;
                 }
                 OutputStream thumbOut = mContentResolver.openOutputStream(uri);
-                thumb.compress(Bitmap.CompressFormat.JPEG, 60, thumbOut);  
+                thumb.compress(Bitmap.CompressFormat.JPEG, 60, thumbOut);
                 thumbOut.close();
                 return thumb;
             }
             catch (Exception ex) {
                 Log.d(TAG, "unable to store thumbnail: " + ex);
                 return thumb;
-            } 
+            }
         }
 
         /**
@@ -924,11 +930,11 @@ public class ImageManager {
             }
             return uri;
         }
-        
+
         java.util.Random mRandom = new java.util.Random(System.currentTimeMillis());
 
         protected SomewhatFairLock mLock = new SomewhatFairLock();
-        
+
         class SomewhatFairLock {
             private Object mSync = new Object();
             private boolean mLocked = false;
@@ -954,7 +960,7 @@ public class ImageManager {
                     mLocked = true;
                 }
             }
-            
+
             void unlock() {
 //              if (VERBOSE) Log.v(TAG, "unlocking... thread " + Thread.currentThread().getId());
                 synchronized (mSync) {
@@ -991,7 +997,7 @@ public class ImageManager {
                             // which will produce much better scaling quality
                             // and is significantly faster.
                             options.inSampleSize = computeSampleSize(options, THUMBNAIL_TARGET_SIZE);
-                                
+
                             if (VERBOSE) {
                                 Log.v(TAG, "in createThumbnailFromExif using inSampleSize of " + options.inSampleSize);
                             }
@@ -1019,7 +1025,20 @@ public class ImageManager {
             }
             return bitmap;
         }
-        
+
+        private Bitmap createVideoThumbnail(String filePath) {
+            Bitmap bitmap = null;
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            try {
+                retriever.setMode(MediaMetadataRetriever.MODE_CAPTURE_FRAME_ONLY);
+                retriever.setDataSource(filePath);
+                bitmap = retriever.captureFrame();
+            } finally {
+                retriever.release();
+            }
+            return bitmap;
+        }
+
         // returns id
         public long checkThumbnail(BaseImage existingImage, Cursor c, int i) {
             long magic, fileMagic = 0, id;
@@ -1042,7 +1061,7 @@ public class ImageManager {
                 }
 
                 if (magic != 0) {
-                    // check the mini thumb file for the right data.  Right is defined as 
+                    // check the mini thumb file for the right data.  Right is defined as
                     // having the right magic number at the offset reserved for this "id".
                     RandomAccessFile r = miniThumbDataFile();
                     if (r != null) {
@@ -1072,18 +1091,23 @@ public class ImageManager {
                 // If we can't retrieve the thumbnail, first check if there is one embedded in the
                 // EXIF data. If not, or it's not big enough, decompress the full size image.
                 Bitmap bitmap = null;
-                
+
                 String filePath = null;
                 synchronized (c) {
                     if (c.moveToPosition(i)) {
                         filePath = c.getString(indexData());
                     }
                 }
-                
                 if (filePath != null) {
                     bitmap = createThumbnailFromEXIF(filePath, id);
                     if (bitmap == null) {
-                        bitmap = createThumbnailFromUri(c, id);
+                        String mimeType = c.getString(indexMimeType());
+                        boolean isVideo = isVideoMimeType(mimeType);
+                        if (isVideo) {
+                            bitmap = createVideoThumbnail(filePath);
+                        } else {
+                            bitmap = createThumbnailFromUri(c, id);
+                        }
                     }
                     synchronized (c) {
                         int degrees = 0;
@@ -1141,7 +1165,7 @@ public class ImageManager {
                 Log.v(TAG, ">>>>>>>>>>> need to check " + c.getCount() + " rows");
 
             c.close();
-            
+
             if (!ImageManager.hasStorage()) {
                 if (VERBOSE)
                     Log.v(TAG, "bailing from the image checker thread -- no storage");
@@ -1158,7 +1182,7 @@ public class ImageManager {
                     return;
                 }
             }
-            
+
             c = getCursor();
             try {
                 if (VERBOSE) Log.v(TAG, "checkThumbnails found " + c.getCount());
@@ -1188,7 +1212,7 @@ public class ImageManager {
                 }
             }
         }
-        
+
         public void commitChanges() {
             synchronized (mCursor) {
                 mCursor.commitUpdates();
@@ -1208,16 +1232,21 @@ public class ImageManager {
                 return ContentUris.withAppendedId(mBaseUri, id);
             }
         }
-        
+
         public void deactivate() {
             mCursorDeactivated = true;
-            mCursor.deactivate();
+            try {
+                mCursor.deactivate();
+            } catch (IllegalStateException e) {
+                // IllegalStateException may be thrown if the cursor is stale.
+                Log.e(TAG, "Caught exception while deactivating cursor.", e);
+            }
             if (mMiniThumbData != null) {
                 try {
                     mMiniThumbData.close();
                     mMiniThumbData = null;
                 } catch (IOException ex) {
-                    
+
                 }
             }
         }
@@ -1244,6 +1273,11 @@ public class ImageManager {
                 return 0;
             }
         }
+
+        public boolean isEmpty() {
+            return getCount() == 0;
+        }
+
         protected Cursor getCursor() {
             synchronized (mCursor) {
                 if (mCursorDeactivated) {
@@ -1252,11 +1286,11 @@ public class ImageManager {
                 return mCursor;
             }
         }
-        
+
         protected void activateCursor() {
             requery();
         }
-        
+
         public IImage getImageAt(int i) {
             Cursor c = getCursor();
             synchronized (c) {
@@ -1307,7 +1341,7 @@ public class ImageManager {
             RandomAccessFile r = miniThumbDataFile();
             if (r == null)
                 return null;
-            
+
             long pos = id * sBytesPerMiniThumb;
             RandomAccessFile f = r;
             synchronized (f) {
@@ -1349,7 +1383,7 @@ public class ImageManager {
                         }
                         index += 1;
                     } while (c.moveToNext());
-                }   
+                }
                 return -1;
             }
         }
@@ -1368,7 +1402,7 @@ public class ImageManager {
         protected abstract int indexTitle();
         protected abstract int indexDisplayName();
         protected abstract int indexThumbId();
-        
+
         protected IImage make(long id, long miniThumbId, ContentResolver cr, IImageList list, long timestamp, int index, int rotation) {
             return null;
         }
@@ -1400,7 +1434,7 @@ public class ImageManager {
             return false;
         }
 
-        
+
         /* (non-Javadoc)
          * @see com.android.camera.IImageList#removeImageAt(int)
          */
@@ -1460,7 +1494,7 @@ public class ImageManager {
                         }
                         r.seek(pos);
                         r.writeByte(0);     // we have no data in this slot
-                        
+
                         // if magic is 0 then leave it alone
                         if (magic == 0)
                             r.skipBytes(8);
@@ -1468,11 +1502,11 @@ public class ImageManager {
                             r.writeLong(magic);
                         r.writeInt(data.length);
                         r.write(data);
-                        //                      f.flush();  
+                        //                      f.flush();
                         r.seek(pos);
                         r.writeByte(1);  // we have data in this slot
                         long t3 = System.currentTimeMillis();
-                        
+
                         if (VERBOSE) Log.v(TAG, "saveMiniThumbToFile took " + (t3-t0) + "; " + (t1-t0) + " " + (t2-t1) + " " + (t3-t2));
                     }
                 } catch (IOException ex) {
@@ -1486,9 +1520,9 @@ public class ImageManager {
             mHandler = h;
         }
     }
-    
+
     public class CanceledException extends Exception {
-        
+
     }
     public enum DataLocation { NONE, INTERNAL, EXTERNAL, ALL }
 
@@ -1502,17 +1536,17 @@ public class ImageManager {
      * from an ICancelable can be retrieved using the get* method.  If the
      * operation was canceled then null is returned.  The act of canceling
      * is to call "cancel" -- from another thread.
-     * 
-     * In general an object which implements ICancelable will need to 
+     *
+     * In general an object which implements ICancelable will need to
      * check, periodically, whether they are canceled or not.  This works
      * well for some things and less well for others.
-     * 
+     *
      * Right now the actual jpeg encode does not check cancelation but
      * the part of encoding which writes the data to disk does.  Note,
      * though, that there is what appears to be a bug in the jpeg encoder
      * in that if the stream that's being written is closed it crashes
      * rather than returning an error.  TODO fix that.
-     * 
+     *
      * When an object detects that it is canceling it must, before exiting,
      * call acknowledgeCancel.  This is necessary because the caller of
      * cancel() will block until acknowledgeCancel is called.
@@ -1526,7 +1560,7 @@ public class ImageManager {
          */
         public boolean cancel();
     }
-    
+
     public interface IGetBitmap_cancelable extends ICancelable {
         // returns the bitmap or null if there was an error or we were canceled
         public Bitmap get();
@@ -1543,9 +1577,9 @@ public class ImageManager {
          * @return  the bitmap for the full size image.
          */
         public abstract Bitmap fullSizeBitmap(int targetWidthOrHeight);
-        
+
         /**
-         * 
+         *
          * @return an object which can be canceled while the bitmap is loading
          */
         public abstract IGetBitmap_cancelable fullSizeBitmap_cancelable(int targetWidthOrHeight);
@@ -1589,7 +1623,7 @@ public class ImageManager {
         public abstract String getDisplayName();
 
         public abstract String getPicasaId();
-        
+
         public abstract int getRow();
 
         public abstract int getWidth();
@@ -1599,13 +1633,13 @@ public class ImageManager {
         public abstract long imageId();
 
         public abstract boolean isReadonly();
-        
+
         public abstract boolean isDrm();
-        
+
         public abstract Bitmap miniThumbBitmap();
-        
+
         public abstract void onRemove();
-        
+
         public abstract boolean rotateImageBy(int degrees);
 
         /**
@@ -1622,26 +1656,27 @@ public class ImageManager {
          * Sets the name of the image.
          */
         public abstract void setName(String name);
-        
+
         public abstract void setPicasaId(String id);
-        
+
         /**
          * Get the bitmap for the medium thumbnail.
          * @return  the bitmap for the medium thumbnail.
          */
         public abstract Bitmap thumbBitmap();
-        
+
         public abstract Uri thumbUri();
-        
+
         public abstract String getDataPath();
     }
+
     public interface IImageList {
         public HashMap<String, String> getBucketIds();
 
         public interface OnChange {
             public void onChange(IImageList list);
         }
-        
+
         public interface ThumbCheckCallback {
             public boolean checking(int current, int count);
         }
@@ -1658,7 +1693,13 @@ public class ImageManager {
          * @return       the number of images
          */
         public abstract int getCount();
-        
+
+        /**
+         * @return true if the count of image objects is zero.
+         */
+
+        public abstract boolean isEmpty();
+
         /**
          * Returns the image at the ith position.
          *
@@ -1666,7 +1707,7 @@ public class ImageManager {
          * @return      the image at the ith position
          */
         public abstract IImage getImageAt(int i);
-        
+
         /**
          * Returns the image with a particular Uri.
          *
@@ -1674,40 +1715,26 @@ public class ImageManager {
          * @return      the image with a particular Uri.
          */
         public abstract IImage getImageForUri(Uri uri);;
-        
+
         public abstract boolean removeImage(IImage image);
         /**
          * Removes the image at the ith position.
          * @param i     the position
          */
         public abstract void removeImageAt(int i);
-        
+
         public abstract void removeOnChangeListener(OnChange changeCallback);
         public abstract void setOnChangeListener(OnChange changeCallback, Handler h);
-    }
-    
-    class VideoObject extends Image {
-        public VideoObject() {
-            super(0, 0, null, null, 0, 0);
-        }
-        
-        public String getTags() {
-            return null;
-        }
-        
-        public String setTags(String tags) {
-            return null;
-        }
     }
 
     class Image extends BaseImage implements IImage {
         int mRotation;
-        
+
         protected Image(long id, long miniThumbId, ContentResolver cr, BaseImageList container, int cursorRow, int rotation) {
             super(id, miniThumbId, cr, container, cursorRow);
             mRotation = rotation;
         }
-        
+
         public String getDataPath() {
             String path = null;
             Cursor c = getCursor();
@@ -1724,7 +1751,7 @@ public class ImageManager {
         protected int getDegreesRotated() {
             return mRotation;
         }
-        
+
         protected void setDegreesRotated(int degrees) {
             Cursor c = getCursor();
             mRotation = degrees;
@@ -1743,12 +1770,12 @@ public class ImageManager {
             String mimeType = getMimeType();
             if (mimeType == null)
                 return Bitmap.CompressFormat.JPEG;
-            
+
             if (mimeType.equals("image/png"))
                 return Bitmap.CompressFormat.PNG;
             else if (mimeType.equals("image/png"))
                 return Bitmap.CompressFormat.PNG;
-            
+
             return Bitmap.CompressFormat.JPEG;
         }
 
@@ -1782,16 +1809,16 @@ public class ImageManager {
             }
             return 0;
         }
-        
+
         public boolean isReadonly() {
             String mimeType = getMimeType();
             return !"image/jpeg".equals(mimeType) && !"image/png".equals(mimeType);
         }
-        
+
         public boolean isDrm() {
             return false;
         }
-        
+
         /**
          * Remove tag if already there. Otherwise, does nothing.
          * @param tag
@@ -1822,17 +1849,17 @@ public class ImageManager {
          * @see com.android.camera.IImage#saveModifiedImage(android.graphics.Bitmap)
          */
         public IGetBoolean_cancelable saveImageContents(
-                final Bitmap image, 
+                final Bitmap image,
                 final byte [] jpegData,
                 final int orientation,
                 final boolean newFile,
                 final Cursor cursor) {
             final class SaveImageContentsCancelable extends BaseCancelable implements IGetBoolean_cancelable {
                 IGetBoolean_cancelable mCurrentCancelable = null;
-                
+
                 SaveImageContentsCancelable() {
                 }
-                
+
                 public boolean doCancelWork() {
                     synchronized (this) {
                         if (mCurrentCancelable != null)
@@ -1840,22 +1867,22 @@ public class ImageManager {
                     }
                     return true;
                 }
-                
+
                 public boolean get() {
                     try {
                         Bitmap thumbnail = null;
-                        
+
                         long t1 = System.currentTimeMillis();
                         Uri uri = mContainer.contentUri(mId);
                         synchronized (this) {
                             checkCanceled();
                             mCurrentCancelable = compressImageToFile(image, jpegData, uri);
                         }
-                        
+
                         long t2 = System.currentTimeMillis();
                         if (!mCurrentCancelable.get())
                             return false;
-        
+
                         synchronized (this) {
                             String filePath;
                             synchronized (cursor) {
@@ -1890,7 +1917,7 @@ public class ImageManager {
                         saveMiniThumb(rotate(thumbnail, orientation));
                         long t5 = System.currentTimeMillis();
                         checkCanceled();
-                        
+
                         if (VERBOSE) Log.v(TAG, String.format("Timing data %d %d %d %d", t2-t1, t3-t2, t4-t3, t5-t4));
                         return true;
                     } catch (CanceledException ex) {
@@ -1911,7 +1938,7 @@ public class ImageManager {
             }
             return new SaveImageContentsCancelable();
         }
-        
+
         private void setExifRotation(int degrees) {
             try {
                 Cursor c = getCursor();
@@ -1952,7 +1979,7 @@ public class ImageManager {
                 Log.e(TAG, "unable to save exif data with new orientation " + fullSizeImageUri());
             }
         }
-        
+
         /**
          * Save the rotated image by updating the Exif "Orientation" tag.
          * @param degrees
@@ -1979,10 +2006,10 @@ public class ImageManager {
             if (mContainer.mThumbUri != null) {
                 try {
                     c = mContentResolver.query(
-                            mContainer.mThumbUri, 
-                            THUMB_PROJECTION, 
-                            Thumbnails.IMAGE_ID + "=?", 
-                            new String[] { String.valueOf(fullSizeImageId()) }, 
+                            mContainer.mThumbUri,
+                            THUMB_PROJECTION,
+                            Thumbnails.IMAGE_ID + "=?",
+                            new String[] { String.valueOf(fullSizeImageId()) },
                             null);
                     if (c != null && c.moveToFirst()) {
                         Uri thumbUri = ContentUris.withAppendedId(mContainer.mThumbUri, c.getLong(((ImageList)mContainer).INDEX_THUMB_ID));
@@ -2011,7 +2038,7 @@ public class ImageManager {
                         c.close();
                 }
             }
-            
+
             if (bitmap == null) {
                 bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE, false);
                 if (VERBOSE) {
@@ -2038,7 +2065,7 @@ public class ImageManager {
 
     final static private String sWhereClause = "(" + Images.Media.MIME_TYPE + "=? or " + Images.Media.MIME_TYPE + "=?" + ")";
     final static private String[] sAcceptableImageTypes = new String[] { "image/jpeg", "image/png" };
-    
+
     private static final String[] IMAGE_PROJECTION = new String[] {
             "_id",
             "_data",
@@ -2047,7 +2074,7 @@ public class ImageManager {
             ImageColumns.ORIENTATION,
             ImageColumns.MIME_TYPE
         };
-        
+
     /**
      * Represents an ordered collection of Image objects.
      * Provides an api to add and remove an image.
@@ -2059,7 +2086,7 @@ public class ImageManager {
         final int INDEX_DATE_TAKEN       = indexOf(IMAGE_PROJECTION, ImageColumns.DATE_TAKEN);
         final int INDEX_MINI_THUMB_MAGIC = indexOf(IMAGE_PROJECTION, ImageColumns.MINI_THUMB_MAGIC);
         final int INDEX_ORIENTATION      = indexOf(IMAGE_PROJECTION, ImageColumns.ORIENTATION);
-        
+
         final int INDEX_THUMB_ID         = indexOf(THUMB_PROJECTION, BaseColumns._ID);
         final int INDEX_THUMB_IMAGE_ID   = indexOf(THUMB_PROJECTION, Images.Thumbnails.IMAGE_ID);
         final int INDEX_THUMB_WIDTH      = indexOf(THUMB_PROJECTION, Images.Thumbnails.WIDTH);
@@ -2068,12 +2095,12 @@ public class ImageManager {
         boolean mIsRegistered = false;
         ContentObserver mContentObserver;
         DataSetObserver mDataSetObserver;
-        
+
         public HashMap<String, String> getBucketIds() {
             Cursor c = Images.Media.query(
                         mContentResolver,
                         mBaseUri.buildUpon().appendQueryParameter("distinct", "true").build(),
-                        new String[] { 
+                        new String[] {
                             ImageColumns.BUCKET_DISPLAY_NAME,
                             ImageColumns.BUCKET_ID
                         },
@@ -2098,7 +2125,6 @@ public class ImageManager {
             mBaseUri = imageUri;
             mThumbUri = thumbUri;
             mSort = sort;
-            mBucketId = bucketId;
 
             mContentResolver = cr;
 
@@ -2118,7 +2144,7 @@ public class ImageManager {
                     // For now ignore them since there shouldn't be anyone modifying the database on the fly.
                     if (true)
                         return;
-                    
+
                     synchronized (mCursor) {
                         requery();
                     }
@@ -2126,7 +2152,7 @@ public class ImageManager {
                         mListener.onChange(ImageList.this);
                 }
             };
-            
+
             mContentObserver = new ContentObserver(null) {
                 @Override
                 public boolean deliverSelfNotifications() {
@@ -2139,7 +2165,7 @@ public class ImageManager {
                     updateRunnable.run();
                 }
             };
-            
+
             mDataSetObserver = new DataSetObserver() {
                 @Override
                 public void onChanged() {
@@ -2152,23 +2178,23 @@ public class ImageManager {
                     if (VERBOSE) Log.v(TAG, "MyDataSetObserver.onInvalidated: " + mCursorDeactivated);
                 }
             };
-            
+
             registerObservers();
         }
-        
+
         private void registerObservers() {
             if (mIsRegistered)
                 return;
-            
+
             mCursor.registerContentObserver(mContentObserver);
             mCursor.registerDataSetObserver(mDataSetObserver);
             mIsRegistered = true;
         }
-        
+
         private void unregisterObservers() {
             if (!mIsRegistered)
                 return;
-            
+
             mCursor.unregisterContentObserver(mContentObserver);
             mCursor.unregisterDataSetObserver(mDataSetObserver);
             mIsRegistered = false;
@@ -2183,21 +2209,21 @@ public class ImageManager {
             super.activateCursor();
             registerObservers();
         }
-        
+
         protected String whereClause() {
             if (mBucketId != null) {
-                return sWhereClause + " and " + Images.Media.BUCKET_ID + " = " + mBucketId; 
+                return sWhereClause + " and " + Images.Media.BUCKET_ID + " = '" + mBucketId + "'";
             } else {
                 return sWhereClause;
             }
         }
-        
+
         protected String[] whereClauseArgs() {
             return sAcceptableImageTypes;
         }
-        
+
         protected Cursor createCursor() {
-            Cursor c = 
+            Cursor c =
                 Images.Media.query(
                     mContentResolver,
                     mBaseUri,
@@ -2209,7 +2235,7 @@ public class ImageManager {
                 Log.v(TAG, "createCursor got cursor with count " + (c == null ? -1 : c.getCount()));
             return c;
         }
-        
+
         protected int indexOrientation() {  return INDEX_ORIENTATION;      }
         protected int indexDateTaken()   {  return INDEX_DATE_TAKEN;       }
         protected int indexDescription() {  return -1;                     }
@@ -2225,7 +2251,7 @@ public class ImageManager {
         protected int indexTitle()       {  return -1;                     }
         protected int indexDisplayName() {  return -1;                     }
         protected int indexThumbId()     {  return INDEX_THUMB_ID;        }
-        
+
         protected IImage make(long id, long miniThumbId, ContentResolver cr, IImageList list, long timestamp, int index, int rotation) {
             return new Image(id, miniThumbId, mContentResolver, this, index, rotation);
         }
@@ -2234,12 +2260,12 @@ public class ImageManager {
             Bitmap b = null;
 
             try {
-                if (pfd == null) 
+                if (pfd == null)
                     pfd = makeInputStream(uri);
 
                 if (pfd == null)
                     return null;
-                
+
                 if (options == null)
                     options = new BitmapFactory.Options();
 
@@ -2272,7 +2298,7 @@ public class ImageManager {
             }
             return b;
         }
-        
+
         private ParcelFileDescriptor makeInputStream(Uri uri) {
             try {
                 return mContentResolver.openFileDescriptor(uri, "r");
@@ -2286,11 +2312,11 @@ public class ImageManager {
             // which could happen, I suppose, if the first two values were
             // duplicated
             String ascending = (mSort == SORT_ASCENDING ? " ASC" : " DESC");
-            return 
+            return
                 Images.Media.DATE_TAKEN + ascending + "," +
                 Images.Media._ID + ascending;
         }
-        
+
     }
 
     /**
@@ -2301,11 +2327,11 @@ public class ImageManager {
             DrmStore.Audio._ID,
             DrmStore.Audio.DATA,
             DrmStore.Audio.MIME_TYPE,
-        };      
-        
+        };
+
         final int INDEX_ID            = indexOf(DRM_IMAGE_PROJECTION, DrmStore.Audio._ID);
         final int INDEX_MIME_TYPE     = indexOf(DRM_IMAGE_PROJECTION, DrmStore.Audio.MIME_TYPE);
- 
+
         public DrmImageList(Context ctx, ContentResolver cr, Uri imageUri, int sort, String bucketId) {
             super(ctx, cr, imageUri, null, sort, bucketId);
         }
@@ -2323,16 +2349,16 @@ public class ImageManager {
         public long checkThumbnail(BaseImage existingImage, Cursor c, int i) {
             return 0;
         }
-        
+
         class DrmImage extends Image {
             protected DrmImage(long id, ContentResolver cr, BaseImageList container, int cursorRow) {
                 super(id, 0, cr, container, cursorRow, 0);
             }
-            
+
             public boolean isDrm() {
                 return true;
             }
-            
+
             public boolean isReadonly() {
                 return true;
             }
@@ -2340,16 +2366,21 @@ public class ImageManager {
             public Bitmap miniThumbBitmap() {
                 return fullSizeBitmap(MINI_THUMB_TARGET_SIZE);
             }
-            
+
             public Bitmap thumbBitmap() {
                 return fullSizeBitmap(THUMBNAIL_TARGET_SIZE);
             }
+
+            public String getDisplayName() {
+                return getTitle();
+            }
         }
-        
-        protected IImage make(long id, long miniThumbId, ContentResolver cr, IImageList list, long timestamp, int index) {
+
+        @Override
+        protected IImage make(long id, long miniThumbId, ContentResolver cr, IImageList list, long timestamp, int index, int rotation) {
             return new DrmImage(id, mContentResolver, this, index);
         }
-        
+
         protected int indexOrientation() {  return -1; }
         protected int indexDateTaken()   {  return -1; }
         protected int indexDescription() {  return -1; }
@@ -2363,11 +2394,11 @@ public class ImageManager {
         protected int indexTitle()       {  return -1; }
         protected int indexDisplayName() {  return -1; }
         protected int indexThumbId()     {  return -1; }
-        
+
         // TODO review this probably should be based on DATE_TAKEN same as images
         private String sortOrder() {
             String ascending = (mSort == SORT_ASCENDING ? " ASC" : " DESC");
-            return 
+            return
                 DrmStore.Images.TITLE  + ascending + "," +
                 DrmStore.Images._ID;
         }
@@ -2385,7 +2416,7 @@ public class ImageManager {
         // The second component indicates which sublist we're referring
         // to (an int which is used to index into mSubList).
         ArrayList<Long> mSkipList = null;
-        
+
         int [] mSkipCounts = null;
 
         public HashMap<String, String> getBucketIds() {
@@ -2395,7 +2426,7 @@ public class ImageManager {
             }
             return hashMap;
         }
-        
+
         public ImageListUber(IImageList [] sublist, int sort) {
             mSubList = sublist.clone();
             mSort = sort;
@@ -2412,7 +2443,7 @@ public class ImageManager {
                 }
             }
         }
-        
+
         public void checkThumbnails(ThumbCheckCallback cb) {
             // TODO this isn't quite right because we need to get the
             // total from each sub item and provide that in the callback
@@ -2421,7 +2452,7 @@ public class ImageManager {
             for (int i = 0; i < length; i++)
                 sublist[i].checkThumbnails(cb);
         }
-        
+
         public void commitChanges() {
             final IImageList sublist[] = mSubList;
             final int length = sublist.length;
@@ -2448,6 +2479,17 @@ public class ImageManager {
             return count;
         }
 
+        public boolean isEmpty() {
+            final IImageList sublist[] = mSubList;
+            final int length = sublist.length;
+            for (int i = 0; i < length; i++) {
+                if (! sublist[i].isEmpty()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         // mSkipCounts is used to tally the counts as we traverse
         // the mSkipList.  It's a member variable only so that
         // we don't have to allocate each time through.  Otherwise
@@ -2456,7 +2498,7 @@ public class ImageManager {
         public synchronized IImage getImageAt(int index) {
             if (index < 0 || index > getCount())
                 throw new IndexOutOfBoundsException("index " + index + " out of range max is " + getCount());
-            
+
             // first make sure our allocations are in order
             if (mSkipCounts == null || mSubList.length > mSkipCounts.length)
                 mSkipCounts = new int[mSubList.length];
@@ -2610,7 +2652,7 @@ public class ImageManager {
             if (changeCallback == mListener)
                 mListener = null;
         }
-        
+
         public void setOnChangeListener(OnChange changeCallback, Handler h) {
             mListener = changeCallback;
             mHandler = h;
@@ -2642,7 +2684,7 @@ public class ImageManager {
         public long getDateTaken() {
             return 0;
         }
-        
+
         public String getMimeType() {
             throw new UnsupportedOperationException();
         }
@@ -2658,7 +2700,7 @@ public class ImageManager {
         public double getLatitude() {
             return 0D;
         }
-        
+
         public double getLongitude() {
             return 0D;
         }
@@ -2678,7 +2720,7 @@ public class ImageManager {
         public int getRow() {
             throw new UnsupportedOperationException();
         }
-        
+
         public int getHeight() {
             return 0;
         }
@@ -2686,7 +2728,7 @@ public class ImageManager {
         public int getWidth() {
             return 0;
         }
-        
+
         public boolean hasLatLong() {
             return false;
         }
@@ -2694,7 +2736,7 @@ public class ImageManager {
         public boolean isReadonly() {
             return true;
         }
-        
+
         public boolean isDrm() {
             return false;
         }
@@ -2706,7 +2748,7 @@ public class ImageManager {
         public boolean rotateImageBy(int degrees) {
             return false;
         }
-        
+
         public void setDescription(String description) {
             throw new UnsupportedOperationException();
         }
@@ -2718,13 +2760,13 @@ public class ImageManager {
         public void setName(String name) {
             throw new UnsupportedOperationException();
         }
-        
+
         public void setPicasaId(long id) {
         }
 
         public void setPicasaId(String id) {
         }
-        
+
         public Uri thumbUri() {
             throw new UnsupportedOperationException();
         }
@@ -2739,11 +2781,11 @@ public class ImageManager {
 
             UriImage() {
             }
-            
+
             public String getDataPath() {
                 return mUri.getPath();
             }
-            
+
             InputStream getInputStream() {
                 try {
                     if (mUri.getScheme().equals("file")) {
@@ -2758,7 +2800,7 @@ public class ImageManager {
                     return null;
                 }
             }
-            
+
             ParcelFileDescriptor getPFD() {
                 try {
                     if (mUri.getScheme().equals("file")) {
@@ -2773,7 +2815,7 @@ public class ImageManager {
                     return null;
                 }
             }
-            
+
             /* (non-Javadoc)
              * @see com.android.camera.ImageManager.IImage#fullSizeBitmap(int)
              */
@@ -2790,7 +2832,7 @@ public class ImageManager {
                     options.inJustDecodeBounds = false;
                     options.inDither = false;
                     options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                    
+
                     Bitmap b = BitmapFactory.decodeFileDescriptor(pfdInput.getFileDescriptor(), null, options);
                     if (VERBOSE) {
                         Log.v(TAG, "B: got bitmap " + b + " with sampleSize " + options.inSampleSize);
@@ -2808,11 +2850,11 @@ public class ImageManager {
                     ParcelFileDescriptor pfdInput;
                     BitmapFactory.Options mOptions = new BitmapFactory.Options();
                     long mCancelInitiationTime;
-                    
+
                     public LoadBitmapCancelable(ParcelFileDescriptor pfd) {
                         pfdInput = pfd;
                     }
-                    
+
                     public boolean doCancelWork() {
                         if (VERBOSE)
                             Log.v(TAG, "requesting bitmap load cancel");
@@ -2820,7 +2862,7 @@ public class ImageManager {
                         mOptions.requestCancelDecode();
                         return true;
                     }
-                    
+
                     public Bitmap get() {
                         try {
                             Bitmap b = makeBitmap(targetWidthOrHeight, fullSizeImageUri(), pfdInput, mOptions);
@@ -2848,12 +2890,12 @@ public class ImageManager {
                     return null;
                 }
             }
-            
+
             @Override
             public Uri fullSizeImageUri() {
                 return mUri;
             }
-            
+
             @Override
             public InputStream fullSizeImageData() {
                 return getInputStream();
@@ -2862,26 +2904,26 @@ public class ImageManager {
             public long imageId() {
                 return 0;
             }
-            
+
             public Bitmap miniThumbBitmap() {
                 return thumbBitmap();
             }
-            
+
             @Override
             public String getTitle() {
                 return mUri.toString();
             }
-            
+
             @Override
             public String getDisplayName() {
                 return getTitle();
             }
-            
-            @Override 
+
+            @Override
             public String getDescription() {
                 return "";
             }
-            
+
             public Bitmap thumbBitmap() {
                 Bitmap b = fullSizeBitmap(THUMBNAIL_TARGET_SIZE);
                 if (b != null) {
@@ -2894,7 +2936,7 @@ public class ImageManager {
                     return null;
                 }
             }
-            
+
             private BitmapFactory.Options snifBitmapOptions() {
                 ParcelFileDescriptor input = getPFD();
                 if (input == null)
@@ -2920,13 +2962,13 @@ public class ImageManager {
                 BitmapFactory.Options options = snifBitmapOptions();
                 return (options!=null) ? options.outMimeType : "";
             }
-            
+
             @Override
             public int getHeight() {
                 BitmapFactory.Options options = snifBitmapOptions();
                 return (options!=null) ? options.outHeight : 0;
             }
-            
+
             @Override
             public int getWidth() {
                 BitmapFactory.Options options = snifBitmapOptions();
@@ -2948,9 +2990,13 @@ public class ImageManager {
         public void deactivate() {
             // nothing to do here
         }
-        
+
         public int getCount() {
             return 1;
+        }
+
+        public boolean isEmpty() {
+            return false;
         }
 
         public IImage getImageAt(int i) {
@@ -2980,7 +3026,7 @@ public class ImageManager {
         protected int indexDateTaken() {
             return -1;
         }
-        
+
         @Override
         protected int indexMimeType() {
             return -1;
@@ -2990,12 +3036,12 @@ public class ImageManager {
         protected int indexDescription() {
             return -1;
         }
-        
+
         @Override
         protected int indexId() {
             return -1;
         }
-        
+
         @Override
         protected int indexData() {
             return -1;
@@ -3040,7 +3086,7 @@ public class ImageManager {
         protected int indexThumbId() {
             return -1;
         }
-        
+
         private InputStream makeInputStream(Uri uri) {
             InputStream input = null;
             try {
@@ -3087,14 +3133,14 @@ public class ImageManager {
         public ThreadSafeOutputStream(OutputStream delegate) {
             mDelegateStream = delegate;
         }
-        
+
         @Override
         synchronized public void close() throws IOException {
             try {
                 mClosed = true;
                 mDelegateStream.close();
             } catch (IOException ex) {
-                
+
             }
         }
 
@@ -3113,7 +3159,7 @@ public class ImageManager {
                 synchronized (this) {
                     if (mClosed)
                         return;
-                    
+
                     int writeLength = Math.min(8192, length);
                     mDelegateStream.write(b, offset, writeLength);
                     offset += writeLength;
@@ -3129,14 +3175,349 @@ public class ImageManager {
             mDelegateStream.write(oneByte);
         }
     }
-    
+
+    class VideoList extends BaseImageList implements IImageList {
+        private final String[] sProjection = new String[] {
+                Video.Media._ID,
+                Video.Media.DATA,
+                Video.Media.DATE_TAKEN,
+                Video.Media.TITLE,
+                Video.Media.DISPLAY_NAME,
+                Video.Media.DESCRIPTION,
+                Video.Media.IS_PRIVATE,
+                Video.Media.TAGS,
+                Video.Media.CATEGORY,
+                Video.Media.LANGUAGE,
+                Video.Media.LATITUDE,
+                Video.Media.LONGITUDE,
+                Video.Media.MINI_THUMB_MAGIC,
+                Video.Media.MIME_TYPE,
+        };
+
+        final int INDEX_ID               = indexOf(sProjection, Video.Media._ID);
+        final int INDEX_DATA             = indexOf(sProjection, Video.Media.DATA);
+        final int INDEX_DATE_TAKEN       = indexOf(sProjection, Video.Media.DATE_TAKEN);
+        final int INDEX_TITLE            = indexOf(sProjection, Video.Media.TITLE);
+        final int INDEX_DISPLAY_NAME     = indexOf(sProjection, Video.Media.DISPLAY_NAME);
+        final int INDEX_MIME_TYPE        = indexOf(sProjection, Video.Media.MIME_TYPE);
+        final int INDEX_DESCRIPTION      = indexOf(sProjection, Video.Media.DESCRIPTION);
+        final int INDEX_PRIVATE          = indexOf(sProjection, Video.Media.IS_PRIVATE);
+        final int INDEX_TAGS             = indexOf(sProjection, Video.Media.TAGS);
+        final int INDEX_CATEGORY         = indexOf(sProjection, Video.Media.CATEGORY);
+        final int INDEX_LANGUAGE         = indexOf(sProjection, Video.Media.LANGUAGE);
+        final int INDEX_LATITUDE         = indexOf(sProjection, Video.Media.LATITUDE);
+        final int INDEX_LONGITUDE        = indexOf(sProjection, Video.Media.LONGITUDE);
+        final int INDEX_MINI_THUMB_MAGIC = indexOf(sProjection, Video.Media.MINI_THUMB_MAGIC);
+        final int INDEX_THUMB_ID         = indexOf(sProjection, BaseColumns._ID);
+
+        public VideoList(Context ctx, ContentResolver cr, Uri uri, Uri thumbUri,
+                int sort, String bucketId) {
+            super(ctx, cr, uri, sort, bucketId);
+
+            mCursor = createCursor();
+            if (mCursor == null) {
+                Log.e(TAG, "unable to create video cursor for " + mBaseUri);
+                throw new UnsupportedOperationException();
+            }
+
+            if (Config.LOGV) {
+                Log.v(TAG, "for " + mUri.toString() + " got cursor " + mCursor + " with length "
+                        + (mCursor != null ? mCursor.getCount() : -1));
+            }
+
+            if (mCursor == null) {
+                throw new UnsupportedOperationException();
+            }
+            if (mCursor != null && mCursor.moveToFirst()) {
+                int row = 0;
+                do {
+                    long imageId = mCursor.getLong(indexId());
+                    long dateTaken = mCursor.getLong(indexDateTaken());
+                    long miniThumbId = mCursor.getLong(indexMiniThumbId());
+                    mCache.put(imageId, new VideoObject(imageId, miniThumbId, mContentResolver,
+                            this, dateTaken, row++));
+                } while (mCursor.moveToNext());
+            }
+        }
+
+        public HashMap<String, String> getBucketIds() {
+            Cursor c = Images.Media.query(
+                    mContentResolver,
+                    mBaseUri.buildUpon().appendQueryParameter("distinct", "true").build(),
+                    new String[] {
+                        VideoColumns.BUCKET_DISPLAY_NAME,
+                        VideoColumns.BUCKET_ID
+                    },
+                    whereClause(),
+                    whereClauseArgs(),
+                    sortOrder());
+
+        HashMap<String, String> hash = new HashMap<String, String>();
+        if (c != null && c.moveToFirst()) {
+            do {
+                Log.e(TAG, "id: " + c.getString(1) + " display_name: " + c.getString(0));
+                hash.put(c.getString(1), c.getString(0));
+            } while (c.moveToNext());
+        }
+        return hash;
+        }
+
+        protected String whereClause() {
+            if (mBucketId != null) {
+                return Images.Media.BUCKET_ID + " = '" + mBucketId + "'";
+            } else {
+                return null;
+            }
+        }
+
+        protected String[] whereClauseArgs() {
+            return null;
+        }
+
+        protected Cursor createCursor() {
+            Cursor c =
+                Images.Media.query(
+                    mContentResolver,
+                    mBaseUri,
+                    sProjection,
+                    whereClause(),
+                    whereClauseArgs(),
+                    sortOrder());
+            if (VERBOSE)
+                Log.v(TAG, "createCursor got cursor with count " + (c == null ? -1 : c.getCount()));
+            return c;
+        }
+
+        protected int indexOrientation() {  return -1;                    }
+        protected int indexDateTaken()   {  return INDEX_DATE_TAKEN;      }
+        protected int indexDescription() {  return INDEX_DESCRIPTION;     }
+        protected int indexMimeType()    {  return INDEX_MIME_TYPE;       }
+        protected int indexData()        {  return INDEX_DATA;            }
+        protected int indexId()          {  return INDEX_ID;              }
+        protected int indexLatitude()    {  return INDEX_LATITUDE;        }
+        protected int indexLongitude()   {  return INDEX_LONGITUDE;       }
+        protected int indexMiniThumbId() {  return INDEX_MINI_THUMB_MAGIC;   }
+        protected int indexPicasaWeb()   {  return -1;                    }
+        protected int indexPrivate()     {  return INDEX_PRIVATE;         }
+        protected int indexTitle()       {  return INDEX_TITLE;           }
+        protected int indexDisplayName() {  return -1;                    }
+        protected int indexThumbId()     {  return INDEX_THUMB_ID;        }
+
+        protected IImage make(long id, long miniThumbId, ContentResolver cr, IImageList list,
+                long timestamp, int index) {
+            return new VideoObject(id, miniThumbId, mContentResolver, this, timestamp, index);
+        }
+
+        @Override
+        protected Bitmap makeBitmap(int targetWidthHeight, Uri uri, ParcelFileDescriptor pfdInput,
+                BitmapFactory.Options options) {
+            MediaPlayer mp = new MediaPlayer();
+            Bitmap thumbnail = sDefaultThumbnail;
+            try {
+                mp.setDataSource(mContext, uri);
+//              int duration = mp.getDuration();
+//              int at = duration > 2000 ? 1000 : duration / 2;
+                int at = 1000;
+                thumbnail = mp.getFrameAt(at);
+                if (Config.LOGV) {
+                    if ( thumbnail != null) {
+                        Log.v(TAG, "getFrameAt @ " + at + " returned " + thumbnail + "; " +
+                                thumbnail.getWidth() + " " + thumbnail.getHeight());
+                    } else {
+                        Log.v(TAG, "getFrame @ " + at + " failed for " + uri);
+                    }
+                }
+            } catch (IOException ex) {
+            } catch (IllegalArgumentException ex) {
+            } catch (SecurityException ex) {
+            } finally {
+                mp.release();
+            }
+            return thumbnail;
+        }
+
+        private final Bitmap sDefaultThumbnail = Bitmap.createBitmap(32, 32, Bitmap.Config.RGB_565);
+
+        private String sortOrder() {
+            return Video.Media.DATE_MODIFIED + (mSort == SORT_ASCENDING ? " ASC " : " DESC");
+        }
+    }
+
+    /**
+     * Represents a particular video and provides access
+     * to the underlying data and two thumbnail bitmaps
+     * as well as other information such as the id, and
+     * the path to the actual video data.
+     */
+    class VideoObject extends BaseImage implements IImage {
+        /**
+         * Constructor.
+         *
+         * @param id        the image id of the image
+         * @param cr        the content resolver
+         */
+        protected VideoObject(long id, long miniThumbId, ContentResolver cr, VideoList container,
+                long dateTaken, int row) {
+            super(id, miniThumbId, cr, container, row);
+        }
+
+        protected Bitmap.CompressFormat compressionType() {
+            return Bitmap.CompressFormat.JPEG;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other == null)
+                return false;
+            if (!(other instanceof VideoObject))
+                return false;
+
+            return fullSizeImageUri().equals(((VideoObject)other).fullSizeImageUri());
+        }
+
+        public String getDataPath() {
+            String path = null;
+            Cursor c = getCursor();
+            synchronized (c) {
+                if (c.moveToPosition(getRow())) {
+                    int column = ((VideoList)getContainer()).indexData();
+                    if (column >= 0)
+                        path = c.getString(column);
+                }
+            }
+            return path;
+        }
+
+        /* (non-Javadoc)
+         * @see com.android.camera.IImage#fullSizeBitmap()
+         */
+        public Bitmap fullSizeBitmap(int targetWidthHeight) {
+            return sNoImageBitmap;
+        }
+
+        public IGetBitmap_cancelable fullSizeBitmap_cancelable(int targetWidthHeight) {
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @see com.android.camera.IImage#fullSizeImageData()
+         */
+        public InputStream fullSizeImageData() {
+            try {
+                InputStream input = mContentResolver.openInputStream(
+                        fullSizeImageUri());
+                return input;
+            } catch (IOException ex) {
+                return null;
+            }
+        }
+
+        /* (non-Javadoc)
+         * @see com.android.camera.IImage#fullSizeImageId()
+         */
+        public long fullSizeImageId() {
+            return mId;
+        }
+
+        public String getCategory() {
+             return getStringEntry(((VideoList)mContainer).INDEX_CATEGORY);
+         }
+
+        public int getHeight() {
+             return 0;
+         }
+
+        public String getLanguage() {
+             return getStringEntry(((VideoList)mContainer).INDEX_LANGUAGE);
+         }
+
+        public String getPicasaId() {
+            return null;
+        }
+
+        private String getStringEntry(int entryName) {
+            String entry = null;
+            Cursor c = getCursor();
+            synchronized(c) {
+                if (c.moveToPosition(getRow())) {
+                    entry = c.getString(entryName);
+                }
+            }
+            return entry;
+        }
+
+        public String getTags() {
+             return getStringEntry(((VideoList)mContainer).INDEX_TAGS);
+         }
+
+        public int getWidth() {
+             return 0;
+         }
+
+         /* (non-Javadoc)
+         * @see com.android.camera.IImage#imageId()
+         */
+        public long imageId() {
+            return mId;
+        }
+
+         public boolean isReadonly() {
+             return false;
+         }
+
+         public boolean isDrm() {
+             return false;
+         }
+
+         public boolean rotateImageBy(int degrees) {
+            return false;
+        }
+
+         public void setCategory(String category) {
+             setStringEntry(category, ((VideoList)mContainer).INDEX_CATEGORY);
+         }
+
+         public void setLanguage(String language) {
+             setStringEntry(language, ((VideoList)mContainer).INDEX_LANGUAGE);
+         }
+
+         private void setStringEntry(String entry, int entryName) {
+            Cursor c = getCursor();
+            synchronized (c) {
+                if (c.moveToPosition(getRow())) {
+                    c.updateString(entryName, entry);
+                }
+            }
+        }
+
+         public void setTags(String tags) {
+             setStringEntry(tags, ((VideoList)mContainer).INDEX_TAGS);
+         }
+
+         /* (non-Javadoc)
+         * @see com.android.camera.IImage#thumb1()
+         */
+        public Bitmap thumbBitmap() {
+            return fullSizeBitmap(320);
+        }
+
+         @Override
+         public String toString() {
+             StringBuilder sb = new StringBuilder();
+             sb.append("" + mId);
+             return sb.toString();
+         }
+
+         private final Bitmap sNoImageBitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.RGB_565);
+    }
+
     /*
      * How much quality to use when storing the thumbnail.
      */
     private static ImageManager sInstance = null;
     private static final int MINI_THUMB_TARGET_SIZE = 96;
     private static final int THUMBNAIL_TARGET_SIZE = 320;
-    
+
     private static final String[] THUMB_PROJECTION = new String[] {
         BaseColumns._ID,           // 0
         Images.Thumbnails.IMAGE_ID,      // 1
@@ -3147,6 +3528,10 @@ public class ImageManager {
     private static Uri sStorageURI   = Images.Media.EXTERNAL_CONTENT_URI;
 
     private static Uri sThumbURI     = Images.Thumbnails.EXTERNAL_CONTENT_URI;
+
+    private static Uri sVideoStorageURI = Uri.parse("content://media/external/video/media");
+
+    private static Uri sVideoThumbURI = Uri.parse("content://media/external/video/thumbnails");
     /**
      * Returns an ImageList object that contains
      * all of the images.
@@ -3157,13 +3542,13 @@ public class ImageManager {
      * @return the singleton ImageList
      */
     static final public int SORT_ASCENDING = 1;
-    
+
     static final public int SORT_DESCENDING = 2;
 
     static final public int INCLUDE_IMAGES     = (1 << 0);
     static final public int INCLUDE_DRM_IMAGES = (1 << 1);
     static final public int INCLUDE_VIDEOS     = (1 << 2);
-    
+
     static public DataLocation getDefaultDataLocation() {
         return DataLocation.EXTERNAL;
     }
@@ -3190,7 +3575,7 @@ public class ImageManager {
     static public byte [] miniThumbData(Bitmap source) {
         if (source == null)
             return null;
-        
+
         float scale;
         if (source.getWidth() < source.getHeight()) {
             scale = MINI_THUMB_TARGET_SIZE / (float)source.getWidth();
@@ -3199,7 +3584,7 @@ public class ImageManager {
         }
         Matrix matrix = new Matrix();
         matrix.setScale(scale, scale);
-        Bitmap miniThumbnail = ImageLoader.transform(matrix, source, 
+        Bitmap miniThumbnail = ImageLoader.transform(matrix, source,
                 MINI_THUMB_TARGET_SIZE, MINI_THUMB_TARGET_SIZE, false);
 
         if (miniThumbnail != source) {
@@ -3223,7 +3608,7 @@ public class ImageManager {
         if (degrees != 0 && b != null) {
             Matrix m = new Matrix();
             m.setRotate(degrees, (float) b.getWidth() / 2, (float) b.getHeight() / 2);
-            
+
             Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
             // TODO should recycle here but that needs more testing/verification
 //            b.recycle();
@@ -3231,12 +3616,12 @@ public class ImageManager {
         }
         return b;
     }
-    
+
     public static int roundOrientation(int orientationInput) {
         int orientation = orientationInput;
         if (orientation == -1)
             orientation = 0;
-        
+
         orientation = orientation % 360;
         int retVal;
         if (orientation < (0*90) + 45) {
@@ -3253,6 +3638,35 @@ public class ImageManager {
 
         if (VERBOSE) Log.v(TAG, "map orientation " + orientationInput + " to " + retVal);
         return retVal;
+    }
+
+
+    /**
+     * @return true if the mimetype is an image mimetype.
+     */
+    public static boolean isImageMimeType(String mimeType) {
+        return mimeType.startsWith("image/");
+    }
+
+    /**
+     * @return true if the mimetype is a video mimetype.
+     */
+    public static boolean isVideoMimeType(String mimeType) {
+        return mimeType.startsWith("video/");
+    }
+
+    /**
+     * @return true if the image is an image.
+     */
+    public static boolean isImage(IImage image) {
+        return isImageMimeType(image.getMimeType());
+    }
+
+    /**
+     * @return true if the image is a video.
+     */
+    public static boolean isVideo(IImage image) {
+        return isVideoMimeType(image.getMimeType());
     }
 
     public Uri addImage(
@@ -3274,11 +3688,12 @@ public class ImageManager {
         values.put(Images.Media.ORIENTATION, orientation);
 
         File parentFile = new File(directory);
+        // Lowercase the path for hashing. This avoids duplicate buckets if the filepath
+        // case is changed externally.
+        // Keep the original case for display.
         String path = parentFile.toString().toLowerCase();
-        String name = parentFile.getName().toLowerCase();
-        
-        values.put(Images.ImageColumns.BUCKET_ID, path.hashCode());
-        values.put(Images.ImageColumns.BUCKET_DISPLAY_NAME, name);
+        String name = parentFile.getName();
+
         if (VERBOSE) Log.v(TAG, "addImage id is " + path.hashCode() + "; name " + name + "; path is " + path);
 
         if (location != null) {
@@ -3288,24 +3703,24 @@ public class ImageManager {
             values.put(Images.Media.LATITUDE, location.getLatitude());
             values.put(Images.Media.LONGITUDE, location.getLongitude());
         }
-        
+
         if (directory != null && filename != null) {
             String value = directory + "/" + filename;
             values.put("_data", value);
         }
-        
+
         long t3 = System.currentTimeMillis();
         Uri uri = cr.insert(sStorageURI, values);
-        
+
         // The line above will create a filename that ends in .jpg
         // That filename is what will be handed to gmail when a user shares a photo.
         // Gmail gets the name of the picture attachment from the "DISPLAY_NAME" field.
         // Extract the filename and jam it into the display name.
         Cursor c = cr.query(
-                uri, 
-                new String [] { ImageColumns._ID, Images.Media.DISPLAY_NAME, "_data" }, 
-                null, 
-                null, 
+                uri,
+                new String [] { ImageColumns._ID, Images.Media.DISPLAY_NAME, "_data" },
+                null,
+                null,
                 null);
         if (c.moveToFirst()) {
             String filePath = c.getString(2);
@@ -3331,7 +3746,7 @@ public class ImageManager {
                            final byte [] jpegData) {
         class AddImageCancelable extends BaseCancelable implements IAddImage_cancelable {
             private IGetBoolean_cancelable mSaveImageCancelable;
-            
+
             public boolean doCancelWork() {
                 if (VERBOSE) {
                     Log.v(TAG, "calling AddImageCancelable.cancel() " + mSaveImageCancelable);
@@ -3347,7 +3762,7 @@ public class ImageManager {
                 if (source == null && jpegData == null) {
                     throw new IllegalArgumentException("source cannot be null");
                 }
-                
+
                 try {
                     long t1 = System.currentTimeMillis();
                     synchronized (this) {
@@ -3356,15 +3771,15 @@ public class ImageManager {
                         }
                     }
                     long id = ContentUris.parseId(uri);
-    
+
                     BaseImageList il = new ImageList(ctx, cr, sStorageURI, sThumbURI, SORT_ASCENDING, null);
                     ImageManager.Image image = new Image(id, 0, cr, il, il.getCount(), 0);
                     long t5 = System.currentTimeMillis();
                     Cursor c = cr.query(
-                            uri, 
-                            new String [] { ImageColumns._ID, ImageColumns.MINI_THUMB_MAGIC, "_data" }, 
-                            null, 
-                            null, 
+                            uri,
+                            new String [] { ImageColumns._ID, ImageColumns.MINI_THUMB_MAGIC, "_data" },
+                            null,
+                            null,
                             null);
                     c.moveToPosition(0);
 
@@ -3372,7 +3787,7 @@ public class ImageManager {
                         checkCanceled();
                         mSaveImageCancelable = image.saveImageContents(source, jpegData, orientation, true, c);
                     }
-                    
+
                     if (mSaveImageCancelable.get()) {
                         long t6 = System.currentTimeMillis();
                         if (VERBOSE) Log.v(TAG, "saveImageContents took " + (t6-t5));
@@ -3403,7 +3818,7 @@ public class ImageManager {
         }
         return new AddImageCancelable();
     }
-    
+
     static public IImageList makeImageList(Uri uri, Context ctx, int sort) {
         ContentResolver cr = ctx.getContentResolver();
         String uriString = (uri != null) ? uri.toString() : "";
@@ -3411,7 +3826,7 @@ public class ImageManager {
         // DRM images in a better way.  Is there a constant
         // for content://drm somewhere??
         IImageList imageList;
-        
+
         if (uriString.startsWith("content://drm")) {
             imageList = ImageManager.instance().allImages(
                     ctx,
@@ -3435,7 +3850,7 @@ public class ImageManager {
         }
         return imageList;
     }
-    
+
     public IImageList emptyImageList() {
         return
         new IImageList() {
@@ -3454,6 +3869,10 @@ public class ImageManager {
 
             public int getCount() {
                 return 0;
+            }
+
+            public boolean isEmpty() {
+                return true;
             }
 
             public IImage getImageAt(int i) {
@@ -3476,10 +3895,10 @@ public class ImageManager {
 
             public void setOnChangeListener(com.android.camera.ImageManager.IImageList.OnChange changeCallback, Handler h) {
             }
-            
+
         };
     }
-    
+
     public IImageList allImages(Context ctx, ContentResolver cr, DataLocation location, int inclusion, int sort) {
         return allImages(ctx, cr, location, inclusion, sort, null, null);
     }
@@ -3487,12 +3906,12 @@ public class ImageManager {
     public IImageList allImages(Context ctx, ContentResolver cr, DataLocation location, int inclusion, int sort, String bucketId) {
         return allImages(ctx, cr, location, inclusion, sort, bucketId, null);
     }
-    
+
     public IImageList allImages(Context ctx, ContentResolver cr, DataLocation location, int inclusion, int sort, String bucketId, Uri specificImageUri) {
         if (VERBOSE) {
             Log.v(TAG, "allImages " + location + " " + ((inclusion&INCLUDE_IMAGES)!=0) + " + v=" + ((inclusion&INCLUDE_VIDEOS)!=0));
         }
-        
+
         if (cr == null) {
             return null;
         } else {
@@ -3510,7 +3929,7 @@ public class ImageManager {
                     try {
                         if (specificImageUri.getScheme().equalsIgnoreCase("content"))
                             l.add(new ImageList(ctx, cr, specificImageUri, sThumbURI, sort, bucketId));
-                        else 
+                        else
                             l.add(new SingleImageList(cr, specificImageUri));
                     } catch (UnsupportedOperationException ex) {
                     }
@@ -3522,11 +3941,17 @@ public class ImageManager {
                             } catch (UnsupportedOperationException ex) {
                             }
                         }
+                        if ((inclusion & INCLUDE_VIDEOS) != 0) {
+                            try {
+                                l.add(new VideoList(ctx, cr, sVideoStorageURI, sVideoThumbURI, sort, bucketId));
+                            } catch (UnsupportedOperationException ex) {
+                            }
+                        }
                     }
                     if (location == DataLocation.INTERNAL || location == DataLocation.ALL) {
                         if ((inclusion & INCLUDE_IMAGES) != 0) {
                             try {
-                                l.add(new ImageList(ctx, cr, Images.Media.INTERNAL_CONTENT_URI, 
+                                l.add(new ImageList(ctx, cr, Images.Media.INTERNAL_CONTENT_URI,
                                         Images.Thumbnails.INTERNAL_CONTENT_URI, sort, bucketId));
                             } catch (UnsupportedOperationException ex) {
                             }
@@ -3546,7 +3971,7 @@ public class ImageManager {
                 if (haveSdCard && location != DataLocation.INTERNAL) {
                     return new ImageList(ctx, cr, sStorageURI, sThumbURI, sort, bucketId);
                 } else  {
-                    return new ImageList(ctx, cr, Images.Media.INTERNAL_CONTENT_URI, 
+                    return new ImageList(ctx, cr, Images.Media.INTERNAL_CONTENT_URI,
                             Images.Thumbnails.INTERNAL_CONTENT_URI, sort, bucketId);
                 }
             }
@@ -3577,7 +4002,7 @@ public class ImageManager {
             return false;
         }
     }
-    
+
     static public boolean hasStorage() {
         return hasStorage(true);
     }
@@ -3610,20 +4035,20 @@ public class ImageManager {
          } catch (UnsupportedOperationException ex) {
             return null;
         }
-        
+
     }
-    
+
     public static boolean isMediaScannerScanning(Context context) {
         boolean result = false;
-        Cursor cursor = query(context, MediaStore.getMediaScannerUri(), 
+        Cursor cursor = query(context, MediaStore.getMediaScannerUri(),
                 new String [] { MediaStore.MEDIA_SCANNER_VOLUME }, null, null, null);
         if (cursor != null) {
             if (cursor.getCount() == 1) {
                 cursor.moveToFirst();
                 result = "external".equals(cursor.getString(0));
             }
-            cursor.close(); 
-        } 
+            cursor.close();
+        }
 
         if (VERBOSE)
             Log.v(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>> isMediaScannerScanning returning " + result);
