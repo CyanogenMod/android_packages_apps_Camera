@@ -76,6 +76,61 @@
 		</view>
 	</AbsoluteLayout>
 	
+    <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/action_icon_panel"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="7dip"
+            android:paddingRight="18dip"
+            android:paddingTop="6dip"
+            android:paddingBottom="6dip"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <com.android.camera.ActionMenuButton
+            android:id="@+id/capture"
+            android:drawableTop="@drawable/ic_menu_capture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/camera_capture"
+            style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
+            android:id="@+id/gallery"
+            android:drawableTop="@drawable/ic_menu_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/camera_gallery"
+            style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
+            android:id="@+id/setas"
+            android:drawableTop="@drawable/ic_menu_set_as"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/camera_set"
+            style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
+            android:id="@+id/share"
+            android:drawableTop="@drawable/ic_menu_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/camera_share"
+            style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
+            android:id="@+id/discard"
+            android:drawableTop="@drawable/ic_menu_delete"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/camera_toss"
+            style="@style/OnscreenActionIcon"
+        />
+    </LinearLayout>
+	
 	<ImageView android:id="@+id/prev_image"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"

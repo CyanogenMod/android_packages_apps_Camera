@@ -113,14 +113,15 @@ public class ImageGallery2 extends Activity {
                     if (mSelectedImageGetter.getCurrentImage() == null)
                         return;
 
-                    menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            mGvs.onSelect(mGvs.mCurrentSelection);
-                            return true;
-                        }
-                    });
-
                     boolean isImage = ImageManager.isImage(mSelectedImageGetter.getCurrentImage());
+                    if (isImage) {
+                        menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                mGvs.onSelect(mGvs.mCurrentSelection);
+                                return true;
+                            }
+                        });
+                    }
 
                     menu.setHeaderTitle(isImage ? R.string.context_menu_header
                             : R.string.video_context_menu_header);
@@ -138,6 +139,7 @@ public class ImageGallery2 extends Activity {
 
                                         mGvs.clearCache();
                                         mGvs.invalidate();
+                                        mGvs.requestLayout();
                                         mGvs.start();
                                         mNoImagesView.setVisibility(mAllImages.getCount() > 0 ? View.GONE : View.VISIBLE);
                                     }
@@ -187,8 +189,9 @@ public class ImageGallery2 extends Activity {
             mGvs.clearCache();
             mAllImages.removeImage(mSelectedImageGetter.getCurrentImage());
             mGvs.invalidate();
+            mGvs.requestLayout();
             mGvs.start();
-            mNoImagesView.setVisibility(mAllImages.getCount() > 0 ? View.GONE : View.VISIBLE);
+            mNoImagesView.setVisibility(mAllImages.isEmpty() ? View.VISIBLE : View.GONE);
         }
     };
 
@@ -217,6 +220,7 @@ public class ImageGallery2 extends Activity {
 
     private Runnable mLongPressCallback = new Runnable() {
         public void run() {
+            mGvs.select(-2, false);
             mGvs.showContextMenu();
         }
     };
@@ -224,6 +228,7 @@ public class ImageGallery2 extends Activity {
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            mGvs.select(-2, false);
             // The keyUp doesn't get called when the longpress menu comes up. We only get here when the user
             // lets go of the center key before the longpress menu comes up.
             mHandler.removeCallbacks(mLongPressCallback);
@@ -243,6 +248,7 @@ public class ImageGallery2 extends Activity {
         int sel = mGvs.mCurrentSelection;
         int columns = mGvs.mCurrentSpec.mColumns;
         int count = mAllImages.getCount();
+        boolean pressed = false;
         if (mGvs.mShowSelection) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
@@ -266,6 +272,7 @@ public class ImageGallery2 extends Activity {
                     }
                     break;
                 case KeyEvent.KEYCODE_DPAD_CENTER:
+                    pressed = true;
                     mHandler.postDelayed(mLongPressCallback, ViewConfiguration.getLongPressTimeout());
                     break;
                 case KeyEvent.KEYCODE_DEL:
@@ -300,7 +307,7 @@ public class ImageGallery2 extends Activity {
         }
         }
         if (handled) {
-            mGvs.select(sel);
+            mGvs.select(sel, pressed);
             return true;
         }
         else
@@ -368,13 +375,15 @@ public class ImageGallery2 extends Activity {
         super.onPause();
         mPausing = true;
         stopCheckingThumbnails();
-        mAllImages.deactivate();
         mGvs.onPause();
 
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
             mReceiver = null;
         }
+        // Now that we've paused the threads that are using the cursor it is safe
+        // to deactivate it.
+        mAllImages.deactivate();
     }
 
     private void rebake(boolean unmounted, boolean scanning) {
@@ -567,8 +576,8 @@ public class ImageGallery2 extends Activity {
         if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
             mSlideShowItem = addSlideShowMenu(menu, 5);
 
-            mFlipItem = MenuHelper.addFlipOrientation(menu, this, mPrefs);
         }
+        mFlipItem = MenuHelper.addFlipOrientation(menu, this, mPrefs);
 
         item = menu.add(0, 0, 1000, R.string.camerasettings);
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -588,14 +597,11 @@ public class ImageGallery2 extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(android.view.Menu menu) {
         if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
-            boolean imageSelected = isImageSelected();
             boolean videoSelected = isVideoSelected();
-            int keyboard = getResources().getConfiguration().keyboardHidden;
-            mFlipItem.setEnabled(imageSelected
-                    && (keyboard == android.content.res.Configuration.KEYBOARDHIDDEN_YES));
             // TODO: Only enable slide show if there is at least one image in the folder.
             mSlideShowItem.setEnabled(!videoSelected);
         }
+        MenuHelper.setFlipOrientationEnabled(this, mFlipItem);
 
         return true;
     }
@@ -685,6 +691,7 @@ public class ImageGallery2 extends Activity {
         private LayoutSpec mCurrentSpec;
         private boolean mShowSelection = false;
         private int mCurrentSelection = -1;
+        private boolean mCurrentSelectionPressed;
 
         private boolean mDirectionBiasDown = true;
         private final static boolean sDump = false;
@@ -748,9 +755,9 @@ public class ImageGallery2 extends Activity {
 
                     int pos = computeSelectedIndex(e);
                     if (pos >= 0 && pos < mGallery.mAllImages.getCount()) {
-                        select(pos);
+                        select(pos, true);
                     } else {
-                        select(-1);
+                        select(-1, false);
                     }
                     if (mImageBlockManager != null)
                         mImageBlockManager.repaintSelection(mCurrentSelection);
@@ -766,7 +773,7 @@ public class ImageGallery2 extends Activity {
                     else if (velocityY < -maxVelocity)
                         velocityY = -maxVelocity;
 
-                    select(-1);
+                    select(-1, false);
                     if (mFling) {
                         mScroller = new Scroller(getContext());
                         mScroller.fling(0, mScrollY, 0, -(int)velocityY, 0, 0, 0, mMaxScrollY);
@@ -782,7 +789,7 @@ public class ImageGallery2 extends Activity {
 
                 @Override
                 public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                    select(-1);
+                    select(-1, false);
                     scrollBy(0, (int)distanceY);
                     invalidate();
                     return true;
@@ -795,6 +802,7 @@ public class ImageGallery2 extends Activity {
 
                 @Override
                 public boolean onSingleTapUp(MotionEvent e) {
+                    select(mCurrentSelection, false);
                     int index = computeSelectedIndex(e);
                     if (index >= 0 && index < mGallery.mAllImages.getCount()) {
                         onSelect(index);
@@ -834,13 +842,22 @@ public class ImageGallery2 extends Activity {
             invalidate();
         }
 
-        public void select(int newSel) {
+        /**
+         *
+         * @param newSel -2 means use old selection, -1 means remove selection
+         * @param newPressed
+         */
+        public void select(int newSel, boolean newPressed) {
+            if (newSel == -2) {
+                newSel = mCurrentSelection;
+            }
             int oldSel = mCurrentSelection;
-            if (oldSel == newSel)
+            if ((oldSel == newSel) && (mCurrentSelectionPressed == newPressed))
                 return;
 
             mShowSelection = (newSel != -1);
             mCurrentSelection = newSel;
+            mCurrentSelectionPressed = newPressed;
             if (mImageBlockManager != null) {
                 mImageBlockManager.repaintSelection(oldSel);
                 mImageBlockManager.repaintSelection(newSel);
@@ -1527,11 +1544,16 @@ public class ImageGallery2 extends Activity {
                 }
 
                 private void paintSel(int pos, int xPos, int yPos) {
+                    int[] stateSet = EMPTY_STATE_SET;
                     if (pos == mCurrentSelection && mShowSelection) {
-                        mCellOutline.setState(ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET);
-                    } else {
-                        mCellOutline.setState(EMPTY_STATE_SET);
+                        if (mCurrentSelectionPressed) {
+                            stateSet = PRESSED_ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+                        } else {
+                            stateSet = ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+                        }
                     }
+
+                    mCellOutline.setState(stateSet);
                     mCanvas.setBitmap(mBitmap);
                     mCellOutline.setBounds(xPos, yPos, xPos+mCurrentSpec.mCellWidth, yPos+mCurrentSpec.mCellHeight);
                     mCellOutline.draw(mCanvas);

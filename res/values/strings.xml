@@ -118,6 +118,12 @@
     <!-- button indicating that the picture just taken should be deleted -->
     <string name="camera_toss">Delete</string>
 
+    <!-- Lable for the button that takes the user to the camera pictures Gallery -->
+    <string name="camera_gallery">Gallery</string>
+    
+    <!-- Label for the button that takes the user back to still-image capture mode -->
+    <string name="camera_capture">Capture</string>
+    
     <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
     <string name="camera_share">Share</string>
 
@@ -126,6 +132,12 @@
 
     <!-- button indicating that the video just taken should be played -->
     <string name="camera_play">Play</string>
+    
+    <!-- button indicating that the video just taken should be accepted -->
+    <string name="camera_accept">Accept</string>
+
+    <!-- button indicating that the video recording session should be canceled -->
+    <string name="camera_cancel">Cancel</string>
     
     <!-- button indicating that the picture just taken should be cropped -->
     <string name="camera_crop">Crop</string>
@@ -299,23 +311,20 @@
     <!-- Do not translate -->
     <string name="pref_camera_upload_albumname_dialogtitle">Picasa album name</string>
 
-    <!-- Settings screen, setting title text -->
+    <!-- [No longer used.] Settings screen, setting title text -->
     <string name="pref_camera_postpicturemenu_title">Prompt after capture</string>
 
-    <!-- Settings screen, setting summary text -->
+    <!-- [No longer used.] Settings screen, setting summary text -->
     <string name="pref_camera_postpicturemenu_summary">Display action menu (save, delete, \u2026) after capture</string>
 
     <!-- Settings screen, Video quality category title -->
     <string name="pref_camera_videoquality_category">Video quality</string>
     
     <!-- Default video quality setting. A numerical value. Do not translate. -->
-    <string name="pref_camera_videoquality_default">0</string>
+    <string name="pref_camera_videoquality_default">1</string>
     
-    <!-- Settings screen, Video quality title -->
-    <string name="pref_camera_videoquality_title">Video quality</string>
-    
-    <!-- Settings screen, Video quality summary -->
-    <string name="pref_camera_videoquality_summary">Select video quality level</string>
+    <!-- Settings screen, Select Video quality title -->
+    <string name="pref_camera_videoquality_title">Select video quality</string>
     
     <!-- Settings screen, Video quality dialog radio button choices -->
     <string name="pref_camera_videoquality_entry_0">Low (for MMS messages)</string>
@@ -367,7 +376,32 @@
     <!-- Label in message of Details dialog  -->
     <string name="details_image_resolution">Resolution:</string>
     <!-- Label in message of Details dialog  -->
+    <string name="details_duration">Duration:</string>
+    <!-- Label in message of Details dialog  -->
     <string name="details_date_taken">Date taken:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_frame_rate">Frame rate:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_bit_rate">Bit rate:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_codec">Codec:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_format">Format:</string>
+    
+    <!-- Used to format image dimensions in Details dialog. e.g. 64 x 64 -->
+    <string name="details_dimension_x">%1$d x %2$d</string>
+    <!-- Used to format short video duration in Details dialog. minutes:seconds e.g. 00:30 -->
+    <string name="details_ms">%1$02d:%2$02d</string>
+    <!-- Used to format video duration in Details dialog. hours:minutes:seconds e.g. 0:21:30 -->
+    <string name="details_hms">%1$d:%2$02d:%3$02d</string>
+    <!-- Unit of measure in the Details dialog frames per second. e.g. 20 fps -->
+    <string name="details_fps">%1$d fps</string>
+    <!-- Unit of measure in the Details dialog K bits per second. e.g. 192 Kbps -->
+    <string name="details_kbps">%1$d Kbps</string>
+    <!-- Unit of measure in the Details dialog M bits per second. e.g. 2.3 Mbps -->
+    <string name="details_mbps">%1$g Mbps</string>
+    <!-- Details dialog "OK" button. Dismisses dialog. -->
+    <string name="details_ok">OK</string>
     
     <!-- Text of context menu when an image is selected -->
     <string name="context_menu_header">Picture options</string>

@@ -21,6 +21,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
@@ -49,6 +50,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ZoomControls;
 import android.preference.PreferenceManager;
 
@@ -56,7 +58,7 @@ import com.android.camera.ImageManager.IImage;
 
 import java.util.Random;
 
-public class ViewImage extends Activity
+public class ViewImage extends Activity implements View.OnClickListener
 {
     static final String TAG = "ViewImage";
     private ImageGetter mGetter;
@@ -81,6 +83,9 @@ public class ViewImage extends Activity
     private static final int MODE_NORMAL = 1;
     private static final int MODE_SLIDESHOW = 2;
     private int mMode = MODE_NORMAL;
+    private boolean mFullScreenInNormalMode;
+    private boolean mShowActionIcons;
+    private View mActionIconPanel;
 
     private boolean mSortAscending = false;
     private int mSlideShowInterval;
@@ -652,8 +657,7 @@ public class ViewImage extends Activity
             mImageMenuRunnable.gettingReadyToOpen(menu, mAllImages.getImageAt(mCurrentPosition));
         }
 
-        int keyboard = getResources().getConfiguration().keyboardHidden;
-        mFlipItem.setEnabled(keyboard == android.content.res.Configuration.KEYBOARDHIDDEN_YES);
+        MenuHelper.setFlipOrientationEnabled(this, mFlipItem);
 
         menu.findItem(MenuHelper.MENU_IMAGE_SHARE).setEnabled(isCurrentImageShareable());
 
@@ -1067,6 +1071,12 @@ public class ViewImage extends Activity
             mSlideShowImageViews[i].setVisibility(View.INVISIBLE);
         }
 
+        mActionIconPanel = findViewById(R.id.action_icon_panel);
+        int[] ids = {R.id.capture, R.id.gallery, R.id.discard, R.id.share, R.id.setas};
+        for(int id : ids) {
+            findViewById(id).setOnClickListener(this);
+        }
+
         Uri uri = getIntent().getData();
 
         if (Config.LOGV)
@@ -1081,12 +1091,24 @@ public class ViewImage extends Activity
             return;
         }
         init(uri);
+        mFullScreenInNormalMode = getIntent().getBooleanExtra(
+                MediaStore.EXTRA_SHOW_ACTION_ICONS, false);
+        mShowActionIcons = getIntent().getBooleanExtra(
+                MediaStore.EXTRA_SHOW_ACTION_ICONS, false);
 
         Bundle b = getIntent().getExtras();
+
         boolean slideShow = b != null ? b.getBoolean("slideshow", false) : false;
         if (slideShow) {
             setMode(MODE_SLIDESHOW);
             loadNextImage(mCurrentPosition, 0, true);
+        } else {
+            if (mFullScreenInNormalMode) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+            if (mShowActionIcons) {
+                mActionIconPanel.setVisibility(View.VISIBLE);
+            }
         }
 
         // Get the zoom controls and add them to the bottom of the map
@@ -1102,7 +1124,20 @@ public class ViewImage extends Activity
         mNextImageView = findViewById(R.id.next_image);
         mPrevImageView = findViewById(R.id.prev_image);
 
-        MenuHelper.requestOrientation(this, mPrefs);
+        setOrientation();
+    }
+
+    private void setOrientation() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(MediaStore.EXTRA_SCREEN_ORIENTATION)) {
+            int orientation = intent.getIntExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
+                    ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            if (orientation != getRequestedOrientation()) {
+                setRequestedOrientation(orientation);
+            }
+        } else {
+            MenuHelper.requestOrientation(this, mPrefs);
+        }
     }
 
     private Animation makeInAnimation(int id) {
@@ -1134,6 +1169,7 @@ public class ViewImage extends Activity
             for (ImageViewTouchBase ivt: mImageViews) {
                 ivt.clear();
             }
+            mActionIconPanel.setVisibility(View.GONE);
 
             if (false) {
                 Log.v(TAG, "current is " + this.mSlideShowImageCurrent);
@@ -1170,14 +1206,21 @@ public class ViewImage extends Activity
         } else {
             if (Config.LOGV)
                 Log.v(TAG, "slide show mode off, mCurrentPosition == " + mCurrentPosition);
-            win.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-                    | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            win.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            if (mFullScreenInNormalMode) {
+                win.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            } else {
+                win.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
 
             if (mGetter != null)
                 mGetter.cancelCurrent();
 
             if (sSlideShowHidesStatusBar) {
                 win.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+            if (mShowActionIcons) {
+                mActionIconPanel.setVisibility(View.VISIBLE);
             }
 
             ImageViewTouchBase dst = mImageViews[1];
@@ -1403,7 +1446,7 @@ public class ViewImage extends Activity
          });
         setImage(mCurrentPosition);
 
-        MenuHelper.requestOrientation(this, mPrefs);
+        setOrientation();
     }
 
     @Override
@@ -1432,5 +1475,50 @@ public class ViewImage extends Activity
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+        case R.id.capture: {
+            MenuHelper.gotoStillImageCapture(this);
+        }
+        break;
+
+        case R.id.gallery: {
+            MenuHelper.gotoCameraImageGallery(this);
+        }
+        break;
+
+        case R.id.discard: {
+            MenuHelper.displayDeleteDialog(this, mDeletePhotoRunnable, true);
+        }
+        break;
+
+        case R.id.share: {
+            Uri u = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.setType("image/jpeg");
+            intent.putExtra(Intent.EXTRA_STREAM, u);
+            try {
+                startActivity(Intent.createChooser(intent, getText(R.string.sendImage)));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, R.string.no_way_to_share_image, Toast.LENGTH_SHORT).show();
+            }
+        }
+        break;
+
+        case R.id.setas: {
+            Uri u = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
+            Intent intent = new Intent(Intent.ACTION_ATTACH_DATA, u);
+            try {
+                startActivity(Intent.createChooser(intent, getText(R.string.setImage)));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, R.string.no_way_to_share_video, Toast.LENGTH_SHORT).show();
+            }
+        }
+        break;
+        }
     }
 }

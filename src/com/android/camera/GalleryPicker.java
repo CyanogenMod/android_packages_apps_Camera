@@ -315,6 +315,9 @@ public class GalleryPicker extends Activity {
             String cameraBucketId = null;
             for (Map.Entry<String, String> entry: hashMap.entrySet()) {
                 String key = entry.getKey();
+                if (key == null) {
+                    continue;
+                }
                 if (key.equals(cameraItem)) {
                     cameraBucketId = key;
                 } else {
@@ -651,9 +654,7 @@ public class GalleryPicker extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(android.view.Menu menu) {
-        int keyboard = getResources().getConfiguration().keyboardHidden;
-        mFlipItem.setEnabled(keyboard == android.content.res.Configuration.KEYBOARDHIDDEN_YES);
-
+        MenuHelper.setFlipOrientationEnabled(this, mFlipItem);
         return true;
     }
 

@@ -17,11 +17,11 @@
 package com.android.camera;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
@@ -44,16 +43,14 @@ import android.os.Message;
 import android.os.StatFs;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore.Images;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -62,40 +59,32 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.RelativeLayout.LayoutParams;
 
 public class VideoCamera extends Activity implements View.OnClickListener, SurfaceHolder.Callback {
 
     private static final String TAG = "videocamera";
 
     private static final boolean DEBUG = true;
-    private static final boolean DEBUG_SUPPRESS_AUDIO_RECORDING = DEBUG && true;
+    private static final boolean DEBUG_SUPPRESS_AUDIO_RECORDING = DEBUG && false;
     private static final boolean DEBUG_DO_NOT_REUSE_MEDIA_RECORDER = DEBUG && true;
 
     private static final int KEEP = 2;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
-    private static final int RESTART_PREVIEW = 6;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
-    private static final int POST_PICTURE_ALERT_TIMEOUT = 6 * 1000;
 
-    private static final int NO_STORAGE_ERROR = -1;
-    private static final int CANNOT_STAT_ERROR = -2;
+    private static final long NO_STORAGE_ERROR = -1L;
+    private static final long CANNOT_STAT_ERROR = -2L;
+    private static final long LOW_STORAGE_THRESHOLD = 512L * 1024L;
 
-    public static final int MENU_SWITCH_TO_VIDEO = 0;
-    public static final int MENU_SWITCH_TO_CAMERA = 1;
     public static final int MENU_SETTINGS = 6;
     public static final int MENU_GALLERY_PHOTOS = 7;
     public static final int MENU_GALLERY_VIDEOS = 8;
-    public static final int MENU_SAVE_SELECT_PHOTOS = 30;
-    public static final int MENU_SAVE_NEW_PHOTO = 31;
-    public static final int MENU_SAVE_SELECTVIDEO = 32;
-    public static final int MENU_SAVE_TAKE_NEW_VIDEO = 33;
     public static final int MENU_SAVE_GALLERY_PHOTO = 34;
-    public static final int MENU_SAVE_GALLERY_VIDEO_PHOTO = 35;
-    public static final int MENU_SAVE_CAMERA_DONE = 36;
-    public static final int MENU_SAVE_CAMERA_VIDEO_DONE = 37;
+    public static final int MENU_SAVE_PLAY_VIDEO = 35;
+    public static final int MENU_SAVE_SELECT_VIDEO = 36;
+    public static final int MENU_SAVE_NEW_VIDEO = 37;
 
     Toast mToast;
     SharedPreferences mPreferences;
@@ -109,9 +98,12 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     private MediaRecorder mMediaRecorder;
     private boolean mMediaRecorderRecording = false;
+    private boolean mNeedToDeletePartialRecording;
+    private boolean mNeedToRegisterRecording;
     private long mRecordingStartTime;
     private String mCurrentVideoFilename;
     private Uri mCurrentVideoUri;
+    private ContentValues mCurrentVideoValues;
 
     boolean mPausing = false;
 
@@ -128,8 +120,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     View mPostPictureAlert;
     LocationManager mLocationManager = null;
-
-    private int mPicturesRemaining;
 
     private Handler mHandler = new MainHandler();
 
@@ -177,14 +167,16 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
                         }
                         String text = minutesString + ":" + secondsString;
                         mRecordingTimeView.setText(text);
+                        // Work around a limitation of the T-Mobile G1: The T-Mobile
+                        // hardware blitter can't pixel-accurately scale and clip at the same time,
+                        // and the SurfaceFlinger doesn't attempt to work around this limitation.
+                        // In order to avoid visual corruption we must manually refresh the entire
+                        // surface view when changing any overlapping view's contents.
+                        mVideoPreview.invalidate();
                         mHandler.sendEmptyMessageDelayed(UPDATE_RECORD_TIME, 1000);
                     }
                     break;
                 }
-
-                case RESTART_PREVIEW:
-                    hideVideoFrameAndStartPreview();
-                    break;
 
                 default:
                     Log.v(TAG, "Unhandled message: " + msg.what);
@@ -254,16 +246,12 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         mBlackout.setBackgroundDrawable(new ColorDrawable(0xFF000000));
 
         mPostPictureAlert = findViewById(R.id.post_picture_panel);
-        View b;
 
-        b = findViewById(R.id.play);
-        b.setOnClickListener(this);
-
-        b = findViewById(R.id.share);
-        b.setOnClickListener(this);
-
-        b = findViewById(R.id.discard);
-        b.setOnClickListener(this);
+        int[] ids = new int[]{R.id.play, R.id.share, R.id.discard,
+                R.id.capture, R.id.cancel, R.id.accept};
+        for (int id : ids) {
+            findViewById(id).setOnClickListener(this);
+        }
 
         mModeIndicatorView = (ImageView) findViewById(R.id.mode_indicator);
         mRecordingIndicatorView = (ImageView) findViewById(R.id.recording_indicator);
@@ -281,7 +269,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
         Thread t = new Thread(new Runnable() {
             public void run() {
-                final boolean storageOK = calculatePicturesRemaining() > 0;
+                final boolean storageOK = getAvailableStorage() >= LOW_STORAGE_THRESHOLD;
                 if (hintView == null)
                     return;
 
@@ -315,12 +303,20 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.discard: {
-                File f = new File(mCurrentVideoFilename);
-                f.delete();
-                mContentResolver.delete(mCurrentVideoUri, null, null);
+            case R.id.capture:
+                doDiscardCurrentVideo();
+                break;
 
-                hideVideoFrameAndStartPreview();
+            case R.id.accept:
+                doReturnToPicker(true);
+                break;
+
+            case R.id.cancel:
+                doReturnToPicker(false);
+                break;
+
+            case R.id.discard: {
+                doDiscardCurrentVideo();
                 break;
             }
 
@@ -339,29 +335,35 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             }
 
             case R.id.play: {
-                Intent intent = new Intent(Intent.ACTION_VIEW, mCurrentVideoUri);
-                try {
-                    startActivity(intent);
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Log.e(TAG, "Couldn't view video " + mCurrentVideoUri, ex);
-                }
+                doPlayCurrentVideo();
                 break;
             }
         }
     }
 
+    private void doPlayCurrentVideo() {
+        Intent intent = new Intent(Intent.ACTION_VIEW, mCurrentVideoUri);
+        try {
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Log.e(TAG, "Couldn't view video " + mCurrentVideoUri, ex);
+        }
+    }
+
+    private void doDiscardCurrentVideo() {
+        deleteCurrentVideo();
+        hideVideoFrameAndStartPreview();
+    }
+
     private void showStorageToast() {
-        String noStorageText = null;
-        int remaining = calculatePicturesRemaining();
+        long remaining = getAvailableStorage();
 
         if (remaining == NO_STORAGE_ERROR) {
-            noStorageText = getString(R.string.no_storage);
-        } else if (remaining < 1) {
-            noStorageText = getString(R.string.not_enough_space);
-        }
-
-        if (noStorageText != null) {
-            Toast.makeText(this, noStorageText, 5000).show();
+            Toast.makeText(this, getString(R.string.no_storage), Toast.LENGTH_LONG).show();
+        } else if (remaining < LOW_STORAGE_THRESHOLD) {
+            new AlertDialog.Builder(this).setTitle(R.string.spaceIsLow_title)
+                .setMessage(R.string.spaceIsLow_content)
+                .show();
         }
     }
 
@@ -456,12 +458,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public boolean onTrackballEvent(MotionEvent event) {
-        cancelRestartPreviewTimeout();
-        return super.onTrackballEvent(event);
-    }
-
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         stopVideoRecording();
         initializeVideo();
@@ -511,7 +507,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
         addBaseMenuItems(menu);
         MenuHelper.addImageMenuItems(
                 menu,
@@ -545,26 +540,47 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             }
         });
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
+
         return true;
     }
 
-    private int calculatePicturesRemaining() {
+    private boolean isPickIntent() {
+        String action = getIntent().getAction();
+        return (Intent.ACTION_PICK.equals(action) || MediaStore.ACTION_VIDEO_CAPTURE.equals(action));
+    }
+
+    private void doReturnToPicker(boolean success) {
+        Intent resultIntent = new Intent();
+        int resultCode;
+        if (success) {
+            resultCode = RESULT_OK;
+            resultIntent.setData(mCurrentVideoUri);
+        } else {
+            resultCode = RESULT_CANCELED;
+        }
+        setResult(resultCode, resultIntent);
+        finish();
+    }
+
+    /**
+     * Returns
+     * @return number of bytes available, or an ERROR code.
+     */
+    private static long getAvailableStorage() {
         try {
             if (!ImageManager.hasStorage()) {
-                mPicturesRemaining = NO_STORAGE_ERROR;
+                return NO_STORAGE_ERROR;
             } else {
                 String storageDirectory = Environment.getExternalStorageDirectory().toString();
                 StatFs stat = new StatFs(storageDirectory);
-                float remaining = ((float)stat.getAvailableBlocks() * (float)stat.getBlockSize()) / 400000F;
-                mPicturesRemaining = (int)remaining;
+                return ((long)stat.getAvailableBlocks() * (long)stat.getBlockSize());
             }
         } catch (Exception ex) {
             // if we can't stat the filesystem then we don't know how many
-            // pictures are remaining.  it might be zero but just leave it
+            // free bytes exist.  It might be zero but just leave it
             // blank since we really don't know.
-            mPicturesRemaining = CANNOT_STAT_ERROR;
+            return CANNOT_STAT_ERROR;
         }
-        return mPicturesRemaining;
     }
 
     private void initializeVideo() {
@@ -577,6 +593,8 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         }
 
         mMediaRecorder = new MediaRecorder();
+        mNeedToDeletePartialRecording = true;
+        mNeedToRegisterRecording = false;
 
         if (DEBUG_SUPPRESS_AUDIO_RECORDING) {
             Log.v(TAG, "DEBUG_SUPPRESS_AUDIO_RECORDING is true.");
@@ -588,17 +606,26 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         Log.v(TAG, "before setOutputFile");
         createVideoPath();
         mMediaRecorder.setOutputFile(mCurrentVideoFilename);
-        Boolean videoQualityLow = getIntPreference("pref_camera_videoquality_key") == 0;
+        boolean videoQualityHigh = getBooleanPreference(CameraSettings.KEY_VIDEO_QUALITY,
+                CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+
+        {
+            Intent intent = getIntent();
+            if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
+                int extraVideoQuality = intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+                videoQualityHigh = (extraVideoQuality > 0);
+            }
+        }
 
         // Use the same frame rate for both, since internally
         // if the frame rate is too large, it can cause camera to become
         // unstable. We need to fix the MediaRecorder to disable the support
         // of setting frame rate for now.
         mMediaRecorder.setVideoFrameRate(20);
-        if (videoQualityLow) {
-            mMediaRecorder.setVideoSize(176,144);
-        } else {
+        if (videoQualityHigh) {
             mMediaRecorder.setVideoSize(352,288);
+        } else {
+            mMediaRecorder.setVideoSize(176,144);
         }
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
         if (!DEBUG_SUPPRESS_AUDIO_RECORDING) {
@@ -641,17 +668,29 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         }
     }
 
-    private int getIntPreference(String key) {
-        String s = mPreferences.getString(key, "0");
-        return Integer.parseInt(s);
+    private int getIntPreference(String key, int defaultValue) {
+        String s = mPreferences.getString(key, "");
+        int result = defaultValue;
+        try {
+            result = Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            // Ignore, result is already the default value.
+        }
+        return result;
+    }
+
+    private boolean getBooleanPreference(String key, boolean defaultValue) {
+        return getIntPreference(key, defaultValue ? 1 : 0) != 0;
     }
 
     private void createVideoPath() {
         long dateTaken = System.currentTimeMillis();
         String title = createName(dateTaken);
         String displayName = title + ".3gp"; // Used when emailing.
-        String filename = ImageManager.CAMERA_IMAGE_BUCKET_NAME + "/"
-            + Long.toString(dateTaken) + ".3gp";
+        String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
+        File cameraDir = new File(cameraDirPath);
+        cameraDir.mkdirs();
+        String filename = cameraDirPath + "/" + Long.toString(dateTaken) + ".3gp";
         ContentValues values = new ContentValues(7);
         values.put(Video.Media.TITLE, title);
         values.put(Video.Media.DISPLAY_NAME, displayName);
@@ -659,10 +698,31 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         values.put(Video.Media.DATE_TAKEN, dateTaken);
         values.put(Video.Media.MIME_TYPE, "video/3gpp");
         values.put(Video.Media.DATA, filename);
-        Uri videoTable = Uri.parse("content://media/external/video/media");
-        Uri item = mContentResolver.insert(videoTable, values);
         mCurrentVideoFilename = filename;
-        mCurrentVideoUri = item;
+        mCurrentVideoValues = values;
+        mCurrentVideoUri = null;
+    }
+
+    private void registerVideo() {
+        Uri videoTable = Uri.parse("content://media/external/video/media");
+        mCurrentVideoUri = mContentResolver.insert(videoTable,
+                mCurrentVideoValues);
+        mCurrentVideoValues = null;
+    }
+
+    private void deleteCurrentVideo() {
+        if (mCurrentVideoFilename != null) {
+            Log.v(TAG, "Deleting stub video " + mCurrentVideoFilename);
+            File f = new File(mCurrentVideoFilename);
+            if (! f.delete()) {
+                Log.v(TAG, "Could not delete " + mCurrentVideoFilename);
+            }
+            mCurrentVideoFilename = null;
+        }
+        if (mCurrentVideoUri != null) {
+            mContentResolver.delete(mCurrentVideoUri, null, null);
+            mCurrentVideoUri = null;
+        }
     }
 
     private void addBaseMenuItems(Menu menu) {
@@ -734,18 +794,18 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     }
 
     private void showPostRecordingAlert() {
-        cancelRestartPreviewTimeout();
+        boolean isPick = isPickIntent();
+        int pickVisible = isPick ? View.VISIBLE : View.GONE;
+        int normalVisible = ! isPick ? View.VISIBLE : View.GONE;
+        mPostPictureAlert.findViewById(R.id.share).setVisibility(normalVisible);
+        mPostPictureAlert.findViewById(R.id.discard).setVisibility(normalVisible);
+        mPostPictureAlert.findViewById(R.id.accept).setVisibility(pickVisible);
+        mPostPictureAlert.findViewById(R.id.cancel).setVisibility(pickVisible);
         mPostPictureAlert.setVisibility(View.VISIBLE);
-        mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, POST_PICTURE_ALERT_TIMEOUT);
     }
 
     private void hidePostPictureAlert() {
-        cancelRestartPreviewTimeout();
         mPostPictureAlert.setVisibility(View.INVISIBLE);
-    }
-
-    private void cancelRestartPreviewTimeout() {
-        mHandler.removeMessages(RESTART_PREVIEW);
     }
 
     private boolean isPostRecordingAlertVisible() {
@@ -757,13 +817,23 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         if (mMediaRecorderRecording || mMediaRecorder != null) {
             if (mMediaRecorderRecording) {
                 mMediaRecorder.stop();
+                mNeedToDeletePartialRecording = false;
+                mNeedToRegisterRecording = true;
+                mMediaRecorderRecording = false;
             }
             releaseMediaRecorder();
-            mMediaRecorderRecording = false;
             mModeIndicatorView.setVisibility(View.VISIBLE);
             mRecordingIndicatorView.setVisibility(View.GONE);
             mRecordingTimeView.setVisibility(View.GONE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        if (mNeedToRegisterRecording) {
+            registerVideo();
+            mNeedToRegisterRecording = false;
+        }
+        if (mNeedToDeletePartialRecording){
+            deleteCurrentVideo();
+            mNeedToDeletePartialRecording = false;
         }
     }
 

@@ -25,19 +25,22 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.location.Location;
@@ -65,16 +68,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.OrientationListener;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.android.camera.ImageManager.IImageList;
 
 public class Camera extends Activity implements View.OnClickListener, SurfaceHolder.Callback {
 
@@ -88,7 +92,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     private static final int CLEAR_SCREEN_DELAY = 4;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
-    private static final int POST_PICTURE_ALERT_TIMEOUT = 6 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
     private static final int NO_STORAGE_ERROR = -1;
@@ -105,8 +108,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     public static final int MENU_GALLERY_VIDEOS = 8;
     public static final int MENU_SAVE_SELECT_PHOTOS = 30;
     public static final int MENU_SAVE_NEW_PHOTO = 31;
-    public static final int MENU_SAVE_SELECTVIDEO = 32;
-    public static final int MENU_SAVE_TAKE_NEW_VIDEO = 33;
     public static final int MENU_SAVE_GALLERY_PHOTO = 34;
     public static final int MENU_SAVE_GALLERY_VIDEO_PHOTO = 35;
     public static final int MENU_SAVE_CAMERA_DONE = 36;
@@ -154,7 +155,8 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
     boolean mMenuSelectionMade;
 
-    View mPostPictureAlert;
+    ImageView mLastPictureButton;
+    Uri mLastPictureUri;
     LocationManager mLocationManager = null;
 
     private Animation mFocusBlinkAnimation;
@@ -216,7 +218,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                         // TODO remove polling
                         mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, 100);
                     } else if (mStatus == SNAPSHOT_COMPLETED){
-                        hidePostPictureAlert();
                         mCaptureObject.dismissFreezeFrame(true);
                     }
                     break;
@@ -316,9 +317,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 Log.v(TAG, "got RawPictureCallback...");
             mRawPictureCallbackTime = System.currentTimeMillis();
             mBlackout.setVisibility(View.INVISIBLE);
-            if (!isPickIntent() && mPreferences.getBoolean("pref_camera_postpicturemenu_key", true)) {
-                showPostPictureAlert();
-            }
         }
     };
 
@@ -337,23 +335,10 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
             mStatus = SNAPSHOT_COMPLETED;
 
-            if (!mPreferences.getBoolean("pref_camera_postpicturemenu_key", true)) {
-                if (mKeepAndRestartPreview) {
-                    long delay = 1500 - (System.currentTimeMillis() - mRawPictureCallbackTime);
-                    mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, Math.max(delay, 0));
-                }
-                return;
-            }
-
             if (mKeepAndRestartPreview) {
-                mKeepAndRestartPreview = false;
-                mPostPictureAlert.setVisibility(View.INVISIBLE);
-
-                // Post this message so that we can finish processing the request. This also
-                // prevents the preview from showing up before mPostPictureAlert is dismissed.
-                mHandler.sendEmptyMessage(RESTART_PREVIEW);
+                long delay = 1500 - (System.currentTimeMillis() - mRawPictureCallbackTime);
+                mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, Math.max(delay, 0));
             }
-
         }
     };
 
@@ -489,6 +474,8 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             if (!captureOnly) {
                 storeImage(data, loc);
                 sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", mLastContentUri));
+                setLastPictureThumb(data);
+                dismissFreezeFrame(true);
             } else {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 4;
@@ -515,6 +502,46 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             if (mPausing) {
                 closeCamera();
             }
+        }
+
+        private void setLastPictureThumb(byte[] data) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 16;
+
+            if (DEBUG) {
+                startTiming();
+            }
+
+            Bitmap lastPictureThumb = BitmapFactory.decodeByteArray(data, 0, data.length, options);
+
+            if (DEBUG) {
+                stopTiming();
+                Log.d(TAG, "Decoded lastPictureThumb bitmap (" + lastPictureThumb.getWidth() +
+                        "x" + lastPictureThumb.getHeight() + " ) in " +
+                        (mWallTimeEnd - mWallTimeStart) + " ms. Thread time was " +
+                        ((mThreadTimeEnd - mThreadTimeStart) / 1000000) + " ms.");
+            }
+
+            final int PADDING_WIDTH = 2;
+            final int PADDING_HEIGHT = 2;
+            LayoutParams layoutParams = mLastPictureButton.getLayoutParams();
+            // Make the mini-thumbnail size smaller than the button size so that the image corners
+            // don't peek out from the rounded corners of the frame_thumbnail graphic:
+            final int miniThumbWidth = layoutParams.width - 2 * PADDING_WIDTH;
+            final int miniThumbHeight = layoutParams.height - 2 * PADDING_HEIGHT;
+
+            lastPictureThumb = ImageManager.extractMiniThumb(lastPictureThumb,
+                    miniThumbWidth, miniThumbHeight);
+
+            Drawable[] layers = new Drawable[2];
+            layers[0] = new BitmapDrawable(lastPictureThumb);
+            layers[1] = getResources().getDrawable(R.drawable.frame_thumbnail);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+            layerDrawable.setLayerInset(0, PADDING_WIDTH, PADDING_HEIGHT,
+                    PADDING_WIDTH, PADDING_HEIGHT);
+            mLastPictureButton.setImageDrawable(layerDrawable);
+            mLastPictureButton.setVisibility(View.VISIBLE);
+            mLastPictureUri = mCaptureObject.getLastCaptureUri();
         }
 
         /*
@@ -619,7 +646,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             if (mStatus == SNAPSHOT_IN_PROGRESS || mStatus == SNAPSHOT_COMPLETED) {
                 mKeepAndRestartPreview = true;
                 mHandler.sendEmptyMessage(RESTART_PREVIEW);
-                mPostPictureAlert.setVisibility(View.INVISIBLE);
                 return;
             }
 
@@ -633,7 +659,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
             mStatus = SNAPSHOT_IN_PROGRESS;
 
-            mKeepAndRestartPreview = !mPreferences.getBoolean("pref_camera_postpicturemenu_key", true);
+            mKeepAndRestartPreview = true;
 
             boolean getContentAction = isPickIntent();
             if (getContentAction) {
@@ -712,17 +738,9 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         mBlackout = (ImageView) findViewById(R.id.blackout);
         mBlackout.setBackgroundDrawable(new ColorDrawable(0xFF000000));
 
-        mPostPictureAlert = findViewById(R.id.post_picture_panel);
-        View b;
-
-        b = findViewById(R.id.discard);
-        b.setOnClickListener(this);
-
-        b = findViewById(R.id.share);
-        b.setOnClickListener(this);
-
-        b = findViewById(R.id.setas);
-        b.setOnClickListener(this);
+        mLastPictureButton = (ImageView) findViewById(R.id.last_picture_button);
+        mLastPictureButton.setOnClickListener(this);
+        mLastPictureButton.setVisibility(View.INVISIBLE);
 
         try {
             mClickSound = new MediaPlayer();
@@ -796,59 +814,9 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
     public void onClick(View v) {
         switch (v.getId()) {
-        /*
-            case R.id.save: {
-                mPostPictureAlert.setVisibility(View.GONE);
-                postAfterKeep(null);
-                break;
-            }
-         */
 
-            case R.id.discard: {
-                if (mCaptureObject != null) {
-                    mCaptureObject.cancelSave();
-                    Uri uri = mCaptureObject.getLastCaptureUri();
-                    if (uri != null) {
-                        mContentResolver.delete(uri, null, null);
-                    }
-                    mCaptureObject.dismissFreezeFrame(true);
-                }
-                mPostPictureAlert.setVisibility(View.GONE);
-                break;
-            }
-
-            case R.id.share: {
-                mPostPictureAlert.setVisibility(View.GONE);
-                postAfterKeep(new Runnable() {
-                    public void run() {
-                        Uri u = mCaptureObject.getLastCaptureUri();
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_SEND);
-                        intent.setType("image/jpeg");
-                        intent.putExtra(Intent.EXTRA_STREAM, u);
-                        try {
-                            startActivity(Intent.createChooser(intent, getText(R.string.sendImage)));
-                        } catch (android.content.ActivityNotFoundException ex) {
-                            Toast.makeText(Camera.this, R.string.no_way_to_share_image, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                break;
-            }
-
-            case R.id.setas: {
-                mPostPictureAlert.setVisibility(View.GONE);
-                postAfterKeep(new Runnable() {
-                    public void run() {
-                        Uri u = mCaptureObject.getLastCaptureUri();
-                        Intent intent = new Intent(Intent.ACTION_ATTACH_DATA, u);
-                        try {
-                            startActivity(Intent.createChooser(intent, getText(R.string.setImage)));
-                        } catch (android.content.ActivityNotFoundException ex) {
-                            Toast.makeText(Camera.this, R.string.no_way_to_share_video, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+            case R.id.last_picture_button: {
+                viewLastImage();
                 break;
             }
         }
@@ -903,6 +871,16 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         }
 
         mBlackout.setVisibility(View.INVISIBLE);
+
+        if (mLastPictureUri != null) {
+            IImageList list = ImageManager.makeImageList(mLastPictureUri, this,
+                    ImageManager.SORT_ASCENDING);
+            if (list.getImageForUri(mLastPictureUri) == null) {
+                mLastPictureUri = null;
+                mLastPictureButton.setVisibility(View.INVISIBLE);
+            }
+            list.deactivate();
+        }
     }
 
     private ImageManager.DataLocation dataLocation() {
@@ -921,7 +899,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     @Override
     protected void onPause() {
         keep();
-        mPostPictureAlert.setVisibility(View.INVISIBLE);
 
         mPausing = true;
         mOrientationListener.disable();
@@ -1012,11 +989,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 if (mStatus == SNAPSHOT_IN_PROGRESS || mStatus == SNAPSHOT_COMPLETED) {
-                    if (mPostPictureAlert.getVisibility() == View.VISIBLE) {
-                        keep();
-                        mPostPictureAlert.setVisibility(View.INVISIBLE);
-                        restartPreview();
-                    }
                     // ignore backs while we're taking a picture
                     return true;
                 }
@@ -1058,9 +1030,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                     }
                 }
                 return true;
-            case KeyEvent.KEYCODE_MENU:
-                mPostPictureAlert.setVisibility(View.INVISIBLE);
-                break;
         }
 
         return super.onKeyDown(keyCode, event);
@@ -1260,12 +1229,30 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     }
 
     void gotoGallery() {
-        Uri target = Images.Media.INTERNAL_CONTENT_URI;
-        Intent intent = new Intent(Intent.ACTION_VIEW, target);
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Log.e(TAG, "Could not start gallery activity", e);
+        MenuHelper.gotoCameraImageGallery(this);
+    }
+
+    private void viewLastImage() {
+        Uri targetUri = mLastPictureUri;
+        if (targetUri != null) {
+            Uri thisUri = Images.Media.INTERNAL_CONTENT_URI;
+            if (thisUri != null) {
+                String bucket = thisUri.getQueryParameter("bucketId");
+                if (bucket != null) {
+                    targetUri = targetUri.buildUpon().appendQueryParameter("bucketId", bucket).build();
+                }
+            }
+            Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
+            intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            intent.putExtra(MediaStore.EXTRA_FULL_SCREEN, true);
+            intent.putExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS, true);
+
+            try {
+                startActivity(intent);
+            } catch (android.content.ActivityNotFoundException ex) {
+                // ignore.
+            }
         }
     }
 
@@ -1523,12 +1510,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                     return true;
                 }
             });
-            menu.add(MenuHelper.VIDEO_SAVING_ITEM, MENU_SAVE_TAKE_NEW_VIDEO, 0, R.string.camera_takenewvideo).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    toss();
-                    return true;
-                }
-            });
         } else {
             addBaseMenuItems(menu);
             MenuHelper.addImageMenuItems(
@@ -1640,16 +1621,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             }
         });
         item.setIcon(android.R.drawable.ic_menu_preferences);
-    }
-
-    private void showPostPictureAlert() {
-        mPostPictureAlert.setVisibility(View.VISIBLE);
-        mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, POST_PICTURE_ALERT_TIMEOUT);
-    }
-
-    private void hidePostPictureAlert() {
-        cancelRestartPreviewTimeout();
-        mPostPictureAlert.setVisibility(View.INVISIBLE);
     }
 
     private void cancelRestartPreviewTimeout() {
