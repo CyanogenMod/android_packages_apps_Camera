@@ -62,8 +62,17 @@ import java.util.HashMap;
  *
  */
 public class ImageManager {
-    public static final String CAMERA_IMAGE_BUCKET_NAME = "/sdcard/dcim/camera";
-    public static final String CAMERA_IMAGE_BUCKET_ID = String.valueOf(CAMERA_IMAGE_BUCKET_NAME.hashCode());
+    public static final String CAMERA_IMAGE_BUCKET_NAME =
+        Environment.getExternalStorageDirectory().toString() + "/dcim/Camera";
+    public static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
+
+    /**
+     * Matches code in MediaProvider.computeBucketValues. Should be a common function.
+     */
+
+    public static String getBucketId(String path) {
+        return String.valueOf(path.toLowerCase().hashCode());
+    }
 
     // To enable verbose logging for this class, change false to true. The other logic ensures that
     // this logging can be disabled by turned off DEBUG and lower, and that it can be enabled by
@@ -1431,7 +1440,7 @@ public class ImageManager {
                     requery();
                 }
             }
-            return false;
+            return true;
         }
 
 
@@ -1716,6 +1725,11 @@ public class ImageManager {
          */
         public abstract IImage getImageForUri(Uri uri);;
 
+        /**
+         *
+         * @param image
+         * @return true if the image was removed.
+         */
         public abstract boolean removeImage(IImage image);
         /**
          * Removes the image at the ith position.
@@ -2252,6 +2266,7 @@ public class ImageManager {
         protected int indexDisplayName() {  return -1;                     }
         protected int indexThumbId()     {  return INDEX_THUMB_ID;        }
 
+        @Override
         protected IImage make(long id, long miniThumbId, ContentResolver cr, IImageList list, long timestamp, int index, int rotation) {
             return new Image(id, miniThumbId, mContentResolver, this, index, rotation);
         }
@@ -2627,12 +2642,20 @@ public class ImageManager {
         }
 
         public boolean removeImage(IImage image) {
+            IImageList parent = image.getContainer();
             int pos = -1;
+            int baseIndex = 0;
             while (++pos < mSubList.length) {
                 IImageList sub = mSubList[pos];
-                if (sub.removeImage(image)) {
-                    return true;
+                if (sub == parent) {
+                    if (sub.removeImage(image)) {
+                        modifySkipCountForDeletedImage(baseIndex);
+                        return true;
+                    } else {
+                        break;
+                    }
                 }
+                baseIndex += sub.getCount();
             }
             return false;
         }
@@ -3303,8 +3326,9 @@ public class ImageManager {
         protected int indexDisplayName() {  return -1;                    }
         protected int indexThumbId()     {  return INDEX_THUMB_ID;        }
 
+        @Override
         protected IImage make(long id, long miniThumbId, ContentResolver cr, IImageList list,
-                long timestamp, int index) {
+                long timestamp, int index, int rotation) {
             return new VideoObject(id, miniThumbId, mContentResolver, this, timestamp, index);
         }
 
@@ -3572,24 +3596,13 @@ public class ImageManager {
         return sInstance;
     }
 
+
     static public byte [] miniThumbData(Bitmap source) {
         if (source == null)
             return null;
 
-        float scale;
-        if (source.getWidth() < source.getHeight()) {
-            scale = MINI_THUMB_TARGET_SIZE / (float)source.getWidth();
-        } else {
-            scale = MINI_THUMB_TARGET_SIZE / (float)source.getHeight();
-        }
-        Matrix matrix = new Matrix();
-        matrix.setScale(scale, scale);
-        Bitmap miniThumbnail = ImageLoader.transform(matrix, source,
-                MINI_THUMB_TARGET_SIZE, MINI_THUMB_TARGET_SIZE, false);
-
-        if (miniThumbnail != source) {
-            source.recycle();
-        }
+        Bitmap miniThumbnail = extractMiniThumb(source, MINI_THUMB_TARGET_SIZE,
+                MINI_THUMB_TARGET_SIZE);
         java.io.ByteArrayOutputStream miniOutStream = new java.io.ByteArrayOutputStream();
         miniThumbnail.compress(Bitmap.CompressFormat.JPEG, 75, miniOutStream);
         miniThumbnail.recycle();
@@ -3602,6 +3615,33 @@ public class ImageManager {
             Log.e(TAG, "got exception ex " + ex);
         }
         return null;
+    }
+
+    /**
+     * Creates a centered bitmap of the desired size. Recycles the input.
+     * @param source
+     * @return
+     */
+    static public Bitmap extractMiniThumb(Bitmap source, int width, int height) {
+        if (source == null) {
+            return null;
+        }
+
+        float scale;
+        if (source.getWidth() < source.getHeight()) {
+            scale = width / (float)source.getWidth();
+        } else {
+            scale = height / (float)source.getHeight();
+        }
+        Matrix matrix = new Matrix();
+        matrix.setScale(scale, scale);
+        Bitmap miniThumbnail = ImageLoader.transform(matrix, source,
+                width, height, false);
+
+        if (miniThumbnail != source) {
+            source.recycle();
+        }
+        return miniThumbnail;
     }
 
     static Bitmap rotate(Bitmap b, int degrees) {

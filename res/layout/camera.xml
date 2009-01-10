@@ -55,6 +55,18 @@
         android:layout_marginRight="5dip"
         android:layout_marginTop="15dip"
         android:scaleType="center"/>
+
+	<ImageView
+	    android:id="@+id/last_picture_button"
+		android:layout_width="75dip"
+		android:layout_height="75dip"
+		android:clickable="true"
+		android:focusable="true"
+		android:focusableInTouchMode="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dip"
+        android:layout_marginBottom="10dip"/>
     
     <TextView
             android:id="@+id/hint_toast"
@@ -66,44 +78,5 @@
             android:gravity="center"
             android:text="@string/camera_button_hint"
             android:textSize="18sp"/>
-
-    <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/post_picture_panel"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:paddingLeft="7dip"
-            android:paddingRight="7dip"
-            android:paddingTop="6dip"
-            android:paddingBottom="6dip"
-            android:layout_width="wrap_content" 
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-        <com.android.camera.ActionMenuButton
-            android:id="@+id/setas"
-            android:drawableTop="@drawable/ic_menu_set_as"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/camera_set"
-            style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
-            android:id="@+id/share"
-            android:drawableTop="@drawable/ic_menu_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/camera_share"
-            style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
-            android:id="@+id/discard"
-            android:drawableTop="@drawable/ic_menu_delete"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:text="@string/camera_toss"
-            style="@style/OnscreenActionIcon"
-        />
-    </LinearLayout>
 </RelativeLayout>
 

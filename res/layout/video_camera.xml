@@ -107,6 +107,14 @@
 			android:orientation="horizontal">
 
 		<com.android.camera.ActionMenuButton
+			android:id="@+id/capture"
+			android:drawableTop="@drawable/ic_menu_capture"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:text="@string/camera_capture"
+			style="@style/OnscreenActionIcon"
+		/>
+		<com.android.camera.ActionMenuButton
 			android:id="@+id/play"
 			android:drawableTop="@drawable/ic_menu_camera_play"
 			android:layout_width="wrap_content"
@@ -128,6 +136,22 @@
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:text="@string/camera_toss"
+			style="@style/OnscreenActionIcon"
+		/>
+		<com.android.camera.ActionMenuButton
+			android:id="@+id/accept"
+			android:drawableTop="@drawable/ic_menu_share"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/camera_accept"
+			style="@style/OnscreenActionIcon"
+		/>
+		<com.android.camera.ActionMenuButton
+			android:id="@+id/cancel"
+			android:drawableTop="@drawable/ic_menu_delete"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/camera_cancel"
 			style="@style/OnscreenActionIcon"
 		/>
 	</LinearLayout>

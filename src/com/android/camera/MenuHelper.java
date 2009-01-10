@@ -19,11 +19,15 @@ package com.android.camera;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
 import android.util.Config;
 import android.util.Log;
 import android.view.Menu;
@@ -266,17 +270,106 @@ public class MenuHelper {
 
                             } finally {
                             }
-                            ((TextView)d.findViewById(R.id.details_attrname_1)).setText(R.string.details_file_size);
-                            ((TextView)d.findViewById(R.id.details_attrvalu_1)).setText(lengthString);
+                            ((TextView)d.findViewById(R.id.details_file_size_value))
+                                .setText(lengthString);
 
+                            int dimensionWidth = 0;
+                            int dimensionHeight = 0;
                             if (isImage) {
-                                String dimensionsString = String.valueOf(image.getWidth() + " X " + image.getHeight());
-                                ((TextView)d.findViewById(R.id.details_attrname_2)).setText(R.string.details_image_resolution);
-                                ((TextView)d.findViewById(R.id.details_attrvalu_2)).setText(dimensionsString);
+                                dimensionWidth = image.getWidth();
+                                dimensionHeight = image.getHeight();
+                                d.findViewById(R.id.details_duration_row).setVisibility(View.GONE);
+                                d.findViewById(R.id.details_frame_rate_row).setVisibility(View.GONE);
+                                d.findViewById(R.id.details_bit_rate_row).setVisibility(View.GONE);
+                                d.findViewById(R.id.details_format_row).setVisibility(View.GONE);
+                                d.findViewById(R.id.details_codec_row).setVisibility(View.GONE);
                             } else {
-                                d.findViewById(R.id.details_attrname_2).setVisibility(View.GONE);
-                                d.findViewById(R.id.details_attrvalu_2).setVisibility(View.GONE);
+                                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                                retriever.setMode(MediaMetadataRetriever.MODE_GET_METADATA_ONLY);
+                                retriever.setDataSource(image.getDataPath());
+                                try {
+                                    dimensionWidth = Integer.parseInt(
+                                            retriever.extractMetadata(
+                                            MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                                    dimensionHeight = Integer.parseInt(
+                                            retriever.extractMetadata(
+                                            MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+                                } catch (NumberFormatException e) {
+                                    dimensionWidth = 0;
+                                    dimensionHeight = 0;
+                                }
+
+                                try {
+                                    long durationMs = Long.parseLong(retriever.extractMetadata(
+                                            MediaMetadataRetriever.METADATA_KEY_DURATION));
+                                    long duration = durationMs / 1000;
+                                    long h = duration / 3600;
+                                    long m = (duration - h * 3600) / 60;
+                                    long s = duration - (h * 3600 + m * 60);
+                                    String durationValue;
+                                    if (h == 0) {
+                                        durationValue = String.format(
+                                                activity.getString(R.string.details_ms), m, s);
+                                    } else {
+                                        durationValue = String.format(
+                                                activity.getString(R.string.details_hms), h, m, s);
+                                    }
+                                    ((TextView)d.findViewById(R.id.details_duration_value))
+                                        .setText(durationValue);
+                                } catch (NumberFormatException e) {
+                                    d.findViewById(R.id.details_frame_rate_row)
+                                    .setVisibility(View.GONE);
+                                }
+
+                                try {
+                                    String frame_rate = String.format(
+                                            activity.getString(R.string.details_fps),
+                                            Integer.parseInt(
+                                                    retriever.extractMetadata(
+                                                            MediaMetadataRetriever.METADATA_KEY_FRAME_RATE)));
+                                    ((TextView)d.findViewById(R.id.details_frame_rate_value))
+                                        .setText(frame_rate);
+                                } catch (NumberFormatException e) {
+                                    d.findViewById(R.id.details_frame_rate_row)
+                                    .setVisibility(View.GONE);
+                                }
+
+                                try {
+                                    long bitRate = Long.parseLong(retriever.extractMetadata(
+                                            MediaMetadataRetriever.METADATA_KEY_BIT_RATE));
+                                    String bps;
+                                    if (bitRate < 1000000) {
+                                        bps = String.format(
+                                                activity.getString(R.string.details_kbps),
+                                                bitRate / 1000);
+                                    } else {
+                                        bps = String.format(
+                                                activity.getString(R.string.details_mbps),
+                                                ((double) bitRate) / 1000000.0);
+                                    }
+                                    ((TextView)d.findViewById(R.id.details_bit_rate_value))
+                                            .setText(bps);
+                                } catch (NumberFormatException e) {
+                                    d.findViewById(R.id.details_bit_rate_row)
+                                            .setVisibility(View.GONE);
+                                }
+
+                                String format = retriever.extractMetadata(
+                                        MediaMetadataRetriever.METADATA_KEY_VIDEO_FORMAT);
+                                ((TextView)d.findViewById(R.id.details_format_value))
+                                    .setText(format);
+
+                                String codec = retriever.extractMetadata(
+                                            MediaMetadataRetriever.METADATA_KEY_CODEC);
+                                ((TextView)d.findViewById(R.id.details_codec_value))
+                                    .setText(codec);
                             }
+
+                            String dimensionsString = String.format(
+                                    activity.getString(R.string.details_dimension_x),
+                                    dimensionWidth, dimensionHeight);
+                            ((TextView)d.findViewById(R.id.details_resolution_value))
+                                .setText(dimensionsString);
 
                             String dateString = "";
                             long dateTaken = image.getDateTaken();
@@ -285,12 +378,19 @@ public class MenuHelper {
                                 java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat();
                                 dateString = dateFormat.format(date);
 
-                                ((TextView)d.findViewById(R.id.details_attrname_3)).setText(R.string.details_date_taken);
-                                ((TextView)d.findViewById(R.id.details_attrvalu_3)).setText(dateString);
+                                ((TextView)d.findViewById(R.id.details_date_taken_value))
+                                    .setText(dateString);
                             } else {
-                                d.findViewById(R.id.details_daterow).setVisibility(View.GONE);
+                                d.findViewById(R.id.details_date_taken_row)
+                                    .setVisibility(View.GONE);
                             }
 
+                            builder.setNeutralButton(R.string.details_ok,
+                                    new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
 
                             builder.setIcon(android.R.drawable.ic_dialog_info)
                                 .setTitle(R.string.details_panel_title)
@@ -356,7 +456,9 @@ public class MenuHelper {
     }
 
     static void deleteImage(Activity activity, Runnable onDelete, IImage image) {
-        deleteImageImpl(activity, onDelete, ImageManager.isImage(image));
+        if (image != null) {
+            deleteImageImpl(activity, onDelete, ImageManager.isImage(image));
+        }
     }
 
     private static void deleteImageImpl(Activity activity, final Runnable onDelete, boolean isPhoto) {
@@ -365,24 +467,29 @@ public class MenuHelper {
             if (onDelete != null)
                 onDelete.run();
         } else {
-            android.app.AlertDialog.Builder b = new android.app.AlertDialog.Builder(activity);
-            b.setIcon(android.R.drawable.ic_dialog_alert);
-            b.setTitle(R.string.confirm_delete_title);
-            b.setMessage(isPhoto? R.string.confirm_delete_message
-                    : R.string.confirm_delete_video_message);
-            b.setPositiveButton(android.R.string.ok, new android.content.DialogInterface.OnClickListener() {
-                public void onClick(android.content.DialogInterface v, int x) {
-                    if (onDelete != null)
-                        onDelete.run();
-                }
-            });
-            b.setNegativeButton(android.R.string.cancel, new android.content.DialogInterface.OnClickListener() {
-                public void onClick(android.content.DialogInterface v, int x) {
-
-                }
-            });
-            b.create().show();
+            displayDeleteDialog(activity, onDelete, isPhoto);
         }
+    }
+
+    public static void displayDeleteDialog(Activity activity,
+            final Runnable onDelete, boolean isPhoto) {
+        android.app.AlertDialog.Builder b = new android.app.AlertDialog.Builder(activity);
+        b.setIcon(android.R.drawable.ic_dialog_alert);
+        b.setTitle(R.string.confirm_delete_title);
+        b.setMessage(isPhoto? R.string.confirm_delete_message
+                : R.string.confirm_delete_video_message);
+        b.setPositiveButton(android.R.string.ok, new android.content.DialogInterface.OnClickListener() {
+            public void onClick(android.content.DialogInterface v, int x) {
+                if (onDelete != null)
+                    onDelete.run();
+            }
+        });
+        b.setNegativeButton(android.R.string.cancel, new android.content.DialogInterface.OnClickListener() {
+            public void onClick(android.content.DialogInterface v, int x) {
+
+            }
+        });
+        b.create().show();
     }
 
     static void addSwitchModeMenuItem(Menu menu, final Activity activity,
@@ -391,7 +498,7 @@ public class MenuHelper {
         int labelId = switchToVideo ? R.string.switch_to_video_lable
                 : R.string.switch_to_camera_lable;
         int iconId = switchToVideo ? R.drawable.ic_menu_camera_video_view
-                : R.drawable.ic_menu_camera;
+                : android.R.drawable.ic_menu_camera;
         MenuItem item = menu.add(group, MENU_SWITCH_CAMERA_MODE, 0,
                 labelId).setOnMenuItemClickListener(
                         new OnMenuItemClickListener() {
@@ -406,6 +513,26 @@ public class MenuHelper {
              }
         });
         item.setIcon(iconId);
+    }
+
+    static void gotoStillImageCapture(Activity activity) {
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        try {
+            activity.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "Could not start still image capture activity", e);
+        }
+    }
+
+    static void gotoCameraImageGallery(Activity activity) {
+        Uri target = Images.Media.INTERNAL_CONTENT_URI.buildUpon().appendQueryParameter("bucketId",
+                ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
+        Intent intent = new Intent(Intent.ACTION_VIEW, target);
+        try {
+            activity.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "Could not start gallery activity", e);
+        }
     }
 
     static void addCaptureMenuItems(Menu menu, final Activity activity) {
@@ -423,7 +550,7 @@ public class MenuHelper {
                 return true;
             }
         })
-        .setIcon(R.drawable.ic_menu_camera);
+        .setIcon(android.R.drawable.ic_menu_camera);
 
         menu.add(0, MENU_CAPTURE_VIDEO, 2, R.string.capture_video)
             .setOnMenuItemClickListener(
@@ -472,6 +599,11 @@ public class MenuHelper {
                 req == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                         ? android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER
                         : req);
+    }
+
+    static void setFlipOrientationEnabled(Activity activity, MenuItem flipItem) {
+        int keyboard = activity.getResources().getConfiguration().hardKeyboardHidden;
+        flipItem.setEnabled(keyboard != android.content.res.Configuration.HARDKEYBOARDHIDDEN_NO);
     }
 }
 

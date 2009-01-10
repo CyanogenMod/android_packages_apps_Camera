@@ -41,6 +41,7 @@ public class GalleryPickerItem extends ImageView {
         super(context, attrs, defStyle);
         
         mFrame = getResources().getDrawable(R.drawable.frame_gallery_preview);
+        mFrame.setCallback(this);
     }
     
     @Override

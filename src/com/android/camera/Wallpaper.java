@@ -74,14 +74,16 @@ public class Wallpaper extends Activity {
     };
     
     static class SetWallpaperThread extends Thread {
-        private Bitmap mBitmap;
-        private Handler mHandler;
-        private Context mContext;
+        private final Bitmap mBitmap;
+        private final Handler mHandler;
+        private final Context mContext;
+        private final File mFile;
         
-        public SetWallpaperThread(Bitmap bitmap, Handler handler, Context context) {
+        public SetWallpaperThread(Bitmap bitmap, Handler handler, Context context, File file) {
             mBitmap = bitmap;
             mHandler = handler;
             mContext = context;
+            mFile = file;
         }
         
         @Override
@@ -92,6 +94,7 @@ public class Wallpaper extends Activity {
                 Log.e(LOG_TAG, "Failed to set wallpaper.", e);
             } finally {
                 mHandler.sendEmptyMessage(FINISH);
+                mFile.delete();
             }
         }
     }
@@ -148,6 +151,10 @@ public class Wallpaper extends Activity {
     }
     
     protected void formatIntent(Intent intent) {
+        // TODO: A temporary file is NOT necessary
+        // The CropImage intent should be able to set the wallpaper directly
+        // without writing to a file, which we then need to read here to write
+        // it again as the final wallpaper, this is silly
         File f = getFileStreamPath("temp-wallpaper");
         (new File(f.getParent())).mkdirs();
         mTempFilePath = f.toString();
@@ -162,6 +169,10 @@ public class Wallpaper extends Activity {
         intent.putExtra("scale",           true);    
         intent.putExtra("noFaceDetection", true);
         intent.putExtra("output",          Uri.parse("file:/" + mTempFilePath));
+        intent.putExtra("outputFormat",    Bitmap.CompressFormat.PNG.name());
+        // TODO: we should have an extra called "setWallpaper" to ask CropImage to
+        // set the cropped image as a wallpaper directly
+        // This means the SetWallpaperThread should be moved out of this class to CropImage
     }
 
     @Override
@@ -169,7 +180,8 @@ public class Wallpaper extends Activity {
         if ((requestCode == PHOTO_PICKED || requestCode == CROP_DONE) && (resultCode == RESULT_OK)
                 && (data != null)) {
             try {
-                InputStream s = new FileInputStream(mTempFilePath);
+                File tempFile = new File(mTempFilePath);
+                InputStream s = new FileInputStream(tempFile);
                 Bitmap bitmap = BitmapFactory.decodeStream(s);
                 if (bitmap == null) {
                     Log.e(LOG_TAG, "Failed to set wallpaper.  Couldn't get bitmap for path " + mTempFilePath);
@@ -177,7 +189,7 @@ public class Wallpaper extends Activity {
                     if (android.util.Config.LOGV)
                         Log.v(LOG_TAG, "bitmap size is " + bitmap.getWidth() + " / " + bitmap.getHeight());
                     mHandler.sendEmptyMessage(SHOW_PROGRESS);
-                    new SetWallpaperThread(bitmap, mHandler, this).start();
+                    new SetWallpaperThread(bitmap, mHandler, this, tempFile).start();
                 }
                 mDoLaunch = false;
             } catch (FileNotFoundException ex) {
