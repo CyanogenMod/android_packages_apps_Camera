@@ -25,7 +25,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.StatFs;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Config;
@@ -82,6 +84,9 @@ public class MenuHelper {
     static public final int MENU_VIDEO_PLAY = 23;
     static public final int MENU_VIDEO_SHARE = 24;
     static public final int MENU_VIDEO_TOSS = 27;
+
+    public static final int NO_STORAGE_ERROR = -1;
+    public static final int CANNOT_STAT_ERROR = -2;
 
     public interface MenuItemsResult {
         public void gettingReadyToOpen(Menu menu, ImageManager.IImage image);
@@ -300,20 +305,10 @@ public class MenuHelper {
                                 }
 
                                 try {
-                                    long durationMs = Long.parseLong(retriever.extractMetadata(
+                                    int durationMs = Integer.parseInt(retriever.extractMetadata(
                                             MediaMetadataRetriever.METADATA_KEY_DURATION));
-                                    long duration = durationMs / 1000;
-                                    long h = duration / 3600;
-                                    long m = (duration - h * 3600) / 60;
-                                    long s = duration - (h * 3600 + m * 60);
-                                    String durationValue;
-                                    if (h == 0) {
-                                        durationValue = String.format(
-                                                activity.getString(R.string.details_ms), m, s);
-                                    } else {
-                                        durationValue = String.format(
-                                                activity.getString(R.string.details_hms), h, m, s);
-                                    }
+                                    String durationValue = formatDuration(
+                                            activity, durationMs);
                                     ((TextView)d.findViewById(R.id.details_duration_value))
                                         .setText(durationValue);
                                 } catch (NumberFormatException e) {
@@ -604,6 +599,56 @@ public class MenuHelper {
     static void setFlipOrientationEnabled(Activity activity, MenuItem flipItem) {
         int keyboard = activity.getResources().getConfiguration().hardKeyboardHidden;
         flipItem.setEnabled(keyboard != android.content.res.Configuration.HARDKEYBOARDHIDDEN_NO);
+    }
+
+    public static String formatDuration(final Activity activity, int durationMs) {
+        int duration = durationMs / 1000;
+        int h = duration / 3600;
+        int m = (duration - h * 3600) / 60;
+        int s = duration - (h * 3600 + m * 60);
+        String durationValue;
+        if (h == 0) {
+            durationValue = String.format(
+                    activity.getString(R.string.details_ms), m, s);
+        } else {
+            durationValue = String.format(
+                    activity.getString(R.string.details_hms), h, m, s);
+        }
+        return durationValue;
+    }
+
+
+    public static void showStorageToast(Activity activity) {
+        String noStorageText = null;
+        int remaining = calculatePicturesRemaining();
+
+        if (remaining == MenuHelper.NO_STORAGE_ERROR) {
+            noStorageText = activity.getString(R.string.no_storage);
+        } else if (remaining < 1) {
+            noStorageText = activity.getString(R.string.not_enough_space);
+        }
+
+        if (noStorageText != null) {
+            Toast.makeText(activity, noStorageText, 5000).show();
+        }
+    }
+
+    public static int calculatePicturesRemaining() {
+        try {
+            if (!ImageManager.hasStorage()) {
+                return NO_STORAGE_ERROR;
+            } else {
+                String storageDirectory = Environment.getExternalStorageDirectory().toString();
+                StatFs stat = new StatFs(storageDirectory);
+                float remaining = ((float)stat.getAvailableBlocks() * (float)stat.getBlockSize()) / 400000F;
+                return (int)remaining;
+            }
+        } catch (Exception ex) {
+            // if we can't stat the filesystem then we don't know how many
+            // pictures are remaining.  it might be zero but just leave it
+            // blank since we really don't know.
+            return CANNOT_STAT_ERROR;
+        }
     }
 }
 

@@ -15,7 +15,10 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/frame_thumbnail_pressed" />
-    <item android:state_window_focused="true" android:state_focused="true" android:drawable="@drawable/frame_thumbnail_selected" />
-    <item android:drawable="@drawable/frame_thumbnail_default" />
+    <item android:state_pressed="true"
+        android:drawable="@drawable/ic_camera_indicator_photo_pressed" />
+    <item android:state_window_focused="true" android:state_focused="true"
+        android:drawable="@drawable/ic_camera_indicator_photo_selected" />
+    <item android:drawable="@drawable/ic_camera_indicator_photo" />
+
 </selector>

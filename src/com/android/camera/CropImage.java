@@ -87,7 +87,7 @@ public class CropImage extends Activity {
         HighlightView mMotionHighlightView = null;
         float mLastX, mLastY;
         int mMotionEdge;
-        
+
         public CropImageView(Context context) {
             super(context);
         }
@@ -96,7 +96,7 @@ public class CropImage extends Activity {
         protected boolean doesScrolling() {
             return false;
         }
-        
+
         @Override
         protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
             super.onLayout(changed, left, top, right, bottom);
@@ -110,11 +110,11 @@ public class CropImage extends Activity {
                 }
             }
         }
-        
+
         public CropImageView(Context context, AttributeSet attrs) {
             super(context, attrs);
         }
-        
+
         protected void zoomTo(float scale, float centerX, float centerY) {
             super.zoomTo(scale, centerX, centerY);
             for (HighlightView hv : mHighlightViews) {
@@ -130,7 +130,7 @@ public class CropImage extends Activity {
                 hv.invalidate();
             }
         }
-        
+
         protected void zoomOut() {
             super.zoomOut();
             for (HighlightView hv : mHighlightViews) {
@@ -139,12 +139,12 @@ public class CropImage extends Activity {
             }
         }
 
-        
+
         @Override
         protected boolean usePerfectFitBitmap() {
             return false;
         }
-        
+
         @Override
         protected void postTranslate(float deltaX, float deltaY) {
             super.postTranslate(deltaX, deltaY);
@@ -161,7 +161,7 @@ public class CropImage extends Activity {
                 hv.setFocus(false);
                 hv.invalidate();
             }
-            
+
             for (int i = 0; i < mHighlightViews.size(); i++) {
                 HighlightView hv = mHighlightViews.get(i);
                 int edge = hv.getHit(event.getX(), event.getY());
@@ -175,13 +175,13 @@ public class CropImage extends Activity {
             }
             invalidate();
         }
-        
+
         @Override
         public boolean onTouchEvent(MotionEvent event) {
             CropImage cropImage = (CropImage)mContext;
             if (cropImage.mSaving)
                 return false;
-            
+
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     if (cropImage.mWaitingToPick) {
@@ -195,8 +195,8 @@ public class CropImage extends Activity {
                                 mMotionHighlightView = hv;
                                 mLastX = event.getX();
                                 mLastY = event.getY();
-                                mMotionHighlightView.setMode(edge == HighlightView.MOVE 
-                                        ? HighlightView.ModifyMode.Move 
+                                mMotionHighlightView.setMode(edge == HighlightView.MOVE
+                                        ? HighlightView.ModifyMode.Move
                                                 : HighlightView.ModifyMode.Grow);
                                 break;
                             }
@@ -251,17 +251,17 @@ public class CropImage extends Activity {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     // if we're not zoomed then there's no point in even allowing
-                    // the user to move the image around.  This call to center 
+                    // the user to move the image around.  This call to center
                     // puts it back to the normalized location (with false meaning
                     // don't animate).
                     if (getScale() == 1F)
                         center(true, true, false);
                     break;
             }
-            
+
             return true;
         }
-        
+
         private void ensureVisible(HighlightView hv) {
             Rect r = hv.mDrawRect;
 
@@ -277,32 +277,32 @@ public class CropImage extends Activity {
             if (panDeltaX != 0 || panDeltaY != 0)
                 panBy(panDeltaX, panDeltaY);
         }
-        
+
         private void centerBasedOnHighlightView(HighlightView hv) {
             Rect drawRect = hv.mDrawRect;
-            
+
             float width = drawRect.width();
             float height = drawRect.height();
-            
+
             float thisWidth = getWidth();
             float thisHeight = getHeight();
-            
+
             float z1 = thisWidth / width * .6F;
             float z2 = thisHeight / height * .6F;
-            
+
             float zoom = Math.min(z1, z2);
             zoom = zoom * this.getScale();
             zoom = Math.max(1F, zoom);
-            
+
             if ((Math.abs(zoom - getScale()) / zoom) > .1) {
                 float [] coordinates = new float[] { hv.mCropRect.centerX(), hv.mCropRect.centerY() };
                 getImageMatrix().mapPoints(coordinates);
                 zoomTo(zoom, coordinates[0], coordinates[1], 300F);
             }
-            
+
             ensureVisible(hv);
         }
-        
+
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
@@ -310,15 +310,15 @@ public class CropImage extends Activity {
                 mHighlightViews.get(i).draw(canvas);
             }
         }
-        
+
         public HighlightView get(int i) {
             return mHighlightViews.get(i);
         }
-        
+
         public int size() {
             return mHighlightViews.size();
         }
-        
+
         public void add(HighlightView hv) {
             mHighlightViews.add(hv);
             invalidate();
@@ -333,7 +333,7 @@ public class CropImage extends Activity {
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         c.drawRect(0F, 0F, width, height, paint);
     }
-    
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -343,6 +343,8 @@ public class CropImage extends Activity {
         setContentView(R.layout.cropimage);
 
         mImageView = (CropImageView) findViewById(R.id.image);
+
+        MenuHelper.showStorageToast(this);
 
         try {
             android.content.Intent intent = getIntent();
@@ -379,15 +381,16 @@ public class CropImage extends Activity {
                 Uri target = intent.getData();
                 mAllImages = ImageManager.makeImageList(target, CropImage.this, ImageManager.SORT_ASCENDING);
                 mImage = mAllImages.getImageForUri(target);
-                
-                // don't read in really large bitmaps.  max out at 1000.
-                // TODO when saving the resulting bitmap use the decode/crop/encode
-                // api so we don't lose any resolution
-                mBitmap = mImage.thumbBitmap();
-                if (Config.LOGV)
-                    Log.v(TAG, "thumbBitmap returned " + mBitmap);
+                if(mImage != null) {
+                    // don't read in really large bitmaps.  max out at 1000.
+                    // TODO when saving the resulting bitmap use the decode/crop/encode
+                    // api so we don't lose any resolution
+                    mBitmap = mImage.thumbBitmap();
+                    if (Config.LOGV)
+                        Log.v(TAG, "thumbBitmap returned " + mBitmap);
+                }
             }
-            
+
             if (mBitmap == null) {
                 finish();
                 return;
@@ -406,7 +409,7 @@ public class CropImage extends Activity {
                     new Thread(new Runnable() {
                         public void run() {
                             final Bitmap b = mImage != null ? mImage.fullSizeBitmap(500) : mBitmap;
-                            if (Config.LOGV)       
+                            if (Config.LOGV)
                                 Log.v(TAG, "back from mImage.fullSizeBitmap(500) with bitmap of size " + b.getWidth() + " / " + b.getHeight());
                             mHandler.post(new Runnable() {
                                 public void run() {
@@ -427,13 +430,13 @@ public class CropImage extends Activity {
             Log.e(TAG, "Failed to load bitmap", e);
             finish();
         }
-        
+
         findViewById(R.id.discard).setOnClickListener(new android.view.View.OnClickListener() {
             public void onClick(View v) {
                 finish();
             }
         });
-        
+
         findViewById(R.id.save).setOnClickListener(new android.view.View.OnClickListener() {
             public void onClick(View v) {
                 // TODO this code needs to change to use the decode/crop/encode single
@@ -461,7 +464,7 @@ public class CropImage extends Activity {
                     c1.drawBitmap(mBitmap, r, new Rect(0, 0, width, height), null);
 
                     if (mCircleCrop) {
-                        // OK, so what's all this about? 
+                        // OK, so what's all this about?
                         // Bitmaps are inherently rectangular but we want to return something
                         // that's basically a circle.  So we fill in the area around the circle
                         // with alpha.  Note the all important PortDuff.Mode.CLEAR.
@@ -532,7 +535,7 @@ public class CropImage extends Activity {
                                     }
                                     if (outputStream != null)
                                         mCroppedImage.compress(mSaveFormat, 75, outputStream);
-                                    
+
                                 } catch (IOException ex) {
                                     if (Config.LOGV)
                                         Log.v(TAG, "got IOException " + ex);
@@ -541,7 +544,7 @@ public class CropImage extends Activity {
                                         try {
                                             outputStream.close();
                                         } catch (IOException ex) {
-                                            
+
                                         }
                                     }
                                 }
@@ -553,13 +556,13 @@ public class CropImage extends Activity {
                             } else {
                                 Bundle extras = new Bundle();
                                 extras.putString("rect",  mCrop.getCropRect().toString());
-                                
-                                // here we decide whether to create a new image or 
+
+                                // here we decide whether to create a new image or
                                 // modify the existing image
                                 if (false) {
                                     /*
                                     // this is the "modify" case
-                                    ImageManager.IGetBoolean_cancelable cancelable = 
+                                    ImageManager.IGetBoolean_cancelable cancelable =
                                         mImage.saveImageContents(mCroppedImage, null, null, null, mImage.getDateTaken(), 0, false);
                                     boolean didSave = cancelable.get();
                                     extras.putString("thumb1uri", mImage.thumbUri().toString());
@@ -571,11 +574,11 @@ public class CropImage extends Activity {
                                     // this is the "new image" case
                                     java.io.File oldPath = new java.io.File(mImage.getDataPath());
                                     java.io.File directory = new java.io.File(oldPath.getParent());
-                                    
+
                                     int x = 0;
                                     String fileName = oldPath.getName();
                                     fileName = fileName.substring(0, fileName.lastIndexOf("."));
-                                    
+
                                     while (true) {
                                         x += 1;
                                         String candidate = directory.toString() + "/" + fileName + "-" + x + ".jpg";
@@ -585,7 +588,7 @@ public class CropImage extends Activity {
                                         if (!exists)
                                             break;
                                     }
-                                    
+
                                     try {
                                         Uri newUri = ImageManager.instance().addImage(
                                                 CropImage.this,
@@ -600,10 +603,10 @@ public class CropImage extends Activity {
 
                                         ImageManager.IAddImage_cancelable cancelable = ImageManager.instance().storeImage(
                                                 newUri,
-                                                CropImage.this, 
-                                                getContentResolver(), 
+                                                CropImage.this,
+                                                getContentResolver(),
                                                 0, // TODO fix this orientation
-                                                mCroppedImage, 
+                                                mCroppedImage,
                                                 null);
 
                                         cancelable.get();
@@ -611,7 +614,7 @@ public class CropImage extends Activity {
                                                 (new Intent()).setAction(newUri.toString())
                                                 .putExtras(extras));
                                     } catch (Exception ex) {
-                                        // basically ignore this or put up 
+                                        // basically ignore this or put up
                                         // some ui saying we failed
                                     }
                                 }
@@ -625,7 +628,7 @@ public class CropImage extends Activity {
             }
         });
     }
-    
+
     @Override
     public void onResume() {
         super.onResume();
@@ -639,7 +642,7 @@ public class CropImage extends Activity {
         Matrix mImageMatrix;
         FaceDetector.Face[] mFaces = new FaceDetector.Face[3];
         int mNumFaces;
-        
+
         private void handleFace(FaceDetector.Face f) {
             PointF midPoint = new PointF();
 
@@ -647,58 +650,58 @@ public class CropImage extends Activity {
             f.getMidPoint(midPoint);
             midPoint.x *= mScale;
             midPoint.y *= mScale;
-            
+
             int midX = (int) midPoint.x;
             int midY = (int) midPoint.y;
-            
+
             HighlightView hv = makeHighlightView();
 
             int width = mBitmap.getWidth();
             int height = mBitmap.getHeight();
-            
+
             Rect imageRect = new Rect(0, 0, width, height);
-            
+
             RectF faceRect = new RectF(midX, midY, midX, midY);
             faceRect.inset(-r, -r);
             if (faceRect.left < 0)
                 faceRect.inset(-faceRect.left, -faceRect.left);
-            
+
             if (faceRect.top < 0)
                 faceRect.inset(-faceRect.top, -faceRect.top);
-            
+
             if (faceRect.right > imageRect.right)
                 faceRect.inset(faceRect.right - imageRect.right, faceRect.right - imageRect.right);
-            
+
             if (faceRect.bottom > imageRect.bottom)
                 faceRect.inset(faceRect.bottom - imageRect.bottom, faceRect.bottom - imageRect.bottom);
 
             hv.setup(mImageMatrix, imageRect, faceRect, mCircleCrop, mAspectX != 0 && mAspectY != 0);
-            
+
             if (mUnion == null) {
                 mUnion = new RectF(faceRect);
             } else {
                 mUnion.union(faceRect);
             }
 
-            mImageView.add(hv);            
+            mImageView.add(hv);
         }
-        
+
         private HighlightView makeHighlightView() {
             return new HighlightView(mImageView);
         }
-        
+
         private void makeDefault() {
             HighlightView hv = makeHighlightView();
 
             int width = mBitmap.getWidth();
             int height = mBitmap.getHeight();
-            
+
             Rect imageRect = new Rect(0, 0, width, height);
 
             // make the default size about 4/5 of the width or height
             int cropWidth = Math.min(width, height) * 4 / 5;
             int cropHeight = cropWidth;
-            
+
             if (mAspectX != 0 && mAspectY != 0) {
                 if (mAspectX > mAspectY) {
                     cropHeight = cropWidth * mAspectY / mAspectX;
@@ -711,16 +714,16 @@ public class CropImage extends Activity {
 
             int x = (width - cropWidth) / 2;
             int y = (height - cropHeight) / 2;
-            
+
             RectF cropRect = new RectF(x, y, x + cropWidth, y + cropHeight);
             hv.setup(mImageMatrix, imageRect, cropRect, mCircleCrop, mAspectX != 0 && mAspectY != 0);
             mImageView.add(hv);
         }
-        
+
         private Bitmap prepareBitmap() {
             if (mBitmap == null)
                 return null;
-            
+
             // scale the image down for faster face detection
             // 256 pixels wide is enough.
             if (mBitmap.getWidth() > 256) {
@@ -730,13 +733,13 @@ public class CropImage extends Activity {
             matrix.setScale(mScale, mScale);
             Bitmap faceBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap
                     .getWidth(), mBitmap.getHeight(), matrix, true);
-            return faceBitmap;            
+            return faceBitmap;
         }
-        
+
         public void run() {
             mImageMatrix = mImageView.getImageMatrix();
             Bitmap faceBitmap = prepareBitmap();
-            
+
             mScale = 1.0F / mScale;
             if (faceBitmap != null && mDoFaceDetection) {
                 FaceDetector detector = new FaceDetector(faceBitmap.getWidth(),
@@ -745,8 +748,8 @@ public class CropImage extends Activity {
                 if (Config.LOGV)
                     Log.v(TAG, "numFaces is " + mNumFaces);
             }
-            mHandler.post(new Runnable() { 
-                public void run() { 
+            mHandler.post(new Runnable() {
+                public void run() {
                     mWaitingToPick = mNumFaces > 1;
                     if (mNumFaces > 0) {
                         for (int i = 0; i < mNumFaces; i++) {
@@ -767,9 +770,9 @@ public class CropImage extends Activity {
                         Toast t = Toast.makeText(CropImage.this, R.string.multiface_crop_help, Toast.LENGTH_SHORT);
                         t.show();
                     }
-                } 
+                }
             });
-            
+
         }
     };
 
@@ -780,15 +783,15 @@ public class CropImage extends Activity {
         if (mAllImages != null)
             mAllImages.deactivate();
     }
-    
+
     private synchronized void closeProgressDialog() {
         if (mFaceDetectionDialog != null) {
             mFaceDetectionDialog.dismiss();
             mFaceDetectionDialog = null;
-        }        
+        }
         if (mSavingProgressDialog != null) {
             mSavingProgressDialog.dismiss();
             mSavingProgressDialog = null;
-        }        
+        }
     }
 }

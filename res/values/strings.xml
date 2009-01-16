@@ -336,8 +336,9 @@
     <!-- Menu item to go to the settings screen -->
     <string name="camerasettings">Settings</string>
 
-    <!-- Text message indicating that there are no pictures on the SD card -->
-    <string name="image_gallery_NoImageView_text">No pictures found.</string>
+    <!-- Text message indicating that there are no pictures or videos in a particular
+         bucket on the SD card -->
+    <string name="image_gallery_NoImageView_text">No media found.</string>
 
     <!-- Preference title for whether the user should be prompted form confirmation when deleting images  -->
     <string name="pref_gallery_confirm_delete_title">Confirm deletions</string>
@@ -460,4 +461,17 @@
     <string name="spaceIsLow_title">Space is low</string>
     <!-- Low-memory dialog message -->
     <string name="spaceIsLow_content">Your SD card is running out of space. Change the quality setting or delete items from Gallery.</string>
+    
+    <!-- Movie View Resume Playing dialog title -->
+    <string name="resume_playing_title">Resume video</string>
+    
+    <!-- Movie View Start Playing dialog title -->
+    <string name="resume_playing_message">Resume playing from %s ?</string>
+    
+    <!-- Movie View Start Playing button "Resume from bookmark" -->
+    <string name="resume_playing_resume">Resume playing</string>
+    
+    <!-- Movie View Start Playing button "Beginning" -->
+    <string name="resume_playing_restart">Start over</string>
+    
 </resources>
