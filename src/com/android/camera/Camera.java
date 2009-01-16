@@ -94,9 +94,6 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
-    private static final int NO_STORAGE_ERROR = -1;
-    private static final int CANNOT_STAT_ERROR = -2;
-
     public static final int MENU_SWITCH_TO_VIDEO = 0;
     public static final int MENU_SWITCH_TO_CAMERA = 1;
     public static final int MENU_FLASH_SETTING = 2;
@@ -742,6 +739,8 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         mLastPictureButton.setOnClickListener(this);
         mLastPictureButton.setVisibility(View.INVISIBLE);
 
+        findViewById(R.id.mode_indicator).setOnClickListener(this);
+
         try {
             mClickSound = new MediaPlayer();
             AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.camera_click);
@@ -814,27 +813,17 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
     public void onClick(View v) {
         switch (v.getId()) {
-
-            case R.id.last_picture_button: {
-                viewLastImage();
-                break;
-            }
+        case R.id.mode_indicator:
+            doSnap(true);
+            break;
+        case R.id.last_picture_button:
+            viewLastImage();
+            break;
         }
     }
 
     private void showStorageToast() {
-        String noStorageText = null;
-        int remaining = calculatePicturesRemaining();
-
-        if (remaining == NO_STORAGE_ERROR) {
-            noStorageText = getString(R.string.no_storage);
-        } else if (remaining < 1) {
-            noStorageText = getString(R.string.not_enough_space);
-        }
-
-        if (noStorageText != null) {
-            Toast.makeText(this, noStorageText, 5000).show();
-        }
+        MenuHelper.showStorageToast(this);
     }
 
     @Override
@@ -1007,27 +996,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
             case KeyEvent.KEYCODE_CAMERA:
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (event.getRepeatCount() == 0) {
-                    // The camera operates in focus-priority mode, meaning that we take a picture
-                    // when focusing completes, and only if it completes successfully. If the user
-                    // has half-pressed the shutter and already locked focus, we can take the photo
-                    // right away, otherwise we need to start AF.
-                    if (mIsFocused || !mPreviewing) {
-                        // doesn't get set until the idler runs
-                        if (mCaptureObject != null) {
-                            mCaptureObject.onSnap();
-                        }
-                        clearFocus();
-                        updateFocusIndicator();
-                    } else {
-                        // Half pressing the shutter (i.e. the focus button event) will already have
-                        // requested AF for us, so just request capture on focus here. If AF has
-                        // already failed, we don't want to trigger it again.
-                        mCaptureOnFocus = true;
-                        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER && !mIsFocusButtonPressed) {
-                            // But we do need to start AF for DPAD_CENTER
-                            autoFocus();
-                        }
-                    }
+                    doSnap(keyCode == KeyEvent.KEYCODE_DPAD_CENTER);
                 }
                 return true;
         }
@@ -1044,6 +1013,30 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    private void doSnap(boolean needAutofocus) {
+        // The camera operates in focus-priority mode, meaning that we take a picture
+        // when focusing completes, and only if it completes successfully. If the user
+        // has half-pressed the shutter and already locked focus, we can take the photo
+        // right away, otherwise we need to start AF.
+        if (mIsFocused || !mPreviewing) {
+            // doesn't get set until the idler runs
+            if (mCaptureObject != null) {
+                mCaptureObject.onSnap();
+            }
+            clearFocus();
+            updateFocusIndicator();
+        } else {
+            // Half pressing the shutter (i.e. the focus button event) will already have
+            // requested AF for us, so just request capture on focus here. If AF has
+            // already failed, we don't want to trigger it again.
+            mCaptureOnFocus = true;
+            if (needAutofocus && !mIsFocusButtonPressed) {
+                // But we do need to start AF for DPAD_CENTER
+                autoFocus();
+            }
+        }
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -1571,21 +1564,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         };
 
     private int calculatePicturesRemaining() {
-        try {
-            if (!ImageManager.instance().hasStorage()) {
-                mPicturesRemaining = NO_STORAGE_ERROR;
-            } else {
-                String storageDirectory = Environment.getExternalStorageDirectory().toString();
-                StatFs stat = new StatFs(storageDirectory);
-                float remaining = ((float)stat.getAvailableBlocks() * (float)stat.getBlockSize()) / 400000F;
-                mPicturesRemaining = (int)remaining;
-            }
-        } catch (Exception ex) {
-            // if we can't stat the filesystem then we don't know how many
-            // pictures are remaining.  it might be zero but just leave it
-            // blank since we really don't know.
-            mPicturesRemaining = CANNOT_STAT_ERROR;
-        }
+        mPicturesRemaining = MenuHelper.calculatePicturesRemaining();
         return mPicturesRemaining;
     }
 

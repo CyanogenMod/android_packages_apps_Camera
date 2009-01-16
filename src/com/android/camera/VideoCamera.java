@@ -67,8 +67,8 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     private static final boolean DEBUG = true;
     private static final boolean DEBUG_SUPPRESS_AUDIO_RECORDING = DEBUG && false;
     private static final boolean DEBUG_DO_NOT_REUSE_MEDIA_RECORDER = DEBUG && true;
+    private static final boolean DEBUG_LOG_APP_LIFECYCLE = DEBUG && false;
 
-    private static final int KEEP = 2;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
 
@@ -86,7 +86,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     public static final int MENU_SAVE_SELECT_VIDEO = 36;
     public static final int MENU_SAVE_NEW_VIDEO = 37;
 
-    Toast mToast;
     SharedPreferences mPreferences;
 
     private static final float VIDEO_ASPECT_RATIO = 176.0f / 144.0f;
@@ -98,9 +97,14 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     private MediaRecorder mMediaRecorder;
     private boolean mMediaRecorderRecording = false;
-    private boolean mNeedToDeletePartialRecording;
     private boolean mNeedToRegisterRecording;
     private long mRecordingStartTime;
+    // The video file that the hardware camera is about to record into
+    // (or is recording into.)
+    private String mCameraVideoFilename;
+
+    // The video file that has already been recorded, and that is being
+    // examined by the user.
     private String mCurrentVideoFilename;
     private Uri mCurrentVideoUri;
     private ContentValues mCurrentVideoValues;
@@ -123,26 +127,11 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     private Handler mHandler = new MainHandler();
 
-    private void cancelSavingNotification() {
-        if (mToast != null) {
-            mToast.cancel();
-            mToast = null;
-        }
-    }
-
     /** This Handler is used to post message back onto the main thread of the application */
     private class MainHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case KEEP: {
-                    keep();
-
-                    if (msg.obj != null) {
-                        mHandler.post((Runnable)msg.obj);
-                    }
-                    break;
-                }
 
                 case CLEAR_SCREEN_DELAY: {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -209,15 +198,12 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         return DateFormat.format("yyyy-MM-dd kk.mm.ss", dateTaken).toString();
     }
 
-    private void postAfterKeep(final Runnable r) {
-        Message msg = mHandler.obtainMessage(KEEP);
-        msg.obj = r;
-        msg.sendToTarget();
-    }
-
     /** Called with the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
+        if (DEBUG_LOG_APP_LIFECYCLE) {
+            Log.v(TAG, "onCreate " + this.hashCode());
+        }
         super.onCreate(icicle);
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -248,7 +234,8 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         mPostPictureAlert = findViewById(R.id.post_picture_panel);
 
         int[] ids = new int[]{R.id.play, R.id.share, R.id.discard,
-                R.id.capture, R.id.cancel, R.id.accept};
+                R.id.capture, R.id.cancel, R.id.accept, R.id.mode_indicator,
+                R.id.recording_indicator};
         for (int id : ids) {
             findViewById(id).setOnClickListener(this);
         }
@@ -261,6 +248,9 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     @Override
     public void onStart() {
+        if (DEBUG_LOG_APP_LIFECYCLE) {
+            Log.v(TAG, "onStart " + this.hashCode());
+        }
         super.onStart();
 
         final View hintView = findViewById(R.id.hint_toast);
@@ -304,7 +294,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.capture:
-                doDiscardCurrentVideo();
+                doStartCaptureMode();
                 break;
 
             case R.id.accept:
@@ -316,7 +306,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
                 break;
 
             case R.id.discard: {
-                doDiscardCurrentVideo();
+                discardCurrentVideoAndStartPreview();
                 break;
             }
 
@@ -338,10 +328,30 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
                 doPlayCurrentVideo();
                 break;
             }
+
+            case R.id.mode_indicator:
+                if (mVideoFrame.getVisibility() == View.VISIBLE) {
+                    doStartCaptureMode();
+                }
+                startVideoRecording();
+                break;
+
+            case R.id.recording_indicator:
+                stopVideoRecordingAndDisplayDialog();
+                break;
+        }
+    }
+
+    private void doStartCaptureMode() {
+        if (isPickIntent()) {
+            discardCurrentVideoAndStartPreview();
+        } else {
+            hideVideoFrameAndStartPreview();
         }
     }
 
     private void doPlayCurrentVideo() {
+        Log.e(TAG, "Playing current video: " + mCurrentVideoUri);
         Intent intent = new Intent(Intent.ACTION_VIEW, mCurrentVideoUri);
         try {
             startActivity(intent);
@@ -350,7 +360,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         }
     }
 
-    private void doDiscardCurrentVideo() {
+    private void discardCurrentVideoAndStartPreview() {
         deleteCurrentVideo();
         hideVideoFrameAndStartPreview();
     }
@@ -369,6 +379,9 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     @Override
     public void onResume() {
+        if (DEBUG_LOG_APP_LIFECYCLE) {
+            Log.v(TAG, "onResume " + this.hashCode());
+        }
         super.onResume();
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
 
@@ -393,18 +406,22 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     @Override
     public void onStop() {
-        Log.v(TAG, "onStop");
+        if (DEBUG_LOG_APP_LIFECYCLE) {
+            Log.v(TAG, "onStop " + this.hashCode());
+        }
         stopVideoRecording();
-        keep();
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
         super.onStop();
     }
 
     @Override
     protected void onPause() {
-        Log.v(TAG, "onPause");
+        if (DEBUG_LOG_APP_LIFECYCLE) {
+            Log.v(TAG, "onPause " + this.hashCode());
+        }
+        super.onPause();
+
         stopVideoRecording();
-        keep();
         hidePostPictureAlert();
 
         mPausing = true;
@@ -413,8 +430,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             unregisterReceiver(mReceiver);
             mDidRegister = false;
         }
-
-        super.onPause();
+        mBlackout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -481,14 +497,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         }
     }
 
-    void keep() {
-        cancelSavingNotification();
-    };
-
-    void toss() {
-        cancelSavingNotification();
-    };
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -500,7 +508,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         }
 
         menu.setGroupVisible(MenuHelper.VIDEO_MODE_ITEM, true);
-
         return true;
     }
 
@@ -531,11 +538,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
                 R.string.camera_gallery_photos_text).setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                postAfterKeep(new Runnable() {
-                    public void run() {
-                        gotoGallery();
-                    }
-                });
+                gotoGallery();
                 return true;
             }
         });
@@ -593,7 +596,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         }
 
         mMediaRecorder = new MediaRecorder();
-        mNeedToDeletePartialRecording = true;
         mNeedToRegisterRecording = false;
 
         if (DEBUG_SUPPRESS_AUDIO_RECORDING) {
@@ -603,9 +605,8 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         }
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        Log.v(TAG, "before setOutputFile");
         createVideoPath();
-        mMediaRecorder.setOutputFile(mCurrentVideoFilename);
+        mMediaRecorder.setOutputFile(mCameraVideoFilename);
         boolean videoQualityHigh = getBooleanPreference(CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
 
@@ -631,12 +632,11 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         if (!DEBUG_SUPPRESS_AUDIO_RECORDING) {
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         }
-        Log.v(TAG, "before setPreviewDisplay");
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
         try {
             mMediaRecorder.prepare();
         } catch (IOException exception) {
-            Log.e(TAG, "prepare failed for " + mCurrentVideoFilename);
+            Log.e(TAG, "prepare failed for " + mCameraVideoFilename);
             releaseMediaRecorder();
             // TODO: add more exception handling logic here
             return;
@@ -661,7 +661,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             try {
                 mMediaRecorder.prepare();
             } catch (IOException exception) {
-                Log.e(TAG, "prepare failed for " + mCurrentVideoFilename);
+                Log.e(TAG, "prepare failed for " + mCameraVideoFilename);
                 releaseMediaRecorder();
                 // TODO: add more exception handling logic here
             }
@@ -698,30 +698,35 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         values.put(Video.Media.DATE_TAKEN, dateTaken);
         values.put(Video.Media.MIME_TYPE, "video/3gpp");
         values.put(Video.Media.DATA, filename);
-        mCurrentVideoFilename = filename;
+        mCameraVideoFilename = filename;
+        Log.v(TAG, "Current camera video filename: " + mCameraVideoFilename);
         mCurrentVideoValues = values;
-        mCurrentVideoUri = null;
     }
 
     private void registerVideo() {
         Uri videoTable = Uri.parse("content://media/external/video/media");
         mCurrentVideoUri = mContentResolver.insert(videoTable,
                 mCurrentVideoValues);
+        Log.v(TAG, "Current video URI: " + mCurrentVideoUri);
         mCurrentVideoValues = null;
     }
 
     private void deleteCurrentVideo() {
         if (mCurrentVideoFilename != null) {
-            Log.v(TAG, "Deleting stub video " + mCurrentVideoFilename);
-            File f = new File(mCurrentVideoFilename);
-            if (! f.delete()) {
-                Log.v(TAG, "Could not delete " + mCurrentVideoFilename);
-            }
+            deleteVideoFile(mCurrentVideoFilename);
             mCurrentVideoFilename = null;
         }
         if (mCurrentVideoUri != null) {
             mContentResolver.delete(mCurrentVideoUri, null, null);
             mCurrentVideoUri = null;
+        }
+    }
+
+    private void deleteVideoFile(String fileName) {
+        Log.v(TAG, "Deleting video " + fileName);
+        File f = new File(fileName);
+        if (! f.delete()) {
+            Log.v(TAG, "Could not delete " + fileName);
         }
     }
 
@@ -817,7 +822,9 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         if (mMediaRecorderRecording || mMediaRecorder != null) {
             if (mMediaRecorderRecording) {
                 mMediaRecorder.stop();
-                mNeedToDeletePartialRecording = false;
+                mCurrentVideoFilename = mCameraVideoFilename;
+                Log.v(TAG, "Setting current video filename: " + mCurrentVideoFilename);
+                mCameraVideoFilename = null;
                 mNeedToRegisterRecording = true;
                 mMediaRecorderRecording = false;
             }
@@ -831,9 +838,8 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             registerVideo();
             mNeedToRegisterRecording = false;
         }
-        if (mNeedToDeletePartialRecording){
-            deleteCurrentVideo();
-            mNeedToDeletePartialRecording = false;
+        if (mCameraVideoFilename != null){
+            deleteVideoFile(mCameraVideoFilename);
         }
     }
 

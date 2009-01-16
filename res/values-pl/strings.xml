@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="all_images">"Wszystkie zdjęcia"</string>
+    <string name="all_videos">"Wszystkie filmy wideo"</string>
+    <string name="camera_label">"Aparat"</string>
+    <string name="gallery_picker_label">"Galeria"</string>
+    <string name="gallery_camera_bucket_name">"Zdjęcia z aparatu"</string>
+    <string name="gallery_camera_videos_bucket_name">"Filmy wideo z aparatu"</string>
+    <string name="switch_to_video_lable">"Przełącz na wideo"</string>
+    <string name="switch_to_camera_lable">"Przełącz na aparat fotograficzny"</string>
+    <string name="crop_label">"Przytnij zdjęcie"</string>
+    <string name="view_label">"Wyświetl zdjęcie"</string>
+    <string name="preferences_label">"Ustawienia aparatu"</string>
+    <string name="wait">"Poczekaj…"</string>
+    <string name="no_storage">"Zanim zaczniesz korzystać z aparatu fotograficznego, włóż kartę SD."</string>
+    <string name="not_enough_space">"Karta SD jest pełna."</string>
+    <string name="wallpaper">"Ustawianie tapety, poczekaj…"</string>
+    <string name="savingImage">"Trwa zapisywanie zdjęcia…"</string>
+    <string name="runningFaceDetection">"Poczekaj…"</string>
+    <string name="flip_orientation">"Zmień orientację"</string>
+    <string name="settings">"Ustawienia"</string>
+    <string name="view">"Wyświetl"</string>
+    <string name="details">"Szczegóły"</string>
+    <string name="rotate">"Obróć"</string>
+    <string name="rotate_left">"Obróć w lewo"</string>
+    <string name="rotate_right">"Obróć w prawo"</string>
+    <string name="slide_show">"Pokaz slajdów"</string>
+    <string name="capture_picture">"Zrób zdjęcie"</string>
+    <string name="capture_video">"Nagraj film wideo"</string>
+    <string name="crop_save_text">"Zapisz"</string>
+    <string name="crop_discard_text">"Odrzuć"</string>
+    <string name="confirm_delete_title">"Usuń"</string>
+    <string name="confirm_delete_message">"Zdjęcie zostanie usunięte."</string>
+    <string name="confirm_delete_video_message">"Film wideo zostanie usunięty."</string>
+    <string name="camera_toss">"Usuń"</string>
+    <!-- no translation found for camera_gallery (815753042966032398) -->
+    <skip />
+    <!-- no translation found for camera_capture (7723676100291210166) -->
+    <skip />
+    <string name="camera_share">"Prześlij"</string>
+    <string name="camera_set">"Ustaw jako"</string>
+    <string name="camera_play">"Odtwórz"</string>
+    <!-- no translation found for camera_accept (9043636509479164410) -->
+    <skip />
+    <!-- no translation found for camera_cancel (8203341746672085747) -->
+    <skip />
+    <string name="camera_crop">"Przytnij"</string>
+    <string name="camera_tossing">"Trwa usuwanie…"</string>
+    <string name="no_way_to_share_image">"Nie można przesłać tego zdjęcia."</string>
+    <string name="no_way_to_share_video">"Nie można przesłać tego filmu."</string>
+    <string name="camera_gallery_photos_text">"Galeria"</string>
+    <string name="camera_pick_wallpaper">"Zdjęcia"</string>
+    <string name="camera_setas_wallpaper">"Tapeta"</string>
+    <string name="camera_setas_wallpaper_drm">"Zakupione zdjęcia"</string>
+    <string name="camera_selectphoto">"Wybierz to zdjęcie"</string>
+    <string name="camera_takenewphoto">"Zrób nowe zdjęcie"</string>
+    <string name="pref_gallery_category">"Ustawienia ogólne"</string>
+    <string name="pref_slideshow_category">"Ustawienia pokazu slajdów"</string>
+    <string name="pref_camera_general_settings_category">"Ustawienia ogólne"</string>
+    <string name="pref_gallery_size_title">"Rozmiar zdjęć"</string>
+    <string name="pref_gallery_size_summary">"Ustaw wyświetlany rozmiar zdjęć"</string>
+    <string name="pref_gallery_size_dialogtitle">"Rozmiar zdjęć"</string>
+  <string-array name="pref_gallery_size_choices">
+    <item>"Duży"</item>
+    <item>"Mały"</item>
+  </string-array>
+    <string name="pref_gallery_sort_title">"Sortowanie zdjęć"</string>
+    <string name="pref_gallery_sort_summary">"Wybierz kolejność sortowania zdjęć"</string>
+    <string name="pref_gallery_sort_dialogtitle">"Sortowanie zdjęć"</string>
+  <string-array name="pref_gallery_sort_choices">
+    <item>"Najpierw najnowsze"</item>
+    <item>"Od najstarszego"</item>
+  </string-array>
+    <string name="pref_gallery_slideshow_interval_title">"Pokaz slajdów — odstęp czasu"</string>
+    <string name="pref_gallery_slideshow_interval_summary">"Wybierz, jak długo mają być wyświetlane poszczególne zdjęcia w pokazie slajdów"</string>
+    <string name="pref_gallery_slideshow_interval_dialogtitle">"Pokaz slajdów — odstęp czasu"</string>
+  <string-array name="pref_gallery_slideshow_interval_choices">
+    <item>"2 sekundy"</item>
+    <item>"3 sekundy"</item>
+    <item>"4 sekundy"</item>
+  </string-array>
+    <string name="pref_gallery_slideshow_transition_title">"Pokaz slajdów — efekt przejścia"</string>
+    <string name="pref_gallery_slideshow_transition_summary">"Wybierz efekt używany przy przejściu z jednego zdjęcia do kolejnego"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle">"Pokaz slajdów — efekt przejścia"</string>
+  <string-array name="pref_gallery_slideshow_transition_choices">
+    <item>"Wyłanianie się i zanikanie zdjęć"</item>
+    <item>"Przesuwanie z lewa w prawo"</item>
+    <item>"Przesuwanie z góry na dół"</item>
+    <item>"Wybór losowy"</item>
+  </string-array>
+    <string name="pref_gallery_slideshow_repeat_title">"Powtórz pokaz slajdów"</string>
+    <string name="pref_gallery_slideshow_repeat_summary">"Wyświetlaj pokaz slajdów więcej niż raz"</string>
+    <string name="pref_gallery_slideshow_shuffle_title">"Losowa kolejność"</string>
+    <string name="pref_gallery_slideshow_shuffle_summary">"Wyświetlaj zdjęcia w kolejności losowej"</string>
+    <string name="pref_camera_recordlocation_title">"Zapisuj lokalizację w zdjęciach"</string>
+    <string name="pref_camera_recordlocation_summary">"Zapisz lokalizację w danych zdjęcia"</string>
+    <string name="pref_camera_postpicturemenu_title">"Monit po zrobieniu zdjęcia"</string>
+    <string name="pref_camera_postpicturemenu_summary">"Wyświetlaj menu działań (zapisz, usuń…) po zrobieniu zdjęcia"</string>
+    <string name="pref_camera_videoquality_category">"Jakość wideo"</string>
+    <!-- no translation found for pref_camera_videoquality_title (3836197291744160920) -->
+    <skip />
+    <string name="pref_camera_videoquality_entry_0">"Niska (dla wiadomości MMS)"</string>
+    <string name="pref_camera_videoquality_entry_1">"Wysoka (dla karty SD)"</string>
+    <string name="pref_camera_videoquality_dialogtitle">"Jakość wideo"</string>
+    <string name="camerasettings">"Ustawienia"</string>
+    <string name="image_gallery_NoImageView_text">"Nie znaleziono zdjęć."</string>
+    <string name="pref_gallery_confirm_delete_title">"Potwierdzanie usuwania"</string>
+    <string name="pref_gallery_confirm_delete_summary">"Prośba o potwierdzenie przy usuwaniu zdjęć"</string>
+    <string name="details_panel_title">"Szczegóły"</string>
+    <string name="details_file_size">"Rozmiar pliku:"</string>
+    <string name="details_image_resolution">"Rozdzielczość:"</string>
+    <!-- no translation found for details_duration (1028116471387901402) -->
+    <skip />
+    <string name="details_date_taken">"Data zrobienia zdjęcia:"</string>
+    <!-- no translation found for details_frame_rate (122397836963498191) -->
+    <skip />
+    <!-- no translation found for details_bit_rate (5632311789455402186) -->
+    <skip />
+    <!-- no translation found for details_codec (5580300450432398126) -->
+    <skip />
+    <!-- no translation found for details_format (3700860266600796363) -->
+    <skip />
+    <!-- no translation found for details_dimension_x (4479200210424701240) -->
+    <skip />
+    <!-- no translation found for details_ms (940634969189855292) -->
+    <skip />
+    <!-- no translation found for details_hms (3215779248094151255) -->
+    <skip />
+    <!-- no translation found for details_fps (2707670327505979317) -->
+    <skip />
+    <!-- no translation found for details_kbps (59196416864960850) -->
+    <skip />
+    <!-- no translation found for details_mbps (3978720645766601106) -->
+    <skip />
+    <!-- no translation found for details_ok (6848594369924424312) -->
+    <skip />
+    <string name="context_menu_header">"Opcje zdjęć"</string>
+    <string name="video_context_menu_header">"Opcje wideo"</string>
+    <string name="multiface_crop_help">"Dotknij twarzy, aby rozpocząć"</string>
+    <string name="camera_button_hint">"Naciśnij przycisk „Zrób zdjęcie”, aby zrobić zdjęcie."</string>
+    <string name="video_camera_button_hint">"Naciśnij przycisk robienia zdjęć, aby nagrać film wideo."</string>
+    <string name="photos_gallery_title">"Galeria"</string>
+    <string name="pick_photos_gallery_title">"Wybierz zdjęcie"</string>
+    <string name="videos_gallery_title">"Galeria"</string>
+    <string name="pick_videos_gallery_title">"Wybierz film wideo"</string>
+    <string name="loading_progress_format_string">"Pozostało <xliff:g id="COUNTER">%d</xliff:g>"</string>
+    <string name="sendImage">"Prześlij zdjęcie następującą drogą:"</string>
+    <string name="setImage">"Ustaw zdjęcie jako"</string>
+    <string name="sendVideo">"Prześlij film następującą drogą:"</string>
+    <string name="movieviewlabel">"Filmy"</string>
+    <string name="loading_video">"Ładowanie filmu wideo..."</string>
+    <string name="picture_saved">"Zapisano zdjęcie na karcie SD."</string>
+    <string name="picture_deleted">"Usunięto zdjęcie."</string>
+    <string name="video_saved">"Zapisano film wideo na karcie SD."</string>
+    <string name="video_deleted">"Usunięto film wideo."</string>
+    <string name="spaceIsLow_title">"Miejsca jest mało"</string>
+    <string name="spaceIsLow_content">"Na karcie SD brakuje miejsca. Zmień ustawienie jakości lub usuń elementy z Galerii."</string>
+    <!-- no translation found for resume_playing_title (8996677350649355013) -->
+    <skip />
+    <!-- no translation found for resume_playing_message (5184414518126703481) -->
+    <skip />
+    <!-- no translation found for resume_playing_resume (3847915469173852416) -->
+    <skip />
+    <!-- no translation found for resume_playing_restart (5471008499835769292) -->
+    <skip />
+</resources>

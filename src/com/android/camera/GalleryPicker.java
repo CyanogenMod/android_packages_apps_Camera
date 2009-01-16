@@ -62,6 +62,7 @@ import java.util.Map;
 public class GalleryPicker extends Activity {
     static private final String TAG = "GalleryPicker";
 
+    private View mNoImagesView;
     GridView mGridView;
     Drawable mFrameGalleryMask;
     Drawable mCellOutline;
@@ -107,6 +108,7 @@ public class GalleryPicker extends Activity {
 
         setContentView(R.layout.gallerypicker);
 
+        mNoImagesView = findViewById(R.id.no_images);
         mGridView = (GridView) findViewById(R.id.albums);
         mGridView.setSelector(android.R.color.transparent);
 
@@ -511,14 +513,21 @@ public class GalleryPicker extends Activity {
         });
         t.start();
 
-        // If we just have one folder, open it. (Probably never triggered because we always have
-        // At least two folders now.)
-        if (!scanning && mAdapter.mItems.size() <= 1) {
-            android.net.Uri uri = Images.Media.INTERNAL_CONTENT_URI;
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);
-            finish();
-            return;
+        // If we just have zero or one folder, open it. (We shouldn't have just one folder
+        // any more, but we can have zero folders.)
+        mNoImagesView.setVisibility(View.GONE);
+        if (!scanning) {
+            int numItems = mAdapter.mItems.size();
+            if (numItems == 0) {
+                mNoImagesView.setVisibility(View.VISIBLE);
+            } else if (numItems == 1) {
+                // Not sure we can ever get here any more.
+                android.net.Uri uri = Images.Media.INTERNAL_CONTENT_URI;
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+                finish();
+                return;
+            }
         }
     }
 
