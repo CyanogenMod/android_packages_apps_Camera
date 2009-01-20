@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-/* grid_background.xml
-**
+/* 
 ** Copyright 2006, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +17,7 @@
 */
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/ic_btn_actionmenu_capture_pressed" />
-    <item android:state_window_focused="true" android:state_focused="true" android:drawable="@drawable/ic_btn_actionmenu_capture_selected" />
-    <item android:drawable="@drawable/ic_btn_actionmenu_capture_default" />
+    <item android:state_pressed="true" android:drawable="@drawable/ic_btn_actionmenu_attach_pressed" />
+    <item android:state_window_focused="true" android:state_focused="true" android:drawable="@drawable/ic_btn_actionmenu_attach_selected" />
+    <item android:drawable="@drawable/ic_btn_actionmenu_attach_default" />
 </selector>

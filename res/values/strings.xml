@@ -121,9 +121,6 @@
     <!-- Lable for the button that takes the user to the camera pictures Gallery -->
     <string name="camera_gallery">Gallery</string>
     
-    <!-- Label for the button that takes the user back to still-image capture mode -->
-    <string name="camera_capture">Capture</string>
-    
     <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
     <string name="camera_share">Share</string>
 
@@ -133,9 +130,9 @@
     <!-- button indicating that the video just taken should be played -->
     <string name="camera_play">Play</string>
     
-    <!-- button indicating that the video just taken should be accepted -->
-    <string name="camera_accept">Accept</string>
-
+    <!-- button indicating that the video just taken should be accepted as an attachment -->
+    <string name="camera_attach">Attach</string>
+    
     <!-- button indicating that the video recording session should be canceled -->
     <string name="camera_cancel">Cancel</string>
     

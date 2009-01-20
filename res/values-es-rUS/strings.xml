@@ -44,7 +44,6 @@
     <!-- no translation found for camera_play (6388821030721929966) -->
     <skip />
     <string name="camera_crop">"Recorte automático"</string>
-    <string name="camera_done">"Nueva imagen"</string>
     <string name="camera_tossing">"Eliminando…"</string>
     <string name="no_way_to_share_image">"Esta imagen no se puede guardar"</string>
     <string name="no_way_to_share_video">"Este vídeo no se puede compartir"</string>

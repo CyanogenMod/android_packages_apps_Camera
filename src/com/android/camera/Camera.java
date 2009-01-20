@@ -608,8 +608,12 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                     parameters.set("gps-longitude", String.valueOf(lon));
                     if (loc.hasAltitude())
                         parameters.set("gps-altitude",  String.valueOf(loc.getAltitude()));
-                    if (loc.getTime() != 0)
-                        parameters.set("gps-timestamp", String.valueOf(loc.getTime()));
+                    if (loc.getTime() != 0) {
+                        // Location.getTime() is UTC in milliseconds.
+                        // gps-timestamp is UTC in seconds.
+                        long utcTimeSeconds = loc.getTime() / 1000;
+                        parameters.set("gps-timestamp", String.valueOf(utcTimeSeconds));
+                    }
                 } else {
                     loc = null;
                 }

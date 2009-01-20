@@ -1072,9 +1072,25 @@ public class ViewImage extends Activity implements View.OnClickListener
         }
 
         mActionIconPanel = findViewById(R.id.action_icon_panel);
-        int[] ids = {R.id.capture, R.id.gallery, R.id.discard, R.id.share, R.id.setas};
-        for(int id : ids) {
-            findViewById(id).setOnClickListener(this);
+        {
+            int[] pickIds = {R.id.attach, R.id.cancel};
+            int[] normalIds = {R.id.gallery, R.id.setas, R.id.share, R.id.discard};
+            int[] alwaysOnIds = {R.id.mode_indicator };
+            int[] hideIds = pickIds;
+            int[] connectIds = normalIds;
+            if (isPickIntent()) {
+                hideIds = normalIds;
+                connectIds = pickIds;
+            }
+            for(int id : hideIds) {
+                findViewById(id).setVisibility(View.GONE);
+            }
+            for(int id : connectIds) {
+                findViewById(id).setOnClickListener(this);
+            }
+            for(int id : alwaysOnIds) {
+                findViewById(id).setOnClickListener(this);
+            }
         }
 
         Uri uri = getIntent().getData();
@@ -1480,7 +1496,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
 
-        case R.id.capture: {
+        case R.id.mode_indicator: {
             MenuHelper.gotoStillImageCapture(this);
         }
         break;
