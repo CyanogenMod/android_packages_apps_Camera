@@ -234,7 +234,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         mPostPictureAlert = findViewById(R.id.post_picture_panel);
 
         int[] ids = new int[]{R.id.play, R.id.share, R.id.discard,
-                R.id.capture, R.id.cancel, R.id.accept, R.id.mode_indicator,
+                R.id.cancel, R.id.attach, R.id.mode_indicator,
                 R.id.recording_indicator};
         for (int id : ids) {
             findViewById(id).setOnClickListener(this);
@@ -293,11 +293,8 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.capture:
-                doStartCaptureMode();
-                break;
 
-            case R.id.accept:
+            case R.id.attach:
                 doReturnToPicker(true);
                 break;
 
@@ -332,8 +329,9 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             case R.id.mode_indicator:
                 if (mVideoFrame.getVisibility() == View.VISIBLE) {
                     doStartCaptureMode();
+                } else {
+                    startVideoRecording();
                 }
-                startVideoRecording();
                 break;
 
             case R.id.recording_indicator:
@@ -804,7 +802,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         int normalVisible = ! isPick ? View.VISIBLE : View.GONE;
         mPostPictureAlert.findViewById(R.id.share).setVisibility(normalVisible);
         mPostPictureAlert.findViewById(R.id.discard).setVisibility(normalVisible);
-        mPostPictureAlert.findViewById(R.id.accept).setVisibility(pickVisible);
+        mPostPictureAlert.findViewById(R.id.attach).setVisibility(pickVisible);
         mPostPictureAlert.findViewById(R.id.cancel).setVisibility(pickVisible);
         mPostPictureAlert.setVisibility(View.VISIBLE);
     }

@@ -36,12 +36,10 @@
     <string name="camera_toss">"Usuń"</string>
     <!-- no translation found for camera_gallery (815753042966032398) -->
     <skip />
-    <!-- no translation found for camera_capture (7723676100291210166) -->
-    <skip />
     <string name="camera_share">"Prześlij"</string>
     <string name="camera_set">"Ustaw jako"</string>
     <string name="camera_play">"Odtwórz"</string>
-    <!-- no translation found for camera_accept (9043636509479164410) -->
+    <!-- no translation found for camera_attach (4048659554893435232) -->
     <skip />
     <!-- no translation found for camera_cancel (8203341746672085747) -->
     <skip />
@@ -104,7 +102,8 @@
     <string name="pref_camera_videoquality_entry_1">"Wysoka (dla karty SD)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Jakość wideo"</string>
     <string name="camerasettings">"Ustawienia"</string>
-    <string name="image_gallery_NoImageView_text">"Nie znaleziono zdjęć."</string>
+    <!-- no translation found for image_gallery_NoImageView_text (409595259802877447) -->
+    <skip />
     <string name="pref_gallery_confirm_delete_title">"Potwierdzanie usuwania"</string>
     <string name="pref_gallery_confirm_delete_summary">"Prośba o potwierdzenie przy usuwaniu zdjęć"</string>
     <string name="details_panel_title">"Szczegóły"</string>

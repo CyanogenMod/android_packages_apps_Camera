@@ -44,7 +44,6 @@
     <!-- no translation found for camera_play (6388821030721929966) -->
     <skip />
     <string name="camera_crop">"Automatisch inkorten"</string>
-    <string name="camera_done">"Nieuwe foto"</string>
     <string name="camera_tossing">"Bezig met verwijderen…"</string>
     <string name="no_way_to_share_image">"De afbeelding kan niet worden opgeslagen"</string>
     <string name="no_way_to_share_video">"Deze video kan niet worden gedeeld"</string>

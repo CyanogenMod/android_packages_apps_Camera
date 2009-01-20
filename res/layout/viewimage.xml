@@ -90,14 +90,6 @@
             android:orientation="horizontal">
 
         <com.android.camera.ActionMenuButton
-            android:id="@+id/capture"
-            android:drawableTop="@drawable/ic_menu_capture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/camera_capture"
-            style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
             android:id="@+id/gallery"
             android:drawableTop="@drawable/ic_menu_gallery"
             android:layout_width="wrap_content"
@@ -129,6 +121,35 @@
             android:text="@string/camera_toss"
             style="@style/OnscreenActionIcon"
         />
+        <com.android.camera.ActionMenuButton
+            android:id="@+id/attach"
+            android:drawableTop="@drawable/ic_menu_attach"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/camera_attach"
+            style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
+            android:id="@+id/cancel"
+            android:drawableTop="@drawable/ic_menu_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/camera_cancel"
+            style="@style/OnscreenActionIcon"
+        />
+        <ImageView
+			android:id="@+id/mode_indicator"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/ic_camera_indicator_photo"
+			android:background="@drawable/ic_btn_camera_background"
+			android:clickable="true"
+			android:focusable="true"
+			android:layout_alignParentRight="true"
+			android:layout_alignParentTop="true"
+			android:layout_marginRight="5dip"
+			android:layout_marginTop="15dip"
+			android:scaleType="center"/>
     </LinearLayout>
 	
 	<ImageView android:id="@+id/prev_image"
