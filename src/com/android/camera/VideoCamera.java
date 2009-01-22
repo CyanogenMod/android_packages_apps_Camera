@@ -18,6 +18,8 @@ package com.android.camera;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -32,6 +34,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaRecorder;
@@ -117,7 +120,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     int mCurrentZoomIndex = 0;
 
     private ImageView mModeIndicatorView;
-    private ImageView mRecordingIndicatorView;
     private TextView mRecordingTimeView;
 
     ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
@@ -234,14 +236,12 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         mPostPictureAlert = findViewById(R.id.post_picture_panel);
 
         int[] ids = new int[]{R.id.play, R.id.share, R.id.discard,
-                R.id.cancel, R.id.attach, R.id.mode_indicator,
-                R.id.recording_indicator};
+                R.id.cancel, R.id.attach, R.id.mode_indicator};
         for (int id : ids) {
             findViewById(id).setOnClickListener(this);
         }
 
         mModeIndicatorView = (ImageView) findViewById(R.id.mode_indicator);
-        mRecordingIndicatorView = (ImageView) findViewById(R.id.recording_indicator);
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
     }
@@ -295,11 +295,11 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         switch (v.getId()) {
 
             case R.id.attach:
-                doReturnToPicker(true);
+                doReturnToCaller(true);
                 break;
 
             case R.id.cancel:
-                doReturnToPicker(false);
+                doReturnToCaller(false);
                 break;
 
             case R.id.discard: {
@@ -327,21 +327,19 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             }
 
             case R.id.mode_indicator:
-                if (mVideoFrame.getVisibility() == View.VISIBLE) {
+                if (mMediaRecorderRecording) {
+                    stopVideoRecordingAndDisplayDialog();
+                } else if (mVideoFrame.getVisibility() == View.VISIBLE) {
                     doStartCaptureMode();
                 } else {
                     startVideoRecording();
                 }
                 break;
-
-            case R.id.recording_indicator:
-                stopVideoRecordingAndDisplayDialog();
-                break;
         }
     }
 
     private void doStartCaptureMode() {
-        if (isPickIntent()) {
+        if (isVideoCaptureIntent()) {
             discardCurrentVideoAndStartPreview();
         } else {
             hideVideoFrameAndStartPreview();
@@ -465,7 +463,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
                     stopVideoRecordingAndDisplayDialog();
                     return true;
                 }
-                hideVideoFrameAndStartPreview();
                 break;
         }
 
@@ -545,17 +542,63 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         return true;
     }
 
-    private boolean isPickIntent() {
+    private boolean isVideoCaptureIntent() {
         String action = getIntent().getAction();
-        return (Intent.ACTION_PICK.equals(action) || MediaStore.ACTION_VIDEO_CAPTURE.equals(action));
+        return (MediaStore.ACTION_VIDEO_CAPTURE.equals(action));
     }
 
-    private void doReturnToPicker(boolean success) {
+    private void doReturnToCaller(boolean success) {
         Intent resultIntent = new Intent();
         int resultCode;
         if (success) {
             resultCode = RESULT_OK;
-            resultIntent.setData(mCurrentVideoUri);
+            Uri saveUri = null;
+
+            Bundle myExtras = getIntent().getExtras();
+            if (myExtras != null) {
+                saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
+            }
+
+            if (saveUri != null) {
+                // TODO: Record the video directly into the content provider stream when
+                // bug 1582062 is fixed. Until then we copy the video data from the
+                // original location to the requested location and then delete the original.
+                OutputStream outputStream = null;
+                InputStream inputStream = null;
+
+                try {
+                    inputStream = mContentResolver.openInputStream(mCurrentVideoUri);
+                    outputStream = mContentResolver.openOutputStream(saveUri);
+                    byte[] buffer = new byte[64*1024];
+                    while(true) {
+                        int bytesRead = inputStream.read(buffer);
+                        if (bytesRead < 0) {
+                            break;
+                        }
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                } catch (IOException ex) {
+                    Log.e(TAG, "Could not copy video file to Uri", ex);
+                } finally {
+                    if (inputStream != null) {
+                        try {
+                            inputStream.close();
+                        } catch (IOException ex) {
+                            Log.e(TAG, "Could not close video file", ex);
+                        }
+                    }
+                    if (outputStream != null) {
+                        try {
+                            outputStream.close();
+                        } catch (IOException ex) {
+                            Log.e(TAG, "Could not close output uri", ex);
+                        }
+                    }
+                    deleteCurrentVideo();
+                }
+            } else {
+                resultIntent.setData(mCurrentVideoUri);
+            }
         } else {
             resultCode = RESULT_CANCELED;
         }
@@ -779,12 +822,18 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             }
             mMediaRecorderRecording = true;
             mRecordingStartTime = SystemClock.uptimeMillis();
-            mModeIndicatorView.setVisibility(View.GONE);
-            mRecordingIndicatorView.setVisibility(View.VISIBLE);
+            updateRecordingIndicator(true);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
         }
+    }
+
+    private void updateRecordingIndicator(boolean showRecording) {
+        int drawableId = showRecording ? R.drawable.ic_camera_bar_indicator_record
+            : R.drawable.ic_camera_indicator_video;
+        Drawable drawable = getResources().getDrawable(drawableId);
+        mModeIndicatorView.setImageDrawable(drawable);
     }
 
     private void stopVideoRecordingAndDisplayDialog() {
@@ -797,7 +846,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     }
 
     private void showPostRecordingAlert() {
-        boolean isPick = isPickIntent();
+        boolean isPick = isVideoCaptureIntent();
         int pickVisible = isPick ? View.VISIBLE : View.GONE;
         int normalVisible = ! isPick ? View.VISIBLE : View.GONE;
         mPostPictureAlert.findViewById(R.id.share).setVisibility(normalVisible);
@@ -827,8 +876,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
                 mMediaRecorderRecording = false;
             }
             releaseMediaRecorder();
-            mModeIndicatorView.setVisibility(View.VISIBLE);
-            mRecordingIndicatorView.setVisibility(View.GONE);
+            updateRecordingIndicator(false);
             mRecordingTimeView.setVisibility(View.GONE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }

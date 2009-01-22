@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.IOException;
@@ -42,13 +43,13 @@ public class Wallpaper extends Activity {
     private static final String LOG_TAG = "Camera";
     static final int PHOTO_PICKED = 1;
     static final int CROP_DONE = 2;
-    
+
     static final int SHOW_PROGRESS = 0;
     static final int FINISH = 1;
-    
+
     static final String sDoLaunchIcicle = "do_launch";
     static final String sTempFilePathIcicle = "temp_file_path";
-    
+
     private ProgressDialog mProgressDialog = null;
     private boolean mDoLaunch = true;
     private String mTempFilePath;
@@ -62,7 +63,7 @@ public class Wallpaper extends Activity {
                     mProgressDialog = ProgressDialog.show(Wallpaper.this, "", c, true, false);
                     break;
                 }
-                
+
                 case FINISH: {
                     closeProgressDialog();
                     setResult(RESULT_OK);
@@ -72,20 +73,20 @@ public class Wallpaper extends Activity {
             }
         }
     };
-    
+
     static class SetWallpaperThread extends Thread {
         private final Bitmap mBitmap;
         private final Handler mHandler;
         private final Context mContext;
         private final File mFile;
-        
+
         public SetWallpaperThread(Bitmap bitmap, Handler handler, Context context, File file) {
             mBitmap = bitmap;
             mHandler = handler;
             mContext = context;
             mFile = file;
         }
-        
+
         @Override
         public void run() {
             try {
@@ -98,14 +99,14 @@ public class Wallpaper extends Activity {
             }
         }
     }
-    
+
     private synchronized void closeProgressDialog() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
             mProgressDialog = null;
-        }        
+        }
     }
-    
+
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -114,23 +115,23 @@ public class Wallpaper extends Activity {
             mTempFilePath = icicle.getString(sTempFilePathIcicle);
         }
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle icicle) {
         icicle.putBoolean(sDoLaunchIcicle, mDoLaunch);
         icicle.putString(sTempFilePathIcicle, mTempFilePath);
     }
-    
+
     @Override
     protected void onPause() {
         closeProgressDialog();
         super.onPause();
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
-        
+
         if (!mDoLaunch) {
             return;
         }
@@ -149,7 +150,7 @@ public class Wallpaper extends Activity {
             startActivityForResult(intent, PHOTO_PICKED);
         }
     }
-    
+
     protected void formatIntent(Intent intent) {
         // TODO: A temporary file is NOT necessary
         // The CropImage intent should be able to set the wallpaper directly
@@ -159,16 +160,16 @@ public class Wallpaper extends Activity {
         (new File(f.getParent())).mkdirs();
         mTempFilePath = f.toString();
         f.delete();
-        
+
         int width = getWallpaperDesiredMinimumWidth();
         int height = getWallpaperDesiredMinimumHeight();
         intent.putExtra("outputX",         width);
         intent.putExtra("outputY",         height);
         intent.putExtra("aspectX",         width);
         intent.putExtra("aspectY",         height);
-        intent.putExtra("scale",           true);    
+        intent.putExtra("scale",           true);
         intent.putExtra("noFaceDetection", true);
-        intent.putExtra("output",          Uri.parse("file:/" + mTempFilePath));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse("file:/" + mTempFilePath));
         intent.putExtra("outputFormat",    Bitmap.CompressFormat.PNG.name());
         // TODO: we should have an extra called "setWallpaper" to ask CropImage to
         // set the cropped image as a wallpaper directly
@@ -193,9 +194,9 @@ public class Wallpaper extends Activity {
                 }
                 mDoLaunch = false;
             } catch (FileNotFoundException ex) {
-                
+
             } catch (IOException ex) {
-                
+
             }
         } else {
             setResult(RESULT_CANCELED);

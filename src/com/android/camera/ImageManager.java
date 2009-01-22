@@ -1042,8 +1042,14 @@ public class ImageManager {
                 retriever.setMode(MediaMetadataRetriever.MODE_CAPTURE_FRAME_ONLY);
                 retriever.setDataSource(filePath);
                 bitmap = retriever.captureFrame();
+            } catch (RuntimeException ex) {
+                // Assume this is a corrupt video file.
             } finally {
-                retriever.release();
+                try {
+                    retriever.release();
+                } catch (RuntimeException ex) {
+                    // Ignore failures while cleaning up.
+                }
             }
             return bitmap;
         }

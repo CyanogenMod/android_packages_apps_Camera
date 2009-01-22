@@ -80,7 +80,8 @@ import android.widget.Toast;
 
 import com.android.camera.ImageManager.IImageList;
 
-public class Camera extends Activity implements View.OnClickListener, SurfaceHolder.Callback {
+public class Camera extends Activity implements View.OnClickListener,
+    ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback {
 
     private static final String TAG = "camera";
 
@@ -110,51 +111,51 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     public static final int MENU_SAVE_CAMERA_DONE = 36;
     public static final int MENU_SAVE_CAMERA_VIDEO_DONE = 37;
 
-    Toast mToast;
-    OrientationListener mOrientationListener;
-    int mLastOrientation = OrientationListener.ORIENTATION_UNKNOWN;
-    SharedPreferences mPreferences;
+    private Toast mToast;
+    private OrientationListener mOrientationListener;
+    private int mLastOrientation = OrientationListener.ORIENTATION_UNKNOWN;
+    private SharedPreferences mPreferences;
 
-    static final int IDLE = 1;
-    static final int SNAPSHOT_IN_PROGRESS = 2;
-    static final int SNAPSHOT_COMPLETED = 3;
+    private static final int IDLE = 1;
+    private static final int SNAPSHOT_IN_PROGRESS = 2;
+    private static final int SNAPSHOT_COMPLETED = 3;
 
-    int mStatus = IDLE;
-    static final String sTempCropFilename = "crop-temp";
+    private int mStatus = IDLE;
+    private static final String sTempCropFilename = "crop-temp";
 
-    android.hardware.Camera mCameraDevice;
-    VideoPreview mSurfaceView;
-    SurfaceHolder mSurfaceHolder = null;
-    ImageView mBlackout = null;
+    private android.hardware.Camera mCameraDevice;
+    private VideoPreview mSurfaceView;
+    private SurfaceHolder mSurfaceHolder = null;
+    private ImageView mBlackout = null;
 
-    int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
-    int mViewFinderWidth, mViewFinderHeight;
-    boolean mPreviewing = false;
+    private int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
+    private int mViewFinderWidth, mViewFinderHeight;
+    private boolean mPreviewing = false;
 
-    MediaPlayer mClickSound;
+    private MediaPlayer mClickSound;
 
-    Capturer mCaptureObject;
-    ImageCapture mImageCapture = null;
+    private Capturer mCaptureObject;
+    private ImageCapture mImageCapture = null;
 
-    boolean mPausing = false;
+    private boolean mPausing = false;
 
-    boolean mIsFocusing = false;
-    boolean mIsFocused = false;
-    boolean mIsFocusButtonPressed = false;
-    boolean mCaptureOnFocus = false;
+    private boolean mIsFocusing = false;
+    private boolean mIsFocused = false;
+    private boolean mIsFocusButtonPressed = false;
+    private boolean mCaptureOnFocus = false;
 
-    static ContentResolver mContentResolver;
-    boolean mDidRegister = false;
+    private static ContentResolver mContentResolver;
+    private boolean mDidRegister = false;
 
-    int mCurrentZoomIndex = 0;
+    private ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
-    ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
+    private boolean mMenuSelectionMade;
 
-    boolean mMenuSelectionMade;
+    private ImageView mLastPictureButton;
+    private Uri mLastPictureUri;
+    private LocationManager mLocationManager = null;
 
-    ImageView mLastPictureButton;
-    Uri mLastPictureUri;
-    LocationManager mLocationManager = null;
+    private ShutterButton mShutterButton;
 
     private Animation mFocusBlinkAnimation;
     private View mFocusIndicator;
@@ -172,7 +173,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     private Handler mHandler = new MainHandler();
     private ProgressDialog mSavingProgress;
 
-    interface Capturer {
+    private interface Capturer {
         Uri getLastCaptureUri();
         void onSnap();
         void dismissFreezeFrame(boolean keep);
@@ -466,7 +467,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         }
 
         public void storeImage(byte[] data, android.hardware.Camera camera, Location loc) {
-            boolean captureOnly = isPickIntent();
+            boolean captureOnly = isImageCaptureIntent();
 
             if (!captureOnly) {
                 storeImage(data, loc);
@@ -662,7 +663,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
             mKeepAndRestartPreview = true;
 
-            boolean getContentAction = isPickIntent();
+            boolean getContentAction = isImageCaptureIntent();
             if (getContentAction) {
                 mImageCapture.initiate(true);
             } else {
@@ -743,7 +744,8 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         mLastPictureButton.setOnClickListener(this);
         mLastPictureButton.setVisibility(View.INVISIBLE);
 
-        findViewById(R.id.mode_indicator).setOnClickListener(this);
+        mShutterButton = (ShutterButton) findViewById(R.id.mode_indicator);
+        mShutterButton.setOnShutterButtonListener(this);
 
         try {
             mClickSound = new MediaPlayer();
@@ -817,12 +819,25 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
     public void onClick(View v) {
         switch (v.getId()) {
-        case R.id.mode_indicator:
-            doSnap(true);
-            break;
         case R.id.last_picture_button:
             viewLastImage();
             break;
+        }
+    }
+
+    public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
+        switch (button.getId()) {
+            case R.id.mode_indicator:
+                doFocus(pressed);
+                break;
+        }
+    }
+
+    public void onShutterButtonClick(ShutterButton button) {
+        switch (button.getId()) {
+            case R.id.mode_indicator:
+                doSnap(false);
+                break;
         }
     }
 
@@ -987,20 +1002,13 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 }
                 break;
             case KeyEvent.KEYCODE_FOCUS:
-                mIsFocusButtonPressed = true;
                 if (event.getRepeatCount() == 0) {
-                    if (mPreviewing) {
-                        autoFocus();
-                    } else if (mCaptureObject != null) {
-                        // Save and restart preview
-                        mCaptureObject.onSnap();
-                    }
+                    doFocus(true);
                 }
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
-            case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (event.getRepeatCount() == 0) {
-                    doSnap(keyCode == KeyEvent.KEYCODE_DPAD_CENTER);
+                    doSnap(false);
                 }
                 return true;
         }
@@ -1012,8 +1020,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
-                clearFocus();
-                updateFocusIndicator();
+                doFocus(false);
                 return true;
         }
         return super.onKeyUp(keyCode, event);
@@ -1040,6 +1047,21 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                 // But we do need to start AF for DPAD_CENTER
                 autoFocus();
             }
+        }
+    }
+
+    private void doFocus(boolean pressed) {
+        if (pressed) {
+            mIsFocusButtonPressed = true;
+            if (mPreviewing) {
+                autoFocus();
+            } else if (mCaptureObject != null) {
+                // Save and restart preview
+                mCaptureObject.onSnap();
+            }
+        } else {
+            clearFocus();
+            updateFocusIndicator();
         }
     }
 
@@ -1386,16 +1408,16 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
         return true;
     }
 
-    private boolean isPickIntent() {
+    private boolean isImageCaptureIntent() {
         String action = getIntent().getAction();
-        return (Intent.ACTION_PICK.equals(action) || MediaStore.ACTION_IMAGE_CAPTURE.equals(action));
+        return (MediaStore.ACTION_IMAGE_CAPTURE.equals(action));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        if (isPickIntent()) {
+        if (isImageCaptureIntent()) {
             menu.add(MenuHelper.IMAGE_SAVING_ITEM, MENU_SAVE_SELECT_PHOTOS , 0, R.string.camera_selectphoto).setOnMenuItemClickListener(new OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     Bitmap bitmap = mImageCapture.getLastBitmap();
@@ -1406,7 +1428,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
 
                     Bundle myExtras = getIntent().getExtras();
                     if (myExtras != null) {
-                        saveUri = (Uri) myExtras.getParcelable("output");
+                        saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
                         cropValue = myExtras.getString("crop");
                     }
 
@@ -1486,7 +1508,7 @@ public class Camera extends Activity implements View.OnClickListener, SurfaceHol
                         if (cropValue.equals("circle"))
                             newExtras.putString("circleCrop", "true");
                         if (saveUri != null)
-                            newExtras.putParcelable("output", saveUri);
+                            newExtras.putParcelable(MediaStore.EXTRA_OUTPUT, saveUri);
                         else
                             newExtras.putBoolean("return-data", true);
 
