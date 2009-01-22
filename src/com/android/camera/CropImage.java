@@ -35,6 +35,7 @@ import android.media.FaceDetector;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Config;
 import android.util.Log;
@@ -361,7 +362,7 @@ public class CropImage extends Activity {
                     mAspectX = 1;
                     mAspectY = 1;
                 }
-                mSaveUri = (Uri) extras.getParcelable("output");
+                mSaveUri = (Uri) extras.getParcelable(MediaStore.EXTRA_OUTPUT);
                 if (mSaveUri != null) {
                     String compressFormatString = extras.getString("outputFormat");
                     if (compressFormatString != null)
