@@ -16,8 +16,9 @@
 
 package com.android.camera;
 
+import java.util.Random;
+
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,12 +29,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Config;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,20 +43,16 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
-import android.preference.PreferenceManager;
 
 import com.android.camera.ImageManager.IImage;
-
-import java.util.Random;
 
 public class ViewImage extends Activity implements View.OnClickListener
 {
@@ -86,6 +82,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     private boolean mFullScreenInNormalMode;
     private boolean mShowActionIcons;
     private View mActionIconPanel;
+    private View mShutterButton;
 
     private boolean mSortAscending = false;
     private int mSlideShowInterval;
@@ -100,7 +97,6 @@ public class ViewImage extends Activity implements View.OnClickListener
     private Animation [] mSlideShowOutAnimation;
 
     private SharedPreferences mPrefs;
-    private MenuItem mFlipItem;
 
     private View mNextImageView, mPrevImageView;
     private Animation mHideNextImageViewAnimation = new AlphaAnimation(1F, 0F);
@@ -130,8 +126,9 @@ public class ViewImage extends Activity implements View.OnClickListener
 
     private MenuHelper.MenuItemsResult mImageMenuRunnable;
 
-    Runnable mDismissOnScreenControlsRunnable;
-    ZoomControls mZoomControls;
+    private Runnable mDismissOnScreenControlsRunnable;
+    private ZoomControls mZoomControls;
+    private boolean mCameraReviewMode;
 
     public ViewImage() {
     }
@@ -176,7 +173,9 @@ public class ViewImage extends Activity implements View.OnClickListener
         if (mZoomControls != null) {
             if (mZoomControls.getVisibility() == View.GONE) {
                 mZoomControls.show();
-                mZoomControls.requestFocus();       // this shouldn't be necessary
+                if (! mShowActionIcons) {
+                    mZoomControls.requestFocus();       // this shouldn't be necessary
+                }
             }
             updateNextPrevControls();
             scheduleDismissOnScreenControls();
@@ -210,21 +209,22 @@ public class ViewImage extends Activity implements View.OnClickListener
             mDismissOnScreenControlsRunnable = new Runnable() {
                 public void run() {
                     mZoomControls.hide();
+                    if (!mShowActionIcons) {
+                        if (mNextImageView.getVisibility() == View.VISIBLE) {
+                            Animation a = mHideNextImageViewAnimation;
+                            a.setDuration(500);
+                            a.startNow();
+                            mNextImageView.setAnimation(a);
+                            mNextImageView.setVisibility(View.INVISIBLE);
+                        }
 
-                    if (mNextImageView.getVisibility() == View.VISIBLE) {
-                        Animation a = mHideNextImageViewAnimation;
-                        a.setDuration(500);
-                        a.startNow();
-                        mNextImageView.setAnimation(a);
-                        mNextImageView.setVisibility(View.INVISIBLE);
-                    }
-
-                    if (mPrevImageView.getVisibility() == View.VISIBLE) {
-                        Animation a = mHidePrevImageViewAnimation;
-                        a.setDuration(500);
-                        a.startNow();
-                        mPrevImageView.setAnimation(a);
-                        mPrevImageView.setVisibility(View.INVISIBLE);
+                        if (mPrevImageView.getVisibility() == View.VISIBLE) {
+                            Animation a = mHidePrevImageViewAnimation;
+                            a.setDuration(500);
+                            a.startNow();
+                            mPrevImageView.setAnimation(a);
+                            mPrevImageView.setVisibility(View.INVISIBLE);
+                        }
                     }
                 }
             };
@@ -251,12 +251,12 @@ public class ViewImage extends Activity implements View.OnClickListener
         return (Intent.ACTION_PICK.equals(action) || Intent.ACTION_GET_CONTENT.equals(action));
     }
 
-    private static final boolean sDragLeftRight = false;
     private static final boolean sUseBounce = false;
     private static final boolean sAnimateTransitions = false;
 
     static public class ImageViewTouch extends ImageViewTouchBase {
         private ViewImage mViewImage;
+        private boolean mEnableTrackballScroll;
 
         private static int TOUCH_STATE_REST = 0;
         private static int TOUCH_STATE_LEFT_PRESS = 1;
@@ -275,6 +275,10 @@ public class ViewImage extends Activity implements View.OnClickListener
         public ImageViewTouch(Context context, AttributeSet attrs) {
             super(context, attrs);
             mViewImage = (ViewImage) context;
+        }
+
+        public void setEnableTrackballScroll(boolean enable) {
+            mEnableTrackballScroll = enable;
         }
 
         protected void postTranslate(float dx, float dy, boolean bounceOK) {
@@ -390,6 +394,14 @@ public class ViewImage extends Activity implements View.OnClickListener
         @Override
         public boolean onKeyDown(int keyCode, KeyEvent event)
         {
+            // Don't respond to arrow keys if trackball scrolling is not enabled
+            if (!mEnableTrackballScroll) {
+                if ((keyCode >= KeyEvent.KEYCODE_DPAD_UP)
+                        && (keyCode <= KeyEvent.KEYCODE_DPAD_RIGHT)) {
+                    return super.onKeyDown(keyCode, event);
+                }
+            }
+
             int current = mViewImage.mCurrentPosition;
 
             int nextImagePos = -2; // default no next image
@@ -557,7 +569,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     {
         super.onCreateOptionsMenu(menu);
 
-        if (true) {
+        if (! mCameraReviewMode) {
             MenuItem item = menu.add(Menu.CATEGORY_SECONDARY, 203, 0, R.string.slide_show);
             item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -569,8 +581,6 @@ public class ViewImage extends Activity implements View.OnClickListener
             });
             item.setIcon(android.R.drawable.ic_menu_slideshow);
         }
-
-        mFlipItem = MenuHelper.addFlipOrientation(menu, ViewImage.this, mPrefs);
 
         final SelectedImageGetter selectedImageGetter = new SelectedImageGetter() {
             public ImageManager.IImage getCurrentImage() {
@@ -656,8 +666,6 @@ public class ViewImage extends Activity implements View.OnClickListener
         if (mImageMenuRunnable != null) {
             mImageMenuRunnable.gettingReadyToOpen(menu, mAllImages.getImageAt(mCurrentPosition));
         }
-
-        MenuHelper.setFlipOrientationEnabled(this, mFlipItem);
 
         menu.findItem(MenuHelper.MENU_IMAGE_SHARE).setEnabled(isCurrentImageShareable());
 
@@ -986,8 +994,10 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         ImageGetterCallback cb = new ImageGetterCallback() {
             public void completed(boolean wasCanceled) {
-                mImageViews[1].setFocusableInTouchMode(true);
-                mImageViews[1].requestFocus();
+                if (!mShowActionIcons) {
+                    mImageViews[1].setFocusableInTouchMode(true);
+                    mImageViews[1].requestFocus();
+                }
             }
 
             public boolean wantsThumbnail(int pos, int offset) {
@@ -1037,6 +1047,11 @@ public class ViewImage extends Activity implements View.OnClickListener
     public void onCreate(Bundle instanceState)
     {
         super.onCreate(instanceState);
+        Intent intent = getIntent();
+        mCameraReviewMode = intent.getBooleanExtra("com.android.camera.ReviewMode", false);
+        mFullScreenInNormalMode = intent.getBooleanExtra(MediaStore.EXTRA_FULL_SCREEN, true);
+        mShowActionIcons = intent.getBooleanExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS, false);
+
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
@@ -1046,6 +1061,10 @@ public class ViewImage extends Activity implements View.OnClickListener
         mImageViews[0] = (ImageViewTouch) findViewById(R.id.image1);
         mImageViews[1] = (ImageViewTouch) findViewById(R.id.image2);
         mImageViews[2] = (ImageViewTouch) findViewById(R.id.image3);
+
+        for(ImageViewTouch v : mImageViews) {
+            v.setEnableTrackballScroll(!mShowActionIcons);
+        }
 
         mScroller = (ScrollHandler)findViewById(R.id.scroller);
         makeGetter();
@@ -1066,16 +1085,16 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         mSlideShowImageViews[0] = (ImageViewTouch) findViewById(R.id.image1_slideShow);
         mSlideShowImageViews[1] = (ImageViewTouch) findViewById(R.id.image2_slideShow);
-        for (int i = 0; i < mSlideShowImageViews.length; i++) {
-            mSlideShowImageViews[i].setImageBitmapResetBase(null, true, true);
-            mSlideShowImageViews[i].setVisibility(View.INVISIBLE);
+        for (ImageViewTouch v : mSlideShowImageViews) {
+            v.setImageBitmapResetBase(null, true, true);
+            v.setVisibility(View.INVISIBLE);
+            v.setEnableTrackballScroll(!mShowActionIcons);
         }
 
         mActionIconPanel = findViewById(R.id.action_icon_panel);
         {
             int[] pickIds = {R.id.attach, R.id.cancel};
             int[] normalIds = {R.id.gallery, R.id.setas, R.id.share, R.id.discard};
-            int[] alwaysOnIds = {R.id.mode_indicator };
             int[] hideIds = pickIds;
             int[] connectIds = normalIds;
             if (isPickIntent()) {
@@ -1083,15 +1102,18 @@ public class ViewImage extends Activity implements View.OnClickListener
                 connectIds = pickIds;
             }
             for(int id : hideIds) {
-                findViewById(id).setVisibility(View.GONE);
+                mActionIconPanel.findViewById(id).setVisibility(View.GONE);
             }
             for(int id : connectIds) {
-                findViewById(id).setOnClickListener(this);
-            }
-            for(int id : alwaysOnIds) {
-                findViewById(id).setOnClickListener(this);
+                View view = mActionIconPanel.findViewById(id);
+                view.setOnClickListener(this);
+                Animation animation = new AlphaAnimation(0F, 1F);
+                animation.setDuration(500);
+                view.setAnimation(animation);
             }
         }
+        mShutterButton = findViewById(R.id.shutter_button);
+        mShutterButton.setOnClickListener(this);
 
         Uri uri = getIntent().getData();
 
@@ -1107,10 +1129,6 @@ public class ViewImage extends Activity implements View.OnClickListener
             return;
         }
         init(uri);
-        mFullScreenInNormalMode = getIntent().getBooleanExtra(
-                MediaStore.EXTRA_SHOW_ACTION_ICONS, false);
-        mShowActionIcons = getIntent().getBooleanExtra(
-                MediaStore.EXTRA_SHOW_ACTION_ICONS, false);
 
         Bundle b = getIntent().getExtras();
 
@@ -1124,6 +1142,7 @@ public class ViewImage extends Activity implements View.OnClickListener
             }
             if (mShowActionIcons) {
                 mActionIconPanel.setVisibility(View.VISIBLE);
+                mShutterButton.setVisibility(View.VISIBLE);
             }
         }
 
@@ -1140,6 +1159,12 @@ public class ViewImage extends Activity implements View.OnClickListener
         mNextImageView = findViewById(R.id.next_image);
         mPrevImageView = findViewById(R.id.prev_image);
 
+        if (mShowActionIcons) {
+            mNextImageView.setOnClickListener(this);
+            mNextImageView.setFocusable(true);
+            mPrevImageView.setOnClickListener(this);
+            mPrevImageView.setFocusable(true);
+        }
         setOrientation();
     }
 
@@ -1186,6 +1211,7 @@ public class ViewImage extends Activity implements View.OnClickListener
                 ivt.clear();
             }
             mActionIconPanel.setVisibility(View.GONE);
+            mShutterButton.setVisibility(View.GONE);
 
             if (false) {
                 Log.v(TAG, "current is " + this.mSlideShowImageCurrent);
@@ -1237,6 +1263,7 @@ public class ViewImage extends Activity implements View.OnClickListener
             }
             if (mShowActionIcons) {
                 mActionIconPanel.setVisibility(View.VISIBLE);
+                mShutterButton.setVisibility(View.VISIBLE);
             }
 
             ImageViewTouchBase dst = mImageViews[1];
@@ -1381,12 +1408,21 @@ public class ViewImage extends Activity implements View.OnClickListener
         mGetter = new ImageGetter();
     }
 
-    private void init(Uri uri) {
+    private boolean desiredSortOrder() {
         String sortOrder = mPrefs.getString("pref_gallery_sort_key", null);
-        mSortAscending = false;
+        boolean sortAscending = false;
         if (sortOrder != null) {
-            mSortAscending = sortOrder.equals("ascending");
+            sortAscending = sortOrder.equals("ascending");
         }
+        if (mCameraReviewMode) {
+            // Force left-arrow older pictures, right-arrow newer pictures.
+            sortAscending = true;
+        }
+        return sortAscending;
+    }
+
+    private void init(Uri uri) {
+        mSortAscending = desiredSortOrder();
         int sort = mSortAscending ? ImageManager.SORT_ASCENDING : ImageManager.SORT_DESCENDING;
         mAllImages = ImageManager.makeImageList(uri, this, sort);
 
@@ -1436,12 +1472,7 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         ImageManager.IImage image = mAllImages.getImageAt(mCurrentPosition);
 
-        String sortOrder = mPrefs.getString("pref_gallery_sort_key", null);
-        boolean sortAscending = false;
-        if (sortOrder != null) {
-            sortAscending = sortOrder.equals("ascending");
-        }
-        if (sortAscending != mSortAscending) {
+        if (desiredSortOrder() != mSortAscending) {
             init(image.fullSizeImageUri());
         }
 
@@ -1496,8 +1527,12 @@ public class ViewImage extends Activity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
 
-        case R.id.mode_indicator: {
-            MenuHelper.gotoStillImageCapture(this);
+        case R.id.shutter_button: {
+            if (mCameraReviewMode) {
+                finish();
+            } else {
+                MenuHelper.gotoStillImageCapture(this);
+            }
         }
         break;
 
@@ -1507,7 +1542,11 @@ public class ViewImage extends Activity implements View.OnClickListener
         break;
 
         case R.id.discard: {
-            MenuHelper.displayDeleteDialog(this, mDeletePhotoRunnable, true);
+            if (mCameraReviewMode) {
+                mDeletePhotoRunnable.run();
+            } else {
+                MenuHelper.deletePhoto(this, mDeletePhotoRunnable);
+            }
         }
         break;
 
@@ -1535,6 +1574,23 @@ public class ViewImage extends Activity implements View.OnClickListener
             }
         }
         break;
+
+        case R.id.next_image: {
+            moveNextOrPrevious(1);
+        }
+        break;
+
+        case R.id.prev_image: {
+            moveNextOrPrevious(-1);
+        }
+        break;
+        }
+    }
+
+    private void moveNextOrPrevious(int delta) {
+        int nextImagePos = mCurrentPosition + delta;
+        if ((0 <= nextImagePos) && (nextImagePos < mAllImages.getCount())) {
+            setImage(nextImagePos);
         }
     }
 }

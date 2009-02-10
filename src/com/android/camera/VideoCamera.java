@@ -20,11 +20,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -58,12 +59,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class VideoCamera extends Activity implements View.OnClickListener, SurfaceHolder.Callback {
+public class VideoCamera extends Activity implements View.OnClickListener,
+    ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback {
 
     private static final String TAG = "videocamera";
 
@@ -119,8 +122,9 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     int mCurrentZoomIndex = 0;
 
-    private ImageView mModeIndicatorView;
+    private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
+    private boolean mHasSdCard;
 
     ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
@@ -136,7 +140,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             switch (msg.what) {
 
                 case CLEAR_SCREEN_DELAY: {
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    clearScreenOnFlag();
                     break;
                 }
 
@@ -185,9 +189,11 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
                 // TODO put up a "please wait" message
                 // TODO also listen for the media scanner finished message
                 showStorageToast();
+                mHasSdCard = true;
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
                 showStorageToast();
+                mHasSdCard = false;
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
                 Toast.makeText(VideoCamera.this, getResources().getString(R.string.wait), 5000);
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
@@ -215,9 +221,6 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
         //setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         requestWindowFeature(Window.FEATURE_PROGRESS);
-
-        Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.video_camera);
 
         mVideoPreview = (VideoPreview) findViewById(R.id.camera_preview);
@@ -236,12 +239,13 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         mPostPictureAlert = findViewById(R.id.post_picture_panel);
 
         int[] ids = new int[]{R.id.play, R.id.share, R.id.discard,
-                R.id.cancel, R.id.attach, R.id.mode_indicator};
+                R.id.cancel, R.id.attach};
         for (int id : ids) {
             findViewById(id).setOnClickListener(this);
         }
 
-        mModeIndicatorView = (ImageView) findViewById(R.id.mode_indicator);
+        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
+        mShutterButton.setOnShutterButtonListener(this);
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
     }
@@ -253,35 +257,13 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         }
         super.onStart();
 
-        final View hintView = findViewById(R.id.hint_toast);
-        if (hintView != null)
-            hintView.setVisibility(View.GONE);
-
         Thread t = new Thread(new Runnable() {
             public void run() {
                 final boolean storageOK = getAvailableStorage() >= LOW_STORAGE_THRESHOLD;
-                if (hintView == null)
-                    return;
 
-                if (storageOK) {
+                if (!storageOK) {
                     mHandler.post(new Runnable() {
                         public void run() {
-                            hintView.setVisibility(View.VISIBLE);
-                        }
-                    });
-                    mHandler.postDelayed(new Runnable() {
-                        public void run() {
-                            Animation a = new android.view.animation.AlphaAnimation(1F, 0F);
-                            a.setDuration(500);
-                            a.startNow();
-                            hintView.setAnimation(a);
-                            hintView.setVisibility(View.GONE);
-                        }
-                    }, 3000);
-                } else {
-                    mHandler.post(new Runnable() {
-                        public void run() {
-                            hintView.setVisibility(View.GONE);
                             showStorageToast();
                         }
                     });
@@ -325,17 +307,27 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
                 doPlayCurrentVideo();
                 break;
             }
+        }
+    }
 
-            case R.id.mode_indicator:
-                if (mMediaRecorderRecording) {
-                    stopVideoRecordingAndDisplayDialog();
-                } else if (mVideoFrame.getVisibility() == View.VISIBLE) {
-                    doStartCaptureMode();
-                } else {
-                    startVideoRecording();
+    public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
+        switch (button.getId()) {
+            case R.id.shutter_button:
+                if (pressed) {
+                    if (mMediaRecorderRecording) {
+                        stopVideoRecordingAndDisplayDialog();
+                    } else if (mVideoFrame.getVisibility() == View.VISIBLE) {
+                        doStartCaptureMode();
+                    } else {
+                        startVideoRecording();
+                    }
                 }
                 break;
         }
+    }
+
+    public void onShutterButtonClick(ShutterButton button) {
+        // Do nothing (everything happens in onShutterButtonFocus).
     }
 
     private void doStartCaptureMode() {
@@ -379,7 +371,8 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             Log.v(TAG, "onResume " + this.hashCode());
         }
         super.onResume();
-        mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
+
+        setScreenTimeoutLong();
 
         mPausing = false;
 
@@ -391,6 +384,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         intentFilter.addDataScheme("file");
         registerReceiver(mReceiver, intentFilter);
         mDidRegister = true;
+        mHasSdCard = ImageManager.hasStorage();
 
         mBlackout.setVisibility(View.INVISIBLE);
         if (mVideoFrameBitmap == null) {
@@ -406,7 +400,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             Log.v(TAG, "onStop " + this.hashCode());
         }
         stopVideoRecording();
-        mHandler.removeMessages(CLEAR_SCREEN_DELAY);
+        setScreenTimeoutSystemDefault();
         super.onStop();
     }
 
@@ -427,12 +421,12 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             mDidRegister = false;
         }
         mBlackout.setVisibility(View.VISIBLE);
+        setScreenTimeoutSystemDefault();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setScreenTimeoutLong();
 
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
@@ -445,19 +439,31 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
                     return true;
                 }
                 break;
-            case KeyEvent.KEYCODE_FOCUS:
-                return true;
             case KeyEvent.KEYCODE_CAMERA:
-            case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (event.getRepeatCount() == 0) {
-                    if (!mMediaRecorderRecording) {
-                        startVideoRecording();
+                    // If we get a dpad center event without any focused view, move the
+                    // focus to the shutter button and press it.
+                    if (mShutterButton.isInTouchMode()) {
+                        mShutterButton.requestFocusFromTouch();
                     } else {
-                        stopVideoRecordingAndDisplayDialog();
+                        mShutterButton.requestFocus();
                     }
+                    mShutterButton.setPressed(true);
                     return true;
                 }
                 return true;
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                if (event.getRepeatCount() == 0) {
+                    // If we get a dpad center event without any focused view, move the
+                    // focus to the shutter button and press it.
+                    if (mShutterButton.isInTouchMode()) {
+                        mShutterButton.requestFocusFromTouch();
+                    } else {
+                        mShutterButton.requestFocus();
+                    }
+                    mShutterButton.setPressed(true);
+                }
+                break;
             case KeyEvent.KEYCODE_MENU:
                 if (mMediaRecorderRecording) {
                     stopVideoRecordingAndDisplayDialog();
@@ -467,6 +473,16 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch(keyCode) {
+        case KeyEvent.KEYCODE_CAMERA:
+            mShutterButton.setPressed(false);
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -483,13 +499,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     }
 
     void gotoGallery() {
-        Uri target = Video.Media.INTERNAL_CONTENT_URI;
-        Intent intent = new Intent(Intent.ACTION_VIEW, target);
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Log.e(TAG, "Could not start gallery activity", e);
-        }
+        MenuHelper.gotoCameraVideoGallery(this);
     }
 
     @Override
@@ -509,36 +519,41 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        addBaseMenuItems(menu);
-        MenuHelper.addImageMenuItems(
-                menu,
-                MenuHelper.INCLUDE_ALL & ~MenuHelper.INCLUDE_ROTATE_MENU,
-                false,
-                VideoCamera.this,
-                mHandler,
 
-                // Handler for deletion
-                new Runnable() {
-                    public void run() {
-                        // What do we do here?
-                        // mContentResolver.delete(uri, null, null);
-                    }
-                },
-                new MenuHelper.MenuInvoker() {
-                    public void run(final MenuHelper.MenuCallback cb) {
-                    }
-                });
+        if (isVideoCaptureIntent()) {
+            // No options menu for attach mode.
+            return false;
+        } else {
+            addBaseMenuItems(menu);
+            MenuHelper.addImageMenuItems(
+                    menu,
+                    MenuHelper.INCLUDE_ALL & ~MenuHelper.INCLUDE_ROTATE_MENU,
+                    false,
+                    VideoCamera.this,
+                    mHandler,
 
-        MenuItem gallery = menu.add(MenuHelper.IMAGE_SAVING_ITEM, MENU_SAVE_GALLERY_PHOTO, 0,
-                R.string.camera_gallery_photos_text).setOnMenuItemClickListener(
-                        new MenuItem.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                gotoGallery();
-                return true;
-            }
-        });
-        gallery.setIcon(android.R.drawable.ic_menu_gallery);
+                    // Handler for deletion
+                    new Runnable() {
+                        public void run() {
+                            // What do we do here?
+                            // mContentResolver.delete(uri, null, null);
+                        }
+                    },
+                    new MenuHelper.MenuInvoker() {
+                        public void run(final MenuHelper.MenuCallback cb) {
+                        }
+                    });
 
+            MenuItem gallery = menu.add(MenuHelper.IMAGE_SAVING_ITEM, MENU_SAVE_GALLERY_PHOTO, 0,
+                    R.string.camera_gallery_photos_text).setOnMenuItemClickListener(
+                            new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    gotoGallery();
+                    return true;
+                }
+            });
+            gallery.setIcon(android.R.drawable.ic_menu_gallery);
+        }
         return true;
     }
 
@@ -731,7 +746,11 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
         File cameraDir = new File(cameraDirPath);
         cameraDir.mkdirs();
-        String filename = cameraDirPath + "/" + Long.toString(dateTaken) + ".3gp";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                getString(R.string.video_file_name_format));
+        Date date = new Date(dateTaken);
+        String filepart = dateFormat.format(date);
+        String filename = cameraDirPath + "/" + filepart + ".3gp";
         ContentValues values = new ContentValues(7);
         values.put(Video.Media.TITLE, title);
         values.put(Video.Media.DISPLAY_NAME, displayName);
@@ -809,11 +828,17 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         Log.v(TAG, "startVideoRecording");
         if (!mMediaRecorderRecording) {
 
+            if (!mHasSdCard) {
+                Toast.makeText(this, getString(
+                        R.string.no_storage), Toast.LENGTH_LONG).show();
+                Log.v(TAG, "No SD card, ignore start recording");
+                return;
+            }
+
             // Check mMediaRecorder to see whether it is initialized or not.
             if (mMediaRecorder == null) {
                 initializeVideo();
             }
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             try {
                 mMediaRecorder.start();   // Recording is now started
             } catch (RuntimeException e) {
@@ -826,6 +851,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
+            setScreenTimeoutInfinite();
         }
     }
 
@@ -833,7 +859,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
         int drawableId = showRecording ? R.drawable.ic_camera_bar_indicator_record
             : R.drawable.ic_camera_indicator_video;
         Drawable drawable = getResources().getDrawable(drawableId);
-        mModeIndicatorView.setImageDrawable(drawable);
+        mShutterButton.setImageDrawable(drawable);
     }
 
     private void stopVideoRecordingAndDisplayDialog() {
@@ -846,14 +872,31 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
     }
 
     private void showPostRecordingAlert() {
-        boolean isPick = isVideoCaptureIntent();
-        int pickVisible = isPick ? View.VISIBLE : View.GONE;
-        int normalVisible = ! isPick ? View.VISIBLE : View.GONE;
-        mPostPictureAlert.findViewById(R.id.share).setVisibility(normalVisible);
-        mPostPictureAlert.findViewById(R.id.discard).setVisibility(normalVisible);
-        mPostPictureAlert.findViewById(R.id.attach).setVisibility(pickVisible);
-        mPostPictureAlert.findViewById(R.id.cancel).setVisibility(pickVisible);
+        int[] pickIds = {R.id.attach, R.id.cancel};
+        int[] normalIds = {R.id.share, R.id.discard};
+        int[] alwaysOnIds = {R.id.play};
+        int[] hideIds = pickIds;
+        int[] connectIds = normalIds;
+        if (isVideoCaptureIntent()) {
+            hideIds = normalIds;
+            connectIds = pickIds;
+        }
+        for(int id : hideIds) {
+            mPostPictureAlert.findViewById(id).setVisibility(View.GONE);
+        }
+        connectAndFadeIn(connectIds);
+        connectAndFadeIn(alwaysOnIds);
         mPostPictureAlert.setVisibility(View.VISIBLE);
+    }
+
+    private void connectAndFadeIn(int[] connectIds) {
+        for(int id : connectIds) {
+            View view = mPostPictureAlert.findViewById(id);
+            view.setOnClickListener(this);
+            Animation animation = new AlphaAnimation(0F, 1F);
+            animation.setDuration(500);
+            view.setAnimation(animation);
+        }
     }
 
     private void hidePostPictureAlert() {
@@ -878,14 +921,44 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             releaseMediaRecorder();
             updateRecordingIndicator(false);
             mRecordingTimeView.setVisibility(View.GONE);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            setScreenTimeoutLong();
         }
         if (mNeedToRegisterRecording) {
             registerVideo();
             mNeedToRegisterRecording = false;
         }
-        if (mCameraVideoFilename != null){
-            deleteVideoFile(mCameraVideoFilename);
+        mCameraVideoFilename = null;
+    }
+
+    private void setScreenTimeoutSystemDefault() {
+        mHandler.removeMessages(CLEAR_SCREEN_DELAY);
+        clearScreenOnFlag();
+    }
+
+    private void setScreenTimeoutLong() {
+        mHandler.removeMessages(CLEAR_SCREEN_DELAY);
+        setScreenOnFlag();
+        mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
+    }
+
+    private void setScreenTimeoutInfinite() {
+        mHandler.removeMessages(CLEAR_SCREEN_DELAY);
+        setScreenOnFlag();
+    }
+
+    private void clearScreenOnFlag() {
+        Window w = getWindow();
+        final int keepScreenOnFlag = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+        if ((w.getAttributes().flags & keepScreenOnFlag) != 0) {
+            w.clearFlags(keepScreenOnFlag);
+        }
+    }
+
+    private void setScreenOnFlag() {
+        Window w = getWindow();
+        final int keepScreenOnFlag = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+        if ((w.getAttributes().flags & keepScreenOnFlag) == 0) {
+            w.addFlags(keepScreenOnFlag);
         }
     }
 
@@ -897,7 +970,7 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
 
     private void acquireAndShowVideoFrame() {
         recycleVideoFrameBitmap();
-        mVideoFrameBitmap = createVideoThumbnail(mCurrentVideoFilename);
+        mVideoFrameBitmap = ImageManager.createVideoThumbnail(mCurrentVideoFilename);
         mVideoFrame.setImageBitmap(mVideoFrameBitmap);
         mVideoFrame.setVisibility(View.VISIBLE);
     }
@@ -914,19 +987,5 @@ public class VideoCamera extends Activity implements View.OnClickListener, Surfa
             mVideoFrameBitmap = null;
         }
     }
-
-    private Bitmap createVideoThumbnail(String filePath) {
-        Bitmap bitmap = null;
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setMode(MediaMetadataRetriever.MODE_CAPTURE_FRAME_ONLY);
-            retriever.setDataSource(filePath);
-            bitmap = retriever.captureFrame();
-        } finally {
-            retriever.release();
-        }
-        return bitmap;
-    }
-
 }
 

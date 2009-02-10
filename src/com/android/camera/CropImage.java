@@ -434,6 +434,7 @@ public class CropImage extends Activity {
 
         findViewById(R.id.discard).setOnClickListener(new android.view.View.OnClickListener() {
             public void onClick(View v) {
+                setResult(RESULT_CANCELED);
                 finish();
             }
         });

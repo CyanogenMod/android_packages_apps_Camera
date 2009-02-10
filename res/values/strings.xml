@@ -62,6 +62,9 @@
     <!-- alert to the user to that the SD card is too full to complete the operation -->
     <string name="not_enough_space">Your SD card is full.</string>
 
+    <!-- alert to the user to that the SD card is being disk-checked -->
+    <string name="preparing_sd">Preparing SD card\u2026</string>
+
     <!-- Toast/alert after saving wallpaper -->
     <string name="wallpaper">Setting wallpaper, please wait\u2026</string>
 
@@ -158,18 +161,6 @@
     <string name="camera_pick_wallpaper">Pictures</string>
     <string name="camera_setas_wallpaper">Wallpaper</string>
 
-    <string name="camera_setas_wallpaper_drm">Purchased pictures</string>
-    
-    <string name="camera_selectphoto">Select this picture</string>
-
-    <!-- Button indicating to skip the picture just taken and take another one (this is used
-         when the camera is invoked for the purpose of returning a picture to another activity
-         such as a contacts photo). -->
-    <string name="camera_takenewphoto">Capture new picture</string>
-
-    <!-- Do not translate -->
-    <string name="camera_takenewvideo">Capture new video</string>
-
     <!-- Settings screen, section heading  -->
     <string name="pref_gallery_category">General settings</string>
 
@@ -178,10 +169,10 @@
     <string name="pref_camera_general_settings_category">General settings</string>
 
     <!-- Settings screen, setting summary text -->
-    <string name="pref_gallery_size_title">Picture size</string>
+    <string name="pref_gallery_size_title">Display size</string>
 
     <!-- Settings screen, title for preference for image size to be used in the im -->
-    <string name="pref_gallery_size_summary">Select the display size of pictures</string>
+    <string name="pref_gallery_size_summary">Select the display size of pictures and videos</string>
     <!-- Title of dialog that appears after selecting Picture size setting option -->
     <string name="pref_gallery_size_dialogtitle">Picture size</string>
     <!-- Options in dialog that appears after selecting Picture size setting option -->
@@ -201,9 +192,9 @@
     <!-- Do not translate. Default option value in dialog that appears after selecting Picture size setting option -->
     <string name="default_value_pref_gallery_size">1</string>
     <!-- Settings screen, setting option name -->
-    <string name="pref_gallery_sort_title">Picture sort</string>
+    <string name="pref_gallery_sort_title">Sort order</string>
     <!-- Settings screen, setting summary text -->
-    <string name="pref_gallery_sort_summary">Select the sort order of pictures</string>
+    <string name="pref_gallery_sort_summary">Select the sort order of pictures and videos</string>
     <!-- Title of dialog that appears after selecting Picture sort setting option -->
     <string name="pref_gallery_sort_dialogtitle">Picture sort</string>
     <!-- Options in dialog that appears after selecting Picture sort setting option -->
@@ -308,12 +299,6 @@
     <!-- Do not translate -->
     <string name="pref_camera_upload_albumname_dialogtitle">Picasa album name</string>
 
-    <!-- [No longer used.] Settings screen, setting title text -->
-    <string name="pref_camera_postpicturemenu_title">Prompt after capture</string>
-
-    <!-- [No longer used.] Settings screen, setting summary text -->
-    <string name="pref_camera_postpicturemenu_summary">Display action menu (save, delete, \u2026) after capture</string>
-
     <!-- Settings screen, Video quality category title -->
     <string name="pref_camera_videoquality_category">Video quality</string>
     
@@ -341,7 +326,7 @@
     <string name="pref_gallery_confirm_delete_title">Confirm deletions</string>
 
     <!-- Preference summary for whether the user should be prompted form confirmation when deleting images  -->
-    <string name="pref_gallery_confirm_delete_summary">Show confirmation before deleting pictures</string>
+    <string name="pref_gallery_confirm_delete_summary">Show confirmation before deleting a picture or video</string>
 
    <!-- Details stuff -->
     <!-- Do not translate -->
@@ -407,10 +392,6 @@
     <string name="video_context_menu_header">Video options</string>
     <!-- Hint that appears when cropping an image with more than one face -->
     <string name="multiface_crop_help">Tap a face to begin.</string>
-    <!-- Hint/toast that appears when user first opens capture screen on still picture camera -->
-    <string name="camera_button_hint">Press Capture button to take picture.</string>
-    <!-- Hint/toast that appears when user first opens capture screen on video camera -->
-    <string name="video_camera_button_hint">Press Capture button to record video.</string>
     
     <!-- Activity title when in the image gallery to see pictures -->   
     <string name="photos_gallery_title">Gallery</string>
@@ -444,16 +425,6 @@
     <!-- shown in the video player view while the video is being loaded, before it starts playing -->
     <string name="loading_video">Loading video\u2026</string>
  
-    <!-- Displayed as a toast when a picture is saved -->
-    <string name="picture_saved">Picture saved to SD card.</string>
-    <!-- Displayed as a toast when a picture is deleted -->
-    <string name="picture_deleted">Picture deleted.</string>
-        
-    <!-- Displayed as a toast when a video is saved -->
-    <string name="video_saved">Video saved to SD card.</string>
-    <!-- Displayed as a toast when a video is deleted -->
-    <string name="video_deleted">Video deleted.</string>
-
     <!-- Low-memory dialog title -->
     <string name="spaceIsLow_title">Space is low</string>
     <!-- Low-memory dialog message -->
@@ -470,5 +441,12 @@
     
     <!-- Movie View Start Playing button "Beginning" -->
     <string name="resume_playing_restart">Start over</string>
+    
+    <!-- Title for picture frame gadget to show in list of all available gadgets -->
+    <string name="gadget_title">Picture frame</string>
+    
+    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat.
+         Do not localize -->
+    <string name="video_file_name_format">"'video'-yyyy-MM-dd-HH-mm-ss"</string>
     
 </resources>

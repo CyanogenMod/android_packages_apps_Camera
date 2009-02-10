@@ -16,13 +16,15 @@
 
 package com.android.camera;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
@@ -37,15 +39,9 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.MenuItem.OnMenuItemClickListener;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import com.android.camera.ImageManager.IImage;
 
@@ -357,8 +353,14 @@ public class MenuHelper {
 
                                     String codec = retriever.extractMetadata(
                                                 MediaMetadataRetriever.METADATA_KEY_CODEC);
-                                    ((TextView)d.findViewById(R.id.details_codec_value))
-                                        .setText(codec);
+
+                                    if (codec == null) {
+                                        d.findViewById(R.id.details_codec_row).
+                                            setVisibility(View.GONE);
+                                    } else {
+                                        ((TextView)d.findViewById(R.id.details_codec_value))
+                                            .setText(codec);
+                                    }
                                 } catch(RuntimeException ex) {
                                     // Assume this is a corrupt video file.
                                 } finally {
@@ -531,9 +533,26 @@ public class MenuHelper {
     }
 
     static void gotoCameraImageGallery(Activity activity) {
+        gotoGallery(activity, R.string.gallery_camera_bucket_name, ImageManager.INCLUDE_IMAGES);
+    }
+
+    static void gotoCameraVideoGallery(Activity activity) {
+        gotoGallery(activity, R.string.gallery_camera_videos_bucket_name,
+                ImageManager.INCLUDE_VIDEOS);
+    }
+
+    static private void gotoGallery(Activity activity, int windowTitleId, int mediaTypes) {
         Uri target = Images.Media.INTERNAL_CONTENT_URI.buildUpon().appendQueryParameter("bucketId",
                 ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
         Intent intent = new Intent(Intent.ACTION_VIEW, target);
+        intent.putExtra("windowTitle", activity.getString(windowTitleId));
+        intent.putExtra("mediaTypes", mediaTypes);
+        // Request unspecified so that we match the current camera orientation rather than
+        // matching the "flip orientation" preference.
+        // Disabled because people don't care for it. Also it's
+        // not as compelling now that we have implemented have quick orientation flipping.
+        // intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
+        //        android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         try {
             activity.startActivity(intent);
         } catch (ActivityNotFoundException e) {
@@ -575,20 +594,22 @@ public class MenuHelper {
     }
     static MenuItem addFlipOrientation(Menu menu, final Activity activity, final SharedPreferences prefs) {
         // position 41 after rotate
+        // D
         return menu
                 .add(Menu.CATEGORY_SECONDARY, 304, 41, R.string.flip_orientation)
                 .setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                int current = activity.getRequestedOrientation();
+                // Check what our actual orientation is
+                int current = activity.getResources().getConfiguration().orientation;
                 int newOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-                if (current == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                if (current == Configuration.ORIENTATION_LANDSCAPE) {
                     newOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
                 }
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("nuorientation", newOrientation);
                 editor.commit();
-                requestOrientation(activity, prefs);
+                requestOrientation(activity, prefs, true);
                 return true;
             }
         })
@@ -596,15 +617,24 @@ public class MenuHelper {
     }
 
     static void requestOrientation(Activity activity, SharedPreferences prefs) {
+        requestOrientation(activity, prefs, false);
+    }
+
+    static private void requestOrientation(Activity activity, SharedPreferences prefs,
+            boolean ignoreIntentExtra) {
         int req = prefs.getInt("nuorientation",
                 android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         // A little trick: use USER instead of UNSPECIFIED, so we ignore the
         // orientation set by the activity below.  It may have forced a landscape
         // orientation, which the user has now cleared here.
-        activity.setRequestedOrientation(
-                req == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                        ? android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER
-                        : req);
+        if (req == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+            req = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER;
+        }
+        if (! ignoreIntentExtra) {
+            Intent intent = activity.getIntent();
+            req = intent.getIntExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, req);
+        }
+        activity.setRequestedOrientation(req);
     }
 
     static void setFlipOrientationEnabled(Activity activity, MenuItem flipItem) {
@@ -628,13 +658,20 @@ public class MenuHelper {
         return durationValue;
     }
 
-
     public static void showStorageToast(Activity activity) {
+      showStorageToast(activity, calculatePicturesRemaining());
+    }
+
+    public static void showStorageToast(Activity activity, int remaining) {
         String noStorageText = null;
-        int remaining = calculatePicturesRemaining();
 
         if (remaining == MenuHelper.NO_STORAGE_ERROR) {
-            noStorageText = activity.getString(R.string.no_storage);
+            String state = Environment.getExternalStorageState();
+            if (state == Environment.MEDIA_CHECKING) {
+                noStorageText = activity.getString(R.string.preparing_sd);
+            } else {
+                noStorageText = activity.getString(R.string.no_storage);
+            }
         } else if (remaining < 1) {
             noStorageText = activity.getString(R.string.not_enough_space);
         }

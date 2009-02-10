@@ -1,3 +1,4 @@
+LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 # We only want this apk build for tests.
@@ -14,3 +15,5 @@ LOCAL_PACKAGE_NAME := CameraTests
 LOCAL_INSTRUMENTATION_FOR := Camera
 
 include $(BUILD_PACKAGE)
+
+

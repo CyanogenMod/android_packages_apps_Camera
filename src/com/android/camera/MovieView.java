@@ -50,6 +50,11 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener, 
     private View        mProgressView;
     private boolean		mFinishOnCompletion;
     private Uri			mUri;
+
+    // State maintained for proper onPause/OnResume behaviour.
+    private int mPositionWhenPaused = -1;
+    private boolean mWasPlayingWhenPaused = false;
+
     public MovieView()
     {
     }
@@ -172,15 +177,40 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener, 
         if ("content".equalsIgnoreCase(scheme)) {
             ContentValues values = new ContentValues();
             values.put(Video.VideoColumns.BOOKMARK, Integer.toString(bookmark));
-            getContentResolver().update(mUri, values, null, null);
-        }
+            try {
+                getContentResolver().update(mUri, values, null, null);
+            } catch (SecurityException ex) {
+                // Ignore, can happen if we try to set the bookmark on a read-only resource
+                // such as a video attached to GMail.
+            } catch (SQLiteException e) {
+                // ignore. can happen if the content doesn't support a bookmark column.
+            }
+       }
     }
 
     @Override
     public void onPause() {
         mHandler.removeCallbacksAndMessages(null);
         setBookmark(mVideoView.getCurrentPosition());
+
+        mPositionWhenPaused = mVideoView.getCurrentPosition();
+        mWasPlayingWhenPaused = mVideoView.isPlaying();
+        mVideoView.stopPlayback();
+
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        if (mPositionWhenPaused >= 0) {
+            mVideoView.setVideoURI(mUri);
+            mVideoView.seekTo(mPositionWhenPaused);
+            if (mWasPlayingWhenPaused) {
+                mVideoView.start();
+            }
+        }
+
+        super.onResume();
     }
 
     Handler mHandler = new Handler() {

@@ -29,6 +29,8 @@
     <string name="wait">"Veuillez patienter..."</string>
     <string name="no_storage">"Veuillez insérer une carte SD avant d\'utiliser la caméra."</string>
     <string name="not_enough_space">"Votre carte SD est pleine."</string>
+    <!-- no translation found for preparing_sd (2914969119574812666) -->
+    <skip />
     <string name="wallpaper">"Configuration de l\'arrière-plan en cours. Veuillez patienter..."</string>
     <string name="savingImage">"Enregistrement de l\'image"</string>
     <string name="runningFaceDetection">"Veuillez patienter..."</string>
@@ -64,21 +66,22 @@
     <string name="camera_gallery_photos_text">"Galerie"</string>
     <string name="camera_pick_wallpaper">"Images"</string>
     <string name="camera_setas_wallpaper">"Arrière-plan"</string>
-    <string name="camera_setas_wallpaper_drm">"Images achetées"</string>
-    <string name="camera_selectphoto">"Sélectionner cette image"</string>
-    <string name="camera_takenewphoto">"Prendre une nouvelle photo"</string>
     <string name="pref_gallery_category">"Paramètres généraux"</string>
     <string name="pref_slideshow_category">"Paramètres du diaporama"</string>
     <string name="pref_camera_general_settings_category">"Paramètres généraux"</string>
-    <string name="pref_gallery_size_title">"Taille de l\'image"</string>
-    <string name="pref_gallery_size_summary">"Sélectionner la taille d\'affichage des images"</string>
+    <!-- no translation found for pref_gallery_size_title (1363406603879434418) -->
+    <skip />
+    <!-- no translation found for pref_gallery_size_summary (8179967445295243638) -->
+    <skip />
     <string name="pref_gallery_size_dialogtitle">"Taille de l\'image"</string>
   <string-array name="pref_gallery_size_choices">
     <item>"Grande"</item>
     <item>"Petite"</item>
   </string-array>
-    <string name="pref_gallery_sort_title">"Trier les images"</string>
-    <string name="pref_gallery_sort_summary">"Sélectionner l\'ordre de tri des images"</string>
+    <!-- no translation found for pref_gallery_sort_title (7447949250045443386) -->
+    <skip />
+    <!-- no translation found for pref_gallery_sort_summary (6644398051645595214) -->
+    <skip />
     <string name="pref_gallery_sort_dialogtitle">"Trier les images"</string>
   <string-array name="pref_gallery_sort_choices">
     <item>"Les plus récentes d\'abord"</item>
@@ -107,8 +110,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Afficher les images"</string>
     <string name="pref_camera_recordlocation_title">"Enregistrer un emplacement dans les images"</string>
     <string name="pref_camera_recordlocation_summary">"Enregistrer un emplacement dans les données d\'image"</string>
-    <string name="pref_camera_postpicturemenu_title">"Demander après la capture"</string>
-    <string name="pref_camera_postpicturemenu_summary">"Afficher l\'option de menu (enregistrer, supprimer, ...) après la capture"</string>
     <string name="pref_camera_videoquality_category">"Qualité vidéo"</string>
     <!-- no translation found for pref_camera_videoquality_title (3836197291744160920) -->
     <skip />
@@ -119,7 +120,8 @@
     <!-- no translation found for image_gallery_NoImageView_text (409595259802877447) -->
     <skip />
     <string name="pref_gallery_confirm_delete_title">"Confirmer les suppressions"</string>
-    <string name="pref_gallery_confirm_delete_summary">"Afficher la confirmation avant de supprimer les images"</string>
+    <!-- no translation found for pref_gallery_confirm_delete_summary (5253456492765525245) -->
+    <skip />
     <string name="details_panel_title">"Détails"</string>
     <string name="details_file_size">"Taille du fichier :"</string>
     <string name="details_image_resolution">"Résolution :"</string>
@@ -151,8 +153,6 @@
     <string name="context_menu_header">"Options de l\'image"</string>
     <string name="video_context_menu_header">"Options vidéo"</string>
     <string name="multiface_crop_help">"Cliquez sur un visage pour commencer."</string>
-    <string name="camera_button_hint">"Appuyez sur Capture pour prendre la photo."</string>
-    <string name="video_camera_button_hint">"Appuyez sur le bouton Déclencher pour enregistrer une vidéo."</string>
     <string name="photos_gallery_title">"Galerie"</string>
     <string name="pick_photos_gallery_title">"Sélectionner l\'image"</string>
     <string name="videos_gallery_title">"Galerie"</string>
@@ -163,10 +163,6 @@
     <string name="sendVideo">"Partager la vidéo via"</string>
     <string name="movieviewlabel">"Films"</string>
     <string name="loading_video">"Chargement de la vidéo..."</string>
-    <string name="picture_saved">"Photo sauvegardée sur la carte SD."</string>
-    <string name="picture_deleted">"Photo supprimée."</string>
-    <string name="video_saved">"Vidéo enregistrée sur la carte SD."</string>
-    <string name="video_deleted">"Vidéo supprimée."</string>
     <string name="spaceIsLow_title">"L\'espace restant est faible"</string>
     <string name="spaceIsLow_content">"Votre carte SD est pleine. Modifiez le paramètre de qualité ou supprimez des éléments de la galerie."</string>
     <!-- no translation found for resume_playing_title (8996677350649355013) -->
@@ -176,5 +172,7 @@
     <!-- no translation found for resume_playing_resume (3847915469173852416) -->
     <skip />
     <!-- no translation found for resume_playing_restart (5471008499835769292) -->
+    <skip />
+    <!-- no translation found for gadget_title (259405922673466798) -->
     <skip />
 </resources>

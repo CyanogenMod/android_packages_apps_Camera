@@ -28,13 +28,9 @@
         <item name="android:shadowRadius">2.0</item>
         <item name="android:textColor">#FFF</item>
         <item name="android:gravity">center_horizontal</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">fill_parent</item>
-        <item name="android:paddingLeft">5dip</item>
-        <item name="android:paddingRight">5dip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">32dip</item>
         <item name="android:drawablePadding">3dip</item>
-        <item name="android:paddingTop">2dip</item>
-        <item name="android:layout_marginLeft">10dip</item>
-        <item name="android:layout_marginRight">10dip</item>
     </style>
 </resources>

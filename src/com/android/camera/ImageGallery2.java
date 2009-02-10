@@ -73,7 +73,6 @@ public class ImageGallery2 extends Activity {
 
     private Dialog mMediaScanningDialog;
 
-    private MenuItem mFlipItem;
     private MenuItem mSlideShowItem;
     private SharedPreferences mPrefs;
 
@@ -187,7 +186,10 @@ public class ImageGallery2 extends Activity {
     private Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             mGvs.clearCache();
-            mAllImages.removeImage(mSelectedImageGetter.getCurrentImage());
+            IImage currentImage = mSelectedImageGetter.getCurrentImage();
+            if (currentImage != null) {
+                mAllImages.removeImage(currentImage);
+            }
             mGvs.invalidate();
             mGvs.requestLayout();
             mGvs.start();
@@ -356,8 +358,10 @@ public class ImageGallery2 extends Activity {
         switch (requestCode) {
             case CROP_MSG: {
                 if (Config.LOGV) Log.v(TAG, "onActivityResult " + data);
-                setResult(resultCode, data);
-                finish();
+                if (resultCode == RESULT_OK) {
+                    setResult(resultCode, data);
+                    finish();
+                }
                 break;
             }
             case VIEW_MSG: {
@@ -504,7 +508,6 @@ public class ImageGallery2 extends Activity {
         mThumbnailCheckThread = new CameraThread(new Runnable() {
             public void run() {
                 android.content.res.Resources resources = getResources();
-                boolean loadingVideos = mInclusion == ImageManager.INCLUDE_VIDEOS;
                 final TextView progressTextView = (TextView) findViewById(R.id.loading_text);
                 final String progressTextFormatString = resources.getString(R.string.loading_progress_format_string);
 
@@ -547,7 +550,8 @@ public class ImageGallery2 extends Activity {
                         return !mPausing;
                     }
                 };
-                allImages(true).checkThumbnails(r);
+                ImageManager.IImageList imageList = allImages(true);
+                imageList.checkThumbnails(r, imageList.getCount());
                 mWakeLock.release();
                 mThumbnailCheckThread = null;
                 mHandler.post(new Runnable() {
@@ -572,12 +576,13 @@ public class ImageGallery2 extends Activity {
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         MenuItem item;
-        MenuHelper.addCaptureMenuItems(menu, this);
-        if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
-            mSlideShowItem = addSlideShowMenu(menu, 5);
+        if (! isPickIntent()) {
+            MenuHelper.addCaptureMenuItems(menu, this);
+            if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
+                mSlideShowItem = addSlideShowMenu(menu, 5);
 
+            }
         }
-        mFlipItem = MenuHelper.addFlipOrientation(menu, this, mPrefs);
 
         item = menu.add(0, 0, 1000, R.string.camerasettings);
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -599,9 +604,10 @@ public class ImageGallery2 extends Activity {
         if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
             boolean videoSelected = isVideoSelected();
             // TODO: Only enable slide show if there is at least one image in the folder.
-            mSlideShowItem.setEnabled(!videoSelected);
+            if (mSlideShowItem != null) {
+                mSlideShowItem.setEnabled(!videoSelected);
+            }
         }
-        MenuHelper.setFlipOrientationEnabled(this, mFlipItem);
 
         return true;
     }
@@ -745,7 +751,7 @@ public class ImageGallery2 extends Activity {
             setVerticalScrollBarEnabled(true);
             initializeScrollbars(context.obtainStyledAttributes(android.R.styleable.View));
 
-            mGestureDetector = new GestureDetector(new SimpleOnGestureListener() {
+             mGestureDetector = new GestureDetector(context, new SimpleOnGestureListener() {
                 @Override
                 public boolean onDown(MotionEvent e) {
                     if (mScroller != null && !mScroller.isFinished()) {
@@ -1037,7 +1043,7 @@ public class ImageGallery2 extends Activity {
                             loadNext();
 
                             synchronized (ImageBlockManager.this) {
-                                if (workCounter == mWorkCounter) {
+                                if ((workCounter == mWorkCounter) && (! mDone)) {
                                     try {
                                         ImageBlockManager.this.wait();
                                     } catch (InterruptedException ex) {

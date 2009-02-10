@@ -63,7 +63,7 @@ import java.util.HashMap;
  */
 public class ImageManager {
     public static final String CAMERA_IMAGE_BUCKET_NAME =
-        Environment.getExternalStorageDirectory().toString() + "/dcim/Camera";
+        Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
     public static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
 
     /**
@@ -830,7 +830,7 @@ public class ImageManager {
         }
 
         String randomAccessFilePath(int version) {
-            String directoryName = Environment.getExternalStorageDirectory().toString() + "/dcim/.thumbnails";
+            String directoryName = Environment.getExternalStorageDirectory().toString() + "/DCIM/.thumbnails";
             String path = directoryName + "/.thumbdata" + version + "-" + mUri.hashCode();
             return path;
         }
@@ -1035,25 +1035,6 @@ public class ImageManager {
             return bitmap;
         }
 
-        private Bitmap createVideoThumbnail(String filePath) {
-            Bitmap bitmap = null;
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            try {
-                retriever.setMode(MediaMetadataRetriever.MODE_CAPTURE_FRAME_ONLY);
-                retriever.setDataSource(filePath);
-                bitmap = retriever.captureFrame();
-            } catch (RuntimeException ex) {
-                // Assume this is a corrupt video file.
-            } finally {
-                try {
-                    retriever.release();
-                } catch (RuntimeException ex) {
-                    // Ignore failures while cleaning up.
-                }
-            }
-            return bitmap;
-        }
-
         // returns id
         public long checkThumbnail(BaseImage existingImage, Cursor c, int i) {
             long magic, fileMagic = 0, id;
@@ -1114,13 +1095,13 @@ public class ImageManager {
                     }
                 }
                 if (filePath != null) {
-                    bitmap = createThumbnailFromEXIF(filePath, id);
-                    if (bitmap == null) {
-                        String mimeType = c.getString(indexMimeType());
-                        boolean isVideo = isVideoMimeType(mimeType);
-                        if (isVideo) {
-                            bitmap = createVideoThumbnail(filePath);
-                        } else {
+                    String mimeType = c.getString(indexMimeType());
+                    boolean isVideo = isVideoMimeType(mimeType);
+                    if (isVideo) {
+                        bitmap = createVideoThumbnail(filePath);
+                    } else {
+                        bitmap = createThumbnailFromEXIF(filePath, id);
+                        if (bitmap == null) {
                             bitmap = createThumbnailFromUri(c, id);
                         }
                     }
@@ -1166,13 +1147,13 @@ public class ImageManager {
             }
         }
 
-        public void checkThumbnails(ThumbCheckCallback cb) {
+        public void checkThumbnails(ThumbCheckCallback cb, int totalThumbnails) {
             Cursor c = Images.Media.query(
                     mContentResolver,
                     mBaseUri,
                     new String[] { "_id", "mini_thumb_magic" },
-                    "mini_thumb_magic isnull and " + sWhereClause,
-                    sAcceptableImageTypes,
+                    thumbnailWhereClause(),
+                    thumbnailWhereClauseArgs(),
                     "_id ASC");
 
             int count = c.getCount();
@@ -1201,7 +1182,6 @@ public class ImageManager {
             c = getCursor();
             try {
                 if (VERBOSE) Log.v(TAG, "checkThumbnails found " + c.getCount());
-                int max = c.getCount();
                 int current = 0;
                 for (int i = 0; i < c.getCount(); i++) {
                     try {
@@ -1211,7 +1191,7 @@ public class ImageManager {
                         break;
                     }
                     if (cb != null) {
-                        if (!cb.checking(current, max)) {
+                        if (!cb.checking(current, totalThumbnails)) {
                             if (VERBOSE) Log.v(TAG, "got false from checking... break <<<<<<<<<<<<<<<<<<<<<<<<");
                             break;
                         }
@@ -1226,6 +1206,14 @@ public class ImageManager {
                     // ignore
                 }
             }
+        }
+
+        protected String thumbnailWhereClause() {
+            return sMiniThumbIsNull + " and " + sWhereClause;
+        }
+
+        protected String[] thumbnailWhereClauseArgs() {
+            return sAcceptableImageTypes;
         }
 
         public void commitChanges() {
@@ -1696,7 +1684,7 @@ public class ImageManager {
             public boolean checking(int current, int count);
         }
 
-        public abstract void checkThumbnails(ThumbCheckCallback cb);
+        public abstract void checkThumbnails(ThumbCheckCallback cb, int totalCount);
 
         public abstract void commitChanges();
 
@@ -2085,6 +2073,7 @@ public class ImageManager {
 
     final static private String sWhereClause = "(" + Images.Media.MIME_TYPE + "=? or " + Images.Media.MIME_TYPE + "=?" + ")";
     final static private String[] sAcceptableImageTypes = new String[] { "image/jpeg", "image/png" };
+    final static private String sMiniThumbIsNull = "mini_thumb_magic isnull";
 
     private static final String[] IMAGE_PROJECTION = new String[] {
             "_id",
@@ -2362,7 +2351,7 @@ public class ImageManager {
         }
 
         @Override
-        public void checkThumbnails(ThumbCheckCallback cb) {
+        public void checkThumbnails(ThumbCheckCallback cb, int totalCount) {
             // do nothing
         }
 
@@ -2465,13 +2454,12 @@ public class ImageManager {
             }
         }
 
-        public void checkThumbnails(ThumbCheckCallback cb) {
-            // TODO this isn't quite right because we need to get the
-            // total from each sub item and provide that in the callback
-            final IImageList sublist[] = mSubList;
-            final int length = sublist.length;
-            for (int i = 0; i < length; i++)
-                sublist[i].checkThumbnails(cb);
+        public void checkThumbnails(ThumbCheckCallback cb, int totalThumbnails) {
+            for (IImageList i : mSubList) {
+                int count = i.getCount();
+                i.checkThumbnails(cb, totalThumbnails);
+                totalThumbnails -= count;
+            }
         }
 
         public void commitChanges() {
@@ -3284,7 +3272,6 @@ public class ImageManager {
         HashMap<String, String> hash = new HashMap<String, String>();
         if (c != null && c.moveToFirst()) {
             do {
-                Log.e(TAG, "id: " + c.getString(1) + " display_name: " + c.getString(0));
                 hash.put(c.getString(1), c.getString(0));
             } while (c.moveToNext());
         }
@@ -3300,6 +3287,16 @@ public class ImageManager {
         }
 
         protected String[] whereClauseArgs() {
+            return null;
+        }
+
+        @Override
+        protected String thumbnailWhereClause() {
+            return sMiniThumbIsNull;
+        }
+
+        @Override
+        protected String[] thumbnailWhereClauseArgs() {
             return null;
         }
 
@@ -3366,12 +3363,13 @@ public class ImageManager {
             return thumbnail;
         }
 
-        private final Bitmap sDefaultThumbnail = Bitmap.createBitmap(32, 32, Bitmap.Config.RGB_565);
 
         private String sortOrder() {
-            return Video.Media.DATE_MODIFIED + (mSort == SORT_ASCENDING ? " ASC " : " DESC");
+            return Video.Media.DATE_TAKEN + (mSort == SORT_ASCENDING ? " ASC " : " DESC");
         }
     }
+
+    private final static Bitmap sDefaultThumbnail = Bitmap.createBitmap(32, 32, Bitmap.Config.RGB_565);
 
     /**
      * Represents a particular video and provides access
@@ -3537,9 +3535,9 @@ public class ImageManager {
              sb.append("" + mId);
              return sb.toString();
          }
-
-         private final Bitmap sNoImageBitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.RGB_565);
     }
+
+    private final static Bitmap sNoImageBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
 
     /*
      * How much quality to use when storing the thumbnail.
@@ -3900,7 +3898,8 @@ public class ImageManager {
     public IImageList emptyImageList() {
         return
         new IImageList() {
-            public void checkThumbnails(com.android.camera.ImageManager.IImageList.ThumbCheckCallback cb) {
+            public void checkThumbnails(ImageManager.IImageList.ThumbCheckCallback cb,
+                    int totalThumbnails) {
             }
 
             public void commitChanges() {
@@ -3936,10 +3935,11 @@ public class ImageManager {
             public void removeImageAt(int i) {
             }
 
-            public void removeOnChangeListener(com.android.camera.ImageManager.IImageList.OnChange changeCallback) {
+            public void removeOnChangeListener(ImageManager.IImageList.OnChange changeCallback) {
             }
 
-            public void setOnChangeListener(com.android.camera.ImageManager.IImageList.OnChange changeCallback, Handler h) {
+            public void setOnChangeListener(ImageManager.IImageList.OnChange changeCallback,
+                    Handler h) {
             }
 
         };
@@ -4027,7 +4027,7 @@ public class ImageManager {
     // Create a temporary file to see whether a volume is really writeable. It's important not to
     // put it in the root directory which may have a limit on the number of files.
     static private boolean checkFsWritable() {
-        String directoryName = Environment.getExternalStorageDirectory().toString() + "/dcim";
+        String directoryName = Environment.getExternalStorageDirectory().toString() + "/DCIM";
         File directory = new File(directoryName);
         if (!directory.isDirectory()) {
             if (!directory.mkdirs()) {
@@ -4099,5 +4099,31 @@ public class ImageManager {
         if (VERBOSE)
             Log.v(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>> isMediaScannerScanning returning " + result);
         return result;
+    }
+
+    /**
+     * Create a video thumbnail for a video. May return null if the video is corrupt.
+     * @param filePath
+     * @return
+     */
+    public static Bitmap createVideoThumbnail(String filePath) {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setMode(MediaMetadataRetriever.MODE_CAPTURE_FRAME_ONLY);
+            retriever.setDataSource(filePath);
+            bitmap = retriever.captureFrame();
+        } catch(IllegalArgumentException ex) {
+            // Assume this is a corrupt video file
+        } catch (RuntimeException ex) {
+            // Assume this is a corrupt video file.
+        } finally {
+            try {
+                retriever.release();
+            } catch (RuntimeException ex) {
+                // Ignore failures while cleaning up.
+            }
+        }
+        return bitmap;
     }
 }
