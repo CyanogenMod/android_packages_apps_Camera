@@ -710,9 +710,12 @@ public class ImageManager {
                 }
                 return null;
             } catch (Exception ex) {
-                Log.e(TAG, "miniThumbBitmap got exception " + ex.toString());
-                for (StackTraceElement s : ex.getStackTrace())
-                    Log.e(TAG, "... " + s.toString());
+                // Typically IOException because the sd card is full.
+                if (VERBOSE) {
+                    Log.e(TAG, "miniThumbBitmap got exception " + ex.toString());
+                    for (StackTraceElement s : ex.getStackTrace())
+                        Log.e(TAG, "... " + s.toString());
+                }
                 return null;
             }
         }
@@ -873,7 +876,7 @@ public class ImageManager {
                 return thumb;
             }
             catch (Exception ex) {
-                Log.d(TAG, "unable to store thumbnail: " + ex);
+                if (VERBOSE) Log.d(TAG, "unable to store thumbnail: " + ex);
                 return thumb;
             }
         }
@@ -1369,7 +1372,9 @@ public class ImageManager {
                     } catch (IOException ex1) {
                         fileLength = -1;
                     }
-                    Log.e(TAG, "couldn't read thumbnail for " + id + "; " + ex.toString() + "; pos is " + pos + "; length is " + fileLength);
+                    if (VERBOSE) {
+                        Log.e(TAG, "couldn't read thumbnail for " + id + "; " + ex.toString() + "; pos is " + pos + "; length is " + fileLength);
+                    }
                     return null;
                 }
             }
@@ -1513,7 +1518,9 @@ public class ImageManager {
                         if (VERBOSE) Log.v(TAG, "saveMiniThumbToFile took " + (t3-t0) + "; " + (t1-t0) + " " + (t2-t1) + " " + (t3-t2));
                     }
                 } catch (IOException ex) {
-                    Log.e(TAG, "couldn't save mini thumbnail data for " + id + "; " + ex.toString());
+                    if (VERBOSE) {
+                        Log.e(TAG, "couldn't save mini thumbnail data for " + id + "; " + ex.toString());
+                    }
                 }
             }
         }
@@ -2000,10 +2007,7 @@ public class ImageManager {
 
             // setting this to zero will force the call to checkCursor to generate fresh thumbs
             mMiniThumbMagic = 0;
-            Cursor c = mContainer.getCursor();
-            synchronized (c) {
-                mContainer.checkThumbnail(this, mContainer.getCursor(), this.getRow());
-            }
+            mContainer.checkThumbnail(this, mContainer.getCursor(), this.getRow());
 
             return true;
         }

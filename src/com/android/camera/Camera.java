@@ -759,7 +759,19 @@ public class Camera extends Activity implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // To reduce startup time, we run some service creation code in another thread.
+        // We make sure the services are loaded at the end of onCreate().
+        Thread loadServiceThread = new Thread(new Runnable() {
+            public void run() {
+                mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                mOrientationListener = new OrientationListener(Camera.this) {
+                    public void onOrientationChanged(int orientation) {
+                        mLastOrientation = orientation;
+                    }
+                };
+            }
+        });
+        loadServiceThread.start();
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mContentResolver = getContentResolver();
@@ -816,18 +828,12 @@ public class Camera extends Activity implements View.OnClickListener,
                              afd.getLength());
 
             if (mClickSound != null) {
-                mClickSound.setAudioStreamType(AudioManager.STREAM_SYSTEM);
+                mClickSound.setAudioStreamType(AudioManager.STREAM_ALARM);
                 mClickSound.prepare();
             }
         } catch (Exception ex) {
             Log.w(TAG, "Couldn't create click sound", ex);
         }
-
-        mOrientationListener = new OrientationListener(this) {
-            public void onOrientationChanged(int orientation) {
-                mLastOrientation = orientation;
-            }
-        };
 
         mFocusIndicator = findViewById(R.id.focus_indicator);
         mFocusBlinkAnimation = AnimationUtils.loadAnimation(this, R.anim.auto_focus_blink);
@@ -835,6 +841,12 @@ public class Camera extends Activity implements View.OnClickListener,
         mFocusBlinkAnimation.setRepeatMode(Animation.REVERSE);
 
         mPostCaptureAlert = findViewById(R.id.post_picture_panel);
+
+        // Make sure the services are loaded.
+        try {
+            loadServiceThread.join();
+        } catch (InterruptedException ex) {
+        }
     }
 
     @Override
@@ -1268,10 +1280,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void restartPreview() {
         VideoPreview surfaceView = mSurfaceView;
-        if (surfaceView == null ||
-                surfaceView.getWidth() == 0 || surfaceView.getHeight() == 0) {
-            return;
-        }
+
         // make sure the surfaceview fills the whole screen when previewing
         surfaceView.setAspectRatio(VideoPreview.DONT_CARE);
         setViewFinder(mOriginalViewFinderWidth, mOriginalViewFinderHeight, true);
@@ -1290,9 +1299,11 @@ public class Camera extends Activity implements View.OnClickListener,
             Animation a = mShowLastPictureButtonAnimation;
             a.setDuration(500);
             mLastPictureButton.setAnimation(a);
-        } else if (mShouldTransitionThumbnails) {
+        } 
+
+        if (mShouldTransitionThumbnails) {
             mShouldTransitionThumbnails = false;
-            mThumbnailTransition.reverseTransition(500);
+            mThumbnailTransition.startTransition(500);
         }
     }
 
@@ -1435,13 +1446,8 @@ public class Camera extends Activity implements View.OnClickListener,
     private void viewLastImage() {
         Uri targetUri = mLastPictureUri;
         if (targetUri != null) {
-            Uri thisUri = Images.Media.INTERNAL_CONTENT_URI;
-            if (thisUri != null) {
-                String bucket = thisUri.getQueryParameter("bucketId");
-                if (bucket != null) {
-                    targetUri = targetUri.buildUpon().appendQueryParameter("bucketId", bucket).build();
-                }
-            }
+            targetUri = targetUri.buildUpon().
+                appendQueryParameter("bucketId", ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
             Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
             intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

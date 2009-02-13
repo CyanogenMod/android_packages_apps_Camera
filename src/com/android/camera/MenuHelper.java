@@ -84,6 +84,10 @@ public class MenuHelper {
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
 
+    /** Activity result code used to report crop results.
+     */
+    public static final int RESULT_COMMON_MENU_CROP = 490;
+
     public interface MenuItemsResult {
         public void gettingReadyToOpen(Menu menu, ImageManager.IImage image);
         public void aboutToCall(MenuItem item, ImageManager.IImage image);
@@ -158,7 +162,7 @@ public class MenuHelper {
                             Intent cropIntent = new Intent();
                             cropIntent.setClass(activity, CropImage.class);
                             cropIntent.setData(u);
-                            activity.startActivity(cropIntent);
+                            activity.startActivityForResult(cropIntent, RESULT_COMMON_MENU_CROP);
                         }
                     });
                     return true;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 5163 The Android Open Source Project
+ * Copyright (C) 2007 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,16 +41,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.Toast;
-import android.widget.ZoomControls;
+import android.widget.ZoomRingController;
 
 import com.android.camera.ImageManager.IImage;
 
@@ -127,7 +124,6 @@ public class ViewImage extends Activity implements View.OnClickListener
     private MenuHelper.MenuItemsResult mImageMenuRunnable;
 
     private Runnable mDismissOnScreenControlsRunnable;
-    private ZoomControls mZoomControls;
     private boolean mCameraReviewMode;
 
     public ViewImage() {
@@ -170,16 +166,8 @@ public class ViewImage extends Activity implements View.OnClickListener
     }
 
     private void showOnScreenControls() {
-        if (mZoomControls != null) {
-            if (mZoomControls.getVisibility() == View.GONE) {
-                mZoomControls.show();
-                if (! mShowActionIcons) {
-                    mZoomControls.requestFocus();       // this shouldn't be necessary
-                }
-            }
-            updateNextPrevControls();
-            scheduleDismissOnScreenControls();
-        }
+        updateNextPrevControls();
+        scheduleDismissOnScreenControls();
     }
 
     @Override
@@ -201,49 +189,28 @@ public class ViewImage extends Activity implements View.OnClickListener
         mHandler.postDelayed(mDismissOnScreenControlsRunnable, 1500);
     }
 
-    public View getZoomControls() {
-        if (mZoomControls == null) {
-            mZoomControls = new ZoomControls(this);
-            mZoomControls.setVisibility(View.GONE);
-            mZoomControls.setZoomSpeed(0);
-            mDismissOnScreenControlsRunnable = new Runnable() {
-                public void run() {
-                    mZoomControls.hide();
-                    if (!mShowActionIcons) {
-                        if (mNextImageView.getVisibility() == View.VISIBLE) {
-                            Animation a = mHideNextImageViewAnimation;
-                            a.setDuration(500);
-                            a.startNow();
-                            mNextImageView.setAnimation(a);
-                            mNextImageView.setVisibility(View.INVISIBLE);
-                        }
+    public void setupDismissOnScreenControlRunnable() {
+        mDismissOnScreenControlsRunnable = new Runnable() {
+            public void run() {
+                if (!mShowActionIcons) {
+                    if (mNextImageView.getVisibility() == View.VISIBLE) {
+                        Animation a = mHideNextImageViewAnimation;
+                        a.setDuration(500);
+                        a.startNow();
+                        mNextImageView.setAnimation(a);
+                        mNextImageView.setVisibility(View.INVISIBLE);
+                    }
 
-                        if (mPrevImageView.getVisibility() == View.VISIBLE) {
-                            Animation a = mHidePrevImageViewAnimation;
-                            a.setDuration(500);
-                            a.startNow();
-                            mPrevImageView.setAnimation(a);
-                            mPrevImageView.setVisibility(View.INVISIBLE);
-                        }
+                    if (mPrevImageView.getVisibility() == View.VISIBLE) {
+                        Animation a = mHidePrevImageViewAnimation;
+                        a.setDuration(500);
+                        a.startNow();
+                        mPrevImageView.setAnimation(a);
+                        mPrevImageView.setVisibility(View.INVISIBLE);
                     }
                 }
-            };
-            mZoomControls.setOnZoomInClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
-                    mImageViews[1].zoomIn();
-                    scheduleDismissOnScreenControls();
-                }
-            });
-            mZoomControls.setOnZoomOutClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
-                    mImageViews[1].zoomOut();
-                    scheduleDismissOnScreenControls();
-                }
-            });
-        }
-        return mZoomControls;
+            }
+        };
     }
 
     private boolean isPickIntent() {
@@ -267,14 +234,79 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         private int mTouchState = TOUCH_STATE_REST;
 
+        // The event time of the previous touch up.
+        private long mPreviousUpTime;
+        // The duration in milliseconds we will wait to see if it is a double tap.
+        private static final int DOUBLE_TAP_TIMEOUT = 200;
+
+        // The zoom ring is set to visible by a double tap.
+        private ZoomRingController mZoomRingController;
+        private ZoomRingController.OnZoomListener mZoomListener =
+                new ZoomRingController.OnZoomListener() {
+            public void onCenter(int x, int y) {
+            }
+
+            public boolean onPan(int deltaX, int deltaY) {
+                postTranslate(-deltaX, -deltaY, sUseBounce);
+                ImageViewTouch.this.center(true, true, false);
+                return true;
+            }
+
+            public void onVisibilityChanged(boolean visible) {
+            }
+
+            public void onBeginDrag(float startAngle) {
+            }
+
+            public void onEndDrag(float endAngle) {
+            }
+
+            public boolean onDragZoom(int deltaZoomLevel, int centerX,
+                                      int centerY, float startAngle, float curAngle) {
+                float oldScale = getScale();
+
+                // First move centerX/centerY to the center of the view.
+                int deltaX = getWidth() / 2 - centerX;
+                int deltaY = getHeight() / 2 - centerY;
+                panBy(deltaX, deltaY);
+                
+                // Do zoom in/out.
+                while (deltaZoomLevel > 0) {
+                    zoomIn();
+                    deltaZoomLevel--;
+                }
+                while (deltaZoomLevel < 0) {
+                    zoomOut();
+                    deltaZoomLevel++;
+                }
+
+                // Reverse the first centering.
+                panBy(-deltaX, -deltaY);
+
+                // Return true if the zoom succeeds.
+                return (oldScale != getScale());
+            }
+
+            public void onSimpleZoom(boolean zoomIn) {
+                if (zoomIn) zoomIn();
+                else zoomOut();
+            }
+        };
+
         public ImageViewTouch(Context context) {
             super(context);
             mViewImage = (ViewImage) context;
+
+            mZoomRingController = new ZoomRingController(context, this);
+            mZoomRingController.setCallback(mZoomListener);
         }
 
         public ImageViewTouch(Context context, AttributeSet attrs) {
             super(context, attrs);
             mViewImage = (ViewImage) context;
+
+            mZoomRingController = new ZoomRingController(context, this);
+            mZoomRingController.setCallback(mZoomListener);
         }
 
         public void setEnableTrackballScroll(boolean enable) {
@@ -381,6 +413,15 @@ public class ViewImage extends Activity implements View.OnClickListener
                     viewImage.mPrevImageView.setPressed(false);
                     viewImage.mNextImageView.setPressed(false);
                     mTouchState = TOUCH_STATE_REST;
+
+                    long eventTime = m.getEventTime();
+                    if (eventTime - mPreviousUpTime < DOUBLE_TAP_TIMEOUT) {
+                        mZoomRingController.setVisible(true);
+                        mPreviousUpTime = 0;
+                    } else {
+                        mPreviousUpTime = eventTime;
+                    }
+                    
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     viewImage.mPrevImageView.setPressed(false);
@@ -1146,15 +1187,7 @@ public class ViewImage extends Activity implements View.OnClickListener
             }
         }
 
-        // Get the zoom controls and add them to the bottom of the map
-        View zoomControls = getZoomControls();
-        RelativeLayout root = (RelativeLayout) findViewById(R.id.rootLayout);
-        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT);
-        p.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        p.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        root.addView(zoomControls, p);
+        setupDismissOnScreenControlRunnable();
 
         mNextImageView = findViewById(R.id.next_image);
         mPrevImageView = findViewById(R.id.prev_image);
@@ -1166,6 +1199,9 @@ public class ViewImage extends Activity implements View.OnClickListener
             mPrevImageView.setFocusable(true);
         }
         setOrientation();
+
+        // Show a tutorial for the new zoom interaction (the method ensure we only show it once)
+        ZoomRingController.showZoomTutorialOnce(this);
     }
 
     private void setOrientation() {
@@ -1591,6 +1627,20 @@ public class ViewImage extends Activity implements View.OnClickListener
         int nextImagePos = mCurrentPosition + delta;
         if ((0 <= nextImagePos) && (nextImagePos < mAllImages.getCount())) {
             setImage(nextImagePos);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+        case MenuHelper.RESULT_COMMON_MENU_CROP:
+            if (resultCode == RESULT_OK) {
+                // The CropImage activity passes back the Uri of the cropped image as
+                // the Action rather than the Data.
+                Uri dataUri = Uri.parse(data.getAction());
+                init(dataUri);
+            }
+            break;
         }
     }
 }

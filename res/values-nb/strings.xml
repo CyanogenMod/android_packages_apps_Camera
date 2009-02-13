@@ -29,8 +29,7 @@
     <string name="wait">"Vent litt…"</string>
     <string name="no_storage">"Sett inn et minnekort før du bruker kameraet."</string>
     <string name="not_enough_space">"Minnekortet er fullt."</string>
-    <!-- no translation found for preparing_sd (2914969119574812666) -->
-    <skip />
+    <string name="preparing_sd">"Forbereder minnekort…"</string>
     <string name="wallpaper">"Setter bakgrunnsbilde, vent litt…"</string>
     <string name="savingImage">"Lagrer bilde…"</string>
     <string name="runningFaceDetection">"Vent litt…"</string>
@@ -50,15 +49,12 @@
     <string name="confirm_delete_message">"Bildet vil bli slettet."</string>
     <string name="confirm_delete_video_message">"Videoen vil bli slettet."</string>
     <string name="camera_toss">"Slett"</string>
-    <!-- no translation found for camera_gallery (815753042966032398) -->
-    <skip />
+    <string name="camera_gallery">"Galleri"</string>
     <string name="camera_share">"Del"</string>
     <string name="camera_set">"Bruk som"</string>
     <string name="camera_play">"Spill"</string>
-    <!-- no translation found for camera_attach (4048659554893435232) -->
-    <skip />
-    <!-- no translation found for camera_cancel (8203341746672085747) -->
-    <skip />
+    <string name="camera_attach">"Legg ved"</string>
+    <string name="camera_cancel">"Avbryt"</string>
     <string name="camera_crop">"Beskjær"</string>
     <string name="camera_tossing">"Sletter…"</string>
     <string name="no_way_to_share_image">"Bildet kan ikke deles."</string>
@@ -146,16 +142,11 @@
     <string name="loading_video">"Laster video…"</string>
     <string name="spaceIsLow_title">"Lite plass"</string>
     <string name="spaceIsLow_content">"Minnekortet begynner å gå tom for plass. Endre kvalitetsinnstillingen eller slett bilder fra galleriet."</string>
-    <!-- no translation found for resume_playing_title (8996677350649355013) -->
-    <skip />
-    <!-- no translation found for resume_playing_message (5184414518126703481) -->
-    <skip />
-    <!-- no translation found for resume_playing_resume (3847915469173852416) -->
-    <skip />
-    <!-- no translation found for resume_playing_restart (5471008499835769292) -->
-    <skip />
-    <!-- no translation found for gadget_title (259405922673466798) -->
-    <skip />
+    <string name="resume_playing_title">"Fortsett avspilling"</string>
+    <string name="resume_playing_message">"Fortsett avspilling fra %s?"</string>
+    <string name="resume_playing_resume">"Fortsett avspilling"</string>
+    <string name="resume_playing_restart">"Begynn på nytt"</string>
+    <string name="gadget_title">"Bilderamme"</string>
     <!-- no translation found for video_file_name_format (8555507706353616970) -->
     <skip />
 </resources>

@@ -444,7 +444,7 @@ abstract public class ImageViewTouchBase extends ImageView {
     }
 
     static final float sPanRate = 7;
-    static final float sScaleRate = 1.05F;
+    static final float sScaleRate = 1.25F;
 
     // Sets the maximum zoom, which is a scale relative to the base matrix. It is calculated to show
     // the image at 400% zoom regardless of screen or image orientation. If in the future we decode

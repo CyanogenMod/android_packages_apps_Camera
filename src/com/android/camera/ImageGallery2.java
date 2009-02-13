@@ -356,6 +356,20 @@ public class ImageGallery2 extends Activity {
         if (Config.LOGV)
             Log.v(TAG, "onActivityResult: " + requestCode + "; resultCode is " + resultCode + "; data is " + data);
         switch (requestCode) {
+            case MenuHelper.RESULT_COMMON_MENU_CROP: {
+                if (resultCode == RESULT_OK) {
+                    // The CropImage activity passes back the Uri of the cropped image as
+                    // the Action rather than the Data.
+                    Uri dataUri = Uri.parse(data.getAction());
+                    rebake(false,false);
+                    IImage image = mAllImages.getImageForUri(dataUri);
+                    if (image != null ) {
+                        int rowId = image.getRow();
+                        mGvs.select(rowId, false);
+                    }
+                }
+                break;
+            }
             case CROP_MSG: {
                 if (Config.LOGV) Log.v(TAG, "onActivityResult " + data);
                 if (resultCode == RESULT_OK) {
@@ -627,7 +641,6 @@ public class ImageGallery2 extends Activity {
             mNoImagesView = findViewById(R.id.no_images);
 
             mInclusion = ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS;
-            ImageManager.DataLocation location = ImageManager.DataLocation.ALL;
 
             Intent intent = getIntent();
             if (intent != null) {
@@ -665,7 +678,6 @@ public class ImageGallery2 extends Activity {
                 if (extras != null && extras.getBoolean("pick-drm")) {
                     Log.d(TAG, "pick-drm is true");
                     mInclusion = ImageManager.INCLUDE_DRM_IMAGES;
-                    location = ImageManager.DataLocation.INTERNAL;
                 }
             }
             if (Config.LOGV)

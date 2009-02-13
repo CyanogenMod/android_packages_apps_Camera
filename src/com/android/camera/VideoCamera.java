@@ -150,17 +150,26 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                         long delta = now - mRecordingStartTime;
                         long seconds = delta / 1000;
                         long minutes = seconds / 60;
+                        long hours = minutes / 60;
+                        long remainderMinutes = minutes - (hours * 60);
                         long remainderSeconds = seconds - (minutes * 60);
 
                         String secondsString = Long.toString(remainderSeconds);
                         if (secondsString.length() < 2) {
                             secondsString = "0" + secondsString;
                         }
-                        String minutesString = Long.toString(minutes);
+                        String minutesString = Long.toString(remainderMinutes);
                         if (minutesString.length() < 2) {
                             minutesString = "0" + minutesString;
                         }
                         String text = minutesString + ":" + secondsString;
+                        if (hours > 0) {
+                            String hoursString = Long.toString(hours);
+                            if (hoursString.length() < 2) {
+                                hoursString = "0" + hoursString;
+                            }
+                            text = hoursString + ":" + text;
+                        }
                         mRecordingTimeView.setText(text);
                         // Work around a limitation of the T-Mobile G1: The T-Mobile
                         // hardware blitter can't pixel-accurately scale and clip at the same time,
@@ -910,7 +919,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
         if (mMediaRecorderRecording || mMediaRecorder != null) {
-            if (mMediaRecorderRecording) {
+            if (mMediaRecorderRecording && mMediaRecorder != null) {
                 mMediaRecorder.stop();
                 mCurrentVideoFilename = mCameraVideoFilename;
                 Log.v(TAG, "Setting current video filename: " + mCurrentVideoFilename);

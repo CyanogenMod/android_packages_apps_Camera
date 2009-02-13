@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <!-- Needed by the ZoomRingController to set the bit saying we've already shown the
+         tutorial toast. -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <application android:icon="@drawable/ic_launcher_camera"
             android:label="@string/camera_label"
             android:taskAffinity="">
@@ -101,7 +104,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/image" />
             </intent-filter>
-
         </activity>
         <activity
             android:name="CropImage"
@@ -192,6 +194,20 @@
             <intent-filter>
                 <action android:name="android.intent.action.SET_WALLPAPER" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="PhotoGadgetProvider" android:label="@string/gadget_title">
+            <intent-filter>
+                <action android:name="android.gadget.action.GADGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.gadget.provider" android:resource="@xml/gadget_info" />
+        </receiver>
+
+        <!-- We configure a gadget by asking to pick a photo, then crop it, and store the config internally -->
+        <activity android:name="PhotoGadgetConfigure">
+            <intent-filter>
+                <action android:name="android.gadget.action.GADGET_CONFIGURE" />
             </intent-filter>
         </activity>
     </application>
