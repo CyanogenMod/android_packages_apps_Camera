@@ -29,8 +29,7 @@
     <string name="wait">"请稍候..."</string>
     <string name="no_storage">"请在使用相机之前插入 SD 卡。"</string>
     <string name="not_enough_space">"您的 SD 卡已满。"</string>
-    <!-- no translation found for preparing_sd (2914969119574812666) -->
-    <skip />
+    <string name="preparing_sd">"正在准备 SD 卡..."</string>
     <string name="wallpaper">"正在设置壁纸，请稍候..."</string>
     <string name="savingImage">"正在保存图片..."</string>
     <string name="runningFaceDetection">"请稍候..."</string>
@@ -50,15 +49,12 @@
     <string name="confirm_delete_message">"会删除该图片。"</string>
     <string name="confirm_delete_video_message">"会删除该视频。"</string>
     <string name="camera_toss">"删除"</string>
-    <!-- no translation found for camera_gallery (815753042966032398) -->
-    <skip />
+    <string name="camera_gallery">"图片库"</string>
     <string name="camera_share">"共享"</string>
     <string name="camera_set">"设置为"</string>
     <string name="camera_play">"播放"</string>
-    <!-- no translation found for camera_attach (4048659554893435232) -->
-    <skip />
-    <!-- no translation found for camera_cancel (8203341746672085747) -->
-    <skip />
+    <string name="camera_attach">"附加"</string>
+    <string name="camera_cancel">"取消"</string>
     <string name="camera_crop">"裁切"</string>
     <string name="camera_tossing">"正在删除..."</string>
     <string name="no_way_to_share_image">"无法共享此图片。"</string>
@@ -69,19 +65,15 @@
     <string name="pref_gallery_category">"常规设置"</string>
     <string name="pref_slideshow_category">"幻灯片演示设置"</string>
     <string name="pref_camera_general_settings_category">"常规设置"</string>
-    <!-- no translation found for pref_gallery_size_title (1363406603879434418) -->
-    <skip />
-    <!-- no translation found for pref_gallery_size_summary (8179967445295243638) -->
-    <skip />
+    <string name="pref_gallery_size_title">"显示大小"</string>
+    <string name="pref_gallery_size_summary">"选择图片和视频的显示大小"</string>
     <string name="pref_gallery_size_dialogtitle">"图片大小"</string>
   <string-array name="pref_gallery_size_choices">
     <item>"大"</item>
     <item>"小"</item>
   </string-array>
-    <!-- no translation found for pref_gallery_sort_title (7447949250045443386) -->
-    <skip />
-    <!-- no translation found for pref_gallery_sort_summary (6644398051645595214) -->
-    <skip />
+    <string name="pref_gallery_sort_title">"排序顺序"</string>
+    <string name="pref_gallery_sort_summary">"选择图片和视频的排序顺序"</string>
     <string name="pref_gallery_sort_dialogtitle">"图片排序"</string>
   <string-array name="pref_gallery_sort_choices">
     <item>"最新的在最前面"</item>
@@ -111,45 +103,30 @@
     <string name="pref_camera_recordlocation_title">"在图片中存储位置"</string>
     <string name="pref_camera_recordlocation_summary">"通过图片数据记录位置"</string>
     <string name="pref_camera_videoquality_category">"视频质量"</string>
-    <!-- no translation found for pref_camera_videoquality_title (3836197291744160920) -->
-    <skip />
+    <string name="pref_camera_videoquality_title">"选择视频质量"</string>
     <string name="pref_camera_videoquality_entry_0">"低（对于彩信）"</string>
     <string name="pref_camera_videoquality_entry_1">"高（对于 SD 卡）"</string>
     <string name="pref_camera_videoquality_dialogtitle">"视频质量"</string>
     <string name="camerasettings">"设置"</string>
-    <!-- no translation found for image_gallery_NoImageView_text (409595259802877447) -->
-    <skip />
+    <string name="image_gallery_NoImageView_text">"找不到媒体。"</string>
     <string name="pref_gallery_confirm_delete_title">"确认删除"</string>
-    <!-- no translation found for pref_gallery_confirm_delete_summary (5253456492765525245) -->
-    <skip />
+    <string name="pref_gallery_confirm_delete_summary">"在删除图片或视频前显示确认"</string>
     <string name="details_panel_title">"详细信息"</string>
     <string name="details_file_size">"文件大小："</string>
     <string name="details_image_resolution">"分辨率："</string>
-    <!-- no translation found for details_duration (1028116471387901402) -->
-    <skip />
+    <string name="details_duration">"持续时间："</string>
     <string name="details_date_taken">"拍摄日期："</string>
-    <!-- no translation found for details_frame_rate (122397836963498191) -->
-    <skip />
-    <!-- no translation found for details_bit_rate (5632311789455402186) -->
-    <skip />
-    <!-- no translation found for details_codec (5580300450432398126) -->
-    <skip />
-    <!-- no translation found for details_format (3700860266600796363) -->
-    <skip />
-    <!-- no translation found for details_dimension_x (4479200210424701240) -->
-    <skip />
-    <!-- no translation found for details_ms (940634969189855292) -->
-    <skip />
-    <!-- no translation found for details_hms (3215779248094151255) -->
-    <skip />
-    <!-- no translation found for details_fps (2707670327505979317) -->
-    <skip />
-    <!-- no translation found for details_kbps (59196416864960850) -->
-    <skip />
-    <!-- no translation found for details_mbps (3978720645766601106) -->
-    <skip />
-    <!-- no translation found for details_ok (6848594369924424312) -->
-    <skip />
+    <string name="details_frame_rate">"帧频："</string>
+    <string name="details_bit_rate">"比特率："</string>
+    <string name="details_codec">"编解码器："</string>
+    <string name="details_format">"格式："</string>
+    <string name="details_dimension_x">"%1$d x %2$d"</string>
+    <string name="details_ms">"%1$02d:%2$02d"</string>
+    <string name="details_hms">"%1$d:%2$02d:%3$02d"</string>
+    <string name="details_fps">"%1$d fps"</string>
+    <string name="details_kbps">"%1$d Kbps"</string>
+    <string name="details_mbps">"%1$g Mbps"</string>
+    <string name="details_ok">"确定"</string>
     <string name="context_menu_header">"图片选项"</string>
     <string name="video_context_menu_header">"视频选项"</string>
     <string name="multiface_crop_help">"轻击一张脸开始裁切。"</string>
@@ -165,16 +142,10 @@
     <string name="loading_video">"正在载入视频..."</string>
     <string name="spaceIsLow_title">"空间不足"</string>
     <string name="spaceIsLow_content">"您的 SD 卡已满。请更改质量设置或删除图片库中的内容。"</string>
-    <!-- no translation found for resume_playing_title (8996677350649355013) -->
-    <skip />
-    <!-- no translation found for resume_playing_message (5184414518126703481) -->
-    <skip />
-    <!-- no translation found for resume_playing_resume (3847915469173852416) -->
-    <skip />
-    <!-- no translation found for resume_playing_restart (5471008499835769292) -->
-    <skip />
-    <!-- no translation found for gadget_title (259405922673466798) -->
-    <skip />
-    <!-- no translation found for video_file_name_format (8555507706353616970) -->
-    <skip />
+    <string name="resume_playing_title">"重新播放视频"</string>
+    <string name="resume_playing_message">"从 %s 开始重新播放？"</string>
+    <string name="resume_playing_resume">"重新播放"</string>
+    <string name="resume_playing_restart">"重新开始"</string>
+    <string name="gadget_title">"相框"</string>
+    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
 </resources>

@@ -763,7 +763,7 @@ public class ImageGallery2 extends Activity {
             setVerticalScrollBarEnabled(true);
             initializeScrollbars(context.obtainStyledAttributes(android.R.styleable.View));
 
-             mGestureDetector = new GestureDetector(context, new SimpleOnGestureListener() {
+            mGestureDetector = new GestureDetector(context, new SimpleOnGestureListener() {
                 @Override
                 public boolean onDown(MotionEvent e) {
                     if (mScroller != null && !mScroller.isFinished()) {
@@ -1464,7 +1464,8 @@ public class ImageGallery2 extends Activity {
                         }
                         return retVal;
 
-                    }}
+                    }
+                }
 
                 Bitmap resizeBitmap(Bitmap b) {
                     // assume they're both square for now

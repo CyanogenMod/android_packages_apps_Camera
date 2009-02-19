@@ -21,16 +21,15 @@
     <string name="gallery_picker_label">"ギャラリー"</string>
     <string name="gallery_camera_bucket_name">"カメラ (写真)"</string>
     <string name="gallery_camera_videos_bucket_name">"カメラ (動画)"</string>
-    <string name="switch_to_video_lable">"動画に切り替え"</string>
-    <string name="switch_to_camera_lable">"カメラに切り替え"</string>
+    <string name="switch_to_video_lable">"ムービーに切替"</string>
+    <string name="switch_to_camera_lable">"写真に切替"</string>
     <string name="crop_label">"写真のトリミング"</string>
     <string name="view_label">"写真を表示"</string>
     <string name="preferences_label">"カメラ設定"</string>
     <string name="wait">"お待ちください..."</string>
     <string name="no_storage">"カメラを使用する前にSDカードを挿入してください。"</string>
     <string name="not_enough_space">"SDカードがいっぱいです。"</string>
-    <!-- no translation found for preparing_sd (2914969119574812666) -->
-    <skip />
+    <string name="preparing_sd">"SDカードの準備中..."</string>
     <string name="wallpaper">"壁紙を設定しています。しばらくお待ちください..."</string>
     <string name="savingImage">"写真を保存中..."</string>
     <string name="runningFaceDetection">"お待ちください..."</string>
@@ -42,23 +41,20 @@
     <string name="rotate_left">"左に回転"</string>
     <string name="rotate_right">"右に回転"</string>
     <string name="slide_show">"スライドショー"</string>
-    <string name="capture_picture">"写真をキャプチャ"</string>
-    <string name="capture_video">"動画をキャプチャ"</string>
+    <string name="capture_picture">"写真撮影"</string>
+    <string name="capture_video">"ムービー撮影"</string>
     <string name="crop_save_text">"保存"</string>
     <string name="crop_discard_text">"破棄"</string>
     <string name="confirm_delete_title">"削除"</string>
     <string name="confirm_delete_message">"写真を削除します。"</string>
     <string name="confirm_delete_video_message">"動画を削除します。"</string>
     <string name="camera_toss">"削除"</string>
-    <!-- no translation found for camera_gallery (815753042966032398) -->
-    <skip />
+    <string name="camera_gallery">"ギャラリー"</string>
     <string name="camera_share">"共有"</string>
     <string name="camera_set">"設定"</string>
     <string name="camera_play">"再生"</string>
-    <!-- no translation found for camera_attach (4048659554893435232) -->
-    <skip />
-    <!-- no translation found for camera_cancel (8203341746672085747) -->
-    <skip />
+    <string name="camera_attach">"添付"</string>
+    <string name="camera_cancel">"キャンセル"</string>
     <string name="camera_crop">"トリミング"</string>
     <string name="camera_tossing">"削除中..."</string>
     <string name="no_way_to_share_image">"この写真は共有できません。"</string>
@@ -69,26 +65,22 @@
     <string name="pref_gallery_category">"全般設定"</string>
     <string name="pref_slideshow_category">"スライドショー設定"</string>
     <string name="pref_camera_general_settings_category">"全般設定"</string>
-    <!-- no translation found for pref_gallery_size_title (1363406603879434418) -->
-    <skip />
-    <!-- no translation found for pref_gallery_size_summary (8179967445295243638) -->
-    <skip />
+    <string name="pref_gallery_size_title">"表示サイズ"</string>
+    <string name="pref_gallery_size_summary">"写真と動画の表示サイズを選択"</string>
     <string name="pref_gallery_size_dialogtitle">"写真サイズ"</string>
   <string-array name="pref_gallery_size_choices">
     <item>"大"</item>
     <item>"小"</item>
   </string-array>
-    <!-- no translation found for pref_gallery_sort_title (7447949250045443386) -->
-    <skip />
-    <!-- no translation found for pref_gallery_sort_summary (6644398051645595214) -->
-    <skip />
+    <string name="pref_gallery_sort_title">"並び替え順"</string>
+    <string name="pref_gallery_sort_summary">"写真と動画の並び替え順を選択"</string>
     <string name="pref_gallery_sort_dialogtitle">"写真の並べ替え"</string>
   <string-array name="pref_gallery_sort_choices">
     <item>"日付の新しい順"</item>
     <item>"日付の古い順"</item>
   </string-array>
     <string name="pref_gallery_slideshow_interval_title">"スライドショーの間隔"</string>
-    <string name="pref_gallery_slideshow_interval_summary">"各スライドを表示する時間を選択"</string>
+    <string name="pref_gallery_slideshow_interval_summary">"各スライドの表示時間"</string>
     <string name="pref_gallery_slideshow_interval_dialogtitle">"スライドショーの間隔"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
     <item>"2秒"</item>
@@ -108,51 +100,36 @@
     <string name="pref_gallery_slideshow_repeat_summary">"スライドショーを繰り返す"</string>
     <string name="pref_gallery_slideshow_shuffle_title">"スライドのシャッフル"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"写真をランダムに表示"</string>
-    <string name="pref_camera_recordlocation_title">"位置を写真に保存"</string>
+    <string name="pref_camera_recordlocation_title">"位置情報を写真に記録する"</string>
     <string name="pref_camera_recordlocation_summary">"写真データに位置情報を記録します"</string>
     <string name="pref_camera_videoquality_category">"動画のクオリティ"</string>
-    <!-- no translation found for pref_camera_videoquality_title (3836197291744160920) -->
-    <skip />
+    <string name="pref_camera_videoquality_title">"動画の画質を選択"</string>
     <string name="pref_camera_videoquality_entry_0">"低 (MMSメッセージ向け)"</string>
     <string name="pref_camera_videoquality_entry_1">"高 (SDカード向け)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"動画のクオリティ"</string>
     <string name="camerasettings">"設定"</string>
-    <!-- no translation found for image_gallery_NoImageView_text (409595259802877447) -->
-    <skip />
+    <string name="image_gallery_NoImageView_text">"メディアが見つかりません。"</string>
     <string name="pref_gallery_confirm_delete_title">"削除を確認"</string>
-    <!-- no translation found for pref_gallery_confirm_delete_summary (5253456492765525245) -->
-    <skip />
+    <string name="pref_gallery_confirm_delete_summary">"写真や動画を削除する前に確認メッセージを表示"</string>
     <string name="details_panel_title">"詳細"</string>
     <string name="details_file_size">"ファイルサイズ:"</string>
     <string name="details_image_resolution">"解像度:"</string>
-    <!-- no translation found for details_duration (1028116471387901402) -->
-    <skip />
+    <string name="details_duration">"再生時間:"</string>
     <string name="details_date_taken">"撮影日:"</string>
-    <!-- no translation found for details_frame_rate (122397836963498191) -->
-    <skip />
-    <!-- no translation found for details_bit_rate (5632311789455402186) -->
-    <skip />
-    <!-- no translation found for details_codec (5580300450432398126) -->
-    <skip />
-    <!-- no translation found for details_format (3700860266600796363) -->
-    <skip />
-    <!-- no translation found for details_dimension_x (4479200210424701240) -->
-    <skip />
-    <!-- no translation found for details_ms (940634969189855292) -->
-    <skip />
-    <!-- no translation found for details_hms (3215779248094151255) -->
-    <skip />
-    <!-- no translation found for details_fps (2707670327505979317) -->
-    <skip />
-    <!-- no translation found for details_kbps (59196416864960850) -->
-    <skip />
-    <!-- no translation found for details_mbps (3978720645766601106) -->
-    <skip />
-    <!-- no translation found for details_ok (6848594369924424312) -->
-    <skip />
+    <string name="details_frame_rate">"フレームレート:"</string>
+    <string name="details_bit_rate">"ビットレート:"</string>
+    <string name="details_codec">"コーデック:"</string>
+    <string name="details_format">"形式:"</string>
+    <string name="details_dimension_x">"%1$dx%2$d"</string>
+    <string name="details_ms">"%1$02d:%2$02d"</string>
+    <string name="details_hms">"%1$d:%2$02d:%3$02d"</string>
+    <string name="details_fps">"%1$dfps"</string>
+    <string name="details_kbps">"%1$dKbps"</string>
+    <string name="details_mbps">"%1$gMbps"</string>
+    <string name="details_ok">"OK"</string>
     <string name="context_menu_header">"写真オプション"</string>
     <string name="video_context_menu_header">"動画オプション"</string>
-    <string name="multiface_crop_help">"顔を選択して開始します。"</string>
+    <string name="multiface_crop_help">"顔をタップして開始します。"</string>
     <string name="photos_gallery_title">"ギャラリー"</string>
     <string name="pick_photos_gallery_title">"写真を選択"</string>
     <string name="videos_gallery_title">"ギャラリー"</string>
@@ -165,16 +142,10 @@
     <string name="loading_video">"動画を読み込み中..."</string>
     <string name="spaceIsLow_title">"空き容量が残り少なくなっています"</string>
     <string name="spaceIsLow_content">"SDカードの容量が足りません。クオリティ設定を変更するか、ギャラリーからアイテムを削除してください。"</string>
-    <!-- no translation found for resume_playing_title (8996677350649355013) -->
-    <skip />
-    <!-- no translation found for resume_playing_message (5184414518126703481) -->
-    <skip />
-    <!-- no translation found for resume_playing_resume (3847915469173852416) -->
-    <skip />
-    <!-- no translation found for resume_playing_restart (5471008499835769292) -->
-    <skip />
-    <!-- no translation found for gadget_title (259405922673466798) -->
-    <skip />
-    <!-- no translation found for video_file_name_format (8555507706353616970) -->
-    <skip />
+    <string name="resume_playing_title">"動画の再開"</string>
+    <string name="resume_playing_message">"再生を%sから再開しますか？"</string>
+    <string name="resume_playing_resume">"再生を再開"</string>
+    <string name="resume_playing_restart">"最初から再生"</string>
+    <string name="gadget_title">"写真フレーム"</string>
+    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
 </resources>

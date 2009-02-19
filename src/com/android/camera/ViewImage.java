@@ -39,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -237,7 +238,36 @@ public class ViewImage extends Activity implements View.OnClickListener
         // The event time of the previous touch up.
         private long mPreviousUpTime;
         // The duration in milliseconds we will wait to see if it is a double tap.
-        private static final int DOUBLE_TAP_TIMEOUT = 200;
+        private static final int DOUBLE_TAP_TIMEOUT = ViewConfiguration.getDoubleTapTimeout();
+        
+        // Returns current scale step (numbered from 0 to 10).
+        private int getCurrentStep() {
+            float s = getScale();
+            float b = sScaleRate;
+            int step = (int)Math.round(Math.log(s) / Math.log(b));
+            return Math.max(0, Math.min(10, step));
+        }
+
+        // Returns the max scale step this image can use.
+        private int getMaxStep() {
+            float s = maxZoom();
+            float b = sScaleRate;
+            int step = (int)Math.ceil(Math.log(s) / Math.log(b));
+            return Math.max(0, Math.min(10, step));
+        }
+
+        // The setup we use here is to have 12 steps (only 0 to 10 are used),
+        // each separated by angle PI/6. We allow clockwise rotation (zoom-in)
+        // from the beginning position only. So we set counter clockwise bound
+        // to 0 and set clockwise bound to (2 - N/6) * PI. (clockwise angle
+        // is negative, and we need to mod 2*PI for the API to work.)
+        private void setZoomRingBounds() {
+            int max_step = getMaxStep();
+            float max_angle = (2 - max_step / 6F) * (float)Math.PI;
+            mZoomRingController.setResetThumbAutomatically(false);
+            mZoomRingController.setThumbClockwiseBound(max_angle);
+            mZoomRingController.setThumbCounterclockwiseBound(0);
+        }
 
         // The zoom ring is set to visible by a double tap.
         private ZoomRingController mZoomRingController;
@@ -246,38 +276,69 @@ public class ViewImage extends Activity implements View.OnClickListener
             public void onCenter(int x, int y) {
             }
 
+            public void onBeginPan() {
+            }
+
             public boolean onPan(int deltaX, int deltaY) {
                 postTranslate(-deltaX, -deltaY, sUseBounce);
                 ImageViewTouch.this.center(true, true, false);
                 return true;
             }
 
+            public void onEndPan() {
+            }
+            
+            // The clockwise angle is negative, so we need to mod 2*PI
+            private float stepToAngle(int step) {
+                float angle = step * (float)Math.PI / 6;
+                angle = (float)Math.PI * 2 - angle;
+                return angle;
+            }
+            
+            private int angleToStep(double angle) {
+                angle = Math.PI * 2 - angle;
+                int step = (int)Math.round(angle / (Math.PI / 6));
+                return step;
+            }
+
             public void onVisibilityChanged(boolean visible) {
+                if (visible) {
+                    int step = getCurrentStep();
+                    float angle = stepToAngle(step);
+                    mZoomRingController.setThumbAngle(angle);
+                }
             }
 
-            public void onBeginDrag(float startAngle) {
+            public void onBeginDrag() {
+                setZoomRingBounds();
             }
 
-            public void onEndDrag(float endAngle) {
+            public void onEndDrag() {
             }
 
             public boolean onDragZoom(int deltaZoomLevel, int centerX,
                                       int centerY, float startAngle, float curAngle) {
+                setZoomRingBounds();
+                int deltaStep = angleToStep(curAngle) - getCurrentStep();
+                if ((deltaZoomLevel > 0) && (deltaStep < 0)) return false;
+                if ((deltaZoomLevel < 0) && (deltaStep > 0)) return false;
+                if ((deltaZoomLevel == 0) || (deltaStep == 0)) return false;
+
                 float oldScale = getScale();
 
                 // First move centerX/centerY to the center of the view.
                 int deltaX = getWidth() / 2 - centerX;
                 int deltaY = getHeight() / 2 - centerY;
                 panBy(deltaX, deltaY);
-                
+
                 // Do zoom in/out.
-                while (deltaZoomLevel > 0) {
+                while (deltaStep > 0) {
                     zoomIn();
-                    deltaZoomLevel--;
+                    deltaStep--;
                 }
-                while (deltaZoomLevel < 0) {
+                while (deltaStep < 0) {
                     zoomOut();
-                    deltaZoomLevel++;
+                    deltaStep++;
                 }
 
                 // Reverse the first centering.
@@ -335,11 +396,16 @@ public class ViewImage extends Activity implements View.OnClickListener
 
             switch (m.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    viewImage.setMode(MODE_NORMAL);
-                    viewImage.showOnScreenControls();
-                    mLastXTouchPos = x;
-                    mLastYTouchPos = y;
-                    mTouchState = TOUCH_STATE_REST;
+                    long downTime = m.getEventTime();
+                    if ((downTime - mPreviousUpTime) < DOUBLE_TAP_TIMEOUT) {
+                        mZoomRingController.setVisible(true);
+                    } else {
+                        viewImage.setMode(MODE_NORMAL);
+                        viewImage.showOnScreenControls();
+                        mLastXTouchPos = x;
+                        mLastYTouchPos = y;
+                        mTouchState = TOUCH_STATE_REST;
+                    }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if (x < TOUCH_AREA_WIDTH) {
@@ -413,15 +479,7 @@ public class ViewImage extends Activity implements View.OnClickListener
                     viewImage.mPrevImageView.setPressed(false);
                     viewImage.mNextImageView.setPressed(false);
                     mTouchState = TOUCH_STATE_REST;
-
-                    long eventTime = m.getEventTime();
-                    if (eventTime - mPreviousUpTime < DOUBLE_TAP_TIMEOUT) {
-                        mZoomRingController.setVisible(true);
-                        mPreviousUpTime = 0;
-                    } else {
-                        mPreviousUpTime = eventTime;
-                    }
-                    
+                    mPreviousUpTime = m.getEventTime();
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     viewImage.mPrevImageView.setPressed(false);
@@ -528,6 +586,11 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         protected int getScrollOffset() {
             return scrollHandler().getScrollX();
+        }
+
+        @Override
+        protected void onDetachedFromWindow() {
+            mZoomRingController.setVisible(false);
         }
 
     }
@@ -1544,12 +1607,12 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         mAllImages.deactivate();
 
-        for (ImageViewTouchBase iv: mImageViews) {
+        for (ImageViewTouch iv: mImageViews) {
             iv.recycleBitmaps();
             iv.setImageBitmap(null, true);
         }
 
-        for (ImageViewTouchBase iv: mSlideShowImageViews) {
+        for (ImageViewTouch iv: mSlideShowImageViews) {
             iv.recycleBitmaps();
             iv.setImageBitmap(null, true);
         }

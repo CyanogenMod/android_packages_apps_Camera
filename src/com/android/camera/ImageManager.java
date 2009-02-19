@@ -691,7 +691,17 @@ public class ImageManager {
                     dbMagic = mMiniThumbMagic;
                     byte [] data = mContainer.getMiniThumbFromFile(id, sMiniThumbData, dbMagic);
                     if (data == null) {
-                        dbMagic = ((BaseImageList)getContainer()).checkThumbnail(this, getCursor(), getRow());
+                        byte[][] createdThumbData = new byte[1][];
+                        try {
+                            dbMagic = ((BaseImageList)getContainer()).checkThumbnail(this, getCursor(),
+                                    getRow(), createdThumbData);
+                        } catch (IOException ex) {
+                            // Typically IOException because the sd card is full.
+                            // But createdThumbData may have been filled in, so continue on.
+                        }
+                        data = createdThumbData[0];
+                    }
+                    if (data == null) {
                         data = mContainer.getMiniThumbFromFile(id, sMiniThumbData, dbMagic);
                     }
                     if (data == null) {
@@ -724,7 +734,7 @@ public class ImageManager {
             mContainer.mCache.remove(mId);
         }
 
-        protected void saveMiniThumb(Bitmap source) {
+        protected void saveMiniThumb(Bitmap source) throws IOException {
             mContainer.saveMiniThumbToFile(source, fullSizeImageId(), 0);
         }
 
@@ -1039,13 +1049,33 @@ public class ImageManager {
         }
 
         // returns id
-        public long checkThumbnail(BaseImage existingImage, Cursor c, int i) {
+        public long checkThumbnail(BaseImage existingImage, Cursor c, int i) throws IOException {
+            return checkThumbnail(existingImage, c, i, null);
+        }
+
+        /**
+         * Checks to see if a mini thumbnail exists in the cache. If not, tries to create it and
+         * add it to the cache.
+         * @param existingImage
+         * @param c
+         * @param i
+         * @param createdThumbnailData if this parameter is non-null, and a new mini-thumbnail
+         * bitmap is created, the new bitmap's data will be stored in createdThumbnailData[0].
+         * Note that if the sdcard is full, it's possible that
+         * createdThumbnailData[0] will be set even if the method throws an IOException. This is
+         * actually useful, because it allows the caller to use the created thumbnail even if
+         * the sdcard is full.
+         * @return
+         * @throws IOException
+         */
+        public long checkThumbnail(BaseImage existingImage, Cursor c, int i,
+                byte[][] createdThumbnailData) throws IOException {
             long magic, fileMagic = 0, id;
             try {
                 mLock.lock();
                 if (existingImage == null) {
                     // if we don't have an Image object then get the id and magic from
-                    // the cursor.  Synchonize on the cursor object.
+                    // the cursor.  Synchronize on the cursor object.
                     synchronized (c) {
                         if (!c.moveToPosition(i)) {
                             return -1;
@@ -1090,7 +1120,6 @@ public class ImageManager {
                 // If we can't retrieve the thumbnail, first check if there is one embedded in the
                 // EXIF data. If not, or it's not big enough, decompress the full size image.
                 Bitmap bitmap = null;
-
                 String filePath = null;
                 synchronized (c) {
                     if (c.moveToPosition(i)) {
@@ -1129,8 +1158,11 @@ public class ImageManager {
                     magic = mRandom.nextLong();
                 } while (magic == 0);
                 if (bitmap != null) {
-                    saveMiniThumbToFile(bitmap, id, magic);
-                    bitmap.recycle();
+                    byte [] data = miniThumbData(bitmap);
+                    if (createdThumbnailData != null) {
+                        createdThumbnailData[0] = data;
+                    }
+                    saveMiniThumbToFile(data, id, magic);
                 }
 
                 synchronized (c) {
@@ -1483,7 +1515,12 @@ public class ImageManager {
             mCursorDeactivated = false;
         }
 
-        protected void saveMiniThumbToFile(Bitmap source, long id, long magic) {
+        protected void saveMiniThumbToFile(Bitmap bitmap, long id, long magic) throws IOException {
+            byte[] data = miniThumbData(bitmap);
+            saveMiniThumbToFile(data, id, magic);
+        }
+
+        protected void saveMiniThumbToFile(byte[] data, long id, long magic) throws IOException {
             RandomAccessFile r = miniThumbDataFile();
             if (r == null)
                 return;
@@ -1493,7 +1530,6 @@ public class ImageManager {
             synchronized (r) {
                 try {
                     long t1 = System.currentTimeMillis();
-                    byte [] data = miniThumbData(source);
                     long t2 = System.currentTimeMillis();
                     if (data != null) {
                         if (data.length > sBytesPerMiniThumb) {
@@ -1518,9 +1554,8 @@ public class ImageManager {
                         if (VERBOSE) Log.v(TAG, "saveMiniThumbToFile took " + (t3-t0) + "; " + (t1-t0) + " " + (t2-t1) + " " + (t3-t2));
                     }
                 } catch (IOException ex) {
-                    if (VERBOSE) {
-                        Log.e(TAG, "couldn't save mini thumbnail data for " + id + "; " + ex.toString());
-                    }
+                    Log.e(TAG, "couldn't save mini thumbnail data for " + id + "; " + ex.toString());
+                    throw ex;
                 }
             }
         }
@@ -1929,7 +1964,11 @@ public class ImageManager {
                         long t4 = System.currentTimeMillis();
                         checkCanceled();
                         if (VERBOSE) Log.v(TAG, ">>>>>>>>>>>>>>>>>>>>> rotating by " + orientation);
-                        saveMiniThumb(rotate(thumbnail, orientation));
+                        try {
+                            saveMiniThumb(rotate(thumbnail, orientation));
+                        } catch (IOException e) {
+                            // Ignore if unable to save thumb.
+                        }
                         long t5 = System.currentTimeMillis();
                         checkCanceled();
 
@@ -2007,7 +2046,11 @@ public class ImageManager {
 
             // setting this to zero will force the call to checkCursor to generate fresh thumbs
             mMiniThumbMagic = 0;
-            mContainer.checkThumbnail(this, mContainer.getCursor(), this.getRow());
+            try {
+                mContainer.checkThumbnail(this, mContainer.getCursor(), this.getRow());
+            } catch (IOException e) {
+                // Ignore inability to store mini thumbnail.
+            }
 
             return true;
         }
@@ -3604,8 +3647,10 @@ public class ImageManager {
         return sInstance;
     }
 
-
-    static public byte [] miniThumbData(Bitmap source) {
+    /**
+     * Creates a byte[] for a given bitmap of the desired size. Recycles the input bitmap.
+     */
+    static public byte[] miniThumbData(Bitmap source) {
         if (source == null)
             return null;
 
@@ -4129,5 +4174,10 @@ public class ImageManager {
             }
         }
         return bitmap;
+    }
+
+    public static String getLastThumbPath() {
+        return Environment.getExternalStorageDirectory().toString() +
+               "/DCIM/.thumbnails/camera_last_thumb";
     }
 }

@@ -17,6 +17,7 @@
 package com.android.camera;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -108,6 +109,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     // The video file that the hardware camera is about to record into
     // (or is recording into.)
     private String mCameraVideoFilename;
+    private FileDescriptor mCameraVideoFileDescriptor;
 
     // The video file that has already been recorded, and that is being
     // examined by the user.
@@ -197,16 +199,16 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 // SD card available
                 // TODO put up a "please wait" message
                 // TODO also listen for the media scanner finished message
-                showStorageToast();
+                updateStorageHint();
                 mHasSdCard = true;
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
-                showStorageToast();
+                updateStorageHint();
                 mHasSdCard = false;
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
                 Toast.makeText(VideoCamera.this, getResources().getString(R.string.wait), 5000);
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                showStorageToast();
+                updateStorageHint();
             }
         }
     };
@@ -273,7 +275,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 if (!storageOK) {
                     mHandler.post(new Runnable() {
                         public void run() {
-                            showStorageToast();
+                            updateStorageHint();
                         }
                     });
                 }
@@ -284,6 +286,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     public void onClick(View v) {
         switch (v.getId()) {
+
+            case R.id.gallery:
+                MenuHelper.gotoCameraVideoGallery(this);
+                break;
 
             case R.id.attach:
                 doReturnToCaller(true);
@@ -362,15 +368,30 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         hideVideoFrameAndStartPreview();
     }
 
-    private void showStorageToast() {
-        long remaining = getAvailableStorage();
+    private OnScreenHint mStorageHint;
 
+    private void updateStorageHint() {
+        long remaining = getAvailableStorage();
+        String errorMessage = null;
         if (remaining == NO_STORAGE_ERROR) {
-            Toast.makeText(this, getString(R.string.no_storage), Toast.LENGTH_LONG).show();
+            errorMessage = getString(R.string.no_storage);
         } else if (remaining < LOW_STORAGE_THRESHOLD) {
-            new AlertDialog.Builder(this).setTitle(R.string.spaceIsLow_title)
-                .setMessage(R.string.spaceIsLow_content)
-                .show();
+            errorMessage = getString(R.string.spaceIsLow_content);
+            if (mStorageHint != null) {
+                mStorageHint.cancel();
+                mStorageHint = null;
+            }
+        }
+        if (errorMessage != null) {
+            if (mStorageHint == null) {
+                mStorageHint = OnScreenHint.makeText(this, errorMessage);
+            } else {
+                mStorageHint.setText(errorMessage);
+            }
+            mStorageHint.show();
+        } else if (mStorageHint != null) {
+            mStorageHint.cancel();
+            mStorageHint = null;
         }
     }
 
@@ -431,6 +452,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
         mBlackout.setVisibility(View.VISIBLE);
         setScreenTimeoutSystemDefault();
+
+        if (mStorageHint != null) {
+            mStorageHint.cancel();
+            mStorageHint = null;
+        }
     }
 
     @Override
@@ -576,53 +602,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         int resultCode;
         if (success) {
             resultCode = RESULT_OK;
-            Uri saveUri = null;
-
-            Bundle myExtras = getIntent().getExtras();
-            if (myExtras != null) {
-                saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
-            }
-
-            if (saveUri != null) {
-                // TODO: Record the video directly into the content provider stream when
-                // bug 1582062 is fixed. Until then we copy the video data from the
-                // original location to the requested location and then delete the original.
-                OutputStream outputStream = null;
-                InputStream inputStream = null;
-
-                try {
-                    inputStream = mContentResolver.openInputStream(mCurrentVideoUri);
-                    outputStream = mContentResolver.openOutputStream(saveUri);
-                    byte[] buffer = new byte[64*1024];
-                    while(true) {
-                        int bytesRead = inputStream.read(buffer);
-                        if (bytesRead < 0) {
-                            break;
-                        }
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-                } catch (IOException ex) {
-                    Log.e(TAG, "Could not copy video file to Uri", ex);
-                } finally {
-                    if (inputStream != null) {
-                        try {
-                            inputStream.close();
-                        } catch (IOException ex) {
-                            Log.e(TAG, "Could not close video file", ex);
-                        }
-                    }
-                    if (outputStream != null) {
-                        try {
-                            outputStream.close();
-                        } catch (IOException ex) {
-                            Log.e(TAG, "Could not close output uri", ex);
-                        }
-                    }
-                    deleteCurrentVideo();
-                }
-            } else {
-                resultIntent.setData(mCurrentVideoUri);
-            }
+            resultIntent.setData(mCurrentVideoUri);
         } else {
             resultCode = RESULT_CANCELED;
         }
@@ -651,8 +631,36 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
     }
 
+    private void cleanupEmptyFile() {
+        if (mCameraVideoFilename != null) {
+            File f = new File(mCameraVideoFilename);
+            if (f.length() == 0 && f.delete()) {
+              Log.v(TAG, "Empty video file deleted: " + mCameraVideoFilename);
+              mCameraVideoFilename = null;
+            }
+        }
+    }
+
     private void initializeVideo() {
         Log.v(TAG, "initializeVideo");
+        boolean isCaptureIntent = isVideoCaptureIntent();
+        Intent intent = getIntent();
+        Bundle myExtras = intent.getExtras();
+
+        if (isCaptureIntent && myExtras != null) {
+            Uri saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
+            if (saveUri != null) {
+                try {
+                    mCameraVideoFileDescriptor = mContentResolver.
+                        openFileDescriptor(saveUri, "rw").getFileDescriptor();
+                    mCurrentVideoUri = saveUri;
+                }
+                catch (java.io.FileNotFoundException ex) {
+                    // invalid uri
+                    Log.e(TAG, ex.toString());
+                }
+            }
+        }
         releaseMediaRecorder();
 
         if (mSurfaceHolder == null) {
@@ -670,17 +678,22 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        createVideoPath();
-        mMediaRecorder.setOutputFile(mCameraVideoFilename);
+
+        // We try Uri in intent first. If it doesn't work, use our own instead.
+        if (mCameraVideoFileDescriptor != null) {
+            mMediaRecorder.setOutputFile(mCameraVideoFileDescriptor);
+        } else {
+            createVideoPath();
+            mMediaRecorder.setOutputFile(mCameraVideoFilename);
+        }
+
         boolean videoQualityHigh = getBooleanPreference(CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
 
-        {
-            Intent intent = getIntent();
-            if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
-                int extraVideoQuality = intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-                videoQualityHigh = (extraVideoQuality > 0);
-            }
+
+        if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
+            int extraVideoQuality = intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+            videoQualityHigh = (extraVideoQuality > 0);
         }
 
         // Use the same frame rate for both, since internally
@@ -712,6 +725,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private void releaseMediaRecorder() {
         Log.v(TAG, "Releasing media recorder.");
         if (mMediaRecorder != null) {
+            cleanupEmptyFile();
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
@@ -773,10 +787,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void registerVideo() {
-        Uri videoTable = Uri.parse("content://media/external/video/media");
-        mCurrentVideoUri = mContentResolver.insert(videoTable,
-                mCurrentVideoValues);
-        Log.v(TAG, "Current video URI: " + mCurrentVideoUri);
+        if (mCameraVideoFileDescriptor == null) {
+            Uri videoTable = Uri.parse("content://media/external/video/media");
+            mCurrentVideoUri = mContentResolver.insert(videoTable,
+                    mCurrentVideoValues);
+            Log.v(TAG, "Current video URI: " + mCurrentVideoUri);
+        }
         mCurrentVideoValues = null;
     }
 
@@ -837,10 +853,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         Log.v(TAG, "startVideoRecording");
         if (!mMediaRecorderRecording) {
 
-            if (!mHasSdCard) {
-                Toast.makeText(this, getString(
-                        R.string.no_storage), Toast.LENGTH_LONG).show();
-                Log.v(TAG, "No SD card, ignore start recording");
+            if (mStorageHint != null) {
+                Log.v(TAG, "Storage issue, ignore the start request");
                 return;
             }
 
@@ -882,7 +896,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private void showPostRecordingAlert() {
         int[] pickIds = {R.id.attach, R.id.cancel};
-        int[] normalIds = {R.id.share, R.id.discard};
+        int[] normalIds = {R.id.gallery, R.id.share, R.id.discard};
         int[] alwaysOnIds = {R.id.play};
         int[] hideIds = pickIds;
         int[] connectIds = normalIds;
@@ -923,7 +937,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 mMediaRecorder.stop();
                 mCurrentVideoFilename = mCameraVideoFilename;
                 Log.v(TAG, "Setting current video filename: " + mCurrentVideoFilename);
-                mCameraVideoFilename = null;
                 mNeedToRegisterRecording = true;
                 mMediaRecorderRecording = false;
             }
@@ -937,6 +950,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mNeedToRegisterRecording = false;
         }
         mCameraVideoFilename = null;
+        mCameraVideoFileDescriptor = null;
     }
 
     private void setScreenTimeoutSystemDefault() {

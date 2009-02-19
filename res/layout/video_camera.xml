@@ -50,7 +50,7 @@
 		android:focusable="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="55dip"
+        android:layout_marginRight="50dip"
         android:layout_marginTop="10dip"
         android:scaleType="center"/>
 
@@ -81,12 +81,18 @@
 			android:id="@+id/post_picture_panel"
 			android:layout_alignTop="@id/shutter_button"
 			android:layout_toLeftOf="@id/shutter_button"
-            android:layout_marginRight="27dip"
+            android:layout_marginRight="15dip"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 			android:orientation="horizontal">
 
-		<com.android.camera.ActionMenuButton
+        <com.android.camera.ActionMenuButton
+            android:id="@+id/gallery"
+            android:drawableTop="@drawable/ic_menu_gallery"
+            android:text="@string/camera_gallery"
+            style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
 			android:id="@+id/play"
 			android:drawableTop="@drawable/ic_menu_camera_play"
 			android:text="@string/camera_play"
