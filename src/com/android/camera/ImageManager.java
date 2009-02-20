@@ -73,6 +73,18 @@ public class ImageManager {
     public static String getBucketId(String path) {
         return String.valueOf(path.toLowerCase().hashCode());
     }
+    
+    /**
+     * OSX requires plugged-in USB storage to have path /DCIM/NNNAAAAA to be imported.
+     * This is a temporary fix for bug#1655552.
+     */
+    public static void ensureOSXCompatibleFolder() {
+        File nnnAAAAA = new File(
+            Environment.getExternalStorageDirectory().toString() + "/DCIM/100ANDRO");
+        if ((!nnnAAAAA.exists()) && (!nnnAAAAA.mkdir())) {
+            Log.e(TAG, "create NNNAAAAA file: "+ nnnAAAAA.getPath()+" failed");
+        }
+    }
 
     // To enable verbose logging for this class, change false to true. The other logic ensures that
     // this logging can be disabled by turned off DEBUG and lower, and that it can be enabled by

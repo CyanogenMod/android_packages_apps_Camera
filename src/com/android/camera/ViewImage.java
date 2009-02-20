@@ -34,12 +34,12 @@ import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Config;
 import android.util.Log;
+import android.view.GestureDetector; 
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -225,21 +225,10 @@ public class ViewImage extends Activity implements View.OnClickListener
     static public class ImageViewTouch extends ImageViewTouchBase {
         private ViewImage mViewImage;
         private boolean mEnableTrackballScroll;
-
-        private static int TOUCH_STATE_REST = 0;
-        private static int TOUCH_STATE_LEFT_PRESS = 1;
-        private static int TOUCH_STATE_RIGHT_PRESS = 2;
-        private static int TOUCH_STATE_PANNING = 3;
-
+        private GestureDetector mGestureDetector;
+        
         private static int TOUCH_AREA_WIDTH = 60;
 
-        private int mTouchState = TOUCH_STATE_REST;
-
-        // The event time of the previous touch up.
-        private long mPreviousUpTime;
-        // The duration in milliseconds we will wait to see if it is a double tap.
-        private static final int DOUBLE_TAP_TIMEOUT = ViewConfiguration.getDoubleTapTimeout();
-        
         // Returns current scale step (numbered from 0 to 10).
         private int getCurrentStep() {
             float s = getScale();
@@ -356,18 +345,20 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         public ImageViewTouch(Context context) {
             super(context);
-            mViewImage = (ViewImage) context;
-
-            mZoomRingController = new ZoomRingController(context, this);
-            mZoomRingController.setCallback(mZoomListener);
+            setup(context);
         }
 
         public ImageViewTouch(Context context, AttributeSet attrs) {
             super(context, attrs);
-            mViewImage = (ViewImage) context;
+            setup(context);
+        }
 
+        private void setup(Context context) {
+            mViewImage = (ViewImage) context;
             mZoomRingController = new ZoomRingController(context, this);
             mZoomRingController.setCallback(mZoomListener);
+            mGestureDetector = new GestureDetector(new MyGestureListener());
+            mGestureDetector.setOnDoubleTapListener(new MyDoubleTapListener());
         }
 
         public void setEnableTrackballScroll(boolean enable) {
@@ -389,105 +380,47 @@ public class ViewImage extends Activity implements View.OnClickListener
         }
 
         public boolean handleTouchEvent(MotionEvent m) {
-            int viewWidth = getWidth();
-            ViewImage viewImage = mViewImage;
-            int x = (int) m.getX();
-            int y = (int) m.getY();
+            return mGestureDetector.onTouchEvent(m);
+        }
 
-            switch (m.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    long downTime = m.getEventTime();
-                    if ((downTime - mPreviousUpTime) < DOUBLE_TAP_TIMEOUT) {
-                        mZoomRingController.setVisible(true);
-                    } else {
-                        viewImage.setMode(MODE_NORMAL);
-                        viewImage.showOnScreenControls();
-                        mLastXTouchPos = x;
-                        mLastYTouchPos = y;
-                        mTouchState = TOUCH_STATE_REST;
-                    }
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if (x < TOUCH_AREA_WIDTH) {
-                        if (mTouchState == TOUCH_STATE_REST) {
-                            mTouchState = TOUCH_STATE_LEFT_PRESS;
-                        }
-                        if (mTouchState == TOUCH_STATE_LEFT_PRESS) {
-                            viewImage.mPrevImageView.setPressed(true);
-                            viewImage.mNextImageView.setPressed(false);
-                        }
-                        mLastXTouchPos = x;
-                        mLastYTouchPos = y;
-                    } else if (x > viewWidth - TOUCH_AREA_WIDTH) {
-                        if (mTouchState == TOUCH_STATE_REST) {
-                            mTouchState = TOUCH_STATE_RIGHT_PRESS;
-                        }
-                        if (mTouchState == TOUCH_STATE_RIGHT_PRESS) {
-                            viewImage.mPrevImageView.setPressed(false);
-                            viewImage.mNextImageView.setPressed(true);
-                        }
-                        mLastXTouchPos = x;
-                        mLastYTouchPos = y;
-                    } else {
-                        mTouchState = TOUCH_STATE_PANNING;
-                        viewImage.mPrevImageView.setPressed(false);
-                        viewImage.mNextImageView.setPressed(false);
-
-                        int deltaX;
-                        int deltaY;
-
-                        if (mLastXTouchPos == -1) {
-                            deltaX = 0;
-                            deltaY = 0;
-                        } else {
-                            deltaX = x - mLastXTouchPos;
-                            deltaY = y - mLastYTouchPos;
-                        }
-
-                        mLastXTouchPos = x;
-                        mLastYTouchPos = y;
-
-                        if (mBitmapDisplayed == null)
-                            return true;
-
-                        if (deltaX != 0) {
-                            // Second.  Pan to whatever degree is possible.
-                            if (getScale() > 1F) {
-                                postTranslate(deltaX, deltaY, sUseBounce);
-                                ImageViewTouch.this.center(true, true, false);
-                            }
-                        }
-                        setImageMatrix(getImageViewMatrix());
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    int nextImagePos = -1;
-                    if (mTouchState == TOUCH_STATE_LEFT_PRESS && x < TOUCH_AREA_WIDTH) {
-                        nextImagePos = viewImage.mCurrentPosition - 1;
-                    } else if (mTouchState == TOUCH_STATE_RIGHT_PRESS &&
-                           x > viewWidth - TOUCH_AREA_WIDTH) {
-                        nextImagePos = viewImage.mCurrentPosition + 1;
-                    }
-                    if (nextImagePos >= 0
-                            && nextImagePos < viewImage.mAllImages.getCount()) {
-                        synchronized (viewImage) {
-                            viewImage.setMode(MODE_NORMAL);
-                            viewImage.setImage(nextImagePos);
-                        }
-                    }
-                    viewImage.scheduleDismissOnScreenControls();
-                    viewImage.mPrevImageView.setPressed(false);
-                    viewImage.mNextImageView.setPressed(false);
-                    mTouchState = TOUCH_STATE_REST;
-                    mPreviousUpTime = m.getEventTime();
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                    viewImage.mPrevImageView.setPressed(false);
-                    viewImage.mNextImageView.setPressed(false);
-                    mTouchState = TOUCH_STATE_REST;
-                    break;
+        private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+            public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                    float distanceX, float distanceY) {
+                if (getScale() > 1F) {
+                    postTranslate(-distanceX, -distanceY, sUseBounce);
+                    ImageViewTouch.this.center(true, true, false);
+                }
+                return true;
             }
-            return true;
+        }
+        
+        private class MyDoubleTapListener implements GestureDetector.OnDoubleTapListener {
+            // On single tap, we show the arrows. We also change to the
+            // prev/next image if the user taps on the left/right region. 
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                ViewImage viewImage = mViewImage;
+
+                int viewWidth = getWidth();
+                int x = (int) e.getX();
+                int y = (int) e.getY(); 
+                if (x < TOUCH_AREA_WIDTH) {
+                    viewImage.moveNextOrPrevious(-1);
+                } else if (x > viewWidth - TOUCH_AREA_WIDTH) {
+                    viewImage.moveNextOrPrevious(1);
+                }
+                
+                viewImage.setMode(MODE_NORMAL);
+                viewImage.showOnScreenControls();
+
+                return true;
+            }
+            
+            // On double tap, we show the zoom ring control.
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                mViewImage.setMode(MODE_NORMAL);
+                mZoomRingController.setVisible(true);
+                return true;
+            }
         }
 
         @Override
@@ -1254,13 +1187,14 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         mNextImageView = findViewById(R.id.next_image);
         mPrevImageView = findViewById(R.id.prev_image);
+        mNextImageView.setOnClickListener(this);
+        mPrevImageView.setOnClickListener(this);
 
         if (mShowActionIcons) {
-            mNextImageView.setOnClickListener(this);
             mNextImageView.setFocusable(true);
-            mPrevImageView.setOnClickListener(this);
             mPrevImageView.setFocusable(true);
         }
+
         setOrientation();
 
         // Show a tutorial for the new zoom interaction (the method ensure we only show it once)

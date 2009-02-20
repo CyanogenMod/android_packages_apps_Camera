@@ -18,5 +18,6 @@
 -->
 
 <alpha xmlns:android="http://schemas.android.com/apk/res/android"
-        android:interpolator="@+android:anim/on_screen_hint_decelerate"
-        android:fromAlpha="0.0" android:toAlpha="1.0" android:duration="400" />
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:fromAlpha="0.0" android:toAlpha="1.0" android:duration="400"
+/>

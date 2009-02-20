@@ -448,5 +448,11 @@
     <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat.
          Do not localize -->
     <string name="video_file_name_format">"'video'-yyyy-MM-dd-HH-mm-ss"</string>
+
+    <!-- Title for the file information dialog -->
+    <string name="file_info_title">File info:</string>
+    
+    <!-- The video is execeed the size limit of a MMS, and suggest user to record a shorter length clip -->
+    <string name="video_exceed_mms_limit">The video you recorded is too large to send via MMS. Try recording a shorter length clip.</string>
     
 </resources>

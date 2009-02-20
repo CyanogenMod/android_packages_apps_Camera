@@ -19,8 +19,10 @@ package com.android.camera;
 import android.content.BroadcastReceiver;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -68,13 +70,13 @@ public class ImageGallery2 extends Activity {
     private View mNoImagesView;
     public final static int CROP_MSG = 2;
     public final static int VIEW_MSG = 3;
-
     private static final String INSTANCE_STATE_TAG = "scrollY";
 
     private Dialog mMediaScanningDialog;
 
     private MenuItem mSlideShowItem;
     private SharedPreferences mPrefs;
+    private long mVideoSizeLimit = Long.MAX_VALUE;
 
     public ImageGallery2() {
     }
@@ -106,7 +108,13 @@ public class ImageGallery2 extends Activity {
         mGvs = (GridViewSpecial) findViewById(R.id.grid);
         mGvs.requestFocus();
 
-        if (!isPickIntent()) {
+        if (isPickIntent()) {
+            mVideoSizeLimit = getIntent().getLongExtra(
+                    MediaStore.EXTRA_SIZE_LIMIT, Long.MAX_VALUE);
+            mGvs.mVideoSizeLimit = mVideoSizeLimit;
+        } else {
+            mVideoSizeLimit = Long.MAX_VALUE;
+            mGvs.mVideoSizeLimit = mVideoSizeLimit;
             mGvs.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
                 public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                     if (mSelectedImageGetter.getCurrentImage() == null)
@@ -306,7 +314,7 @@ public class ImageGallery2 extends Activity {
             default:
                 handled = false;
                 break;
-        }
+            }
         }
         if (handled) {
             mGvs.select(sel, pressed);
@@ -323,6 +331,23 @@ public class ImageGallery2 extends Activity {
 
     private void launchCropperOrFinish(ImageManager.IImage img) {
         Bundle myExtras = getIntent().getExtras();
+
+        if (MenuHelper.getImageFileSize(img) > mVideoSizeLimit) {
+
+            DialogInterface.OnClickListener buttonListener =
+                    new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            };
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setTitle(R.string.file_info_title)
+                    .setMessage(R.string.video_exceed_mms_limit)
+                    .setNeutralButton(R.string.details_ok, buttonListener)
+                    .show();
+            return;
+        }
 
         String cropValue = myExtras != null ? myExtras.getString("crop") : null;
         if (cropValue != null) {
@@ -714,6 +739,8 @@ public class ImageGallery2 extends Activity {
         private boolean mDirectionBiasDown = true;
         private final static boolean sDump = false;
 
+        private long mVideoSizeLimit;
+
         class LayoutSpec {
             LayoutSpec(int cols, int w, int h, int leftEdgePadding, int rightEdgePadding, int intercellSpacing) {
                 mColumns = cols;
@@ -996,6 +1023,9 @@ public class ImageGallery2 extends Activity {
             private Thread mWorkerThread;
             private Bitmap mMissingImageThumbnailBitmap;
             private Bitmap mMissingVideoThumbnailBitmap;
+
+            private Drawable mVideoOverlay;
+            private Drawable mVideoMmsErrorOverlay;
 
             public void dump() {
                 synchronized (ImageBlockManager.this) {
@@ -1350,7 +1380,6 @@ public class ImageGallery2 extends Activity {
                 int     mRequestedMask;   // columns which have been requested to the loader
                 int     mCompletedMask;   // columns which have been completed from the loader
                 boolean mIsVisible;
-                Drawable mVideoOverlay;
 
                 public void dump(StringBuilder line1, StringBuilder line2) {
                     synchronized (ImageBlock.this) {
@@ -1523,17 +1552,31 @@ public class ImageGallery2 extends Activity {
                         mCanvas.drawBitmap(error, source, dest, mPaint);
                     }
                     if (ImageManager.isVideo(image)) {
-                        if (mVideoOverlay == null) {
-                            mVideoOverlay = getResources().getDrawable(
-                                    R.drawable.ic_gallery_video_overlay);
+                        Drawable overlay = null;
+                        if (MenuHelper.getImageFileSize(image) <= mVideoSizeLimit) {
+                            if (mVideoOverlay == null) {
+                                mVideoOverlay = getResources().getDrawable(
+                                        R.drawable.ic_gallery_video_overlay);
+                            }
+                            overlay = mVideoOverlay;
+                        } else {
+                            if (mVideoMmsErrorOverlay == null) {
+                                mVideoMmsErrorOverlay = getResources().getDrawable(
+                                        R.drawable.ic_error_mms_video_overlay);
+                            }
+                            overlay = mVideoMmsErrorOverlay;
+                            Paint paint = new Paint();
+                            paint.setARGB(0x80, 0x00, 0x00, 0x00);
+                            mCanvas.drawRect(xPos, yPos, xPos + mCurrentSpec.mCellWidth,
+                                    yPos + mCurrentSpec.mCellHeight, paint);
                         }
-                        int width = mVideoOverlay.getIntrinsicWidth();
-                        int height = mVideoOverlay.getIntrinsicHeight();
+                        int width = overlay.getIntrinsicWidth();
+                        int height = overlay.getIntrinsicHeight();
                         int left = (mCurrentSpec.mCellWidth - width) / 2 + xPos;
                         int top = (mCurrentSpec.mCellHeight - height) / 2 + yPos;
                         Rect newBounds = new Rect(left, top, left + width, top + height);
-                        mVideoOverlay.setBounds(newBounds);
-                        mVideoOverlay.draw(mCanvas);
+                        overlay.setBounds(newBounds);
+                        overlay.draw(mCanvas);
                     }
                     paintSel(base + baseOffset, xPos, yPos);
                 }

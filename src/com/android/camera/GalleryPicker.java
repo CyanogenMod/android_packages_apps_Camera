@@ -228,6 +228,8 @@ public class GalleryPicker extends Activity {
                 });
             }
         });
+ 
+        ImageManager.ensureOSXCompatibleFolder();
     }
 
     private void launchFolderGallery(int position) {

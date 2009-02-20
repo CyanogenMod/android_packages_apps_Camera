@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -99,6 +100,25 @@ public class MenuHelper {
 
     public interface MenuCallback {
         public void run(Uri uri, ImageManager.IImage image);
+    }
+
+    private static void closeSilently(Closeable target) {
+        try {
+            if (target != null) target.close();
+        } catch (Throwable t) {
+            // ignore all exceptions, that's what silently means
+        }
+    }
+
+    public static long getImageFileSize(ImageManager.IImage image) {
+        java.io.InputStream data = image.fullSizeImageData();
+        try {
+            return data.available();
+        } catch (java.io.IOException ex) {
+            return -1;
+        } finally {
+            closeSilently(data);
+        }
     }
 
     static MenuItemsResult addImageMenuItems(
@@ -264,17 +284,9 @@ public class MenuHelper {
                             TextView textView = (TextView) d.findViewById(R.id.details_image_title);
                             textView.setText(image.getDisplayName());
 
-                            java.io.InputStream data = image.fullSizeImageData();
-                            String lengthString = "";
-                            try {
-                                long length = data.available();
-                                lengthString =
-                                    android.text.format.Formatter.formatFileSize(activity, length);
-                                data.close();
-                            } catch (java.io.IOException ex) {
-
-                            } finally {
-                            }
+                            long length = getImageFileSize(image);
+                            String lengthString = lengthString = length < 0 ? ""
+                                    : android.text.format.Formatter.formatFileSize(activity, length);
                             ((TextView)d.findViewById(R.id.details_file_size_value))
                                 .setText(lengthString);
 

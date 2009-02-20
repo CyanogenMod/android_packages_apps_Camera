@@ -39,12 +39,10 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -62,25 +60,23 @@ import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.StatFs;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images;
 import android.text.format.DateFormat;
 import android.util.Config;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -94,7 +90,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_TIME_OPERATIONS = DEBUG && false;
-    private static final boolean DEBUG_FAKE_GPS_LOCATION = DEBUG && false;
 
     private static final int CROP_MSG = 1;
     private static final int KEEP = 2;
@@ -581,23 +576,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mParameters.remove("gps-altitude");
             mParameters.remove("gps-timestamp");
 
-            if (DEBUG_FAKE_GPS_LOCATION) {
-                // Google London office, having trouble encoding longitude
-
-                if (false) {
-                    // This fails:
-                    mParameters.set("gps-latitude", "51.49473309516907");
-                    mParameters.set("gps-longitude", "-0.14598190784454346");
-                    mParameters.set("gps-altitude", "71.0"); // meters
-                    mParameters.set("gps-timestamp", "1233744883");
-                } else {
-                    // This works OK:
-                    mParameters.set("gps-latitude", "51.49473309516907");
-                    mParameters.set("gps-longitude", "-1.0");
-                    mParameters.set("gps-altitude", "71.0"); // meters
-                    mParameters.set("gps-timestamp", "1233744883");
-                }
-            } else if (loc != null) {
+            if (loc != null) {
                 double lat = loc.getLatitude();
                 double lon = loc.getLongitude();
                 boolean hasLatLon = (lat != 0.0d) || (lon != 0.0d);
@@ -853,6 +832,8 @@ public class Camera extends Activity implements View.OnClickListener,
             loadServiceThread.join();
         } catch (InterruptedException ex) {
         }
+        
+        ImageManager.ensureOSXCompatibleFolder();
     }
 
     @Override
