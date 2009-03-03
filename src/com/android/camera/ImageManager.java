@@ -1835,7 +1835,7 @@ public class ImageManager {
 
             if (mimeType.equals("image/png"))
                 return Bitmap.CompressFormat.PNG;
-            else if (mimeType.equals("image/png"))
+            else if (mimeType.equals("image/gif"))
                 return Bitmap.CompressFormat.PNG;
 
             return Bitmap.CompressFormat.JPEG;
@@ -2130,8 +2130,8 @@ public class ImageManager {
 
     }
 
-    final static private String sWhereClause = "(" + Images.Media.MIME_TYPE + "=? or " + Images.Media.MIME_TYPE + "=?" + ")";
-    final static private String[] sAcceptableImageTypes = new String[] { "image/jpeg", "image/png" };
+    final static private String sWhereClause = "(" + Images.Media.MIME_TYPE + " in (?, ?, ?))";
+    final static private String[] sAcceptableImageTypes = new String[] { "image/jpeg", "image/png", "image/gif" };
     final static private String sMiniThumbIsNull = "mini_thumb_magic isnull";
 
     private static final String[] IMAGE_PROJECTION = new String[] {
@@ -2360,10 +2360,14 @@ public class ImageManager {
                 if (VERBOSE) {
                     Log.v(TAG, "A: got bitmap " + b + " with sampleSize " + options.inSampleSize + " took " + (t2-t1));
                 }
-                pfd.close();
-            } catch (IOException ex) {
-                if (VERBOSE) Log.v(TAG, "got io exception " + ex);
+            } catch (OutOfMemoryError ex) {
+                if (VERBOSE) Log.v(TAG, "got oom exception " + ex);
                 return null;
+            } finally {
+                try {
+                    pfd.close();
+                } catch (IOException ex) {
+                }
             }
             return b;
         }
@@ -3193,10 +3197,14 @@ public class ImageManager {
                 if (VERBOSE) {
                     Log.v(TAG, "C: got bitmap " + b + " with sampleSize " + options.inSampleSize);
                 }
-                pfdInput.close();
-            } catch (IOException ex) {
-                if (VERBOSE) Log.v(TAG, "got io exception " + ex);
+            } catch (OutOfMemoryError ex) {
+                if (VERBOSE) Log.v(TAG, "got oom exception " + ex);
                 return null;
+            } finally {
+                try {
+                    pfdInput.close();
+                } catch (IOException ex) {
+                }
             }
             return b;
         }

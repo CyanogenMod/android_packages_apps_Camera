@@ -148,4 +148,8 @@
     <string name="resume_playing_restart">"시작"</string>
     <string name="gadget_title">"사진 프레임"</string>
     <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
+    <!-- no translation found for file_info_title (1628963357466012538) -->
+    <skip />
+    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
+    <skip />
 </resources>

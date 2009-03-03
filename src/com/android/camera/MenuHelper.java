@@ -434,9 +434,11 @@ public class MenuHelper {
                 public boolean onMenuItemClick(MenuItem item) {
                     onInvoke.run(new MenuCallback() {
                         public void run(Uri uri, IImage image) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW,
-                                    image.fullSizeImageUri());
-                            activity.startActivity(intent);
+                            if (image != null) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        image.fullSizeImageUri());
+                                activity.startActivity(intent);
+                            }
                         }});
                     return true;
                 }
