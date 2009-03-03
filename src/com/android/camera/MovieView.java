@@ -127,46 +127,37 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener, 
         }
     }
 
-    private static boolean uriSupportsBookmarks(Uri uri) {
-        String scheme = uri.getScheme();
-        String authority = uri.getAuthority();
-        return ("content".equalsIgnoreCase(scheme)
-                && MediaStore.AUTHORITY.equalsIgnoreCase(authority));
-    }
-    
     private Integer getBookmark() {
-        if (!uriSupportsBookmarks(mUri)) {
-            return null;
-        }
-        
-        String[] projection = new String[]{Video.VideoColumns.DURATION,
-                Video.VideoColumns.BOOKMARK};
-        try {
-            Cursor cursor = getContentResolver().query(mUri, projection, null, null, null);
-            if (cursor != null) {
-                try {
-                    if ( cursor.moveToFirst() ) {
-                        int duration = getCursorInteger(cursor, 0);
-                        int bookmark = getCursorInteger(cursor, 1);
-                        final int ONE_MINUTE = 60 * 1000;
-                        final int TWO_MINUTES = 2 * ONE_MINUTE;
-                        final int FIVE_MINUTES = 5 * ONE_MINUTE;
-                        if ((bookmark < TWO_MINUTES)
-                                || (duration < FIVE_MINUTES)
-                                || (bookmark > (duration - ONE_MINUTE))) {
-                            return null;
+        String scheme = mUri.getScheme();
+        if ("content".equalsIgnoreCase(scheme)) {
+            String[] projection = new String[]{Video.VideoColumns.DURATION,
+                    Video.VideoColumns.BOOKMARK};
+            try {
+                Cursor cursor = getContentResolver().query(mUri, projection, null, null, null);
+                if (cursor != null) {
+                    try {
+                        if ( cursor.moveToFirst() ) {
+                            int duration = getCursorInteger(cursor, 0);
+                            int bookmark = getCursorInteger(cursor, 1);
+                            final int ONE_MINUTE = 60 * 1000;
+                            final int TWO_MINUTES = 2 * ONE_MINUTE;
+                            final int FIVE_MINUTES = 5 * ONE_MINUTE;
+                            if ((bookmark < TWO_MINUTES)
+                                    || (duration < FIVE_MINUTES)
+                                    || (bookmark > (duration - ONE_MINUTE))) {
+                                return null;
+                            }
+
+                            return new Integer(bookmark);
                         }
-
-                        return new Integer(bookmark);
+                    } finally {
+                        cursor.close();
                     }
-                } finally {
-                    cursor.close();
                 }
+            } catch (SQLiteException e) {
+                // ignore
             }
-        } catch (SQLiteException e) {
-            // ignore
         }
-
         return null;
     }
 
@@ -182,22 +173,19 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener, 
     }
 
     private void setBookmark(int bookmark) {
-        if (!uriSupportsBookmarks(mUri)) {
-            return;
-        }
-        
-        ContentValues values = new ContentValues();
-        values.put(Video.VideoColumns.BOOKMARK, Integer.toString(bookmark));
-        try {
-            getContentResolver().update(mUri, values, null, null);
-        } catch (SecurityException ex) {
-            // Ignore, can happen if we try to set the bookmark on a read-only resource
-            // such as a video attached to GMail.
-        } catch (SQLiteException e) {
-            // ignore. can happen if the content doesn't support a bookmark column.
-        } catch (UnsupportedOperationException e) {
-            // ignore. can happen if the external volume is already detached.
-        }
+        String scheme = mUri.getScheme();
+        if ("content".equalsIgnoreCase(scheme)) {
+            ContentValues values = new ContentValues();
+            values.put(Video.VideoColumns.BOOKMARK, Integer.toString(bookmark));
+            try {
+                getContentResolver().update(mUri, values, null, null);
+            } catch (SecurityException ex) {
+                // Ignore, can happen if we try to set the bookmark on a read-only resource
+                // such as a video attached to GMail.
+            } catch (SQLiteException e) {
+                // ignore. can happen if the content doesn't support a bookmark column.
+            }
+       }
     }
 
     @Override

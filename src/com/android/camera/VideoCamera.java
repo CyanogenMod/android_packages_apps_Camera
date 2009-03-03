@@ -67,7 +67,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class VideoCamera extends Activity implements View.OnClickListener,
-    ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback, MediaRecorder.OnErrorListener {
+    ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback {
 
     private static final String TAG = "videocamera";
 
@@ -104,6 +104,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private MediaRecorder mMediaRecorder;
     private boolean mMediaRecorderRecording = false;
+    private boolean mNeedToRegisterRecording;
     private long mRecordingStartTime;
     // The video file that the hardware camera is about to record into
     // (or is recording into.)
@@ -194,22 +195,16 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-                mHasSdCard = false;
-                stopVideoRecording();
-                initializeVideo();
-            } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
+            if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 // SD card available
                 // TODO put up a "please wait" message
                 // TODO also listen for the media scanner finished message
                 updateStorageHint();
                 mHasSdCard = true;
-                initializeVideo();
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
                 updateStorageHint();
                 mHasSdCard = false;
-                releaseMediaRecorder();
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
                 Toast.makeText(VideoCamera.this, getResources().getString(R.string.wait), 5000);
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
@@ -413,7 +408,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_EJECT);
         intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
@@ -675,6 +669,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
 
         mMediaRecorder = new MediaRecorder();
+        mNeedToRegisterRecording = false;
 
         if (DEBUG_SUPPRESS_AUDIO_RECORDING) {
             Log.v(TAG, "DEBUG_SUPPRESS_AUDIO_RECORDING is true.");
@@ -684,20 +679,17 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
-        if (!mHasSdCard) {
-            mMediaRecorder.setOutputFile("/dev/null");
+        // We try Uri in intent first. If it doesn't work, use our own instead.
+        if (mCameraVideoFileDescriptor != null) {
+            mMediaRecorder.setOutputFile(mCameraVideoFileDescriptor);
         } else {
-            // We try Uri in intent first. If it doesn't work, use our own instead.
-            if (mCameraVideoFileDescriptor != null) {
-                mMediaRecorder.setOutputFile(mCameraVideoFileDescriptor);
-            } else {
-                createVideoPath();
-                mMediaRecorder.setOutputFile(mCameraVideoFilename);
-            }
+            createVideoPath();
+            mMediaRecorder.setOutputFile(mCameraVideoFilename);
         }
 
         boolean videoQualityHigh = getBooleanPreference(CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+
 
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
             int extraVideoQuality = intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
@@ -857,15 +849,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         item.setIcon(android.R.drawable.ic_menu_preferences);
     }
 
-    // from MediaRecorder.OnErrorListener
-    public void onError(MediaRecorder mr, int what, int extra) {
-        if (what == MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN) {
-            // We may have run out of space on the sdcard.
-            stopVideoRecording();
-            updateStorageHint();
-        }
-    }
-
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
         if (!mMediaRecorderRecording) {
@@ -876,10 +859,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
 
             // Check mMediaRecorder to see whether it is initialized or not.
-            if (mMediaRecorder == null) initializeVideo();
-
+            if (mMediaRecorder == null) {
+                initializeVideo();
+            }
             try {
-                mMediaRecorder.setOnErrorListener(this);
                 mMediaRecorder.start();   // Recording is now started
             } catch (RuntimeException e) {
                 Log.e(TAG, "Could not start media recorder. ", e);
@@ -949,18 +932,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
-        boolean needToRegisterRecording = false;
         if (mMediaRecorderRecording || mMediaRecorder != null) {
             if (mMediaRecorderRecording && mMediaRecorder != null) {
-                try {
-                    mMediaRecorder.setOnErrorListener(null);
-                    mMediaRecorder.stop();
-                } catch (RuntimeException e) {
-                    Log.e(TAG, "stop fail: " + e.getMessage());
-                }
+                mMediaRecorder.stop();
                 mCurrentVideoFilename = mCameraVideoFilename;
                 Log.v(TAG, "Setting current video filename: " + mCurrentVideoFilename);
-                needToRegisterRecording = true;
+                mNeedToRegisterRecording = true;
                 mMediaRecorderRecording = false;
             }
             releaseMediaRecorder();
@@ -968,8 +945,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mRecordingTimeView.setVisibility(View.GONE);
             setScreenTimeoutLong();
         }
-        if (needToRegisterRecording && mHasSdCard) registerVideo();
-
+        if (mNeedToRegisterRecording) {
+            registerVideo();
+            mNeedToRegisterRecording = false;
+        }
         mCameraVideoFilename = null;
         mCameraVideoFileDescriptor = null;
     }

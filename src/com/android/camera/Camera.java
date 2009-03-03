@@ -258,7 +258,7 @@ public class Camera extends Activity implements View.OnClickListener,
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 // SD card available
-                updateStorageHint(calculatePicturesRemaining());
+                updateStorageHint();
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED) ||
                     action.equals(Intent.ACTION_MEDIA_CHECKING)) {
                 // SD card unavailable
@@ -832,7 +832,7 @@ public class Camera extends Activity implements View.OnClickListener,
             loadServiceThread.join();
         } catch (InterruptedException ex) {
         }
-
+        
         ImageManager.ensureOSXCompatibleFolder();
     }
 
@@ -1355,40 +1355,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         return mCameraDevice != null;
     }
-    
-    private boolean isLastPictureValid() {
-        boolean isValid = true;
-        if (mLastPictureUri == null)  return false;
-        try {
-            mContentResolver.openFileDescriptor(mLastPictureUri, "r").close();
-        }
-        catch (Exception ex) {
-            isValid = false;
-            Log.e(TAG, ex.toString());
-        }
-        return isValid;
-    }
-    
-    private void updateLastImage() {
-        ImageManager.IImageList list = ImageManager.instance().allImages(
-            this,
-            mContentResolver,
-            dataLocation(),
-            ImageManager.INCLUDE_IMAGES,
-            ImageManager.SORT_ASCENDING,
-            ImageManager.CAMERA_IMAGE_BUCKET_ID);
-        int count = list.getCount();
-        if (count > 0) {
-            ImageManager.IImage image = list.getImageAt(count-1);
-            mLastPictureUri = image.fullSizeImageUri();
-            Log.v(TAG, "updateLastImage: count="+ count + 
-                ", lastPictureUri="+mLastPictureUri);
-            setLastPictureThumb(image.miniThumbBitmap(), mLastPictureUri);
-        } else {
-            mLastPictureUri = null;
-        }
-        list.deactivate();
-    }
 
     private void restartPreview() {
         VideoPreview surfaceView = mSurfaceView;
@@ -1405,10 +1371,6 @@ public class Camera extends Activity implements View.OnClickListener,
         // let the user take a picture, and delete that file if needed to save the new photo.
         calculatePicturesRemaining();
 
-        if (!isLastPictureValid()) {
-            updateLastImage();
-        }
-    
         if (mShouldShowLastPictureButton) {
             mShouldShowLastPictureButton = false;
             mLastPictureButton.setVisibility(View.VISIBLE);
@@ -1561,7 +1523,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void viewLastImage() {
         Uri targetUri = mLastPictureUri;
-        if (targetUri != null && isLastPictureValid()) {
+        if (targetUri != null) {
             targetUri = targetUri.buildUpon().
                 appendQueryParameter("bucketId", ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
             Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
@@ -1576,8 +1538,6 @@ public class Camera extends Activity implements View.OnClickListener,
             } catch (android.content.ActivityNotFoundException ex) {
                 // ignore.
             }
-        } else {
-            Log.e(TAG, "Can't view last image.");
         }
     }
 

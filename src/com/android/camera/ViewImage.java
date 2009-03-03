@@ -34,7 +34,7 @@ import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Config;
 import android.util.Log;
-import android.view.GestureDetector;
+import android.view.GestureDetector; 
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,7 +48,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 import android.widget.Toast;
-import android.widget.ZoomButtonsController;
 import android.widget.ZoomRingController;
 
 import com.android.camera.ImageManager.IImage;
@@ -127,9 +126,6 @@ public class ViewImage extends Activity implements View.OnClickListener
 
     private Runnable mDismissOnScreenControlsRunnable;
     private boolean mCameraReviewMode;
-
-    private int mCurrentOrientation;
-
 
     public ViewImage() {
     }
@@ -230,41 +226,38 @@ public class ViewImage extends Activity implements View.OnClickListener
         private ViewImage mViewImage;
         private boolean mEnableTrackballScroll;
         private GestureDetector mGestureDetector;
-
+        
         private static int TOUCH_AREA_WIDTH = 60;
-        
-        // The zoom ring setup:
-        // We limit the thumb on the zoom ring in the range 0 to 5/3*PI. The
-        // last PI/3 of the ring is left as a region that the thumb can't go in.
-        // The 5/3*PI range is divided into 60 steps. Each step scales the image
-        // by mScaleRate. We make mScaleRate^60 = maxZoom().
-        
-        // This is the max step value we can have for the zoom ring.
-        private static int MAX_STEP = 60;
-        // This is the angle we used to separate each step.
-        private static float STEP_ANGLE = (5 * (float) Math.PI / 3) / MAX_STEP;
-        // The scale rate for each step.
-        private float mScaleRate;
 
-        // Returns current scale step (numbered from 0 to MAX_STEP).
+        // Returns current scale step (numbered from 0 to 10).
         private int getCurrentStep() {
             float s = getScale();
-            float b = mScaleRate;
+            float b = sScaleRate;
             int step = (int)Math.round(Math.log(s) / Math.log(b));
-            return Math.max(0, Math.min(MAX_STEP, step));
+            return Math.max(0, Math.min(10, step));
         }
 
-        // Limit the thumb on the zoom ring in the range 0 to 5/3*PI. (clockwise
-        // angle is negative, and we need to mod 2*PI for the API to work.)
+        // Returns the max scale step this image can use.
+        private int getMaxStep() {
+            float s = maxZoom();
+            float b = sScaleRate;
+            int step = (int)Math.ceil(Math.log(s) / Math.log(b));
+            return Math.max(0, Math.min(10, step));
+        }
+
+        // The setup we use here is to have 12 steps (only 0 to 10 are used),
+        // each separated by angle PI/6. We allow clockwise rotation (zoom-in)
+        // from the beginning position only. So we set counter clockwise bound
+        // to 0 and set clockwise bound to (2 - N/6) * PI. (clockwise angle
+        // is negative, and we need to mod 2*PI for the API to work.)
         private void setZoomRingBounds() {
-            mScaleRate = (float) Math.pow(maxZoom(), 1.0 / MAX_STEP);
-            float limit = (2 - 5 / 3F) * (float) Math.PI;
-            mZoomRingController.setThumbClockwiseBound(limit);
+            int max_step = getMaxStep();
+            float max_angle = (2 - max_step / 6F) * (float)Math.PI;
+            mZoomRingController.setResetThumbAutomatically(false);
+            mZoomRingController.setThumbClockwiseBound(max_angle);
             mZoomRingController.setThumbCounterclockwiseBound(0);
         }
 
-        private ZoomButtonsController mZoomButtonsController;
-        
         // The zoom ring is set to visible by a double tap.
         private ZoomRingController mZoomRingController;
         private ZoomRingController.OnZoomListener mZoomListener =
@@ -283,17 +276,17 @@ public class ViewImage extends Activity implements View.OnClickListener
 
             public void onEndPan() {
             }
-
+            
             // The clockwise angle is negative, so we need to mod 2*PI
             private float stepToAngle(int step) {
-                float angle = step * STEP_ANGLE;
-                angle = (float) Math.PI * 2 - angle;
+                float angle = step * (float)Math.PI / 6;
+                angle = (float)Math.PI * 2 - angle;
                 return angle;
             }
-
+            
             private int angleToStep(double angle) {
                 angle = Math.PI * 2 - angle;
-                int step = (int)Math.round(angle / STEP_ANGLE);
+                int step = (int)Math.round(angle / (Math.PI / 6));
                 return step;
             }
 
@@ -327,11 +320,14 @@ public class ViewImage extends Activity implements View.OnClickListener
                 int deltaY = getHeight() / 2 - centerY;
                 panBy(deltaX, deltaY);
 
-                // Do zoom in/out.                
-                if (deltaStep > 0) {
-                    zoomIn((float) Math.pow(mScaleRate, deltaStep));
-                } else if (deltaStep < 0) {
-                    zoomOut((float) Math.pow(mScaleRate, -deltaStep));
+                // Do zoom in/out.
+                while (deltaStep > 0) {
+                    zoomIn();
+                    deltaStep--;
+                }
+                while (deltaStep < 0) {
+                    zoomOut();
+                    deltaStep++;
                 }
 
                 // Reverse the first centering.
@@ -360,31 +356,9 @@ public class ViewImage extends Activity implements View.OnClickListener
         private void setup(Context context) {
             mViewImage = (ViewImage) context;
             mZoomRingController = new ZoomRingController(context, this);
-            mZoomRingController.setVibration(false);
-            mZoomRingController.setZoomCallbackThreshold(STEP_ANGLE);
-            mZoomRingController.setResetThumbAutomatically(false);
             mZoomRingController.setCallback(mZoomListener);
-            mGestureDetector = new GestureDetector(getContext(), new MyGestureListener());
+            mGestureDetector = new GestureDetector(new MyGestureListener());
             mGestureDetector.setOnDoubleTapListener(new MyDoubleTapListener());
-            mZoomButtonsController = new ZoomButtonsController(context, this);
-            mZoomButtonsController.setOverviewVisible(false);
-            mZoomButtonsController.setCallback(new ZoomButtonsController.OnZoomListener() {
-
-                public void onCenter(int x, int y) {
-                    mZoomListener.onCenter(x, y);
-                }
-
-                public void onOverview() {
-                }
-
-                public void onVisibilityChanged(boolean visible) {
-                    mZoomListener.onVisibilityChanged(visible);
-                }
-
-                public void onZoom(boolean zoomIn) {
-                    mZoomListener.onSimpleZoom(zoomIn);
-                }
-            });
         }
 
         public void setEnableTrackballScroll(boolean enable) {
@@ -419,40 +393,34 @@ public class ViewImage extends Activity implements View.OnClickListener
                 return true;
             }
         }
-
+        
         private class MyDoubleTapListener implements GestureDetector.OnDoubleTapListener {
             // On single tap, we show the arrows. We also change to the
-            // prev/next image if the user taps on the left/right region.
+            // prev/next image if the user taps on the left/right region. 
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 ViewImage viewImage = mViewImage;
 
                 int viewWidth = getWidth();
                 int x = (int) e.getX();
-                int y = (int) e.getY();
+                int y = (int) e.getY(); 
                 if (x < TOUCH_AREA_WIDTH) {
                     viewImage.moveNextOrPrevious(-1);
                 } else if (x > viewWidth - TOUCH_AREA_WIDTH) {
                     viewImage.moveNextOrPrevious(1);
                 }
-
+                
                 viewImage.setMode(MODE_NORMAL);
                 viewImage.showOnScreenControls();
 
                 return true;
             }
-
+            
             // On double tap, we show the zoom ring control.
             public boolean onDoubleTapEvent(MotionEvent e) {
                 mViewImage.setMode(MODE_NORMAL);
-                mZoomRingController.handleDoubleTapEvent(e);
-                mZoomButtonsController.handleDoubleTapEvent(e);
+                mZoomRingController.setVisible(true);
                 return true;
             }
-
-            public boolean onDoubleTap(MotionEvent e) {
-                return false;
-            }
-
         }
 
         @Override
@@ -556,7 +524,6 @@ public class ViewImage extends Activity implements View.OnClickListener
         @Override
         protected void onDetachedFromWindow() {
             mZoomRingController.setVisible(false);
-            mZoomButtonsController.setVisible(false);
         }
 
     }
@@ -737,27 +704,28 @@ public class ViewImage extends Activity implements View.OnClickListener
             mImageMenuRunnable.gettingReadyToOpen(menu, mAllImages.getImageAt(mCurrentPosition));
         }
 
+        menu.findItem(MenuHelper.MENU_IMAGE_SHARE).setEnabled(isCurrentImageShareable());
+
+        return true;
+    }
+
+    private boolean isCurrentImageShareable() {
+        IImage image = mAllImages.getImageAt(mCurrentPosition);
+        if (image != null){
+            Uri uri = image.fullSizeImageUri();
+            String fullUri = uri.toString();
+            return fullUri.startsWith(MediaStore.Images.Media.INTERNAL_CONTENT_URI.toString()) ||
+                    fullUri.startsWith(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString());
+        }
         return true;
     }
 
     @Override
     public void onConfigurationChanged(android.content.res.Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        boolean changed = mCurrentOrientation != newConfig.orientation;
-        mCurrentOrientation = newConfig.orientation;
-        if (changed) {
-            if (mGetter != null) {
-                // kill off any background image fetching
-                mGetter.cancelCurrent();
-                mGetter.stop();
-            }
-            makeGetter();
-            mFirst = true;
-
-            // clear off the current set of images since we need to reload
-            // them at the right size
+        if (newConfig.orientation != getResources().getConfiguration().orientation) {
             for (ImageViewTouchBase iv: mImageViews) {
-                iv.clear();
+                iv.setImageBitmapResetBase(null, false, true);
             }
             MenuHelper.requestOrientation(this, mPrefs);
         }
@@ -1122,7 +1090,6 @@ public class ViewImage extends Activity implements View.OnClickListener
         mShowActionIcons = intent.getBooleanExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS, false);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mCurrentOrientation = getResources().getConfiguration().orientation;
 
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1229,6 +1196,9 @@ public class ViewImage extends Activity implements View.OnClickListener
         }
 
         setOrientation();
+
+        // Show a tutorial for the new zoom interaction (the method ensure we only show it once)
+        ZoomRingController.showZoomTutorialOnce(this);
     }
 
     private void setOrientation() {
@@ -1557,9 +1527,6 @@ public class ViewImage extends Activity implements View.OnClickListener
         setImage(mCurrentPosition);
 
         setOrientation();
-
-        // Show a tutorial for the new zoom interaction (the method ensure we only show it once)
-        ZoomRingController.showZoomTutorialOnce(this);
     }
 
     @Override
@@ -1583,7 +1550,6 @@ public class ViewImage extends Activity implements View.OnClickListener
             iv.recycleBitmaps();
             iv.setImageBitmap(null, true);
         }
-        ZoomRingController.finishZoomTutorial(this, false);
     }
 
     @Override
