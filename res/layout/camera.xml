@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/camera"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal">
+
+    <com.android.camera.VideoPreview
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true" />
+          
+    <View
+        android:id="@+id/blackout"
+        android:background="#ff000000"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="invisible" />
+
+    <com.android.camera.ShutterButton
+        android:id="@+id/shutter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_camera_indicator_photo"
+        android:background="@drawable/ic_btn_camera_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="50dip"
+        android:layout_marginTop="10dip"
+        android:scaleType="center" />
+
+    <ImageView
+        android:id="@+id/focus_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_camera_indicator_auto_focus_green"
+        android:layout_alignLeft="@id/shutter_button"
+        android:layout_alignTop="@id/shutter_button"
+        android:layout_marginLeft="39dip"
+        android:layout_marginTop="16dip"
+        android:scaleType="center"
+        android:visibility="gone" />
+        
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/last_picture_button"
+        android:layout_width="72dip"
+        android:layout_height="72dip"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="10dip" />
+</RelativeLayout>
