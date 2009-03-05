@@ -144,10 +144,12 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private boolean mPausing = false;
 
-    private boolean mIsFocusing = false;
-    private boolean mIsFocused = false;
-    private boolean mIsFocusButtonPressed = false;
-    private boolean mCaptureOnFocus = false;
+    private static final int FOCUS_NOT_STARTED = 0;
+    private static final int FOCUSING = 1;
+    private static final int FOCUSING_SNAP_ON_FINISH = 2;
+    private static final int FOCUS_SUCCESS = 3;
+    private static final int FOCUS_FAIL = 4;
+    private int mFocusState = FOCUS_NOT_STARTED;
 
     private static ContentResolver mContentResolver;
     private boolean mDidRegister = false;
@@ -381,20 +383,27 @@ public class Camera extends Activity implements View.OnClickListener,
                 Log.v(TAG, "Auto focus took " + (mFocusCallbackTime - mFocusStartTime) + " ms.");
             }
 
-            mIsFocusing = false;
-            mIsFocused = focused;
-            if (focused) {
-                if (mCaptureOnFocus && mCaptureObject != null) {
-                    // No need to play the AF sound if we're about to play the shutter sound
-                    mCaptureObject.onSnap();
-                    clearFocus();
-                } else {
-                    ToneGenerator tg = mFocusToneGenerator;
-                    if (tg != null)
-                       tg.startTone(ToneGenerator.TONE_PROP_BEEP2);
+            if (mFocusState == FOCUSING_SNAP_ON_FINISH && mCaptureObject != null) {
+                // Take the picture no matter focus succeeds or fails.
+                // No need to play the AF sound if we're about to play the shutter sound.
+                mCaptureObject.onSnap();
+                clearFocusState();
+            } else if (mFocusState == FOCUSING) {
+                // User is half-pressing the focus key. Play the focus tone.
+                // Do not take the picture now.
+                ToneGenerator tg = mFocusToneGenerator;
+                if (tg != null)
+                   tg.startTone(ToneGenerator.TONE_PROP_BEEP2);
+                if (focused) {
+                    mFocusState = FOCUS_SUCCESS;
                 }
-                mCaptureOnFocus = false;
-            }
+                else {
+                    mFocusState = FOCUS_FAIL;
+                }
+            } else if (mFocusState == FOCUS_NOT_STARTED) {
+                // User has released the focus key before focus completes.
+                // Do nothing.
+            } 
             updateFocusIndicator();
         }
     };
@@ -769,7 +778,11 @@ public class Camera extends Activity implements View.OnClickListener,
                 mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 mOrientationListener = new OrientationEventListener(Camera.this) {
                     public void onOrientationChanged(int orientation) {
-                        mLastOrientation = orientation;
+                        // We keep the last known orientation. So if the user
+                        // first orient the camera then point the camera to
+                        // floor/sky, we still have the correct orientation.
+                        if (orientation != ORIENTATION_UNKNOWN)
+                            mLastOrientation = orientation;
                     }
                 };
             }
@@ -993,7 +1006,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public void onShutterButtonClick(ShutterButton button) {
         switch (button.getId()) {
             case R.id.shutter_button:
-                doSnap(false);
+                doSnap();
                 break;
         }
     }
@@ -1204,38 +1217,33 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void autoFocus() {
         updateFocusIndicator();
-        if (!mIsFocusing) {
+        if (mFocusState != FOCUSING && mFocusState != FOCUSING_SNAP_ON_FINISH) {
             if (mCameraDevice != null) {
-                mIsFocusing = true;
-                mIsFocused = false;
-                mCameraDevice.autoFocus(mAutoFocusCallback);
                 if (DEBUG_TIME_OPERATIONS) {
                     mFocusStartTime = System.currentTimeMillis();
                 }
+                mFocusState = FOCUSING;
+                mCameraDevice.autoFocus(mAutoFocusCallback);
             }
         }
     }
 
-    private void clearFocus() {
-        mIsFocusing = false;
-        mIsFocused = false;
-        mIsFocusButtonPressed = false;
+    private void clearFocusState() {
+        mFocusState = FOCUS_NOT_STARTED;
     }
 
     private void updateFocusIndicator() {
         mHandler.post(new Runnable() {
             public void run() {
-                if (mIsFocusing || !mIsFocusButtonPressed) {
+                if (mFocusState == FOCUS_SUCCESS) {
+                    mFocusIndicator.setVisibility(View.VISIBLE);
+                    mFocusIndicator.clearAnimation();
+                } else if (mFocusState == FOCUS_FAIL) {
+                    mFocusIndicator.setVisibility(View.VISIBLE);
+                    mFocusIndicator.startAnimation(mFocusBlinkAnimation);
+                } else {
                     mFocusIndicator.setVisibility(View.GONE);
                     mFocusIndicator.clearAnimation();
-                } else {
-                    if (mIsFocused) {
-                        mFocusIndicator.setVisibility(View.VISIBLE);
-                        mFocusIndicator.clearAnimation();
-                    } else {
-                        mFocusIndicator.setVisibility(View.VISIBLE);
-                        mFocusIndicator.startAnimation(mFocusBlinkAnimation);
-                    }
                 }
             }
         });
@@ -1261,7 +1269,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
                 if (event.getRepeatCount() == 0) {
-                    doSnap(false);
+                    doSnap();
                 }
                 return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
@@ -1294,43 +1302,39 @@ public class Camera extends Activity implements View.OnClickListener,
         return super.onKeyUp(keyCode, event);
     }
 
-    private void doSnap(boolean needAutofocus) {
-        // The camera operates in focus-priority mode, meaning that we take a picture
-        // when focusing completes, and only if it completes successfully. If the user
-        // has half-pressed the shutter and already locked focus, we can take the photo
-        // right away, otherwise we need to start AF.
-        if (mIsFocused || !mPreviewing) {
+    private void doSnap() {
+        // If the user has half-pressed the shutter and focus is completed, we
+        // can take the photo right away.
+        if ((mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL) 
+                || !mPreviewing) {
             // doesn't get set until the idler runs
             if (mCaptureObject != null) {
                 mCaptureObject.onSnap();
             }
-            clearFocus();
+            clearFocusState();
             updateFocusIndicator();
         } else {
-            // Half pressing the shutter (i.e. the focus button event) will already have
-            // requested AF for us, so just request capture on focus here. If AF has
-            // already failed, we don't want to trigger it again.
-            mCaptureOnFocus = true;
-            if (needAutofocus && !mIsFocusButtonPressed) {
-                // But we do need to start AF for DPAD_CENTER
-                autoFocus();
-            }
+            // Half pressing the shutter (i.e. the focus button event) will 
+            // already have requested AF for us, so just request capture on 
+            // focus here.
+            mFocusState = FOCUSING_SNAP_ON_FINISH;
         }
     }
 
     private void doFocus(boolean pressed) {
-        if (pressed) {
-            mIsFocusButtonPressed = true;
-            mCaptureOnFocus = false;
+        if (pressed) {  // Focus key down.
             if (mPreviewing) {
                 autoFocus();
             } else if (mCaptureObject != null) {
                 // Save and restart preview
                 mCaptureObject.onSnap();
             }
-        } else {
-            clearFocus();
-            updateFocusIndicator();
+        } else {  // Focus key up.
+            if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
+                // User releases half-pressed focus key.
+                clearFocusState();
+                updateFocusIndicator();
+            }
         }
     }
 
@@ -1414,7 +1418,7 @@ public class Camera extends Activity implements View.OnClickListener,
         // let the user take a picture, and delete that file if needed to save the new photo.
         calculatePicturesRemaining();
 
-        if (!isLastPictureValid()) {
+        if (!isImageCaptureIntent() && !isLastPictureValid()) {
             updateLastImage();
         }
     

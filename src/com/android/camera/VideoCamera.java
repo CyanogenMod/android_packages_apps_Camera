@@ -119,13 +119,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     boolean mPausing = false;
 
     static ContentResolver mContentResolver;
-    boolean mDidRegister = false;
 
     int mCurrentZoomIndex = 0;
 
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
-    private boolean mHasSdCard;
 
     ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
@@ -195,25 +193,20 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-                mHasSdCard = false;
+                updateStorageHint(false);
                 stopVideoRecording();
                 initializeVideo();
             } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                // SD card available
-                // TODO put up a "please wait" message
-                // TODO also listen for the media scanner finished message
-                updateStorageHint();
-                mHasSdCard = true;
+                updateStorageHint(true);
                 initializeVideo();
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
-                updateStorageHint();
-                mHasSdCard = false;
+                updateStorageHint(false);
                 releaseMediaRecorder();
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
                 Toast.makeText(VideoCamera.this, getResources().getString(R.string.wait), 5000);
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                updateStorageHint();
+                updateStorageHint(true);
             }
         }
     };
@@ -264,29 +257,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mShutterButton.setOnShutterButtonListener(this);
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
-    }
-
-    @Override
-    public void onStart() {
-        if (DEBUG_LOG_APP_LIFECYCLE) {
-            Log.v(TAG, "onStart " + this.hashCode());
-        }
-        super.onStart();
-
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-                final boolean storageOK = getAvailableStorage() >= LOW_STORAGE_THRESHOLD;
-
-                if (!storageOK) {
-                    mHandler.post(new Runnable() {
-                        public void run() {
-                            updateStorageHint();
-                        }
-                    });
-                }
-            }
-        });
-        t.start();
     }
 
     public void onClick(View v) {
@@ -375,17 +345,13 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private OnScreenHint mStorageHint;
 
-    private void updateStorageHint() {
-        long remaining = getAvailableStorage();
+    private void updateStorageHint(boolean mayHaveSd) {
+        long remaining = mayHaveSd ? getAvailableStorage() : NO_STORAGE_ERROR;
         String errorMessage = null;
         if (remaining == NO_STORAGE_ERROR) {
             errorMessage = getString(R.string.no_storage);
         } else if (remaining < LOW_STORAGE_THRESHOLD) {
             errorMessage = getString(R.string.spaceIsLow_content);
-            if (mStorageHint != null) {
-                mStorageHint.cancel();
-                mStorageHint = null;
-            }
         }
         if (errorMessage != null) {
             if (mStorageHint == null) {
@@ -419,8 +385,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
         intentFilter.addDataScheme("file");
         registerReceiver(mReceiver, intentFilter);
-        mDidRegister = true;
-        mHasSdCard = ImageManager.hasStorage();
+        updateStorageHint(true);
 
         mBlackout.setVisibility(View.INVISIBLE);
         if (mVideoFrameBitmap == null) {
@@ -452,10 +417,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         mPausing = true;
 
-        if (mDidRegister) {
-            unregisterReceiver(mReceiver);
-            mDidRegister = false;
-        }
+        unregisterReceiver(mReceiver);
         mBlackout.setVisibility(View.VISIBLE);
         setScreenTimeoutSystemDefault();
 
@@ -685,7 +647,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
-        if (!mHasSdCard) {
+        if (mStorageHint != null) {
             mMediaRecorder.setOutputFile("/dev/null");
         } else {
             // We try Uri in intent first. If it doesn't work, use our own instead.
@@ -864,8 +826,21 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (what == MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN) {
             // We may have run out of space on the sdcard.
             stopVideoRecording();
-            updateStorageHint();
+            updateStorageHint(true);
         }
+    }
+
+    /*
+     * Make sure we're not recording music playing in the background, ask
+     * the MediaPlaybackService to pause playback.
+     */
+    private void pauseAudioPlayback() {
+        // Shamelessly copied from MediaPlaybackService.java, which
+        // should be public, but isn't.
+        Intent i = new Intent("com.android.music.musicservicecommand");
+        i.putExtra("command", "pause");
+
+        sendBroadcast(i);
     }
 
     private void startVideoRecording() {
@@ -882,6 +857,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 Log.e(TAG, "Initialize video (MediaRecorder) failed.");
                 return;
             }
+
+            pauseAudioPlayback();
 
             try {
                 mMediaRecorder.setOnErrorListener(this);
@@ -973,7 +950,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mRecordingTimeView.setVisibility(View.GONE);
             setScreenTimeoutLong();
         }
-        if (needToRegisterRecording && mHasSdCard) registerVideo();
+        if (needToRegisterRecording && mStorageHint == null) registerVideo();
 
         mCameraVideoFilename = null;
         mCameraVideoFileDescriptor = null;

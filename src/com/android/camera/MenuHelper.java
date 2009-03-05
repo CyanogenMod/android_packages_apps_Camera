@@ -112,6 +112,7 @@ public class MenuHelper {
 
     public static long getImageFileSize(ImageManager.IImage image) {
         java.io.InputStream data = image.fullSizeImageData();
+        if (data == null) return -1;
         try {
             return data.available();
         } catch (java.io.IOException ex) {

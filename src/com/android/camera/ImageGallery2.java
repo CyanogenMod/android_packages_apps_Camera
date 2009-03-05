@@ -254,6 +254,10 @@ public class ImageGallery2 extends Activity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mGvs.mCurrentSpec == null) {
+            // View.onLayout hasn't been called so we can't handle onKeyDown event yet.
+            return false;
+        }
         boolean handled = true;
         int sel = mGvs.mCurrentSelection;
         int columns = mGvs.mCurrentSpec.mColumns;
@@ -332,7 +336,13 @@ public class ImageGallery2 extends Activity {
     private void launchCropperOrFinish(ImageManager.IImage img) {
         Bundle myExtras = getIntent().getExtras();
 
-        if (MenuHelper.getImageFileSize(img) > mVideoSizeLimit) {
+        long size = MenuHelper.getImageFileSize(img);
+        if (size < 0) {
+            // return if there image file is not available.
+            return;
+        }
+        
+        if (size > mVideoSizeLimit) {
 
             DialogInterface.OnClickListener buttonListener =
                     new DialogInterface.OnClickListener() {
@@ -1553,7 +1563,8 @@ public class ImageGallery2 extends Activity {
                     }
                     if (ImageManager.isVideo(image)) {
                         Drawable overlay = null;
-                        if (MenuHelper.getImageFileSize(image) <= mVideoSizeLimit) {
+                        long size = MenuHelper.getImageFileSize(image);
+                        if (size >= 0 && size <= mVideoSizeLimit) {
                             if (mVideoOverlay == null) {
                                 mVideoOverlay = getResources().getDrawable(
                                         R.drawable.ic_gallery_video_overlay);

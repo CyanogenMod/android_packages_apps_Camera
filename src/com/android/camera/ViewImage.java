@@ -341,9 +341,19 @@ public class ViewImage extends Activity implements View.OnClickListener
                 return (oldScale != getScale());
             }
 
-            public void onSimpleZoom(boolean zoomIn) {
-                if (zoomIn) zoomIn();
-                else zoomOut();
+            public void onSimpleZoom(boolean zoomIn, int centerX, int centerY) {
+                // First move centerX/centerY to the center of the view.
+                int deltaX = getWidth() / 2 - centerX;
+                int deltaY = getHeight() / 2 - centerY;
+                panBy(deltaX, deltaY);
+
+                if (zoomIn) {
+                    zoomIn();
+                } else {
+                    zoomOut();
+                }
+
+                panBy(-deltaX, -deltaY);
             }
         };
 
@@ -361,8 +371,7 @@ public class ViewImage extends Activity implements View.OnClickListener
             mViewImage = (ViewImage) context;
             mZoomRingController = new ZoomRingController(context, this);
             mZoomRingController.setVibration(false);
-            mZoomRingController.setZoomCallbackThreshold(STEP_ANGLE);
-            mZoomRingController.setResetThumbAutomatically(false);
+            mZoomRingController.setTickDelta(STEP_ANGLE);
             mZoomRingController.setCallback(mZoomListener);
             mGestureDetector = new GestureDetector(getContext(), new MyGestureListener());
             mGestureDetector.setOnDoubleTapListener(new MyDoubleTapListener());
@@ -382,7 +391,7 @@ public class ViewImage extends Activity implements View.OnClickListener
                 }
 
                 public void onZoom(boolean zoomIn) {
-                    mZoomListener.onSimpleZoom(zoomIn);
+                    mZoomListener.onSimpleZoom(zoomIn, getWidth()/2, getHeight()/2);
                 }
             });
         }

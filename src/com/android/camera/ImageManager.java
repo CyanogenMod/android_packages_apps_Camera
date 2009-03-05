@@ -73,7 +73,7 @@ public class ImageManager {
     public static String getBucketId(String path) {
         return String.valueOf(path.toLowerCase().hashCode());
     }
-    
+
     /**
      * OSX requires plugged-in USB storage to have path /DCIM/NNNAAAAA to be imported.
      * This is a temporary fix for bug#1655552.
@@ -4123,12 +4123,14 @@ public class ImageManager {
     }
 
     static public boolean hasStorage(boolean requireWriteAccess) {
+        //TODO: After fix the bug,  add "if (VERBOSE)" before logging errors.
         String state = Environment.getExternalStorageState();
-        if (VERBOSE) Log.v(TAG, "state is " + state);
+        Log.v(TAG, "storage state is " + state);
+
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             if (requireWriteAccess) {
                 boolean writable = checkFsWritable();
-                if (VERBOSE) Log.v(TAG, "writable is " + writable);
+                Log.v(TAG, "storage writable is " + writable);
                 return writable;
             } else {
                 return true;
