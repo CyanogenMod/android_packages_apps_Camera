@@ -618,8 +618,14 @@ public class Camera extends Activity implements View.OnClickListener,
                     String lonString = String.valueOf(lon);
                     mParameters.set("gps-latitude",  latString);
                     mParameters.set("gps-longitude", lonString);
-                    if (loc.hasAltitude())
+                    if (loc.hasAltitude()) {
                         mParameters.set("gps-altitude",  String.valueOf(loc.getAltitude()));
+                    } else {
+                        // for NETWORK_PROVIDER location provider, we may have
+                        // no altitude information, but the driver needs it, so
+                        // we fake one.
+                        mParameters.set("gps-altitude",  "0");
+                    }
                     if (loc.getTime() != 0) {
                         // Location.getTime() is UTC in milliseconds.
                         // gps-timestamp is UTC in seconds.

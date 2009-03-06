@@ -932,12 +932,10 @@ public class ViewImage extends Activity implements View.OnClickListener
                                             long t1;
                                             if (Config.LOGV) t1 = System.currentTimeMillis();
 
-                                            Bitmap b = null;
-                                            try {
-                                                b = mLoad.get();
-                                            } catch (OutOfMemoryError e) {
-                                                Log.e(TAG, "couldn't load full size bitmap for " + "");
-                                            }
+                                            // The return value could be null if the
+                                            // bitmap is too big, or we cancelled it.
+                                            Bitmap b = mLoad.get();
+
                                             if (Config.LOGV && b != null) {
                                                 long t2 = System.currentTimeMillis();
                                                 Log.v(TAG, "loading full image for " + image.fullSizeImageUri()
@@ -1550,10 +1548,6 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         if (mGetter == null) {
             makeGetter();
-        }
-
-        for (ImageViewTouchBase iv: mImageViews) {
-            iv.setImageBitmap(null, true);
         }
 
         mFirst = true;
