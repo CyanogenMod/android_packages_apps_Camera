@@ -92,7 +92,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final boolean DEBUG_TIME_OPERATIONS = DEBUG && false;
 
     private static final int CROP_MSG = 1;
-    private static final int KEEP = 2;
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
 
@@ -115,7 +114,6 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final int MENU_SAVE_CAMERA_DONE = 36;
     public static final int MENU_SAVE_CAMERA_VIDEO_DONE = 37;
 
-    private Toast mToast;
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
     private SharedPreferences mPreferences;
@@ -156,8 +154,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
-    private boolean mMenuSelectionMade;
-
     private ImageView mLastPictureButton;
     private LayerDrawable mVignette;
     private Animation mShowLastPictureButtonAnimation = new AlphaAnimation(0F, 1F);
@@ -193,22 +189,11 @@ public class Camera extends Activity implements View.OnClickListener,
 
 
     private Handler mHandler = new MainHandler();
-    private ProgressDialog mSavingProgress;
 
     private interface Capturer {
         Uri getLastCaptureUri();
         void onSnap();
-        void dismissFreezeFrame(boolean keep);
-        void cancelSave();
-        void cancelAutoDismiss();
-        void setDone(boolean wait);
-    }
-
-    private void cancelSavingNotification() {
-        if (mToast != null) {
-            mToast.cancel();
-            mToast = null;
-        }
+        void dismissFreezeFrame();
     }
 
     /** This Handler is used to post message back onto the main thread of the application */
@@ -216,21 +201,6 @@ public class Camera extends Activity implements View.OnClickListener,
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case KEEP: {
-                    keep();
-                    if (mSavingProgress != null) {
-                        mSavingProgress.cancel();
-                        mSavingProgress = null;
-                    }
-
-                    mKeepAndRestartPreview = true;
-
-                    if (msg.obj != null) {
-                        mHandler.post((Runnable)msg.obj);
-                    }
-                    break;
-                }
-
                 case RESTART_PREVIEW: {
                     if (mStatus == SNAPSHOT_IN_PROGRESS) {
                         // We are still in the processing of taking the picture, wait.
@@ -238,7 +208,7 @@ public class Camera extends Activity implements View.OnClickListener,
                         // TODO remove polling
                         mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, 100);
                     } else if (mStatus == SNAPSHOT_COMPLETED){
-                        mCaptureObject.dismissFreezeFrame(true);
+                        mCaptureObject.dismissFreezeFrame();
                         hidePostCaptureAlert();
                     }
                     break;
@@ -436,26 +406,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mCapturing = capturing;
         }
 
-        /*
-         * Tell the ImageCapture thread to exit when possible.
-         */
-        public void setDone(boolean wait) {
-        }
-
-        /*
-         * Tell the image capture thread to not "dismiss" the current
-         * capture when the current image is stored, etc.
-         */
-        public void cancelAutoDismiss() {
-        }
-
-        public void dismissFreezeFrame(boolean keep) {
-            if (keep) {
-                cancelSavingNotification();
-            } else {
-                Toast.makeText(Camera.this, R.string.camera_tossing, Toast.LENGTH_SHORT).show();
-            }
-
+        public void dismissFreezeFrame() {
             if (mStatus == SNAPSHOT_IN_PROGRESS) {
                 // If we are still in the process of taking a picture, then just post a message.
                 mHandler.sendEmptyMessage(RESTART_PREVIEW);
@@ -522,7 +473,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 storeImage(data, loc);
                 sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", mLastContentUri));
                 setLastPictureThumb(data, mCaptureObject.getLastCaptureUri());
-                dismissFreezeFrame(true);
+                dismissFreezeFrame();
             } else {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 4;
@@ -549,23 +500,6 @@ public class Camera extends Activity implements View.OnClickListener,
             if (mPausing) {
                 closeCamera();
             }
-        }
-
-        /*
-         * Tells the image capture thread to abort the capture of the
-         * current image.
-         */
-        public void cancelSave() {
-            if (!mCapturing) {
-                return;
-            }
-
-            mCancel = true;
-
-            if (mAddImageCancelable != null) {
-                mAddImageCancelable.cancel();
-            }
-            dismissFreezeFrame(false);
         }
 
         /*
@@ -675,6 +609,13 @@ public class Camera extends Activity implements View.OnClickListener,
                 mImageCapture.initiate(false);
             }
         }
+        
+        private void clearLastBitmap() {
+            if (mCaptureOnlyBitmap != null) {
+                mCaptureOnlyBitmap.recycle();
+                mCaptureOnlyBitmap = null;
+            }
+        }
     }
 
     private void setLastPictureThumb(byte[] data, Uri uri) {
@@ -748,19 +689,6 @@ public class Camera extends Activity implements View.OnClickListener,
         m.setScale(scale, scale, 0.5F, 0.5F);
         m.postTranslate(x, y);
         return m;
-    }
-
-    private void postAfterKeep(final Runnable r) {
-        Resources res = getResources();
-
-        if (mSavingProgress != null) {
-            mSavingProgress = ProgressDialog.show(this, res.getString(R.string.savingImage),
-                    res.getString(R.string.wait));
-        }
-
-        Message msg = mHandler.obtainMessage(KEEP);
-        msg.obj = r;
-        msg.sendToTarget();
     }
 
     /** Called with the activity is first created. */
@@ -896,7 +824,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void doAttach() {
         Bitmap bitmap = mImageCapture.getLastBitmap();
-        mCaptureObject.setDone(true);
 
         String cropValue = null;
         Uri saveUri = null;
@@ -1196,6 +1123,13 @@ public class Camera extends Activity implements View.OnClickListener,
             mStorageHint.cancel();
             mStorageHint = null;
         }
+        
+        // If we are in an image capture intent and has taken
+        // a picture, we just clear it in onPause.
+        mImageCapture.clearLastBitmap();
+        mImageCapture = null;
+        hidePostCaptureAlert();
+        
         super.onPause();
     }
 
@@ -1601,16 +1535,8 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     void keep() {
-        cancelSavingNotification();
         if (mCaptureObject != null) {
-            mCaptureObject.dismissFreezeFrame(true);
-        }
-    };
-
-    void toss() {
-        cancelSavingNotification();
-        if (mCaptureObject != null) {
-            mCaptureObject.cancelSave();
+            mCaptureObject.dismissFreezeFrame();
         }
     };
 
@@ -1686,7 +1612,7 @@ public class Camera extends Activity implements View.OnClickListener,
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         super.onOptionsMenuClosed(menu);
-        if (mImageSavingItem && !mMenuSelectionMade) {
+        if (mImageSavingItem) {
             // save the image if we presented the "advanced" menu
             // which happens if "menu" is pressed while in
             // SNAPSHOT_IN_PROGRESS  or SNAPSHOT_COMPLETED modes
@@ -1700,7 +1626,6 @@ public class Camera extends Activity implements View.OnClickListener,
         if (featureId == Window.FEATURE_OPTIONS_PANEL) {
             if (mStatus == SNAPSHOT_IN_PROGRESS) {
                 cancelAutomaticPreviewRestart();
-                mMenuSelectionMade = false;
             }
         }
         return super.onMenuOpened(featureId, menu);
@@ -1709,8 +1634,6 @@ public class Camera extends Activity implements View.OnClickListener,
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
-        mMenuSelectionMade = false;
 
         for (int i = 1; i <= MenuHelper.MENU_ITEM_MAX; i++) {
             if (i != MenuHelper.GENERIC_ITEM) {
@@ -1725,9 +1648,6 @@ public class Camera extends Activity implements View.OnClickListener,
             menu.setGroupVisible(MenuHelper.IMAGE_MODE_ITEM, true);
             mImageSavingItem = false;
         }
-
-        if (mCaptureObject != null)
-            mCaptureObject.cancelAutoDismiss();
 
         return true;
     }
@@ -1771,49 +1691,6 @@ public class Camera extends Activity implements View.OnClickListener,
             return false;
         } else {
             addBaseMenuItems(menu);
-            MenuHelper.addImageMenuItems(
-                    menu,
-                    MenuHelper.INCLUDE_ALL & ~MenuHelper.INCLUDE_ROTATE_MENU,
-                    true,
-                    Camera.this,
-                    mHandler,
-
-                    // Handler for deletion
-                    new Runnable() {
-                        public void run() {
-                            if (mCaptureObject != null) {
-                                mCaptureObject.cancelSave();
-                                Uri uri = mCaptureObject.getLastCaptureUri();
-                                if (uri != null) {
-                                    mContentResolver.delete(uri, null, null);
-                                }
-                            }
-                        }
-                    },
-                    new MenuHelper.MenuInvoker() {
-                        public void run(final MenuHelper.MenuCallback cb) {
-                            mMenuSelectionMade = true;
-                            postAfterKeep(new Runnable() {
-                                public void run() {
-                                    cb.run(mSelectedImageGetter.getCurrentImageUri(), mSelectedImageGetter.getCurrentImage());
-                                    if (mCaptureObject != null)
-                                        mCaptureObject.dismissFreezeFrame(true);
-                                }
-                            });
-                        }
-                    });
-
-            MenuItem gallery = menu.add(MenuHelper.IMAGE_SAVING_ITEM, MENU_SAVE_GALLERY_PHOTO, 0, R.string.camera_gallery_photos_text).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    postAfterKeep(new Runnable() {
-                        public void run() {
-                            gotoGallery();
-                        }
-                    });
-                    return true;
-                }
-            });
-            gallery.setIcon(android.R.drawable.ic_menu_gallery);
         }
         return true;
     }

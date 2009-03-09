@@ -85,6 +85,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private static final long CANNOT_STAT_ERROR = -2L;
     private static final long LOW_STORAGE_THRESHOLD = 512L * 1024L;
 
+    private static final int STORAGE_STATUS_OK = 0;
+    private static final int STORAGE_STATUS_LOW = 1;
+    private static final int STORAGE_STATUS_NONE = 2;
+
     public static final int MENU_SETTINGS = 6;
     public static final int MENU_GALLERY_PHOTOS = 7;
     public static final int MENU_GALLERY_VIDEOS = 8;
@@ -101,6 +105,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     ImageView mBlackout = null;
     ImageView mVideoFrame;
     Bitmap mVideoFrameBitmap;
+
+    private int mStorageStatus = STORAGE_STATUS_OK;
 
     private MediaRecorder mMediaRecorder;
     private boolean mMediaRecorderRecording = false;
@@ -193,20 +199,19 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-                updateStorageHint(false);
+                updateAndShowStorageHint(false);
                 stopVideoRecording();
                 initializeVideo();
             } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                updateStorageHint(true);
+                updateAndShowStorageHint(true);
                 initializeVideo();
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
-                updateStorageHint(false);
-                releaseMediaRecorder();
+                // handled in ACTION_MEDIA_EJECT
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
                 Toast.makeText(VideoCamera.this, getResources().getString(R.string.wait), 5000);
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                updateStorageHint(true);
+                updateAndShowStorageHint(true);
             }
         }
     };
@@ -345,12 +350,18 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private OnScreenHint mStorageHint;
 
-    private void updateStorageHint(boolean mayHaveSd) {
-        long remaining = mayHaveSd ? getAvailableStorage() : NO_STORAGE_ERROR;
+    private void updateAndShowStorageHint(boolean mayHaveSd) {
+        mStorageStatus = getStorageStatus(mayHaveSd);
+        showStorageHint();
+    }
+
+    private void showStorageHint() {
         String errorMessage = null;
-        if (remaining == NO_STORAGE_ERROR) {
+        switch (mStorageStatus) {
+        case STORAGE_STATUS_NONE:
             errorMessage = getString(R.string.no_storage);
-        } else if (remaining < LOW_STORAGE_THRESHOLD) {
+            break;
+        case STORAGE_STATUS_LOW:
             errorMessage = getString(R.string.spaceIsLow_content);
         }
         if (errorMessage != null) {
@@ -364,6 +375,15 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mStorageHint.cancel();
             mStorageHint = null;
         }
+    }
+
+    private int getStorageStatus(boolean mayHaveSd) {
+        long remaining = mayHaveSd ? getAvailableStorage() : NO_STORAGE_ERROR;
+        if (remaining == NO_STORAGE_ERROR) {
+            return STORAGE_STATUS_NONE;
+        }
+        return remaining < LOW_STORAGE_THRESHOLD
+                ? STORAGE_STATUS_LOW : STORAGE_STATUS_OK;
     }
 
     @Override
@@ -385,7 +405,13 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
         intentFilter.addDataScheme("file");
         registerReceiver(mReceiver, intentFilter);
-        updateStorageHint(true);
+        mStorageStatus = getStorageStatus(true);
+
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                showStorageHint();
+            }
+        }, 200);
 
         mBlackout.setVisibility(View.INVISIBLE);
         if (mVideoFrameBitmap == null) {
@@ -647,7 +673,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
-        if (mStorageHint != null) {
+        if (mStorageStatus != STORAGE_STATUS_OK) {
             mMediaRecorder.setOutputFile("/dev/null");
         } else {
             // We try Uri in intent first. If it doesn't work, use our own instead.
@@ -826,7 +852,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (what == MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN) {
             // We may have run out of space on the sdcard.
             stopVideoRecording();
-            updateStorageHint(true);
+            updateAndShowStorageHint(true);
         }
     }
 
@@ -847,7 +873,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         Log.v(TAG, "startVideoRecording");
         if (!mMediaRecorderRecording) {
 
-            if (mStorageHint != null) {
+            if (mStorageStatus != STORAGE_STATUS_OK) {
                 Log.v(TAG, "Storage issue, ignore the start request");
                 return;
             }
@@ -950,7 +976,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mRecordingTimeView.setVisibility(View.GONE);
             setScreenTimeoutLong();
         }
-        if (needToRegisterRecording && mStorageHint == null) registerVideo();
+        if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {
+            registerVideo();
+        }
 
         mCameraVideoFilename = null;
         mCameraVideoFileDescriptor = null;
