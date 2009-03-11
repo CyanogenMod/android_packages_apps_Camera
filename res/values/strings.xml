@@ -454,5 +454,9 @@
     
     <!-- The video is execeed the size limit of a MMS, and suggest user to record a shorter length clip -->
     <string name="video_exceed_mms_limit">The video you recorded is too large to send via MMS. Try recording a shorter length clip.</string>
+
+    <!-- Displayed as a toast when a video file is too large to attach
+         to a Gmail message. -->
+    <string name="too_large_to_attach">File too large to attach.</string>
     
 </resources>

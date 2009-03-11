@@ -84,6 +84,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private static final long NO_STORAGE_ERROR = -1L;
     private static final long CANNOT_STAT_ERROR = -2L;
     private static final long LOW_STORAGE_THRESHOLD = 512L * 1024L;
+    private static final long SHARE_FILE_LENGTH_LIMIT = 3L * 1024L * 1024L;
 
     private static final int STORAGE_STATUS_OK = 0;
     private static final int STORAGE_STATUS_LOW = 1;
@@ -264,6 +265,24 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
     }
 
+    private void startShareVideoActivity() {
+        long fileLength = new File(mCurrentVideoFilename).length();
+        if (fileLength > SHARE_FILE_LENGTH_LIMIT) {
+            Toast.makeText(VideoCamera.this,
+                    R.string.too_large_to_attach, Toast.LENGTH_LONG).show();
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("video/3gpp");
+        intent.putExtra(Intent.EXTRA_STREAM, mCurrentVideoUri);
+        try {
+            startActivity(Intent.createChooser(intent, getText(R.string.sendVideo)));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(VideoCamera.this, R.string.no_way_to_share_video, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void onClick(View v) {
         switch (v.getId()) {
 
@@ -285,16 +304,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
 
             case R.id.share: {
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_SEND);
-                intent.setType("video/3gpp");
-                intent.putExtra(Intent.EXTRA_STREAM, mCurrentVideoUri);
-                try {
-                    startActivity(Intent.createChooser(intent, getText(R.string.sendVideo)));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(VideoCamera.this, R.string.no_way_to_share_video, Toast.LENGTH_SHORT).show();
-                }
-
+                startShareVideoActivity();
                 break;
             }
 
@@ -932,6 +942,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         for(int id : hideIds) {
             mPostPictureAlert.findViewById(id).setVisibility(View.GONE);
         }
+
         connectAndFadeIn(connectIds);
         connectAndFadeIn(alwaysOnIds);
         mPostPictureAlert.setVisibility(View.VISIBLE);

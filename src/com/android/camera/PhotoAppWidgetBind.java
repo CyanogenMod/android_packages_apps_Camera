@@ -16,11 +16,11 @@
 
 package com.android.camera;
 
-import com.android.camera.PhotoGadgetProvider.PhotoDatabaseHelper;
+import com.android.camera.PhotoAppWidgetProvider.PhotoDatabaseHelper;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.gadget.GadgetManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,10 +28,10 @@ import android.widget.RemoteViews;
 
 import java.util.ArrayList;
 
-public class PhotoGadgetBind extends Activity {
-    static final String TAG = "PhotoGadgetBind";
+public class PhotoAppWidgetBind extends Activity {
+    static final String TAG = "PhotoAppWidgetBind";
     
-    static final String EXTRA_GADGET_BITMAPS = "com.android.camera.gadgetbitmaps";
+    static final String EXTRA_APPWIDGET_BITMAPS = "com.android.camera.appwidgetbitmaps";
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -39,33 +39,33 @@ public class PhotoGadgetBind extends Activity {
         finish();
         
         // The caller has requested that we bind a given bitmap to a specific
-        // gadgetId, which probably is happening during a Launcher upgrade. This
-        // is dangerous because the caller could set bitmaps on gadgetIds they
+        // appWidgetId, which probably is happening during a Launcher upgrade. This
+        // is dangerous because the caller could set bitmaps on appWidgetIds they
         // don't own, so we guard this call at the manifest level by requiring
-        // the BIND_GADGET permission.
+        // the BIND_APPWIDGET permission.
         
         final Intent intent = getIntent();
         final Bundle extras = intent.getExtras();
         
-        final int[] gadgetIds = extras.getIntArray(GadgetManager.EXTRA_GADGET_IDS);
-        final ArrayList<Bitmap> bitmaps = extras.getParcelableArrayList(EXTRA_GADGET_BITMAPS);
+        final int[] appWidgetIds = extras.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+        final ArrayList<Bitmap> bitmaps = extras.getParcelableArrayList(EXTRA_APPWIDGET_BITMAPS);
         
-        if (gadgetIds == null || bitmaps == null ||
-                gadgetIds.length != bitmaps.size()) {
-            Log.e(TAG, "Problem parsing photo gadget bind request");
+        if (appWidgetIds == null || bitmaps == null ||
+                appWidgetIds.length != bitmaps.size()) {
+            Log.e(TAG, "Problem parsing photo widget bind request");
             return;
         }
         
-        GadgetManager gadgetManager = GadgetManager.getInstance(this);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         PhotoDatabaseHelper helper = new PhotoDatabaseHelper(this);
-        for (int i = 0; i < gadgetIds.length; i++) {
+        for (int i = 0; i < appWidgetIds.length; i++) {
             // Store the cropped photo in our database
-            int gadgetId = gadgetIds[i];
-            helper.setPhoto(gadgetId, bitmaps.get(i));
+            int appWidgetId = appWidgetIds[i];
+            helper.setPhoto(appWidgetId, bitmaps.get(i));
             
-            // Push newly updated gadget to surface
-            RemoteViews views = PhotoGadgetProvider.buildUpdate(this, gadgetId, helper);
-            gadgetManager.updateGadget(new int[] { gadgetId }, views);
+            // Push newly updated widget to surface
+            RemoteViews views = PhotoAppWidgetProvider.buildUpdate(this, appWidgetId, helper);
+            appWidgetManager.updateAppWidget(new int[] { appWidgetId }, views);
         }
         helper.close();
         

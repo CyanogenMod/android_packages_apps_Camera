@@ -82,6 +82,8 @@ public class MenuHelper {
     static public final int MENU_VIDEO_SHARE = 24;
     static public final int MENU_VIDEO_TOSS = 27;
 
+    static private final long SHARE_FILE_LENGTH_LIMIT = 3L * 1024L * 1024L;
+
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
 
@@ -226,8 +228,13 @@ public class MenuHelper {
                 public boolean onMenuItemClick(MenuItem item) {
                     onInvoke.run(new MenuCallback() {
                         public void run(Uri u, ImageManager.IImage image) {
-                            if (image == null)
+                            if (image == null) return;
+                            if (!isImage && getImageFileSize(image) > SHARE_FILE_LENGTH_LIMIT ) {
+                                Toast.makeText(activity,
+                                        R.string.too_large_to_attach, Toast.LENGTH_LONG).show();
                                 return;
+                            }
+
                             Intent intent = new Intent();
                             intent.setAction(Intent.ACTION_SEND);
                             String mimeType = image.getMimeType();
@@ -564,6 +571,7 @@ public class MenuHelper {
         Uri target = Images.Media.INTERNAL_CONTENT_URI.buildUpon().appendQueryParameter("bucketId",
                 ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
         Intent intent = new Intent(Intent.ACTION_VIEW, target);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("windowTitle", activity.getString(windowTitleId));
         intent.putExtra("mediaTypes", mediaTypes);
         // Request unspecified so that we match the current camera orientation rather than
@@ -586,6 +594,7 @@ public class MenuHelper {
                  new MenuItem.OnMenuItemClickListener() {
                      public boolean onMenuItemClick(MenuItem item) {
                         Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         try {
                                activity.startActivity(intent);
                         } catch (android.content.ActivityNotFoundException e) {
@@ -601,6 +610,7 @@ public class MenuHelper {
                  new MenuItem.OnMenuItemClickListener() {
                      public boolean onMenuItemClick(MenuItem item) {
                          Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
+                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                          try {
                              activity.startActivity(intent);
                          } catch (android.content.ActivityNotFoundException e) {

@@ -2095,6 +2095,9 @@ public class ImageManager {
                         } catch (NullPointerException ex) {
                             // we seem to get this if the file doesn't exist anymore
                             Log.e(TAG, "couldn't open thumbnail " + thumbUri + "; " + ex);
+                        } catch (OutOfMemoryError ex) {
+                            Log.e(TAG, "failed to allocate memory for thumbnail "
+                                    + thumbUri + "; " + ex);
                         }
                     }
                 } catch (Exception ex) {

@@ -197,26 +197,26 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="PhotoGadgetProvider" android:label="@string/gadget_title">
+        <receiver android:name="PhotoAppWidgetProvider" android:label="@string/gadget_title">
             <intent-filter>
-                <action android:name="android.gadget.action.GADGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.gadget.provider" android:resource="@xml/gadget_info" />
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/appwidget_info" />
         </receiver>
 
-        <!-- We configure a gadget by asking to pick a photo, then crop it, and store the config internally -->
-        <activity android:name="PhotoGadgetConfigure">
+        <!-- We configure a widget by asking to pick a photo, then crop it, and store the config internally -->
+        <activity android:name="PhotoAppWidgetConfigure">
             <intent-filter>
-                <action android:name="android.gadget.action.GADGET_CONFIGURE" />
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
 
         <!-- We also allow direct binding where the caller provides a bitmap and
-             gadgetId to bind.  We require the permission because this changes our
+             appWidgetId to bind.  We require the permission because this changes our
              internal database without user confirmation. -->
-        <activity android:name="PhotoGadgetBind" android:exported="true"
+        <activity android:name="PhotoAppWidgetBind" android:exported="true"
                 android:theme="@android:style/Theme.NoDisplay"
-                android:permission="android.permission.BIND_GADGET" />
+                android:permission="android.permission.BIND_APPWIDGET" />
 
     </application>
 </manifest>

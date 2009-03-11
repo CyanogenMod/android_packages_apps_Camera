@@ -129,7 +129,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private android.hardware.Camera.Parameters mParameters;
     private VideoPreview mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
-    private View mBlackout = null;
 
     private int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
     private int mViewFinderWidth, mViewFinderHeight;
@@ -204,7 +203,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 case RESTART_PREVIEW: {
                     if (mStatus == SNAPSHOT_IN_PROGRESS) {
                         // We are still in the processing of taking the picture, wait.
-                        // This is is strange.  Why are we polling?
+                        // This is strange.  Why are we polling?
                         // TODO remove polling
                         mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, 100);
                     } else if (mStatus == SNAPSHOT_COMPLETED){
@@ -293,15 +292,20 @@ public class Camera extends Activity implements View.OnClickListener,
                 mShutterCallbackTime = System.currentTimeMillis();
                 Log.v(TAG, "Shutter lag was " + (mShutterCallbackTime - mCaptureStartTime) + " ms.");
             }
+
+            // We are going to change the size of surface view and show captured
+            // image. Set it to invisible now and set it back to visible in 
+            // surfaceChanged() so that users won't see the image is resized on
+            // the screen.
+            mSurfaceView.setVisibility(View.INVISIBLE);
+            // Resize the SurfaceView to the aspect-ratio of the still image
+            // and so that we can see the full image that was taken.
+            Size pictureSize = mParameters.getPictureSize();
+            mSurfaceView.setAspectRatio(pictureSize.width, pictureSize.height);
+
             if (mClickSound != null) {
                 mClickSound.start();
             }
-            mBlackout.setVisibility(View.VISIBLE);
-
-            Size pictureSize = mParameters.getPictureSize();
-            // Resize the SurfaceView to the aspect-ratio of the still image
-            // and so that we can see the full image that was taken.
-            mSurfaceView.setAspectRatio(pictureSize.width, pictureSize.height);
         }
     };
 
@@ -314,7 +318,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 Log.v(TAG, (mRawPictureCallbackTime - mShutterCallbackTime) + "ms elapsed between" +
                         " ShutterCallback and RawPictureCallback.");
             }
-            mBlackout.setVisibility(View.GONE);
         }
     };
 
@@ -326,6 +329,9 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void onPictureTaken(byte [] jpegData, android.hardware.Camera camera) {
+            if (!canHandleCameraEvent()) {
+                return;
+            }
             if (Config.LOGV)
                 Log.v(TAG, "got JpegPictureCallback...");
 
@@ -581,6 +587,9 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void onSnap() {
+            if (!canHandleCameraEvent()) {
+                return;
+            }
             if (DEBUG_TIME_OPERATIONS) mCaptureStartTime = System.currentTimeMillis();
 
             // If we are already in the middle of taking a snapshot then we should just save
@@ -739,8 +748,6 @@ public class Camera extends Activity implements View.OnClickListener,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mBlackout = findViewById(R.id.blackout);
-
         if (!isImageCaptureIntent())  {
             mLastPictureButton = (ImageView) findViewById(R.id.last_picture_button);
             mLastPictureButton.setOnClickListener(this);
@@ -823,6 +830,9 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void doAttach() {
+        if (!canHandleCameraEvent()) {
+            return;
+        }
         Bitmap bitmap = mImageCapture.getLastBitmap();
 
         String cropValue = null;
@@ -928,7 +938,16 @@ public class Camera extends Activity implements View.OnClickListener,
         finish();
     }
 
+    private boolean canHandleCameraEvent() {
+        // don't handle any shutter event before we have a valid 
+        // imageCapture object.
+        return mImageCapture != null;
+    }
+
     public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
+        if (!canHandleCameraEvent()) {
+            return;
+        }
         switch (button.getId()) {
             case R.id.shutter_button:
                 doFocus(pressed);
@@ -937,6 +956,9 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     public void onShutterButtonClick(ShutterButton button) {
+        if (!canHandleCameraEvent()) {
+            return;
+        }
         switch (button.getId()) {
             case R.id.shutter_button:
                 doSnap();
@@ -1010,8 +1032,6 @@ public class Camera extends Activity implements View.OnClickListener,
             Log.w(TAG, "Exception caught while creating local tone generator: " + e);
             mFocusToneGenerator = null;
         }
-
-        mBlackout.setVisibility(View.GONE);
     }
 
     private ImageManager.DataLocation dataLocation() {
@@ -1129,7 +1149,7 @@ public class Camera extends Activity implements View.OnClickListener,
         mImageCapture.clearLastBitmap();
         mImageCapture = null;
         hidePostCaptureAlert();
-        
+
         super.onPause();
     }
 
@@ -1279,10 +1299,11 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        mSurfaceView.setVisibility(View.VISIBLE);
         // if we're creating the surface, start the preview as well.
         boolean preview = holder.isCreating();
         setViewFinder(w, h, preview);
-        mCaptureObject = mImageCapture;
+        mCaptureObject = mImageCapture;        
     }
 
     public void surfaceCreated(SurfaceHolder holder) {

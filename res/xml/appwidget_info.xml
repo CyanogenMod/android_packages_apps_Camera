@@ -14,11 +14,11 @@
      limitations under the License.
 -->
 
-<gadget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="146dip"
     android:minHeight="146dip"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/photo_frame"
-    android:configure="com.android.camera.PhotoGadgetConfigure"
+    android:configure="com.android.camera.PhotoAppWidgetConfigure"
     >
-</gadget-provider>
+</appwidget-provider>

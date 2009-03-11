@@ -249,12 +249,8 @@ public class ViewImage extends Activity implements View.OnClickListener
             mGestureDetector = new GestureDetector(getContext(), new MyGestureListener());
             mGestureDetector.setOnDoubleTapListener(new MyDoubleTapListener());
             mZoomButtonsController = new ZoomButtonsController(context, this);
-            mZoomButtonsController.setOverviewVisible(false);
             mZoomButtonsController.setCallback(new ZoomButtonsController.OnZoomListener() {
                 public void onCenter(int x, int y) {
-                }
-
-                public void onOverview() {
                 }
 
                 public void onVisibilityChanged(boolean visible) {
@@ -338,7 +334,9 @@ public class ViewImage extends Activity implements View.OnClickListener
             // On double tap, we show the zoom controls.
             public boolean onDoubleTapEvent(MotionEvent e) {
                 mViewImage.setMode(MODE_NORMAL);
-                mZoomButtonsController.handleDoubleTapEvent(e);
+                if (mZoomButtonsController.handleDoubleTapEvent(e)) {
+                    ZoomButtonsController.finishZoomTutorial(mViewImage, true);
+                }
                 return true;
             }
 
@@ -901,7 +899,8 @@ public class ViewImage extends Activity implements View.OnClickListener
             return;
         }
 
-        final boolean left = mCurrentPosition > pos;
+        final boolean left = (pos == mCurrentPosition - 1);
+        final boolean right = (pos == mCurrentPosition + 1);
 
         mCurrentPosition = pos;
 
@@ -919,7 +918,7 @@ public class ViewImage extends Activity implements View.OnClickListener
             if (left) {
                 mImageViews[2].copyFrom(mImageViews[1]);
                 mImageViews[1].copyFrom(mImageViews[0]);
-            } else {
+            } else if (right) {
                 mImageViews[0].copyFrom(mImageViews[1]);
                 mImageViews[1].copyFrom(mImageViews[2]);
             }
@@ -1446,6 +1445,15 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         // Show a tutorial for the new zoom interaction (the method ensure we only show it once)
         ZoomButtonsController.showZoomTutorialOnce(this);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus) {
+            ZoomButtonsController.showZoomTutorialOnce(this);
+        } else {
+            ZoomButtonsController.finishZoomTutorial(this, false);
+        }
     }
 
     @Override

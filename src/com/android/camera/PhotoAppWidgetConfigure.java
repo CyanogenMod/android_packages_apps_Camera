@@ -16,13 +16,13 @@
 
 package com.android.camera;
 
-import com.android.camera.PhotoGadgetProvider.PhotoDatabaseHelper;
+import com.android.camera.PhotoAppWidgetProvider.PhotoDatabaseHelper;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.gadget.GadgetManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -32,22 +32,22 @@ import android.widget.RemoteViews;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class PhotoGadgetConfigure extends Activity {
-    static final private String TAG = "PhotoGadgetConfigure";
+public class PhotoAppWidgetConfigure extends Activity {
+    static final private String TAG = "PhotoAppWidgetConfigure";
     
     static final int REQUEST_GET_PHOTO = 2;
     
-    int gadgetId = -1;
+    int appWidgetId = -1;
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         
-        // Someone is requesting that we configure the given gadgetId, which means
+        // Someone is requesting that we configure the given appWidgetId, which means
         // we prompt the user to pick and crop a photo.
         
-        gadgetId = getIntent().getIntExtra(GadgetManager.EXTRA_GADGET_ID, -1);
-        if (gadgetId == -1) {
+        appWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        if (appWidgetId == -1) {
             setResult(Activity.RESULT_CANCELED);
             finish();
         }
@@ -69,27 +69,27 @@ public class PhotoGadgetConfigure extends Activity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && gadgetId != -1) {
+        if (resultCode == RESULT_OK && appWidgetId != -1) {
             // Store the cropped photo in our database
             Bitmap bitmap = (Bitmap) data.getParcelableExtra("data");
             
             PhotoDatabaseHelper helper = new PhotoDatabaseHelper(this);
-            if (helper.setPhoto(gadgetId, bitmap)) {
+            if (helper.setPhoto(appWidgetId, bitmap)) {
                 resultCode = Activity.RESULT_OK;
 
-                // Push newly updated gadget to surface
-                RemoteViews views = PhotoGadgetProvider.buildUpdate(this, gadgetId, helper);
-                GadgetManager gadgetManager = GadgetManager.getInstance(this);
-                gadgetManager.updateGadget(new int[] { gadgetId }, views);
+                // Push newly updated widget to surface
+                RemoteViews views = PhotoAppWidgetProvider.buildUpdate(this, appWidgetId, helper);
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+                appWidgetManager.updateAppWidget(new int[] { appWidgetId }, views);
             }
             helper.close();
         } else {
             resultCode = Activity.RESULT_CANCELED;
         }
         
-        // Make sure we pass back the original gadgetId
+        // Make sure we pass back the original appWidgetId
         Intent resultValue = new Intent();
-        resultValue.putExtra(GadgetManager.EXTRA_GADGET_ID, gadgetId);
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         setResult(resultCode, resultValue);
         finish();
     }

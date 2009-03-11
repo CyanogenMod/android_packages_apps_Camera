@@ -23,6 +23,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -36,8 +38,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.gadget.GadgetManager;
-import android.gadget.GadgetProvider;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -61,41 +61,41 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * Simple gadget to show a user-selected picture.
+ * Simple widget to show a user-selected picture.
  */
-public class PhotoGadgetProvider extends GadgetProvider {
-    static final String TAG = "PhotoGadgetProvider";
+public class PhotoAppWidgetProvider extends AppWidgetProvider {
+    static final String TAG = "PhotoAppWidgetProvider";
     static final boolean LOGD = Config.LOGD || true;
     
     @Override
-    public void onUpdate(Context context, GadgetManager gadgetManager, int[] gadgetIds) {
-        // Update each requested gadgetId with its unique photo
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        // Update each requested appWidgetId with its unique photo
         PhotoDatabaseHelper helper = new PhotoDatabaseHelper(context);
-        for (int gadgetId : gadgetIds) {
-            int[] specificGadget = new int[] { gadgetId };
-            RemoteViews views = buildUpdate(context, gadgetId, helper);
-            if (LOGD) Log.d(TAG, "sending out views="+views+" for id="+gadgetId);
-            gadgetManager.updateGadget(specificGadget, views);
+        for (int appWidgetId : appWidgetIds) {
+            int[] specificAppWidget = new int[] { appWidgetId };
+            RemoteViews views = buildUpdate(context, appWidgetId, helper);
+            if (LOGD) Log.d(TAG, "sending out views="+views+" for id="+appWidgetId);
+            appWidgetManager.updateAppWidget(specificAppWidget, views);
         }
         helper.close();
     }
     
     @Override
-    public void onDeleted(Context context, int[] gadgetIds) {
+    public void onDeleted(Context context, int[] appWidgetIds) {
         // Clean deleted photos out of our database
         PhotoDatabaseHelper helper = new PhotoDatabaseHelper(context);
-        for (int gadgetId : gadgetIds) {
-            helper.deletePhoto(gadgetId);
+        for (int appWidgetId : appWidgetIds) {
+            helper.deletePhoto(appWidgetId);
         }
         helper.close();
     }
 
     /**
-     * Load photo for given gadget and build {@link RemoteViews} for it.
+     * Load photo for given widget and build {@link RemoteViews} for it.
      */
-    static RemoteViews buildUpdate(Context context, int gadgetId, PhotoDatabaseHelper helper) {
+    static RemoteViews buildUpdate(Context context, int appWidgetId, PhotoDatabaseHelper helper) {
         RemoteViews views = null;
-        Bitmap bitmap = helper.getPhoto(gadgetId);
+        Bitmap bitmap = helper.getPhoto(appWidgetId);
         if (bitmap != null) {
             views = new RemoteViews(context.getPackageName(), R.layout.photo_frame);
             views.setImageViewBitmap(R.id.photo, bitmap);
@@ -111,7 +111,7 @@ public class PhotoGadgetProvider extends GadgetProvider {
         private static final int DATABASE_VERSION = 1;
 
         static final String TABLE_PHOTOS = "photos";
-        static final String FIELD_GADGET_ID = "gadgetId";
+        static final String FIELD_APPWIDGET_ID = "appWidgetId";
         static final String FIELD_PHOTO_BLOB = "photoBlob";
 
         PhotoDatabaseHelper(Context context) {
@@ -122,7 +122,7 @@ public class PhotoGadgetProvider extends GadgetProvider {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE " + TABLE_PHOTOS + " (" +
-                    FIELD_GADGET_ID + " INTEGER PRIMARY KEY," +
+                    FIELD_APPWIDGET_ID + " INTEGER PRIMARY KEY," +
                     FIELD_PHOTO_BLOB + " BLOB" +
                     ");");
         }
@@ -139,9 +139,9 @@ public class PhotoGadgetProvider extends GadgetProvider {
         }
         
         /**
-         * Store the given bitmap in this database for the given gadgetId.
+         * Store the given bitmap in this database for the given appWidgetId.
          */
-        public boolean setPhoto(int gadgetId, Bitmap bitmap) {
+        public boolean setPhoto(int appWidgetId, Bitmap bitmap) {
             boolean success = false;
             try {
                 // Try go guesstimate how much space the icon will take when serialized
@@ -153,7 +153,7 @@ public class PhotoGadgetProvider extends GadgetProvider {
                 out.close();
 
                 ContentValues values = new ContentValues();
-                values.put(PhotoDatabaseHelper.FIELD_GADGET_ID, gadgetId);
+                values.put(PhotoDatabaseHelper.FIELD_APPWIDGET_ID, appWidgetId);
                 values.put(PhotoDatabaseHelper.FIELD_PHOTO_BLOB, out.toByteArray());
                     
                 SQLiteDatabase db = getWritableDatabase();
@@ -176,14 +176,14 @@ public class PhotoGadgetProvider extends GadgetProvider {
         static final int INDEX_PHOTO_BLOB = 0;
         
         /**
-         * Inflate and return a bitmap for the given gadgetId.
+         * Inflate and return a bitmap for the given appWidgetId.
          */
-        public Bitmap getPhoto(int gadgetId) {
+        public Bitmap getPhoto(int appWidgetId) {
             Cursor c = null;
             Bitmap bitmap = null;
             try {
                 SQLiteDatabase db = getReadableDatabase();
-                String selection = String.format("%s=%d", FIELD_GADGET_ID, gadgetId);
+                String selection = String.format("%s=%d", FIELD_APPWIDGET_ID, appWidgetId);
                 c = db.query(TABLE_PHOTOS, PHOTOS_PROJECTION, selection, null,
                         null, null, null, null);
                 
@@ -206,12 +206,12 @@ public class PhotoGadgetProvider extends GadgetProvider {
         }
         
         /**
-         * Remove any bitmap associated with the given gadgetId.
+         * Remove any bitmap associated with the given appWidgetId.
          */
-        public void deletePhoto(int gadgetId) {
+        public void deletePhoto(int appWidgetId) {
             try {
                 SQLiteDatabase db = getWritableDatabase();
-                String whereClause = String.format("%s=%d", FIELD_GADGET_ID, gadgetId);
+                String whereClause = String.format("%s=%d", FIELD_APPWIDGET_ID, appWidgetId);
                 db.delete(TABLE_PHOTOS, whereClause, null);
             } catch (SQLiteException e) {
                 Log.e(TAG, "Could not delete photo from database", e);
