@@ -1273,11 +1273,13 @@ public class Camera extends Activity implements View.OnClickListener,
             }
             clearFocusState();
             updateFocusIndicator();
-        } else {
+        } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will 
             // already have requested AF for us, so just request capture on 
             // focus here.
             mFocusState = FOCUSING_SNAP_ON_FINISH;
+        } else if (mFocusState == FOCUS_NOT_STARTED) {
+            // Focus key down event is dropped for some reasons. Just ignore.
         }
     }
 
@@ -1527,6 +1529,8 @@ public class Camera extends Activity implements View.OnClickListener,
             mCameraDevice.stopPreview();
         }
         mPreviewing = false;
+        // If auto focus was in progress, it would have been canceled.
+        clearFocusState(); 
     }
 
     void gotoGallery() {

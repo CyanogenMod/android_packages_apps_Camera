@@ -651,19 +651,10 @@ public class MenuHelper {
 
     static private void requestOrientation(Activity activity, SharedPreferences prefs,
             boolean ignoreIntentExtra) {
-        int req = prefs.getInt("nuorientation",
-                android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        // A little trick: use USER instead of UNSPECIFIED, so we ignore the
-        // orientation set by the activity below.  It may have forced a landscape
-        // orientation, which the user has now cleared here.
-        if (req == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-            req = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER;
-        }
-        if (! ignoreIntentExtra) {
-            Intent intent = activity.getIntent();
-            req = intent.getIntExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, req);
-        }
-        activity.setRequestedOrientation(req);
+        // Disable orientation for now. If it is set to SCREEN_ORIENTATION_SENSOR,
+        // a duplicated orientation will be observed.
+
+        return;
     }
 
     static void setFlipOrientationEnabled(Activity activity, MenuItem flipItem) {

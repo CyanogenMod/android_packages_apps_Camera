@@ -71,7 +71,7 @@
         android:shadowDy="1"
         android:shadowRadius="1"
         android:gravity="right"
-        android:textColor="#ffffffff"
+        android:textColor="@color/recording_time_elapsed_text"
         android:textSize="20dip"
         android:textStyle="bold"
         android:visibility="gone"/>

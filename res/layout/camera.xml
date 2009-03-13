@@ -58,7 +58,7 @@
         android:layout_width="72dip"
         android:layout_height="72dip"
         android:clickable="true"
-        android:focusable="true"
+        android:focusable="false"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="10dip"

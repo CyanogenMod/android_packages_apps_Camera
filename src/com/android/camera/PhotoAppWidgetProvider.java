@@ -108,7 +108,7 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
 
         private static final String DATABASE_NAME = "launcher.db";
         
-        private static final int DATABASE_VERSION = 1;
+        private static final int DATABASE_VERSION = 2;
 
         static final String TABLE_PHOTOS = "photos";
         static final String FIELD_APPWIDGET_ID = "appWidgetId";

@@ -67,7 +67,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class VideoCamera extends Activity implements View.OnClickListener,
-    ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback, MediaRecorder.OnErrorListener {
+    ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback, MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
 
     private static final String TAG = "videocamera";
 
@@ -107,6 +107,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     ImageView mVideoFrame;
     Bitmap mVideoFrameBitmap;
 
+    private static final int MAX_RECORDING_DURATION_MS = 10 * 60 * 1000;
+
     private int mStorageStatus = STORAGE_STATUS_OK;
 
     private MediaRecorder mMediaRecorder;
@@ -120,6 +122,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     // The video file that has already been recorded, and that is being
     // examined by the user.
     private String mCurrentVideoFilename;
+    private long mCurrentVideoFileLength = 0L;
     private Uri mCurrentVideoUri;
     private ContentValues mCurrentVideoValues;
 
@@ -131,6 +134,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
+    private boolean mRecordingTimeCountsDown = false;
 
     ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
@@ -154,7 +158,17 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     if (mMediaRecorderRecording) {
                         long now = SystemClock.uptimeMillis();
                         long delta = now - mRecordingStartTime;
-                        long seconds = delta / 1000;
+
+                        // Starting a minute before reaching the max duration
+                        // limit, we'll countdown the remaining time instead.
+                        boolean countdown_remaining_time =
+                            (delta >= MAX_RECORDING_DURATION_MS - 60000);
+
+                        if (countdown_remaining_time) {
+                            delta = Math.max(0, MAX_RECORDING_DURATION_MS - delta);
+                        }
+
+                        long seconds = (delta + 500) / 1000;  // round to nearest
                         long minutes = seconds / 60;
                         long hours = minutes / 60;
                         long remainderMinutes = minutes - (hours * 60);
@@ -177,6 +191,20 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                             text = hoursString + ":" + text;
                         }
                         mRecordingTimeView.setText(text);
+
+                        if (mRecordingTimeCountsDown != countdown_remaining_time) {
+                            // Avoid setting the color on every update, do it only
+                            // when it needs changing.
+
+                            mRecordingTimeCountsDown = countdown_remaining_time;
+
+                            int color = getResources().getColor(
+                                    countdown_remaining_time ? R.color.recording_time_remaining_text
+                                                             : R.color.recording_time_elapsed_text);
+
+                            mRecordingTimeView.setTextColor(color);
+                        }
+
                         // Work around a limitation of the T-Mobile G1: The T-Mobile
                         // hardware blitter can't pixel-accurately scale and clip at the same time,
                         // and the SurfaceFlinger doesn't attempt to work around this limitation.
@@ -266,8 +294,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void startShareVideoActivity() {
-        long fileLength = new File(mCurrentVideoFilename).length();
-        if (fileLength > SHARE_FILE_LENGTH_LIMIT) {
+        if (mCurrentVideoFileLength > SHARE_FILE_LENGTH_LIMIT) {
             Toast.makeText(VideoCamera.this,
                     R.string.too_large_to_attach, Toast.LENGTH_LONG).show();
             return;
@@ -323,6 +350,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                         stopVideoRecordingAndDisplayDialog();
                     } else if (mVideoFrame.getVisibility() == View.VISIBLE) {
                         doStartCaptureMode();
+                        startVideoRecording();
                     } else {
                         startVideoRecording();
                     }
@@ -683,6 +711,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
+        mMediaRecorder.setMaxDuration(MAX_RECORDING_DURATION_MS);
+
         if (mStorageStatus != STORAGE_STATUS_OK) {
             mMediaRecorder.setOutputFile("/dev/null");
         } else {
@@ -866,6 +896,13 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
     }
 
+    // from MediaRecorder.OnInfoListener
+    public void onInfo(MediaRecorder mr, int what, int extra) {
+        if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
+            stopVideoRecordingAndDisplayDialog();
+        }
+    }
+
     /*
      * Make sure we're not recording music playing in the background, ask
      * the MediaPlaybackService to pause playback.
@@ -898,6 +935,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
             try {
                 mMediaRecorder.setOnErrorListener(this);
+                mMediaRecorder.setOnInfoListener(this);
                 mMediaRecorder.start();   // Recording is now started
             } catch (RuntimeException e) {
                 Log.e(TAG, "Could not start media recorder. ", e);
@@ -942,7 +980,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         for(int id : hideIds) {
             mPostPictureAlert.findViewById(id).setVisibility(View.GONE);
         }
-
+        ActionMenuButton shareButton =
+                (ActionMenuButton) mPostPictureAlert.findViewById(R.id.share);
+        shareButton.setRestricted(
+                mCurrentVideoFileLength > SHARE_FILE_LENGTH_LIMIT);
         connectAndFadeIn(connectIds);
         connectAndFadeIn(alwaysOnIds);
         mPostPictureAlert.setVisibility(View.VISIBLE);
@@ -973,11 +1014,19 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             if (mMediaRecorderRecording && mMediaRecorder != null) {
                 try {
                     mMediaRecorder.setOnErrorListener(null);
+                    mMediaRecorder.setOnInfoListener(null);
                     mMediaRecorder.stop();
                 } catch (RuntimeException e) {
                     Log.e(TAG, "stop fail: " + e.getMessage());
                 }
+
                 mCurrentVideoFilename = mCameraVideoFilename;
+                try {
+                    mCurrentVideoFileLength = new File(mCurrentVideoFilename).length();
+                } catch (RuntimeException e) {
+                    Log.e(TAG, "get file length fail: " + e.getMessage());
+                    mCurrentVideoFileLength = 0;
+                }
                 Log.v(TAG, "Setting current video filename: " + mCurrentVideoFilename);
                 needToRegisterRecording = true;
                 mMediaRecorderRecording = false;

@@ -374,15 +374,7 @@ public class ImageManager {
                                 Log.v(TAG, "cancelation of bitmap load success==" + (b == null ? "TRUE" : "FALSE") + " -- took " + (System.currentTimeMillis() - mCancelInitiationTime));
                         }
                         if (b != null) {
-                            int degrees = getDegreesRotated();
-                            if (degrees != 0) {
-                                Matrix m = new Matrix();
-                                m.setRotate(degrees, (float) b.getWidth() / 2, (float) b.getHeight() / 2);
-                                Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
-                                if (b != b2)
-                                    b.recycle();
-                                b = b2;
-                            }
+                            b = rotate(b, getDegreesRotated());
                         }
                         return b;
                     } catch (Exception ex) {
@@ -1157,10 +1149,7 @@ public class ImageManager {
                                 degrees = c.getInt(column);
                         }
                         if (degrees != 0) {
-                            Bitmap b2 = rotate(bitmap, degrees);
-                            if (b2 != bitmap)
-                                bitmap.recycle();
-                            bitmap = b2;
+                            bitmap = rotate(bitmap, degrees);
                         }
                     }
                 }
@@ -1977,7 +1966,8 @@ public class ImageManager {
                         checkCanceled();
                         if (VERBOSE) Log.v(TAG, ">>>>>>>>>>>>>>>>>>>>> rotating by " + orientation);
                         try {
-                            saveMiniThumb(rotate(thumbnail, orientation));
+                            thumbnail = rotate(thumbnail, orientation);
+                            saveMiniThumb(thumbnail);
                         } catch (IOException e) {
                             // Ignore if unable to save thumb.
                         }
@@ -2338,6 +2328,15 @@ public class ImageManager {
                 if (pfd == null)
                     return null;
 
+                try {
+                    InputStream is = mContentResolver.openInputStream(uri);
+                    Log.v(TAG, "available = " + is.available());
+                    if (is.available() > 5*1024*1024) return null;
+                    is.close();
+                } catch (IOException ex) {
+                    return null;
+                }
+                
                 if (options == null)
                     options = new BitmapFactory.Options();
 
@@ -3720,15 +3719,22 @@ public class ImageManager {
         return miniThumbnail;
     }
 
+    // Rotates the bitmap by the specified degree.
+    // If a new bitmap is created, the original bitmap is recycled.
     static Bitmap rotate(Bitmap b, int degrees) {
         if (degrees != 0 && b != null) {
             Matrix m = new Matrix();
             m.setRotate(degrees, (float) b.getWidth() / 2, (float) b.getHeight() / 2);
 
-            Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
-            // TODO should recycle here but that needs more testing/verification
-//            b.recycle();
-            b = b2;
+            try {
+                Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
+                if (b != b2) {
+                    b.recycle();
+                    b = b2;
+                }
+            } catch (OutOfMemoryError ex) {
+                // We have no memory to rotate. Return the original bitmap.
+            }
         }
         return b;
     }

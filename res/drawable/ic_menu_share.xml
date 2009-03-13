@@ -17,8 +17,10 @@
 ** limitations under the License.
 */
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res/com.android.camera">
     <item android:state_pressed="true" android:drawable="@drawable/ic_btn_actionmenu_share_pressed" />
     <item android:state_window_focused="true" android:state_focused="true" android:drawable="@drawable/ic_btn_actionmenu_share_selected" />
+    <item app:state_restricted="true" android:drawable="@drawable/ic_btn_actionmenu_share_grayout" />
     <item android:drawable="@drawable/ic_btn_actionmenu_share_default" />
 </selector>

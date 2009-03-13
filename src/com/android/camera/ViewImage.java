@@ -247,9 +247,8 @@ public class ViewImage extends Activity implements View.OnClickListener
         private void setup(Context context) {
             mViewImage = (ViewImage) context;
             mGestureDetector = new GestureDetector(getContext(), new MyGestureListener());
-            mGestureDetector.setOnDoubleTapListener(new MyDoubleTapListener());
-            mZoomButtonsController = new ZoomButtonsController(context, this);
-            mZoomButtonsController.setCallback(new ZoomButtonsController.OnZoomListener() {
+            mZoomButtonsController = new ZoomButtonsController(this);
+            mZoomButtonsController.setOnZoomListener(new ZoomButtonsController.OnZoomListener() {
                 public void onCenter(int x, int y) {
                 }
 
@@ -300,20 +299,25 @@ public class ViewImage extends Activity implements View.OnClickListener
         }
 
         private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                mZoomButtonsController.setVisible(true);
+                return true;
+            }
+
+            @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
                     float distanceX, float distanceY) {
                 if (getScale() > 1F) {
                     postTranslate(-distanceX, -distanceY, sUseBounce);
                     ImageViewTouch.this.center(true, true, false);
                 }
+                mZoomButtonsController.setVisible(true);
                 return true;
             }
-        }
 
-        private class MyDoubleTapListener implements GestureDetector.OnDoubleTapListener {
-            // On single tap, we show the arrows. We also change to the
-            // prev/next image if the user taps on the left/right region.
-            public boolean onSingleTapConfirmed(MotionEvent e) {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
                 ViewImage viewImage = mViewImage;
 
                 int viewWidth = getWidth();
@@ -330,20 +334,6 @@ public class ViewImage extends Activity implements View.OnClickListener
 
                 return true;
             }
-
-            // On double tap, we show the zoom controls.
-            public boolean onDoubleTapEvent(MotionEvent e) {
-                mViewImage.setMode(MODE_NORMAL);
-                if (mZoomButtonsController.handleDoubleTapEvent(e)) {
-                    ZoomButtonsController.finishZoomTutorial(mViewImage, true);
-                }
-                return true;
-            }
-
-            public boolean onDoubleTap(MotionEvent e) {
-                return false;
-            }
-
         }
 
         @Override
