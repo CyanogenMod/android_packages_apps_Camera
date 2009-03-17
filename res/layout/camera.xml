@@ -15,30 +15,25 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/camera"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="horizontal">
 
     <com.android.camera.VideoPreview
-		android:id="@+id/camera_preview"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_centerInParent="true" />
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true" />
           
-    <ImageView
-		android:id="@+id/blackout"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:visibility="invisible" />
-
     <com.android.camera.ShutterButton
-        android:id="@+id/mode_indicator"
+        android:id="@+id/shutter_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_camera_indicator_photo"
-	    android:background="@drawable/ic_btn_camera_background"
+        android:background="@drawable/ic_btn_camera_background"
         android:clickable="true"
-		android:focusable="true"
+        android:focusable="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="50dip"
@@ -50,33 +45,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_camera_indicator_auto_focus_green"
-        android:layout_alignLeft="@id/mode_indicator"
-        android:layout_alignTop="@id/mode_indicator"
+        android:layout_alignLeft="@id/shutter_button"
+        android:layout_alignTop="@id/shutter_button"
         android:layout_marginLeft="39dip"
         android:layout_marginTop="16dip"
         android:scaleType="center"
         android:visibility="gone" />
-    
+        
     <ImageView
-	    android:id="@+id/last_picture_button"
-		android:layout_width="75dip"
-		android:layout_height="75dip"
-		android:clickable="true"
-		android:focusable="true"
+        android:visibility="gone"
+        android:id="@+id/last_picture_button"
+        android:layout_width="72dip"
+        android:layout_height="72dip"
+        android:clickable="true"
+        android:focusable="false"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="10dip"
-        android:layout_marginBottom="10dip" />
-    
-    <TextView
-		android:id="@+id/hint_toast"
-		android:layout_alignParentRight="true"
-		android:layout_alignParentTop="true"
-		android:background="@drawable/popup_camera_toast"
-		android:layout_width="200dip"
-		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:text="@string/camera_button_hint"
-		android:textSize="18sp" />
+        android:layout_marginTop="10dip" />
 </RelativeLayout>
-

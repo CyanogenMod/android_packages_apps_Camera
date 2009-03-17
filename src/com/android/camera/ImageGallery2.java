@@ -19,8 +19,10 @@ package com.android.camera;
 import android.content.BroadcastReceiver;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -68,14 +70,13 @@ public class ImageGallery2 extends Activity {
     private View mNoImagesView;
     public final static int CROP_MSG = 2;
     public final static int VIEW_MSG = 3;
-
     private static final String INSTANCE_STATE_TAG = "scrollY";
 
     private Dialog mMediaScanningDialog;
 
-    private MenuItem mFlipItem;
     private MenuItem mSlideShowItem;
     private SharedPreferences mPrefs;
+    private long mVideoSizeLimit = Long.MAX_VALUE;
 
     public ImageGallery2() {
     }
@@ -107,7 +108,13 @@ public class ImageGallery2 extends Activity {
         mGvs = (GridViewSpecial) findViewById(R.id.grid);
         mGvs.requestFocus();
 
-        if (!isPickIntent()) {
+        if (isPickIntent()) {
+            mVideoSizeLimit = getIntent().getLongExtra(
+                    MediaStore.EXTRA_SIZE_LIMIT, Long.MAX_VALUE);
+            mGvs.mVideoSizeLimit = mVideoSizeLimit;
+        } else {
+            mVideoSizeLimit = Long.MAX_VALUE;
+            mGvs.mVideoSizeLimit = mVideoSizeLimit;
             mGvs.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
                 public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                     if (mSelectedImageGetter.getCurrentImage() == null)
@@ -187,7 +194,10 @@ public class ImageGallery2 extends Activity {
     private Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             mGvs.clearCache();
-            mAllImages.removeImage(mSelectedImageGetter.getCurrentImage());
+            IImage currentImage = mSelectedImageGetter.getCurrentImage();
+            if (currentImage != null) {
+                mAllImages.removeImage(currentImage);
+            }
             mGvs.invalidate();
             mGvs.requestLayout();
             mGvs.start();
@@ -244,6 +254,10 @@ public class ImageGallery2 extends Activity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mGvs.mCurrentSpec == null) {
+            // View.onLayout hasn't been called so we can't handle onKeyDown event yet.
+            return false;
+        }
         boolean handled = true;
         int sel = mGvs.mCurrentSelection;
         int columns = mGvs.mCurrentSpec.mColumns;
@@ -304,7 +318,7 @@ public class ImageGallery2 extends Activity {
             default:
                 handled = false;
                 break;
-        }
+            }
         }
         if (handled) {
             mGvs.select(sel, pressed);
@@ -321,6 +335,29 @@ public class ImageGallery2 extends Activity {
 
     private void launchCropperOrFinish(ImageManager.IImage img) {
         Bundle myExtras = getIntent().getExtras();
+
+        long size = MenuHelper.getImageFileSize(img);
+        if (size < 0) {
+            // return if there image file is not available.
+            return;
+        }
+        
+        if (size > mVideoSizeLimit) {
+
+            DialogInterface.OnClickListener buttonListener =
+                    new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            };
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setTitle(R.string.file_info_title)
+                    .setMessage(R.string.video_exceed_mms_limit)
+                    .setNeutralButton(R.string.details_ok, buttonListener)
+                    .show();
+            return;
+        }
 
         String cropValue = myExtras != null ? myExtras.getString("crop") : null;
         if (cropValue != null) {
@@ -354,10 +391,26 @@ public class ImageGallery2 extends Activity {
         if (Config.LOGV)
             Log.v(TAG, "onActivityResult: " + requestCode + "; resultCode is " + resultCode + "; data is " + data);
         switch (requestCode) {
+            case MenuHelper.RESULT_COMMON_MENU_CROP: {
+                if (resultCode == RESULT_OK) {
+                    // The CropImage activity passes back the Uri of the cropped image as
+                    // the Action rather than the Data.
+                    Uri dataUri = Uri.parse(data.getAction());
+                    rebake(false,false);
+                    IImage image = mAllImages.getImageForUri(dataUri);
+                    if (image != null ) {
+                        int rowId = image.getRow();
+                        mGvs.select(rowId, false);
+                    }
+                }
+                break;
+            }
             case CROP_MSG: {
                 if (Config.LOGV) Log.v(TAG, "onActivityResult " + data);
-                setResult(resultCode, data);
-                finish();
+                if (resultCode == RESULT_OK) {
+                    setResult(resultCode, data);
+                    finish();
+                }
                 break;
             }
             case VIEW_MSG: {
@@ -504,7 +557,6 @@ public class ImageGallery2 extends Activity {
         mThumbnailCheckThread = new CameraThread(new Runnable() {
             public void run() {
                 android.content.res.Resources resources = getResources();
-                boolean loadingVideos = mInclusion == ImageManager.INCLUDE_VIDEOS;
                 final TextView progressTextView = (TextView) findViewById(R.id.loading_text);
                 final String progressTextFormatString = resources.getString(R.string.loading_progress_format_string);
 
@@ -547,7 +599,8 @@ public class ImageGallery2 extends Activity {
                         return !mPausing;
                     }
                 };
-                allImages(true).checkThumbnails(r);
+                ImageManager.IImageList imageList = allImages(true);
+                imageList.checkThumbnails(r, imageList.getCount());
                 mWakeLock.release();
                 mThumbnailCheckThread = null;
                 mHandler.post(new Runnable() {
@@ -572,12 +625,13 @@ public class ImageGallery2 extends Activity {
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         MenuItem item;
-        MenuHelper.addCaptureMenuItems(menu, this);
-        if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
-            mSlideShowItem = addSlideShowMenu(menu, 5);
+        if (! isPickIntent()) {
+            MenuHelper.addCaptureMenuItems(menu, this);
+            if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
+                mSlideShowItem = addSlideShowMenu(menu, 5);
 
+            }
         }
-        mFlipItem = MenuHelper.addFlipOrientation(menu, this, mPrefs);
 
         item = menu.add(0, 0, 1000, R.string.camerasettings);
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -599,9 +653,10 @@ public class ImageGallery2 extends Activity {
         if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
             boolean videoSelected = isVideoSelected();
             // TODO: Only enable slide show if there is at least one image in the folder.
-            mSlideShowItem.setEnabled(!videoSelected);
+            if (mSlideShowItem != null) {
+                mSlideShowItem.setEnabled(!videoSelected);
+            }
         }
-        MenuHelper.setFlipOrientationEnabled(this, mFlipItem);
 
         return true;
     }
@@ -621,7 +676,6 @@ public class ImageGallery2 extends Activity {
             mNoImagesView = findViewById(R.id.no_images);
 
             mInclusion = ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS;
-            ImageManager.DataLocation location = ImageManager.DataLocation.ALL;
 
             Intent intent = getIntent();
             if (intent != null) {
@@ -659,7 +713,6 @@ public class ImageGallery2 extends Activity {
                 if (extras != null && extras.getBoolean("pick-drm")) {
                     Log.d(TAG, "pick-drm is true");
                     mInclusion = ImageManager.INCLUDE_DRM_IMAGES;
-                    location = ImageManager.DataLocation.INTERNAL;
                 }
             }
             if (Config.LOGV)
@@ -695,6 +748,8 @@ public class ImageGallery2 extends Activity {
 
         private boolean mDirectionBiasDown = true;
         private final static boolean sDump = false;
+
+        private long mVideoSizeLimit;
 
         class LayoutSpec {
             LayoutSpec(int cols, int w, int h, int leftEdgePadding, int rightEdgePadding, int intercellSpacing) {
@@ -745,7 +800,7 @@ public class ImageGallery2 extends Activity {
             setVerticalScrollBarEnabled(true);
             initializeScrollbars(context.obtainStyledAttributes(android.R.styleable.View));
 
-            mGestureDetector = new GestureDetector(new SimpleOnGestureListener() {
+            mGestureDetector = new GestureDetector(context, new SimpleOnGestureListener() {
                 @Override
                 public boolean onDown(MotionEvent e) {
                     if (mScroller != null && !mScroller.isFinished()) {
@@ -979,6 +1034,9 @@ public class ImageGallery2 extends Activity {
             private Bitmap mMissingImageThumbnailBitmap;
             private Bitmap mMissingVideoThumbnailBitmap;
 
+            private Drawable mVideoOverlay;
+            private Drawable mVideoMmsErrorOverlay;
+
             public void dump() {
                 synchronized (ImageBlockManager.this) {
                     StringBuilder line1 = new StringBuilder();
@@ -1037,7 +1095,7 @@ public class ImageGallery2 extends Activity {
                             loadNext();
 
                             synchronized (ImageBlockManager.this) {
-                                if (workCounter == mWorkCounter) {
+                                if ((workCounter == mWorkCounter) && (! mDone)) {
                                     try {
                                         ImageBlockManager.this.wait();
                                     } catch (InterruptedException ex) {
@@ -1332,7 +1390,6 @@ public class ImageGallery2 extends Activity {
                 int     mRequestedMask;   // columns which have been requested to the loader
                 int     mCompletedMask;   // columns which have been completed from the loader
                 boolean mIsVisible;
-                Drawable mVideoOverlay;
 
                 public void dump(StringBuilder line1, StringBuilder line2) {
                     synchronized (ImageBlock.this) {
@@ -1446,7 +1503,8 @@ public class ImageGallery2 extends Activity {
                         }
                         return retVal;
 
-                    }}
+                    }
+                }
 
                 Bitmap resizeBitmap(Bitmap b) {
                     // assume they're both square for now
@@ -1504,17 +1562,32 @@ public class ImageGallery2 extends Activity {
                         mCanvas.drawBitmap(error, source, dest, mPaint);
                     }
                     if (ImageManager.isVideo(image)) {
-                        if (mVideoOverlay == null) {
-                            mVideoOverlay = getResources().getDrawable(
-                                    R.drawable.ic_gallery_video_overlay);
+                        Drawable overlay = null;
+                        long size = MenuHelper.getImageFileSize(image);
+                        if (size >= 0 && size <= mVideoSizeLimit) {
+                            if (mVideoOverlay == null) {
+                                mVideoOverlay = getResources().getDrawable(
+                                        R.drawable.ic_gallery_video_overlay);
+                            }
+                            overlay = mVideoOverlay;
+                        } else {
+                            if (mVideoMmsErrorOverlay == null) {
+                                mVideoMmsErrorOverlay = getResources().getDrawable(
+                                        R.drawable.ic_error_mms_video_overlay);
+                            }
+                            overlay = mVideoMmsErrorOverlay;
+                            Paint paint = new Paint();
+                            paint.setARGB(0x80, 0x00, 0x00, 0x00);
+                            mCanvas.drawRect(xPos, yPos, xPos + mCurrentSpec.mCellWidth,
+                                    yPos + mCurrentSpec.mCellHeight, paint);
                         }
-                        int width = mVideoOverlay.getIntrinsicWidth();
-                        int height = mVideoOverlay.getIntrinsicHeight();
+                        int width = overlay.getIntrinsicWidth();
+                        int height = overlay.getIntrinsicHeight();
                         int left = (mCurrentSpec.mCellWidth - width) / 2 + xPos;
                         int top = (mCurrentSpec.mCellHeight - height) / 2 + yPos;
                         Rect newBounds = new Rect(left, top, left + width, top + height);
-                        mVideoOverlay.setBounds(newBounds);
-                        mVideoOverlay.draw(mCanvas);
+                        overlay.setBounds(newBounds);
+                        overlay.draw(mCanvas);
                     }
                     paintSel(base + baseOffset, xPos, yPos);
                 }

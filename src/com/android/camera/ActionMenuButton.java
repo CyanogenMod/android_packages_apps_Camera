@@ -34,8 +34,13 @@ public class ActionMenuButton extends TextView {
     private static final float PADDING_H = 5.0f;
     private static final float PADDING_V = 1.0f;
 
+    private static final int[] RESTRICTED_STATE_SET = {
+            R.attr.state_restricted
+    };
+
     private final RectF mRect = new RectF();
     private Paint mPaint;
+    private boolean mRestricted = false;
 
     public ActionMenuButton(Context context) {
         super(context);
@@ -57,6 +62,26 @@ public class ActionMenuButton extends TextView {
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(getContext().getResources().getColor(R.color.bubble_dark_background));
+    }
+
+    public void setRestricted(boolean restricted) {
+        if (restricted != mRestricted) {
+            mRestricted = restricted;
+            refreshDrawableState();
+        }
+    }
+
+    public boolean isRestricted() {
+        return mRestricted;
+    }
+
+    @Override
+    protected int[] onCreateDrawableState(int extraSpace) {
+        int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        if (isRestricted()) {
+            mergeDrawableStates(drawableState, RESTRICTED_STATE_SET);
+        }
+        return drawableState;
     }
 
     @Override

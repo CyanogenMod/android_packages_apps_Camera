@@ -16,13 +16,16 @@
 
 package com.android.camera;
 
+import java.io.Closeable;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
@@ -37,15 +40,9 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.MenuItem.OnMenuItemClickListener;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import com.android.camera.ImageManager.IImage;
 
@@ -85,8 +82,14 @@ public class MenuHelper {
     static public final int MENU_VIDEO_SHARE = 24;
     static public final int MENU_VIDEO_TOSS = 27;
 
+    static private final long SHARE_FILE_LENGTH_LIMIT = 3L * 1024L * 1024L;
+
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
+
+    /** Activity result code used to report crop results.
+     */
+    public static final int RESULT_COMMON_MENU_CROP = 490;
 
     public interface MenuItemsResult {
         public void gettingReadyToOpen(Menu menu, ImageManager.IImage image);
@@ -99,6 +102,26 @@ public class MenuHelper {
 
     public interface MenuCallback {
         public void run(Uri uri, ImageManager.IImage image);
+    }
+
+    private static void closeSilently(Closeable target) {
+        try {
+            if (target != null) target.close();
+        } catch (Throwable t) {
+            // ignore all exceptions, that's what silently means
+        }
+    }
+
+    public static long getImageFileSize(ImageManager.IImage image) {
+        java.io.InputStream data = image.fullSizeImageData();
+        if (data == null) return -1;
+        try {
+            return data.available();
+        } catch (java.io.IOException ex) {
+            return -1;
+        } finally {
+            closeSilently(data);
+        }
     }
 
     static MenuItemsResult addImageMenuItems(
@@ -162,7 +185,7 @@ public class MenuHelper {
                             Intent cropIntent = new Intent();
                             cropIntent.setClass(activity, CropImage.class);
                             cropIntent.setData(u);
-                            activity.startActivity(cropIntent);
+                            activity.startActivityForResult(cropIntent, RESULT_COMMON_MENU_CROP);
                         }
                     });
                     return true;
@@ -205,8 +228,13 @@ public class MenuHelper {
                 public boolean onMenuItemClick(MenuItem item) {
                     onInvoke.run(new MenuCallback() {
                         public void run(Uri u, ImageManager.IImage image) {
-                            if (image == null)
+                            if (image == null) return;
+                            if (!isImage && getImageFileSize(image) > SHARE_FILE_LENGTH_LIMIT ) {
+                                Toast.makeText(activity,
+                                        R.string.too_large_to_attach, Toast.LENGTH_LONG).show();
                                 return;
+                            }
+
                             Intent intent = new Intent();
                             intent.setAction(Intent.ACTION_SEND);
                             String mimeType = image.getMimeType();
@@ -264,17 +292,9 @@ public class MenuHelper {
                             TextView textView = (TextView) d.findViewById(R.id.details_image_title);
                             textView.setText(image.getDisplayName());
 
-                            java.io.InputStream data = image.fullSizeImageData();
-                            String lengthString = "";
-                            try {
-                                long length = data.available();
-                                lengthString =
-                                    android.text.format.Formatter.formatFileSize(activity, length);
-                                data.close();
-                            } catch (java.io.IOException ex) {
-
-                            } finally {
-                            }
+                            long length = getImageFileSize(image);
+                            String lengthString = lengthString = length < 0 ? ""
+                                    : android.text.format.Formatter.formatFileSize(activity, length);
                             ((TextView)d.findViewById(R.id.details_file_size_value))
                                 .setText(lengthString);
 
@@ -357,8 +377,14 @@ public class MenuHelper {
 
                                     String codec = retriever.extractMetadata(
                                                 MediaMetadataRetriever.METADATA_KEY_CODEC);
-                                    ((TextView)d.findViewById(R.id.details_codec_value))
-                                        .setText(codec);
+
+                                    if (codec == null) {
+                                        d.findViewById(R.id.details_codec_row).
+                                            setVisibility(View.GONE);
+                                    } else {
+                                        ((TextView)d.findViewById(R.id.details_codec_value))
+                                            .setText(codec);
+                                    }
                                 } catch(RuntimeException ex) {
                                     // Assume this is a corrupt video file.
                                 } finally {
@@ -416,9 +442,11 @@ public class MenuHelper {
                 public boolean onMenuItemClick(MenuItem item) {
                     onInvoke.run(new MenuCallback() {
                         public void run(Uri uri, IImage image) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW,
-                                    image.fullSizeImageUri());
-                            activity.startActivity(intent);
+                            if (image != null) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        image.fullSizeImageUri());
+                                activity.startActivity(intent);
+                            }
                         }});
                     return true;
                 }
@@ -531,9 +559,27 @@ public class MenuHelper {
     }
 
     static void gotoCameraImageGallery(Activity activity) {
+        gotoGallery(activity, R.string.gallery_camera_bucket_name, ImageManager.INCLUDE_IMAGES);
+    }
+
+    static void gotoCameraVideoGallery(Activity activity) {
+        gotoGallery(activity, R.string.gallery_camera_videos_bucket_name,
+                ImageManager.INCLUDE_VIDEOS);
+    }
+
+    static private void gotoGallery(Activity activity, int windowTitleId, int mediaTypes) {
         Uri target = Images.Media.INTERNAL_CONTENT_URI.buildUpon().appendQueryParameter("bucketId",
                 ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
         Intent intent = new Intent(Intent.ACTION_VIEW, target);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("windowTitle", activity.getString(windowTitleId));
+        intent.putExtra("mediaTypes", mediaTypes);
+        // Request unspecified so that we match the current camera orientation rather than
+        // matching the "flip orientation" preference.
+        // Disabled because people don't care for it. Also it's
+        // not as compelling now that we have implemented have quick orientation flipping.
+        // intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
+        //        android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         try {
             activity.startActivity(intent);
         } catch (ActivityNotFoundException e) {
@@ -548,6 +594,7 @@ public class MenuHelper {
                  new MenuItem.OnMenuItemClickListener() {
                      public boolean onMenuItemClick(MenuItem item) {
                         Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         try {
                                activity.startActivity(intent);
                         } catch (android.content.ActivityNotFoundException e) {
@@ -563,6 +610,7 @@ public class MenuHelper {
                  new MenuItem.OnMenuItemClickListener() {
                      public boolean onMenuItemClick(MenuItem item) {
                          Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
+                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                          try {
                              activity.startActivity(intent);
                          } catch (android.content.ActivityNotFoundException e) {
@@ -575,20 +623,22 @@ public class MenuHelper {
     }
     static MenuItem addFlipOrientation(Menu menu, final Activity activity, final SharedPreferences prefs) {
         // position 41 after rotate
+        // D
         return menu
                 .add(Menu.CATEGORY_SECONDARY, 304, 41, R.string.flip_orientation)
                 .setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                int current = activity.getRequestedOrientation();
+                // Check what our actual orientation is
+                int current = activity.getResources().getConfiguration().orientation;
                 int newOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-                if (current == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                if (current == Configuration.ORIENTATION_LANDSCAPE) {
                     newOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
                 }
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("nuorientation", newOrientation);
                 editor.commit();
-                requestOrientation(activity, prefs);
+                requestOrientation(activity, prefs, true);
                 return true;
             }
         })
@@ -596,15 +646,15 @@ public class MenuHelper {
     }
 
     static void requestOrientation(Activity activity, SharedPreferences prefs) {
-        int req = prefs.getInt("nuorientation",
-                android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        // A little trick: use USER instead of UNSPECIFIED, so we ignore the
-        // orientation set by the activity below.  It may have forced a landscape
-        // orientation, which the user has now cleared here.
-        activity.setRequestedOrientation(
-                req == android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                        ? android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER
-                        : req);
+        requestOrientation(activity, prefs, false);
+    }
+
+    static private void requestOrientation(Activity activity, SharedPreferences prefs,
+            boolean ignoreIntentExtra) {
+        // Disable orientation for now. If it is set to SCREEN_ORIENTATION_SENSOR,
+        // a duplicated orientation will be observed.
+
+        return;
     }
 
     static void setFlipOrientationEnabled(Activity activity, MenuItem flipItem) {
@@ -628,13 +678,20 @@ public class MenuHelper {
         return durationValue;
     }
 
-
     public static void showStorageToast(Activity activity) {
+      showStorageToast(activity, calculatePicturesRemaining());
+    }
+
+    public static void showStorageToast(Activity activity, int remaining) {
         String noStorageText = null;
-        int remaining = calculatePicturesRemaining();
 
         if (remaining == MenuHelper.NO_STORAGE_ERROR) {
-            noStorageText = activity.getString(R.string.no_storage);
+            String state = Environment.getExternalStorageState();
+            if (state == Environment.MEDIA_CHECKING) {
+                noStorageText = activity.getString(R.string.preparing_sd);
+            } else {
+                noStorageText = activity.getString(R.string.no_storage);
+            }
         } else if (remaining < 1) {
             noStorageText = activity.getString(R.string.not_enough_space);
         }

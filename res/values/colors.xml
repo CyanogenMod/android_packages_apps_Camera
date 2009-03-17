@@ -19,4 +19,6 @@
 -->
 <resources>
     <color name="bubble_dark_background">#B2191919</color>
+    <color name="recording_time_elapsed_text">#FFFFFFFF</color>
+    <color name="recording_time_remaining_text">#FFFF0033</color>
 </resources>

@@ -284,7 +284,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
             throw new UnsupportedOperationException();
         }
 
-        public void checkThumbnails(ThumbCheckCallback cb) {
+        public void checkThumbnails(ThumbCheckCallback cb, int totalThumbnails) {
             // TODO Auto-generated method stub
 
         }

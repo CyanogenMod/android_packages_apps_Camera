@@ -73,7 +73,6 @@ public class GalleryPicker extends Activity {
 
     Dialog mMediaScanningDialog;
 
-    MenuItem mFlipItem;
     SharedPreferences mPrefs;
 
     boolean mPausing = false;
@@ -96,8 +95,49 @@ public class GalleryPicker extends Activity {
                     true,
                     true);
         }
-        mAdapter.notifyDataSetChanged();
-        mAdapter.init(!unmounted && !scanning);
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+            mAdapter.init(!unmounted && !scanning);
+        }
+
+        if (!unmounted) {
+            // Warn the user if space is getting low
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+
+                    // Check available space only if we are writable
+                    if (ImageManager.hasStorage()) {
+                        String storageDirectory = Environment.getExternalStorageDirectory().toString();
+                        StatFs stat = new StatFs(storageDirectory);
+                        long remaining = (long)stat.getAvailableBlocks() * (long)stat.getBlockSize();
+                        if (remaining < LOW_STORAGE_THRESHOLD) {
+
+                            mHandler.post(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(GalleryPicker.this.getApplicationContext(),
+                                        R.string.not_enough_space, 5000).show();
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            t.start();
+        }
+
+        // If we just have zero or one folder, open it. (We shouldn't have just one folder
+        // any more, but we can have zero folders.)
+        mNoImagesView.setVisibility(View.GONE);
+        if (!scanning) {
+            int numItems = mAdapter.mItems.size();
+            if (numItems == 0) {
+                mNoImagesView.setVisibility(View.VISIBLE);
+            } else if (numItems == 1) {
+                mAdapter.mItems.get(0).launch(this);
+                finish();
+                return;
+            }
+        }
     }
 
     @Override
@@ -188,6 +228,8 @@ public class GalleryPicker extends Activity {
                 });
             }
         });
+ 
+        ImageManager.ensureOSXCompatibleFolder();
     }
 
     private void launchFolderGallery(int position) {
@@ -201,6 +243,7 @@ public class GalleryPicker extends Activity {
 
     static class Item implements Comparable<Item>{
         // The type is also used as the sort order
+        public final static int TYPE_NONE = -1;
         public final static int TYPE_ALL_IMAGES = 0;
         public final static int TYPE_ALL_VIDEOS = 1;
         public final static int TYPE_CAMERA_IMAGES = 2;
@@ -329,14 +372,16 @@ public class GalleryPicker extends Activity {
             images.deactivate();
             notifyDataSetInvalidated();
 
-            // If just one
-            addBucketIfNotEmpty(Item.TYPE_ALL_IMAGES, null, R.string.all_images);
-            addBucketIfNotEmpty(Item.TYPE_ALL_VIDEOS, null, R.string.all_videos);
+            // Conditionally add all-images and all-videos folders.
+            addBucket(Item.TYPE_ALL_IMAGES, null,
+                    Item.TYPE_CAMERA_IMAGES, cameraBucketId, R.string.all_images);
+            addBucket(Item.TYPE_ALL_VIDEOS, null,
+                    Item.TYPE_CAMERA_VIDEOS, cameraBucketId, R.string.all_videos);
 
             if (cameraBucketId != null) {
-                addBucketIfNotEmpty(Item.TYPE_CAMERA_IMAGES, cameraBucketId,
+                addBucket(Item.TYPE_CAMERA_IMAGES, cameraBucketId,
                         R.string.gallery_camera_bucket_name);
-                addBucketIfNotEmpty(Item.TYPE_CAMERA_VIDEOS, cameraBucketId,
+                addBucket(Item.TYPE_CAMERA_VIDEOS, cameraBucketId,
                         R.string.gallery_camera_videos_bucket_name);
             }
 
@@ -401,7 +446,36 @@ public class GalleryPicker extends Activity {
             mWorkerThread.toBackground();
         }
 
-        private void addBucketIfNotEmpty(int itemType, String bucketId, int labelId) {
+        /**
+         * Add a bucket, but only if it's interesting.
+         * Interesting means non-empty and not duplicated by the
+         * corresponding camera bucket.
+         */
+        private void addBucket(int itemType, String bucketId,
+                int cameraItemType, String cameraBucketId,
+                int labelId) {
+            int itemCount = bucketItemCount(
+                    Item.convertItemTypeToIncludedMediaType(itemType), bucketId);
+            if (itemCount == 0) {
+                return; // Bucket is empty, so don't show it.
+            }
+            int cameraItemCount = 0;
+            if (cameraBucketId != null) {
+                cameraItemCount = bucketItemCount(
+                        Item.convertItemTypeToIncludedMediaType(cameraItemType), cameraBucketId);
+            }
+            if (cameraItemCount == itemCount) {
+                return; // Bucket is the same as the camera bucket, so don't show it.
+            }
+            mItems.add(new Item(itemType, bucketId, getResources().getString(labelId)));
+        }
+
+        /**
+         * Add a bucket, but only if it's interesting.
+         * Interesting means non-empty.
+         */
+        private void addBucket(int itemType, String bucketId,
+                int labelId) {
             if (!isEmptyBucket(Item.convertItemTypeToIncludedMediaType(itemType), bucketId)) {
                 mItems.add(new Item(itemType, bucketId, getResources().getString(labelId)));
             }
@@ -489,47 +563,8 @@ public class GalleryPicker extends Activity {
 
         registerReceiver(mReceiver, intentFilter);
         MenuHelper.requestOrientation(this, mPrefs);
-
-        // Warn the user if space is getting low
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-
-                // Check available space only if we are writable
-                if (ImageManager.hasStorage()) {
-                    String storageDirectory = Environment.getExternalStorageDirectory().toString();
-                    StatFs stat = new StatFs(storageDirectory);
-                    long remaining = (long)stat.getAvailableBlocks() * (long)stat.getBlockSize();
-                    if (remaining < LOW_STORAGE_THRESHOLD) {
-
-                        mHandler.post(new Runnable() {
-                            public void run() {
-                                Toast.makeText(GalleryPicker.this.getApplicationContext(),
-                                    R.string.not_enough_space, 5000).show();
-                            }
-                        });
-                    }
-                }
-            }
-        });
-        t.start();
-
-        // If we just have zero or one folder, open it. (We shouldn't have just one folder
-        // any more, but we can have zero folders.)
-        mNoImagesView.setVisibility(View.GONE);
-        if (!scanning) {
-            int numItems = mAdapter.mItems.size();
-            if (numItems == 0) {
-                mNoImagesView.setVisibility(View.VISIBLE);
-            } else if (numItems == 1) {
-                // Not sure we can ever get here any more.
-                android.net.Uri uri = Images.Media.INTERNAL_CONTENT_URI;
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
-                finish();
-                return;
-            }
-        }
     }
+
 
 
     private void setBackgrounds(Resources r) {
@@ -644,7 +679,6 @@ public class GalleryPicker extends Activity {
         super.onCreateOptionsMenu(menu);
 
         MenuHelper.addCaptureMenuItems(menu, this);
-        mFlipItem = MenuHelper.addFlipOrientation(menu, this, mPrefs);
 
         menu.add(0, 0, 5, R.string.camerasettings)
         .setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -661,12 +695,6 @@ public class GalleryPicker extends Activity {
         return true;
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(android.view.Menu menu) {
-        MenuHelper.setFlipOrientationEnabled(this, mFlipItem);
-        return true;
-    }
-
     private boolean isEmptyBucket(int mediaTypes, String bucketId) {
         // TODO: Find a more efficient way of calculating this
         ImageManager.IImageList list = createImageList(mediaTypes, bucketId);
@@ -678,6 +706,16 @@ public class GalleryPicker extends Activity {
         }
     }
 
+    private int bucketItemCount(int mediaTypes, String bucketId) {
+        // TODO: Find a more efficient way of calculating this
+        ImageManager.IImageList list = createImageList(mediaTypes, bucketId);
+        try {
+            return list.getCount();
+        }
+        finally {
+            list.deactivate();
+        }
+    }
     private ImageManager.IImageList createImageList(int mediaTypes, String bucketId) {
         return ImageManager.instance().allImages(
                 this,

@@ -399,6 +399,9 @@ public class CropImage extends Activity {
 
             mHandler.postDelayed(new Runnable() {
                 public void run() {
+                    if (isFinishing()) {
+                        return;
+                    }
                     mFaceDetectionDialog = ProgressDialog.show(CropImage.this,
                             null,
                             getResources().getString(R.string.runningFaceDetection),
@@ -434,6 +437,7 @@ public class CropImage extends Activity {
 
         findViewById(R.id.discard).setOnClickListener(new android.view.View.OnClickListener() {
             public void onClick(View v) {
+                setResult(RESULT_CANCELED);
                 finish();
             }
         });

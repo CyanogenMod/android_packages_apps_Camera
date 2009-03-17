@@ -29,11 +29,12 @@
     <string name="wait">"Por favor, espera..."</string>
     <string name="no_storage">"Antes de utilizar la cámara, debes insertar una tarjeta SD."</string>
     <string name="not_enough_space">"La tarjeta SD está llena."</string>
-    <string name="wallpaper">"Estableciendo papel tapiz; por favor, espera..."</string>
+    <string name="preparing_sd">"Preparando tarjeta SD…"</string>
+    <string name="wallpaper">"Estableciendo fondo de pantalla; por favor, espera..."</string>
     <string name="savingImage">"Guardando imagen..."</string>
     <string name="runningFaceDetection">"Por favor, espera..."</string>
     <string name="flip_orientation">"Cambiar orientación"</string>
-    <string name="settings">"Configuración"</string>
+    <string name="settings">"Ajustes"</string>
     <string name="view">"Ver"</string>
     <string name="details">"Detalles"</string>
     <string name="rotate">"Girar"</string>
@@ -48,37 +49,31 @@
     <string name="confirm_delete_message">"Se eliminará la imagen."</string>
     <string name="confirm_delete_video_message">"Se eliminará el vídeo."</string>
     <string name="camera_toss">"Suprimir"</string>
-    <!-- no translation found for camera_gallery (815753042966032398) -->
-    <skip />
+    <string name="camera_gallery">"Galería"</string>
     <string name="camera_share">"Compartir"</string>
     <string name="camera_set">"Establecer como"</string>
     <string name="camera_play">"Reproducir"</string>
-    <!-- no translation found for camera_attach (4048659554893435232) -->
-    <skip />
-    <!-- no translation found for camera_cancel (8203341746672085747) -->
-    <skip />
+    <string name="camera_attach">"Adjuntar"</string>
+    <string name="camera_cancel">"Cancelar"</string>
     <string name="camera_crop">"Recortar"</string>
     <string name="camera_tossing">"Eliminando..."</string>
     <string name="no_way_to_share_image">"Esta imagen no se puede compartir."</string>
     <string name="no_way_to_share_video">"Este vídeo no se puede compartir."</string>
     <string name="camera_gallery_photos_text">"Galería"</string>
     <string name="camera_pick_wallpaper">"Imágenes"</string>
-    <string name="camera_setas_wallpaper">"Papel tapiz"</string>
-    <string name="camera_setas_wallpaper_drm">"Imágenes compradas"</string>
-    <string name="camera_selectphoto">"Seleccionar esta imagen"</string>
-    <string name="camera_takenewphoto">"Hacer otra fotografía"</string>
+    <string name="camera_setas_wallpaper">"Fondo de pantalla"</string>
     <string name="pref_gallery_category">"Configuración general"</string>
     <string name="pref_slideshow_category">"Configuración de presentación"</string>
     <string name="pref_camera_general_settings_category">"Configuración general"</string>
-    <string name="pref_gallery_size_title">"Tamaño de imagen"</string>
-    <string name="pref_gallery_size_summary">"Seleccionar el tamaño de visualización de las imágenes"</string>
+    <string name="pref_gallery_size_title">"Tamaño de visualización"</string>
+    <string name="pref_gallery_size_summary">"Seleccionar el tamaño de visualización de imágenes y vídeos"</string>
     <string name="pref_gallery_size_dialogtitle">"Tamaño de imagen"</string>
   <string-array name="pref_gallery_size_choices">
     <item>"Grande"</item>
     <item>"Pequeña"</item>
   </string-array>
-    <string name="pref_gallery_sort_title">"Orden de imágenes"</string>
-    <string name="pref_gallery_sort_summary">"Seleccionar el orden de las imágenes"</string>
+    <string name="pref_gallery_sort_title">"Orden"</string>
+    <string name="pref_gallery_sort_summary">"Seleccionar el orden de imágenes y vídeos"</string>
     <string name="pref_gallery_sort_dialogtitle">"Ordenación de imágenes"</string>
   <string-array name="pref_gallery_sort_choices">
     <item>"Más recientes primero"</item>
@@ -107,74 +102,54 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Mostrar imágenes en orden aleatorio"</string>
     <string name="pref_camera_recordlocation_title">"Almacenar ubicación en imágenes"</string>
     <string name="pref_camera_recordlocation_summary">"Registrar ubicación en datos de imagen"</string>
-    <string name="pref_camera_postpicturemenu_title">"Mensaje tras la fotografía"</string>
-    <string name="pref_camera_postpicturemenu_summary">"Mostrar el menú de acción (guardar, eliminar...) tras realizar la fotografía"</string>
     <string name="pref_camera_videoquality_category">"Calidad de vídeo"</string>
-    <!-- no translation found for pref_camera_videoquality_title (3836197291744160920) -->
-    <skip />
+    <string name="pref_camera_videoquality_title">"Seleccionar calidad de vídeo"</string>
     <string name="pref_camera_videoquality_entry_0">"Baja (para mensajes MMS)"</string>
     <string name="pref_camera_videoquality_entry_1">"Alta (para tarjeta SD)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Calidad de vídeo"</string>
-    <string name="camerasettings">"Configuración"</string>
-    <!-- no translation found for image_gallery_NoImageView_text (409595259802877447) -->
-    <skip />
+    <string name="camerasettings">"Ajustes"</string>
+    <string name="image_gallery_NoImageView_text">"No se ha encontrado ningún elemento."</string>
     <string name="pref_gallery_confirm_delete_title">"Confirmar eliminaciones"</string>
-    <string name="pref_gallery_confirm_delete_summary">"Mostrar confirmación antes de eliminar imágenes"</string>
+    <string name="pref_gallery_confirm_delete_summary">"Mostrar confirmación antes de eliminar una imagen o un vídeo"</string>
     <string name="details_panel_title">"Detalles"</string>
     <string name="details_file_size">"Tamaño de archivo:"</string>
     <string name="details_image_resolution">"Resolución:"</string>
-    <!-- no translation found for details_duration (1028116471387901402) -->
-    <skip />
+    <string name="details_duration">"Duración:"</string>
     <string name="details_date_taken">"Fecha de realización:"</string>
-    <!-- no translation found for details_frame_rate (122397836963498191) -->
-    <skip />
-    <!-- no translation found for details_bit_rate (5632311789455402186) -->
-    <skip />
-    <!-- no translation found for details_codec (5580300450432398126) -->
-    <skip />
-    <!-- no translation found for details_format (3700860266600796363) -->
-    <skip />
-    <!-- no translation found for details_dimension_x (4479200210424701240) -->
-    <skip />
-    <!-- no translation found for details_ms (940634969189855292) -->
-    <skip />
-    <!-- no translation found for details_hms (3215779248094151255) -->
-    <skip />
-    <!-- no translation found for details_fps (2707670327505979317) -->
-    <skip />
-    <!-- no translation found for details_kbps (59196416864960850) -->
-    <skip />
-    <!-- no translation found for details_mbps (3978720645766601106) -->
-    <skip />
-    <!-- no translation found for details_ok (6848594369924424312) -->
-    <skip />
+    <string name="details_frame_rate">"Frecuencia de imagen:"</string>
+    <string name="details_bit_rate">"Velocidad binaria:"</string>
+    <string name="details_codec">"Códec:"</string>
+    <string name="details_format">"Formato:"</string>
+    <string name="details_dimension_x">"%1$d x %2$d"</string>
+    <string name="details_ms">"%1$02d:%2$02d"</string>
+    <string name="details_hms">"%1$d:%2$02d:%3$02d"</string>
+    <string name="details_fps">"%1$d fps"</string>
+    <string name="details_kbps">"%1$d Kbps"</string>
+    <string name="details_mbps">"%1$g Mbps"</string>
+    <string name="details_ok">"Aceptar"</string>
     <string name="context_menu_header">"Opciones de imagen"</string>
     <string name="video_context_menu_header">"Opciones de vídeo"</string>
     <string name="multiface_crop_help">"Selecciona una cara para empezar."</string>
-    <string name="camera_button_hint">"Pulsa el botón de captura para realizar la fotografía."</string>
-    <string name="video_camera_button_hint">"Pulsa el botón de captura para grabar un vídeo."</string>
     <string name="photos_gallery_title">"Galería"</string>
     <string name="pick_photos_gallery_title">"Seleccionar imagen"</string>
     <string name="videos_gallery_title">"Galería"</string>
     <string name="pick_videos_gallery_title">"Seleccionar vídeo"</string>
     <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> restantes"</string>
-    <string name="sendImage">"Compartir imagen a través de"</string>
+    <string name="sendImage">"Compartir imagen por"</string>
     <string name="setImage">"Establecer imagen como"</string>
     <string name="sendVideo">"Compartir vídeo a través de"</string>
     <string name="movieviewlabel">"Películas"</string>
     <string name="loading_video">"Cargando vídeo…"</string>
-    <string name="picture_saved">"La imagen se ha guardado en la tarjeta SD."</string>
-    <string name="picture_deleted">"La imagen se ha eliminado."</string>
-    <string name="video_saved">"El vídeo se ha guardado en la tarjeta SD."</string>
-    <string name="video_deleted">"El vídeo se ha eliminado"</string>
     <string name="spaceIsLow_title">"Poco espacio"</string>
     <string name="spaceIsLow_content">"No queda espacio en la tarjeta SD. Cambia la configuración de calidad o elimina elementos de la galería."</string>
-    <!-- no translation found for resume_playing_title (8996677350649355013) -->
+    <string name="resume_playing_title">"Reanudar vídeo"</string>
+    <string name="resume_playing_message">"Reanudar reproducción a partir de %s ?"</string>
+    <string name="resume_playing_resume">"Reanudar reproducción"</string>
+    <string name="resume_playing_restart">"Volver a reproducir"</string>
+    <string name="gadget_title">"Picture frame"</string>
+    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
+    <!-- no translation found for file_info_title (1628963357466012538) -->
     <skip />
-    <!-- no translation found for resume_playing_message (5184414518126703481) -->
-    <skip />
-    <!-- no translation found for resume_playing_resume (3847915469173852416) -->
-    <skip />
-    <!-- no translation found for resume_playing_restart (5471008499835769292) -->
+    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
     <skip />
 </resources>
