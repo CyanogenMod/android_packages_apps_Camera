@@ -35,8 +35,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.location.LocationManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaRecorder;
@@ -57,6 +67,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -106,6 +117,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     ImageView mBlackout = null;
     ImageView mVideoFrame;
     Bitmap mVideoFrameBitmap;
+    private TransitionDrawable mThumbnailTransition;
+    private Drawable[] mThumbnails;
+    private boolean mShouldTransitionThumbnails;
+    private ImageView mLastPictureButton;
+    private Bitmap mLastPictureThumb;
 
     private static final int MAX_RECORDING_DURATION_MS = 10 * 60 * 1000;
 
@@ -291,6 +307,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mShutterButton.setOnShutterButtonListener(this);
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
+        mLastPictureButton = (ImageView) findViewById(R.id.last_picture_button);
+        mLastPictureButton.setOnClickListener(this);
     }
 
     private void startShareVideoActivity() {
@@ -339,28 +357,36 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 doPlayCurrentVideo();
                 break;
             }
+
+            case R.id.last_picture_button: {
+                stopPreviewAndShowAlert();
+                break;
+            }
         }
     }
 
     public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
-        switch (button.getId()) {
-            case R.id.shutter_button:
-                if (pressed) {
-                    if (mMediaRecorderRecording) {
-                        stopVideoRecordingAndDisplayDialog();
-                    } else if (mVideoFrame.getVisibility() == View.VISIBLE) {
-                        doStartCaptureMode();
-                        startVideoRecording();
-                    } else {
-                        startVideoRecording();
-                    }
-                }
-                break;
-        }
+        // Do nothing (everything happens in onShutterButtonClick).
     }
 
     public void onShutterButtonClick(ShutterButton button) {
-        // Do nothing (everything happens in onShutterButtonFocus).
+        switch (button.getId()) {
+            case R.id.shutter_button:
+                if (mMediaRecorderRecording) {
+                    if (isVideoCaptureIntent()) {
+                        stopVideoRecordingAndShowAlert();
+                    } else {
+                        stopVideoRecordingAndShowThumbnail();
+                        doStartCaptureMode();
+                    }
+                } else if (mVideoFrame.getVisibility() == View.VISIBLE) {
+                    doStartCaptureMode();
+                    startVideoRecording();
+                } else {
+                    startVideoRecording();
+                }
+                break;
+        }
     }
 
     private void doStartCaptureMode() {
@@ -455,7 +481,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (mVideoFrameBitmap == null) {
             initializeVideo();
         } else {
-            showPostRecordingAlert();
+            showVideoFrame();
         }
     }
 
@@ -477,7 +503,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         super.onPause();
 
         stopVideoRecording();
-        hidePostPictureAlert();
+        hideVideoFrame();
 
         mPausing = true;
 
@@ -498,8 +524,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 if (mMediaRecorderRecording) {
-                    Log.v(TAG, "onKeyBack");
-                    stopVideoRecordingAndDisplayDialog();
+                    mShutterButton.performClick();
                     return true;
                 } else if(isPostRecordingAlertVisible()) {
                     hideVideoFrameAndStartPreview();
@@ -508,32 +533,19 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 break;
             case KeyEvent.KEYCODE_CAMERA:
                 if (event.getRepeatCount() == 0) {
-                    // If we get a dpad center event without any focused view, move the
-                    // focus to the shutter button and press it.
-                    if (mShutterButton.isInTouchMode()) {
-                        mShutterButton.requestFocusFromTouch();
-                    } else {
-                        mShutterButton.requestFocus();
-                    }
-                    mShutterButton.setPressed(true);
+                    mShutterButton.performClick();
                     return true;
                 }
-                return true;
+                break;
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (event.getRepeatCount() == 0) {
-                    // If we get a dpad center event without any focused view, move the
-                    // focus to the shutter button and press it.
-                    if (mShutterButton.isInTouchMode()) {
-                        mShutterButton.requestFocusFromTouch();
-                    } else {
-                        mShutterButton.requestFocus();
-                    }
-                    mShutterButton.setPressed(true);
+                    mShutterButton.performClick();
+                    return true;
                 }
                 break;
             case KeyEvent.KEYCODE_MENU:
                 if (mMediaRecorderRecording) {
-                    stopVideoRecordingAndDisplayDialog();
+                    mShutterButton.performClick();
                     return true;
                 }
                 break;
@@ -748,6 +760,19 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         }
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
+
+        long remaining = getAvailableStorage();
+        // remaining >= LOW_STORAGE_THRESHOLD at this point, reserve a quarter
+        // of that to make it more likely that recording can complete successfully.
+        try {
+            mMediaRecorder.setMaxFileSize(remaining - LOW_STORAGE_THRESHOLD / 4);
+        } catch (RuntimeException exception) {
+            // We are going to ignore failure of setMaxFileSize here, as
+            // a) The composer selected may simply not support it, or
+            // b) The underlying media framework may not handle 64-bit range
+            //    on the size restriction.
+        }
+
         try {
             mMediaRecorder.prepare();
         } catch (IOException exception) {
@@ -782,6 +807,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 releaseMediaRecorder();
                 // TODO: add more exception handling logic here
             }
+        }
+        if (mShouldTransitionThumbnails) {
+            mShouldTransitionThumbnails = false;
+            mThumbnailTransition.startTransition(500);
         }
     }
 
@@ -843,6 +872,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mContentResolver.delete(mCurrentVideoUri, null, null);
             mCurrentVideoUri = null;
         }
+        updateAndShowStorageHint(true);
     }
 
     private void deleteVideoFile(String fileName) {
@@ -899,7 +929,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     // from MediaRecorder.OnInfoListener
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-            stopVideoRecordingAndDisplayDialog();
+            mShutterButton.performClick();
+        } else if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
+            mShutterButton.performClick();
+            updateAndShowStorageHint(true);
         }
     }
 
@@ -948,6 +981,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mRecordingTimeView.setVisibility(View.VISIBLE);
             mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
             setScreenTimeoutInfinite();
+            hideLastPictureButton();
+            recycleVideoFrameBitmap();
         }
     }
 
@@ -958,16 +993,31 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mShutterButton.setImageDrawable(drawable);
     }
 
-    private void stopVideoRecordingAndDisplayDialog() {
-        Log.v(TAG, "stopVideoRecordingAndDisplayDialog");
+    private void stopVideoRecordingAndShowThumbnail() {
+        Log.v(TAG, "stopVideoRecordingAndShowThumbnail");
         if (mMediaRecorderRecording) {
             stopVideoRecording();
-            acquireAndShowVideoFrame();
-            showPostRecordingAlert();
+            acquireVideoFrame();
+            setLastPictureThumb(mVideoFrameBitmap);
+            showLastPictureButton();
         }
     }
 
-    private void showPostRecordingAlert() {
+    private void stopVideoRecordingAndShowAlert() {
+        Log.v(TAG, "stopVideoRecordingAndShowAlert");
+        if (mMediaRecorderRecording) {
+            stopVideoRecording();
+            acquireVideoFrame();
+            showVideoFrame();
+        }
+    }
+
+    private void stopPreviewAndShowAlert() {
+        stopVideoRecording();
+        showVideoFrame();
+    }
+
+    private void showVideoFrame() {
         int[] pickIds = {R.id.attach, R.id.cancel};
         int[] normalIds = {R.id.gallery, R.id.share, R.id.discard};
         int[] alwaysOnIds = {R.id.play};
@@ -986,7 +1036,15 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 mCurrentVideoFileLength > SHARE_FILE_LENGTH_LIMIT);
         connectAndFadeIn(connectIds);
         connectAndFadeIn(alwaysOnIds);
+        hideLastPictureButton();
+        mVideoFrame.setVisibility(View.VISIBLE);
         mPostPictureAlert.setVisibility(View.VISIBLE);
+    }
+
+    private void hideVideoFrame() {
+        mVideoFrame.setVisibility(View.INVISIBLE);
+        mPostPictureAlert.setVisibility(View.INVISIBLE);
+        showLastPictureButton();
     }
 
     private void connectAndFadeIn(int[] connectIds) {
@@ -997,10 +1055,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             animation.setDuration(500);
             view.setAnimation(animation);
         }
-    }
-
-    private void hidePostPictureAlert() {
-        mPostPictureAlert.setVisibility(View.INVISIBLE);
     }
 
     private boolean isPostRecordingAlertVisible() {
@@ -1077,21 +1131,74 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void hideVideoFrameAndStartPreview() {
-        hidePostPictureAlert();
         hideVideoFrame();
         restartPreview();
     }
 
-    private void acquireAndShowVideoFrame() {
+    private void acquireVideoFrame() {
         recycleVideoFrameBitmap();
         mVideoFrameBitmap = ImageManager.createVideoThumbnail(mCurrentVideoFilename);
         mVideoFrame.setImageBitmap(mVideoFrameBitmap);
-        mVideoFrame.setVisibility(View.VISIBLE);
+        Log.v(TAG, "acquireVideoFrame:" + mVideoFrameBitmap);
     }
 
-    private void hideVideoFrame() {
-        recycleVideoFrameBitmap();
-        mVideoFrame.setVisibility(View.GONE);
+    //TODO: Refactor the code so that the following code is shared between
+    //      VideoCamera.java and Camera.java
+    private static Bitmap makeRoundedCorner(Bitmap thumb, int rx, int ry) {
+        if (thumb == null) return null;
+        int width = thumb.getWidth();
+        int height = thumb.getHeight();
+
+        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawRoundRect(new RectF(0, 0, width, height), rx, ry, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(thumb, 0, 0, paint);
+        return result;
+    }
+
+    private void setLastPictureThumb(Bitmap videoFrame) {
+
+        final int PADDING_WIDTH = 6;
+        final int PADDING_HEIGHT = 6;
+        LayoutParams layoutParams = mLastPictureButton.getLayoutParams();
+        // Make the mini-thumbnail size smaller than the button size so that the image corners
+        // don't peek out from the rounded corners of the frame_thumbnail graphic:
+        final int miniThumbWidth = layoutParams.width - 2 * PADDING_WIDTH;
+        final int miniThumbHeight = layoutParams.height - 2 * PADDING_HEIGHT;
+
+        Bitmap lastPictureThumb = ImageManager.extractMiniThumb(videoFrame,
+                miniThumbWidth, miniThumbHeight, false);
+        lastPictureThumb = makeRoundedCorner(lastPictureThumb, 3, 3);
+
+        Drawable[] vignetteLayers = new Drawable[2];
+        vignetteLayers[0] = getResources().getDrawable(R.drawable.frame_thumbnail);
+        if (mThumbnails == null) {
+            mThumbnails = new Drawable[2];
+            mThumbnails[1] = new BitmapDrawable(lastPictureThumb);
+            vignetteLayers[1] = mThumbnails[1];
+        } else {
+            mThumbnails[0] = mThumbnails[1];
+            mThumbnails[1] = new BitmapDrawable(lastPictureThumb);
+            mThumbnailTransition = new TransitionDrawable(mThumbnails);
+            mShouldTransitionThumbnails = true;
+            vignetteLayers[1] = mThumbnailTransition;
+        }
+
+        LayerDrawable vignette = new LayerDrawable(vignetteLayers);
+        vignette.setLayerInset(1, PADDING_WIDTH, PADDING_HEIGHT,
+                PADDING_WIDTH, PADDING_HEIGHT);
+        mLastPictureButton.setImageDrawable(vignette);
+    }
+
+    private void showLastPictureButton() {
+        mLastPictureButton.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLastPictureButton() {
+        mLastPictureButton.setVisibility(View.INVISIBLE);
     }
 
     private void recycleVideoFrameBitmap() {
@@ -1102,4 +1209,3 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
     }
 }
-

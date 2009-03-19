@@ -587,8 +587,7 @@ public class MenuHelper {
         }
     }
 
-    static void addCaptureMenuItems(Menu menu, final Activity activity) {
-
+    static void addCapturePictureMenuItems(Menu menu, final Activity activity) {
         menu.add(0, MENU_CAPTURE_PICTURE, 1, R.string.capture_picture)
             .setOnMenuItemClickListener(
                  new MenuItem.OnMenuItemClickListener() {
@@ -604,7 +603,9 @@ public class MenuHelper {
             }
         })
         .setIcon(android.R.drawable.ic_menu_camera);
+    }
 
+    static void addCaptureVideoMenuItems(Menu menu, final Activity activity) {
         menu.add(0, MENU_CAPTURE_VIDEO, 2, R.string.capture_video)
             .setOnMenuItemClickListener(
                  new MenuItem.OnMenuItemClickListener() {
@@ -621,6 +622,12 @@ public class MenuHelper {
         })
         .setIcon(R.drawable.ic_menu_camera_video_view);
     }
+
+    static void addCaptureMenuItems(Menu menu, final Activity activity) {
+        addCapturePictureMenuItems(menu, activity);
+        addCaptureVideoMenuItems(menu, activity);
+    }
+
     static MenuItem addFlipOrientation(Menu menu, final Activity activity, final SharedPreferences prefs) {
         // position 41 after rotate
         // D

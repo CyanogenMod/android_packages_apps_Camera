@@ -41,7 +41,12 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -294,7 +299,7 @@ public class Camera extends Activity implements View.OnClickListener,
             }
 
             // We are going to change the size of surface view and show captured
-            // image. Set it to invisible now and set it back to visible in 
+            // image. Set it to invisible now and set it back to visible in
             // surfaceChanged() so that users won't see the image is resized on
             // the screen.
             mSurfaceView.setVisibility(View.INVISIBLE);
@@ -329,7 +334,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void onPictureTaken(byte [] jpegData, android.hardware.Camera camera) {
-            if (!canHandleCameraEvent()) {
+            if (mPausing) {
                 return;
             }
             if (Config.LOGV)
@@ -341,7 +346,9 @@ public class Camera extends Activity implements View.OnClickListener,
                         " RawPictureCallback and JpegPictureCallback.");
             }
 
-            mImageCapture.storeImage(jpegData, camera, mLocation);
+            if (jpegData != null) {
+                mImageCapture.storeImage(jpegData, camera, mLocation);
+            }
 
             mStatus = SNAPSHOT_COMPLETED;
 
@@ -379,7 +386,7 @@ public class Camera extends Activity implements View.OnClickListener,
             } else if (mFocusState == FOCUS_NOT_STARTED) {
                 // User has released the focus key before focus completes.
                 // Do nothing.
-            } 
+            }
             updateFocusIndicator();
         }
     };
@@ -587,7 +594,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void onSnap() {
-            if (!canHandleCameraEvent()) {
+            if (mPausing) {
                 return;
             }
             if (DEBUG_TIME_OPERATIONS) mCaptureStartTime = System.currentTimeMillis();
@@ -618,7 +625,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 mImageCapture.initiate(false);
             }
         }
-        
+
         private void clearLastBitmap() {
             if (mCaptureOnlyBitmap != null) {
                 mCaptureOnlyBitmap.recycle();
@@ -636,42 +643,56 @@ public class Camera extends Activity implements View.OnClickListener,
         setLastPictureThumb(lastPictureThumb, uri);
     }
 
+    private static Bitmap makeRoundedCorner(Bitmap thumb, int rx, int ry) {
+        if (thumb == null) return null;
+        int width = thumb.getWidth();
+        int height = thumb.getHeight();
+
+        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawRoundRect(new RectF(0, 0, width, height), rx, ry, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(thumb, 0, 0, paint);
+        return result;
+    }
+
     private void setLastPictureThumb(Bitmap lastPictureThumb, Uri uri) {
 
-        final int PADDING_WIDTH = 2;
-        final int PADDING_HEIGHT = 2;
+        final int PADDING_WIDTH = 6;
+        final int PADDING_HEIGHT = 6;
         LayoutParams layoutParams = mLastPictureButton.getLayoutParams();
         // Make the mini-thumbnail size smaller than the button size so that the image corners
         // don't peek out from the rounded corners of the frame_thumbnail graphic:
         final int miniThumbWidth = layoutParams.width - 2 * PADDING_WIDTH;
         final int miniThumbHeight = layoutParams.height - 2 * PADDING_HEIGHT;
-
-        lastPictureThumb = ImageManager.extractMiniThumb(lastPictureThumb,
-                miniThumbWidth, miniThumbHeight);
+        mLastPictureThumb = ImageManager.extractMiniThumb(
+                lastPictureThumb, miniThumbWidth, miniThumbHeight);
+        lastPictureThumb = makeRoundedCorner(mLastPictureThumb, 3, 3);
 
         Drawable[] vignetteLayers = new Drawable[2];
-        vignetteLayers[1] = getResources().getDrawable(R.drawable.frame_thumbnail);
+        vignetteLayers[0] = getResources().getDrawable(R.drawable.frame_thumbnail);
         if (mThumbnails == null) {
             mThumbnails = new Drawable[2];
             mThumbnails[1] = new BitmapDrawable(lastPictureThumb);
-            vignetteLayers[0] = mThumbnails[1];
+            vignetteLayers[1] = mThumbnails[1];
         } else {
             mThumbnails[0] = mThumbnails[1];
             mThumbnails[1] = new BitmapDrawable(lastPictureThumb);
             mThumbnailTransition = new TransitionDrawable(mThumbnails);
             mShouldTransitionThumbnails = true;
-            vignetteLayers[0] = mThumbnailTransition;
+            vignetteLayers[1] = mThumbnailTransition;
         }
 
         mVignette = new LayerDrawable(vignetteLayers);
-        mVignette.setLayerInset(0, PADDING_WIDTH, PADDING_HEIGHT,
+        mVignette.setLayerInset(1, PADDING_WIDTH, PADDING_HEIGHT,
                 PADDING_WIDTH, PADDING_HEIGHT);
         mLastPictureButton.setImageDrawable(mVignette);
 
         if (mLastPictureButton.getVisibility() != View.VISIBLE) {
             mShouldShowLastPictureButton = true;
         }
-        mLastPictureThumb = lastPictureThumb;
         mLastPictureUri = uri;
     }
 
@@ -830,7 +851,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void doAttach() {
-        if (!canHandleCameraEvent()) {
+        if (mPausing) {
             return;
         }
         Bitmap bitmap = mImageCapture.getLastBitmap();
@@ -938,14 +959,8 @@ public class Camera extends Activity implements View.OnClickListener,
         finish();
     }
 
-    private boolean canHandleCameraEvent() {
-        // don't handle any shutter event before we have a valid 
-        // imageCapture object.
-        return mImageCapture != null;
-    }
-
     public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
-        if (!canHandleCameraEvent()) {
+        if (mPausing) {
             return;
         }
         switch (button.getId()) {
@@ -956,7 +971,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     public void onShutterButtonClick(ShutterButton button) {
-        if (!canHandleCameraEvent()) {
+        if (mPausing) {
             return;
         }
         switch (button.getId()) {
@@ -1143,7 +1158,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mStorageHint.cancel();
             mStorageHint = null;
         }
-        
+
         // If we are in an image capture intent and has taken
         // a picture, we just clear it in onPause.
         mImageCapture.clearLastBitmap();
@@ -1265,7 +1280,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private void doSnap() {
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away.
-        if ((mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL) 
+        if ((mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)
                 || !mPreviewing) {
             // doesn't get set until the idler runs
             if (mCaptureObject != null) {
@@ -1274,8 +1289,8 @@ public class Camera extends Activity implements View.OnClickListener,
             clearFocusState();
             updateFocusIndicator();
         } else if (mFocusState == FOCUSING) {
-            // Half pressing the shutter (i.e. the focus button event) will 
-            // already have requested AF for us, so just request capture on 
+            // Half pressing the shutter (i.e. the focus button event) will
+            // already have requested AF for us, so just request capture on
             // focus here.
             mFocusState = FOCUSING_SNAP_ON_FINISH;
         } else if (mFocusState == FOCUS_NOT_STARTED) {
@@ -1305,7 +1320,7 @@ public class Camera extends Activity implements View.OnClickListener,
         // if we're creating the surface, start the preview as well.
         boolean preview = holder.isCreating();
         setViewFinder(w, h, preview);
-        mCaptureObject = mImageCapture;        
+        mCaptureObject = mImageCapture;
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
@@ -1331,7 +1346,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         return mCameraDevice != null;
     }
-    
+
     private boolean isLastPictureValid() {
         boolean isValid = true;
         if (mLastPictureUri == null)  return false;
@@ -1344,7 +1359,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         return isValid;
     }
-    
+
     private void updateLastImage() {
         ImageManager.IImageList list = ImageManager.instance().allImages(
             this,
@@ -1357,7 +1372,7 @@ public class Camera extends Activity implements View.OnClickListener,
         if (count > 0) {
             ImageManager.IImage image = list.getImageAt(count-1);
             mLastPictureUri = image.fullSizeImageUri();
-            Log.v(TAG, "updateLastImage: count="+ count + 
+            Log.v(TAG, "updateLastImage: count="+ count +
                 ", lastPictureUri="+mLastPictureUri);
             setLastPictureThumb(image.miniThumbBitmap(), mLastPictureUri);
         } else {
@@ -1384,7 +1399,7 @@ public class Camera extends Activity implements View.OnClickListener,
         if (!isImageCaptureIntent() && !isLastPictureValid()) {
             updateLastImage();
         }
-    
+
         if (mShouldShowLastPictureButton) {
             mShouldShowLastPictureButton = false;
             mLastPictureButton.setVisibility(View.VISIBLE);
@@ -1530,7 +1545,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         mPreviewing = false;
         // If auto focus was in progress, it would have been canceled.
-        clearFocusState(); 
+        clearFocusState();
     }
 
     void gotoGallery() {

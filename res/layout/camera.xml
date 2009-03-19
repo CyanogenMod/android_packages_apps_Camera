@@ -36,7 +36,7 @@
         android:focusable="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="50dip"
+        android:layout_marginRight="10dip"
         android:layout_marginTop="10dip"
         android:scaleType="center" />
 

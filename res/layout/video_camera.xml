@@ -50,7 +50,7 @@
 		android:focusable="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="50dip"
+        android:layout_marginRight="10dip"
         android:layout_marginTop="10dip"
         android:scaleType="center"/>
 
@@ -81,7 +81,7 @@
 			android:id="@+id/post_picture_panel"
 			android:layout_alignTop="@id/shutter_button"
 			android:layout_toLeftOf="@id/shutter_button"
-            android:layout_marginRight="15dip"
+            android:layout_marginRight="38dip"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 			android:orientation="horizontal">
@@ -123,5 +123,15 @@
 			style="@style/OnscreenActionIcon"
 		/>
 	</LinearLayout>
+    <ImageView
+        android:visibility="visible"
+        android:id="@+id/last_picture_button"
+        android:layout_width="72dip"
+        android:layout_height="72dip"
+        android:clickable="true"
+        android:focusable="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="10dip" />
 </RelativeLayout>
-

@@ -59,6 +59,8 @@
     <string name="camera_tossing">"削除中..."</string>
     <string name="no_way_to_share_image">"この写真は共有できません。"</string>
     <string name="no_way_to_share_video">"この動画は共有できません。"</string>
+    <!-- no translation found for video_play (5287787282508002895) -->
+    <skip />
     <string name="camera_gallery_photos_text">"ギャラリー"</string>
     <string name="camera_pick_wallpaper">"写真"</string>
     <string name="camera_setas_wallpaper">"壁紙"</string>
@@ -147,9 +149,10 @@
     <string name="resume_playing_resume">"再生を再開"</string>
     <string name="resume_playing_restart">"最初から再生"</string>
     <string name="gadget_title">"写真フレーム"</string>
-    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
     <!-- no translation found for file_info_title (1628963357466012538) -->
     <skip />
     <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
+    <skip />
+    <!-- no translation found for too_large_to_attach (8944461117941172986) -->
     <skip />
 </resources>

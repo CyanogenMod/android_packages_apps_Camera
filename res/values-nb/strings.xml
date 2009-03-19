@@ -59,6 +59,8 @@
     <string name="camera_tossing">"Sletter…"</string>
     <string name="no_way_to_share_image">"Bildet kan ikke deles."</string>
     <string name="no_way_to_share_video">"Videoen kan ikke deles."</string>
+    <!-- no translation found for video_play (5287787282508002895) -->
+    <skip />
     <string name="camera_gallery_photos_text">"Galleri"</string>
     <string name="camera_pick_wallpaper">"Bilder"</string>
     <string name="camera_setas_wallpaper">"Bakgrunnsbilder"</string>
@@ -147,10 +149,10 @@
     <string name="resume_playing_resume">"Fortsett avspilling"</string>
     <string name="resume_playing_restart">"Begynn på nytt"</string>
     <string name="gadget_title">"Bilderamme"</string>
-    <!-- no translation found for video_file_name_format (8555507706353616970) -->
-    <skip />
     <!-- no translation found for file_info_title (1628963357466012538) -->
     <skip />
     <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
+    <skip />
+    <!-- no translation found for too_large_to_attach (8944461117941172986) -->
     <skip />
 </resources>

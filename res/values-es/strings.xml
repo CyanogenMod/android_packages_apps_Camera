@@ -59,6 +59,8 @@
     <string name="camera_tossing">"Eliminando..."</string>
     <string name="no_way_to_share_image">"Esta imagen no se puede compartir."</string>
     <string name="no_way_to_share_video">"Este vídeo no se puede compartir."</string>
+    <!-- no translation found for video_play (5287787282508002895) -->
+    <skip />
     <string name="camera_gallery_photos_text">"Galería"</string>
     <string name="camera_pick_wallpaper">"Imágenes"</string>
     <string name="camera_setas_wallpaper">"Fondo de pantalla"</string>
@@ -147,9 +149,10 @@
     <string name="resume_playing_resume">"Reanudar reproducción"</string>
     <string name="resume_playing_restart">"Volver a reproducir"</string>
     <string name="gadget_title">"Picture frame"</string>
-    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
     <!-- no translation found for file_info_title (1628963357466012538) -->
     <skip />
     <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
+    <skip />
+    <!-- no translation found for too_large_to_attach (8944461117941172986) -->
     <skip />
 </resources>
