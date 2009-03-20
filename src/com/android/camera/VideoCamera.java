@@ -19,14 +19,11 @@ package com.android.camera;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -34,21 +31,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor; 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.location.LocationManager;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,7 +53,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -84,8 +69,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private static final boolean DEBUG = true;
     private static final boolean DEBUG_SUPPRESS_AUDIO_RECORDING = DEBUG && false;
-    private static final boolean DEBUG_DO_NOT_REUSE_MEDIA_RECORDER = DEBUG && true;
-    private static final boolean DEBUG_LOG_APP_LIFECYCLE = DEBUG && false;
 
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
@@ -114,14 +97,13 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private static final float VIDEO_ASPECT_RATIO = 176.0f / 144.0f;
     VideoPreview mVideoPreview;
     SurfaceHolder mSurfaceHolder = null;
-    ImageView mBlackout = null;
     ImageView mVideoFrame;
-    Bitmap mVideoFrameBitmap;
-    private TransitionDrawable mThumbnailTransition;
-    private Drawable[] mThumbnails;
-    private boolean mShouldTransitionThumbnails;
+
+    private boolean mIsVideoCaptureIntent;
+    // mLastPictureButton and mThumbController
+    // are non-null only if isVideoCaptureIntent() is true;
     private ImageView mLastPictureButton;
-    private Bitmap mLastPictureThumb;
+    private ThumbnailController mThumbController;
 
     private static final int MAX_RECORDING_DURATION_MS = 10 * 60 * 1000;
 
@@ -268,9 +250,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     /** Called with the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
-        if (DEBUG_LOG_APP_LIFECYCLE) {
-            Log.v(TAG, "onCreate " + this.hashCode());
-        }
         super.onCreate(icicle);
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -292,9 +271,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mBlackout = (ImageView) findViewById(R.id.blackout);
-        mBlackout.setBackgroundDrawable(new ColorDrawable(0xFF000000));
-
         mPostPictureAlert = findViewById(R.id.post_picture_panel);
 
         int[] ids = new int[]{R.id.play, R.id.share, R.id.discard,
@@ -307,8 +283,15 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mShutterButton.setOnShutterButtonListener(this);
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
-        mLastPictureButton = (ImageView) findViewById(R.id.last_picture_button);
-        mLastPictureButton.setOnClickListener(this);
+        mIsVideoCaptureIntent = isVideoCaptureIntent();
+        if (!mIsVideoCaptureIntent) {
+            mLastPictureButton = (ImageView) findViewById(R.id.last_picture_button);
+            mLastPictureButton.setOnClickListener(this);
+            Drawable frame = getResources().getDrawable(R.drawable.frame_thumbnail);
+            mThumbController = new ThumbnailController(mLastPictureButton,
+                    frame, mContentResolver);
+            mThumbController.loadData(ImageManager.getLastVideoThumbPath());
+        }
     }
 
     private void startShareVideoActivity() {
@@ -359,7 +342,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
 
             case R.id.last_picture_button: {
-                stopPreviewAndShowAlert();
+                stopVideoRecordingAndShowAlert();
                 break;
             }
         }
@@ -373,27 +356,22 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         switch (button.getId()) {
             case R.id.shutter_button:
                 if (mMediaRecorderRecording) {
-                    if (isVideoCaptureIntent()) {
+                    if (mIsVideoCaptureIntent) {
                         stopVideoRecordingAndShowAlert();
                     } else {
-                        stopVideoRecordingAndShowThumbnail();
-                        doStartCaptureMode();
+                        stopVideoRecordingAndGetThumbnail();
+                        initializeVideo();
                     }
-                } else if (mVideoFrame.getVisibility() == View.VISIBLE) {
-                    doStartCaptureMode();
-                    startVideoRecording();
+                } else if (isAlertVisible()) {
+                    if (mIsVideoCaptureIntent) {
+                        discardCurrentVideoAndStartPreview();
+                    } else {
+                        hideAlertAndStartVideoRecording();
+                    }
                 } else {
                     startVideoRecording();
                 }
                 break;
-        }
-    }
-
-    private void doStartCaptureMode() {
-        if (isVideoCaptureIntent()) {
-            discardCurrentVideoAndStartPreview();
-        } else {
-            hideVideoFrameAndStartPreview();
         }
     }
 
@@ -409,7 +387,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private void discardCurrentVideoAndStartPreview() {
         deleteCurrentVideo();
-        hideVideoFrameAndStartPreview();
+        hideAlertAndStartPreview();
     }
 
     private OnScreenHint mStorageHint;
@@ -452,9 +430,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     @Override
     public void onResume() {
-        if (DEBUG_LOG_APP_LIFECYCLE) {
-            Log.v(TAG, "onResume " + this.hashCode());
-        }
         super.onResume();
 
         setScreenTimeoutLong();
@@ -477,40 +452,40 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
         }, 200);
 
-        mBlackout.setVisibility(View.INVISIBLE);
-        if (mVideoFrameBitmap == null) {
-            initializeVideo();
-        } else {
-            showVideoFrame();
-        }
+        initializeVideo();
     }
 
     @Override
     public void onStop() {
-        if (DEBUG_LOG_APP_LIFECYCLE) {
-            Log.v(TAG, "onStop " + this.hashCode());
-        }
-        stopVideoRecording();
         setScreenTimeoutSystemDefault();
         super.onStop();
     }
 
     @Override
     protected void onPause() {
-        if (DEBUG_LOG_APP_LIFECYCLE) {
-            Log.v(TAG, "onPause " + this.hashCode());
-        }
         super.onPause();
 
-        stopVideoRecording();
-        hideVideoFrame();
+        // This is similar to what mShutterButton.performClick() does,
+        // but not quite the same.
+        if (mMediaRecorderRecording) {
+            if (mIsVideoCaptureIntent) {
+                stopVideoRecordingAndShowAlert();
+            } else {
+                stopVideoRecordingAndGetThumbnail();
+            }
+        } else {
+            stopVideoRecording();
+        }
 
         mPausing = true;
 
         unregisterReceiver(mReceiver);
-        mBlackout.setVisibility(View.VISIBLE);
         setScreenTimeoutSystemDefault();
 
+        if (!mIsVideoCaptureIntent) {
+            mThumbController.storeData(ImageManager.getLastVideoThumbPath());
+        }
+        
         if (mStorageHint != null) {
             mStorageHint.cancel();
             mStorageHint = null;
@@ -526,8 +501,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 if (mMediaRecorderRecording) {
                     mShutterButton.performClick();
                     return true;
-                } else if(isPostRecordingAlertVisible()) {
-                    hideVideoFrameAndStartPreview();
+                } else if(isAlertVisible()) {
+                    hideAlertAndStartPreview();
                     return true;
                 }
                 break;
@@ -565,6 +540,16 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        if (mPausing) {
+            // We're pausing, the screen is off and we already stopped
+            // video recording. We don't want to start the camera again
+            // in this case in order to conserve power.
+            // The fact that surfaceChanged is called _after_ an onPause appears
+            // to be legitimate since in that case the lockscreen always returns
+            // to portrait orientation possibly triggering the notification.
+            return;
+        }
+
         stopVideoRecording();
         initializeVideo();
     }
@@ -599,7 +584,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        if (isVideoCaptureIntent()) {
+        if (mIsVideoCaptureIntent) {
             // No options menu for attach mode.
             return false;
         } else {
@@ -685,14 +670,18 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
     }
 
+    // initializeVideo() starts preview and prepare media recorder.
     // Returns false if initializeVideo fails
     private boolean initializeVideo() {
         Log.v(TAG, "initializeVideo");
-        boolean isCaptureIntent = isVideoCaptureIntent();
+
+        // We will call initializeVideo() again when the alert is hidden.
+        if (isAlertVisible()) return false;
+
         Intent intent = getIntent();
         Bundle myExtras = intent.getExtras();
 
-        if (isCaptureIntent && myExtras != null) {
+        if (mIsVideoCaptureIntent && myExtras != null) {
             Uri saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
             if (saveUri != null) {
                 try {
@@ -782,6 +771,15 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             return false;
         }
         mMediaRecorderRecording = false;
+
+        if (!mIsVideoCaptureIntent && !mThumbController.isUriValid()) {
+            updateLastVideo();
+        }
+
+        if (!mIsVideoCaptureIntent) {
+            mThumbController.updateDisplayIfNeeded();
+        }
+
         return true;
     }
 
@@ -792,25 +790,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
-        }
-    }
-
-    private void restartPreview() {
-        if (DEBUG_DO_NOT_REUSE_MEDIA_RECORDER) {
-            Log.v(TAG, "DEBUG_DO_NOT_REUSE_MEDIA_RECORDER recreating mMediaRecorder.");
-            initializeVideo();
-        } else {
-            try {
-                mMediaRecorder.prepare();
-            } catch (IOException exception) {
-                Log.e(TAG, "prepare failed for " + mCameraVideoFilename);
-                releaseMediaRecorder();
-                // TODO: add more exception handling logic here
-            }
-        }
-        if (mShouldTransitionThumbnails) {
-            mShouldTransitionThumbnails = false;
-            mThumbnailTransition.startTransition(500);
         }
     }
 
@@ -982,7 +961,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
             setScreenTimeoutInfinite();
             hideLastPictureButton();
-            recycleVideoFrameBitmap();
         }
     }
 
@@ -993,37 +971,23 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mShutterButton.setImageDrawable(drawable);
     }
 
-    private void stopVideoRecordingAndShowThumbnail() {
-        Log.v(TAG, "stopVideoRecordingAndShowThumbnail");
-        if (mMediaRecorderRecording) {
-            stopVideoRecording();
-            acquireVideoFrame();
-            setLastPictureThumb(mVideoFrameBitmap);
-            showLastPictureButton();
-        }
+    private void stopVideoRecordingAndGetThumbnail() {
+        stopVideoRecording();
+        acquireVideoThumb();
     }
 
     private void stopVideoRecordingAndShowAlert() {
-        Log.v(TAG, "stopVideoRecordingAndShowAlert");
-        if (mMediaRecorderRecording) {
-            stopVideoRecording();
-            acquireVideoFrame();
-            showVideoFrame();
-        }
-    }
-
-    private void stopPreviewAndShowAlert() {
         stopVideoRecording();
-        showVideoFrame();
+        showAlert();
     }
 
-    private void showVideoFrame() {
+    private void showAlert() {
         int[] pickIds = {R.id.attach, R.id.cancel};
         int[] normalIds = {R.id.gallery, R.id.share, R.id.discard};
         int[] alwaysOnIds = {R.id.play};
         int[] hideIds = pickIds;
         int[] connectIds = normalIds;
-        if (isVideoCaptureIntent()) {
+        if (mIsVideoCaptureIntent) {
             hideIds = normalIds;
             connectIds = pickIds;
         }
@@ -1037,11 +1001,31 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         connectAndFadeIn(connectIds);
         connectAndFadeIn(alwaysOnIds);
         hideLastPictureButton();
-        mVideoFrame.setVisibility(View.VISIBLE);
         mPostPictureAlert.setVisibility(View.VISIBLE);
+
+        // There are two cases we are here:
+        // (1) We are in a capture video intent, and we are reviewing the video
+        //     we just taken. 
+        // (2) The thumbnail button is clicked: we review the video associated
+        //     with the thumbnail.
+        // For the second case, we copy the associated URI and filename to
+        // mCurrentVideoUri and mCurrentVideoFilename, so the video frame shown
+        // and the target for actions (play, delete, ...) will be correct.
+
+        if (!mIsVideoCaptureIntent) {
+            mCurrentVideoUri = mThumbController.getUri();
+            mCurrentVideoFilename = getDataPath(mCurrentVideoUri);
+        }
+
+        String path = mCurrentVideoFilename;
+        if (path != null) {
+            Bitmap videoFrame = ImageManager.createVideoThumbnail(path);
+            mVideoFrame.setImageBitmap(videoFrame);
+            mVideoFrame.setVisibility(View.VISIBLE);
+        }
     }
 
-    private void hideVideoFrame() {
+    private void hideAlert() {
         mVideoFrame.setVisibility(View.INVISIBLE);
         mPostPictureAlert.setVisibility(View.INVISIBLE);
         showLastPictureButton();
@@ -1053,11 +1037,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             view.setOnClickListener(this);
             Animation animation = new AlphaAnimation(0F, 1F);
             animation.setDuration(500);
-            view.setAnimation(animation);
+            view.startAnimation(animation);
         }
     }
 
-    private boolean isPostRecordingAlertVisible() {
+    private boolean isAlertVisible() {
         return mPostPictureAlert.getVisibility() == View.VISIBLE;
     }
 
@@ -1130,82 +1114,71 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
     }
 
-    private void hideVideoFrameAndStartPreview() {
-        hideVideoFrame();
-        restartPreview();
+    private void hideAlertAndStartPreview() {
+        hideAlert();
+        initializeVideo();
     }
 
-    private void acquireVideoFrame() {
-        recycleVideoFrameBitmap();
-        mVideoFrameBitmap = ImageManager.createVideoThumbnail(mCurrentVideoFilename);
-        mVideoFrame.setImageBitmap(mVideoFrameBitmap);
-        Log.v(TAG, "acquireVideoFrame:" + mVideoFrameBitmap);
+    private void hideAlertAndStartVideoRecording() {
+        hideAlert();
+        startVideoRecording();
     }
 
-    //TODO: Refactor the code so that the following code is shared between
-    //      VideoCamera.java and Camera.java
-    private static Bitmap makeRoundedCorner(Bitmap thumb, int rx, int ry) {
-        if (thumb == null) return null;
-        int width = thumb.getWidth();
-        int height = thumb.getHeight();
-
-        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawRoundRect(new RectF(0, 0, width, height), rx, ry, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(thumb, 0, 0, paint);
-        return result;
-    }
-
-    private void setLastPictureThumb(Bitmap videoFrame) {
-
-        final int PADDING_WIDTH = 6;
-        final int PADDING_HEIGHT = 6;
-        LayoutParams layoutParams = mLastPictureButton.getLayoutParams();
-        // Make the mini-thumbnail size smaller than the button size so that the image corners
-        // don't peek out from the rounded corners of the frame_thumbnail graphic:
-        final int miniThumbWidth = layoutParams.width - 2 * PADDING_WIDTH;
-        final int miniThumbHeight = layoutParams.height - 2 * PADDING_HEIGHT;
-
-        Bitmap lastPictureThumb = ImageManager.extractMiniThumb(videoFrame,
-                miniThumbWidth, miniThumbHeight, false);
-        lastPictureThumb = makeRoundedCorner(lastPictureThumb, 3, 3);
-
-        Drawable[] vignetteLayers = new Drawable[2];
-        vignetteLayers[0] = getResources().getDrawable(R.drawable.frame_thumbnail);
-        if (mThumbnails == null) {
-            mThumbnails = new Drawable[2];
-            mThumbnails[1] = new BitmapDrawable(lastPictureThumb);
-            vignetteLayers[1] = mThumbnails[1];
-        } else {
-            mThumbnails[0] = mThumbnails[1];
-            mThumbnails[1] = new BitmapDrawable(lastPictureThumb);
-            mThumbnailTransition = new TransitionDrawable(mThumbnails);
-            mShouldTransitionThumbnails = true;
-            vignetteLayers[1] = mThumbnailTransition;
-        }
-
-        LayerDrawable vignette = new LayerDrawable(vignetteLayers);
-        vignette.setLayerInset(1, PADDING_WIDTH, PADDING_HEIGHT,
-                PADDING_WIDTH, PADDING_HEIGHT);
-        mLastPictureButton.setImageDrawable(vignette);
+    private void acquireVideoThumb() {
+        Bitmap videoFrame = ImageManager.createVideoThumbnail(mCurrentVideoFilename);
+        mThumbController.setData(mCurrentVideoUri, videoFrame);
     }
 
     private void showLastPictureButton() {
-        mLastPictureButton.setVisibility(View.VISIBLE);
+        if (!mIsVideoCaptureIntent) {
+            mLastPictureButton.setVisibility(View.VISIBLE);
+        }
     }
 
     private void hideLastPictureButton() {
-        mLastPictureButton.setVisibility(View.INVISIBLE);
+        if (!mIsVideoCaptureIntent) {
+            mLastPictureButton.setVisibility(View.INVISIBLE);
+        }
     }
 
-    private void recycleVideoFrameBitmap() {
-        if (mVideoFrameBitmap != null) {
-            mVideoFrame.setImageDrawable(null);
-            mVideoFrameBitmap.recycle();
-            mVideoFrameBitmap = null;
+    private static ImageManager.DataLocation dataLocation() {
+        return ImageManager.DataLocation.EXTERNAL;
+    }
+
+    private void updateLastVideo() {
+        ImageManager.IImageList list = ImageManager.instance().allImages(
+            this,
+            mContentResolver,
+            dataLocation(),
+            ImageManager.INCLUDE_VIDEOS,
+            ImageManager.SORT_ASCENDING,
+            ImageManager.CAMERA_IMAGE_BUCKET_ID);
+        int count = list.getCount();
+        if (count > 0) {
+            ImageManager.IImage image = list.getImageAt(count-1);
+            Uri uri = image.fullSizeImageUri();
+            mThumbController.setData(uri, image.miniThumbBitmap());
+        } else {
+            mThumbController.setData(null, null);
+        }
+        list.deactivate();
+    }
+
+    private static final String[] DATA_PATH_PROJECTION = new String[] {
+        "_data"
+    };
+
+    private String getDataPath(Uri uri) {
+        Cursor c = null;
+        try {
+            c = mContentResolver.query(uri, DATA_PATH_PROJECTION, null, null, null);
+            if (c != null && c.moveToFirst()) {
+                return c.getString(0);
+            } else {
+                return null;
+            }
+        } finally {
+            if (c != null) c.close();
         }
     }
 }

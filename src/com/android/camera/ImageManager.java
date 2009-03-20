@@ -4197,8 +4197,13 @@ public class ImageManager {
         return bitmap;
     }
 
-    public static String getLastThumbPath() {
+    public static String getLastImageThumbPath() {
         return Environment.getExternalStorageDirectory().toString() +
-               "/DCIM/.thumbnails/camera_last_thumb";
+               "/DCIM/.thumbnails/image_last_thumb";
+    }
+
+    public static String getLastVideoThumbPath() {
+        return Environment.getExternalStorageDirectory().toString() +
+               "/DCIM/.thumbnails/video_last_thumb";
     }
 }

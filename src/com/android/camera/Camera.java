@@ -16,12 +16,7 @@
 
 package com.android.camera;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +24,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -37,27 +31,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
@@ -79,7 +62,6 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -139,8 +121,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mViewFinderWidth, mViewFinderHeight;
     private boolean mPreviewing = false;
 
-    private MediaPlayer mClickSound;
-
     private Capturer mCaptureObject;
     private ImageCapture mImageCapture = null;
 
@@ -158,21 +138,13 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
-    private ImageView mLastPictureButton;
-    private LayerDrawable mVignette;
-    private Animation mShowLastPictureButtonAnimation = new AlphaAnimation(0F, 1F);
-    private boolean mShouldShowLastPictureButton;
-    private TransitionDrawable mThumbnailTransition;
-    private Drawable[] mThumbnails;
-    private boolean mShouldTransitionThumbnails;
-    private Uri mLastPictureUri;
-    private Bitmap mLastPictureThumb;
     private LocationManager mLocationManager = null;
 
     private ShutterButton mShutterButton;
 
     private Animation mFocusBlinkAnimation;
     private View mFocusIndicator;
+    private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
 
 
@@ -185,12 +157,16 @@ public class Camera extends Activity implements View.OnClickListener,
     private long mShutterCallbackTime;
     private long mRawPictureCallbackTime;
     private int mPicturesRemaining;
+    private boolean mRecordLocation;
 
     private boolean mKeepAndRestartPreview;
 
-    // mPostCaptureAlert is non-null only if isImageCaptureIntent() is true.
+    private boolean mIsImageCaptureIntent;
+    // mPostCaptureAlert, mLastPictureButton, mThumbController
+    // are non-null only if isImageCaptureIntent() is true.
     private View mPostCaptureAlert;
-
+    private ImageView mLastPictureButton;
+    private ThumbnailController mThumbController;
 
     private Handler mHandler = new MainHandler();
 
@@ -267,6 +243,12 @@ public class Camera extends Activity implements View.OnClickListener,
                 // Hack to filter out 0.0,0.0 locations
                 return;
             }
+            // If GPS is available before start camera, we won't get status
+            // update so update GPS indicator when we receive data.
+            if (mRecordLocation
+                    && LocationManager.GPS_PROVIDER.equals(mProvider)) {
+                mGpsIndicator.setVisibility(View.VISIBLE);
+            }
             mLastLocation.set(newLocation);
             mValid = true;
         }
@@ -279,8 +261,16 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            if (status == LocationProvider.OUT_OF_SERVICE) {
-                mValid = false;
+            switch(status) {
+                case LocationProvider.OUT_OF_SERVICE:
+                case LocationProvider.TEMPORARILY_UNAVAILABLE: {
+                    mValid = false;
+                    if (mRecordLocation &&
+                            LocationManager.GPS_PROVIDER.equals(provider)) {
+                        mGpsIndicator.setVisibility(View.INVISIBLE);
+                    }
+                    break;
+                }
             }
         }
 
@@ -307,10 +297,6 @@ public class Camera extends Activity implements View.OnClickListener,
             // and so that we can see the full image that was taken.
             Size pictureSize = mParameters.getPictureSize();
             mSurfaceView.setAspectRatio(pictureSize.width, pictureSize.height);
-
-            if (mClickSound != null) {
-                mClickSound.start();
-            }
         }
     };
 
@@ -480,7 +466,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void storeImage(byte[] data, android.hardware.Camera camera, Location loc) {
-            boolean captureOnly = isImageCaptureIntent();
+            boolean captureOnly = mIsImageCaptureIntent;
 
             if (!captureOnly) {
                 storeImage(data, loc);
@@ -543,8 +529,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
             final int latchedOrientation = ImageManager.roundOrientation(mLastOrientation + 90);
 
-            Boolean recordLocation = mPreferences.getBoolean("pref_camera_recordlocation_key", false);
-            Location loc = recordLocation ? getCurrentLocation() : null;
+            Location loc = mRecordLocation ? getCurrentLocation() : null;
             // Quality 75 has visible artifacts, and quality 90 looks great but the files begin to
             // get large. 85 is a good compromise between the two.
             mParameters.set("jpeg-quality", 85);
@@ -587,10 +572,6 @@ public class Camera extends Activity implements View.OnClickListener,
             mCameraDevice.setParameters(mParameters);
 
             mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback, new JpegPictureCallback(loc));
-            // Prepare the sound to play in shutter callback.
-            if (mClickSound != null) {
-                mClickSound.seekTo(0);
-            }
         }
 
         public void onSnap() {
@@ -618,7 +599,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
             mKeepAndRestartPreview = true;
 
-            boolean getContentAction = isImageCaptureIntent();
+            boolean getContentAction = mIsImageCaptureIntent;
             if (getContentAction) {
                 mImageCapture.initiate(true);
             } else {
@@ -637,63 +618,8 @@ public class Camera extends Activity implements View.OnClickListener,
     private void setLastPictureThumb(byte[] data, Uri uri) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 16;
-
         Bitmap lastPictureThumb = BitmapFactory.decodeByteArray(data, 0, data.length, options);
-
-        setLastPictureThumb(lastPictureThumb, uri);
-    }
-
-    private static Bitmap makeRoundedCorner(Bitmap thumb, int rx, int ry) {
-        if (thumb == null) return null;
-        int width = thumb.getWidth();
-        int height = thumb.getHeight();
-
-        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawRoundRect(new RectF(0, 0, width, height), rx, ry, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(thumb, 0, 0, paint);
-        return result;
-    }
-
-    private void setLastPictureThumb(Bitmap lastPictureThumb, Uri uri) {
-
-        final int PADDING_WIDTH = 6;
-        final int PADDING_HEIGHT = 6;
-        LayoutParams layoutParams = mLastPictureButton.getLayoutParams();
-        // Make the mini-thumbnail size smaller than the button size so that the image corners
-        // don't peek out from the rounded corners of the frame_thumbnail graphic:
-        final int miniThumbWidth = layoutParams.width - 2 * PADDING_WIDTH;
-        final int miniThumbHeight = layoutParams.height - 2 * PADDING_HEIGHT;
-        mLastPictureThumb = ImageManager.extractMiniThumb(
-                lastPictureThumb, miniThumbWidth, miniThumbHeight);
-        lastPictureThumb = makeRoundedCorner(mLastPictureThumb, 3, 3);
-
-        Drawable[] vignetteLayers = new Drawable[2];
-        vignetteLayers[0] = getResources().getDrawable(R.drawable.frame_thumbnail);
-        if (mThumbnails == null) {
-            mThumbnails = new Drawable[2];
-            mThumbnails[1] = new BitmapDrawable(lastPictureThumb);
-            vignetteLayers[1] = mThumbnails[1];
-        } else {
-            mThumbnails[0] = mThumbnails[1];
-            mThumbnails[1] = new BitmapDrawable(lastPictureThumb);
-            mThumbnailTransition = new TransitionDrawable(mThumbnails);
-            mShouldTransitionThumbnails = true;
-            vignetteLayers[1] = mThumbnailTransition;
-        }
-
-        mVignette = new LayerDrawable(vignetteLayers);
-        mVignette.setLayerInset(1, PADDING_WIDTH, PADDING_HEIGHT,
-                PADDING_WIDTH, PADDING_HEIGHT);
-        mLastPictureButton.setImageDrawable(mVignette);
-
-        if (mLastPictureButton.getVisibility() != View.VISIBLE) {
-            mShouldShowLastPictureButton = true;
-        }
-        mLastPictureUri = uri;
+        mThumbController.setData(uri, lastPictureThumb);
     }
 
     static private String createName(long dateTaken) {
@@ -761,6 +687,7 @@ public class Camera extends Activity implements View.OnClickListener,
         setContentView(R.layout.camera);
 
         mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
+        mGpsIndicator = (ImageView) findViewById(R.id.gps_indicator);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
@@ -769,30 +696,19 @@ public class Camera extends Activity implements View.OnClickListener,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        if (!isImageCaptureIntent())  {
+        mIsImageCaptureIntent = isImageCaptureIntent();
+
+        if (!mIsImageCaptureIntent)  {
             mLastPictureButton = (ImageView) findViewById(R.id.last_picture_button);
             mLastPictureButton.setOnClickListener(this);
-            loadLastThumb();
+            Drawable frame = getResources().getDrawable(R.drawable.frame_thumbnail);
+            mThumbController = new ThumbnailController(mLastPictureButton,
+                    frame, mContentResolver);
+            mThumbController.loadData(ImageManager.getLastImageThumbPath());
         }
 
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterButton.setOnShutterButtonListener(this);
-
-        try {
-            mClickSound = new MediaPlayer();
-            AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.camera_click);
-
-            mClickSound.setDataSource(afd.getFileDescriptor(),
-                             afd.getStartOffset(),
-                             afd.getLength());
-
-            if (mClickSound != null) {
-                mClickSound.setAudioStreamType(AudioManager.STREAM_ALARM);
-                mClickSound.prepare();
-            }
-        } catch (Exception ex) {
-            Log.w(TAG, "Couldn't create click sound", ex);
-        }
 
         mFocusIndicator = findViewById(R.id.focus_indicator);
         mFocusBlinkAnimation = AnimationUtils.loadAnimation(this, R.anim.auto_focus_blink);
@@ -800,7 +716,7 @@ public class Camera extends Activity implements View.OnClickListener,
         mFocusBlinkAnimation.setRepeatMode(Animation.REVERSE);
 
         // We load the post_picture_panel layout only if it is needed.
-        if (isImageCaptureIntent()) {
+        if (mIsImageCaptureIntent) {
             ViewGroup cameraView = (ViewGroup)findViewById(R.id.camera);
             getLayoutInflater().inflate(R.layout.post_picture_panel,
                                         cameraView);
@@ -1021,6 +937,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
         mPausing = false;
         mOrientationListener.enable();
+        mRecordLocation = mPreferences.getBoolean(
+                "pref_camera_recordlocation_key", false);
+        mGpsIndicator.setVisibility(View.INVISIBLE);
 
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
@@ -1036,8 +955,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         restartPreview();
 
-        if (mPreferences.getBoolean("pref_camera_recordlocation_key", false))
-            startReceivingLocationUpdates();
+        if (mRecordLocation) startReceivingLocationUpdates();
 
         updateFocusIndicator();
 
@@ -1049,76 +967,8 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    private ImageManager.DataLocation dataLocation() {
+    private static ImageManager.DataLocation dataLocation() {
         return ImageManager.DataLocation.EXTERNAL;
-    }
-
-    private static final int BUFSIZE = 4096;
-
-    // Stores the thumbnail and URI of last-picture-taken to SD card, so we can
-    // load it the next time the Camera app starts.
-    private void storeLastThumb() {
-        if (mLastPictureUri != null && mLastPictureThumb != null) {
-            try {
-                FileOutputStream f = new FileOutputStream(ImageManager.getLastThumbPath());
-                try {
-                    BufferedOutputStream b = new BufferedOutputStream(f, BUFSIZE);
-                    try {
-                        DataOutputStream d = new DataOutputStream(b);
-                        try {
-                            d.writeUTF(mLastPictureUri.toString());
-                            mLastPictureThumb.compress(Bitmap.CompressFormat.PNG, 100, d);
-                        } finally {
-                            d.close();
-                            b = null;
-                            f = null;
-                        }
-                    } finally {
-                        if (b != null) {
-                            b.close();
-                            f = null;
-                        }
-                    }
-                } finally {
-                    if (f != null) {
-                        f.close();
-                    }
-                }
-            } catch (IOException e) {
-            }
-        }
-    }
-
-    // Loads the thumbnail and URI of last-picture-taken from SD card.
-    private void loadLastThumb() {
-        try {
-            FileInputStream f = new FileInputStream(ImageManager.getLastThumbPath());
-            try {
-                BufferedInputStream b = new BufferedInputStream(f, BUFSIZE);
-                try {
-                    DataInputStream d = new DataInputStream(b);
-                    try {
-                        Uri lastUri = Uri.parse(d.readUTF());
-                        Bitmap lastThumb = BitmapFactory.decodeStream(d);
-                        setLastPictureThumb(lastThumb, lastUri);
-                    } finally {
-                        d.close();
-                        b = null;
-                        f = null;
-                    }
-                } finally {
-                    if (b != null) {
-                        b.close();
-                        f = null;
-                    }
-                }
-            } finally {
-                if (f != null) {
-                    f.close();
-                }
-            }
-        } catch (IOException e) {
-        }
     }
 
     @Override
@@ -1153,7 +1003,10 @@ public class Camera extends Activity implements View.OnClickListener,
             mFocusToneGenerator = null;
         }
 
-        storeLastThumb();
+        if (!mIsImageCaptureIntent) {
+            mThumbController.storeData(ImageManager.getLastImageThumbPath());
+        }
+
         if (mStorageHint != null) {
             mStorageHint.cancel();
             mStorageHint = null;
@@ -1347,19 +1200,6 @@ public class Camera extends Activity implements View.OnClickListener,
         return mCameraDevice != null;
     }
 
-    private boolean isLastPictureValid() {
-        boolean isValid = true;
-        if (mLastPictureUri == null)  return false;
-        try {
-            mContentResolver.openFileDescriptor(mLastPictureUri, "r").close();
-        }
-        catch (Exception ex) {
-            isValid = false;
-            Log.e(TAG, ex.toString());
-        }
-        return isValid;
-    }
-
     private void updateLastImage() {
         ImageManager.IImageList list = ImageManager.instance().allImages(
             this,
@@ -1371,12 +1211,10 @@ public class Camera extends Activity implements View.OnClickListener,
         int count = list.getCount();
         if (count > 0) {
             ImageManager.IImage image = list.getImageAt(count-1);
-            mLastPictureUri = image.fullSizeImageUri();
-            Log.v(TAG, "updateLastImage: count="+ count +
-                ", lastPictureUri="+mLastPictureUri);
-            setLastPictureThumb(image.miniThumbBitmap(), mLastPictureUri);
+            Uri uri = image.fullSizeImageUri();
+            mThumbController.setData(uri, image.miniThumbBitmap());
         } else {
-            mLastPictureUri = null;
+            mThumbController.setData(null, null);
         }
         list.deactivate();
     }
@@ -1396,21 +1234,12 @@ public class Camera extends Activity implements View.OnClickListener,
         // let the user take a picture, and delete that file if needed to save the new photo.
         calculatePicturesRemaining();
 
-        if (!isImageCaptureIntent() && !isLastPictureValid()) {
+        if (!mIsImageCaptureIntent && !mThumbController.isUriValid()) {
             updateLastImage();
         }
 
-        if (mShouldShowLastPictureButton) {
-            mShouldShowLastPictureButton = false;
-            mLastPictureButton.setVisibility(View.VISIBLE);
-            Animation a = mShowLastPictureButtonAnimation;
-            a.setDuration(500);
-            mLastPictureButton.setAnimation(a);
-        }
-
-        if (mShouldTransitionThumbnails) {
-            mShouldTransitionThumbnails = false;
-            mThumbnailTransition.startTransition(500);
+        if (!mIsImageCaptureIntent) {
+            mThumbController.updateDisplayIfNeeded();
         }
     }
 
@@ -1492,8 +1321,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     } catch (InterruptedException ex) {
                         //
                     }
-                    if (mPreviewing)
-                        break;
+                    if (mPreviewing) break;
 
                     int delay = (int) (SystemClock.elapsedRealtime() - wallTimeStart) / 1000;
                     if (delay >= next_warning) {
@@ -1553,8 +1381,8 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void viewLastImage() {
-        Uri targetUri = mLastPictureUri;
-        if (targetUri != null && isLastPictureValid()) {
+        if (mThumbController.isUriValid()) {
+            Uri targetUri = mThumbController.getUri();
             targetUri = targetUri.buildUpon().
                 appendQueryParameter("bucketId", ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
             Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
@@ -1637,16 +1465,12 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private Location getCurrentLocation() {
-        Location l = null;
-
         // go in best to worst order
         for (int i = 0; i < mLocationListeners.length; i++) {
-            l = mLocationListeners[i].current();
-            if (l != null)
-                break;
+            Location l = mLocationListeners[i].current();
+            if (l != null) return l;
         }
-
-        return l;
+        return null;
     }
 
     @Override
@@ -1703,7 +1527,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void showPostCaptureAlert() {
-        if (isImageCaptureIntent()) {
+        if (mIsImageCaptureIntent) {
             mPostCaptureAlert.setVisibility(View.VISIBLE);
             int[] pickIds = {R.id.attach, R.id.cancel};
             for(int id : pickIds) {
@@ -1717,7 +1541,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void hidePostCaptureAlert() {
-        if (isImageCaptureIntent()) {
+        if (mIsImageCaptureIntent) {
             mPostCaptureAlert.setVisibility(View.INVISIBLE);
         }
     }
@@ -1726,7 +1550,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        if (isImageCaptureIntent()) {
+        if (mIsImageCaptureIntent) {
             // No options menu for attach mode.
             return false;
         } else {

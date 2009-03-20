@@ -4,9 +4,9 @@
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-  
+
           http://www.apache.org/licenses/LICENSE-2.0
-  
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,114 +24,107 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_centerInParent="true"
-            />
-          
-    <ImageView
-    		android:id="@+id/video_frame"
-    		android:layout_width="fill_parent"
-    		android:layout_height="fill_parent"
-    		android:visibility="gone" 
     />
-    
+
     <ImageView
-    		android:id="@+id/blackout"
-    		android:layout_width="fill_parent"
-    		android:layout_height="fill_parent"
-    		android:visibility="invisible" 
+            android:id="@+id/video_frame"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="gone"
     />
 
     <com.android.camera.ShutterButton
-        android:id="@+id/shutter_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_camera_indicator_video"
-	    android:background="@drawable/ic_btn_camera_background"
-        android:clickable="true"
-		android:focusable="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dip"
-        android:layout_marginTop="10dip"
-        android:scaleType="center"/>
+            android:id="@+id/shutter_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera_indicator_video"
+            android:background="@drawable/ic_btn_camera_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="5dip"
+            android:scaleType="center" />
 
     <!-- Note: In this TextView the paddingRight="2"
          attribute is required because otherwise the
          text's drop shadow will be clipped. -->
     <TextView
-        android:id="@+id/recording_time"
-        android:layout_width="90dip"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/shutter_button"
-        android:layout_alignTop="@id/shutter_button"
-        android:layout_marginTop="20dip"
-        android:layout_marginRight="6dip"
-        android:paddingRight="2dip"
-        android:shadowColor="#c0000000"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        android:gravity="right"
-        android:textColor="@color/recording_time_elapsed_text"
-        android:textSize="20dip"
-        android:textStyle="bold"
-        android:visibility="gone"/>
+            android:id="@+id/recording_time"
+            android:layout_width="90dip"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/shutter_button"
+            android:layout_alignTop="@id/shutter_button"
+            android:layout_marginTop="20dip"
+            android:layout_marginRight="6dip"
+            android:paddingRight="2dip"
+            android:shadowColor="#c0000000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:gravity="right"
+            android:textColor="@color/recording_time_elapsed_text"
+            android:textSize="20dip"
+            android:textStyle="bold"
+            android:visibility="gone"/>
 
-	<LinearLayout
-			android:visibility="gone"
-			android:id="@+id/post_picture_panel"
-			android:layout_alignTop="@id/shutter_button"
-			android:layout_toLeftOf="@id/shutter_button"
+    <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/post_picture_panel"
+            android:layout_alignTop="@id/shutter_button"
+            android:layout_toLeftOf="@id/shutter_button"
             android:layout_marginRight="38dip"
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
         <com.android.camera.ActionMenuButton
-            android:id="@+id/gallery"
-            android:drawableTop="@drawable/ic_menu_gallery"
-            android:text="@string/camera_gallery"
-            style="@style/OnscreenActionIcon"
+                android:id="@+id/gallery"
+                android:drawableTop="@drawable/ic_menu_gallery"
+                android:text="@string/camera_gallery"
+                style="@style/OnscreenActionIcon"
         />
         <com.android.camera.ActionMenuButton
-			android:id="@+id/play"
-			android:drawableTop="@drawable/ic_menu_camera_play"
-			android:text="@string/camera_play"
-			style="@style/OnscreenActionIcon"
-		/>
-		<com.android.camera.ActionMenuButton
-			android:id="@+id/share"
-			android:drawableTop="@drawable/ic_menu_share"
-			android:text="@string/camera_share"
-			style="@style/OnscreenActionIcon"
-		/>
-		<com.android.camera.ActionMenuButton
-			android:id="@+id/discard"
-			android:drawableTop="@drawable/ic_menu_delete"
-			android:text="@string/camera_toss"
-			style="@style/OnscreenActionIcon"
-		/>
-		<com.android.camera.ActionMenuButton
-			android:id="@+id/attach"
-			android:drawableTop="@drawable/ic_menu_attach"
-			android:text="@string/camera_attach"
-			style="@style/OnscreenActionIcon"
-		/>
-		<com.android.camera.ActionMenuButton
-			android:id="@+id/cancel"
-			android:drawableTop="@drawable/ic_menu_cancel"
-			android:text="@string/camera_cancel"
-			style="@style/OnscreenActionIcon"
-		/>
-	</LinearLayout>
+                android:id="@+id/play"
+                android:drawableTop="@drawable/ic_menu_camera_play"
+                android:text="@string/camera_play"
+                style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
+                android:id="@+id/share"
+                android:drawableTop="@drawable/ic_menu_share"
+                android:text="@string/camera_share"
+                style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
+                android:id="@+id/discard"
+                android:drawableTop="@drawable/ic_menu_delete"
+                android:text="@string/camera_toss"
+                style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
+                android:id="@+id/attach"
+                android:drawableTop="@drawable/ic_menu_attach"
+                android:text="@string/camera_attach"
+                style="@style/OnscreenActionIcon"
+        />
+        <com.android.camera.ActionMenuButton
+                android:id="@+id/cancel"
+                android:drawableTop="@drawable/ic_menu_cancel"
+                android:text="@string/camera_cancel"
+                style="@style/OnscreenActionIcon"
+        />
+    </LinearLayout>
     <ImageView
-        android:visibility="visible"
-        android:id="@+id/last_picture_button"
-        android:layout_width="72dip"
-        android:layout_height="72dip"
-        android:clickable="true"
-        android:focusable="false"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dip"
-        android:layout_marginTop="10dip" />
+            android:visibility="visible"
+            android:id="@+id/last_picture_button"
+            android:layout_width="72dip"
+            android:layout_height="72dip"
+            android:clickable="true"
+            android:focusable="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip"/>
 </RelativeLayout>
