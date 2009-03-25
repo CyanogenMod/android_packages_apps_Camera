@@ -327,7 +327,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 break;
 
             case R.id.discard: {
-                discardCurrentVideoAndStartPreview();
+                Runnable deleteCallback = new Runnable() {
+                    public void run() {
+                        discardCurrentVideoAndStartPreview();
+                    }
+                };
+                MenuHelper.deleteVideo(this, deleteCallback);
                 break;
             }
 
