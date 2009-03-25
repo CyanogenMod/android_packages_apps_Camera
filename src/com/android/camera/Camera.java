@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -42,7 +41,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
@@ -122,8 +120,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
     private int mViewFinderWidth, mViewFinderHeight;
     private boolean mPreviewing = false;
-
-    private MediaPlayer mClickSound;
 
     private Capturer mCaptureObject;
     private ImageCapture mImageCapture = null;
@@ -301,10 +297,6 @@ public class Camera extends Activity implements View.OnClickListener,
             // and so that we can see the full image that was taken.
             Size pictureSize = mParameters.getPictureSize();
             mSurfaceView.setAspectRatio(pictureSize.width, pictureSize.height);
-
-            if (mClickSound != null) {
-                mClickSound.start();
-            }
         }
     };
 
@@ -580,10 +572,6 @@ public class Camera extends Activity implements View.OnClickListener,
             mCameraDevice.setParameters(mParameters);
 
             mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback, new JpegPictureCallback(loc));
-            // Prepare the sound to play in shutter callback.
-            if (mClickSound != null) {
-                mClickSound.seekTo(0);
-            }
         }
 
         public void onSnap() {
@@ -721,22 +709,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterButton.setOnShutterButtonListener(this);
-
-        try {
-            mClickSound = new MediaPlayer();
-            AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.camera_click);
-
-            mClickSound.setDataSource(afd.getFileDescriptor(),
-                             afd.getStartOffset(),
-                             afd.getLength());
-
-            if (mClickSound != null) {
-                mClickSound.setAudioStreamType(AudioManager.STREAM_ALARM);
-                mClickSound.prepare();
-            }
-        } catch (Exception ex) {
-            Log.w(TAG, "Couldn't create click sound", ex);
-        }
 
         mFocusIndicator = findViewById(R.id.focus_indicator);
         mFocusBlinkAnimation = AnimationUtils.loadAnimation(this, R.anim.auto_focus_blink);
