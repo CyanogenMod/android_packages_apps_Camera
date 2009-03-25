@@ -4,9 +4,9 @@
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-  
+
           http://www.apache.org/licenses/LICENSE-2.0
-  
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,14 +25,14 @@
             android:layout_height="fill_parent"
             android:layout_centerInParent="true"
     />
-          
+
     <ImageView
             android:id="@+id/video_frame"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:visibility="gone" 
+            android:visibility="gone"
     />
-    
+
     <com.android.camera.ShutterButton
             android:id="@+id/shutter_button"
             android:layout_width="wrap_content"
@@ -43,9 +43,9 @@
             android:focusable="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="10dip"
-            android:layout_marginTop="10dip"
-            android:scaleType="center"/>
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="5dip"
+            android:scaleType="center" />
 
     <!-- Note: In this TextView the paddingRight="2"
          attribute is required because otherwise the
@@ -75,7 +75,7 @@
             android:layout_alignTop="@id/shutter_button"
             android:layout_toLeftOf="@id/shutter_button"
             android:layout_marginRight="38dip"
-            android:layout_width="wrap_content" 
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -125,6 +125,6 @@
             android:focusable="false"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dip"
-            android:layout_marginTop="10dip"/>
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip"/>
 </RelativeLayout>

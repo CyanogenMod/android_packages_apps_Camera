@@ -148,6 +148,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private Animation mFocusBlinkAnimation;
     private View mFocusIndicator;
+    private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
 
 
@@ -160,6 +161,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private long mShutterCallbackTime;
     private long mRawPictureCallbackTime;
     private int mPicturesRemaining;
+    private boolean mRecordLocation;
 
     private boolean mKeepAndRestartPreview;
 
@@ -245,6 +247,12 @@ public class Camera extends Activity implements View.OnClickListener,
                 // Hack to filter out 0.0,0.0 locations
                 return;
             }
+            // If GPS is available before start camera, we won't get status
+            // update so update GPS indicator when we receive data.
+            if (mRecordLocation
+                    && LocationManager.GPS_PROVIDER.equals(mProvider)) {
+                mGpsIndicator.setVisibility(View.VISIBLE);
+            }
             mLastLocation.set(newLocation);
             mValid = true;
         }
@@ -257,8 +265,16 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            if (status == LocationProvider.OUT_OF_SERVICE) {
-                mValid = false;
+            switch(status) {
+                case LocationProvider.OUT_OF_SERVICE:
+                case LocationProvider.TEMPORARILY_UNAVAILABLE: {
+                    mValid = false;
+                    if (mRecordLocation &&
+                            LocationManager.GPS_PROVIDER.equals(provider)) {
+                        mGpsIndicator.setVisibility(View.INVISIBLE);
+                    }
+                    break;
+                }
             }
         }
 
@@ -521,8 +537,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
             final int latchedOrientation = ImageManager.roundOrientation(mLastOrientation + 90);
 
-            Boolean recordLocation = mPreferences.getBoolean("pref_camera_recordlocation_key", false);
-            Location loc = recordLocation ? getCurrentLocation() : null;
+            Location loc = mRecordLocation ? getCurrentLocation() : null;
             // Quality 75 has visible artifacts, and quality 90 looks great but the files begin to
             // get large. 85 is a good compromise between the two.
             mParameters.set("jpeg-quality", 85);
@@ -684,6 +699,7 @@ public class Camera extends Activity implements View.OnClickListener,
         setContentView(R.layout.camera);
 
         mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
+        mGpsIndicator = (ImageView) findViewById(R.id.gps_indicator);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
@@ -949,6 +965,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
         mPausing = false;
         mOrientationListener.enable();
+        mRecordLocation = mPreferences.getBoolean(
+                "pref_camera_recordlocation_key", false);
+        mGpsIndicator.setVisibility(View.INVISIBLE);
 
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
@@ -964,8 +983,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         restartPreview();
 
-        if (mPreferences.getBoolean("pref_camera_recordlocation_key", false))
-            startReceivingLocationUpdates();
+        if (mRecordLocation) startReceivingLocationUpdates();
 
         updateFocusIndicator();
 
@@ -1331,8 +1349,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     } catch (InterruptedException ex) {
                         //
                     }
-                    if (mPreviewing)
-                        break;
+                    if (mPreviewing) break;
 
                     int delay = (int) (SystemClock.elapsedRealtime() - wallTimeStart) / 1000;
                     if (delay >= next_warning) {
@@ -1476,16 +1493,12 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private Location getCurrentLocation() {
-        Location l = null;
-
         // go in best to worst order
         for (int i = 0; i < mLocationListeners.length; i++) {
-            l = mLocationListeners[i].current();
-            if (l != null)
-                break;
+            Location l = mLocationListeners[i].current();
+            if (l != null) return l;
         }
-
-        return l;
+        return null;
     }
 
     @Override
