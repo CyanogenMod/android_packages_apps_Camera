@@ -120,8 +120,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
     private int mViewFinderWidth, mViewFinderHeight;
     private boolean mPreviewing = false;
-    private final Object mCameraLock = new Object();
-    private Thread mStartPreviewThread = null;
 
     private Capturer mCaptureObject;
     private ImageCapture mImageCapture = null;
@@ -507,8 +505,13 @@ public class Camera extends Activity implements View.OnClickListener,
          * Initiate the capture of an image.
          */
         public void initiate(boolean captureOnly) {
+            if (mCameraDevice == null) {
+                return;
+            }
+
             mCancel = false;
             mCapturing = true;
+
             capture(captureOnly);
         }
 
@@ -649,6 +652,15 @@ public class Camera extends Activity implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        // To reduce startup time, we open camera device in another thread.
+        // We make sure the camera is opened at the end of onCreate.
+        Thread openCameraThread = new Thread(new Runnable() {
+            public void run() {
+                mCameraDevice = android.hardware.Camera.open();
+            }
+        });
+        openCameraThread.start();
+
         // To reduce startup time, we run some service creation code in another thread.
         // We make sure the services are loaded at the end of onCreate().
         Thread loadServiceThread = new Thread(new Runnable() {
@@ -713,6 +725,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         // Make sure the services are loaded.
         try {
+            openCameraThread.join();
             loadServiceThread.join();
         } catch (InterruptedException ex) {
         }
@@ -865,7 +878,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
-        if (!mPreviewing || mPausing) {
+        if (mPausing) {
             return;
         }
         switch (button.getId()) {
@@ -876,7 +889,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     public void onShutterButtonClick(ShutterButton button) {
-        if (!mPreviewing || mPausing) {
+        if (mPausing) {
             return;
         }
         switch (button.getId()) {
@@ -1081,16 +1094,12 @@ public class Camera extends Activity implements View.OnClickListener,
                 break;
             case KeyEvent.KEYCODE_FOCUS:
                 if (event.getRepeatCount() == 0) {
-                    if (mPreviewing) {
-                        doFocus(true);
-                    }
+                    doFocus(true);
                 }
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
                 if (event.getRepeatCount() == 0) {
-                    if (mPreviewing) {
-                        doSnap();
-                    }
+                    doSnap();
                 }
                 return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
@@ -1099,15 +1108,13 @@ public class Camera extends Activity implements View.OnClickListener,
                 if (event.getRepeatCount() == 0) {
                     // Start auto-focus immediately to reduce shutter lag. After the shutter button
                     // gets the focus, doFocus() will be called again but it is fine.
-                    if (mPreviewing) {
-                        doFocus(true);
-                        if (mShutterButton.isInTouchMode()) {
-                            mShutterButton.requestFocusFromTouch();
-                        } else {
-                            mShutterButton.requestFocus();
-                        }
-                        mShutterButton.setPressed(true);
+                    doFocus(true);
+                    if (mShutterButton.isInTouchMode()) {
+                        mShutterButton.requestFocusFromTouch();
+                    } else {
+                        mShutterButton.requestFocus();
                     }
+                    mShutterButton.setPressed(true);
                 }
                 return true;
         }
@@ -1180,13 +1187,19 @@ public class Camera extends Activity implements View.OnClickListener,
         mSurfaceHolder = null;
     }
 
-    // always call stopPreview before calling closeCamera
     private void closeCamera() {
         if (mCameraDevice != null) {
             mCameraDevice.release();
             mCameraDevice = null;
             mPreviewing = false;
         }
+    }
+
+    private boolean ensureCameraDevice() {
+        if (mCameraDevice == null) {
+            mCameraDevice = android.hardware.Camera.open();
+        }
+        return mCameraDevice != null;
     }
 
     private void updateLastImage() {
@@ -1242,6 +1255,9 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
 
+        if (!ensureCameraDevice())
+            return;
+
         if (mSurfaceHolder == null)
             return;
 
@@ -1263,98 +1279,101 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
 
         /*
-         * start preview on a separate thread
+         * start the preview if we're asked to...
          */
-        // start camera preview
-        synchronized(mCameraLock) {
-            if (mStartPreviewThread == null) {
-                mStartPreviewThread = new Thread(new Runnable() {
-                    public void run() {
 
-                        // create camera object
-                        synchronized(mCameraLock) {
-                            if (mCameraDevice == null) {
-                                mCameraDevice = android.hardware.Camera.open();
+        // we want to start the preview and we're previewing already,
+        // stop the preview first (this will blank the screen).
+        if (mPreviewing)
+            stopPreview();
+
+        // this blanks the screen if the surface changed, no-op otherwise
+        try {
+            mCameraDevice.setPreviewDisplay(mSurfaceHolder);
+        } catch (IOException exception) {
+            mCameraDevice.release();
+            mCameraDevice = null;
+            // TODO: add more exception handling logic here
+            return;
+        }
+
+        // request the preview size, the hardware may not honor it,
+        // if we depended on it we would have to query the size again
+        mParameters = mCameraDevice.getParameters();
+        mParameters.setPreviewSize(w, h);
+        try {
+            mCameraDevice.setParameters(mParameters);
+        } catch (IllegalArgumentException e) {
+            // Ignore this error, it happens in the simulator.
+        }
+
+
+        final long wallTimeStart = SystemClock.elapsedRealtime();
+        final long threadTimeStart = Debug.threadCpuTimeNanos();
+
+        final Object watchDogSync = new Object();
+        Thread watchDog = new Thread(new Runnable() {
+            public void run() {
+                int next_warning = 1;
+                while (true) {
+                    try {
+                        synchronized (watchDogSync) {
+                            watchDogSync.wait(1000);
+                        }
+                    } catch (InterruptedException ex) {
+                        //
+                    }
+                    if (mPreviewing) break;
+
+                    int delay = (int) (SystemClock.elapsedRealtime() - wallTimeStart) / 1000;
+                    if (delay >= next_warning) {
+                        if (delay < 120) {
+                            Log.e(TAG, "preview hasn't started yet in " + delay + " seconds");
+                        } else {
+                            Log.e(TAG, "preview hasn't started yet in " + (delay / 60) + " minutes");
+                        }
+                        if (next_warning < 60) {
+                            next_warning <<= 1;
+                            if (next_warning == 16) {
+                                next_warning = 15;
                             }
-                        }
-
-                        // we want to start the preview and we're previewing already,
-                        // stop the preview first (this will blank the screen).
-                        if (mPreviewing)
-                            stopPreview();
-
-                        // this blanks the screen if the surface changed, no-op otherwise
-                        try {
-                            mCameraDevice.setPreviewDisplay(mSurfaceHolder);
-                        } catch (IOException exception) {
-                                    mCameraDevice.release();
-                                    mCameraDevice = null;
-                                    // TODO: add more exception handling logic here
-                                    return;
-                        }
-
-                        // request the preview size, the hardware may not honor it,
-                        // if we depended on it we would have to query the size again
-                        mParameters = mCameraDevice.getParameters();
-                        mParameters.setPreviewSize(mViewFinderWidth, mViewFinderHeight);
-                        try {
-                            mCameraDevice.setParameters(mParameters);
-                        } catch (IllegalArgumentException e) {
-                            // Ignore this error, it happens in the simulator.
-                        }
-
-                        final long wallTimeStart = SystemClock.elapsedRealtime();
-                        final long threadTimeStart = Debug.threadCpuTimeNanos();
-
-                        if (Config.LOGV) Log.v(TAG, "calling mCameraDevice.startPreview");
-                        try {
-                            mCameraDevice.startPreview();
-                        } catch (Throwable e) {
-                            // TODO: change Throwable to IOException once android.hardware.Camera.startPreview
-                            // properly declares that it throws IOException.
-                        }
-                        synchronized(mCameraLock) {
-                            mPreviewing = true;
-                            mStartPreviewThread = null;
-                        }
-
-                        long threadTimeEnd = Debug.threadCpuTimeNanos();
-                        long wallTimeEnd = SystemClock.elapsedRealtime();
-                        if ((wallTimeEnd - wallTimeStart) > 3000) {
-                            Log.w(TAG, "startPreview() to " + (wallTimeEnd - wallTimeStart) + " ms. Thread time was"
-                                    + (threadTimeEnd - threadTimeStart) / 1000000 + " ms.");
+                        } else {
+                            next_warning += 60;
                         }
                     }
-                });
-
-                mStartPreviewThread.start();
+                }
             }
-        }
-    }
+        });
 
-    // wait for preview thread if it is running
-    private void joinPreviewThread() {
-        Thread startPreviewThread;
-        synchronized(mCameraLock) {
-            startPreviewThread = mStartPreviewThread;
+        watchDog.start();
+
+        if (Config.LOGV)
+            Log.v(TAG, "calling mCameraDevice.startPreview");
+        try {
+            mCameraDevice.startPreview();
+        } catch (Throwable e) {
+            // TODO: change Throwable to IOException once android.hardware.Camera.startPreview
+            // properly declares that it throws IOException.
         }
-        if (startPreviewThread != null) {
-            try {
-                startPreviewThread.join();
-            } catch (InterruptedException ex) {
-            }
+        mPreviewing = true;
+
+        synchronized (watchDogSync) {
+            watchDogSync.notify();
+        }
+
+        long threadTimeEnd = Debug.threadCpuTimeNanos();
+        long wallTimeEnd = SystemClock.elapsedRealtime();
+        if ((wallTimeEnd - wallTimeStart) > 3000) {
+            Log.w(TAG, "startPreview() to " + (wallTimeEnd - wallTimeStart) + " ms. Thread time was"
+                    + (threadTimeEnd - threadTimeStart) / 1000000 + " ms.");
         }
     }
 
     private void stopPreview() {
-        joinPreviewThread();
-        synchronized(mCameraLock) {
-            if (mCameraDevice != null && mPreviewing) {
-                mCameraDevice.stopPreview();
-            }
-            mPreviewing = false;
+        if (mCameraDevice != null && mPreviewing) {
+            mCameraDevice.stopPreview();
         }
-
+        mPreviewing = false;
         // If auto focus was in progress, it would have been canceled.
         clearFocusState();
     }
