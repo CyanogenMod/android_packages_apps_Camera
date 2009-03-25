@@ -31,7 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor; 
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
@@ -490,7 +490,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (!mIsVideoCaptureIntent) {
             mThumbController.storeData(ImageManager.getLastVideoThumbPath());
         }
-        
+
         if (mStorageHint != null) {
             mStorageHint.cancel();
             mStorageHint = null;
@@ -594,9 +594,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             return false;
         } else {
             addBaseMenuItems(menu);
+            int menuFlags = MenuHelper.INCLUDE_ALL & ~MenuHelper.INCLUDE_ROTATE_MENU
+                    & ~MenuHelper.INCLUDE_DETAILS_MENU;
             MenuHelper.addImageMenuItems(
                     menu,
-                    MenuHelper.INCLUDE_ALL & ~MenuHelper.INCLUDE_ROTATE_MENU,
+                    menuFlags,
                     false,
                     VideoCamera.this,
                     mHandler,
@@ -1010,7 +1012,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         // There are two cases we are here:
         // (1) We are in a capture video intent, and we are reviewing the video
-        //     we just taken. 
+        //     we just taken.
         // (2) The thumbnail button is clicked: we review the video associated
         //     with the thumbnail.
         // For the second case, we copy the associated URI and filename to
