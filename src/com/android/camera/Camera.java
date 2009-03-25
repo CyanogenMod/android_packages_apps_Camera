@@ -756,7 +756,9 @@ public class Camera extends Activity implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
         case R.id.last_picture_button:
-            viewLastImage();
+            if (mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED) {
+                viewLastImage();
+            }
             break;
         case R.id.attach:
             doAttach();
