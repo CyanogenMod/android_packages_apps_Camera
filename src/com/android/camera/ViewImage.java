@@ -394,8 +394,8 @@ public class ViewImage extends Activity implements View.OnClickListener
                         return true;
                     }
                     case KeyEvent.KEYCODE_DEL:
-                        MenuHelper.displayDeleteDialog(mViewImage, 
-                                mViewImage.mDeletePhotoRunnable, true);
+                        MenuHelper.deletePhoto(
+                                mViewImage, mViewImage.mDeletePhotoRunnable);
                         break;
                 }
             } finally {
@@ -1482,7 +1482,7 @@ public class ViewImage extends Activity implements View.OnClickListener
         break;
 
         case R.id.discard: {
-            MenuHelper.displayDeleteDialog(this, mDeletePhotoRunnable, true);
+            MenuHelper.deletePhoto(this, mDeletePhotoRunnable);
         }
         break;
 
