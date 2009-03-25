@@ -540,6 +540,16 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        if (mPausing) {
+            // We're pausing, the screen is off and we already stopped
+            // video recording. We don't want to start the camera again
+            // in this case in order to conserve power.
+            // The fact that surfaceChanged is called _after_ an onPause appears
+            // to be legitimate since in that case the lockscreen always returns
+            // to portrait orientation possibly triggering the notification.
+            return;
+        }
+
         stopVideoRecording();
         initializeVideo();
     }
