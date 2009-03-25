@@ -149,10 +149,7 @@
     <string name="resume_playing_resume">"重新播放"</string>
     <string name="resume_playing_restart">"重新开始"</string>
     <string name="gadget_title">"相框"</string>
-    <!-- no translation found for file_info_title (1628963357466012538) -->
-    <skip />
-    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
-    <skip />
-    <!-- no translation found for too_large_to_attach (8944461117941172986) -->
-    <skip />
+    <string name="file_info_title">"文件信息："</string>
+    <string name="video_exceed_mms_limit">"您录制的视频太大，无法用彩信发送。请尝试录制短一点的剪辑。"</string>
+    <string name="too_large_to_attach">"文件太大，无法附加。"</string>
 </resources>

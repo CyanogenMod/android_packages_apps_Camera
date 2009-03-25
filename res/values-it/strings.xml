@@ -149,10 +149,7 @@
     <string name="resume_playing_resume">"Riprendi riproduzione"</string>
     <string name="resume_playing_restart">"Ricomincia"</string>
     <string name="gadget_title">"Cornice immagine"</string>
-    <!-- no translation found for file_info_title (1628963357466012538) -->
-    <skip />
-    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
-    <skip />
-    <!-- no translation found for too_large_to_attach (8944461117941172986) -->
-    <skip />
+    <string name="file_info_title">"Info file:"</string>
+    <string name="video_exceed_mms_limit">"Il video registrato è troppo grande per essere inviato tramite MMS. Prova a registrare un clip più corto."</string>
+    <string name="too_large_to_attach">"File troppo grande. Impossibile allegarlo."</string>
 </resources>
