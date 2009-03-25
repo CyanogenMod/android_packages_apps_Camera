@@ -1493,6 +1493,7 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         case R.id.share: {
             Uri u = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
+            if (MenuHelper.isMMSUri(u)) return;
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND);
             intent.setType("image/jpeg");
