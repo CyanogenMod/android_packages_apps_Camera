@@ -201,6 +201,17 @@ public class ViewImage extends Activity implements View.OnClickListener
         mZoomButtonsController.setZoomOutEnabled(scale > 1);
     }
 
+    @Override
+    protected void onDestroy() {
+        // This is necessary to make the ZoomButtonsController unregister
+        // its configuration change receiver.
+        if (mZoomButtonsController != null) {
+            mZoomButtonsController.setVisible(false);
+        }
+
+        super.onDestroy();
+    }
+
     private void setupZoomButtonController(View rootView) {
         mGestureDetector = new GestureDetector(this, new MyGestureListener());
         mZoomButtonsController = new ZoomButtonsController(rootView);
