@@ -58,8 +58,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     private static final int TOUCH_AREA_WIDTH = 60;
 
     private ImageGetter mGetter;
-    private boolean mInitialized;
-    private Uri mCurrentUri;
+    private Uri mSavedUri;
 
     static final boolean sSlideShowHidesStatusBar = true;
 
@@ -1061,20 +1060,20 @@ public class ViewImage extends Activity implements View.OnClickListener
         mShutterButton = findViewById(R.id.shutter_button);
         mShutterButton.setOnClickListener(this);
 
-        mCurrentUri = getIntent().getData();
+        Uri uri = getIntent().getData();
 
         if (Config.LOGV)
-            Log.v(TAG, "uri is " + mCurrentUri);
+            Log.v(TAG, "uri is " + uri);
         if (instanceState != null) {
             if (instanceState.containsKey("uri")) {
-                mCurrentUri = Uri.parse(instanceState.getString("uri"));
+                uri = Uri.parse(instanceState.getString("uri"));
             }
         }
-        if (mCurrentUri == null) {
+        if (uri == null) {
             finish();
             return;
         }
-        init(mCurrentUri);
+        init(uri);
 
         Bundle b = getIntent().getExtras();
 
@@ -1356,7 +1355,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     }
 
     private void init(Uri uri) {
-        if (mInitialized || (uri == null))
+        if (uri == null)
             return;
         
         mSortAscending = desiredSortOrder();
@@ -1373,57 +1372,55 @@ public class ViewImage extends Activity implements View.OnClickListener
                 break;
             }
         }
-        mInitialized = true;
     }
 
+    private Uri getCurrentUri() {
+        ImageManager.IImage image = mAllImages.getImageAt(mCurrentPosition);
+        Uri uri = null;
+        if (image != null){
+            String bucket = null;
+            uri = image.fullSizeImageUri();
+            if(getIntent() != null && getIntent().getData() != null)
+                bucket = getIntent().getData().getQueryParameter("bucketId");
+
+            if(bucket != null)
+                uri = uri.buildUpon().appendQueryParameter("bucketId", bucket).build();
+        }
+        return uri;
+    }
+    
     @Override
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
-        ImageManager.IImage image = mAllImages.getImageAt(mCurrentPosition);
-
-        if (image != null){
-            Uri uri = image.fullSizeImageUri();
-            String bucket = null;
-            if(getIntent()!= null && getIntent().getData()!=null)
-                bucket = getIntent().getData().getQueryParameter("bucketId");
-
-            if(bucket!=null)
-                uri = uri.buildUpon().appendQueryParameter("bucketId", bucket).build();
-
+        
+        Uri uri = getCurrentUri();
+        if (uri != null) {
             b.putString("uri", uri.toString());
         }
-        if (mMode == MODE_SLIDESHOW)
+        
+        if (mMode == MODE_SLIDESHOW) {
             b.putBoolean("slideshow", true);
-    }
-    
-    protected void onRestoreInstanceState (Bundle b) {
-        if (b.containsKey("uri")) {
-            mCurrentUri =  Uri.parse(b.getString("uri"));
         }
     }
-
+    
     @Override
     public void onResume()
     {
         super.onResume();
         
-        if (mCurrentUri != null) {
-            init(mCurrentUri);
-        }
+        init(mSavedUri);
 
         // normally this will never be zero but if one "backs" into this
         // activity after removing the sdcard it could be zero.  in that
         // case just "finish" since there's nothing useful that can happen.
-        if (mAllImages.getCount() == 0) {
+        int count = mAllImages.getCount();
+        if (count == 0) {
             finish();
+        } else if (count <= mCurrentPosition) {
+            mCurrentPosition = count - 1;
         }
 
-        mCurrentPosition = mAllImages.getCount() - 1;
         ImageManager.IImage image = mAllImages.getImageAt(mCurrentPosition);
-
-        if (desiredSortOrder() != mSortAscending) {
-            init(image.fullSizeImageUri());
-        }
 
         if (mGetter == null) {
             makeGetter();
@@ -1453,6 +1450,8 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         // removing all callback in the message queue
         mHandler.removeAllGetterCallbacks();
+        
+        mSavedUri = getCurrentUri();
 
         mAllImages.deactivate();
         mDismissOnScreenControlsRunnable.run();
@@ -1468,13 +1467,6 @@ public class ViewImage extends Activity implements View.OnClickListener
             iv.recycleBitmaps();
             iv.setImageBitmap(null, true);
         }
-        
-        mInitialized = false;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     public void onClick(View v) {
@@ -1550,12 +1542,7 @@ public class ViewImage extends Activity implements View.OnClickListener
             if (resultCode == RESULT_OK) {
                 // The CropImage activity passes back the Uri of the cropped image as
                 // the Action rather than the Data.
-                Uri dataUri = Uri.parse(data.getAction());
-                init(dataUri);
-                // Clear mImageViews so we can reload the correct image in onResume().
-                for (ImageViewTouch iv: mImageViews) {
-                    iv.clear();
-                }
+                mSavedUri = Uri.parse(data.getAction());
             }
             break;
         }
