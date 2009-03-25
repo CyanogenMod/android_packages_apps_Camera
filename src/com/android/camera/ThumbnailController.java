@@ -188,14 +188,13 @@ public class ThumbnailController {
 
         // Make the mini-thumb size smaller than the button size so that the image corners
         // don't peek out from the rounded corners of the frame_thumb graphic:
-        final int PADDING_WIDTH = 6;
-        final int PADDING_HEIGHT = 6;
+        final int PADDING_WIDTH = 12;
+        final int PADDING_HEIGHT = 12;
         LayoutParams layoutParams = mButton.getLayoutParams();
         final int miniThumbWidth = layoutParams.width - 2 * PADDING_WIDTH;
         final int miniThumbHeight = layoutParams.height - 2 * PADDING_HEIGHT;
-        mThumb = ImageManager.extractMiniThumb(original,
-                miniThumbWidth, miniThumbHeight, false);
-        mThumb = makeRoundedCorner(mThumb, 3, 3);
+        mThumb = ImageManager.extractMiniThumb(
+                original, miniThumbWidth, miniThumbHeight, false);
 
         Drawable[] vignetteLayers = new Drawable[2];
         vignetteLayers[0] = mFrame;
@@ -220,21 +219,6 @@ public class ThumbnailController {
         if (mButton.getVisibility() != View.VISIBLE) {
             mShouldAnimateButton = true;
         }
-    }
-
-    private static Bitmap makeRoundedCorner(Bitmap thumb, int rx, int ry) {
-        if (thumb == null) return null;
-        int width = thumb.getWidth();
-        int height = thumb.getHeight();
-
-        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawRoundRect(new RectF(0, 0, width, height), rx, ry, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(thumb, 0, 0, paint);
-        return result;
     }
 
     public boolean isUriValid() {
