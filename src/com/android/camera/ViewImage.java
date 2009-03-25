@@ -65,11 +65,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     static private final int[] sOrder_adjacents = new int[] { 0, 1, -1 };
     static private final int[] sOrder_slideshow = new int[] { 0 };
 
-    Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-        }
-    };
+    private LocalHandler mHandler = new LocalHandler();
 
     private Random mRandom = new Random(System.currentTimeMillis());
     private int [] mShuffleOrder;
@@ -779,7 +775,7 @@ public class ViewImage extends Activity implements View.OnClickListener
                                         if (Config.LOGV)
                                             Log.v(TAG, "starting THUMBNAIL load at offset " + offset);
                                         Bitmap b = image.thumbBitmap();
-                                        mHandler.post(callback(lastPosition, offset, true, b));
+                                        mHandler.postGetterCallback(callback(lastPosition, offset, true, b));
                                     }
                                 }
                             }
@@ -808,7 +804,7 @@ public class ViewImage extends Activity implements View.OnClickListener
                                                 long t2 = System.currentTimeMillis();
                                                 Log.v(TAG, "loading full image for " + image.fullSizeImageUri()
                                                         + " with requested size " + sizeToUse
-                                                        + " took " + (t2-t1)
+                                                        + " took " + (t2 - t1)
                                                         + " and returned a bitmap with size "
                                                         + b.getWidth() + " / " + b.getHeight());
                                             }
@@ -818,14 +814,14 @@ public class ViewImage extends Activity implements View.OnClickListener
                                                 if (isCanceled()) {
                                                     b.recycle();
                                                 } else {
-                                                    mHandler.post(callback(lastPosition, offset, false, b));
+                                                    mHandler.postGetterCallback(callback(lastPosition, offset, false, b));
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                            mHandler.post(completedCallback(isCanceled()));
+                            mHandler.postGetterCallback(completedCallback(isCanceled()));
                         }
                     }
                 }
@@ -976,6 +972,7 @@ public class ViewImage extends Activity implements View.OnClickListener
             }
 
             public void imageLoaded(int pos, int offset, Bitmap bitmap, boolean isThumb) {
+                // shouldn't get here after onPause()
                 ImageViewTouchBase ivt = mImageViews[1 + offset];
                 if (offset == 0) updateZoomButtonsEnabled();
                 ivt.setImageBitmapResetBase(bitmap, isThumb, isThumb);
@@ -1275,11 +1272,9 @@ public class ViewImage extends Activity implements View.OnClickListener
 
             public void imageLoaded(final int pos, final int offset, final Bitmap bitmap, final boolean isThumb) {
                 long timeRemaining = Math.max(0, targetDisplayTime - System.currentTimeMillis());
-                mHandler.postDelayed(new Runnable() {
+                mHandler.postDelayedGetterCallback(new Runnable() {
                     public void run() {
-                        if (mMode == MODE_NORMAL) {
-                            return;
-                        }
+                        if (mMode == MODE_NORMAL) return;
 
                         ImageViewTouchBase oldView = mSlideShowImageViews[mSlideShowImageCurrent];
 
@@ -1313,24 +1308,20 @@ public class ViewImage extends Activity implements View.OnClickListener
 
                         mCurrentPosition = requestedPos;
 
-                        mHandler.post(new Runnable() {
-                            public void run() {
-                                if (mCurrentPosition == mLastSlideShowImage && !firstCall) {
-                                    if (mSlideShowLoop) {
-                                        if (mUseShuffleOrder) {
-                                            generateShuffleOrder();
-                                        }
-                                    } else {
-                                        setMode(MODE_NORMAL);
-                                        return;
-                                    }
+                        if (mCurrentPosition == mLastSlideShowImage && !firstCall) {
+                            if (mSlideShowLoop) {
+                                if (mUseShuffleOrder) {
+                                    generateShuffleOrder();
                                 }
-
-                                if (Config.LOGV)
-                                    Log.v(TAG, "mCurrentPosition is now " + mCurrentPosition);
-                                loadNextImage((mCurrentPosition + 1) % mAllImages.getCount(), mSlideShowInterval, false);
+                            } else {
+                                setMode(MODE_NORMAL);
+                                return;
                             }
-                        });
+                        }
+
+                        if (Config.LOGV)
+                            Log.v(TAG, "mCurrentPosition is now " + mCurrentPosition);
+                        loadNextImage((mCurrentPosition + 1) % mAllImages.getCount(), mSlideShowInterval, false);
                     }
                 }, timeRemaining);
             }
@@ -1443,6 +1434,9 @@ public class ViewImage extends Activity implements View.OnClickListener
         mGetter = null;
         setMode(MODE_NORMAL);
 
+        // removing all callback in the message queue
+        mHandler.removeAllGetterCallbacks();
+
         mAllImages.deactivate();
         mDismissOnScreenControlsRunnable.run();
         if (mDismissOnScreenControlsRunnable != null)
@@ -1545,6 +1539,34 @@ public class ViewImage extends Activity implements View.OnClickListener
                 }
             }
             break;
+        }
+    }
+
+    static class LocalHandler extends Handler {
+        private static final int IMAGE_GETTER_CALLBACK = 1;
+
+        @Override
+        public void handleMessage(Message message) {
+            switch(message.what) {
+            case IMAGE_GETTER_CALLBACK:
+                ((Runnable) message.obj).run();
+            }
+        }
+
+        public void postGetterCallback(Runnable callback) {
+           postDelayedGetterCallback(callback, 0);
+        }
+
+        public void postDelayedGetterCallback(Runnable callback, long delay) {
+            if (callback == null) throw new NullPointerException();
+            Message message = Message.obtain();
+            message.what = IMAGE_GETTER_CALLBACK;
+            message.obj = callback;
+            sendMessageDelayed(message, delay);
+        }
+
+        public void removeAllGetterCallbacks() {
+            removeMessages(IMAGE_GETTER_CALLBACK);
         }
     }
 }
