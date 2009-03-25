@@ -235,14 +235,14 @@ public class ImageGallery2 extends Activity {
         }
     };
 
-    private boolean isPaused() {
+    private boolean canHandleEvent() {
         // Don't process event in pause state.
-        return mPausing;
+        return (!mPausing) && (mGvs.mCurrentSpec != null);
     }
     
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (isPaused())  return false;
+        if (!canHandleEvent())  return false;
         
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             mGvs.select(-2, false);
@@ -261,7 +261,7 @@ public class ImageGallery2 extends Activity {
     
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (isPaused())  return false;
+        if (!canHandleEvent())  return false;
         
         boolean handled = true;
         int sel = mGvs.mCurrentSelection;
@@ -1747,7 +1747,7 @@ public class ImageGallery2 extends Activity {
 
         @Override
         public boolean onTouchEvent(android.view.MotionEvent ev) {
-            if (mGallery.isPaused())  return false;
+            if (!mGallery.canHandleEvent())  return false;
             
             mGestureDetector.onTouchEvent(ev);
             return true;
