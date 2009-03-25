@@ -149,10 +149,7 @@
     <string name="resume_playing_resume">"Pokračovat v přehrávání"</string>
     <string name="resume_playing_restart">"Začít znovu"</string>
     <string name="gadget_title">"Rámeček fotografie"</string>
-    <!-- no translation found for file_info_title (1628963357466012538) -->
-    <skip />
-    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
-    <skip />
-    <!-- no translation found for too_large_to_attach (8944461117941172986) -->
-    <skip />
+    <string name="file_info_title">"Informace o souboru:"</string>
+    <string name="video_exceed_mms_limit">"Zaznamenané video je pro odeslání ve zprávě MMS příliš velké. Zkuste zaznamenat kratší videoklip."</string>
+    <string name="too_large_to_attach">"Soubor nelze připojit, protože je příliš velký."</string>
 </resources>
