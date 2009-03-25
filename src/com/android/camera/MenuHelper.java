@@ -63,7 +63,7 @@ public class MenuHelper {
     static public final int INCLUDE_CROP_MENU     = (1 << 3);
     static public final int INCLUDE_DELETE_MENU   = (1 << 4);
     static public final int INCLUDE_ROTATE_MENU   = (1 << 5);
-    static public final int INCLUDE_DETAILS_MENU   = (1 << 5);
+    static public final int INCLUDE_DETAILS_MENU  = (1 << 6);
 
     static public final int MENU_SWITCH_CAMERA_MODE = 0;
     static public final int MENU_CAPTURE_PICTURE = 1;
@@ -487,7 +487,7 @@ public class MenuHelper {
     static void deletePhoto(Activity activity, Runnable onDelete) {
         deleteImpl(activity, onDelete, true);
     }
-    
+
     static void deleteVideo(Activity activity, Runnable onDelete) {
         deleteImpl(activity, onDelete, false);
     }
@@ -543,8 +543,8 @@ public class MenuHelper {
                 String action = switchToVideo ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
                         : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
                 Intent intent = new Intent(action);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                activity.finish();
                 activity.startActivity(intent);
                 return true;
              }
