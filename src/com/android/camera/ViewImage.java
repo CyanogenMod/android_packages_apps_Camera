@@ -58,6 +58,8 @@ public class ViewImage extends Activity implements View.OnClickListener
     private static final int TOUCH_AREA_WIDTH = 60;
 
     private ImageGetter mGetter;
+    private boolean mInitialized;
+    private Uri mCurrentUri;
 
     static final boolean sSlideShowHidesStatusBar = true;
 
@@ -1059,20 +1061,20 @@ public class ViewImage extends Activity implements View.OnClickListener
         mShutterButton = findViewById(R.id.shutter_button);
         mShutterButton.setOnClickListener(this);
 
-        Uri uri = getIntent().getData();
+        mCurrentUri = getIntent().getData();
 
         if (Config.LOGV)
-            Log.v(TAG, "uri is " + uri);
+            Log.v(TAG, "uri is " + mCurrentUri);
         if (instanceState != null) {
             if (instanceState.containsKey("uri")) {
-                uri = Uri.parse(instanceState.getString("uri"));
+                mCurrentUri = Uri.parse(instanceState.getString("uri"));
             }
         }
-        if (uri == null) {
+        if (mCurrentUri == null) {
             finish();
             return;
         }
-        init(uri);
+        init(mCurrentUri);
 
         Bundle b = getIntent().getExtras();
 
@@ -1354,6 +1356,9 @@ public class ViewImage extends Activity implements View.OnClickListener
     }
 
     private void init(Uri uri) {
+        if (mInitialized || (uri == null))
+            return;
+        
         mSortAscending = desiredSortOrder();
         int sort = mSortAscending ? ImageManager.SORT_ASCENDING : ImageManager.SORT_DESCENDING;
         mAllImages = ImageManager.makeImageList(uri, this, sort);
@@ -1368,6 +1373,7 @@ public class ViewImage extends Activity implements View.OnClickListener
                 break;
             }
         }
+        mInitialized = true;
     }
 
     @Override
@@ -1389,11 +1395,21 @@ public class ViewImage extends Activity implements View.OnClickListener
         if (mMode == MODE_SLIDESHOW)
             b.putBoolean("slideshow", true);
     }
+    
+    protected void onRestoreInstanceState (Bundle b) {
+        if (b.containsKey("uri")) {
+            mCurrentUri =  Uri.parse(b.getString("uri"));
+        }
+    }
 
     @Override
     public void onResume()
     {
         super.onResume();
+        
+        if (mCurrentUri != null) {
+            init(mCurrentUri);
+        }
 
         // normally this will never be zero but if one "backs" into this
         // activity after removing the sdcard it could be zero.  in that
@@ -1402,6 +1418,7 @@ public class ViewImage extends Activity implements View.OnClickListener
             finish();
         }
 
+        mCurrentPosition = mAllImages.getCount() - 1;
         ImageManager.IImage image = mAllImages.getImageAt(mCurrentPosition);
 
         if (desiredSortOrder() != mSortAscending) {
@@ -1451,6 +1468,8 @@ public class ViewImage extends Activity implements View.OnClickListener
             iv.recycleBitmaps();
             iv.setImageBitmap(null, true);
         }
+        
+        mInitialized = false;
     }
 
     @Override
