@@ -266,7 +266,7 @@ public class MenuHelper {
             requiresWriteAccessItems.add(deleteItem);
             deleteItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    deleteImageImpl(activity, onDelete, isImage);
+                    deleteImpl(activity, onDelete, isImage);
                     return true;
                 }
             })
@@ -485,16 +485,20 @@ public class MenuHelper {
     }
 
     static void deletePhoto(Activity activity, Runnable onDelete) {
-        deleteImageImpl(activity, onDelete, true);
+        deleteImpl(activity, onDelete, true);
+    }
+    
+    static void deleteVideo(Activity activity, Runnable onDelete) {
+        deleteImpl(activity, onDelete, false);
     }
 
     static void deleteImage(Activity activity, Runnable onDelete, IImage image) {
         if (image != null) {
-            deleteImageImpl(activity, onDelete, ImageManager.isImage(image));
+            deleteImpl(activity, onDelete, ImageManager.isImage(image));
         }
     }
 
-    private static void deleteImageImpl(Activity activity, final Runnable onDelete, boolean isPhoto) {
+    private static void deleteImpl(Activity activity, final Runnable onDelete, boolean isPhoto) {
         boolean confirm = android.preference.PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("pref_gallery_confirm_delete_key", true);
         if (!confirm) {
             if (onDelete != null)
