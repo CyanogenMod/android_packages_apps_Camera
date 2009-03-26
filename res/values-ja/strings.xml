@@ -18,6 +18,8 @@
     <string name="all_images">"すべての写真"</string>
     <string name="all_videos">"すべての動画"</string>
     <string name="camera_label">"カメラ"</string>
+    <!-- no translation found for video_camera_label (2899292505526427293) -->
+    <skip />
     <string name="gallery_picker_label">"ギャラリー"</string>
     <string name="gallery_camera_bucket_name">"カメラ (写真)"</string>
     <string name="gallery_camera_videos_bucket_name">"カメラ (動画)"</string>
