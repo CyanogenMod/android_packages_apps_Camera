@@ -127,8 +127,6 @@ public class ViewImage extends Activity implements View.OnClickListener
     private Runnable mDismissOnScreenControlsRunnable;
     private boolean mCameraReviewMode;
 
-    private int mCurrentOrientation;
-
     private void updateNextPrevControls() {
         boolean showPrev =  mCurrentPosition > 0;
         boolean showNext = mCurrentPosition < mAllImages.getCount() - 1;
@@ -229,7 +227,6 @@ public class ViewImage extends Activity implements View.OnClickListener
                 }
                 showOnScreenControls();
             }
-
         });
     }
 
@@ -250,7 +247,6 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-
             int viewWidth = mImageViews[1].getWidth();
             int x = (int) e.getX();
             int y = (int) e.getY();
@@ -336,8 +332,7 @@ public class ViewImage extends Activity implements View.OnClickListener
         }
 
         @Override
-        public boolean onKeyDown(int keyCode, KeyEvent event)
-        {
+        public boolean onKeyDown(int keyCode, KeyEvent event) {
             // Don't respond to arrow keys if trackball scrolling is not enabled
             if (!mEnableTrackballScroll) {
                 if ((keyCode >= KeyEvent.KEYCODE_DPAD_UP)
@@ -438,20 +433,19 @@ public class ViewImage extends Activity implements View.OnClickListener
     static class ScrollHandler extends LinearLayout {
         private Runnable mFirstLayoutCompletedCallback = null;
         private Scroller mScrollerHelper;
+        private ViewImage mViewImage;
         private int mWidth = -1;
 
         public ScrollHandler(Context context) {
             super(context);
             mScrollerHelper = new Scroller(context);
+            mViewImage = (ViewImage) context;
         }
 
         public ScrollHandler(Context context, AttributeSet attrs) {
             super(context, attrs);
             mScrollerHelper = new Scroller(context);
-        }
-
-        public void setLayoutCompletedCallback(Runnable r) {
-            mFirstLayoutCompletedCallback = r;
+            mViewImage = (ViewImage) context;
         }
 
         public void startScrollTo(int newX, int newY) {
@@ -494,12 +488,12 @@ public class ViewImage extends Activity implements View.OnClickListener
             }
 
             findViewById(R.id.padding1).layout(width, 0, width + sPadding, bottom);
-            findViewById(R.id.padding2).layout(width+sPadding+width, 0, width+sPadding+width+sPadding, bottom);
+            findViewById(R.id.padding2).layout(width + sPadding + width,
+                    0, width + sPadding + width + sPadding, bottom);
 
             if (changed) {
-                if (mFirstLayoutCompletedCallback != null) {
-                    mFirstLayoutCompletedCallback.run();
-                }
+                mViewImage.mLayoutComplete = true;
+                mViewImage.onLayoutChanged();
             }
         }
     }
@@ -509,8 +503,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
         if (! mCameraReviewMode) {
@@ -602,8 +595,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     };
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu)
-    {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         setMode(MODE_NORMAL);
 
@@ -614,27 +606,16 @@ public class ViewImage extends Activity implements View.OnClickListener
         return true;
     }
 
-    @Override
-    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        boolean changed = mCurrentOrientation != newConfig.orientation;
-        mCurrentOrientation = newConfig.orientation;
-        if (changed) {
-            if (mGetter != null) {
-                // kill off any background image fetching
-                mGetter.cancelCurrent();
-                mGetter.stop();
-            }
-            makeGetter();
-            mFirst = true;
-
-            // clear off the current set of images since we need to reload
-            // them at the right size
-            for (ImageViewTouchBase iv: mImageViews) {
-                iv.clear();
-            }
-            MenuHelper.requestOrientation(this, mPrefs);
+    private void onLayoutChanged() {
+        // if we get here after "onPause" then ignore the event
+        if (mGetter == null) return;
+        mDismissOnScreenControlsRunnable.run();
+        mGetter.cancelCurrent();
+        for (ImageViewTouch iv: mImageViews) {
+            iv.clear();
         }
+        mFirst = true;
+        setImage(mCurrentPosition);
     }
 
     @Override
@@ -725,9 +706,8 @@ public class ViewImage extends Activity implements View.OnClickListener
                             // before delivering them
                             if (!isCanceled() && position == mCurrentPosition) {
                                 mCB.imageLoaded(position, offset, bitmap, isThumb);
-                            } else {
-                                if (bitmap != null)
-                                    bitmap.recycle();
+                            } else if (bitmap != null) {
+                                bitmap.recycle();
                             }
                         }
                     };
@@ -879,9 +859,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     }
 
     private void setImage(int pos) {
-        if (!mLayoutComplete) {
-            return;
-        }
+        if (!mLayoutComplete) return;
 
         final boolean left = (pos == mCurrentPosition - 1);
         final boolean right = (pos == mCurrentPosition + 1);
@@ -984,20 +962,21 @@ public class ViewImage extends Activity implements View.OnClickListener
         if (mGetter != null) {
             mGetter.setPosition(pos, cb);
         }
+
         showOnScreenControls();
     }
 
     @Override
-    public void onCreate(Bundle instanceState)
-    {
+    public void onCreate(Bundle instanceState) {
         super.onCreate(instanceState);
         Intent intent = getIntent();
         mCameraReviewMode = intent.getBooleanExtra("com.android.camera.ReviewMode", false);
         mFullScreenInNormalMode = intent.getBooleanExtra(MediaStore.EXTRA_FULL_SCREEN, true);
         mShowActionIcons = intent.getBooleanExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS, false);
 
+        setRequestedOrientation();
+
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mCurrentOrientation = getResources().getConfiguration().orientation;
 
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1103,11 +1082,9 @@ public class ViewImage extends Activity implements View.OnClickListener
             mNextImageView.setFocusable(true);
             mPrevImageView.setFocusable(true);
         }
-
-        setOrientation();
     }
 
-    private void setOrientation() {
+    private void setRequestedOrientation() {
         Intent intent = getIntent();
         if (intent.hasExtra(MediaStore.EXTRA_SCREEN_ORIENTATION)) {
             int orientation = intent.getIntExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
@@ -1357,7 +1334,7 @@ public class ViewImage extends Activity implements View.OnClickListener
     private void init(Uri uri) {
         if (uri == null)
             return;
-        
+
         mSortAscending = desiredSortOrder();
         int sort = mSortAscending ? ImageManager.SORT_ASCENDING : ImageManager.SORT_DESCENDING;
         mAllImages = ImageManager.makeImageList(uri, this, sort);
@@ -1388,26 +1365,25 @@ public class ViewImage extends Activity implements View.OnClickListener
         }
         return uri;
     }
-    
+
     @Override
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
-        
+
         Uri uri = getCurrentUri();
         if (uri != null) {
             b.putString("uri", uri.toString());
         }
-        
+
         if (mMode == MODE_SLIDESHOW) {
             b.putBoolean("slideshow", true);
         }
     }
-    
+
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
-        
+
         init(mSavedUri);
 
         // normally this will never be zero but if one "backs" into this
@@ -1427,20 +1403,11 @@ public class ViewImage extends Activity implements View.OnClickListener
         }
 
         mFirst = true;
-        mScroller.setLayoutCompletedCallback(new Runnable() {
-            public void run() {
-                mLayoutComplete = true;
-                setImage(mCurrentPosition);
-            }
-         });
         setImage(mCurrentPosition);
-
-        setOrientation();
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
 
         mGetter.cancelCurrent();
@@ -1450,7 +1417,7 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         // removing all callback in the message queue
         mHandler.removeAllGetterCallbacks();
-        
+
         mSavedUri = getCurrentUri();
 
         mAllImages.deactivate();
