@@ -133,6 +133,14 @@ public class MenuHelper {
                uri.getAuthority().equals("mms");
     }
     
+    public static void enableShareMenuItem(Menu menu, boolean enabled) {
+        MenuItem item = menu.findItem(MENU_IMAGE_SHARE);
+        if (item != null) {
+            item.setVisible(enabled);
+            item.setEnabled(enabled);
+        }
+    }
+
     static MenuItemsResult addImageMenuItems(
             Menu menu,
             int inclusions,
@@ -238,7 +246,6 @@ public class MenuHelper {
                     onInvoke.run(new MenuCallback() {
                         public void run(Uri u, ImageManager.IImage image) {
                             if (image == null) return;
-                            if (isMMSUri(u)) return;
                             if (!isImage && getImageFileSize(image) > SHARE_FILE_LENGTH_LIMIT ) {
                                 Toast.makeText(activity,
                                         R.string.too_large_to_attach, Toast.LENGTH_LONG).show();
