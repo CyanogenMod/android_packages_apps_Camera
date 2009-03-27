@@ -55,7 +55,6 @@ import com.android.camera.ImageManager.IImage;
 public class ViewImage extends Activity implements View.OnClickListener
 {
     private static final String TAG = "ViewImage";
-    private static final int TOUCH_AREA_WIDTH = 60;
 
     private ImageGetter mGetter;
     private Uri mSavedUri;
@@ -164,19 +163,36 @@ public class ViewImage extends Activity implements View.OnClickListener
     }
 
     private void showOnScreenControls() {
+        mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
         updateNextPrevControls();
         updateZoomButtonsEnabled();
         mZoomButtonsController.setVisible(true);
-        scheduleDismissOnScreenControls();
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         boolean sup = super.dispatchTouchEvent(m);
+
+        // This is a hack to show the on screen controls. We should make sure
+        // this event is not handled by others(ie. sup == false), and listen for
+        // the events on zoom/prev/next buttons.
+        // However, since we have no other pressable views, it is OK now.
+        // TODO: Fix the above issue.
+        if (mMode == MODE_NORMAL) {
+            switch (m.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    showOnScreenControls();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    scheduleDismissOnScreenControls();
+                    break;
+            }
+        }
+
         if (sup == false) {
             if (mMode == MODE_SLIDESHOW) {
                 mSlideShowImageViews[mSlideShowImageCurrent].handleTouchEvent(m);
-            } else if (mMode == MODE_NORMAL){
+            } else if (mMode == MODE_NORMAL) {
                 mImageViews[1].handleTouchEvent(m);
             }
             return true;
@@ -225,7 +241,6 @@ public class ViewImage extends Activity implements View.OnClickListener
                 } else {
                     mImageViews[1].zoomOut();
                 }
-                showOnScreenControls();
             }
         });
     }
@@ -241,22 +256,12 @@ public class ViewImage extends Activity implements View.OnClickListener
                 imageView.postTranslate(-distanceX, -distanceY, sUseBounce);
                 imageView.center(true, true, false);
             }
-            showOnScreenControls();
             return true;
         }
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            int viewWidth = mImageViews[1].getWidth();
-            int x = (int) e.getX();
-            int y = (int) e.getY();
-            if (x < TOUCH_AREA_WIDTH) {
-                moveNextOrPrevious(-1);
-            } else if (x > viewWidth - TOUCH_AREA_WIDTH) {
-                moveNextOrPrevious(1);
-            }
             setMode(MODE_NORMAL);
-            showOnScreenControls();
             return true;
         }
     }
@@ -314,9 +319,6 @@ public class ViewImage extends Activity implements View.OnClickListener
 
         protected void postTranslate(float dx, float dy, boolean bounceOK) {
             super.postTranslate(dx, dy);
-            if (dx != 0F || dy != 0F) {
-                mViewImage.showOnScreenControls();
-            }
 
             if (!sUseBounce) {
                 center(true, false, false);
@@ -567,6 +569,7 @@ public class ViewImage extends Activity implements View.OnClickListener
         .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 showOnScreenControls();
+                scheduleDismissOnScreenControls();
                 return true;
             }
         })
@@ -967,6 +970,7 @@ public class ViewImage extends Activity implements View.OnClickListener
         }
 
         showOnScreenControls();
+        scheduleDismissOnScreenControls();
     }
 
     @Override
