@@ -59,6 +59,8 @@
     <string name="camera_tossing">"Trwa usuwanie…"</string>
     <string name="no_way_to_share_image">"Nie można przesłać tego zdjęcia."</string>
     <string name="no_way_to_share_video">"Nie można przesłać tego filmu."</string>
+    <!-- no translation found for video_play (5287787282508002895) -->
+    <skip />
     <string name="camera_gallery_photos_text">"Galeria"</string>
     <string name="camera_pick_wallpaper">"Zdjęcia"</string>
     <string name="camera_setas_wallpaper">"Tapeta"</string>
@@ -147,9 +149,7 @@
     <string name="resume_playing_resume">"Wznów odtwarzanie"</string>
     <string name="resume_playing_restart">"Rozpocznij"</string>
     <string name="gadget_title">"Ramka zdjęcia"</string>
-    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
-    <!-- no translation found for file_info_title (1628963357466012538) -->
-    <skip />
-    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
-    <skip />
+    <string name="file_info_title">"Informacje o pliku:"</string>
+    <string name="video_exceed_mms_limit">"Nagrany film wideo jest zbyt duży, aby wysłać go w wiadomości MMS. Spróbuj nagrać krótszy film wideo."</string>
+    <string name="too_large_to_attach">"Plik jest zbyt duży do załączenia."</string>
 </resources>

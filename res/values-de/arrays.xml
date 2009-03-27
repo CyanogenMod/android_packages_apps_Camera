@@ -15,8 +15,8 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for pref_camera_videoquality_entries:0 (4921712231611437934) -->
-    <!-- no translation found for pref_camera_videoquality_entries:1 (3206329580124804732) -->
+    <!-- no translation found for pref_camera_videoquality_entries:0 (4155278146225809483) -->
+    <!-- no translation found for pref_camera_videoquality_entries:1 (2439895494739176281) -->
   <string-array name="pref_camera_videoquality_entryvalues">
     <item>"0"</item>
     <item>"1"</item>

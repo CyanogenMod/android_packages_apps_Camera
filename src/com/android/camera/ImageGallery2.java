@@ -235,8 +235,15 @@ public class ImageGallery2 extends Activity {
         }
     };
 
+    private boolean canHandleEvent() {
+        // Don't process event in pause state.
+        return (!mPausing) && (mGvs.mCurrentSpec != null);
+    }
+    
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (!canHandleEvent())  return false;
+        
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             mGvs.select(-2, false);
             // The keyUp doesn't get called when the longpress menu comes up. We only get here when the user
@@ -251,13 +258,11 @@ public class ImageGallery2 extends Activity {
         }
         return super.onKeyUp(keyCode, event);
     }
-
+    
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mGvs.mCurrentSpec == null) {
-            // View.onLayout hasn't been called so we can't handle onKeyDown event yet.
-            return false;
-        }
+        if (!canHandleEvent())  return false;
+        
         boolean handled = true;
         int sel = mGvs.mCurrentSelection;
         int columns = mGvs.mCurrentSpec.mColumns;
@@ -625,11 +630,12 @@ public class ImageGallery2 extends Activity {
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         MenuItem item;
-        if (! isPickIntent()) {
+        if (isPickIntent()) {
+            MenuHelper.addCapturePictureMenuItems(menu, this);
+        } else {
             MenuHelper.addCaptureMenuItems(menu, this);
             if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
                 mSlideShowItem = addSlideShowMenu(menu, 5);
-
             }
         }
 
@@ -848,11 +854,6 @@ public class ImageGallery2 extends Activity {
                     scrollBy(0, (int)distanceY);
                     invalidate();
                     return true;
-                }
-
-                @Override
-                public void onShowPress(MotionEvent e) {
-                    super.onShowPress(e);
                 }
 
                 @Override
@@ -1746,6 +1747,8 @@ public class ImageGallery2 extends Activity {
 
         @Override
         public boolean onTouchEvent(android.view.MotionEvent ev) {
+            if (!mGallery.canHandleEvent())  return false;
+            
             mGestureDetector.onTouchEvent(ev);
             return true;
         }

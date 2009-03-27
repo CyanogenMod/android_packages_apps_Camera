@@ -59,6 +59,8 @@
     <string name="camera_tossing">"Mazání..."</string>
     <string name="no_way_to_share_image">"Tuto fotografii nelze sdílet."</string>
     <string name="no_way_to_share_video">"Toto video nelze sdílet."</string>
+    <!-- no translation found for video_play (5287787282508002895) -->
+    <skip />
     <string name="camera_gallery_photos_text">"Galerie"</string>
     <string name="camera_pick_wallpaper">"Fotografie"</string>
     <string name="camera_setas_wallpaper">"Tapeta"</string>
@@ -147,9 +149,7 @@
     <string name="resume_playing_resume">"Pokračovat v přehrávání"</string>
     <string name="resume_playing_restart">"Začít znovu"</string>
     <string name="gadget_title">"Rámeček fotografie"</string>
-    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
-    <!-- no translation found for file_info_title (1628963357466012538) -->
-    <skip />
-    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
-    <skip />
+    <string name="file_info_title">"Informace o souboru:"</string>
+    <string name="video_exceed_mms_limit">"Zaznamenané video je pro odeslání ve zprávě MMS příliš velké. Zkuste zaznamenat kratší videoklip."</string>
+    <string name="too_large_to_attach">"Soubor nelze připojit, protože je příliš velký."</string>
 </resources>

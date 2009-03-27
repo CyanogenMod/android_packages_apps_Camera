@@ -59,6 +59,7 @@
     <string name="camera_tossing">"Löschvorgang..."</string>
     <string name="no_way_to_share_image">"Dieses Bild kann nicht weitergeleitet werden."</string>
     <string name="no_way_to_share_video">"Dieses Video kann nicht weitergeleitet werden."</string>
+    <string name="video_play">"Play"</string>
     <string name="camera_gallery_photos_text">"Galerie"</string>
     <string name="camera_pick_wallpaper">"Bilder"</string>
     <string name="camera_setas_wallpaper">"Hintergrund"</string>
@@ -147,9 +148,7 @@
     <string name="resume_playing_resume">"Mit Wiedergabe fortfahren"</string>
     <string name="resume_playing_restart">"Starten"</string>
     <string name="gadget_title">"Bildrahmen"</string>
-    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
-    <!-- no translation found for file_info_title (1628963357466012538) -->
-    <skip />
-    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
-    <skip />
+    <string name="file_info_title">"Dateiinfo:"</string>
+    <string name="video_exceed_mms_limit">"Das aufgenommene Video ist zu groß und kann nicht per MMS gesendet werden. Nehmen Sie einen kürzeren Clip auf."</string>
+    <string name="too_large_to_attach">"Dateianhang zu groß"</string>
 </resources>

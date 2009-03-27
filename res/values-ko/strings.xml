@@ -59,6 +59,8 @@
     <string name="camera_tossing">"삭제 중..."</string>
     <string name="no_way_to_share_image">"공유할 수 없는 사진입니다."</string>
     <string name="no_way_to_share_video">"공유할 수 없는 동영상입니다."</string>
+    <!-- no translation found for video_play (5287787282508002895) -->
+    <skip />
     <string name="camera_gallery_photos_text">"갤러리"</string>
     <string name="camera_pick_wallpaper">"사진"</string>
     <string name="camera_setas_wallpaper">"배경화면"</string>
@@ -147,9 +149,7 @@
     <string name="resume_playing_resume">"재생 다시 시작"</string>
     <string name="resume_playing_restart">"시작"</string>
     <string name="gadget_title">"사진 프레임"</string>
-    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
-    <!-- no translation found for file_info_title (1628963357466012538) -->
-    <skip />
-    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
-    <skip />
+    <string name="file_info_title">"파일 정보:"</string>
+    <string name="video_exceed_mms_limit">"녹화한 동영상이 너무 커서 MMS를 통해 전송할 수 없습니다. 클립의 길이를 더 짧게 녹화하세요."</string>
+    <string name="too_large_to_attach">"파일이 너무 커서 첨부할 수 없습니다."</string>
 </resources>

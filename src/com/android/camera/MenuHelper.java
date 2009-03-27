@@ -63,7 +63,7 @@ public class MenuHelper {
     static public final int INCLUDE_CROP_MENU     = (1 << 3);
     static public final int INCLUDE_DELETE_MENU   = (1 << 4);
     static public final int INCLUDE_ROTATE_MENU   = (1 << 5);
-    static public final int INCLUDE_DETAILS_MENU   = (1 << 5);
+    static public final int INCLUDE_DETAILS_MENU  = (1 << 6);
 
     static public final int MENU_SWITCH_CAMERA_MODE = 0;
     static public final int MENU_CAPTURE_PICTURE = 1;
@@ -121,6 +121,23 @@ public class MenuHelper {
             return -1;
         } finally {
             closeSilently(data);
+        }
+    }
+
+    // This is a hack before we find a solution to pass a permission to other
+    // applications. See bug #1735149.
+    // Checks if the URI starts with "content://mms".
+    public static boolean isMMSUri(Uri uri) {
+        return (uri != null) &&
+               uri.getScheme().equals("content") &&
+               uri.getAuthority().equals("mms");
+    }
+    
+    public static void enableShareMenuItem(Menu menu, boolean enabled) {
+        MenuItem item = menu.findItem(MENU_IMAGE_SHARE);
+        if (item != null) {
+            item.setVisible(enabled);
+            item.setEnabled(enabled);
         }
     }
 
@@ -266,7 +283,7 @@ public class MenuHelper {
             requiresWriteAccessItems.add(deleteItem);
             deleteItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    deleteImageImpl(activity, onDelete, isImage);
+                    deleteImpl(activity, onDelete, isImage);
                     return true;
                 }
             })
@@ -485,16 +502,20 @@ public class MenuHelper {
     }
 
     static void deletePhoto(Activity activity, Runnable onDelete) {
-        deleteImageImpl(activity, onDelete, true);
+        deleteImpl(activity, onDelete, true);
+    }
+
+    static void deleteVideo(Activity activity, Runnable onDelete) {
+        deleteImpl(activity, onDelete, false);
     }
 
     static void deleteImage(Activity activity, Runnable onDelete, IImage image) {
         if (image != null) {
-            deleteImageImpl(activity, onDelete, ImageManager.isImage(image));
+            deleteImpl(activity, onDelete, ImageManager.isImage(image));
         }
     }
 
-    private static void deleteImageImpl(Activity activity, final Runnable onDelete, boolean isPhoto) {
+    private static void deleteImpl(Activity activity, final Runnable onDelete, boolean isPhoto) {
         boolean confirm = android.preference.PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("pref_gallery_confirm_delete_key", true);
         if (!confirm) {
             if (onDelete != null)
@@ -539,8 +560,8 @@ public class MenuHelper {
                 String action = switchToVideo ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
                         : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
                 Intent intent = new Intent(action);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                activity.finish();
                 activity.startActivity(intent);
                 return true;
              }
@@ -587,8 +608,7 @@ public class MenuHelper {
         }
     }
 
-    static void addCaptureMenuItems(Menu menu, final Activity activity) {
-
+    static void addCapturePictureMenuItems(Menu menu, final Activity activity) {
         menu.add(0, MENU_CAPTURE_PICTURE, 1, R.string.capture_picture)
             .setOnMenuItemClickListener(
                  new MenuItem.OnMenuItemClickListener() {
@@ -604,7 +624,9 @@ public class MenuHelper {
             }
         })
         .setIcon(android.R.drawable.ic_menu_camera);
+    }
 
+    static void addCaptureVideoMenuItems(Menu menu, final Activity activity) {
         menu.add(0, MENU_CAPTURE_VIDEO, 2, R.string.capture_video)
             .setOnMenuItemClickListener(
                  new MenuItem.OnMenuItemClickListener() {
@@ -621,6 +643,12 @@ public class MenuHelper {
         })
         .setIcon(R.drawable.ic_menu_camera_video_view);
     }
+
+    static void addCaptureMenuItems(Menu menu, final Activity activity) {
+        addCapturePictureMenuItems(menu, activity);
+        addCaptureVideoMenuItems(menu, activity);
+    }
+
     static MenuItem addFlipOrientation(Menu menu, final Activity activity, final SharedPreferences prefs) {
         // position 41 after rotate
         // D

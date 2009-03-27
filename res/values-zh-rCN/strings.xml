@@ -59,6 +59,8 @@
     <string name="camera_tossing">"正在删除..."</string>
     <string name="no_way_to_share_image">"无法共享此图片。"</string>
     <string name="no_way_to_share_video">"无法共享此视频。"</string>
+    <!-- no translation found for video_play (5287787282508002895) -->
+    <skip />
     <string name="camera_gallery_photos_text">"图片库"</string>
     <string name="camera_pick_wallpaper">"图片"</string>
     <string name="camera_setas_wallpaper">"壁纸"</string>
@@ -147,9 +149,7 @@
     <string name="resume_playing_resume">"重新播放"</string>
     <string name="resume_playing_restart">"重新开始"</string>
     <string name="gadget_title">"相框"</string>
-    <string name="video_file_name_format">"\'video\'-yyyy-MM-dd-HH-mm-ss"</string>
-    <!-- no translation found for file_info_title (1628963357466012538) -->
-    <skip />
-    <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
-    <skip />
+    <string name="file_info_title">"文件信息："</string>
+    <string name="video_exceed_mms_limit">"您录制的视频太大，无法用彩信发送。请尝试录制短一点的剪辑。"</string>
+    <string name="too_large_to_attach">"文件太大，无法附加。"</string>
 </resources>

@@ -2108,13 +2108,7 @@ public class ImageManager {
             }
 
             if (bitmap != null) {
-                int degrees = getDegreesRotated();
-                if (degrees != 0) {
-                    Matrix m = new Matrix();
-                    m.setRotate(degrees, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
-                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
-                                                            m, true);
-                }
+                bitmap = rotate(bitmap, getDegreesRotated());
             }
 
             long elapsed = System.currentTimeMillis();
@@ -2328,15 +2322,6 @@ public class ImageManager {
                 if (pfd == null)
                     return null;
 
-                try {
-                    InputStream is = mContentResolver.openInputStream(uri);
-                    Log.v(TAG, "available = " + is.available());
-                    if (is.available() > 5*1024*1024) return null;
-                    is.close();
-                } catch (IOException ex) {
-                    return null;
-                }
-                
                 if (options == null)
                     options = new BitmapFactory.Options();
 
@@ -3698,6 +3683,11 @@ public class ImageManager {
      * @return
      */
     static public Bitmap extractMiniThumb(Bitmap source, int width, int height) {
+        return extractMiniThumb(source, width, height, true);
+    }
+
+    static public Bitmap extractMiniThumb(Bitmap source, int width, int height,
+                                          boolean recycle) {
         if (source == null) {
             return null;
         }
@@ -3713,7 +3703,7 @@ public class ImageManager {
         Bitmap miniThumbnail = ImageLoader.transform(matrix, source,
                 width, height, false);
 
-        if (miniThumbnail != source) {
+        if (recycle && miniThumbnail != source) {
             source.recycle();
         }
         return miniThumbnail;
@@ -4207,8 +4197,13 @@ public class ImageManager {
         return bitmap;
     }
 
-    public static String getLastThumbPath() {
+    public static String getLastImageThumbPath() {
         return Environment.getExternalStorageDirectory().toString() +
-               "/DCIM/.thumbnails/camera_last_thumb";
+               "/DCIM/.thumbnails/image_last_thumb";
+    }
+
+    public static String getLastVideoThumbPath() {
+        return Environment.getExternalStorageDirectory().toString() +
+               "/DCIM/.thumbnails/video_last_thumb";
     }
 }

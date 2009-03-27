@@ -26,6 +26,9 @@
     <!-- label for the icon meaning 'show me all the images that were taken with the camera' -->
     <string name="camera_label">Camera</string>
 
+    <!-- label for the 'video recording application shown in the top level 'all applications' -->
+    <string name="video_camera_label">Camcorder</string>
+
     <!-- label for the 'pictures application shown in the top level 'all applications' -->
     <string name="gallery_picker_label">Gallery</string>
 
@@ -151,7 +154,7 @@
     <!-- Toast after trying to share a video indicating that there are no applications which are capable of so doing. -->
     <string name="no_way_to_share_video">This video cannot be shared.</string>
 
-    <!-- Do not translate -->
+    <!-- Menu item for playing the video. -->
     <string name="video_play">Play</string>
 
     <!-- Button indicating to go to the image gallery -->
@@ -447,7 +450,7 @@
     
     <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat.
          Do not localize -->
-    <string name="video_file_name_format">"'video'-yyyy-MM-dd-HH-mm-ss"</string>
+    <string name="video_file_name_format" translatable="false">"'video'-yyyy-MM-dd-HH-mm-ss"</string>
 
     <!-- Title for the file information dialog -->
     <string name="file_info_title">File info:</string>

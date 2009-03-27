@@ -14,11 +14,24 @@
      limitations under the License.
 -->
 
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/photo"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:scaleType="center"
-    android:cropToPadding="true"
     android:background="@drawable/photo_frame"
-    />
+    >
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="center"
+        android:cropToPadding="true"
+        />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/photo_inner"
+        />
+
+</FrameLayout>
