@@ -295,7 +295,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void startShareVideoActivity() {
-        if (MenuHelper.isMMSUri(mCurrentVideoUri)) return;
         if (mCurrentVideoFileLength > SHARE_FILE_LENGTH_LIMIT) {
             Toast.makeText(VideoCamera.this,
                     R.string.too_large_to_attach, Toast.LENGTH_LONG).show();

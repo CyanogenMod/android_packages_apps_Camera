@@ -603,6 +603,9 @@ public class ViewImage extends Activity implements View.OnClickListener
             mImageMenuRunnable.gettingReadyToOpen(menu, mAllImages.getImageAt(mCurrentPosition));
         }
 
+        Uri uri = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
+        MenuHelper.enableShareMenuItem(menu, !MenuHelper.isMMSUri(uri));
+
         return true;
     }
 
