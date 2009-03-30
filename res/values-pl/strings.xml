@@ -18,6 +18,8 @@
     <string name="all_images">"Wszystkie zdjęcia"</string>
     <string name="all_videos">"Wszystkie filmy"</string>
     <string name="camera_label">"Aparat"</string>
+    <!-- no translation found for video_camera_label (2899292505526427293) -->
+    <skip />
     <string name="gallery_picker_label">"Galeria"</string>
     <string name="gallery_camera_bucket_name">"Zdjęcia z aparatu"</string>
     <string name="gallery_camera_videos_bucket_name">"Filmy z aparatu"</string>
