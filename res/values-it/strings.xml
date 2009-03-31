@@ -18,6 +18,8 @@
     <string name="all_images">"Tutte le foto"</string>
     <string name="all_videos">"Tutti i video"</string>
     <string name="camera_label">"Fotocamera"</string>
+    <!-- no translation found for video_camera_label (2899292505526427293) -->
+    <skip />
     <string name="gallery_picker_label">"Galleria"</string>
     <string name="gallery_camera_bucket_name">"Foto"</string>
     <string name="gallery_camera_videos_bucket_name">"Video fotocamera"</string>
