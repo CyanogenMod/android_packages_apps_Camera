@@ -18,6 +18,8 @@
     <string name="all_images">"모든 사진"</string>
     <string name="all_videos">"모든 동영상"</string>
     <string name="camera_label">"카메라"</string>
+    <!-- no translation found for video_camera_label (2899292505526427293) -->
+    <skip />
     <string name="gallery_picker_label">"갤러리"</string>
     <string name="gallery_camera_bucket_name">"카메라 사진"</string>
     <string name="gallery_camera_videos_bucket_name">"카메라 동영상"</string>
