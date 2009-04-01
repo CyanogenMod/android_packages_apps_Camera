@@ -16,6 +16,20 @@
 
 package com.android.camera;
 
+import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.net.Uri;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.ImageView;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
@@ -25,39 +39,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import android.content.ContentResolver;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.net.Uri;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.ImageView;
-
-// A controller shows thumbnail picture on a button. The thumbnail picture
-// corresponds to a URI of the original picture/video. The thumbnail bitmap
-// and the URI can be saved to a file (and later loaded from it).
-//
-//    public ThumbnailController(ImageView button)
-//    public void setData(Uri uri, Bitmap original)
-//    public void updateDisplayIfNeeded()
-//    public Uri getUri()
-//    public Bitmap getThumb()
-//    public boolean storeData(String filePath)
-//    public boolean loadData(String filePath)
-//
-
+/** A controller shows thumbnail picture on a button. The thumbnail picture
+ * corresponds to a URI of the original picture/video. The thumbnail bitmap
+ * and the URI can be saved to a file (and later loaded from it).
+ * <pre>
+ *    public ThumbnailController(ImageView button)
+ *    public void setData(Uri uri, Bitmap original)
+ *    public void updateDisplayIfNeeded()
+ *    public Uri getUri()
+ *    public Bitmap getThumb()
+ *    public boolean storeData(String filePath)
+ *    public boolean loadData(String filePath)
+ * </pre>
+ */
 public class ThumbnailController {
     private static final String TAG = "ThumbnailController";
     private ContentResolver mContentResolver;
@@ -81,7 +75,8 @@ public class ThumbnailController {
     }
 
     public void setData(Uri uri, Bitmap original) {
-        // Make sure uri and original are consistently both null or both non-null.
+        // Make sure uri and original are consistently both null or both
+        // non-null.
         if (uri == null || original == null) {
             uri = null;
             original = null;
@@ -186,8 +181,9 @@ public class ThumbnailController {
             return;
         }
 
-        // Make the mini-thumb size smaller than the button size so that the image corners
-        // don't peek out from the rounded corners of the frame_thumb graphic:
+        // Make the mini-thumb size smaller than the button size so that the
+        // image corners don't peek out from the rounded corners of the
+        // frame_thumb graphic:
         final int PADDING_WIDTH = 12;
         final int PADDING_HEIGHT = 12;
         LayoutParams layoutParams = mButton.getLayoutParams();
@@ -225,7 +221,7 @@ public class ThumbnailController {
         if (mUri == null) return false;
         try {
             mContentResolver.openFileDescriptor(mUri, "r").close();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             return false;
         }
         return true;
