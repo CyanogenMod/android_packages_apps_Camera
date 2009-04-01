@@ -69,7 +69,7 @@ public class PhotoAppWidgetBind extends Activity {
             // Push newly updated widget to surface
             RemoteViews views =
                     PhotoAppWidgetProvider.buildUpdate(this, appWidgetId,
-                            helper);
+                    helper);
             appWidgetManager.updateAppWidget(new int[] { appWidgetId }, views);
         }
         helper.close();

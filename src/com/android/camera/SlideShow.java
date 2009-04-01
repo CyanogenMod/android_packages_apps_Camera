@@ -21,25 +21,24 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Bundle;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.os.Message;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.ViewSwitcher;
 import android.widget.Gallery.LayoutParams;
-
-import android.view.WindowManager;
+import android.widget.ViewSwitcher;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,35 +48,31 @@ import com.android.camera.ImageManager.IGetBitmap_cancelable;
 import com.android.camera.ImageManager.IImage;
 import com.android.camera.ImageManager.IImageList;
 
-import android.view.MotionEvent;
-
-public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
-{
-    static final private String TAG = "SlideShow";
-    static final int sLag = 2000;
-    static final int sNextImageInterval = 3000;
+public class SlideShow extends Activity implements ViewSwitcher.ViewFactory {
+    private static final String TAG = "SlideShow";
+    static final int LAG = 2000;
+    static final int NEXT_IMAGE_INTERVAL = 3000;
     private ImageManager.IImageList mImageList;
     private int mCurrentPosition = 0;
     private ImageView mSwitcher;
     private boolean mPosted = false;
 
     @Override
-    protected void onCreate(Bundle icicle)
-    {
+    protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         Window wp = getWindow();
         wp.setFlags(FLAG_KEEP_SCREEN_ON, FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.slide_show);
 
-        mSwitcher = (ImageView)findViewById(R.id.imageview);
-        if (android.util.Config.LOGV)
+        mSwitcher = (ImageView) findViewById(R.id.imageview);
+        if (android.util.Config.LOGV) {
             Log.v(TAG, "mSwitcher " + mSwitcher);
+        }
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
 
         if (mImageList == null) {
@@ -93,25 +88,25 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
         cancelPost();
     }
 
-    static public class ImageViewTouch extends ImageView {
-        class xy {
-            public xy(float xIn, float yIn) {
+    public static class ImageViewTouch extends ImageView {
+        class XY {
+            public XY(float xIn, float yIn) {
                 x = xIn;
                 y = yIn;
-                timeAdded = System.currentTimeMillis();
+                mTimeAdded = System.currentTimeMillis();
             }
-            public xy(MotionEvent e) {
+            public XY(MotionEvent e) {
                 x = e.getX();
                 y = e.getY();
-                timeAdded = System.currentTimeMillis();
+                mTimeAdded = System.currentTimeMillis();
             }
-            float x,y;
-            long timeAdded;
+            float x, y;
+            long mTimeAdded;
         }
 
         SlideShow mSlideShow;
         Paint mPaints[] = new Paint[1];
-        ArrayList<xy> mPoints = new ArrayList<xy>();
+        ArrayList<XY> mPoints = new ArrayList<XY>();
         boolean mDown;
 
         public ImageViewTouch(Context context) {
@@ -141,13 +136,15 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
 
         private void addEvent(MotionEvent event) {
             long now = System.currentTimeMillis();
-            mPoints.add(new xy(event));
+            mPoints.add(new XY(event));
             for (int i = 0; i < event.getHistorySize(); i++)
-                mPoints.add(new xy(event.getHistoricalX(i), event.getHistoricalY(i)));
+                mPoints.add(new XY(event.getHistoricalX(i),
+                                   event.getHistoricalY(i)));
             while (mPoints.size() > 0) {
-                xy ev = mPoints.get(0);
-                if (now - ev.timeAdded < sLag)
+                XY ev = mPoints.get(0);
+                if (now - ev.mTimeAdded < LAG) {
                     break;
+                }
                 mPoints.remove(0);
             }
         }
@@ -177,21 +174,24 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
 
             boolean didPaint = false;
             long now = System.currentTimeMillis();
-            for (xy ev: mPoints) {
+            for (XY ev : mPoints) {
                 Paint p = mPaints[0];
-                long delta = now - ev.timeAdded;
-                if (delta > sLag)
+                long delta = now - ev.mTimeAdded;
+                if (delta > LAG) {
                     continue;
+                }
 
-                int alpha2 = Math.max(0, 255 - (255 * (int)delta / sLag));
-                if (alpha2 == 0)
+                int alpha2 = Math.max(0, 255 - (255 * (int) delta / LAG));
+                if (alpha2 == 0) {
                     continue;
+                }
                 p.setAlpha(alpha2);
                 canvas.drawCircle(ev.x, ev.y, 2, p);
                 didPaint = true;
             }
-            if (didPaint && !mDown)
+            if (didPaint && !mDown) {
                 postInvalidate();
+            }
         }
     }
 
@@ -210,10 +210,11 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
                 return true;
 
             case KeyEvent.KEYCODE_DPAD_CENTER:
-                if (mPosted)
+                if (mPosted) {
                     cancelPost();
-                else
+                } else {
                     loadNextImage();
+                }
                 return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -225,18 +226,20 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
     }
 
     private void post() {
-        mHandler.postDelayed(mNextImageRunnable, sNextImageInterval);
+        mHandler.postDelayed(mNextImageRunnable, NEXT_IMAGE_INTERVAL);
         mPosted = true;
     }
 
     private void loadImage() {
         ImageManager.IImage image = mImageList.getImageAt(mCurrentPosition);
-        if (image == null)
+        if (image == null) {
             return;
+        }
 
         Bitmap bitmap = image.thumbBitmap();
-        if (bitmap == null)
+        if (bitmap == null) {
             return;
+        }
 
         mSwitcher.setImageDrawable(new BitmapDrawable(bitmap));
         post();
@@ -244,24 +247,26 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
 
     private Runnable mNextImageRunnable = new Runnable() {
         public void run() {
-            if (android.util.Config.LOGV)
+            if (android.util.Config.LOGV) {
                 Log.v(TAG, "mNextImagerunnable called");
+            }
             loadNextImage();
         }
     };
 
     private void loadNextImage() {
-        if (++mCurrentPosition >= mImageList.getCount())
+        if (++mCurrentPosition >= mImageList.getCount()) {
             mCurrentPosition = 0;
+        }
         loadImage();
     }
 
     private void loadPreviousImage() {
-        if (mCurrentPosition == 0)
+        if (mCurrentPosition == 0) {
             mCurrentPosition = mImageList.getCount() - 1;
-        else
+        } else {
             mCurrentPosition -= 1;
-
+        }
         loadImage();
     }
 
@@ -269,7 +274,8 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
         ImageView i = new ImageView(this);
         i.setBackgroundColor(0xFF000000);
         i.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        i.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        i.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
+                                           LayoutParams.FILL_PARENT));
         return i;
     }
 
@@ -284,7 +290,8 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
             throw new UnsupportedOperationException();
         }
 
-        public void checkThumbnails(ThumbCheckCallback cb, int totalThumbnails) {
+        public void checkThumbnails(ThumbCheckCallback cb,
+                                    int totalThumbnails) {
             // TODO Auto-generated method stub
 
         }
@@ -329,7 +336,8 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
                 return BitmapFactory.decodeFile(mPath);
             }
 
-            public IGetBitmap_cancelable fullSizeBitmap_cancelable(int targetWidthOrHeight) {
+            public IGetBitmap_cancelable fullSizeBitmap_cancelable(
+                    int targetWidthOrHeight) {
                 return null;
             }
 
@@ -338,7 +346,8 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
                 Matrix m = new Matrix();
                 float scale = 320F / (float) b.getWidth();
                 m.setScale(scale, scale);
-                Bitmap scaledBitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
+                Bitmap scaledBitmap = Bitmap.createBitmap(
+                        b, 0, 0, b.getWidth(), b.getHeight(), m, true);
                 return scaledBitmap;
             }
 
@@ -357,12 +366,14 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
                 String [] children = f.list();
                 if (children != null) {
                     for (int i = 0; i < children.length; i++) {
-                        if (children[i].charAt(0) != '.')
+                        if (children[i].charAt(0) != '.') {
                             enumerate(path + "/" + children[i], list);
+                        }
                     }
                 }
             } else {
-                if (path.endsWith(".jpeg") || path.endsWith(".jpg") || path.endsWith(".png")) {
+                if (path.endsWith(".jpeg") || path.endsWith(".jpg")
+                        || path.endsWith(".png")) {
                     if (f.length() > 0) {
                         list.add(path);
                     }
@@ -372,20 +383,21 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory
 
         public FileImageList() {
             ArrayList<String> list = new ArrayList<String>();
-            enumerate(Environment.getExternalStorageDirectory().getPath(), list);
+            enumerate(Environment.getExternalStorageDirectory().getPath(),
+                      list);
             enumerate("/data/images", list);
 
             for (int i = 0; i < list.size(); i++) {
                 FileImage img = new FileImage(i, list.get(i));
-                mCache.put((long)i, img);
+                mCache.put((long) i, img);
                 mImages.add(img);
             }
         }
 
         public IImage getImageAt(int i) {
-            if (i >= mImages.size())
+            if (i >= mImages.size()) {
                 return null;
-
+            }
             return mImages.get(i);
         }
 
