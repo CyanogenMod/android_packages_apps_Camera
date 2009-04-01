@@ -22,16 +22,13 @@ import android.preference.PreferenceActivity;
 /**
  *  GallerySettings
  */
-public class GallerySettings extends PreferenceActivity
-{
-    public GallerySettings()
-    {
+public class GallerySettings extends PreferenceActivity {
+    public GallerySettings() {
     }
 
     /** Called with the activity is first created. */
     @Override
-    public void onCreate(Bundle icicle)
-    {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.gallery_preferences);
     }

@@ -21,9 +21,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -38,30 +38,28 @@ import android.view.View;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-public class MovieView extends Activity implements MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener
-{
+public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
+        MediaPlayer.OnCompletionListener {
     private static final String TAG = "MovieView";
-    // Copied from MediaPlaybackService in the Music Player app. Should be public, but isn't.
-    private static final String SERVICECMD = "com.android.music.musicservicecommand";
+
+    // Copied from MediaPlaybackService in the Music Player app. Should be
+    // public, but isn't.
+    private static final String SERVICECMD =
+            "com.android.music.musicservicecommand";
     private static final String CMDNAME = "command";
     private static final String CMDPAUSE = "pause";
 
-    private VideoView   mVideoView;
-    private View        mProgressView;
-    private boolean		mFinishOnCompletion;
-    private Uri			mUri;
+    private VideoView mVideoView;
+    private View mProgressView;
+    private boolean mFinishOnCompletion;
+    private Uri mUri;
 
     // State maintained for proper onPause/OnResume behaviour.
     private int mPositionWhenPaused = -1;
     private boolean mWasPlayingWhenPaused = false;
 
-    public MovieView()
-    {
-    }
-
     @Override
-    public void onCreate(Bundle icicle)
-    {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         setContentView(R.layout.movie_view);
@@ -70,13 +68,15 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener, 
         mProgressView = findViewById(R.id.progress_indicator);
         Intent intent = getIntent();
         if (intent.hasExtra(MediaStore.EXTRA_SCREEN_ORIENTATION)) {
-            int orientation = intent.getIntExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
+            int orientation = intent.getIntExtra(
+                    MediaStore.EXTRA_SCREEN_ORIENTATION,
                     ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             if (orientation != getRequestedOrientation()) {
                 setRequestedOrientation(orientation);
             }
         }
-        mFinishOnCompletion = intent.getBooleanExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
+        mFinishOnCompletion = intent.getBooleanExtra(
+                MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
         mUri = intent.getData();
 
         // For streams that we expect to be slow to start up, show a
@@ -93,7 +93,9 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener, 
         mVideoView.setOnCompletionListener(this);
         mVideoView.setVideoURI(mUri);
         mVideoView.setMediaController(new MediaController(this));
-        mVideoView.requestFocus(); // make the video view handle keys for seeking and pausing
+
+        // make the video view handle keys for seeking and pausing
+        mVideoView.requestFocus();
 
         Intent i = new Intent(SERVICECMD);
         i.putExtra(CMDNAME, CMDPAUSE);
@@ -111,12 +113,13 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener, 
                         finish();
                     }});
                 builder.setPositiveButton(R.string.resume_playing_resume,
-                        new OnClickListener(){
+                        new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mVideoView.seekTo(bookmark);
                         mVideoView.start();
                     }});
-                builder.setNegativeButton(R.string.resume_playing_restart, new OnClickListener(){
+                builder.setNegativeButton(R.string.resume_playing_restart,
+                        new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mVideoView.start();
                     }});
@@ -142,10 +145,11 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener, 
         String[] projection = new String[]{Video.VideoColumns.DURATION,
                 Video.VideoColumns.BOOKMARK};
         try {
-            Cursor cursor = getContentResolver().query(mUri, projection, null, null, null);
+            Cursor cursor = getContentResolver().query(mUri, projection,
+                    null, null, null);
             if (cursor != null) {
                 try {
-                    if ( cursor.moveToFirst() ) {
+                    if (cursor.moveToFirst()) {
                         int duration = getCursorInteger(cursor, 0);
                         int bookmark = getCursorInteger(cursor, 1);
                         final int ONE_MINUTE = 60 * 1000;
@@ -191,10 +195,11 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener, 
         try {
             getContentResolver().update(mUri, values, null, null);
         } catch (SecurityException ex) {
-            // Ignore, can happen if we try to set the bookmark on a read-only resource
-            // such as a video attached to GMail.
+            // Ignore, can happen if we try to set the bookmark on a read-only
+            // resource such as a video attached to GMail.
         } catch (SQLiteException e) {
-            // ignore. can happen if the content doesn't support a bookmark column.
+            // ignore. can happen if the content doesn't support a bookmark
+            // column.
         } catch (UnsupportedOperationException e) {
             // ignore. can happen if the external volume is already detached.
         }
