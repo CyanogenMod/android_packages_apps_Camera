@@ -16,19 +16,18 @@
 
 package com.android.camera;
 
-import android.content.Intent;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.os.Bundle;
 import android.widget.TextView;
 
 
 /**
  *
  */
-public class ErrorScreen extends Activity
-{
+public class ErrorScreen extends Activity {
     int mError;
     boolean mLogoutOnExit;
     boolean mReconnectOnExit;
@@ -79,7 +78,8 @@ public class ErrorScreen extends Activity
         mError = intent.getIntExtra("error", mError);
 
         mLogoutOnExit = intent.getBooleanExtra("logout", mLogoutOnExit);
-        mReconnectOnExit = intent.getBooleanExtra("reconnect", mReconnectOnExit);
+        mReconnectOnExit = intent.getBooleanExtra("reconnect",
+                mReconnectOnExit);
     }
     
 //    void startNextActivity() {
