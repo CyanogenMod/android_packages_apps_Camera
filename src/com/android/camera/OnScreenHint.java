@@ -16,12 +16,9 @@
 
 package com.android.camera;
 
-import android.app.INotificationManager;
-import android.app.ITransientNotification;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
-import android.os.RemoteException;
 import android.os.Handler;
 import android.os.ServiceManager;
 import android.util.Log;
@@ -45,7 +42,7 @@ import android.widget.TextView;
  */
 public class OnScreenHint {
     static final String TAG = "OnScreenHint";
-    static final boolean localLOGV = false;
+    static final boolean LOCAL_LOGV = false;
 
     final Context mContext;
     int mGravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
@@ -55,21 +52,24 @@ public class OnScreenHint {
     View mView;
     View mNextView;
 
-    private final WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
+    private final WindowManager.LayoutParams mParams =
+            new WindowManager.LayoutParams();
     private WindowManager mWM;
     private final Handler mHandler = new Handler();
 
     /**
-     * Construct an empty OnScreenHint object.  You must call {@link #setView} before you
-     * can call {@link #show}.
+     * Construct an empty OnScreenHint object.  You must call {@link #setView}
+     * before you can call {@link #show}.
      *
-     * @param context  The context to use.  Usually your {@link android.app.Application}
-     *                 or {@link android.app.Activity} object.
+     * @param context  The context to use.  Usually your
+     *                 {@link android.app.Application} or
+     *                 {@link android.app.Activity} object.
      */
     public OnScreenHint(Context context) {
         mContext = context;
         mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        mY = context.getResources().getDimensionPixelSize(R.dimen.hint_y_offset);
+        mY = context.getResources().getDimensionPixelSize(
+                R.dimen.hint_y_offset);
 
         mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -88,7 +88,7 @@ public class OnScreenHint {
         if (mNextView == null) {
             throw new RuntimeException("setView must have been called");
         }
-        if (localLOGV) Log.v(TAG, "SHOW: " + this);
+        if (LOCAL_LOGV) Log.v(TAG, "SHOW: " + this);
         mHandler.post(mShow);
     }
 
@@ -96,7 +96,7 @@ public class OnScreenHint {
      * Close the view if it's showing.
      */
     public void cancel() {
-        if (localLOGV) Log.v(TAG, "HIDE: " + this);
+        if (LOCAL_LOGV) Log.v(TAG, "HIDE: " + this);
         mHandler.post(mHide);
     }
 
@@ -182,17 +182,20 @@ public class OnScreenHint {
     /**
      * Make a standard hint that just contains a text view.
      *
-     * @param context  The context to use.  Usually your {@link android.app.Application}
-     *                 or {@link android.app.Activity} object.
+     * @param context  The context to use.  Usually your
+     *                 {@link android.app.Application} or
+     *                 {@link android.app.Activity} object.
      * @param text     The text to show.  Can be formatted text.
      *
      */
     public static OnScreenHint makeText(Context context, CharSequence text) {
         OnScreenHint result = new OnScreenHint(context);
 
-        LayoutInflater inflate = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflate =
+                (LayoutInflater) context.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
         View v = inflate.inflate(R.layout.on_screen_hint, null);
-        TextView tv = (TextView)v.findViewById(R.id.message);
+        TextView tv = (TextView) v.findViewById(R.id.message);
         tv.setText(text);
 
         result.mNextView = v;
@@ -201,11 +204,14 @@ public class OnScreenHint {
     }
 
     /**
-     * Make a standard hint that just contains a text view with the text from a resource.
+     * Make a standard hint that just contains a text view with the text from a
+     * resource.
      *
-     * @param context  The context to use.  Usually your {@link android.app.Application}
-     *                 or {@link android.app.Activity} object.
-     * @param resId    The resource id of the string resource to use.  Can be formatted text.
+     * @param context  The context to use.  Usually your
+     *                 {@link android.app.Application} or
+     *                 {@link android.app.Activity} object.
+     * @param resId    The resource id of the string resource to use.  Can be
+     *                 formatted text.
      *
      * @throws Resources.NotFoundException if the resource can't be found.
      */
@@ -215,7 +221,8 @@ public class OnScreenHint {
     }
 
     /**
-     * Update the text in a OnScreenHint that was previously created using one of the makeText() methods.
+     * Update the text in a OnScreenHint that was previously created using one
+     * of the makeText() methods.
      * @param resId The new text for the OnScreenHint.
      */
     public void setText(int resId) {
@@ -223,33 +230,40 @@ public class OnScreenHint {
     }
 
     /**
-     * Update the text in a OnScreenHint that was previously created using one of the makeText() methods.
+     * Update the text in a OnScreenHint that was previously created using one
+     * of the makeText() methods.
      * @param s The new text for the OnScreenHint.
      */
     public void setText(CharSequence s) {
         if (mNextView == null) {
-            throw new RuntimeException("This OnScreenHint was not created with OnScreenHint.makeText()");
+            throw new RuntimeException("This OnScreenHint was not "
+                    + "created with OnScreenHint.makeText()");
         }
         TextView tv = (TextView) mNextView.findViewById(R.id.message);
         if (tv == null) {
-            throw new RuntimeException("This OnScreenHint was not created with OnScreenHint.makeText()");
+            throw new RuntimeException("This OnScreenHint was not "
+                    + "created with OnScreenHint.makeText()");
         }
         tv.setText(s);
     }
 
     private synchronized void handleShow() {
-        if (localLOGV) Log.v(TAG, "HANDLE SHOW: " + this + " mView=" + mView
-                + " mNextView=" + mNextView);
+        if (LOCAL_LOGV) {
+            Log.v(TAG, "HANDLE SHOW: " + this + " mView=" + mView
+                       + " mNextView=" + mNextView);
+        }
         if (mView != mNextView) {
             // remove the old view if necessary
             handleHide();
             mView = mNextView;
             final int gravity = mGravity;
             mParams.gravity = gravity;
-            if ((gravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.FILL_HORIZONTAL) {
+            if ((gravity & Gravity.HORIZONTAL_GRAVITY_MASK)
+                    == Gravity.FILL_HORIZONTAL) {
                 mParams.horizontalWeight = 1.0f;
             }
-            if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.FILL_VERTICAL) {
+            if ((gravity & Gravity.VERTICAL_GRAVITY_MASK)
+                    == Gravity.FILL_VERTICAL) {
                 mParams.verticalWeight = 1.0f;
             }
             mParams.x = mX;
@@ -257,24 +271,26 @@ public class OnScreenHint {
             mParams.verticalMargin = mVerticalMargin;
             mParams.horizontalMargin = mHorizontalMargin;
             if (mView.getParent() != null) {
-                if (localLOGV) Log.v(
-                        TAG, "REMOVE! " + mView + " in " + this);
+                if (LOCAL_LOGV) {
+                    Log.v(TAG, "REMOVE! " + mView + " in " + this);
+                }
                 mWM.removeView(mView);
             }
-            if (localLOGV) Log.v(TAG, "ADD! " + mView + " in " + this);
+            if (LOCAL_LOGV) Log.v(TAG, "ADD! " + mView + " in " + this);
             mWM.addView(mView, mParams);
         }
     }
 
     private synchronized void handleHide() {
-        if (localLOGV) Log.v(TAG, "HANDLE HIDE: " + this + " mView=" + mView);
+        if (LOCAL_LOGV) Log.v(TAG, "HANDLE HIDE: " + this + " mView=" + mView);
         if (mView != null) {
             // note: checking parent() just to make sure the view has
             // been added...  i have seen cases where we get here when
             // the view isn't yet added, so let's try not to crash.
             if (mView.getParent() != null) {
-                if (localLOGV) Log.v(
-                        TAG, "REMOVE! " + mView + " in " + this);
+                if (LOCAL_LOGV) {
+                    Log.v(TAG, "REMOVE! " + mView + " in " + this);
+                }
                 mWM.removeView(mView);
             }
             mView = null;
