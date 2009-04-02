@@ -31,7 +31,8 @@ import java.util.ArrayList;
 public class PhotoAppWidgetBind extends Activity {
     static final String TAG = "PhotoAppWidgetBind";
     
-    static final String EXTRA_APPWIDGET_BITMAPS = "com.android.camera.appwidgetbitmaps";
+    static final String EXTRA_APPWIDGET_BITMAPS =
+            "com.android.camera.appwidgetbitmaps";
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -39,16 +40,18 @@ public class PhotoAppWidgetBind extends Activity {
         finish();
         
         // The caller has requested that we bind a given bitmap to a specific
-        // appWidgetId, which probably is happening during a Launcher upgrade. This
-        // is dangerous because the caller could set bitmaps on appWidgetIds they
-        // don't own, so we guard this call at the manifest level by requiring
-        // the BIND_APPWIDGET permission.
+        // appWidgetId, which probably is happening during a Launcher upgrade.
+        // This is dangerous because the caller could set bitmaps on
+        // appWidgetIds they don't own, so we guard this call at the manifest
+        // level by requiring the BIND_APPWIDGET permission.
         
         final Intent intent = getIntent();
         final Bundle extras = intent.getExtras();
         
-        final int[] appWidgetIds = extras.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-        final ArrayList<Bitmap> bitmaps = extras.getParcelableArrayList(EXTRA_APPWIDGET_BITMAPS);
+        final int[] appWidgetIds =
+                extras.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+        final ArrayList<Bitmap> bitmaps =
+                extras.getParcelableArrayList(EXTRA_APPWIDGET_BITMAPS);
         
         if (appWidgetIds == null || bitmaps == null ||
                 appWidgetIds.length != bitmaps.size()) {
@@ -64,7 +67,9 @@ public class PhotoAppWidgetBind extends Activity {
             helper.setPhoto(appWidgetId, bitmaps.get(i));
             
             // Push newly updated widget to surface
-            RemoteViews views = PhotoAppWidgetProvider.buildUpdate(this, appWidgetId, helper);
+            RemoteViews views =
+                    PhotoAppWidgetProvider.buildUpdate(this, appWidgetId,
+                            helper);
             appWidgetManager.updateAppWidget(new int[] { appWidgetId }, views);
         }
         helper.close();

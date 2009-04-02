@@ -17,7 +17,8 @@
 package com.android.camera;
 
 /**
- * Wallpaper picker for the camera application. This just redirects to the standard pick action.
+ * Wallpaper picker for the camera application.
+ * This just redirects to the standard pick action.
  */
 public class PickWallpaper extends Wallpaper {
 }
