@@ -28,9 +28,10 @@ class VideoPreview extends SurfaceView {
     private int mVerticalTileSize = 1;
 
     /**
-     * Setting the aspect ratio to this value means to not enforce an aspect ratio.
+     * Setting the aspect ratio to this value means to not enforce an aspect
+     * ratio.
      */
-    public static float DONT_CARE = 0.0f;
+    public static final float DONT_CARE = 0.0f;
 
     public VideoPreview(Context context) {
         super(context);
@@ -83,9 +84,12 @@ class VideoPreview extends SurfaceView {
                 } else if (defaultRatio > mAspectRatio) {
                     width = (int) (height * mAspectRatio);
                 }
-                width = roundUpToTile(width, mHorizontalTileSize, widthSpecSize);
-                height = roundUpToTile(height, mVerticalTileSize, heightSpecSize);
-                Log.i("VideoPreview", "ar " + mAspectRatio + " setting size: " + width + 'x' + height);
+                width = roundUpToTile(width, mHorizontalTileSize,
+                                      widthSpecSize);
+                height = roundUpToTile(height, mVerticalTileSize,
+                                       heightSpecSize);
+                Log.i("VideoPreview", "ar " + mAspectRatio +
+                      " setting size: " + width + 'x' + height);
                 setMeasuredDimension(width, height);
                 return;
             }
@@ -94,6 +98,7 @@ class VideoPreview extends SurfaceView {
     }
 
     private int roundUpToTile(int dimension, int tileSize, int maxDimension) {
-        return Math.min(((dimension + tileSize - 1) / tileSize) * tileSize, maxDimension);
+        return Math.min(((dimension + tileSize - 1) / tileSize)
+                * tileSize, maxDimension);
     }
 }

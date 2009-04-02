@@ -16,48 +16,21 @@
 
 package com.android.camera;
 
-import com.android.internal.util.XmlUtils;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.Settings;
-import android.provider.Calendar.Attendees;
-import android.provider.Calendar.Calendars;
-import android.provider.Calendar.Instances;
-import android.text.format.DateFormat;
-import android.text.format.DateUtils;
 import android.util.Config;
 import android.util.Log;
-import android.util.Xml;
-import android.view.View;
 import android.widget.RemoteViews;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 /**
@@ -68,13 +41,17 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
     static final boolean LOGD = Config.LOGD || true;
     
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager,
+                         int[] appWidgetIds) {
         // Update each requested appWidgetId with its unique photo
         PhotoDatabaseHelper helper = new PhotoDatabaseHelper(context);
         for (int appWidgetId : appWidgetIds) {
             int[] specificAppWidget = new int[] { appWidgetId };
             RemoteViews views = buildUpdate(context, appWidgetId, helper);
-            if (LOGD) Log.d(TAG, "sending out views="+views+" for id="+appWidgetId);
+            if (LOGD) {
+                Log.d(TAG, "sending out views=" + views
+                           + " for id=" + appWidgetId);
+            }
             appWidgetManager.updateAppWidget(specificAppWidget, views);
         }
         helper.close();
@@ -93,11 +70,13 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
     /**
      * Load photo for given widget and build {@link RemoteViews} for it.
      */
-    static RemoteViews buildUpdate(Context context, int appWidgetId, PhotoDatabaseHelper helper) {
+    static RemoteViews buildUpdate(Context context, int appWidgetId,
+                                   PhotoDatabaseHelper helper) {
         RemoteViews views = null;
         Bitmap bitmap = helper.getPhoto(appWidgetId);
         if (bitmap != null) {
-            views = new RemoteViews(context.getPackageName(), R.layout.photo_frame);
+            views = new RemoteViews(context.getPackageName(),
+                                    R.layout.photo_frame);
             views.setImageViewBitmap(R.id.photo, bitmap);
         }
         return views;
@@ -128,7 +107,8 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
         }
 
         @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        public void onUpgrade(SQLiteDatabase db, int oldVersion,
+                              int newVersion) {
             int version = oldVersion;
             
             if (version != DATABASE_VERSION) {
@@ -144,8 +124,9 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
         public boolean setPhoto(int appWidgetId, Bitmap bitmap) {
             boolean success = false;
             try {
-                // Try go guesstimate how much space the icon will take when serialized
-                // to avoid unnecessary allocations/copies during the write.
+                // Try go guesstimate how much space the icon will take when
+                // serialized to avoid unnecessary allocations/copies during
+                // the write.
                 int size = bitmap.getWidth() * bitmap.getHeight() * 4;
                 ByteArrayOutputStream out = new ByteArrayOutputStream(size);
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
@@ -154,10 +135,12 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
 
                 ContentValues values = new ContentValues();
                 values.put(PhotoDatabaseHelper.FIELD_APPWIDGET_ID, appWidgetId);
-                values.put(PhotoDatabaseHelper.FIELD_PHOTO_BLOB, out.toByteArray());
+                values.put(PhotoDatabaseHelper.FIELD_PHOTO_BLOB,
+                           out.toByteArray());
                     
                 SQLiteDatabase db = getWritableDatabase();
-                db.insertOrThrow(PhotoDatabaseHelper.TABLE_PHOTOS, null, values);
+                db.insertOrThrow(PhotoDatabaseHelper.TABLE_PHOTOS, null,
+                                 values);
                 
                 success = true;
             } catch (SQLiteException e) {
@@ -165,7 +148,7 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
             } catch (IOException e) {
                 Log.e(TAG, "Could not serialize photo", e);
             }
-            if (LOGD) Log.d(TAG, "setPhoto success="+success);
+            if (LOGD) Log.d(TAG, "setPhoto success=" + success);
             return success;
         }
         
@@ -183,16 +166,20 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
             Bitmap bitmap = null;
             try {
                 SQLiteDatabase db = getReadableDatabase();
-                String selection = String.format("%s=%d", FIELD_APPWIDGET_ID, appWidgetId);
+                String selection = String.format("%s=%d", FIELD_APPWIDGET_ID,
+                                                 appWidgetId);
                 c = db.query(TABLE_PHOTOS, PHOTOS_PROJECTION, selection, null,
                         null, null, null, null);
                 
-                if (c != null && LOGD) Log.d(TAG, "getPhoto query count="+c.getCount());
+                if (c != null && LOGD) {
+                    Log.d(TAG, "getPhoto query count=" + c.getCount());
+                }
 
                 if (c != null && c.moveToFirst()) {
                     byte[] data = c.getBlob(INDEX_PHOTO_BLOB);
                     if (data != null) {
-                        bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        bitmap = BitmapFactory.decodeByteArray(data, 0,
+                                data.length);
                     }
                 }
             } catch (SQLiteException e) {
@@ -211,7 +198,8 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
         public void deletePhoto(int appWidgetId) {
             try {
                 SQLiteDatabase db = getWritableDatabase();
-                String whereClause = String.format("%s=%d", FIELD_APPWIDGET_ID, appWidgetId);
+                String whereClause = String.format("%s=%d", FIELD_APPWIDGET_ID,
+                                                   appWidgetId);
                 db.delete(TABLE_PHOTOS, whereClause, null);
             } catch (SQLiteException e) {
                 Log.e(TAG, "Could not delete photo from database", e);

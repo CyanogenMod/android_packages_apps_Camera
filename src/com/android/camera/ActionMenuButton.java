@@ -25,9 +25,9 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
- * because we want to make the bubble taller than the text and TextView's clip is
- * too aggressive.
+ * TextView that draws a bubble behind the text. We cannot use a
+ * LineBackgroundSpan because we want to make the bubble taller than the text
+ * and TextView's clip is too aggressive.
  */
 public class ActionMenuButton extends TextView {
     private static final float CORNER_RADIUS = 8.0f;
@@ -61,7 +61,8 @@ public class ActionMenuButton extends TextView {
         setFocusable(true);
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(getContext().getResources().getColor(R.color.bubble_dark_background));
+        mPaint.setColor(getContext().getResources()
+                .getColor(R.color.bubble_dark_background));
     }
 
     public void setRestricted(boolean restricted) {
@@ -98,9 +99,10 @@ public class ActionMenuButton extends TextView {
         final int top = getExtendedPaddingTop();
 
         rect.set(left + layout.getLineLeft(0) - PADDING_H,
-                top + layout.getLineTop(0) - PADDING_V,
-                Math.min(left + layout.getLineRight(0) + PADDING_H, mScrollX + mRight - mLeft),
-                top + layout.getLineBottom(0) + PADDING_V);
+                 top + layout.getLineTop(0) - PADDING_V,
+                 Math.min(left + layout.getLineRight(0) + PADDING_H,
+                          mScrollX + mRight - mLeft),
+                 top + layout.getLineBottom(0) + PADDING_V);
         canvas.drawRoundRect(rect, CORNER_RADIUS, CORNER_RADIUS, mPaint);
 
         super.draw(canvas);
