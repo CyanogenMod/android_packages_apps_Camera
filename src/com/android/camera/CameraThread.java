@@ -18,19 +18,19 @@ package com.android.camera;
 
 import android.os.Process;
 
-public class CameraThread {
+class CameraThread {
     private Thread mThread;
     private int mTid;
     private boolean mTidSet;
     private boolean mFinished;
 
-    synchronized private void setTid(int tid) {
+    private synchronized void setTid(int tid) {
         mTid = tid;
         mTidSet = true;
         CameraThread.this.notifyAll();
     }
     
-    synchronized private void setFinished() {
+    private synchronized void setFinished() {
         mFinished = true;
     }
     
@@ -49,16 +49,18 @@ public class CameraThread {
         mThread = new Thread(wrapper);
     }
     
-    synchronized public void start() {
+    public synchronized void start() {
+        BitmapDecoder.allowThreadDecoding(mThread);
         mThread.start();
     }
     
-    synchronized public void setName(String name) {
+    public synchronized void setName(String name) {
         mThread.setName(name);
     }
     
     public void join() {
         try {
+            BitmapDecoder.cancelThreadDecoding(mThread);
             mThread.join();
         } catch (InterruptedException ex) {
             // ok?
@@ -73,7 +75,7 @@ public class CameraThread {
         return mThread;
     }
     
-    synchronized public void setPriority(int androidOsPriority) {
+    public synchronized void setPriority(int androidOsPriority) {
         while (!mTidSet) {
             try {
                 CameraThread.this.wait();
@@ -81,15 +83,16 @@ public class CameraThread {
                 // ok, try again
             }
         }
-        if (!mFinished)
+        if (!mFinished) {
             Process.setThreadPriority(mTid, androidOsPriority);
+        }
     }
     
-    synchronized public void toBackground() {
+    public synchronized void toBackground() {
         setPriority(Process.THREAD_PRIORITY_BACKGROUND);
     }
     
-    synchronized public void toForeground() {
+    public synchronized void toForeground() {
         setPriority(Process.THREAD_PRIORITY_FOREGROUND);
     }
 }

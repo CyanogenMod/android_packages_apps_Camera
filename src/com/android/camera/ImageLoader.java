@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import java.util.ArrayList;
+import com.android.camera.ImageManager.IImage;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -25,6 +25,8 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.util.Config;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 class ImageLoader {
     private static final String TAG = "ImageLoader";
@@ -44,10 +46,11 @@ class ImageLoader {
     synchronized void clear(Uri uri) {
     }
 
-    synchronized public void dump() {
+    public synchronized void dump() {
         synchronized (mQueue) {
-            if (Config.LOGV)
+            if (Config.LOGV) {
                 Log.v(TAG, "Loader queue length is " + mQueue.size());
+            }
         }
     }
 
@@ -55,7 +58,7 @@ class ImageLoader {
         public void run(Bitmap result);
     }
 
-    public void pushToFront(final ImageManager.IImage image) {
+    public void pushToFront(final IImage image) {
         synchronized (mQueue) {
             WorkItem w = new WorkItem(image, 0, null, false);
 
@@ -68,7 +71,7 @@ class ImageLoader {
         }
     }
 
-    public boolean cancel(final ImageManager.IImage image) {
+    public boolean cancel(final IImage image) {
         synchronized (mQueue) {
             WorkItem w = new WorkItem(image, 0, null, false);
 
@@ -81,21 +84,29 @@ class ImageLoader {
         }
     }
 
-    public Bitmap getBitmap(final ImageManager.IImage image, final LoadedCallback imageLoadedRunnable, final boolean postAtFront, boolean postBack) {
+    public Bitmap getBitmap(IImage image, 
+                            LoadedCallback imageLoadedRunnable, 
+                            boolean postAtFront,
+                            boolean postBack) {
         return getBitmap(image, 0, imageLoadedRunnable, postAtFront, postBack);
     }
 
-    public Bitmap getBitmap(final ImageManager.IImage image, int tag, final LoadedCallback imageLoadedRunnable, final boolean postAtFront, boolean postBack) {
+    public Bitmap getBitmap(IImage image, 
+                            int tag, 
+                            LoadedCallback imageLoadedRunnable, 
+                            boolean postAtFront, 
+                            boolean postBack) {
         synchronized (mDecodeThreads) {
             if (mDecodeThreads.size() == 0) {
                 start();
             }
         }
         long t1 = System.currentTimeMillis();
-        long t2,t3,t4;
+        long t2, t3, t4;
         synchronized (mQueue) {
             t2 = System.currentTimeMillis();
-            WorkItem w = new WorkItem(image, tag, imageLoadedRunnable, postBack);
+            WorkItem w = 
+                    new WorkItem(image, tag, imageLoadedRunnable, postBack);
 
             if (!mInProgress.contains(w)) {
                 boolean contains = mQueue.contains(w);
@@ -106,19 +117,22 @@ class ImageLoader {
                         mQueue.add(0, w);
                     }
                 } else {
-                    if (postAtFront)
+                    if (postAtFront) {
                         mQueue.add(0, w);
-                    else
+                    } else {
                         mQueue.add(w);
+                    }
                     mQueue.notifyAll();
                 }
             }
-            if (false)
+            if (false) {
                 dumpQueue("+" + (postAtFront ? "F " : "B ") + tag + ": ");
+            }
             t3 = System.currentTimeMillis();
         }
         t4 = System.currentTimeMillis();
-//        Log.v(TAG, "getBitmap breakdown: tot= " + (t4-t1) + "; " + "; " + (t4-t3) + "; " + (t3-t2) + "; " + (t2-t1));
+        // Log.v(TAG, "getBitmap breakdown: tot= " + (t4-t1) + "; " + "; " + 
+        //         (t4-t3) + "; " + (t3-t2) + "; " + (t2-t1));
         return null;
     }
 
@@ -128,8 +142,9 @@ class ImageLoader {
             for (int i = 0; i < mQueue.size(); i++) {
                 sb.append(mQueue.get(i).mTag + " ");
             }
-            if (Config.LOGV)
+            if (Config.LOGV) {
                 Log.v(TAG, sb.toString());
+            }
         }
     }
 
@@ -138,13 +153,15 @@ class ImageLoader {
     }
 
     class WorkItem {
-        ImageManager.IImage mImage;
-        int mTargetX, mTargetY;
+        IImage mImage;
+        int mTargetX;
+        int mTargetY;
         int mTag;
         LoadedCallback mOnLoadedRunnable;
         boolean mPostBack;
 
-        WorkItem(ImageManager.IImage image, int tag, LoadedCallback onLoadedRunnable, boolean postBack) {
+        WorkItem(IImage image, int tag, LoadedCallback onLoadedRunnable, 
+                 boolean postBack) {
             mImage = image;
             mTag = tag;
             mOnLoadedRunnable = onLoadedRunnable;
@@ -153,10 +170,7 @@ class ImageLoader {
 
         public boolean equals(Object other) {
             WorkItem otherWorkItem = (WorkItem) other;
-            if (otherWorkItem.mImage != mImage)
-                return false;
-
-            return true;
+            return otherWorkItem.mImage == mImage;
         }
 
         public int hashCode() {
@@ -170,20 +184,23 @@ class ImageLoader {
         start();
     }
 
-    synchronized private void start() {
-        if (Config.LOGV)
+    private synchronized void start() {
+        if (Config.LOGV) {
             Log.v(TAG, "ImageLoader.start() <<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        }
 
         synchronized (mDecodeThreads) {
-            if (mDecodeThreads.size() > 0)
+            if (mDecodeThreads.size() > 0) {
                 return;
+            }
 
             mDone = false;
-            for (int i = 0;i < mThreadCount; i++) {
+            for (int i = 0; i < mThreadCount; i++) {
                 Thread t = new Thread(new Runnable() {
-                    // pick off items on the queue, one by one, and compute their bitmap.
-                    // place the resulting bitmap in the cache.  then post a notification
-                    // back to the ui so things can get updated appropriately.
+                    // pick off items on the queue, one by one, and compute 
+                    // their bitmap. place the resulting bitmap in the cache. 
+                    // then post a notification back to the ui so things can 
+                    // get updated appropriately.
                     public void run() {
                         while (!mDone) {
                             WorkItem workItem = null;
@@ -191,26 +208,23 @@ class ImageLoader {
                                 if (mQueue.size() > 0) {
                                     workItem = mQueue.remove(0);
                                     mInProgress.add(workItem);
-                                }
-                                else {
+                                } else {
                                     try {
                                         mQueue.wait();
                                     } catch (InterruptedException ex) {
+                                        // ignore the exception
                                     }
                                 }
                             }
                             if (workItem != null) {
-                                if (false)
+                                if (false) {
                                     dumpQueue("-" + workItem.mTag + ": ");
-                                Bitmap b = null;
-                                try {
-                                    b = workItem.mImage.miniThumbBitmap();
-                                } catch (Exception ex) {
-                                    if (Config.LOGV) Log.v(TAG, "couldn't load miniThumbBitmap " + ex.toString());
-                                    // sd card removal or sd card full
                                 }
-                                if (b == null) {
-                                    if (Config.LOGV) Log.v(TAG, "unable to read thumbnail for " + workItem.mImage.fullSizeImageUri());
+                                Bitmap b = workItem.mImage.miniThumbBitmap();
+                                if (b == null && Config.LOGV) {
+                                    Log.v(TAG, "unable to read thumbnail for "
+                                            + workItem.mImage
+                                            .fullSizeImageUri());
                                 }
 
                                 synchronized (mQueue) {
@@ -219,12 +233,13 @@ class ImageLoader {
 
                                 if (workItem.mOnLoadedRunnable != null) {
                                     if (workItem.mPostBack) {
-                                        final WorkItem w1 = workItem;
-                                        final Bitmap bitmap = b;
                                         if (!mDone) {
+                                            final WorkItem w1 = workItem;
+                                            final Bitmap bitmap = b;
                                             mHandler.post(new Runnable() {
                                                 public void run() {
-                                                    w1.mOnLoadedRunnable.run(bitmap);
+                                                    w1.mOnLoadedRunnable
+                                                            .run(bitmap);
                                                 }
                                             });
                                         }
@@ -243,21 +258,26 @@ class ImageLoader {
         }
     }
 
-    public static Bitmap transform(Matrix scaler, Bitmap source, int targetWidth, int targetHeight,
-            boolean scaleUp) {
+    public static Bitmap transform(Matrix scaler, 
+                                   Bitmap source, 
+                                   int targetWidth, 
+                                   int targetHeight, 
+                                   boolean scaleUp) {
         int deltaX = source.getWidth() - targetWidth;
         int deltaY = source.getHeight() - targetHeight;
         if (!scaleUp && (deltaX < 0 || deltaY < 0)) {
             /*
-             * In this case the bitmap is smaller, at least in one dimension, than the
-             * target.  Transform it by placing as much of the image as possible into
-             * the target and leaving the top/bottom or left/right (or both) black.
+             * In this case the bitmap is smaller, at least in one dimension, 
+             * than the target.  Transform it by placing as much of the image 
+             * as possible into the target and leaving the top/bottom or 
+             * left/right (or both) black.
              */
-            Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+            Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight, 
+                    Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b2);
 
-            int deltaXHalf = Math.max(0, deltaX/2);
-            int deltaYHalf = Math.max(0, deltaY/2);
+            int deltaXHalf = Math.max(0, deltaX / 2);
+            int deltaYHalf = Math.max(0, deltaY / 2);
             Rect src = new Rect(
                     deltaXHalf,
                     deltaYHalf,
@@ -270,8 +290,9 @@ class ImageLoader {
                     dstY,
                     targetWidth - dstX,
                     targetHeight - dstY);
-            if (Config.LOGV)
+            if (Config.LOGV) {
                 Log.v(TAG, "draw " + src.toString() + " ==> " + dst.toString());
+            }
             c.drawBitmap(source, src, dst, null);
             return b2;
         }
@@ -311,20 +332,23 @@ class ImageLoader {
 
         Bitmap b2 = Bitmap.createBitmap(
                 b1,
-                dx1/2,
-                dy1/2,
+                dx1 / 2,
+                dy1 / 2,
                 targetWidth,
                 targetHeight);
 
-        if (b1 != source)
+        if (b1 != source) {
             b1.recycle();
+        }
 
         return b2;
     }
 
     public void stop() {
-        if (Config.LOGV)
-            Log.v(TAG, "ImageLoader.stop " + mDecodeThreads.size() + " threads");
+        if (Config.LOGV) {
+            Log.v(TAG, "ImageLoader.stop " + mDecodeThreads.size() + 
+                    " threads");
+        }
         mDone = true;
         synchronized (mQueue) {
             mQueue.notifyAll();

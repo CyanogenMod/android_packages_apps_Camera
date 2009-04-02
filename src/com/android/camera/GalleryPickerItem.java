@@ -23,8 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-public class GalleryPickerItem extends ImageView {
-
+class GalleryPickerItem extends ImageView {
     private Drawable mFrame;
     private Rect mFrameBounds = new Rect();
     private Drawable mOverlay;
@@ -37,7 +36,9 @@ public class GalleryPickerItem extends ImageView {
         this(context, attrs, 0);
     }
     
-    public GalleryPickerItem(Context context, AttributeSet attrs, int defStyle) {
+    public GalleryPickerItem(Context context, 
+                             AttributeSet attrs, 
+                             int defStyle) {
         super(context, attrs, defStyle);
         
         mFrame = getResources().getDrawable(R.drawable.frame_gallery_preview);
@@ -46,7 +47,8 @@ public class GalleryPickerItem extends ImageView {
     
     @Override
     protected boolean verifyDrawable(Drawable who) {
-        return super.verifyDrawable(who) || (who == mFrame) || (who == mOverlay);
+        return super.verifyDrawable(who) || (who == mFrame) 
+                || (who == mOverlay);
     }
     
     @Override
