@@ -107,14 +107,14 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final double ZOOM_MIN = 1.0;
     public static final String ZOOM_SPEED = "99";
 
+    private Parameters mParameters;
+
     // The parameter strings to communicate with camera driver.
     public static final String PARM_ZOOM_STATE = "zoom-state";
     public static final String PARM_ZOOM_STEP = "zoom-step";
     public static final String PARM_ZOOM_TO_LEVEL = "zoom-to-level";
     public static final String PARM_ZOOM_SPEED = "zoom-speed";
     public static final String PARM_ZOOM_MAX = "max-picture-continuous-zoom";
-
-    private Parameters mParameters;
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -413,6 +413,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private class ZoomGestureListener extends
             GestureDetector.SimpleOnGestureListener {
+        @Override
         public boolean onDown(MotionEvent e) {
             // Show zoom buttons only when preview is started and snapshot
             // is not in progress. mZoomButtons may be null if it is not
@@ -424,6 +425,7 @@ public class Camera extends Activity implements View.OnClickListener,
             return true;
         }
 
+        @Override
         public boolean onDoubleTap(MotionEvent e) {
             // Perform zoom only when preview is started and snapshot is not in
             // progress.
@@ -1596,6 +1598,22 @@ public class Camera extends Activity implements View.OnClickListener,
             mParameters.setFlashMode(flashMode);
         }
 
+        // Set white balance parameter.
+        if (mParameters.getSupportedWhiteBalance() != null) {
+            String whiteBalance = mPreferences.getString(
+                    CameraSettings.KEY_WHITE_BALANCE,
+                    getString(R.string.pref_camera_whitebalance_default));
+            mParameters.setWhiteBalance(whiteBalance);
+        }
+
+        // Set color effect parameter.
+        if (mParameters.getSupportedColorEffects() != null) {
+            String colorEffect = mPreferences.getString(
+                    CameraSettings.KEY_COLOR_EFFECT,
+                    getString(R.string.pref_camera_coloreffect_default));
+            mParameters.setColorEffect(colorEffect);
+        }
+
         mCameraDevice.setParameters(mParameters);
     }
 
@@ -1825,6 +1843,16 @@ public class Camera extends Activity implements View.OnClickListener,
             } else {
                 stopReceivingLocationUpdates();
             }
+        } else if (CameraSettings.KEY_COLOR_EFFECT.equals(key)) {
+            String colorEffect = preferences.getString(key,
+                    getString(R.string.pref_camera_coloreffect_default));
+            mParameters.setColorEffect(colorEffect);
+            mCameraDevice.setParameters(mParameters);
+        } else if (CameraSettings.KEY_WHITE_BALANCE.equals(key)) {
+            String whiteBalance = preferences.getString(key,
+                    getString(R.string.pref_camera_whitebalance_default));
+            mParameters.setWhiteBalance(whiteBalance);
+            mCameraDevice.setParameters(mParameters);
         }
     }
 

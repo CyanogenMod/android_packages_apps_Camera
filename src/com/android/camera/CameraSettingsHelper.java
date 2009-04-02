@@ -16,6 +16,8 @@ import java.util.List;
 
 public class CameraSettingsHelper {
     private static final int FIRST_REQUEST_CODE = 100;
+    private static final int NOT_FOUND = -1;
+
     public static final String KEY_RECORD_LOCATION =
             "pref_camera_recordlocation_key";
     public static final String KEY_VIDEO_QUALITY =
@@ -26,6 +28,9 @@ public class CameraSettingsHelper {
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
+    public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
+    public static final String KEY_WHITE_BALANCE =
+            "pref_camera_whitebalance_key";
 
     // max mms video duration in seconds.
     public static final int MMS_VIDEO_DURATION =
@@ -57,7 +62,7 @@ public class CameraSettingsHelper {
         return mScreen;
     }
 
-    private void setDefault(String key, int strRes) {
+    private void setDefaultIfNull(String key, int strRes) {
         ListPreference pref = (ListPreference) mScreen.findPreference(key);
         if (pref.getValue() == null) pref.setValue(mContext.getString(strRes));
     }
@@ -66,6 +71,12 @@ public class CameraSettingsHelper {
 
         ListPreference videoDuration =
                 (ListPreference) screen.findPreference(KEY_VIDEO_DURATION);
+        ListPreference pictureSize =
+                (ListPreference) screen.findPreference(KEY_PICTURE_SIZE);
+        ListPreference whiteBalance =
+                (ListPreference) screen.findPreference(KEY_WHITE_BALANCE);
+        ListPreference colorEffect =
+                (ListPreference) screen.findPreference(KEY_COLOR_EFFECT);
 
         // Modify video duration settings.
         // The first entry is for MMS video duration, and we need to fill in the
@@ -73,10 +84,18 @@ public class CameraSettingsHelper {
         CharSequence[] entries = videoDuration.getEntries();
         entries[0] = String.format(entries[0].toString(), MMS_VIDEO_DURATION);
 
-        // Create picture size settings.
-        filterSupportedSizes(screen);
-        setDefault(KEY_JPEG_QUALITY, R.string.pref_camera_jpegquality_default);
-        setDefault(KEY_FOCUS_MODE, R.string.pref_camera_focusmode_default);
+        // Filter out unsupported settings / options
+        filterUnsupportedOptions(screen, pictureSize,
+                sizeListToStringList(mParameters.getSupportedPictureSizes()));
+        filterUnsupportedOptions(screen,
+                whiteBalance, mParameters.getSupportedWhiteBalance());
+        filterUnsupportedOptions(screen,
+                colorEffect, mParameters.getSupportedColorEffects());
+
+        setDefaultIfNull(
+                KEY_JPEG_QUALITY, R.string.pref_camera_jpegquality_default);
+        setDefaultIfNull(
+                KEY_FOCUS_MODE, R.string.pref_camera_focusmode_default);
     }
 
     private boolean removePreference(PreferenceGroup group, Preference remove) {
@@ -93,23 +112,11 @@ public class CameraSettingsHelper {
         return false;
     }
 
-    private static boolean isSupported(List<Size> supported, String required) {
-        int index = required.indexOf('x');
-        int width = Integer.parseInt(required.substring(0, index));
-        int height = Integer.parseInt(required.substring(index + 1));
-        for (Size size : supported) {
-            if (size.width == width && size.height == height) return true;
-        }
-        return false;
-    }
-
-    private void filterSupportedSizes(PreferenceScreen screen) {
-        ListPreference pref =
-                (ListPreference) screen.findPreference(KEY_PICTURE_SIZE);
+    private void filterUnsupportedOptions(PreferenceScreen screen,
+            ListPreference pref, List<String> supported) {
 
         // Remove the preference if the parameter is not supported.
-        List<Size> supportedSizes = mParameters.getSupportedPictureSizes();
-        if (supportedSizes == null) {
+        if (supported == null) {
             removePreference(screen, pref);
             return;
         }
@@ -120,7 +127,7 @@ public class CameraSettingsHelper {
         ArrayList<CharSequence> entries = new ArrayList<CharSequence>();
         ArrayList<CharSequence> entryValues = new ArrayList<CharSequence>();
         for (int i = 0, len = allEntryValues.length; i < len; i++) {
-            if (isSupported(supportedSizes, allEntryValues[i].toString())) {
+            if (supported.indexOf(allEntryValues[i].toString()) != NOT_FOUND) {
                 entries.add(allEntries[i]);
                 entryValues.add(allEntryValues[i]);
             }
@@ -133,8 +140,16 @@ public class CameraSettingsHelper {
 
         // Set the value to the first entry if it is invalid.
         String value = pref.getValue();
-        if (pref.findIndexOfValue(value) == -1) {
+        if (pref.findIndexOfValue(value) == NOT_FOUND) {
             pref.setValueIndex(0);
         }
+    }
+
+    private static List<String> sizeListToStringList(List<Size> sizes) {
+        ArrayList<String> list = new ArrayList<String>();
+        for (Size size : sizes) {
+            list.add(String.format("%dx%d", size.width, size.height));
+        }
+        return list;
     }
 }
