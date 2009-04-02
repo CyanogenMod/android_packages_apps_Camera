@@ -101,6 +101,17 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final int MENU_SAVE_CAMERA_DONE = 36;
     public static final int MENU_SAVE_CAMERA_VIDEO_DONE = 37;
 
+    private android.hardware.Camera.Parameters mParameters;
+
+    // The parameter strings to communicate with camera driver.
+    public static final String PARM_WHITE_BALANCE = "whitebalance";
+    public static final String PARM_JPEG_QUALITY = "jpeg-quality";
+    public static final String PARM_ROTATION = "rotation";
+    public static final String PARM_GPS_LATITUDE = "gps-latitude";
+    public static final String PARM_GPS_LONGITUDE = "gps-longitude";
+    public static final String PARM_GPS_ALTITUDE = "gps-altitude";
+    public static final String PARM_GPS_TIMESTAMP = "gps-timestamp";
+
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
     private SharedPreferences mPreferences;
@@ -113,7 +124,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final String sTempCropFilename = "crop-temp";
 
     private android.hardware.Camera mCameraDevice;
-    private android.hardware.Camera.Parameters mParameters;
     private VideoPreview mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
 
@@ -532,13 +542,13 @@ public class Camera extends Activity implements View.OnClickListener,
             Location loc = mRecordLocation ? getCurrentLocation() : null;
             // Quality 75 has visible artifacts, and quality 90 looks great but the files begin to
             // get large. 85 is a good compromise between the two.
-            mParameters.set("jpeg-quality", 85);
-            mParameters.set("rotation", latchedOrientation);
+            mParameters.set(PARM_JPEG_QUALITY, 85);
+            mParameters.set(PARM_ROTATION, latchedOrientation);
 
-            mParameters.remove("gps-latitude");
-            mParameters.remove("gps-longitude");
-            mParameters.remove("gps-altitude");
-            mParameters.remove("gps-timestamp");
+            mParameters.remove(PARM_GPS_LATITUDE);
+            mParameters.remove(PARM_GPS_LONGITUDE);
+            mParameters.remove(PARM_GPS_ALTITUDE);
+            mParameters.remove(PARM_GPS_TIMESTAMP);
 
             if (loc != null) {
                 double lat = loc.getLatitude();
@@ -548,21 +558,23 @@ public class Camera extends Activity implements View.OnClickListener,
                 if (hasLatLon) {
                     String latString = String.valueOf(lat);
                     String lonString = String.valueOf(lon);
-                    mParameters.set("gps-latitude",  latString);
-                    mParameters.set("gps-longitude", lonString);
+                    mParameters.set(PARM_GPS_LATITUDE,  latString);
+                    mParameters.set(PARM_GPS_LONGITUDE, lonString);
                     if (loc.hasAltitude()) {
-                        mParameters.set("gps-altitude",  String.valueOf(loc.getAltitude()));
+                        mParameters.set(PARM_GPS_ALTITUDE, 
+                                        String.valueOf(loc.getAltitude()));
                     } else {
                         // for NETWORK_PROVIDER location provider, we may have
                         // no altitude information, but the driver needs it, so
                         // we fake one.
-                        mParameters.set("gps-altitude",  "0");
+                        mParameters.set(PARM_GPS_ALTITUDE,  "0");
                     }
                     if (loc.getTime() != 0) {
                         // Location.getTime() is UTC in milliseconds.
                         // gps-timestamp is UTC in seconds.
                         long utcTimeSeconds = loc.getTime() / 1000;
-                        mParameters.set("gps-timestamp", String.valueOf(utcTimeSeconds));
+                        mParameters.set(PARM_GPS_TIMESTAMP,
+                                        String.valueOf(utcTimeSeconds));
                     }
                 } else {
                     loc = null;
@@ -1301,6 +1313,13 @@ public class Camera extends Activity implements View.OnClickListener,
         // if we depended on it we would have to query the size again
         mParameters = mCameraDevice.getParameters();
         mParameters.setPreviewSize(w, h);
+
+        // Set white balance parameter.
+        String whiteBalance = mPreferences.getString(
+                CameraSettings.KEY_WHITE_BALANCE,
+                getString(R.string.pref_camera_whitebalance_default));
+        mParameters.set(PARM_WHITE_BALANCE, whiteBalance);
+
         try {
             mCameraDevice.setParameters(mParameters);
         } catch (IllegalArgumentException e) {

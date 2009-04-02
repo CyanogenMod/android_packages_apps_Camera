@@ -18,9 +18,14 @@ package com.android.camera;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
+
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  *  CameraSettings
@@ -29,9 +34,12 @@ public class CameraSettings extends PreferenceActivity
     implements OnSharedPreferenceChangeListener
 {
     public static final String KEY_VIDEO_QUALITY = "pref_camera_videoquality_key";
+    public static final String KEY_WHITE_BALANCE = "pref_camera_whitebalance_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
     private ListPreference mVideoQuality;
+    private ListPreference mWhiteBalance;
+    private Parameters mParameters;
 
     public CameraSettings()
     {
@@ -45,16 +53,26 @@ public class CameraSettings extends PreferenceActivity
         addPreferencesFromResource(R.xml.camera_preferences);
 
         initUI();
+
+        // Get parameters.
+        android.hardware.Camera device = android.hardware.Camera.open();
+        mParameters = device.getParameters();
+        device.release();
+
+        createWhiteBalanceSettings();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         updateVideoQuality();
+        updateWhiteBalance();
     }
 
     private void initUI() {
         mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
+        mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -65,6 +83,48 @@ public class CameraSettings extends PreferenceActivity
             getResources().getStringArray(R.array.pref_camera_videoquality_entries);
         String vidQuality = vidQualities[vidQualityIndex];
         mVideoQuality.setSummary(vidQuality);
+    }
+
+    private void createWhiteBalanceSettings() {
+        // Get the supported white balance settings.
+        String supportedWbStr = mParameters.get("whitebalance-values");
+        StringTokenizer tokenizer = new StringTokenizer(supportedWbStr, ",");
+        ArrayList<CharSequence> supportedWb = new ArrayList<CharSequence>();
+        while (tokenizer.hasMoreElements()) {
+            supportedWb.add(tokenizer.nextToken());
+        }
+
+        // Prepare white balance entries and entry values.
+        String[] allWbEntries = getResources().getStringArray(
+                R.array.pref_camera_whitebalance_entries);
+        String[] allWbEntryValues = getResources().getStringArray(
+                R.array.pref_camera_whitebalance_entryvalues);
+        ArrayList<CharSequence> wbEntries = new ArrayList<CharSequence>();
+        ArrayList<CharSequence> wbEntryValues = new ArrayList<CharSequence>();
+        for (int i = 0, len = allWbEntryValues.length; i < len; i++) {
+            int found = supportedWb.indexOf(allWbEntryValues[i]);
+            if (found != -1) {
+                wbEntries.add(allWbEntries[i]);
+                wbEntryValues.add(allWbEntryValues[i]);
+            }
+        }
+
+        // Set white balance entries and entry values to list preference.
+        mWhiteBalance.setEntries(wbEntries.toArray(
+                new CharSequence[wbEntries.size()]));
+        mWhiteBalance.setEntryValues(wbEntryValues.toArray(
+                new CharSequence[wbEntryValues.size()]));
+
+        String value = mWhiteBalance.getValue();
+        int index = mWhiteBalance.findIndexOfValue(value);
+        if (index == -1) {
+            mWhiteBalance.setValueIndex(0);
+        }
+    }
+
+    private void updateWhiteBalance() {
+        // Set preference summary.
+        mWhiteBalance.setSummary(mWhiteBalance.getEntry());
     }
 
     private static int getIntPreference(ListPreference preference, int defaultValue) {
@@ -84,10 +144,11 @@ public class CameraSettings extends PreferenceActivity
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-           if (key.equals(KEY_VIDEO_QUALITY)) {
-               updateVideoQuality();
-           }
-
+        if (key.equals(KEY_VIDEO_QUALITY)) {
+            updateVideoQuality();
+        } else if (key.equals(KEY_WHITE_BALANCE)) {
+            updateWhiteBalance();
+        }
     }
 }
 
