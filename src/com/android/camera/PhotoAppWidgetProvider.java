@@ -50,7 +50,7 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
             RemoteViews views = buildUpdate(context, appWidgetId, helper);
             if (LOGD) {
                 Log.d(TAG, "sending out views=" + views
-                           + " for id=" + appWidgetId);
+                        + " for id=" + appWidgetId);
             }
             appWidgetManager.updateAppWidget(specificAppWidget, views);
         }
