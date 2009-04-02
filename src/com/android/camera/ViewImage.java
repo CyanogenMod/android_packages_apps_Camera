@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import java.util.Random;
+import com.android.camera.ImageManager.IImage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -50,10 +50,9 @@ import android.widget.Scroller;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
-import com.android.camera.ImageManager.IImage;
+import java.util.Random;
 
-public class ViewImage extends Activity implements View.OnClickListener
-{
+public class ViewImage extends Activity implements View.OnClickListener {
     private static final String TAG = "ViewImage";
 
     private ImageGetter mGetter;
@@ -358,7 +357,7 @@ public class ViewImage extends Activity implements View.OnClickListener
                         break;
                     }
                     case KeyEvent.KEYCODE_DPAD_LEFT: {
-                        panBy(sPanRate, 0);
+                        panBy(PAN_RATE, 0);
                         int maxOffset = (current == 0) ? 0 : sHysteresis;
                         if (getScale() <= 1F || isShiftedToNextImage(true, maxOffset)) {
                             nextImagePos = current - 1;
@@ -368,7 +367,7 @@ public class ViewImage extends Activity implements View.OnClickListener
                         return true;
                     }
                     case KeyEvent.KEYCODE_DPAD_RIGHT: {
-                        panBy(-sPanRate, 0);
+                        panBy(-PAN_RATE, 0);
                         int maxOffset = (current == mViewImage.mAllImages.getCount() - 1) ? 0 : sHysteresis;
                         if (getScale() <= 1F || isShiftedToNextImage(false, maxOffset)) {
                             nextImagePos = current + 1;
@@ -378,12 +377,12 @@ public class ViewImage extends Activity implements View.OnClickListener
                         return true;
                     }
                     case KeyEvent.KEYCODE_DPAD_UP: {
-                        panBy(0, sPanRate);
+                        panBy(0, PAN_RATE);
                         center(true, false, false);
                         return true;
                     }
                     case KeyEvent.KEYCODE_DPAD_DOWN: {
-                        panBy(0, -sPanRate);
+                        panBy(0, -PAN_RATE);
                         center(true, false, false);
                         return true;
                     }
