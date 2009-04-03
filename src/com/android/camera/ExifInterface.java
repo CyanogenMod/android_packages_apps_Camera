@@ -26,32 +26,31 @@ public class ExifInterface {
     private String mFilename;
 
     // Constants used for the Orientation Exif tag.
-    static final int ORIENTATION_UNDEFINED = 0;
-
-    static final int ORIENTATION_NORMAL = 1;
+    public static final int ORIENTATION_UNDEFINED = 0;
+    public static final int ORIENTATION_NORMAL = 1;
 
     // left right reversed mirror
-    static final int ORIENTATION_FLIP_HORIZONTAL = 2;
-    
-    static final int ORIENTATION_ROTATE_180 = 3;
+    public static final int ORIENTATION_FLIP_HORIZONTAL = 2;    
+    public static final int ORIENTATION_ROTATE_180 = 3;
 
     // upside down mirror
-    static final int ORIENTATION_FLIP_VERTICAL = 4;  
+    public static final int ORIENTATION_FLIP_VERTICAL = 4;  
 
     // flipped about top-left <--> bottom-right axis
-    static final int ORIENTATION_TRANSPOSE = 5;
+    public static final int ORIENTATION_TRANSPOSE = 5;
 
     // rotate 90 cw to right it
-    static final int ORIENTATION_ROTATE_90 = 6;
+    public static final int ORIENTATION_ROTATE_90 = 6;
 
     // flipped about top-right <--> bottom-left axis
-    static final int ORIENTATION_TRANSVERSE = 7;
+    public static final int ORIENTATION_TRANSVERSE = 7;
 
     // rotate 270 to right it
-    static final int ORIENTATION_ROTATE_270 = 8;
+    public static final int ORIENTATION_ROTATE_270 = 8;
 
     // The Exif tag names
-    static final String TAG_ORIENTATION = "Orientation";
+    public static final String TAG_ORIENTATION = "Orientation";
+    
     static final String TAG_DATE_TIME_ORIGINAL = "DateTimeOriginal";
     static final String TAG_MAKE = "Make";
     static final String TAG_MODEL = "Model";
