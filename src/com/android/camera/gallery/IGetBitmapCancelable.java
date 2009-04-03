@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 The Android Open Source Project
+ * Copyright (C) 2009 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.android.camera;
+package com.android.camera.gallery;
 
-import com.android.camera.gallery.IImage;
+import android.graphics.Bitmap;
 
-import android.net.Uri;
-
-interface SelectedImageGetter {
-    IImage getCurrentImage();
-    Uri getCurrentImageUri();
+/**
+ * An <code>ICancelable</code> interface which will return a bitmap.
+ */
+public interface IGetBitmapCancelable extends ICancelable {
+    // returns the bitmap or null if there was an error or we were canceled
+    public Bitmap get();
 }
-

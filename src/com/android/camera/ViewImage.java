@@ -16,6 +16,10 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IGetBitmapCancelable;
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -101,7 +105,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     static final int HYSTERESIS = PADDING * 2;
     static final int BASE_SCROLL_DURATION = 1000; // ms
 
-    ImageManager.IImageList mAllImages;
+    IImageList mAllImages;
 
     private int mSlideShowImageCurrent = 0;
     private ImageViewTouch [] mSlideShowImageViews = new ImageViewTouch[2];
@@ -297,7 +301,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private static final boolean ANIMATE_TRANSITIONS = false;
 
-
     static class ScrollHandler extends LinearLayout {
         private Runnable mFirstLayoutCompletedCallback = null;
         private Scroller mScrollerHelper;
@@ -394,7 +397,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         final SelectedImageGetter selectedImageGetter =
                 new SelectedImageGetter() {
-            public ImageManager.IImage getCurrentImage() {
+            public IImage getCurrentImage() {
                 return mAllImages.getImageAt(mCurrentPosition);
             }
 
@@ -1037,7 +1040,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         uri = uri.buildUpon().query(null).build();
         // TODO smarter/faster here please
         for (int i = 0; i < mAllImages.getCount(); i++) {
-            ImageManager.IImage image = mAllImages.getImageAt(i);
+            IImage image = mAllImages.getImageAt(i);
             if (image.fullSizeImageUri().equals(uri)) {
                 mCurrentPosition = i;
                 mLastSlideShowImage = mCurrentPosition;
@@ -1047,7 +1050,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     }
 
     private Uri getCurrentUri() {
-        ImageManager.IImage image = mAllImages.getImageAt(mCurrentPosition);
+        IImage image = mAllImages.getImageAt(mCurrentPosition);
         Uri uri = null;
         if (image != null){
             String bucket = null;
@@ -1094,7 +1097,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mCurrentPosition = count - 1;
         }
 
-        ImageManager.IImage image = mAllImages.getImageAt(mCurrentPosition);
+        IImage image = mAllImages.getImageAt(mCurrentPosition);
 
         if (mGetter == null) {
             makeGetter();
@@ -1268,6 +1271,7 @@ class ImageViewTouch extends ImageViewTouchBase {
         mEnableTrackballScroll = enable;
     }
 
+    @Override
     protected void postTranslate(float dx, float dy) {
         super.postTranslate(dx, dy);
         center(true, false, false);
@@ -1294,7 +1298,7 @@ class ImageViewTouch extends ImageViewTouchBase {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_CENTER: {
                     if (mViewImage.isPickIntent()) {
-                        ImageManager.IImage img = mViewImage.mAllImages
+                        IImage img = mViewImage.mAllImages
                                 .getImageAt(mViewImage.mCurrentPosition);
                         mViewImage.setResult(ViewImage.RESULT_OK,
                                  new Intent().setData(img.fullSizeImageUri()));
@@ -1305,7 +1309,7 @@ class ImageViewTouch extends ImageViewTouchBase {
                 case KeyEvent.KEYCODE_DPAD_LEFT: {
                     panBy(PAN_RATE, 0);
                     int maxOffset = (current == 0) ? 0 : ViewImage.HYSTERESIS;
-                    if (getScale() <= 1F 
+                    if (getScale() <= 1F
                             || isShiftedToNextImage(true, maxOffset)) {
                         nextImagePos = current - 1;
                     } else {
@@ -1422,7 +1426,7 @@ class ImageGetter {
 
     // This is the loader cancelable that gets set while we're loading an image.
     // If we change position we can cancel the current load using this.
-    private ImageManager.IGetBitmap_cancelable mLoad;
+    private IGetBitmapCancelable mLoad;
 
     // True if we're canceling the current load.
     private boolean mCancelCurrent = false;
@@ -1440,7 +1444,7 @@ class ImageGetter {
         synchronized (this) {
             if (!mReady) {
                 mCancelCurrent = true;
-                ImageManager.IGetBitmap_cancelable load = mLoad;
+                IGetBitmapCancelable load = mLoad;
                 if (load != null) {
                     if (Config.LOGV) {
                         Log.v(TAG, "canceling load object");
@@ -1503,7 +1507,7 @@ class ImageGetter {
                         int offset = order[i];
                         int imageNumber = lastPosition + offset;
                         if (imageNumber >= 0 && imageNumber < imageCount) {
-                            ImageManager.IImage image = mViewImage.mAllImages.getImageAt(lastPosition + offset);
+                            IImage image = mViewImage.mAllImages.getImageAt(lastPosition + offset);
                             if (image == null || isCanceled()) {
                                 break;
                             }
@@ -1520,14 +1524,14 @@ class ImageGetter {
                         int offset = order[i];
                         int imageNumber = lastPosition + offset;
                         if (imageNumber >= 0 && imageNumber < imageCount) {
-                            ImageManager.IImage image = mViewImage.mAllImages.getImageAt(lastPosition + offset);
+                            IImage image = mViewImage.mAllImages.getImageAt(lastPosition + offset);
                             if (mCB.wantsFullImage(lastPosition, offset)) {
                                 if (Config.LOGV) {
                                     Log.v(TAG, "starting FULL IMAGE load at offset " + offset);
                                 }
                                 int sizeToUse = mCB.fullImageSizeToUse(lastPosition, offset);
                                 if (image != null && !isCanceled()) {
-                                    mLoad = image.fullSizeBitmap_cancelable(sizeToUse);
+                                    mLoad = image.fullSizeBitmapCancelable(sizeToUse);
                                 }
                                 if (mLoad != null) {
                                     long t1;
@@ -1565,7 +1569,7 @@ class ImageGetter {
             }
         }
     }
-    
+
     public ImageGetter(ViewImage viewImage) {
         mViewImage = viewImage;
         mGetterThread = new Thread(new ImageGetterRunnable());
@@ -1584,7 +1588,7 @@ class ImageGetter {
             if (!mReady) {
                 try {
                     mCancelCurrent = true;
-                    ImageManager.IGetBitmap_cancelable load = mLoad;
+                    IGetBitmapCancelable load = mLoad;
                     if (load != null) {
                         load.cancel();
                     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 The Android Open Source Project
+ * Copyright (C) 2009 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package com.android.camera;
+package com.android.camera.gallery;
 
-import com.android.camera.gallery.IImage;
-
-import android.net.Uri;
-
-interface SelectedImageGetter {
-    IImage getCurrentImage();
-    Uri getCurrentImageUri();
+/**
+ * The interface for all the tasks that could be canceled.
+ */
+public interface ICancelable {
+    /*
+     * call cancel() when the unit of work in progress needs to be
+     * canceled.  This should return true if it was possible to
+     * cancel and false otherwise.  If this returns false the caller
+     * may still be able to cleanup and simulate cancelation.
+     */
+    public boolean cancel();
 }
-

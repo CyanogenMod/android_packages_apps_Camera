@@ -16,6 +16,8 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.Util;
+
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -189,7 +191,7 @@ public class ThumbnailController {
         LayoutParams layoutParams = mButton.getLayoutParams();
         final int miniThumbWidth = layoutParams.width - 2 * PADDING_WIDTH;
         final int miniThumbHeight = layoutParams.height - 2 * PADDING_HEIGHT;
-        mThumb = ImageManager.extractMiniThumb(
+        mThumb = Util.extractMiniThumb(
                 original, miniThumbWidth, miniThumbHeight, false);
 
         Drawable[] vignetteLayers = new Drawable[2];

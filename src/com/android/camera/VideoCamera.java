@@ -16,6 +16,10 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.Util;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -1026,7 +1030,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         String path = mCurrentVideoFilename;
         if (path != null) {
-            Bitmap videoFrame = ImageManager.createVideoThumbnail(path);
+            Bitmap videoFrame = Util.createVideoThumbnail(path);
             mVideoFrame.setImageBitmap(videoFrame);
             mVideoFrame.setVisibility(View.VISIBLE);
         }
@@ -1132,7 +1136,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void acquireVideoThumb() {
-        Bitmap videoFrame = ImageManager.createVideoThumbnail(mCurrentVideoFilename);
+        Bitmap videoFrame = Util.createVideoThumbnail(mCurrentVideoFilename);
         mThumbController.setData(mCurrentVideoUri, videoFrame);
     }
 
@@ -1153,7 +1157,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void updateLastVideo() {
-        ImageManager.IImageList list = ImageManager.instance().allImages(
+        IImageList list = ImageManager.instance().allImages(
             this,
             mContentResolver,
             dataLocation(),
@@ -1162,7 +1166,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             ImageManager.CAMERA_IMAGE_BUCKET_ID);
         int count = list.getCount();
         if (count > 0) {
-            ImageManager.IImage image = list.getImageAt(count-1);
+            IImage image = list.getImageAt(count-1);
             Uri uri = image.fullSizeImageUri();
             mThumbController.setData(uri, image.miniThumbBitmap());
         } else {

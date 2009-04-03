@@ -17,6 +17,12 @@
 package com.android.camera;
 
 import static android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+
+import com.android.camera.gallery.IGetBitmapCancelable;
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.SimpleBaseImage;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -44,15 +50,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.android.camera.ImageManager.IGetBitmap_cancelable;
-import com.android.camera.ImageManager.IImage;
-import com.android.camera.ImageManager.IImageList;
 
 public class SlideShow extends Activity implements ViewSwitcher.ViewFactory {
     private static final String TAG = "SlideShow";
     static final int LAG = 2000;
     static final int NEXT_IMAGE_INTERVAL = 3000;
-    private ImageManager.IImageList mImageList;
+    private IImageList mImageList;
     private int mCurrentPosition = 0;
     private ImageView mSwitcher;
     private boolean mPosted = false;
@@ -231,7 +234,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory {
     }
 
     private void loadImage() {
-        ImageManager.IImage image = mImageList.getImageAt(mCurrentPosition);
+        IImage image = mImageList.getImageAt(mCurrentPosition);
         if (image == null) {
             return;
         }
@@ -315,7 +318,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory {
         // image uri ==> Image object
         private HashMap<Long, IImage> mCache = new HashMap<Long, IImage>();
 
-        class FileImage extends ImageManager.SimpleBaseImage {
+        class FileImage extends SimpleBaseImage {
             long mId;
             String mPath;
 
@@ -336,7 +339,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory {
                 return BitmapFactory.decodeFile(mPath);
             }
 
-            public IGetBitmap_cancelable fullSizeBitmap_cancelable(
+            public IGetBitmapCancelable fullSizeBitmapCancelable(
                     int targetWidthOrHeight) {
                 return null;
             }

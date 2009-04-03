@@ -16,6 +16,8 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IImage;
+
 import java.io.Closeable;
 import java.util.ArrayList;
 
@@ -44,7 +46,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.camera.ImageManager.IImage;
 
 public class MenuHelper {
     static private final String TAG = "MenuHelper";
@@ -92,8 +93,8 @@ public class MenuHelper {
     public static final int RESULT_COMMON_MENU_CROP = 490;
 
     public interface MenuItemsResult {
-        public void gettingReadyToOpen(Menu menu, ImageManager.IImage image);
-        public void aboutToCall(MenuItem item, ImageManager.IImage image);
+        public void gettingReadyToOpen(Menu menu, IImage image);
+        public void aboutToCall(MenuItem item, IImage image);
     }
 
     public interface MenuInvoker {
@@ -101,7 +102,7 @@ public class MenuHelper {
     }
 
     public interface MenuCallback {
-        public void run(Uri uri, ImageManager.IImage image);
+        public void run(Uri uri, IImage image);
     }
 
     private static void closeSilently(Closeable target) {
@@ -112,7 +113,7 @@ public class MenuHelper {
         }
     }
 
-    public static long getImageFileSize(ImageManager.IImage image) {
+    public static long getImageFileSize(IImage image) {
         java.io.InputStream data = image.fullSizeImageData();
         if (data == null) return -1;
         try {
@@ -164,7 +165,7 @@ public class MenuHelper {
                 requiresWriteAccessItems.add(rotateSubmenu.add(0, MENU_IMAGE_ROTATE_LEFT, 50, R.string.rotate_left).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         onInvoke.run(new MenuCallback() {
-                            public void run(Uri u, ImageManager.IImage image) {
+                            public void run(Uri u, IImage image) {
                                 if (image == null || image.isReadonly())
                                     return;
                                 image.rotateImageBy(-90);
@@ -176,7 +177,7 @@ public class MenuHelper {
                 requiresWriteAccessItems.add(rotateSubmenu.add(0, MENU_IMAGE_ROTATE_RIGHT, 60, R.string.rotate_right).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         onInvoke.run(new MenuCallback() {
-                            public void run(Uri u, ImageManager.IImage image) {
+                            public void run(Uri u, IImage image) {
                                 if (image == null || image.isReadonly())
                                     return;
 
@@ -195,7 +196,7 @@ public class MenuHelper {
                             new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     onInvoke.run(new MenuCallback() {
-                        public void run(Uri u, ImageManager.IImage image) {
+                        public void run(Uri u, IImage image) {
                             if (u == null)
                                 return;
 
@@ -219,7 +220,7 @@ public class MenuHelper {
             setMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     onInvoke.run(new MenuCallback() {
-                        public void run(Uri u, ImageManager.IImage image) {
+                        public void run(Uri u, IImage image) {
                             if (u == null || image == null)
                                 return;
 
@@ -244,7 +245,7 @@ public class MenuHelper {
                     new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     onInvoke.run(new MenuCallback() {
-                        public void run(Uri u, ImageManager.IImage image) {
+                        public void run(Uri u, IImage image) {
                             if (image == null) return;
                             if (!isImage && getImageFileSize(image) > SHARE_FILE_LENGTH_LIMIT ) {
                                 Toast.makeText(activity,
@@ -295,7 +296,7 @@ public class MenuHelper {
             MenuItem detailsMenu = menu.add(0, 0, 80, R.string.details).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     onInvoke.run(new MenuCallback() {
-                        public void run(Uri u, ImageManager.IImage image) {
+                        public void run(Uri u, IImage image) {
                             if (image == null)
                                 return;
 
@@ -472,7 +473,7 @@ public class MenuHelper {
 
 
         return new MenuItemsResult() {
-            public void gettingReadyToOpen(Menu menu, ImageManager.IImage image) {
+            public void gettingReadyToOpen(Menu menu, IImage image) {
                 // protect against null here.  this isn't strictly speaking required
                 // but if a client app isn't handling sdcard removal properly it
                 // could happen
@@ -496,7 +497,7 @@ public class MenuHelper {
                       item.setEnabled(!isDrm);
                 }
             }
-            public void aboutToCall(MenuItem menu, ImageManager.IImage image) {
+            public void aboutToCall(MenuItem menu, IImage image) {
             }
         };
     }

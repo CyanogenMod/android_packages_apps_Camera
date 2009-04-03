@@ -60,11 +60,13 @@ import android.widget.Scroller;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.android.camera.ImageManager.IImage;
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.VideoObject;
 
 public class ImageGallery2 extends Activity {
     private static final String TAG = "ImageGallery2";
-    private ImageManager.IImageList mAllImages;
+    private IImageList mAllImages;
     private int mInclusion;
     private boolean mSortAscending = false;
     private View mNoImagesView;
@@ -167,7 +169,7 @@ public class ImageGallery2 extends Activity {
         return menu.add(0, 207, position, R.string.slide_show)
         .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                ImageManager.IImage img = mSelectedImageGetter.getCurrentImage();
+                IImage img = mSelectedImageGetter.getCurrentImage();
                 if (img == null) {
                     img = mAllImages.getImageAt(0);
                     if (img == null) {
@@ -207,13 +209,13 @@ public class ImageGallery2 extends Activity {
 
     private SelectedImageGetter mSelectedImageGetter = new SelectedImageGetter() {
         public Uri getCurrentImageUri() {
-            ImageManager.IImage image = getCurrentImage();
+            IImage image = getCurrentImage();
             if (image != null)
                 return image.fullSizeImageUri();
             else
                 return null;
         }
-        public ImageManager.IImage getCurrentImage() {
+        public IImage getCurrentImage() {
             int currentSelection = mGvs.mCurrentSelection;
             if (currentSelection < 0 || currentSelection >= mAllImages.getCount())
                 return null;
@@ -338,7 +340,7 @@ public class ImageGallery2 extends Activity {
         return (Intent.ACTION_PICK.equals(action) || Intent.ACTION_GET_CONTENT.equals(action));
     }
 
-    private void launchCropperOrFinish(ImageManager.IImage img) {
+    private void launchCropperOrFinish(IImage img) {
         Bundle myExtras = getIntent().getExtras();
 
         long size = MenuHelper.getImageFileSize(img);
@@ -421,7 +423,7 @@ public class ImageGallery2 extends Activity {
             case VIEW_MSG: {
                 if (Config.LOGV)
                     Log.v(TAG, "got VIEW_MSG with " + data);
-                ImageManager.IImage img = mAllImages.getImageForUri(data.getData());
+                IImage img = mAllImages.getImageForUri(data.getData());
                 launchCropperOrFinish(img);
                 break;
             }
@@ -570,7 +572,7 @@ public class ImageGallery2 extends Activity {
                     pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
                                    "ImageGallery2.checkThumbnails");
                 mWakeLock.acquire();
-                ImageManager.IImageList.ThumbCheckCallback r = new ImageManager.IImageList.ThumbCheckCallback() {
+                IImageList.ThumbCheckCallback r = new IImageList.ThumbCheckCallback() {
                     boolean mDidSetProgress = false;
 
                     public boolean checking(final int count, final int maxCount) {
@@ -604,7 +606,7 @@ public class ImageGallery2 extends Activity {
                         return !mPausing;
                     }
                 };
-                ImageManager.IImageList imageList = allImages(true);
+                IImageList imageList = allImages(true);
                 imageList.checkThumbnails(r, imageList.getCount());
                 mWakeLock.release();
                 mThumbnailCheckThread = null;
@@ -623,7 +625,7 @@ public class ImageGallery2 extends Activity {
         mThumbnailCheckThread.start();
         mThumbnailCheckThread.toBackground();
 
-        ImageManager.IImageList list = allImages(true);
+        IImageList list = allImages(true);
         mNoImagesView.setVisibility(list.getCount() > 0 ? View.GONE : View.VISIBLE);
     }
 
@@ -677,7 +679,7 @@ public class ImageGallery2 extends Activity {
         return (image != null) && ImageManager.isVideo(image);
     }
 
-    private synchronized ImageManager.IImageList allImages(boolean assumeMounted) {
+    private synchronized IImageList allImages(boolean assumeMounted) {
         if (mAllImages == null) {
             mNoImagesView = findViewById(R.id.no_images);
 
@@ -1111,7 +1113,7 @@ public class ImageGallery2 extends Activity {
             }
 
             // Create this bitmap lazily, and only once for all the ImageBlocks to use
-            public Bitmap getErrorBitmap(ImageManager.IImage image) {
+            public Bitmap getErrorBitmap(IImage image) {
                 if (ImageManager.isImage(image)) {
                     if (mMissingImageThumbnailBitmap == null) {
                         mMissingImageThumbnailBitmap = BitmapFactory.decodeResource(GridViewSpecial.this.getResources(),
@@ -1495,7 +1497,7 @@ public class ImageGallery2 extends Activity {
                             if (pos >= count)
                                 break;
 
-                            ImageManager.IImage image = mGallery.mAllImages.getImageAt(pos);
+                            IImage image = mGallery.mAllImages.getImageAt(pos);
                             if (image != null) {
 //                              Log.v(TAG, "calling loadImage " + (base + col));
                                 loadImage(base, col, image, xPos, yPos);
@@ -1519,7 +1521,7 @@ public class ImageGallery2 extends Activity {
                     return b2;
                 }
 
-                private void drawBitmap(ImageManager.IImage image, int base, int baseOffset, Bitmap b, int xPos, int yPos) {
+                private void drawBitmap(IImage image, int base, int baseOffset, Bitmap b, int xPos, int yPos) {
                     mCanvas.setBitmap(mBitmap);
                     if (b != null) {
                         // if the image is close to the target size then crop, otherwise scale
@@ -1636,7 +1638,7 @@ public class ImageGallery2 extends Activity {
                 private void loadImage(
                         final int base,
                         final int baseOffset,
-                        final ImageManager.IImage image,
+                        final IImage image,
                         final int xPos,
                         final int yPos) {
                     synchronized (ImageBlock.this) {
@@ -1755,7 +1757,7 @@ public class ImageGallery2 extends Activity {
 
         private void onSelect(int index) {
             if (index >= 0 && index < mGallery.mAllImages.getCount()) {
-                ImageManager.IImage img = mGallery.mAllImages.getImageAt(index);
+                IImage img = mGallery.mAllImages.getImageAt(index);
                 if (img == null)
                     return;
 
@@ -1772,7 +1774,7 @@ public class ImageGallery2 extends Activity {
                     }
                     Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
 
-                    if (img instanceof ImageManager.VideoObject) {
+                    if (img instanceof VideoObject) {
                         intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
                                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                     }
@@ -1826,9 +1828,9 @@ public class ImageGallery2 extends Activity {
 
                 GridViewSpecial.this.mImageBlockManager.getVisibleRange(mDateRange);
 
-                ImageManager.IImage firstImage = mGallery.mAllImages.getImageAt(mDateRange[0]);
+                IImage firstImage = mGallery.mAllImages.getImageAt(mDateRange[0]);
                 int lastOffset = Math.min(count-1, mDateRange[1]);
-                ImageManager.IImage lastImage = mGallery.mAllImages.getImageAt(lastOffset);
+                IImage lastImage = mGallery.mAllImages.getImageAt(lastOffset);
 
                 GregorianCalendar dateStart = new GregorianCalendar();
                 GregorianCalendar dateEnd   = new GregorianCalendar();
