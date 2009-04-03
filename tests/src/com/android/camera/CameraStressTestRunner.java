@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.camera.tests;
+package com.android.camera;
+
+import com.android.camera.stress.ImageCapture;
+import com.android.camera.stress.SwitchPreview;
 
 import android.test.InstrumentationTestRunner;
 import android.test.InstrumentationTestSuite;
-import com.android.camera.tests.stress.SwitchPreview;
-import com.android.camera.tests.stress.ImageCapture;
 
 import junit.framework.TestSuite;
 

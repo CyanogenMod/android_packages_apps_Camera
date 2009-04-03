@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package com.android.camera.tests.stress;
-
-import android.app.Activity;
-import android.app.Instrumentation;
-import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.test.suitebuilder.annotation.LargeTest;
+package com.android.camera.stress;
 
 import com.android.camera.Camera;
 
+import android.app.Instrumentation;
+import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Log;
+import android.view.KeyEvent;
+
 /**
  * Junit / Instrumentation test case for camera test
- * 
+ *
  */
 
 public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
@@ -39,20 +38,20 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     private static final long WAIT_FOR_PREVIEW = 1000; //1 seconds
 
     public ImageCapture() {
-        super("com.android.camera", Camera.class);       
+        super("com.android.camera", Camera.class);
     }
-    
-    @Override 
-    protected void setUp() throws Exception {  
+
+    @Override
+    protected void setUp() throws Exception {
         getActivity();
-        super.setUp();     
+        super.setUp();
     }
-    
-    @Override 
-    protected void tearDown() throws Exception {     
-        super.tearDown();              
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
     }
-        
+
     @LargeTest
     public void testImageCapture() {
         Instrumentation inst = getInstrumentation();
@@ -68,7 +67,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
         }
             assertTrue("testImageCapture", true);
     }
-    
+
     @LargeTest
     public void testVideoCapture() {
         Instrumentation inst = getInstrumentation();
@@ -93,4 +92,4 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     }
 
 }
-    
+
