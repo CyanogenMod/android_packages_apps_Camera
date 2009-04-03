@@ -50,7 +50,6 @@ class CameraThread {
     }
     
     public synchronized void start() {
-        BitmapDecoder.allowThreadDecoding(mThread);
         mThread.start();
     }
     
@@ -60,7 +59,6 @@ class CameraThread {
     
     public void join() {
         try {
-            BitmapDecoder.cancelThreadDecoding(mThread);
             mThread.join();
         } catch (InterruptedException ex) {
             // ok?
