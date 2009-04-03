@@ -111,6 +111,52 @@
     <string name="pref_camera_videoquality_entry_0">"Bajo (para mensajes MMS)"</string>
     <string name="pref_camera_videoquality_entry_1">"Alta (para tarjeta SD)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Calidad del video"</string>
+    <!-- no translation found for pref_camera_picture_settings_category (1513001949820030759) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_title (2756537812337124731) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_auto (6580665476983469293) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_incandescent (8856667786449549938) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_daylight (2534757270149561027) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_fluorescent (2435332872847454032) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_cloudy (3531996716997959326) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_twilight (2257942426397244556) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_shade (4685730287406277702) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_dialogtitle (8978388629257577909) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_title (4914320939058424556) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_off (8886904740291649742) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_mono (8855894641721641755) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_sepia (1140386541736136378) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_negative (4543039133688988499) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_solarize (6038735847229504972) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_posterize (2482626618781180303) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_whiteboard (5470662301397802316) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_blackboard (270353561128282285) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_aqua (217673047138564200) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_pastel (7448668656894605817) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_mosaic (3311376232776084648) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_dialogtitle (2208375525985287062) -->
+    <skip />
     <string name="camerasettings">"Configuración"</string>
     <string name="image_gallery_NoImageView_text">"No se han encontrado medios."</string>
     <string name="pref_gallery_confirm_delete_title">"Confirmar eliminaciones"</string>
