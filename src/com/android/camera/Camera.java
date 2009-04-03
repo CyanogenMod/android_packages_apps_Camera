@@ -16,6 +16,10 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IAddImageCancelable;
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -396,7 +400,7 @@ public class Camera extends Activity implements View.OnClickListener,
         private boolean mCapturing = false;
 
         private Uri mLastContentUri;
-        private ImageManager.IAddImage_cancelable mAddImageCancelable;
+        private IAddImageCancelable mAddImageCancelable;
 
         Bitmap mCaptureOnlyBitmap;
 
@@ -1218,7 +1222,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void updateLastImage() {
-        ImageManager.IImageList list = ImageManager.instance().allImages(
+        IImageList list = ImageManager.instance().allImages(
             this,
             mContentResolver,
             dataLocation(),
@@ -1227,7 +1231,7 @@ public class Camera extends Activity implements View.OnClickListener,
             ImageManager.CAMERA_IMAGE_BUCKET_ID);
         int count = list.getCount();
         if (count > 0) {
-            ImageManager.IImage image = list.getImageAt(count-1);
+            IImage image = list.getImageAt(count-1);
             Uri uri = image.fullSizeImageUri();
             mThumbController.setData(uri, image.miniThumbBitmap());
         } else {
@@ -1438,14 +1442,14 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     };
 
-    private ImageManager.IImage getImageForURI(Uri uri) {
-        ImageManager.IImageList list = ImageManager.instance().allImages(
+    private IImage getImageForURI(Uri uri) {
+        IImageList list = ImageManager.instance().allImages(
                 this,
                 mContentResolver,
                 dataLocation(),
                 ImageManager.INCLUDE_IMAGES,
                 ImageManager.SORT_ASCENDING);
-        ImageManager.IImage image = list.getImageForUri(uri);
+        IImage image = list.getImageForUri(uri);
         list.deactivate();
         return image;
     }
@@ -1591,7 +1595,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     SelectedImageGetter mSelectedImageGetter =
         new SelectedImageGetter() {
-            public ImageManager.IImage getCurrentImage() {
+            public IImage getCurrentImage() {
                 return getImageForURI(getCurrentImageUri());
             }
             public Uri getCurrentImageUri() {

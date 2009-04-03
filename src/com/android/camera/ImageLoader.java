@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import com.android.camera.ImageManager.IImage;
+import com.android.camera.gallery.IImage;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -28,7 +28,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-class ImageLoader {
+public class ImageLoader {
     private static final String TAG = "ImageLoader";
 
     // queue of work to do in the worker thread
@@ -84,17 +84,17 @@ class ImageLoader {
         }
     }
 
-    public Bitmap getBitmap(IImage image, 
-                            LoadedCallback imageLoadedRunnable, 
+    public Bitmap getBitmap(IImage image,
+                            LoadedCallback imageLoadedRunnable,
                             boolean postAtFront,
                             boolean postBack) {
         return getBitmap(image, 0, imageLoadedRunnable, postAtFront, postBack);
     }
 
-    public Bitmap getBitmap(IImage image, 
-                            int tag, 
-                            LoadedCallback imageLoadedRunnable, 
-                            boolean postAtFront, 
+    public Bitmap getBitmap(IImage image,
+                            int tag,
+                            LoadedCallback imageLoadedRunnable,
+                            boolean postAtFront,
                             boolean postBack) {
         synchronized (mDecodeThreads) {
             if (mDecodeThreads.size() == 0) {
@@ -105,7 +105,7 @@ class ImageLoader {
         long t2, t3, t4;
         synchronized (mQueue) {
             t2 = System.currentTimeMillis();
-            WorkItem w = 
+            WorkItem w =
                     new WorkItem(image, tag, imageLoadedRunnable, postBack);
 
             if (!mInProgress.contains(w)) {
@@ -131,7 +131,7 @@ class ImageLoader {
             t3 = System.currentTimeMillis();
         }
         t4 = System.currentTimeMillis();
-        // Log.v(TAG, "getBitmap breakdown: tot= " + (t4-t1) + "; " + "; " + 
+        // Log.v(TAG, "getBitmap breakdown: tot= " + (t4-t1) + "; " + "; " +
         //         (t4-t3) + "; " + (t3-t2) + "; " + (t2-t1));
         return null;
     }
@@ -160,7 +160,7 @@ class ImageLoader {
         LoadedCallback mOnLoadedRunnable;
         boolean mPostBack;
 
-        WorkItem(IImage image, int tag, LoadedCallback onLoadedRunnable, 
+        WorkItem(IImage image, int tag, LoadedCallback onLoadedRunnable,
                  boolean postBack) {
             mImage = image;
             mTag = tag;
@@ -168,11 +168,13 @@ class ImageLoader {
             mPostBack = postBack;
         }
 
+        @Override
         public boolean equals(Object other) {
             WorkItem otherWorkItem = (WorkItem) other;
             return otherWorkItem.mImage == mImage;
         }
 
+        @Override
         public int hashCode() {
             return mImage.fullSizeImageUri().hashCode();
         }
@@ -197,9 +199,9 @@ class ImageLoader {
             mDone = false;
             for (int i = 0; i < mThreadCount; i++) {
                 Thread t = new Thread(new Runnable() {
-                    // pick off items on the queue, one by one, and compute 
-                    // their bitmap. place the resulting bitmap in the cache. 
-                    // then post a notification back to the ui so things can 
+                    // pick off items on the queue, one by one, and compute
+                    // their bitmap. place the resulting bitmap in the cache.
+                    // then post a notification back to the ui so things can
                     // get updated appropriately.
                     public void run() {
                         while (!mDone) {
@@ -258,21 +260,21 @@ class ImageLoader {
         }
     }
 
-    public static Bitmap transform(Matrix scaler, 
-                                   Bitmap source, 
-                                   int targetWidth, 
-                                   int targetHeight, 
+    public static Bitmap transform(Matrix scaler,
+                                   Bitmap source,
+                                   int targetWidth,
+                                   int targetHeight,
                                    boolean scaleUp) {
         int deltaX = source.getWidth() - targetWidth;
         int deltaY = source.getHeight() - targetHeight;
         if (!scaleUp && (deltaX < 0 || deltaY < 0)) {
             /*
-             * In this case the bitmap is smaller, at least in one dimension, 
-             * than the target.  Transform it by placing as much of the image 
-             * as possible into the target and leaving the top/bottom or 
+             * In this case the bitmap is smaller, at least in one dimension,
+             * than the target.  Transform it by placing as much of the image
+             * as possible into the target and leaving the top/bottom or
              * left/right (or both) black.
              */
-            Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight, 
+            Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight,
                     Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b2);
 
@@ -346,7 +348,7 @@ class ImageLoader {
 
     public void stop() {
         if (Config.LOGV) {
-            Log.v(TAG, "ImageLoader.stop " + mDecodeThreads.size() + 
+            Log.v(TAG, "ImageLoader.stop " + mDecodeThreads.size() +
                     " threads");
         }
         mDone = true;

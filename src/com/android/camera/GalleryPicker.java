@@ -16,6 +16,9 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -332,7 +335,7 @@ public class GalleryPicker extends Activity {
         public void init(boolean assumeMounted) {
             mItems.clear();
 
-            ImageManager.IImageList images;
+            IImageList images;
             if (assumeMounted) {
                 images = ImageManager.instance().allImages(
                         GalleryPicker.this,
@@ -397,7 +400,7 @@ public class GalleryPicker extends Activity {
 
                         for (int i = 0; i < mItems.size() && !mDone; i++) {
                             final Item item = mItems.get(i);
-                            ImageManager.IImageList list = createImageList(
+                            IImageList list = createImageList(
                                     item.getIncludeMediaTypes(), item.mId);
                             try {
                                 if (mPausing) {
@@ -586,7 +589,7 @@ public class GalleryPicker extends Activity {
         c.drawBitmap(image, xPos, yPos, paint);
     }
 
-    private Bitmap makeMiniThumbBitmap(int width, int height, ImageManager.IImageList images) {
+    private Bitmap makeMiniThumbBitmap(int width, int height, IImageList images) {
         int count = images.getCount();
         // We draw three different version of the folder image depending on the number of images in the folder.
         //    For a single image, that image draws over the whole folder.
@@ -629,7 +632,7 @@ public class GalleryPicker extends Activity {
             }
 
             Bitmap temp = null;
-            ImageManager.IImage image = i < count ? images.getImageAt(i) : null;
+            IImage image = i < count ? images.getImageAt(i) : null;
 
             if (image != null) {
                 temp = image.miniThumbBitmap();
@@ -697,7 +700,7 @@ public class GalleryPicker extends Activity {
 
     private boolean isEmptyBucket(int mediaTypes, String bucketId) {
         // TODO: Find a more efficient way of calculating this
-        ImageManager.IImageList list = createImageList(mediaTypes, bucketId);
+        IImageList list = createImageList(mediaTypes, bucketId);
         try {
             return list.isEmpty();
         }
@@ -708,7 +711,7 @@ public class GalleryPicker extends Activity {
 
     private int bucketItemCount(int mediaTypes, String bucketId) {
         // TODO: Find a more efficient way of calculating this
-        ImageManager.IImageList list = createImageList(mediaTypes, bucketId);
+        IImageList list = createImageList(mediaTypes, bucketId);
         try {
             return list.getCount();
         }
@@ -716,7 +719,7 @@ public class GalleryPicker extends Activity {
             list.deactivate();
         }
     }
-    private ImageManager.IImageList createImageList(int mediaTypes, String bucketId) {
+    private IImageList createImageList(int mediaTypes, String bucketId) {
         return ImageManager.instance().allImages(
                 this,
                 getContentResolver(),

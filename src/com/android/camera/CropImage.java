@@ -16,6 +16,10 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IAddImageCancelable;
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -54,7 +58,7 @@ public class CropImage extends Activity {
     private static final String TAG = "CropImage";
     private ProgressDialog mFaceDetectionDialog = null;
     private ProgressDialog mSavingProgressDialog = null;
-    private ImageManager.IImageList mAllImages;
+    private IImageList mAllImages;
     private Bitmap.CompressFormat mSaveFormat = Bitmap.CompressFormat.JPEG; // only used with mSaveUri
     private Uri mSaveUri = null;
     private int mAspectX, mAspectY;
@@ -73,7 +77,7 @@ public class CropImage extends Activity {
     Bitmap mCroppedImage;
     HighlightView mCrop;
 
-    ImageManager.IImage mImage;
+    IImage mImage;
 
     public CropImage() {
     }
@@ -606,7 +610,7 @@ public class CropImage extends Activity {
                                                 directory.toString(),
                                                 fileName + "-" + x + ".jpg");
 
-                                        ImageManager.IAddImage_cancelable cancelable = ImageManager.instance().storeImage(
+                                        IAddImageCancelable cancelable = ImageManager.instance().storeImage(
                                                 newUri,
                                                 CropImage.this,
                                                 getContentResolver(),
