@@ -14,45 +14,42 @@
  * limitations under the License.
  */
 
-package com.android.camera.tests.stress;
+package com.android.camera.stress;
 
-import android.app.Activity;
+import com.android.camera.VideoCamera;
+
 import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.test.suitebuilder.annotation.LargeTest;
-
-import com.android.camera.Camera;
-import com.android.camera.VideoCamera;
 
 /**
  * Junit / Instrumentation test case for camera test
- * 
+ *
  */
-
 public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera>{
     private String TAG = "SwitchPreview";
     private static final int TOTAL_NUMBER_OF_SWITCHING = 200;
     private static final long WAIT_FOR_PREVIEW = 2000;
-    
-    
+
+
     public SwitchPreview() {
-        super("com.android.camera", VideoCamera.class);      
+        super("com.android.camera", VideoCamera.class);
     }
-    
-    @Override 
-    protected void setUp() throws Exception {  
+
+    @Override
+    protected void setUp() throws Exception {
         getActivity();
         super.setUp();
     }
-    
-    @Override 
-    protected void tearDown() throws Exception {   
+
+    @Override
+    protected void tearDown() throws Exception {
         getActivity().finish();
-        super.tearDown();              
+        super.tearDown();
     }
-        
+
     @LargeTest
     public void testSwitchMode() {
         //Switching the video and the video recorder mode
@@ -71,4 +68,4 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
             assertTrue("testSwitchMode",true);
     }
 }
-    
+

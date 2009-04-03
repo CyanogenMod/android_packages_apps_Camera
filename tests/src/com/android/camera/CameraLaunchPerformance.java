@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package com.android.camera.tests;
+package com.android.camera;
 
 import android.app.Activity;
-import android.test.LaunchPerformanceBase;
 import android.os.Bundle;
-
-import java.util.Map;
+import android.test.LaunchPerformanceBase;
 
 /**
  * Instrumentation class for Camera launch performance testing.
  */
 public class CameraLaunchPerformance extends LaunchPerformanceBase {
- 
+
     public static final String LOG_TAG = "CameraLaunchPerformance";
 
     public CameraLaunchPerformance() {
