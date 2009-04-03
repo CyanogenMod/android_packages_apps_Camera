@@ -105,12 +105,15 @@ public class Camera extends Activity implements View.OnClickListener,
 
     // The parameter strings to communicate with camera driver.
     public static final String PARM_WHITE_BALANCE = "whitebalance";
+    public static final String PARM_EFFECT = "effect";
     public static final String PARM_JPEG_QUALITY = "jpeg-quality";
     public static final String PARM_ROTATION = "rotation";
     public static final String PARM_GPS_LATITUDE = "gps-latitude";
     public static final String PARM_GPS_LONGITUDE = "gps-longitude";
     public static final String PARM_GPS_ALTITUDE = "gps-altitude";
     public static final String PARM_GPS_TIMESTAMP = "gps-timestamp";
+    public static final String SUPPORTED_WHITE_BALANCE = "whitebalance-values";
+    public static final String SUPPORTED_EFFECT = "effect-values";
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -1319,6 +1322,12 @@ public class Camera extends Activity implements View.OnClickListener,
                 CameraSettings.KEY_WHITE_BALANCE,
                 getString(R.string.pref_camera_whitebalance_default));
         mParameters.set(PARM_WHITE_BALANCE, whiteBalance);
+
+        // Set effect parameter.
+        String effect = mPreferences.getString(
+                CameraSettings.KEY_EFFECT,
+                getString(R.string.pref_camera_effect_default));
+        mParameters.set(PARM_EFFECT, effect);
 
         try {
             mCameraDevice.setParameters(mParameters);

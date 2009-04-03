@@ -16,138 +16,135 @@
 
 package com.android.camera;
 
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
-
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import android.util.Log;
 
 /**
  *  CameraSettings
  */
 public class CameraSettings extends PreferenceActivity
-    implements OnSharedPreferenceChangeListener
-{
-    public static final String KEY_VIDEO_QUALITY = "pref_camera_videoquality_key";
-    public static final String KEY_WHITE_BALANCE = "pref_camera_whitebalance_key";
+    implements OnSharedPreferenceChangeListener {
+    public static final String KEY_VIDEO_QUALITY = 
+            "pref_camera_videoquality_key";
+    public static final String KEY_WHITE_BALANCE = 
+            "pref_camera_whitebalance_key";
+    public static final String KEY_EFFECT = "pref_camera_effect_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
     private ListPreference mVideoQuality;
     private ListPreference mWhiteBalance;
+    private ListPreference mEffect;
     private Parameters mParameters;
-
-    public CameraSettings()
-    {
-    }
 
     /** Called with the activity is first created. */
     @Override
-    public void onCreate(Bundle icicle)
-    {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.camera_preferences);
 
         initUI();
-
-        // Get parameters.
-        android.hardware.Camera device = android.hardware.Camera.open();
-        mParameters = device.getParameters();
-        device.release();
-
-        createWhiteBalanceSettings();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        updateVideoQuality();
-        updateWhiteBalance();
+        updateVideoQualitySummary();
+        updateWhiteBalanceSummary();
+        updateEffectSummary();
     }
 
     private void initUI() {
         mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
         mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        mEffect = (ListPreference) findPreference(KEY_EFFECT);
+        getPreferenceScreen().getSharedPreferences().
+                registerOnSharedPreferenceChangeListener(this);
+
+        // Get parameters.
+        android.hardware.Camera device = android.hardware.Camera.open();
+        mParameters = device.getParameters();
+        device.release();
+
+        // Create white balance settings.
+        createSettings(mWhiteBalance, Camera.SUPPORTED_WHITE_BALANCE,
+                       R.array.pref_camera_whitebalance_entries,
+                       R.array.pref_camera_whitebalance_entryvalues);
+
+        // Create effect settings.
+        createSettings(mEffect, Camera.SUPPORTED_EFFECT,
+                       R.array.pref_camera_effect_entries,
+                       R.array.pref_camera_effect_entryvalues);
     }
 
-    private void updateVideoQuality() {
-        boolean vidQualityValue = getBooleanPreference(mVideoQuality, DEFAULT_VIDEO_QUALITY_VALUE);
-        int vidQualityIndex = vidQualityValue ? 1 : 0;
-        String[] vidQualities =
-            getResources().getStringArray(R.array.pref_camera_videoquality_entries);
-        String vidQuality = vidQualities[vidQualityIndex];
-        mVideoQuality.setSummary(vidQuality);
-    }
-
-    private void createWhiteBalanceSettings() {
-        // Get the supported white balance settings.
-        String supportedWbStr = mParameters.get("whitebalance-values");
-        StringTokenizer tokenizer = new StringTokenizer(supportedWbStr, ",");
-        ArrayList<CharSequence> supportedWb = new ArrayList<CharSequence>();
+    private void createSettings(
+            ListPreference pref, String paramName, int prefEntriesResId,
+            int prefEntryValuesResId) {
+        // Get the supported parameter settings.
+        String supportedParamStr = mParameters.get(paramName);
+        StringTokenizer tokenizer = new StringTokenizer(supportedParamStr, ",");
+        ArrayList<CharSequence> supportedParam = new ArrayList<CharSequence>();
         while (tokenizer.hasMoreElements()) {
-            supportedWb.add(tokenizer.nextToken());
+            supportedParam.add(tokenizer.nextToken());
         }
 
-        // Prepare white balance entries and entry values.
-        String[] allWbEntries = getResources().getStringArray(
-                R.array.pref_camera_whitebalance_entries);
-        String[] allWbEntryValues = getResources().getStringArray(
-                R.array.pref_camera_whitebalance_entryvalues);
-        ArrayList<CharSequence> wbEntries = new ArrayList<CharSequence>();
-        ArrayList<CharSequence> wbEntryValues = new ArrayList<CharSequence>();
-        for (int i = 0, len = allWbEntryValues.length; i < len; i++) {
-            int found = supportedWb.indexOf(allWbEntryValues[i]);
+        // Prepare setting entries and entry values.
+        String[] allEntries = getResources().getStringArray(prefEntriesResId);
+        String[] allEntryValues = getResources().getStringArray(
+                prefEntryValuesResId);
+        ArrayList<CharSequence> entries = new ArrayList<CharSequence>();
+        ArrayList<CharSequence> entryValues = new ArrayList<CharSequence>();
+        for (int i = 0, len = allEntryValues.length; i < len; i++) {
+            int found = supportedParam.indexOf(allEntryValues[i]);
             if (found != -1) {
-                wbEntries.add(allWbEntries[i]);
-                wbEntryValues.add(allWbEntryValues[i]);
+                entries.add(allEntries[i]);
+                entryValues.add(allEntryValues[i]);
             }
         }
 
-        // Set white balance entries and entry values to list preference.
-        mWhiteBalance.setEntries(wbEntries.toArray(
-                new CharSequence[wbEntries.size()]));
-        mWhiteBalance.setEntryValues(wbEntryValues.toArray(
-                new CharSequence[wbEntryValues.size()]));
+        // Set entries and entry values to list preference.
+        pref.setEntries(entries.toArray(new CharSequence[entries.size()]));
+        pref.setEntryValues(entryValues.toArray(
+                new CharSequence[entryValues.size()]));
 
-        String value = mWhiteBalance.getValue();
-        int index = mWhiteBalance.findIndexOfValue(value);
+        // Set the value to the first entry if it is invalid.
+        String value = pref.getValue();
+        int index = pref.findIndexOfValue(value);
         if (index == -1) {
-            mWhiteBalance.setValueIndex(0);
+            pref.setValueIndex(0);
         }
     }
 
-    private void updateWhiteBalance() {
+    private void updateVideoQualitySummary() {
+        mVideoQuality.setSummary(mVideoQuality.getEntry());
+    }
+
+    private void updateWhiteBalanceSummary() {
         // Set preference summary.
         mWhiteBalance.setSummary(mWhiteBalance.getEntry());
     }
 
-    private static int getIntPreference(ListPreference preference, int defaultValue) {
-        String s = preference.getValue();
-        int result = defaultValue;
-        try {
-            result = Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            // Ignore, result is already the default value.
-        }
-        return result;
-    }
-
-    private boolean getBooleanPreference(ListPreference preference, boolean defaultValue) {
-        return getIntPreference(preference, defaultValue ? 1 : 0) != 0;
+    private void updateEffectSummary() {
+        // Set preference summary.
+        mEffect.setSummary(mEffect.getEntry());
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals(KEY_VIDEO_QUALITY)) {
-            updateVideoQuality();
+            updateVideoQualitySummary();
         } else if (key.equals(KEY_WHITE_BALANCE)) {
-            updateWhiteBalance();
+            updateWhiteBalanceSummary();
+        } else if (key.equals(KEY_EFFECT)) {
+            updateEffectSummary();
         }
     }
 }
