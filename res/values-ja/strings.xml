@@ -46,7 +46,7 @@
     <string name="capture_picture">"写真撮影"</string>
     <string name="capture_video">"ムービー撮影"</string>
     <string name="crop_save_text">"保存"</string>
-    <string name="crop_discard_text">"破棄"</string>
+    <string name="crop_discard_text">"キャンセル"</string>
     <string name="confirm_delete_title">"削除"</string>
     <string name="confirm_delete_message">"画像を削除します。"</string>
     <string name="confirm_delete_video_message">"動画を削除します。"</string>
