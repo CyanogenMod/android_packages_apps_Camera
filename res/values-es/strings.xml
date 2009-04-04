@@ -32,7 +32,7 @@
     <string name="no_storage">"Antes de utilizar la cámara, debes insertar una tarjeta SD."</string>
     <string name="not_enough_space">"La tarjeta SD está llena."</string>
     <string name="preparing_sd">"Preparando tarjeta SD…"</string>
-    <string name="wallpaper">"Estableciendo fondo de pantalla; por favor, espera..."</string>
+    <string name="wallpaper">"Estableciendo fondo de pantalla..."</string>
     <string name="savingImage">"Guardando imagen..."</string>
     <string name="runningFaceDetection">"Por favor, espera..."</string>
     <string name="flip_orientation">"Cambiar orientación"</string>
