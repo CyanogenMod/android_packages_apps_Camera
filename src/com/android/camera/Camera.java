@@ -1634,9 +1634,12 @@ public class Camera extends Activity implements View.OnClickListener,
 
         MenuItem item = menu.add(MenuHelper.GENERIC_ITEM, MENU_SETTINGS, 0, R.string.settings).setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent();
-                intent.setClass(Camera.this, CameraSettings.class);
-                startActivity(intent);
+                // Do not go to camera settings during capture.
+                if (mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED) {
+                    Intent intent = new Intent();
+                    intent.setClass(Camera.this, CameraSettings.class);
+                    startActivity(intent);
+                }
                 return true;
             }
         });
