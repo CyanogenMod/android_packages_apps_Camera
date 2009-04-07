@@ -43,27 +43,26 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore.Images;
 import android.util.Config;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GalleryPicker extends Activity {
-    static private final String TAG = "GalleryPicker";
+    private static final String TAG = "GalleryPicker";
 
     private View mNoImagesView;
     GridView mGridView;
@@ -80,7 +79,7 @@ public class GalleryPicker extends Activity {
 
     boolean mPausing = false;
 
-    private static long LOW_STORAGE_THRESHOLD = 1024 * 1024 * 2;
+    private static final long LOW_STORAGE_THRESHOLD = 1024 * 1024 * 2;
 
     public GalleryPicker() {
     }
@@ -110,15 +109,19 @@ public class GalleryPicker extends Activity {
 
                     // Check available space only if we are writable
                     if (ImageManager.hasStorage()) {
-                        String storageDirectory = Environment.getExternalStorageDirectory().toString();
+                        String storageDirectory = Environment
+                                .getExternalStorageDirectory().toString();
                         StatFs stat = new StatFs(storageDirectory);
-                        long remaining = (long)stat.getAvailableBlocks() * (long)stat.getBlockSize();
+                        long remaining = (long) stat.getAvailableBlocks()
+                                * (long) stat.getBlockSize();
                         if (remaining < LOW_STORAGE_THRESHOLD) {
 
                             mHandler.post(new Runnable() {
                                 public void run() {
-                                    Toast.makeText(GalleryPicker.this.getApplicationContext(),
-                                        R.string.not_enough_space, 5000).show();
+                                    Toast.makeText(GalleryPicker.this
+                                            .getApplicationContext(),
+                                            R.string.not_enough_space,
+                                            5000).show();
                                 }
                             });
                         }
@@ -128,8 +131,8 @@ public class GalleryPicker extends Activity {
             t.start();
         }
 
-        // If we just have zero or one folder, open it. (We shouldn't have just one folder
-        // any more, but we can have zero folders.)
+        // If we just have zero or one folder, open it. (We shouldn't have
+        // just one folder any more, but we can have zero folders.)
         mNoImagesView.setVisibility(View.GONE);
         if (!scanning) {
             int numItems = mAdapter.mItems.size();
@@ -159,7 +162,9 @@ public class GalleryPicker extends Activity {
 
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (Config.LOGV) Log.v(TAG, "onReceiveIntent " + intent.getAction());
+                if (Config.LOGV) {
+                    Log.v(TAG, "onReceiveIntent " + intent.getAction());
+                }
                 String action = intent.getAction();
                 if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                     // SD card available
@@ -167,54 +172,75 @@ public class GalleryPicker extends Activity {
                     // TODO also listen for the media scanner finished message
                 } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                     // SD card unavailable
-                    if (Config.LOGV) Log.v(TAG, "sd card no longer available");
-                    Toast.makeText(GalleryPicker.this, getResources().getString(R.string.wait), 5000);
+                    if (Config.LOGV) {
+                        Log.v(TAG, "sd card no longer available");
+                    }
+                    Toast.makeText(GalleryPicker.this,
+                            getResources().getString(R.string.wait), 5000);
                     rebake(true, false);
                 } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
-                    Toast.makeText(GalleryPicker.this, getResources().getString(R.string.wait), 5000);
+                    Toast.makeText(GalleryPicker.this,
+                            getResources().getString(R.string.wait), 5000);
                     rebake(false, true);
-                } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                    if (Config.LOGV)
-                        Log.v(TAG, "rebake because of ACTION_MEDIA_SCANNER_FINISHED");
+                } else if (action.equals(
+                        Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
+                    if (Config.LOGV) {
+                        Log.v(TAG, "rebake because of "
+                                + "ACTION_MEDIA_SCANNER_FINISHED");
+                    }
                     rebake(false, false);
                 } else if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-                    if (Config.LOGV)
+                    if (Config.LOGV) {
                         Log.v(TAG, "rebake because of ACTION_MEDIA_EJECT");
+                    }
                     rebake(true, false);
                 }
             }
         };
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
                 launchFolderGallery(position);
             }
         });
-        mGridView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            public void onCreateContextMenu(ContextMenu menu, View v, final ContextMenu.ContextMenuInfo menuInfo) {
-                int position = ((AdapterContextMenuInfo)menuInfo).position;
+        mGridView.setOnCreateContextMenuListener(
+        new View.OnCreateContextMenuListener() {
+            public void onCreateContextMenu(ContextMenu menu, View v,
+                    final ContextMenu.ContextMenuInfo menuInfo) {
+                int position = ((AdapterContextMenuInfo) menuInfo).position;
                 menu.setHeaderTitle(mAdapter.baseTitleForPosition(position));
-                if ((mAdapter.getIncludeMediaTypes(position) & ImageManager.INCLUDE_IMAGES) != 0) {
+                if ((mAdapter.getIncludeMediaTypes(position)
+                        & ImageManager.INCLUDE_IMAGES) != 0) {
                     menu.add(0, 207, 0, R.string.slide_show)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
-                            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+                            AdapterView.AdapterContextMenuInfo info =
+                                    (AdapterView.AdapterContextMenuInfo)
+                                    menuInfo;
                             int position = info.position;
 
                             Uri targetUri;
                             synchronized (mAdapter.mItems) {
-                                if (position < 0 || position >= mAdapter.mItems.size()) {
+                                if (position < 0
+                                        || position >= mAdapter.mItems.size()) {
                                     return true;
                                 }
-                                // the mFirstImageUris list includes the "all" uri
-                                targetUri = mAdapter.mItems.get(position).mFirstImageUri;
+                                // the mFirstImageUris list includes the "all"
+                                // uri
+                                targetUri = mAdapter.mItems.get(position)
+                                        .mFirstImageUri;
                             }
                             if (targetUri != null && position > 0) {
-                                targetUri = targetUri.buildUpon().appendQueryParameter("bucketId",
-                                        mAdapter.mItems.get(info.position).mId).build();
+                                targetUri = targetUri
+                                        .buildUpon()
+                                        .appendQueryParameter("bucketId",
+                                        mAdapter.mItems.get(info.position).mId)
+                                        .build();
                             }
     //                      Log.v(TAG, "URI to launch slideshow " + targetUri);
-                            Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
+                            Intent intent = new Intent(Intent.ACTION_VIEW,
+                                                       targetUri);
                             intent.putExtra("slideshow", true);
                             startActivity(intent);
                             return true;
@@ -222,13 +248,16 @@ public class GalleryPicker extends Activity {
                     });
                 }
                 menu.add(0, 208, 0, R.string.view)
-                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-                        launchFolderGallery(info.position);
-                        return true;
-                    }
-                });
+                        .setOnMenuItemClickListener(
+                        new OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                AdapterView.AdapterContextMenuInfo info =
+                                        (AdapterView.AdapterContextMenuInfo)
+                                        menuInfo;
+                                launchFolderGallery(info.position);
+                                return true;
+                            }
+                        });
             }
         });
  
@@ -240,18 +269,18 @@ public class GalleryPicker extends Activity {
     }
 
     class ItemInfo {
-        Bitmap bitmap;
-        int count;
+        Bitmap mBitmap;
+        int mCount;
     }
 
     static class Item implements Comparable<Item>{
         // The type is also used as the sort order
-        public final static int TYPE_NONE = -1;
-        public final static int TYPE_ALL_IMAGES = 0;
-        public final static int TYPE_ALL_VIDEOS = 1;
-        public final static int TYPE_CAMERA_IMAGES = 2;
-        public final static int TYPE_CAMERA_VIDEOS = 3;
-        public final static int TYPE_NORMAL_FOLDERS = 4;
+        public static final int TYPE_NONE = -1;
+        public static final int TYPE_ALL_IMAGES = 0;
+        public static final int TYPE_ALL_VIDEOS = 1;
+        public static final int TYPE_CAMERA_IMAGES = 2;
+        public static final int TYPE_CAMERA_VIDEOS = 3;
+        public static final int TYPE_NORMAL_FOLDERS = 4;
 
         public int mType;
         public String mId;
@@ -272,7 +301,8 @@ public class GalleryPicker extends Activity {
         public void launch(Activity activity) {
             android.net.Uri uri = Images.Media.INTERNAL_CONTENT_URI;
             if (needsBucketId()) {
-                uri = uri.buildUpon().appendQueryParameter("bucketId",mId).build();
+                uri = uri.buildUpon()
+                        .appendQueryParameter("bucketId", mId).build();
             }
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             intent.putExtra("windowTitle", mName);
@@ -294,7 +324,8 @@ public class GalleryPicker extends Activity {
                 return ImageManager.INCLUDE_VIDEOS;
             case TYPE_NORMAL_FOLDERS:
             default:
-                return     ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS;
+                return ImageManager.INCLUDE_IMAGES
+                        | ImageManager.INCLUDE_VIDEOS;
             }
         }
 
@@ -313,7 +344,8 @@ public class GalleryPicker extends Activity {
             }
         }
 
-        // sort based on the sort order, then the case-insensitive display name, then the id.
+        // sort based on the sort order, then the case-insensitive display name,
+        // then the id.
         public int compareTo(Item other) {
             int x = mType - other.mType;
             if (x == 0) {
@@ -341,7 +373,8 @@ public class GalleryPicker extends Activity {
                         GalleryPicker.this,
                         getContentResolver(),
                         ImageManager.DataLocation.ALL,
-                        ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS,
+                        ImageManager.INCLUDE_IMAGES
+                        | ImageManager.INCLUDE_VIDEOS,
                         ImageManager.SORT_DESCENDING);
             } else {
                 images = ImageManager.instance().emptyImageList();
@@ -350,8 +383,10 @@ public class GalleryPicker extends Activity {
             if (mWorkerThread != null) {
                 try {
                     mDone = true;
-                    if (Config.LOGV)
-                        Log.v(TAG, "about to call join on thread " + mWorkerThread.getId());
+                    if (Config.LOGV) {
+                        Log.v(TAG, "about to call join on thread "
+                                + mWorkerThread.getId());
+                    }
                     mWorkerThread.join();
                 } finally {
                     mWorkerThread = null;
@@ -361,7 +396,7 @@ public class GalleryPicker extends Activity {
             String cameraItem = ImageManager.CAMERA_IMAGE_BUCKET_ID;
             final HashMap<String, String> hashMap = images.getBucketIds();
             String cameraBucketId = null;
-            for (Map.Entry<String, String> entry: hashMap.entrySet()) {
+            for (Map.Entry<String, String> entry : hashMap.entrySet()) {
                 String key = entry.getKey();
                 if (key == null) {
                     continue;
@@ -369,7 +404,8 @@ public class GalleryPicker extends Activity {
                 if (key.equals(cameraItem)) {
                     cameraBucketId = key;
                 } else {
-                    mItems.add(new Item(Item.TYPE_NORMAL_FOLDERS, key, entry.getValue()));
+                    mItems.add(new Item(Item.TYPE_NORMAL_FOLDERS, key,
+                            entry.getValue()));
                 }
             }
             images.deactivate();
@@ -377,9 +413,11 @@ public class GalleryPicker extends Activity {
 
             // Conditionally add all-images and all-videos folders.
             addBucket(Item.TYPE_ALL_IMAGES, null,
-                    Item.TYPE_CAMERA_IMAGES, cameraBucketId, R.string.all_images);
+                    Item.TYPE_CAMERA_IMAGES, cameraBucketId,
+                    R.string.all_images);
             addBucket(Item.TYPE_ALL_VIDEOS, null,
-                    Item.TYPE_CAMERA_VIDEOS, cameraBucketId, R.string.all_videos);
+                    Item.TYPE_CAMERA_VIDEOS, cameraBucketId,
+                    R.string.all_videos);
 
             if (cameraBucketId != null) {
                 addBucket(Item.TYPE_CAMERA_IMAGES, cameraBucketId,
@@ -395,8 +433,9 @@ public class GalleryPicker extends Activity {
                 public void run() {
                     try {
                         // no images, nothing to do
-                        if (mItems.size() == 0)
+                        if (mItems.size() == 0) {
                             return;
+                        }
 
                         for (int i = 0; i < mItems.size() && !mDone; i++) {
                             final Item item = mItems.get(i);
@@ -406,16 +445,21 @@ public class GalleryPicker extends Activity {
                                 if (mPausing) {
                                     break;
                                 }
-                                if (list.getCount() > 0)
-                                    item.mFirstImageUri = list.getImageAt(0).fullSizeImageUri();
+                                if (list.getCount() > 0) {
+                                    item.mFirstImageUri = list.getImageAt(0)
+                                            .fullSizeImageUri();
+                                }
 
-                                final Bitmap b = makeMiniThumbBitmap(142, 142, list);
+                                final Bitmap b = makeMiniThumbBitmap(142, 142,
+                                        list);
                                 final int pos = i;
                                 final int count = list.getCount();
-                                final Thread currentThread = Thread.currentThread();
+                                final Thread currentThread =
+                                        Thread.currentThread();
                                 mHandler.post(new Runnable() {
                                     public void run() {
-                                        if (mPausing || currentThread != mWorkerThread.realThread()) {
+                                        if (mPausing || currentThread
+                                                != mWorkerThread.realThread()) {
                                             if (b != null) {
                                                 b.recycle();
                                             }
@@ -423,16 +467,23 @@ public class GalleryPicker extends Activity {
                                         }
 
                                         ItemInfo info = new ItemInfo();
-                                        info.bitmap = b;
-                                        info.count = count;
+                                        info.mBitmap = b;
+                                        info.mCount = count;
                                         item.mThumb = info;
 
-                                        final GridView grid = GalleryPicker.this.mGridView;
-                                        final int firstVisible = grid.getFirstVisiblePosition();
+                                        final GridView grid =
+                                                GalleryPicker.this.mGridView;
+                                        final int firstVisible =
+                                                grid.getFirstVisiblePosition();
 
-                                        // Minor optimization -- only notify if the specified position is visible
-                                        if ((pos >= firstVisible) && (pos < firstVisible + grid.getChildCount())) {
-                                            GalleryPickerAdapter.this.notifyDataSetChanged();
+                                        // Minor optimization -- only notify if
+                                        // the specified position is visible
+                                        if ((pos >= firstVisible)
+                                                && (pos < firstVisible
+                                                + grid.getChildCount())) {
+                                            GalleryPickerAdapter
+                                                    .this
+                                                    .notifyDataSetChanged();
                                         }
                                     }
                                 });
@@ -441,7 +492,8 @@ public class GalleryPicker extends Activity {
                             }
                         }
                     } catch (Exception ex) {
-                        Log.e(TAG, "got exception generating collage views ", ex);
+                        Log.e(TAG, "got exception generating collage views ",
+                                ex);
                     }
                 }
             });
@@ -458,19 +510,23 @@ public class GalleryPicker extends Activity {
                 int cameraItemType, String cameraBucketId,
                 int labelId) {
             int itemCount = bucketItemCount(
-                    Item.convertItemTypeToIncludedMediaType(itemType), bucketId);
+                    Item.convertItemTypeToIncludedMediaType(itemType),
+                    bucketId);
             if (itemCount == 0) {
                 return; // Bucket is empty, so don't show it.
             }
             int cameraItemCount = 0;
             if (cameraBucketId != null) {
                 cameraItemCount = bucketItemCount(
-                        Item.convertItemTypeToIncludedMediaType(cameraItemType), cameraBucketId);
+                        Item.convertItemTypeToIncludedMediaType(cameraItemType),
+                        cameraBucketId);
             }
             if (cameraItemCount == itemCount) {
-                return; // Bucket is the same as the camera bucket, so don't show it.
+                // Bucket is the same as the camera bucket, so don't show it.
+                return;
             }
-            mItems.add(new Item(itemType, bucketId, getResources().getString(labelId)));
+            mItems.add(new Item(itemType, bucketId,
+                    getResources().getString(labelId)));
         }
 
         /**
@@ -479,8 +535,11 @@ public class GalleryPicker extends Activity {
          */
         private void addBucket(int itemType, String bucketId,
                 int labelId) {
-            if (!isEmptyBucket(Item.convertItemTypeToIncludedMediaType(itemType), bucketId)) {
-                mItems.add(new Item(itemType, bucketId, getResources().getString(labelId)));
+            if (!isEmptyBucket(
+                    Item.convertItemTypeToIncludedMediaType(itemType),
+                    bucketId)) {
+                mItems.add(new Item(itemType, bucketId,
+                        getResources().getString(labelId)));
             }
         }
 
@@ -504,11 +563,13 @@ public class GalleryPicker extends Activity {
             return mItems.get(position).getIncludeMediaTypes();
         }
 
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView,
+                            ViewGroup parent) {
             View v;
 
             if (convertView == null) {
-                LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater vi = (LayoutInflater) getSystemService(
+                        Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(R.layout.gallery_picker_item, null);
             } else {
                 v = convertView;
@@ -516,12 +577,14 @@ public class GalleryPicker extends Activity {
 
             TextView titleView = (TextView) v.findViewById(R.id.title);
 
-            GalleryPickerItem iv = (GalleryPickerItem) v.findViewById(R.id.thumbnail);
+            GalleryPickerItem iv = 
+                    (GalleryPickerItem) v.findViewById(R.id.thumbnail);
             iv.setOverlay(mItems.get(position).getOverlay());
             ItemInfo info = mItems.get(position).mThumb;
             if (info != null) {
-                iv.setImageBitmap(info.bitmap);
-                String title = baseTitleForPosition(position) + " (" + info.count + ")";
+                iv.setImageBitmap(info.mBitmap);
+                String title = baseTitleForPosition(position) + " ("
+                        + info.mCount + ")";
                 titleView.setText(title);
             } else {
                 iv.setImageResource(android.R.color.transparent);
@@ -557,7 +620,8 @@ public class GalleryPicker extends Activity {
         rebake(false, scanning);
 
         // install an intent filter to receive SD card related events.
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
+        IntentFilter intentFilter = new IntentFilter(
+                Intent.ACTION_MEDIA_MOUNTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
@@ -571,7 +635,8 @@ public class GalleryPicker extends Activity {
 
 
     private void setBackgrounds(Resources r) {
-        mFrameGalleryMask = r.getDrawable(R.drawable.frame_gallery_preview_album_mask);
+        mFrameGalleryMask = r.getDrawable(
+                R.drawable.frame_gallery_preview_album_mask);
 
         mCellOutline = r.getDrawable(android.R.drawable.gallery_thumb);
         mVideoOverlay = r.getDrawable(R.drawable.ic_gallery_video_overlay);
@@ -579,7 +644,10 @@ public class GalleryPicker extends Activity {
 
     Handler mHandler = new Handler();
 
-    private void placeImage(Bitmap image, Canvas c, Paint paint, int imageWidth, int widthPadding, int imageHeight, int heightPadding, int offsetX, int offsetY, int pos) {
+    private void placeImage(Bitmap image, Canvas c, Paint paint, int imageWidth,
+                            int widthPadding, int imageHeight,
+                            int heightPadding, int offsetX, int offsetY,
+                            int pos) {
         int row = pos / 2;
         int col = pos - (row * 2);
 
@@ -589,9 +657,11 @@ public class GalleryPicker extends Activity {
         c.drawBitmap(image, xPos, yPos, paint);
     }
 
-    private Bitmap makeMiniThumbBitmap(int width, int height, IImageList images) {
+    private Bitmap makeMiniThumbBitmap(int width, int height,
+            IImageList images) {
         int count = images.getCount();
-        // We draw three different version of the folder image depending on the number of images in the folder.
+        // We draw three different version of the folder image depending on the
+        // number of images in the folder.
         //    For a single image, that image draws over the whole folder.
         //    For two or three images, we draw the two most recent photos.
         //    For four or more images, we draw four photos.
@@ -601,11 +671,13 @@ public class GalleryPicker extends Activity {
         int offsetWidth = 0;
         int offsetHeight = 0;
 
-        imageWidth = (imageWidth - padding) / 2;     // 2 here because we show two images
-        imageHeight = (imageHeight - padding) / 2;   // per row and column
+        imageWidth = (imageWidth - padding) / 2;  // 2 here because we show two
+                                                  // images
+        imageHeight = (imageHeight - padding) / 2;  // per row and column
 
         final Paint  p = new Paint();
-        final Bitmap b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        final Bitmap b = Bitmap.createBitmap(width, height,
+                Bitmap.Config.ARGB_8888);
         final Canvas c = new Canvas(b);
 
         final Matrix m = new Matrix();
@@ -646,32 +718,39 @@ public class GalleryPicker extends Activity {
                     int overlayHeight = mVideoOverlay.getIntrinsicHeight();
                     int left = (newMap.getWidth() - overlayWidth) / 2;
                     int top = (newMap.getHeight() - overlayHeight) / 2;
-                    Rect newBounds = new Rect(left, top, left + overlayWidth, top + overlayHeight);
+                    Rect newBounds = new Rect(left, top, left + overlayWidth,
+                            top + overlayHeight);
                     mVideoOverlay.setBounds(newBounds);
                     mVideoOverlay.draw(overlayCanvas);
                     temp.recycle();
                     temp = newMap;
                 }
 
-                Bitmap temp2 = ImageLoader.transform(m, temp, imageWidth, imageHeight, true);
-                if (temp2 != temp)
+                Bitmap temp2 = ImageLoader.transform(m, temp, imageWidth,
+                                                     imageHeight, true);
+                if (temp2 != temp) {
                     temp.recycle();
+                }
                 temp = temp2;
             }
 
-            Bitmap thumb = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888);
+            Bitmap thumb = Bitmap.createBitmap(imageWidth, imageHeight,
+                                               Bitmap.Config.ARGB_8888);
             Canvas tempCanvas = new Canvas(thumb);
-            if (temp != null)
+            if (temp != null) {
                 tempCanvas.drawBitmap(temp, new Matrix(), new Paint());
+            }
             mCellOutline.setBounds(0, 0, imageWidth, imageHeight);
             mCellOutline.draw(tempCanvas);
 
-            placeImage(thumb, c, pdpaint, imageWidth, padding, imageHeight, padding, offsetWidth, offsetHeight, i);
+            placeImage(thumb, c, pdpaint, imageWidth, padding, imageHeight,
+                       padding, offsetWidth, offsetHeight, i);
 
             thumb.recycle();
 
-            if (temp != null)
+            if (temp != null) {
                 temp.recycle();
+            }
         }
 
         return b;
@@ -703,8 +782,7 @@ public class GalleryPicker extends Activity {
         IImageList list = createImageList(mediaTypes, bucketId);
         try {
             return list.isEmpty();
-        }
-        finally {
+        } finally {
             list.deactivate();
         }
     }
@@ -714,8 +792,7 @@ public class GalleryPicker extends Activity {
         IImageList list = createImageList(mediaTypes, bucketId);
         try {
             return list.getCount();
-        }
-        finally {
+        } finally {
             list.deactivate();
         }
     }
