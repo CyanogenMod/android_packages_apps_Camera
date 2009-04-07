@@ -16,16 +16,15 @@
 
 package com.android.camera;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
-import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  *  CameraSettings
