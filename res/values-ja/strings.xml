@@ -18,8 +18,7 @@
     <string name="all_images">"すべての写真"</string>
     <string name="all_videos">"すべての動画"</string>
     <string name="camera_label">"カメラ"</string>
-    <!-- no translation found for video_camera_label (2899292505526427293) -->
-    <skip />
+    <string name="video_camera_label">"ビデオ録画"</string>
     <string name="gallery_picker_label">"ギャラリー"</string>
     <string name="gallery_camera_bucket_name">"カメラ (写真)"</string>
     <string name="gallery_camera_videos_bucket_name">"カメラ (動画)"</string>
@@ -61,8 +60,7 @@
     <string name="camera_tossing">"削除中..."</string>
     <string name="no_way_to_share_image">"この画像は共有できません。"</string>
     <string name="no_way_to_share_video">"この動画は共有できません。"</string>
-    <!-- no translation found for video_play (5287787282508002895) -->
-    <skip />
+    <string name="video_play">"再生"</string>
     <string name="camera_gallery_photos_text">"ギャラリー"</string>
     <string name="camera_pick_wallpaper">"画像"</string>
     <string name="camera_setas_wallpaper">"壁紙"</string>
