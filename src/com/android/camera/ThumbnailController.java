@@ -117,9 +117,9 @@ public class ThumbnailController {
         } catch (IOException e) {
             return false;
         } finally {
-            closeSilently(f);
-            closeSilently(b);
-            closeSilently(d);
+            MenuHelper.closeSilently(f);
+            MenuHelper.closeSilently(b);
+            MenuHelper.closeSilently(d);
         }
         return true;
     }
@@ -141,21 +141,11 @@ public class ThumbnailController {
         } catch (IOException e) {
             return false;
         } finally {
-            closeSilently(f);
-            closeSilently(b);
-            closeSilently(d);
+            MenuHelper.closeSilently(f);
+            MenuHelper.closeSilently(b);
+            MenuHelper.closeSilently(d);
         }
         return true;
-    }
-
-    private void closeSilently(Closeable c) {
-        if (c != null) {
-            try {
-                c.close();
-            } catch (IOException e) {
-                // ignore
-            }
-        }
     }
 
     public void updateDisplayIfNeeded() {

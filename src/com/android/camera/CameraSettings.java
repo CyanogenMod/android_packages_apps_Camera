@@ -30,8 +30,8 @@ import android.util.Log;
 /**
  *  CameraSettings
  */
-public class CameraSettings extends PreferenceActivity
-    implements OnSharedPreferenceChangeListener {
+public class CameraSettings extends PreferenceActivity implements
+        OnSharedPreferenceChangeListener {
     public static final String KEY_VIDEO_QUALITY = 
             "pref_camera_videoquality_key";
     public static final String KEY_WHITE_BALANCE = 
@@ -44,7 +44,6 @@ public class CameraSettings extends PreferenceActivity
     private ListPreference mEffect;
     private Parameters mParameters;
 
-    /** Called with the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -148,4 +147,3 @@ public class CameraSettings extends PreferenceActivity
         }
     }
 }
-
