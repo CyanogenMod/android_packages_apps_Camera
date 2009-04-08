@@ -18,8 +18,7 @@
     <string name="all_images">"Wszystkie zdjęcia"</string>
     <string name="all_videos">"Wszystkie filmy"</string>
     <string name="camera_label">"Aparat"</string>
-    <!-- no translation found for video_camera_label (2899292505526427293) -->
-    <skip />
+    <string name="video_camera_label">"Kamera"</string>
     <string name="gallery_picker_label">"Galeria"</string>
     <string name="gallery_camera_bucket_name">"Zdjęcia z aparatu"</string>
     <string name="gallery_camera_videos_bucket_name">"Filmy z aparatu"</string>
@@ -61,8 +60,7 @@
     <string name="camera_tossing">"Trwa usuwanie…"</string>
     <string name="no_way_to_share_image">"Nie można przesłać tego zdjęcia."</string>
     <string name="no_way_to_share_video">"Nie można przesłać tego filmu."</string>
-    <!-- no translation found for video_play (5287787282508002895) -->
-    <skip />
+    <string name="video_play">"Odtwórz"</string>
     <string name="camera_gallery_photos_text">"Galeria"</string>
     <string name="camera_pick_wallpaper">"Zdjęcia"</string>
     <string name="camera_setas_wallpaper">"Tapeta"</string>

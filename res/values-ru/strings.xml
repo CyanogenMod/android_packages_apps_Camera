@@ -18,8 +18,7 @@
     <string name="all_images">"Все изображения"</string>
     <string name="all_videos">"Все видео"</string>
     <string name="camera_label">"Камера"</string>
-    <!-- no translation found for video_camera_label (2899292505526427293) -->
-    <skip />
+    <string name="video_camera_label">"Видеокамера"</string>
     <string name="gallery_picker_label">"Галерея"</string>
     <string name="gallery_camera_bucket_name">"Фотографии с камеры"</string>
     <string name="gallery_camera_videos_bucket_name">"Видео с камеры"</string>
@@ -61,8 +60,7 @@
     <string name="camera_tossing">"Идет удаление…"</string>
     <string name="no_way_to_share_image">"Отправить это изображение нельзя."</string>
     <string name="no_way_to_share_video">"Отправить это видео нельзя."</string>
-    <!-- no translation found for video_play (5287787282508002895) -->
-    <skip />
+    <string name="video_play">"Воспроизвести"</string>
     <string name="camera_gallery_photos_text">"Галерея"</string>
     <string name="camera_pick_wallpaper">"Изображения"</string>
     <string name="camera_setas_wallpaper">"Фоновый рисунок"</string>
