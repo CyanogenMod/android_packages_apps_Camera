@@ -138,16 +138,6 @@ public class DrmImageList extends ImageList implements IImageList {
     }
 
     @Override
-    protected int indexPicasaWeb() {
-        return -1;
-    }
-
-    @Override
-    protected int indexPrivate() {
-        return -1;
-    }
-
-    @Override
     protected int indexTitle() {
         return -1;
     }

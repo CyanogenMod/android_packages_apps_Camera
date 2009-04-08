@@ -52,7 +52,6 @@ public class VideoList extends BaseImageList implements IImageList {
             Video.Media.TITLE,
             Video.Media.DISPLAY_NAME,
             Video.Media.DESCRIPTION,
-            Video.Media.IS_PRIVATE,
             Video.Media.TAGS,
             Video.Media.CATEGORY,
             Video.Media.LANGUAGE,
@@ -70,7 +69,6 @@ public class VideoList extends BaseImageList implements IImageList {
     static final int INDEX_MIME_TYPE = indexOf(Video.Media.MIME_TYPE);
     static final int INDEX_DESCRIPTION =
             indexOf(Video.Media.DESCRIPTION);
-    static final int INDEX_PRIVATE = indexOf(Video.Media.IS_PRIVATE);
     static final int INDEX_TAGS = indexOf(Video.Media.TAGS);
     static final int INDEX_CATEGORY = indexOf(Video.Media.CATEGORY);
     static final int INDEX_LANGUAGE = indexOf(Video.Media.LANGUAGE);
@@ -210,16 +208,6 @@ public class VideoList extends BaseImageList implements IImageList {
     @Override
     protected int indexMiniThumbId() {
         return INDEX_MINI_THUMB_MAGIC;
-    }
-
-    @Override
-    protected int indexPicasaWeb() {
-        return -1;
-    }
-
-    @Override
-    protected int indexPrivate() {
-        return INDEX_PRIVATE;
     }
 
     @Override
