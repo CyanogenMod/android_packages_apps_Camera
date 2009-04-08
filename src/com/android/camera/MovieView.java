@@ -31,13 +31,13 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+// This activity plays a video from a specified URI.
 public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
     private static final String TAG = "MovieView";
@@ -82,8 +82,8 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
         // For streams that we expect to be slow to start up, show a
         // progress spinner until playback starts.
         String scheme = mUri.getScheme();
-        if ("http".equalsIgnoreCase(scheme) ||
-                "rtsp".equalsIgnoreCase(scheme)) {
+        if ("http".equalsIgnoreCase(scheme)
+                || "rtsp".equalsIgnoreCase(scheme)) {
             mHandler.postDelayed(mPlayingChecker, 250);
         } else {
             mProgressView.setVisibility(View.GONE);
@@ -142,8 +142,11 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
             return null;
         }
         
-        String[] projection = new String[]{Video.VideoColumns.DURATION,
-                Video.VideoColumns.BOOKMARK};
+        String[] projection = new String[] {
+            Video.VideoColumns.DURATION,
+            Video.VideoColumns.BOOKMARK
+        };
+
         try {
             Cursor cursor = getContentResolver().query(mUri, projection,
                     null, null, null);
@@ -230,11 +233,7 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
         super.onResume();
     }
 
-    Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-        }
-    };
+    Handler mHandler = new Handler();
 
     Runnable mPlayingChecker = new Runnable() {
         public void run() {

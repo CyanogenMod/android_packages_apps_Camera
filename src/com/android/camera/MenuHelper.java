@@ -23,8 +23,6 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
@@ -44,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,8 +72,6 @@ public class MenuHelper {
     public static final int MENU_IMAGE_SHARE = 10;
     public static final int MENU_IMAGE_SET = 14;
     public static final int MENU_IMAGE_SET_WALLPAPER = 15;
-    public static final int MENU_IMAGE_SET_CONTACT = 16;
-    public static final int MENU_IMAGE_SET_MYFAVE = 17;
     public static final int MENU_IMAGE_CROP = 18;
     public static final int MENU_IMAGE_ROTATE = 19;
     public static final int MENU_IMAGE_ROTATE_LEFT = 20;
@@ -82,7 +79,6 @@ public class MenuHelper {
     public static final int MENU_IMAGE_TOSS = 22;
     public static final int MENU_VIDEO_PLAY = 23;
     public static final int MENU_VIDEO_SHARE = 24;
-    public static final int MENU_VIDEO_TOSS = 27;
 
     private static final long SHARE_FILE_LENGTH_LIMIT = 3L * 1024L * 1024L;
 
@@ -106,11 +102,13 @@ public class MenuHelper {
         public void run(Uri uri, IImage image);
     }
 
-    private static void closeSilently(Closeable target) {
-        try {
-            if (target != null) target.close();
-        } catch (Throwable t) {
-            // ignore all exceptions, that's what silently means
+    public static void closeSilently(Closeable c) {
+        if (c != null) {
+            try {
+                c.close();
+            } catch (Throwable e) {
+                // ignore
+            }
         }
     }
 
@@ -143,6 +141,8 @@ public class MenuHelper {
         }
     }
 
+    // Called when "Details" is clicked.
+    // Displays detailed information about the image/video.
     private static boolean onDetailsClicked(MenuInvoker onInvoke,
                                            final Activity activity,
                                            final boolean isImage) {
@@ -334,30 +334,21 @@ public class MenuHelper {
         return true;
     }
 
-    private static boolean onRotateLeftClicked(MenuInvoker onInvoke) {
+    // Called when "Rotate left" or "Rotate right" is clicked.
+    private static boolean onRotateClicked(MenuInvoker onInvoke,
+            final int degree) {
         onInvoke.run(new MenuCallback() {
             public void run(Uri u, IImage image) {
                 if (image == null || image.isReadonly()) {
                     return;
                 }
-                image.rotateImageBy(-90);
+                image.rotateImageBy(degree);
             }
         });
         return true;
     }
 
-    private static boolean onRotateRightClicked(MenuInvoker onInvoke) {    
-        onInvoke.run(new MenuCallback() {
-            public void run(Uri u, IImage image) {
-                if (image == null || image.isReadonly()) {
-                    return;
-                }
-                image.rotateImageBy(90);
-            }
-        });
-        return true;
-    }
-
+    // Called when "Crop" is clicked.
     private static boolean onCropClicked(MenuInvoker onInvoke,
                                          final Activity activity) {
         onInvoke.run(new MenuCallback() {
@@ -376,18 +367,15 @@ public class MenuHelper {
         return true;
     }
 
-    private static boolean onImageSaveClicked(MenuInvoker onInvoke,
-                                              final Activity activity) {
+    // Called when "Set as" is clicked.
+    private static boolean onSetAsClicked(MenuInvoker onInvoke,
+                                          final Activity activity) {
         onInvoke.run(new MenuCallback() {
             public void run(Uri u, IImage image) {
                 if (u == null || image == null) {
                     return;
                 }
 
-                if (Config.LOGV) {
-                    Log.v(TAG, "in callback u is " + u + "; mime type is "
-                            + image.getMimeType());
-                }
                 Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
                 intent.setDataAndType(u, image.getMimeType());
                 intent.putExtra("mimeType", image.getMimeType());
@@ -398,6 +386,7 @@ public class MenuHelper {
         return true;
     }
 
+    // Called when "Share" is clicked.
     private static boolean onImageShareClicked(MenuInvoker onInvoke,
             final Activity activity, final boolean isImage) {
         onInvoke.run(new MenuCallback() {
@@ -433,6 +422,7 @@ public class MenuHelper {
         return true;
     }
 
+    // Called when "Play" is clicked.
     private static boolean onViewPlayClicked(MenuInvoker onInvoke,
             final Activity activity) {
         onInvoke.run(new MenuCallback() {
@@ -451,7 +441,6 @@ public class MenuHelper {
             int inclusions,
             final boolean isImage,
             final Activity activity,
-            final Handler handler,
             final Runnable onDelete,
             final MenuInvoker onInvoke) {
         final ArrayList<MenuItem> requiresWriteAccessItems =
@@ -475,7 +464,7 @@ public class MenuHelper {
                         .setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
-                                return onRotateLeftClicked(onInvoke);
+                                return onRotateClicked(onInvoke, -90);
                             }
                         }).setAlphabeticShortcut('l'));
                 requiresWriteAccessItems.add(
@@ -484,7 +473,7 @@ public class MenuHelper {
                         .setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
-                                return onRotateRightClicked(onInvoke);
+                                return onRotateClicked(onInvoke, 90);
                             }
                         }).setAlphabeticShortcut('r'));
             }
@@ -510,7 +499,7 @@ public class MenuHelper {
             setMenu.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
-                            return onImageSaveClicked(onInvoke, activity);
+                            return onSetAsClicked(onInvoke, activity);
                         }
                     });
         }
@@ -564,7 +553,6 @@ public class MenuHelper {
             });
         }
 
-
         return new MenuItemsResult() {
             public void gettingReadyToOpen(Menu menu, IImage image) {
                 // protect against null here.  this isn't strictly speaking
@@ -593,7 +581,8 @@ public class MenuHelper {
                     item.setEnabled(!isDrm);
                 }
             }
-        
+
+            // must override abstract method
             public void aboutToCall(MenuItem menu, IImage image) {
             }
         };
@@ -628,7 +617,7 @@ public class MenuHelper {
         }
     }
 
-    public static void displayDeleteDialog(Activity activity,
+    private static void displayDeleteDialog(Activity activity,
             final Runnable onDelete, boolean isPhoto) {
         android.app.AlertDialog.Builder b =
                 new android.app.AlertDialog.Builder(activity);
@@ -669,17 +658,22 @@ public class MenuHelper {
         MenuItem item = menu.add(group, MENU_SWITCH_CAMERA_MODE, 0, labelId)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        String action = switchToVideo
-                                ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
-                                : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
-                        Intent intent = new Intent(action);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                        activity.startActivity(intent);
-                        return true;
-                     }
+                        return onSwitchModeClicked(activity, switchToVideo);
+                    }
                 });
         item.setIcon(iconId);
+    }
+
+    private static boolean onSwitchModeClicked(Activity activity,
+                boolean switchToVideo) {
+        String action = switchToVideo
+                ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
+                : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
+        Intent intent = new Intent(action);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        activity.startActivity(intent);
+        return true;
     }
 
     static void gotoStillImageCapture(Activity activity) {
@@ -712,14 +706,6 @@ public class MenuHelper {
         intent.putExtra("windowTitle", activity.getString(windowTitleId));
         intent.putExtra("mediaTypes", mediaTypes);
 
-        // Request unspecified so that we match the current camera orientation
-        // rather than matching the "flip orientation" preference.
-        // Disabled because people don't care for it. Also it's
-        // not as compelling now that we have implemented have quick orientation
-        // flipping.
-        // intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
-        //         android.content.pm.ActivityInfo
-        //         .SCREEN_ORIENTATION_UNSPECIFIED);
         try {
             activity.startActivity(intent);
         } catch (ActivityNotFoundException e) {
@@ -732,17 +718,20 @@ public class MenuHelper {
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        Intent intent = new Intent(
-                                MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        try {
-                            activity.startActivity(intent);
-                        } catch (android.content.ActivityNotFoundException e) {
-                            // Ignore exception
-                        }
-                        return true;
+                        return onCapturePictureClicked(activity);
                     }
                 }).setIcon(android.R.drawable.ic_menu_camera);
+    }
+
+    private static boolean onCapturePictureClicked(Activity activity) {
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        try {
+            activity.startActivity(intent);
+        } catch (android.content.ActivityNotFoundException e) {
+            // Ignore exception
+        }
+        return true;
     }
 
     static void addCaptureVideoMenuItems(Menu menu, final Activity activity) {
@@ -750,75 +739,25 @@ public class MenuHelper {
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        Intent intent = new Intent(
-                                MediaStore.INTENT_ACTION_VIDEO_CAMERA);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        try {
-                            activity.startActivity(intent);
-                        } catch (android.content.ActivityNotFoundException e) {
-                            // Ignore exception
-                        }
-                        return true;
+                        return onCaptureVideoClicked(activity);
                     }
                 }).setIcon(R.drawable.ic_menu_camera_video_view);
     }
 
-    static void addCaptureMenuItems(Menu menu, final Activity activity) {
-        addCapturePictureMenuItems(menu, activity);
-        addCaptureVideoMenuItems(menu, activity);
-    }
-
-    private static boolean onFlipOrientationClicked(Activity activity,
-            SharedPreferences prefs) {
-        // Check what our actual orientation is
-        int current = activity.getResources().getConfiguration().orientation;
-        int newOrientation = android.content.pm.ActivityInfo
-                .SCREEN_ORIENTATION_LANDSCAPE;
-        if (current == Configuration.ORIENTATION_LANDSCAPE) {
-            newOrientation = android.content.pm.ActivityInfo
-                    .SCREEN_ORIENTATION_UNSPECIFIED;
+    private static boolean onCaptureVideoClicked(Activity activity) {
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        try {
+            activity.startActivity(intent);
+        } catch (android.content.ActivityNotFoundException e) {
+            // Ignore exception
         }
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("nuorientation", newOrientation);
-        editor.commit();
-        requestOrientation(activity, prefs, true);
         return true;
     }
 
-    static MenuItem addFlipOrientation(Menu menu, final Activity activity,
-            final SharedPreferences prefs) {
-        // position 41 after rotate
-        // D
-        return menu
-                .add(Menu.CATEGORY_SECONDARY, 304, 41,
-                R.string.flip_orientation)
-                .setOnMenuItemClickListener(
-                new MenuItem.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        return onFlipOrientationClicked(activity, prefs);
-                    }
-                }).setIcon(
-                android.R.drawable.ic_menu_always_landscape_portrait);
-    }
-
-    static void requestOrientation(Activity activity, SharedPreferences prefs) {
-        requestOrientation(activity, prefs, false);
-    }
-
-    private static void requestOrientation(Activity activity,
-            SharedPreferences prefs, boolean ignoreIntentExtra) {
-        // Disable orientation for now. If it is set to
-        // SCREEN_ORIENTATION_SENSOR, a duplicated orientation will be observed.
-
-        return;
-    }
-
-    static void setFlipOrientationEnabled(Activity activity,
-            MenuItem flipItem) {
-        int keyboard = activity.getResources().getConfiguration()
-                .hardKeyboardHidden;
-        flipItem.setEnabled(keyboard != android.content.res.Configuration
-                .HARDKEYBOARDHIDDEN_NO);
+    public static void addCaptureMenuItems(Menu menu, final Activity activity) {
+        addCapturePictureMenuItems(menu, activity);
+        addCaptureVideoMenuItems(menu, activity);
     }
 
     public static String formatDuration(final Activity activity,
