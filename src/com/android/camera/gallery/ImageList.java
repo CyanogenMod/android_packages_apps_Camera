@@ -243,16 +243,6 @@ public class ImageList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected int indexPicasaWeb() {
-        return -1;
-    }
-
-    @Override
-    protected int indexPrivate() {
-        return -1;
-    }
-
-    @Override
     protected int indexTitle() {
         return -1;
     }
