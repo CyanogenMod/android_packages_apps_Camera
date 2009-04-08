@@ -53,8 +53,8 @@ public class PhotoAppWidgetBind extends Activity {
         final ArrayList<Bitmap> bitmaps =
                 extras.getParcelableArrayList(EXTRA_APPWIDGET_BITMAPS);
         
-        if (appWidgetIds == null || bitmaps == null ||
-                appWidgetIds.length != bitmaps.size()) {
+        if (appWidgetIds == null || bitmaps == null
+                || appWidgetIds.length != bitmaps.size()) {
             Log.e(TAG, "Problem parsing photo widget bind request");
             return;
         }
@@ -73,6 +73,5 @@ public class PhotoAppWidgetBind extends Activity {
             appWidgetManager.updateAppWidget(new int[] { appWidgetId }, views);
         }
         helper.close();
-        
     }
 }

@@ -318,18 +318,6 @@ public abstract class BaseImage implements IImage {
         }
     }
 
-    public boolean getIsPrivate() {
-        if (mContainer.indexPrivate() < 0) return false;
-        boolean isPrivate = false;
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                isPrivate = c.getInt(mContainer.indexPrivate()) != 0;
-            }
-        }
-        return isPrivate;
-    }
-
     public double getLatitude() {
         if (mContainer.indexLatitude() < 0) return 0D;
         Cursor c = getCursor();
@@ -384,10 +372,6 @@ public abstract class BaseImage implements IImage {
             }
         }
         return String.valueOf(mId);
-    }
-
-    public String getPicasaId() {
-        return null;
     }
 
     public int getRow() {
@@ -545,45 +529,12 @@ public abstract class BaseImage implements IImage {
         }
     }
 
-    public void setIsPrivate(boolean isPrivate) {
-        if (mContainer.indexPrivate() < 0) return;
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                c.updateInt(mContainer.indexPrivate(), isPrivate ? 1 : 0);
-            }
-        }
-    }
-
     public void setName(String name) {
         Cursor c = getCursor();
         synchronized (c) {
             if (c.moveToPosition(getRow())) {
                 c.updateString(mContainer.indexTitle(), name);
             }
-        }
-    }
-
-    public void setPicasaId(String id) {
-        Cursor c = null;
-        try {
-            c = mContentResolver.query(fullSizeImageUri(),
-                new String[] { "_id", Images.Media.PICASA_ID },
-                null, null, null);
-            if (c != null && c.moveToFirst()) {
-                if (VERBOSE) {
-                    Log.v(TAG, "storing picasaid " + id + " for "
-                            + fullSizeImageUri());
-                }
-                c.updateString(1, id);
-                c.commitUpdates();
-                if (VERBOSE) {
-                    Log.v(TAG, "updated image with picasa id " + id);
-                }
-            }
-        } finally {
-            if (c != null)
-                c.close();
         }
     }
 

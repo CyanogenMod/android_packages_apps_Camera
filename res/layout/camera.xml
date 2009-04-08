@@ -21,24 +21,24 @@
         android:orientation="horizontal">
 
     <com.android.camera.VideoPreview
-        android:id="@+id/camera_preview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_centerInParent="true" />
+            android:id="@+id/camera_preview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true" />
 
     <com.android.camera.ShutterButton
-        android:id="@+id/shutter_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_camera_indicator_photo"
-        android:background="@drawable/ic_btn_camera_background"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="5dip"
-        android:layout_marginTop="5dip"
-        android:scaleType="center" />
+            android:id="@+id/shutter_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera_indicator_photo"
+            android:background="@drawable/ic_btn_camera_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="5dip"
+            android:scaleType="center" />
 
     <ImageView
             android:id="@+id/gps_indicator"
@@ -54,26 +54,26 @@
             android:src="@drawable/ic_gps_active_camera" />
 
     <ImageView
-        android:id="@+id/focus_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_camera_indicator_auto_focus_green"
-        android:layout_alignLeft="@id/shutter_button"
-        android:layout_alignTop="@id/shutter_button"
-        android:layout_marginLeft="39dip"
-        android:layout_marginTop="16dip"
-        android:scaleType="center"
-        android:visibility="gone" />
+            android:id="@+id/focus_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera_indicator_auto_focus_green"
+            android:layout_alignLeft="@id/shutter_button"
+            android:layout_alignTop="@id/shutter_button"
+            android:layout_marginLeft="39dip"
+            android:layout_marginTop="16dip"
+            android:scaleType="center"
+            android:visibility="gone" />
 
     <ImageView
-        android:visibility="gone"
-        android:id="@+id/last_picture_button"
-        android:layout_width="72dip"
-        android:layout_height="72dip"
-        android:clickable="true"
-        android:focusable="false"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="5dip"
-        android:layout_marginTop="5dip" />
+            android:visibility="gone"
+            android:id="@+id/last_picture_button"
+            android:layout_width="72dip"
+            android:layout_height="72dip"
+            android:clickable="true"
+            android:focusable="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip" />
 </RelativeLayout>

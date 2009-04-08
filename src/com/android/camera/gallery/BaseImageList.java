@@ -728,10 +728,6 @@ public abstract class BaseImageList implements IImageList {
 
     protected abstract int indexMiniThumbId();
 
-    protected abstract int indexPicasaWeb();
-
-    protected abstract int indexPrivate();
-
     protected abstract int indexTitle();
 
     protected abstract int indexDisplayName();

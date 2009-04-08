@@ -61,12 +61,6 @@ public interface IImage {
     public abstract String getMimeType();
     public abstract int getHeight();
 
-    /**
-     * Gets the flag telling whether this video/photo is private or public.
-     * @return  the description of the image.
-     */
-    public abstract boolean getIsPrivate();
-
     public abstract double getLatitude();
 
     public abstract double getLongitude();
@@ -78,8 +72,6 @@ public interface IImage {
     public abstract String getTitle();
 
     public abstract String getDisplayName();
-
-    public abstract String getPicasaId();
 
     public abstract int getRow();
 
@@ -105,16 +97,9 @@ public interface IImage {
     public abstract void setDescription(String description);
 
     /**
-     * Sets whether the video/photo is private or public.
-     */
-    public abstract void setIsPrivate(boolean isPrivate);
-
-    /**
      * Sets the name of the image.
      */
     public abstract void setName(String name);
-
-    public abstract void setPicasaId(String id);
 
     /**
      * Get the bitmap for the medium thumbnail.

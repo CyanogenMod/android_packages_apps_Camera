@@ -19,18 +19,14 @@ package com.android.camera;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-/**
- *  GallerySettings
- */
+// GallerySettings
+//
+// This is the setting screen for Gallery.
+// It reads the available settings from an XML resource.
 public class GallerySettings extends PreferenceActivity {
-    public GallerySettings() {
-    }
-
-    /** Called with the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.gallery_preferences);
     }
 }
-

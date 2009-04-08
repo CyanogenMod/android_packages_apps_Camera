@@ -112,11 +112,6 @@ public class VideoObject extends BaseImage implements IImage {
          return getStringEntry(VideoList.INDEX_LANGUAGE);
     }
 
-    @Override
-    public String getPicasaId() {
-        return null;
-    }
-
     private String getStringEntry(int entryName) {
         String entry = null;
         Cursor c = getCursor();
