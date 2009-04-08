@@ -18,9 +18,6 @@ package com.android.camera;
 
 import com.android.camera.gallery.IImage;
 
-import java.io.Closeable;
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -39,51 +36,55 @@ import android.util.Config;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Closeable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class MenuHelper {
-    static private final String TAG = "MenuHelper";
+    private static final String TAG = "MenuHelper";
 
-    static public final int GENERIC_ITEM      = 1;
-    static public final int IMAGE_SAVING_ITEM = 2;
-    static public final int VIDEO_SAVING_ITEM = 3;
-    static public final int IMAGE_MODE_ITEM   = 4;
-    static public final int VIDEO_MODE_ITEM   = 5;
-    static public final int MENU_ITEM_MAX     = 5;
+    public static final int GENERIC_ITEM      = 1;
+    public static final int IMAGE_SAVING_ITEM = 2;
+    public static final int VIDEO_SAVING_ITEM = 3;
+    public static final int IMAGE_MODE_ITEM   = 4;
+    public static final int VIDEO_MODE_ITEM   = 5;
+    public static final int MENU_ITEM_MAX     = 5;
 
-    static public final int INCLUDE_ALL           = 0xFFFFFFFF;
-    static public final int INCLUDE_VIEWPLAY_MENU = (1 << 0);
-    static public final int INCLUDE_SHARE_MENU    = (1 << 1);
-    static public final int INCLUDE_SET_MENU      = (1 << 2);
-    static public final int INCLUDE_CROP_MENU     = (1 << 3);
-    static public final int INCLUDE_DELETE_MENU   = (1 << 4);
-    static public final int INCLUDE_ROTATE_MENU   = (1 << 5);
-    static public final int INCLUDE_DETAILS_MENU  = (1 << 6);
+    public static final int INCLUDE_ALL           = 0xFFFFFFFF;
+    public static final int INCLUDE_VIEWPLAY_MENU = (1 << 0);
+    public static final int INCLUDE_SHARE_MENU    = (1 << 1);
+    public static final int INCLUDE_SET_MENU      = (1 << 2);
+    public static final int INCLUDE_CROP_MENU     = (1 << 3);
+    public static final int INCLUDE_DELETE_MENU   = (1 << 4);
+    public static final int INCLUDE_ROTATE_MENU   = (1 << 5);
+    public static final int INCLUDE_DETAILS_MENU  = (1 << 6);
 
-    static public final int MENU_SWITCH_CAMERA_MODE = 0;
-    static public final int MENU_CAPTURE_PICTURE = 1;
-    static public final int MENU_CAPTURE_VIDEO = 2;
-    static public final int MENU_IMAGE_SHARE = 10;
-    static public final int MENU_IMAGE_SET = 14;
-    static public final int MENU_IMAGE_SET_WALLPAPER = 15;
-    static public final int MENU_IMAGE_SET_CONTACT = 16;
-    static public final int MENU_IMAGE_SET_MYFAVE = 17;
-    static public final int MENU_IMAGE_CROP = 18;
-    static public final int MENU_IMAGE_ROTATE = 19;
-    static public final int MENU_IMAGE_ROTATE_LEFT = 20;
-    static public final int MENU_IMAGE_ROTATE_RIGHT = 21;
-    static public final int MENU_IMAGE_TOSS = 22;
-    static public final int MENU_VIDEO_PLAY = 23;
-    static public final int MENU_VIDEO_SHARE = 24;
-    static public final int MENU_VIDEO_TOSS = 27;
+    public static final int MENU_SWITCH_CAMERA_MODE = 0;
+    public static final int MENU_CAPTURE_PICTURE = 1;
+    public static final int MENU_CAPTURE_VIDEO = 2;
+    public static final int MENU_IMAGE_SHARE = 10;
+    public static final int MENU_IMAGE_SET = 14;
+    public static final int MENU_IMAGE_SET_WALLPAPER = 15;
+    public static final int MENU_IMAGE_SET_CONTACT = 16;
+    public static final int MENU_IMAGE_SET_MYFAVE = 17;
+    public static final int MENU_IMAGE_CROP = 18;
+    public static final int MENU_IMAGE_ROTATE = 19;
+    public static final int MENU_IMAGE_ROTATE_LEFT = 20;
+    public static final int MENU_IMAGE_ROTATE_RIGHT = 21;
+    public static final int MENU_IMAGE_TOSS = 22;
+    public static final int MENU_VIDEO_PLAY = 23;
+    public static final int MENU_VIDEO_SHARE = 24;
+    public static final int MENU_VIDEO_TOSS = 27;
 
-    static private final long SHARE_FILE_LENGTH_LIMIT = 3L * 1024L * 1024L;
+    private static final long SHARE_FILE_LENGTH_LIMIT = 3L * 1024L * 1024L;
 
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
@@ -142,6 +143,309 @@ public class MenuHelper {
         }
     }
 
+    private static boolean onDetailsClicked(MenuInvoker onInvoke,
+                                           final Activity activity,
+                                           final boolean isImage) {
+        onInvoke.run(new MenuCallback() {
+            public void run(Uri u, IImage image) {
+                if (image == null) {
+                    return;
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+                final View d = View.inflate(activity, R.layout.detailsview,
+                        null);
+
+                ImageView imageView = (ImageView) d.findViewById(
+                        R.id.details_thumbnail_image);
+                imageView.setImageBitmap(image.miniThumbBitmap());
+
+                TextView textView = (TextView) d.findViewById(
+                        R.id.details_image_title);
+                textView.setText(image.getDisplayName());
+
+                long length = getImageFileSize(image);
+                String lengthString = lengthString = length < 0 ? ""
+                        : android.text.format.Formatter.formatFileSize(
+                        activity, length);
+                ((TextView) d
+                    .findViewById(R.id.details_file_size_value))
+                    .setText(lengthString);
+
+                int dimensionWidth = 0;
+                int dimensionHeight = 0;
+                if (isImage) {
+                    dimensionWidth = image.getWidth();
+                    dimensionHeight = image.getHeight();
+                    d.findViewById(R.id.details_duration_row)
+                            .setVisibility(View.GONE);
+                    d.findViewById(R.id.details_frame_rate_row)
+                            .setVisibility(View.GONE);
+                    d.findViewById(R.id.details_bit_rate_row)
+                            .setVisibility(View.GONE);
+                    d.findViewById(R.id.details_format_row)
+                            .setVisibility(View.GONE);
+                    d.findViewById(R.id.details_codec_row)
+                            .setVisibility(View.GONE);
+                } else {
+                    MediaMetadataRetriever retriever
+                            = new MediaMetadataRetriever();
+                    try {
+                        retriever.setMode(MediaMetadataRetriever
+                                .MODE_GET_METADATA_ONLY);
+                        retriever.setDataSource(image.getDataPath());
+                        try {
+                            dimensionWidth = Integer.parseInt(
+                                    retriever.extractMetadata(
+                                    MediaMetadataRetriever
+                                    .METADATA_KEY_VIDEO_WIDTH));
+                            dimensionHeight = Integer.parseInt(
+                                    retriever.extractMetadata(
+                                    MediaMetadataRetriever
+                                    .METADATA_KEY_VIDEO_HEIGHT));
+                        } catch (NumberFormatException e) {
+                            dimensionWidth = 0;
+                            dimensionHeight = 0;
+                        }
+
+                        try {
+                            int durationMs = Integer.parseInt(
+                                    retriever.extractMetadata(
+                                    MediaMetadataRetriever
+                                    .METADATA_KEY_DURATION));
+                            String durationValue = formatDuration(
+                                    activity, durationMs);
+                            ((TextView) d.findViewById(
+                                R.id.details_duration_value))
+                                .setText(durationValue);
+                        } catch (NumberFormatException e) {
+                            d.findViewById(
+                                    R.id.details_frame_rate_row)
+                                    .setVisibility(View.GONE);
+                        }
+
+                        try {
+                            String frameRate = String.format(
+                                    activity.getString(R.string.details_fps),
+                                    Integer.parseInt(
+                                            retriever.extractMetadata(
+                                            MediaMetadataRetriever
+                                            .METADATA_KEY_FRAME_RATE)));
+                            ((TextView) d.findViewById(
+                                R.id.details_frame_rate_value))
+                                .setText(frameRate);
+                        } catch (NumberFormatException e) {
+                            d.findViewById(
+                                    R.id.details_frame_rate_row)
+                                    .setVisibility(View.GONE);
+                        }
+
+                        try {
+                            long bitRate = Long.parseLong(
+                                    retriever.extractMetadata(
+                                    MediaMetadataRetriever
+                                    .METADATA_KEY_BIT_RATE));
+                            String bps;
+                            if (bitRate < 1000000) {
+                                bps = String.format(
+                                        activity.getString(
+                                        R.string.details_kbps),
+                                        bitRate / 1000);
+                            } else {
+                                bps = String.format(
+                                        activity.getString(
+                                        R.string.details_mbps),
+                                        ((double) bitRate) / 1000000.0);
+                            }
+                            ((TextView) d.findViewById(
+                                    R.id.details_bit_rate_value))
+                                    .setText(bps);
+                        } catch (NumberFormatException e) {
+                            d.findViewById(R.id.details_bit_rate_row)
+                                    .setVisibility(View.GONE);
+                        }
+
+                        String format = retriever.extractMetadata(
+                                MediaMetadataRetriever
+                                .METADATA_KEY_VIDEO_FORMAT);
+                        ((TextView) d.findViewById(
+                                R.id.details_format_value))
+                                .setText(format);
+
+                        String codec = retriever.extractMetadata(
+                                MediaMetadataRetriever.METADATA_KEY_CODEC);
+
+                        if (codec == null) {
+                            d.findViewById(R.id.details_codec_row).
+                                    setVisibility(View.GONE);
+                        } else {
+                            ((TextView) d.findViewById(
+                                    R.id.details_codec_value))
+                                    .setText(codec);
+                        }
+                    } catch (RuntimeException ex) {
+                        // Assume this is a corrupt video file.
+                    } finally {
+                        try {
+                            retriever.release();
+                        } catch (RuntimeException ex) {
+                            // Ignore failures while cleaning up.
+                        }
+                    }
+                }
+
+                String dimensionsString = String.format(
+                        activity.getString(R.string.details_dimension_x),
+                        dimensionWidth, dimensionHeight);
+                ((TextView) d
+                    .findViewById(R.id.details_resolution_value))
+                    .setText(dimensionsString);
+
+                String dateString = "";
+                long dateTaken = image.getDateTaken();
+                if (dateTaken != 0) {
+                    Date date = new Date(image.getDateTaken());
+                    SimpleDateFormat dateFormat = new SimpleDateFormat();
+                    dateString = dateFormat.format(date);
+
+                    ((TextView) d
+                            .findViewById(R.id.details_date_taken_value))
+                            .setText(dateString);
+                } else {
+                    d.findViewById(R.id.details_date_taken_row)
+                            .setVisibility(View.GONE);
+                }
+
+                builder.setNeutralButton(R.string.details_ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                    int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                builder.setIcon(android.R.drawable.ic_dialog_info)
+                        .setTitle(R.string.details_panel_title)
+                        .setView(d)
+                        .show();
+            }
+        });
+        return true;
+    }
+
+    private static boolean onRotateLeftClicked(MenuInvoker onInvoke) {
+        onInvoke.run(new MenuCallback() {
+            public void run(Uri u, IImage image) {
+                if (image == null || image.isReadonly()) {
+                    return;
+                }
+                image.rotateImageBy(-90);
+            }
+        });
+        return true;
+    }
+
+    private static boolean onRotateRightClicked(MenuInvoker onInvoke) {    
+        onInvoke.run(new MenuCallback() {
+            public void run(Uri u, IImage image) {
+                if (image == null || image.isReadonly()) {
+                    return;
+                }
+                image.rotateImageBy(90);
+            }
+        });
+        return true;
+    }
+
+    private static boolean onCropClicked(MenuInvoker onInvoke,
+                                         final Activity activity) {
+        onInvoke.run(new MenuCallback() {
+            public void run(Uri u, IImage image) {
+                if (u == null) {
+                    return;
+                }
+
+                Intent cropIntent = new Intent();
+                cropIntent.setClass(activity, CropImage.class);
+                cropIntent.setData(u);
+                activity.startActivityForResult(cropIntent,
+                        RESULT_COMMON_MENU_CROP);
+            }
+        });
+        return true;
+    }
+
+    private static boolean onImageSaveClicked(MenuInvoker onInvoke,
+                                              final Activity activity) {
+        onInvoke.run(new MenuCallback() {
+            public void run(Uri u, IImage image) {
+                if (u == null || image == null) {
+                    return;
+                }
+
+                if (Config.LOGV) {
+                    Log.v(TAG, "in callback u is " + u + "; mime type is "
+                            + image.getMimeType());
+                }
+                Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+                intent.setDataAndType(u, image.getMimeType());
+                intent.putExtra("mimeType", image.getMimeType());
+                activity.startActivity(Intent.createChooser(intent,
+                        activity.getText(R.string.setImage)));
+            }
+        });
+        return true;
+    }
+
+    private static boolean onImageShareClicked(MenuInvoker onInvoke,
+            final Activity activity, final boolean isImage) {
+        onInvoke.run(new MenuCallback() {
+            public void run(Uri u, IImage image) {
+                if (image == null) return;
+                if (!isImage && getImageFileSize(image)
+                        > SHARE_FILE_LENGTH_LIMIT) {
+                    Toast.makeText(activity,
+                            R.string.too_large_to_attach,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                String mimeType = image.getMimeType();
+                intent.setType(mimeType);
+                intent.putExtra(Intent.EXTRA_STREAM, u);
+                boolean isImage = ImageManager.isImageMimeType(mimeType);
+                try {
+                    activity.startActivity(Intent.createChooser(intent,
+                            activity.getText(isImage
+                            ? R.string.sendImage
+                            : R.string.sendVideo)));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(activity, isImage
+                            ? R.string.no_way_to_share_image
+                            : R.string.no_way_to_share_video,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        return true;
+    }
+
+    private static boolean onViewPlayClicked(MenuInvoker onInvoke,
+            final Activity activity) {
+        onInvoke.run(new MenuCallback() {
+            public void run(Uri uri, IImage image) {
+                if (image != null) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                            image.fullSizeImageUri());
+                    activity.startActivity(intent);
+                }
+            }});
+        return true;
+    }
+
     static MenuItemsResult addImageMenuItems(
             Menu menu,
             int inclusions,
@@ -150,305 +454,101 @@ public class MenuHelper {
             final Handler handler,
             final Runnable onDelete,
             final MenuInvoker onInvoke) {
-        final ArrayList<MenuItem> requiresWriteAccessItems = new ArrayList<MenuItem>();
-        final ArrayList<MenuItem> requiresNoDrmAccessItems = new ArrayList<MenuItem>();
+        final ArrayList<MenuItem> requiresWriteAccessItems =
+                new ArrayList<MenuItem>();
+        final ArrayList<MenuItem> requiresNoDrmAccessItems =
+                new ArrayList<MenuItem>();
 
         if (isImage && ((inclusions & INCLUDE_ROTATE_MENU) != 0)) {
-            SubMenu rotateSubmenu = menu.addSubMenu(IMAGE_SAVING_ITEM, MENU_IMAGE_ROTATE,
-                    40, R.string.rotate).setIcon(android.R.drawable.ic_menu_rotate);
+            SubMenu rotateSubmenu = menu.addSubMenu(IMAGE_SAVING_ITEM,
+                    MENU_IMAGE_ROTATE, 40, R.string.rotate)
+                    .setIcon(android.R.drawable.ic_menu_rotate);
             // Don't show the rotate submenu if the item at hand is read only
-            // since the items within the submenu won't be shown anyway.  This is
-            // really a framework bug in that it shouldn't show the submenu if
-            // the submenu has no visible items.
+            // since the items within the submenu won't be shown anyway. This
+            // is really a framework bug in that it shouldn't show the submenu
+            // if the submenu has no visible items.
             requiresWriteAccessItems.add(rotateSubmenu.getItem());
             if (rotateSubmenu != null) {
-                requiresWriteAccessItems.add(rotateSubmenu.add(0, MENU_IMAGE_ROTATE_LEFT, 50, R.string.rotate_left).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        onInvoke.run(new MenuCallback() {
-                            public void run(Uri u, IImage image) {
-                                if (image == null || image.isReadonly())
-                                    return;
-                                image.rotateImageBy(-90);
+                requiresWriteAccessItems.add(
+                        rotateSubmenu.add(0, MENU_IMAGE_ROTATE_LEFT, 50,
+                        R.string.rotate_left)
+                        .setOnMenuItemClickListener(
+                        new MenuItem.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                return onRotateLeftClicked(onInvoke);
                             }
-                        });
-                        return true;
-                    }
-                }).setAlphabeticShortcut('l'));
-                requiresWriteAccessItems.add(rotateSubmenu.add(0, MENU_IMAGE_ROTATE_RIGHT, 60, R.string.rotate_right).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        onInvoke.run(new MenuCallback() {
-                            public void run(Uri u, IImage image) {
-                                if (image == null || image.isReadonly())
-                                    return;
-
-                                image.rotateImageBy(90);
+                        }).setAlphabeticShortcut('l'));
+                requiresWriteAccessItems.add(
+                        rotateSubmenu.add(0, MENU_IMAGE_ROTATE_RIGHT, 60,
+                        R.string.rotate_right)
+                        .setOnMenuItemClickListener(
+                        new MenuItem.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                return onRotateRightClicked(onInvoke);
                             }
-                        });
-                        return true;
-                    }
-                }).setAlphabeticShortcut('r'));
+                        }).setAlphabeticShortcut('r'));
             }
         }
 
         if (isImage && ((inclusions & INCLUDE_CROP_MENU) != 0)) {
             MenuItem autoCrop = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_CROP, 73,
-                    R.string.camera_crop).setOnMenuItemClickListener(
-                            new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    onInvoke.run(new MenuCallback() {
-                        public void run(Uri u, IImage image) {
-                            if (u == null)
-                                return;
-
-                            Intent cropIntent = new Intent();
-                            cropIntent.setClass(activity, CropImage.class);
-                            cropIntent.setData(u);
-                            activity.startActivityForResult(cropIntent, RESULT_COMMON_MENU_CROP);
+                    R.string.camera_crop);
+            autoCrop.setIcon(android.R.drawable.ic_menu_crop);
+            autoCrop.setOnMenuItemClickListener(
+                    new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            return onCropClicked(onInvoke, activity);
                         }
                     });
-                    return true;
-                }
-            });
-            autoCrop.setIcon(android.R.drawable.ic_menu_crop);
             requiresWriteAccessItems.add(autoCrop);
         }
 
         if (isImage && ((inclusions & INCLUDE_SET_MENU) != 0)) {
-            MenuItem setMenu = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_SET, 75, R.string.camera_set);
+            MenuItem setMenu = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_SET, 75,
+                    R.string.camera_set);
             setMenu.setIcon(android.R.drawable.ic_menu_set_as);
-
-            setMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    onInvoke.run(new MenuCallback() {
-                        public void run(Uri u, IImage image) {
-                            if (u == null || image == null)
-                                return;
-
-                            if (Config.LOGV)
-                                Log.v(TAG, "in callback u is " + u + "; mime type is " + image.getMimeType());
-                            Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
-                            intent.setDataAndType(u, image.getMimeType());
-                            intent.putExtra("mimeType", image.getMimeType());
-                            activity.startActivity(Intent.createChooser(intent, activity.getText(R.string.setImage)));
+            setMenu.setOnMenuItemClickListener(
+                    new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            return onImageSaveClicked(onInvoke, activity);
                         }
                     });
-                    return true;
-                }
-            });
         }
 
         if ((inclusions & INCLUDE_SHARE_MENU) != 0) {
-            if (Config.LOGV)
-                Log.v(TAG, ">>>>> add share");
             MenuItem item1 = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_SHARE, 10,
                     R.string.camera_share).setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    onInvoke.run(new MenuCallback() {
-                        public void run(Uri u, IImage image) {
-                            if (image == null) return;
-                            if (!isImage && getImageFileSize(image) > SHARE_FILE_LENGTH_LIMIT ) {
-                                Toast.makeText(activity,
-                                        R.string.too_large_to_attach, Toast.LENGTH_LONG).show();
-                                return;
-                            }
-
-                            Intent intent = new Intent();
-                            intent.setAction(Intent.ACTION_SEND);
-                            String mimeType = image.getMimeType();
-                            intent.setType(mimeType);
-                            intent.putExtra(Intent.EXTRA_STREAM, u);
-                            boolean isImage = ImageManager.isImageMimeType(mimeType);
-                            try {
-                                activity.startActivity(Intent.createChooser(intent,
-                                        activity.getText(
-                                                isImage ? R.string.sendImage : R.string.sendVideo)));
-                            } catch (android.content.ActivityNotFoundException ex) {
-                                Toast.makeText(activity,
-                                        isImage ? R.string.no_way_to_share_image
-                                                : R.string.no_way_to_share_video,
-                                                Toast.LENGTH_SHORT).show();
-                            }
+                        public boolean onMenuItemClick(MenuItem item) {
+                            return onImageShareClicked(onInvoke, activity,
+                                    isImage);
                         }
                     });
-                    return true;
-                }
-            });
             item1.setIcon(android.R.drawable.ic_menu_share);
             MenuItem item = item1;
             requiresNoDrmAccessItems.add(item);
         }
 
         if ((inclusions & INCLUDE_DELETE_MENU) != 0) {
-            MenuItem deleteItem = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_TOSS, 70, R.string.camera_toss);
+            MenuItem deleteItem = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_TOSS,
+                    70, R.string.camera_toss);
             requiresWriteAccessItems.add(deleteItem);
-            deleteItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    deleteImpl(activity, onDelete, isImage);
-                    return true;
-                }
-            })
-            .setAlphabeticShortcut('d')
-            .setIcon(android.R.drawable.ic_menu_delete);
+            deleteItem.setOnMenuItemClickListener(
+                    new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            deleteImpl(activity, onDelete, isImage);
+                            return true;
+                        }
+                    })
+                    .setAlphabeticShortcut('d')
+                    .setIcon(android.R.drawable.ic_menu_delete);
         }
 
         if ((inclusions & INCLUDE_DETAILS_MENU) != 0) {
-            MenuItem detailsMenu = menu.add(0, 0, 80, R.string.details).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            MenuItem detailsMenu = menu.add(0, 0, 80, R.string.details)
+            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    onInvoke.run(new MenuCallback() {
-                        public void run(Uri u, IImage image) {
-                            if (image == null)
-                                return;
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
-                            final View d = View.inflate(activity, R.layout.detailsview, null);
-
-                            ImageView imageView = (ImageView) d.findViewById(R.id.details_thumbnail_image);
-                            imageView.setImageBitmap(image.miniThumbBitmap());
-
-                            TextView textView = (TextView) d.findViewById(R.id.details_image_title);
-                            textView.setText(image.getDisplayName());
-
-                            long length = getImageFileSize(image);
-                            String lengthString = lengthString = length < 0 ? ""
-                                    : android.text.format.Formatter.formatFileSize(activity, length);
-                            ((TextView)d.findViewById(R.id.details_file_size_value))
-                                .setText(lengthString);
-
-                            int dimensionWidth = 0;
-                            int dimensionHeight = 0;
-                            if (isImage) {
-                                dimensionWidth = image.getWidth();
-                                dimensionHeight = image.getHeight();
-                                d.findViewById(R.id.details_duration_row).setVisibility(View.GONE);
-                                d.findViewById(R.id.details_frame_rate_row).setVisibility(View.GONE);
-                                d.findViewById(R.id.details_bit_rate_row).setVisibility(View.GONE);
-                                d.findViewById(R.id.details_format_row).setVisibility(View.GONE);
-                                d.findViewById(R.id.details_codec_row).setVisibility(View.GONE);
-                            } else {
-                                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                                try {
-                                    retriever.setMode(MediaMetadataRetriever.MODE_GET_METADATA_ONLY);
-                                    retriever.setDataSource(image.getDataPath());
-                                    try {
-                                        dimensionWidth = Integer.parseInt(
-                                                retriever.extractMetadata(
-                                                MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-                                        dimensionHeight = Integer.parseInt(
-                                                retriever.extractMetadata(
-                                                MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-                                    } catch (NumberFormatException e) {
-                                        dimensionWidth = 0;
-                                        dimensionHeight = 0;
-                                    }
-
-                                    try {
-                                        int durationMs = Integer.parseInt(retriever.extractMetadata(
-                                                MediaMetadataRetriever.METADATA_KEY_DURATION));
-                                        String durationValue = formatDuration(
-                                                activity, durationMs);
-                                        ((TextView)d.findViewById(R.id.details_duration_value))
-                                            .setText(durationValue);
-                                    } catch (NumberFormatException e) {
-                                        d.findViewById(R.id.details_frame_rate_row)
-                                        .setVisibility(View.GONE);
-                                    }
-
-                                    try {
-                                        String frame_rate = String.format(
-                                                activity.getString(R.string.details_fps),
-                                                Integer.parseInt(
-                                                        retriever.extractMetadata(
-                                                                MediaMetadataRetriever.METADATA_KEY_FRAME_RATE)));
-                                        ((TextView)d.findViewById(R.id.details_frame_rate_value))
-                                            .setText(frame_rate);
-                                    } catch (NumberFormatException e) {
-                                        d.findViewById(R.id.details_frame_rate_row)
-                                        .setVisibility(View.GONE);
-                                    }
-
-                                    try {
-                                        long bitRate = Long.parseLong(retriever.extractMetadata(
-                                                MediaMetadataRetriever.METADATA_KEY_BIT_RATE));
-                                        String bps;
-                                        if (bitRate < 1000000) {
-                                            bps = String.format(
-                                                    activity.getString(R.string.details_kbps),
-                                                    bitRate / 1000);
-                                        } else {
-                                            bps = String.format(
-                                                    activity.getString(R.string.details_mbps),
-                                                    ((double) bitRate) / 1000000.0);
-                                        }
-                                        ((TextView)d.findViewById(R.id.details_bit_rate_value))
-                                                .setText(bps);
-                                    } catch (NumberFormatException e) {
-                                        d.findViewById(R.id.details_bit_rate_row)
-                                                .setVisibility(View.GONE);
-                                    }
-
-                                    String format = retriever.extractMetadata(
-                                            MediaMetadataRetriever.METADATA_KEY_VIDEO_FORMAT);
-                                    ((TextView)d.findViewById(R.id.details_format_value))
-                                        .setText(format);
-
-                                    String codec = retriever.extractMetadata(
-                                                MediaMetadataRetriever.METADATA_KEY_CODEC);
-
-                                    if (codec == null) {
-                                        d.findViewById(R.id.details_codec_row).
-                                            setVisibility(View.GONE);
-                                    } else {
-                                        ((TextView)d.findViewById(R.id.details_codec_value))
-                                            .setText(codec);
-                                    }
-                                } catch(RuntimeException ex) {
-                                    // Assume this is a corrupt video file.
-                                } finally {
-                                    try {
-                                        retriever.release();
-                                    } catch (RuntimeException ex) {
-                                        // Ignore failures while cleaning up.
-                                    }
-                                }
-                            }
-
-                            String dimensionsString = String.format(
-                                    activity.getString(R.string.details_dimension_x),
-                                    dimensionWidth, dimensionHeight);
-                            ((TextView)d.findViewById(R.id.details_resolution_value))
-                                .setText(dimensionsString);
-
-                            String dateString = "";
-                            long dateTaken = image.getDateTaken();
-                            if (dateTaken != 0) {
-                                java.util.Date date = new java.util.Date(image.getDateTaken());
-                                java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat();
-                                dateString = dateFormat.format(date);
-
-                                ((TextView)d.findViewById(R.id.details_date_taken_value))
-                                    .setText(dateString);
-                            } else {
-                                d.findViewById(R.id.details_date_taken_row)
-                                    .setVisibility(View.GONE);
-                            }
-
-                            builder.setNeutralButton(R.string.details_ok,
-                                    new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-
-                            builder.setIcon(android.R.drawable.ic_dialog_info)
-                                .setTitle(R.string.details_panel_title)
-                                .setView(d)
-                                .show();
-
-                        }
-                    });
-                    return true;
+                    return onDetailsClicked(onInvoke, activity, isImage);
                 }
             });
             detailsMenu.setIcon(R.drawable.ic_menu_view_details);
@@ -456,17 +556,10 @@ public class MenuHelper {
 
         if ((!isImage) && ((inclusions & INCLUDE_VIEWPLAY_MENU) != 0)) {
             menu.add(VIDEO_SAVING_ITEM, MENU_VIDEO_PLAY, 0, R.string.video_play)
-                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                .setOnMenuItemClickListener(
+                new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    onInvoke.run(new MenuCallback() {
-                        public void run(Uri uri, IImage image) {
-                            if (image != null) {
-                                Intent intent = new Intent(Intent.ACTION_VIEW,
-                                        image.fullSizeImageUri());
-                                activity.startActivity(intent);
-                            }
-                        }});
-                    return true;
+                    return onViewPlayClicked(onInvoke, activity);
                 }
             });
         }
@@ -474,29 +567,33 @@ public class MenuHelper {
 
         return new MenuItemsResult() {
             public void gettingReadyToOpen(Menu menu, IImage image) {
-                // protect against null here.  this isn't strictly speaking required
-                // but if a client app isn't handling sdcard removal properly it
-                // could happen
+                // protect against null here.  this isn't strictly speaking
+                // required but if a client app isn't handling sdcard removal
+                // properly it could happen
                 if (image == null) {
                     return;
                 }
                 boolean readOnly = image.isReadonly();
                 boolean isDrm = image.isDrm();
-                if (Config.LOGV)
+                if (Config.LOGV) {
                     Log.v(TAG, "readOnly: " + readOnly + "; drm: " + isDrm);
-                for (MenuItem item: requiresWriteAccessItems) {
-                    if (Config.LOGV)
-                        Log.v(TAG, "item is " + item.toString());
-                      item.setVisible(!readOnly);
-                      item.setEnabled(!readOnly);
                 }
-                for (MenuItem item: requiresNoDrmAccessItems) {
-                    if (Config.LOGV)
+                for (MenuItem item : requiresWriteAccessItems) {
+                    if (Config.LOGV) {
                         Log.v(TAG, "item is " + item.toString());
-                      item.setVisible(!isDrm);
-                      item.setEnabled(!isDrm);
+                    }
+                    item.setVisible(!readOnly);
+                    item.setEnabled(!readOnly);
+                }
+                for (MenuItem item : requiresNoDrmAccessItems) {
+                    if (Config.LOGV) {
+                        Log.v(TAG, "item is " + item.toString());
+                    }
+                    item.setVisible(!isDrm);
+                    item.setEnabled(!isDrm);
                 }
             }
+        
             public void aboutToCall(MenuItem menu, IImage image) {
             }
         };
@@ -510,17 +607,22 @@ public class MenuHelper {
         deleteImpl(activity, onDelete, false);
     }
 
-    static void deleteImage(Activity activity, Runnable onDelete, IImage image) {
+    static void deleteImage(Activity activity, Runnable onDelete,
+            IImage image) {
         if (image != null) {
             deleteImpl(activity, onDelete, ImageManager.isImage(image));
         }
     }
 
-    private static void deleteImpl(Activity activity, final Runnable onDelete, boolean isPhoto) {
-        boolean confirm = android.preference.PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("pref_gallery_confirm_delete_key", true);
+    private static void deleteImpl(Activity activity, final Runnable onDelete,
+            boolean isPhoto) {
+        boolean confirm = android.preference.PreferenceManager
+                .getDefaultSharedPreferences(activity)
+                .getBoolean("pref_gallery_confirm_delete_key", true);
         if (!confirm) {
-            if (onDelete != null)
+            if (onDelete != null) {
                 onDelete.run();
+            }
         } else {
             displayDeleteDialog(activity, onDelete, isPhoto);
         }
@@ -528,45 +630,55 @@ public class MenuHelper {
 
     public static void displayDeleteDialog(Activity activity,
             final Runnable onDelete, boolean isPhoto) {
-        android.app.AlertDialog.Builder b = new android.app.AlertDialog.Builder(activity);
+        android.app.AlertDialog.Builder b =
+                new android.app.AlertDialog.Builder(activity);
         b.setIcon(android.R.drawable.ic_dialog_alert);
         b.setTitle(R.string.confirm_delete_title);
-        b.setMessage(isPhoto? R.string.confirm_delete_message
+        b.setMessage(isPhoto
+                ? R.string.confirm_delete_message
                 : R.string.confirm_delete_video_message);
-        b.setPositiveButton(android.R.string.ok, new android.content.DialogInterface.OnClickListener() {
-            public void onClick(android.content.DialogInterface v, int x) {
-                if (onDelete != null)
-                    onDelete.run();
-            }
-        });
-        b.setNegativeButton(android.R.string.cancel, new android.content.DialogInterface.OnClickListener() {
-            public void onClick(android.content.DialogInterface v, int x) {
-
-            }
-        });
+        b.setPositiveButton(android.R.string.ok,
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(android.content.DialogInterface v,
+                                        int x) {
+                        if (onDelete != null) {
+                            onDelete.run();
+                        }
+                    }
+                });
+        b.setNegativeButton(android.R.string.cancel,
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(android.content.DialogInterface v,
+                                        int x) {
+                    }
+                });
         b.create().show();
     }
 
     static void addSwitchModeMenuItem(Menu menu, final Activity activity,
             final boolean switchToVideo) {
-        int group = switchToVideo ? MenuHelper.IMAGE_MODE_ITEM : MenuHelper.VIDEO_MODE_ITEM;
-        int labelId = switchToVideo ? R.string.switch_to_video_lable
+        int group = switchToVideo
+                ? MenuHelper.IMAGE_MODE_ITEM
+                : MenuHelper.VIDEO_MODE_ITEM;
+        int labelId = switchToVideo
+                ? R.string.switch_to_video_lable
                 : R.string.switch_to_camera_lable;
-        int iconId = switchToVideo ? R.drawable.ic_menu_camera_video_view
+        int iconId = switchToVideo
+                ? R.drawable.ic_menu_camera_video_view
                 : android.R.drawable.ic_menu_camera;
-        MenuItem item = menu.add(group, MENU_SWITCH_CAMERA_MODE, 0,
-                labelId).setOnMenuItemClickListener(
-                        new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                String action = switchToVideo ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
-                        : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
-                Intent intent = new Intent(action);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                activity.startActivity(intent);
-                return true;
-             }
-        });
+        MenuItem item = menu.add(group, MENU_SWITCH_CAMERA_MODE, 0, labelId)
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        String action = switchToVideo
+                                ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
+                                : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
+                        Intent intent = new Intent(action);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                        activity.startActivity(intent);
+                        return true;
+                     }
+                });
         item.setIcon(iconId);
     }
 
@@ -581,7 +693,8 @@ public class MenuHelper {
     }
 
     static void gotoCameraImageGallery(Activity activity) {
-        gotoGallery(activity, R.string.gallery_camera_bucket_name, ImageManager.INCLUDE_IMAGES);
+        gotoGallery(activity, R.string.gallery_camera_bucket_name,
+                ImageManager.INCLUDE_IMAGES);
     }
 
     static void gotoCameraVideoGallery(Activity activity) {
@@ -589,19 +702,24 @@ public class MenuHelper {
                 ImageManager.INCLUDE_VIDEOS);
     }
 
-    static private void gotoGallery(Activity activity, int windowTitleId, int mediaTypes) {
-        Uri target = Images.Media.INTERNAL_CONTENT_URI.buildUpon().appendQueryParameter("bucketId",
+    private static void gotoGallery(Activity activity, int windowTitleId,
+            int mediaTypes) {
+        Uri target = Images.Media.INTERNAL_CONTENT_URI.buildUpon()
+                .appendQueryParameter("bucketId",
                 ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
         Intent intent = new Intent(Intent.ACTION_VIEW, target);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("windowTitle", activity.getString(windowTitleId));
         intent.putExtra("mediaTypes", mediaTypes);
-        // Request unspecified so that we match the current camera orientation rather than
-        // matching the "flip orientation" preference.
+
+        // Request unspecified so that we match the current camera orientation
+        // rather than matching the "flip orientation" preference.
         // Disabled because people don't care for it. Also it's
-        // not as compelling now that we have implemented have quick orientation flipping.
+        // not as compelling now that we have implemented have quick orientation
+        // flipping.
         // intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
-        //        android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        //         android.content.pm.ActivityInfo
+        //         .SCREEN_ORIENTATION_UNSPECIFIED);
         try {
             activity.startActivity(intent);
         } catch (ActivityNotFoundException e) {
@@ -611,38 +729,38 @@ public class MenuHelper {
 
     static void addCapturePictureMenuItems(Menu menu, final Activity activity) {
         menu.add(0, MENU_CAPTURE_PICTURE, 1, R.string.capture_picture)
-            .setOnMenuItemClickListener(
-                 new MenuItem.OnMenuItemClickListener() {
-                     public boolean onMenuItemClick(MenuItem item) {
-                        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+                .setOnMenuItemClickListener(
+                new MenuItem.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Intent intent = new Intent(
+                                MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         try {
-                               activity.startActivity(intent);
+                            activity.startActivity(intent);
                         } catch (android.content.ActivityNotFoundException e) {
                             // Ignore exception
                         }
-                return true;
-            }
-        })
-        .setIcon(android.R.drawable.ic_menu_camera);
+                        return true;
+                    }
+                }).setIcon(android.R.drawable.ic_menu_camera);
     }
 
     static void addCaptureVideoMenuItems(Menu menu, final Activity activity) {
         menu.add(0, MENU_CAPTURE_VIDEO, 2, R.string.capture_video)
-            .setOnMenuItemClickListener(
-                 new MenuItem.OnMenuItemClickListener() {
-                     public boolean onMenuItemClick(MenuItem item) {
-                         Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
-                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                         try {
-                             activity.startActivity(intent);
-                         } catch (android.content.ActivityNotFoundException e) {
-                             // Ignore exception
-                         }
-                return true;
-            }
-        })
-        .setIcon(R.drawable.ic_menu_camera_video_view);
+                .setOnMenuItemClickListener(
+                new MenuItem.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Intent intent = new Intent(
+                                MediaStore.INTENT_ACTION_VIDEO_CAMERA);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        try {
+                            activity.startActivity(intent);
+                        } catch (android.content.ActivityNotFoundException e) {
+                            // Ignore exception
+                        }
+                        return true;
+                    }
+                }).setIcon(R.drawable.ic_menu_camera_video_view);
     }
 
     static void addCaptureMenuItems(Menu menu, final Activity activity) {
@@ -650,48 +768,61 @@ public class MenuHelper {
         addCaptureVideoMenuItems(menu, activity);
     }
 
-    static MenuItem addFlipOrientation(Menu menu, final Activity activity, final SharedPreferences prefs) {
+    private static boolean onFlipOrientationClicked(Activity activity,
+            SharedPreferences prefs) {
+        // Check what our actual orientation is
+        int current = activity.getResources().getConfiguration().orientation;
+        int newOrientation = android.content.pm.ActivityInfo
+                .SCREEN_ORIENTATION_LANDSCAPE;
+        if (current == Configuration.ORIENTATION_LANDSCAPE) {
+            newOrientation = android.content.pm.ActivityInfo
+                    .SCREEN_ORIENTATION_UNSPECIFIED;
+        }
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("nuorientation", newOrientation);
+        editor.commit();
+        requestOrientation(activity, prefs, true);
+        return true;
+    }
+
+    static MenuItem addFlipOrientation(Menu menu, final Activity activity,
+            final SharedPreferences prefs) {
         // position 41 after rotate
         // D
         return menu
-                .add(Menu.CATEGORY_SECONDARY, 304, 41, R.string.flip_orientation)
+                .add(Menu.CATEGORY_SECONDARY, 304, 41,
+                R.string.flip_orientation)
                 .setOnMenuItemClickListener(
-                        new MenuItem.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                // Check what our actual orientation is
-                int current = activity.getResources().getConfiguration().orientation;
-                int newOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-                if (current == Configuration.ORIENTATION_LANDSCAPE) {
-                    newOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-                }
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt("nuorientation", newOrientation);
-                editor.commit();
-                requestOrientation(activity, prefs, true);
-                return true;
-            }
-        })
-        .setIcon(android.R.drawable.ic_menu_always_landscape_portrait);
+                new MenuItem.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        return onFlipOrientationClicked(activity, prefs);
+                    }
+                }).setIcon(
+                android.R.drawable.ic_menu_always_landscape_portrait);
     }
 
     static void requestOrientation(Activity activity, SharedPreferences prefs) {
         requestOrientation(activity, prefs, false);
     }
 
-    static private void requestOrientation(Activity activity, SharedPreferences prefs,
-            boolean ignoreIntentExtra) {
-        // Disable orientation for now. If it is set to SCREEN_ORIENTATION_SENSOR,
-        // a duplicated orientation will be observed.
+    private static void requestOrientation(Activity activity,
+            SharedPreferences prefs, boolean ignoreIntentExtra) {
+        // Disable orientation for now. If it is set to
+        // SCREEN_ORIENTATION_SENSOR, a duplicated orientation will be observed.
 
         return;
     }
 
-    static void setFlipOrientationEnabled(Activity activity, MenuItem flipItem) {
-        int keyboard = activity.getResources().getConfiguration().hardKeyboardHidden;
-        flipItem.setEnabled(keyboard != android.content.res.Configuration.HARDKEYBOARDHIDDEN_NO);
+    static void setFlipOrientationEnabled(Activity activity,
+            MenuItem flipItem) {
+        int keyboard = activity.getResources().getConfiguration()
+                .hardKeyboardHidden;
+        flipItem.setEnabled(keyboard != android.content.res.Configuration
+                .HARDKEYBOARDHIDDEN_NO);
     }
 
-    public static String formatDuration(final Activity activity, int durationMs) {
+    public static String formatDuration(final Activity activity,
+            int durationMs) {
         int duration = durationMs / 1000;
         int h = duration / 3600;
         int m = (duration - h * 3600) / 60;
@@ -708,7 +839,7 @@ public class MenuHelper {
     }
 
     public static void showStorageToast(Activity activity) {
-      showStorageToast(activity, calculatePicturesRemaining());
+        showStorageToast(activity, calculatePicturesRemaining());
     }
 
     public static void showStorageToast(Activity activity, int remaining) {
@@ -735,10 +866,12 @@ public class MenuHelper {
             if (!ImageManager.hasStorage()) {
                 return NO_STORAGE_ERROR;
             } else {
-                String storageDirectory = Environment.getExternalStorageDirectory().toString();
+                String storageDirectory =
+                        Environment.getExternalStorageDirectory().toString();
                 StatFs stat = new StatFs(storageDirectory);
-                float remaining = ((float)stat.getAvailableBlocks() * (float)stat.getBlockSize()) / 400000F;
-                return (int)remaining;
+                float remaining = ((float) stat.getAvailableBlocks()
+                        * (float) stat.getBlockSize()) / 400000F;
+                return (int) remaining;
             }
         } catch (Exception ex) {
             // if we can't stat the filesystem then we don't know how many
@@ -748,4 +881,3 @@ public class MenuHelper {
         }
     }
 }
-
