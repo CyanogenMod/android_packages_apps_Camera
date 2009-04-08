@@ -16,19 +16,15 @@
 
 package com.android.camera;
 
-
 import android.content.Intent;
-
 
 /**
  * Wallpaper picker for DRM images. This just redirects to the standard pick
  * action.
  */
 public class DrmWallpaper extends Wallpaper {
-
     protected void formatIntent(Intent intent) {
         super.formatIntent(intent);
         intent.putExtra("pick-drm", true);
     }
-
 }

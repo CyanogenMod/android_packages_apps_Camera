@@ -177,7 +177,6 @@ public class GalleryPicker extends Activity {
     
         mGridView.setOnCreateContextMenuListener(
                 new View.OnCreateContextMenuListener() {
-                    @Override
                     public void onCreateContextMenu(ContextMenu menu, View v,
                         final ContextMenuInfo menuInfo) {
                             onCreateGalleryPickerContextMenu(menu, menuInfo);
@@ -644,7 +643,6 @@ public class GalleryPicker extends Activity {
         intentFilter.addDataScheme("file");
 
         registerReceiver(mReceiver, intentFilter);
-        MenuHelper.requestOrientation(this, mPrefs);
     }
 
     private void setBackgrounds(Resources r) {

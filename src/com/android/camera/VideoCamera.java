@@ -555,8 +555,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     menuFlags,
                     false,
                     VideoCamera.this,
-                    mHandler,
-
                     // Handler for deletion
                     new Runnable() {
                         public void run() {
