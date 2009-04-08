@@ -412,7 +412,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 MenuHelper.INCLUDE_ALL,
                 true,
                 ViewImage.this,
-                mHandler,
                 mDeletePhotoRunnable,
                 new MenuHelper.MenuInvoker() {
                     public void run(MenuHelper.MenuCallback cb) {
@@ -764,8 +763,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
             if (orientation != getRequestedOrientation()) {
                 setRequestedOrientation(orientation);
             }
-        } else {
-            MenuHelper.requestOrientation(this, mPrefs);
         }
     }
 

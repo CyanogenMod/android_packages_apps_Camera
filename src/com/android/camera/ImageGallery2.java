@@ -544,9 +544,6 @@ public class ImageGallery2 extends Activity {
             }
         };
         registerReceiver(mReceiver, intentFilter);
-
-        MenuHelper.requestOrientation(this, mPrefs);
-
         rebake(false, ImageManager.isMediaScannerScanning(this));
     }
 
@@ -806,7 +803,6 @@ public class ImageGallery2 extends Activity {
                         MenuHelper.INCLUDE_ALL,
                         isImage,
                         ImageGallery2.this,
-                        mHandler,
                         mDeletePhotoRunnable,
                         new MenuHelper.MenuInvoker() {
                             public void run(MenuHelper.MenuCallback cb) {
