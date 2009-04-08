@@ -14,13 +14,14 @@
      limitations under the License.
 -->
 
-<!-- This is a primitive example showing the different types of preferences available. -->
+<!-- This is the preference setting for Gallery. -->
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
             android:title="@string/pref_gallery_category">
             
+        <!-- Display size -->
         <ListPreference
                 android:key="pref_gallery_size_key"
                 android:title="@string/pref_gallery_size_title"
@@ -30,6 +31,7 @@
                 android:dialogTitle="@string/pref_gallery_size_dialogtitle"
                 android:defaultValue="@string/default_value_pref_gallery_size" />
 
+        <!-- Sort order -->
         <ListPreference
                 android:key="pref_gallery_sort_key"
                 android:title="@string/pref_gallery_sort_title"
@@ -39,22 +41,18 @@
                 android:dialogTitle="@string/pref_gallery_sort_dialogtitle"
                 android:defaultValue="@string/default_value_pref_gallery_sort" />
 
+        <!-- Confirm deletions -->
         <CheckBoxPreference
                 android:key="pref_gallery_confirm_delete_key"
                 android:title="@string/pref_gallery_confirm_delete_title"
                 android:summary="@string/pref_gallery_confirm_delete_summary"
                 android:defaultValue="true"/>
-<!--
-        <EditTextPreference
-                android:key="pref_camera_upload_albumname_key"
-                android:title="@string/pref_camera_upload_albumname_title"
-                android:summary="@string/pref_camera_upload_albumname_summary"
-                android:dialogTitle="@string/pref_camera_upload_albumname_dialogtitle"
-                android:singleLine="true" />
--->                
+
     </PreferenceCategory>
     <PreferenceCategory
       android:title="@string/pref_slideshow_category">
+
+        <!--  Slideshow interval -->
         <ListPreference
                 android:key="pref_gallery_slideshow_interval_key"
                 android:title="@string/pref_gallery_slideshow_interval_title"
@@ -64,6 +62,7 @@
                 android:dialogTitle="@string/pref_gallery_slideshow_interval_dialogtitle"
                 android:defaultValue="@string/default_value_pref_gallery_slideshow_interval" />
 
+        <!-- Slideshow transition -->
         <ListPreference
                 android:key="pref_gallery_slideshow_transition_key"
                 android:title="@string/pref_gallery_slideshow_transition_title"
@@ -73,12 +72,14 @@
                 android:dialogTitle="@string/pref_gallery_slideshow_transition_dialogtitle"
                 android:defaultValue="@string/default_value_pref_gallery_slideshow_transition" />
 
+        <!-- Repeat slideshow -->
         <CheckBoxPreference
                 android:key="pref_gallery_slideshow_repeat_key"
                 android:title="@string/pref_gallery_slideshow_repeat_title"
                 android:summary="@string/pref_gallery_slideshow_repeat_summary"
                 android:defaultValue="false"/>
 
+        <!-- Shuffle slides -->
         <CheckBoxPreference
                 android:key="pref_gallery_slideshow_shuffle_key"
                 android:title="@string/pref_gallery_slideshow_shuffle_title"

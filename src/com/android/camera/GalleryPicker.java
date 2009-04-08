@@ -32,6 +32,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -44,6 +46,7 @@ import android.provider.MediaStore.Images;
 import android.util.Config;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -159,42 +162,9 @@ public class GalleryPicker extends Activity {
         mGridView.setSelector(android.R.color.transparent);
 
         mReceiver = new BroadcastReceiver() {
-
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (Config.LOGV) {
-                    Log.v(TAG, "onReceiveIntent " + intent.getAction());
-                }
-                String action = intent.getAction();
-                if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                    // SD card available
-                    // TODO put up a "please wait" message
-                    // TODO also listen for the media scanner finished message
-                } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                    // SD card unavailable
-                    if (Config.LOGV) {
-                        Log.v(TAG, "sd card no longer available");
-                    }
-                    Toast.makeText(GalleryPicker.this,
-                            getResources().getString(R.string.wait), 5000);
-                    rebake(true, false);
-                } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
-                    Toast.makeText(GalleryPicker.this,
-                            getResources().getString(R.string.wait), 5000);
-                    rebake(false, true);
-                } else if (action.equals(
-                        Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "rebake because of "
-                                + "ACTION_MEDIA_SCANNER_FINISHED");
-                    }
-                    rebake(false, false);
-                } else if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "rebake because of ACTION_MEDIA_EJECT");
-                    }
-                    rebake(true, false);
-                }
+                onReceiveMediaBroadcast(intent);
             }
         };
 
@@ -204,68 +174,113 @@ public class GalleryPicker extends Activity {
                 launchFolderGallery(position);
             }
         });
+    
         mGridView.setOnCreateContextMenuListener(
-        new View.OnCreateContextMenuListener() {
-            public void onCreateContextMenu(ContextMenu menu, View v,
-                    final ContextMenu.ContextMenuInfo menuInfo) {
-                int position = ((AdapterContextMenuInfo) menuInfo).position;
-                menu.setHeaderTitle(mAdapter.baseTitleForPosition(position));
-                if ((mAdapter.getIncludeMediaTypes(position)
-                        & ImageManager.INCLUDE_IMAGES) != 0) {
-                    menu.add(0, 207, 0, R.string.slide_show)
-                    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            AdapterView.AdapterContextMenuInfo info =
-                                    (AdapterView.AdapterContextMenuInfo)
-                                    menuInfo;
-                            int position = info.position;
-
-                            Uri targetUri;
-                            synchronized (mAdapter.mItems) {
-                                if (position < 0
-                                        || position >= mAdapter.mItems.size()) {
-                                    return true;
-                                }
-                                // the mFirstImageUris list includes the "all"
-                                // uri
-                                targetUri = mAdapter.mItems.get(position)
-                                        .mFirstImageUri;
-                            }
-                            if (targetUri != null && position > 0) {
-                                targetUri = targetUri
-                                        .buildUpon()
-                                        .appendQueryParameter("bucketId",
-                                        mAdapter.mItems.get(info.position).mId)
-                                        .build();
-                            }
-    //                      Log.v(TAG, "URI to launch slideshow " + targetUri);
-                            Intent intent = new Intent(Intent.ACTION_VIEW,
-                                                       targetUri);
-                            intent.putExtra("slideshow", true);
-                            startActivity(intent);
-                            return true;
-                        }
-                    });
-                }
-                menu.add(0, 208, 0, R.string.view)
-                        .setOnMenuItemClickListener(
-                        new OnMenuItemClickListener() {
-                            public boolean onMenuItemClick(MenuItem item) {
-                                AdapterView.AdapterContextMenuInfo info =
-                                        (AdapterView.AdapterContextMenuInfo)
-                                        menuInfo;
-                                launchFolderGallery(info.position);
-                                return true;
-                            }
-                        });
-            }
-        });
+                new View.OnCreateContextMenuListener() {
+                    @Override
+                    public void onCreateContextMenu(ContextMenu menu, View v,
+                        final ContextMenuInfo menuInfo) {
+                            onCreateGalleryPickerContextMenu(menu, menuInfo);
+                    }
+                });
  
         ImageManager.ensureOSXCompatibleFolder();
+    }
+    
+    // This is called when we receive media-related broadcast.
+    private void onReceiveMediaBroadcast(Intent intent) {
+        if (Config.LOGV) {
+            Log.v(TAG, "onReceiveMediaBroadcast " + intent.getAction());
+        }
+        String action = intent.getAction();
+        if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
+            // SD card available
+            // TODO put up a "please wait" message
+            // TODO also listen for the media scanner finished message
+        } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+            // SD card unavailable
+            if (Config.LOGV) {
+                Log.v(TAG, "sd card no longer available");
+            }
+            Toast.makeText(GalleryPicker.this,
+                    getResources().getString(R.string.wait), 5000);
+            rebake(true, false);
+        } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
+            Toast.makeText(GalleryPicker.this,
+                    getResources().getString(R.string.wait), 5000);
+            rebake(false, true);
+        } else if (action.equals(
+                Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
+            if (Config.LOGV) {
+                Log.v(TAG, "rebake because of "
+                        + "ACTION_MEDIA_SCANNER_FINISHED");
+            }
+            rebake(false, false);
+        } else if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
+            if (Config.LOGV) {
+                Log.v(TAG, "rebake because of ACTION_MEDIA_EJECT");
+            }
+            rebake(true, false);
+        }
     }
 
     private void launchFolderGallery(int position) {
         mAdapter.mItems.get(position).launch(this);
+    }
+
+    private void onCreateGalleryPickerContextMenu(ContextMenu menu,
+            final ContextMenuInfo menuInfo) {
+        int position = ((AdapterContextMenuInfo) menuInfo).position;
+        menu.setHeaderTitle(mAdapter.baseTitleForPosition(position));
+        // "Slide Show"
+        if ((mAdapter.getIncludeMediaTypes(position)
+                & ImageManager.INCLUDE_IMAGES) != 0) {
+            menu.add(0, 207, 0, R.string.slide_show)
+                    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            return onSlideShowClicked(menuInfo);
+                        }
+                    });
+        }
+        // "View"
+        menu.add(0, 208, 0, R.string.view)
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                            return onViewClicked(menuInfo);
+                    }
+                });
+    }
+
+    // This is called when the user clicks "Slideshow" from the context menu.
+    private boolean onSlideShowClicked(ContextMenuInfo menuInfo) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+        int position = info.position;
+
+        Uri targetUri;
+        synchronized (mAdapter.mItems) {
+            if (position < 0 || position >= mAdapter.mItems.size()) {
+                return true;
+            }
+            // the mFirstImageUris list includes the "all" uri
+            targetUri = mAdapter.mItems.get(position).mFirstImageUri;
+        }
+        if (targetUri != null && position > 0) {
+            targetUri = targetUri.buildUpon()
+                    .appendQueryParameter("bucketId",
+                    mAdapter.mItems.get(info.position).mId)
+                    .build();
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
+        intent.putExtra("slideshow", true);
+        startActivity(intent);
+        return true;
+    }
+
+    // This is called when the user clicks "View" from the context menu.
+    private boolean onViewClicked(ContextMenuInfo menuInfo) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+        launchFolderGallery(info.position);
+        return true;
     }
 
     class ItemInfo {
@@ -273,7 +288,7 @@ public class GalleryPicker extends Activity {
         int mCount;
     }
 
-    static class Item implements Comparable<Item>{
+    static class Item implements Comparable<Item> {
         // The type is also used as the sort order
         public static final int TYPE_NONE = -1;
         public static final int TYPE_ALL_IMAGES = 0;
@@ -620,8 +635,8 @@ public class GalleryPicker extends Activity {
         rebake(false, scanning);
 
         // install an intent filter to receive SD card related events.
-        IntentFilter intentFilter = new IntentFilter(
-                Intent.ACTION_MEDIA_MOUNTED);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
@@ -631,8 +646,6 @@ public class GalleryPicker extends Activity {
         registerReceiver(mReceiver, intentFilter);
         MenuHelper.requestOrientation(this, mPrefs);
     }
-
-
 
     private void setBackgrounds(Resources r) {
         mFrameGalleryMask = r.getDrawable(
@@ -679,7 +692,6 @@ public class GalleryPicker extends Activity {
         final Bitmap b = Bitmap.createBitmap(width, height,
                 Bitmap.Config.ARGB_8888);
         final Canvas c = new Canvas(b);
-
         final Matrix m = new Matrix();
 
         // draw the whole canvas as transparent
@@ -692,8 +704,7 @@ public class GalleryPicker extends Activity {
         mFrameGalleryMask.draw(c);
 
         Paint pdpaint = new Paint();
-        pdpaint.setXfermode(new android.graphics.PorterDuffXfermode(
-                                    android.graphics.PorterDuff.Mode.SRC_IN));
+        pdpaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 
         pdpaint.setStyle(Paint.Style.FILL);
         c.drawRect(0, 0, width, height, pdpaint);
@@ -763,16 +774,17 @@ public class GalleryPicker extends Activity {
         MenuHelper.addCaptureMenuItems(menu, this);
 
         menu.add(0, 0, 5, R.string.camerasettings)
-        .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent preferences = new Intent();
-                preferences.setClass(GalleryPicker.this, GallerySettings.class);
-                startActivity(preferences);
-                return true;
-            }
-        })
-        .setAlphabeticShortcut('p')
-        .setIcon(android.R.drawable.ic_menu_preferences);
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Intent preferences = new Intent();
+                        preferences.setClass(GalleryPicker.this,
+                                             GallerySettings.class);
+                        startActivity(preferences);
+                        return true;
+                    }
+                })
+                .setAlphabeticShortcut('p')
+                .setIcon(android.R.drawable.ic_menu_preferences);
 
         return true;
     }
@@ -796,6 +808,7 @@ public class GalleryPicker extends Activity {
             list.deactivate();
         }
     }
+
     private IImageList createImageList(int mediaTypes, String bucketId) {
         return ImageManager.instance().allImages(
                 this,

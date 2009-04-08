@@ -56,10 +56,6 @@ public abstract class SimpleBaseImage implements IImage {
         throw new UnsupportedOperationException();
     }
 
-    public boolean getIsPrivate() {
-        throw new UnsupportedOperationException();
-    }
-
     public double getLatitude() {
         return 0D;
     }
@@ -74,10 +70,6 @@ public abstract class SimpleBaseImage implements IImage {
 
     public String getDisplayName() {
         throw new UnsupportedOperationException();
-    }
-
-    public String getPicasaId() {
-        return null;
     }
 
     public int getRow() {
@@ -116,18 +108,8 @@ public abstract class SimpleBaseImage implements IImage {
         throw new UnsupportedOperationException();
     }
 
-    public void setIsPrivate(boolean isPrivate) {
-        throw new UnsupportedOperationException();
-    }
-
     public void setName(String name) {
         throw new UnsupportedOperationException();
-    }
-
-    public void setPicasaId(long id) {
-    }
-
-    public void setPicasaId(String id) {
     }
 
     public Uri thumbUri() {
