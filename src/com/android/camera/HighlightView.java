@@ -29,15 +29,14 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
-
+// This class is used by CropImage to display a highlighted cropping rectangle
+// overlayed with the image. There are two coordinate spaces in use. One is
+// image, another is screen. computeLayout() uses mMatrix to map from image
+// space to screen space.
 public class HighlightView {
-    private static final String TAG = "CropImage";
-    View mContext;
-    Path mPath;
-    Rect mViewDrawingRect = new Rect();
+    private static final String TAG = "HighlightView";
+    View mContext;  // The View displaying the image.
 
-    int mMotionMode;
-    
     public static final int GROW_NONE        = (1 << 0);
     public static final int GROW_LEFT_EDGE   = (1 << 1);
     public static final int GROW_RIGHT_EDGE  = (1 << 2);
@@ -47,10 +46,9 @@ public class HighlightView {
     
     public HighlightView(View ctx) {
         mContext = ctx;
-        mPath = new Path();
     }
 
-    private void initHighlightView() {
+    private void init() {
         android.content.res.Resources resources = mContext.getResources();
         mResizeDrawableWidth =
                 resources.getDrawable(R.drawable.camera_crop_width);
@@ -80,33 +78,31 @@ public class HighlightView {
             return;
         }        
         canvas.save();
-        mPath.reset();
+        Path path = new Path();
         if (!hasFocus()) {
             mOutlinePaint.setColor(0xFF000000);
             canvas.drawRect(mDrawRect, mOutlinePaint);
         } else {
-            mContext.getDrawingRect(mViewDrawingRect);
+            Rect viewDrawingRect = new Rect();
+            mContext.getDrawingRect(viewDrawingRect);
             if (mCircle) {
-                float width  = mDrawRect.width()
-                        - (getPaddingLeft() + getPaddingRight());
-                float height = mDrawRect.height()
-                        - (getPaddingTop()  + getPaddingBottom());
-                mPath.addCircle(
-                        mDrawRect.left + getPaddingLeft() + (width  / 2), 
-                        mDrawRect.top  + getPaddingTop()  + (height / 2),
-                        width / 2, 
-                        Path.Direction.CW);
+                float width  = mDrawRect.width();
+                float height = mDrawRect.height();
+                path.addCircle(mDrawRect.left + (width  / 2), 
+                               mDrawRect.top + (height / 2),
+                               width / 2, 
+                               Path.Direction.CW);
                 mOutlinePaint.setColor(0xFFEF04D6);
             } else {
-                mPath.addRect(new RectF(mDrawRect), Path.Direction.CW);
+                path.addRect(new RectF(mDrawRect), Path.Direction.CW);
                 mOutlinePaint.setColor(0xFFFF8A00);
             }
-            canvas.clipPath(mPath, Region.Op.DIFFERENCE);
-            canvas.drawRect(mViewDrawingRect,
+            canvas.clipPath(path, Region.Op.DIFFERENCE);
+            canvas.drawRect(viewDrawingRect,
                     hasFocus() ? mFocusPaint : mNoFocusPaint);
 
             canvas.restore();
-            canvas.drawPath(mPath, mOutlinePaint);
+            canvas.drawPath(path, mOutlinePaint);
 
             if (mMode == ModifyMode.Grow) {
                 if (mCircle) {
@@ -169,22 +165,8 @@ public class HighlightView {
                 }
             }
         }
-    
     }
     
-    float getPaddingTop() {
-        return 0F;
-    }
-    float getPaddingBottom() {
-        return 0F;
-    }
-    float getPaddingLeft() {
-        return 0F;
-    }
-    float getPaddingRight() {
-        return 0F;
-    }
-
     public ModifyMode getMode() {
         return mMode;
     }
@@ -196,6 +178,7 @@ public class HighlightView {
         }
     }
     
+    // Determines which edges are hit by touching at (x, y).
     public int getHit(float x, float y) {
         Rect r = computeLayout();
         final float hysteresis = 20F;
@@ -206,7 +189,7 @@ public class HighlightView {
             float distY = y - r.centerY();
             int distanceFromCenter =
                     (int) Math.sqrt(distX * distX + distY * distY);
-            int radius  = (int) (mDrawRect.width() - getPaddingLeft()) / 2;
+            int radius  = (int) (mDrawRect.width()) / 2;
             int delta = distanceFromCenter - radius;
             if (Math.abs(delta) <= hysteresis) {
                 if (Math.abs(distY) > Math.abs(distX)) {
@@ -228,11 +211,14 @@ public class HighlightView {
                 retval = GROW_NONE;
             }
         } else {
+            // verticalCheck makes sure the position is between the top and
+            // the bottom edge (with some tolerance). Similar for horizCheck.
             boolean verticalCheck = (y >= r.top - hysteresis)
                     && (y < r.bottom + hysteresis);
             boolean horizCheck = (x >= r.left - hysteresis)
                     && (x < r.right + hysteresis);
 
+            // Check whether the position is near some edge(s).
             if ((Math.abs(r.left - x)     < hysteresis)  &&  verticalCheck) {
                 retval |= GROW_LEFT_EDGE;
             }
@@ -246,6 +232,7 @@ public class HighlightView {
                 retval |= GROW_BOTTOM_EDGE;
             }
 
+            // Not near any edge but inside the rectangle: move.
             if (retval == GROW_NONE && r.contains((int) x, (int) y)) {
                 retval = MOVE;
             }
@@ -253,11 +240,14 @@ public class HighlightView {
         return retval;
     }
 
+    // Handles motion (dx, dy) in screen space.
+    // The "edge" parameter specifies which edges the user is dragging.
     void handleMotion(int edge, float dx, float dy) {
         Rect r = computeLayout();
         if (edge == GROW_NONE) {
             return;
         } else if (edge == MOVE) {
+            // Convert to image space before sending to moveBy().
             moveBy(dx * (mCropRect.width() / r.width()),
                    dy * (mCropRect.height() / r.height()));
         } else {
@@ -268,19 +258,22 @@ public class HighlightView {
             if (((GROW_TOP_EDGE | GROW_BOTTOM_EDGE) & edge) == 0) {
                 dy = 0;
             }
-            
+
+            // Convert to image space before sending to growBy().
             float xDelta = dx * (mCropRect.width() / r.width());
             float yDelta = dy * (mCropRect.height() / r.height());
             growBy((((edge & GROW_LEFT_EDGE) != 0) ? -1 : 1) * xDelta,
                     (((edge & GROW_TOP_EDGE) != 0) ? -1 : 1) * yDelta);
-                   
         }
     }
     
+    // Grows the cropping rectange by (dx, dy) in image space.
     void moveBy(float dx, float dy) {
         Rect invalRect = new Rect(mDrawRect);
 
         mCropRect.offset(dx, dy);
+        
+        // Put the cropping rectangle inside image rectangle.
         mCropRect.offset(
                 Math.max(0, mImageRect.left - mCropRect.left), 
                 Math.max(0, mImageRect.top  - mCropRect.top));
@@ -295,13 +288,7 @@ public class HighlightView {
         mContext.invalidate(invalRect);
     }
     
-    private void shift(RectF r, float dx, float dy) {
-        r.left   += dx;
-        r.right  += dx;
-        r.top    += dy;
-        r.bottom += dy;
-    }
-
+    // Grows the cropping rectange by (dx, dy) in image space.
     void growBy(float dx, float dy) {
         if (mMaintainAspectRatio) {
             if (dx != 0) {
@@ -311,6 +298,9 @@ public class HighlightView {
             }
         }
 
+        // Don't let the cropping rectangle grow too fast.
+        // Grow at most half of the difference between the image rectangle and
+        // the cropping rectangle.
         RectF r = new RectF(mCropRect);
         if (dx > 0F && r.width() + 2 * dx > mImageRect.width()) {
             float adjustment = (mImageRect.width() - r.width()) / 2F;
@@ -329,9 +319,10 @@ public class HighlightView {
 
         r.inset(-dx, -dy);
         
-        float widthCap = 25F;
-        if (r.width() < 25) {
-            r.inset(-(25F - r.width()) / 2F, 0F);
+        // Don't let the cropping rectangle shrink too fast.
+        final float widthCap = 25F;
+        if (r.width() < widthCap) {
+            r.inset(-(widthCap - r.width()) / 2F, 0F);
         }
         float heightCap = mMaintainAspectRatio
                 ? (widthCap / mInitialAspectRatio)
@@ -340,48 +331,30 @@ public class HighlightView {
             r.inset(0F, -(heightCap - r.height()) / 2F);
         }
         
+        // Put the cropping rectangle inside the image rectangle.
         if (r.left < mImageRect.left) {
-            shift(r, mImageRect.left - r.left, 0F);
+            r.offset(mImageRect.left - r.left, 0F);
         } else if (r.right > mImageRect.right) {
-            shift(r, -(r.right - mImageRect.right), 0);
+            r.offset(-(r.right - mImageRect.right), 0);
         }
         if (r.top < mImageRect.top) {
-            shift(r, 0F, mImageRect.top - r.top);
+            r.offset(0F, mImageRect.top - r.top);
         } else if (r.bottom > mImageRect.bottom) {
-            shift(r, 0F, -(r.bottom - mImageRect.bottom));
+            r.offset(0F, -(r.bottom - mImageRect.bottom));
         }
-/*        
-        RectF rCandidate = new RectF(r);
-        r.intersect(mImageRect);
-        if (mMaintainAspectRatio) {
-            if (r.left != rCandidate.left) {
-                Log.v(TAG, "bail 1");
-                return;
-            }
-            if (r.right != rCandidate.right) {
-                Log.v(TAG, "bail 2");
-                return;
-            }
-            if (r.top != rCandidate.top) {
-                Log.v(TAG, "bail 3");
-                return;
-            }
-            if (r.bottom != rCandidate.bottom) {
-                Log.v(TAG, "bail 4");
-                return;
-            }
-        }
-*/        
+
         mCropRect.set(r);
         mDrawRect = computeLayout();
         mContext.invalidate();
     }
     
+    // Returns the cropping rectangle in image space.
     public Rect getCropRect() {
         return new Rect((int) mCropRect.left, (int) mCropRect.top,
                         (int) mCropRect.right, (int) mCropRect.bottom);
     }
     
+    // Maps the cropping rectangle from image space to screen space.
     private Rect computeLayout() {
         RectF r = new RectF(mCropRect.left, mCropRect.top,
                             mCropRect.right, mCropRect.bottom);
@@ -396,11 +369,6 @@ public class HighlightView {
     
     public void setup(Matrix m, Rect imageRect, RectF cropRect, boolean circle,
                       boolean maintainAspectRatio) {
-        if (Config.LOGV) {
-            Log.v(TAG, "setup... " + imageRect + "; " + cropRect
-                       + "; maintain " + maintainAspectRatio
-                       + "; circle " + circle);
-        }
         if (circle) {
             maintainAspectRatio = true;
         }
@@ -421,66 +389,27 @@ public class HighlightView {
         mOutlinePaint.setAntiAlias(true);
 
         mMode = ModifyMode.None;
-        initHighlightView();
-    }
-    
-    public void modify(int keyCode, long repeatCount) {
-        float factor = Math.max(.01F, Math.min(.1F, repeatCount * .01F));  
-        float widthUnits = factor * (float) mContext.getWidth();
-        float heightUnits = widthUnits;
-
-        switch (keyCode) {
-        case KeyEvent.KEYCODE_DPAD_LEFT:
-            if (mMode == ModifyMode.Move) {
-                moveBy(-widthUnits, 0);
-            } else if (mMode == ModifyMode.Grow) {
-                growBy(-widthUnits, 0);
-            }
-            break;
-        
-        case KeyEvent.KEYCODE_DPAD_RIGHT:
-            if (mMode == ModifyMode.Move) {
-                moveBy(widthUnits, 0);
-            } else if (mMode == ModifyMode.Grow) {
-                growBy(widthUnits, 0);
-            }
-            break;
-    
-        case KeyEvent.KEYCODE_DPAD_UP:
-            if (mMode == ModifyMode.Move) {
-                moveBy(0, -heightUnits);
-            } else if (mMode == ModifyMode.Grow) {
-                growBy(0, -heightUnits);
-            }
-            break;
-
-        case KeyEvent.KEYCODE_DPAD_DOWN:
-            if (mMode == ModifyMode.Move) {
-                moveBy(0, heightUnits);
-            } else if (mMode == ModifyMode.Grow) {
-                growBy(0, heightUnits);
-            }
-            break;
-        }
+        init();
     }
     
     enum ModifyMode { None, Move, Grow };
     
-    ModifyMode mMode = ModifyMode.None;
+    private ModifyMode mMode = ModifyMode.None;
     
-    Rect  mDrawRect;
-    RectF mImageRect;
-    RectF mCropRect;
+    Rect mDrawRect;  // in screen space
+    private RectF mImageRect;  // in image space
+    RectF mCropRect;  // in image space
     Matrix mMatrix;
 
-    boolean mMaintainAspectRatio = false;
-    float mInitialAspectRatio;
-    boolean mCircle = false;
+    private boolean mMaintainAspectRatio = false;
+    private float mInitialAspectRatio;
+    private boolean mCircle = false;
     
-    Drawable mResizeDrawableWidth, mResizeDrawableHeight,
-             mResizeDrawableDiagonal;
+    private Drawable mResizeDrawableWidth;
+    private Drawable mResizeDrawableHeight;
+    private Drawable mResizeDrawableDiagonal;
 
-    Paint mFocusPaint = new Paint();
-    Paint mNoFocusPaint = new Paint();
-    Paint mOutlinePaint = new Paint();
+    private Paint mFocusPaint = new Paint();
+    private Paint mNoFocusPaint = new Paint();
+    private Paint mOutlinePaint = new Paint();
 }
