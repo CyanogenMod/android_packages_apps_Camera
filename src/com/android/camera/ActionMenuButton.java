@@ -30,9 +30,9 @@ import android.widget.TextView;
  * and TextView's clip is too aggressive.
  */
 public class ActionMenuButton extends TextView {
-    private static final float CORNER_RADIUS = 8.0f;
-    private static final float PADDING_H = 5.0f;
-    private static final float PADDING_V = 1.0f;
+    private static final int CORNER_RADIUS = 8;
+    private static final int PADDING_H = 5;
+    private static final int PADDING_V = 1;
 
     private static final int[] RESTRICTED_STATE_SET = {
             R.attr.state_restricted
@@ -59,6 +59,7 @@ public class ActionMenuButton extends TextView {
 
     private void init() {
         setFocusable(true);
+        setPadding(PADDING_H, PADDING_V, PADDING_H, PADDING_V);
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(getContext().getResources()
