@@ -36,11 +36,13 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_WHITE_BALANCE = 
             "pref_camera_whitebalance_key";
     public static final String KEY_EFFECT = "pref_camera_effect_key";
+    public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
     private ListPreference mVideoQuality;
     private ListPreference mWhiteBalance;
     private ListPreference mEffect;
+    private ListPreference mPictureSize;
     private Parameters mParameters;
 
     @Override
@@ -58,12 +60,14 @@ public class CameraSettings extends PreferenceActivity implements
         updateVideoQualitySummary();
         updateWhiteBalanceSummary();
         updateEffectSummary();
+        updatePictureSizeSummary();
     }
 
     private void initUI() {
         mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
         mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
         mEffect = (ListPreference) findPreference(KEY_EFFECT);
+        mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         getPreferenceScreen().getSharedPreferences().
                 registerOnSharedPreferenceChangeListener(this);
 
@@ -81,13 +85,24 @@ public class CameraSettings extends PreferenceActivity implements
         createSettings(mEffect, Camera.SUPPORTED_EFFECT,
                        R.array.pref_camera_effect_entries,
                        R.array.pref_camera_effect_entryvalues);
+
+        // Create picture size settings.
+        createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE,
+                       R.array.pref_camera_picturesize_entries,
+                       R.array.pref_camera_picturesize_entryvalues);
     }
 
     private void createSettings(
             ListPreference pref, String paramName, int prefEntriesResId,
             int prefEntryValuesResId) {
-        // Get the supported parameter settings.
+        // Disable the preference if the parameter is not supported.
         String supportedParamStr = mParameters.get(paramName);
+        if (supportedParamStr == null) {  
+            pref.setEnabled(false);
+            return;
+        }
+
+        // Get the supported parameter settings.
         StringTokenizer tokenizer = new StringTokenizer(supportedParamStr, ",");
         ArrayList<CharSequence> supportedParam = new ArrayList<CharSequence>();
         while (tokenizer.hasMoreElements()) {
@@ -126,13 +141,15 @@ public class CameraSettings extends PreferenceActivity implements
     }
 
     private void updateWhiteBalanceSummary() {
-        // Set preference summary.
         mWhiteBalance.setSummary(mWhiteBalance.getEntry());
     }
 
     private void updateEffectSummary() {
-        // Set preference summary.
         mEffect.setSummary(mEffect.getEntry());
+    }
+
+    private void updatePictureSizeSummary() {
+        mPictureSize.setSummary(mPictureSize.getEntry());
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -143,6 +160,8 @@ public class CameraSettings extends PreferenceActivity implements
             updateWhiteBalanceSummary();
         } else if (key.equals(KEY_EFFECT)) {
             updateEffectSummary();
+        } else if (key.equals(KEY_PICTURE_SIZE)) {
+            updatePictureSizeSummary();
         }
     }
 }
