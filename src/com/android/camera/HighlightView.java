@@ -33,7 +33,7 @@ import android.view.View;
 // overlayed with the image. There are two coordinate spaces in use. One is
 // image, another is screen. computeLayout() uses mMatrix to map from image
 // space to screen space.
-public class HighlightView {
+class HighlightView {
     private static final String TAG = "HighlightView";
     View mContext;  // The View displaying the image.
 

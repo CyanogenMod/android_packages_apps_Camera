@@ -42,8 +42,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.Gallery.LayoutParams;
+import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import java.io.File;
@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class SlideShow extends Activity implements ViewSwitcher.ViewFactory {
+class SlideShow extends Activity implements ViewSwitcher.ViewFactory {
     private static final String TAG = "SlideShow";
     static final int LAG = 2000;
     static final int NEXT_IMAGE_INTERVAL = 3000;
@@ -91,7 +91,7 @@ public class SlideShow extends Activity implements ViewSwitcher.ViewFactory {
         cancelPost();
     }
 
-    public static class ImageViewTouch extends ImageView {
+    static class ImageViewTouch extends ImageView {
         class XY {
             public XY(float xIn, float yIn) {
                 x = xIn;
