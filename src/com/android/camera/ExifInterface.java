@@ -19,8 +19,9 @@ package com.android.camera;
 import java.util.HashMap;
 import java.util.Iterator;
 
-// Wrapper for native Exif library
-
+/**
+ * Wrapper for native Exif library
+ */
 public class ExifInterface {
 
     private String mFilename;
@@ -268,7 +269,7 @@ public class ExifInterface {
                 return preliminaryResult + String.valueOf((char) 186) + " "
                         + ref; 
             }
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             // if for whatever reason we can't parse the lat long then return
             // null
             return null;

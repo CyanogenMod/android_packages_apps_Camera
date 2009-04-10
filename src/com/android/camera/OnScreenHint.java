@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.os.Handler;
-import android.os.ServiceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -88,7 +87,9 @@ public class OnScreenHint {
         if (mNextView == null) {
             throw new RuntimeException("setView must have been called");
         }
-        if (LOCAL_LOGV) Log.v(TAG, "SHOW: " + this);
+        if (LOCAL_LOGV) {
+            Log.v(TAG, "SHOW: " + this);
+        }
         mHandler.post(mShow);
     }
 
@@ -96,7 +97,9 @@ public class OnScreenHint {
      * Close the view if it's showing.
      */
     public void cancel() {
-        if (LOCAL_LOGV) Log.v(TAG, "HIDE: " + this);
+        if (LOCAL_LOGV) {
+            Log.v(TAG, "HIDE: " + this);
+        }
         mHandler.post(mHide);
     }
 
@@ -276,13 +279,17 @@ public class OnScreenHint {
                 }
                 mWM.removeView(mView);
             }
-            if (LOCAL_LOGV) Log.v(TAG, "ADD! " + mView + " in " + this);
+            if (LOCAL_LOGV) {
+                Log.v(TAG, "ADD! " + mView + " in " + this);
+            }
             mWM.addView(mView, mParams);
         }
     }
 
     private synchronized void handleHide() {
-        if (LOCAL_LOGV) Log.v(TAG, "HANDLE HIDE: " + this + " mView=" + mView);
+        if (LOCAL_LOGV) {
+            Log.v(TAG, "HANDLE HIDE: " + this + " mView=" + mView);
+        }
         if (mView != null) {
             // note: checking parent() just to make sure the view has
             // been added...  i have seen cases where we get here when

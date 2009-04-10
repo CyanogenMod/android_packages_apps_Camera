@@ -32,7 +32,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
-public abstract class ImageViewTouchBase extends ImageView {
+abstract class ImageViewTouchBase extends ImageView {
     private static final String TAG = "ImageViewTouchBase";
     
     // if we're animating these images, it may be faster to cache the image

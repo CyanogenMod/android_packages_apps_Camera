@@ -389,7 +389,9 @@ public class ImageManager {
             imageList = new SingleImageList(cr, uri);
         } else {
             String bucketId = uri.getQueryParameter("bucketId");
-            if (VERBOSE) Log.v(TAG, "bucketId is " + bucketId);
+            if (VERBOSE) {
+                Log.v(TAG, "bucketId is " + bucketId);
+            }
             imageList = ImageManager.instance().allImages(
                 ctx, cr, ImageManager.DataLocation.ALL,
                 ImageManager.INCLUDE_IMAGES, sort, bucketId);
@@ -578,8 +580,9 @@ public class ImageManager {
             if (f.exists()) {
                 f.delete();
             }
-            if (!f.createNewFile())
+            if (!f.createNewFile()) {
                 return false;
+            }
             f.delete();
             return true;
         } catch (IOException ex) {
