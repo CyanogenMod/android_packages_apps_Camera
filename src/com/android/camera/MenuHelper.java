@@ -144,6 +144,7 @@ public class MenuHelper {
     // Called when "Details" is clicked.
     // Displays detailed information about the image/video.
     private static boolean onDetailsClicked(MenuInvoker onInvoke,
+                                           final Handler handler,
                                            final Activity activity,
                                            final boolean isImage) {
         onInvoke.run(new MenuCallback() {
@@ -152,7 +153,7 @@ public class MenuHelper {
                     return;
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
                 final View d = View.inflate(activity, R.layout.detailsview,
                         null);
@@ -325,10 +326,15 @@ public class MenuHelper {
                             }
                         });
 
-                builder.setIcon(android.R.drawable.ic_dialog_info)
-                        .setTitle(R.string.details_panel_title)
-                        .setView(d)
-                        .show();
+                handler.post(
+                        new Runnable() {
+                            public void run() {
+                                builder.setIcon(android.R.drawable.ic_dialog_info)
+                                        .setTitle(R.string.details_panel_title)
+                                        .setView(d)
+                                        .show();
+                            }
+                        });
             }
         });
         return true;
@@ -441,6 +447,7 @@ public class MenuHelper {
             int inclusions,
             final boolean isImage,
             final Activity activity,
+            final Handler handler,
             final Runnable onDelete,
             final MenuInvoker onInvoke) {
         final ArrayList<MenuItem> requiresWriteAccessItems =
@@ -537,7 +544,7 @@ public class MenuHelper {
             MenuItem detailsMenu = menu.add(0, 0, 80, R.string.details)
             .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    return onDetailsClicked(onInvoke, activity, isImage);
+                    return onDetailsClicked(onInvoke, handler, activity, isImage);
                 }
             });
             detailsMenu.setIcon(R.drawable.ic_menu_view_details);

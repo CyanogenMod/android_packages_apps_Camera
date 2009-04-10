@@ -18,7 +18,10 @@ package com.android.camera;
 
 import android.os.Process;
 
-class CameraThread {
+/**
+ * A generic thread wrapper used by several gallery activities.
+ */
+class BitmapThread {
     private Thread mThread;
     private int mTid;
     private boolean mTidSet;
@@ -27,14 +30,14 @@ class CameraThread {
     private synchronized void setTid(int tid) {
         mTid = tid;
         mTidSet = true;
-        CameraThread.this.notifyAll();
+        BitmapThread.this.notifyAll();
     }
     
     private synchronized void setFinished() {
         mFinished = true;
     }
     
-    public CameraThread(final Runnable r) {
+    public BitmapThread(final Runnable r) {
         Runnable wrapper = new Runnable() {
             public void run() {
                 setTid(Process.myTid());
@@ -50,6 +53,7 @@ class CameraThread {
     }
     
     public synchronized void start() {
+        BitmapManager.instance().allowThreadDecoding(mThread);
         mThread.start();
     }
     
@@ -59,9 +63,10 @@ class CameraThread {
     
     public void join() {
         try {
+            BitmapManager.instance().cancelThreadDecoding(mThread);
             mThread.join();
         } catch (InterruptedException ex) {
-            // ok?
+            // Ignore this exception.
         }
     }
     
@@ -76,7 +81,7 @@ class CameraThread {
     public synchronized void setPriority(int androidOsPriority) {
         while (!mTidSet) {
             try {
-                CameraThread.this.wait();
+                BitmapThread.this.wait();
             } catch (InterruptedException ex) {
                 // ok, try again
             }
