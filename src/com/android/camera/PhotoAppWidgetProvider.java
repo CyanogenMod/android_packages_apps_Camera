@@ -148,7 +148,9 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
             } catch (IOException e) {
                 Log.e(TAG, "Could not serialize photo", e);
             }
-            if (LOGD) Log.d(TAG, "setPhoto success=" + success);
+            if (LOGD) {
+                Log.d(TAG, "setPhoto success=" + success);
+            }
             return success;
         }
         

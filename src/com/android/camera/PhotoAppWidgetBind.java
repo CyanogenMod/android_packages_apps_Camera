@@ -28,10 +28,9 @@ import android.widget.RemoteViews;
 
 import java.util.ArrayList;
 
-public class PhotoAppWidgetBind extends Activity {
-    static final String TAG = "PhotoAppWidgetBind";
-    
-    static final String EXTRA_APPWIDGET_BITMAPS =
+class PhotoAppWidgetBind extends Activity {
+    private static final String TAG = "PhotoAppWidgetBind";
+    private static final String EXTRA_APPWIDGET_BITMAPS =
             "com.android.camera.appwidgetbitmaps";
 
     @Override

@@ -37,7 +37,9 @@ import android.view.View;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-// This activity plays a video from a specified URI.
+/**
+ * This activity plays a video from a specified URI.
+ */
 public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
     private static final String TAG = "MovieView";

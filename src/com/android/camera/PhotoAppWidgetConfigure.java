@@ -25,9 +25,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
-public class PhotoAppWidgetConfigure extends Activity {
+class PhotoAppWidgetConfigure extends Activity {
     private static final String TAG = "PhotoAppWidgetConfigure";
-    
     static final int REQUEST_GET_PHOTO = 2;
     
     int mAppWidgetId = -1;
