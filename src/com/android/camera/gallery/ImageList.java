@@ -16,6 +16,7 @@
 
 package com.android.camera.gallery;
 
+import com.android.camera.BitmapManager;
 import com.android.camera.ImageManager;
 
 import android.content.ContentResolver;
@@ -278,7 +279,7 @@ public class ImageList extends BaseImageList implements IImageList {
             if (targetWidthHeight != -1) {
                 options.inJustDecodeBounds = true;
                 long t1 = System.currentTimeMillis();
-                BitmapFactory.decodeFileDescriptor(fd, null, options);
+                BitmapManager.instance().decodeFileDescriptor(fd, null, options);
                 long t2 = System.currentTimeMillis();
                 if (options.mCancel || options.outWidth == -1
                         || options.outHeight == -1) {
@@ -292,7 +293,8 @@ public class ImageList extends BaseImageList implements IImageList {
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             long t1 = System.currentTimeMillis();
-            b = BitmapFactory.decodeFileDescriptor(fd, null, options);
+            b = BitmapManager.instance()
+                    .decodeFileDescriptor(fd, null, options);
             long t2 = System.currentTimeMillis();
             if (VERBOSE) {
                 Log.v(TAG, "A: got bitmap " + b + " with sampleSize "

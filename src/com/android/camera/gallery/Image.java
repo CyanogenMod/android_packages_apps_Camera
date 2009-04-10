@@ -16,6 +16,8 @@
 
 package com.android.camera.gallery;
 
+import com.android.camera.BitmapManager;
+
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.database.Cursor;
@@ -391,7 +393,7 @@ public class Image extends BaseImage implements IImage {
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             pfdInput = mContentResolver.openFileDescriptor(thumbUri, "r");
-            bitmap = BitmapFactory.decodeFileDescriptor(
+            bitmap = BitmapManager.instance().decodeFileDescriptor(
                     pfdInput.getFileDescriptor(), null, options);
             pfdInput.close();
         } catch (FileNotFoundException ex) {

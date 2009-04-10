@@ -16,6 +16,8 @@
 
 package com.android.camera.gallery;
 
+import com.android.camera.BitmapManager;
+
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -385,7 +387,7 @@ public abstract class BaseImage implements IImage {
             input = mContentResolver.openFileDescriptor(uri, "r");
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFileDescriptor(
+            BitmapManager.instance().decodeFileDescriptor(
                     input.getFileDescriptor(), null, options);
             return options.outWidth;
         } catch (IOException ex) {
@@ -402,7 +404,7 @@ public abstract class BaseImage implements IImage {
             input = mContentResolver.openFileDescriptor(uri, "r");
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFileDescriptor(
+            BitmapManager.instance().decodeFileDescriptor(
                     input.getFileDescriptor(), null, options);
             return options.outHeight;
         } catch (IOException ex) {
