@@ -91,7 +91,7 @@ public class ImageGallery2 extends Activity {
     boolean mPausing = false;
     boolean mStopThumbnailChecking = false;
 
-    CameraThread mThumbnailCheckThread;
+    BitmapThread mThumbnailCheckThread;
     GridViewSpecial mGvs;
 
     @Override
@@ -422,6 +422,8 @@ public class ImageGallery2 extends Activity {
     public void onPause() {
         super.onPause();
         mPausing = true;
+        
+        BitmapManager.instance().cancelAllDecoding();
         stopCheckingThumbnails();
         mGvs.onPause();
 
@@ -484,6 +486,8 @@ public class ImageGallery2 extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        
+        BitmapManager.instance().allowAllDecoding();
 
         try {
             mGvs.setSizeChoice(Integer.parseInt(
@@ -558,7 +562,7 @@ public class ImageGallery2 extends Activity {
     private void checkThumbnails() {
         final long startTime = System.currentTimeMillis();
         final long t1 = System.currentTimeMillis();
-        mThumbnailCheckThread = new CameraThread(new Runnable() {
+        mThumbnailCheckThread = new BitmapThread(new Runnable() {
             public void run() {
                 android.content.res.Resources resources = getResources();
                 final TextView progressTextView =
@@ -803,6 +807,7 @@ public class ImageGallery2 extends Activity {
                         MenuHelper.INCLUDE_ALL,
                         isImage,
                         ImageGallery2.this,
+                        mHandler,
                         mDeletePhotoRunnable,
                         new MenuHelper.MenuInvoker() {
                             public void run(MenuHelper.MenuCallback cb) {
@@ -1077,13 +1082,10 @@ class GridViewSpecial extends View {
     public void onLayout(boolean changed, int left, int top,
                          int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-
         if (mGallery.isFinishing() || mGallery.mPausing) {
             return;
         }
-
         clearCache();
-
         mCurrentSpec = mCellSizeChoices[mSizeChoice];
         int oldColumnCount = mCurrentSpec.mColumns;
 
@@ -1231,9 +1233,10 @@ class GridViewSpecial extends View {
                                 }
                             }
                         }
-                    }
-                }
+                    } // while
+                } // run
             });
+            BitmapManager.instance().allowThreadDecoding(mWorkerThread);
             mWorkerThread.setName("image-block-manager");
             mWorkerThread.start();
         }
@@ -1290,6 +1293,7 @@ class GridViewSpecial extends View {
             }
             if (mWorkerThread != null) {
                 try {
+                    BitmapManager.instance().cancelThreadDecoding(mWorkerThread);
                     mWorkerThread.join();
                     mWorkerThread = null;
                 } catch (InterruptedException ex) {

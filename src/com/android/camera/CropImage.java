@@ -53,6 +53,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+/**
+ * The activity can crop specific region of interest from an image.
+ */
 public class CropImage extends Activity {
     private static final String TAG = "CropImage";
     private ProgressDialog mFaceDetectionDialog = null;
@@ -164,7 +167,7 @@ public class CropImage extends Activity {
                     startFaceDetection();
                 }
             }, 100);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             Log.e(TAG, "Failed to load bitmap", e);
             finish();
         }
@@ -422,6 +425,17 @@ public class CropImage extends Activity {
             Thread t = new Thread(r);
             t.start();
         }
+        
+    }
+    
+    public void onResume() {
+        super.onResume();
+        BitmapManager.instance().allowAllDecoding();
+    }
+
+    public void onPause() {
+        super.onPause();
+        BitmapManager.instance().cancelAllDecoding();
     }
 
     Handler mHandler = new Handler();

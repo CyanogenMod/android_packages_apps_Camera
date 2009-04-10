@@ -54,6 +54,10 @@ import android.widget.ZoomButtonsController;
 
 import java.util.Random;
 
+/**
+ * This activity can display a whole picture and navigate them in 
+ * specific gallery.
+ */
 public class ViewImage extends Activity implements View.OnClickListener {
     private static final String TAG = "ViewImage";
 
@@ -412,17 +416,28 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 MenuHelper.INCLUDE_ALL,
                 true,
                 ViewImage.this,
+                mHandler,
                 mDeletePhotoRunnable,
                 new MenuHelper.MenuInvoker() {
-                    public void run(MenuHelper.MenuCallback cb) {
+                    public void run(final MenuHelper.MenuCallback cb) {
                         setMode(MODE_NORMAL);
-                        cb.run(selectedImageGetter.getCurrentImageUri(),
-                               selectedImageGetter.getCurrentImage());
-                        for (ImageViewTouchBase iv : mImageViews) {
-                            iv.recycleBitmaps();
-                            iv.setImageBitmap(null, true);
-                        }
-                        setImage(mCurrentPosition);
+                        Thread t = new Thread() {
+                            public void run() {
+                               cb.run(selectedImageGetter.getCurrentImageUri(),
+                                       selectedImageGetter.getCurrentImage());
+                               mHandler.post(new Runnable() {
+                                 public void run() {
+                                     for (ImageViewTouchBase iv : mImageViews) {
+                                         iv.recycleBitmaps();
+                                         iv.setImageBitmap(null, true);
+                                     }
+                                     setImage(mCurrentPosition);
+                                 }
+                               });
+                            }
+                        };
+                        BitmapManager.instance().allowThreadDecoding(t);
+                        t.start();
                     }
                 });
 
@@ -495,7 +510,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private void onLayoutChanged() {
         // if we get here after "onPause" then ignore the event
-        if (mGetter == null) return;
+        if (mGetter == null) {
+            return;
+        }
         mDismissOnScreenControlsRunnable.run();
         mGetter.cancelCurrent();
         for (ImageViewTouch iv : mImageViews) {
@@ -517,7 +534,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
 
     void setImage(int pos) {
-        if (!mLayoutComplete) return;
+        if (!mLayoutComplete) {
+            return;
+        }
 
         final boolean left = (pos == mCurrentPosition - 1);
         final boolean right = (pos == mCurrentPosition + 1);
@@ -612,7 +631,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
                                     boolean isThumb) {
                 // shouldn't get here after onPause()
                 ImageViewTouchBase ivt = mImageViews[1 + offset];
-                if (offset == 0) updateZoomButtonsEnabled();
+                if (offset == 0) {
+                    updateZoomButtonsEnabled();
+                }
                 ivt.setImageBitmapResetBase(bitmap, isThumb, isThumb);
             }
         };
@@ -654,6 +675,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
 
         mScroller = (ScrollHandler) findViewById(R.id.scroller);
+        
+        BitmapManager bitmapManager = BitmapManager.instance();
+        bitmapManager.setCheckResourceLock(false);
+        bitmapManager.allowAllDecoding();
+
         makeGetter();
 
         mAnimationIndex = -1;
@@ -814,14 +840,14 @@ public class ViewImage extends Activity implements View.OnClickListener {
             try {
                 mAnimationIndex = Integer.parseInt(mPrefs.getString(
                         "pref_gallery_slideshow_transition_key", "0"));
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 Log.e(TAG, "couldn't parse preference: " + ex.toString());
                 mAnimationIndex = 0;
             }
             try {
                 mSlideShowInterval = Integer.parseInt(mPrefs.getString(
                         "pref_gallery_slideshow_interval_key", "3")) * 1000;
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 Log.e(TAG, "couldn't parse preference: " + ex.toString());
                 mSlideShowInterval = 3000;
             }
@@ -934,7 +960,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
                         targetDisplayTime - System.currentTimeMillis());
                 mHandler.postDelayedGetterCallback(new Runnable() {
                     public void run() {
-                        if (mMode == MODE_NORMAL) return;
+                        if (mMode == MODE_NORMAL) {
+                            return;
+                        }
 
                         ImageViewTouchBase oldView =
                                 mSlideShowImageViews[mSlideShowImageCurrent];
@@ -1081,6 +1109,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        
+        BitmapManager.instance().allowAllDecoding(false);
 
         init(mSavedUri);
 
@@ -1107,6 +1137,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
+        BitmapManager.instance().cancelAllDecoding();
 
         mGetter.cancelCurrent();
         mGetter.stop();
@@ -1159,7 +1190,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         case R.id.share: {
             Uri u = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
-            if (MenuHelper.isMMSUri(u)) return;
+            if (MenuHelper.isMMSUri(u)) {
+                return;
+            }
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND);
             intent.setType("image/jpeg");
@@ -1237,7 +1270,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
 
         public void postDelayedGetterCallback(Runnable callback, long delay) {
-            if (callback == null) throw new NullPointerException();
+            if (callback == null) {
+                throw new NullPointerException();
+            }
             Message message = Message.obtain();
             message.what = IMAGE_GETTER_CALLBACK;
             message.obj = callback;
@@ -1268,7 +1303,6 @@ class ImageViewTouch extends ImageViewTouchBase {
         mEnableTrackballScroll = enable;
     }
 
-    @Override
     protected void postTranslate(float dx, float dy) {
         super.postTranslate(dx, dy);
         center(true, false, false);
@@ -1458,8 +1492,8 @@ class ImageGetter {
                                   final boolean isThumb, final Bitmap bitmap) {
             return new Runnable() {
                 public void run() {
-                    // check for inflight callbacks that aren't applicable any longer
-                    // before delivering them
+                    // check for inflight callbacks that aren't applicable 
+                    // any longer before delivering them
                     if (!isCanceled() && position == mCurrentPosition) {
                         mCB.imageLoaded(position, offset, bitmap, isThumb);
                     } else if (bitmap != null) {
@@ -1484,7 +1518,8 @@ class ImageGetter {
                     mReady = true;
                     ImageGetter.this.notify();
 
-                    if (mCurrentPosition == -1 || lastPosition == mCurrentPosition) {
+                    if (mCurrentPosition == -1 
+                            || lastPosition == mCurrentPosition) {
                         try {
                             ImageGetter.this.wait();
                         } catch (InterruptedException ex) {
@@ -1504,15 +1539,20 @@ class ImageGetter {
                         int offset = order[i];
                         int imageNumber = lastPosition + offset;
                         if (imageNumber >= 0 && imageNumber < imageCount) {
-                            IImage image = mViewImage.mAllImages.getImageAt(lastPosition + offset);
+                            IImage image = mViewImage.mAllImages
+                                    .getImageAt(lastPosition + offset);
                             if (image == null || isCanceled()) {
                                 break;
                             }
                             if (mCB.wantsThumbnail(lastPosition, offset)) {
-                                if (Config.LOGV)
-                                    Log.v(TAG, "starting THUMBNAIL load at offset " + offset);
+                                if (Config.LOGV) {
+                                    Log.v(TAG, "starting THUMBNAIL load at "
+                                            + "offset " + offset);
+                                }
                                 Bitmap b = image.thumbBitmap();
-                                mViewImage.mHandler.postGetterCallback(callback(lastPosition, offset, true, b));
+                                mViewImage.mHandler.postGetterCallback(
+                                        callback(lastPosition, offset, 
+                                        true, b));
                             }
                         }
                     }
@@ -1521,18 +1561,24 @@ class ImageGetter {
                         int offset = order[i];
                         int imageNumber = lastPosition + offset;
                         if (imageNumber >= 0 && imageNumber < imageCount) {
-                            IImage image = mViewImage.mAllImages.getImageAt(lastPosition + offset);
+                            IImage image = mViewImage.mAllImages
+                                    .getImageAt(lastPosition + offset);
                             if (mCB.wantsFullImage(lastPosition, offset)) {
                                 if (Config.LOGV) {
-                                    Log.v(TAG, "starting FULL IMAGE load at offset " + offset);
+                                    Log.v(TAG, "starting FULL IMAGE load "
+                                            + "at offset " + offset);
                                 }
-                                int sizeToUse = mCB.fullImageSizeToUse(lastPosition, offset);
+                                int sizeToUse = mCB.fullImageSizeToUse(
+                                        lastPosition, offset);
                                 if (image != null && !isCanceled()) {
-                                    mLoad = image.fullSizeBitmapCancelable(sizeToUse);
+                                    mLoad = image.fullSizeBitmapCancelable(
+                                            sizeToUse);
                                 }
                                 if (mLoad != null) {
                                     long t1;
-                                    if (Config.LOGV) t1 = System.currentTimeMillis();
+                                    if (Config.LOGV) {
+                                        t1 = System.currentTimeMillis();
+                                    }
 
                                     // The return value could be null if the
                                     // bitmap is too big, or we cancelled it.
@@ -1540,11 +1586,15 @@ class ImageGetter {
 
                                     if (Config.LOGV && b != null) {
                                         long t2 = System.currentTimeMillis();
-                                        Log.v(TAG, "loading full image for " + image.fullSizeImageUri()
-                                                + " with requested size " + sizeToUse
+                                        Log.v(TAG, "loading full image for " 
+                                                + image.fullSizeImageUri()
+                                                + " with requested size " 
+                                                + sizeToUse
                                                 + " took " + (t2 - t1)
-                                                + " and returned a bitmap with size "
-                                                + b.getWidth() + " / " + b.getHeight());
+                                                + " and returned a bitmap"
+                                                + " with size "
+                                                + b.getWidth() + " / " 
+                                                + b.getHeight());
                                     }
 
                                     mLoad = null;
@@ -1552,8 +1602,11 @@ class ImageGetter {
                                         if (isCanceled()) {
                                             b.recycle();
                                         } else {
-                                            Runnable cb = callback(lastPosition, offset, false, b);
-                                            mViewImage.mHandler.postGetterCallback(cb);
+                                            Runnable cb = callback(
+                                                    lastPosition, offset, 
+                                                    false, b);
+                                            mViewImage.mHandler
+                                                    .postGetterCallback(cb);
                                         }
                                     }
                                 }
@@ -1571,6 +1624,7 @@ class ImageGetter {
         mViewImage = viewImage;
         mGetterThread = new Thread(new ImageGetterRunnable());
         mGetterThread.setName("ImageGettter");
+        BitmapManager.instance().allowThreadDecoding(mGetterThread);
         mGetterThread.start();
     }
 
@@ -1585,14 +1639,14 @@ class ImageGetter {
             if (!mReady) {
                 try {
                     mCancelCurrent = true;
-                    IGetBitmapCancelable load = mLoad;
-                    if (load != null) {
-                        load.cancel();
-                    }
                     // if the thread is waiting before loading the full size
                     // image then this will free it up
+                    BitmapManager.instance()
+                            .cancelThreadDecoding(mGetterThread);
                     ImageGetter.this.notify();
                     ImageGetter.this.wait();
+                    BitmapManager.instance()
+                            .allowThreadDecoding(mGetterThread);
                     mCancelCurrent = false;
                 } catch (InterruptedException ex) {
                     // not sure what to do here
@@ -1616,7 +1670,7 @@ class ImageGetter {
         try {
             mGetterThread.join();
         } catch (InterruptedException ex) {
-
+            // Ignore the exception
         }
     }
 }

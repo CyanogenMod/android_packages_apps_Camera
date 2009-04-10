@@ -64,6 +64,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The GalleryPicker activity.
+ */
 public class GalleryPicker extends Activity {
     private static final String TAG = "GalleryPicker";
 
@@ -376,7 +379,7 @@ public class GalleryPicker extends Activity {
         ArrayList<Item> mItems = new ArrayList<Item>();
 
         boolean mDone = false;
-        CameraThread mWorkerThread;
+        BitmapThread mWorkerThread;
 
         public void init(boolean assumeMounted) {
             mItems.clear();
@@ -443,7 +446,7 @@ public class GalleryPicker extends Activity {
             java.util.Collections.sort(mItems);
 
             mDone = false;
-            mWorkerThread = new CameraThread(new Runnable() {
+            mWorkerThread = new BitmapThread(new Runnable() {
                 public void run() {
                     try {
                         // no images, nothing to do
@@ -505,7 +508,7 @@ public class GalleryPicker extends Activity {
                                 list.deactivate();
                             }
                         }
-                    } catch (Exception ex) {
+                    } catch (RuntimeException ex) {
                         Log.e(TAG, "got exception generating collage views ",
                                 ex);
                     }
@@ -613,6 +616,8 @@ public class GalleryPicker extends Activity {
     public void onPause() {
         super.onPause();
         mPausing = true;
+        
+        BitmapManager.instance().cancelAllDecoding();
         unregisterReceiver(mReceiver);
 
         // free up some ram
@@ -626,6 +631,7 @@ public class GalleryPicker extends Activity {
         super.onResume();
         mPausing = false;
 
+        BitmapManager.instance().allowAllDecoding();
         mAdapter = new GalleryPickerAdapter();
         mGridView.setAdapter(mAdapter);
         setBackgrounds(getResources());
