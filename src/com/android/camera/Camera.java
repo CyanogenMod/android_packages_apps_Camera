@@ -114,6 +114,7 @@ public class Camera extends Activity implements View.OnClickListener,
     // The parameter strings to communicate with camera driver.
     public static final String PARM_WHITE_BALANCE = "whitebalance";
     public static final String PARM_EFFECT = "effect";
+    public static final String PARM_PICTURE_SIZE = "picture-size";
     public static final String PARM_JPEG_QUALITY = "jpeg-quality";
     public static final String PARM_ROTATION = "rotation";
     public static final String PARM_GPS_LATITUDE = "gps-latitude";
@@ -122,6 +123,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final String PARM_GPS_TIMESTAMP = "gps-timestamp";
     public static final String SUPPORTED_WHITE_BALANCE = "whitebalance-values";
     public static final String SUPPORTED_EFFECT = "effect-values";
+    public static final String SUPPORTED_PICTURE_SIZE = "picture-size-values";
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -1387,6 +1389,12 @@ public class Camera extends Activity implements View.OnClickListener,
                 CameraSettings.KEY_EFFECT,
                 getString(R.string.pref_camera_effect_default));
         mParameters.set(PARM_EFFECT, effect);
+
+        // Set picture size parameter.
+        String pictureSize = mPreferences.getString(
+                CameraSettings.KEY_PICTURE_SIZE,
+                getString(R.string.pref_camera_picturesize_default));
+        mParameters.set(PARM_PICTURE_SIZE, pictureSize);
 
         try {
             mCameraDevice.setParameters(mParameters);
