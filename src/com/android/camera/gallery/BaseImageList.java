@@ -16,6 +16,8 @@
 
 package com.android.camera.gallery;
 
+import com.android.camera.BitmapManager;
+
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -227,34 +229,6 @@ public abstract class BaseImageList implements IImageList {
     private static final java.util.Random sRandom =
             new java.util.Random(System.currentTimeMillis());
 
-    protected SomewhatFairLock mLock = new SomewhatFairLock();
-
-    private static class SomewhatFairLock {
-        private boolean mLocked = false;
-        private ArrayList<Thread> mWaiting = new ArrayList<Thread>();
-
-        public synchronized void lock() {
-            while (mLocked) {
-                try {
-                    mWaiting.add(Thread.currentThread());
-                    wait();
-                    if (mWaiting.get(0) == Thread.currentThread()) {
-                        mWaiting.remove(0);
-                        break;
-                    }
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            mLocked = true;
-        }
-
-        public synchronized void unlock() {
-            mLocked = false;
-            notifyAll();
-        }
-    }
-
     // If the photo has an EXIF thumbnail and it's big enough, extract it and
     // save that JPEG as the large thumbnail without re-encoding it. We still
     // have to decompress it though, in order to generate the minithumb.
@@ -339,7 +313,11 @@ public abstract class BaseImageList implements IImageList {
     public long checkThumbnail(BaseImage existingImage, Cursor c, int i,
             byte[][] createdThumbnailData) throws IOException {
         long magic, fileMagic = 0, id;
-        mLock.lock();
+        if (BitmapManager.instance().acquireResourceLock() == false) {
+            return -1;
+        }
+        Log.v(TAG, "checkThumbnail: i="+i);
+        
         try {
             if (existingImage == null) {
                 // if we don't have an Image object then get the id and magic
@@ -436,6 +414,7 @@ public abstract class BaseImageList implements IImageList {
             }
 
             synchronized (c) {
+                Log.v(TAG, "checkThumbnail: moveToPosition i="+i);
                 c.moveToPosition(i);
                 c.updateLong(indexMiniThumbId(), magic);
                 c.commitUpdates();
@@ -448,7 +427,7 @@ public abstract class BaseImageList implements IImageList {
                 return magic;
             }
         } finally {
-            mLock.unlock();
+            BitmapManager.instance().releaseResourceLock();
         }
     }
 

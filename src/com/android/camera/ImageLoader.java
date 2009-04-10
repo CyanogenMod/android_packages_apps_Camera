@@ -28,6 +28,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+/**
+ * A dedicated decoding thread used by ImageGallery.
+ */
 public class ImageLoader {
     private static final String TAG = "ImageLoader";
 
@@ -254,6 +257,7 @@ public class ImageLoader {
                     }
                 });
                 t.setName("image-loader-" + i);
+                BitmapManager.instance().allowThreadDecoding(t);
                 mDecodeThreads.add(t);
                 t.start();
             }
@@ -358,6 +362,7 @@ public class ImageLoader {
         while (mDecodeThreads.size() > 0) {
             Thread t = mDecodeThreads.get(0);
             try {
+                BitmapManager.instance().cancelThreadDecoding(t);
                 t.join();
                 mDecodeThreads.remove(0);
             } catch (InterruptedException ex) {

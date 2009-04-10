@@ -16,6 +16,8 @@
 
 package com.android.camera.gallery;
 
+import com.android.camera.BitmapManager;
+
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -85,7 +87,7 @@ public class SingleImageList extends BaseImageList implements IImageList {
                 ParcelFileDescriptor pfdInput = getPFD();
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFileDescriptor(
+                BitmapManager.instance().decodeFileDescriptor(
                         pfdInput.getFileDescriptor(), null, options);
 
                 if (targetWidthHeight != -1) {
@@ -97,7 +99,7 @@ public class SingleImageList extends BaseImageList implements IImageList {
                 options.inDither = false;
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
-                Bitmap b = BitmapFactory.decodeFileDescriptor(
+                Bitmap b = BitmapManager.instance().decodeFileDescriptor(
                         pfdInput.getFileDescriptor(), null, options);
                 if (VERBOSE) {
                     Log.v(TAG, "B: got bitmap " + b + " with sampleSize "
@@ -223,7 +225,7 @@ public class SingleImageList extends BaseImageList implements IImageList {
                 Uri uri = fullSizeImageUri();
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFileDescriptor(
+                BitmapManager.instance().decodeFileDescriptor(
                         input.getFileDescriptor(), null, options);
                 return options;
             } finally {
@@ -358,13 +360,13 @@ public class SingleImageList extends BaseImageList implements IImageList {
 
             if (targetWidthHeight != -1) {
                 options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFileDescriptor(
+                BitmapManager.instance().decodeFileDescriptor(
                         pfdInput.getFileDescriptor(), null, options);
                 options.inSampleSize =
                         Util.computeSampleSize(options, targetWidthHeight);
                 options.inJustDecodeBounds = false;
             }
-            b = BitmapFactory.decodeFileDescriptor(
+            b = BitmapManager.instance().decodeFileDescriptor(
                     pfdInput.getFileDescriptor(), null, options);
             if (VERBOSE) {
                 Log.v(TAG, "C: got bitmap " + b + " with sampleSize "

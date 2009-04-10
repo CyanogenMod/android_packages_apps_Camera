@@ -228,7 +228,7 @@ public class BitmapManager {
         if (VERBOSE) {
             Log.v(TAG, ">>>>>>>> cancelAllDecoding <<<<<<<");
         }
-        setAllowDecoding(false);
+        allowAllDecoding(false);
         for (ThreadStatus status : mThreadStatus.values()) {
             status.state = State.CANCEL;
             if (status.options != null) {
@@ -243,17 +243,16 @@ public class BitmapManager {
         notifyAll();
     }
     
-    public synchronized void setAllowDecoding(boolean canDecode) {
-        setAllowDecoding(canDecode, true);
+    public synchronized void allowAllDecoding() {
+        allowAllDecoding(true);
     }
     
-    public synchronized void setAllowDecoding(boolean canDecode, 
-            boolean reset) {
+    public synchronized void allowAllDecoding(boolean reset) {
         if (VERBOSE) {
             Log.v(TAG, ">>>>>>>> allowAllDecoding <<<<<<<");
         }
-        mAllowDecoding = canDecode;
-        if (canDecode && reset) { 
+        mAllowDecoding = true;
+        if (reset) { 
             mThreadStatus.clear();
         }
     }
