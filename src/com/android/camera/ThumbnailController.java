@@ -210,7 +210,9 @@ public class ThumbnailController {
     }
 
     public boolean isUriValid() {
-        if (mUri == null) return false;
+        if (mUri == null) {
+            return false;
+        }
         try {
             mContentResolver.openFileDescriptor(mUri, "r").close();
         } catch (IOException ex) {

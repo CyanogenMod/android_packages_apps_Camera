@@ -16,11 +16,14 @@
 
 package com.android.camera;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.BroadcastReceiver;
 
-public class CameraButtonIntentReceiver extends BroadcastReceiver {
+class CameraButtonIntentReceiver extends BroadcastReceiver {
+    public CameraButtonIntentReceiver() {
+    }
+    
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent i = new Intent(Intent.ACTION_MAIN);

@@ -66,6 +66,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * The Camcorder activity.
+ */
 public class VideoCamera extends Activity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
@@ -555,6 +558,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     menuFlags,
                     false,
                     VideoCamera.this,
+                    mHandler,
                     // Handler for deletion
                     new Runnable() {
                         public void run() {
@@ -615,7 +619,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 return ((long) stat.getAvailableBlocks()
                         * (long) stat.getBlockSize());
             }
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             // if we can't stat the filesystem then we don't know how many
             // free bytes exist.  It might be zero but just leave it
             // blank since we really don't know.
@@ -639,7 +643,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         Log.v(TAG, "initializeVideo");
 
         // We will call initializeVideo() again when the alert is hidden.
-        if (isAlertVisible()) return false;
+        if (isAlertVisible()) {
+            return false;
+        }
 
         Intent intent = getIntent();
         Bundle myExtras = intent.getExtras();
@@ -1150,12 +1156,16 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 return null;
             }
         } finally {
-            if (c != null) c.close();
+            if (c != null) {
+                c.close();
+            }
         }
     }
 
     private void updateRecordingTime() {
-        if (!mMediaRecorderRecording) return;
+        if (!mMediaRecorderRecording) {
+            return;
+        }
         long now = SystemClock.uptimeMillis();
         long delta = now - mRecordingStartTime;
 
