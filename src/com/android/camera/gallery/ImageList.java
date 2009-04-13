@@ -21,9 +21,7 @@ import com.android.camera.ImageManager;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -43,10 +41,6 @@ public class ImageList extends BaseImageList implements IImageList {
 
     private static final String TAG = "ImageList";
     private static final boolean VERBOSE = false;
-
-    boolean mIsRegistered = false;
-    ContentObserver mContentObserver;
-    DataSetObserver mDataSetObserver;
 
     public HashMap<String, String> getBucketIds() {
         Uri uri = mBaseUri.buildUpon()
@@ -90,95 +84,17 @@ public class ImageList extends BaseImageList implements IImageList {
                     + mCursor + " with length "
                     + (mCursor != null ? mCursor.getCount() : "-1"));
         }
-
-        final Runnable updateRunnable = new Runnable() {
-            public void run() {
-
-                // handling these external updates is causing ANR problems that
-                // are unresolved. For now ignore them since there shouldn't
-                // be anyone modifying the database on the fly.
-                if (true) return;
-
-                synchronized (mCursor) {
-                    requery();
-                }
-            }
-        };
-
-        mContentObserver = new ContentObserver(null) {
-            @Override
-            public boolean deliverSelfNotifications() {
-                return false;
-            }
-
-            @Override
-            public void onChange(boolean selfChange) {
-                if (VERBOSE) {
-                    Log.v(TAG, "MyContentObserver.onChange; selfChange == "
-                            + selfChange);
-                }
-                updateRunnable.run();
-            }
-        };
-
-        mDataSetObserver = new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                if (VERBOSE) Log.v(TAG, "MyDataSetObserver.onChanged");
-                // handling these external updates is causing ANR problems that
-                // are unresolved. For now ignore them since there shouldn't
-                // be anyone modifying the database on the fly.
-
-                // updateRunnable.run();
-            }
-
-            @Override
-            public void onInvalidated() {
-                if (VERBOSE) {
-                    Log.v(TAG, "MyDataSetObserver.onInvalidated: "
-                            + mCursorDeactivated);
-                }
-            }
-        };
-
-        registerObservers();
     }
 
-    private void registerObservers() {
-        if (mIsRegistered) return;
-        mCursor.registerContentObserver(mContentObserver);
-        mCursor.registerDataSetObserver(mDataSetObserver);
-        mIsRegistered = true;
-    }
-
-    private void unregisterObservers() {
-        if (!mIsRegistered) return;
-        mCursor.unregisterContentObserver(mContentObserver);
-        mCursor.unregisterDataSetObserver(mDataSetObserver);
-        mIsRegistered = false;
-    }
-
-    @Override
-    public void deactivate() {
-        super.deactivate();
-        unregisterObservers();
-    }
-
-    @Override
-    protected void activateCursor() {
-        super.activateCursor();
-        registerObservers();
-    }
-
-    private static final String sWhereClause =
+    private static final String WHERE_CLAUSE =
             "(" + Images.Media.MIME_TYPE + " in (?, ?, ?))";
 
     protected String whereClause() {
         if (mBucketId != null) {
-            return sWhereClause + " and " + Images.Media.BUCKET_ID + " = '"
+            return WHERE_CLAUSE + " and " + Images.Media.BUCKET_ID + " = '"
                     + mBucketId + "'";
         } else {
-            return sWhereClause;
+            return WHERE_CLAUSE;
         }
     }
 
@@ -220,16 +136,6 @@ public class ImageList extends BaseImageList implements IImageList {
     @Override
     protected int indexId() {
         return INDEX_ID;
-    }
-
-    @Override
-    protected int indexLatitude() {
-        return -1;
-    }
-
-    @Override
-    protected int indexLongitude() {
-        return -1;
     }
 
     @Override

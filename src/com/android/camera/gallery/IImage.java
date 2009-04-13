@@ -55,8 +55,6 @@ public interface IImage {
 
     public abstract String getMimeType();
     public abstract int getHeight();
-    public abstract double getLatitude();
-    public abstract double getLongitude();
 
     /**
      * Gets the name of the image.
@@ -69,8 +67,6 @@ public interface IImage {
     public abstract int getRow();
 
     public abstract int getWidth();
-
-    public abstract boolean hasLatLong();
 
     public abstract long imageId();
 
@@ -85,9 +81,9 @@ public interface IImage {
     public abstract boolean rotateImageBy(int degrees);
 
     /**
-     * Sets the name of the image.
+     * Sets the title of the image.
      */
-    public abstract void setName(String name);
+    public abstract void setTitle(String name);
 
     /**
      * Get the bitmap for the medium thumbnail.

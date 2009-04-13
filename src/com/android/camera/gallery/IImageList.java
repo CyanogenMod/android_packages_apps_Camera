@@ -17,7 +17,6 @@
 package com.android.camera.gallery;
 
 import android.net.Uri;
-import android.os.Handler;
 
 import java.util.HashMap;
 

@@ -310,16 +310,6 @@ public class SingleImageList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected int indexLatitude() {
-        return -1;
-    }
-
-    @Override
-    protected int indexLongitude() {
-        return -1;
-    }
-
-    @Override
     protected int indexMiniThumbId() {
         return -1;
     }
