@@ -52,14 +52,6 @@ public abstract class SimpleBaseImage implements IImage {
         throw new UnsupportedOperationException();
     }
 
-    public double getLatitude() {
-        return 0D;
-    }
-
-    public double getLongitude() {
-        return 0D;
-    }
-
     public String getTitle() {
         throw new UnsupportedOperationException();
     }
@@ -80,10 +72,6 @@ public abstract class SimpleBaseImage implements IImage {
         return 0;
     }
 
-    public boolean hasLatLong() {
-        return false;
-    }
-
     public boolean isReadonly() {
         return true;
     }
@@ -100,7 +88,7 @@ public abstract class SimpleBaseImage implements IImage {
         return false;
     }
 
-    public void setName(String name) {
+    public void setTitle(String name) {
         throw new UnsupportedOperationException();
     }
 

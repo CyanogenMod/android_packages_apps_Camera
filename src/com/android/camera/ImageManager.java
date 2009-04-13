@@ -202,13 +202,13 @@ public class ImageManager {
         return Util.isVideoMimeType(image.getMimeType());
     }
 
-    public Uri addImage(Context ctx, ContentResolver cr, String imageName,
+    public Uri addImage(Context ctx, ContentResolver cr, String title,
             long dateTaken, Location location,
             int orientation, String directory, String filename) {
 
         ContentValues values = new ContentValues(7);
-        values.put(Images.Media.TITLE, imageName);
-        values.put(Images.Media.DISPLAY_NAME, imageName);
+        values.put(Images.Media.TITLE, title);
+        values.put(Images.Media.DISPLAY_NAME, title);
         values.put(Images.Media.DATE_TAKEN, dateTaken);
         values.put(Images.Media.MIME_TYPE, "image/jpeg");
         values.put(Images.Media.ORIENTATION, orientation);
