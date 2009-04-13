@@ -102,7 +102,6 @@ public abstract class BaseImageList implements IImageList {
     protected int mSort;
     protected Uri mBaseUri;
     protected Cursor mCursor;
-    protected IImageList.OnChange mListener = null;
     protected boolean mCursorDeactivated;
     protected String mBucketId;
     protected Context mContext;
@@ -693,8 +692,6 @@ public abstract class BaseImageList implements IImageList {
 
     protected abstract int indexDateTaken();
 
-    protected abstract int indexDescription();
-
     protected abstract int indexMimeType();
 
     protected abstract int indexData();
@@ -774,10 +771,6 @@ public abstract class BaseImageList implements IImageList {
         }
     }
 
-    public void removeOnChangeListener(OnChange changeCallback) {
-        if (changeCallback == mListener) mListener = null;
-    }
-
     protected void requery() {
         mCache.clear();
         mCursor.requery();
@@ -837,9 +830,5 @@ public abstract class BaseImageList implements IImageList {
                 throw ex;
             }
         }
-    }
-
-    public void setOnChangeListener(OnChange changeCallback, Handler h) {
-        mListener = changeCallback;
     }
 }

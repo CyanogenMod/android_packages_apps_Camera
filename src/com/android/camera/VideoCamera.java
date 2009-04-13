@@ -790,7 +790,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         ContentValues values = new ContentValues(7);
         values.put(Video.Media.TITLE, title);
         values.put(Video.Media.DISPLAY_NAME, displayName);
-        values.put(Video.Media.DESCRIPTION, "");
         values.put(Video.Media.DATE_TAKEN, dateTaken);
         values.put(Video.Media.MIME_TYPE, "video/3gpp");
         values.put(Video.Media.DATA, filename);

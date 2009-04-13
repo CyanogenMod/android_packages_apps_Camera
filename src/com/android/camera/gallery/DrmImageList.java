@@ -108,11 +108,6 @@ public class DrmImageList extends ImageList implements IImageList {
     }
 
     @Override
-    protected int indexDescription() {
-        return -1;
-    }
-
-    @Override
     protected int indexMimeType() {
         return -1;
     }

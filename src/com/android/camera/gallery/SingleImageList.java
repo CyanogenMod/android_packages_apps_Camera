@@ -197,12 +197,6 @@ public class SingleImageList extends BaseImageList implements IImageList {
             return getTitle();
         }
 
-        @Override
-        public String getDescription() {
-            return "";
-        }
-
-
         public Bitmap thumbBitmap() {
             Bitmap b = fullSizeBitmap(THUMBNAIL_TARGET_SIZE);
             if (b != null) {
@@ -302,11 +296,6 @@ public class SingleImageList extends BaseImageList implements IImageList {
 
     @Override
     protected int indexMimeType() {
-        return -1;
-    }
-
-    @Override
-    protected int indexDescription() {
         return -1;
     }
 
