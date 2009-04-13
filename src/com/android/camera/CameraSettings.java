@@ -37,12 +37,14 @@ public class CameraSettings extends PreferenceActivity implements
             "pref_camera_whitebalance_key";
     public static final String KEY_EFFECT = "pref_camera_effect_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
+    public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
     private ListPreference mVideoQuality;
     private ListPreference mWhiteBalance;
     private ListPreference mEffect;
     private ListPreference mPictureSize;
+    private ListPreference mJpegQuality;
     private Parameters mParameters;
 
     @Override
@@ -61,6 +63,7 @@ public class CameraSettings extends PreferenceActivity implements
         updateWhiteBalanceSummary();
         updateEffectSummary();
         updatePictureSizeSummary();
+        updateJpegQualitySummary();
     }
 
     private void initUI() {
@@ -68,6 +71,7 @@ public class CameraSettings extends PreferenceActivity implements
         mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
         mEffect = (ListPreference) findPreference(KEY_EFFECT);
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
+        mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
         getPreferenceScreen().getSharedPreferences().
                 registerOnSharedPreferenceChangeListener(this);
 
@@ -152,6 +156,10 @@ public class CameraSettings extends PreferenceActivity implements
         mPictureSize.setSummary(mPictureSize.getEntry());
     }
 
+    private void updateJpegQualitySummary() {
+        mJpegQuality.setSummary(mJpegQuality.getEntry());
+    }
+
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals(KEY_VIDEO_QUALITY)) {
@@ -162,6 +170,8 @@ public class CameraSettings extends PreferenceActivity implements
             updateEffectSummary();
         } else if (key.equals(KEY_PICTURE_SIZE)) {
             updatePictureSizeSummary();
+        } else if (key.equals(KEY_JPEG_QUALITY)) {
+            updateJpegQualitySummary();
         }
     }
 }

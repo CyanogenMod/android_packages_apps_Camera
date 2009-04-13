@@ -583,13 +583,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
             final int latchedOrientation =
                     ImageManager.roundOrientation(mLastOrientation + 90);
+            mParameters.set(PARM_ROTATION, latchedOrientation);
 
             Location loc = mRecordLocation ? getCurrentLocation() : null;
-            // Quality 75 has visible artifacts, and quality 90 looks great but
-            // the files begin to get large. 85 is a good compromise between
-            // the two.
-            mParameters.set(PARM_JPEG_QUALITY, 85);
-            mParameters.set(PARM_ROTATION, latchedOrientation);
 
             mParameters.remove(PARM_GPS_LATITUDE);
             mParameters.remove(PARM_GPS_LONGITUDE);
@@ -1372,34 +1368,7 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
 
-        // request the preview size, the hardware may not honor it,
-        // if we depended on it we would have to query the size again
-        mParameters = mCameraDevice.getParameters();
-        mParameters.setPreviewSize(w, h);
-
-        // Set white balance parameter.
-        String whiteBalance = mPreferences.getString(
-                CameraSettings.KEY_WHITE_BALANCE,
-                getString(R.string.pref_camera_whitebalance_default));
-        mParameters.set(PARM_WHITE_BALANCE, whiteBalance);
-
-        // Set effect parameter.
-        String effect = mPreferences.getString(
-                CameraSettings.KEY_EFFECT,
-                getString(R.string.pref_camera_effect_default));
-        mParameters.set(PARM_EFFECT, effect);
-
-        // Set picture size parameter.
-        String pictureSize = mPreferences.getString(
-                CameraSettings.KEY_PICTURE_SIZE,
-                getString(R.string.pref_camera_picturesize_default));
-        mParameters.set(PARM_PICTURE_SIZE, pictureSize);
-
-        try {
-            mCameraDevice.setParameters(mParameters);
-        } catch (IllegalArgumentException e) {
-            // Ignore this error, it happens in the simulator.
-        }
+        setCameraParameter();
 
         final long wallTimeStart = SystemClock.elapsedRealtime();
         final long threadTimeStart = Debug.threadCpuTimeNanos();
@@ -1467,6 +1436,39 @@ public class Camera extends Activity implements View.OnClickListener,
                     + " ms. Thread time was"
                     + (threadTimeEnd - threadTimeStart) / 1000000 + " ms.");
         }
+    }
+
+    private void setCameraParameter() {
+        // request the preview size, the hardware may not honor it,
+        // if we depended on it we would have to query the size again
+        mParameters = mCameraDevice.getParameters();
+        mParameters.setPreviewSize(mViewFinderWidth, mViewFinderHeight);
+    
+        // Set white balance parameter.
+        String whiteBalance = mPreferences.getString(
+                CameraSettings.KEY_WHITE_BALANCE,
+                getString(R.string.pref_camera_whitebalance_default));
+        mParameters.set(PARM_WHITE_BALANCE, whiteBalance);
+    
+        // Set effect parameter.
+        String effect = mPreferences.getString(
+                CameraSettings.KEY_EFFECT,
+                getString(R.string.pref_camera_effect_default));
+        mParameters.set(PARM_EFFECT, effect);
+    
+        // Set picture size parameter.
+        String pictureSize = mPreferences.getString(
+                CameraSettings.KEY_PICTURE_SIZE,
+                getString(R.string.pref_camera_picturesize_default));
+        mParameters.set(PARM_PICTURE_SIZE, pictureSize);
+    
+        // Set JPEG quality parameter.
+        String jpegQuality = mPreferences.getString(
+                CameraSettings.KEY_JPEG_QUALITY,
+                getString(R.string.pref_camera_jpegquality_default));
+        mParameters.set(PARM_JPEG_QUALITY, jpegQuality);
+    
+        mCameraDevice.setParameters(mParameters);
     }
 
     private void stopPreview() {
