@@ -176,14 +176,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="SlideShow" android:label="Raw Image Viewer"
-                android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.TEST" />
-            </intent-filter>
-        </activity>
-
         <activity android:name=".Wallpaper"
             android:label="@string/camera_setas_wallpaper"
             android:icon="@drawable/ic_launcher_gallery">
