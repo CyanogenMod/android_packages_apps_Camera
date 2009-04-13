@@ -195,7 +195,7 @@ public class CropImage extends Activity {
         mFaceDetectionDialog = ProgressDialog.show(CropImage.this, null,
                 getResources().getString(R.string.runningFaceDetection),
                 true, false);
-        mImageView.setImageBitmapResetBase(mBitmap, true, true);
+        mImageView.setImageBitmapResetBase(mBitmap, true);
         if (mImageView.getScale() == 1F) {
             mImageView.center(true, true, false);
         }
@@ -214,7 +214,7 @@ public class CropImage extends Activity {
                     public void run() {
                         if (b != mBitmap && b != null) {
                             mBitmap = b;
-                            mImageView.setImageBitmapResetBase(b, true, false);
+                            mImageView.setImageBitmapResetBase(b, true);
                         }
                         if (mImageView.getScale() == 1F) {
                             mImageView.center(true, true, false);
@@ -605,11 +605,6 @@ class CropImageView extends ImageViewTouchBase {
     int mMotionEdge;
 
     @Override
-    protected boolean doesScrolling() {
-        return false;
-    }
-
-    @Override
     protected void onLayout(boolean changed, int left, int top,
                             int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -650,11 +645,6 @@ class CropImageView extends ImageViewTouchBase {
             hv.mMatrix.set(getImageMatrix());
             hv.invalidate();
         }
-    }
-
-    @Override
-    protected boolean usePerfectFitBitmap() {
-        return false;
     }
 
     @Override
