@@ -51,7 +51,6 @@ public class VideoList extends BaseImageList implements IImageList {
             Video.Media.DATE_TAKEN,
             Video.Media.TITLE,
             Video.Media.DISPLAY_NAME,
-            Video.Media.DESCRIPTION,
             Video.Media.TAGS,
             Video.Media.CATEGORY,
             Video.Media.LANGUAGE,
@@ -67,8 +66,6 @@ public class VideoList extends BaseImageList implements IImageList {
     static final int INDEX_DISPLAY_NAME =
             indexOf(Video.Media.DISPLAY_NAME);
     static final int INDEX_MIME_TYPE = indexOf(Video.Media.MIME_TYPE);
-    static final int INDEX_DESCRIPTION =
-            indexOf(Video.Media.DESCRIPTION);
     static final int INDEX_TAGS = indexOf(Video.Media.TAGS);
     static final int INDEX_CATEGORY = indexOf(Video.Media.CATEGORY);
     static final int INDEX_LANGUAGE = indexOf(Video.Media.LANGUAGE);
@@ -173,11 +170,6 @@ public class VideoList extends BaseImageList implements IImageList {
     @Override
     protected int indexDateTaken() {
         return INDEX_DATE_TAKEN;
-    }
-
-    @Override
-    protected int indexDescription() {
-        return INDEX_DESCRIPTION;
     }
 
     @Override

@@ -388,7 +388,6 @@ public class CropImage extends Activity {
                                     CropImage.this,
                                     getContentResolver(),
                                     mImage.getTitle(),
-                                    mImage.getDescription(),
                                     mImage.getDateTaken(),
                                     null,    // TODO this null is
                                              // going to cause us to

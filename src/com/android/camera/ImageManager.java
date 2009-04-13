@@ -203,13 +203,12 @@ public class ImageManager {
     }
 
     public Uri addImage(Context ctx, ContentResolver cr, String imageName,
-            String description, long dateTaken, Location location,
+            long dateTaken, Location location,
             int orientation, String directory, String filename) {
 
         ContentValues values = new ContentValues(7);
         values.put(Images.Media.TITLE, imageName);
         values.put(Images.Media.DISPLAY_NAME, imageName);
-        values.put(Images.Media.DESCRIPTION, description);
         values.put(Images.Media.DATE_TAKEN, dateTaken);
         values.put(Images.Media.MIME_TYPE, "image/jpeg");
         values.put(Images.Media.ORIENTATION, orientation);
@@ -443,14 +442,6 @@ public class ImageManager {
 
         public void removeImageAt(int i) {
         }
-
-        public void removeOnChangeListener(IImageList.OnChange changeCallback) {
-        }
-
-        public void setOnChangeListener(IImageList.OnChange changeCallback,
-                Handler h) {
-        }
-
     }
 
     public IImageList emptyImageList() {
