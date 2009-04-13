@@ -35,15 +35,9 @@ import android.widget.ImageView;
 abstract class ImageViewTouchBase extends ImageView {
     private static final String TAG = "ImageViewTouchBase";
     
-    // if we're animating these images, it may be faster to cache the image
-    // at its target size first. to do this set this variable to true.
-    // currently we're not animating images, so we don't need to do this
-    // extra work.
-    private static final boolean USE_PERFECT_FIT_OPTIMIZATION = false;
-    
     // This is the base transformation which is used to show the image
     // initially.  The current computation for this shows the image in
-    // it's entirety, letterboxing as needed.  One could chose to
+    // it's entirety, letterboxing as needed.  One could choose to
     // show the image as cropped instead.  
     //
     // This matrix is recomputed when we go from the thumbnail image to
@@ -67,29 +61,22 @@ abstract class ImageViewTouchBase extends ImageView {
     // The current bitmap being displayed.
     protected Bitmap mBitmapDisplayed;
 
-    // The thumbnail bitmap.
-    protected Bitmap mThumbBitmap;
-    
-    // The full size bitmap which should be used once we start zooming.
-    private Bitmap mFullBitmap;
-
-    // The bitmap which is exactly sized to what we need.  The decoded bitmap is
-    // drawn into the mPerfectFitBitmap so that animation is faster.
-    protected Bitmap mPerfectFitBitmap;
-
-    // True if the image is the thumbnail.
-    protected boolean mBitmapIsThumbnail;
-
-    // True if the user is zooming -- use the full size image
-    protected boolean mIsZooming;
-
-    // Paint to use to clear the "mPerfectFitBitmap"
-    protected Paint mPaint = new Paint();
-    
     int mThisWidth = -1, mThisHeight = -1;
     
     float mMaxZoom;
     
+    // ImageViewTouchBase will pass a Bitmap to the Recycler if it has finished
+    // its use of that Bitmap.
+    public interface Recycler {
+        public void recycle(Bitmap b);
+    }
+
+    public void setRecycler(Recycler r) {
+        mRecycler = r;
+    }
+
+    private Recycler mRecycler;
+
     @Override
     protected void onLayout(boolean changed, int left, int top,
                             int right, int bottom) {
@@ -102,7 +89,7 @@ abstract class ImageViewTouchBase extends ImageView {
             r.run();
         }
         if (mBitmapDisplayed != null) {
-            setBaseMatrix(mBitmapDisplayed, mBaseMatrix);
+            getProperBaseMatrix(mBitmapDisplayed, mBaseMatrix);
             setImageMatrix(getImageViewMatrix());
         }
     }
@@ -123,168 +110,49 @@ abstract class ImageViewTouchBase extends ImageView {
     protected int mLastXTouchPos;
     protected int mLastYTouchPos;
     
-    protected boolean doesScrolling() {
-        return true;
-    }
-
-    // Translate a given point through a given matrix.
-    private static void translatePoint(Matrix matrix, float [] xy) {
-        matrix.mapPoints(xy);
-    }
-
-    // Return the mapped x coordinate through the matrix.
-    static int mapXPoint(Matrix matrix, int point) {
-        // Matrix's mapPoints takes an array of x/y coordinates.
-        // That's why we have to allocte an array of length two
-        // even though we don't use the y coordinate.
-        float [] xy = new float[2];
-        xy[0] = point;
-        xy[1] = 0F;
-        matrix.mapPoints(xy);
-        return (int) xy[0];
-    }
-    
     @Override
     public void setImageBitmap(Bitmap bitmap) {
-        throw new NullPointerException();
-    }
-
-    public void setImageBitmap(Bitmap bitmap, boolean isThumbnail) {
         super.setImageBitmap(bitmap);
         Drawable d = getDrawable();
         if (d != null) {
             d.setDither(true);
         }
+
+        Bitmap old = mBitmapDisplayed;
         mBitmapDisplayed = bitmap;
-        mBitmapIsThumbnail = isThumbnail;
-    }
-    
-    protected boolean usePerfectFitBitmap() {
-        return USE_PERFECT_FIT_OPTIMIZATION && !mIsZooming;
-    }
-    
-    public void recycleBitmaps() {
-        if (mFullBitmap != null) {
-            if (Config.LOGV) {
-                Log.v(TAG, "recycling mFullBitmap " + mFullBitmap
-                        + "; this == " + this.hashCode());
-            }
-            mFullBitmap.recycle();
-            mFullBitmap = null;
+        if (old != null && old != bitmap && mRecycler != null) {
+            mRecycler.recycle(old);
         }
-        if (mThumbBitmap != null) {
-            if (Config.LOGV) {
-                Log.v(TAG, "recycling mThumbBitmap" + mThumbBitmap
-                        + "; this == " + this.hashCode());
-            }
-            mThumbBitmap.recycle();
-            mThumbBitmap = null;
-        }
+    }
 
-        // mBitmapDisplayed is either mPerfectFitBitmap or mFullBitmap (in the
-        // case of zooming)
-        setImageBitmap(null, true);
-    }
-    
     public void clear() {
-        mBitmapDisplayed = null;
-        recycleBitmaps();
+        setImageBitmapResetBase(null, true);
     }
-    
-    private Runnable mOnLayoutRunnable = null;
-    
-    public void setImageBitmapResetBase(final Bitmap bitmap,
-            final boolean resetSupp, final boolean isThumb) {
-        if ((bitmap != null) && (bitmap == mPerfectFitBitmap)) {
-            // TODO: this should be removed in production
-            throw new IllegalArgumentException("bitmap must not be "
-                    + "mPerfectFitBitmap");
-        }
 
+    private Runnable mOnLayoutRunnable = null;
+
+    // This function changes bitmap, reset base matrix according to the size
+    // of the bitmap, and optionally reset the supplementary matrix.
+    public void setImageBitmapResetBase(final Bitmap bitmap,
+            final boolean resetSupp) {
         final int viewWidth = getWidth();
         final int viewHeight = getHeight();
 
         if (viewWidth <= 0)  {
             mOnLayoutRunnable = new Runnable() {
                 public void run() {
-                    setImageBitmapResetBase(bitmap, resetSupp, isThumb);
+                    setImageBitmapResetBase(bitmap, resetSupp);
                 }
             };
             return;
         }
-        
-        if (isThumb && mThumbBitmap != bitmap) {
-            if (mThumbBitmap != null) {
-                mThumbBitmap.recycle();
-            }
-            mThumbBitmap = bitmap;
-        } else if (!isThumb && mFullBitmap != bitmap) {
-            if (mFullBitmap != null) {
-                mFullBitmap.recycle();
-            }
-            mFullBitmap = bitmap;
-        }
-        mBitmapIsThumbnail = isThumb;
-        
+
         if (bitmap != null) {
-            if (!usePerfectFitBitmap()) {
-                setScaleType(ImageView.ScaleType.MATRIX);
-                setBaseMatrix(bitmap, mBaseMatrix);
-                setImageBitmap(bitmap, isThumb);
-            } else {
-                Matrix matrix = new Matrix();
-                setBaseMatrix(bitmap, matrix);
-                if ((mPerfectFitBitmap == null) || 
-                        mPerfectFitBitmap.getWidth() != mThisWidth || 
-                        mPerfectFitBitmap.getHeight() != mThisHeight) {
-                    if (mPerfectFitBitmap != null) {
-                        if (Config.LOGV) {
-                            Log.v(TAG, "recycling mPerfectFitBitmap "
-                                    + mPerfectFitBitmap.hashCode());
-                        }
-                        mPerfectFitBitmap.recycle();
-                    }
-                    mPerfectFitBitmap = Bitmap.createBitmap(mThisWidth,
-                            mThisHeight, Bitmap.Config.RGB_565);
-                }
-                Canvas canvas = new Canvas(mPerfectFitBitmap);
-                // clear the bitmap which may be bigger than the image and
-                // contain the the previous image.
-                canvas.drawColor(0xFF000000);
-
-                final int bw = bitmap.getWidth();
-                final int bh = bitmap.getHeight();
-                final float widthScale  = Math.min(viewWidth / (float) bw,
-                                                   1.0f);
-                final float heightScale = Math.min(viewHeight / (float) bh,
-                                                   1.0f);
-                int translateX, translateY;
-                if (widthScale > heightScale) {
-                    translateX = (int) ((viewWidth - (float) bw * heightScale)
-                            * 0.5f);
-                    translateY = (int) ((viewHeight - (float) bh * heightScale)
-                            * 0.5f);
-                } else {
-                    translateX = (int) ((viewWidth - (float) bw * widthScale)
-                            * 0.5f);
-                    translateY = (int) ((viewHeight - (float) bh * widthScale)
-                            * 0.5f);
-                }
-
-                android.graphics.Rect src = new android.graphics.Rect(0, 0, 
-                                                                      bw, bh);
-                android.graphics.Rect dst = new android.graphics.Rect(
-                        translateX, translateY,  
-                        mThisWidth - translateX, mThisHeight - translateY);
-                canvas.drawBitmap(bitmap, src, dst, mPaint);
-                
-                setImageBitmap(mPerfectFitBitmap, isThumb);
-                setScaleType(ImageView.ScaleType.MATRIX);
-                setImageMatrix(null);
-            }
+            getProperBaseMatrix(bitmap, mBaseMatrix);
+            setImageBitmap(bitmap);
         } else {
             mBaseMatrix.reset();
-            setImageBitmap(null, isThumb);
+            setImageBitmap(null);
         }
 
         if (resetSupp) {
@@ -311,8 +179,8 @@ abstract class ImageViewTouchBase extends ImageView {
         float [] botRight = new float[] { mBitmapDisplayed.getWidth(),
                                           mBitmapDisplayed.getHeight() };
 
-        translatePoint(m, topLeft);
-        translatePoint(m, botRight);
+        m.mapPoints(topLeft);
+        m.mapPoints(botRight);
 
         float height = botRight[1] - topLeft[1];
         float width  = botRight[0] - topLeft[0];
@@ -350,43 +218,7 @@ abstract class ImageViewTouchBase extends ImageView {
         }
         setImageMatrix(getImageViewMatrix());
     }
-
-    public void copyFrom(ImageViewTouchBase other) {
-        mSuppMatrix.set(other.mSuppMatrix);
-        mBaseMatrix.set(other.mBaseMatrix);
-        
-        if (mThumbBitmap != null) {
-            mThumbBitmap.recycle();
-        }
-        
-        if (mFullBitmap != null) {
-            mFullBitmap.recycle();
-        }
-        
-        // copy the data
-        mThumbBitmap       = other.mThumbBitmap;
-        mFullBitmap        = null;
-        
-        if (other.mFullBitmap != null) {
-            other.mFullBitmap.recycle();
-        }
-        
-        // transfer "ownership"
-        other.mThumbBitmap = null;
-        other.mFullBitmap  = null;
-        other.mBitmapIsThumbnail = true;
-
-        setImageMatrix(other.getImageMatrix());
-        setScaleType(other.getScaleType());
-        
-        setImageBitmapResetBase(mThumbBitmap, true, true);
-    }
     
-    @Override 
-    public void setImageDrawable(android.graphics.drawable.Drawable d) {
-        super.setImageDrawable(d);
-    }
-
     public ImageViewTouchBase(Context context) {
         super(context);
         init();
@@ -399,8 +231,6 @@ abstract class ImageViewTouchBase extends ImageView {
 
     private void init() {
         setScaleType(ImageView.ScaleType.MATRIX);
-        mPaint.setDither(true);
-        mPaint.setFilterBitmap(true);
     }
 
     protected float getValue(Matrix matrix, int whichValue) {
@@ -417,16 +247,8 @@ abstract class ImageViewTouchBase extends ImageView {
         return getScale(mSuppMatrix);
     }
     
-    protected float getTranslateX() {
-        return getValue(mSuppMatrix, Matrix.MTRANS_X);
-    }
-
-    protected float getTranslateY() {
-        return getValue(mSuppMatrix, Matrix.MTRANS_Y);
-    }
-
     // Setup the base matrix so that the image is centered and scaled properly.
-    private void setBaseMatrix(Bitmap bitmap, Matrix matrix) {
+    private void getProperBaseMatrix(Bitmap bitmap, Matrix matrix) {
         float viewWidth = getWidth();
         float viewHeight = getHeight();
 
@@ -449,45 +271,13 @@ abstract class ImageViewTouchBase extends ImageView {
     
     // Combine the base matrix and the supp matrix to make the final matrix.
     protected Matrix getImageViewMatrix() {
+        // The final matrix is computed as the concatentation of the base matrix
+        // and the supplementary matrix.
         mDisplayMatrix.set(mBaseMatrix);
         mDisplayMatrix.postConcat(mSuppMatrix);
         return mDisplayMatrix;
     }
 
-    private void onZoom() {
-        mIsZooming = true;
-        if (mFullBitmap != null && mFullBitmap != mBitmapDisplayed) {
-            setImageBitmapResetBase(mFullBitmap, false, mBitmapIsThumbnail);
-        }
-    }
-    
-    private String describe(Bitmap b) {
-        StringBuilder sb = new StringBuilder();
-        if (b == null) {
-            sb.append("NULL");
-        } else if (b.isRecycled()) {
-            sb.append(String.format("%08x: RECYCLED", b.hashCode()));
-        } else {
-            sb.append(String.format("%08x: LIVE", b.hashCode()));
-            sb.append(String.format("%d x %d (size == %d)", b.getWidth(),
-                    b.getHeight(), b.getWidth() * b.getHeight() * 2));
-        }
-        return sb.toString();
-    }
-    
-    public void dump() {
-        if (Config.LOGV) {
-            Log.v(TAG, "dump ImageViewTouchBase " + this);
-            Log.v(TAG, "... mBitmapDisplayed  = " + describe(mBitmapDisplayed));
-            Log.v(TAG, "... mThumbBitmap      = " + describe(mThumbBitmap));
-            Log.v(TAG, "... mFullBitmap       = " + describe(mFullBitmap));
-            Log.v(TAG, "... mPerfectFitBitmap = "
-                    + describe(mPerfectFitBitmap));
-            Log.v(TAG, "... mIsThumb          = " + mBitmapIsThumbnail);
-        }
-    }
-
-    static final float PAN_RATE = 7;
     static final float SCALE_RATE = 1.25F;
 
     // Sets the maximum zoom, which is a scale relative to the base matrix. It
@@ -509,7 +299,6 @@ abstract class ImageViewTouchBase extends ImageView {
         if (scale > mMaxZoom) {
             scale = mMaxZoom;
         }
-        onZoom();
         
         float oldScale = getScale();
         float deltaScale = scale / oldScale;
@@ -541,10 +330,10 @@ abstract class ImageViewTouchBase extends ImageView {
     }
 
     protected void zoomTo(float scale) {
-        float width = getWidth();
-        float height = getHeight();
+        float cx = getWidth() / 2F;
+        float cy = getHeight() / 2F;
         
-        zoomTo(scale, width / 2F, height / 2F);
+        zoomTo(scale, cx, cy);
     }
     
     protected void zoomIn() {
@@ -562,13 +351,12 @@ abstract class ImageViewTouchBase extends ImageView {
         if (mBitmapDisplayed == null) {
             return;
         }
-        float width = getWidth();
-        float height = getHeight();
 
-        mSuppMatrix.postScale(rate, rate, width / 2F, height / 2F);
+        float cx = getWidth() / 2F;
+        float cy = getHeight() / 2F;
+
+        mSuppMatrix.postScale(rate, rate, cx, cy);
         setImageMatrix(getImageViewMatrix());
-
-        onZoom();
     }
 
     protected void zoomOut(float rate) {
@@ -576,22 +364,20 @@ abstract class ImageViewTouchBase extends ImageView {
             return;
         }
         
-        float width = getWidth();
-        float height = getHeight();
+        float cx = getWidth() / 2F;
+        float cy = getHeight() / 2F;
 
+        // Zoom out to at most 1x.
         Matrix tmp = new Matrix(mSuppMatrix);
-        tmp.postScale(1F / SCALE_RATE, 1F / SCALE_RATE,
-                      width / 2F, height / 2F);
+        tmp.postScale(1F / rate, 1F / rate, cx, cy);
+
         if (getScale(tmp) < 1F) {
-            mSuppMatrix.setScale(1F, 1F, width / 2F, height / 2F);
+            mSuppMatrix.setScale(1F, 1F, cx, cy);
         } else {
-            mSuppMatrix.postScale(1F / rate, 1F / rate,
-                                  width / 2F, height / 2F);
+            mSuppMatrix.postScale(1F / rate, 1F / rate, cx, cy);
         }
         setImageMatrix(getImageViewMatrix());
         center(true, true, false);
-
-        onZoom();
     }
     
     protected void postTranslate(float dx, float dy) {
@@ -603,4 +389,3 @@ abstract class ImageViewTouchBase extends ImageView {
         setImageMatrix(getImageViewMatrix());
     }
 }
-
