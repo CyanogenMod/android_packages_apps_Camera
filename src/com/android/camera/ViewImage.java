@@ -47,17 +47,16 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
 import java.util.Random;
 
-// This activity can display a whole picture and navigate them in a specific gallery.
-// It has two modes: normal mode and slide show mode. In normal mode the
-// user view one image at a time, and can click "previous" and "next" button to
-// see the previous or next image. In slide show mode it shows one image after
-// another, with some transition effect.
+// This activity can display a whole picture and navigate them in a specific
+// gallery. It has two modes: normal mode and slide show mode. In normal mode
+// the user view one image at a time, and can click "previous" and "next"
+// button to see the previous or next image. In slide show mode it shows one
+// image after another, with some transition effect.
 public class ViewImage extends Activity implements View.OnClickListener {
     private static final String TAG = "ViewImage";
 
@@ -1449,7 +1448,7 @@ class ImageGetter {
 
 // This is a cache for Bitmap displayed in ViewImage (normal mode, thumb only).
 class BitmapCache implements ImageViewTouchBase.Recycler {
-    static public class Entry {
+    public static class Entry {
         int mPos;
         Bitmap mBitmap;
         public Entry() {

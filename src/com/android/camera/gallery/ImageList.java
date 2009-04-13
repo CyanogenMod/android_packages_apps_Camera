@@ -102,7 +102,6 @@ public class ImageList extends BaseImageList implements IImageList {
                 synchronized (mCursor) {
                     requery();
                 }
-                if (mListener != null) mListener.onChange(ImageList.this);
             }
         };
 
@@ -206,11 +205,6 @@ public class ImageList extends BaseImageList implements IImageList {
     @Override
     protected int indexDateTaken() {
         return INDEX_DATE_TAKEN;
-    }
-
-    @Override
-    protected int indexDescription() {
-        return -1;
     }
 
     @Override

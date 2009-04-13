@@ -482,7 +482,6 @@ public class Camera extends Activity implements View.OnClickListener,
                         Camera.this,
                         mContentResolver,
                         name,
-                        "",
                         dateTaken,
                         loc, // location for the database goes here
                         0, // the dsp will use the right orientation so

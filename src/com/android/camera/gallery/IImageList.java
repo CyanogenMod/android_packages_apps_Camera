@@ -28,13 +28,6 @@ public interface IImageList {
     public HashMap<String, String> getBucketIds();
 
     /**
-     * Notify interface when the image list has been changed.
-     */
-    public interface OnChange {
-        public void onChange(IImageList list);
-    }
-
-    /**
      * Notify interface of how many thumbnails are processed.
      */
     public interface ThumbCheckCallback {
@@ -89,10 +82,4 @@ public interface IImageList {
      * @param i     the position
      */
     public abstract void removeImageAt(int i);
-
-    public abstract void removeOnChangeListener(
-            IImageList.OnChange changeCallback);
-
-    public abstract void setOnChangeListener(
-            IImageList.OnChange changeCallback, Handler h);
 }

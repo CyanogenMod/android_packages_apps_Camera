@@ -298,28 +298,6 @@ public abstract class BaseImage implements IImage {
         }
     }
 
-    public String getDescription() {
-        if (mContainer.indexDescription() < 0) {
-            Cursor c = mContentResolver.query(fullSizeImageUri(),
-                    new String[] { "_id", Images.Media.DESCRIPTION },
-                    null, null, null);
-            try {
-                return c.moveToFirst() ? c.getString(1) : "";
-            } finally {
-                c.close();
-            }
-        } else {
-            String description = null;
-            Cursor c = getCursor();
-            synchronized (c) {
-                if (c.moveToPosition(getRow())) {
-                    description = c.getString(mContainer.indexDescription());
-                }
-            }
-            return description;
-        }
-    }
-
     public double getLatitude() {
         if (mContainer.indexLatitude() < 0) return 0D;
         Cursor c = getCursor();
@@ -519,16 +497,6 @@ public abstract class BaseImage implements IImage {
 
     protected void saveMiniThumb(Bitmap source) throws IOException {
         mContainer.saveMiniThumbToFile(source, fullSizeImageId(), 0);
-    }
-
-    public void setDescription(String description) {
-        if (mContainer.indexDescription() < 0) return;
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                c.updateString(mContainer.indexDescription(), description);
-            }
-        }
     }
 
     public void setName(String name) {

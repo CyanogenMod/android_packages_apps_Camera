@@ -53,16 +53,9 @@ public interface IImage {
     public abstract IImageList getContainer();
     public abstract long getDateTaken();
 
-    /**
-     * Gets the description of the image.
-     * @return  the description of the image.
-     */
-    public abstract String getDescription();
     public abstract String getMimeType();
     public abstract int getHeight();
-
     public abstract double getLatitude();
-
     public abstract double getLongitude();
 
     /**
@@ -90,11 +83,6 @@ public interface IImage {
     public abstract void onRemove();
 
     public abstract boolean rotateImageBy(int degrees);
-
-    /**
-     * Sets the description of the image.
-     */
-    public abstract void setDescription(String description);
 
     /**
      * Sets the name of the image.

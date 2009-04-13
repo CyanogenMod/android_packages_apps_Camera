@@ -52,10 +52,6 @@ public abstract class SimpleBaseImage implements IImage {
         throw new UnsupportedOperationException();
     }
 
-    public String getDescription() {
-        throw new UnsupportedOperationException();
-    }
-
     public double getLatitude() {
         return 0D;
     }
@@ -102,10 +98,6 @@ public abstract class SimpleBaseImage implements IImage {
 
     public boolean rotateImageBy(int degrees) {
         return false;
-    }
-
-    public void setDescription(String description) {
-        throw new UnsupportedOperationException();
     }
 
     public void setName(String name) {
