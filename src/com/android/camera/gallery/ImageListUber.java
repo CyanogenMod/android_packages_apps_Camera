@@ -34,8 +34,6 @@ public class ImageListUber implements IImageList {
 
     private IImageList [] mSubList;
     private int mSort;
-    private IImageList.OnChange mListener = null;
-    private Handler mHandler;
 
     // This is an array of Longs wherein each Long consists of
     // two components.  The first component indicates the number of
@@ -56,18 +54,6 @@ public class ImageListUber implements IImageList {
     public ImageListUber(IImageList [] sublist, int sort) {
         mSubList = sublist.clone();
         mSort = sort;
-
-        if (mListener != null) {
-            for (IImageList list : sublist) {
-                list.setOnChangeListener(new OnChange() {
-                    public void onChange(IImageList list) {
-                        if (mListener != null) {
-                            mListener.onChange(ImageListUber.this);
-                        }
-                    }
-                }, mHandler);
-            }
-        }
     }
 
     public void checkThumbnails(ThumbCheckCallback cb, int totalThumbnails) {
@@ -288,16 +274,4 @@ public class ImageListUber implements IImageList {
             }
         }
     }
-
-    public void removeOnChangeListener(OnChange changeCallback) {
-        if (changeCallback == mListener) {
-            mListener = null;
-        }
-    }
-
-    public void setOnChangeListener(OnChange changeCallback, Handler h) {
-        mListener = changeCallback;
-        mHandler = h;
-    }
-
 }
