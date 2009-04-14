@@ -195,11 +195,6 @@ public class Wallpaper extends Activity {
                                    + "Couldn't get bitmap for path "
                                    + mTempFilePath);
                 } else {
-                    if (android.util.Config.LOGV) {
-                        Log.v(LOG_TAG, "bitmap size is "
-                                       + bitmap.getWidth()
-                                       + " / " + bitmap.getHeight());
-                    }
                     mHandler.sendEmptyMessage(SHOW_PROGRESS);
                     new SetWallpaperThread(bitmap, mHandler,
                                            this, tempFile).start();

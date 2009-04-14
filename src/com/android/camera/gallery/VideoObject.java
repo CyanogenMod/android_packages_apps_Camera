@@ -132,11 +132,6 @@ public class VideoObject extends BaseImage implements IImage {
         return 0;
     }
 
-    @Override
-    public long imageId() {
-        return mId;
-    }
-
     public boolean isReadonly() {
         return false;
     }

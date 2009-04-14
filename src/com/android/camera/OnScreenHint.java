@@ -87,9 +87,6 @@ public class OnScreenHint {
         if (mNextView == null) {
             throw new RuntimeException("setView must have been called");
         }
-        if (LOCAL_LOGV) {
-            Log.v(TAG, "SHOW: " + this);
-        }
         mHandler.post(mShow);
     }
 
@@ -97,9 +94,6 @@ public class OnScreenHint {
      * Close the view if it's showing.
      */
     public void cancel() {
-        if (LOCAL_LOGV) {
-            Log.v(TAG, "HIDE: " + this);
-        }
         mHandler.post(mHide);
     }
 
@@ -251,10 +245,6 @@ public class OnScreenHint {
     }
 
     private synchronized void handleShow() {
-        if (LOCAL_LOGV) {
-            Log.v(TAG, "HANDLE SHOW: " + this + " mView=" + mView
-                       + " mNextView=" + mNextView);
-        }
         if (mView != mNextView) {
             // remove the old view if necessary
             handleHide();
@@ -274,30 +264,18 @@ public class OnScreenHint {
             mParams.verticalMargin = mVerticalMargin;
             mParams.horizontalMargin = mHorizontalMargin;
             if (mView.getParent() != null) {
-                if (LOCAL_LOGV) {
-                    Log.v(TAG, "REMOVE! " + mView + " in " + this);
-                }
                 mWM.removeView(mView);
-            }
-            if (LOCAL_LOGV) {
-                Log.v(TAG, "ADD! " + mView + " in " + this);
             }
             mWM.addView(mView, mParams);
         }
     }
 
     private synchronized void handleHide() {
-        if (LOCAL_LOGV) {
-            Log.v(TAG, "HANDLE HIDE: " + this + " mView=" + mView);
-        }
         if (mView != null) {
             // note: checking parent() just to make sure the view has
             // been added...  i have seen cases where we get here when
             // the view isn't yet added, so let's try not to crash.
             if (mView.getParent() != null) {
-                if (LOCAL_LOGV) {
-                    Log.v(TAG, "REMOVE! " + mView + " in " + this);
-                }
                 mWM.removeView(mView);
             }
             mView = null;

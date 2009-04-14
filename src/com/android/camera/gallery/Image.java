@@ -104,13 +104,9 @@ public class Image extends BaseImage implements IImage {
         if (mExifData == null) {
             mExifData = new HashMap<String, String>();
         }
+        // If the key is already there, ignore it.
         if (!mExifData.containsKey(tag)) {
             mExifData.put(tag, value);
-        } else {
-            if (VERBOSE) {
-                Log.v(TAG, "addExifTag where the key already was there: "
-                        + tag + " = " + value);
-            }
         }
     }
 
@@ -192,7 +188,6 @@ public class Image extends BaseImage implements IImage {
             try {
                 Bitmap thumbnail = null;
 
-                long t1 = System.currentTimeMillis();
                 Uri uri = mContainer.contentUri(mId);
                 synchronized (this) {
                     checkCanceled();
@@ -200,7 +195,6 @@ public class Image extends BaseImage implements IImage {
                             compressImageToFile(mImage, mJpegData, uri);
                 }
 
-                long t2 = System.currentTimeMillis();
                 if (!mCurrentCancelable.get()) return false;
 
                 synchronized (this) {
@@ -219,20 +213,10 @@ public class Image extends BaseImage implements IImage {
                         thumbData =
                                 (new ExifInterface(filePath)).getThumbnail();
                     }
-                    if (VERBOSE) {
-                        Log.v(TAG, "for file " + filePath + " thumbData is "
-                                + thumbData + "; length "
-                                + (thumbData != null ? thumbData.length : -1));
-                    }
 
                     if (thumbData != null) {
                         thumbnail = BitmapFactory.decodeByteArray(
                                 thumbData, 0, thumbData.length);
-                        if (VERBOSE) {
-                            Log.v(TAG, "embedded thumbnail bitmap "
-                                    + thumbnail.getWidth() + "/"
-                                    + thumbnail.getHeight());
-                        }
                     }
                     if (thumbnail == null && mImage != null) {
                         thumbnail = mImage;
@@ -243,28 +227,20 @@ public class Image extends BaseImage implements IImage {
                     }
                 }
 
-                long t3 = System.currentTimeMillis();
                 mContainer.storeThumbnail(
                         thumbnail, Image.this.fullSizeImageId());
-                long t4 = System.currentTimeMillis();
                 checkCanceled();
-                if (VERBOSE) Log.v(TAG, "rotating by " + mOrientation);
+
                 try {
                     thumbnail = Util.rotate(thumbnail, mOrientation);
                     saveMiniThumb(thumbnail);
                 } catch (IOException e) {
                     // Ignore if unable to save thumb.
                 }
-                long t5 = System.currentTimeMillis();
                 checkCanceled();
-
-                if (VERBOSE) {
-                    Log.v(TAG, String.format("Timing data %d %d %d %d",
-                            t2 - t1, t3 - t2, t4 - t3, t5 - t4));
-                }
                 return true;
             } catch (CanceledException ex) {
-                if (VERBOSE) Log.v(TAG, "got canceled... need to cleanup");
+                // Got canceled... need to cleanup.
                 return false;
             } finally {
                 /*
@@ -366,10 +342,7 @@ public class Image extends BaseImage implements IImage {
 
         if (bitmap == null) {
             bitmap = fullSizeBitmap(ImageManager.THUMBNAIL_TARGET_SIZE, false);
-            if (VERBOSE) {
-                Log.v(TAG, "no thumbnail found... storing new one for "
-                        + fullSizeImageId());
-            }
+            // No thumbnail found... storing the new one.
             bitmap = mContainer.storeThumbnail(bitmap, fullSizeImageId());
         }
 

@@ -40,7 +40,6 @@ import java.util.HashMap;
  * the path to the actual image data.
  */
 public abstract class BaseImage implements IImage {
-
     private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImage";
 
@@ -98,29 +97,15 @@ public abstract class BaseImage implements IImage {
 
         public Boolean get() {
             try {
-                long t1 = System.currentTimeMillis();
                 OutputStream delegate = mContentResolver.openOutputStream(mUri);
                 synchronized (this) {
                     checkCanceled();
                     mOutputStream = new ThreadSafeOutputStream(delegate);
                 }
-                long t2 = System.currentTimeMillis();
                 if (mBitmap != null) {
                     mBitmap.compress(compressionType(), 75, mOutputStream);
                 } else {
-                    long x1 = System.currentTimeMillis();
                     mOutputStream.write(mJpegData);
-                    long x2 = System.currentTimeMillis();
-                    if (VERBOSE) {
-                        Log.v(TAG, "done writing... " + mJpegData.length
-                                + " bytes took " + (x2 - x1));
-                    }
-                }
-                long t3 = System.currentTimeMillis();
-                if (VERBOSE) {
-                    Log.v(TAG, String.format(
-                            "CompressImageToFile.get took %d (%d, %d)",
-                            (t3 - t1), (t2 - t1), (t3 - t2)));
                 }
                 return true;
             } catch (FileNotFoundException ex) {
@@ -167,7 +152,6 @@ public abstract class BaseImage implements IImage {
     protected Bitmap fullSizeBitmap(
             int targetWidthHeight, boolean rotateAsNeeded) {
         Uri url = mContainer.contentUri(mId);
-        if (VERBOSE) Log.v(TAG, "getCreateBitmap for " + url);
         if (url == null) return null;
 
         Bitmap b = makeBitmap(targetWidthHeight, url);
@@ -180,7 +164,6 @@ public abstract class BaseImage implements IImage {
     private class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
         private ParcelFileDescriptor mPFD;
         private BitmapFactory.Options mOptions = new BitmapFactory.Options();
-        private long mCancelInitiationTime;
         private int mTargetWidthHeight;
 
         public LoadBitmapCancelable(
@@ -191,8 +174,6 @@ public abstract class BaseImage implements IImage {
 
         @Override
         public boolean doCancelWork() {
-            if (VERBOSE) Log.v(TAG, "requesting bitmap load cancel");
-            mCancelInitiationTime = System.currentTimeMillis();
             mOptions.requestCancelDecode();
             return true;
         }
@@ -201,12 +182,6 @@ public abstract class BaseImage implements IImage {
             try {
                 Bitmap b = makeBitmap(
                         mTargetWidthHeight, fullSizeImageUri(), mPFD, mOptions);
-                if (mCancelInitiationTime != 0 && VERBOSE) {
-                    Log.v(TAG, "cancelation of bitmap load success=="
-                            + (b == null ? "TRUE" : "FALSE") + " -- took "
-                            + (System.currentTimeMillis()
-                            - mCancelInitiationTime));
-                }
                 if (b != null) {
                     b = Util.rotate(b, getDegreesRotated());
                 }
@@ -372,10 +347,6 @@ public abstract class BaseImage implements IImage {
         }
     }
 
-    public long imageId() {
-        return mId;
-    }
-
     /**
      * Make a bitmap from a given Uri.
      *
@@ -405,10 +376,6 @@ public abstract class BaseImage implements IImage {
             if (dbMagic == 0 || dbMagic == id) {
                 dbMagic = ((BaseImageList) getContainer())
                         .checkThumbnail(this, getCursor(), getRow());
-                if (VERBOSE) {
-                    Log.v(TAG, "after computing thumbnail dbMagic is "
-                            + dbMagic);
-                }
             }
 
             synchronized (sMiniThumbData) {
@@ -433,15 +400,12 @@ public abstract class BaseImage implements IImage {
                             dbMagic);
                 }
                 if (data == null) {
-                    if (VERBOSE) {
-                        Log.v(TAG, "unable to get miniThumbBitmap,"
-                                + " data is null");
-                    }
+                    // Unable to get mini-thumb data from file.
                 }
                 if (data != null) {
                     Bitmap b = BitmapFactory.decodeByteArray(data, 0,
                             data.length);
-                    if (b == null && VERBOSE) {
+                    if (b == null) {
                         Log.v(TAG, "couldn't decode byte array, "
                                 + "length was " + data.length);
                     }
@@ -450,11 +414,7 @@ public abstract class BaseImage implements IImage {
             }
             return null;
         } catch (Throwable ex) {
-            if (VERBOSE) {
-                Log.e(TAG, "miniThumbBitmap got exception " + ex.toString());
-                for (StackTraceElement s : ex.getStackTrace())
-                    Log.e(TAG, "... " + s.toString());
-            }
+            Log.e(TAG, "miniThumbBitmap got exception", ex);
             return null;
         }
     }

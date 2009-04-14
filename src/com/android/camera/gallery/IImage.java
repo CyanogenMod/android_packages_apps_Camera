@@ -26,72 +26,55 @@ import java.io.InputStream;
  */
 public interface IImage {
 
-    public abstract void commitChanges();
+    /** Get the image list which contains this image. */
+    public abstract IImageList getContainer();
 
-    /**
-     * Get the bitmap for the full size image.
-     * @return  the bitmap for the full size image.
-     */
+    /** Get the bitmap for the full size image. */
     public abstract Bitmap fullSizeBitmap(int targetWidthOrHeight);
 
-    /**
-     *
-     * @return an object which can be canceled while the bitmap is loading
-     */
+    /** Get the cancelable object for the bitmap of the full size image. */
     public abstract ICancelable<Bitmap> fullSizeBitmapCancelable(
             int targetWidthOrHeight);
 
-    /**
-     * Gets the input stream associated with a given full size image.
-     * This is used, for example, if one wants to email or upload
-     * the image.
-     * @return  the InputStream associated with the image.
-     */
+    /** Get the input stream associated with a given full size image. */
     public abstract InputStream fullSizeImageData();
     public abstract long fullSizeImageId();
     public abstract Uri fullSizeImageUri();
-    public abstract IImageList getContainer();
-    public abstract long getDateTaken();
 
-    public abstract String getMimeType();
-    public abstract int getHeight();
+    /** Get the path of the (full size) image data. */
+    public abstract String getDataPath();
 
-    /**
-     * Gets the name of the image.
-     * @return  the name of the image.
-     */
+    // Get/Set the title of the image
+    public abstract void setTitle(String name);
     public abstract String getTitle();
 
+    // Get metadata of the image
+    public abstract long getDateTaken();
+    public abstract String getMimeType();
+    public abstract int getWidth();
+    public abstract int getHeight();
     public abstract String getDisplayName();
 
-    public abstract int getRow();
-
-    public abstract int getWidth();
-
-    public abstract long imageId();
-
+    // Get property of the image
     public abstract boolean isReadonly();
-
     public abstract boolean isDrm();
 
-    public abstract Bitmap miniThumbBitmap();
-
-    public abstract void onRemove();
-
-    public abstract boolean rotateImageBy(int degrees);
-
-    /**
-     * Sets the title of the image.
-     */
-    public abstract void setTitle(String name);
-
-    /**
-     * Get the bitmap for the medium thumbnail.
-     * @return  the bitmap for the medium thumbnail.
-     */
+    // Get the bitmap/uri of the medium thumbnail
     public abstract Bitmap thumbBitmap();
-
     public abstract Uri thumbUri();
 
-    public abstract String getDataPath();
+    // Get the bitmap of the mini thumbnail.
+    public abstract Bitmap miniThumbBitmap();
+
+    // Get the row number for this image in the database table.
+    public abstract int getRow();
+
+    // Rotate the image
+    public abstract boolean rotateImageBy(int degrees);
+
+    // This is called if the image is removed.
+    public abstract void onRemove();
+
+    // Commit the changes done to this image.
+    public abstract void commitChanges();
 }

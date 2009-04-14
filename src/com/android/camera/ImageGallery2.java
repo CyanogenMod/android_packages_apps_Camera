@@ -96,7 +96,6 @@ public class ImageGallery2 extends Activity {
 
     @Override
     public void onCreate(Bundle icicle) {
-        if (Config.LOGV) Log.v(TAG, "onCreate");
         super.onCreate(icicle);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -108,9 +107,6 @@ public class ImageGallery2 extends Activity {
 
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
                 R.layout.custom_gallery_title);
-        if (Config.LOGV) {
-            Log.v(TAG, "findView... " + findViewById(R.id.loading_indicator));
-        }
 
         mGvs = (GridViewSpecial) findViewById(R.id.grid);
         mGvs.requestFocus();
@@ -361,7 +357,6 @@ public class ImageGallery2 extends Activity {
 
             /* pass through any extras that were passed in */
             cropIntent.putExtras(myExtras);
-            if (Config.LOGV) Log.v(TAG, "startSubActivity " + cropIntent);
             startActivityForResult(cropIntent, CROP_MSG);
         } else {
             Intent result = new Intent(null, img.fullSizeImageUri());
@@ -379,10 +374,6 @@ public class ImageGallery2 extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
-        if (Config.LOGV) {
-            Log.v(TAG, "onActivityResult: " + requestCode
-                    + "; resultCode is " + resultCode + "; data is " + data);
-        }
         switch (requestCode) {
             case MenuHelper.RESULT_COMMON_MENU_CROP: {
                 if (resultCode == RESULT_OK) {
@@ -400,7 +391,6 @@ public class ImageGallery2 extends Activity {
                 break;
             }
             case CROP_MSG: {
-                if (Config.LOGV) Log.v(TAG, "onActivityResult " + data);
                 if (resultCode == RESULT_OK) {
                     setResult(resultCode, data);
                     finish();
@@ -408,9 +398,6 @@ public class ImageGallery2 extends Activity {
                 break;
             }
             case VIEW_MSG: {
-                if (Config.LOGV) {
-                    Log.v(TAG, "got VIEW_MSG with " + data);
-                }
                 IImage img = mAllImages.getImageForUri(data.getData());
                 launchCropperOrFinish(img);
                 break;
@@ -458,9 +445,6 @@ public class ImageGallery2 extends Activity {
             mAllImages = ImageManager.instance().emptyImageList();
         } else {
             mAllImages = allImages(!unmounted);
-            if (Config.LOGV) {
-                Log.v(TAG, "mAllImages is now " + mAllImages);
-            }
             mGvs.init(mHandler);
             mGvs.start();
             mGvs.requestLayout();
@@ -514,9 +498,6 @@ public class ImageGallery2 extends Activity {
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (Config.LOGV) {
-                    Log.v(TAG, "onReceiveIntent " + intent.getAction());
-                }
                 String action = intent.getAction();
                 if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                     // SD card available
@@ -524,7 +505,6 @@ public class ImageGallery2 extends Activity {
                     // TODO also listen for the media scanner finished message
                 } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                     // SD card unavailable
-                    if (Config.LOGV) Log.v(TAG, "sd card no longer available");
                     Toast.makeText(ImageGallery2.this,
                             getResources().getString(R.string.wait), 5000);
                     rebake(true, false);
@@ -534,15 +514,8 @@ public class ImageGallery2 extends Activity {
                     rebake(false, true);
                 } else if (action.equals(
                         Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "rebake because of "
-                                + "ACTION_MEDIA_SCANNER_FINISHED");
-                    }
                     rebake(false, false);
                 } else if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "rebake because of ACTION_MEDIA_EJECT");
-                    }
                     rebake(true, false);
                 }
             }
@@ -561,7 +534,6 @@ public class ImageGallery2 extends Activity {
 
     private void checkThumbnails() {
         final long startTime = System.currentTimeMillis();
-        final long t1 = System.currentTimeMillis();
         mThumbnailCheckThread = new BitmapThread(new Runnable() {
             public void run() {
                 android.content.res.Resources resources = getResources();
@@ -603,6 +575,8 @@ public class ImageGallery2 extends Activity {
                                 }
                                 mGvs.postInvalidate();
 
+                                // If there is a new image done and it has been
+                                // a second, update the progress.
                                 if (System.currentTimeMillis()
                                         - startTime > 1000) {
                                     mHandler.post(new Runnable() {
@@ -628,11 +602,6 @@ public class ImageGallery2 extends Activity {
                                 View.GONE);
                     }
                 });
-                long t2 = System.currentTimeMillis();
-                if (Config.LOGV) {
-                    Log.v(TAG, "check thumbnails thread finishing; took "
-                            + (t2 - t1));
-                }
             }
         });
 
@@ -702,9 +671,6 @@ public class ImageGallery2 extends Activity {
             Intent intent = getIntent();
             if (intent != null) {
                 String type = intent.resolveType(this);
-                if (Config.LOGV) {
-                    Log.v(TAG, "allImages... type is " + type);
-                }
                 TextView leftText = (TextView) findViewById(R.id.left_text);
                 if (type != null) {
                     if (type.equals("vnd.android.cursor.dir/image")
@@ -746,11 +712,6 @@ public class ImageGallery2 extends Activity {
                     Log.d(TAG, "pick-drm is true");
                     mInclusion = ImageManager.INCLUDE_DRM_IMAGES;
                 }
-            }
-            if (Config.LOGV) {
-                Log.v(TAG, "computing images... mSortAscending is "
-                        + mSortAscending + "; assumeMounted is "
-                        + assumeMounted);
             }
             Uri uri = getIntent().getData();
             if (!assumeMounted) {
@@ -888,12 +849,6 @@ class GridViewSpecial extends View {
     private GestureDetector mGestureDetector;
 
     public void dump() {
-        if (Config.LOGV){
-            Log.v(TAG, "mSizeChoice is " + mCellSizeChoices[mSizeChoice]);
-            Log.v(TAG, "mCurrentSpec.width / mCellHeight are "
-                    + mCurrentSpec.mCellWidth + " / "
-                    + mCurrentSpec.mCellHeight);
-        }
         mImageBlockManager.dump();
     }
 
@@ -1160,20 +1115,11 @@ class GridViewSpecial extends View {
             synchronized (ImageBlockManager.this) {
                 StringBuilder line1 = new StringBuilder();
                 StringBuilder line2 = new StringBuilder();
-                if (Config.LOGV) {
-                    Log.v(TAG, ">>> mBlockCacheFirstBlockNumber: "
-                            + mBlockCacheFirstBlockNumber + " "
-                            + mBlockCacheStartOffset);
-                }
                 for (int i = 0; i < mBlockCache.length; i++) {
                     int index = (mBlockCacheStartOffset + i)
                             % mBlockCache.length;
                     ImageBlock block = mBlockCache[index];
                     block.dump(line1, line2);
-                }
-                if (Config.LOGV){
-                    Log.v(TAG, line1.toString());
-                    Log.v(TAG, line2.toString());
                 }
             }
         }
@@ -1195,10 +1141,6 @@ class GridViewSpecial extends View {
                             workCounter = mWorkCounter;
                         }
                         if (mDone) {
-                            if (Config.LOGV) {
-                                Log.v(TAG, "stopping the loader here "
-                                        + Thread.currentThread().getName());
-                            }
                             if (mLoader != null) {
                                 mLoader.stop();
                             }
@@ -1701,15 +1643,6 @@ class GridViewSpecial extends View {
                         android.graphics.Rect dst =
                                 new android.graphics.Rect(xPos, yPos,
                                 xPos + w, yPos + h);
-                        if (src.width() != dst.width()
-                                || src.height() != dst.height()) {
-                            if (Config.LOGV){
-                                Log.v(TAG, "nope... width doesn't match "
-                                        + src.width() + " " + dst.width());
-                                Log.v(TAG, "nope... height doesn't match "
-                                        + src.height() + " " + dst.height());
-                            }
-                        }
                         mCanvas.drawBitmap(b, src, dst, mPaint);
                     } else {
                         android.graphics.Rect src =
@@ -1877,10 +1810,6 @@ class GridViewSpecial extends View {
         super.onDraw(canvas);
         if (false) {
             canvas.drawRect(0, 0, getWidth(), getHeight(), mGridViewPaint);
-            if (Config.LOGV) {
-                Log.v(TAG, "painting background w/h " + getWidth()
-                        + " / " + getHeight());
-            }
             return;
         }
 

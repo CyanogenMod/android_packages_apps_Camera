@@ -84,12 +84,6 @@ public class VideoList extends BaseImageList implements IImageList {
             throw new UnsupportedOperationException();
         }
 
-        if (Config.LOGV) {
-            Log.v(TAG, "for " + mUri.toString() + " got cursor " + mCursor
-                    + " with length "
-                    + (mCursor != null ? mCursor.getCount() : -1));
-        }
-
         if (mCursor == null) {
             throw new UnsupportedOperationException();
         }
@@ -150,10 +144,6 @@ public class VideoList extends BaseImageList implements IImageList {
         Cursor c = Images.Media.query(
                 mContentResolver, mBaseUri, sProjection,
                 whereClause(), whereClauseArgs(), sortOrder());
-        if (VERBOSE) {
-            Log.v(TAG, "createCursor got cursor with count "
-                    + (c == null ? -1 : c.getCount()));
-        }
         return c;
     }
 
@@ -220,15 +210,6 @@ public class VideoList extends BaseImageList implements IImageList {
 //              int at = duration > 2000 ? 1000 : duration / 2;
             int at = 1000;
             thumbnail = mp.getFrameAt(at);
-            if (Config.LOGV) {
-                if (thumbnail != null) {
-                    Log.v(TAG, "getFrameAt @ " + at + " returned " + thumbnail
-                            + "; " + thumbnail.getWidth() + " "
-                            + thumbnail.getHeight());
-                } else {
-                    Log.v(TAG, "getFrame @ " + at + " failed for " + uri);
-                }
-            }
         } catch (IOException ex) {
             // ignore
         } catch (IllegalArgumentException ex) {

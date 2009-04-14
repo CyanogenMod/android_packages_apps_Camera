@@ -20,6 +20,26 @@ import android.net.Uri;
 
 import java.util.HashMap;
 
+//
+// ImageList and Image classes have one-to-one correspondence.
+// The class hierarchy (* = abstract class):
+//
+//    IImageList
+//    - BaseImageList (*)
+//      - VideoList
+//      - ImageList
+//        - DrmImageList
+//      - SingleImageList (contains UriImage)
+//    - ImageListUber
+//
+//    IImage
+//    - BaseImage (*)
+//      - VideoObject
+//      - Image
+//        - DrmImage
+//    - UriImage
+//
+
 /**
  * The interface of all image collections used in gallery.
  */

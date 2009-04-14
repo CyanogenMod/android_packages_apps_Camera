@@ -55,14 +55,7 @@ import java.util.HashMap;
  * in the media content provider.
  */
 public class ImageManager {
-    // To enable verbose logging for this class, change false to true. The other
-    // logic ensures that this logging can be disabled by turned off DEBUG and
-    // lower, and that it can be enabled by "setprop log.tag.ImageManager
-    // VERBOSE" if desired.
-    //
-    // IMPORTANT: Never check in this file set to true!
-    private static final boolean VERBOSE =
-            Config.LOGD && (false || Config.LOGV);
+    private static final boolean VERBOSE = false;
     private static final String TAG = "ImageManager";
     private static ImageManager sInstance = null;
 
@@ -172,9 +165,6 @@ public class ImageManager {
             retVal = 0;
         }
 
-        if (VERBOSE) {
-            Log.v(TAG, "map orientation " + orientationInput + " to " + retVal);
-        }
         return retVal;
     }
 
@@ -218,16 +208,7 @@ public class ImageManager {
         String path = parentFile.toString().toLowerCase();
         String name = parentFile.getName();
 
-        if (VERBOSE) {
-            Log.v(TAG, "addImage id is " + path.hashCode() + "; name "
-                    + name + "; path is " + path);
-        }
-
         if (location != null) {
-            if (VERBOSE) {
-                Log.v(TAG, "lat long " + location.getLatitude() + " / "
-                        + location.getLongitude());
-            }
             values.put(Images.Media.LATITUDE, location.getLatitude());
             values.put(Images.Media.LONGITUDE, location.getLongitude());
         }
@@ -237,7 +218,6 @@ public class ImageManager {
             values.put(Images.Media.DATA, value);
         }
 
-        long t3 = System.currentTimeMillis();
         Uri uri = cr.insert(sStorageURI, values);
 
         // The line above will create a filename that ends in .jpg
@@ -290,10 +270,6 @@ public class ImageManager {
 
         @Override
         public boolean doCancelWork() {
-            if (VERBOSE) {
-                Log.v(TAG, "calling AddImageCancelable.cancel() "
-                        + mSaveImageCancelable);
-            }
             if (mSaveImageCancelable != null) {
                 mSaveImageCancelable.cancel();
             }
@@ -302,7 +278,6 @@ public class ImageManager {
 
         public Void get() {
             try {
-                long t1 = System.currentTimeMillis();
                 synchronized (this) {
                     if (mCancel) {
                         throw new CanceledException();
@@ -313,7 +288,6 @@ public class ImageManager {
                 BaseImageList il = new ImageList(mCtx, mCr, sStorageURI,
                         sThumbURI, SORT_ASCENDING, null);
                 Image image = new Image(id, 0, mCr, il, il.getCount(), 0);
-                long t5 = System.currentTimeMillis();
                 String[] projection = new String[] {
                         ImageColumns._ID,
                         ImageColumns.MINI_THUMB_MAGIC, ImageColumns.DATA};
@@ -328,31 +302,15 @@ public class ImageManager {
                 }
 
                 if (mSaveImageCancelable.get()) {
-                    long t6 = System.currentTimeMillis();
-                    if (VERBOSE) {
-                        Log.v(TAG, "saveImageContents took " + (t6 - t5));
-                        Log.v(TAG, "updating new picture with id " + id);
-                    }
                     c.updateLong(1, id);
                     c.commitUpdates();
                     c.close();
-                    long t7 = System.currentTimeMillis();
-                    if (VERBOSE) {
-                        Log.v(TAG, "commit updates to save mini thumb took "
-                                + (t7 - t6));
-                    }
                 } else {
                     c.close();
                     throw new CanceledException();
                 }
             } catch (CanceledException ex) {
-                if (VERBOSE) {
-                    Log.v(TAG, "caught CanceledException");
-                }
                 if (mUri != null) {
-                    if (VERBOSE) {
-                        Log.v(TAG, "canceled... cleaning up this uri: " + mUri);
-                    }
                     mCr.delete(mUri, null, null);
                 }
                 acknowledgeCancel();
@@ -385,9 +343,6 @@ public class ImageManager {
             imageList = new SingleImageList(cr, uri);
         } else {
             String bucketId = uri.getQueryParameter("bucketId");
-            if (VERBOSE) {
-                Log.v(TAG, "bucketId is " + bucketId);
-            }
             imageList = ImageManager.instance().allImages(
                 ctx, cr, ImageManager.DataLocation.ALL,
                 ImageManager.INCLUDE_IMAGES, sort, bucketId);
@@ -458,12 +413,6 @@ public class ImageManager {
     public IImageList allImages(
             Context ctx, ContentResolver cr, DataLocation location,
             int inclusion, int sort, String bucketId, Uri specificImageUri) {
-        if (VERBOSE) {
-            Log.v(TAG, "allImages " + location + " "
-                    + ((inclusion & INCLUDE_IMAGES) != 0) + " + v="
-                    + ((inclusion & INCLUDE_VIDEOS) != 0));
-        }
-
         if (cr == null) {
             return null;
         } else {
@@ -473,12 +422,6 @@ public class ImageManager {
             if (true) {
                 // use this code to merge videos and stills into the same list
                 ArrayList<IImageList> l = new ArrayList<IImageList>();
-
-                if (VERBOSE) {
-                    Log.v(TAG, "initializing ... haveSdCard == " + haveSdCard
-                            + "; inclusion is "
-                            + String.format("%x", inclusion));
-                }
                 if (specificImageUri != null) {
                     try {
                         if (specificImageUri.getScheme()
@@ -583,14 +526,11 @@ public class ImageManager {
     }
 
     public static boolean hasStorage(boolean requireWriteAccess) {
-        //TODO: After fix the bug,  add "if (VERBOSE)" before logging errors.
         String state = Environment.getExternalStorageState();
-        Log.v(TAG, "storage state is " + state);
 
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             if (requireWriteAccess) {
                 boolean writable = checkFsWritable();
-                Log.v(TAG, "storage writable is " + writable);
                 return writable;
             } else {
                 return true;
@@ -630,9 +570,6 @@ public class ImageManager {
             cursor.close();
         }
 
-        if (VERBOSE) {
-            Log.v(TAG, "isMediaScannerScanning returning " + result);
-        }
         return result;
     }
 

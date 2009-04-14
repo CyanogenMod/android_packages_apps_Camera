@@ -79,12 +79,6 @@ public class ImageList extends BaseImageList implements IImageList {
             Log.e(TAG, "unable to create image cursor for " + mBaseUri);
             throw new UnsupportedOperationException();
         }
-
-        if (VERBOSE) {
-            Log.v(TAG, "for " + mBaseUri.toString() + " got cursor "
-                    + mCursor + " with length "
-                    + (mCursor != null ? mCursor.getCount() : "-1"));
-        }
     }
 
     private static final String WHERE_CLAUSE =
@@ -107,10 +101,6 @@ public class ImageList extends BaseImageList implements IImageList {
         Cursor c = Images.Media.query(
                 mContentResolver, mBaseUri, BaseImageList.IMAGE_PROJECTION,
                 whereClause(), whereClauseArgs(), sortOrder());
-        if (VERBOSE) {
-            Log.v(TAG, "createCursor got cursor with count "
-                    + (c == null ? -1 : c.getCount()));
-        }
         return c;
     }
 
@@ -179,9 +169,7 @@ public class ImageList extends BaseImageList implements IImageList {
             options.inSampleSize = 1;
             if (targetWidthHeight != -1) {
                 options.inJustDecodeBounds = true;
-                long t1 = System.currentTimeMillis();
                 BitmapManager.instance().decodeFileDescriptor(fd, null, options);
-                long t2 = System.currentTimeMillis();
                 if (options.mCancel || options.outWidth == -1
                         || options.outHeight == -1) {
                     return null;
@@ -193,18 +181,10 @@ public class ImageList extends BaseImageList implements IImageList {
 
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            long t1 = System.currentTimeMillis();
             b = BitmapManager.instance()
                     .decodeFileDescriptor(fd, null, options);
-            long t2 = System.currentTimeMillis();
-            if (VERBOSE) {
-                Log.v(TAG, "A: got bitmap " + b + " with sampleSize "
-                        + options.inSampleSize + " took " + (t2 - t1));
-            }
         } catch (OutOfMemoryError ex) {
-            if (VERBOSE) {
-                Log.v(TAG, "got oom exception " + ex);
-            }
+            Log.e(TAG, "Got oom exception ", ex);
             return null;
         } finally {
             Util.closeSiliently(pfd);

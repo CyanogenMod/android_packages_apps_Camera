@@ -110,9 +110,6 @@ public class ExifInterface {
             sb.append(val);
         }
         String s = sb.toString();
-        if (android.util.Config.LOGV) {
-            android.util.Log.v("camera", "saving exif data: " + s);
-        }
         saveAttributesNative(mFilename, s);
         mSavedAttributes = true;
     }

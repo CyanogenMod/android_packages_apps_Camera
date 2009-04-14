@@ -647,6 +647,13 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mShutterButton.setVisibility(View.GONE);
 
             findViewById(R.id.slideShowContainer).getRootView().requestLayout();
+
+            // The preferences we want to read:
+            //   mUseShuffleOrder
+            //   mSlideShowLoop
+            //   mAnimationIndex
+            //   mSlideShowInterval
+
             mUseShuffleOrder   = mPrefs.getBoolean(
                     "pref_gallery_slideshow_shuffle_key", false);
             mSlideShowLoop     = mPrefs.getBoolean(
@@ -666,12 +673,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 mSlideShowInterval = 3000;
             }
 
-            if (Config.LOGV) {
-                Log.v(TAG, "read prefs...  shuffle: " + mUseShuffleOrder);
-                Log.v(TAG, "read prefs...     loop: " + mSlideShowLoop);
-                Log.v(TAG, "read prefs...  animidx: " + mAnimationIndex);
-                Log.v(TAG, "read prefs... interval: " + mSlideShowInterval);
-            }
 
             if (mUseShuffleOrder) {
                 generateShuffleOrder();

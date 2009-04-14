@@ -336,9 +336,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private final class RawPictureCallback implements PictureCallback {
         public void onPictureTaken(
                 byte [] rawData, android.hardware.Camera camera) {
-            if (Config.LOGV) {
-                Log.v(TAG, "got RawPictureCallback...");
-            }
             mRawPictureCallbackTime = System.currentTimeMillis();
             if (DEBUG_TIME_OPERATIONS) {
                 Log.v(TAG, (mRawPictureCallbackTime - mShutterCallbackTime)
@@ -359,9 +356,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 byte [] jpegData, android.hardware.Camera camera) {
             if (mPausing) {
                 return;
-            }
-            if (Config.LOGV) {
-                Log.v(TAG, "got JpegPictureCallback...");
             }
 
             if (DEBUG_TIME_OPERATIONS) {
@@ -1413,9 +1407,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
         watchDog.start();
 
-        if (Config.LOGV) {
-            Log.v(TAG, "calling mCameraDevice.startPreview");
-        }
         try {
             mCameraDevice.startPreview();
         } catch (Throwable e) {

@@ -191,9 +191,6 @@ public class GalleryPicker extends Activity {
 
     // This is called when we receive media-related broadcast.
     private void onReceiveMediaBroadcast(Intent intent) {
-        if (Config.LOGV) {
-            Log.v(TAG, "onReceiveMediaBroadcast " + intent.getAction());
-        }
         String action = intent.getAction();
         if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
             // SD card available
@@ -201,9 +198,6 @@ public class GalleryPicker extends Activity {
             // TODO also listen for the media scanner finished message
         } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
             // SD card unavailable
-            if (Config.LOGV) {
-                Log.v(TAG, "sd card no longer available");
-            }
             Toast.makeText(GalleryPicker.this,
                     getResources().getString(R.string.wait), 5000);
             rebake(true, false);
@@ -213,15 +207,8 @@ public class GalleryPicker extends Activity {
             rebake(false, true);
         } else if (action.equals(
                 Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-            if (Config.LOGV) {
-                Log.v(TAG, "rebake because of "
-                        + "ACTION_MEDIA_SCANNER_FINISHED");
-            }
             rebake(false, false);
         } else if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-            if (Config.LOGV) {
-                Log.v(TAG, "rebake because of ACTION_MEDIA_EJECT");
-            }
             rebake(true, false);
         }
     }
@@ -400,10 +387,6 @@ public class GalleryPicker extends Activity {
             if (mWorkerThread != null) {
                 try {
                     mDone = true;
-                    if (Config.LOGV) {
-                        Log.v(TAG, "about to call join on thread "
-                                + mWorkerThread.getId());
-                    }
                     mWorkerThread.join();
                 } finally {
                     mWorkerThread = null;

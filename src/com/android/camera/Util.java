@@ -85,11 +85,6 @@ public class Util {
             if ((h > target) && (h / candidate) < target) candidate -= 1;
         }
 
-        if (VERBOSE) {
-            Log.v(TAG, "for w/h " + w + "/" + h + " returning " + candidate
-                    + "(" + (w / candidate) + " / " + (h / candidate));
-        }
-
         return candidate;
     }
 

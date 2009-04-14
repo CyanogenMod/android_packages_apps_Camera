@@ -180,7 +180,6 @@ public class ImageListUber implements IImageList {
             }
 
             if (which == -1) {
-                if (VERBOSE) Log.v(TAG, "which is -1, returning null");
                 return null;
             }
 
@@ -197,9 +196,6 @@ public class ImageListUber implements IImageList {
             }
             if (!done) {
                 long newEntry = ((long) which << 32) | count;
-                if (VERBOSE) {
-                    Log.v(TAG, "new entry is " + Long.toHexString(newEntry));
-                }
                 mSkipList.add(newEntry);
             }
 

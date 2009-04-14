@@ -106,15 +106,7 @@ public class CropImage extends Activity {
         try {
             Intent intent = getIntent();
             Bundle extras = intent.getExtras();
-            if (Config.LOGV) {
-                Log.v(TAG, "extras are " + extras);
-            }
             if (extras != null) {
-                for (String s : extras.keySet()) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "" + s + " >>> " + extras.get(s));
-                    }
-                }
                 if (extras.getString("circleCrop") != null) {
                     mCircleCrop = true;
                     mAspectX = 1;
@@ -151,9 +143,6 @@ public class CropImage extends Activity {
                     // TODO when saving the resulting bitmap use the
                     // decode/crop/encode api so we don't lose any resolution.
                     mBitmap = mImage.thumbBitmap();
-                    if (Config.LOGV) {
-                        Log.v(TAG, "thumbBitmap returned " + mBitmap);
-                    }
                 }
             }
 
@@ -205,11 +194,6 @@ public class CropImage extends Activity {
                 final Bitmap b = (mImage != null)
                         ? mImage.fullSizeBitmap(500)
                         : mBitmap;
-                if (Config.LOGV) {
-                    Log.v(TAG, "back from fullSizeBitmap(500) "
-                            + "with bitmap of size " + b.getWidth()
-                            + " / " + b.getHeight());
-                }
                 mHandler.post(new Runnable() {
                     public void run() {
                         if (b != mBitmap && b != null) {
@@ -234,9 +218,6 @@ public class CropImage extends Activity {
         mSaving = true;
         if (mCroppedImage == null) {
             if (mCrop == null) {
-                if (Config.LOGV) {
-                    Log.v(TAG, "no cropped image...");
-                }
                 return;
             }
 
@@ -336,9 +317,7 @@ public class CropImage extends Activity {
                                         outputStream);
                             }
                         } catch (IOException ex) {
-                            if (Config.LOGV) {
-                                Log.v(TAG, "got IOException " + ex);
-                            }
+
                         } finally {
                             if (outputStream != null)  {
                                 try {
@@ -371,9 +350,6 @@ public class CropImage extends Activity {
                             x += 1;
                             String candidate = directory.toString()
                                     + "/" + fileName + "-" + x + ".jpg";
-                            if (Config.LOGV) {
-                                Log.v(TAG, "candidate is " + candidate);
-                            }
                             boolean exists =
                                     (new java.io.File(candidate)).exists();
                             if (!exists) {

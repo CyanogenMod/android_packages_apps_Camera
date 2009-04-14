@@ -570,20 +570,12 @@ public class MenuHelper {
                 }
                 boolean readOnly = image.isReadonly();
                 boolean isDrm = image.isDrm();
-                if (Config.LOGV) {
-                    Log.v(TAG, "readOnly: " + readOnly + "; drm: " + isDrm);
-                }
+
                 for (MenuItem item : requiresWriteAccessItems) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "item is " + item.toString());
-                    }
                     item.setVisible(!readOnly);
                     item.setEnabled(!readOnly);
                 }
                 for (MenuItem item : requiresNoDrmAccessItems) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "item is " + item.toString());
-                    }
                     item.setVisible(!isDrm);
                     item.setEnabled(!isDrm);
                 }

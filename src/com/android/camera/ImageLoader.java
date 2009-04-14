@@ -49,14 +49,6 @@ public class ImageLoader {
     synchronized void clear(Uri uri) {
     }
 
-    public synchronized void dump() {
-        synchronized (mQueue) {
-            if (Config.LOGV) {
-                Log.v(TAG, "Loader queue length is " + mQueue.size());
-            }
-        }
-    }
-
     public interface LoadedCallback {
         public void run(Bitmap result);
     }
@@ -104,10 +96,7 @@ public class ImageLoader {
                 start();
             }
         }
-        long t1 = System.currentTimeMillis();
-        long t2, t3, t4;
         synchronized (mQueue) {
-            t2 = System.currentTimeMillis();
             WorkItem w =
                     new WorkItem(image, tag, imageLoadedRunnable, postBack);
 
@@ -131,11 +120,7 @@ public class ImageLoader {
             if (false) {
                 dumpQueue("+" + (postAtFront ? "F " : "B ") + tag + ": ");
             }
-            t3 = System.currentTimeMillis();
         }
-        t4 = System.currentTimeMillis();
-        // Log.v(TAG, "getBitmap breakdown: tot= " + (t4-t1) + "; " + "; " +
-        //         (t4-t3) + "; " + (t3-t2) + "; " + (t2-t1));
         return null;
     }
 
@@ -144,9 +129,6 @@ public class ImageLoader {
             StringBuilder sb = new StringBuilder(s);
             for (int i = 0; i < mQueue.size(); i++) {
                 sb.append(mQueue.get(i).mTag + " ");
-            }
-            if (Config.LOGV) {
-                Log.v(TAG, sb.toString());
             }
         }
     }
@@ -190,10 +172,6 @@ public class ImageLoader {
     }
 
     private synchronized void start() {
-        if (Config.LOGV) {
-            Log.v(TAG, "ImageLoader.start() <<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-        }
-
         synchronized (mDecodeThreads) {
             if (mDecodeThreads.size() > 0) {
                 return;
@@ -226,11 +204,6 @@ public class ImageLoader {
                                     dumpQueue("-" + workItem.mTag + ": ");
                                 }
                                 Bitmap b = workItem.mImage.miniThumbBitmap();
-                                if (b == null && Config.LOGV) {
-                                    Log.v(TAG, "unable to read thumbnail for "
-                                            + workItem.mImage
-                                            .fullSizeImageUri());
-                                }
 
                                 synchronized (mQueue) {
                                     mInProgress.remove(workItem);
@@ -296,9 +269,6 @@ public class ImageLoader {
                     dstY,
                     targetWidth - dstX,
                     targetHeight - dstY);
-            if (Config.LOGV) {
-                Log.v(TAG, "draw " + src.toString() + " ==> " + dst.toString());
-            }
             c.drawBitmap(source, src, dst, null);
             return b2;
         }
@@ -351,10 +321,6 @@ public class ImageLoader {
     }
 
     public void stop() {
-        if (Config.LOGV) {
-            Log.v(TAG, "ImageLoader.stop " + mDecodeThreads.size() +
-                    " threads");
-        }
         mDone = true;
         synchronized (mQueue) {
             mQueue.notifyAll();

@@ -140,7 +140,6 @@ class MiniThumbFile {
         if (r == null) return;
 
         long pos = id * BYTES_PER_MINTHUMB;
-        long t0 = System.currentTimeMillis();
         synchronized (r) {
             try {
                 if (data != null) {

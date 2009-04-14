@@ -133,7 +133,7 @@ public abstract class BaseImageList implements IImageList {
             thumbOut.close();
             return thumb;
         } catch (Exception ex) {
-            if (VERBOSE) Log.d(TAG, "unable to store thumbnail: " + ex);
+            Log.e(TAG, "Unable to store thumbnail", ex);
             return thumb;
         }
     }
@@ -228,11 +228,6 @@ public abstract class BaseImageList implements IImageList {
             // and is significantly faster.
             options.inSampleSize =
                     Util.computeSampleSize(options, THUMBNAIL_TARGET_SIZE);
-
-            if (VERBOSE) {
-                Log.v(TAG, "in createThumbnailFromExif using inSampleSize of "
-                        + options.inSampleSize);
-            }
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             options.inJustDecodeBounds = false;
@@ -378,46 +373,29 @@ public abstract class BaseImageList implements IImageList {
                 "_id ASC");
 
         int count = c.getCount();
-        if (VERBOSE) {
-            Log.v(TAG, ">>>>>>>>>>> need to check " + c.getCount() + " rows");
-        }
         c.close();
 
         if (!ImageManager.hasStorage()) {
-            if (VERBOSE) {
-                Log.v(TAG, "bailing from the image checker thread "
-                        + "-- no storage");
-            }
+            Log.v(TAG, "bailing from the image checker thread -- no storage");
             return;
         }
 
         c = getCursor();
-        try {
-            if (VERBOSE) Log.v(TAG, "checkThumbnails found " + c.getCount());
-            int current = 0;
-            for (int i = 0; i < c.getCount(); i++) {
-                try {
-                    checkThumbnail(null, c, i);
-                } catch (IOException ex) {
-                    Log.e(TAG, "!!!!! failed to check thumbnail..."
-                            + " was the sd card removed? - " + ex.getMessage());
+        int current = 0;
+        for (int i = 0; i < c.getCount(); i++) {
+            try {
+                checkThumbnail(null, c, i);
+            } catch (IOException ex) {
+                Log.e(TAG, "!!!!! failed to check thumbnail..."
+                        + " was the sd card removed? - " + ex.getMessage());
+                break;
+            }
+            if (cb != null) {
+                if (!cb.checking(current, totalThumbnails)) {
                     break;
                 }
-                if (cb != null) {
-                    if (!cb.checking(current, totalThumbnails)) {
-                        if (VERBOSE) {
-                            Log.v(TAG, "got false from checking... break");
-                        }
-                        break;
-                    }
-                }
-                current += 1;
             }
-        } finally {
-            if (VERBOSE) {
-                Log.v(TAG, "checkThumbnails existing after reaching count "
-                        + c.getCount());
-            }
+            current += 1;
         }
     }
 
@@ -457,18 +435,6 @@ public abstract class BaseImageList implements IImageList {
             Log.e(TAG, "Caught exception while deactivating cursor.", e);
         }
         mMiniThumbFile.deactivate();
-    }
-
-    public void dump(String msg) {
-        int count = getCount();
-        if (VERBOSE) {
-            Log.v(TAG, "dump ImageList (count is " + count + ") " + msg);
-        }
-        for (int i = 0; i < count; i++) {
-            IImage img = getImageAt(i);
-            if (VERBOSE) Log.v(TAG, "   " + i + ": " + img);
-        }
-        if (VERBOSE) Log.v(TAG, "end of dump container");
     }
 
     public int getCount() {
@@ -624,7 +590,6 @@ public abstract class BaseImageList implements IImageList {
              *       we can get it back as needed
              * TODO: need to delete the thumbnails as well
              */
-            dump("before delete");
             IImage image = getImageAt(i);
             boolean moved;
             try {
@@ -639,7 +604,6 @@ public abstract class BaseImageList implements IImageList {
                 requery();
                 image.onRemove();
             }
-            dump("after delete");
         }
     }
 
