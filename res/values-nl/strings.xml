@@ -48,7 +48,7 @@
     <string name="crop_discard_text">"Ongedaan maken"</string>
     <string name="confirm_delete_title">"Verwijderen"</string>
     <string name="confirm_delete_message">"De foto wordt verwijderd."</string>
-    <string name="confirm_delete_video_message">"De video wordt verwijderd"</string>
+    <string name="confirm_delete_video_message">"De video wordt verwijderd."</string>
     <string name="camera_toss">"Verwijderen"</string>
     <string name="camera_gallery">"Galerij"</string>
     <string name="camera_share">"Delen"</string>
