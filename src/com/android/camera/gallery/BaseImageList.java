@@ -26,25 +26,20 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.MediaColumns;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
+import android.provider.MediaStore.MediaColumns;
 import android.util.Log;
 
 import com.android.camera.ExifInterface;
 import com.android.camera.ImageManager;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -108,7 +103,7 @@ public abstract class BaseImageList implements IImageList {
     protected Context mContext;
     protected Uri mUri;
     protected HashMap<Long, IImage> mCache = new HashMap<Long, IImage>();
-    protected RandomAccessFile mMiniThumbFile;
+    protected MiniThumbFile mMiniThumbFile;
     protected Uri mThumbUri;
 
     public BaseImageList(Context ctx, ContentResolver cr, Uri uri, int sort,
@@ -119,34 +114,7 @@ public abstract class BaseImageList implements IImageList {
         mBaseUri = uri;
         mBucketId = bucketId;
         mContentResolver = cr;
-    }
-
-    String randomAccessFilePath(int version) {
-        String directoryName =
-                Environment.getExternalStorageDirectory().toString()
-                + "/DCIM/.thumbnails";
-        return directoryName + "/.thumbdata" + version + "-" + mUri.hashCode();
-    }
-
-    RandomAccessFile miniThumbDataFile() {
-        if (mMiniThumbFile == null) {
-            String path = randomAccessFilePath(MINI_THUMB_DATA_FILE_VERSION);
-            File directory = new File(new File(path).getParent());
-            if (!directory.isDirectory()) {
-                if (!directory.mkdirs()) {
-                    Log.e(TAG, "!!!! unable to create .thumbnails directory "
-                            + directory.toString());
-                }
-            }
-            File f = new File(path);
-            if (VERBOSE) Log.v(TAG, "file f is " + f.toString());
-            try {
-                mMiniThumbFile = new RandomAccessFile(f, "rw");
-            } catch (IOException ex) {
-                // ignore exception
-            }
-        }
-        return mMiniThumbFile;
+        mMiniThumbFile = new MiniThumbFile(uri);
     }
 
     /**
@@ -312,11 +280,10 @@ public abstract class BaseImageList implements IImageList {
      */
     public long checkThumbnail(BaseImage existingImage, Cursor c, int i,
             byte[][] createdThumbnailData) throws IOException {
-        long magic, fileMagic = 0, id;
+        long magic, id;
         if (BitmapManager.instance().acquireResourceLock() == false) {
             return -1;
         }
-        Log.v(TAG, "checkThumbnail: i="+i);
         
         try {
             if (existingImage == null) {
@@ -336,35 +303,9 @@ public abstract class BaseImageList implements IImageList {
             }
 
             if (magic != 0) {
-                // check the mini thumb file for the right data.  Right is
-                // defined as having the right magic number at the offset
-                // reserved for this "id".
-                RandomAccessFile r = miniThumbDataFile();
-                if (r != null) {
-                    synchronized (r) {
-                        long pos = id * BaseImage.BYTES_PER_MINTHUMB;
-                        try {
-                            // check that we can read the following 9 bytes
-                            // (1 for the "status" and 8 for the long)
-                            if (r.length() >= pos + 1 + 8) {
-                                r.seek(pos);
-                                if (r.readByte() == 1) {
-                                    fileMagic = r.readLong();
-                                    if (fileMagic == magic && magic != 0
-                                            && magic != id) {
-                                        return magic;
-                                    }
-                                }
-                            }
-                        } catch (IOException ex) {
-                            Log.v(TAG, "got exception checking file magic: "
-                                    + ex);
-                        }
-                    }
-                }
-                if (VERBOSE) {
-                    Log.v(TAG, "didn't verify... fileMagic: " + fileMagic
-                            + "; magic: " + magic + "; id: " + id + "; ");
+                long fileMagic = mMiniThumbFile.getMagic(id);
+                if (fileMagic == magic && magic != 0 && magic != id) {
+                    return magic;
                 }
             }
 
@@ -414,7 +355,6 @@ public abstract class BaseImageList implements IImageList {
             }
 
             synchronized (c) {
-                Log.v(TAG, "checkThumbnail: moveToPosition i="+i);
                 c.moveToPosition(i);
                 c.updateLong(indexMiniThumbId(), magic);
                 c.commitUpdates();
@@ -451,16 +391,6 @@ public abstract class BaseImageList implements IImageList {
             return;
         }
 
-        String oldPath = randomAccessFilePath(MINI_THUMB_DATA_FILE_VERSION - 1);
-        File oldFile = new File(oldPath);
-
-        if (count == 0) {
-            // now check that we have the right thumbs file
-            if (!oldFile.exists()) {
-                return;
-            }
-        }
-
         c = getCursor();
         try {
             if (VERBOSE) Log.v(TAG, "checkThumbnails found " + c.getCount());
@@ -487,11 +417,6 @@ public abstract class BaseImageList implements IImageList {
             if (VERBOSE) {
                 Log.v(TAG, "checkThumbnails existing after reaching count "
                         + c.getCount());
-            }
-            try {
-                oldFile.delete();
-            } catch (SecurityException ex) {
-                // ignore
             }
         }
     }
@@ -531,14 +456,7 @@ public abstract class BaseImageList implements IImageList {
             // IllegalStateException may be thrown if the cursor is stale.
             Log.e(TAG, "Caught exception while deactivating cursor.", e);
         }
-        if (mMiniThumbFile != null) {
-            try {
-                mMiniThumbFile.close();
-                mMiniThumbFile = null;
-            } catch (IOException ex) {
-                // ignore exception
-            }
-        }
+        mMiniThumbFile.deactivate();
     }
 
     public void dump(String msg) {
@@ -633,60 +551,17 @@ public abstract class BaseImageList implements IImageList {
     }
 
     byte [] getMiniThumbFromFile(long id, byte [] data, long magicCheck) {
-        RandomAccessFile r = miniThumbDataFile();
-        if (r == null) return null;
-
-        long pos = id * BaseImage.BYTES_PER_MINTHUMB;
-        synchronized (r) {
-            try {
-                r.seek(pos);
-                if (r.readByte() == 1) {
-                    long magic = r.readLong();
-                    if (magic != magicCheck) {
-                        if (VERBOSE) {
-                            Log.v(TAG, "for id " + id + "; magic: " + magic
-                                    + "; magicCheck: " + magicCheck
-                                    + " (fail)");
-                        }
-                        return null;
-                    }
-                    int length = r.readInt();
-                    r.read(data, 0, length);
-                    return data;
-                } else {
-                    return null;
-                }
-            } catch (IOException ex) {
-                long fileLength;
-                try {
-                    fileLength = r.length();
-                } catch (IOException ex1) {
-                    fileLength = -1;
-                }
-                if (VERBOSE) {
-                    Log.e(TAG, "couldn't read thumbnail for " + id + "; "
-                            + ex.toString() + "; pos is " + pos + "; length is "
-                            + fileLength);
-                }
-                return null;
-            }
-        }
+        return mMiniThumbFile.getMiniThumbFromFile(id, data, magicCheck);
     }
-    protected int getRowFor(IImage imageObj) {
-        Cursor c = getCursor();
-        synchronized (c) {
-            int index = 0;
-            long targetId = imageObj.fullSizeImageId();
-            if (c.moveToFirst()) {
-                do {
-                    if (c.getLong(0) == targetId) {
-                        return index;
-                    }
-                    index += 1;
-                } while (c.moveToNext());
-            }
-            return -1;
-        }
+    
+    void saveMiniThumbToFile(Bitmap bitmap, long id, long magic)       
+            throws IOException {
+        mMiniThumbFile.saveMiniThumbToFile(bitmap, id, magic);
+    } 
+            
+    void saveMiniThumbToFile(byte[] data, long id, long magic)
+            throws IOException {
+        mMiniThumbFile.saveMiniThumbToFile(data, id, magic);
     }
 
     protected abstract int indexOrientation();
@@ -772,60 +647,5 @@ public abstract class BaseImageList implements IImageList {
         mCache.clear();
         mCursor.requery();
         mCursorDeactivated = false;
-    }
-
-    protected void saveMiniThumbToFile(Bitmap bitmap, long id, long magic)
-            throws IOException {
-        byte[] data = Util.miniThumbData(bitmap);
-        saveMiniThumbToFile(data, id, magic);
-    }
-
-    protected void saveMiniThumbToFile(byte[] data, long id, long magic)
-            throws IOException {
-        RandomAccessFile r = miniThumbDataFile();
-        if (r == null) return;
-
-        long pos = id * BaseImage.BYTES_PER_MINTHUMB;
-        long t0 = System.currentTimeMillis();
-        synchronized (r) {
-            try {
-                long t1 = System.currentTimeMillis();
-                long t2 = System.currentTimeMillis();
-                if (data != null) {
-                    if (data.length > BaseImage.BYTES_PER_MINTHUMB) {
-                        if (VERBOSE) {
-                            Log.v(TAG, "warning: " + data.length + " > "
-                                    + BaseImage.BYTES_PER_MINTHUMB);
-                        }
-                        return;
-                    }
-                    r.seek(pos);
-                    r.writeByte(0);     // we have no data in this slot
-
-                    // if magic is 0 then leave it alone
-                    if (magic == 0) {
-                        r.skipBytes(8);
-                    } else {
-                        r.writeLong(magic);
-                    }
-                    r.writeInt(data.length);
-                    r.write(data);
-                    //                      f.flush();
-                    r.seek(pos);
-                    r.writeByte(1);  // we have data in this slot
-                    long t3 = System.currentTimeMillis();
-
-                    if (VERBOSE) {
-                        Log.v(TAG, "saveMiniThumbToFile took " + (t3 - t0)
-                                + "; " + (t1 - t0) + " " + (t2 - t1) + " "
-                                + (t3 - t2));
-                    }
-                }
-            } catch (IOException ex) {
-                Log.e(TAG, "couldn't save mini thumbnail data for "
-                        + id + "; " + ex.toString());
-                throw ex;
-            }
-        }
     }
 }
