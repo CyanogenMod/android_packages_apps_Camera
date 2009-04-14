@@ -156,7 +156,7 @@ public class ImageGallery2 extends Activity {
         return true;
     }
 
-    private Runnable mDeletePhotoRunnable = new Runnable() {
+    private final Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             mGvs.clearCache();
             IImage currentImage = mSelectedImageGetter.getCurrentImage();
@@ -172,7 +172,7 @@ public class ImageGallery2 extends Activity {
         }
     };
 
-    private SelectedImageGetter mSelectedImageGetter =
+    private final SelectedImageGetter mSelectedImageGetter =
             new SelectedImageGetter() {
                 public Uri getCurrentImageUri() {
                     IImage image = getCurrentImage();
@@ -199,9 +199,9 @@ public class ImageGallery2 extends Activity {
         mTargetScroll = mGvs.getScrollY();
     }
 
-    private Runnable mLongPressCallback = new Runnable() {
+    private final Runnable mLongPressCallback = new Runnable() {
         public void run() {
-            mGvs.select(-2, false);
+            mGvs.select(GridViewSpecial.ORIGINAL_SELECT, false);
             mGvs.showContextMenu();
         }
     };
@@ -216,7 +216,7 @@ public class ImageGallery2 extends Activity {
         if (!canHandleEvent()) return false;
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            mGvs.select(-2, false);
+            mGvs.select(GridViewSpecial.ORIGINAL_SELECT, false);
 
             // The keyUp doesn't get called when the longpress menu comes up. We
             // only get here when the user lets go of the center key before the
@@ -225,7 +225,7 @@ public class ImageGallery2 extends Activity {
 
             // open the photo
             if (mSelectedImageGetter.getCurrentImage() != null) {
-                mGvs.onSelect(mGvs.mCurrentSelection);
+                onSelect(mGvs.mCurrentSelection);
             }
             return true;
         }
@@ -286,10 +286,9 @@ public class ImageGallery2 extends Activity {
                     GridViewSpecial.ImageBlockManager ibm =
                             mGvs.mImageBlockManager;
                     if (ibm != null) {
-                        mGvs.mImageBlockManager.getVisibleRange(range);
+                        ibm.getVisibleRange(range);
                         int topPos = range[0];
-                        android.graphics.Rect r =
-                                mGvs.getRectForPosition(topPos);
+                        Rect r = mGvs.getRectForPosition(topPos);
                         if (r.top < mGvs.getScrollY()) {
                             topPos += columns;
                         }
@@ -732,6 +731,42 @@ public class ImageGallery2 extends Activity {
         return mAllImages;
     }
 
+    void onSelect(int index) {
+        if (index >= 0 && index < mAllImages.getCount()) {
+            IImage img = mAllImages.getImageAt(index);
+            if (img == null) {
+                return;
+            }
+
+            if (isPickIntent()) {
+                launchCropperOrFinish(img);
+            } else {
+                Uri targetUri = img.fullSizeImageUri();
+                Uri thisUri = getIntent().getData();
+                if (thisUri != null) {
+                    String bucket = thisUri.getQueryParameter("bucketId");
+                    if (bucket != null) {
+                        targetUri = targetUri.buildUpon()
+                                .appendQueryParameter("bucketId", bucket)
+                                .build();
+                    }
+                }
+                Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
+
+                if (img instanceof VideoObject) {
+                    intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
+                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }
+
+                try {
+                    startActivity(intent);
+                } catch (Exception ex) {
+                    // sdcard removal??
+                }
+            }
+        }
+    }
+
     private class CreateContextMenuListener implements
             View.OnCreateContextMenuListener {
         public void onCreateContextMenu(ContextMenu menu, View v,
@@ -746,7 +781,7 @@ public class ImageGallery2 extends Activity {
                 menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
-                                mGvs.onSelect(mGvs.mCurrentSelection);
+                                onSelect(mGvs.mCurrentSelection);
                                 return true;
                             }
                         });
@@ -795,9 +830,12 @@ public class ImageGallery2 extends Activity {
 
 
 class GridViewSpecial extends View {
+    public static final int ORIGINAL_SELECT = -2;
+    public static final int REMOVE_SELCTION = -1;
+
     private static final String TAG = "GridViewSpecial";
     ImageGallery2 mGallery;
-    private Paint   mGridViewPaint = new Paint();
+    private final Paint mGridViewPaint = new Paint();
 
     ImageBlockManager mImageBlockManager;
     private Handler mHandler;
@@ -808,7 +846,6 @@ class GridViewSpecial extends View {
     private boolean mCurrentSelectionPressed;
 
     private boolean mDirectionBiasDown = true;
-    private static final boolean DUMP = false;
 
     long mVideoSizeLimit;
 
@@ -828,7 +865,7 @@ class GridViewSpecial extends View {
         int mCellSpacing;
     }
 
-    private LayoutSpec [] mCellSizeChoices = new LayoutSpec[] {
+    private final LayoutSpec [] mCellSizeChoices = new LayoutSpec[] {
             new LayoutSpec(0, 67, 67, 14, 14, 8),
             new LayoutSpec(0, 92, 92, 14, 14, 8),
     };
@@ -838,18 +875,14 @@ class GridViewSpecial extends View {
     // overshoot the start (top) or end (bottom) of the gallery.
     // After overshooting the gallery will animate back to the
     // appropriate location.
-    private int mMaxOvershoot = 0; // 100;
+    private final int mMaxOvershoot = 0; // 100;
     private int mMaxScrollY;
     private int mMinScrollY;
 
-    private boolean mFling = true;
+    private final boolean mFling = true;
     private Scroller mScroller = null;
 
     private GestureDetector mGestureDetector;
-
-    public void dump() {
-        mImageBlockManager.dump();
-    }
 
     private void init(Context context) {
         mGridViewPaint.setColor(0xFF000000);
@@ -872,7 +905,7 @@ class GridViewSpecial extends View {
                 if (pos >= 0 && pos < mGallery.mAllImages.getCount()) {
                     select(pos, true);
                 } else {
-                    select(-1, false);
+                    select(REMOVE_SELCTION, false);
                 }
                 if (mImageBlockManager != null) {
                     mImageBlockManager.repaintSelection(mCurrentSelection);
@@ -891,7 +924,7 @@ class GridViewSpecial extends View {
                     velocityY = -maxVelocity;
                 }
 
-                select(-1, false);
+                select(REMOVE_SELCTION, false);
                 if (mFling) {
                     mScroller = new Scroller(getContext());
                     mScroller.fling(0, mScrollY, 0, -(int) velocityY, 0, 0, 0,
@@ -909,7 +942,7 @@ class GridViewSpecial extends View {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                     float distanceX, float distanceY) {
-                select(-1, false);
+                select(REMOVE_SELCTION, false);
                 scrollBy(0, (int) distanceY);
                 invalidate();
                 return true;
@@ -920,7 +953,7 @@ class GridViewSpecial extends View {
                 select(mCurrentSelection, false);
                 int index = computeSelectedIndex(e);
                 if (index >= 0 && index < mGallery.mAllImages.getCount()) {
-                    onSelect(index);
+                    mGallery.onSelect(index);
                     return true;
                 }
                 return false;
@@ -971,7 +1004,7 @@ class GridViewSpecial extends View {
             return;
         }
 
-        mShowSelection = (newSel != -1);
+        mShowSelection = (newSel != REMOVE_SELCTION);
         mCurrentSelection = newSel;
         mCurrentSelectionPressed = newPressed;
         if (mImageBlockManager != null) {
@@ -979,7 +1012,7 @@ class GridViewSpecial extends View {
             mImageBlockManager.repaintSelection(newSel);
         }
 
-        if (newSel != -1) {
+        if (newSel != REMOVE_SELCTION) {
             ensureVisible(newSel);
         }
     }
@@ -1006,7 +1039,7 @@ class GridViewSpecial extends View {
         if (mGallery.mLayoutComplete) {
             if (mImageBlockManager == null) {
                 mImageBlockManager = new ImageBlockManager();
-                mImageBlockManager.moveDataWindow(true, true);
+                mImageBlockManager.moveDataWindow(true);
             }
         }
     }
@@ -1086,7 +1119,7 @@ class GridViewSpecial extends View {
     }
 
     class ImageBlockManager {
-        private ImageLoader mLoader;
+        private final ImageLoader mLoader;
         private int mBlockCacheFirstBlockNumber = 0;
 
         // mBlockCache is an array with a starting point which is not
@@ -1109,19 +1142,6 @@ class GridViewSpecial extends View {
 
         private Drawable mVideoOverlay;
         private Drawable mVideoMmsErrorOverlay;
-
-        public void dump() {
-            synchronized (ImageBlockManager.this) {
-                StringBuilder line1 = new StringBuilder();
-                StringBuilder line2 = new StringBuilder();
-                for (int i = 0; i < mBlockCache.length; i++) {
-                    int index = (mBlockCacheStartOffset + i)
-                            % mBlockCache.length;
-                    ImageBlock block = mBlockCache[index];
-                    block.dump(line1, line2);
-                }
-            }
-        }
 
         ImageBlockManager() {
             mLoader = new ImageLoader(mHandler, 1);
@@ -1316,14 +1336,10 @@ class GridViewSpecial extends View {
                         }
                     }
                 }
-                if (DUMP) {
-                    this.dump();
-                }
             }
         }
 
-        private void moveDataWindow(boolean directionBiasDown,
-                boolean forceRefresh) {
+        private void moveDataWindow(boolean forceRefresh) {
             final int blockHeight = (mCurrentSpec.mCellSpacing
                     + mCurrentSpec.mCellHeight);
 
@@ -1389,17 +1405,10 @@ class GridViewSpecial extends View {
                     block.setVisibility(isVis);
                 }
 
-                if (DUMP) {
-                    mImageBlockManager.dump();
-                }
-
                 if (any) {
                     ImageBlockManager.this.notify();
                     mWorkCounter += 1;
                 }
-            }
-            if (DUMP) {
-                dump();
             }
         }
 
@@ -1488,7 +1497,7 @@ class GridViewSpecial extends View {
                 mPaint.setTextSize(14F);
                 mPaint.setStyle(Paint.Style.FILL);
 
-                mBlockNumber = -1;
+                mBlockNumber = REMOVE_SELCTION;
                 mCellOutline = GridViewSpecial.this.getResources()
                         .getDrawable(android.R.drawable.gallery_thumb);
             }
@@ -1564,7 +1573,7 @@ class GridViewSpecial extends View {
                     final int startRow = mBlockNumber;
                     int count = mGallery.mAllImages.getCount();
 
-                    if (startRow == -1) {
+                    if (startRow == REMOVE_SELCTION) {
                         return 0;
                     }
 
@@ -1788,9 +1797,6 @@ class GridViewSpecial extends View {
                                     mWorkCounter += 1;
                                 }
                             }
-                            if (DUMP) {
-                                ImageBlockManager.this.dump();
-                            }
                         }
                     };
                     mRequestedMask |= (1 << baseOffset);
@@ -1814,7 +1820,7 @@ class GridViewSpecial extends View {
 
         if (mImageBlockManager != null) {
             mImageBlockManager.doDraw(canvas);
-            mImageBlockManager.moveDataWindow(mDirectionBiasDown, false);
+            mImageBlockManager.moveDataWindow(false);
         }
     }
 
@@ -1869,42 +1875,6 @@ class GridViewSpecial extends View {
 
         mGestureDetector.onTouchEvent(ev);
         return true;
-    }
-
-    void onSelect(int index) {
-        if (index >= 0 && index < mGallery.mAllImages.getCount()) {
-            IImage img = mGallery.mAllImages.getImageAt(index);
-            if (img == null) {
-                return;
-            }
-
-            if (mGallery.isPickIntent()) {
-                mGallery.launchCropperOrFinish(img);
-            } else {
-                Uri targetUri = img.fullSizeImageUri();
-                Uri thisUri = mGallery.getIntent().getData();
-                if (thisUri != null) {
-                    String bucket = thisUri.getQueryParameter("bucketId");
-                    if (bucket != null) {
-                        targetUri = targetUri.buildUpon()
-                                .appendQueryParameter("bucketId", bucket)
-                                .build();
-                    }
-                }
-                Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
-
-                if (img instanceof VideoObject) {
-                    intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
-                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                }
-
-                try {
-                    mContext.startActivity(intent);
-                } catch (Exception ex) {
-                    // sdcard removal??
-                }
-            }
-        }
     }
 
     @Override
