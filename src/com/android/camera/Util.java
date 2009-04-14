@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.camera.gallery;
+package com.android.camera;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,8 +23,6 @@ import android.media.MediaMetadataRetriever;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import com.android.camera.ImageLoader;
-import com.android.camera.ImageManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;

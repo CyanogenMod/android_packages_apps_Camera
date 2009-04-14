@@ -17,6 +17,9 @@
 package com.android.camera.gallery;
 
 import com.android.camera.BitmapManager;
+import com.android.camera.ExifInterface;
+import com.android.camera.ImageManager;
+import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -33,9 +36,6 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.provider.MediaStore.MediaColumns;
 import android.util.Log;
-
-import com.android.camera.ExifInterface;
-import com.android.camera.ImageManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -284,7 +284,7 @@ public abstract class BaseImageList implements IImageList {
         if (BitmapManager.instance().acquireResourceLock() == false) {
             return -1;
         }
-        
+
         try {
             if (existingImage == null) {
                 // if we don't have an Image object then get the id and magic

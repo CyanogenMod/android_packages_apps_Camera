@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.Util;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
@@ -34,7 +33,6 @@ import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -55,6 +53,8 @@ import java.io.IOException;
  * </pre>
  */
 public class ThumbnailController {
+
+    @SuppressWarnings("unused")
     private static final String TAG = "ThumbnailController";
     private ContentResolver mContentResolver;
     private Uri mUri;

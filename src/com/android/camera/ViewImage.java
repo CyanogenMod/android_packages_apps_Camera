@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IGetBitmapCancelable;
+import com.android.camera.gallery.ICancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -324,6 +324,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     public void run(final MenuHelper.MenuCallback cb) {
                         setMode(MODE_NORMAL);
                         Thread t = new Thread() {
+                            @Override
                             public void run() {
                                cb.run(selectedImageGetter.getCurrentImageUri(),
                                        selectedImageGetter.getCurrentImage());
@@ -406,17 +407,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         return true;
     }
 
-    private void onLayoutChanged() {
-        // if we get here after "onPause" then ignore the event
-        if (mGetter == null) {
-            return;
-        }
-        mDismissOnScreenControlsRunnable.run();
-        mGetter.cancelCurrent();
-        mImageView.clear();
-        setImage(mCurrentPosition);
-    }
-
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         boolean b = super.onMenuItemSelected(featureId, item);
@@ -435,7 +425,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mImageView.setImageBitmapResetBase(b, true);
             updateZoomButtonsEnabled();
         }
-        
+
         ImageGetterCallback cb = new ImageGetterCallback() {
             public void completed(boolean wasCanceled) {
                 if (!mShowActionIcons) {
@@ -515,7 +505,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mCache = new BitmapCache(3);
         mImageView.setRecycler(mCache);
 
-        
+
         BitmapManager bitmapManager = BitmapManager.instance();
         bitmapManager.setCheckResourceLock(false);
         bitmapManager.allowAllDecoding();
@@ -914,7 +904,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        
+
         BitmapManager.instance().allowAllDecoding(false);
 
         init(mSavedUri);
@@ -1244,6 +1234,8 @@ interface ImageGetterCallback {
 }
 
 class ImageGetter {
+
+    @SuppressWarnings("unused")
     private static final String TAG = "ImageGetter";
 
     // The thread which does the work.
@@ -1258,7 +1250,7 @@ class ImageGetter {
 
     // This is the loader cancelable that gets set while we're loading an image.
     // If we change position we can cancel the current load using this.
-    private IGetBitmapCancelable mLoad;
+    private ICancelable<Bitmap> mLoad;
 
     // True if we're canceling the current load.
     private boolean mCancelCurrent = false;
@@ -1276,7 +1268,7 @@ class ImageGetter {
         synchronized (this) {
             if (!mReady) {
                 mCancelCurrent = true;
-                IGetBitmapCancelable load = mLoad;
+                ICancelable<Bitmap> load = mLoad;
                 if (load != null) {
                     load.cancel();
                 }
@@ -1290,7 +1282,7 @@ class ImageGetter {
                                   final boolean isThumb, final Bitmap bitmap) {
             return new Runnable() {
                 public void run() {
-                    // check for inflight callbacks that aren't applicable 
+                    // check for inflight callbacks that aren't applicable
                     // any longer before delivering them
                     if (!isCanceled() && position == mCurrentPosition) {
                         mCB.imageLoaded(position, offset, bitmap, isThumb);
@@ -1316,7 +1308,7 @@ class ImageGetter {
                     mReady = true;
                     ImageGetter.this.notify();
 
-                    if (mCurrentPosition == -1 
+                    if (mCurrentPosition == -1
                             || lastPosition == mCurrentPosition) {
                         try {
                             ImageGetter.this.wait();
@@ -1345,7 +1337,7 @@ class ImageGetter {
                             if (mCB.wantsThumbnail(lastPosition, offset)) {
                                 Bitmap b = image.thumbBitmap();
                                 mViewImage.mHandler.postGetterCallback(
-                                        callback(lastPosition, offset, 
+                                        callback(lastPosition, offset,
                                         true, b));
                             }
                         }
@@ -1374,7 +1366,7 @@ class ImageGetter {
                                             b.recycle();
                                         } else {
                                             Runnable cb = callback(
-                                                    lastPosition, offset, 
+                                                    lastPosition, offset,
                                                     false, b);
                                             mViewImage.mHandler
                                                     .postGetterCallback(cb);
@@ -1461,7 +1453,7 @@ class BitmapCache implements ImageViewTouchBase.Recycler {
     }
 
     private Entry[] mCache;
-    
+
     public BitmapCache(int size) {
         mCache = new Entry[size];
         for (int i = 0; i < mCache.length; i++) {
@@ -1479,7 +1471,7 @@ class BitmapCache implements ImageViewTouchBase.Recycler {
         }
         return null;
     }
-    
+
     // Returns the thumb bitmap if we have it, otherwise return null.
     public synchronized Bitmap getBitmap(int pos) {
         Entry e = findEntry(pos);
@@ -1513,7 +1505,7 @@ class BitmapCache implements ImageViewTouchBase.Recycler {
                 }
             }
         }
-        
+
         // Recycle the image being kicked out.
         // This only works because our current usage is sequential, so we
         // do not happen to recycle the image being displayed.
@@ -1524,7 +1516,7 @@ class BitmapCache implements ImageViewTouchBase.Recycler {
         best.mPos = pos;
         best.mBitmap = bitmap;
     }
-    
+
     // Recycle all bitmaps in the cache and clear the cache.
     public synchronized void clear() {
         for (Entry e : mCache) {
@@ -1540,7 +1532,7 @@ class BitmapCache implements ImageViewTouchBase.Recycler {
         Entry e = findEntry(pos);
         return (e != null);
     }
-    
+
     // Recycle the bitmap if it's not in the cache.
     // The input must be non-null.
     public synchronized void recycle(Bitmap b) {

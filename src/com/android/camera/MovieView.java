@@ -21,9 +21,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -42,6 +42,7 @@ import android.widget.VideoView;
  */
 public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
+    @SuppressWarnings("unused")
     private static final String TAG = "MovieView";
 
     // Copied from MediaPlaybackService in the Music Player app. Should be
@@ -138,12 +139,12 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
         return ("content".equalsIgnoreCase(scheme)
                 && MediaStore.AUTHORITY.equalsIgnoreCase(authority));
     }
-    
+
     private Integer getBookmark() {
         if (!uriSupportsBookmarks(mUri)) {
             return null;
         }
-        
+
         String[] projection = new String[] {
             Video.VideoColumns.DURATION,
             Video.VideoColumns.BOOKMARK
@@ -194,7 +195,7 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
         if (!uriSupportsBookmarks(mUri)) {
             return;
         }
-        
+
         ContentValues values = new ContentValues();
         values.put(Video.VideoColumns.BOOKMARK, Integer.toString(bookmark));
         try {

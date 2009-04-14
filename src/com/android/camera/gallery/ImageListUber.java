@@ -19,7 +19,6 @@ package com.android.camera.gallery;
 import com.android.camera.ImageManager;
 
 import android.net.Uri;
-import android.os.Handler;
 import android.util.Log;
 
 import java.util.ArrayList;
