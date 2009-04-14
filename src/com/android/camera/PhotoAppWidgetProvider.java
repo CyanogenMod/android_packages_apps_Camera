@@ -39,7 +39,7 @@ import java.io.IOException;
 public class PhotoAppWidgetProvider extends AppWidgetProvider {
     static final String TAG = "PhotoAppWidgetProvider";
     static final boolean LOGD = Config.LOGD || true;
-    
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
@@ -56,7 +56,7 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
         }
         helper.close();
     }
-    
+
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         // Clean deleted photos out of our database
@@ -83,10 +83,8 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
     }
 
     static class PhotoDatabaseHelper extends SQLiteOpenHelper {
-        private final Context mContext;
-
         private static final String DATABASE_NAME = "launcher.db";
-        
+
         private static final int DATABASE_VERSION = 2;
 
         static final String TABLE_PHOTOS = "photos";
@@ -95,7 +93,6 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
 
         PhotoDatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
-            mContext = context;
         }
 
         @Override
@@ -110,14 +107,14 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
         public void onUpgrade(SQLiteDatabase db, int oldVersion,
                               int newVersion) {
             int version = oldVersion;
-            
+
             if (version != DATABASE_VERSION) {
                 Log.w(TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_PHOTOS);
                 onCreate(db);
             }
         }
-        
+
         /**
          * Store the given bitmap in this database for the given appWidgetId.
          */
@@ -137,11 +134,11 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
                 values.put(PhotoDatabaseHelper.FIELD_APPWIDGET_ID, appWidgetId);
                 values.put(PhotoDatabaseHelper.FIELD_PHOTO_BLOB,
                            out.toByteArray());
-                    
+
                 SQLiteDatabase db = getWritableDatabase();
                 db.insertOrThrow(PhotoDatabaseHelper.TABLE_PHOTOS, null,
                                  values);
-                
+
                 success = true;
             } catch (SQLiteException e) {
                 Log.e(TAG, "Could not open database", e);
@@ -153,13 +150,13 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
             }
             return success;
         }
-        
+
         static final String[] PHOTOS_PROJECTION = {
             FIELD_PHOTO_BLOB,
         };
-        
+
         static final int INDEX_PHOTO_BLOB = 0;
-        
+
         /**
          * Inflate and return a bitmap for the given appWidgetId.
          */
@@ -172,7 +169,7 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
                                                  appWidgetId);
                 c = db.query(TABLE_PHOTOS, PHOTOS_PROJECTION, selection, null,
                         null, null, null, null);
-                
+
                 if (c != null && LOGD) {
                     Log.d(TAG, "getPhoto query count=" + c.getCount());
                 }
@@ -193,7 +190,7 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
             }
             return bitmap;
         }
-        
+
         /**
          * Remove any bitmap associated with the given appWidgetId.
          */
@@ -208,6 +205,6 @@ public class PhotoAppWidgetProvider extends AppWidgetProvider {
             }
         }
     }
-    
+
 }
 

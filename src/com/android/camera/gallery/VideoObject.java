@@ -16,11 +16,11 @@
 
 package com.android.camera.gallery;
 
+import com.android.camera.ImageManager;
+
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-
-import com.android.camera.ImageManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,7 +78,7 @@ public class VideoObject extends BaseImage implements IImage {
     }
 
     @Override
-    public IGetBitmapCancelable fullSizeBitmapCancelable(
+    public ICancelable<Bitmap> fullSizeBitmapCancelable(
             int targetWidthHeight) {
         return null;
     }

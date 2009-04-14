@@ -18,7 +18,6 @@ package com.android.camera;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.Util;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -48,11 +47,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -168,7 +167,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                   break;
             }
         }
-    };
+    }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
