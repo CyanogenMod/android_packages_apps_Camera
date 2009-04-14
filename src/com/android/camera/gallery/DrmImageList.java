@@ -118,16 +118,6 @@ public class DrmImageList extends ImageList implements IImageList {
     }
 
     @Override
-    protected int indexLatitude() {
-        return -1;
-    }
-
-    @Override
-    protected int indexLongitude() {
-        return -1;
-    }
-
-    @Override
     protected int indexMiniThumbId() {
         return -1;
     }

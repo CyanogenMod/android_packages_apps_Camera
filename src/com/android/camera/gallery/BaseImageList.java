@@ -62,21 +62,22 @@ public abstract class BaseImageList implements IImageList {
             "(" + Images.Media.MIME_TYPE + " in (?, ?, ?))";
 
     static final String[] IMAGE_PROJECTION = new String[] {
-            "_id",
-            "_data",
+            BaseColumns._ID,
+            MediaColumns.DATA,
             ImageColumns.DATE_TAKEN,
             ImageColumns.MINI_THUMB_MAGIC,
             ImageColumns.ORIENTATION,
             ImageColumns.MIME_TYPE};
 
     static final String[] THUMB_PROJECTION = new String[] {
-            BaseColumns._ID,           // 0
-            Images.Thumbnails.IMAGE_ID,      // 1
+            BaseColumns._ID,
+            Images.Thumbnails.IMAGE_ID,
             Images.Thumbnails.WIDTH,
             Images.Thumbnails.HEIGHT};
 
-    static final int INDEX_ID = Util.indexOf(IMAGE_PROJECTION, "_id");
-    static final int INDEX_DATA = Util.indexOf(IMAGE_PROJECTION, "_data");
+    static final int INDEX_ID = Util.indexOf(IMAGE_PROJECTION, BaseColumns._ID);
+    static final int INDEX_DATA =
+            Util.indexOf(IMAGE_PROJECTION, MediaColumns.DATA);
     static final int INDEX_MIME_TYPE =
             Util.indexOf(IMAGE_PROJECTION, MediaColumns.MIME_TYPE);
     static final int INDEX_DATE_TAKEN =
@@ -107,7 +108,7 @@ public abstract class BaseImageList implements IImageList {
     protected Context mContext;
     protected Uri mUri;
     protected HashMap<Long, IImage> mCache = new HashMap<Long, IImage>();
-    protected RandomAccessFile mMiniThumbData;
+    protected RandomAccessFile mMiniThumbFile;
     protected Uri mThumbUri;
 
     public BaseImageList(Context ctx, ContentResolver cr, Uri uri, int sort,
@@ -128,7 +129,7 @@ public abstract class BaseImageList implements IImageList {
     }
 
     RandomAccessFile miniThumbDataFile() {
-        if (mMiniThumbData == null) {
+        if (mMiniThumbFile == null) {
             String path = randomAccessFilePath(MINI_THUMB_DATA_FILE_VERSION);
             File directory = new File(new File(path).getParent());
             if (!directory.isDirectory()) {
@@ -140,12 +141,12 @@ public abstract class BaseImageList implements IImageList {
             File f = new File(path);
             if (VERBOSE) Log.v(TAG, "file f is " + f.toString());
             try {
-                mMiniThumbData = new RandomAccessFile(f, "rw");
+                mMiniThumbFile = new RandomAccessFile(f, "rw");
             } catch (IOException ex) {
                 // ignore exception
             }
         }
-        return mMiniThumbData;
+        return mMiniThumbFile;
     }
 
     /**
@@ -204,7 +205,7 @@ public abstract class BaseImageList implements IImageList {
                 new String[]{String.valueOf(imageId)}, null);
         try {
             if (c.moveToFirst()) {
-                // If, for some reaosn, we already have a row with a matching
+                // If, for some reason, we already have a row with a matching
                 // image id, then just update that row rather than creating a
                 // new row.
                 uri = ContentUris.withAppendedId(
@@ -530,10 +531,10 @@ public abstract class BaseImageList implements IImageList {
             // IllegalStateException may be thrown if the cursor is stale.
             Log.e(TAG, "Caught exception while deactivating cursor.", e);
         }
-        if (mMiniThumbData != null) {
+        if (mMiniThumbFile != null) {
             try {
-                mMiniThumbData.close();
-                mMiniThumbData = null;
+                mMiniThumbFile.close();
+                mMiniThumbFile = null;
             } catch (IOException ex) {
                 // ignore exception
             }
@@ -697,10 +698,6 @@ public abstract class BaseImageList implements IImageList {
     protected abstract int indexData();
 
     protected abstract int indexId();
-
-    protected abstract int indexLatitude();
-
-    protected abstract int indexLongitude();
 
     protected abstract int indexMiniThumbId();
 

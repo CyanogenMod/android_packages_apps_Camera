@@ -54,8 +54,6 @@ public class VideoList extends BaseImageList implements IImageList {
             Video.Media.TAGS,
             Video.Media.CATEGORY,
             Video.Media.LANGUAGE,
-            Video.Media.LATITUDE,
-            Video.Media.LONGITUDE,
             Video.Media.MINI_THUMB_MAGIC,
             Video.Media.MIME_TYPE};
 
@@ -69,8 +67,6 @@ public class VideoList extends BaseImageList implements IImageList {
     static final int INDEX_TAGS = indexOf(Video.Media.TAGS);
     static final int INDEX_CATEGORY = indexOf(Video.Media.CATEGORY);
     static final int INDEX_LANGUAGE = indexOf(Video.Media.LANGUAGE);
-    static final int INDEX_LATITUDE = indexOf(Video.Media.LATITUDE);
-    static final int INDEX_LONGITUDE = indexOf(Video.Media.LONGITUDE);
     static final int INDEX_MINI_THUMB_MAGIC =
             indexOf(Video.Media.MINI_THUMB_MAGIC);
     static final int INDEX_THUMB_ID = indexOf(BaseColumns._ID);
@@ -185,16 +181,6 @@ public class VideoList extends BaseImageList implements IImageList {
     @Override
     protected int indexId() {
         return INDEX_ID;
-    }
-
-    @Override
-    protected int indexLatitude() {
-        return INDEX_LATITUDE;
-    }
-
-    @Override
-    protected int indexLongitude() {
-        return INDEX_LONGITUDE;
     }
 
     @Override

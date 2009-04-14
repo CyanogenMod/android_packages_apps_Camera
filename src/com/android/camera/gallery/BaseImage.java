@@ -298,24 +298,6 @@ public abstract class BaseImage implements IImage {
         }
     }
 
-    public double getLatitude() {
-        if (mContainer.indexLatitude() < 0) return 0D;
-        Cursor c = getCursor();
-        synchronized (c) {
-            c.moveToPosition(getRow());
-            return c.getDouble(mContainer.indexLatitude());
-        }
-    }
-
-    public double getLongitude() {
-        if (mContainer.indexLongitude() < 0) return 0D;
-        Cursor c = getCursor();
-        synchronized (c) {
-            c.moveToPosition(getRow());
-            return c.getDouble(mContainer.indexLongitude());
-        }
-    }
-
     public String getTitle() {
         String name = null;
         Cursor c = getCursor();
@@ -389,18 +371,6 @@ public abstract class BaseImage implements IImage {
             return 0;
         } finally {
             Util.closeSiliently(input);
-        }
-    }
-
-    public boolean hasLatLong() {
-        if (mContainer.indexLatitude() < 0 || mContainer.indexLongitude() < 0) {
-            return false;
-        }
-        Cursor c = getCursor();
-        synchronized (c) {
-            c.moveToPosition(getRow());
-            return !c.isNull(mContainer.indexLatitude())
-                    && !c.isNull(mContainer.indexLongitude());
         }
     }
 
@@ -499,7 +469,7 @@ public abstract class BaseImage implements IImage {
         mContainer.saveMiniThumbToFile(source, fullSizeImageId(), 0);
     }
 
-    public void setName(String name) {
+    public void setTitle(String name) {
         Cursor c = getCursor();
         synchronized (c) {
             if (c.moveToPosition(getRow())) {
