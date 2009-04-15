@@ -36,6 +36,7 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_WHITE_BALANCE =
             "pref_camera_whitebalance_key";
     public static final String KEY_EFFECT = "pref_camera_effect_key";
+    public static final String KEY_BRIGHTNESS = "pref_camera_brightness_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
@@ -44,6 +45,7 @@ public class CameraSettings extends PreferenceActivity implements
     private ListPreference mVideoQuality;
     private ListPreference mWhiteBalance;
     private ListPreference mEffect;
+    private ListPreference mBrightness;
     private ListPreference mPictureSize;
     private ListPreference mJpegQuality;
     private ListPreference mFocusMode;
@@ -64,6 +66,7 @@ public class CameraSettings extends PreferenceActivity implements
         updateVideoQualitySummary();
         updateWhiteBalanceSummary();
         updateEffectSummary();
+        updateBrightSummary();
         updatePictureSizeSummary();
         updateJpegQualitySummary();
         updateFocusModeSummary();
@@ -73,6 +76,8 @@ public class CameraSettings extends PreferenceActivity implements
         mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
         mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
         mEffect = (ListPreference) findPreference(KEY_EFFECT);
+        mBrightness = (ListPreference) findPreference(KEY_BRIGHTNESS);
+
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
         mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
@@ -93,6 +98,11 @@ public class CameraSettings extends PreferenceActivity implements
         createSettings(mEffect, Camera.SUPPORTED_EFFECT,
                        R.array.pref_camera_effect_entries,
                        R.array.pref_camera_effect_entryvalues);
+
+        // Create brightness settings.
+        createSettings(mBrightness, Camera.SUPPORTED_BRIGHTNESS,
+                       R.array.pref_camera_brightness_entries,
+                       R.array.pref_camera_brightness_entryvalues);
 
         // Create picture size settings.
         createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE,
@@ -168,6 +178,10 @@ public class CameraSettings extends PreferenceActivity implements
         mEffect.setSummary(mEffect.getEntry());
     }
 
+    private void updateBrightSummary() {
+        mBrightness.setSummary(mBrightness.getEntry());
+    }
+
     private void updatePictureSizeSummary() {
         mPictureSize.setSummary(mPictureSize.getEntry());
     }
@@ -194,6 +208,8 @@ public class CameraSettings extends PreferenceActivity implements
             updateJpegQualitySummary();
         } else if (key.equals(KEY_FOCUS_MODE)) {
             updateFocusModeSummary();
-        }
+        } else if (key.equals(KEY_BRIGHTNESS)) {
+            updateBrightSummary();
+        } 
     }
 }
