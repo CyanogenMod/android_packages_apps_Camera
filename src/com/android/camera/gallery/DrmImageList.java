@@ -92,8 +92,8 @@ public class DrmImageList extends ImageList implements IImageList {
     }
 
     @Override
-    protected IImage make(long id, long miniThumbId, ContentResolver cr,
-            IImageList list, long timestamp, int index, int rotation) {
+    protected IImage make(long id, long miniThumbMagic, ContentResolver cr,
+            IImageList list, int index, int rotation) {
         return new DrmImage(id, mContentResolver, this, index);
     }
 
@@ -118,7 +118,7 @@ public class DrmImageList extends ImageList implements IImageList {
     }
 
     @Override
-    protected int indexMiniThumbId() {
+    protected int indexMiniThumbMagic() {
         return -1;
     }
 

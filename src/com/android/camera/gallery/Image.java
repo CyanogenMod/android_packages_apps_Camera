@@ -44,9 +44,9 @@ public class Image extends BaseImage implements IImage {
 
     private int mRotation;
 
-    public Image(long id, long miniThumbId, ContentResolver cr,
+    public Image(long id, long miniThumbMagic, ContentResolver cr,
             BaseImageList container, int cursorRow, int rotation) {
-        super(id, miniThumbId, cr, container, cursorRow);
+        super(id, miniThumbMagic, cr, container, cursorRow);
         mRotation = rotation;
     }
 

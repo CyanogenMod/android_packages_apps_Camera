@@ -91,10 +91,9 @@ public class VideoList extends BaseImageList implements IImageList {
             int row = 0;
             do {
                 long imageId = mCursor.getLong(indexId());
-                long dateTaken = mCursor.getLong(indexDateTaken());
-                long miniThumbId = mCursor.getLong(indexMiniThumbId());
-                mCache.put(imageId, new VideoObject(imageId, miniThumbId,
-                        mContentResolver, this, dateTaken, row++));
+                long miniThumbMagic = mCursor.getLong(indexMiniThumbMagic());
+                mCache.put(imageId, new VideoObject(imageId, miniThumbMagic,
+                        mContentResolver, this, row++));
             } while (mCursor.moveToNext());
         }
     }
@@ -173,7 +172,7 @@ public class VideoList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected int indexMiniThumbId() {
+    protected int indexMiniThumbMagic() {
         return INDEX_MINI_THUMB_MAGIC;
     }
 
@@ -193,10 +192,10 @@ public class VideoList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected IImage make(long id, long miniThumbId, ContentResolver cr,
-            IImageList list, long timestamp, int index, int rotation) {
-        return new VideoObject(id, miniThumbId, mContentResolver, this,
-                timestamp, index);
+    protected IImage make(long id, long miniThumbMagic, ContentResolver cr,
+            IImageList list, int index, int rotation) {
+        return new VideoObject(id, miniThumbMagic, mContentResolver, this,
+                index);
     }
 
     private String sortOrder() {

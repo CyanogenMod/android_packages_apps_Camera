@@ -38,9 +38,9 @@ public class VideoObject extends BaseImage implements IImage {
      * @param id        the image id of the image
      * @param cr        the content resolver
      */
-    protected VideoObject(long id, long miniThumbId, ContentResolver cr,
-            VideoList container, long dateTaken, int row) {
-        super(id, miniThumbId, cr, container, row);
+    protected VideoObject(long id, long miniThumbMagic, ContentResolver cr,
+            VideoList container, int row) {
+        super(id, miniThumbMagic, cr, container, row);
     }
 
     @Override

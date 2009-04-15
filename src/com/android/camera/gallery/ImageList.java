@@ -130,7 +130,7 @@ public class ImageList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected int indexMiniThumbId() {
+    protected int indexMiniThumbMagic() {
         return INDEX_MINI_THUMB_MAGIC;
     }
 
@@ -150,9 +150,9 @@ public class ImageList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected IImage make(long id, long miniThumbId, ContentResolver cr,
-            IImageList list, long timestamp, int index, int rotation) {
-        return new Image(id, miniThumbId, mContentResolver, this, index,
+    protected IImage make(long id, long miniThumbMagic, ContentResolver cr,
+            IImageList list, int index, int rotation) {
+        return new Image(id, miniThumbMagic, mContentResolver, this, index,
                 rotation);
     }
 

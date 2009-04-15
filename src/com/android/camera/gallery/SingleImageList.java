@@ -99,7 +99,7 @@ public class SingleImageList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected int indexMiniThumbId() {
+    protected int indexMiniThumbMagic() {
         return -1;
     }
 

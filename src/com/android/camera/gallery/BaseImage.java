@@ -52,11 +52,11 @@ public abstract class BaseImage implements IImage {
     protected HashMap<String, String> mExifData;
     protected int mCursorRow;
 
-    protected BaseImage(long id, long miniThumbId, ContentResolver cr,
+    protected BaseImage(long id, long miniThumbMagic, ContentResolver cr,
             BaseImageList container, int cursorRow) {
         mContentResolver = cr;
         mId              = id;
-        mMiniThumbMagic  = miniThumbId;
+        mMiniThumbMagic  = miniThumbMagic;
         mContainer       = container;
         mCursorRow       = cursorRow;
     }

@@ -290,7 +290,7 @@ public abstract class BaseImageList implements IImageList {
                     if (!c.moveToPosition(i)) {
                         return -1;
                     }
-                    magic = c.getLong(indexMiniThumbId());
+                    magic = c.getLong(indexMiniThumbMagic());
                     id = c.getLong(indexId());
                 }
             } else {
@@ -353,7 +353,7 @@ public abstract class BaseImageList implements IImageList {
 
             synchronized (c) {
                 c.moveToPosition(i);
-                c.updateLong(indexMiniThumbId(), magic);
+                c.updateLong(indexMiniThumbMagic(), magic);
                 c.commitUpdates();
                 c.requery();
                 c.moveToPosition(i);
@@ -479,19 +479,18 @@ public abstract class BaseImageList implements IImageList {
             if (moved) {
                 try {
                     long id = c.getLong(0);
-                    long miniThumbId = 0;
+                    long miniThumbMagic = 0;
                     int rotation = 0;
-                    if (indexMiniThumbId() != -1) {
-                        miniThumbId = c.getLong(indexMiniThumbId());
+                    if (indexMiniThumbMagic() != -1) {
+                        miniThumbMagic = c.getLong(indexMiniThumbMagic());
                     }
                     if (indexOrientation() != -1) {
                         rotation = c.getInt(indexOrientation());
                     }
-                    long timestamp = c.getLong(1);
                     IImage img = mCache.get(id);
                     if (img == null) {
-                        img = make(id, miniThumbId, mContentResolver, this,
-                                timestamp, i, rotation);
+                        img = make(id, miniThumbMagic, mContentResolver, this,
+                                i, rotation);
                         mCache.put(id, img);
                     }
                     return img;
@@ -542,7 +541,7 @@ public abstract class BaseImageList implements IImageList {
 
     protected abstract int indexId();
 
-    protected abstract int indexMiniThumbId();
+    protected abstract int indexMiniThumbMagic();
 
     protected abstract int indexTitle();
 
@@ -550,8 +549,8 @@ public abstract class BaseImageList implements IImageList {
 
     protected abstract int indexThumbId();
 
-    protected IImage make(long id, long miniThumbId, ContentResolver cr,
-            IImageList list, long timestamp, int index, int rotation) {
+    protected IImage make(long id, long miniThumbMagic, ContentResolver cr,
+            IImageList list, int index, int rotation) {
         return null;
     }
 
