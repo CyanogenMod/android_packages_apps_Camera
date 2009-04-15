@@ -54,7 +54,7 @@ public interface IImageList {
     }
 
     public abstract void checkThumbnails(
-            IImageList.ThumbCheckCallback cb, int totalCount);
+            IImageList.ThumbCheckCallback cb, int totalThumbnails);
 
     public abstract void commitChanges();
 

@@ -99,32 +99,9 @@ public class VideoObject extends BaseImage implements IImage {
         return mId;
     }
 
-    public String getCategory() {
-         return getStringEntry(VideoList.INDEX_CATEGORY);
-    }
-
     @Override
     public int getHeight() {
          return 0;
-    }
-
-    public String getLanguage() {
-         return getStringEntry(VideoList.INDEX_LANGUAGE);
-    }
-
-    private String getStringEntry(int entryName) {
-        String entry = null;
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                entry = c.getString(entryName);
-            }
-        }
-        return entry;
-    }
-
-    public String getTags() {
-        return getStringEntry(VideoList.INDEX_TAGS);
     }
 
     @Override
@@ -136,33 +113,12 @@ public class VideoObject extends BaseImage implements IImage {
         return false;
     }
 
-     public boolean isDrm() {
-         return false;
-     }
-
-     public boolean rotateImageBy(int degrees) {
+    public boolean isDrm() {
         return false;
     }
 
-    public void setCategory(String category) {
-        setStringEntry(category, VideoList.INDEX_CATEGORY);
-    }
-
-    public void setLanguage(String language) {
-        setStringEntry(language, VideoList.INDEX_LANGUAGE);
-    }
-
-    private void setStringEntry(String entry, int entryName) {
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                c.updateString(entryName, entry);
-            }
-        }
-    }
-
-    public void setTags(String tags) {
-        setStringEntry(tags, VideoList.INDEX_TAGS);
+    public boolean rotateImageBy(int degrees) {
+       return false;
     }
 
     public Bitmap thumbBitmap() {

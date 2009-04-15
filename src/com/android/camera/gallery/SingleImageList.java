@@ -16,15 +16,10 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.BitmapManager;
 import com.android.camera.ImageManager;
-import com.android.camera.Util;
 
 import android.content.ContentResolver;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -40,7 +35,7 @@ public class SingleImageList extends BaseImageList implements IImageList {
     private IImage mSingleImage;
 
     public SingleImageList(ContentResolver cr, Uri uri) {
-        super(null, cr, uri, ImageManager.SORT_ASCENDING, null);
+        super(cr, uri, ImageManager.SORT_ASCENDING, null);
         mSingleImage = new UriImage(this, cr, uri);
     }
 
@@ -70,22 +65,7 @@ public class SingleImageList extends BaseImageList implements IImageList {
 
     @Override
     public IImage getImageForUri(Uri uri) {
-        return uri.equals(mUri) ? mSingleImage : null;
-    }
-
-    @Override
-    protected int indexOrientation() {
-        return -1;
-    }
-
-    @Override
-    protected int indexDateTaken() {
-        return -1;
-    }
-
-    @Override
-    protected int indexMimeType() {
-        return -1;
+        return uri.equals(mBaseUri) ? mSingleImage : null;
     }
 
     @Override
@@ -99,7 +79,22 @@ public class SingleImageList extends BaseImageList implements IImageList {
     }
 
     @Override
+    protected int indexMimeType() {
+        return -1;
+    }
+
+    @Override
+    protected int indexDateTaken() {
+        return -1;
+    }
+
+    @Override
     protected int indexMiniThumbMagic() {
+        return -1;
+    }
+
+    @Override
+    protected int indexOrientation() {
         return -1;
     }
 
@@ -110,11 +105,6 @@ public class SingleImageList extends BaseImageList implements IImageList {
 
     @Override
     protected int indexDisplayName() {
-        return -1;
-    }
-
-    @Override
-    protected int indexThumbId() {
         return -1;
     }
 }

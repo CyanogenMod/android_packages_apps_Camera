@@ -16,22 +16,18 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.BitmapManager;
 import com.android.camera.ImageManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
+import android.provider.BaseColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -65,14 +61,10 @@ public class ImageList extends BaseImageList implements IImageList {
      * ImageList constructor.
      * @param cr    ContentResolver
      */
-    public ImageList(Context ctx, ContentResolver cr, Uri imageUri,
+    public ImageList(ContentResolver cr, Uri imageUri,
             Uri thumbUri, int sort, String bucketId) {
-        super(ctx, cr, imageUri, sort, bucketId);
-        mBaseUri = imageUri;
+        super(cr, imageUri, sort, bucketId);
         mThumbUri = thumbUri;
-        mSort = sort;
-
-        mContentResolver = cr;
 
         mCursor = createCursor();
         if (mCursor == null) {
@@ -99,24 +91,35 @@ public class ImageList extends BaseImageList implements IImageList {
 
     protected Cursor createCursor() {
         Cursor c = Images.Media.query(
-                mContentResolver, mBaseUri, BaseImageList.IMAGE_PROJECTION,
+                mContentResolver, mBaseUri, IMAGE_PROJECTION,
                 whereClause(), whereClauseArgs(), sortOrder());
         return c;
     }
 
-    @Override
-    protected int indexOrientation() {
-        return INDEX_ORIENTATION;
-    }
+    static final String[] IMAGE_PROJECTION = new String[] {
+            BaseColumns._ID,
+            MediaColumns.DATA,
+            ImageColumns.DATE_TAKEN,
+            ImageColumns.MINI_THUMB_MAGIC,
+            ImageColumns.ORIENTATION,
+            ImageColumns.MIME_TYPE};
+
+    private static final int INDEX_ID
+            = Util.indexOf(IMAGE_PROJECTION, BaseColumns._ID);
+    private static final int INDEX_DATA =
+            Util.indexOf(IMAGE_PROJECTION, MediaColumns.DATA);
+    private static final int INDEX_MIME_TYPE =
+            Util.indexOf(IMAGE_PROJECTION, MediaColumns.MIME_TYPE);
+    private static final int INDEX_DATE_TAKEN =
+            Util.indexOf(IMAGE_PROJECTION, ImageColumns.DATE_TAKEN);
+    private static final int INDEX_MINI_THUMB_MAGIC =
+            Util.indexOf(IMAGE_PROJECTION, ImageColumns.MINI_THUMB_MAGIC);
+    private static final int INDEX_ORIENTATION =
+            Util.indexOf(IMAGE_PROJECTION, ImageColumns.ORIENTATION);
 
     @Override
-    protected int indexDateTaken() {
-        return INDEX_DATE_TAKEN;
-    }
-
-    @Override
-    protected int indexMimeType() {
-        return INDEX_MIME_TYPE;
+    protected int indexId() {
+        return INDEX_ID;
     }
 
     @Override
@@ -125,13 +128,23 @@ public class ImageList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected int indexId() {
-        return INDEX_ID;
+    protected int indexMimeType() {
+        return INDEX_MIME_TYPE;
+    }
+
+    @Override
+    protected int indexDateTaken() {
+        return INDEX_DATE_TAKEN;
     }
 
     @Override
     protected int indexMiniThumbMagic() {
         return INDEX_MINI_THUMB_MAGIC;
+    }
+
+    @Override
+    protected int indexOrientation() {
+        return INDEX_ORIENTATION;
     }
 
     @Override
@@ -142,11 +155,6 @@ public class ImageList extends BaseImageList implements IImageList {
     @Override
     protected int indexDisplayName() {
         return -1;
-    }
-
-    @Override
-    protected int indexThumbId() {
-        return INDEX_THUMB_ID;
     }
 
     @Override
@@ -165,6 +173,4 @@ public class ImageList extends BaseImageList implements IImageList {
         return Images.Media.DATE_TAKEN + ascending + "," + Images.Media._ID
                 + ascending;
     }
-
 }
-

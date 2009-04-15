@@ -20,21 +20,14 @@ import com.android.camera.ImageManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Video;
 import android.provider.MediaStore.Video.VideoColumns;
-import android.util.Config;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -56,27 +49,23 @@ public class VideoList extends BaseImageList implements IImageList {
             Video.Media.MINI_THUMB_MAGIC,
             Video.Media.MIME_TYPE};
 
-    static final int INDEX_ID = indexOf(Video.Media._ID);
-    static final int INDEX_DATA = indexOf(Video.Media.DATA);
-    static final int INDEX_DATE_TAKEN = indexOf(Video.Media.DATE_TAKEN);
-    static final int INDEX_TITLE = indexOf(Video.Media.TITLE);
-    static final int INDEX_DISPLAY_NAME =
+    private static final int INDEX_ID = indexOf(Video.Media._ID);
+    private static final int INDEX_DATA = indexOf(Video.Media.DATA);
+    private static final int INDEX_DATE_TAKEN = indexOf(Video.Media.DATE_TAKEN);
+    private static final int INDEX_TITLE = indexOf(Video.Media.TITLE);
+    private static final int INDEX_DISPLAY_NAME =
             indexOf(Video.Media.DISPLAY_NAME);
-    static final int INDEX_MIME_TYPE = indexOf(Video.Media.MIME_TYPE);
-    static final int INDEX_TAGS = indexOf(Video.Media.TAGS);
-    static final int INDEX_CATEGORY = indexOf(Video.Media.CATEGORY);
-    static final int INDEX_LANGUAGE = indexOf(Video.Media.LANGUAGE);
-    static final int INDEX_MINI_THUMB_MAGIC =
+    private static final int INDEX_MIME_TYPE = indexOf(Video.Media.MIME_TYPE);
+    private static final int INDEX_MINI_THUMB_MAGIC =
             indexOf(Video.Media.MINI_THUMB_MAGIC);
-    static final int INDEX_THUMB_ID = indexOf(BaseColumns._ID);
 
     private static int indexOf(String field) {
         return Util.indexOf(sProjection, field);
     }
 
-    public VideoList(Context ctx, ContentResolver cr, Uri uri, Uri thumbUri,
+    public VideoList(ContentResolver cr, Uri uri, Uri thumbUri,
             int sort, String bucketId) {
-        super(ctx, cr, uri, sort, bucketId);
+        super(cr, uri, sort, bucketId);
 
         mCursor = createCursor();
         if (mCursor == null) {
@@ -84,10 +73,7 @@ public class VideoList extends BaseImageList implements IImageList {
             throw new UnsupportedOperationException();
         }
 
-        if (mCursor == null) {
-            throw new UnsupportedOperationException();
-        }
-        if (mCursor != null && mCursor.moveToFirst()) {
+        if (mCursor.moveToFirst()) {
             int row = 0;
             do {
                 long imageId = mCursor.getLong(indexId());
@@ -129,16 +115,6 @@ public class VideoList extends BaseImageList implements IImageList {
         return null;
     }
 
-    @Override
-    protected String thumbnailWhereClause() {
-        return MINITHUMB_IS_NULL;
-    }
-
-    @Override
-    protected String[] thumbnailWhereClauseArgs() {
-        return null;
-    }
-
     protected Cursor createCursor() {
         Cursor c = Images.Media.query(
                 mContentResolver, mBaseUri, sProjection,
@@ -147,18 +123,8 @@ public class VideoList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected int indexOrientation() {
-        return -1;
-    }
-
-    @Override
-    protected int indexDateTaken() {
-        return INDEX_DATE_TAKEN;
-    }
-
-    @Override
-    protected int indexMimeType() {
-        return INDEX_MIME_TYPE;
+    protected int indexId() {
+        return INDEX_ID;
     }
 
     @Override
@@ -167,13 +133,23 @@ public class VideoList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected int indexId() {
-        return INDEX_ID;
+    protected int indexMimeType() {
+        return INDEX_MIME_TYPE;
+    }
+
+    @Override
+    protected int indexDateTaken() {
+        return INDEX_DATE_TAKEN;
     }
 
     @Override
     protected int indexMiniThumbMagic() {
         return INDEX_MINI_THUMB_MAGIC;
+    }
+
+    @Override
+    protected int indexOrientation() {
+        return -1;
     }
 
     @Override
@@ -184,11 +160,6 @@ public class VideoList extends BaseImageList implements IImageList {
     @Override
     protected int indexDisplayName() {
         return -1;
-    }
-
-    @Override
-    protected int indexThumbId() {
-        return INDEX_THUMB_ID;
     }
 
     @Override
