@@ -38,6 +38,7 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_EFFECT = "pref_camera_effect_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
+    public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
     private ListPreference mVideoQuality;
@@ -45,6 +46,7 @@ public class CameraSettings extends PreferenceActivity implements
     private ListPreference mEffect;
     private ListPreference mPictureSize;
     private ListPreference mJpegQuality;
+    private ListPreference mFocusMode;
     private Parameters mParameters;
 
     @Override
@@ -64,6 +66,7 @@ public class CameraSettings extends PreferenceActivity implements
         updateEffectSummary();
         updatePictureSizeSummary();
         updateJpegQualitySummary();
+        updateFocusModeSummary();
     }
 
     private void initUI() {
@@ -72,6 +75,7 @@ public class CameraSettings extends PreferenceActivity implements
         mEffect = (ListPreference) findPreference(KEY_EFFECT);
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
+        mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
         getPreferenceScreen().getSharedPreferences().
                 registerOnSharedPreferenceChangeListener(this);
 
@@ -94,6 +98,18 @@ public class CameraSettings extends PreferenceActivity implements
         createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE,
                        R.array.pref_camera_picturesize_entries,
                        R.array.pref_camera_picturesize_entryvalues);
+
+        // Set default JPEG quality value if it is empty.
+        if (mJpegQuality.getValue() == null) {
+            mJpegQuality.setValue(getString(
+                R.string.pref_camera_jpegquality_default));
+        }
+
+        // Set default focus mode value if it is empty.
+        if (mFocusMode.getValue() == null) {
+            mFocusMode.setValue(getString(
+                R.string.pref_camera_focusmode_default));
+        }
     }
 
     private void createSettings(
@@ -160,6 +176,10 @@ public class CameraSettings extends PreferenceActivity implements
         mJpegQuality.setSummary(mJpegQuality.getEntry());
     }
 
+    private void updateFocusModeSummary() {
+        mFocusMode.setSummary(mFocusMode.getEntry());
+    }
+
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals(KEY_VIDEO_QUALITY)) {
@@ -172,6 +192,8 @@ public class CameraSettings extends PreferenceActivity implements
             updatePictureSizeSummary();
         } else if (key.equals(KEY_JPEG_QUALITY)) {
             updateJpegQualitySummary();
+        } else if (key.equals(KEY_FOCUS_MODE)) {
+            updateFocusModeSummary();
         }
     }
 }

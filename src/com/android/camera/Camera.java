@@ -181,6 +181,9 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mPicturesRemaining;
     private boolean mRecordLocation;
 
+    // Focus mode. Options are pref_camera_focusmode_entryvalues.
+    private String mFocusMode;
+
     private boolean mKeepAndRestartPreview;
 
     private boolean mIsImageCaptureIntent;
@@ -1011,6 +1014,9 @@ public class Camera extends Activity implements View.OnClickListener,
         mOrientationListener.enable();
         mRecordLocation = mPreferences.getBoolean(
                 "pref_camera_recordlocation_key", false);
+        mFocusMode = mPreferences.getString(
+                CameraSettings.KEY_FOCUS_MODE,
+                getString(R.string.pref_camera_focusmode_default));
         mGpsIndicator.setVisibility(View.INVISIBLE);
 
         // install an intent filter to receive SD card related events.
@@ -1208,11 +1214,12 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void doSnap() {
-        /*
-         * If the user has half-pressed the shutter and focus is completed, we
-         * can take the photo right away.
-         */
-        if ((mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)
+        // If the user has half-pressed the shutter and focus is completed, we
+        // can take the photo right away. If the focus mode is infinity, we can
+        // also take the photo.
+        if (mFocusMode.equals(getString(
+                R.string.pref_camera_focusmode_value_infinity))
+                || (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)
                 || !mPreviewing) {
             // doesn't get set until the idler runs
             if (mCaptureObject != null) {
@@ -1231,18 +1238,22 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void doFocus(boolean pressed) {
-        if (pressed) {  // Focus key down.
-            if (mPreviewing) {
-                autoFocus();
-            } else if (mCaptureObject != null) {
-                // Save and restart preview
-                mCaptureObject.onSnap();
-            }
-        } else {  // Focus key up.
-            if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
-                // User releases half-pressed focus key.
-                clearFocusState();
-                updateFocusIndicator();
+        // Do the focus if the mode is auto. No focus needed in infinity mode.
+        if (mFocusMode.equals(getString(
+                R.string.pref_camera_focusmode_value_auto))) {
+            if (pressed) {  // Focus key down.
+                if (mPreviewing) {
+                    autoFocus();
+                } else if (mCaptureObject != null) {
+                    // Save and restart preview
+                    mCaptureObject.onSnap();
+                }
+            } else {  // Focus key up.
+                if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
+                    // User releases half-pressed focus key.
+                    clearFocusState();
+                    updateFocusIndicator();
+                }
             }
         }
     }

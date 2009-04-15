@@ -108,4 +108,16 @@
         <item>65</item>
     </string-array>
 
+    <!-- Camera Preferences focus mode dialog box entries -->
+    <string-array name="pref_camera_focusmode_entries">
+        <item>@string/pref_camera_focusmode_entry_auto</item>
+        <item>@string/pref_camera_focusmode_entry_infinity</item>
+    </string-array>
+
+    <!-- Do not localize entryvalues -->
+    <string-array name="pref_camera_focusmode_entryvalues">
+        <item>@string/pref_camera_focusmode_value_auto</item>
+        <item>@string/pref_camera_focusmode_value_infinity</item>
+    </string-array>
+
 </resources>
