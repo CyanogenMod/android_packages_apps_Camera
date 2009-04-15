@@ -242,12 +242,14 @@ public abstract class BaseImageList implements IImageList {
     // create the minithumb from it.
     private Bitmap createThumbnailFromUri(Cursor c, long id) {
         Uri uri = ContentUris.withAppendedId(mBaseUri, id);
-        Bitmap bitmap = makeBitmap(THUMBNAIL_TARGET_SIZE, uri, null, null);
+        Bitmap bitmap = Util.makeBitmap(THUMBNAIL_TARGET_SIZE, uri,
+                mContentResolver, null, null);
         if (bitmap != null) {
             storeThumbnail(bitmap, id);
         } else {
             uri = ContentUris.withAppendedId(mBaseUri, id);
-            bitmap = makeBitmap(MINI_THUMB_TARGET_SIZE, uri, null, null);
+            bitmap = Util.makeBitmap(MINI_THUMB_TARGET_SIZE, uri,
+                mContentResolver, null, null);
         }
         return bitmap;
     }
@@ -552,10 +554,6 @@ public abstract class BaseImageList implements IImageList {
             IImageList list, long timestamp, int index, int rotation) {
         return null;
     }
-
-    protected abstract Bitmap makeBitmap(
-            int targetWidthHeight, Uri uri, ParcelFileDescriptor pfdInput,
-            BitmapFactory.Options options);
 
     public boolean removeImage(IImage image) {
         Cursor c = getCursor();

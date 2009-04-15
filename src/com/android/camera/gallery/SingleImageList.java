@@ -117,31 +117,4 @@ public class SingleImageList extends BaseImageList implements IImageList {
     protected int indexThumbId() {
         return -1;
     }
-
-    @Override
-    protected Bitmap makeBitmap(int targetWidthHeight, Uri uri,
-            ParcelFileDescriptor pfdInput, BitmapFactory.Options options) {
-        Bitmap b = null;
-        try {
-            if (options == null) options = new BitmapFactory.Options();
-            options.inSampleSize = 1;
-
-            if (targetWidthHeight != -1) {
-                options.inJustDecodeBounds = true;
-                BitmapManager.instance().decodeFileDescriptor(
-                        pfdInput.getFileDescriptor(), null, options);
-                options.inSampleSize =
-                        Util.computeSampleSize(options, targetWidthHeight);
-                options.inJustDecodeBounds = false;
-            }
-            b = BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), null, options);
-        } catch (OutOfMemoryError ex) {
-            Log.e(TAG, "Got oom exception ", ex);
-            return null;
-        } finally {
-            Util.closeSiliently(pfdInput);
-        }
-        return b;
-    }
 }

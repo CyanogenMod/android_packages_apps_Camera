@@ -154,7 +154,7 @@ public abstract class BaseImage implements IImage {
         Uri url = mContainer.contentUri(mId);
         if (url == null) return null;
 
-        Bitmap b = makeBitmap(targetWidthHeight, url);
+        Bitmap b = Util.makeBitmap(targetWidthHeight, url, mContentResolver);
         if (b != null && rotateAsNeeded) {
             b = Util.rotate(b, getDegreesRotated());
         }
@@ -180,8 +180,9 @@ public abstract class BaseImage implements IImage {
 
         public Bitmap get() {
             try {
-                Bitmap b = makeBitmap(
-                        mTargetWidthHeight, fullSizeImageUri(), mPFD, mOptions);
+                Bitmap b = Util.makeBitmap(
+                        mTargetWidthHeight, fullSizeImageUri(),
+                        mContentResolver, mPFD, mOptions);
                 if (b != null) {
                     b = Util.rotate(b, getDegreesRotated());
                 }
@@ -345,28 +346,6 @@ public abstract class BaseImage implements IImage {
         } finally {
             Util.closeSiliently(input);
         }
-    }
-
-    /**
-     * Make a bitmap from a given Uri.
-     *
-     * @param uri
-     */
-    private Bitmap makeBitmap(int targetWidthOrHeight, Uri uri) {
-        ParcelFileDescriptor input = null;
-        try {
-            input = mContentResolver.openFileDescriptor(uri, "r");
-            return makeBitmap(targetWidthOrHeight, uri, input, null);
-        } catch (IOException ex) {
-            return null;
-        } finally {
-            Util.closeSiliently(input);
-        }
-    }
-
-    protected Bitmap makeBitmap(int targetWidthHeight, Uri uri,
-            ParcelFileDescriptor pfdInput, BitmapFactory.Options options) {
-        return mContainer.makeBitmap(targetWidthHeight, uri, pfdInput, options);
     }
 
     public Bitmap miniThumbBitmap() {

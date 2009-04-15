@@ -199,29 +199,6 @@ public class VideoList extends BaseImageList implements IImageList {
                 timestamp, index);
     }
 
-    @Override
-    protected Bitmap makeBitmap(int targetWidthHeight, Uri uri,
-            ParcelFileDescriptor pfdInput, BitmapFactory.Options options) {
-        MediaPlayer mp = new MediaPlayer();
-        Bitmap thumbnail = ImageManager.DEFAULT_THUMBNAIL;
-        try {
-            mp.setDataSource(mContext, uri);
-//              int duration = mp.getDuration();
-//              int at = duration > 2000 ? 1000 : duration / 2;
-            int at = 1000;
-            thumbnail = mp.getFrameAt(at);
-        } catch (IOException ex) {
-            // ignore
-        } catch (IllegalArgumentException ex) {
-            // ignore
-        } catch (SecurityException ex) {
-            // ignore
-        } finally {
-            mp.release();
-        }
-        return thumbnail;
-    }
-
     private String sortOrder() {
         return Video.Media.DATE_TAKEN +
                 (mSort == ImageManager.SORT_ASCENDING ? " ASC " : " DESC");

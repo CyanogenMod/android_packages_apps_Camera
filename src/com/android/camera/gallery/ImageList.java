@@ -156,50 +156,6 @@ public class ImageList extends BaseImageList implements IImageList {
                 rotation);
     }
 
-    @Override
-    protected Bitmap makeBitmap(int targetWidthHeight, Uri uri,
-            ParcelFileDescriptor pfd, BitmapFactory.Options options) {
-        Bitmap b = null;
-        try {
-            if (pfd == null) pfd = makeInputStream(uri);
-            if (pfd == null) return null;
-            if (options == null) options = new BitmapFactory.Options();
-
-            java.io.FileDescriptor fd = pfd.getFileDescriptor();
-            options.inSampleSize = 1;
-            if (targetWidthHeight != -1) {
-                options.inJustDecodeBounds = true;
-                BitmapManager.instance().decodeFileDescriptor(fd, null, options);
-                if (options.mCancel || options.outWidth == -1
-                        || options.outHeight == -1) {
-                    return null;
-                }
-                options.inSampleSize =
-                        Util.computeSampleSize(options, targetWidthHeight);
-                options.inJustDecodeBounds = false;
-            }
-
-            options.inDither = false;
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            b = BitmapManager.instance()
-                    .decodeFileDescriptor(fd, null, options);
-        } catch (OutOfMemoryError ex) {
-            Log.e(TAG, "Got oom exception ", ex);
-            return null;
-        } finally {
-            Util.closeSiliently(pfd);
-        }
-        return b;
-    }
-
-    private ParcelFileDescriptor makeInputStream(Uri uri) {
-        try {
-            return mContentResolver.openFileDescriptor(uri, "r");
-        } catch (IOException ex) {
-            return null;
-        }
-    }
-
     private String sortOrder() {
         // add id to the end so that we don't ever get random sorting
         // which could happen, I suppose, if the first two values were

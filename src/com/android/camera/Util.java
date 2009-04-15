@@ -16,16 +16,20 @@
 
 package com.android.camera;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.IOException;
+import java.io.FileDescriptor;
 
 /**
  * Collection of utility functions used in this package.
@@ -206,4 +210,67 @@ public class Util {
         }
     }
 
+    /**
+     * Make a bitmap from a given Uri.
+     *
+     * @param uri
+     */
+    public static Bitmap makeBitmap(int targetWidthOrHeight, Uri uri,
+            ContentResolver cr) {
+        ParcelFileDescriptor input = null;
+        try {
+            input = cr.openFileDescriptor(uri, "r");
+            return makeBitmap(targetWidthOrHeight, uri, cr, input, null);
+        } catch (IOException ex) {
+            return null;
+        } finally {
+            closeSiliently(input);
+        }
+    }
+
+    public static Bitmap makeBitmap(int targetWidthHeight, Uri uri,
+            ContentResolver cr, ParcelFileDescriptor pfd,
+            BitmapFactory.Options options) {
+        Bitmap b = null;
+        try {
+            if (pfd == null) pfd = makeInputStream(uri, cr);
+            if (pfd == null) return null;
+            if (options == null) options = new BitmapFactory.Options();
+
+            FileDescriptor fd = pfd.getFileDescriptor();
+            options.inSampleSize = 1;
+            if (targetWidthHeight != -1) {
+                options.inJustDecodeBounds = true;
+                BitmapManager.instance().decodeFileDescriptor(
+                        fd, null, options);
+                if (options.mCancel || options.outWidth == -1
+                        || options.outHeight == -1) {
+                    return null;
+                }
+                options.inSampleSize =
+                        computeSampleSize(options, targetWidthHeight);
+                options.inJustDecodeBounds = false;
+            }
+
+            options.inDither = false;
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            b = BitmapManager.instance()
+                    .decodeFileDescriptor(fd, null, options);
+        } catch (OutOfMemoryError ex) {
+            Log.e(TAG, "Got oom exception ", ex);
+            return null;
+        } finally {
+            closeSiliently(pfd);
+        }
+        return b;
+    }
+
+    private static ParcelFileDescriptor makeInputStream(
+            Uri uri, ContentResolver cr) {
+        try {
+            return cr.openFileDescriptor(uri, "r");
+        } catch (IOException ex) {
+            return null;
+        }
+    }
 }

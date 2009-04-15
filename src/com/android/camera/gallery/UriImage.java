@@ -121,8 +121,9 @@ class UriImage implements IImage {
 
         public Bitmap get() {
             try {
-                Bitmap b = mContainer.makeBitmap(mTargetWidthOrHeight,
-                        fullSizeImageUri(), mPfdInput, mOptions);
+                Bitmap b = Util.makeBitmap(mTargetWidthOrHeight,
+                        fullSizeImageUri(), mContentResolver, mPfdInput,
+                        mOptions);
                 return b;
             } catch (Exception ex) {
                 return null;
