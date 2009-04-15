@@ -139,7 +139,7 @@
     <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> rimanenti"</string>
     <string name="sendImage">"Condividi foto via"</string>
     <string name="setImage">"Imposta foto come"</string>
-    <string name="sendVideo">"Condividi video via"</string>
+    <string name="sendVideo">"Condividi video tramite"</string>
     <string name="movieviewlabel">"Film"</string>
     <string name="loading_video">"Caricamento video..."</string>
     <string name="spaceIsLow_title">"Spazio in esaurimento"</string>
