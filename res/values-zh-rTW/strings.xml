@@ -18,6 +18,8 @@
     <string name="all_images">"所有相片"</string>
     <string name="all_videos">"所有影片"</string>
     <string name="camera_label">"相機"</string>
+    <!-- no translation found for video_camera_label (2899292505526427293) -->
+    <skip />
     <string name="gallery_picker_label">"圖庫"</string>
     <string name="gallery_camera_bucket_name">"攝影機圖片"</string>
     <string name="gallery_camera_videos_bucket_name">"攝影機影片"</string>

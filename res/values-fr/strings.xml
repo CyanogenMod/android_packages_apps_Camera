@@ -18,6 +18,7 @@
     <string name="all_images">"Toutes les images"</string>
     <string name="all_videos">"Toutes les vidéos"</string>
     <string name="camera_label">"Appareil photo"</string>
+    <string name="video_camera_label">"Caméra"</string>
     <string name="gallery_picker_label">"Galerie"</string>
     <string name="gallery_camera_bucket_name">"Photos de l\'appareil"</string>
     <string name="gallery_camera_videos_bucket_name">"Vidéos de la caméra"</string>
@@ -53,14 +54,13 @@
     <string name="camera_share">"Partager"</string>
     <string name="camera_set">"Définir comme"</string>
     <string name="camera_play">"Lire"</string>
-    <string name="camera_attach">"Joindre"</string>
+    <string name="camera_attach">"Pièce jointe"</string>
     <string name="camera_cancel">"Annuler"</string>
     <string name="camera_crop">"Rogner"</string>
     <string name="camera_tossing">"Suppression..."</string>
     <string name="no_way_to_share_image">"Impossible de partager cette image."</string>
     <string name="no_way_to_share_video">"Cette vidéo ne peut pas être partagée."</string>
-    <!-- no translation found for video_play (5287787282508002895) -->
-    <skip />
+    <string name="video_play">"Lire"</string>
     <string name="camera_gallery_photos_text">"Galerie"</string>
     <string name="camera_pick_wallpaper">"Images"</string>
     <string name="camera_setas_wallpaper">"Arrière-plan"</string>

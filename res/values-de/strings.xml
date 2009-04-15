@@ -18,6 +18,7 @@
     <string name="all_images">"Alle Bilder"</string>
     <string name="all_videos">"Alle Videos"</string>
     <string name="camera_label">"Kamera"</string>
+    <string name="video_camera_label">"Camcorder"</string>
     <string name="gallery_picker_label">"Galerie"</string>
     <string name="gallery_camera_bucket_name">"Kamerabilder"</string>
     <string name="gallery_camera_videos_bucket_name">"Kameravideos"</string>
@@ -59,7 +60,7 @@
     <string name="camera_tossing">"Löschvorgang..."</string>
     <string name="no_way_to_share_image">"Dieses Bild kann nicht weitergeleitet werden."</string>
     <string name="no_way_to_share_video">"Dieses Video kann nicht weitergeleitet werden."</string>
-    <string name="video_play">"Play"</string>
+    <string name="video_play">"Wiedergeben"</string>
     <string name="camera_gallery_photos_text">"Galerie"</string>
     <string name="camera_pick_wallpaper">"Bilder"</string>
     <string name="camera_setas_wallpaper">"Hintergrund"</string>
@@ -88,20 +89,20 @@
     <item>"3 Sekunden"</item>
     <item>"4 Sekunden"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title">"Diashow - Übergang"</string>
+    <string name="pref_gallery_slideshow_transition_title">"Diashow-Übergang"</string>
     <string name="pref_gallery_slideshow_transition_summary">"Effekt auswählen, der beim Wechsel zum nächsten Bild angewendet wird"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle">"Diashow - Übergang"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle">"Diashow-Übergang"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
     <item>"Ein- und ausblenden"</item>
     <item>"Einblendung von links - rechts"</item>
     <item>"Einblendung von oben - unten"</item>
     <item>"Zufällige Auswahl"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_repeat_title">"Diashow erneut anzeigen?"</string>
+    <string name="pref_gallery_slideshow_repeat_title">"Diashow wiederholen"</string>
     <string name="pref_gallery_slideshow_repeat_summary">"Diashow mehrmals anzeigen"</string>
     <string name="pref_gallery_slideshow_shuffle_title">"Bilder mischen"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"Bilder in zufälliger Reihenfolge anzeigen"</string>
-    <string name="pref_camera_recordlocation_title">"Aufnahmeort in Bildern speichern"</string>
+    <string name="pref_camera_recordlocation_title">"Aufnahmeort speichern"</string>
     <string name="pref_camera_recordlocation_summary">"Aufnahmeort in Bilddaten speichern"</string>
     <string name="pref_camera_videoquality_category">"Videoqualität"</string>
     <string name="pref_camera_videoquality_title">"Videoqualität auswählen"</string>

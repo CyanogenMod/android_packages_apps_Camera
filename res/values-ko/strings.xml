@@ -18,6 +18,7 @@
     <string name="all_images">"모든 사진"</string>
     <string name="all_videos">"모든 동영상"</string>
     <string name="camera_label">"카메라"</string>
+    <string name="video_camera_label">"캠코더"</string>
     <string name="gallery_picker_label">"갤러리"</string>
     <string name="gallery_camera_bucket_name">"카메라 사진"</string>
     <string name="gallery_camera_videos_bucket_name">"카메라 동영상"</string>
@@ -59,8 +60,7 @@
     <string name="camera_tossing">"삭제 중..."</string>
     <string name="no_way_to_share_image">"공유할 수 없는 사진입니다."</string>
     <string name="no_way_to_share_video">"공유할 수 없는 동영상입니다."</string>
-    <!-- no translation found for video_play (5287787282508002895) -->
-    <skip />
+    <string name="video_play">"재생"</string>
     <string name="camera_gallery_photos_text">"갤러리"</string>
     <string name="camera_pick_wallpaper">"사진"</string>
     <string name="camera_setas_wallpaper">"배경화면"</string>

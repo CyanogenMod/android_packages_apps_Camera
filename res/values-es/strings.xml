@@ -18,6 +18,7 @@
     <string name="all_images">"Todas las imágenes"</string>
     <string name="all_videos">"Todos los vídeos"</string>
     <string name="camera_label">"Cámara"</string>
+    <string name="video_camera_label">"Videocámara"</string>
     <string name="gallery_picker_label">"Galería"</string>
     <string name="gallery_camera_bucket_name">"Imágenes de cámara"</string>
     <string name="gallery_camera_videos_bucket_name">"Vídeos de cámara"</string>
@@ -30,7 +31,7 @@
     <string name="no_storage">"Antes de utilizar la cámara, debes insertar una tarjeta SD."</string>
     <string name="not_enough_space">"La tarjeta SD está llena."</string>
     <string name="preparing_sd">"Preparando tarjeta SD…"</string>
-    <string name="wallpaper">"Estableciendo fondo de pantalla; por favor, espera..."</string>
+    <string name="wallpaper">"Estableciendo fondo de pantalla..."</string>
     <string name="savingImage">"Guardando imagen..."</string>
     <string name="runningFaceDetection">"Por favor, espera..."</string>
     <string name="flip_orientation">"Cambiar orientación"</string>
@@ -59,8 +60,7 @@
     <string name="camera_tossing">"Eliminando..."</string>
     <string name="no_way_to_share_image">"Esta imagen no se puede compartir."</string>
     <string name="no_way_to_share_video">"Este vídeo no se puede compartir."</string>
-    <!-- no translation found for video_play (5287787282508002895) -->
-    <skip />
+    <string name="video_play">"Reproducir"</string>
     <string name="camera_gallery_photos_text">"Galería"</string>
     <string name="camera_pick_wallpaper">"Imágenes"</string>
     <string name="camera_setas_wallpaper">"Fondo de pantalla"</string>
@@ -100,7 +100,7 @@
   </string-array>
     <string name="pref_gallery_slideshow_repeat_title">"Repetir presentación"</string>
     <string name="pref_gallery_slideshow_repeat_summary">"Mostrar presentación más de una vez"</string>
-    <string name="pref_gallery_slideshow_shuffle_title">"Reproducir diapositivas en orden aleatorio"</string>
+    <string name="pref_gallery_slideshow_shuffle_title">"Reproducir aleatoriamente"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"Mostrar imágenes en orden aleatorio"</string>
     <string name="pref_camera_recordlocation_title">"Almacenar ubicación en imágenes"</string>
     <string name="pref_camera_recordlocation_summary">"Registrar ubicación en datos de imagen"</string>
@@ -131,7 +131,7 @@
     <string name="details_ok">"Aceptar"</string>
     <string name="context_menu_header">"Opciones de imagen"</string>
     <string name="video_context_menu_header">"Opciones de vídeo"</string>
-    <string name="multiface_crop_help">"Selecciona una cara para empezar."</string>
+    <string name="multiface_crop_help">"Toca una cara para empezar."</string>
     <string name="photos_gallery_title">"Galería"</string>
     <string name="pick_photos_gallery_title">"Seleccionar imagen"</string>
     <string name="videos_gallery_title">"Galería"</string>

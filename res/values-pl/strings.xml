@@ -18,6 +18,7 @@
     <string name="all_images">"Wszystkie zdjęcia"</string>
     <string name="all_videos">"Wszystkie filmy"</string>
     <string name="camera_label">"Aparat"</string>
+    <string name="video_camera_label">"Kamera"</string>
     <string name="gallery_picker_label">"Galeria"</string>
     <string name="gallery_camera_bucket_name">"Zdjęcia z aparatu"</string>
     <string name="gallery_camera_videos_bucket_name">"Filmy z aparatu"</string>
@@ -59,8 +60,7 @@
     <string name="camera_tossing">"Trwa usuwanie…"</string>
     <string name="no_way_to_share_image">"Nie można przesłać tego zdjęcia."</string>
     <string name="no_way_to_share_video">"Nie można przesłać tego filmu."</string>
-    <!-- no translation found for video_play (5287787282508002895) -->
-    <skip />
+    <string name="video_play">"Odtwórz"</string>
     <string name="camera_gallery_photos_text">"Galeria"</string>
     <string name="camera_pick_wallpaper">"Zdjęcia"</string>
     <string name="camera_setas_wallpaper">"Tapeta"</string>
@@ -81,17 +81,17 @@
     <item>"Od najnowszego"</item>
     <item>"Od najstarszego"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_interval_title">"Pokaz slajdów – interwał"</string>
+    <string name="pref_gallery_slideshow_interval_title">"Interwał pokazu slajdów"</string>
     <string name="pref_gallery_slideshow_interval_summary">"Wybierz, jak długo mają być wyświetlane poszczególne zdjęcia w pokazie slajdów"</string>
-    <string name="pref_gallery_slideshow_interval_dialogtitle">"Pokaz slajdów – interwał"</string>
+    <string name="pref_gallery_slideshow_interval_dialogtitle">"Interwał pokazu slajdów"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
     <item>"2 sekundy"</item>
     <item>"3 sekundy"</item>
     <item>"4 sekundy"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title">"Pokaz slajdów – efekty"</string>
+    <string name="pref_gallery_slideshow_transition_title">"Efekty pokazu slajdów"</string>
     <string name="pref_gallery_slideshow_transition_summary">"Wybierz efekt używany przy przejściu z jednego zdjęcia do kolejnego"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle">"Pokaz slajdów – efekty"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle">"Efekty pokazu slajdów"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
     <item>"Pojawianie i znikanie"</item>
     <item>"Przesuwanie z lewa w prawo"</item>
@@ -110,7 +110,7 @@
     <string name="pref_camera_videoquality_entry_1">"Wysoka (dla karty SD)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Jakość wideo"</string>
     <string name="camerasettings">"Ustawienia"</string>
-    <string name="image_gallery_NoImageView_text">"Brak plików."</string>
+    <string name="image_gallery_NoImageView_text">"Brak plików"</string>
     <string name="pref_gallery_confirm_delete_title">"Potwierdzanie usuwania"</string>
     <string name="pref_gallery_confirm_delete_summary">"Wyświetl potwierdzenie przed usunięciem zdjęcia lub filmu"</string>
     <string name="details_panel_title">"Szczegóły"</string>

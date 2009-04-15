@@ -18,6 +18,7 @@
     <string name="all_images">"Všechny fotografie"</string>
     <string name="all_videos">"Všechna videa"</string>
     <string name="camera_label">"Fotoaparát"</string>
+    <string name="video_camera_label">"Videokamera"</string>
     <string name="gallery_picker_label">"Galerie"</string>
     <string name="gallery_camera_bucket_name">"Pořízené fotografie"</string>
     <string name="gallery_camera_videos_bucket_name">"Pořízená videa"</string>
@@ -59,8 +60,7 @@
     <string name="camera_tossing">"Mazání..."</string>
     <string name="no_way_to_share_image">"Tuto fotografii nelze sdílet."</string>
     <string name="no_way_to_share_video">"Toto video nelze sdílet."</string>
-    <!-- no translation found for video_play (5287787282508002895) -->
-    <skip />
+    <string name="video_play">"Přehrát"</string>
     <string name="camera_gallery_photos_text">"Galerie"</string>
     <string name="camera_pick_wallpaper">"Fotografie"</string>
     <string name="camera_setas_wallpaper">"Tapeta"</string>
@@ -103,7 +103,7 @@
     <string name="pref_gallery_slideshow_shuffle_title">"Náhodné pořadí snímků"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"Zobrazit fotografie v náhodném pořadí"</string>
     <string name="pref_camera_recordlocation_title">"K fotografiím ukládat místo pořízení"</string>
-    <string name="pref_camera_recordlocation_summary">"V datech fotografie zaznamenat místo pořízení"</string>
+    <string name="pref_camera_recordlocation_summary">"V údajích o fotografii zaznamenat místo pořízení"</string>
     <string name="pref_camera_videoquality_category">"Kvalita videa"</string>
     <string name="pref_camera_videoquality_title">"Vybrat kvalitu videa"</string>
     <string name="pref_camera_videoquality_entry_0">"Nízká (pro zprávy MMS)"</string>
@@ -112,7 +112,7 @@
     <string name="camerasettings">"Nastavení"</string>
     <string name="image_gallery_NoImageView_text">"Žádná média nebyla nalezena."</string>
     <string name="pref_gallery_confirm_delete_title">"Potvrdit smazání"</string>
-    <string name="pref_gallery_confirm_delete_summary">"Žádat potvrzení před smazáním obrázku nebo videa"</string>
+    <string name="pref_gallery_confirm_delete_summary">"Požadovat potvrzení před smazáním obrázku nebo videa"</string>
     <string name="details_panel_title">"Podrobnosti"</string>
     <string name="details_file_size">"Velikost souboru:"</string>
     <string name="details_image_resolution">"Rozlišení:"</string>
