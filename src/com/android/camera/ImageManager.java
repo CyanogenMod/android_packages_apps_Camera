@@ -189,13 +189,23 @@ public class ImageManager {
         return Util.isVideoMimeType(image.getMimeType());
     }
 
+    public void setImageSize(ContentResolver cr, Uri uri, long size) {
+        ContentValues values = new ContentValues();
+        values.put(Images.Media.SIZE, size);
+        cr.update(uri, values, null, null);
+    }
+
     public Uri addImage(Context ctx, ContentResolver cr, String title,
             long dateTaken, Location location,
             int orientation, String directory, String filename) {
 
         ContentValues values = new ContentValues(7);
         values.put(Images.Media.TITLE, title);
-        values.put(Images.Media.DISPLAY_NAME, title);
+
+        // That filename is what will be handed to Gmail when a user shares a
+        // photo. Gmail gets the name of the picture attachment from the
+        // "DISPLAY_NAME" field.
+        values.put(Images.Media.DISPLAY_NAME, filename);
         values.put(Images.Media.DATE_TAKEN, dateTaken);
         values.put(Images.Media.MIME_TYPE, "image/jpeg");
         values.put(Images.Media.ORIENTATION, orientation);
@@ -218,42 +228,17 @@ public class ImageManager {
             values.put(Images.Media.DATA, value);
         }
 
-        Uri uri = cr.insert(sStorageURI, values);
-
-        // The line above will create a filename that ends in .jpg
-        // That filename is what will be handed to gmail when a user shares a
-        // photo. Gmail gets the name of the picture attachment from the
-        // "DISPLAY_NAME" field. Extract the filename and jam it into the
-        // display name.
-        String projection[] = new String [] {
-                ImageColumns._ID, Images.Media.DISPLAY_NAME, Images.Media.DATA};
-        Cursor c = cr.query(uri, projection, null, null, null);
-
-        //TODO: check why we need this
-        if (c.moveToFirst()) {
-            String filePath = c.getString(2);
-            if (filePath != null) {
-                int pos = filePath.lastIndexOf("/");
-                if (pos >= 0) {
-                    // pick off the filename
-                    filePath = filePath.substring(pos + 1);
-                    c.updateString(1, filePath);
-                    c.commitUpdates();
-                }
-            }
-        }
-        c.close();
-        return uri;
+        return cr.insert(sStorageURI, values);
     }
 
     private static class AddImageCancelable extends BaseCancelable<Void> {
         private ICancelable<Boolean> mSaveImageCancelable;
-        private Uri mUri;
-        private Context mCtx;
-        private ContentResolver mCr;
-        private int mOrientation;
-        private Bitmap mSource;
-        private byte [] mJpegData;
+        private final Uri mUri;
+        private final Context mCtx;
+        private final ContentResolver mCr;
+        private final int mOrientation;
+        private final Bitmap mSource;
+        private final byte [] mJpegData;
 
         public AddImageCancelable(Uri uri, Context ctx, ContentResolver cr,
                 int orientation, Bitmap source, byte[] jpegData) {

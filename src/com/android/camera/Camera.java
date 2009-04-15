@@ -470,9 +470,12 @@ public class Camera extends Activity implements View.OnClickListener,
                 if (DEBUG_TIME_OPERATIONS) {
                     startTiming();
                 }
+
+                ImageManager imgManager = ImageManager.instance();
+
                 long dateTaken = System.currentTimeMillis();
                 String name = createName(dateTaken) + ".jpg";
-                mLastContentUri = ImageManager.instance().addImage(
+                mLastContentUri = imgManager.addImage(
                         Camera.this,
                         mContentResolver,
                         name,
@@ -487,11 +490,13 @@ public class Camera extends Activity implements View.OnClickListener,
                     mCancel = true;
                 }
                 if (!mCancel) {
-                    mAddImageCancelable =
-                            ImageManager.instance().storeImage(mLastContentUri,
+                    mAddImageCancelable = imgManager.storeImage(mLastContentUri,
                             Camera.this, mContentResolver, 0, null, data);
                     mAddImageCancelable.get();
                     mAddImageCancelable = null;
+                    imgManager.setImageSize(mContentResolver, mLastContentUri,
+                            new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
+                            name).length());
                 }
 
                 if (DEBUG_TIME_OPERATIONS) {
