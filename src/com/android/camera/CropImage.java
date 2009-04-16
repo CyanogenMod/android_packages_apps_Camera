@@ -254,7 +254,7 @@ public class CropImage extends Activity {
         if (mOutputX != 0 && mOutputY != 0) {
             if (mScale) {
                 /* Scale the image to the required dimensions */
-                mCroppedImage = ImageLoader.transform(new Matrix(),
+                mCroppedImage = Util.transform(new Matrix(),
                         mCroppedImage, mOutputX, mOutputY, mScaleUp);
             } else {
 
