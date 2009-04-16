@@ -17,6 +17,9 @@
 package com.android.camera.gallery;
 
 import com.android.camera.BitmapManager;
+import com.android.camera.ExifInterface;
+import com.android.camera.ImageManager;
+import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -27,9 +30,6 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
-
-import com.android.camera.ExifInterface;
-import com.android.camera.ImageManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -165,13 +165,12 @@ public class Image extends BaseImage implements IImage {
         mExifData.put(tag, value);
     }
 
-    private class SaveImageContentsCancelable extends BaseCancelable
-            implements IGetBooleanCancelable {
+    private class SaveImageContentsCancelable extends BaseCancelable<Boolean> {
         private Bitmap mImage;
         private byte [] mJpegData;
         private int mOrientation;
         private Cursor mCursor;
-        IGetBooleanCancelable mCurrentCancelable = null;
+        ICancelable<Boolean> mCurrentCancelable = null;
 
         SaveImageContentsCancelable(Bitmap image, byte[] jpegData,
                 int orientation, Cursor cursor) {
@@ -189,7 +188,7 @@ public class Image extends BaseImage implements IImage {
             return true;
         }
 
-        public boolean get() {
+        public Boolean get() {
             try {
                 Bitmap thumbnail = null;
 
@@ -198,7 +197,7 @@ public class Image extends BaseImage implements IImage {
                 synchronized (this) {
                     checkCanceled();
                     mCurrentCancelable =
-                        compressImageToFile(mImage, mJpegData, uri);
+                            compressImageToFile(mImage, mJpegData, uri);
                 }
 
                 long t2 = System.currentTimeMillis();
@@ -277,7 +276,7 @@ public class Image extends BaseImage implements IImage {
         }
     }
 
-    public IGetBooleanCancelable saveImageContents(Bitmap image,
+    public ICancelable<Boolean> saveImageContents(Bitmap image,
             byte [] jpegData, int orientation, boolean newFile, Cursor cursor) {
         return new SaveImageContentsCancelable(
                 image, jpegData, orientation, cursor);
@@ -385,7 +384,7 @@ public class Image extends BaseImage implements IImage {
     private Bitmap decodeCurrentImage(Cursor c) {
         Uri thumbUri = ContentUris.withAppendedId(
                 mContainer.mThumbUri,
-                c.getLong(((ImageList) mContainer).INDEX_THUMB_ID));
+                c.getLong(ImageList.INDEX_THUMB_ID));
         ParcelFileDescriptor pfdInput;
         Bitmap bitmap = null;
         try {

@@ -17,6 +17,8 @@
 package com.android.camera.gallery;
 
 import com.android.camera.BitmapManager;
+import com.android.camera.ImageManager;
+import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
@@ -25,8 +27,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-
-import com.android.camera.ImageManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -113,8 +113,7 @@ public class SingleImageList extends BaseImageList implements IImageList {
             }
         }
 
-        final class LoadBitmapCancelable extends BaseCancelable
-                implements IGetBitmapCancelable {
+        final class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
             ParcelFileDescriptor mPfdInput;
             BitmapFactory.Options mOptions = new BitmapFactory.Options();
             long mCancelInitiationTime;
@@ -157,7 +156,7 @@ public class SingleImageList extends BaseImageList implements IImageList {
             }
         }
 
-        public IGetBitmapCancelable fullSizeBitmapCancelable(
+        public ICancelable<Bitmap> fullSizeBitmapCancelable(
                 int targetWidthOrHeight) {
             try {
                 ParcelFileDescriptor pfdInput = getPFD();

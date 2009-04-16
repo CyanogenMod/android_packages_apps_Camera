@@ -19,7 +19,7 @@ package com.android.camera.gallery;
 /**
  * The interface for all the tasks that could be canceled.
  */
-public interface ICancelable {
+public interface ICancelable<T> {
     /*
      * call cancel() when the unit of work in progress needs to be
      * canceled.  This should return true if it was possible to
@@ -27,4 +27,6 @@ public interface ICancelable {
      * may still be able to cleanup and simulate cancelation.
      */
     public boolean cancel();
+
+    public T get();
 }

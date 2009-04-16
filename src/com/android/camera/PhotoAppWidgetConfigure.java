@@ -26,18 +26,20 @@ import android.os.Bundle;
 import android.widget.RemoteViews;
 
 class PhotoAppWidgetConfigure extends Activity {
+
+    @SuppressWarnings("unused")
     private static final String TAG = "PhotoAppWidgetConfigure";
     static final int REQUEST_GET_PHOTO = 2;
-    
+
     int mAppWidgetId = -1;
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        
+
         // Someone is requesting that we configure the given mAppWidgetId, which
         // means we prompt the user to pick and crop a photo.
-        
+
         mAppWidgetId = getIntent().getIntExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         if (mAppWidgetId == -1) {
@@ -56,17 +58,17 @@ class PhotoAppWidgetConfigure extends Activity {
         intent.putExtra("outputY", 192);
         intent.putExtra("noFaceDetection", true);
         intent.putExtra("return-data", true);
-        
+
         startActivityForResult(intent, REQUEST_GET_PHOTO);
     }
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         if (resultCode == RESULT_OK && mAppWidgetId != -1) {
             // Store the cropped photo in our database
             Bitmap bitmap = (Bitmap) data.getParcelableExtra("data");
-            
+
             PhotoDatabaseHelper helper = new PhotoDatabaseHelper(this);
             if (helper.setPhoto(mAppWidgetId, bitmap)) {
                 resultCode = Activity.RESULT_OK;
@@ -83,12 +85,12 @@ class PhotoAppWidgetConfigure extends Activity {
         } else {
             resultCode = Activity.RESULT_CANCELED;
         }
-        
+
         // Make sure we pass back the original mAppWidgetId
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         setResult(resultCode, resultValue);
         finish();
     }
-    
+
 }

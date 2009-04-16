@@ -46,19 +46,19 @@ import android.provider.MediaStore.Images;
 import android.util.Config;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,7 +177,7 @@ public class GalleryPicker extends Activity {
                 launchFolderGallery(position);
             }
         });
-    
+
         mGridView.setOnCreateContextMenuListener(
                 new View.OnCreateContextMenuListener() {
                     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -185,10 +185,10 @@ public class GalleryPicker extends Activity {
                             onCreateGalleryPickerContextMenu(menu, menuInfo);
                     }
                 });
- 
+
         ImageManager.ensureOSXCompatibleFolder();
     }
-    
+
     // This is called when we receive media-related broadcast.
     private void onReceiveMediaBroadcast(Intent intent) {
         if (Config.LOGV) {
@@ -594,7 +594,7 @@ public class GalleryPicker extends Activity {
 
             TextView titleView = (TextView) v.findViewById(R.id.title);
 
-            GalleryPickerItem iv = 
+            GalleryPickerItem iv =
                     (GalleryPickerItem) v.findViewById(R.id.thumbnail);
             iv.setOverlay(mItems.get(position).getOverlay());
             ItemInfo info = mItems.get(position).mThumb;
@@ -610,13 +610,13 @@ public class GalleryPicker extends Activity {
 
             return v;
         }
-    };
+    }
 
     @Override
     public void onPause() {
         super.onPause();
         mPausing = true;
-        
+
         BitmapManager.instance().cancelAllDecoding();
         unregisterReceiver(mReceiver);
 

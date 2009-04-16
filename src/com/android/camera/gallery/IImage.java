@@ -38,7 +38,7 @@ public interface IImage {
      *
      * @return an object which can be canceled while the bitmap is loading
      */
-    public abstract IGetBitmapCancelable fullSizeBitmapCancelable(
+    public abstract ICancelable<Bitmap> fullSizeBitmapCancelable(
             int targetWidthOrHeight);
 
     /**

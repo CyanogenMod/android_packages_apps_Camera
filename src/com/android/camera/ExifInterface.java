@@ -31,11 +31,11 @@ public class ExifInterface {
     public static final int ORIENTATION_NORMAL = 1;
 
     // left right reversed mirror
-    public static final int ORIENTATION_FLIP_HORIZONTAL = 2;    
+    public static final int ORIENTATION_FLIP_HORIZONTAL = 2;
     public static final int ORIENTATION_ROTATE_180 = 3;
 
     // upside down mirror
-    public static final int ORIENTATION_FLIP_VERTICAL = 4;  
+    public static final int ORIENTATION_FLIP_VERTICAL = 4;
 
     // flipped about top-left <--> bottom-right axis
     public static final int ORIENTATION_TRANSPOSE = 5;
@@ -51,7 +51,7 @@ public class ExifInterface {
 
     // The Exif tag names
     public static final String TAG_ORIENTATION = "Orientation";
-    
+
     static final String TAG_DATE_TIME_ORIGINAL = "DateTimeOriginal";
     static final String TAG_MAKE = "Make";
     static final String TAG_MODEL = "Model";
@@ -61,7 +61,7 @@ public class ExifInterface {
 
     static final String TAG_GPS_LATITUDE = "GPSLatitude";
     static final String TAG_GPS_LONGITUDE = "GPSLongitude";
-    
+
     static final String TAG_GPS_LATITUDE_REF = "GPSLatitudeRef";
     static final String TAG_GPS_LONGITUDE_REF = "GPSLongitudeRef";
 
@@ -97,14 +97,14 @@ public class ExifInterface {
             --size;
         }
         sb.append(size + " ");
-        Iterator keyIterator = attributes.keySet().iterator();
+        Iterator<String> keyIterator = attributes.keySet().iterator();
         while (keyIterator.hasNext()) {
-            String key = (String) keyIterator.next();
+            String key = keyIterator.next();
             if (key.equals("hasThumbnail")) {
                 // this is a fake attribute not saved as an exif tag
                 continue;
             }
-            String val = (String) attributes.get(key);
+            String val = attributes.get(key);
             sb.append(key + "=");
             sb.append(val.length() + " ");
             sb.append(val);
@@ -260,14 +260,14 @@ public class ExifInterface {
                     / Float.parseFloat(pair[1].trim());
 
             float result = degrees + (minutes / 60F) + (seconds / (60F * 60F));
-            
+
             String preliminaryResult = String.valueOf(result);
             if (usePositiveNegative) {
                 String neg = (ref.equals("S") || ref.equals("E")) ? "-" : "";
                 return neg + preliminaryResult;
             } else {
                 return preliminaryResult + String.valueOf((char) 186) + " "
-                        + ref; 
+                        + ref;
             }
         } catch (RuntimeException ex) {
             // if for whatever reason we can't parse the lat long then return
@@ -275,26 +275,25 @@ public class ExifInterface {
             return null;
         }
     }
-        
+
     public static String makeLatLongString(double d) {
         d = Math.abs(d);
-        
+
         int degrees = (int) d;
-        
-        double remainder = d - (double) degrees;
+
+        double remainder = d - degrees;
         int minutes = (int) (remainder * 60D);
         // really seconds * 1000
         int seconds = (int) (((remainder * 60D) - minutes) * 60D * 1000D);
-        
-        String retVal = degrees + "/1," + minutes + "/1," + (int) seconds
-                + "/1000";
+
+        String retVal = degrees + "/1," + minutes + "/1," + seconds + "/1000";
         return retVal;
     }
-    
+
     public static String makeLatStringRef(double lat) {
         return lat >= 0D ? "N" : "S";
     }
-    
+
     public static String makeLonStringRef(double lon) {
         return lon >= 0D ? "W" : "E";
     }

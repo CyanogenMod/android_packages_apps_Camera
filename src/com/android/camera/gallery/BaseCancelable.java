@@ -20,7 +20,7 @@ package com.android.camera.gallery;
 /**
  * A base class for the interface <code>ICancelable</code>.
  */
-public abstract class BaseCancelable implements ICancelable {
+public abstract class BaseCancelable<T> implements ICancelable<T> {
     protected boolean mCancel = false;
     protected boolean mFinished = false;
 

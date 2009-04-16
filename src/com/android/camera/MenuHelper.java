@@ -30,19 +30,19 @@ import android.os.Handler;
 import android.os.StatFs;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.text.format.Formatter;
 import android.util.Config;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -132,7 +132,7 @@ public class MenuHelper {
                uri.getScheme().equals("content") &&
                uri.getAuthority().equals("mms");
     }
-    
+
     public static void enableShareMenuItem(Menu menu, boolean enabled) {
         MenuItem item = menu.findItem(MENU_IMAGE_SHARE);
         if (item != null) {
@@ -167,9 +167,9 @@ public class MenuHelper {
                 textView.setText(image.getDisplayName());
 
                 long length = getImageFileSize(image);
-                String lengthString = lengthString = length < 0 ? ""
-                        : android.text.format.Formatter.formatFileSize(
-                        activity, length);
+                String lengthString = length < 0
+                        ? ""
+                        : Formatter.formatFileSize(activity, length);
                 ((TextView) d
                     .findViewById(R.id.details_file_size_value))
                     .setText(lengthString);
@@ -257,7 +257,7 @@ public class MenuHelper {
                                 bps = String.format(
                                         activity.getString(
                                         R.string.details_mbps),
-                                        ((double) bitRate) / 1000000.0);
+                                        (bitRate) / 1000000.0);
                             }
                             ((TextView) d.findViewById(
                                     R.id.details_bit_rate_value))

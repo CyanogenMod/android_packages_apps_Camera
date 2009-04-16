@@ -23,6 +23,8 @@ import android.content.Intent;
  * action.
  */
 public class DrmWallpaper extends Wallpaper {
+
+    @Override
     protected void formatIntent(Intent intent) {
         super.formatIntent(intent);
         intent.putExtra("pick-drm", true);

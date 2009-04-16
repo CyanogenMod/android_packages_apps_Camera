@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IAddImageCancelable;
+import com.android.camera.gallery.ICancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -226,7 +226,7 @@ public class CropImage extends Activity {
             }
         }).start();
     }
-    
+
     private void onSaveClicked() {
         // TODO this code needs to change to use the decode/crop/encode single
         // step api so that we don't require that the whole (possibly large)
@@ -382,9 +382,7 @@ public class CropImage extends Activity {
                         }
 
                         try {
-                            Uri newUri = ImageManager
-                                    .instance()
-                                    .addImage(
+                            Uri newUri = ImageManager.instance().addImage(
                                     CropImage.this,
                                     getContentResolver(),
                                     mImage.getTitle(),
@@ -398,9 +396,8 @@ public class CropImage extends Activity {
                                     directory.toString(),
                                     fileName + "-" + x + ".jpg");
 
-                            IAddImageCancelable cancelable =
-                                    ImageManager.instance()
-                                    .storeImage(
+                            ICancelable<Void> cancelable =
+                                    ImageManager.instance().storeImage(
                                     newUri,
                                     CropImage.this,
                                     getContentResolver(),
@@ -424,14 +421,16 @@ public class CropImage extends Activity {
             Thread t = new Thread(r);
             t.start();
         }
-        
+
     }
-    
+
+    @Override
     public void onResume() {
         super.onResume();
         BitmapManager.instance().allowAllDecoding();
     }
 
+    @Override
     public void onPause() {
         super.onPause();
         BitmapManager.instance().cancelAllDecoding();
@@ -528,7 +527,7 @@ public class CropImage extends Activity {
 
             // 256 pixels wide is enough.
             if (mBitmap.getWidth() > 256) {
-                mScale = 256.0F / (float) mBitmap.getWidth();
+                mScale = 256.0F / mBitmap.getWidth();
             }
             Matrix matrix = new Matrix();
             matrix.setScale(mScale, mScale);
@@ -622,6 +621,7 @@ class CropImageView extends ImageViewTouchBase {
         super(context, attrs);
     }
 
+    @Override
     protected void zoomTo(float scale, float centerX, float centerY) {
         super.zoomTo(scale, centerX, centerY);
         for (HighlightView hv : mHighlightViews) {
@@ -630,6 +630,7 @@ class CropImageView extends ImageViewTouchBase {
         }
     }
 
+    @Override
     protected void zoomIn() {
         super.zoomIn();
         for (HighlightView hv : mHighlightViews) {
@@ -638,6 +639,7 @@ class CropImageView extends ImageViewTouchBase {
         }
     }
 
+    @Override
     protected void zoomOut() {
         super.zoomOut();
         for (HighlightView hv : mHighlightViews) {
