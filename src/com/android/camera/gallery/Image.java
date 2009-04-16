@@ -163,10 +163,10 @@ public class Image extends BaseImage implements IImage {
     }
 
     private class SaveImageContentsCancelable extends BaseCancelable<Boolean> {
-        private Bitmap mImage;
-        private byte [] mJpegData;
-        private int mOrientation;
-        private Cursor mCursor;
+        private final Bitmap mImage;
+        private final byte [] mJpegData;
+        private final int mOrientation;
+        private final Cursor mCursor;
         ICancelable<Boolean> mCurrentCancelable = null;
 
         SaveImageContentsCancelable(Bitmap image, byte[] jpegData,
@@ -372,7 +372,7 @@ public class Image extends BaseImage implements IImage {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             pfdInput = mContentResolver.openFileDescriptor(thumbUri, "r");
             bitmap = BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), null, options);
+                    pfdInput.getFileDescriptor(), options);
             pfdInput.close();
         } catch (FileNotFoundException ex) {
             Log.e(TAG, "couldn't open thumbnail " + thumbUri + "; " + ex);

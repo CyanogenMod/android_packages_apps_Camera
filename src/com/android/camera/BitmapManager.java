@@ -18,7 +18,6 @@ package com.android.camera;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.util.Log;
 
 import java.io.FileDescriptor;
@@ -58,7 +57,7 @@ public class BitmapManager {
             return s;
         }
     }
-    private WeakHashMap<Thread, ThreadStatus> mThreadStatus =
+    private final WeakHashMap<Thread, ThreadStatus> mThreadStatus =
             new WeakHashMap<Thread, ThreadStatus>();
     private boolean mAllowDecoding = false;
     private boolean mLocked = false;
@@ -234,7 +233,6 @@ public class BitmapManager {
      * The real place to delegate bitmap decoding to BitmapFactory.
      */
     public Bitmap decodeFileDescriptor(FileDescriptor fd,
-                                       Rect outPadding,
                                        BitmapFactory.Options options) {
         // Does the global switch turn on?
         if (!canDecode() || options.mCancel) {

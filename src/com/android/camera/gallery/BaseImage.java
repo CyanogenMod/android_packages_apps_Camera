@@ -42,6 +42,7 @@ import java.util.HashMap;
 public abstract class BaseImage implements IImage {
     private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImage";
+    private static final int UNKNOWN_LENGTH = -1;
 
     private static final byte [] sMiniThumbData =
             new byte[MiniThumbFile.BYTES_PER_MINTHUMB];
@@ -51,6 +52,9 @@ public abstract class BaseImage implements IImage {
     protected BaseImageList mContainer;
     protected HashMap<String, String> mExifData;
     protected int mCursorRow;
+
+    private int mWidth = UNKNOWN_LENGTH;
+    private int mHeight = UNKNOWN_LENGTH;
 
     protected BaseImage(long id, long miniThumbMagic, ContentResolver cr,
             BaseImageList container, int cursorRow) {
@@ -76,9 +80,9 @@ public abstract class BaseImage implements IImage {
     private class CompressImageToFile extends BaseCancelable<Boolean> {
         private ThreadSafeOutputStream mOutputStream = null;
 
-        private Bitmap mBitmap;
-        private Uri mUri;
-        private byte[] mJpegData;
+        private final Bitmap mBitmap;
+        private final Uri mUri;
+        private final byte[] mJpegData;
 
         public CompressImageToFile(Bitmap bitmap, byte[] jpegData, Uri uri) {
             mBitmap = bitmap;
@@ -162,9 +166,9 @@ public abstract class BaseImage implements IImage {
     }
 
     private class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
-        private ParcelFileDescriptor mPFD;
-        private BitmapFactory.Options mOptions = new BitmapFactory.Options();
-        private int mTargetWidthHeight;
+        private final ParcelFileDescriptor mPFD;
+        private final BitmapFactory.Options mOptions = new BitmapFactory.Options();
+        private final int mTargetWidthHeight;
 
         public LoadBitmapCancelable(
                 ParcelFileDescriptor pfdInput, int targetWidthHeight) {
@@ -314,38 +318,33 @@ public abstract class BaseImage implements IImage {
         return mCursorRow;
     }
 
-    public int getWidth() {
+    private void setupDimension() {
         ParcelFileDescriptor input = null;
         try {
-            Uri uri = fullSizeImageUri();
-            input = mContentResolver.openFileDescriptor(uri, "r");
+            input = mContentResolver
+                    .openFileDescriptor(fullSizeImageUri(), "r");
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapManager.instance().decodeFileDescriptor(
-                    input.getFileDescriptor(), null, options);
-            return options.outWidth;
-        } catch (IOException ex) {
-            return 0;
+                    input.getFileDescriptor(), options);
+            mWidth = options.outWidth;
+            mHeight = options.outHeight;
+        } catch (FileNotFoundException ex) {
+            mWidth = 0;
+            mHeight = 0;
         } finally {
             Util.closeSiliently(input);
         }
     }
 
+    public int getWidth() {
+        if (mWidth == UNKNOWN_LENGTH) setupDimension();
+        return mWidth;
+    }
+
     public int getHeight() {
-        ParcelFileDescriptor input = null;
-        try {
-            Uri uri = fullSizeImageUri();
-            input = mContentResolver.openFileDescriptor(uri, "r");
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapManager.instance().decodeFileDescriptor(
-                    input.getFileDescriptor(), null, options);
-            return options.outHeight;
-        } catch (IOException ex) {
-            return 0;
-        } finally {
-            Util.closeSiliently(input);
-        }
+        if (mHeight == UNKNOWN_LENGTH) setupDimension();
+        return mHeight;
     }
 
     public Bitmap miniThumbBitmap() {

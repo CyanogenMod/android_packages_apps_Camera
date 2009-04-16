@@ -22,7 +22,6 @@ import com.android.camera.Util;
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -33,9 +32,9 @@ import java.io.InputStream;
 
 class UriImage implements IImage {
     private static final String TAG = "UriImage";
-    private Uri mUri;
-    private BaseImageList mContainer;
-    private ContentResolver mContentResolver;
+    private final Uri mUri;
+    private final BaseImageList mContainer;
+    private final ContentResolver mContentResolver;
 
     UriImage(BaseImageList container, ContentResolver cr, Uri uri) {
         mContainer = container;
@@ -80,7 +79,7 @@ class UriImage implements IImage {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), null, options);
+                    pfdInput.getFileDescriptor(), options);
 
             if (targetWidthHeight != -1) {
                 options.inSampleSize =
@@ -92,7 +91,7 @@ class UriImage implements IImage {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
             Bitmap b = BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), null, options);
+                    pfdInput.getFileDescriptor(), options);
             pfdInput.close();
             return b;
         } catch (Exception ex) {
@@ -175,7 +174,7 @@ class UriImage implements IImage {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapManager.instance().decodeFileDescriptor(
-                    input.getFileDescriptor(), null, options);
+                    input.getFileDescriptor(), options);
             return options;
         } finally {
             Util.closeSiliently(input);

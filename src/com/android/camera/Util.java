@@ -31,8 +31,8 @@ import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
-import java.io.IOException;
 import java.io.FileDescriptor;
+import java.io.IOException;
 
 /**
  * Collection of utility functions used in this package.
@@ -326,8 +326,7 @@ public class Util {
             options.inSampleSize = 1;
             if (targetWidthHeight != -1) {
                 options.inJustDecodeBounds = true;
-                BitmapManager.instance().decodeFileDescriptor(
-                        fd, null, options);
+                BitmapManager.instance().decodeFileDescriptor(fd, options);
                 if (options.mCancel || options.outWidth == -1
                         || options.outHeight == -1) {
                     return null;
@@ -339,8 +338,7 @@ public class Util {
 
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            b = BitmapManager.instance()
-                    .decodeFileDescriptor(fd, null, options);
+            b = BitmapManager.instance().decodeFileDescriptor(fd, options);
         } catch (OutOfMemoryError ex) {
             Log.e(TAG, "Got oom exception ", ex);
             return null;
