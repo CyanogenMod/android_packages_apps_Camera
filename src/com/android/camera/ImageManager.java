@@ -59,13 +59,14 @@ public class ImageManager {
     private static final String TAG = "ImageManager";
     private static ImageManager sInstance = null;
 
-    private static Uri sStorageURI = Images.Media.EXTERNAL_CONTENT_URI;
-    private static Uri sThumbURI = Images.Thumbnails.EXTERNAL_CONTENT_URI;
+    private static final Uri STORAGE_URI = Images.Media.EXTERNAL_CONTENT_URI;
+    private static final Uri THUMB_URI
+            = Images.Thumbnails.EXTERNAL_CONTENT_URI;
 
-    private static Uri sVideoStorageURI =
+    private static final Uri VIDEO_STORAGE_URI =
             Uri.parse("content://media/external/video/media");
 
-    private static Uri sVideoThumbURI =
+    private static final Uri VIDEO_THUMBNAIL_URI =
             Uri.parse("content://media/external/video/thumbnails");
 
     /**
@@ -228,7 +229,7 @@ public class ImageManager {
             values.put(Images.Media.DATA, value);
         }
 
-        return cr.insert(sStorageURI, values);
+        return cr.insert(STORAGE_URI, values);
     }
 
     private static class AddImageCancelable extends BaseCancelable<Void> {
@@ -270,8 +271,8 @@ public class ImageManager {
                 }
                 long id = ContentUris.parseId(mUri);
 
-                BaseImageList il = new ImageList(mCtx, mCr, sStorageURI,
-                        sThumbURI, SORT_ASCENDING, null);
+                BaseImageList il = new ImageList(mCr, STORAGE_URI,
+                        THUMB_URI, SORT_ASCENDING, null);
                 Image image = new Image(id, 0, mCr, il, il.getCount(), 0);
                 String[] projection = new String[] {
                         ImageColumns._ID,
@@ -411,8 +412,8 @@ public class ImageManager {
                     try {
                         if (specificImageUri.getScheme()
                                 .equalsIgnoreCase("content")) {
-                            l.add(new ImageList(ctx, cr, specificImageUri,
-                                    sThumbURI, sort, bucketId));
+                            l.add(new ImageList(cr, specificImageUri,
+                                    THUMB_URI, sort, bucketId));
                         } else {
                             l.add(new SingleImageList(cr, specificImageUri));
                         }
@@ -423,16 +424,16 @@ public class ImageManager {
                     if (haveSdCard && location != DataLocation.INTERNAL) {
                         if ((inclusion & INCLUDE_IMAGES) != 0) {
                             try {
-                                l.add(new ImageList(ctx, cr, sStorageURI,
-                                        sThumbURI, sort, bucketId));
+                                l.add(new ImageList(cr, STORAGE_URI,
+                                        THUMB_URI, sort, bucketId));
                             } catch (UnsupportedOperationException ex) {
                                 // ignore exception
                             }
                         }
                         if ((inclusion & INCLUDE_VIDEOS) != 0) {
                             try {
-                                l.add(new VideoList(ctx, cr, sVideoStorageURI,
-                                        sVideoThumbURI, sort, bucketId));
+                                l.add(new VideoList(cr, VIDEO_STORAGE_URI,
+                                        VIDEO_THUMBNAIL_URI, sort, bucketId));
                             } catch (UnsupportedOperationException ex) {
                                 // ignore exception
                             }
@@ -442,7 +443,7 @@ public class ImageManager {
                             || location == DataLocation.ALL) {
                         if ((inclusion & INCLUDE_IMAGES) != 0) {
                             try {
-                                l.add(new ImageList(ctx, cr,
+                                l.add(new ImageList(cr,
                                         Images.Media.INTERNAL_CONTENT_URI,
                                         Images.Thumbnails.INTERNAL_CONTENT_URI,
                                         sort, bucketId));
@@ -452,7 +453,7 @@ public class ImageManager {
                         }
                         if ((inclusion & INCLUDE_DRM_IMAGES) != 0) {
                             try {
-                                l.add(new DrmImageList(ctx, cr,
+                                l.add(new DrmImageList(cr,
                                         DrmStore.Images.CONTENT_URI,
                                         sort, bucketId));
                             } catch (UnsupportedOperationException ex) {
@@ -467,9 +468,9 @@ public class ImageManager {
             } else {
                 if (haveSdCard && location != DataLocation.INTERNAL) {
                     return new ImageList(
-                            ctx, cr, sStorageURI, sThumbURI, sort, bucketId);
+                            cr, STORAGE_URI, THUMB_URI, sort, bucketId);
                 } else  {
-                    return new ImageList(ctx, cr,
+                    return new ImageList(cr,
                             Images.Media.INTERNAL_CONTENT_URI,
                             Images.Thumbnails.INTERNAL_CONTENT_URI, sort,
                             bucketId);

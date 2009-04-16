@@ -28,6 +28,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.provider.BaseColumns;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
 
@@ -322,16 +323,22 @@ public class Image extends BaseImage implements IImage {
         return true;
     }
 
+    private static final String[] THUMB_PROJECTION = new String[] {
+        BaseColumns._ID,
+    };
+
     public Bitmap thumbBitmap() {
         Bitmap bitmap = null;
         if (mContainer.mThumbUri != null) {
             Cursor c = mContentResolver.query(
-                    mContainer.mThumbUri, BaseImageList.THUMB_PROJECTION,
+                    mContainer.mThumbUri, THUMB_PROJECTION,
                     Thumbnails.IMAGE_ID + "=?",
                     new String[] { String.valueOf(fullSizeImageId()) },
                     null);
             try {
-                if (c.moveToFirst()) bitmap = decodeCurrentImage(c);
+                if (c.moveToFirst()) {
+                    bitmap = decodeCurrentImage(c.getLong(0));
+                }
             } catch (RuntimeException ex) {
                 // sdcard removed?
                 return null;
@@ -354,10 +361,9 @@ public class Image extends BaseImage implements IImage {
         return bitmap;
     }
 
-    private Bitmap decodeCurrentImage(Cursor c) {
+    private Bitmap decodeCurrentImage(long id) {
         Uri thumbUri = ContentUris.withAppendedId(
-                mContainer.mThumbUri,
-                c.getLong(ImageList.INDEX_THUMB_ID));
+                mContainer.mThumbUri, id);
         ParcelFileDescriptor pfdInput;
         Bitmap bitmap = null;
         try {
