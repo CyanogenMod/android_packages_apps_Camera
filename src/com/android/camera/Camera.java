@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IAddImageCancelable;
+import com.android.camera.gallery.ICancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -227,7 +227,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 }
             }
         }
-    };
+    }
 
     LocationListener [] mLocationListeners = new LocationListener[] {
             new LocationListener(LocationManager.GPS_PROVIDER),
@@ -308,7 +308,7 @@ public class Camera extends Activity implements View.OnClickListener,
         public Location current() {
             return mValid ? mLastLocation : null;
         }
-    };
+    }
 
     private boolean mImageSavingItem = false;
 
@@ -331,7 +331,7 @@ public class Camera extends Activity implements View.OnClickListener,
             Size pictureSize = mParameters.getPictureSize();
             mSurfaceView.setAspectRatio(pictureSize.width, pictureSize.height);
         }
-    };
+    }
 
     private final class RawPictureCallback implements PictureCallback {
         public void onPictureTaken(
@@ -346,7 +346,7 @@ public class Camera extends Activity implements View.OnClickListener,
                         + " ShutterCallback and RawPictureCallback.");
             }
         }
-    };
+    }
 
     private final class JpegPictureCallback implements PictureCallback {
         Location mLocation;
@@ -384,7 +384,7 @@ public class Camera extends Activity implements View.OnClickListener,
                         RESTART_PREVIEW, Math.max(delay, 0));
             }
         }
-    };
+    }
 
     private final class AutoFocusCallback
             implements android.hardware.Camera.AutoFocusCallback {
@@ -421,7 +421,7 @@ public class Camera extends Activity implements View.OnClickListener,
             }
             updateFocusIndicator();
         }
-    };
+    }
 
     private class ImageCapture implements Capturer {
 
@@ -429,7 +429,7 @@ public class Camera extends Activity implements View.OnClickListener,
         private boolean mCapturing = false;
 
         private Uri mLastContentUri;
-        private IAddImageCancelable mAddImageCancelable;
+        private ICancelable<Void> mAddImageCancelable;
 
         Bitmap mCaptureOnlyBitmap;
 
@@ -1443,31 +1443,31 @@ public class Camera extends Activity implements View.OnClickListener,
         // if we depended on it we would have to query the size again
         mParameters = mCameraDevice.getParameters();
         mParameters.setPreviewSize(mViewFinderWidth, mViewFinderHeight);
-    
+
         // Set white balance parameter.
         String whiteBalance = mPreferences.getString(
                 CameraSettings.KEY_WHITE_BALANCE,
                 getString(R.string.pref_camera_whitebalance_default));
         mParameters.set(PARM_WHITE_BALANCE, whiteBalance);
-    
+
         // Set effect parameter.
         String effect = mPreferences.getString(
                 CameraSettings.KEY_EFFECT,
                 getString(R.string.pref_camera_effect_default));
         mParameters.set(PARM_EFFECT, effect);
-    
+
         // Set picture size parameter.
         String pictureSize = mPreferences.getString(
                 CameraSettings.KEY_PICTURE_SIZE,
                 getString(R.string.pref_camera_picturesize_default));
         mParameters.set(PARM_PICTURE_SIZE, pictureSize);
-    
+
         // Set JPEG quality parameter.
         String jpegQuality = mPreferences.getString(
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
         mParameters.set(PARM_JPEG_QUALITY, jpegQuality);
-    
+
         mCameraDevice.setParameters(mParameters);
     }
 

@@ -16,7 +16,8 @@
 
 package com.android.camera.gallery;
 
-import static com.android.camera.gallery.BaseImageList.MINITHUMB_IS_NULL;
+import com.android.camera.ImageManager;
+import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -32,8 +33,6 @@ import android.provider.MediaStore.Video;
 import android.provider.MediaStore.Video.VideoColumns;
 import android.util.Config;
 import android.util.Log;
-
-import com.android.camera.ImageManager;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -206,8 +206,6 @@ public class Wallpaper extends Activity {
                 }
                 mDoLaunch = false;
             } catch (FileNotFoundException ex) {
-                // ignore 
-            } catch (IOException ex) {
                 // ignore
             }
         } else {

@@ -16,6 +16,19 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.BaseCancelable;
+import com.android.camera.gallery.BaseImageList;
+import com.android.camera.gallery.CanceledException;
+import com.android.camera.gallery.DrmImageList;
+import com.android.camera.gallery.ICancelable;
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.Image;
+import com.android.camera.gallery.ImageList;
+import com.android.camera.gallery.ImageListUber;
+import com.android.camera.gallery.SingleImageList;
+import com.android.camera.gallery.VideoList;
+
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -25,28 +38,12 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.DrmStore;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Config;
 import android.util.Log;
-
-import com.android.camera.gallery.BaseCancelable;
-import com.android.camera.gallery.BaseImageList;
-import com.android.camera.gallery.CanceledException;
-import com.android.camera.gallery.DrmImageList;
-import com.android.camera.gallery.IAddImageCancelable;
-import com.android.camera.gallery.IGetBooleanCancelable;
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.Image;
-import com.android.camera.gallery.ImageList;
-import com.android.camera.gallery.ImageListUber;
-import com.android.camera.gallery.SingleImageList;
-import com.android.camera.gallery.Util;
-import com.android.camera.gallery.VideoList;
 
 import java.io.File;
 import java.io.IOException;
@@ -237,7 +234,7 @@ public class ImageManager {
 
         if (directory != null && filename != null) {
             String value = directory + "/" + filename;
-            values.put("_data", value);
+            values.put(Images.Media.DATA, value);
         }
 
         long t3 = System.currentTimeMillis();
@@ -249,9 +246,10 @@ public class ImageManager {
         // "DISPLAY_NAME" field. Extract the filename and jam it into the
         // display name.
         String projection[] = new String [] {
-                ImageColumns._ID, Images.Media.DISPLAY_NAME, "_data"};
+                ImageColumns._ID, Images.Media.DISPLAY_NAME, Images.Media.DATA};
         Cursor c = cr.query(uri, projection, null, null, null);
 
+        //TODO: check why we need this
         if (c.moveToFirst()) {
             String filePath = c.getString(2);
             if (filePath != null) {
@@ -268,9 +266,8 @@ public class ImageManager {
         return uri;
     }
 
-    private static class AddImageCancelable extends BaseCancelable
-            implements IAddImageCancelable {
-        private IGetBooleanCancelable mSaveImageCancelable;
+    private static class AddImageCancelable extends BaseCancelable<Void> {
+        private ICancelable<Boolean> mSaveImageCancelable;
         private Uri mUri;
         private Context mCtx;
         private ContentResolver mCr;
@@ -280,6 +277,9 @@ public class ImageManager {
 
         public AddImageCancelable(Uri uri, Context ctx, ContentResolver cr,
                 int orientation, Bitmap source, byte[] jpegData) {
+            if (source == null && jpegData == null) {
+                throw new IllegalArgumentException("source cannot be null");
+            }
             mUri = uri;
             mCtx = ctx;
             mCr = cr;
@@ -300,11 +300,7 @@ public class ImageManager {
             return true;
         }
 
-        public void get() {
-            if (mSource == null && mJpegData == null) {
-                throw new IllegalArgumentException("source cannot be null");
-            }
-
+        public Void get() {
             try {
                 long t1 = System.currentTimeMillis();
                 synchronized (this) {
@@ -320,7 +316,7 @@ public class ImageManager {
                 long t5 = System.currentTimeMillis();
                 String[] projection = new String[] {
                         ImageColumns._ID,
-                        ImageColumns.MINI_THUMB_MAGIC, "_data"};
+                        ImageColumns.MINI_THUMB_MAGIC, ImageColumns.DATA};
 
                 Cursor c = mCr.query(mUri, projection, null, null, null);
                 c.moveToPosition(0);
@@ -361,10 +357,11 @@ public class ImageManager {
                 }
                 acknowledgeCancel();
             }
+            return null;
         }
     }
 
-    public IAddImageCancelable storeImage(
+    public ICancelable<Void> storeImage(
             Uri uri, Context ctx, ContentResolver cr, int orientation,
             Bitmap source, byte [] jpegData) {
         return new AddImageCancelable(
