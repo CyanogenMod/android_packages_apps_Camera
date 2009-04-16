@@ -190,7 +190,7 @@ public abstract class BaseImageList implements IImageList {
             // and is significantly faster.
             options.inSampleSize =
                     Util.computeSampleSize(options,
-                    IImage.THUMBNAIL_TARGET_SIZE);
+                    IImage.MINI_THUMB_TARGET_SIZE);
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             options.inJustDecodeBounds = false;
