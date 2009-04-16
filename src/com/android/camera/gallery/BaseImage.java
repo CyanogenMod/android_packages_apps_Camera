@@ -44,8 +44,8 @@ public abstract class BaseImage implements IImage {
     private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImage";
 
-    static final int BYTES_PER_MINTHUMB = 10000;
-    private static final byte [] sMiniThumbData = new byte[BYTES_PER_MINTHUMB];
+    private static final byte [] sMiniThumbData =
+            new byte[MiniThumbFile.BYTES_PER_MINTHUMB];
 
     protected ContentResolver mContentResolver;
     protected long mId, mMiniThumbMagic;
