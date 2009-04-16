@@ -74,6 +74,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Activity of the Camera which used to see preview and take pictures.
@@ -114,6 +115,7 @@ public class Camera extends Activity implements View.OnClickListener,
     // The parameter strings to communicate with camera driver.
     public static final String PARM_WHITE_BALANCE = "whitebalance";
     public static final String PARM_EFFECT = "effect";
+    public static final String PARM_BRIGHTNESS = "exposure-offset";
     public static final String PARM_PICTURE_SIZE = "picture-size";
     public static final String PARM_JPEG_QUALITY = "jpeg-quality";
     public static final String PARM_ROTATION = "rotation";
@@ -123,6 +125,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final String PARM_GPS_TIMESTAMP = "gps-timestamp";
     public static final String SUPPORTED_WHITE_BALANCE = "whitebalance-values";
     public static final String SUPPORTED_EFFECT = "effect-values";
+    public static final String SUPPORTED_BRIGHTNESS = "exposure-offset-values";
     public static final String SUPPORTED_PICTURE_SIZE = "picture-size-values";
 
     private OrientationEventListener mOrientationListener;
@@ -143,6 +146,10 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
     private int mViewFinderWidth, mViewFinderHeight;
     private boolean mPreviewing = false;
+
+    private int mCurrentBrightness = 5;
+    private int mMaxBrightness = 10;
+    private int mMinBrightness = 0;
 
     private Capturer mCaptureObject;
     private ImageCapture mImageCapture = null;
@@ -1019,6 +1026,28 @@ public class Camera extends Activity implements View.OnClickListener,
                 getString(R.string.pref_camera_focusmode_default));
         mGpsIndicator.setVisibility(View.INVISIBLE);
 
+        String brightness = mPreferences.getString(
+                CameraSettings.KEY_BRIGHTNESS,
+                getString(R.string.pref_camera_brightness_default));
+        String supportedParamStr = mParameters.get(SUPPORTED_BRIGHTNESS);
+        StringTokenizer tokenizer = new StringTokenizer(supportedParamStr, ",");
+        ArrayList brightnessList = new ArrayList();
+        while (tokenizer.hasMoreElements()) {
+            brightnessList.add(tokenizer.nextElement());
+        }
+        try {
+            if (brightnessList.size() > 0) {
+                mMaxBrightness = Integer.parseInt(
+                        (String)brightnessList.get(brightnessList.size()-1));
+                mMinBrightness = Integer.parseInt(
+                        (String)brightnessList.get(0));
+            }
+            mCurrentBrightness = Integer.parseInt(brightness);
+        }
+        catch (NumberFormatException ex) {
+            // Simply use the default value and ignore settings in mParameters.
+        }
+
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter =
                 new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
@@ -1166,6 +1195,23 @@ public class Camera extends Activity implements View.OnClickListener,
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         switch (keyCode) {
+            // TODO: change the following two handlers to OSD control.
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (mCurrentBrightness > mMinBrightness) {
+                    mParameters.set(PARM_BRIGHTNESS, --mCurrentBrightness);
+                    mCameraDevice.setParameters(mParameters);
+                    Log.v(TAG, "--brightness=" + mCurrentBrightness);
+                }
+                break;
+
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (mCurrentBrightness < mMaxBrightness) {
+                    mParameters.set(PARM_BRIGHTNESS, ++mCurrentBrightness);
+                    mCameraDevice.setParameters(mParameters);
+                    Log.v(TAG, "++brightness=" + mCurrentBrightness);
+                }
+                break;
+
             case KeyEvent.KEYCODE_BACK:
                 if (mStatus == SNAPSHOT_IN_PROGRESS) {
                     // ignore backs while we're taking a picture
@@ -1379,6 +1425,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         setCameraParameter();
+        
 
         final long wallTimeStart = SystemClock.elapsedRealtime();
         final long threadTimeStart = Debug.threadCpuTimeNanos();
