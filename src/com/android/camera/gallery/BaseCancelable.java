@@ -16,7 +16,6 @@
 
 package com.android.camera.gallery;
 
-
 /**
  * A base class for the interface <code>ICancelable</code>.
  */

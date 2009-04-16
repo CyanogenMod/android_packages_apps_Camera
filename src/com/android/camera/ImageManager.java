@@ -42,7 +42,6 @@ import android.provider.DrmStore;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
-import android.util.Config;
 import android.util.Log;
 
 import java.io.File;
@@ -91,9 +90,6 @@ public class ImageManager {
             + "/DCIM/Camera";
     public static final String CAMERA_IMAGE_BUCKET_ID =
             getBucketId(CAMERA_IMAGE_BUCKET_NAME);
-
-    public static final int MINI_THUMB_TARGET_SIZE = 96;
-    public static final int THUMBNAIL_TARGET_SIZE = 320;
 
     /**
      * Matches code in MediaProvider.computeBucketValues. Should be a common

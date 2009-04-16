@@ -348,7 +348,7 @@ public class Image extends BaseImage implements IImage {
         }
 
         if (bitmap == null) {
-            bitmap = fullSizeBitmap(ImageManager.THUMBNAIL_TARGET_SIZE, false);
+            bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE, false);
             // No thumbnail found... storing the new one.
             bitmap = mContainer.storeThumbnail(bitmap, fullSizeImageId());
         }

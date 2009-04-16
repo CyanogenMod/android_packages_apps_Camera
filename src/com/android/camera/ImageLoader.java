@@ -23,7 +23,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.util.Config;
 import android.util.Log;
 
 import java.util.ArrayList;

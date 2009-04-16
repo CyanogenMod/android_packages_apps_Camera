@@ -122,7 +122,7 @@ public class VideoObject extends BaseImage implements IImage {
     }
 
     public Bitmap thumbBitmap() {
-        return fullSizeBitmap(320);
+        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE);
     }
 
     @Override

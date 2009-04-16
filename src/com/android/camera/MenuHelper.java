@@ -31,7 +31,6 @@ import android.os.StatFs;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.text.format.Formatter;
-import android.util.Config;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;

@@ -33,11 +33,10 @@ import java.io.InputStream;
 
 class UriImage implements IImage {
     private static final String TAG = "UriImage";
-    private static final int THUMBNAIL_TARGET_SIZE = 320;
     private Uri mUri;
     private BaseImageList mContainer;
     private ContentResolver mContentResolver;
-    
+
     UriImage(BaseImageList container, ContentResolver cr, Uri uri) {
         mContainer = container;
         mContentResolver = cr;
@@ -48,7 +47,7 @@ class UriImage implements IImage {
         return mUri.getPath();
     }
 
-    InputStream getInputStream() {
+    private InputStream getInputStream() {
         try {
             if (mUri.getScheme().equals("file")) {
                 String path = mUri.getPath();
@@ -61,7 +60,7 @@ class UriImage implements IImage {
         }
     }
 
-    ParcelFileDescriptor getPFD() {
+    private ParcelFileDescriptor getPFD() {
         try {
             if (mUri.getScheme().equals("file")) {
                 String path = mUri.getPath();
@@ -165,18 +164,7 @@ class UriImage implements IImage {
     }
 
     public Bitmap thumbBitmap() {
-        Bitmap b = fullSizeBitmap(THUMBNAIL_TARGET_SIZE);
-        if (b != null) {
-            Matrix m = new Matrix();
-            float scale = Math.min(
-                    1F, THUMBNAIL_TARGET_SIZE / (float) b.getWidth());
-            m.setScale(scale, scale);
-            Bitmap scaledBitmap = Bitmap.createBitmap(
-                    b, 0, 0, b.getWidth(), b.getHeight(), m, true);
-            return scaledBitmap;
-        } else {
-            return null;
-        }
+        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE);
     }
 
     private BitmapFactory.Options snifBitmapOptions() {

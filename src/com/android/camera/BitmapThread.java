@@ -32,11 +32,11 @@ class BitmapThread {
         mTidSet = true;
         BitmapThread.this.notifyAll();
     }
-    
+
     private synchronized void setFinished() {
         mFinished = true;
     }
-    
+
     public BitmapThread(final Runnable r) {
         Runnable wrapper = new Runnable() {
             public void run() {
@@ -51,16 +51,16 @@ class BitmapThread {
 
         mThread = new Thread(wrapper);
     }
-    
+
     public synchronized void start() {
         BitmapManager.instance().allowThreadDecoding(mThread);
         mThread.start();
     }
-    
+
     public synchronized void setName(String name) {
         mThread.setName(name);
     }
-    
+
     public void join() {
         try {
             BitmapManager.instance().cancelThreadDecoding(mThread);
@@ -69,15 +69,15 @@ class BitmapThread {
             // Ignore this exception.
         }
     }
-    
+
     public long getId() {
         return mThread.getId();
     }
-    
+
     public Thread realThread() {
         return mThread;
     }
-    
+
     public synchronized void setPriority(int androidOsPriority) {
         while (!mTidSet) {
             try {
@@ -90,11 +90,11 @@ class BitmapThread {
             Process.setThreadPriority(mTid, androidOsPriority);
         }
     }
-    
+
     public synchronized void toBackground() {
         setPriority(Process.THREAD_PRIORITY_BACKGROUND);
     }
-    
+
     public synchronized void toForeground() {
         setPriority(Process.THREAD_PRIORITY_FOREGROUND);
     }

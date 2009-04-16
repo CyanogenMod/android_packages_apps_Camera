@@ -16,8 +16,9 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IImage;
+
 import android.content.ContentResolver;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -132,8 +133,8 @@ public class Util {
         if (source == null) return null;
 
         Bitmap miniThumbnail = extractMiniThumb(
-                source, ImageManager.MINI_THUMB_TARGET_SIZE,
-                ImageManager.MINI_THUMB_TARGET_SIZE);
+                source, IImage.MINI_THUMB_TARGET_SIZE,
+                IImage.MINI_THUMB_TARGET_SIZE);
 
         ByteArrayOutputStream miniOutStream = new ByteArrayOutputStream();
         miniThumbnail.compress(Bitmap.CompressFormat.JPEG, 75, miniOutStream);

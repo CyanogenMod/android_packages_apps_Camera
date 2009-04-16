@@ -41,7 +41,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
-import android.util.Config;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -186,7 +185,7 @@ public class CropImage extends Activity {
                 true, false);
         mImageView.setImageBitmapResetBase(mBitmap, true);
         if (mImageView.getScale() == 1F) {
-            mImageView.center(true, true, false);
+            mImageView.center(true, true);
         }
 
         new Thread(new Runnable() {
@@ -201,7 +200,7 @@ public class CropImage extends Activity {
                             mImageView.setImageBitmapResetBase(b, true);
                         }
                         if (mImageView.getScale() == 1F) {
-                            mImageView.center(true, true, false);
+                            mImageView.center(true, true);
                         }
 
                         new Thread(mRunFaceDetection).start();
@@ -734,7 +733,7 @@ class CropImageView extends ImageViewTouchBase {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                center(true, true, true);
+                center(true, true);
                 break;
             case MotionEvent.ACTION_MOVE:
                 // if we're not zoomed then there's no point in even allowing
@@ -742,7 +741,7 @@ class CropImageView extends ImageViewTouchBase {
                 // it back to the normalized location (with false meaning don't
                 // animate).
                 if (getScale() == 1F) {
-                    center(true, true, false);
+                    center(true, true);
                 }
                 break;
         }

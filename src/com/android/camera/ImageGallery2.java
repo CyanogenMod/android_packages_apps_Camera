@@ -46,7 +46,6 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
-import android.util.Config;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.GestureDetector;

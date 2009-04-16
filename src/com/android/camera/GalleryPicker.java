@@ -43,7 +43,6 @@ import android.os.Handler;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore.Images;
-import android.util.Config;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;

@@ -20,6 +20,7 @@ import com.android.camera.BitmapManager;
 import com.android.camera.ExifInterface;
 import com.android.camera.ImageManager;
 import com.android.camera.Util;
+import com.android.camera.gallery.IImage;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -30,9 +31,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
-import android.provider.MediaStore.MediaColumns;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
@@ -47,8 +46,6 @@ public abstract class BaseImageList implements IImageList {
     private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImageList";
 
-    private static final int MINI_THUMB_TARGET_SIZE = 96;
-    private static final int THUMBNAIL_TARGET_SIZE = 320;
     private static final int MINI_THUMB_DATA_FILE_VERSION = 3;
 
     private static final String WHERE_CLAUSE =
@@ -181,7 +178,8 @@ public abstract class BaseImageList implements IImageList {
         BitmapFactory.decodeByteArray(thumbData, 0, thumbData.length, options);
         int width = options.outWidth;
         int height = options.outHeight;
-        if (width >= THUMBNAIL_TARGET_SIZE && height >= THUMBNAIL_TARGET_SIZE
+        if (width >= IImage.THUMBNAIL_TARGET_SIZE
+                && height >= IImage.THUMBNAIL_TARGET_SIZE
                 && storeThumbnail(thumbData, id, width, height)) {
             // this is used for *encoding* the minithumb, so
             // we don't want to dither or convert to 565 here.
@@ -191,7 +189,8 @@ public abstract class BaseImageList implements IImageList {
             // which will produce much better scaling quality
             // and is significantly faster.
             options.inSampleSize =
-                    Util.computeSampleSize(options, THUMBNAIL_TARGET_SIZE);
+                    Util.computeSampleSize(options,
+                    IImage.THUMBNAIL_TARGET_SIZE);
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             options.inJustDecodeBounds = false;
@@ -206,12 +205,12 @@ public abstract class BaseImageList implements IImageList {
     // create the minithumb from it.
     private Bitmap createThumbnailFromUri(Cursor c, long id) {
         Uri uri = ContentUris.withAppendedId(mBaseUri, id);
-        Bitmap bitmap = Util.makeBitmap(THUMBNAIL_TARGET_SIZE, uri,
+        Bitmap bitmap = Util.makeBitmap(IImage.THUMBNAIL_TARGET_SIZE, uri,
                 mContentResolver);
         if (bitmap != null) {
             storeThumbnail(bitmap, id);
         } else {
-            bitmap = Util.makeBitmap(MINI_THUMB_TARGET_SIZE, uri,
+            bitmap = Util.makeBitmap(IImage.MINI_THUMB_TARGET_SIZE, uri,
                 mContentResolver);
         }
         return bitmap;
@@ -466,12 +465,12 @@ public abstract class BaseImageList implements IImageList {
     byte [] getMiniThumbFromFile(long id, byte [] data, long magicCheck) {
         return mMiniThumbFile.getMiniThumbFromFile(id, data, magicCheck);
     }
-    
-    void saveMiniThumbToFile(Bitmap bitmap, long id, long magic)       
+
+    void saveMiniThumbToFile(Bitmap bitmap, long id, long magic)
             throws IOException {
         mMiniThumbFile.saveMiniThumbToFile(bitmap, id, magic);
-    } 
-            
+    }
+
     void saveMiniThumbToFile(byte[] data, long id, long magic)
             throws IOException {
         mMiniThumbFile.saveMiniThumbToFile(data, id, magic);

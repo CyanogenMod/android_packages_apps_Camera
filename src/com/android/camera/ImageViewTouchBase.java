@@ -24,8 +24,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
 abstract class ImageViewTouchBase extends ImageView {
@@ -165,8 +163,7 @@ abstract class ImageViewTouchBase extends ImageView {
     // view's dimensions then center it (literally).  If the image
     // is scaled larger than the view and is translated out of view
     // then translate it back into view (i.e. eliminate black bars).
-    protected void center(boolean vertical, boolean horizontal,
-            boolean animate) {
+    protected void center(boolean vertical, boolean horizontal) {
         if (mBitmapDisplayed == null) {
             return;
         }
@@ -208,12 +205,6 @@ abstract class ImageViewTouchBase extends ImageView {
         }
 
         postTranslate(deltaX, deltaY);
-        if (animate) {
-            Animation a = new TranslateAnimation(-deltaX, 0, -deltaY, 0);
-            a.setStartTime(SystemClock.elapsedRealtime());
-            a.setDuration(250);
-            setAnimation(a);
-        }
         setImageMatrix(getImageViewMatrix());
     }
 
@@ -303,7 +294,7 @@ abstract class ImageViewTouchBase extends ImageView {
 
         mSuppMatrix.postScale(deltaScale, deltaScale, centerX, centerY);
         setImageMatrix(getImageViewMatrix());
-        center(true, true, false);
+        center(true, true);
     }
 
     protected void zoomTo(final float scale, final float centerX,
@@ -374,7 +365,7 @@ abstract class ImageViewTouchBase extends ImageView {
             mSuppMatrix.postScale(1F / rate, 1F / rate, cx, cy);
         }
         setImageMatrix(getImageViewMatrix());
-        center(true, true, false);
+        center(true, true);
     }
 
     protected void postTranslate(float dx, float dy) {

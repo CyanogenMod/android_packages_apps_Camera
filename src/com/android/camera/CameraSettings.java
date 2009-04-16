@@ -31,9 +31,9 @@ import java.util.StringTokenizer;
  */
 public class CameraSettings extends PreferenceActivity implements
         OnSharedPreferenceChangeListener {
-    public static final String KEY_VIDEO_QUALITY = 
+    public static final String KEY_VIDEO_QUALITY =
             "pref_camera_videoquality_key";
-    public static final String KEY_WHITE_BALANCE = 
+    public static final String KEY_WHITE_BALANCE =
             "pref_camera_whitebalance_key";
     public static final String KEY_EFFECT = "pref_camera_effect_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
@@ -117,7 +117,7 @@ public class CameraSettings extends PreferenceActivity implements
             int prefEntryValuesResId) {
         // Disable the preference if the parameter is not supported.
         String supportedParamStr = mParameters.get(paramName);
-        if (supportedParamStr == null) {  
+        if (supportedParamStr == null) {
             pref.setEnabled(false);
             return;
         }

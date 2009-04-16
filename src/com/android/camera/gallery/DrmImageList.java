@@ -17,6 +17,7 @@
 package com.android.camera.gallery;
 
 import com.android.camera.ImageManager;
+import com.android.camera.gallery.IImage;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -76,12 +77,12 @@ public class DrmImageList extends ImageList implements IImageList {
 
         @Override
         public Bitmap miniThumbBitmap() {
-            return fullSizeBitmap(ImageManager.MINI_THUMB_TARGET_SIZE);
+            return fullSizeBitmap(IImage.MINI_THUMB_TARGET_SIZE);
         }
 
         @Override
         public Bitmap thumbBitmap() {
-            return fullSizeBitmap(ImageManager.THUMBNAIL_TARGET_SIZE);
+            return fullSizeBitmap(IImage.THUMBNAIL_TARGET_SIZE);
         }
 
         @Override

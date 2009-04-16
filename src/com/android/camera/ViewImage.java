@@ -34,7 +34,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
-import android.util.Config;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -1099,7 +1098,7 @@ class ImageViewTouch extends ImageViewTouchBase {
 
     protected void postTranslateCenter(float dx, float dy) {
         super.postTranslate(dx, dy);
-        center(true, true, false);
+        center(true, true);
     }
 
     static final float PAN_RATE = 20;
@@ -1136,7 +1135,7 @@ class ImageViewTouch extends ImageViewTouchBase {
                         nextImagePos = current - 1;
                     } else {
                         panBy(PAN_RATE, 0);
-                        center(true, false, true);
+                        center(true, false);
                     }
                     return true;
                 }
@@ -1150,18 +1149,18 @@ class ImageViewTouch extends ImageViewTouchBase {
                         nextImagePos = current + 1;
                     } else {
                         panBy(-PAN_RATE, 0);
-                        center(true, false, true);
+                        center(true, false);
                     }
                     return true;
                 }
                 case KeyEvent.KEYCODE_DPAD_UP: {
                     panBy(0, PAN_RATE);
-                    center(true, false, false);
+                    center(false, true);
                     return true;
                 }
                 case KeyEvent.KEYCODE_DPAD_DOWN: {
                     panBy(0, -PAN_RATE);
-                    center(true, false, false);
+                    center(false, true);
                     return true;
                 }
                 case KeyEvent.KEYCODE_DEL:
@@ -1177,7 +1176,7 @@ class ImageViewTouch extends ImageViewTouchBase {
                     mViewImage.setImage(nextImagePos);
                 }
            } else if (nextImagePos != -2) {
-               center(true, true, false);
+               center(true, true);
            }
         }
 
