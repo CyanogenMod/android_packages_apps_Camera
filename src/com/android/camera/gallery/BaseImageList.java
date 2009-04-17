@@ -165,7 +165,7 @@ public abstract class BaseImageList implements IImageList {
         if (filePath == null) return null;
 
         byte [] thumbData = null;
-        synchronized (ImageManager.instance()) {
+        synchronized (ExifInterface.class) {
             thumbData = (new ExifInterface(filePath)).getThumbnail();
         }
         if (thumbData == null) return null;

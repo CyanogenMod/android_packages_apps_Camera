@@ -210,7 +210,7 @@ public class Image extends BaseImage implements IImage {
                     // dimensions.
 
                     byte[] thumbData = null;
-                    synchronized (ImageManager.instance()) {
+                    synchronized (ExifInterface.class) {
                         thumbData =
                                 (new ExifInterface(filePath)).getThumbnail();
                     }
@@ -266,7 +266,7 @@ public class Image extends BaseImage implements IImage {
             synchronized (c) {
                 filePath = c.getString(mContainer.indexData());
             }
-            synchronized (ImageManager.instance()) {
+            synchronized (ExifInterface.class) {
                 ExifInterface exif = new ExifInterface(filePath);
                 if (mExifData == null) {
                     mExifData = exif.getAttributes();
