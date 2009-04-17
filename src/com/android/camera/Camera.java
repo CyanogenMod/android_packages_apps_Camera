@@ -147,9 +147,12 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mViewFinderWidth, mViewFinderHeight;
     private boolean mPreviewing = false;
 
-    private int mCurrentBrightness = 5;
-    private int mMaxBrightness = 10;
-    private int mMinBrightness = 0;
+    // TODO: Decide whether we should read these values from drivers,
+    // and update the preference screen if needed.
+    private static final int BRIGHTNESS_DEFAULT = 5;
+    private static final int BRIGHTNESS_MAX = 10;
+    private static final int BRIGHTNESS_MIN = 0;
+    private int mCurrentBrightness;
 
     private Capturer mCaptureObject;
     private ImageCapture mImageCapture = null;
@@ -1011,6 +1014,28 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    // Reads brightness setting from the preference and store it in
+    // mCurrentBrightness.
+    private void readBrightnessPreference() {
+        String brightness = mPreferences.getString(
+                CameraSettings.KEY_BRIGHTNESS,
+                getString(R.string.pref_camera_brightness_default));
+        try {
+            mCurrentBrightness = Integer.parseInt(brightness);
+            // Limit the brightness to the valid range.
+            if (mCurrentBrightness > BRIGHTNESS_MAX) {
+                mCurrentBrightness = BRIGHTNESS_MAX;
+            }
+            if (mCurrentBrightness < BRIGHTNESS_MIN) {
+                mCurrentBrightness = BRIGHTNESS_MIN;
+            }
+        }
+        catch (NumberFormatException ex) {
+            // Use the default value if it cannot be parsed.
+            mCurrentBrightness = BRIGHTNESS_DEFAULT;
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -1025,27 +1050,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 getString(R.string.pref_camera_focusmode_default));
         mGpsIndicator.setVisibility(View.INVISIBLE);
 
-        String brightness = mPreferences.getString(
-                CameraSettings.KEY_BRIGHTNESS,
-                getString(R.string.pref_camera_brightness_default));
-        String supportedParamStr = mParameters.get(SUPPORTED_BRIGHTNESS);
-        StringTokenizer tokenizer = new StringTokenizer(supportedParamStr, ",");
-        ArrayList brightnessList = new ArrayList();
-        while (tokenizer.hasMoreElements()) {
-            brightnessList.add(tokenizer.nextElement());
-        }
-        try {
-            if (brightnessList.size() > 0) {
-                mMaxBrightness = Integer.parseInt(
-                        (String)brightnessList.get(brightnessList.size()-1));
-                mMinBrightness = Integer.parseInt(
-                        (String)brightnessList.get(0));
-            }
-            mCurrentBrightness = Integer.parseInt(brightness);
-        }
-        catch (NumberFormatException ex) {
-            // Simply use the default value and ignore settings in mParameters.
-        }
+        readBrightnessPreference();
 
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter =
@@ -1196,7 +1201,7 @@ public class Camera extends Activity implements View.OnClickListener,
         switch (keyCode) {
             // TODO: change the following two handlers to OSD control.
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (mCurrentBrightness > mMinBrightness) {
+                if (mCurrentBrightness > BRIGHTNESS_MIN) {
                     mParameters.set(PARM_BRIGHTNESS, --mCurrentBrightness);
                     mCameraDevice.setParameters(mParameters);
                     Log.v(TAG, "--brightness=" + mCurrentBrightness);
@@ -1204,7 +1209,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 break;
 
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (mCurrentBrightness < mMaxBrightness) {
+                if (mCurrentBrightness < BRIGHTNESS_MAX) {
                     mParameters.set(PARM_BRIGHTNESS, ++mCurrentBrightness);
                     mCameraDevice.setParameters(mParameters);
                     Log.v(TAG, "++brightness=" + mCurrentBrightness);
