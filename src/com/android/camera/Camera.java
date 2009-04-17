@@ -1429,7 +1429,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         setCameraParameter();
-        
 
         final long wallTimeStart = SystemClock.elapsedRealtime();
         final long threadTimeStart = Debug.threadCpuTimeNanos();

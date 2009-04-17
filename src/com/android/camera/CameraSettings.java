@@ -66,7 +66,7 @@ public class CameraSettings extends PreferenceActivity implements
         updateVideoQualitySummary();
         updateWhiteBalanceSummary();
         updateEffectSummary();
-        updateBrightSummary();
+        updateBrightnessSummary();
         updatePictureSizeSummary();
         updateJpegQualitySummary();
         updateFocusModeSummary();
@@ -178,7 +178,7 @@ public class CameraSettings extends PreferenceActivity implements
         mEffect.setSummary(mEffect.getEntry());
     }
 
-    private void updateBrightSummary() {
+    private void updateBrightnessSummary() {
         mBrightness.setSummary(mBrightness.getEntry());
     }
 
@@ -209,7 +209,7 @@ public class CameraSettings extends PreferenceActivity implements
         } else if (key.equals(KEY_FOCUS_MODE)) {
             updateFocusModeSummary();
         } else if (key.equals(KEY_BRIGHTNESS)) {
-            updateBrightSummary();
-        } 
+            updateBrightnessSummary();
+        }
     }
 }
