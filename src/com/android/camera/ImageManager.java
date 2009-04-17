@@ -32,7 +32,6 @@ import com.android.camera.gallery.VideoList;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -181,7 +180,7 @@ public class ImageManager {
         cr.update(uri, values, null, null);
     }
 
-    public static Uri addImage(Context ctx, ContentResolver cr, String title,
+    public static Uri addImage(ContentResolver cr, String title,
             long dateTaken, Location location,
             int orientation, String directory, String filename) {
 
@@ -292,14 +291,14 @@ public class ImageManager {
     }
 
     public static ICancelable<Void> storeImage(
-            Uri uri, Context ctx, ContentResolver cr, int orientation,
+            Uri uri, ContentResolver cr, int orientation,
             Bitmap source, byte [] jpegData) {
         return new AddImageCancelable(
                 uri, cr, orientation, source, jpegData);
     }
 
-    public static IImageList makeImageList(Uri uri, Context ctx, int sort) {
-        ContentResolver cr = ctx.getContentResolver();
+    public static IImageList makeImageList(Uri uri, ContentResolver cr,
+            int sort) {
         String uriString = (uri != null) ? uri.toString() : "";
 
         // TODO: we need to figure out whether we're viewing
@@ -309,14 +308,14 @@ public class ImageManager {
 
         if (uriString.startsWith("content://drm")) {
             imageList = ImageManager.allImages(
-                    ctx, cr, ImageManager.DataLocation.ALL,
+                    cr, ImageManager.DataLocation.ALL,
                     ImageManager.INCLUDE_DRM_IMAGES, sort);
         } else if (isSingleImageMode(uriString)) {
             imageList = new SingleImageList(cr, uri);
         } else {
             String bucketId = uri.getQueryParameter("bucketId");
             imageList = ImageManager.allImages(
-                ctx, cr, ImageManager.DataLocation.ALL,
+                cr, ImageManager.DataLocation.ALL,
                 ImageManager.INCLUDE_IMAGES, sort, bucketId);
         }
         return imageList;
@@ -369,97 +368,66 @@ public class ImageManager {
         return new EmptyImageList();
     }
 
-    public static IImageList allImages(Context ctx, ContentResolver cr,
+    public static IImageList allImages(ContentResolver cr,
             DataLocation location, int inclusion, int sort) {
-        return allImages(ctx, cr, location, inclusion, sort, null, null);
+        return allImages(cr, location, inclusion, sort, null);
     }
 
-    public static IImageList allImages(Context ctx, ContentResolver cr,
+    public static IImageList allImages(ContentResolver cr,
             DataLocation location, int inclusion, int sort, String bucketId) {
-        return allImages(ctx, cr, location, inclusion, sort, bucketId, null);
-    }
-
-    public static IImageList allImages(
-            Context ctx, ContentResolver cr, DataLocation location,
-            int inclusion, int sort, String bucketId, Uri specificImageUri) {
         if (cr == null) {
             return null;
-        } else {
-            // false ==> don't require write access
-            boolean haveSdCard = hasStorage(false);
+        }
 
-            if (true) {
-                // use this code to merge videos and stills into the same list
-                ArrayList<IImageList> l = new ArrayList<IImageList>();
-                if (specificImageUri != null) {
-                    try {
-                        if (specificImageUri.getScheme()
-                                .equalsIgnoreCase("content")) {
-                            l.add(new ImageList(cr, specificImageUri,
-                                    THUMB_URI, sort, bucketId));
-                        } else {
-                            l.add(new SingleImageList(cr, specificImageUri));
-                        }
-                    } catch (UnsupportedOperationException ex) {
-                        // ignore exception
-                    }
-                } else {
-                    if (haveSdCard && location != DataLocation.INTERNAL) {
-                        if ((inclusion & INCLUDE_IMAGES) != 0) {
-                            try {
-                                l.add(new ImageList(cr, STORAGE_URI,
-                                        THUMB_URI, sort, bucketId));
-                            } catch (UnsupportedOperationException ex) {
-                                // ignore exception
-                            }
-                        }
-                        if ((inclusion & INCLUDE_VIDEOS) != 0) {
-                            try {
-                                l.add(new VideoList(cr, VIDEO_STORAGE_URI,
-                                        VIDEO_THUMBNAIL_URI, sort, bucketId));
-                            } catch (UnsupportedOperationException ex) {
-                                // ignore exception
-                            }
-                        }
-                    }
-                    if (location == DataLocation.INTERNAL
-                            || location == DataLocation.ALL) {
-                        if ((inclusion & INCLUDE_IMAGES) != 0) {
-                            try {
-                                l.add(new ImageList(cr,
-                                        Images.Media.INTERNAL_CONTENT_URI,
-                                        Images.Thumbnails.INTERNAL_CONTENT_URI,
-                                        sort, bucketId));
-                            } catch (UnsupportedOperationException ex) {
-                                // ignore exception
-                            }
-                        }
-                        if ((inclusion & INCLUDE_DRM_IMAGES) != 0) {
-                            try {
-                                l.add(new DrmImageList(cr,
-                                        DrmStore.Images.CONTENT_URI,
-                                        sort, bucketId));
-                            } catch (UnsupportedOperationException ex) {
-                                // ignore exception
-                            }
-                        }
-                    }
+        // false ==> don't require write access
+        boolean haveSdCard = hasStorage(false);
+
+        // use this code to merge videos and stills into the same list
+        ArrayList<IImageList> l = new ArrayList<IImageList>();
+
+        if (haveSdCard && location != DataLocation.INTERNAL) {
+            if ((inclusion & INCLUDE_IMAGES) != 0) {
+                try {
+                    l.add(new ImageList(cr, STORAGE_URI,
+                            THUMB_URI, sort, bucketId));
+                } catch (UnsupportedOperationException ex) {
+                    // ignore exception
                 }
-
-                IImageList [] imageList = l.toArray(new IImageList[l.size()]);
-                return new ImageListUber(imageList, sort);
-            } else {
-                if (haveSdCard && location != DataLocation.INTERNAL) {
-                    return new ImageList(
-                            cr, STORAGE_URI, THUMB_URI, sort, bucketId);
-                } else  {
-                    return new ImageList(cr,
-                            Images.Media.INTERNAL_CONTENT_URI,
-                            Images.Thumbnails.INTERNAL_CONTENT_URI, sort,
-                            bucketId);
+            }
+            if ((inclusion & INCLUDE_VIDEOS) != 0) {
+                try {
+                    l.add(new VideoList(cr, VIDEO_STORAGE_URI,
+                            VIDEO_THUMBNAIL_URI, sort, bucketId));
+                } catch (UnsupportedOperationException ex) {
+                    // ignore exception
                 }
             }
         }
+        if (location == DataLocation.INTERNAL
+                || location == DataLocation.ALL) {
+            if ((inclusion & INCLUDE_IMAGES) != 0) {
+                try {
+                    l.add(new ImageList(cr,
+                            Images.Media.INTERNAL_CONTENT_URI,
+                            Images.Thumbnails.INTERNAL_CONTENT_URI,
+                            sort, bucketId));
+                } catch (UnsupportedOperationException ex) {
+                    // ignore exception
+                }
+            }
+            if ((inclusion & INCLUDE_DRM_IMAGES) != 0) {
+                try {
+                    l.add(new DrmImageList(cr,
+                            DrmStore.Images.CONTENT_URI,
+                            sort, bucketId));
+                } catch (UnsupportedOperationException ex) {
+                    // ignore exception
+                }
+            }
+        }
+
+        IImageList [] imageList = l.toArray(new IImageList[l.size()]);
+        return new ImageListUber(imageList, sort);
     }
 
     private static boolean checkFsWritable() {
@@ -511,10 +479,10 @@ public class ImageManager {
         return false;
     }
 
-    public static Cursor query(Context context, Uri uri, String[] projection,
-            String selection, String[] selectionArgs, String sortOrder) {
+    private static Cursor query(ContentResolver resolver, Uri uri,
+            String[] projection, String selection, String[] selectionArgs,
+            String sortOrder) {
         try {
-            ContentResolver resolver = context.getContentResolver();
             if (resolver == null) {
                 return null;
             }
@@ -526,9 +494,9 @@ public class ImageManager {
 
     }
 
-    public static boolean isMediaScannerScanning(Context context) {
+    public static boolean isMediaScannerScanning(ContentResolver cr) {
         boolean result = false;
-        Cursor cursor = query(context, MediaStore.getMediaScannerUri(),
+        Cursor cursor = query(cr, MediaStore.getMediaScannerUri(),
                 new String [] {MediaStore.MEDIA_SCANNER_VOLUME},
                 null, null, null);
         if (cursor != null) {

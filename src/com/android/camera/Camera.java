@@ -487,7 +487,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 long dateTaken = System.currentTimeMillis();
                 String name = createName(dateTaken) + ".jpg";
                 mLastContentUri = ImageManager.addImage(
-                        Camera.this,
                         mContentResolver,
                         name,
                         dateTaken,
@@ -502,7 +501,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 }
                 if (!mCancel) {
                     mAddImageCancelable = ImageManager.storeImage(
-                            mLastContentUri, Camera.this, mContentResolver,
+                            mLastContentUri, mContentResolver,
                             0, null, data);
                     mAddImageCancelable.get();
                     mAddImageCancelable = null;
@@ -1342,7 +1341,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void updateLastImage() {
         IImageList list = ImageManager.allImages(
-            this,
             mContentResolver,
             dataLocation(),
             ImageManager.INCLUDE_IMAGES,
@@ -1571,7 +1569,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private IImage getImageForURI(Uri uri) {
         IImageList list = ImageManager.allImages(
-                this,
                 mContentResolver,
                 dataLocation(),
                 ImageManager.INCLUDE_IMAGES,

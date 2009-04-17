@@ -134,8 +134,8 @@ public class CropImage extends Activity {
 
             if (mBitmap == null) {
                 Uri target = intent.getData();
-                mAllImages = ImageManager.makeImageList(target, CropImage.this,
-                        ImageManager.SORT_ASCENDING);
+                mAllImages = ImageManager.makeImageList(target,
+                        mContentResolver, ImageManager.SORT_ASCENDING);
                 mImage = mAllImages.getImageForUri(target);
                 if (mImage != null) {
                     // don't read in really large bitmaps.  max out at 1000.
@@ -358,7 +358,6 @@ public class CropImage extends Activity {
 
                         try {
                             Uri newUri = ImageManager.addImage(
-                                    CropImage.this,
                                     getContentResolver(),
                                     mImage.getTitle(),
                                     mImage.getDateTaken(),
@@ -374,7 +373,6 @@ public class CropImage extends Activity {
                             ICancelable<Void> cancelable =
                                     ImageManager.storeImage(
                                     newUri,
-                                    CropImage.this,
                                     getContentResolver(),
                                     0, // TODO fix this orientation
                                     mCroppedImage,

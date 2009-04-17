@@ -503,7 +503,8 @@ public class ImageGallery2 extends Activity {
             }
         };
         registerReceiver(mReceiver, intentFilter);
-        rebake(false, ImageManager.isMediaScannerScanning(this));
+        rebake(false, ImageManager.isMediaScannerScanning(
+                getContentResolver()));
     }
 
     private void stopCheckingThumbnails() {
@@ -700,7 +701,6 @@ public class ImageGallery2 extends Activity {
                 mAllImages = ImageManager.emptyImageList();
             } else {
                 mAllImages = ImageManager.allImages(
-                        ImageGallery2.this,
                         getContentResolver(),
                         ImageManager.DataLocation.NONE,
                         mInclusion,

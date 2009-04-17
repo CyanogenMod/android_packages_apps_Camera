@@ -373,7 +373,6 @@ public class GalleryPicker extends Activity {
             IImageList images;
             if (assumeMounted) {
                 images = ImageManager.allImages(
-                        GalleryPicker.this,
                         getContentResolver(),
                         ImageManager.DataLocation.ALL,
                         ImageManager.INCLUDE_IMAGES
@@ -618,7 +617,8 @@ public class GalleryPicker extends Activity {
         mGridView.setAdapter(mAdapter);
         setBackgrounds(getResources());
 
-        boolean scanning = ImageManager.isMediaScannerScanning(this);
+        boolean scanning = ImageManager.isMediaScannerScanning(
+                getContentResolver());
         rebake(false, scanning);
 
         // install an intent filter to receive SD card related events.
@@ -797,7 +797,6 @@ public class GalleryPicker extends Activity {
 
     private IImageList createImageList(int mediaTypes, String bucketId) {
         return ImageManager.allImages(
-                this,
                 getContentResolver(),
                 ImageManager.DataLocation.ALL,
                 mediaTypes,

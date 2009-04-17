@@ -855,7 +855,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
         int sort = mSortAscending
                 ? ImageManager.SORT_ASCENDING
                 : ImageManager.SORT_DESCENDING;
-        mAllImages = ImageManager.makeImageList(uri, this, sort);
+        mAllImages = ImageManager.makeImageList(uri, getContentResolver(),
+                sort);
 
         uri = uri.buildUpon().query(null).build();
         // TODO smarter/faster here please
