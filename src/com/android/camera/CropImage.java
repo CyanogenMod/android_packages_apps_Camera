@@ -357,7 +357,7 @@ public class CropImage extends Activity {
                         }
 
                         try {
-                            Uri newUri = ImageManager.instance().addImage(
+                            Uri newUri = ImageManager.addImage(
                                     CropImage.this,
                                     getContentResolver(),
                                     mImage.getTitle(),
@@ -372,7 +372,7 @@ public class CropImage extends Activity {
                                     fileName + "-" + x + ".jpg");
 
                             ICancelable<Void> cancelable =
-                                    ImageManager.instance().storeImage(
+                                    ImageManager.storeImage(
                                     newUri,
                                     CropImage.this,
                                     getContentResolver(),

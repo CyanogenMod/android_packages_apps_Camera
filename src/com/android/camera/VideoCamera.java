@@ -1112,7 +1112,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void updateLastVideo() {
-        IImageList list = ImageManager.instance().allImages(
+        IImageList list = ImageManager.allImages(
             this,
             mContentResolver,
             dataLocation(),

@@ -481,11 +481,9 @@ public class Camera extends Activity implements View.OnClickListener,
                     startTiming();
                 }
 
-                ImageManager imgManager = ImageManager.instance();
-
                 long dateTaken = System.currentTimeMillis();
                 String name = createName(dateTaken) + ".jpg";
-                mLastContentUri = imgManager.addImage(
+                mLastContentUri = ImageManager.addImage(
                         Camera.this,
                         mContentResolver,
                         name,
@@ -500,11 +498,12 @@ public class Camera extends Activity implements View.OnClickListener,
                     mCancel = true;
                 }
                 if (!mCancel) {
-                    mAddImageCancelable = imgManager.storeImage(mLastContentUri,
-                            Camera.this, mContentResolver, 0, null, data);
+                    mAddImageCancelable = ImageManager.storeImage(
+                            mLastContentUri, Camera.this, mContentResolver,
+                            0, null, data);
                     mAddImageCancelable.get();
                     mAddImageCancelable = null;
-                    imgManager.setImageSize(mContentResolver, mLastContentUri,
+                    ImageManager.setImageSize(mContentResolver, mLastContentUri,
                             new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
                             name).length());
                 }
@@ -1337,7 +1336,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void updateLastImage() {
-        IImageList list = ImageManager.instance().allImages(
+        IImageList list = ImageManager.allImages(
             this,
             mContentResolver,
             dataLocation(),
@@ -1567,7 +1566,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private IImage getImageForURI(Uri uri) {
-        IImageList list = ImageManager.instance().allImages(
+        IImageList list = ImageManager.allImages(
                 this,
                 mContentResolver,
                 dataLocation(),

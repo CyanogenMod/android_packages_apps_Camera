@@ -134,7 +134,7 @@ public class Util {
         float bitmapHeightF = source.getHeight();
 
         float bitmapAspect = bitmapWidthF / bitmapHeightF;
-        float viewAspect   = (float) targetWidth / (float) targetHeight;
+        float viewAspect   = (float) targetWidth / targetHeight;
 
         if (bitmapAspect > viewAspect) {
             float scale = targetHeight / bitmapHeightF;

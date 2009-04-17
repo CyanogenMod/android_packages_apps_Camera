@@ -131,16 +131,6 @@ public class ImageManager {
     public static DataLocation getDefaultDataLocation() {
         return DataLocation.EXTERNAL;
     }
-    /**
-     * Returns the singleton instance of the ImageManager.
-     * @return the ImageManager instance.
-     */
-    public static ImageManager instance() {
-        if (sInstance == null) {
-            sInstance = new ImageManager();
-        }
-        return sInstance;
-    }
 
     public static int roundOrientation(int orientationInput) {
         int orientation = orientationInput;
@@ -186,13 +176,13 @@ public class ImageManager {
         return Util.isVideoMimeType(image.getMimeType());
     }
 
-    public void setImageSize(ContentResolver cr, Uri uri, long size) {
+    public static void setImageSize(ContentResolver cr, Uri uri, long size) {
         ContentValues values = new ContentValues();
         values.put(Images.Media.SIZE, size);
         cr.update(uri, values, null, null);
     }
 
-    public Uri addImage(Context ctx, ContentResolver cr, String title,
+    public static Uri addImage(Context ctx, ContentResolver cr, String title,
             long dateTaken, Location location,
             int orientation, String directory, String filename) {
 
@@ -301,7 +291,7 @@ public class ImageManager {
         }
     }
 
-    public ICancelable<Void> storeImage(
+    public static ICancelable<Void> storeImage(
             Uri uri, Context ctx, ContentResolver cr, int orientation,
             Bitmap source, byte [] jpegData) {
         return new AddImageCancelable(
@@ -318,14 +308,14 @@ public class ImageManager {
         IImageList imageList;
 
         if (uriString.startsWith("content://drm")) {
-            imageList = ImageManager.instance().allImages(
+            imageList = ImageManager.allImages(
                     ctx, cr, ImageManager.DataLocation.ALL,
                     ImageManager.INCLUDE_DRM_IMAGES, sort);
         } else if (isSingleImageMode(uriString)) {
             imageList = new SingleImageList(cr, uri);
         } else {
             String bucketId = uri.getQueryParameter("bucketId");
-            imageList = ImageManager.instance().allImages(
+            imageList = ImageManager.allImages(
                 ctx, cr, ImageManager.DataLocation.ALL,
                 ImageManager.INCLUDE_IMAGES, sort, bucketId);
         }
@@ -378,21 +368,21 @@ public class ImageManager {
         }
     }
 
-    public IImageList emptyImageList() {
+    public static IImageList emptyImageList() {
         return new EmptyImageList();
     }
 
-    public IImageList allImages(Context ctx, ContentResolver cr,
+    public static IImageList allImages(Context ctx, ContentResolver cr,
             DataLocation location, int inclusion, int sort) {
         return allImages(ctx, cr, location, inclusion, sort, null, null);
     }
 
-    public IImageList allImages(Context ctx, ContentResolver cr,
+    public static IImageList allImages(Context ctx, ContentResolver cr,
             DataLocation location, int inclusion, int sort, String bucketId) {
         return allImages(ctx, cr, location, inclusion, sort, bucketId, null);
     }
 
-    public IImageList allImages(
+    public static IImageList allImages(
             Context ctx, ContentResolver cr, DataLocation location,
             int inclusion, int sort, String bucketId, Uri specificImageUri) {
         if (cr == null) {

@@ -49,6 +49,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,13 +57,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class ImageGallery2 extends Activity {
     private static final String TAG = "ImageGallery2";
@@ -79,9 +76,6 @@ public class ImageGallery2 extends Activity {
     private MenuItem mSlideShowItem;
     private SharedPreferences mPrefs;
     private long mVideoSizeLimit = Long.MAX_VALUE;
-
-    public ImageGallery2() {
-    }
 
     BroadcastReceiver mReceiver = null;
 
@@ -309,13 +303,13 @@ public class ImageGallery2 extends Activity {
         }
     }
 
-    boolean isPickIntent() {
+    private boolean isPickIntent() {
         String action = getIntent().getAction();
         return (Intent.ACTION_PICK.equals(action)
                 || Intent.ACTION_GET_CONTENT.equals(action));
     }
 
-    void launchCropperOrFinish(IImage img) {
+    private void launchCropperOrFinish(IImage img) {
         Bundle myExtras = getIntent().getExtras();
 
         long size = MenuHelper.getImageFileSize(img);
@@ -440,7 +434,7 @@ public class ImageGallery2 extends Activity {
                     getResources().getString(R.string.wait),
                     true,
                     true);
-            mAllImages = ImageManager.instance().emptyImageList();
+            mAllImages = ImageManager.emptyImageList();
         } else {
             mAllImages = allImages(!unmounted);
             mGvs.init(mHandler);
@@ -563,18 +557,18 @@ public class ImageGallery2 extends Activity {
 
                                 if (!mDidSetProgress) {
                                     mHandler.post(new Runnable() {
-                                        public void run() {
+                                            public void run() {
                                                 findViewById(
                                                 R.id.loading_indicator)
                                                 .setVisibility(View.VISIBLE);
-                                        }
+                                            }
                                     });
                                     mDidSetProgress = true;
                                 }
                                 mGvs.postInvalidate();
 
                                 // If there is a new image done and it has been
-                                // a second, update the progress.
+                                // one second, update the progress text.
                                 if (System.currentTimeMillis()
                                         - startTime > 1000) {
                                     mHandler.post(new Runnable() {
@@ -614,7 +608,7 @@ public class ImageGallery2 extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem item;
         if (isPickIntent()) {
             MenuHelper.addCapturePictureMenuItems(menu, this);
@@ -641,7 +635,7 @@ public class ImageGallery2 extends Activity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(android.view.Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
             boolean videoSelected = isVideoSelected();
             // TODO: Only enable slide show if there is at least one image in
@@ -713,9 +707,9 @@ public class ImageGallery2 extends Activity {
             }
             Uri uri = getIntent().getData();
             if (!assumeMounted) {
-                mAllImages = ImageManager.instance().emptyImageList();
+                mAllImages = ImageManager.emptyImageList();
             } else {
-                mAllImages = ImageManager.instance().allImages(
+                mAllImages = ImageManager.allImages(
                         ImageGallery2.this,
                         getContentResolver(),
                         ImageManager.DataLocation.NONE,
@@ -1018,7 +1012,7 @@ class GridViewSpecial extends View {
     }
 
     private void ensureVisible(int pos) {
-        android.graphics.Rect r = getRectForPosition(pos);
+        Rect r = getRectForPosition(pos);
         int top = getScrollY();
         int bot = top + getHeight();
 
@@ -1105,17 +1099,6 @@ class GridViewSpecial extends View {
                 scrollTo(0, y);
             }
         }
-    }
-
-    Bitmap scaleTo(int width, int height, Bitmap b) {
-        Matrix m = new Matrix();
-        m.setScale(width / 64F, height / 64F);
-        Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(),
-                m, false);
-        if (b2 != b) {
-            b.recycle();
-        }
-        return b2;
     }
 
     class ImageBlockManager {
@@ -1249,7 +1232,8 @@ class GridViewSpecial extends View {
             }
             if (mWorkerThread != null) {
                 try {
-                    BitmapManager.instance().cancelThreadDecoding(mWorkerThread);
+                    BitmapManager.instance()
+                            .cancelThreadDecoding(mWorkerThread);
                     mWorkerThread.join();
                     mWorkerThread = null;
                 } catch (InterruptedException ex) {
@@ -1402,7 +1386,7 @@ class GridViewSpecial extends View {
                     int blockNum = block.mBlockNumber;
                     boolean isVis = blockNum >= firstVisBlock
                             && blockNum <= lastVisBlock;
-                    block.setVisibility(isVis);
+                    block.setVisible(isVis);
                 }
 
                 if (any) {
@@ -1560,7 +1544,7 @@ class GridViewSpecial extends View {
                 }
             }
 
-            private boolean setVisibility(boolean isVis) {
+            private boolean setVisible(boolean isVis) {
                 synchronized (ImageBlock.this) {
                     boolean retval = mIsVisible != isVis;
                     mIsVisible = isVis;
@@ -1644,20 +1628,15 @@ class GridViewSpecial extends View {
                     if (deltaW < 10 && deltaH < 10) {
                         int halfDeltaW = deltaW / 2;
                         int halfDeltaH = deltaH / 2;
-                        android.graphics.Rect src =
-                                new android.graphics.Rect(0 + halfDeltaW,
+                        Rect src = new Rect(0 + halfDeltaW,
                                 0 + halfDeltaH, bw - halfDeltaW,
                                 bh - halfDeltaH);
-                        android.graphics.Rect dst =
-                                new android.graphics.Rect(xPos, yPos,
+                        Rect dst = new Rect(xPos, yPos,
                                 xPos + w, yPos + h);
                         mCanvas.drawBitmap(b, src, dst, mPaint);
                     } else {
-                        android.graphics.Rect src =
-                                new android.graphics.Rect(0, 0, bw, bh);
-                        android.graphics.Rect dst =
-                                new android.graphics.Rect(xPos, yPos, xPos + w,
-                                yPos + h);
+                        Rect src = new Rect(0, 0, bw, bh);
+                        Rect dst = new Rect(xPos, yPos, xPos + w, yPos + h);
                         mCanvas.drawBitmap(b, src, dst, mPaint);
                     }
                 } else {
@@ -1839,22 +1818,23 @@ class GridViewSpecial extends View {
         }
     }
 
-    android.graphics.Rect getRectForPosition(int pos) {
+    // Return the rectange for the thumbnail in the given position.
+    Rect getRectForPosition(int pos) {
         int row = pos / mCurrentSpec.mColumns;
         int col = pos - (row * mCurrentSpec.mColumns);
 
         int left = mCurrentSpec.mLeftEdgePadding
                 + (col * mCurrentSpec.mCellWidth)
-                + (Math.max(0, col - 1) * mCurrentSpec.mCellSpacing);
-        int top  = (row * mCurrentSpec.mCellHeight)
+                + (col * mCurrentSpec.mCellSpacing);
+        int top = (row * mCurrentSpec.mCellHeight)
                 + (row * mCurrentSpec.mCellSpacing);
 
-        return new android.graphics.Rect(left, top,
-                left + mCurrentSpec.mCellWidth + mCurrentSpec.mCellWidth,
+        return new Rect(left, top,
+                left + mCurrentSpec.mCellWidth + mCurrentSpec.mCellSpacing,
                 top + mCurrentSpec.mCellHeight + mCurrentSpec.mCellSpacing);
     }
 
-    int computeSelectedIndex(android.view.MotionEvent ev) {
+    int computeSelectedIndex(MotionEvent ev) {
         int spacing = mCurrentSpec.mCellSpacing;
         int leftSpacing = mCurrentSpec.mLeftEdgePadding;
 
@@ -1868,7 +1848,7 @@ class GridViewSpecial extends View {
     }
 
     @Override
-    public boolean onTouchEvent(android.view.MotionEvent ev) {
+    public boolean onTouchEvent(MotionEvent ev) {
         if (!mGallery.canHandleEvent()) {
             return false;
         }
@@ -1881,68 +1861,6 @@ class GridViewSpecial extends View {
     public void scrollBy(int x, int y) {
         scrollTo(x, mScrollY + y);
     }
-
-    Toast mDateLocationToast;
-    int [] mDateRange = new int[2];
-
-    private String month(int month) {
-        String text = "";
-        switch (month) {
-            case 0:  text = "January";   break;
-            case 1:  text = "February";  break;
-            case 2:  text = "March";     break;
-            case 3:  text = "April";     break;
-            case 4:  text = "May";       break;
-            case 5:  text = "June";      break;
-            case 6:  text = "July";      break;
-            case 7:  text = "August";    break;
-            case 8:  text = "September"; break;
-            case 9:  text = "October";   break;
-            case 10: text = "November";  break;
-            case 11: text = "December";  break;
-        }
-        return text;
-    }
-
-    Runnable mToastRunnable = new Runnable() {
-        public void run() {
-            if (mDateLocationToast != null) {
-                mDateLocationToast.cancel();
-                mDateLocationToast = null;
-            }
-
-            int count = mGallery.mAllImages.getCount();
-            if (count == 0) {
-                return;
-            }
-
-            GridViewSpecial.this.mImageBlockManager.getVisibleRange(mDateRange);
-
-            IImage firstImage = mGallery.mAllImages.getImageAt(mDateRange[0]);
-            int lastOffset = Math.min(count - 1, mDateRange[1]);
-            IImage lastImage = mGallery.mAllImages.getImageAt(lastOffset);
-
-            GregorianCalendar dateStart = new GregorianCalendar();
-            GregorianCalendar dateEnd   = new GregorianCalendar();
-
-            dateStart.setTimeInMillis(firstImage.getDateTaken());
-            dateEnd.setTimeInMillis(lastImage.getDateTaken());
-
-            String text1 = month(dateStart.get(Calendar.MONTH)) + " "
-                    + dateStart.get(Calendar.YEAR);
-            String text2 = month(dateEnd.get(Calendar.MONTH)) + " "
-                    + dateEnd.get(Calendar.YEAR);
-
-            String text = text1;
-            if (!text2.equals(text1)) {
-                text = text + " : " + text2;
-            }
-
-            mDateLocationToast = Toast.makeText(mContext, text,
-                    Toast.LENGTH_LONG);
-            mDateLocationToast.show();
-        }
-    };
 
     @Override
     public void scrollTo(int x, int y) {

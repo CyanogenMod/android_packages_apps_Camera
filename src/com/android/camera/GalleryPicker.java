@@ -372,7 +372,7 @@ public class GalleryPicker extends Activity {
 
             IImageList images;
             if (assumeMounted) {
-                images = ImageManager.instance().allImages(
+                images = ImageManager.allImages(
                         GalleryPicker.this,
                         getContentResolver(),
                         ImageManager.DataLocation.ALL,
@@ -380,7 +380,7 @@ public class GalleryPicker extends Activity {
                         | ImageManager.INCLUDE_VIDEOS,
                         ImageManager.SORT_DESCENDING);
             } else {
-                images = ImageManager.instance().emptyImageList();
+                images = ImageManager.emptyImageList();
             }
 
             if (mWorkerThread != null) {
@@ -796,7 +796,7 @@ public class GalleryPicker extends Activity {
     }
 
     private IImageList createImageList(int mediaTypes, String bucketId) {
-        return ImageManager.instance().allImages(
+        return ImageManager.allImages(
                 this,
                 getContentResolver(),
                 ImageManager.DataLocation.ALL,
