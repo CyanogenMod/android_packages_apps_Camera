@@ -20,7 +20,6 @@ import com.android.camera.BitmapManager;
 import com.android.camera.ExifInterface;
 import com.android.camera.ImageManager;
 import com.android.camera.Util;
-import com.android.camera.gallery.IImage;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -43,13 +42,7 @@ import java.util.HashMap;
  * A collection of <code>BaseImage</code>s.
  */
 public abstract class BaseImageList implements IImageList {
-    private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImageList";
-
-    private static final int MINI_THUMB_DATA_FILE_VERSION = 3;
-
-    private static final String WHERE_CLAUSE =
-            "(" + Images.Media.MIME_TYPE + " in (?, ?, ?))";
 
     protected static final String[] ACCEPTABLE_IMAGE_TYPES =
             new String[] { "image/jpeg", "image/png", "image/gif" };
@@ -137,9 +130,7 @@ public abstract class BaseImageList implements IImageList {
                 // If, for some reason, we already have a row with a matching
                 // image id, then just update that row rather than creating a
                 // new row.
-                uri = ContentUris.withAppendedId(
-                        mThumbUri, c.getLong(0));
-                c.commitUpdates();
+                uri = ContentUris.withAppendedId(mThumbUri, c.getLong(0));
             }
         } finally {
             c.close();
@@ -350,13 +341,6 @@ public abstract class BaseImageList implements IImageList {
                     break;
                 }
             }
-        }
-    }
-
-    public void commitChanges() {
-        synchronized (mCursor) {
-            mCursor.commitUpdates();
-            requery();
         }
     }
 

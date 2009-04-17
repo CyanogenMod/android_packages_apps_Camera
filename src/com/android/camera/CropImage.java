@@ -414,6 +414,7 @@ public class CropImage extends Activity {
     Handler mHandler = new Handler();
 
     Runnable mRunFaceDetection = new Runnable() {
+        @SuppressWarnings("hiding")
         float mScale = 1F;
         Matrix mImageMatrix;
         FaceDetector.Face[] mFaces = new FaceDetector.Face[3];

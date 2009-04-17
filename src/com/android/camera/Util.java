@@ -38,7 +38,6 @@ import java.io.IOException;
  * Collection of utility functions used in this package.
  */
 public class Util {
-    private static final boolean VERBOSE = false;
     private static final String TAG = "db.Util";
 
     private Util() {

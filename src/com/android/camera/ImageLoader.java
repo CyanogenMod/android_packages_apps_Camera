@@ -19,11 +19,7 @@ package com.android.camera;
 import com.android.camera.gallery.IImage;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -31,17 +27,18 @@ import java.util.ArrayList;
  * A dedicated decoding thread used by ImageGallery.
  */
 public class ImageLoader {
+    @SuppressWarnings("unused")
     private static final String TAG = "ImageLoader";
 
     // queue of work to do in the worker thread
-    private ArrayList<WorkItem>      mQueue = new ArrayList<WorkItem>();
-    private ArrayList<WorkItem>      mInProgress = new ArrayList<WorkItem>();
+    private final ArrayList<WorkItem>      mQueue = new ArrayList<WorkItem>();
+    private final ArrayList<WorkItem>      mInProgress = new ArrayList<WorkItem>();
 
     // the worker thread and a done flag so we know when to exit
     // currently we only exit from finalize
     private boolean                  mDone;
-    private ArrayList<Thread>        mDecodeThreads = new ArrayList<Thread>();
-    private android.os.Handler       mHandler;
+    private final ArrayList<Thread>        mDecodeThreads = new ArrayList<Thread>();
+    private final android.os.Handler       mHandler;
 
     private int                      mThreadCount = 1;
 

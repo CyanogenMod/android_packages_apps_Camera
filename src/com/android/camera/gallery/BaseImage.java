@@ -40,7 +40,6 @@ import java.util.HashMap;
  * the path to the actual image data.
  */
 public abstract class BaseImage implements IImage {
-    private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImage";
     private static final int UNKNOWN_LENGTH = -1;
 
@@ -66,16 +65,6 @@ public abstract class BaseImage implements IImage {
     }
 
     protected abstract Bitmap.CompressFormat compressionType();
-
-    public void commitChanges() {
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                c.commitUpdates();
-                c.requery();
-            }
-        }
-    }
 
     private class CompressImageToFile extends BaseCancelable<Boolean> {
         private ThreadSafeOutputStream mOutputStream = null;
@@ -410,6 +399,7 @@ public abstract class BaseImage implements IImage {
         synchronized (c) {
             if (c.moveToPosition(getRow())) {
                 c.updateString(mContainer.indexTitle(), name);
+                c.commitUpdates();
             }
         }
     }

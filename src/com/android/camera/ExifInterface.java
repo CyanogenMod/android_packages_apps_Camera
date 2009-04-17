@@ -24,7 +24,7 @@ import java.util.Iterator;
  */
 public class ExifInterface {
 
-    private String mFilename;
+    private final String mFilename;
 
     // Constants used for the Orientation Exif tag.
     public static final int ORIENTATION_UNDEFINED = 0;
@@ -111,6 +111,7 @@ public class ExifInterface {
         }
         String s = sb.toString();
         saveAttributesNative(mFilename, s);
+        commitChangesNative(mFilename);
         mSavedAttributes = true;
     }
 
@@ -213,18 +214,6 @@ public class ExifInterface {
         }
         mHasThumbnail = appendThumbnailNative(mFilename, thumbnailFileName);
         return mHasThumbnail;
-    }
-
-    /**
-     * Saves the changes (added Exif tags, added thumbnail) to the JPG file.
-     * You have to call saveAttributes() before committing the changes.
-     */
-    public void commitChanges() {
-        if (!mSavedAttributes) {
-            throw new RuntimeException("Must call saveAttributes "
-                    + "before calling commitChanges");
-        }
-        commitChangesNative(mFilename);
     }
 
     public boolean hasThumbnail() {

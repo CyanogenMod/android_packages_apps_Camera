@@ -20,7 +20,6 @@ import com.android.camera.ImageManager;
 
 import android.content.ContentResolver;
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -29,10 +28,11 @@ import java.util.HashMap;
  * one image.
  */
 public class SingleImageList extends BaseImageList implements IImageList {
-    private static final String TAG = "SingleImageList";
-    private static final boolean VERBOSE = false;
 
-    private IImage mSingleImage;
+    @SuppressWarnings("unused")
+    private static final String TAG = "BaseImageList";
+
+    private final IImage mSingleImage;
 
     public SingleImageList(ContentResolver cr, Uri uri) {
         super(cr, uri, ImageManager.SORT_ASCENDING, null);

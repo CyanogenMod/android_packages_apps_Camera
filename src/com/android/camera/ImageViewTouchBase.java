@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.ImageView;
@@ -49,10 +48,10 @@ abstract class ImageViewTouchBase extends ImageView {
 
     // This is the final matrix which is computed as the concatentation
     // of the base matrix and the supplementary matrix.
-    private Matrix mDisplayMatrix = new Matrix();
+    private final Matrix mDisplayMatrix = new Matrix();
 
     // Temporary buffer used for getting the values out of a matrix.
-    private float[] mMatrixValues = new float[9];
+    private final float[] mMatrixValues = new float[9];
 
     // The current bitmap being displayed.
     protected Bitmap mBitmapDisplayed;

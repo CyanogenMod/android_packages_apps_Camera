@@ -37,7 +37,6 @@ import java.util.WeakHashMap;
  */
 public class BitmapManager {
     private static final String TAG = "BitmapManager";
-    private static final boolean VERBOSE = false;
     private static enum State {RUNNING, CANCEL, WAIT}
     private static class ThreadStatus {
         public State state = State.WAIT;
@@ -76,10 +75,6 @@ public class BitmapManager {
 
     public synchronized void setCheckResourceLock(boolean b) {
         mCheckResourceLock = b;
-    }
-
-    private synchronized boolean checkResourceLock() {
-        return mCheckResourceLock;
     }
 
     /**

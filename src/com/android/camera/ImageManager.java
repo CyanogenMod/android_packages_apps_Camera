@@ -54,7 +54,6 @@ import java.util.HashMap;
  * in the media content provider.
  */
 public class ImageManager {
-    private static final boolean VERBOSE = false;
     private static final String TAG = "ImageManager";
     private static ImageManager sInstance = null;
 
@@ -221,19 +220,17 @@ public class ImageManager {
     private static class AddImageCancelable extends BaseCancelable<Void> {
         private ICancelable<Boolean> mSaveImageCancelable;
         private final Uri mUri;
-        private final Context mCtx;
         private final ContentResolver mCr;
         private final int mOrientation;
         private final Bitmap mSource;
         private final byte [] mJpegData;
 
-        public AddImageCancelable(Uri uri, Context ctx, ContentResolver cr,
+        public AddImageCancelable(Uri uri, ContentResolver cr,
                 int orientation, Bitmap source, byte[] jpegData) {
             if (source == null && jpegData == null) {
                 throw new IllegalArgumentException("source cannot be null");
             }
             mUri = uri;
-            mCtx = ctx;
             mCr = cr;
             mOrientation = orientation;
             mSource = source;
@@ -265,20 +262,23 @@ public class ImageManager {
                         ImageColumns.MINI_THUMB_MAGIC, ImageColumns.DATA};
 
                 Cursor c = mCr.query(mUri, projection, null, null, null);
-                c.moveToPosition(0);
-
-                synchronized (this) {
-                    checkCanceled();
-                    mSaveImageCancelable = image.saveImageContents(
-                            mSource, mJpegData, mOrientation, true, c);
+                try {
+                    c.moveToPosition(0);
+                    synchronized (this) {
+                        checkCanceled();
+                        mSaveImageCancelable = image.saveImageContents(
+                                mSource, mJpegData, mOrientation, true,
+                                c.getString(2));
+                    }
+                } finally {
+                    c.close();
                 }
 
                 if (mSaveImageCancelable.get()) {
-                    c.updateLong(1, id);
-                    c.commitUpdates();
-                    c.close();
+                    ContentValues values = new ContentValues();
+                    values.put(ImageColumns.MINI_THUMB_MAGIC, 0);
+                    mCr.update(mUri, values, null, null);
                 } else {
-                    c.close();
                     throw new CanceledException();
                 }
             } catch (CanceledException ex) {
@@ -295,7 +295,7 @@ public class ImageManager {
             Uri uri, Context ctx, ContentResolver cr, int orientation,
             Bitmap source, byte [] jpegData) {
         return new AddImageCancelable(
-                uri, ctx, cr, orientation, source, jpegData);
+                uri, cr, orientation, source, jpegData);
     }
 
     public static IImageList makeImageList(Uri uri, Context ctx, int sort) {
@@ -332,9 +332,6 @@ public class ImageManager {
     private static class EmptyImageList implements IImageList {
         public void checkThumbnails(IImageList.ThumbCheckCallback cb,
                 int totalThumbnails) {
-        }
-
-        public void commitChanges() {
         }
 
         public void deactivate() {

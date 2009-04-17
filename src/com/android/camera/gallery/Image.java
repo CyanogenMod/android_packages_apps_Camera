@@ -40,7 +40,6 @@ import java.util.HashMap;
  * The class for normal images in gallery.
  */
 public class Image extends BaseImage implements IImage {
-    private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImage";
 
     private int mRotation;
@@ -77,7 +76,7 @@ public class Image extends BaseImage implements IImage {
                 int column = ((ImageList) getContainer()).indexOrientation();
                 if (column >= 0) {
                     c.updateInt(column, degrees);
-                    getContainer().commitChanges();
+                    c.commitUpdates();
                 }
             }
         }
@@ -166,15 +165,15 @@ public class Image extends BaseImage implements IImage {
         private final Bitmap mImage;
         private final byte [] mJpegData;
         private final int mOrientation;
-        private final Cursor mCursor;
+        private final String mFilePath;
         ICancelable<Boolean> mCurrentCancelable = null;
 
         SaveImageContentsCancelable(Bitmap image, byte[] jpegData,
-                int orientation, Cursor cursor) {
+                int orientation, String filePath) {
             mImage = image;
             mJpegData = jpegData;
             mOrientation = orientation;
-            mCursor = cursor;
+            mFilePath = filePath;
         }
 
         @Override
@@ -199,16 +198,12 @@ public class Image extends BaseImage implements IImage {
                 if (!mCurrentCancelable.get()) return false;
 
                 synchronized (this) {
-                    String filePath;
-                    synchronized (mCursor) {
-                        mCursor.moveToPosition(0);
-                        filePath = mCursor.getString(2);
-                    }
+                    String filePath = mFilePath;
+
                     // TODO: If thumbData is present and usable, we should call
                     // the version of storeThumbnail which takes a byte array,
                     // rather than re-encoding a new JPEG of the same
                     // dimensions.
-
                     byte[] thumbData = null;
                     synchronized (ExifInterface.class) {
                         thumbData =
@@ -254,9 +249,9 @@ public class Image extends BaseImage implements IImage {
     }
 
     public ICancelable<Boolean> saveImageContents(Bitmap image,
-            byte [] jpegData, int orientation, boolean newFile, Cursor cursor) {
+            byte [] jpegData, int orientation, boolean newFile, String filePath) {
         return new SaveImageContentsCancelable(
-                image, jpegData, orientation, cursor);
+                image, jpegData, orientation, filePath);
     }
 
     private void setExifRotation(int degrees) {
@@ -294,7 +289,6 @@ public class Image extends BaseImage implements IImage {
                 replaceExifTag("UserComment",
                         "saveRotatedImage comment orientation: " + orientation);
                 exif.saveAttributes(mExifData);
-                exif.commitChanges();
             }
         } catch (RuntimeException ex) {
             Log.e(TAG, "unable to save exif data with new orientation "

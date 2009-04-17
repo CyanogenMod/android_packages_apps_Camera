@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +52,7 @@ public class OnScreenHint {
 
     private final WindowManager.LayoutParams mParams =
             new WindowManager.LayoutParams();
-    private WindowManager mWM;
+    private final WindowManager mWM;
     private final Handler mHandler = new Handler();
 
     /**
@@ -282,13 +281,13 @@ public class OnScreenHint {
         }
     }
 
-    private Runnable mShow = new Runnable() {
+    private final Runnable mShow = new Runnable() {
         public void run() {
             handleShow();
         }
     };
 
-    private Runnable mHide = new Runnable() {
+    private final Runnable mHide = new Runnable() {
         public void run() {
             handleHide();
         }

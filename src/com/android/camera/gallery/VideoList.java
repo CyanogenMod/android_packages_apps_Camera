@@ -34,7 +34,6 @@ import java.util.HashMap;
  */
 public class VideoList extends BaseImageList implements IImageList {
     private static final String TAG = "BaseImageList";
-    private static final boolean VERBOSE = false;
 
     private static final String[] sProjection = new String[] {
             Video.Media._ID,

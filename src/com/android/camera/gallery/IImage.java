@@ -77,6 +77,4 @@ public interface IImage {
     // This is called if the image is removed.
     public abstract void onRemove();
 
-    // Commit the changes done to this image.
-    public abstract void commitChanges();
 }

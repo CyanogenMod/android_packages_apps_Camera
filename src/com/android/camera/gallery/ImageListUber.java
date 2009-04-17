@@ -19,7 +19,6 @@ package com.android.camera.gallery;
 import com.android.camera.ImageManager;
 
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,11 +27,11 @@ import java.util.HashMap;
  * A union of different <code>IImageList</code>.
  */
 public class ImageListUber implements IImageList {
-    private static final boolean VERBOSE = false;
+    @SuppressWarnings("unused")
     private static final String TAG = "ImageListUber";
 
-    private IImageList [] mSubList;
-    private int mSort;
+    private final IImageList [] mSubList;
+    private final int mSort;
 
     // This is an array of Longs wherein each Long consists of
     // two components.  The first component indicates the number of
@@ -60,14 +59,6 @@ public class ImageListUber implements IImageList {
             int count = i.getCount();
             i.checkThumbnails(cb, totalThumbnails);
             totalThumbnails -= count;
-        }
-    }
-
-    public void commitChanges() {
-        final IImageList sublist[] = mSubList;
-        final int length = sublist.length;
-        for (int i = 0; i < length; i++) {
-            sublist[i].commitChanges();
         }
     }
 

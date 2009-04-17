@@ -169,7 +169,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private ContentResolver mContentResolver;
     private boolean mDidRegister = false;
 
-    private ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
+    private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private LocationManager mLocationManager = null;
 
@@ -180,9 +180,9 @@ public class Camera extends Activity implements View.OnClickListener,
     private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
 
-    private ShutterCallback mShutterCallback = new ShutterCallback();
-    private RawPictureCallback mRawPictureCallback = new RawPictureCallback();
-    private AutoFocusCallback mAutoFocusCallback = new AutoFocusCallback();
+    private final ShutterCallback mShutterCallback = new ShutterCallback();
+    private final RawPictureCallback mRawPictureCallback = new RawPictureCallback();
+    private final AutoFocusCallback mAutoFocusCallback = new AutoFocusCallback();
     private long mFocusStartTime;
     private long mFocusCallbackTime;
     private long mCaptureStartTime;
@@ -204,7 +204,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
 
-    private Handler mHandler = new MainHandler();
+    private final Handler mHandler = new MainHandler();
 
     private interface Capturer {
         Uri getLastCaptureUri();

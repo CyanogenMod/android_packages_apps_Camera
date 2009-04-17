@@ -196,10 +196,6 @@ class UriImage implements IImage {
         return (options != null) ? options.outWidth : 0;
     }
 
-    public void commitChanges() {
-        throw new UnsupportedOperationException();
-    }
-
     public long fullSizeImageId() {
         return 0;
     }
