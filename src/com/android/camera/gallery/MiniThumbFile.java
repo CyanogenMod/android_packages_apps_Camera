@@ -16,10 +16,8 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.Util;
-
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.net.Uri;               
 import android.os.Environment;
 import android.util.Log;
 
@@ -42,9 +40,10 @@ class MiniThumbFile {
     private static final int MINI_THUMB_DATA_FILE_VERSION = 3;
     public static final int BYTES_PER_MINTHUMB = 10000;
     private static final int HEADER_SIZE = 1 + 8 + 4;
+    private static final byte [] sMiniThumbData = new byte[BYTES_PER_MINTHUMB];
     private Uri mUri;
-    private RandomAccessFile mMiniThumbFile;
-
+    private RandomAccessFile mMiniThumbFile;                           
+    
     private String randomAccessFilePath(int version) {
         String directoryName =
                 Environment.getExternalStorageDirectory().toString()
