@@ -17,7 +17,6 @@
 package com.android.camera.gallery;
 
 import com.android.camera.BitmapManager;
-import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -27,6 +26,7 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore.Images;
 import android.util.Log;
+
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -74,7 +74,8 @@ public abstract class BaseImage implements IImage {
         }
     }
 
-    private class CompressImageToFile extends BaseCancelable<Boolean> {
+    private class CompressImageToFile extends BaseCancelable
+            implements IGetBooleanCancelable {
         private ThreadSafeOutputStream mOutputStream = null;
 
         private Bitmap mBitmap;
@@ -96,7 +97,7 @@ public abstract class BaseImage implements IImage {
             return false;
         }
 
-        public Boolean get() {
+        public boolean get() {
             try {
                 long t1 = System.currentTimeMillis();
                 OutputStream delegate = mContentResolver.openOutputStream(mUri);
@@ -144,7 +145,7 @@ public abstract class BaseImage implements IImage {
      * @param uri       where to store the bitmap
      * @return          true if we succeeded
      */
-    protected ICancelable<Boolean> compressImageToFile(
+    protected IGetBooleanCancelable compressImageToFile(
             Bitmap bitmap, byte [] jpegData, Uri uri) {
         return new CompressImageToFile(bitmap, jpegData, uri);
     }
@@ -177,7 +178,8 @@ public abstract class BaseImage implements IImage {
         return b;
     }
 
-    private class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
+    private class LoadBitmapCancelable extends BaseCancelable
+            implements IGetBitmapCancelable {
         private ParcelFileDescriptor mPFD;
         private BitmapFactory.Options mOptions = new BitmapFactory.Options();
         private long mCancelInitiationTime;
@@ -222,7 +224,7 @@ public abstract class BaseImage implements IImage {
     }
 
 
-    public ICancelable<Bitmap> fullSizeBitmapCancelable(
+    public IGetBitmapCancelable fullSizeBitmapCancelable(
             int targetWidthHeight) {
         try {
             ParcelFileDescriptor pfdInput = mContentResolver
