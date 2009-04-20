@@ -600,28 +600,34 @@ public class ImageGallery2 extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem item;
         if (isPickIntent()) {
-            MenuHelper.addCapturePictureMenuItems(menu, this);
+            String type = getIntent().resolveType(this);
+            if (type != null) {
+                if (isImageType(type)) {
+                    MenuHelper.addCapturePictureMenuItems(menu, this);
+                }
+                else if (isVideoType(type)) {
+                    MenuHelper.addCaptureVideoMenuItems(menu, this);
+                }
+            }
         } else {
             MenuHelper.addCaptureMenuItems(menu, this);
             if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
                 mSlideShowItem = addSlideShowMenu(menu, 5);
             }
+
+            MenuItem item = menu.add(0, 0, 1000, R.string.camerasettings);
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    Intent preferences = new Intent();
+                    preferences.setClass(ImageGallery2.this, GallerySettings.class);
+                    startActivity(preferences);
+                    return true;
+                }
+            });
+            item.setAlphabeticShortcut('p');
+            item.setIcon(android.R.drawable.ic_menu_preferences);
         }
-
-        item = menu.add(0, 0, 1000, R.string.camerasettings);
-        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent preferences = new Intent();
-                preferences.setClass(ImageGallery2.this, GallerySettings.class);
-                startActivity(preferences);
-                return true;
-            }
-        });
-        item.setAlphabeticShortcut('p');
-        item.setIcon(android.R.drawable.ic_menu_preferences);
-
         return true;
     }
 
@@ -644,6 +650,16 @@ public class ImageGallery2 extends Activity {
         return (image != null) && ImageManager.isVideo(image);
     }
 
+    private boolean isImageType(String type) {
+        return type.equals("vnd.android.cursor.dir/image")
+                || type.equals("image/*");
+    }
+
+    private boolean isVideoType(String type) {
+        return type.equals("vnd.android.cursor.dir/video")
+                || type.equals("video/*");
+    }
+
     private synchronized IImageList allImages(boolean assumeMounted) {
         if (mAllImages == null) {
             mNoImagesView = findViewById(R.id.no_images);
@@ -656,8 +672,7 @@ public class ImageGallery2 extends Activity {
                 String type = intent.resolveType(this);
                 TextView leftText = (TextView) findViewById(R.id.left_text);
                 if (type != null) {
-                    if (type.equals("vnd.android.cursor.dir/image")
-                            || type.equals("image/*")) {
+                    if (isImageType(type)) {
                         mInclusion = ImageManager.INCLUDE_IMAGES;
                         if (isPickIntent()) {
                             leftText.setText(
@@ -666,8 +681,7 @@ public class ImageGallery2 extends Activity {
                             leftText.setText(R.string.photos_gallery_title);
                         }
                     }
-                    if (type.equals("vnd.android.cursor.dir/video")
-                            || type.equals("video/*")) {
+                    if (isVideoType(type)) {
                         mInclusion = ImageManager.INCLUDE_VIDEOS;
                         if (isPickIntent()) {
                             leftText.setText(
