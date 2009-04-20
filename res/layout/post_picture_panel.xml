@@ -28,14 +28,14 @@
         android:id="@+id/attach"
         android:drawableTop="@drawable/ic_menu_attach"
         android:text="@string/camera_attach"
-        android:layout_marginLeft="30dip"
+        android:layout_marginLeft="20dip"
         style="@style/OnscreenActionIcon"
     />
     <com.android.camera.ActionMenuButton
         android:id="@+id/cancel"
         android:drawableTop="@drawable/ic_menu_cancel"
         android:text="@string/camera_cancel"
-        android:layout_marginLeft="30dip"
+        android:layout_marginLeft="20dip"
         style="@style/OnscreenActionIcon"
     />
 </LinearLayout>
