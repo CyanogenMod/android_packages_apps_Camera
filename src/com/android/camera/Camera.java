@@ -84,8 +84,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private static final String TAG = "camera";
 
-    private static final boolean DEBUG = false;
-    private static final boolean DEBUG_TIME_OPERATIONS = DEBUG && false;
+    private static final boolean DEBUG_TIME_OPERATIONS = false;
 
     private static final int CROP_MSG = 1;
     private static final int RESTART_PREVIEW = 3;
@@ -180,14 +179,21 @@ public class Camera extends Activity implements View.OnClickListener,
     private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
 
+    // Use OneShotPreviewCallback to measure the time between
+    // JpegPictureCallback and preview.
+    private final OneShotPreviewCallback mOneShotPreviewCallback =
+            new OneShotPreviewCallback();
     private final ShutterCallback mShutterCallback = new ShutterCallback();
-    private final RawPictureCallback mRawPictureCallback = new RawPictureCallback();
-    private final AutoFocusCallback mAutoFocusCallback = new AutoFocusCallback();
+    private final RawPictureCallback mRawPictureCallback =
+            new RawPictureCallback();
+    private final AutoFocusCallback mAutoFocusCallback =
+            new AutoFocusCallback();
     private long mFocusStartTime;
     private long mFocusCallbackTime;
     private long mCaptureStartTime;
     private long mShutterCallbackTime;
     private long mRawPictureCallbackTime;
+    private long mJpegPictureCallbackTime;
     private int mPicturesRemaining;
     private boolean mRecordLocation;
 
@@ -325,14 +331,26 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private boolean mImageSavingItem = false;
 
+    private final class OneShotPreviewCallback
+            implements android.hardware.Camera.PreviewCallback {
+        public void onPreviewFrame(byte[] data,
+                                   android.hardware.Camera camera) {
+            long now = System.currentTimeMillis();
+            if (mJpegPictureCallbackTime != 0) {
+                Log.v(TAG, (now - mJpegPictureCallbackTime)
+                        + "ms elapsed between JpegPictureCallback and preview "
+                        + "restarted.");
+                mJpegPictureCallbackTime = 0;
+            }
+        }
+    }
+
     private final class ShutterCallback
             implements android.hardware.Camera.ShutterCallback {
         public void onShutter() {
-            if (DEBUG_TIME_OPERATIONS) {
-                mShutterCallbackTime = System.currentTimeMillis();
-                Log.v(TAG, "Shutter lag was "
-                        + (mShutterCallbackTime - mCaptureStartTime) + " ms.");
-            }
+            mShutterCallbackTime = System.currentTimeMillis();
+            Log.v(TAG, "Shutter lag was "
+                    + (mShutterCallbackTime - mCaptureStartTime) + " ms.");
 
             // We are going to change the size of surface view and show captured
             // image. Set it to invisible now and set it back to visible in
@@ -350,11 +368,9 @@ public class Camera extends Activity implements View.OnClickListener,
         public void onPictureTaken(
                 byte [] rawData, android.hardware.Camera camera) {
             mRawPictureCallbackTime = System.currentTimeMillis();
-            if (DEBUG_TIME_OPERATIONS) {
-                Log.v(TAG, (mRawPictureCallbackTime - mShutterCallbackTime)
-                        + "ms elapsed between"
-                        + " ShutterCallback and RawPictureCallback.");
-            }
+            Log.v(TAG, (mRawPictureCallbackTime - mShutterCallbackTime)
+                    + "ms elapsed between"
+                    + " ShutterCallback and RawPictureCallback.");
         }
     }
 
@@ -371,12 +387,10 @@ public class Camera extends Activity implements View.OnClickListener,
                 return;
             }
 
-            if (DEBUG_TIME_OPERATIONS) {
-                long mJpegPictureCallback = System.currentTimeMillis();
-                Log.v(TAG, (mJpegPictureCallback - mRawPictureCallbackTime)
-                        + "ms elapsed between"
-                        + " RawPictureCallback and JpegPictureCallback.");
-            }
+            mJpegPictureCallbackTime = System.currentTimeMillis();
+            Log.v(TAG, (mJpegPictureCallbackTime - mRawPictureCallbackTime)
+                    + "ms elapsed between"
+                    + " RawPictureCallback and JpegPictureCallback.");
 
             if (jpegData != null) {
                 mImageCapture.storeImage(jpegData, camera, mLocation);
@@ -397,11 +411,9 @@ public class Camera extends Activity implements View.OnClickListener,
             implements android.hardware.Camera.AutoFocusCallback {
         public void onAutoFocus(
                 boolean focused, android.hardware.Camera camera) {
-            if (DEBUG_TIME_OPERATIONS) {
-                mFocusCallbackTime = System.currentTimeMillis();
-                Log.v(TAG, "Auto focus took "
-                        + (mFocusCallbackTime - mFocusStartTime) + " ms.");
-            }
+            mFocusCallbackTime = System.currentTimeMillis();
+            Log.v(TAG, "Auto focus took "
+                    + (mFocusCallbackTime - mFocusStartTime) + " ms.");
 
             if (mFocusState == FOCUSING_SNAP_ON_FINISH
                     && mCaptureObject != null) {
@@ -643,9 +655,7 @@ public class Camera extends Activity implements View.OnClickListener,
             if (mPausing) {
                 return;
             }
-            if (DEBUG_TIME_OPERATIONS) {
-                mCaptureStartTime = System.currentTimeMillis();
-            }
+            mCaptureStartTime = System.currentTimeMillis();
 
             // If we are already in the middle of taking a snapshot then we
             // should just save
@@ -1048,6 +1058,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 CameraSettings.KEY_FOCUS_MODE,
                 getString(R.string.pref_camera_focusmode_default));
         mGpsIndicator.setVisibility(View.INVISIBLE);
+        mJpegPictureCallbackTime = 0;
 
         readBrightnessPreference();
 
@@ -1161,9 +1172,7 @@ public class Camera extends Activity implements View.OnClickListener,
         updateFocusIndicator();
         if (mFocusState != FOCUSING && mFocusState != FOCUSING_SNAP_ON_FINISH) {
             if (mCameraDevice != null) {
-                if (DEBUG_TIME_OPERATIONS) {
-                    mFocusStartTime = System.currentTimeMillis();
-                }
+                mFocusStartTime = System.currentTimeMillis();
                 mFocusState = FOCUSING;
                 mCameraDevice.autoFocus(mAutoFocusCallback);
             }
@@ -1370,10 +1379,6 @@ public class Camera extends Activity implements View.OnClickListener,
         // latency. It's true that someone else could write to the SD card in
         // the mean time and fill it, but that could have happened between the
         // shutter press and saving the JPEG too.
-
-        // TODO: The best longterm solution is to write a reserve file of
-        //     maximum JPEG size, always let the user take a picture, and
-        //     delete that file if needed to save the new photo.
         calculatePicturesRemaining();
 
         if (!mIsImageCaptureIntent && !mThumbController.isUriValid()) {
@@ -1449,13 +1454,8 @@ public class Camera extends Activity implements View.OnClickListener,
                     int delay = (int) (SystemClock.elapsedRealtime()
                             - wallTimeStart) / 1000;
                     if (delay >= nextWarning) {
-                        if (delay < 120) {
-                            Log.e(TAG, "preview hasn't started yet in "
-                                    + delay + " seconds");
-                        } else {
-                            Log.e(TAG, "preview hasn't started yet in "
-                                    + (delay / 60) + " minutes");
-                        }
+                        Log.e(TAG, "preview hasn't started yet in "
+                                + delay + " seconds");
                         if (nextWarning < 60) {
                             nextWarning <<= 1;
                             if (nextWarning == 16) {
@@ -1470,6 +1470,9 @@ public class Camera extends Activity implements View.OnClickListener,
         });
 
         watchDog.start();
+
+        // Set one shot preview callback for latency measurement.
+        mCameraDevice.setOneShotPreviewCallback(mOneShotPreviewCallback);
 
         try {
             mCameraDevice.startPreview();
