@@ -20,7 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-class CameraButtonIntentReceiver extends BroadcastReceiver {
+public class CameraButtonIntentReceiver extends BroadcastReceiver {
     public CameraButtonIntentReceiver() {
     }
 
@@ -28,6 +28,7 @@ class CameraButtonIntentReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent i = new Intent(Intent.ACTION_MAIN);
         i.setClass(context, Camera.class);
+        i.addCategory("android.intent.category.LAUNCHER");
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(i);
     }
