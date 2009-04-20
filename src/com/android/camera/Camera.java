@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.ICancelable;
+import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -458,7 +458,7 @@ public class Camera extends Activity implements View.OnClickListener,
         private boolean mCapturing = false;
 
         private Uri mLastContentUri;
-        private ICancelable<Void> mAddImageCancelable;
+        private Cancelable<Void> mAddImageCancelable;
 
         Bitmap mCaptureOnlyBitmap;
 

@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.ICancelable;
+import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -374,7 +374,7 @@ public class CropImage extends Activity {
                                     directory.toString(),
                                     fileName + "-" + x + ".jpg");
 
-                            ICancelable<Void> cancelable =
+                            Cancelable<Void> cancelable =
                                     ImageManager.storeImage(
                                     newUri,
                                     getContentResolver(),
