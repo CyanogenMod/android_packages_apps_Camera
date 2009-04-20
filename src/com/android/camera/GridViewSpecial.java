@@ -1,6 +1,7 @@
 package com.android.camera;
 
 import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,8 +15,10 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.Scroller;
 
@@ -24,20 +27,21 @@ class GridViewSpecial extends View {
     public static final int REMOVE_SELCTION = -1;
 
     private static final String TAG = "GridViewSpecial";
-    ImageGallery2 mGallery;
-    private final Paint mGridViewPaint = new Paint();
+    private IImageList mAllImages = ImageManager.emptyImageList();
+    private final Paint mPatin = new Paint();
 
     ImageBlockManager mImageBlockManager;
     private Handler mHandler;
 
-    LayoutSpec mCurrentSpec;
+    private LayoutSpec mCurrentSpec;
     boolean mShowSelection = false;
     int mCurrentSelection = -1;
     private boolean mCurrentSelectionPressed;
 
-    private boolean mDirectionBiasDown = true;
+    private Listener mListener = null;
 
     long mVideoSizeLimit;
+    private boolean mRunning = false;
 
     class LayoutSpec {
         LayoutSpec(int cols, int w, int h, int leftEdgePadding,
@@ -61,22 +65,22 @@ class GridViewSpecial extends View {
     };
     private int mSizeChoice = 1;
 
-    // Use a number like 100 or 200 here to allow the user to
-    // overshoot the start (top) or end (bottom) of the gallery.
-    // After overshooting the gallery will animate back to the
-    // appropriate location.
-    private final int mMaxOvershoot = 0; // 100;
     private int mMaxScrollY;
-    private int mMinScrollY;
 
     private final boolean mFling = true;
     private Scroller mScroller = null;
 
     private GestureDetector mGestureDetector;
+    private boolean mLayoutComplete = false;
+
+    public Listener setListener(Listener listener) {
+        Listener original = mListener;
+        mListener = listener;
+        return original;
+    }
 
     private void init(Context context) {
-        mGridViewPaint.setColor(0xFF000000);
-        mGallery = (ImageGallery2) context;
+        mPatin.setColor(0xFF000000);
 
         setVerticalScrollBarEnabled(true);
         initializeScrollbars(context.obtainStyledAttributes(
@@ -91,8 +95,8 @@ class GridViewSpecial extends View {
                     return false;
                 }
 
-                int pos = computeSelectedIndex(e);
-                if (pos >= 0 && pos < mGallery.mAllImages.getCount()) {
+                int pos = computeSelectedIndex(e.getX(), e.getY());
+                if (pos >= 0 && pos < mAllImages.getCount()) {
                     select(pos, true);
                 } else {
                     select(REMOVE_SELCTION, false);
@@ -141,15 +145,21 @@ class GridViewSpecial extends View {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 select(mCurrentSelection, false);
-                int index = computeSelectedIndex(e);
-                if (index >= 0 && index < mGallery.mAllImages.getCount()) {
-                    mGallery.onSelect(index);
+                int index = computeSelectedIndex(e.getX(), e.getY());
+                if (index >= 0 && index < mAllImages.getCount()) {
+                    if (mListener != null) mListener.onSelect(index);
                     return true;
                 }
                 return false;
             }
         });
         // mGestureDetector.setIsLongpressEnabled(false);
+    }
+
+    public static interface Listener {
+        public void onSelect(int index);
+        public void onLayout();
+        public void onScroll(int index);
     }
 
     public GridViewSpecial(Context context, AttributeSet attrs, int defStyle) {
@@ -165,6 +175,10 @@ class GridViewSpecial extends View {
     public GridViewSpecial(Context context) {
         super(context);
         init(context);
+    }
+
+    public void setImageList(IImageList list) {
+        this.mAllImages = list;
     }
 
     @Override
@@ -207,6 +221,11 @@ class GridViewSpecial extends View {
         }
     }
 
+    public void scrollToImage(int index) {
+        Rect r = getRectForPosition(index);
+        scrollTo(0, r.top);
+    }
+
     private void ensureVisible(int pos) {
         Rect r = getRectForPosition(pos);
         int top = getScrollY();
@@ -226,20 +245,17 @@ class GridViewSpecial extends View {
     }
 
     public void start() {
-        if (mGallery.mLayoutComplete) {
-            if (mImageBlockManager == null) {
-                mImageBlockManager = new ImageBlockManager();
-                mImageBlockManager.moveDataWindow(true);
-            }
-        }
+        mRunning = true;
+        requestLayout();
     }
 
-    public void onPause() {
+    public void stop() {
         mScroller = null;
         if (mImageBlockManager != null) {
             mImageBlockManager.onPause();
             mImageBlockManager = null;
         }
+        mRunning = false;
     }
 
     public void clearCache() {
@@ -253,7 +269,7 @@ class GridViewSpecial extends View {
     public void onLayout(boolean changed, int left, int top,
                          int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (mGallery.isFinishing() || mGallery.mPausing) {
+        if (!mRunning) {
             return;
         }
         clearCache();
@@ -271,29 +287,18 @@ class GridViewSpecial extends View {
                 - (mCurrentSpec.mColumns * mCurrentSpec.mCellWidth)) / 2;
         mCurrentSpec.mRightEdgePadding = mCurrentSpec.mLeftEdgePadding;
 
-        int rows = (mGallery.mAllImages.getCount() + mCurrentSpec.mColumns - 1)
+        int rows = (mAllImages.getCount() + mCurrentSpec.mColumns - 1)
                 / mCurrentSpec.mColumns;
         mMaxScrollY = mCurrentSpec.mCellSpacing
                 + (rows
                 * (mCurrentSpec.mCellSpacing + mCurrentSpec.mCellHeight))
-                - (bottom - top) + mMaxOvershoot;
-        mMinScrollY = 0 - mMaxOvershoot;
-
-        mGallery.mLayoutComplete = true;
-
-        start();
-
-        if (mGallery.mSortAscending && mGallery.mTargetScroll == 0) {
-            scrollTo(0, mMaxScrollY - mMaxOvershoot);
-        } else {
-            if (oldColumnCount != 0) {
-                int y = mGallery.mTargetScroll *
-                        oldColumnCount / mCurrentSpec.mColumns;
-                Log.v(TAG, "target was " + mGallery.mTargetScroll
-                        + " now " + y);
-                scrollTo(0, y);
-            }
+                - (bottom - top) ;
+        if (mImageBlockManager == null) {
+            mImageBlockManager = new ImageBlockManager();
+            mImageBlockManager.moveDataWindow(true);
         }
+        mLayoutComplete = true;
+        if (mListener != null) mListener.onLayout();
     }
 
     class ImageBlockManager {
@@ -439,36 +444,29 @@ class GridViewSpecial extends View {
         }
 
         void getVisibleRange(int [] range) {
-            // try to work around a possible bug in the VM wherein this appears
-            // to be null
-            try {
-                synchronized (ImageBlockManager.this) {
-                    int blockLength = mBlockCache.length;
-                    boolean lookingForStart = true;
-                    ImageBlock prevBlock = null;
-                    for (int i = 0; i < blockLength; i++) {
-                        int index = (mBlockCacheStartOffset + i) % blockLength;
-                        ImageBlock block = mBlockCache[index];
-                        if (lookingForStart) {
-                            if (block.mIsVisible) {
-                                range[0] = block.mBlockNumber
-                                        * mCurrentSpec.mColumns;
-                                lookingForStart = false;
-                            }
-                        } else {
-                            if (!block.mIsVisible || i == blockLength - 1) {
-                                range[1] = (prevBlock.mBlockNumber
-                                        * mCurrentSpec.mColumns)
-                                        + mCurrentSpec.mColumns - 1;
-                                break;
-                            }
+            synchronized (ImageBlockManager.this) {
+                int blockLength = mBlockCache.length;
+                boolean lookingForStart = true;
+                ImageBlock prevBlock = null;
+                for (int i = 0; i < blockLength; i++) {
+                    int index = (mBlockCacheStartOffset + i) % blockLength;
+                    ImageBlock block = mBlockCache[index];
+                    if (lookingForStart) {
+                        if (block.mIsVisible) {
+                            range[0] = block.mBlockNumber
+                                    * mCurrentSpec.mColumns;
+                            lookingForStart = false;
                         }
-                        prevBlock = block;
+                    } else {
+                        if (!block.mIsVisible || i == blockLength - 1) {
+                            range[1] = (prevBlock.mBlockNumber
+                                    * mCurrentSpec.mColumns)
+                                    + mCurrentSpec.mColumns - 1;
+                            break;
+                        }
                     }
+                    prevBlock = block;
                 }
-            } catch (NullPointerException ex) {
-                Log.e(TAG, "this is somewhat null, what up?");
-                range[0] = range[1] = 0;
             }
         }
 
@@ -486,33 +484,17 @@ class GridViewSpecial extends View {
             synchronized (ImageBlockManager.this) {
                 ImageBlock [] blocks = mBlockCache;
                 int numBlocks = blocks.length;
-                if (mDirectionBiasDown) {
-                    int first = (mBlockCacheStartOffset
-                            + (firstVisBlock - mBlockCacheFirstBlockNumber))
-                            % blocks.length;
-                    for (int i = 0; i < numBlocks; i++) {
-                        int j = first + i;
-                        if (j >= numBlocks) {
-                            j -= numBlocks;
-                        }
-                        ImageBlock b = blocks[j];
-                        if (b.startLoading() > 0) {
-                            break;
-                        }
+                int first = (mBlockCacheStartOffset
+                        + (firstVisBlock - mBlockCacheFirstBlockNumber))
+                        % blocks.length;
+                for (int i = 0; i < numBlocks; i++) {
+                    int j = first + i;
+                    if (j >= numBlocks) {
+                        j -= numBlocks;
                     }
-                } else {
-                    int first = (mBlockCacheStartOffset
-                            + (lastVisBlock - mBlockCacheFirstBlockNumber))
-                            % blocks.length;
-                    for (int i = 0; i < numBlocks; i++) {
-                        int j = first - i;
-                        if (j < 0) {
-                            j += numBlocks;
-                        }
-                        ImageBlock b = blocks[j];
-                        if (b.startLoading() > 0) {
-                            break;
-                        }
+                    ImageBlock b = blocks[j];
+                    if (b.startLoading() > 0) {
+                        break;
                     }
                 }
             }
@@ -616,7 +598,7 @@ class GridViewSpecial extends View {
                     }
 
                     if (currentBlock < 0) {
-                        canvas.drawRect(0, yPos, thisWidth, 0, mGridViewPaint);
+                        canvas.drawRect(0, yPos, thisWidth, 0, mPatin);
                         currentBlock += 1;
                         continue;
                     }
@@ -638,7 +620,7 @@ class GridViewSpecial extends View {
                         if (b == null) {
                             break;
                         }
-                        canvas.drawBitmap(b, 0, yPos, mGridViewPaint);
+                        canvas.drawBitmap(b, 0, yPos, mPatin);
                         blockCount += 1;
                     }
                 }
@@ -695,8 +677,7 @@ class GridViewSpecial extends View {
                         if ((mRequestedMask & mask) != 0) {
                             int pos =
                                     (mBlockNumber * mCurrentSpec.mColumns) + i;
-                            if (mLoader.cancel(
-                                    mGallery.mAllImages.getImageAt(pos))) {
+                            if (mLoader.cancel(mAllImages.getImageAt(pos))) {
                                 mRequestedMask &= ~mask;
                             }
                         }
@@ -718,7 +699,7 @@ class GridViewSpecial extends View {
                     mCanvas.drawColor(0xFF000000);
                     mPaint.setColor(0xFFDDDDDD);
                     int imageNumber = blockNumber * mCurrentSpec.mColumns;
-                    int lastImageNumber = mGallery.mAllImages.getCount() - 1;
+                    int lastImageNumber = mAllImages.getCount() - 1;
 
                     int spacing = mCurrentSpec.mCellSpacing;
                     int leftSpacing = mCurrentSpec.mLeftEdgePadding;
@@ -750,7 +731,7 @@ class GridViewSpecial extends View {
             private int startLoading() {
                 synchronized (ImageBlock.this) {
                     final int startRow = mBlockNumber;
-                    int count = mGallery.mAllImages.getCount();
+                    int count = mAllImages.getCount();
 
                     if (startRow == REMOVE_SELCTION) {
                         return 0;
@@ -778,7 +759,7 @@ class GridViewSpecial extends View {
                             break;
                         }
 
-                        IImage image = mGallery.mAllImages.getImageAt(pos);
+                        IImage image = mAllImages.getImageAt(pos);
                         if (image != null) {
                             loadImage(base, col, image, xPos, yPos);
                             retVal += 1;
@@ -880,7 +861,7 @@ class GridViewSpecial extends View {
             }
 
             private void repaintSelection() {
-                int count = mGallery.mAllImages.getCount();
+                int count = mAllImages.getCount();
                 int startPos = mBlockNumber * mCurrentSpec.mColumns;
                 synchronized (ImageBlock.this) {
                     for (int i = 0; i < mCurrentSpec.mColumns; i++) {
@@ -988,7 +969,7 @@ class GridViewSpecial extends View {
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (false) {
-            canvas.drawRect(0, 0, getWidth(), getHeight(), mGridViewPaint);
+            canvas.drawRect(0, 0, getWidth(), getHeight(), mPatin);
             return;
         }
 
@@ -1028,25 +1009,22 @@ class GridViewSpecial extends View {
                 top + spec.mCellHeight + spec.mCellSpacing);
     }
 
-    int computeSelectedIndex(MotionEvent ev) {
+    int computeSelectedIndex(float x, float y) {
         int spacing = mCurrentSpec.mCellSpacing;
         int leftSpacing = mCurrentSpec.mLeftEdgePadding;
 
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
-        int row = (mScrollY + y - spacing)
+        int row = (int) (mScrollY + y - spacing)
                 / (mCurrentSpec.mCellHeight + spacing);
         int col = Math.min(mCurrentSpec.mColumns - 1,
-                (x - leftSpacing) / (mCurrentSpec.mCellWidth + spacing));
+                (int) (x - leftSpacing) / (mCurrentSpec.mCellWidth + spacing));
         return (row * mCurrentSpec.mColumns) + col;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!mGallery.canHandleEvent()) {
+        if (!canHandleEvent()) {
             return false;
         }
-
         mGestureDetector.onTouchEvent(ev);
         return true;
     }
@@ -1059,12 +1037,116 @@ class GridViewSpecial extends View {
     @Override
     public void scrollTo(int x, int y) {
         y = Math.min(mMaxScrollY, y);
-        y = Math.max(mMinScrollY, y);
-        if (y > mScrollY) {
-            mDirectionBiasDown = true;
-        } else if (y < mScrollY) {
-            mDirectionBiasDown = false;
+        y = Math.max(0, y);
+        if (mListener != null && mCurrentSpec != null) {
+            int index = Math.min(mAllImages.getCount(),
+                    Math.max(0, computeSelectedIndex(x, y)));
+            mListener.onScroll(index);
         }
         super.scrollTo(x, y);
     }
+
+    private boolean canHandleEvent() {
+        return mRunning && mLayoutComplete;
+    }
+
+    private final Runnable mLongPressCallback = new Runnable() {
+        public void run() {
+            select(GridViewSpecial.ORIGINAL_SELECT, false);
+            showContextMenu();
+        }
+    };
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (!canHandleEvent()) return false;
+
+        boolean handled = true;
+        int sel = mCurrentSelection;
+        int columns = mCurrentSpec.mColumns;
+        int count = mAllImages.getCount();
+        boolean pressed = false;
+        if (mShowSelection) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    if (sel != count && (sel % columns < columns - 1)) {
+                        sel += 1;
+                    }
+                    break;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    if (sel > 0 && (sel % columns != 0)) {
+                        sel -= 1;
+                    }
+                    break;
+                case KeyEvent.KEYCODE_DPAD_UP:
+                    if ((sel / columns) != 0) {
+                        sel -= columns;
+                    }
+                    break;
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                    if ((sel / columns) != (sel + columns / columns)) {
+                        sel = Math.min(count - 1, sel + columns);
+                    }
+                    break;
+                case KeyEvent.KEYCODE_DPAD_CENTER:
+                    pressed = true;
+                    mHandler.postDelayed(mLongPressCallback,
+                            ViewConfiguration.getLongPressTimeout());
+                    break;
+                default:
+                    handled = false;
+                    break;
+            }
+        } else {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                case KeyEvent.KEYCODE_DPAD_UP:
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                    int [] range = new int[2];
+                    if (mImageBlockManager != null) {
+                        mImageBlockManager.getVisibleRange(range);
+                        int topPos = range[0];
+                        Rect r = getRectForPosition(topPos);
+                        if (r.top < getScrollY()) {
+                            topPos += columns;
+                        }
+                        topPos = Math.min(count - 1, topPos);
+                        sel = topPos;
+                    }
+                    break;
+                default:
+                    handled = false;
+                    break;
+            }
+        }
+        if (handled) {
+            select(sel, pressed);
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (!canHandleEvent()) return false;
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            select(GridViewSpecial.ORIGINAL_SELECT, false);
+
+            // The keyUp doesn't get called when the longpress menu comes up. We
+            // only get here when the user lets go of the center key before the
+            // longpress menu comes up.
+            mHandler.removeCallbacks(mLongPressCallback);
+
+            // open the photo
+            if (mListener != null) mListener.onSelect(mCurrentSelection);
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+
 }

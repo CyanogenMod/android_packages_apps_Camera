@@ -74,7 +74,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 /**
  * Activity of the Camera which used to see preview and take pictures.
@@ -1719,17 +1718,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         return true;
     }
-
-    SelectedImageGetter mSelectedImageGetter =
-        new SelectedImageGetter() {
-            public IImage getCurrentImage() {
-                return getImageForURI(getCurrentImageUri());
-            }
-            public Uri getCurrentImageUri() {
-                keep();
-                return mCaptureObject.getLastCaptureUri();
-            }
-        };
 
     private int calculatePicturesRemaining() {
         mPicturesRemaining = MenuHelper.calculatePicturesRemaining();

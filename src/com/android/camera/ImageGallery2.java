@@ -32,8 +32,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,12 +46,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ImageGallery2 extends Activity {
+public class ImageGallery2 extends Activity implements GridViewSpecial.Listener {
     private static final String TAG = "ImageGallery2";
     IImageList mAllImages;
     private int mInclusion;
@@ -77,6 +76,9 @@ public class ImageGallery2 extends Activity {
     BitmapThread mThumbnailCheckThread;
     GridViewSpecial mGvs;
 
+    // The index of the first picture in GridViewSpecial.
+    private int mFirstVisibleIndex = 0;
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -93,6 +95,7 @@ public class ImageGallery2 extends Activity {
 
         mGvs = (GridViewSpecial) findViewById(R.id.grid);
         mGvs.requestFocus();
+        mGvs.setListener(this);
 
         if (isPickIntent()) {
             mVideoSizeLimit = getIntent().getLongExtra(
@@ -117,7 +120,7 @@ public class ImageGallery2 extends Activity {
     }
 
     public boolean onSlideShowClicked() {
-        IImage img = mSelectedImageGetter.getCurrentImage();
+        IImage img = getCurrentImage();
         if (img == null) {
             img = mAllImages.getImageAt(0);
             if (img == null) {
@@ -143,7 +146,7 @@ public class ImageGallery2 extends Activity {
     private final Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             mGvs.clearCache();
-            IImage currentImage = mSelectedImageGetter.getCurrentImage();
+            IImage currentImage = getCurrentImage();
             if (currentImage != null) {
                 mAllImages.removeImage(currentImage);
             }
@@ -156,26 +159,24 @@ public class ImageGallery2 extends Activity {
         }
     };
 
-    private final SelectedImageGetter mSelectedImageGetter =
-            new SelectedImageGetter() {
-                public Uri getCurrentImageUri() {
-                    IImage image = getCurrentImage();
-                    if (image != null) {
-                        return image.fullSizeImageUri();
-                    } else {
-                        return null;
-                    }
-                }
-                public IImage getCurrentImage() {
-                    int currentSelection = mGvs.mCurrentSelection;
-                    if (currentSelection < 0
-                            || currentSelection >= mAllImages.getCount()) {
-                        return null;
-                    } else {
-                        return mAllImages.getImageAt(currentSelection);
-                    }
-                }
-            };
+    private Uri getCurrentImageUri() {
+        IImage image = getCurrentImage();
+        if (image != null) {
+            return image.fullSizeImageUri();
+        } else {
+            return null;
+        }
+    }
+
+    private IImage getCurrentImage() {
+        int currentSelection = mGvs.mCurrentSelection;
+        if (currentSelection < 0
+                || currentSelection >= mAllImages.getCount()) {
+            return null;
+        } else {
+            return mAllImages.getImageAt(currentSelection);
+        }
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -183,114 +184,21 @@ public class ImageGallery2 extends Activity {
         mTargetScroll = mGvs.getScrollY();
     }
 
-    private final Runnable mLongPressCallback = new Runnable() {
-        public void run() {
-            mGvs.select(GridViewSpecial.ORIGINAL_SELECT, false);
-            mGvs.showContextMenu();
-        }
-    };
-
     boolean canHandleEvent() {
         // Don't process event in pause state.
-        return (!mPausing) && (mGvs.mCurrentSpec != null);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (!canHandleEvent()) return false;
-
-        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            mGvs.select(GridViewSpecial.ORIGINAL_SELECT, false);
-
-            // The keyUp doesn't get called when the longpress menu comes up. We
-            // only get here when the user lets go of the center key before the
-            // longpress menu comes up.
-            mHandler.removeCallbacks(mLongPressCallback);
-
-            // open the photo
-            if (mSelectedImageGetter.getCurrentImage() != null) {
-                onSelect(mGvs.mCurrentSelection);
-            }
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
+        return (!mPausing) && (mLayoutComplete);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (!canHandleEvent()) return false;
-
-        boolean handled = true;
-        int sel = mGvs.mCurrentSelection;
-        int columns = mGvs.mCurrentSpec.mColumns;
-        int count = mAllImages.getCount();
-        boolean pressed = false;
-        if (mGvs.mShowSelection) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    if (sel != count && (sel % columns < columns - 1)) {
-                        sel += 1;
-                    }
-                    break;
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                    if (sel > 0 && (sel % columns != 0)) {
-                        sel -= 1;
-                    }
-                    break;
-                case KeyEvent.KEYCODE_DPAD_UP:
-                    if ((sel / columns) != 0) {
-                        sel -= columns;
-                    }
-                    break;
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                    if ((sel / columns) != (sel + columns / columns)) {
-                        sel = Math.min(count - 1, sel + columns);
-                    }
-                    break;
-                case KeyEvent.KEYCODE_DPAD_CENTER:
-                    pressed = true;
-                    mHandler.postDelayed(mLongPressCallback,
-                            ViewConfiguration.getLongPressTimeout());
-                    break;
-                case KeyEvent.KEYCODE_DEL:
-                    MenuHelper.deleteImage(this, mDeletePhotoRunnable,
-                            mSelectedImageGetter.getCurrentImage());
-                    break;
-                default:
-                    handled = false;
-                    break;
-            }
-        } else {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                case KeyEvent.KEYCODE_DPAD_UP:
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                    int [] range = new int[2];
-                    GridViewSpecial.ImageBlockManager ibm =
-                            mGvs.mImageBlockManager;
-                    if (ibm != null) {
-                        ibm.getVisibleRange(range);
-                        int topPos = range[0];
-                        Rect r = mGvs.getRectForPosition(topPos);
-                        if (r.top < mGvs.getScrollY()) {
-                            topPos += columns;
-                        }
-                        topPos = Math.min(count - 1, topPos);
-                        sel = topPos;
-                    }
-                    break;
-                default:
-                    handled = false;
-                    break;
-            }
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DEL:
+                MenuHelper.deleteImage(
+                        this, mDeletePhotoRunnable, getCurrentImage());
+                return true;
         }
-        if (handled) {
-            mGvs.select(sel, pressed);
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private boolean isPickIntent() {
@@ -394,7 +302,7 @@ public class ImageGallery2 extends Activity {
 
         BitmapManager.instance().cancelAllDecoding();
         stopCheckingThumbnails();
-        mGvs.onPause();
+        mGvs.stop();
 
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
@@ -427,6 +335,7 @@ public class ImageGallery2 extends Activity {
             mAllImages = ImageManager.emptyImageList();
         } else {
             mAllImages = allImages(!unmounted);
+            mGvs.setImageList(mAllImages);
             mGvs.init(mHandler);
             mGvs.start();
             mGvs.requestLayout();
@@ -455,17 +364,16 @@ public class ImageGallery2 extends Activity {
 
         BitmapManager.instance().allowAllDecoding();
 
-        try {
-            mGvs.setSizeChoice(Integer.parseInt(
-                    mPrefs.getString("pref_gallery_size_key", "1")),
-                    mTargetScroll);
+        mGvs.setSizeChoice(Integer.parseInt(
+                mPrefs.getString("pref_gallery_size_key", "1")),
+                mTargetScroll);
+        mGvs.requestFocus();
 
-            String sortOrder = mPrefs.getString("pref_gallery_sort_key", null);
-            if (sortOrder != null) {
-                mSortAscending = sortOrder.equals("ascending");
-            }
-        } catch (RuntimeException ex) {
+        String sortOrder = mPrefs.getString("pref_gallery_sort_key", null);
+        if (sortOrder != null) {
+            mSortAscending = sortOrder.equals("ascending");
         }
+
         mPausing = false;
 
         // install an intent filter to receive SD card related events.
@@ -519,62 +427,21 @@ public class ImageGallery2 extends Activity {
         final long startTime = System.currentTimeMillis();
         mThumbnailCheckThread = new BitmapThread(new Runnable() {
             public void run() {
-                android.content.res.Resources resources = getResources();
-                final TextView progressTextView =
+                Resources resources = getResources();
+                TextView progressTextView =
                         (TextView) findViewById(R.id.loading_text);
-                final String progressTextFormatString =
+                String progressTextFormatString =
                         resources.getString(
                         R.string.loading_progress_format_string);
 
-                PowerManager pm =
-                        (PowerManager) getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock mWakeLock =
-                    pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
-                                   "ImageGallery2.checkThumbnails");
+                PowerManager pm = (PowerManager)
+                        getSystemService(Context.POWER_SERVICE);
+                PowerManager.WakeLock mWakeLock = pm.newWakeLock(
+                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
+                        "ImageGallery2.checkThumbnails");
                 mWakeLock.acquire();
-                IImageList.ThumbCheckCallback r =
-                        new IImageList.ThumbCheckCallback() {
-                            boolean mDidSetProgress = false;
-
-                            public boolean checking(final int count,
-                                    final int maxCount) {
-                                if (mStopThumbnailChecking) {
-                                    return false;
-                                }
-
-                                if (!mLayoutComplete) {
-                                    return true;
-                                }
-
-                                if (!mDidSetProgress) {
-                                    mHandler.post(new Runnable() {
-                                            public void run() {
-                                                findViewById(
-                                                R.id.loading_indicator)
-                                                .setVisibility(View.VISIBLE);
-                                            }
-                                    });
-                                    mDidSetProgress = true;
-                                }
-                                mGvs.postInvalidate();
-
-                                // If there is a new image done and it has been
-                                // one second, update the progress text.
-                                if (System.currentTimeMillis()
-                                        - startTime > 1000) {
-                                    mHandler.post(new Runnable() {
-                                        public void run() {
-                                            String s = String.format(
-                                                    progressTextFormatString,
-                                                    maxCount - count);
-                                            progressTextView.setText(s);
-                                        }
-                                    });
-                                }
-
-                                return !mPausing;
-                            }
-                        };
+                IImageList.ThumbCheckCallback r = new MyThumbCheckCallback(
+                        progressTextView, startTime, progressTextFormatString);
                 IImageList imageList = allImages(true);
                 imageList.checkThumbnails(r, imageList.getCount());
                 mWakeLock.release();
@@ -646,7 +513,7 @@ public class ImageGallery2 extends Activity {
     }
 
     private boolean isVideoSelected() {
-        IImage image = mSelectedImageGetter.getCurrentImage();
+        IImage image = getCurrentImage();
         return (image != null) && ImageManager.isVideo(image);
     }
 
@@ -729,7 +596,7 @@ public class ImageGallery2 extends Activity {
         return mAllImages;
     }
 
-    void onSelect(int index) {
+    public void onSelect(int index) {
         if (index >= 0 && index < mAllImages.getCount()) {
             IImage img = mAllImages.getImageAt(index);
             if (img == null) {
@@ -765,16 +632,68 @@ public class ImageGallery2 extends Activity {
         }
     }
 
+    private final class MyThumbCheckCallback implements IImageList.ThumbCheckCallback {
+        private final TextView progressTextView;
+        private final long startTime;
+        private final String progressTextFormatString;
+        boolean mDidSetProgress = false;
+
+        private MyThumbCheckCallback(TextView progressTextView, long startTime,
+                String progressTextFormatString) {
+            this.progressTextView = progressTextView;
+            this.startTime = startTime;
+            this.progressTextFormatString = progressTextFormatString;
+        }
+
+        public boolean checking(final int count,
+                final int maxCount) {
+            if (mStopThumbnailChecking) {
+                return false;
+            }
+
+            if (!mLayoutComplete) {
+                return true;
+            }
+
+            if (!mDidSetProgress) {
+                mHandler.post(new Runnable() {
+                        public void run() {
+                            findViewById(
+                            R.id.loading_indicator)
+                            .setVisibility(View.VISIBLE);
+                        }
+                });
+                mDidSetProgress = true;
+            }
+            mGvs.postInvalidate();
+
+            // If there is a new image done and it has been
+            // one second, update the progress text.
+            if (System.currentTimeMillis()
+                    - startTime > 1000) {
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        String s = String.format(
+                                progressTextFormatString,
+                                maxCount - count);
+                        progressTextView.setText(s);
+                    }
+                });
+            }
+
+            return !mPausing;
+        }
+    }
+
     private class CreateContextMenuListener implements
             View.OnCreateContextMenuListener {
         public void onCreateContextMenu(ContextMenu menu, View v,
                 ContextMenu.ContextMenuInfo menuInfo) {
-            if (mSelectedImageGetter.getCurrentImage() == null) {
+            if (getCurrentImage() == null) {
                 return;
             }
 
-            boolean isImage = ImageManager.isImage(
-                    mSelectedImageGetter.getCurrentImage());
+            boolean isImage = ImageManager.isImage(getCurrentImage());
             if (isImage) {
                 menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
@@ -799,9 +718,7 @@ public class ImageGallery2 extends Activity {
                         mDeletePhotoRunnable,
                         new MenuHelper.MenuInvoker() {
                             public void run(MenuHelper.MenuCallback cb) {
-                                cb.run(mSelectedImageGetter
-                                        .getCurrentImageUri(),
-                                        mSelectedImageGetter.getCurrentImage());
+                                cb.run(getCurrentImageUri(), getCurrentImage());
 
                                 mGvs.clearCache();
                                 mGvs.invalidate();
@@ -814,8 +731,7 @@ public class ImageGallery2 extends Activity {
                             }
                         });
                 if (r != null) {
-                    r.gettingReadyToOpen(menu,
-                            mSelectedImageGetter.getCurrentImage());
+                    r.gettingReadyToOpen(menu, getCurrentImage());
                 }
 
                 if (isImage) {
@@ -824,6 +740,20 @@ public class ImageGallery2 extends Activity {
             }
         }
     }
+
+    public void onLayout() {
+        mLayoutComplete = true;
+        if (mSortAscending && mTargetScroll == 0) {
+            mGvs.scrollToImage(mAllImages.getCount() - 1);
+        } else {
+            mGvs.scrollToImage(mFirstVisibleIndex);
+        }
+    }
+
+    public void onScroll(int index) {
+        mFirstVisibleIndex = index;
+    }
+
 }
 
 
