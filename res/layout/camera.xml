@@ -76,4 +76,10 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="5dip"
             android:layout_marginTop="5dip" />
+
+    <com.android.camera.FocusRectangle
+            android:id="@+id/focus_rectangle"
+            android:layout_width="276dip"
+            android:layout_height="168dip"
+            android:layout_centerInParent="true"/>
 </RelativeLayout>

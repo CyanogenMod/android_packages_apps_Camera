@@ -29,9 +29,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
@@ -50,8 +52,10 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
+import android.util.AttributeSet;
 import android.util.Config;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -175,6 +179,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private Animation mFocusBlinkAnimation;
     private View mFocusIndicator;
+    private FocusRectangle mFocusRectangle;
     private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
 
@@ -805,6 +810,8 @@ public class Camera extends Activity implements View.OnClickListener,
         mFocusBlinkAnimation.setRepeatCount(Animation.INFINITE);
         mFocusBlinkAnimation.setRepeatMode(Animation.REVERSE);
 
+        mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
+
         // We load the post_picture_panel layout only if it is needed.
         if (mIsImageCaptureIntent) {
             ViewGroup cameraView = (ViewGroup) findViewById(R.id.camera);
@@ -1168,7 +1175,6 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void autoFocus() {
-        updateFocusIndicator();
         if (mFocusState != FOCUSING && mFocusState != FOCUSING_SNAP_ON_FINISH) {
             if (mCameraDevice != null) {
                 mFocusStartTime = System.currentTimeMillis();
@@ -1176,24 +1182,31 @@ public class Camera extends Activity implements View.OnClickListener,
                 mCameraDevice.autoFocus(mAutoFocusCallback);
             }
         }
+        updateFocusIndicator();
     }
 
     private void clearFocusState() {
         mFocusState = FOCUS_NOT_STARTED;
+        updateFocusIndicator();
     }
 
     private void updateFocusIndicator() {
         mHandler.post(new Runnable() {
             public void run() {
-                if (mFocusState == FOCUS_SUCCESS) {
+                if (mFocusState == FOCUSING || mFocusState == FOCUSING_SNAP_ON_FINISH) {
+                    mFocusRectangle.showStart();
+                } else if (mFocusState == FOCUS_SUCCESS) {
                     mFocusIndicator.setVisibility(View.VISIBLE);
                     mFocusIndicator.clearAnimation();
+                    mFocusRectangle.showSuccess();
                 } else if (mFocusState == FOCUS_FAIL) {
                     mFocusIndicator.setVisibility(View.VISIBLE);
                     mFocusIndicator.startAnimation(mFocusBlinkAnimation);
+                    mFocusRectangle.showFail();
                 } else {
                     mFocusIndicator.setVisibility(View.GONE);
                     mFocusIndicator.clearAnimation();
+                    mFocusRectangle.clear();
                 }
             }
         });
@@ -1283,7 +1296,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 mCaptureObject.onSnap();
             }
             clearFocusState();
-            updateFocusIndicator();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
             // already have requested AF for us, so just request capture on
@@ -1309,7 +1321,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
                     // User releases half-pressed focus key.
                     clearFocusState();
-                    updateFocusIndicator();
                 }
             }
         }
@@ -1767,5 +1778,36 @@ public class Camera extends Activity implements View.OnClickListener,
             }
         });
         item.setIcon(android.R.drawable.ic_menu_preferences);
+    }
+}
+
+class FocusRectangle extends View {
+    private static final String TAG = "FocusRectangle";
+
+    public FocusRectangle(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    private void setDrawable(int resid) {
+        BitmapDrawable d = (BitmapDrawable) getResources().getDrawable(resid);
+        // We do this because we don't want the bitmap to be scaled.
+        d.setGravity(Gravity.CENTER);
+        setBackgroundDrawable(d);
+    }
+
+    public void showStart() {
+        setDrawable(R.drawable.frame_autofocus_rectangle);
+    }
+
+    public void showSuccess() {
+        setDrawable(R.drawable.frame_focused_rectangle);
+    }
+
+    public void showFail() {
+        setDrawable(R.drawable.frame_nofocus_rectangle);
+    }
+
+    public void clear() {
+        setBackgroundDrawable(null);
     }
 }
