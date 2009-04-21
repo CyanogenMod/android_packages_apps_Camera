@@ -34,6 +34,11 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,7 +55,10 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ImageGallery2 extends Activity implements GridViewSpecial.Listener {
+import java.util.HashSet;
+
+public class ImageGallery2 extends Activity implements
+        GridViewSpecial.Listener, GridViewSpecial.DrawAdapter {
     private static final String TAG = "ImageGallery2";
     IImageList mAllImages;
     private int mInclusion;
@@ -78,6 +86,8 @@ public class ImageGallery2 extends Activity implements GridViewSpecial.Listener 
 
     // The index of the first picture in GridViewSpecial.
     private int mFirstVisibleIndex = 0;
+
+    private HashSet<IImage> mMultiSelected = null;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -336,6 +346,7 @@ public class ImageGallery2 extends Activity implements GridViewSpecial.Listener 
         } else {
             mAllImages = allImages(!unmounted);
             mGvs.setImageList(mAllImages);
+            mGvs.setDrawAdapter(this);
             mGvs.init(mHandler);
             mGvs.start();
             mGvs.requestLayout();
@@ -484,16 +495,34 @@ public class ImageGallery2 extends Activity implements GridViewSpecial.Listener 
             }
 
             MenuItem item = menu.add(0, 0, 1000, R.string.camerasettings);
-            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            item.setOnMenuItemClickListener(
+                    new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     Intent preferences = new Intent();
-                    preferences.setClass(ImageGallery2.this, GallerySettings.class);
+                    preferences.setClass(
+                            ImageGallery2.this, GallerySettings.class);
                     startActivity(preferences);
                     return true;
                 }
             });
             item.setAlphabeticShortcut('p');
             item.setIcon(android.R.drawable.ic_menu_preferences);
+
+            item = menu.add(R.string.multiselect);
+            item.setOnMenuItemClickListener(
+                    new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (mMultiSelected == null) {
+                        mMultiSelected = new HashSet<IImage>();
+                    } else {
+                        mMultiSelected = null;
+                    }
+                    mGvs.invalidateAllImages();
+                    return true;
+                }
+            });
+            item.setIcon(R.drawable.ic_menu_multiselect_gallery);
+
         }
         return true;
     }
@@ -600,6 +629,13 @@ public class ImageGallery2 extends Activity implements GridViewSpecial.Listener 
         if (index >= 0 && index < mAllImages.getCount()) {
             IImage img = mAllImages.getImageAt(index);
             if (img == null) {
+                return;
+            }
+
+            // if in multiselect mode
+            if (mMultiSelected != null) {
+                if (!mMultiSelected.add(img)) mMultiSelected.remove(img);
+                mGvs.invalidateImage(index);
                 return;
             }
 
@@ -752,6 +788,120 @@ public class ImageGallery2 extends Activity implements GridViewSpecial.Listener 
 
     public void onScroll(int index) {
         mFirstVisibleIndex = index;
+    }
+
+    private Drawable mVideoOverlay;
+    private Drawable mVideoMmsErrorOverlay;
+    private Drawable mMultiSelectTrue;
+
+    public void drawImage(Canvas canvas, IImage image,
+            Bitmap b, int xPos, int yPos, int w, int h) {
+        Paint paint = new Paint();
+
+        if (b != null) {
+            // if the image is close to the target size then crop,
+            // otherwise scale both the bitmap and the view should be
+            // square but I suppose that could change in the future.
+
+            int bw = b.getWidth();
+            int bh = b.getHeight();
+
+            int deltaW = bw - w;
+            int deltaH = bh - h;
+
+            if (deltaW < 10 && deltaH < 10) {
+                int halfDeltaW = deltaW / 2;
+                int halfDeltaH = deltaH / 2;
+                Rect src = new Rect(0 + halfDeltaW, 0 + halfDeltaH,
+                        bw - halfDeltaW, bh - halfDeltaH);
+                Rect dst = new Rect(xPos, yPos, xPos + w, yPos + h);
+                canvas.drawBitmap(b, src, dst, paint);
+            } else {
+                Rect src = new Rect(0, 0, bw, bh);
+                Rect dst = new Rect(xPos, yPos, xPos + w, yPos + h);
+                canvas.drawBitmap(b, src, dst, paint);
+            }
+        } else {
+            // If the thumbnail cannot be drawn, put up an error icon
+            // instead
+            Bitmap error = getErrorBitmap(image);
+            int width = error.getWidth();
+            int height = error.getHeight();
+            Rect source = new Rect(0, 0, width, height);
+            int left = (w - width) / 2 + xPos;
+            int top = (w - height) / 2 + yPos;
+            Rect dest = new Rect(left, top, left + width, top + height);
+            canvas.drawBitmap(error, source, dest, paint);
+        }
+        if (ImageManager.isVideo(image)) {
+            Drawable overlay = null;
+            long size = MenuHelper.getImageFileSize(image);
+            if (size >= 0 && size <= mVideoSizeLimit) {
+                if (mVideoOverlay == null) {
+                    mVideoOverlay = getResources().getDrawable(
+                            R.drawable.ic_gallery_video_overlay);
+                }
+                overlay = mVideoOverlay;
+            } else {
+                if (mVideoMmsErrorOverlay == null) {
+                    mVideoMmsErrorOverlay = getResources().getDrawable(
+                            R.drawable.ic_error_mms_video_overlay);
+                }
+                overlay = mVideoMmsErrorOverlay;
+                paint.setARGB(0x80, 0x00, 0x00, 0x00);
+                canvas.drawRect(xPos, yPos, xPos + w, yPos + h, paint);
+            }
+            int width = overlay.getIntrinsicWidth();
+            int height = overlay.getIntrinsicHeight();
+            int left = (w - width) / 2 + xPos;
+            int top = (h - height) / 2 + yPos;
+            Rect newBounds =
+                    new Rect(left, top, left + width, top + height);
+            overlay.setBounds(newBounds);
+            overlay.draw(canvas);
+        }
+
+        if (mMultiSelected != null && mMultiSelected.contains(image)) {
+            initializeMultiSelectDrawables();
+
+            Drawable checkBox = mMultiSelectTrue;
+            int width = checkBox.getIntrinsicWidth();
+            int height = checkBox.getIntrinsicHeight();
+            int left = 5 + xPos;
+            int top = h - height - 5 + yPos;
+            checkBox.setBounds(new Rect(
+                    left, top, left + width, top + height));
+            checkBox.draw(canvas);
+        }
+    }
+
+    private void initializeMultiSelectDrawables() {
+        if (mMultiSelectTrue == null) {
+            mMultiSelectTrue = getResources()
+                    .getDrawable(R.drawable.btn_check_buttonless_on);
+        }
+    }
+
+    private Bitmap mMissingImageThumbnailBitmap;
+    private Bitmap mMissingVideoThumbnailBitmap;
+
+    // Create this bitmap lazily, and only once for all the ImageBlocks to
+    // use
+    public Bitmap getErrorBitmap(IImage image) {
+        if (ImageManager.isImage(image)) {
+            if (mMissingImageThumbnailBitmap == null) {
+                mMissingImageThumbnailBitmap = BitmapFactory.decodeResource(
+                        getResources(),
+                        R.drawable.ic_missing_thumbnail_picture);
+            }
+            return mMissingImageThumbnailBitmap;
+        } else {
+            if (mMissingVideoThumbnailBitmap == null) {
+                mMissingVideoThumbnailBitmap = BitmapFactory.decodeResource(
+                        getResources(), R.drawable.ic_missing_thumbnail_video);
+            }
+            return mMissingVideoThumbnailBitmap;
+        }
     }
 
 }
