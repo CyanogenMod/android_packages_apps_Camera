@@ -27,13 +27,13 @@
     <string name="crop_label">"Przytnij zdjęcie"</string>
     <string name="view_label">"Wyświetl zdjęcie"</string>
     <string name="preferences_label">"Ustawienia aparatu"</string>
-    <string name="wait">"Poczekaj…"</string>
+    <string name="wait">"Proszę czekać…"</string>
     <string name="no_storage">"Zanim zaczniesz korzystać z aparatu fotograficznego, włóż kartę SD."</string>
     <string name="not_enough_space">"Karta SD jest pełna."</string>
     <string name="preparing_sd">"Przygotowywanie karty SD..."</string>
-    <string name="wallpaper">"Ustawianie tapety, poczekaj…"</string>
+    <string name="wallpaper">"Ustawianie tapety, proszę czekać…"</string>
     <string name="savingImage">"Trwa zapisywanie zdjęcia…"</string>
-    <string name="runningFaceDetection">"Poczekaj…"</string>
+    <string name="runningFaceDetection">"Proszę czekać…"</string>
     <string name="flip_orientation">"Zmień orientację"</string>
     <string name="settings">"Ustawienia"</string>
     <string name="view">"Wyświetl"</string>
@@ -102,7 +102,7 @@
     <string name="pref_gallery_slideshow_repeat_summary">"Wyświetlaj pokaz slajdów więcej niż raz"</string>
     <string name="pref_gallery_slideshow_shuffle_title">"Losowa kolejność"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"Wyświetlaj zdjęcia w kolejności losowej"</string>
-    <string name="pref_camera_recordlocation_title">"Zapisuj lokalizację w zdjęciach"</string>
+    <string name="pref_camera_recordlocation_title">"Lokalizacja w zdjęciach"</string>
     <string name="pref_camera_recordlocation_summary">"Zapisz lokalizację w danych zdjęcia"</string>
     <string name="pref_camera_videoquality_category">"Jakość wideo"</string>
     <string name="pref_camera_videoquality_title">"Wybierz jakość wideo"</string>
