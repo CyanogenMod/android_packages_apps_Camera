@@ -595,5 +595,14 @@
     <!-- Displayed as a toast when a video file is too large to attach
          to a Gmail message. -->
     <string name="too_large_to_attach">File too large to attach.</string>
+
+    <!-- The title shown on the button which share the selected images by gmail, mms, and etc. --> 
+    <string name="multiselect_share">Share</string>
+
+    <!-- The title shown on the button which will delete all the selected images -->
+    <string name="multiselect_delete">Delete</string>
+
+    <!-- Title shown on the button which will close the multiselction mode -->
+    <string name="multiselect_close">Close</string>
     
 </resources>
