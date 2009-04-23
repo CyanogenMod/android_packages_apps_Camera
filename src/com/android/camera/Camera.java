@@ -356,6 +356,7 @@ public class Camera extends Activity implements View.OnClickListener,
             Log.v(TAG, "Shutter lag was "
                     + (mShutterCallbackTime - mCaptureStartTime) + " ms.");
 
+            clearFocusState();
             // We are going to change the size of surface view and show captured
             // image. Set it to invisible now and set it back to visible in
             // surfaceChanged() so that users won't see the image is resized on
@@ -424,8 +425,12 @@ public class Camera extends Activity implements View.OnClickListener,
                 // Take the picture no matter focus succeeds or fails. No need
                 // to play the AF sound if we're about to play the shutter
                 // sound.
+                if (focused) {
+                    mFocusState = FOCUS_SUCCESS;
+                } else {
+                    mFocusState = FOCUS_FAIL;
+                }
                 mCaptureObject.onSnap();
-                clearFocusState();
             } else if (mFocusState == FOCUSING) {
                 // User is half-pressing the focus key. Play the focus tone.
                 // Do not take the picture now.
@@ -1191,25 +1196,21 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void updateFocusIndicator() {
-        mHandler.post(new Runnable() {
-            public void run() {
-                if (mFocusState == FOCUSING || mFocusState == FOCUSING_SNAP_ON_FINISH) {
-                    mFocusRectangle.showStart();
-                } else if (mFocusState == FOCUS_SUCCESS) {
-                    mFocusIndicator.setVisibility(View.VISIBLE);
-                    mFocusIndicator.clearAnimation();
-                    mFocusRectangle.showSuccess();
-                } else if (mFocusState == FOCUS_FAIL) {
-                    mFocusIndicator.setVisibility(View.VISIBLE);
-                    mFocusIndicator.startAnimation(mFocusBlinkAnimation);
-                    mFocusRectangle.showFail();
-                } else {
-                    mFocusIndicator.setVisibility(View.GONE);
-                    mFocusIndicator.clearAnimation();
-                    mFocusRectangle.clear();
-                }
-            }
-        });
+        if (mFocusState == FOCUSING || mFocusState == FOCUSING_SNAP_ON_FINISH) {
+            mFocusRectangle.showStart();
+        } else if (mFocusState == FOCUS_SUCCESS) {
+            mFocusIndicator.setVisibility(View.VISIBLE);
+            mFocusIndicator.clearAnimation();
+            mFocusRectangle.showSuccess();
+        } else if (mFocusState == FOCUS_FAIL) {
+            mFocusIndicator.setVisibility(View.VISIBLE);
+            mFocusIndicator.startAnimation(mFocusBlinkAnimation);
+            mFocusRectangle.showFail();
+        } else {
+            mFocusIndicator.setVisibility(View.GONE);
+            mFocusIndicator.clearAnimation();
+            mFocusRectangle.clear();
+        }
     }
 
 
@@ -1295,7 +1296,6 @@ public class Camera extends Activity implements View.OnClickListener,
             if (mCaptureObject != null) {
                 mCaptureObject.onSnap();
             }
-            clearFocusState();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
             // already have requested AF for us, so just request capture on
