@@ -40,9 +40,8 @@ import java.util.HashMap;
  * the path to the actual image data.
  */
 public abstract class BaseImage implements IImage {
-
-    private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImage";
+    private static final int UNKNOWN_LENGTH = -1;
 
     private static final byte [] sMiniThumbData =
             new byte[MiniThumbFile.BYTES_PER_MINTHUMB];
@@ -53,33 +52,26 @@ public abstract class BaseImage implements IImage {
     protected HashMap<String, String> mExifData;
     protected int mCursorRow;
 
-    protected BaseImage(long id, long miniThumbId, ContentResolver cr,
+    private int mWidth = UNKNOWN_LENGTH;
+    private int mHeight = UNKNOWN_LENGTH;
+
+    protected BaseImage(long id, long miniThumbMagic, ContentResolver cr,
             BaseImageList container, int cursorRow) {
         mContentResolver = cr;
         mId              = id;
-        mMiniThumbMagic  = miniThumbId;
+        mMiniThumbMagic  = miniThumbMagic;
         mContainer       = container;
         mCursorRow       = cursorRow;
     }
 
     protected abstract Bitmap.CompressFormat compressionType();
 
-    public void commitChanges() {
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                c.commitUpdates();
-                c.requery();
-            }
-        }
-    }
-
     private class CompressImageToFile extends BaseCancelable<Boolean> {
         private ThreadSafeOutputStream mOutputStream = null;
 
-        private Bitmap mBitmap;
-        private Uri mUri;
-        private byte[] mJpegData;
+        private final Bitmap mBitmap;
+        private final Uri mUri;
+        private final byte[] mJpegData;
 
         public CompressImageToFile(Bitmap bitmap, byte[] jpegData, Uri uri) {
             mBitmap = bitmap;
@@ -98,29 +90,15 @@ public abstract class BaseImage implements IImage {
 
         public Boolean get() {
             try {
-                long t1 = System.currentTimeMillis();
                 OutputStream delegate = mContentResolver.openOutputStream(mUri);
                 synchronized (this) {
                     checkCanceled();
                     mOutputStream = new ThreadSafeOutputStream(delegate);
                 }
-                long t2 = System.currentTimeMillis();
                 if (mBitmap != null) {
                     mBitmap.compress(compressionType(), 75, mOutputStream);
                 } else {
-                    long x1 = System.currentTimeMillis();
                     mOutputStream.write(mJpegData);
-                    long x2 = System.currentTimeMillis();
-                    if (VERBOSE) {
-                        Log.v(TAG, "done writing... " + mJpegData.length
-                                + " bytes took " + (x2 - x1));
-                    }
-                }
-                long t3 = System.currentTimeMillis();
-                if (VERBOSE) {
-                    Log.v(TAG, String.format(
-                            "CompressImageToFile.get took %d (%d, %d)",
-                            (t3 - t1), (t2 - t1), (t3 - t2)));
                 }
                 return true;
             } catch (FileNotFoundException ex) {
@@ -167,10 +145,9 @@ public abstract class BaseImage implements IImage {
     protected Bitmap fullSizeBitmap(
             int targetWidthHeight, boolean rotateAsNeeded) {
         Uri url = mContainer.contentUri(mId);
-        if (VERBOSE) Log.v(TAG, "getCreateBitmap for " + url);
         if (url == null) return null;
 
-        Bitmap b = makeBitmap(targetWidthHeight, url);
+        Bitmap b = Util.makeBitmap(targetWidthHeight, url, mContentResolver);
         if (b != null && rotateAsNeeded) {
             b = Util.rotate(b, getDegreesRotated());
         }
@@ -178,10 +155,9 @@ public abstract class BaseImage implements IImage {
     }
 
     private class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
-        private ParcelFileDescriptor mPFD;
-        private BitmapFactory.Options mOptions = new BitmapFactory.Options();
-        private long mCancelInitiationTime;
-        private int mTargetWidthHeight;
+        private final ParcelFileDescriptor mPFD;
+        private final BitmapFactory.Options mOptions = new BitmapFactory.Options();
+        private final int mTargetWidthHeight;
 
         public LoadBitmapCancelable(
                 ParcelFileDescriptor pfdInput, int targetWidthHeight) {
@@ -191,22 +167,15 @@ public abstract class BaseImage implements IImage {
 
         @Override
         public boolean doCancelWork() {
-            if (VERBOSE) Log.v(TAG, "requesting bitmap load cancel");
-            mCancelInitiationTime = System.currentTimeMillis();
             mOptions.requestCancelDecode();
             return true;
         }
 
         public Bitmap get() {
             try {
-                Bitmap b = makeBitmap(
-                        mTargetWidthHeight, fullSizeImageUri(), mPFD, mOptions);
-                if (mCancelInitiationTime != 0 && VERBOSE) {
-                    Log.v(TAG, "cancelation of bitmap load success=="
-                            + (b == null ? "TRUE" : "FALSE") + " -- took "
-                            + (System.currentTimeMillis()
-                            - mCancelInitiationTime));
-                }
+                Bitmap b = Util.makeBitmap(
+                        mTargetWidthHeight, fullSizeImageUri(),
+                        mContentResolver, mPFD, mOptions);
                 if (b != null) {
                     b = Util.rotate(b, getDegreesRotated());
                 }
@@ -338,64 +307,33 @@ public abstract class BaseImage implements IImage {
         return mCursorRow;
     }
 
-    public int getWidth() {
+    private void setupDimension() {
         ParcelFileDescriptor input = null;
         try {
-            Uri uri = fullSizeImageUri();
-            input = mContentResolver.openFileDescriptor(uri, "r");
+            input = mContentResolver
+                    .openFileDescriptor(fullSizeImageUri(), "r");
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapManager.instance().decodeFileDescriptor(
-                    input.getFileDescriptor(), null, options);
-            return options.outWidth;
-        } catch (IOException ex) {
-            return 0;
+                    input.getFileDescriptor(), options);
+            mWidth = options.outWidth;
+            mHeight = options.outHeight;
+        } catch (FileNotFoundException ex) {
+            mWidth = 0;
+            mHeight = 0;
         } finally {
             Util.closeSiliently(input);
         }
+    }
+
+    public int getWidth() {
+        if (mWidth == UNKNOWN_LENGTH) setupDimension();
+        return mWidth;
     }
 
     public int getHeight() {
-        ParcelFileDescriptor input = null;
-        try {
-            Uri uri = fullSizeImageUri();
-            input = mContentResolver.openFileDescriptor(uri, "r");
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapManager.instance().decodeFileDescriptor(
-                    input.getFileDescriptor(), null, options);
-            return options.outHeight;
-        } catch (IOException ex) {
-            return 0;
-        } finally {
-            Util.closeSiliently(input);
-        }
-    }
-
-    public long imageId() {
-        return mId;
-    }
-
-    /**
-     * Make a bitmap from a given Uri.
-     *
-     * @param uri
-     */
-    private Bitmap makeBitmap(int targetWidthOrHeight, Uri uri) {
-        ParcelFileDescriptor input = null;
-        try {
-            input = mContentResolver.openFileDescriptor(uri, "r");
-            return makeBitmap(targetWidthOrHeight, uri, input, null);
-        } catch (IOException ex) {
-            return null;
-        } finally {
-            Util.closeSiliently(input);
-        }
-    }
-
-    protected Bitmap makeBitmap(int targetWidthHeight, Uri uri,
-            ParcelFileDescriptor pfdInput, BitmapFactory.Options options) {
-        return mContainer.makeBitmap(targetWidthHeight, uri, pfdInput, options);
+        if (mHeight == UNKNOWN_LENGTH) setupDimension();
+        return mHeight;
     }
 
     public Bitmap miniThumbBitmap() {
@@ -405,10 +343,6 @@ public abstract class BaseImage implements IImage {
             if (dbMagic == 0 || dbMagic == id) {
                 dbMagic = ((BaseImageList) getContainer())
                         .checkThumbnail(this, getCursor(), getRow());
-                if (VERBOSE) {
-                    Log.v(TAG, "after computing thumbnail dbMagic is "
-                            + dbMagic);
-                }
             }
 
             synchronized (sMiniThumbData) {
@@ -433,15 +367,12 @@ public abstract class BaseImage implements IImage {
                             dbMagic);
                 }
                 if (data == null) {
-                    if (VERBOSE) {
-                        Log.v(TAG, "unable to get miniThumbBitmap,"
-                                + " data is null");
-                    }
+                    // Unable to get mini-thumb data from file.
                 }
                 if (data != null) {
                     Bitmap b = BitmapFactory.decodeByteArray(data, 0,
                             data.length);
-                    if (b == null && VERBOSE) {
+                    if (b == null) {
                         Log.v(TAG, "couldn't decode byte array, "
                                 + "length was " + data.length);
                     }
@@ -450,11 +381,7 @@ public abstract class BaseImage implements IImage {
             }
             return null;
         } catch (Throwable ex) {
-            if (VERBOSE) {
-                Log.e(TAG, "miniThumbBitmap got exception " + ex.toString());
-                for (StackTraceElement s : ex.getStackTrace())
-                    Log.e(TAG, "... " + s.toString());
-            }
+            Log.e(TAG, "miniThumbBitmap got exception", ex);
             return null;
         }
     }
@@ -472,6 +399,7 @@ public abstract class BaseImage implements IImage {
         synchronized (c) {
             if (c.moveToPosition(getRow())) {
                 c.updateString(mContainer.indexTitle(), name);
+                c.commitUpdates();
             }
         }
     }

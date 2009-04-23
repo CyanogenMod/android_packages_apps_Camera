@@ -41,7 +41,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
-import android.util.Config;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -106,15 +105,7 @@ public class CropImage extends Activity {
         try {
             Intent intent = getIntent();
             Bundle extras = intent.getExtras();
-            if (Config.LOGV) {
-                Log.v(TAG, "extras are " + extras);
-            }
             if (extras != null) {
-                for (String s : extras.keySet()) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "" + s + " >>> " + extras.get(s));
-                    }
-                }
                 if (extras.getString("circleCrop") != null) {
                     mCircleCrop = true;
                     mAspectX = 1;
@@ -143,17 +134,14 @@ public class CropImage extends Activity {
 
             if (mBitmap == null) {
                 Uri target = intent.getData();
-                mAllImages = ImageManager.makeImageList(target, CropImage.this,
-                        ImageManager.SORT_ASCENDING);
+                mAllImages = ImageManager.makeImageList(target,
+                        mContentResolver, ImageManager.SORT_ASCENDING);
                 mImage = mAllImages.getImageForUri(target);
                 if (mImage != null) {
                     // don't read in really large bitmaps.  max out at 1000.
                     // TODO when saving the resulting bitmap use the
                     // decode/crop/encode api so we don't lose any resolution.
                     mBitmap = mImage.thumbBitmap();
-                    if (Config.LOGV) {
-                        Log.v(TAG, "thumbBitmap returned " + mBitmap);
-                    }
                 }
             }
 
@@ -197,7 +185,7 @@ public class CropImage extends Activity {
                 true, false);
         mImageView.setImageBitmapResetBase(mBitmap, true);
         if (mImageView.getScale() == 1F) {
-            mImageView.center(true, true, false);
+            mImageView.center(true, true);
         }
 
         new Thread(new Runnable() {
@@ -205,11 +193,6 @@ public class CropImage extends Activity {
                 final Bitmap b = (mImage != null)
                         ? mImage.fullSizeBitmap(500)
                         : mBitmap;
-                if (Config.LOGV) {
-                    Log.v(TAG, "back from fullSizeBitmap(500) "
-                            + "with bitmap of size " + b.getWidth()
-                            + " / " + b.getHeight());
-                }
                 mHandler.post(new Runnable() {
                     public void run() {
                         if (b != mBitmap && b != null) {
@@ -217,7 +200,7 @@ public class CropImage extends Activity {
                             mImageView.setImageBitmapResetBase(b, true);
                         }
                         if (mImageView.getScale() == 1F) {
-                            mImageView.center(true, true, false);
+                            mImageView.center(true, true);
                         }
 
                         new Thread(mRunFaceDetection).start();
@@ -234,9 +217,6 @@ public class CropImage extends Activity {
         mSaving = true;
         if (mCroppedImage == null) {
             if (mCrop == null) {
-                if (Config.LOGV) {
-                    Log.v(TAG, "no cropped image...");
-                }
                 return;
             }
 
@@ -274,7 +254,7 @@ public class CropImage extends Activity {
         if (mOutputX != 0 && mOutputY != 0) {
             if (mScale) {
                 /* Scale the image to the required dimensions */
-                mCroppedImage = ImageLoader.transform(new Matrix(),
+                mCroppedImage = Util.transform(new Matrix(),
                         mCroppedImage, mOutputX, mOutputY, mScaleUp);
             } else {
 
@@ -336,9 +316,7 @@ public class CropImage extends Activity {
                                         outputStream);
                             }
                         } catch (IOException ex) {
-                            if (Config.LOGV) {
-                                Log.v(TAG, "got IOException " + ex);
-                            }
+
                         } finally {
                             if (outputStream != null)  {
                                 try {
@@ -371,9 +349,6 @@ public class CropImage extends Activity {
                             x += 1;
                             String candidate = directory.toString()
                                     + "/" + fileName + "-" + x + ".jpg";
-                            if (Config.LOGV) {
-                                Log.v(TAG, "candidate is " + candidate);
-                            }
                             boolean exists =
                                     (new java.io.File(candidate)).exists();
                             if (!exists) {
@@ -382,8 +357,7 @@ public class CropImage extends Activity {
                         }
 
                         try {
-                            Uri newUri = ImageManager.instance().addImage(
-                                    CropImage.this,
+                            Uri newUri = ImageManager.addImage(
                                     getContentResolver(),
                                     mImage.getTitle(),
                                     mImage.getDateTaken(),
@@ -397,9 +371,8 @@ public class CropImage extends Activity {
                                     fileName + "-" + x + ".jpg");
 
                             ICancelable<Void> cancelable =
-                                    ImageManager.instance().storeImage(
+                                    ImageManager.storeImage(
                                     newUri,
-                                    CropImage.this,
                                     getContentResolver(),
                                     0, // TODO fix this orientation
                                     mCroppedImage,
@@ -439,6 +412,7 @@ public class CropImage extends Activity {
     Handler mHandler = new Handler();
 
     Runnable mRunFaceDetection = new Runnable() {
+        @SuppressWarnings("hiding")
         float mScale = 1F;
         Matrix mImageMatrix;
         FaceDetector.Face[] mFaces = new FaceDetector.Face[3];
@@ -758,7 +732,7 @@ class CropImageView extends ImageViewTouchBase {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                center(true, true, true);
+                center(true, true);
                 break;
             case MotionEvent.ACTION_MOVE:
                 // if we're not zoomed then there's no point in even allowing
@@ -766,7 +740,7 @@ class CropImageView extends ImageViewTouchBase {
                 // it back to the normalized location (with false meaning don't
                 // animate).
                 if (getScale() == 1F) {
-                    center(true, true, false);
+                    center(true, true);
                 }
                 break;
         }

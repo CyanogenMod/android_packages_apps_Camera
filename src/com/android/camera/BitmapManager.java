@@ -18,8 +18,6 @@ package com.android.camera;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.util.Config;
 import android.util.Log;
 
 import java.io.FileDescriptor;
@@ -39,8 +37,6 @@ import java.util.WeakHashMap;
  */
 public class BitmapManager {
     private static final String TAG = "BitmapManager";
-    private static final boolean VERBOSE =
-            Config.LOGD && (false || Config.LOGV);
     private static enum State {RUNNING, CANCEL, WAIT}
     private static class ThreadStatus {
         public State state = State.WAIT;
@@ -60,7 +56,7 @@ public class BitmapManager {
             return s;
         }
     }
-    private WeakHashMap<Thread, ThreadStatus> mThreadStatus =
+    private final WeakHashMap<Thread, ThreadStatus> mThreadStatus =
             new WeakHashMap<Thread, ThreadStatus>();
     private boolean mAllowDecoding = false;
     private boolean mLocked = false;
@@ -79,10 +75,6 @@ public class BitmapManager {
 
     public synchronized void setCheckResourceLock(boolean b) {
         mCheckResourceLock = b;
-    }
-
-    private synchronized boolean checkResourceLock() {
-        return mCheckResourceLock;
     }
 
     /**
@@ -109,30 +101,17 @@ public class BitmapManager {
         Thread t = Thread.currentThread();
         ThreadStatus status = getThreadStatus(t, true);
 
-        if (VERBOSE) {
-            Log.v(TAG, "lock... thread " + t + "(" + t.getId() + ")");
-        }
-
         while (mLocked) {
             try {
-                if (VERBOSE) {
-                    Log.v(TAG, "waiting... thread " + t.getId());
-                }
                 wait();
                 // remove canceled thread
                 if (status.state == State.CANCEL) {
-                    if (VERBOSE) {
-                        Log.v(TAG, "[" + t + "] someone cancels me!!");
-                    }
                     return false;
                 }
             } catch (InterruptedException ex) {
                 Log.e(TAG, ex.toString());
             }
 
-        }
-        if (VERBOSE) {
-            Log.v(TAG, "locked... thread " + t + "(" + t.getId() + ")");
         }
         status.state = State.RUNNING;
         mLocked = true;
@@ -144,9 +123,6 @@ public class BitmapManager {
      */
     public synchronized void releaseResourceLock() {
         Thread t = Thread.currentThread();
-        if (VERBOSE) {
-            Log.v(TAG, "unlocking... thread " + t + "(" + t.getId() + ")");
-        }
         mLocked = false;
         notifyAll();
     }
@@ -157,10 +133,6 @@ public class BitmapManager {
      */
     private synchronized void setDecodingOptions(Thread t,
             BitmapFactory.Options options) {
-        if (VERBOSE) {
-            Log.v(TAG, "setDecodingOptions for thread " + t.getId()
-                    + ", options=" + options);
-        }
         getThreadStatus(t, true).options = options;
     }
 
@@ -170,9 +142,6 @@ public class BitmapManager {
     }
 
     synchronized void removeDecodingOptions(Thread t) {
-        if (VERBOSE) {
-            Log.v(TAG, "removeDecodingOptions for thread " + t.getId());
-        }
         ThreadStatus status = mThreadStatus.get(t);
         status.options = null;
     }
@@ -190,31 +159,17 @@ public class BitmapManager {
 
         boolean result = (status.state == State.RUNNING) ||
                 (status.state != State.CANCEL && !mCheckResourceLock);
-        if (VERBOSE) {
-            Log.v(TAG, "canThread " + t + " allow to decode "
-                    + result);
-        }
         return result;
     }
 
     public synchronized void allowThreadDecoding(Thread t) {
-        if (VERBOSE) {
-            Log.v(TAG, "allowThreadDecoding: " + t + "(" + t.getId() + ")");
-        }
         getThreadStatus(t, true).state = State.WAIT;
     }
 
     public synchronized void cancelThreadDecoding(Thread t) {
-        if (VERBOSE) {
-            Log.v(TAG, "[Cancel Thread] cancelThreadDecode: "
-                    + t + "(" + t.getId() + ")");
-        }
         ThreadStatus status = getThreadStatus(t, true);
         status.state = State.CANCEL;
         if (status.options != null) {
-            if (VERBOSE) {
-                Log.v(TAG, "[Cancel Decoding] options: " + status.options);
-            }
             status.options.requestCancelDecode();
         }
 
@@ -227,16 +182,10 @@ public class BitmapManager {
      * bitmap decoding.
      */
     public synchronized void cancelAllDecoding() {
-        if (VERBOSE) {
-            Log.v(TAG, ">>>>>>>> cancelAllDecoding <<<<<<<");
-        }
         allowAllDecoding(false);
         for (ThreadStatus status : mThreadStatus.values()) {
             status.state = State.CANCEL;
             if (status.options != null) {
-                if (VERBOSE) {
-                    Log.v(TAG, "cancelDecode: " + status.options);
-                }
                 status.options.requestCancelDecode();
             }
         }
@@ -250,9 +199,6 @@ public class BitmapManager {
     }
 
     public synchronized void allowAllDecoding(boolean reset) {
-        if (VERBOSE) {
-            Log.v(TAG, ">>>>>>>> allowAllDecoding <<<<<<<");
-        }
         mAllowDecoding = true;
         if (reset) {
             mThreadStatus.clear();
@@ -282,43 +228,25 @@ public class BitmapManager {
      * The real place to delegate bitmap decoding to BitmapFactory.
      */
     public Bitmap decodeFileDescriptor(FileDescriptor fd,
-                                       Rect outPadding,
                                        BitmapFactory.Options options) {
         // Does the global switch turn on?
         if (!canDecode() || options.mCancel) {
-           if (VERBOSE) {
-               Log.v(TAG, "Not allowed to decode.");
-           }
            return null;
         }
 
         // Can current thread decode?
         Thread thread = Thread.currentThread();
         if (!canThreadDecoding(thread)) {
-           if (VERBOSE) {
-               Log.v(TAG, "Thread " + thread + "(" + thread.getId()
-                       + ") is not allowed to decode");
-           }
            return null;
         }
 
         setDecodingOptions(thread, options);
-        if (VERBOSE) {
-            Log.v(TAG, "decodeFileDescriptor: " + options + ", cancel="
-                    + options.mCancel);
-        }
 
-        long t = System.currentTimeMillis();
         Bitmap b = BitmapFactory.decodeFileDescriptor(fd, null, options);
 
         // In case legacy code cancel it in traditional way
         if (options.mCancel) {
             cancelThreadDecoding(thread);
-        }
-        if (VERBOSE) {
-            Log.v(TAG, "decodeFileDescriptor done: options=" + options
-                    + ", cancel=" + options.mCancel + ", it takes "
-                    + (System.currentTimeMillis() - t) + " ms.");
         }
         removeDecodingOptions(thread);
 

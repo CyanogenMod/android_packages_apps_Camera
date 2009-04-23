@@ -28,6 +28,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.provider.BaseColumns;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
 
@@ -39,14 +40,13 @@ import java.util.HashMap;
  * The class for normal images in gallery.
  */
 public class Image extends BaseImage implements IImage {
-    private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImage";
 
     private int mRotation;
 
-    public Image(long id, long miniThumbId, ContentResolver cr,
+    public Image(long id, long miniThumbMagic, ContentResolver cr,
             BaseImageList container, int cursorRow, int rotation) {
-        super(id, miniThumbId, cr, container, cursorRow);
+        super(id, miniThumbMagic, cr, container, cursorRow);
         mRotation = rotation;
     }
 
@@ -76,7 +76,7 @@ public class Image extends BaseImage implements IImage {
                 int column = ((ImageList) getContainer()).indexOrientation();
                 if (column >= 0) {
                     c.updateInt(column, degrees);
-                    getContainer().commitChanges();
+                    c.commitUpdates();
                 }
             }
         }
@@ -104,13 +104,9 @@ public class Image extends BaseImage implements IImage {
         if (mExifData == null) {
             mExifData = new HashMap<String, String>();
         }
+        // If the key is already there, ignore it.
         if (!mExifData.containsKey(tag)) {
             mExifData.put(tag, value);
-        } else {
-            if (VERBOSE) {
-                Log.v(TAG, "addExifTag where the key already was there: "
-                        + tag + " = " + value);
-            }
         }
     }
 
@@ -166,18 +162,18 @@ public class Image extends BaseImage implements IImage {
     }
 
     private class SaveImageContentsCancelable extends BaseCancelable<Boolean> {
-        private Bitmap mImage;
-        private byte [] mJpegData;
-        private int mOrientation;
-        private Cursor mCursor;
+        private final Bitmap mImage;
+        private final byte [] mJpegData;
+        private final int mOrientation;
+        private final String mFilePath;
         ICancelable<Boolean> mCurrentCancelable = null;
 
         SaveImageContentsCancelable(Bitmap image, byte[] jpegData,
-                int orientation, Cursor cursor) {
+                int orientation, String filePath) {
             mImage = image;
             mJpegData = jpegData;
             mOrientation = orientation;
-            mCursor = cursor;
+            mFilePath = filePath;
         }
 
         @Override
@@ -192,7 +188,6 @@ public class Image extends BaseImage implements IImage {
             try {
                 Bitmap thumbnail = null;
 
-                long t1 = System.currentTimeMillis();
                 Uri uri = mContainer.contentUri(mId);
                 synchronized (this) {
                     checkCanceled();
@@ -200,39 +195,24 @@ public class Image extends BaseImage implements IImage {
                             compressImageToFile(mImage, mJpegData, uri);
                 }
 
-                long t2 = System.currentTimeMillis();
                 if (!mCurrentCancelable.get()) return false;
 
                 synchronized (this) {
-                    String filePath;
-                    synchronized (mCursor) {
-                        mCursor.moveToPosition(0);
-                        filePath = mCursor.getString(2);
-                    }
+                    String filePath = mFilePath;
+
                     // TODO: If thumbData is present and usable, we should call
                     // the version of storeThumbnail which takes a byte array,
                     // rather than re-encoding a new JPEG of the same
                     // dimensions.
-
                     byte[] thumbData = null;
-                    synchronized (ImageManager.instance()) {
+                    synchronized (ExifInterface.class) {
                         thumbData =
                                 (new ExifInterface(filePath)).getThumbnail();
-                    }
-                    if (VERBOSE) {
-                        Log.v(TAG, "for file " + filePath + " thumbData is "
-                                + thumbData + "; length "
-                                + (thumbData != null ? thumbData.length : -1));
                     }
 
                     if (thumbData != null) {
                         thumbnail = BitmapFactory.decodeByteArray(
                                 thumbData, 0, thumbData.length);
-                        if (VERBOSE) {
-                            Log.v(TAG, "embedded thumbnail bitmap "
-                                    + thumbnail.getWidth() + "/"
-                                    + thumbnail.getHeight());
-                        }
                     }
                     if (thumbnail == null && mImage != null) {
                         thumbnail = mImage;
@@ -243,28 +223,20 @@ public class Image extends BaseImage implements IImage {
                     }
                 }
 
-                long t3 = System.currentTimeMillis();
                 mContainer.storeThumbnail(
                         thumbnail, Image.this.fullSizeImageId());
-                long t4 = System.currentTimeMillis();
                 checkCanceled();
-                if (VERBOSE) Log.v(TAG, "rotating by " + mOrientation);
+
                 try {
                     thumbnail = Util.rotate(thumbnail, mOrientation);
                     saveMiniThumb(thumbnail);
                 } catch (IOException e) {
                     // Ignore if unable to save thumb.
                 }
-                long t5 = System.currentTimeMillis();
                 checkCanceled();
-
-                if (VERBOSE) {
-                    Log.v(TAG, String.format("Timing data %d %d %d %d",
-                            t2 - t1, t3 - t2, t4 - t3, t5 - t4));
-                }
                 return true;
             } catch (CanceledException ex) {
-                if (VERBOSE) Log.v(TAG, "got canceled... need to cleanup");
+                // Got canceled... need to cleanup.
                 return false;
             } finally {
                 /*
@@ -277,9 +249,9 @@ public class Image extends BaseImage implements IImage {
     }
 
     public ICancelable<Boolean> saveImageContents(Bitmap image,
-            byte [] jpegData, int orientation, boolean newFile, Cursor cursor) {
+            byte [] jpegData, int orientation, boolean newFile, String filePath) {
         return new SaveImageContentsCancelable(
-                image, jpegData, orientation, cursor);
+                image, jpegData, orientation, filePath);
     }
 
     private void setExifRotation(int degrees) {
@@ -289,7 +261,7 @@ public class Image extends BaseImage implements IImage {
             synchronized (c) {
                 filePath = c.getString(mContainer.indexData());
             }
-            synchronized (ImageManager.instance()) {
+            synchronized (ExifInterface.class) {
                 ExifInterface exif = new ExifInterface(filePath);
                 if (mExifData == null) {
                     mExifData = exif.getAttributes();
@@ -317,7 +289,6 @@ public class Image extends BaseImage implements IImage {
                 replaceExifTag("UserComment",
                         "saveRotatedImage comment orientation: " + orientation);
                 exif.saveAttributes(mExifData);
-                exif.commitChanges();
             }
         } catch (RuntimeException ex) {
             Log.e(TAG, "unable to save exif data with new orientation "
@@ -346,16 +317,22 @@ public class Image extends BaseImage implements IImage {
         return true;
     }
 
+    private static final String[] THUMB_PROJECTION = new String[] {
+        BaseColumns._ID,
+    };
+
     public Bitmap thumbBitmap() {
         Bitmap bitmap = null;
         if (mContainer.mThumbUri != null) {
             Cursor c = mContentResolver.query(
-                    mContainer.mThumbUri, BaseImageList.THUMB_PROJECTION,
+                    mContainer.mThumbUri, THUMB_PROJECTION,
                     Thumbnails.IMAGE_ID + "=?",
                     new String[] { String.valueOf(fullSizeImageId()) },
                     null);
             try {
-                if (c.moveToFirst()) bitmap = decodeCurrentImage(c);
+                if (c.moveToFirst()) {
+                    bitmap = decodeCurrentImage(c.getLong(0));
+                }
             } catch (RuntimeException ex) {
                 // sdcard removed?
                 return null;
@@ -365,11 +342,8 @@ public class Image extends BaseImage implements IImage {
         }
 
         if (bitmap == null) {
-            bitmap = fullSizeBitmap(ImageManager.THUMBNAIL_TARGET_SIZE, false);
-            if (VERBOSE) {
-                Log.v(TAG, "no thumbnail found... storing new one for "
-                        + fullSizeImageId());
-            }
+            bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE, false);
+            // No thumbnail found... storing the new one.
             bitmap = mContainer.storeThumbnail(bitmap, fullSizeImageId());
         }
 
@@ -381,10 +355,9 @@ public class Image extends BaseImage implements IImage {
         return bitmap;
     }
 
-    private Bitmap decodeCurrentImage(Cursor c) {
+    private Bitmap decodeCurrentImage(long id) {
         Uri thumbUri = ContentUris.withAppendedId(
-                mContainer.mThumbUri,
-                c.getLong(ImageList.INDEX_THUMB_ID));
+                mContainer.mThumbUri, id);
         ParcelFileDescriptor pfdInput;
         Bitmap bitmap = null;
         try {
@@ -393,7 +366,7 @@ public class Image extends BaseImage implements IImage {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             pfdInput = mContentResolver.openFileDescriptor(thumbUri, "r");
             bitmap = BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), null, options);
+                    pfdInput.getFileDescriptor(), options);
             pfdInput.close();
         } catch (FileNotFoundException ex) {
             Log.e(TAG, "couldn't open thumbnail " + thumbUri + "; " + ex);

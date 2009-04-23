@@ -43,7 +43,6 @@ import android.os.Handler;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore.Images;
-import android.util.Config;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -191,9 +190,6 @@ public class GalleryPicker extends Activity {
 
     // This is called when we receive media-related broadcast.
     private void onReceiveMediaBroadcast(Intent intent) {
-        if (Config.LOGV) {
-            Log.v(TAG, "onReceiveMediaBroadcast " + intent.getAction());
-        }
         String action = intent.getAction();
         if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
             // SD card available
@@ -201,9 +197,6 @@ public class GalleryPicker extends Activity {
             // TODO also listen for the media scanner finished message
         } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
             // SD card unavailable
-            if (Config.LOGV) {
-                Log.v(TAG, "sd card no longer available");
-            }
             Toast.makeText(GalleryPicker.this,
                     getResources().getString(R.string.wait), 5000);
             rebake(true, false);
@@ -213,15 +206,8 @@ public class GalleryPicker extends Activity {
             rebake(false, true);
         } else if (action.equals(
                 Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-            if (Config.LOGV) {
-                Log.v(TAG, "rebake because of "
-                        + "ACTION_MEDIA_SCANNER_FINISHED");
-            }
             rebake(false, false);
         } else if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-            if (Config.LOGV) {
-                Log.v(TAG, "rebake because of ACTION_MEDIA_EJECT");
-            }
             rebake(true, false);
         }
     }
@@ -386,24 +372,19 @@ public class GalleryPicker extends Activity {
 
             IImageList images;
             if (assumeMounted) {
-                images = ImageManager.instance().allImages(
-                        GalleryPicker.this,
+                images = ImageManager.allImages(
                         getContentResolver(),
                         ImageManager.DataLocation.ALL,
                         ImageManager.INCLUDE_IMAGES
                         | ImageManager.INCLUDE_VIDEOS,
                         ImageManager.SORT_DESCENDING);
             } else {
-                images = ImageManager.instance().emptyImageList();
+                images = ImageManager.emptyImageList();
             }
 
             if (mWorkerThread != null) {
                 try {
                     mDone = true;
-                    if (Config.LOGV) {
-                        Log.v(TAG, "about to call join on thread "
-                                + mWorkerThread.getId());
-                    }
                     mWorkerThread.join();
                 } finally {
                     mWorkerThread = null;
@@ -636,7 +617,8 @@ public class GalleryPicker extends Activity {
         mGridView.setAdapter(mAdapter);
         setBackgrounds(getResources());
 
-        boolean scanning = ImageManager.isMediaScannerScanning(this);
+        boolean scanning = ImageManager.isMediaScannerScanning(
+                getContentResolver());
         rebake(false, scanning);
 
         // install an intent filter to receive SD card related events.
@@ -741,8 +723,8 @@ public class GalleryPicker extends Activity {
                     temp = newMap;
                 }
 
-                Bitmap temp2 = ImageLoader.transform(m, temp, imageWidth,
-                                                     imageHeight, true);
+                Bitmap temp2 = Util.transform(m, temp, imageWidth,
+                                              imageHeight, true);
                 if (temp2 != temp) {
                     temp.recycle();
                 }
@@ -814,8 +796,7 @@ public class GalleryPicker extends Activity {
     }
 
     private IImageList createImageList(int mediaTypes, String bucketId) {
-        return ImageManager.instance().allImages(
-                this,
+        return ImageManager.allImages(
                 getContentResolver(),
                 ImageManager.DataLocation.ALL,
                 mediaTypes,

@@ -60,7 +60,7 @@ public class ActionMenuButton extends TextView {
     private void init() {
         setFocusable(true);
         // We need extra padding below to prevent the bubble being cut.
-        setPadding(0, 0, 0, PADDING_V);
+        setPadding(PADDING_H, 0, PADDING_H, PADDING_V);
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(getContext().getResources()

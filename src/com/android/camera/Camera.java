@@ -29,9 +29,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
@@ -50,8 +52,10 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
+import android.util.AttributeSet;
 import android.util.Config;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -83,8 +87,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private static final String TAG = "camera";
 
-    private static final boolean DEBUG = false;
-    private static final boolean DEBUG_TIME_OPERATIONS = DEBUG && false;
+    private static final boolean DEBUG_TIME_OPERATIONS = false;
 
     private static final int CROP_MSG = 1;
     private static final int RESTART_PREVIEW = 3;
@@ -114,6 +117,7 @@ public class Camera extends Activity implements View.OnClickListener,
     // The parameter strings to communicate with camera driver.
     public static final String PARM_WHITE_BALANCE = "whitebalance";
     public static final String PARM_EFFECT = "effect";
+    public static final String PARM_BRIGHTNESS = "exposure-offset";
     public static final String PARM_PICTURE_SIZE = "picture-size";
     public static final String PARM_JPEG_QUALITY = "jpeg-quality";
     public static final String PARM_ROTATION = "rotation";
@@ -123,6 +127,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final String PARM_GPS_TIMESTAMP = "gps-timestamp";
     public static final String SUPPORTED_WHITE_BALANCE = "whitebalance-values";
     public static final String SUPPORTED_EFFECT = "effect-values";
+    public static final String SUPPORTED_BRIGHTNESS = "exposure-offset-values";
     public static final String SUPPORTED_PICTURE_SIZE = "picture-size-values";
 
     private OrientationEventListener mOrientationListener;
@@ -144,6 +149,13 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mViewFinderWidth, mViewFinderHeight;
     private boolean mPreviewing = false;
 
+    // TODO: Decide whether we should read these values from drivers,
+    // and update the preference screen if needed.
+    private static final int BRIGHTNESS_DEFAULT = 5;
+    private static final int BRIGHTNESS_MAX = 10;
+    private static final int BRIGHTNESS_MIN = 0;
+    private int mCurrentBrightness;
+
     private Capturer mCaptureObject;
     private ImageCapture mImageCapture = null;
 
@@ -159,7 +171,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private ContentResolver mContentResolver;
     private boolean mDidRegister = false;
 
-    private ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
+    private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private LocationManager mLocationManager = null;
 
@@ -167,19 +179,30 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private Animation mFocusBlinkAnimation;
     private View mFocusIndicator;
+    private FocusRectangle mFocusRectangle;
     private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
 
-    private ShutterCallback mShutterCallback = new ShutterCallback();
-    private RawPictureCallback mRawPictureCallback = new RawPictureCallback();
-    private AutoFocusCallback mAutoFocusCallback = new AutoFocusCallback();
+    // Use OneShotPreviewCallback to measure the time between
+    // JpegPictureCallback and preview.
+    private final OneShotPreviewCallback mOneShotPreviewCallback =
+            new OneShotPreviewCallback();
+    private final ShutterCallback mShutterCallback = new ShutterCallback();
+    private final RawPictureCallback mRawPictureCallback =
+            new RawPictureCallback();
+    private final AutoFocusCallback mAutoFocusCallback =
+            new AutoFocusCallback();
     private long mFocusStartTime;
     private long mFocusCallbackTime;
     private long mCaptureStartTime;
     private long mShutterCallbackTime;
     private long mRawPictureCallbackTime;
+    private long mJpegPictureCallbackTime;
     private int mPicturesRemaining;
     private boolean mRecordLocation;
+
+    // Focus mode. Options are pref_camera_focusmode_entryvalues.
+    private String mFocusMode;
 
     private boolean mKeepAndRestartPreview;
 
@@ -191,7 +214,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
 
-    private Handler mHandler = new MainHandler();
+    private final Handler mHandler = new MainHandler();
 
     private interface Capturer {
         Uri getLastCaptureUri();
@@ -312,14 +335,26 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private boolean mImageSavingItem = false;
 
+    private final class OneShotPreviewCallback
+            implements android.hardware.Camera.PreviewCallback {
+        public void onPreviewFrame(byte[] data,
+                                   android.hardware.Camera camera) {
+            long now = System.currentTimeMillis();
+            if (mJpegPictureCallbackTime != 0) {
+                Log.v(TAG, (now - mJpegPictureCallbackTime)
+                        + "ms elapsed between JpegPictureCallback and preview "
+                        + "restarted.");
+                mJpegPictureCallbackTime = 0;
+            }
+        }
+    }
+
     private final class ShutterCallback
             implements android.hardware.Camera.ShutterCallback {
         public void onShutter() {
-            if (DEBUG_TIME_OPERATIONS) {
-                mShutterCallbackTime = System.currentTimeMillis();
-                Log.v(TAG, "Shutter lag was "
-                        + (mShutterCallbackTime - mCaptureStartTime) + " ms.");
-            }
+            mShutterCallbackTime = System.currentTimeMillis();
+            Log.v(TAG, "Shutter lag was "
+                    + (mShutterCallbackTime - mCaptureStartTime) + " ms.");
 
             // We are going to change the size of surface view and show captured
             // image. Set it to invisible now and set it back to visible in
@@ -336,15 +371,10 @@ public class Camera extends Activity implements View.OnClickListener,
     private final class RawPictureCallback implements PictureCallback {
         public void onPictureTaken(
                 byte [] rawData, android.hardware.Camera camera) {
-            if (Config.LOGV) {
-                Log.v(TAG, "got RawPictureCallback...");
-            }
             mRawPictureCallbackTime = System.currentTimeMillis();
-            if (DEBUG_TIME_OPERATIONS) {
-                Log.v(TAG, (mRawPictureCallbackTime - mShutterCallbackTime)
-                        + "ms elapsed between"
-                        + " ShutterCallback and RawPictureCallback.");
-            }
+            Log.v(TAG, (mRawPictureCallbackTime - mShutterCallbackTime)
+                    + "ms elapsed between"
+                    + " ShutterCallback and RawPictureCallback.");
         }
     }
 
@@ -360,16 +390,11 @@ public class Camera extends Activity implements View.OnClickListener,
             if (mPausing) {
                 return;
             }
-            if (Config.LOGV) {
-                Log.v(TAG, "got JpegPictureCallback...");
-            }
 
-            if (DEBUG_TIME_OPERATIONS) {
-                long mJpegPictureCallback = System.currentTimeMillis();
-                Log.v(TAG, (mJpegPictureCallback - mRawPictureCallbackTime)
-                        + "ms elapsed between"
-                        + " RawPictureCallback and JpegPictureCallback.");
-            }
+            mJpegPictureCallbackTime = System.currentTimeMillis();
+            Log.v(TAG, (mJpegPictureCallbackTime - mRawPictureCallbackTime)
+                    + "ms elapsed between"
+                    + " RawPictureCallback and JpegPictureCallback.");
 
             if (jpegData != null) {
                 mImageCapture.storeImage(jpegData, camera, mLocation);
@@ -390,11 +415,9 @@ public class Camera extends Activity implements View.OnClickListener,
             implements android.hardware.Camera.AutoFocusCallback {
         public void onAutoFocus(
                 boolean focused, android.hardware.Camera camera) {
-            if (DEBUG_TIME_OPERATIONS) {
-                mFocusCallbackTime = System.currentTimeMillis();
-                Log.v(TAG, "Auto focus took "
-                        + (mFocusCallbackTime - mFocusStartTime) + " ms.");
-            }
+            mFocusCallbackTime = System.currentTimeMillis();
+            Log.v(TAG, "Auto focus took "
+                    + (mFocusCallbackTime - mFocusStartTime) + " ms.");
 
             if (mFocusState == FOCUSING_SNAP_ON_FINISH
                     && mCaptureObject != null) {
@@ -476,10 +499,10 @@ public class Camera extends Activity implements View.OnClickListener,
                 if (DEBUG_TIME_OPERATIONS) {
                     startTiming();
                 }
+
                 long dateTaken = System.currentTimeMillis();
                 String name = createName(dateTaken) + ".jpg";
-                mLastContentUri = ImageManager.instance().addImage(
-                        Camera.this,
+                mLastContentUri = ImageManager.addImage(
                         mContentResolver,
                         name,
                         dateTaken,
@@ -493,11 +516,14 @@ public class Camera extends Activity implements View.OnClickListener,
                     mCancel = true;
                 }
                 if (!mCancel) {
-                    mAddImageCancelable =
-                            ImageManager.instance().storeImage(mLastContentUri,
-                            Camera.this, mContentResolver, 0, null, data);
+                    mAddImageCancelable = ImageManager.storeImage(
+                            mLastContentUri, mContentResolver,
+                            0, null, data);
                     mAddImageCancelable.get();
                     mAddImageCancelable = null;
+                    ImageManager.setImageSize(mContentResolver, mLastContentUri,
+                            new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
+                            name).length());
                 }
 
                 if (DEBUG_TIME_OPERATIONS) {
@@ -633,9 +659,7 @@ public class Camera extends Activity implements View.OnClickListener,
             if (mPausing) {
                 return;
             }
-            if (DEBUG_TIME_OPERATIONS) {
-                mCaptureStartTime = System.currentTimeMillis();
-            }
+            mCaptureStartTime = System.currentTimeMillis();
 
             // If we are already in the middle of taking a snapshot then we
             // should just save
@@ -785,6 +809,8 @@ public class Camera extends Activity implements View.OnClickListener,
                 AnimationUtils.loadAnimation(this, R.anim.auto_focus_blink);
         mFocusBlinkAnimation.setRepeatCount(Animation.INFINITE);
         mFocusBlinkAnimation.setRepeatMode(Animation.REVERSE);
+
+        mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
 
         // We load the post_picture_panel layout only if it is needed.
         if (mIsImageCaptureIntent) {
@@ -1003,6 +1029,28 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    // Reads brightness setting from the preference and store it in
+    // mCurrentBrightness.
+    private void readBrightnessPreference() {
+        String brightness = mPreferences.getString(
+                CameraSettings.KEY_BRIGHTNESS,
+                getString(R.string.pref_camera_brightness_default));
+        try {
+            mCurrentBrightness = Integer.parseInt(brightness);
+            // Limit the brightness to the valid range.
+            if (mCurrentBrightness > BRIGHTNESS_MAX) {
+                mCurrentBrightness = BRIGHTNESS_MAX;
+            }
+            if (mCurrentBrightness < BRIGHTNESS_MIN) {
+                mCurrentBrightness = BRIGHTNESS_MIN;
+            }
+        }
+        catch (NumberFormatException ex) {
+            // Use the default value if it cannot be parsed.
+            mCurrentBrightness = BRIGHTNESS_DEFAULT;
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -1012,7 +1060,13 @@ public class Camera extends Activity implements View.OnClickListener,
         mOrientationListener.enable();
         mRecordLocation = mPreferences.getBoolean(
                 "pref_camera_recordlocation_key", false);
+        mFocusMode = mPreferences.getString(
+                CameraSettings.KEY_FOCUS_MODE,
+                getString(R.string.pref_camera_focusmode_default));
         mGpsIndicator.setVisibility(View.INVISIBLE);
+        mJpegPictureCallbackTime = 0;
+
+        readBrightnessPreference();
 
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter =
@@ -1121,34 +1175,38 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void autoFocus() {
-        updateFocusIndicator();
         if (mFocusState != FOCUSING && mFocusState != FOCUSING_SNAP_ON_FINISH) {
             if (mCameraDevice != null) {
-                if (DEBUG_TIME_OPERATIONS) {
-                    mFocusStartTime = System.currentTimeMillis();
-                }
+                mFocusStartTime = System.currentTimeMillis();
                 mFocusState = FOCUSING;
                 mCameraDevice.autoFocus(mAutoFocusCallback);
             }
         }
+        updateFocusIndicator();
     }
 
     private void clearFocusState() {
         mFocusState = FOCUS_NOT_STARTED;
+        updateFocusIndicator();
     }
 
     private void updateFocusIndicator() {
         mHandler.post(new Runnable() {
             public void run() {
-                if (mFocusState == FOCUS_SUCCESS) {
+                if (mFocusState == FOCUSING || mFocusState == FOCUSING_SNAP_ON_FINISH) {
+                    mFocusRectangle.showStart();
+                } else if (mFocusState == FOCUS_SUCCESS) {
                     mFocusIndicator.setVisibility(View.VISIBLE);
                     mFocusIndicator.clearAnimation();
+                    mFocusRectangle.showSuccess();
                 } else if (mFocusState == FOCUS_FAIL) {
                     mFocusIndicator.setVisibility(View.VISIBLE);
                     mFocusIndicator.startAnimation(mFocusBlinkAnimation);
+                    mFocusRectangle.showFail();
                 } else {
                     mFocusIndicator.setVisibility(View.GONE);
                     mFocusIndicator.clearAnimation();
+                    mFocusRectangle.clear();
                 }
             }
         });
@@ -1161,6 +1219,23 @@ public class Camera extends Activity implements View.OnClickListener,
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         switch (keyCode) {
+            // TODO: change the following two handlers to OSD control.
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (mCurrentBrightness > BRIGHTNESS_MIN) {
+                    mParameters.set(PARM_BRIGHTNESS, --mCurrentBrightness);
+                    mCameraDevice.setParameters(mParameters);
+                    Log.v(TAG, "--brightness=" + mCurrentBrightness);
+                }
+                break;
+
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (mCurrentBrightness < BRIGHTNESS_MAX) {
+                    mParameters.set(PARM_BRIGHTNESS, ++mCurrentBrightness);
+                    mCameraDevice.setParameters(mParameters);
+                    Log.v(TAG, "++brightness=" + mCurrentBrightness);
+                }
+                break;
+
             case KeyEvent.KEYCODE_BACK:
                 if (mStatus == SNAPSHOT_IN_PROGRESS) {
                     // ignore backs while we're taking a picture
@@ -1209,18 +1284,18 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void doSnap() {
-        /*
-         * If the user has half-pressed the shutter and focus is completed, we
-         * can take the photo right away.
-         */
-        if ((mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)
+        // If the user has half-pressed the shutter and focus is completed, we
+        // can take the photo right away. If the focus mode is infinity, we can
+        // also take the photo.
+        if (mFocusMode.equals(getString(
+                R.string.pref_camera_focusmode_value_infinity))
+                || (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)
                 || !mPreviewing) {
             // doesn't get set until the idler runs
             if (mCaptureObject != null) {
                 mCaptureObject.onSnap();
             }
             clearFocusState();
-            updateFocusIndicator();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
             // already have requested AF for us, so just request capture on
@@ -1232,18 +1307,21 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void doFocus(boolean pressed) {
-        if (pressed) {  // Focus key down.
-            if (mPreviewing) {
-                autoFocus();
-            } else if (mCaptureObject != null) {
-                // Save and restart preview
-                mCaptureObject.onSnap();
-            }
-        } else {  // Focus key up.
-            if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
-                // User releases half-pressed focus key.
-                clearFocusState();
-                updateFocusIndicator();
+        // Do the focus if the mode is auto. No focus needed in infinity mode.
+        if (mFocusMode.equals(getString(
+                R.string.pref_camera_focusmode_value_auto))) {
+            if (pressed) {  // Focus key down.
+                if (mPreviewing) {
+                    autoFocus();
+                } else if (mCaptureObject != null) {
+                    // Save and restart preview
+                    mCaptureObject.onSnap();
+                }
+            } else {  // Focus key up.
+                if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
+                    // User releases half-pressed focus key.
+                    clearFocusState();
+                }
             }
         }
     }
@@ -1281,8 +1359,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void updateLastImage() {
-        IImageList list = ImageManager.instance().allImages(
-            this,
+        IImageList list = ImageManager.allImages(
             mContentResolver,
             dataLocation(),
             ImageManager.INCLUDE_IMAGES,
@@ -1312,10 +1389,6 @@ public class Camera extends Activity implements View.OnClickListener,
         // latency. It's true that someone else could write to the SD card in
         // the mean time and fill it, but that could have happened between the
         // shutter press and saving the JPEG too.
-
-        // TODO: The best longterm solution is to write a reserve file of
-        //     maximum JPEG size, always let the user take a picture, and
-        //     delete that file if needed to save the new photo.
         calculatePicturesRemaining();
 
         if (!mIsImageCaptureIntent && !mThumbController.isUriValid()) {
@@ -1391,13 +1464,8 @@ public class Camera extends Activity implements View.OnClickListener,
                     int delay = (int) (SystemClock.elapsedRealtime()
                             - wallTimeStart) / 1000;
                     if (delay >= nextWarning) {
-                        if (delay < 120) {
-                            Log.e(TAG, "preview hasn't started yet in "
-                                    + delay + " seconds");
-                        } else {
-                            Log.e(TAG, "preview hasn't started yet in "
-                                    + (delay / 60) + " minutes");
-                        }
+                        Log.e(TAG, "preview hasn't started yet in "
+                                + delay + " seconds");
                         if (nextWarning < 60) {
                             nextWarning <<= 1;
                             if (nextWarning == 16) {
@@ -1413,9 +1481,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
         watchDog.start();
 
-        if (Config.LOGV) {
-            Log.v(TAG, "calling mCameraDevice.startPreview");
-        }
+        // Set one shot preview callback for latency measurement.
+        mCameraDevice.setOneShotPreviewCallback(mOneShotPreviewCallback);
+
         try {
             mCameraDevice.startPreview();
         } catch (Throwable e) {
@@ -1513,8 +1581,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private IImage getImageForURI(Uri uri) {
-        IImageList list = ImageManager.instance().allImages(
-                this,
+        IImageList list = ImageManager.allImages(
                 mContentResolver,
                 dataLocation(),
                 ImageManager.INCLUDE_IMAGES,
@@ -1663,17 +1730,6 @@ public class Camera extends Activity implements View.OnClickListener,
         return true;
     }
 
-    SelectedImageGetter mSelectedImageGetter =
-        new SelectedImageGetter() {
-            public IImage getCurrentImage() {
-                return getImageForURI(getCurrentImageUri());
-            }
-            public Uri getCurrentImageUri() {
-                keep();
-                return mCaptureObject.getLastCaptureUri();
-            }
-        };
-
     private int calculatePicturesRemaining() {
         mPicturesRemaining = MenuHelper.calculatePicturesRemaining();
         return mPicturesRemaining;
@@ -1722,5 +1778,36 @@ public class Camera extends Activity implements View.OnClickListener,
             }
         });
         item.setIcon(android.R.drawable.ic_menu_preferences);
+    }
+}
+
+class FocusRectangle extends View {
+    private static final String TAG = "FocusRectangle";
+
+    public FocusRectangle(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    private void setDrawable(int resid) {
+        BitmapDrawable d = (BitmapDrawable) getResources().getDrawable(resid);
+        // We do this because we don't want the bitmap to be scaled.
+        d.setGravity(Gravity.CENTER);
+        setBackgroundDrawable(d);
+    }
+
+    public void showStart() {
+        setDrawable(R.drawable.frame_autofocus_rectangle);
+    }
+
+    public void showSuccess() {
+        setDrawable(R.drawable.frame_focused_rectangle);
+    }
+
+    public void showFail() {
+        setDrawable(R.drawable.frame_nofocus_rectangle);
+    }
+
+    public void clear() {
+        setBackgroundDrawable(null);
     }
 }

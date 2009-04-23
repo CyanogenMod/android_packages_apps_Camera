@@ -34,7 +34,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
-import android.util.Config;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -647,6 +646,13 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mShutterButton.setVisibility(View.GONE);
 
             findViewById(R.id.slideShowContainer).getRootView().requestLayout();
+
+            // The preferences we want to read:
+            //   mUseShuffleOrder
+            //   mSlideShowLoop
+            //   mAnimationIndex
+            //   mSlideShowInterval
+
             mUseShuffleOrder   = mPrefs.getBoolean(
                     "pref_gallery_slideshow_shuffle_key", false);
             mSlideShowLoop     = mPrefs.getBoolean(
@@ -666,12 +672,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 mSlideShowInterval = 3000;
             }
 
-            if (Config.LOGV) {
-                Log.v(TAG, "read prefs...  shuffle: " + mUseShuffleOrder);
-                Log.v(TAG, "read prefs...     loop: " + mSlideShowLoop);
-                Log.v(TAG, "read prefs...  animidx: " + mAnimationIndex);
-                Log.v(TAG, "read prefs... interval: " + mSlideShowInterval);
-            }
 
             if (mUseShuffleOrder) {
                 generateShuffleOrder();
@@ -855,7 +855,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
         int sort = mSortAscending
                 ? ImageManager.SORT_ASCENDING
                 : ImageManager.SORT_DESCENDING;
-        mAllImages = ImageManager.makeImageList(uri, this, sort);
+        mAllImages = ImageManager.makeImageList(uri, getContentResolver(),
+                sort);
 
         uri = uri.buildUpon().query(null).build();
         // TODO smarter/faster here please
@@ -1098,7 +1099,7 @@ class ImageViewTouch extends ImageViewTouchBase {
 
     protected void postTranslateCenter(float dx, float dy) {
         super.postTranslate(dx, dy);
-        center(true, true, false);
+        center(true, true);
     }
 
     static final float PAN_RATE = 20;
@@ -1135,7 +1136,7 @@ class ImageViewTouch extends ImageViewTouchBase {
                         nextImagePos = current - 1;
                     } else {
                         panBy(PAN_RATE, 0);
-                        center(true, false, true);
+                        center(true, false);
                     }
                     return true;
                 }
@@ -1149,18 +1150,18 @@ class ImageViewTouch extends ImageViewTouchBase {
                         nextImagePos = current + 1;
                     } else {
                         panBy(-PAN_RATE, 0);
-                        center(true, false, true);
+                        center(true, false);
                     }
                     return true;
                 }
                 case KeyEvent.KEYCODE_DPAD_UP: {
                     panBy(0, PAN_RATE);
-                    center(true, false, false);
+                    center(false, true);
                     return true;
                 }
                 case KeyEvent.KEYCODE_DPAD_DOWN: {
                     panBy(0, -PAN_RATE);
-                    center(true, false, false);
+                    center(false, true);
                     return true;
                 }
                 case KeyEvent.KEYCODE_DEL:
@@ -1176,7 +1177,7 @@ class ImageViewTouch extends ImageViewTouchBase {
                     mViewImage.setImage(nextImagePos);
                 }
            } else if (nextImagePos != -2) {
-               center(true, true, false);
+               center(true, true);
            }
         }
 

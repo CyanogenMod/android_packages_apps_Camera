@@ -56,6 +56,12 @@
                 android:dialogTitle="@string/pref_camera_effect_dialogtitle" />
 
         <ListPreference
+                android:key="pref_camera_brightness_key"
+                android:defaultValue="@string/pref_camera_brightness_default"
+                android:title="@string/pref_camera_brightness_title"
+                android:dialogTitle="@string/pref_camera_brightness_dialogtitle" />
+
+        <ListPreference
                 android:key="pref_camera_picturesize_key"
                 android:defaultValue="@string/pref_camera_picturesize_default"
                 android:title="@string/pref_camera_picturesize_title"
@@ -68,6 +74,14 @@
                 android:entries="@array/pref_camera_jpegquality_entries"
                 android:entryValues="@array/pref_camera_jpegquality_entryvalues"
                 android:dialogTitle="@string/pref_camera_jpegquality_dialogtitle" />
+
+        <ListPreference
+                android:key="pref_camera_focusmode_key"
+                android:defaultValue="@string/pref_camera_focusmode_default"
+                android:title="@string/pref_camera_focusmode_title"
+                android:entries="@array/pref_camera_focusmode_entries"
+                android:entryValues="@array/pref_camera_focusmode_entryvalues"
+                android:dialogTitle="@string/pref_camera_focusmode_dialogtitle" />
     </PreferenceCategory>
 
 </PreferenceScreen>

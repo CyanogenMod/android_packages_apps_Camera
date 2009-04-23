@@ -30,7 +30,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -105,7 +104,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private boolean mIsVideoCaptureIntent;
     // mLastPictureButton and mThumbController
-    // are non-null only if isVideoCaptureIntent() is true;
+    // are non-null only if mIsVideoCaptureIntent is true.
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
 
@@ -132,8 +131,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private ContentResolver mContentResolver;
 
-    int mCurrentZoomIndex = 0;
-
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
     private boolean mRecordingTimeCountsDown = false;
@@ -141,7 +138,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     View mPostPictureAlert;
-    LocationManager mLocationManager = null;
 
     private Handler mHandler = new MainHandler();
 
@@ -164,7 +160,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
                 default:
                     Log.v(TAG, "Unhandled message: " + msg.what);
-                  break;
+                    break;
             }
         }
     }
@@ -201,13 +197,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        mLocationManager = (LocationManager) getSystemService(
-                Context.LOCATION_SERVICE);
-
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mContentResolver = getContentResolver();
 
-        //setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         requestWindowFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.video_camera);
 
@@ -269,7 +261,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         switch (v.getId()) {
 
             case R.id.gallery:
-                MenuHelper.gotoCameraVideoGallery(this);
+                gotoGallery();
                 break;
 
             case R.id.attach:
@@ -335,7 +327,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void doPlayCurrentVideo() {
-        Log.e(TAG, "Playing current video: " + mCurrentVideoUri);
+        Log.v(TAG, "Playing current video: " + mCurrentVideoUri);
         Intent intent = new Intent(Intent.ACTION_VIEW, mCurrentVideoUri);
         try {
             startActivity(intent);
@@ -522,7 +514,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mSurfaceHolder = null;
     }
 
-    void gotoGallery() {
+    private void gotoGallery() {
         MenuHelper.gotoCameraVideoGallery(this);
     }
 
@@ -674,7 +666,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-
         mMediaRecorder.setMaxDuration(MAX_RECORDING_DURATION_MS);
 
         if (mStorageStatus != STORAGE_STATUS_OK) {
@@ -1121,8 +1112,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void updateLastVideo() {
-        IImageList list = ImageManager.instance().allImages(
-            this,
+        IImageList list = ImageManager.allImages(
             mContentResolver,
             dataLocation(),
             ImageManager.INCLUDE_VIDEOS,

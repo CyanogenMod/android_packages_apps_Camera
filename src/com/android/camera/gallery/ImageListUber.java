@@ -19,7 +19,6 @@ package com.android.camera.gallery;
 import com.android.camera.ImageManager;
 
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,11 +27,11 @@ import java.util.HashMap;
  * A union of different <code>IImageList</code>.
  */
 public class ImageListUber implements IImageList {
-    private static final boolean VERBOSE = false;
+    @SuppressWarnings("unused")
     private static final String TAG = "ImageListUber";
 
-    private IImageList [] mSubList;
-    private int mSort;
+    private final IImageList [] mSubList;
+    private final int mSort;
 
     // This is an array of Longs wherein each Long consists of
     // two components.  The first component indicates the number of
@@ -61,13 +60,6 @@ public class ImageListUber implements IImageList {
             i.checkThumbnails(cb, totalThumbnails);
             totalThumbnails -= count;
         }
-    }
-
-    public void commitChanges() {
-        final IImageList sublist[] = mSubList;
-        final int length = sublist.length;
-        for (int i = 0; i < length; i++)
-            sublist[i].commitChanges();
     }
 
     public void deactivate() {
@@ -121,7 +113,7 @@ public class ImageListUber implements IImageList {
         }
 
         // zero out the mSkipCounts since that's only used for the
-        // duration of the function call
+        // duration of the function call.
         for (int i = 0; i < mSubList.length; i++) {
             mSkipCounts[i] = 0;
         }
@@ -137,7 +129,7 @@ public class ImageListUber implements IImageList {
         for (int i = 0; i < mSkipList.size(); i++) {
             long v = mSkipList.get(i);
 
-            int offset = (int) (v & 0xFFFF);
+            int offset = (int) (v & 0xFFFFFFFF);
             int which  = (int) (v >> 32);
 
             if (skipCount + offset > index) {
@@ -154,8 +146,12 @@ public class ImageListUber implements IImageList {
         // "index" yet so keep computing.  This means running
         // through the list of images and either modifying the
         // last entry or creating a new one.
-        long count = 0;
         while (true) {
+            // We are merging the sublists into this uber list.
+            // We pick the next image by choosing the one with
+            // max/min timestamp from the next image of each sublists.
+            // Then we record this fact in mSkipList (which encodes
+            // sublist number in a run-length encoding fashion).
             long maxTimestamp = mSort == ImageManager.SORT_ASCENDING
                     ? Long.MAX_VALUE
                     : Long.MIN_VALUE;
@@ -180,12 +176,10 @@ public class ImageListUber implements IImageList {
             }
 
             if (which == -1) {
-                if (VERBOSE) Log.v(TAG, "which is -1, returning null");
                 return null;
             }
 
             boolean done = false;
-            count = 1;
             if (mSkipList.size() > 0) {
                 int pos = mSkipList.size() - 1;
                 long oldEntry = mSkipList.get(pos);
@@ -196,10 +190,7 @@ public class ImageListUber implements IImageList {
                 }
             }
             if (!done) {
-                long newEntry = ((long) which << 32) | count;
-                if (VERBOSE) {
-                    Log.v(TAG, "new entry is " + Long.toHexString(newEntry));
-                }
+                long newEntry = ((long) which << 32) | 1;  // initial count = 1
                 mSkipList.add(newEntry);
             }
 
@@ -232,7 +223,7 @@ public class ImageListUber implements IImageList {
         for (int i = 0; i < mSkipList.size(); i++) {
             long v = mSkipList.get(i);
 
-            int offset = (int) (v & 0xFFFF);
+            int offset = (int) (v & 0xFFFFFFFF);
             int which  = (int) (v >> 32);
 
             if (skipCount + offset > index) {

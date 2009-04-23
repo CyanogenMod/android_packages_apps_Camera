@@ -32,40 +32,25 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.util.AttributeSet;
-import android.util.Config;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.Window;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-public class ImageGallery2 extends Activity {
+public class ImageGallery2 extends Activity implements GridViewSpecial.Listener {
     private static final String TAG = "ImageGallery2";
     IImageList mAllImages;
     private int mInclusion;
@@ -81,9 +66,6 @@ public class ImageGallery2 extends Activity {
     private SharedPreferences mPrefs;
     private long mVideoSizeLimit = Long.MAX_VALUE;
 
-    public ImageGallery2() {
-    }
-
     BroadcastReceiver mReceiver = null;
 
     Handler mHandler = new Handler();
@@ -94,9 +76,11 @@ public class ImageGallery2 extends Activity {
     BitmapThread mThumbnailCheckThread;
     GridViewSpecial mGvs;
 
+    // The index of the first picture in GridViewSpecial.
+    private int mFirstVisibleIndex = 0;
+
     @Override
     public void onCreate(Bundle icicle) {
-        if (Config.LOGV) Log.v(TAG, "onCreate");
         super.onCreate(icicle);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -108,12 +92,10 @@ public class ImageGallery2 extends Activity {
 
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
                 R.layout.custom_gallery_title);
-        if (Config.LOGV) {
-            Log.v(TAG, "findView... " + findViewById(R.id.loading_indicator));
-        }
 
         mGvs = (GridViewSpecial) findViewById(R.id.grid);
         mGvs.requestFocus();
+        mGvs.setListener(this);
 
         if (isPickIntent()) {
             mVideoSizeLimit = getIntent().getLongExtra(
@@ -138,7 +120,7 @@ public class ImageGallery2 extends Activity {
     }
 
     public boolean onSlideShowClicked() {
-        IImage img = mSelectedImageGetter.getCurrentImage();
+        IImage img = getCurrentImage();
         if (img == null) {
             img = mAllImages.getImageAt(0);
             if (img == null) {
@@ -161,10 +143,10 @@ public class ImageGallery2 extends Activity {
         return true;
     }
 
-    private Runnable mDeletePhotoRunnable = new Runnable() {
+    private final Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             mGvs.clearCache();
-            IImage currentImage = mSelectedImageGetter.getCurrentImage();
+            IImage currentImage = getCurrentImage();
             if (currentImage != null) {
                 mAllImages.removeImage(currentImage);
             }
@@ -177,26 +159,24 @@ public class ImageGallery2 extends Activity {
         }
     };
 
-    private SelectedImageGetter mSelectedImageGetter =
-            new SelectedImageGetter() {
-                public Uri getCurrentImageUri() {
-                    IImage image = getCurrentImage();
-                    if (image != null) {
-                        return image.fullSizeImageUri();
-                    } else {
-                        return null;
-                    }
-                }
-                public IImage getCurrentImage() {
-                    int currentSelection = mGvs.mCurrentSelection;
-                    if (currentSelection < 0
-                            || currentSelection >= mAllImages.getCount()) {
-                        return null;
-                    } else {
-                        return mAllImages.getImageAt(currentSelection);
-                    }
-                }
-            };
+    private Uri getCurrentImageUri() {
+        IImage image = getCurrentImage();
+        if (image != null) {
+            return image.fullSizeImageUri();
+        } else {
+            return null;
+        }
+    }
+
+    private IImage getCurrentImage() {
+        int currentSelection = mGvs.mCurrentSelection;
+        if (currentSelection < 0
+                || currentSelection >= mAllImages.getCount()) {
+            return null;
+        } else {
+            return mAllImages.getImageAt(currentSelection);
+        }
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -204,124 +184,30 @@ public class ImageGallery2 extends Activity {
         mTargetScroll = mGvs.getScrollY();
     }
 
-    private Runnable mLongPressCallback = new Runnable() {
-        public void run() {
-            mGvs.select(-2, false);
-            mGvs.showContextMenu();
-        }
-    };
-
     boolean canHandleEvent() {
         // Don't process event in pause state.
-        return (!mPausing) && (mGvs.mCurrentSpec != null);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (!canHandleEvent()) return false;
-
-        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            mGvs.select(-2, false);
-
-            // The keyUp doesn't get called when the longpress menu comes up. We
-            // only get here when the user lets go of the center key before the
-            // longpress menu comes up.
-            mHandler.removeCallbacks(mLongPressCallback);
-
-            // open the photo
-            if (mSelectedImageGetter.getCurrentImage() != null) {
-                mGvs.onSelect(mGvs.mCurrentSelection);
-            }
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
+        return (!mPausing) && (mLayoutComplete);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (!canHandleEvent()) return false;
-
-        boolean handled = true;
-        int sel = mGvs.mCurrentSelection;
-        int columns = mGvs.mCurrentSpec.mColumns;
-        int count = mAllImages.getCount();
-        boolean pressed = false;
-        if (mGvs.mShowSelection) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    if (sel != count && (sel % columns < columns - 1)) {
-                        sel += 1;
-                    }
-                    break;
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                    if (sel > 0 && (sel % columns != 0)) {
-                        sel -= 1;
-                    }
-                    break;
-                case KeyEvent.KEYCODE_DPAD_UP:
-                    if ((sel / columns) != 0) {
-                        sel -= columns;
-                    }
-                    break;
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                    if ((sel / columns) != (sel + columns / columns)) {
-                        sel = Math.min(count - 1, sel + columns);
-                    }
-                    break;
-                case KeyEvent.KEYCODE_DPAD_CENTER:
-                    pressed = true;
-                    mHandler.postDelayed(mLongPressCallback,
-                            ViewConfiguration.getLongPressTimeout());
-                    break;
-                case KeyEvent.KEYCODE_DEL:
-                    MenuHelper.deleteImage(this, mDeletePhotoRunnable,
-                            mSelectedImageGetter.getCurrentImage());
-                    break;
-                default:
-                    handled = false;
-                    break;
-            }
-        } else {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                case KeyEvent.KEYCODE_DPAD_UP:
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                    int [] range = new int[2];
-                    GridViewSpecial.ImageBlockManager ibm =
-                            mGvs.mImageBlockManager;
-                    if (ibm != null) {
-                        mGvs.mImageBlockManager.getVisibleRange(range);
-                        int topPos = range[0];
-                        android.graphics.Rect r =
-                                mGvs.getRectForPosition(topPos);
-                        if (r.top < mGvs.getScrollY()) {
-                            topPos += columns;
-                        }
-                        topPos = Math.min(count - 1, topPos);
-                        sel = topPos;
-                    }
-                    break;
-                default:
-                    handled = false;
-                    break;
-            }
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DEL:
+                MenuHelper.deleteImage(
+                        this, mDeletePhotoRunnable, getCurrentImage());
+                return true;
         }
-        if (handled) {
-            mGvs.select(sel, pressed);
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
+        return super.onKeyDown(keyCode, event);
     }
 
-    boolean isPickIntent() {
+    private boolean isPickIntent() {
         String action = getIntent().getAction();
         return (Intent.ACTION_PICK.equals(action)
                 || Intent.ACTION_GET_CONTENT.equals(action));
     }
 
-    void launchCropperOrFinish(IImage img) {
+    private void launchCropperOrFinish(IImage img) {
         Bundle myExtras = getIntent().getExtras();
 
         long size = MenuHelper.getImageFileSize(img);
@@ -361,7 +247,6 @@ public class ImageGallery2 extends Activity {
 
             /* pass through any extras that were passed in */
             cropIntent.putExtras(myExtras);
-            if (Config.LOGV) Log.v(TAG, "startSubActivity " + cropIntent);
             startActivityForResult(cropIntent, CROP_MSG);
         } else {
             Intent result = new Intent(null, img.fullSizeImageUri());
@@ -379,10 +264,6 @@ public class ImageGallery2 extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
-        if (Config.LOGV) {
-            Log.v(TAG, "onActivityResult: " + requestCode
-                    + "; resultCode is " + resultCode + "; data is " + data);
-        }
         switch (requestCode) {
             case MenuHelper.RESULT_COMMON_MENU_CROP: {
                 if (resultCode == RESULT_OK) {
@@ -400,7 +281,6 @@ public class ImageGallery2 extends Activity {
                 break;
             }
             case CROP_MSG: {
-                if (Config.LOGV) Log.v(TAG, "onActivityResult " + data);
                 if (resultCode == RESULT_OK) {
                     setResult(resultCode, data);
                     finish();
@@ -408,9 +288,6 @@ public class ImageGallery2 extends Activity {
                 break;
             }
             case VIEW_MSG: {
-                if (Config.LOGV) {
-                    Log.v(TAG, "got VIEW_MSG with " + data);
-                }
                 IImage img = mAllImages.getImageForUri(data.getData());
                 launchCropperOrFinish(img);
                 break;
@@ -425,7 +302,7 @@ public class ImageGallery2 extends Activity {
 
         BitmapManager.instance().cancelAllDecoding();
         stopCheckingThumbnails();
-        mGvs.onPause();
+        mGvs.stop();
 
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
@@ -455,12 +332,10 @@ public class ImageGallery2 extends Activity {
                     getResources().getString(R.string.wait),
                     true,
                     true);
-            mAllImages = ImageManager.instance().emptyImageList();
+            mAllImages = ImageManager.emptyImageList();
         } else {
             mAllImages = allImages(!unmounted);
-            if (Config.LOGV) {
-                Log.v(TAG, "mAllImages is now " + mAllImages);
-            }
+            mGvs.setImageList(mAllImages);
             mGvs.init(mHandler);
             mGvs.start();
             mGvs.requestLayout();
@@ -489,17 +364,16 @@ public class ImageGallery2 extends Activity {
 
         BitmapManager.instance().allowAllDecoding();
 
-        try {
-            mGvs.setSizeChoice(Integer.parseInt(
-                    mPrefs.getString("pref_gallery_size_key", "1")),
-                    mTargetScroll);
+        mGvs.setSizeChoice(Integer.parseInt(
+                mPrefs.getString("pref_gallery_size_key", "1")),
+                mTargetScroll);
+        mGvs.requestFocus();
 
-            String sortOrder = mPrefs.getString("pref_gallery_sort_key", null);
-            if (sortOrder != null) {
-                mSortAscending = sortOrder.equals("ascending");
-            }
-        } catch (RuntimeException ex) {
+        String sortOrder = mPrefs.getString("pref_gallery_sort_key", null);
+        if (sortOrder != null) {
+            mSortAscending = sortOrder.equals("ascending");
         }
+
         mPausing = false;
 
         // install an intent filter to receive SD card related events.
@@ -514,9 +388,6 @@ public class ImageGallery2 extends Activity {
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (Config.LOGV) {
-                    Log.v(TAG, "onReceiveIntent " + intent.getAction());
-                }
                 String action = intent.getAction();
                 if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                     // SD card available
@@ -524,7 +395,6 @@ public class ImageGallery2 extends Activity {
                     // TODO also listen for the media scanner finished message
                 } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                     // SD card unavailable
-                    if (Config.LOGV) Log.v(TAG, "sd card no longer available");
                     Toast.makeText(ImageGallery2.this,
                             getResources().getString(R.string.wait), 5000);
                     rebake(true, false);
@@ -534,21 +404,15 @@ public class ImageGallery2 extends Activity {
                     rebake(false, true);
                 } else if (action.equals(
                         Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "rebake because of "
-                                + "ACTION_MEDIA_SCANNER_FINISHED");
-                    }
                     rebake(false, false);
                 } else if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-                    if (Config.LOGV) {
-                        Log.v(TAG, "rebake because of ACTION_MEDIA_EJECT");
-                    }
                     rebake(true, false);
                 }
             }
         };
         registerReceiver(mReceiver, intentFilter);
-        rebake(false, ImageManager.isMediaScannerScanning(this));
+        rebake(false, ImageManager.isMediaScannerScanning(
+                getContentResolver()));
     }
 
     private void stopCheckingThumbnails() {
@@ -561,63 +425,23 @@ public class ImageGallery2 extends Activity {
 
     private void checkThumbnails() {
         final long startTime = System.currentTimeMillis();
-        final long t1 = System.currentTimeMillis();
         mThumbnailCheckThread = new BitmapThread(new Runnable() {
             public void run() {
-                android.content.res.Resources resources = getResources();
-                final TextView progressTextView =
+                Resources resources = getResources();
+                TextView progressTextView =
                         (TextView) findViewById(R.id.loading_text);
-                final String progressTextFormatString =
+                String progressTextFormatString =
                         resources.getString(
                         R.string.loading_progress_format_string);
 
-                PowerManager pm =
-                        (PowerManager) getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock mWakeLock =
-                    pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
-                                   "ImageGallery2.checkThumbnails");
+                PowerManager pm = (PowerManager)
+                        getSystemService(Context.POWER_SERVICE);
+                PowerManager.WakeLock mWakeLock = pm.newWakeLock(
+                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
+                        "ImageGallery2.checkThumbnails");
                 mWakeLock.acquire();
-                IImageList.ThumbCheckCallback r =
-                        new IImageList.ThumbCheckCallback() {
-                            boolean mDidSetProgress = false;
-
-                            public boolean checking(final int count,
-                                    final int maxCount) {
-                                if (mStopThumbnailChecking) {
-                                    return false;
-                                }
-
-                                if (!mLayoutComplete) {
-                                    return true;
-                                }
-
-                                if (!mDidSetProgress) {
-                                    mHandler.post(new Runnable() {
-                                        public void run() {
-                                                findViewById(
-                                                R.id.loading_indicator)
-                                                .setVisibility(View.VISIBLE);
-                                        }
-                                    });
-                                    mDidSetProgress = true;
-                                }
-                                mGvs.postInvalidate();
-
-                                if (System.currentTimeMillis()
-                                        - startTime > 1000) {
-                                    mHandler.post(new Runnable() {
-                                        public void run() {
-                                            String s = String.format(
-                                                    progressTextFormatString,
-                                                    maxCount - count);
-                                            progressTextView.setText(s);
-                                        }
-                                    });
-                                }
-
-                                return !mPausing;
-                            }
-                        };
+                IImageList.ThumbCheckCallback r = new MyThumbCheckCallback(
+                        progressTextView, startTime, progressTextFormatString);
                 IImageList imageList = allImages(true);
                 imageList.checkThumbnails(r, imageList.getCount());
                 mWakeLock.release();
@@ -628,11 +452,6 @@ public class ImageGallery2 extends Activity {
                                 View.GONE);
                     }
                 });
-                long t2 = System.currentTimeMillis();
-                if (Config.LOGV) {
-                    Log.v(TAG, "check thumbnails thread finishing; took "
-                            + (t2 - t1));
-                }
             }
         });
 
@@ -647,34 +466,40 @@ public class ImageGallery2 extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        MenuItem item;
+    public boolean onCreateOptionsMenu(Menu menu) {
         if (isPickIntent()) {
-            MenuHelper.addCapturePictureMenuItems(menu, this);
+            String type = getIntent().resolveType(this);
+            if (type != null) {
+                if (isImageType(type)) {
+                    MenuHelper.addCapturePictureMenuItems(menu, this);
+                }
+                else if (isVideoType(type)) {
+                    MenuHelper.addCaptureVideoMenuItems(menu, this);
+                }
+            }
         } else {
             MenuHelper.addCaptureMenuItems(menu, this);
             if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
                 mSlideShowItem = addSlideShowMenu(menu, 5);
             }
+
+            MenuItem item = menu.add(0, 0, 1000, R.string.camerasettings);
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    Intent preferences = new Intent();
+                    preferences.setClass(ImageGallery2.this, GallerySettings.class);
+                    startActivity(preferences);
+                    return true;
+                }
+            });
+            item.setAlphabeticShortcut('p');
+            item.setIcon(android.R.drawable.ic_menu_preferences);
         }
-
-        item = menu.add(0, 0, 1000, R.string.camerasettings);
-        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent preferences = new Intent();
-                preferences.setClass(ImageGallery2.this, GallerySettings.class);
-                startActivity(preferences);
-                return true;
-            }
-        });
-        item.setAlphabeticShortcut('p');
-        item.setIcon(android.R.drawable.ic_menu_preferences);
-
         return true;
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(android.view.Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
             boolean videoSelected = isVideoSelected();
             // TODO: Only enable slide show if there is at least one image in
@@ -688,8 +513,18 @@ public class ImageGallery2 extends Activity {
     }
 
     private boolean isVideoSelected() {
-        IImage image = mSelectedImageGetter.getCurrentImage();
+        IImage image = getCurrentImage();
         return (image != null) && ImageManager.isVideo(image);
+    }
+
+    private boolean isImageType(String type) {
+        return type.equals("vnd.android.cursor.dir/image")
+                || type.equals("image/*");
+    }
+
+    private boolean isVideoType(String type) {
+        return type.equals("vnd.android.cursor.dir/video")
+                || type.equals("video/*");
     }
 
     private synchronized IImageList allImages(boolean assumeMounted) {
@@ -702,13 +537,9 @@ public class ImageGallery2 extends Activity {
             Intent intent = getIntent();
             if (intent != null) {
                 String type = intent.resolveType(this);
-                if (Config.LOGV) {
-                    Log.v(TAG, "allImages... type is " + type);
-                }
                 TextView leftText = (TextView) findViewById(R.id.left_text);
                 if (type != null) {
-                    if (type.equals("vnd.android.cursor.dir/image")
-                            || type.equals("image/*")) {
+                    if (isImageType(type)) {
                         mInclusion = ImageManager.INCLUDE_IMAGES;
                         if (isPickIntent()) {
                             leftText.setText(
@@ -717,8 +548,7 @@ public class ImageGallery2 extends Activity {
                             leftText.setText(R.string.photos_gallery_title);
                         }
                     }
-                    if (type.equals("vnd.android.cursor.dir/video")
-                            || type.equals("video/*")) {
+                    if (isVideoType(type)) {
                         mInclusion = ImageManager.INCLUDE_VIDEOS;
                         if (isPickIntent()) {
                             leftText.setText(
@@ -747,17 +577,11 @@ public class ImageGallery2 extends Activity {
                     mInclusion = ImageManager.INCLUDE_DRM_IMAGES;
                 }
             }
-            if (Config.LOGV) {
-                Log.v(TAG, "computing images... mSortAscending is "
-                        + mSortAscending + "; assumeMounted is "
-                        + assumeMounted);
-            }
             Uri uri = getIntent().getData();
             if (!assumeMounted) {
-                mAllImages = ImageManager.instance().emptyImageList();
+                mAllImages = ImageManager.emptyImageList();
             } else {
-                mAllImages = ImageManager.instance().allImages(
-                        ImageGallery2.this,
+                mAllImages = ImageManager.allImages(
                         getContentResolver(),
                         ImageManager.DataLocation.NONE,
                         mInclusion,
@@ -772,21 +596,109 @@ public class ImageGallery2 extends Activity {
         return mAllImages;
     }
 
+    public void onSelect(int index) {
+        if (index >= 0 && index < mAllImages.getCount()) {
+            IImage img = mAllImages.getImageAt(index);
+            if (img == null) {
+                return;
+            }
+
+            if (isPickIntent()) {
+                launchCropperOrFinish(img);
+            } else {
+                Uri targetUri = img.fullSizeImageUri();
+                Uri thisUri = getIntent().getData();
+                if (thisUri != null) {
+                    String bucket = thisUri.getQueryParameter("bucketId");
+                    if (bucket != null) {
+                        targetUri = targetUri.buildUpon()
+                                .appendQueryParameter("bucketId", bucket)
+                                .build();
+                    }
+                }
+                Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
+
+                if (img instanceof VideoObject) {
+                    intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
+                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }
+
+                try {
+                    startActivity(intent);
+                } catch (Exception ex) {
+                    // sdcard removal??
+                }
+            }
+        }
+    }
+
+    private final class MyThumbCheckCallback implements IImageList.ThumbCheckCallback {
+        private final TextView progressTextView;
+        private final long startTime;
+        private final String progressTextFormatString;
+        boolean mDidSetProgress = false;
+
+        private MyThumbCheckCallback(TextView progressTextView, long startTime,
+                String progressTextFormatString) {
+            this.progressTextView = progressTextView;
+            this.startTime = startTime;
+            this.progressTextFormatString = progressTextFormatString;
+        }
+
+        public boolean checking(final int count,
+                final int maxCount) {
+            if (mStopThumbnailChecking) {
+                return false;
+            }
+
+            if (!mLayoutComplete) {
+                return true;
+            }
+
+            if (!mDidSetProgress) {
+                mHandler.post(new Runnable() {
+                        public void run() {
+                            findViewById(
+                            R.id.loading_indicator)
+                            .setVisibility(View.VISIBLE);
+                        }
+                });
+                mDidSetProgress = true;
+            }
+            mGvs.postInvalidate();
+
+            // If there is a new image done and it has been
+            // one second, update the progress text.
+            if (System.currentTimeMillis()
+                    - startTime > 1000) {
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        String s = String.format(
+                                progressTextFormatString,
+                                maxCount - count);
+                        progressTextView.setText(s);
+                    }
+                });
+            }
+
+            return !mPausing;
+        }
+    }
+
     private class CreateContextMenuListener implements
             View.OnCreateContextMenuListener {
         public void onCreateContextMenu(ContextMenu menu, View v,
                 ContextMenu.ContextMenuInfo menuInfo) {
-            if (mSelectedImageGetter.getCurrentImage() == null) {
+            if (getCurrentImage() == null) {
                 return;
             }
 
-            boolean isImage = ImageManager.isImage(
-                    mSelectedImageGetter.getCurrentImage());
+            boolean isImage = ImageManager.isImage(getCurrentImage());
             if (isImage) {
                 menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
-                                mGvs.onSelect(mGvs.mCurrentSelection);
+                                onSelect(mGvs.mCurrentSelection);
                                 return true;
                             }
                         });
@@ -806,9 +718,7 @@ public class ImageGallery2 extends Activity {
                         mDeletePhotoRunnable,
                         new MenuHelper.MenuInvoker() {
                             public void run(MenuHelper.MenuCallback cb) {
-                                cb.run(mSelectedImageGetter
-                                        .getCurrentImageUri(),
-                                        mSelectedImageGetter.getCurrentImage());
+                                cb.run(getCurrentImageUri(), getCurrentImage());
 
                                 mGvs.clearCache();
                                 mGvs.invalidate();
@@ -821,8 +731,7 @@ public class ImageGallery2 extends Activity {
                             }
                         });
                 if (r != null) {
-                    r.gettingReadyToOpen(menu,
-                            mSelectedImageGetter.getCurrentImage());
+                    r.gettingReadyToOpen(menu, getCurrentImage());
                 }
 
                 if (isImage) {
@@ -831,1230 +740,20 @@ public class ImageGallery2 extends Activity {
             }
         }
     }
+
+    public void onLayout() {
+        mLayoutComplete = true;
+        if (mSortAscending && mTargetScroll == 0) {
+            mGvs.scrollToImage(mAllImages.getCount() - 1);
+        } else {
+            mGvs.scrollToImage(mFirstVisibleIndex);
+        }
+    }
+
+    public void onScroll(int index) {
+        mFirstVisibleIndex = index;
+    }
+
 }
 
 
-class GridViewSpecial extends View {
-    private static final String TAG = "GridViewSpecial";
-    ImageGallery2 mGallery;
-    private Paint   mGridViewPaint = new Paint();
-
-    ImageBlockManager mImageBlockManager;
-    private Handler mHandler;
-
-    LayoutSpec mCurrentSpec;
-    boolean mShowSelection = false;
-    int mCurrentSelection = -1;
-    private boolean mCurrentSelectionPressed;
-
-    private boolean mDirectionBiasDown = true;
-    private static final boolean DUMP = false;
-
-    long mVideoSizeLimit;
-
-    class LayoutSpec {
-        LayoutSpec(int cols, int w, int h, int leftEdgePadding,
-                   int rightEdgePadding, int intercellSpacing) {
-            mColumns = cols;
-            mCellWidth = w;
-            mCellHeight = h;
-            mLeftEdgePadding = leftEdgePadding;
-            mRightEdgePadding = rightEdgePadding;
-            mCellSpacing = intercellSpacing;
-        }
-        int mColumns;
-        int mCellWidth, mCellHeight;
-        int mLeftEdgePadding, mRightEdgePadding;
-        int mCellSpacing;
-    }
-
-    private LayoutSpec [] mCellSizeChoices = new LayoutSpec[] {
-            new LayoutSpec(0, 67, 67, 14, 14, 8),
-            new LayoutSpec(0, 92, 92, 14, 14, 8),
-    };
-    private int mSizeChoice = 1;
-
-    // Use a number like 100 or 200 here to allow the user to
-    // overshoot the start (top) or end (bottom) of the gallery.
-    // After overshooting the gallery will animate back to the
-    // appropriate location.
-    private int mMaxOvershoot = 0; // 100;
-    private int mMaxScrollY;
-    private int mMinScrollY;
-
-    private boolean mFling = true;
-    private Scroller mScroller = null;
-
-    private GestureDetector mGestureDetector;
-
-    public void dump() {
-        if (Config.LOGV){
-            Log.v(TAG, "mSizeChoice is " + mCellSizeChoices[mSizeChoice]);
-            Log.v(TAG, "mCurrentSpec.width / mCellHeight are "
-                    + mCurrentSpec.mCellWidth + " / "
-                    + mCurrentSpec.mCellHeight);
-        }
-        mImageBlockManager.dump();
-    }
-
-    private void init(Context context) {
-        mGridViewPaint.setColor(0xFF000000);
-        mGallery = (ImageGallery2) context;
-
-        setVerticalScrollBarEnabled(true);
-        initializeScrollbars(context.obtainStyledAttributes(
-                android.R.styleable.View));
-
-        mGestureDetector = new GestureDetector(context,
-                new SimpleOnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent e) {
-                if (mScroller != null && !mScroller.isFinished()) {
-                    mScroller.forceFinished(true);
-                    return false;
-                }
-
-                int pos = computeSelectedIndex(e);
-                if (pos >= 0 && pos < mGallery.mAllImages.getCount()) {
-                    select(pos, true);
-                } else {
-                    select(-1, false);
-                }
-                if (mImageBlockManager != null) {
-                    mImageBlockManager.repaintSelection(mCurrentSelection);
-                }
-                invalidate();
-                return true;
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2,
-                    float velocityX, float velocityY) {
-                final float maxVelocity = 2500;
-                if (velocityY > maxVelocity) {
-                    velocityY = maxVelocity;
-                } else if (velocityY < -maxVelocity) {
-                    velocityY = -maxVelocity;
-                }
-
-                select(-1, false);
-                if (mFling) {
-                    mScroller = new Scroller(getContext());
-                    mScroller.fling(0, mScrollY, 0, -(int) velocityY, 0, 0, 0,
-                            mMaxScrollY);
-                    computeScroll();
-                }
-                return true;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-                performLongClick();
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                    float distanceX, float distanceY) {
-                select(-1, false);
-                scrollBy(0, (int) distanceY);
-                invalidate();
-                return true;
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                select(mCurrentSelection, false);
-                int index = computeSelectedIndex(e);
-                if (index >= 0 && index < mGallery.mAllImages.getCount()) {
-                    onSelect(index);
-                    return true;
-                }
-                return false;
-            }
-        });
-        // mGestureDetector.setIsLongpressEnabled(false);
-    }
-
-    public GridViewSpecial(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context);
-    }
-
-    public GridViewSpecial(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
-    public GridViewSpecial(Context context) {
-        super(context);
-        init(context);
-    }
-
-    @Override
-    protected int computeVerticalScrollRange() {
-        return mMaxScrollY + getHeight();
-    }
-
-    public void setSizeChoice(int choice, int scrollY) {
-        mSizeChoice = choice;
-        clearCache();
-        scrollTo(0, scrollY);
-        requestLayout();
-        invalidate();
-    }
-
-    /**
-     *
-     * @param newSel -2 means use old selection, -1 means remove selection
-     * @param newPressed
-     */
-    public void select(int newSel, boolean newPressed) {
-        if (newSel == -2) {
-            newSel = mCurrentSelection;
-        }
-        int oldSel = mCurrentSelection;
-        if ((oldSel == newSel) && (mCurrentSelectionPressed == newPressed)) {
-            return;
-        }
-
-        mShowSelection = (newSel != -1);
-        mCurrentSelection = newSel;
-        mCurrentSelectionPressed = newPressed;
-        if (mImageBlockManager != null) {
-            mImageBlockManager.repaintSelection(oldSel);
-            mImageBlockManager.repaintSelection(newSel);
-        }
-
-        if (newSel != -1) {
-            ensureVisible(newSel);
-        }
-    }
-
-    private void ensureVisible(int pos) {
-        android.graphics.Rect r = getRectForPosition(pos);
-        int top = getScrollY();
-        int bot = top + getHeight();
-
-        if (r.bottom > bot) {
-            mScroller = new Scroller(getContext());
-            mScroller.startScroll(mScrollX, mScrollY, 0,
-                    r.bottom - getHeight() - mScrollY, 200);
-            computeScroll();
-        } else if (r.top < top) {
-            mScroller = new Scroller(getContext());
-            mScroller.startScroll(mScrollX, mScrollY, 0, r.top - mScrollY, 200);
-            computeScroll();
-        }
-        invalidate();
-    }
-
-    public void start() {
-        if (mGallery.mLayoutComplete) {
-            if (mImageBlockManager == null) {
-                mImageBlockManager = new ImageBlockManager();
-                mImageBlockManager.moveDataWindow(true, true);
-            }
-        }
-    }
-
-    public void onPause() {
-        mScroller = null;
-        if (mImageBlockManager != null) {
-            mImageBlockManager.onPause();
-            mImageBlockManager = null;
-        }
-    }
-
-    public void clearCache() {
-        if (mImageBlockManager != null) {
-            mImageBlockManager.onPause();
-            mImageBlockManager = null;
-        }
-    }
-
-
-    @Override
-    public void onLayout(boolean changed, int left, int top,
-                         int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (mGallery.isFinishing() || mGallery.mPausing) {
-            return;
-        }
-        clearCache();
-        mCurrentSpec = mCellSizeChoices[mSizeChoice];
-        int oldColumnCount = mCurrentSpec.mColumns;
-
-        int width = right - left;
-        mCurrentSpec.mColumns = 1;
-        width -= mCurrentSpec.mCellWidth;
-        mCurrentSpec.mColumns += width
-                / (mCurrentSpec.mCellWidth + mCurrentSpec.mCellSpacing);
-
-        mCurrentSpec.mLeftEdgePadding = ((right - left)
-                - ((mCurrentSpec.mColumns - 1) * mCurrentSpec.mCellSpacing)
-                - (mCurrentSpec.mColumns * mCurrentSpec.mCellWidth)) / 2;
-        mCurrentSpec.mRightEdgePadding = mCurrentSpec.mLeftEdgePadding;
-
-        int rows = (mGallery.mAllImages.getCount() + mCurrentSpec.mColumns - 1)
-                / mCurrentSpec.mColumns;
-        mMaxScrollY = mCurrentSpec.mCellSpacing
-                + (rows
-                * (mCurrentSpec.mCellSpacing + mCurrentSpec.mCellHeight))
-                - (bottom - top) + mMaxOvershoot;
-        mMinScrollY = 0 - mMaxOvershoot;
-
-        mGallery.mLayoutComplete = true;
-
-        start();
-
-        if (mGallery.mSortAscending && mGallery.mTargetScroll == 0) {
-            scrollTo(0, mMaxScrollY - mMaxOvershoot);
-        } else {
-            if (oldColumnCount != 0) {
-                int y = mGallery.mTargetScroll *
-                        oldColumnCount / mCurrentSpec.mColumns;
-                Log.v(TAG, "target was " + mGallery.mTargetScroll
-                        + " now " + y);
-                scrollTo(0, y);
-            }
-        }
-    }
-
-    Bitmap scaleTo(int width, int height, Bitmap b) {
-        Matrix m = new Matrix();
-        m.setScale(width / 64F, height / 64F);
-        Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(),
-                m, false);
-        if (b2 != b) {
-            b.recycle();
-        }
-        return b2;
-    }
-
-    class ImageBlockManager {
-        private ImageLoader mLoader;
-        private int mBlockCacheFirstBlockNumber = 0;
-
-        // mBlockCache is an array with a starting point which is not
-        // necessarily zero.  The first element of the array is indicated by
-        // mBlockCacheStartOffset.
-        private int mBlockCacheStartOffset = 0;
-        private ImageBlock [] mBlockCache;
-
-        private static final int sRowsPerPage    = 6;   // should compute this
-
-        private static final int sPagesPreCache  = 2;
-        private static final int sPagesPostCache = 2;
-
-        private int mWorkCounter = 0;
-        private boolean mDone = false;
-
-        private Thread mWorkerThread;
-        private Bitmap mMissingImageThumbnailBitmap;
-        private Bitmap mMissingVideoThumbnailBitmap;
-
-        private Drawable mVideoOverlay;
-        private Drawable mVideoMmsErrorOverlay;
-
-        public void dump() {
-            synchronized (ImageBlockManager.this) {
-                StringBuilder line1 = new StringBuilder();
-                StringBuilder line2 = new StringBuilder();
-                if (Config.LOGV) {
-                    Log.v(TAG, ">>> mBlockCacheFirstBlockNumber: "
-                            + mBlockCacheFirstBlockNumber + " "
-                            + mBlockCacheStartOffset);
-                }
-                for (int i = 0; i < mBlockCache.length; i++) {
-                    int index = (mBlockCacheStartOffset + i)
-                            % mBlockCache.length;
-                    ImageBlock block = mBlockCache[index];
-                    block.dump(line1, line2);
-                }
-                if (Config.LOGV){
-                    Log.v(TAG, line1.toString());
-                    Log.v(TAG, line2.toString());
-                }
-            }
-        }
-
-        ImageBlockManager() {
-            mLoader = new ImageLoader(mHandler, 1);
-
-            mBlockCache = new ImageBlock[sRowsPerPage
-                    * (sPagesPreCache + sPagesPostCache + 1)];
-            for (int i = 0; i < mBlockCache.length; i++) {
-                mBlockCache[i] = new ImageBlock();
-            }
-
-            mWorkerThread = new Thread(new Runnable() {
-                public void run() {
-                    while (true) {
-                        int workCounter;
-                        synchronized (ImageBlockManager.this) {
-                            workCounter = mWorkCounter;
-                        }
-                        if (mDone) {
-                            if (Config.LOGV) {
-                                Log.v(TAG, "stopping the loader here "
-                                        + Thread.currentThread().getName());
-                            }
-                            if (mLoader != null) {
-                                mLoader.stop();
-                            }
-                            if (mBlockCache != null) {
-                                for (int i = 0; i < mBlockCache.length; i++) {
-                                    ImageBlock block = mBlockCache[i];
-                                    if (block != null) {
-                                        block.recycleBitmaps();
-                                        mBlockCache[i] = null;
-                                    }
-                                }
-                            }
-                            mBlockCache = null;
-                            mBlockCacheStartOffset = 0;
-                            mBlockCacheFirstBlockNumber = 0;
-
-                            break;
-                        }
-
-                        loadNext();
-
-                        synchronized (ImageBlockManager.this) {
-                            if ((workCounter == mWorkCounter) && (!mDone)) {
-                                try {
-                                    ImageBlockManager.this.wait();
-                                } catch (InterruptedException ex) {
-                                }
-                            }
-                        }
-                    } // while
-                } // run
-            });
-            BitmapManager.instance().allowThreadDecoding(mWorkerThread);
-            mWorkerThread.setName("image-block-manager");
-            mWorkerThread.start();
-        }
-
-        // Create this bitmap lazily, and only once for all the ImageBlocks to
-        // use
-        public Bitmap getErrorBitmap(IImage image) {
-            if (ImageManager.isImage(image)) {
-                if (mMissingImageThumbnailBitmap == null) {
-                    mMissingImageThumbnailBitmap =
-                            BitmapFactory.decodeResource(
-                            GridViewSpecial.this.getResources(),
-                            R.drawable.ic_missing_thumbnail_picture);
-                }
-                return mMissingImageThumbnailBitmap;
-            } else {
-                if (mMissingVideoThumbnailBitmap == null) {
-                    mMissingVideoThumbnailBitmap =
-                            BitmapFactory.decodeResource(
-                            GridViewSpecial.this.getResources(),
-                            R.drawable.ic_missing_thumbnail_video);
-                }
-                return mMissingVideoThumbnailBitmap;
-            }
-        }
-
-        private ImageBlock getBlockForPos(int pos) {
-            synchronized (ImageBlockManager.this) {
-                int blockNumber = pos / mCurrentSpec.mColumns;
-                int delta = blockNumber - mBlockCacheFirstBlockNumber;
-                if (delta >= 0 && delta < mBlockCache.length) {
-                    int index = (mBlockCacheStartOffset + delta)
-                            % mBlockCache.length;
-                    ImageBlock b = mBlockCache[index];
-                    return b;
-                }
-            }
-            return null;
-        }
-
-        private void repaintSelection(int pos) {
-            synchronized (ImageBlockManager.this) {
-                ImageBlock b = getBlockForPos(pos);
-                if (b != null) {
-                    b.repaintSelection();
-                }
-            }
-        }
-
-        private void onPause() {
-            synchronized (ImageBlockManager.this) {
-                mDone = true;
-                ImageBlockManager.this.notify();
-            }
-            if (mWorkerThread != null) {
-                try {
-                    BitmapManager.instance().cancelThreadDecoding(mWorkerThread);
-                    mWorkerThread.join();
-                    mWorkerThread = null;
-                } catch (InterruptedException ex) {
-                    //
-                }
-            }
-            Log.v(TAG, "/ImageBlockManager.onPause");
-        }
-
-        void getVisibleRange(int [] range) {
-            // try to work around a possible bug in the VM wherein this appears
-            // to be null
-            try {
-                synchronized (ImageBlockManager.this) {
-                    int blockLength = mBlockCache.length;
-                    boolean lookingForStart = true;
-                    ImageBlock prevBlock = null;
-                    for (int i = 0; i < blockLength; i++) {
-                        int index = (mBlockCacheStartOffset + i) % blockLength;
-                        ImageBlock block = mBlockCache[index];
-                        if (lookingForStart) {
-                            if (block.mIsVisible) {
-                                range[0] = block.mBlockNumber
-                                        * mCurrentSpec.mColumns;
-                                lookingForStart = false;
-                            }
-                        } else {
-                            if (!block.mIsVisible || i == blockLength - 1) {
-                                range[1] = (prevBlock.mBlockNumber
-                                        * mCurrentSpec.mColumns)
-                                        + mCurrentSpec.mColumns - 1;
-                                break;
-                            }
-                        }
-                        prevBlock = block;
-                    }
-                }
-            } catch (NullPointerException ex) {
-                Log.e(TAG, "this is somewhat null, what up?");
-                range[0] = range[1] = 0;
-            }
-        }
-
-        private void loadNext() {
-            final int blockHeight = (mCurrentSpec.mCellSpacing
-                    + mCurrentSpec.mCellHeight);
-
-            final int firstVisBlock =
-                    Math.max(0, (mScrollY - mCurrentSpec.mCellSpacing)
-                    / blockHeight);
-            final int lastVisBlock =
-                    (mScrollY - mCurrentSpec.mCellSpacing + getHeight())
-                    / blockHeight;
-
-            synchronized (ImageBlockManager.this) {
-                ImageBlock [] blocks = mBlockCache;
-                int numBlocks = blocks.length;
-                if (mDirectionBiasDown) {
-                    int first = (mBlockCacheStartOffset
-                            + (firstVisBlock - mBlockCacheFirstBlockNumber))
-                            % blocks.length;
-                    for (int i = 0; i < numBlocks; i++) {
-                        int j = first + i;
-                        if (j >= numBlocks) {
-                            j -= numBlocks;
-                        }
-                        ImageBlock b = blocks[j];
-                        if (b.startLoading() > 0) {
-                            break;
-                        }
-                    }
-                } else {
-                    int first = (mBlockCacheStartOffset
-                            + (lastVisBlock - mBlockCacheFirstBlockNumber))
-                            % blocks.length;
-                    for (int i = 0; i < numBlocks; i++) {
-                        int j = first - i;
-                        if (j < 0) {
-                            j += numBlocks;
-                        }
-                        ImageBlock b = blocks[j];
-                        if (b.startLoading() > 0) {
-                            break;
-                        }
-                    }
-                }
-                if (DUMP) {
-                    this.dump();
-                }
-            }
-        }
-
-        private void moveDataWindow(boolean directionBiasDown,
-                boolean forceRefresh) {
-            final int blockHeight = (mCurrentSpec.mCellSpacing
-                    + mCurrentSpec.mCellHeight);
-
-            final int firstVisBlock = (mScrollY - mCurrentSpec.mCellSpacing)
-                    / blockHeight;
-            final int lastVisBlock =
-                    (mScrollY - mCurrentSpec.mCellSpacing + getHeight())
-                    / blockHeight;
-
-            final int preCache = sPagesPreCache;
-            final int startBlock = Math.max(0,
-                    firstVisBlock - (preCache * sRowsPerPage));
-
-            synchronized (ImageBlockManager.this) {
-                boolean any = false;
-                ImageBlock [] blocks = mBlockCache;
-                int numBlocks = blocks.length;
-
-                int delta = startBlock - mBlockCacheFirstBlockNumber;
-
-                mBlockCacheFirstBlockNumber = startBlock;
-                if (Math.abs(delta) > numBlocks || forceRefresh) {
-                    for (int i = 0; i < numBlocks; i++) {
-                        int blockNum = startBlock + i;
-                        blocks[i].setStart(blockNum);
-                        any = true;
-                    }
-                    mBlockCacheStartOffset = 0;
-                } else if (delta > 0) {
-                    mBlockCacheStartOffset += delta;
-                    if (mBlockCacheStartOffset >= numBlocks) {
-                        mBlockCacheStartOffset -= numBlocks;
-                    }
-
-                    for (int i = delta; i > 0; i--) {
-                        int index = (mBlockCacheStartOffset + numBlocks - i)
-                                % numBlocks;
-                        int blockNum = mBlockCacheFirstBlockNumber
-                                + numBlocks - i;
-                        blocks[index].setStart(blockNum);
-                        any = true;
-                    }
-                } else if (delta < 0) {
-                    mBlockCacheStartOffset += delta;
-                    if (mBlockCacheStartOffset < 0) {
-                        mBlockCacheStartOffset += numBlocks;
-                    }
-
-                    for (int i = 0; i < -delta; i++) {
-                        int index = (mBlockCacheStartOffset + i) % numBlocks;
-                        int blockNum = mBlockCacheFirstBlockNumber + i;
-                        blocks[index].setStart(blockNum);
-                        any = true;
-                    }
-                }
-
-                for (int i = 0; i < numBlocks; i++) {
-                    int index = (mBlockCacheStartOffset + i) % numBlocks;
-                    ImageBlock block = blocks[index];
-                    int blockNum = block.mBlockNumber;
-                    boolean isVis = blockNum >= firstVisBlock
-                            && blockNum <= lastVisBlock;
-                    block.setVisibility(isVis);
-                }
-
-                if (DUMP) {
-                    mImageBlockManager.dump();
-                }
-
-                if (any) {
-                    ImageBlockManager.this.notify();
-                    mWorkCounter += 1;
-                }
-            }
-            if (DUMP) {
-                dump();
-            }
-        }
-
-        void doDraw(Canvas canvas) {
-            synchronized (ImageBlockManager.this) {
-                ImageBlockManager.ImageBlock [] blocks = mBlockCache;
-                int blockCount = 0;
-
-                if (blocks[0] == null) {
-                    return;
-                }
-
-                final int thisHeight = getHeight();
-                final int thisWidth  = getWidth();
-                final int height = blocks[0].mBitmap.getHeight();
-                final int scrollPos = mScrollY;
-
-                int currentBlock = (scrollPos < 0)
-                        ? ((scrollPos - height + 1) / height)
-                        : (scrollPos / height);
-
-                while (true) {
-                    final int yPos = currentBlock * height;
-                    if (yPos >= scrollPos + thisHeight) {
-                        break;
-                    }
-
-                    if (currentBlock < 0) {
-                        canvas.drawRect(0, yPos, thisWidth, 0, mGridViewPaint);
-                        currentBlock += 1;
-                        continue;
-                    }
-                    int effectiveOffset =
-                            (mBlockCacheStartOffset
-                            + (currentBlock++ - mBlockCacheFirstBlockNumber))
-                            % blocks.length;
-                    if (effectiveOffset < 0
-                            || effectiveOffset >= blocks.length) {
-                        break;
-                    }
-
-                    ImageBlock block = blocks[effectiveOffset];
-                    if (block == null) {
-                        break;
-                    }
-                    synchronized (block) {
-                        Bitmap b = block.mBitmap;
-                        if (b == null) {
-                            break;
-                        }
-                        canvas.drawBitmap(b, 0, yPos, mGridViewPaint);
-                        blockCount += 1;
-                    }
-                }
-            }
-        }
-
-        int blockHeight() {
-            return mCurrentSpec.mCellSpacing + mCurrentSpec.mCellHeight;
-        }
-
-        private class ImageBlock {
-            Drawable mCellOutline;
-            Bitmap mBitmap = Bitmap.createBitmap(getWidth(), blockHeight(),
-                    Bitmap.Config.RGB_565);
-            Canvas mCanvas = new Canvas(mBitmap);
-            Paint mPaint = new Paint();
-
-            int     mBlockNumber;
-
-            // columns which have been requested to the loader
-            int     mRequestedMask;
-
-            // columns which have been completed from the loader
-            int     mCompletedMask;
-            boolean mIsVisible;
-
-            public void dump(StringBuilder line1, StringBuilder line2) {
-                synchronized (ImageBlock.this) {
-                    line2.append(mCompletedMask != 0xF ? 'L' : '_');
-                    line1.append(mIsVisible ? 'V' : ' ');
-                }
-            }
-
-            ImageBlock() {
-                mPaint.setTextSize(14F);
-                mPaint.setStyle(Paint.Style.FILL);
-
-                mBlockNumber = -1;
-                mCellOutline = GridViewSpecial.this.getResources()
-                        .getDrawable(android.R.drawable.gallery_thumb);
-            }
-
-            private void recycleBitmaps() {
-                synchronized (ImageBlock.this) {
-                    mBitmap.recycle();
-                    mBitmap = null;
-                }
-            }
-
-            private void cancelExistingRequests() {
-                synchronized (ImageBlock.this) {
-                    for (int i = 0; i < mCurrentSpec.mColumns; i++) {
-                        int mask = (1 << i);
-                        if ((mRequestedMask & mask) != 0) {
-                            int pos =
-                                    (mBlockNumber * mCurrentSpec.mColumns) + i;
-                            if (mLoader.cancel(
-                                    mGallery.mAllImages.getImageAt(pos))) {
-                                mRequestedMask &= ~mask;
-                            }
-                        }
-                    }
-                }
-            }
-
-            private void setStart(final int blockNumber) {
-                synchronized (ImageBlock.this) {
-                    if (blockNumber == mBlockNumber) {
-                        return;
-                    }
-
-                    cancelExistingRequests();
-
-                    mBlockNumber = blockNumber;
-                    mRequestedMask = 0;
-                    mCompletedMask = 0;
-                    mCanvas.drawColor(0xFF000000);
-                    mPaint.setColor(0xFFDDDDDD);
-                    int imageNumber = blockNumber * mCurrentSpec.mColumns;
-                    int lastImageNumber = mGallery.mAllImages.getCount() - 1;
-
-                    int spacing = mCurrentSpec.mCellSpacing;
-                    int leftSpacing = mCurrentSpec.mLeftEdgePadding;
-
-                    final int yPos = spacing;
-
-                    for (int col = 0; col < mCurrentSpec.mColumns; col++) {
-                        if (imageNumber++ >= lastImageNumber) {
-                            break;
-                        }
-                        final int xPos = leftSpacing
-                                + (col * (mCurrentSpec.mCellWidth + spacing));
-                        mCanvas.drawRect(xPos, yPos,
-                                xPos + mCurrentSpec.mCellWidth,
-                                yPos + mCurrentSpec.mCellHeight, mPaint);
-                        paintSel(0, xPos, yPos);
-                    }
-                }
-            }
-
-            private boolean setVisibility(boolean isVis) {
-                synchronized (ImageBlock.this) {
-                    boolean retval = mIsVisible != isVis;
-                    mIsVisible = isVis;
-                    return retval;
-                }
-            }
-
-            private int startLoading() {
-                synchronized (ImageBlock.this) {
-                    final int startRow = mBlockNumber;
-                    int count = mGallery.mAllImages.getCount();
-
-                    if (startRow == -1) {
-                        return 0;
-                    }
-
-                    if ((startRow * mCurrentSpec.mColumns) >= count) {
-                        return 0;
-                    }
-
-                    int retVal = 0;
-                    int base = (mBlockNumber * mCurrentSpec.mColumns);
-                    for (int col = 0; col < mCurrentSpec.mColumns; col++) {
-                        if ((mCompletedMask & (1 << col)) != 0) {
-                            continue;
-                        }
-
-                        int spacing = mCurrentSpec.mCellSpacing;
-                        int leftSpacing = mCurrentSpec.mLeftEdgePadding;
-                        final int yPos = spacing;
-                        final int xPos = leftSpacing
-                                + (col * (mCurrentSpec.mCellWidth + spacing));
-
-                        int pos = base + col;
-                        if (pos >= count) {
-                            break;
-                        }
-
-                        IImage image = mGallery.mAllImages.getImageAt(pos);
-                        if (image != null) {
-                            loadImage(base, col, image, xPos, yPos);
-                            retVal += 1;
-                        }
-                    }
-                    return retVal;
-
-                }
-            }
-
-            Bitmap resizeBitmap(Bitmap b) {
-                // assume they're both square for now
-                if (b == null || (b.getWidth() == mCurrentSpec.mCellWidth
-                        && b.getHeight() == mCurrentSpec.mCellHeight)) {
-                    return b;
-                }
-                float scale = (float) mCurrentSpec.mCellWidth
-                        / (float) b.getWidth();
-                Matrix m = new Matrix();
-                m.setScale(scale, scale, b.getWidth(), b.getHeight());
-                Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(),
-                        b.getHeight(), m, false);
-                return b2;
-            }
-
-            private void drawBitmap(IImage image, int base, int baseOffset,
-                    Bitmap b, int xPos, int yPos) {
-                mCanvas.setBitmap(mBitmap);
-                if (b != null) {
-                    // if the image is close to the target size then crop,
-                    // otherwise scale both the bitmap and the view should be
-                    // square but I suppose that could change in the future.
-                    int w = mCurrentSpec.mCellWidth;
-                    int h = mCurrentSpec.mCellHeight;
-
-                    int bw = b.getWidth();
-                    int bh = b.getHeight();
-
-                    int deltaW = bw - w;
-                    int deltaH = bh - h;
-
-                    if (deltaW < 10 && deltaH < 10) {
-                        int halfDeltaW = deltaW / 2;
-                        int halfDeltaH = deltaH / 2;
-                        android.graphics.Rect src =
-                                new android.graphics.Rect(0 + halfDeltaW,
-                                0 + halfDeltaH, bw - halfDeltaW,
-                                bh - halfDeltaH);
-                        android.graphics.Rect dst =
-                                new android.graphics.Rect(xPos, yPos,
-                                xPos + w, yPos + h);
-                        if (src.width() != dst.width()
-                                || src.height() != dst.height()) {
-                            if (Config.LOGV){
-                                Log.v(TAG, "nope... width doesn't match "
-                                        + src.width() + " " + dst.width());
-                                Log.v(TAG, "nope... height doesn't match "
-                                        + src.height() + " " + dst.height());
-                            }
-                        }
-                        mCanvas.drawBitmap(b, src, dst, mPaint);
-                    } else {
-                        android.graphics.Rect src =
-                                new android.graphics.Rect(0, 0, bw, bh);
-                        android.graphics.Rect dst =
-                                new android.graphics.Rect(xPos, yPos, xPos + w,
-                                yPos + h);
-                        mCanvas.drawBitmap(b, src, dst, mPaint);
-                    }
-                } else {
-                    // If the thumbnail cannot be drawn, put up an error icon
-                    // instead
-                    Bitmap error = mImageBlockManager.getErrorBitmap(image);
-                    int width = error.getWidth();
-                    int height = error.getHeight();
-                    Rect source = new Rect(0, 0, width, height);
-                    int left = (mCurrentSpec.mCellWidth - width) / 2 + xPos;
-                    int top = (mCurrentSpec.mCellHeight - height) / 2 + yPos;
-                    Rect dest = new Rect(left, top, left + width, top + height);
-                    mCanvas.drawBitmap(error, source, dest, mPaint);
-                }
-                if (ImageManager.isVideo(image)) {
-                    Drawable overlay = null;
-                    long size = MenuHelper.getImageFileSize(image);
-                    if (size >= 0 && size <= mVideoSizeLimit) {
-                        if (mVideoOverlay == null) {
-                            mVideoOverlay = getResources().getDrawable(
-                                    R.drawable.ic_gallery_video_overlay);
-                        }
-                        overlay = mVideoOverlay;
-                    } else {
-                        if (mVideoMmsErrorOverlay == null) {
-                            mVideoMmsErrorOverlay = getResources().getDrawable(
-                                    R.drawable.ic_error_mms_video_overlay);
-                        }
-                        overlay = mVideoMmsErrorOverlay;
-                        Paint paint = new Paint();
-                        paint.setARGB(0x80, 0x00, 0x00, 0x00);
-                        mCanvas.drawRect(xPos, yPos,
-                                xPos + mCurrentSpec.mCellWidth,
-                                yPos + mCurrentSpec.mCellHeight, paint);
-                    }
-                    int width = overlay.getIntrinsicWidth();
-                    int height = overlay.getIntrinsicHeight();
-                    int left = (mCurrentSpec.mCellWidth - width) / 2 + xPos;
-                    int top = (mCurrentSpec.mCellHeight - height) / 2 + yPos;
-                    Rect newBounds =
-                            new Rect(left, top, left + width, top + height);
-                    overlay.setBounds(newBounds);
-                    overlay.draw(mCanvas);
-                }
-                paintSel(base + baseOffset, xPos, yPos);
-            }
-
-            private void repaintSelection() {
-                int count = mGallery.mAllImages.getCount();
-                int startPos = mBlockNumber * mCurrentSpec.mColumns;
-                synchronized (ImageBlock.this) {
-                    for (int i = 0; i < mCurrentSpec.mColumns; i++) {
-                        int pos = startPos + i;
-
-                        if (pos >= count) {
-                            break;
-                        }
-
-                        int row = 0; // i / mCurrentSpec.mColumns;
-                        int col = i - (row * mCurrentSpec.mColumns);
-
-                        // this is duplicated from getOrKick
-                        // (TODO: don't duplicate this code)
-                        int spacing = mCurrentSpec.mCellSpacing;
-                        int leftSpacing = mCurrentSpec.mLeftEdgePadding;
-                        final int yPos = spacing
-                                + (row * (mCurrentSpec.mCellHeight + spacing));
-                        final int xPos = leftSpacing
-                                + (col * (mCurrentSpec.mCellWidth + spacing));
-
-                        paintSel(pos, xPos, yPos);
-                    }
-                }
-            }
-
-            private void paintSel(int pos, int xPos, int yPos) {
-                int[] stateSet = EMPTY_STATE_SET;
-                if (pos == mCurrentSelection && mShowSelection) {
-                    if (mCurrentSelectionPressed) {
-                        stateSet = PRESSED_ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
-                    } else {
-                        stateSet = ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
-                    }
-                }
-
-                mCellOutline.setState(stateSet);
-                mCanvas.setBitmap(mBitmap);
-                mCellOutline.setBounds(xPos, yPos,
-                        xPos + mCurrentSpec.mCellWidth,
-                        yPos + mCurrentSpec.mCellHeight);
-                mCellOutline.draw(mCanvas);
-            }
-
-            private void loadImage(
-                    final int base,
-                    final int baseOffset,
-                    final IImage image,
-                    final int xPos,
-                    final int yPos) {
-                synchronized (ImageBlock.this) {
-                    final int startBlock = mBlockNumber;
-                    final int pos = base + baseOffset;
-                    final ImageLoader.LoadedCallback r =
-                            new ImageLoader.LoadedCallback() {
-                        public void run(Bitmap b) {
-                            boolean more = false;
-                            synchronized (ImageBlock.this) {
-                                if (startBlock != mBlockNumber) {
-                                    return;
-                                }
-
-                                if (mBitmap == null) {
-                                    return;
-                                }
-
-                                drawBitmap(image, base, baseOffset, b, xPos,
-                                        yPos);
-
-                                int mask = (1 << baseOffset);
-                                mRequestedMask &= ~mask;
-                                mCompletedMask |= mask;
-
-                                if (mRequestedMask == 0) {
-                                    if (mIsVisible) {
-                                        postInvalidate();
-                                    }
-                                    more = true;
-                                }
-                            }
-                            if (b != null) {
-                                b.recycle();
-                            }
-
-                            if (more) {
-                                synchronized (ImageBlockManager.this) {
-                                    ImageBlockManager.this.notify();
-                                    mWorkCounter += 1;
-                                }
-                            }
-                            if (DUMP) {
-                                ImageBlockManager.this.dump();
-                            }
-                        }
-                    };
-                    mRequestedMask |= (1 << baseOffset);
-                    mLoader.getBitmap(image, pos, r, mIsVisible, false);
-                }
-            }
-        }
-    }
-
-    public void init(Handler handler) {
-        mHandler = handler;
-    }
-
-    @Override
-    public void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (false) {
-            canvas.drawRect(0, 0, getWidth(), getHeight(), mGridViewPaint);
-            if (Config.LOGV) {
-                Log.v(TAG, "painting background w/h " + getWidth()
-                        + " / " + getHeight());
-            }
-            return;
-        }
-
-        if (mImageBlockManager != null) {
-            mImageBlockManager.doDraw(canvas);
-            mImageBlockManager.moveDataWindow(mDirectionBiasDown, false);
-        }
-    }
-
-    @Override
-    public void computeScroll() {
-        if (mScroller != null) {
-            boolean more = mScroller.computeScrollOffset();
-            scrollTo(0, mScroller.getCurrY());
-            if (more) {
-                postInvalidate();  // So we draw again
-            } else {
-                mScroller = null;
-            }
-        } else {
-            super.computeScroll();
-        }
-    }
-
-    android.graphics.Rect getRectForPosition(int pos) {
-        int row = pos / mCurrentSpec.mColumns;
-        int col = pos - (row * mCurrentSpec.mColumns);
-
-        int left = mCurrentSpec.mLeftEdgePadding
-                + (col * mCurrentSpec.mCellWidth)
-                + (Math.max(0, col - 1) * mCurrentSpec.mCellSpacing);
-        int top  = (row * mCurrentSpec.mCellHeight)
-                + (row * mCurrentSpec.mCellSpacing);
-
-        return new android.graphics.Rect(left, top,
-                left + mCurrentSpec.mCellWidth + mCurrentSpec.mCellWidth,
-                top + mCurrentSpec.mCellHeight + mCurrentSpec.mCellSpacing);
-    }
-
-    int computeSelectedIndex(android.view.MotionEvent ev) {
-        int spacing = mCurrentSpec.mCellSpacing;
-        int leftSpacing = mCurrentSpec.mLeftEdgePadding;
-
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
-        int row = (mScrollY + y - spacing)
-                / (mCurrentSpec.mCellHeight + spacing);
-        int col = Math.min(mCurrentSpec.mColumns - 1,
-                (x - leftSpacing) / (mCurrentSpec.mCellWidth + spacing));
-        return (row * mCurrentSpec.mColumns) + col;
-    }
-
-    @Override
-    public boolean onTouchEvent(android.view.MotionEvent ev) {
-        if (!mGallery.canHandleEvent()) {
-            return false;
-        }
-
-        mGestureDetector.onTouchEvent(ev);
-        return true;
-    }
-
-    void onSelect(int index) {
-        if (index >= 0 && index < mGallery.mAllImages.getCount()) {
-            IImage img = mGallery.mAllImages.getImageAt(index);
-            if (img == null) {
-                return;
-            }
-
-            if (mGallery.isPickIntent()) {
-                mGallery.launchCropperOrFinish(img);
-            } else {
-                Uri targetUri = img.fullSizeImageUri();
-                Uri thisUri = mGallery.getIntent().getData();
-                if (thisUri != null) {
-                    String bucket = thisUri.getQueryParameter("bucketId");
-                    if (bucket != null) {
-                        targetUri = targetUri.buildUpon()
-                                .appendQueryParameter("bucketId", bucket)
-                                .build();
-                    }
-                }
-                Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
-
-                if (img instanceof VideoObject) {
-                    intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
-                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                }
-
-                try {
-                    mContext.startActivity(intent);
-                } catch (Exception ex) {
-                    // sdcard removal??
-                }
-            }
-        }
-    }
-
-    @Override
-    public void scrollBy(int x, int y) {
-        scrollTo(x, mScrollY + y);
-    }
-
-    Toast mDateLocationToast;
-    int [] mDateRange = new int[2];
-
-    private String month(int month) {
-        String text = "";
-        switch (month) {
-            case 0:  text = "January";   break;
-            case 1:  text = "February";  break;
-            case 2:  text = "March";     break;
-            case 3:  text = "April";     break;
-            case 4:  text = "May";       break;
-            case 5:  text = "June";      break;
-            case 6:  text = "July";      break;
-            case 7:  text = "August";    break;
-            case 8:  text = "September"; break;
-            case 9:  text = "October";   break;
-            case 10: text = "November";  break;
-            case 11: text = "December";  break;
-        }
-        return text;
-    }
-
-    Runnable mToastRunnable = new Runnable() {
-        public void run() {
-            if (mDateLocationToast != null) {
-                mDateLocationToast.cancel();
-                mDateLocationToast = null;
-            }
-
-            int count = mGallery.mAllImages.getCount();
-            if (count == 0) {
-                return;
-            }
-
-            GridViewSpecial.this.mImageBlockManager.getVisibleRange(mDateRange);
-
-            IImage firstImage = mGallery.mAllImages.getImageAt(mDateRange[0]);
-            int lastOffset = Math.min(count - 1, mDateRange[1]);
-            IImage lastImage = mGallery.mAllImages.getImageAt(lastOffset);
-
-            GregorianCalendar dateStart = new GregorianCalendar();
-            GregorianCalendar dateEnd   = new GregorianCalendar();
-
-            dateStart.setTimeInMillis(firstImage.getDateTaken());
-            dateEnd.setTimeInMillis(lastImage.getDateTaken());
-
-            String text1 = month(dateStart.get(Calendar.MONTH)) + " "
-                    + dateStart.get(Calendar.YEAR);
-            String text2 = month(dateEnd.get(Calendar.MONTH)) + " "
-                    + dateEnd.get(Calendar.YEAR);
-
-            String text = text1;
-            if (!text2.equals(text1)) {
-                text = text + " : " + text2;
-            }
-
-            mDateLocationToast = Toast.makeText(mContext, text,
-                    Toast.LENGTH_LONG);
-            mDateLocationToast.show();
-        }
-    };
-
-    @Override
-    public void scrollTo(int x, int y) {
-        y = Math.min(mMaxScrollY, y);
-        y = Math.max(mMinScrollY, y);
-        if (y > mScrollY) {
-            mDirectionBiasDown = true;
-        } else if (y < mScrollY) {
-            mDirectionBiasDown = false;
-        }
-        super.scrollTo(x, y);
-    }
-}

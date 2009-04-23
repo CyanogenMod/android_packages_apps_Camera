@@ -17,9 +17,9 @@
 package com.android.camera.gallery;
 
 import com.android.camera.ImageManager;
+import com.android.camera.gallery.IImage;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -36,9 +36,9 @@ public class DrmImageList extends ImageList implements IImageList {
         DrmStore.Audio.MIME_TYPE,
     };
 
-    public DrmImageList(Context ctx, ContentResolver cr, Uri imageUri,
+    public DrmImageList(ContentResolver cr, Uri imageUri,
             int sort, String bucketId) {
-        super(ctx, cr, imageUri, null, sort, bucketId);
+        super(cr, imageUri, null, sort, bucketId);
     }
 
     @Override
@@ -77,12 +77,12 @@ public class DrmImageList extends ImageList implements IImageList {
 
         @Override
         public Bitmap miniThumbBitmap() {
-            return fullSizeBitmap(ImageManager.MINI_THUMB_TARGET_SIZE);
+            return fullSizeBitmap(IImage.MINI_THUMB_TARGET_SIZE);
         }
 
         @Override
         public Bitmap thumbBitmap() {
-            return fullSizeBitmap(ImageManager.THUMBNAIL_TARGET_SIZE);
+            return fullSizeBitmap(IImage.THUMBNAIL_TARGET_SIZE);
         }
 
         @Override
@@ -92,18 +92,19 @@ public class DrmImageList extends ImageList implements IImageList {
     }
 
     @Override
-    protected IImage make(long id, long miniThumbId, ContentResolver cr,
-            IImageList list, long timestamp, int index, int rotation) {
+    protected IImage make(long id, long miniThumbMagic, ContentResolver cr,
+            IImageList list, int index, int rotation) {
         return new DrmImage(id, mContentResolver, this, index);
     }
 
+
     @Override
-    protected int indexOrientation() {
+    protected int indexId() {
         return -1;
     }
 
     @Override
-    protected int indexDateTaken() {
+    protected int indexData() {
         return -1;
     }
 
@@ -113,12 +114,17 @@ public class DrmImageList extends ImageList implements IImageList {
     }
 
     @Override
-    protected int indexId() {
+    protected int indexDateTaken() {
         return -1;
     }
 
     @Override
-    protected int indexMiniThumbId() {
+    protected int indexMiniThumbMagic() {
+        return -1;
+    }
+
+    @Override
+    protected int indexOrientation() {
         return -1;
     }
 
@@ -129,11 +135,6 @@ public class DrmImageList extends ImageList implements IImageList {
 
     @Override
     protected int indexDisplayName() {
-        return -1;
-    }
-
-    @Override
-    protected int indexThumbId() {
         return -1;
     }
 

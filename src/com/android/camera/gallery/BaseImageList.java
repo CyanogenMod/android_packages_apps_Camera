@@ -24,17 +24,13 @@ import com.android.camera.Util;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
-import android.provider.MediaStore.MediaColumns;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
@@ -46,53 +42,10 @@ import java.util.HashMap;
  * A collection of <code>BaseImage</code>s.
  */
 public abstract class BaseImageList implements IImageList {
-    private static final boolean VERBOSE = false;
     private static final String TAG = "BaseImageList";
-
-    private static final int MINI_THUMB_TARGET_SIZE = 96;
-    private static final int THUMBNAIL_TARGET_SIZE = 320;
-    private static final int MINI_THUMB_DATA_FILE_VERSION = 3;
-
-    private static final String WHERE_CLAUSE =
-            "(" + Images.Media.MIME_TYPE + " in (?, ?, ?))";
-
-    static final String[] IMAGE_PROJECTION = new String[] {
-            BaseColumns._ID,
-            MediaColumns.DATA,
-            ImageColumns.DATE_TAKEN,
-            ImageColumns.MINI_THUMB_MAGIC,
-            ImageColumns.ORIENTATION,
-            ImageColumns.MIME_TYPE};
-
-    static final String[] THUMB_PROJECTION = new String[] {
-            BaseColumns._ID,
-            Images.Thumbnails.IMAGE_ID,
-            Images.Thumbnails.WIDTH,
-            Images.Thumbnails.HEIGHT};
-
-    static final int INDEX_ID = Util.indexOf(IMAGE_PROJECTION, BaseColumns._ID);
-    static final int INDEX_DATA =
-            Util.indexOf(IMAGE_PROJECTION, MediaColumns.DATA);
-    static final int INDEX_MIME_TYPE =
-            Util.indexOf(IMAGE_PROJECTION, MediaColumns.MIME_TYPE);
-    static final int INDEX_DATE_TAKEN =
-            Util.indexOf(IMAGE_PROJECTION, ImageColumns.DATE_TAKEN);
-    static final int INDEX_MINI_THUMB_MAGIC =
-            Util.indexOf(IMAGE_PROJECTION, ImageColumns.MINI_THUMB_MAGIC);
-    static final int INDEX_ORIENTATION =
-            Util.indexOf(IMAGE_PROJECTION, ImageColumns.ORIENTATION);
-    static final int INDEX_THUMB_ID =
-            Util.indexOf(THUMB_PROJECTION, BaseColumns._ID);
-    static final int INDEX_THUMB_IMAGE_ID =
-            Util.indexOf(THUMB_PROJECTION, Images.Thumbnails.IMAGE_ID);
-    static final int INDEX_THUMB_WIDTH =
-            Util.indexOf(THUMB_PROJECTION, Images.Thumbnails.WIDTH);
-    static final int INDEX_THUMB_HEIGHT =
-            Util.indexOf(THUMB_PROJECTION, Images.Thumbnails.HEIGHT);
 
     protected static final String[] ACCEPTABLE_IMAGE_TYPES =
             new String[] { "image/jpeg", "image/png", "image/gif" };
-    protected static final String MINITHUMB_IS_NULL = "mini_thumb_magic isnull";
 
     protected ContentResolver mContentResolver;
     protected int mSort;
@@ -100,17 +53,13 @@ public abstract class BaseImageList implements IImageList {
     protected Cursor mCursor;
     protected boolean mCursorDeactivated;
     protected String mBucketId;
-    protected Context mContext;
-    protected Uri mUri;
     protected HashMap<Long, IImage> mCache = new HashMap<Long, IImage>();
     protected MiniThumbFile mMiniThumbFile;
     protected Uri mThumbUri;
 
-    public BaseImageList(Context ctx, ContentResolver cr, Uri uri, int sort,
+    public BaseImageList(ContentResolver cr, Uri uri, int sort,
             String bucketId) {
-        mContext = ctx;
         mSort = sort;
-        mUri = uri;
         mBaseUri = uri;
         mBucketId = bucketId;
         mContentResolver = cr;
@@ -133,7 +82,7 @@ public abstract class BaseImageList implements IImageList {
             thumbOut.close();
             return thumb;
         } catch (Exception ex) {
-            if (VERBOSE) Log.d(TAG, "unable to store thumbnail: " + ex);
+            Log.e(TAG, "Unable to store thumbnail", ex);
             return thumb;
         }
     }
@@ -161,6 +110,10 @@ public abstract class BaseImageList implements IImageList {
         }
     }
 
+    private static final String[] THUMB_PROJECTION = new String[] {
+        BaseColumns._ID
+    };
+
     private Uri getThumbnailUri(long imageId, int width, int height) {
         // we do not store thumbnails for DRM'd images
         if (mThumbUri == null) {
@@ -168,6 +121,7 @@ public abstract class BaseImageList implements IImageList {
         }
 
         Uri uri = null;
+
         Cursor c = mContentResolver.query(mThumbUri, THUMB_PROJECTION,
                 Thumbnails.IMAGE_ID + "=?",
                 new String[]{String.valueOf(imageId)}, null);
@@ -176,9 +130,7 @@ public abstract class BaseImageList implements IImageList {
                 // If, for some reason, we already have a row with a matching
                 // image id, then just update that row rather than creating a
                 // new row.
-                uri = ContentUris.withAppendedId(
-                        mThumbUri, c.getLong(indexThumbId()));
-                c.commitUpdates();
+                uri = ContentUris.withAppendedId(mThumbUri, c.getLong(0));
             }
         } finally {
             c.close();
@@ -204,7 +156,7 @@ public abstract class BaseImageList implements IImageList {
         if (filePath == null) return null;
 
         byte [] thumbData = null;
-        synchronized (ImageManager.instance()) {
+        synchronized (ExifInterface.class) {
             thumbData = (new ExifInterface(filePath)).getThumbnail();
         }
         if (thumbData == null) return null;
@@ -217,7 +169,8 @@ public abstract class BaseImageList implements IImageList {
         BitmapFactory.decodeByteArray(thumbData, 0, thumbData.length, options);
         int width = options.outWidth;
         int height = options.outHeight;
-        if (width >= THUMBNAIL_TARGET_SIZE && height >= THUMBNAIL_TARGET_SIZE
+        if (width >= IImage.THUMBNAIL_TARGET_SIZE
+                && height >= IImage.THUMBNAIL_TARGET_SIZE
                 && storeThumbnail(thumbData, id, width, height)) {
             // this is used for *encoding* the minithumb, so
             // we don't want to dither or convert to 565 here.
@@ -227,12 +180,8 @@ public abstract class BaseImageList implements IImageList {
             // which will produce much better scaling quality
             // and is significantly faster.
             options.inSampleSize =
-                    Util.computeSampleSize(options, THUMBNAIL_TARGET_SIZE);
-
-            if (VERBOSE) {
-                Log.v(TAG, "in createThumbnailFromExif using inSampleSize of "
-                        + options.inSampleSize);
-            }
+                    Util.computeSampleSize(options,
+                    IImage.MINI_THUMB_TARGET_SIZE);
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             options.inJustDecodeBounds = false;
@@ -247,12 +196,13 @@ public abstract class BaseImageList implements IImageList {
     // create the minithumb from it.
     private Bitmap createThumbnailFromUri(Cursor c, long id) {
         Uri uri = ContentUris.withAppendedId(mBaseUri, id);
-        Bitmap bitmap = makeBitmap(THUMBNAIL_TARGET_SIZE, uri, null, null);
+        Bitmap bitmap = Util.makeBitmap(IImage.THUMBNAIL_TARGET_SIZE, uri,
+                mContentResolver);
         if (bitmap != null) {
             storeThumbnail(bitmap, id);
         } else {
-            uri = ContentUris.withAppendedId(mBaseUri, id);
-            bitmap = makeBitmap(MINI_THUMB_TARGET_SIZE, uri, null, null);
+            bitmap = Util.makeBitmap(IImage.MINI_THUMB_TARGET_SIZE, uri,
+                mContentResolver);
         }
         return bitmap;
     }
@@ -293,7 +243,7 @@ public abstract class BaseImageList implements IImageList {
                     if (!c.moveToPosition(i)) {
                         return -1;
                     }
-                    magic = c.getLong(indexMiniThumbId());
+                    magic = c.getLong(indexMiniThumbMagic());
                     id = c.getLong(indexId());
                 }
             } else {
@@ -356,7 +306,7 @@ public abstract class BaseImageList implements IImageList {
 
             synchronized (c) {
                 c.moveToPosition(i);
-                c.updateLong(indexMiniThumbId(), magic);
+                c.updateLong(indexMiniThumbMagic(), magic);
                 c.commitUpdates();
                 c.requery();
                 c.moveToPosition(i);
@@ -372,69 +322,28 @@ public abstract class BaseImageList implements IImageList {
     }
 
     public void checkThumbnails(ThumbCheckCallback cb, int totalThumbnails) {
-        Cursor c = Images.Media.query(mContentResolver, mBaseUri,
-                new String[] { "_id", "mini_thumb_magic" },
-                thumbnailWhereClause(), thumbnailWhereClauseArgs(),
-                "_id ASC");
-
-        int count = c.getCount();
-        if (VERBOSE) {
-            Log.v(TAG, ">>>>>>>>>>> need to check " + c.getCount() + " rows");
-        }
-        c.close();
-
         if (!ImageManager.hasStorage()) {
-            if (VERBOSE) {
-                Log.v(TAG, "bailing from the image checker thread "
-                        + "-- no storage");
-            }
+            Log.v(TAG, "bailing from the image checker thread -- no storage");
             return;
         }
 
-        c = getCursor();
-        try {
-            if (VERBOSE) Log.v(TAG, "checkThumbnails found " + c.getCount());
-            int current = 0;
-            for (int i = 0; i < c.getCount(); i++) {
-                try {
-                    checkThumbnail(null, c, i);
-                } catch (IOException ex) {
-                    Log.e(TAG, "!!!!! failed to check thumbnail..."
-                            + " was the sd card removed? - " + ex.getMessage());
+        Cursor c = getCursor();
+        for (int i = 0; i < c.getCount(); i++) {
+            try {
+                checkThumbnail(null, c, i);
+            } catch (IOException ex) {
+                Log.e(TAG, "!!!!! failed to check thumbnail..."
+                        + " was the sd card removed? - " + ex.getMessage());
+                break;
+            }
+            if (cb != null) {
+                if (!cb.checking(i, totalThumbnails)) {
                     break;
                 }
-                if (cb != null) {
-                    if (!cb.checking(current, totalThumbnails)) {
-                        if (VERBOSE) {
-                            Log.v(TAG, "got false from checking... break");
-                        }
-                        break;
-                    }
-                }
-                current += 1;
-            }
-        } finally {
-            if (VERBOSE) {
-                Log.v(TAG, "checkThumbnails existing after reaching count "
-                        + c.getCount());
             }
         }
     }
 
-    protected String thumbnailWhereClause() {
-        return MINITHUMB_IS_NULL + " and " + WHERE_CLAUSE;
-    }
-
-    protected String[] thumbnailWhereClauseArgs() {
-        return ACCEPTABLE_IMAGE_TYPES;
-    }
-
-    public void commitChanges() {
-        synchronized (mCursor) {
-            mCursor.commitUpdates();
-            requery();
-        }
-    }
     protected Uri contentUri(long id) {
         try {
             // does our uri already have an id (single image query)?
@@ -457,18 +366,6 @@ public abstract class BaseImageList implements IImageList {
             Log.e(TAG, "Caught exception while deactivating cursor.", e);
         }
         mMiniThumbFile.deactivate();
-    }
-
-    public void dump(String msg) {
-        int count = getCount();
-        if (VERBOSE) {
-            Log.v(TAG, "dump ImageList (count is " + count + ") " + msg);
-        }
-        for (int i = 0; i < count; i++) {
-            IImage img = getImageAt(i);
-            if (VERBOSE) Log.v(TAG, "   " + i + ": " + img);
-        }
-        if (VERBOSE) Log.v(TAG, "end of dump container");
     }
 
     public int getCount() {
@@ -510,20 +407,19 @@ public abstract class BaseImageList implements IImageList {
             }
             if (moved) {
                 try {
-                    long id = c.getLong(0);
-                    long miniThumbId = 0;
+                    long id = c.getLong(indexId());
+                    long miniThumbMagic = 0;
                     int rotation = 0;
-                    if (indexMiniThumbId() != -1) {
-                        miniThumbId = c.getLong(indexMiniThumbId());
+                    if (indexMiniThumbMagic() != -1) {
+                        miniThumbMagic = c.getLong(indexMiniThumbMagic());
                     }
                     if (indexOrientation() != -1) {
                         rotation = c.getInt(indexOrientation());
                     }
-                    long timestamp = c.getLong(1);
                     IImage img = mCache.get(id);
                     if (img == null) {
-                        img = make(id, miniThumbId, mContentResolver, this,
-                                timestamp, i, rotation);
+                        img = make(id, miniThumbMagic, mContentResolver, this,
+                                i, rotation);
                         mCache.put(id, img);
                     }
                     return img;
@@ -553,43 +449,37 @@ public abstract class BaseImageList implements IImageList {
     byte [] getMiniThumbFromFile(long id, byte [] data, long magicCheck) {
         return mMiniThumbFile.getMiniThumbFromFile(id, data, magicCheck);
     }
-    
-    void saveMiniThumbToFile(Bitmap bitmap, long id, long magic)       
+
+    void saveMiniThumbToFile(Bitmap bitmap, long id, long magic)
             throws IOException {
         mMiniThumbFile.saveMiniThumbToFile(bitmap, id, magic);
-    } 
-            
+    }
+
     void saveMiniThumbToFile(byte[] data, long id, long magic)
             throws IOException {
         mMiniThumbFile.saveMiniThumbToFile(data, id, magic);
     }
 
-    protected abstract int indexOrientation();
-
-    protected abstract int indexDateTaken();
-
-    protected abstract int indexMimeType();
+    protected abstract int indexId();
 
     protected abstract int indexData();
 
-    protected abstract int indexId();
+    protected abstract int indexMimeType();
 
-    protected abstract int indexMiniThumbId();
+    protected abstract int indexDateTaken();
+
+    protected abstract int indexMiniThumbMagic();
+
+    protected abstract int indexOrientation();
 
     protected abstract int indexTitle();
 
     protected abstract int indexDisplayName();
 
-    protected abstract int indexThumbId();
-
-    protected IImage make(long id, long miniThumbId, ContentResolver cr,
-            IImageList list, long timestamp, int index, int rotation) {
+    protected IImage make(long id, long miniThumbMagic, ContentResolver cr,
+            IImageList list, int index, int rotation) {
         return null;
     }
-
-    protected abstract Bitmap makeBitmap(
-            int targetWidthHeight, Uri uri, ParcelFileDescriptor pfdInput,
-            BitmapFactory.Options options);
 
     public boolean removeImage(IImage image) {
         Cursor c = getCursor();
@@ -624,7 +514,6 @@ public abstract class BaseImageList implements IImageList {
              *       we can get it back as needed
              * TODO: need to delete the thumbnails as well
              */
-            dump("before delete");
             IImage image = getImageAt(i);
             boolean moved;
             try {
@@ -639,7 +528,6 @@ public abstract class BaseImageList implements IImageList {
                 requery();
                 image.onRemove();
             }
-            dump("after delete");
         }
     }
 

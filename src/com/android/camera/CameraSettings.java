@@ -16,36 +16,39 @@
 
 package com.android.camera;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
-import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  *  CameraSettings
  */
 public class CameraSettings extends PreferenceActivity implements
         OnSharedPreferenceChangeListener {
-    public static final String KEY_VIDEO_QUALITY = 
+    public static final String KEY_VIDEO_QUALITY =
             "pref_camera_videoquality_key";
-    public static final String KEY_WHITE_BALANCE = 
+    public static final String KEY_WHITE_BALANCE =
             "pref_camera_whitebalance_key";
     public static final String KEY_EFFECT = "pref_camera_effect_key";
+    public static final String KEY_BRIGHTNESS = "pref_camera_brightness_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
+    public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
     private ListPreference mVideoQuality;
     private ListPreference mWhiteBalance;
     private ListPreference mEffect;
+    private ListPreference mBrightness;
     private ListPreference mPictureSize;
     private ListPreference mJpegQuality;
+    private ListPreference mFocusMode;
     private Parameters mParameters;
 
     @Override
@@ -63,16 +66,21 @@ public class CameraSettings extends PreferenceActivity implements
         updateVideoQualitySummary();
         updateWhiteBalanceSummary();
         updateEffectSummary();
+        updateBrightnessSummary();
         updatePictureSizeSummary();
         updateJpegQualitySummary();
+        updateFocusModeSummary();
     }
 
     private void initUI() {
         mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
         mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
         mEffect = (ListPreference) findPreference(KEY_EFFECT);
+        mBrightness = (ListPreference) findPreference(KEY_BRIGHTNESS);
+
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
+        mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
         getPreferenceScreen().getSharedPreferences().
                 registerOnSharedPreferenceChangeListener(this);
 
@@ -91,10 +99,27 @@ public class CameraSettings extends PreferenceActivity implements
                        R.array.pref_camera_effect_entries,
                        R.array.pref_camera_effect_entryvalues);
 
+        // Create brightness settings.
+        createSettings(mBrightness, Camera.SUPPORTED_BRIGHTNESS,
+                       R.array.pref_camera_brightness_entries,
+                       R.array.pref_camera_brightness_entryvalues);
+
         // Create picture size settings.
         createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE,
                        R.array.pref_camera_picturesize_entries,
                        R.array.pref_camera_picturesize_entryvalues);
+
+        // Set default JPEG quality value if it is empty.
+        if (mJpegQuality.getValue() == null) {
+            mJpegQuality.setValue(getString(
+                R.string.pref_camera_jpegquality_default));
+        }
+
+        // Set default focus mode value if it is empty.
+        if (mFocusMode.getValue() == null) {
+            mFocusMode.setValue(getString(
+                R.string.pref_camera_focusmode_default));
+        }
     }
 
     private void createSettings(
@@ -102,7 +127,7 @@ public class CameraSettings extends PreferenceActivity implements
             int prefEntryValuesResId) {
         // Disable the preference if the parameter is not supported.
         String supportedParamStr = mParameters.get(paramName);
-        if (supportedParamStr == null) {  
+        if (supportedParamStr == null) {
             pref.setEnabled(false);
             return;
         }
@@ -153,12 +178,20 @@ public class CameraSettings extends PreferenceActivity implements
         mEffect.setSummary(mEffect.getEntry());
     }
 
+    private void updateBrightnessSummary() {
+        mBrightness.setSummary(mBrightness.getEntry());
+    }
+
     private void updatePictureSizeSummary() {
         mPictureSize.setSummary(mPictureSize.getEntry());
     }
 
     private void updateJpegQualitySummary() {
         mJpegQuality.setSummary(mJpegQuality.getEntry());
+    }
+
+    private void updateFocusModeSummary() {
+        mFocusMode.setSummary(mFocusMode.getEntry());
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -173,6 +206,10 @@ public class CameraSettings extends PreferenceActivity implements
             updatePictureSizeSummary();
         } else if (key.equals(KEY_JPEG_QUALITY)) {
             updateJpegQualitySummary();
+        } else if (key.equals(KEY_FOCUS_MODE)) {
+            updateFocusModeSummary();
+        } else if (key.equals(KEY_BRIGHTNESS)) {
+            updateBrightnessSummary();
         }
     }
 }
