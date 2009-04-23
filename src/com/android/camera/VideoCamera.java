@@ -127,6 +127,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private Uri mCurrentVideoUri;
     private ContentValues mCurrentVideoValues;
 
+    // The video frame size we will record (like 352x288).
+    private int mVideoWidth, mVideoHeight;
+
     boolean mPausing = false;
 
     private ContentResolver mContentResolver;
@@ -379,13 +382,36 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 ? STORAGE_STATUS_LOW : STORAGE_STATUS_OK;
     }
 
+    private void readVideoSizePreference() {
+        boolean videoQualityHigh = getBooleanPreference(
+                CameraSettings.KEY_VIDEO_QUALITY,
+                CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
+            int extraVideoQuality = intent.getIntExtra(
+                    MediaStore.EXTRA_VIDEO_QUALITY, 0);
+            videoQualityHigh = (extraVideoQuality > 0);
+        }
+
+        if (videoQualityHigh) {
+            // CIF size
+            mVideoWidth = 352;
+            mVideoHeight = 288;
+        } else {
+            // QCIF size
+            mVideoWidth = 176;
+            mVideoHeight = 144;
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        mPausing = false;
 
         setScreenTimeoutLong();
-
-        mPausing = false;
+        readVideoSizePreference();
 
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter =
@@ -405,6 +431,54 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }, 200);
 
         initializeVideo();
+    }
+
+    private void setCameraParameters() {
+        android.hardware.Camera.Parameters param;
+        param = mCameraDevice.getParameters();
+        param.setPreviewSize(mVideoWidth, mVideoHeight);
+        mCameraDevice.setParameters(param);
+    }
+
+    // Precondition: mSurfaceHolder != null
+    private void startPreview() {
+        Log.v(TAG, "startPreview");
+        if (mCameraDevice != null) {
+            Log.d(TAG, "already started.");
+            return;
+        }
+        mCameraDevice = android.hardware.Camera.open();
+        setCameraParameters();
+        try {
+            mCameraDevice.setPreviewDisplay(mSurfaceHolder);
+        } catch (IOException ex) {
+            mCameraDevice.release();
+            mCameraDevice = null;
+            Log.e(TAG, "failed to set preview display");
+            return;
+        }
+        try {
+            mCameraDevice.startPreview();
+        } catch (Throwable ex) {
+            // TODO: change Throwable to IOException once
+            //      android.hardware.Camera.startPreview properly declares
+            //      that it throws IOException.
+            mCameraDevice.release();
+            mCameraDevice = null;
+            Log.e(TAG, "failed to start preview");
+            return;
+        }
+        mCameraDevice.unlock();
+    }
+
+    private void stopPreview() {
+        Log.v(TAG, "stopPreview");
+        if (mCameraDevice == null) {
+            Log.d(TAG, "already stopped.");
+            return;
+        }
+        mCameraDevice.release();
+        mCameraDevice = null;
     }
 
     @Override
@@ -442,6 +516,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mStorageHint.cancel();
             mStorageHint = null;
         }
+
+        stopPreview();
     }
 
     @Override
@@ -628,6 +704,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
     }
 
+    private android.hardware.Camera mCameraDevice;
     // initializeVideo() starts preview and prepare media recorder.
     // Returns false if initializeVideo fails
     private boolean initializeVideo() {
@@ -660,9 +737,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             Log.v(TAG, "SurfaceHolder is null");
             return false;
         }
-
+        startPreview();
         mMediaRecorder = new MediaRecorder();
 
+        mMediaRecorder.setCamera(mCameraDevice);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -681,26 +759,13 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
         }
 
-        boolean videoQualityHigh = getBooleanPreference(
-                CameraSettings.KEY_VIDEO_QUALITY,
-                CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
-
-        if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
-            int extraVideoQuality = intent.getIntExtra(
-                    MediaStore.EXTRA_VIDEO_QUALITY, 0);
-            videoQualityHigh = (extraVideoQuality > 0);
-        }
 
         // Use the same frame rate for both, since internally
         // if the frame rate is too large, it can cause camera to become
         // unstable. We need to fix the MediaRecorder to disable the support
         // of setting frame rate for now.
         mMediaRecorder.setVideoFrameRate(20);
-        if (videoQualityHigh) {
-            mMediaRecorder.setVideoSize(352, 288);
-        } else {
-            mMediaRecorder.setVideoSize(176, 144);
-        }
+        mMediaRecorder.setVideoSize(mVideoWidth, mVideoHeight);
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
