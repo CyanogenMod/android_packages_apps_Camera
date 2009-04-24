@@ -72,6 +72,7 @@ public class MenuHelper {
     public static final int INCLUDE_DELETE_MENU   = (1 << 4);
     public static final int INCLUDE_ROTATE_MENU   = (1 << 5);
     public static final int INCLUDE_DETAILS_MENU  = (1 << 6);
+    public static final int INCLUDE_SHOWMAP_MENU  = (1 << 7);
 
     public static final int MENU_SWITCH_CAMERA_MODE = 0;
     public static final int MENU_CAPTURE_PICTURE = 1;
@@ -92,6 +93,8 @@ public class MenuHelper {
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
     public static final String EMPTY_STRING = "";
+    // valid range is -180f to +180f
+    public static final float INVALID_LATLNG = 255f;
 
     /** Activity result code used to report crop results.
      */
@@ -157,35 +160,53 @@ public class MenuHelper {
         d.findViewById(rowId).setVisibility(View.GONE);
     }
 
-    private static float setLatLngDetails(View d, Image img,
-                                          String tag, String refTag) {
+    private static float getLatLng(Image img, String tag) {
         String value = img.getExifTag(tag);
-        String ref = img.getExifTag(refTag);
-        float f = 0f;
+        String ref;
+
+        if (tag == ExifInterface.TAG_GPS_LATITUDE) {
+            ref = img.getExifTag(ExifInterface.TAG_GPS_LATITUDE_REF);
+        } else {
+            ref = img.getExifTag(ExifInterface.TAG_GPS_LONGITUDE_REF);
+        }
+
+        float f = INVALID_LATLNG;
         if (value != null && ref != null) {
             f = ExifInterface.convertRationalLatLonToFloat(
                     value, ref);
-            value = String.valueOf(f);
         }
+        return f;
+    }
+
+    private static float setLatLngDetails(View d, Image img,
+                                          String tag, String refTag) {
         int valueId = R.id.details_latitude_value;
         int rowId = R.id.details_latitude_row;
+        float latlng = getLatLng(img, tag);
 
         if (tag == ExifInterface.TAG_GPS_LONGITUDE) {
             valueId = R.id.details_longitude_value;
             rowId = R.id.details_longitude_row;
         }
-        if (value != null) {
-            setDetailsValue(d, value, valueId);
-        } else {
+
+        if (latlng == INVALID_LATLNG) {
             hideDetailsRow(d, rowId);
+            return INVALID_LATLNG;
         }
-        return f;
+
+        setDetailsValue(d, String.valueOf(latlng), valueId);
+        return latlng;
     }
 
     private static void setReverseGeocodingDetails(View d, Activity context,
                                                    float lat, float lng) {
         // Fill in reverse-geocoded address
         String value = EMPTY_STRING;
+        if (lat == INVALID_LATLNG || lng == INVALID_LATLNG) {
+            hideDetailsRow(d, R.id.details_location_row);
+            return;
+        }
+
         try {
             Geocoder geocoder = new Geocoder(context);
             List<Address> address = geocoder.getFromLocation(
@@ -214,12 +235,51 @@ public class MenuHelper {
         }
     }
 
+    // Called when "Show on Maps" is clicked.
+    // Displays image location on Google Maps for further operations.
+    private static boolean onShowMapClicked(MenuInvoker onInvoke,
+                                            final Handler handler,
+                                            final Activity activity) {
+        onInvoke.run(new MenuCallback() {
+            public void run(Uri u, IImage image) {
+                if (image == null) {
+                    return;
+                }
+                float lat = getLatLng((Image) image,
+                        ExifInterface.TAG_GPS_LATITUDE);
+                float lng = getLatLng((Image) image,
+                        ExifInterface.TAG_GPS_LONGITUDE);
+                if (lat == INVALID_LATLNG || lng == INVALID_LATLNG) {
+                    handler.post(new Runnable() {
+                        public void run() {
+                            Toast.makeText(activity,
+                                    R.string.no_location_image,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    return;
+                }
+
+                // Can't use geo:latitude,longitude because it only centers
+                // the MapView to specified location, but we need a bubble
+                // for further operations (routing to/from).
+                // The q=(lat, lng) syntax is suggested by geo-team.
+                String uri = "http://maps.google.com/maps?f=q&" +
+                        "q=(" + lat + "," + lng + ")";
+                activity.startActivity(new Intent(
+                        android.content.Intent.ACTION_VIEW,
+                        Uri.parse(uri)));
+            }
+        });
+        return true;
+    }
+
     // Called when "Details" is clicked.
     // Displays detailed information about the image/video.
     private static boolean onDetailsClicked(MenuInvoker onInvoke,
-                                           final Handler handler,
-                                           final Activity activity,
-                                           final boolean isImage) {
+                                            final Handler handler,
+                                            final Activity activity,
+                                            final boolean isImage) {
         onInvoke.run(new MenuCallback() {
             public void run(Uri u, IImage image) {
                 if (image == null) {
@@ -662,6 +722,17 @@ public class MenuHelper {
                 }
             });
             detailsMenu.setIcon(R.drawable.ic_menu_view_details);
+        }
+
+        if ((isImage) && ((inclusions & INCLUDE_SHOWMAP_MENU) != 0)) {
+            menu.add(0, 0, 80, R.string.show_on_map)
+                .setOnMenuItemClickListener(
+                        new MenuItem.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                return onShowMapClicked(onInvoke,
+                                        handler, activity);
+                            }
+                        });
         }
 
         if ((!isImage) && ((inclusions & INCLUDE_VIEWPLAY_MENU) != 0)) {
