@@ -18,8 +18,7 @@
     <string name="all_images">"Alle bilder"</string>
     <string name="all_videos">"Alle videoer"</string>
     <string name="camera_label">"Kamera"</string>
-    <!-- no translation found for video_camera_label (2899292505526427293) -->
-    <skip />
+    <string name="video_camera_label">"Video"</string>
     <string name="gallery_picker_label">"Galleri"</string>
     <string name="gallery_camera_bucket_name">"Bilder fra kamera"</string>
     <string name="gallery_camera_videos_bucket_name">"Videoer fra kamera"</string>
@@ -61,8 +60,7 @@
     <string name="camera_tossing">"Sletter…"</string>
     <string name="no_way_to_share_image">"Bildet kan ikke deles."</string>
     <string name="no_way_to_share_video">"Videoen kan ikke deles."</string>
-    <!-- no translation found for video_play (5287787282508002895) -->
-    <skip />
+    <string name="video_play">"Spill"</string>
     <string name="camera_gallery_photos_text">"Galleri"</string>
     <string name="camera_pick_wallpaper">"Bilder"</string>
     <string name="camera_setas_wallpaper">"Bakgrunnsbilder"</string>
@@ -153,6 +151,5 @@
     <string name="gadget_title">"Bilderamme"</string>
     <string name="file_info_title">"Filinformasjon:"</string>
     <string name="video_exceed_mms_limit">"Videoen er for stor til å sendes over MMS. Prøv å ta opp en kortere video."</string>
-    <!-- no translation found for too_large_to_attach (8944461117941172986) -->
-    <skip />
+    <string name="too_large_to_attach">"Filen er for stor til å legges ved."</string>
 </resources>

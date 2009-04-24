@@ -28,7 +28,7 @@
     <string name="view_label">"Ver imagen"</string>
     <string name="preferences_label">"Configuración de cámara"</string>
     <string name="wait">"Por favor, espera..."</string>
-    <string name="no_storage">"Antes de utilizar la cámara, debes insertar una tarjeta SD."</string>
+    <string name="no_storage">"Inserta o activa la tarjeta SD para poder utilizar la cámara."</string>
     <string name="not_enough_space">"La tarjeta SD está llena."</string>
     <string name="preparing_sd">"Preparando tarjeta SD…"</string>
     <string name="wallpaper">"Estableciendo fondo de pantalla..."</string>
@@ -100,9 +100,9 @@
   </string-array>
     <string name="pref_gallery_slideshow_repeat_title">"Repetir presentación"</string>
     <string name="pref_gallery_slideshow_repeat_summary">"Mostrar presentación más de una vez"</string>
-    <string name="pref_gallery_slideshow_shuffle_title">"Reproducir aleatoriamente"</string>
+    <string name="pref_gallery_slideshow_shuffle_title">"Orden aleatorio"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"Mostrar imágenes en orden aleatorio"</string>
-    <string name="pref_camera_recordlocation_title">"Almacenar ubicación en imágenes"</string>
+    <string name="pref_camera_recordlocation_title">"Almacenar en imágenes"</string>
     <string name="pref_camera_recordlocation_summary">"Registrar ubicación en datos de imagen"</string>
     <string name="pref_camera_videoquality_category">"Calidad de vídeo"</string>
     <string name="pref_camera_videoquality_title">"Seleccionar calidad de vídeo"</string>
