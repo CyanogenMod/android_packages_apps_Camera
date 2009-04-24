@@ -71,7 +71,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ImageGallery2" android:label="@string/gallery_label"
+        <activity android:name="ImageGallery" android:label="@string/gallery_label"
                 android:configChanges="orientation|keyboardHidden"
                 android:icon="@drawable/ic_launcher_gallery">
             <intent-filter>

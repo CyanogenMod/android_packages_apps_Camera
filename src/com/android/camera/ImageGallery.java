@@ -57,9 +57,9 @@ import android.widget.Toast;
 
 import java.util.HashSet;
 
-public class ImageGallery2 extends Activity implements
+public class ImageGallery extends Activity implements
         GridViewSpecial.Listener, GridViewSpecial.DrawAdapter {
-    private static final String TAG = "ImageGallery2";
+    private static final String TAG = "ImageGallery";
     IImageList mAllImages;
     private int mInclusion;
     boolean mSortAscending = false;
@@ -406,11 +406,11 @@ public class ImageGallery2 extends Activity implements
                     // TODO also listen for the media scanner finished message
                 } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                     // SD card unavailable
-                    Toast.makeText(ImageGallery2.this,
+                    Toast.makeText(ImageGallery.this,
                             getResources().getString(R.string.wait), 5000);
                     rebake(true, false);
                 } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
-                    Toast.makeText(ImageGallery2.this,
+                    Toast.makeText(ImageGallery.this,
                             getResources().getString(R.string.wait), 5000);
                     rebake(false, true);
                 } else if (action.equals(
@@ -449,7 +449,7 @@ public class ImageGallery2 extends Activity implements
                         getSystemService(Context.POWER_SERVICE);
                 PowerManager.WakeLock mWakeLock = pm.newWakeLock(
                         PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
-                        "ImageGallery2.checkThumbnails");
+                        "ImageGallery.checkThumbnails");
                 mWakeLock.acquire();
                 IImageList.ThumbCheckCallback r = new MyThumbCheckCallback(
                         progressTextView, startTime, progressTextFormatString);
@@ -499,8 +499,7 @@ public class ImageGallery2 extends Activity implements
                     new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     Intent preferences = new Intent();
-                    preferences.setClass(
-                            ImageGallery2.this, GallerySettings.class);
+                    preferences.setClass(ImageGallery.this, GallerySettings.class);
                     startActivity(preferences);
                     return true;
                 }
@@ -749,7 +748,7 @@ public class ImageGallery2 extends Activity implements
                         menu,
                         MenuHelper.INCLUDE_ALL,
                         isImage,
-                        ImageGallery2.this,
+                        ImageGallery.this,
                         mHandler,
                         mDeletePhotoRunnable,
                         new MenuHelper.MenuInvoker() {
