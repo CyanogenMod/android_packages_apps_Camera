@@ -335,7 +335,7 @@ class GridViewSpecial extends View {
         private Thread mWorkerThread;
 
         ImageBlockManager() {
-            mLoader = new ImageLoader(mHandler, 1);
+            mLoader = new ImageLoader(mHandler);
 
             mBlockCache = new ImageBlock[sRowsPerPage
                     * (sPagesPreCache + sPagesPostCache + 1)];
