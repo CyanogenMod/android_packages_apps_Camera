@@ -17,12 +17,15 @@
 package com.android.camera;
 
 import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.Image;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
@@ -34,17 +37,22 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.StringTokenizer;
 
 public class MenuHelper {
     private static final String TAG = "MenuHelper";
@@ -83,6 +91,7 @@ public class MenuHelper {
 
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
+    public static final String EMPTY_STRING = "";
 
     /** Activity result code used to report crop results.
      */
@@ -140,6 +149,71 @@ public class MenuHelper {
         }
     }
 
+    private static void setDetailsValue(View d, String text, int valueId) {
+        ((TextView) d.findViewById(valueId)).setText(text);
+    }
+
+    private static void hideDetailsRow(View d, int rowId) {
+        d.findViewById(rowId).setVisibility(View.GONE);
+    }
+
+    private static float setLatLngDetails(View d, Image img,
+                                          String tag, String refTag) {
+        String value = img.getExifTag(tag);
+        String ref = img.getExifTag(refTag);
+        float f = 0f;
+        if (value != null && ref != null) {
+            f = ExifInterface.convertRationalLatLonToFloat(
+                    value, ref);
+            value = String.valueOf(f);
+        }
+        int valueId = R.id.details_latitude_value;
+        int rowId = R.id.details_latitude_row;
+
+        if (tag == ExifInterface.TAG_GPS_LONGITUDE) {
+            valueId = R.id.details_longitude_value;
+            rowId = R.id.details_longitude_row;
+        }
+        if (value != null) {
+            setDetailsValue(d, value, valueId);
+        } else {
+            hideDetailsRow(d, rowId);
+        }
+        return f;
+    }
+
+    private static void setReverseGeocodingDetails(View d, Activity context,
+                                                   float lat, float lng) {
+        // Fill in reverse-geocoded address
+        String value = EMPTY_STRING;
+        try {
+            Geocoder geocoder = new Geocoder(context);
+            List<Address> address = geocoder.getFromLocation(
+                    lat, lng, 1);
+            Iterator<Address> iterator = address.iterator();
+
+            while (iterator.hasNext()) {
+                Address addr = iterator.next();
+                value += addr.getAddressLine(
+                        addr.getMaxAddressLineIndex());
+                Log.v(TAG, addr.toString());
+            }
+        } catch (IOException ex) {
+            // Ignore this exception.
+            value = EMPTY_STRING;
+            Log.e(TAG, "Geocoder exception: ", ex);
+        } catch (RuntimeException ex) {
+            // Ignore this exception.
+            value = EMPTY_STRING;
+            Log.e(TAG, "Geocoder exception: ", ex);
+        }
+        if (value != EMPTY_STRING) {
+            setDetailsValue(d, value, R.id.details_location_value);
+        } else {
+            hideDetailsRow(d, R.id.details_location_row);
+        }
+    }
+
     // Called when "Details" is clicked.
     // Displays detailed information about the image/video.
     private static boolean onDetailsClicked(MenuInvoker onInvoke,
@@ -167,7 +241,7 @@ public class MenuHelper {
 
                 long length = getImageFileSize(image);
                 String lengthString = length < 0
-                        ? ""
+                        ? EMPTY_STRING
                         : Formatter.formatFileSize(activity, length);
                 ((TextView) d
                     .findViewById(R.id.details_file_size_value))
@@ -176,6 +250,7 @@ public class MenuHelper {
                 int dimensionWidth = 0;
                 int dimensionHeight = 0;
                 if (isImage) {
+                    // getWidth is much slower than reading from EXIF
                     dimensionWidth = image.getWidth();
                     dimensionHeight = image.getHeight();
                     d.findViewById(R.id.details_duration_row)
@@ -275,15 +350,12 @@ public class MenuHelper {
 
                         String codec = retriever.extractMetadata(
                                 MediaMetadataRetriever.METADATA_KEY_CODEC);
-
-                        if (codec == null) {
-                            d.findViewById(R.id.details_codec_row).
-                                    setVisibility(View.GONE);
+                        if (codec != null) {
+                            setDetailsValue(d, codec, R.id.details_codec_value);
                         } else {
-                            ((TextView) d.findViewById(
-                                    R.id.details_codec_value))
-                                    .setText(codec);
+                            hideDetailsRow(d, R.id.details_codec_row);
                         }
+
                     } catch (RuntimeException ex) {
                         // Assume this is a corrupt video file.
                     } finally {
@@ -295,26 +367,69 @@ public class MenuHelper {
                     }
                 }
 
-                String dimensionsString = String.format(
-                        activity.getString(R.string.details_dimension_x),
-                        dimensionWidth, dimensionHeight);
-                ((TextView) d
-                    .findViewById(R.id.details_resolution_value))
-                    .setText(dimensionsString);
+                Image img = (Image) image;
+                String value = null;
+                if (dimensionWidth > 0 && dimensionHeight > 0) {
+                    value = String.format(
+                            activity.getString(R.string.details_dimension_x),
+                            dimensionWidth, dimensionHeight);
+                } else {
+                    String width = img.getExifTag(ExifInterface.TAG_IMAGE_WIDTH);
+                    String height = img.getExifTag(ExifInterface.TAG_IMAGE_LENGTH);
+                    if (width != null && height != null) {
+                        value = EMPTY_STRING + width + " x " + height;
+                    }
+                }
+                if (value != null) {
+                    setDetailsValue(d, value, R.id.details_resolution_value);
+                } else {
+                    hideDetailsRow(d, R.id.details_resolution_row);
+                }
 
-                String dateString = "";
+                value = img.getExifTag(ExifInterface.TAG_MAKE);
+                if (value != null) {
+                    setDetailsValue(d, value, R.id.details_make_value);
+                } else {
+                    hideDetailsRow(d, R.id.details_make_row);
+                }
+
+                value = img.getExifTag(ExifInterface.TAG_MODEL);
+                if (value != null) {
+                    setDetailsValue(d, value, R.id.details_model_value);
+                } else {
+                    hideDetailsRow(d, R.id.details_model_row);
+                }
+
+                value = img.getExifTag(ExifInterface.TAG_WHITE_BALANCE);
+                if (value != null) {
+                    value = ExifInterface.whiteBalanceToString(
+                            Integer.parseInt(value));
+                }
+                if (value != null) {
+                    setDetailsValue(d, value, R.id.details_whitebalance_value);
+                } else {
+                    hideDetailsRow(d, R.id.details_whitebalance_row);
+                }
+
+                float lat = setLatLngDetails(d, img,
+                        ExifInterface.TAG_GPS_LATITUDE,
+                        ExifInterface.TAG_GPS_LATITUDE_REF);
+                float lng = setLatLngDetails(d, img,
+                        ExifInterface.TAG_GPS_LONGITUDE,
+                        ExifInterface.TAG_GPS_LONGITUDE_REF);
+                setReverseGeocodingDetails(d, activity, lat, lng);
+
+                value = EMPTY_STRING;
                 long dateTaken = image.getDateTaken();
                 if (dateTaken != 0) {
                     Date date = new Date(image.getDateTaken());
                     SimpleDateFormat dateFormat = new SimpleDateFormat();
-                    dateString = dateFormat.format(date);
-
-                    ((TextView) d
-                            .findViewById(R.id.details_date_taken_value))
-                            .setText(dateString);
+                    value = dateFormat.format(date);
+                }
+                if (value != EMPTY_STRING) {
+                    setDetailsValue(d, value, R.id.details_date_taken_value);
                 } else {
-                    d.findViewById(R.id.details_date_taken_row)
-                            .setVisibility(View.GONE);
+                    hideDetailsRow(d, R.id.details_date_taken_row);
                 }
 
                 builder.setNeutralButton(R.string.details_ok,

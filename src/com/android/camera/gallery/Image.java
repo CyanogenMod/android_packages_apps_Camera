@@ -43,6 +43,7 @@ public class Image extends BaseImage implements IImage {
     private static final String TAG = "BaseImage";
 
     private int mRotation;
+    private ExifInterface mExif;
 
     public Image(long id, long miniThumbMagic, ContentResolver cr,
             BaseImageList container, int cursorRow, int rotation) {
@@ -102,7 +103,7 @@ public class Image extends BaseImage implements IImage {
      */
     public void addExifTag(String tag, String value) {
         if (mExifData == null) {
-            mExifData = new HashMap<String, String>();
+            loadExifData();
         }
         // If the key is already there, ignore it.
         if (!mExifData.containsKey(tag)) {
@@ -116,14 +117,28 @@ public class Image extends BaseImage implements IImage {
      *
      * @param tag
      */
-    public int getExifTagInt(String tag) {
-        if (mExifData != null) {
-            String tagValue = mExifData.get(tag);
+    public int getExifTagInt(String tag, int defaultValue) {
+        String tagValue = getExifTag(tag);
+        try {
             if (tagValue != null) {
                 return Integer.parseInt(tagValue);
             }
+        } catch (NumberFormatException ex) {
+            // Simply return defaultValue if exception is thrown.
+            Log.v(TAG, ex.toString());
         }
-        return 0;
+        return defaultValue;
+    }
+
+    /**
+     * Return the value of the Exif tag as a String. It's caller's
+     * responsibility to check nullity.
+     */
+    public String getExifTag(String tag) {
+        if (mExifData == null) {
+            loadExifData();
+        }
+        return mExifData.get(tag);
     }
 
     public boolean isReadonly() {
@@ -141,7 +156,7 @@ public class Image extends BaseImage implements IImage {
      */
     public void removeExifTag(String tag) {
         if (mExifData == null) {
-            mExifData = new HashMap<String, String>();
+            loadExifData();
         }
         mExifData.remove(tag);
     }
@@ -153,10 +168,7 @@ public class Image extends BaseImage implements IImage {
      */
     public void replaceExifTag(String tag, String value) {
         if (mExifData == null) {
-            mExifData = new HashMap<String, String>();
-        }
-        if (!mExifData.containsKey(tag)) {
-            mExifData.remove(tag);
+            loadExifData();
         }
         mExifData.put(tag, value);
     }
@@ -254,42 +266,49 @@ public class Image extends BaseImage implements IImage {
                 image, jpegData, orientation, filePath);
     }
 
+    private void loadExifData() {
+        Cursor c = getCursor();
+        String filePath;
+        synchronized (c) {
+            filePath = c.getString(mContainer.indexData());
+        }
+        ExifInterface mExif = new ExifInterface(filePath);
+        if (mExifData == null) {
+            mExifData = mExif.getAttributes();
+        }
+    }
+
+    private void saveExifData() {
+        if (mExif != null && mExifData != null) {
+            mExif.saveAttributes(mExifData);
+        }
+    }
+
     private void setExifRotation(int degrees) {
         try {
-            Cursor c = getCursor();
-            String filePath;
-            synchronized (c) {
-                filePath = c.getString(mContainer.indexData());
-            }
-            synchronized (ExifInterface.class) {
-                ExifInterface exif = new ExifInterface(filePath);
-                if (mExifData == null) {
-                    mExifData = exif.getAttributes();
-                }
-                if (degrees < 0) degrees += 360;
+            if (degrees < 0) degrees += 360;
 
-                int orientation = ExifInterface.ORIENTATION_NORMAL;
-                switch (degrees) {
-                    case 0:
-                        orientation = ExifInterface.ORIENTATION_NORMAL;
-                        break;
-                    case 90:
-                        orientation = ExifInterface.ORIENTATION_ROTATE_90;
-                        break;
-                    case 180:
-                        orientation = ExifInterface.ORIENTATION_ROTATE_180;
-                        break;
-                    case 270:
-                        orientation = ExifInterface.ORIENTATION_ROTATE_270;
-                        break;
-                }
-
-                replaceExifTag(ExifInterface.TAG_ORIENTATION,
-                        Integer.toString(orientation));
-                replaceExifTag("UserComment",
-                        "saveRotatedImage comment orientation: " + orientation);
-                exif.saveAttributes(mExifData);
+            int orientation = ExifInterface.ORIENTATION_NORMAL;
+            switch (degrees) {
+                case 0:
+                    orientation = ExifInterface.ORIENTATION_NORMAL;
+                    break;
+                case 90:
+                    orientation = ExifInterface.ORIENTATION_ROTATE_90;
+                    break;
+                case 180:
+                    orientation = ExifInterface.ORIENTATION_ROTATE_180;
+                    break;
+                case 270:
+                    orientation = ExifInterface.ORIENTATION_ROTATE_270;
+                    break;
             }
+
+            replaceExifTag(ExifInterface.TAG_ORIENTATION,
+                    Integer.toString(orientation));
+            replaceExifTag("UserComment",
+                    "saveRotatedImage comment orientation: " + orientation);
+            saveExifData();
         } catch (RuntimeException ex) {
             Log.e(TAG, "unable to save exif data with new orientation "
                     + fullSizeImageUri());

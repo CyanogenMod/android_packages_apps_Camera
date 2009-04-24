@@ -462,6 +462,18 @@
     <!-- Label in message of Details dialog  -->
     <string name="details_image_resolution">Resolution:</string>
     <!-- Label in message of Details dialog  -->
+    <string name="details_image_make">Manufacturer:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_model">Model:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_whitebalance">WhiteBalance:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_latitude">GPS Latitude:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_longitude">GPS Longitude:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_location">Location:</string>
+    <!-- Label in message of Details dialog  -->
     <string name="details_duration">Duration:</string>
     <!-- Label in message of Details dialog  -->
     <string name="details_date_taken">Date taken:</string>

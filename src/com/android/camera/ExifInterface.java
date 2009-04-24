@@ -30,6 +30,10 @@ public class ExifInterface {
     public static final int ORIENTATION_UNDEFINED = 0;
     public static final int ORIENTATION_NORMAL = 1;
 
+    // Constants used for white balance
+    public static final int WHITEBALANCE_AUTO = 0;
+    public static final int WHITEBALANCE_MANUAL = 1;
+
     // left right reversed mirror
     public static final int ORIENTATION_FLIP_HORIZONTAL = 2;
     public static final int ORIENTATION_ROTATE_180 = 3;
@@ -64,6 +68,7 @@ public class ExifInterface {
 
     static final String TAG_GPS_LATITUDE_REF = "GPSLatitudeRef";
     static final String TAG_GPS_LONGITUDE_REF = "GPSLongitudeRef";
+    static final String TAG_WHITE_BALANCE = "WhiteBalance";
 
     private boolean mSavedAttributes = false;
     private boolean mHasThumbnail = false;
@@ -163,6 +168,23 @@ public class ExifInterface {
     }
 
     /**
+     * Given a numerical white balance value, return a
+     * human-readable string describing it.
+     * @param orientation
+     * @return String
+     */
+    public static String whiteBalanceToString(int whitebalance) {
+        switch (whitebalance) {
+            case WHITEBALANCE_AUTO:
+                return "Auto";
+            case WHITEBALANCE_MANUAL:
+                return "Manual";
+            default:
+                return "";
+        }
+    }
+
+    /**
      * Given a numerical orientation, return a human-readable string describing
      * the orientation.
      */
@@ -227,8 +249,8 @@ public class ExifInterface {
         return getThumbnailNative(mFilename);
     }
 
-    public static String convertRationalLatLonToDecimalString(
-            String rationalString, String ref, boolean usePositiveNegative) {
+    public static float convertRationalLatLonToFloat(
+            String rationalString, String ref) {
         try {
             String [] parts = rationalString.split(",");
 
@@ -246,6 +268,20 @@ public class ExifInterface {
                     / Float.parseFloat(pair[1].trim());
 
             float result = degrees + (minutes / 60F) + (seconds / (60F * 60F));
+            if ((ref.equals("S") || ref.equals("W"))) {
+                return -result;
+            }
+            return result;
+        } catch (RuntimeException ex) {
+            // if for whatever reason we can't parse the lat long then return
+            // null
+            return 0f;
+        }
+    }
+
+    public static String convertRationalLatLonToDecimalString(
+            String rationalString, String ref, boolean usePositiveNegative) {
+            float result = convertRationalLatLonToFloat(rationalString, ref);
 
             String preliminaryResult = String.valueOf(result);
             if (usePositiveNegative) {
@@ -255,11 +291,6 @@ public class ExifInterface {
                 return preliminaryResult + String.valueOf((char) 186) + " "
                         + ref;
             }
-        } catch (RuntimeException ex) {
-            // if for whatever reason we can't parse the lat long then return
-            // null
-            return null;
-        }
     }
 
     public static String makeLatLongString(double d) {
