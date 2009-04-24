@@ -229,15 +229,23 @@ public class BitmapManager {
      */
     public Bitmap decodeFileDescriptor(FileDescriptor fd,
                                        BitmapFactory.Options options) {
+        if (options.mCancel) {
+            return null;
+        }
+
         // Does the global switch turn on?
-        if (!canDecode() || options.mCancel) {
-           return null;
+        if (!canDecode()) {
+            // This is a bug, and we should fix the caller.
+            Util.debugWhere(TAG, "canDecode() == false");
+            return null;
         }
 
         // Can current thread decode?
         Thread thread = Thread.currentThread();
         if (!canThreadDecoding(thread)) {
-           return null;
+            // This is a bug, and we should fix the caller.
+            Util.debugWhere(TAG, "canThreadDecoding() == false");
+            return null;
         }
 
         setDecodingOptions(thread, options);
