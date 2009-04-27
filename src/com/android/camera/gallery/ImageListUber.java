@@ -20,6 +20,7 @@ import com.android.camera.ImageManager;
 
 import android.net.Uri;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -54,11 +55,13 @@ public class ImageListUber implements IImageList {
         mSort = sort;
     }
 
-    public void checkThumbnails(ThumbCheckCallback cb, int totalThumbnails) {
-        for (IImageList i : mSubList) {
-            int count = i.getCount();
-            i.checkThumbnails(cb, totalThumbnails);
-            totalThumbnails -= count;
+    public void checkThumbnail(int index) throws IOException {
+        for (IImageList list : mSubList) {
+            int count = list.getCount();
+            if (count > index) {
+                list.checkThumbnail(index);
+            }
+            index -= count;
         }
     }
 

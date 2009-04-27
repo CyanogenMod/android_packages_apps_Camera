@@ -342,7 +342,7 @@ public abstract class BaseImage implements IImage {
             long dbMagic = mMiniThumbMagic;
             if (dbMagic == 0 || dbMagic == id) {
                 dbMagic = ((BaseImageList) getContainer())
-                        .checkThumbnail(this, getCursor(), getRow());
+                        .checkThumbnail(this, getRow(), null);
             }
 
             synchronized (sMiniThumbData) {
@@ -353,7 +353,7 @@ public abstract class BaseImage implements IImage {
                     byte[][] createdThumbData = new byte[1][];
                     try {
                         dbMagic = ((BaseImageList) getContainer())
-                                .checkThumbnail(this, getCursor(), getRow(),
+                                .checkThumbnail(this, getRow(),
                                 createdThumbData);
                     } catch (IOException ex) {
                         // Typically IOException because the sd card is full.

@@ -207,17 +207,14 @@ public abstract class BaseImageList implements IImageList {
         return bitmap;
     }
 
-    // returns id
-    public long checkThumbnail(BaseImage existingImage, Cursor c, int i)
-            throws IOException {
-        return checkThumbnail(existingImage, c, i, null);
+    public void checkThumbnail(int index) throws IOException {
+        checkThumbnail(null, index, null);
     }
 
     /**
      * Checks to see if a mini thumbnail exists in the cache. If not, tries to
      * create it and add it to the cache.
      * @param existingImage
-     * @param c
      * @param i
      * @param createdThumbnailData if this parameter is non-null, and a new
      *         mini-thumbnail bitmap is created, the new bitmap's data will be
@@ -228,13 +225,14 @@ public abstract class BaseImageList implements IImageList {
      *         thumbnail even if the sdcard is full.
      * @throws IOException
      */
-    public long checkThumbnail(BaseImage existingImage, Cursor c, int i,
+    public long checkThumbnail(BaseImage existingImage, int i,
             byte[][] createdThumbnailData) throws IOException {
         long magic, id;
         if (BitmapManager.instance().acquireResourceLock() == false) {
             return -1;
         }
 
+        Cursor c = getCursor();
         try {
             if (existingImage == null) {
                 // if we don't have an Image object then get the id and magic
@@ -318,29 +316,6 @@ public abstract class BaseImageList implements IImageList {
             }
         } finally {
             BitmapManager.instance().releaseResourceLock();
-        }
-    }
-
-    public void checkThumbnails(ThumbCheckCallback cb, int totalThumbnails) {
-        if (!ImageManager.hasStorage()) {
-            Log.v(TAG, "bailing from the image checker thread -- no storage");
-            return;
-        }
-
-        Cursor c = getCursor();
-        for (int i = 0; i < c.getCount(); i++) {
-            try {
-                checkThumbnail(null, c, i);
-            } catch (IOException ex) {
-                Log.e(TAG, "!!!!! failed to check thumbnail..."
-                        + " was the sd card removed? - " + ex.getMessage());
-                break;
-            }
-            if (cb != null) {
-                if (!cb.checking(i, totalThumbnails)) {
-                    break;
-                }
-            }
         }
     }
 

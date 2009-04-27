@@ -48,14 +48,7 @@ public class DrmImageList extends ImageList implements IImageList {
     }
 
     @Override
-    public void checkThumbnails(
-            IImageList.ThumbCheckCallback cb, int totalCount) {
-        // do nothing
-    }
-
-    @Override
-    public long checkThumbnail(BaseImage existingImage, Cursor c, int i) {
-        return 0;
+    public void checkThumbnail(int index) {
     }
 
     private class DrmImage extends Image {

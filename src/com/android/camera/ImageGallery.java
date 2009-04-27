@@ -79,9 +79,8 @@ public class ImageGallery extends Activity implements
     Handler mHandler = new Handler();
     boolean mLayoutComplete;
     boolean mPausing = false;
-    boolean mStopThumbnailChecking = false;
+    ImageLoader mLoader;
 
-    BitmapThread mThumbnailCheckThread;
     GridViewSpecial mGvs;
 
     // The index of the first picture in GridViewSpecial.
@@ -117,6 +116,8 @@ public class ImageGallery extends Activity implements
             mGvs.setOnCreateContextMenuListener(
                     new CreateContextMenuListener());
         }
+
+        mLoader = new ImageLoader(mHandler);
     }
 
     private MenuItem addSlideShowMenu(Menu menu, int position) {
@@ -347,7 +348,7 @@ public class ImageGallery extends Activity implements
             mAllImages = allImages(!unmounted);
             mGvs.setImageList(mAllImages);
             mGvs.setDrawAdapter(this);
-            mGvs.init(mHandler);
+            mGvs.init(mHandler, mLoader);
             mGvs.start();
             mGvs.requestLayout();
             checkThumbnails();
@@ -427,51 +428,14 @@ public class ImageGallery extends Activity implements
     }
 
     private void stopCheckingThumbnails() {
-        mStopThumbnailChecking = true;
-        if (mThumbnailCheckThread != null) {
-            mThumbnailCheckThread.join();
-        }
-        mStopThumbnailChecking = false;
+        mLoader.stopCheckingThumbnails();
     }
 
     private void checkThumbnails() {
-        final long startTime = System.currentTimeMillis();
-        mThumbnailCheckThread = new BitmapThread(new Runnable() {
-            public void run() {
-                Resources resources = getResources();
-                TextView progressTextView =
-                        (TextView) findViewById(R.id.loading_text);
-                String progressTextFormatString =
-                        resources.getString(
-                        R.string.loading_progress_format_string);
-
-                PowerManager pm = (PowerManager)
-                        getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock mWakeLock = pm.newWakeLock(
-                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
-                        "ImageGallery.checkThumbnails");
-                mWakeLock.acquire();
-                IImageList.ThumbCheckCallback r = new MyThumbCheckCallback(
-                        progressTextView, startTime, progressTextFormatString);
-                IImageList imageList = allImages(true);
-                imageList.checkThumbnails(r, imageList.getCount());
-                mWakeLock.release();
-                mThumbnailCheckThread = null;
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        findViewById(R.id.loading_indicator).setVisibility(
-                                View.GONE);
-                    }
-                });
-            }
-        });
-
-        mThumbnailCheckThread.setName("check_thumbnails");
-        mThumbnailCheckThread.start();
-        mThumbnailCheckThread.toBackground();
-
-        IImageList list = allImages(true);
-        mNoImagesView.setVisibility(list.getCount() > 0
+       ImageLoader.ThumbCheckCallback cb = new MyThumbCheckCallback();
+       IImageList imageList = allImages(true);
+       mLoader.startCheckingThumbnails(imageList, cb);
+       mNoImagesView.setVisibility(imageList.getCount() > 0
                 ? View.GONE
                 : View.VISIBLE);
     }
@@ -667,25 +631,27 @@ public class ImageGallery extends Activity implements
         }
     }
 
-    private final class MyThumbCheckCallback implements IImageList.ThumbCheckCallback {
-        private final TextView progressTextView;
-        private final long startTime;
-        private final String progressTextFormatString;
+    private final class MyThumbCheckCallback implements
+            ImageLoader.ThumbCheckCallback {
+        private final TextView mProgressTextView;
+        private final String mProgressTextFormatString;
         boolean mDidSetProgress = false;
+        private PowerManager.WakeLock mWakeLock;
 
-        private MyThumbCheckCallback(TextView progressTextView, long startTime,
-                String progressTextFormatString) {
-            this.progressTextView = progressTextView;
-            this.startTime = startTime;
-            this.progressTextFormatString = progressTextFormatString;
+        private MyThumbCheckCallback() {
+            Resources resources = getResources();
+            mProgressTextView = (TextView) findViewById(R.id.loading_text);
+            mProgressTextFormatString = resources.getString(
+                    R.string.loading_progress_format_string);
+            PowerManager pm = (PowerManager)
+                    getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(
+                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
+                    "ImageGallery.checkThumbnails");
+            mWakeLock.acquire();
         }
 
-        public boolean checking(final int count,
-                final int maxCount) {
-            if (mStopThumbnailChecking) {
-                return false;
-            }
-
+        public boolean checking(final int count, final int maxCount) {
             if (!mLayoutComplete) {
                 return true;
             }
@@ -693,30 +659,37 @@ public class ImageGallery extends Activity implements
             if (!mDidSetProgress) {
                 mHandler.post(new Runnable() {
                         public void run() {
-                            findViewById(
-                            R.id.loading_indicator)
-                            .setVisibility(View.VISIBLE);
+                            View v = findViewById(R.id.loading_indicator);
+                            v.setVisibility(View.VISIBLE);
                         }
                 });
                 mDidSetProgress = true;
             }
             mGvs.postInvalidate();
 
-            // If there is a new image done and it has been
-            // one second, update the progress text.
-            if (System.currentTimeMillis()
-                    - startTime > 1000) {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        String s = String.format(
-                                progressTextFormatString,
-                                maxCount - count);
-                        progressTextView.setText(s);
-                    }
-                });
-            }
+            // Update the progress text.
+            mHandler.post(new Runnable() {
+                public void run() {
+                    String s = String.format(mProgressTextFormatString,
+                            maxCount - count);
+                    mProgressTextView.setText(s);
+                }
+            });
 
             return !mPausing;
+        }
+
+        public void done() {
+            // done() should only be called once. Use mWakeLock to verify this.
+            assert mWakeLock.isHeld();
+
+            mWakeLock.release();
+            mHandler.post(new Runnable() {
+                public void run() {
+                    findViewById(R.id.loading_indicator).setVisibility(
+                            View.GONE);
+                }
+            });
         }
     }
 
@@ -902,7 +875,4 @@ public class ImageGallery extends Activity implements
             return mMissingVideoThumbnailBitmap;
         }
     }
-
 }
-
-

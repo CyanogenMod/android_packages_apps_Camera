@@ -17,11 +17,14 @@
 package com.android.camera;
 
 import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -36,10 +39,21 @@ public class ImageLoader {
     private final ArrayList<WorkItem> mInProgress = new ArrayList<WorkItem>();
 
     // the worker thread and a done flag so we know when to exit
-    // currently we only exit from finalize
     private boolean mDone;
     private Thread mDecodeThread;
     private final Handler mHandler;
+
+    // Thumbnail checking will be done when there is no getBitmap requests
+    // need to be processed.
+    private ThumbnailChecker mThumbnailChecker;
+
+    /**
+     * Notify interface of how many thumbnails are processed.
+     */
+    public interface ThumbCheckCallback {
+        public boolean checking(int current, int count);
+        public void done();
+    }
 
     public interface LoadedCallback {
         public void run(Bitmap result);
@@ -118,6 +132,7 @@ public class ImageLoader {
 
     public ImageLoader(Handler handler) {
         mHandler = handler;
+        mThumbnailChecker = new ThumbnailChecker();
         start();
     }
 
@@ -134,13 +149,23 @@ public class ImageLoader {
                         workItem = mQueue.remove(0);
                         mInProgress.add(workItem);
                     } else {
-                        try {
-                            mQueue.wait();
-                        } catch (InterruptedException ex) {
-                            // ignore the exception
+                        if (!mThumbnailChecker.hasMoreThumbnailsToCheck()) {
+                            try {
+                                mQueue.wait();
+                            } catch (InterruptedException ex) {
+                                // ignore the exception
+                            }
+                            continue;
                         }
-                        continue;
                     }
+                }
+
+                // This holds if and only if the above
+                // hasMoreThumbnailsToCheck() returns true. (We put the call
+                // here because we want to release the lock on mQueue.
+                if (workItem == null) {
+                    mThumbnailChecker.checkNextThumbnail();
+                    continue;
                 }
 
                 final Bitmap b = workItem.mImage.miniThumbBitmap();
@@ -197,5 +222,93 @@ public class ImageLoader {
                 // so now what?
             }
         }
+        stopCheckingThumbnails();
+    }
+
+    // Passthrough to ThumbnailChecker.
+    public void startCheckingThumbnails(IImageList imageList,
+            ThumbCheckCallback cb) {
+        mThumbnailChecker.startCheckingThumbnails(imageList, cb);
+        // Kick WorkerThread to start working.
+        synchronized (mQueue) {
+            mQueue.notifyAll();
+        }
+    }
+
+    public void stopCheckingThumbnails() {
+        mThumbnailChecker.stopCheckingThumbnails();
+    }
+}
+
+// This is part of ImageLoader which is responsible for checking thumbnails.
+//
+// The methods of ThumbnailChecker need to be synchronized because the data
+// will also be accessed by the WorkerThread. The methods of ThumbnailChecker
+// is only called by ImageLoader.
+class ThumbnailChecker {
+    private static final String TAG = "ThumbnailChecker";
+
+    private IImageList mImageListToCheck;  // The image list we will check.
+    private int mTotalToCheck;  // total number of thumbnails to check.
+    private int mNextToCheck;  // next thumbnail to check,
+                               // -1 if no further checking is needed.
+    private ImageLoader.ThumbCheckCallback mThumbCheckCallback;
+
+    ThumbnailChecker() {
+        mNextToCheck = -1;
+    }
+
+    // Both imageList and cb must be non-null.
+    synchronized void startCheckingThumbnails(IImageList imageList,
+            ImageLoader.ThumbCheckCallback cb) {
+        assert imageList != null;
+        assert cb != null;
+        mImageListToCheck = imageList;
+        mTotalToCheck = imageList.getCount();
+        mNextToCheck = 0;
+        mThumbCheckCallback = cb;
+
+        if (!ImageManager.hasStorage()) {
+            Log.v(TAG, "bailing from the image checker -- no storage");
+            stopCheckingThumbnails();
+        }
+    }
+
+    synchronized void stopCheckingThumbnails() {
+        if (mThumbCheckCallback == null) return;  // alreay stopped.
+        mThumbCheckCallback.done();
+        mImageListToCheck = null;
+        mTotalToCheck = 0;
+        mNextToCheck = -1;
+        mThumbCheckCallback = null;
+    }
+
+    synchronized boolean hasMoreThumbnailsToCheck() {
+        return mNextToCheck != -1;
+    }
+
+    synchronized void checkNextThumbnail() {
+        if (mNextToCheck == -1) {
+            return;
+        }
+
+        if (mNextToCheck >= mTotalToCheck) {
+            stopCheckingThumbnails();
+            return;
+        }
+
+        try {
+            mImageListToCheck.checkThumbnail(mNextToCheck);
+        } catch (IOException ex) {
+            Log.e(TAG, "Failed to check thumbnail..."
+                    + " was the sd card removed? - " + ex.getMessage());
+            stopCheckingThumbnails();
+        }
+
+        if (!mThumbCheckCallback.checking(mNextToCheck, mTotalToCheck)) {
+            stopCheckingThumbnails();
+        }
+
+        mNextToCheck++;
     }
 }
