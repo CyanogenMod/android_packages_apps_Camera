@@ -228,94 +228,87 @@ public abstract class BaseImageList implements IImageList {
     public long checkThumbnail(BaseImage existingImage, int i,
             byte[][] createdThumbnailData) throws IOException {
         long magic, id;
-        if (BitmapManager.instance().acquireResourceLock() == false) {
-            return -1;
-        }
 
         Cursor c = getCursor();
-        try {
-            if (existingImage == null) {
-                // if we don't have an Image object then get the id and magic
-                // from the cursor.  Synchronize on the cursor object.
-                synchronized (c) {
-                    if (!c.moveToPosition(i)) {
-                        return -1;
-                    }
-                    magic = c.getLong(indexMiniThumbMagic());
-                    id = c.getLong(indexId());
-                }
-            } else {
-                // if we have an Image object then ask them for the magic/id
-                magic = existingImage.mMiniThumbMagic;
-                id = existingImage.fullSizeImageId();
-            }
-
-            if (magic != 0) {
-                long fileMagic = mMiniThumbFile.getMagic(id);
-                if (fileMagic == magic && magic != 0 && magic != id) {
-                    return magic;
-                }
-            }
-
-            // If we can't retrieve the thumbnail, first check if there is one
-            // embedded in the EXIF data. If not, or it's not big enough,
-            // decompress the full size image.
-            Bitmap bitmap = null;
-            String filePath = null;
+        if (existingImage == null) {
+            // if we don't have an Image object then get the id and magic
+            // from the cursor.  Synchronize on the cursor object.
             synchronized (c) {
-                if (c.moveToPosition(i)) {
-                    filePath = c.getString(indexData());
+                if (!c.moveToPosition(i)) {
+                    return -1;
                 }
+                magic = c.getLong(indexMiniThumbMagic());
+                id = c.getLong(indexId());
             }
-            if (filePath != null) {
-                String mimeType = c.getString(indexMimeType());
-                boolean isVideo = Util.isVideoMimeType(mimeType);
-                if (isVideo) {
-                    bitmap = Util.createVideoThumbnail(filePath);
-                } else {
-                    bitmap = createThumbnailFromEXIF(filePath, id);
-                    if (bitmap == null) {
-                        bitmap = createThumbnailFromUri(c, id);
-                    }
-                }
-                synchronized (c) {
-                    int degrees = 0;
-                    if (c.moveToPosition(i)) {
-                        int column = indexOrientation();
-                        if (column >= 0) degrees = c.getInt(column);
-                    }
-                    if (degrees != 0) {
-                        bitmap = Util.rotate(bitmap, degrees);
-                    }
-                }
-            }
+        } else {
+            // if we have an Image object then ask them for the magic/id
+            magic = existingImage.mMiniThumbMagic;
+            id = existingImage.fullSizeImageId();
+        }
 
-            // make a new magic number since things are out of sync
-            do {
-                magic = sRandom.nextLong();
-            } while (magic == 0);
-            if (bitmap != null) {
-                byte [] data = Util.miniThumbData(bitmap);
-                if (createdThumbnailData != null) {
-                    createdThumbnailData[0] = data;
-                }
-                saveMiniThumbToFile(data, id, magic);
-            }
-
-            synchronized (c) {
-                c.moveToPosition(i);
-                c.updateLong(indexMiniThumbMagic(), magic);
-                c.commitUpdates();
-                c.requery();
-                c.moveToPosition(i);
-
-                if (existingImage != null) {
-                    existingImage.mMiniThumbMagic = magic;
-                }
+        if (magic != 0) {
+            long fileMagic = mMiniThumbFile.getMagic(id);
+            if (fileMagic == magic && magic != 0 && magic != id) {
                 return magic;
             }
-        } finally {
-            BitmapManager.instance().releaseResourceLock();
+        }
+
+        // If we can't retrieve the thumbnail, first check if there is one
+        // embedded in the EXIF data. If not, or it's not big enough,
+        // decompress the full size image.
+        Bitmap bitmap = null;
+        String filePath = null;
+        synchronized (c) {
+            if (c.moveToPosition(i)) {
+                filePath = c.getString(indexData());
+            }
+        }
+        if (filePath != null) {
+            String mimeType = c.getString(indexMimeType());
+            boolean isVideo = Util.isVideoMimeType(mimeType);
+            if (isVideo) {
+                bitmap = Util.createVideoThumbnail(filePath);
+            } else {
+                bitmap = createThumbnailFromEXIF(filePath, id);
+                if (bitmap == null) {
+                    bitmap = createThumbnailFromUri(c, id);
+                }
+            }
+            synchronized (c) {
+                int degrees = 0;
+                if (c.moveToPosition(i)) {
+                    int column = indexOrientation();
+                    if (column >= 0) degrees = c.getInt(column);
+                }
+                if (degrees != 0) {
+                    bitmap = Util.rotate(bitmap, degrees);
+                }
+            }
+        }
+
+        // make a new magic number since things are out of sync
+        do {
+            magic = sRandom.nextLong();
+        } while (magic == 0);
+        if (bitmap != null) {
+            byte [] data = Util.miniThumbData(bitmap);
+            if (createdThumbnailData != null) {
+                createdThumbnailData[0] = data;
+            }
+            saveMiniThumbToFile(data, id, magic);
+        }
+
+        synchronized (c) {
+            c.moveToPosition(i);
+            c.updateLong(indexMiniThumbMagic(), magic);
+            c.commitUpdates();
+            c.requery();
+            c.moveToPosition(i);
+
+            if (existingImage != null) {
+                existingImage.mMiniThumbMagic = magic;
+            }
+            return magic;
         }
     }
 
