@@ -40,6 +40,7 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
+    public static final String KEY_ISO = "pref_camera_iso_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
     private ListPreference mVideoQuality;
@@ -49,6 +50,7 @@ public class CameraSettings extends PreferenceActivity implements
     private ListPreference mPictureSize;
     private ListPreference mJpegQuality;
     private ListPreference mFocusMode;
+    private ListPreference mIso;
     private Parameters mParameters;
 
     @Override
@@ -70,6 +72,7 @@ public class CameraSettings extends PreferenceActivity implements
         updatePictureSizeSummary();
         updateJpegQualitySummary();
         updateFocusModeSummary();
+        updateIsoSummary();
     }
 
     private void initUI() {
@@ -81,6 +84,7 @@ public class CameraSettings extends PreferenceActivity implements
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
         mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
+        mIso = (ListPreference) findPreference(KEY_ISO);
         getPreferenceScreen().getSharedPreferences().
                 registerOnSharedPreferenceChangeListener(this);
 
@@ -108,6 +112,11 @@ public class CameraSettings extends PreferenceActivity implements
         createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE,
                        R.array.pref_camera_picturesize_entries,
                        R.array.pref_camera_picturesize_entryvalues);
+
+        // Create iso settings.
+        createSettings(mIso, Camera.SUPPORTED_ISO,
+                       R.array.pref_camera_iso_entries,
+                       R.array.pref_camera_iso_entryvalues);
 
         // Set default JPEG quality value if it is empty.
         if (mJpegQuality.getValue() == null) {
@@ -194,6 +203,10 @@ public class CameraSettings extends PreferenceActivity implements
         mFocusMode.setSummary(mFocusMode.getEntry());
     }
 
+    private void updateIsoSummary() {
+        mIso.setSummary(mIso.getEntry());
+    }
+
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals(KEY_VIDEO_QUALITY)) {
@@ -210,6 +223,8 @@ public class CameraSettings extends PreferenceActivity implements
             updateFocusModeSummary();
         } else if (key.equals(KEY_BRIGHTNESS)) {
             updateBrightnessSummary();
+        } else if (key.equals(KEY_ISO)) {
+            updateIsoSummary();
         }
     }
 }
