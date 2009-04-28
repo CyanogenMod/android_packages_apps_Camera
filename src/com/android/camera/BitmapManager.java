@@ -60,7 +60,7 @@ public class BitmapManager {
             new WeakHashMap<Thread, ThreadStatus>();
     private boolean mAllowDecoding = false;
     private boolean mLocked = false;
-    private boolean mCheckResourceLock = true;
+    private boolean mCheckResourceLock = false;
     private static BitmapManager sManager;
 
     public static BitmapManager instance() {
