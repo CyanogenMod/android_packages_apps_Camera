@@ -410,6 +410,19 @@ public class ImageManager {
             }
         }
 
+        // Optimization: If some of the lists are empty, remove them.
+        // If there is only one remaining list, return it directly.
+
+        for (IImageList sublist : l) {
+            if (sublist.isEmpty()) {
+                l.remove(sublist);
+            }
+        }
+
+        if (l.size() == 1) {
+            return l.get(0);
+        }
+
         IImageList [] imageList = l.toArray(new IImageList[l.size()]);
         return new ImageListUber(imageList, sort);
     }
