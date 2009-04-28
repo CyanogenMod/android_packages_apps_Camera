@@ -357,7 +357,16 @@ public class Util {
     }
 
     public static void debugWhere(String tag, String msg) {
-        Exception ex = new Exception();
-        Log.d(tag, msg, ex);
+        Log.d(tag, msg + " --- stack trace begins: ");
+        StackTraceElement elements[] = Thread.currentThread().getStackTrace();
+        // skip first 3 element, they are not related to the caller
+        for (int i = 3, n = elements.length; i < n; ++i) {
+            StackTraceElement st = elements[i];
+            String message = String.format("    at %s.%s(%s:%s)",
+                    st.getClassName(), st.getMethodName(), st.getFileName(),
+                    st.getLineNumber());
+            Log.d(tag, message);
+        }
+        Log.d(tag, msg + " --- stack trace ends.");
     }
 }
