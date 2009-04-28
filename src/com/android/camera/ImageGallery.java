@@ -636,6 +636,7 @@ public class ImageGallery extends Activity implements
         private final TextView mProgressTextView;
         private final String mProgressTextFormatString;
         boolean mDidSetProgress = false;
+        private long lastUpdateTime;  // initialized to 0
         private PowerManager.WakeLock mWakeLock;
 
         private MyThumbCheckCallback() {
@@ -667,15 +668,20 @@ public class ImageGallery extends Activity implements
             }
             mGvs.postInvalidate();
 
-            // Update the progress text.
-            mHandler.post(new Runnable() {
-                public void run() {
-                    String s = String.format(mProgressTextFormatString,
-                            maxCount - count);
-                    mProgressTextView.setText(s);
-                }
-            });
-
+            // Update the progress text. (Only if it has been one
+            // second since last update, to avoid the UI thread
+            // being overwhelmed by the update).
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastUpdateTime > 1000) {
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        String s = String.format(mProgressTextFormatString,
+                                maxCount - count);
+                        mProgressTextView.setText(s);
+                    }
+                });
+                lastUpdateTime = currentTime;
+            }
             return !mPausing;
         }
 
