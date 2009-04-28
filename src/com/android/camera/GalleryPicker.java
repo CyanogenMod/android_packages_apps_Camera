@@ -290,11 +290,13 @@ public class GalleryPicker extends Activity {
         public String mName;
         public Uri mFirstImageUri;
         public ItemInfo mThumb;
+        public IImageList mImageList;
 
-        public Item(int type, String id, String name) {
+        public Item(int type, String id, String name, IImageList list) {
             mType = type;
             mId = id;
             mName = name;
+            mImageList = list;
         }
 
         public boolean needsBucketId() {
@@ -361,6 +363,46 @@ public class GalleryPicker extends Activity {
         }
     }
 
+    // IMAGE_LIST_DATA stores the parameters for the four image lists
+    // we are interested in. The order of the IMAGE_LIST_DATA array is
+    // significant (See the implementation of GalleryPickerAdapter.init).
+    private static final class ImageListData {
+        ImageListData(int include, String bucketId, int type, int stringId) {
+            mInclude = include;
+            mBucketId = bucketId;
+            mType = type;
+            mStringId = stringId;
+        }
+        int mInclude;
+        String mBucketId;
+        int mType;
+        int mStringId;
+    }
+
+    private static final ImageListData[] IMAGE_LIST_DATA = {
+        // Camera Images
+        new ImageListData(ImageManager.INCLUDE_IMAGES,
+                          ImageManager.CAMERA_IMAGE_BUCKET_ID,
+                          Item.TYPE_CAMERA_IMAGES,
+                          R.string.gallery_camera_bucket_name),
+        // Camera Videos
+        new ImageListData(ImageManager.INCLUDE_VIDEOS,
+                          ImageManager.CAMERA_IMAGE_BUCKET_ID,
+                          Item.TYPE_CAMERA_VIDEOS,
+                          R.string.gallery_camera_videos_bucket_name),
+        // All Images
+        new ImageListData(ImageManager.INCLUDE_IMAGES,
+                          null,
+                          Item.TYPE_ALL_IMAGES,
+                          R.string.all_images),
+
+        // All Videos
+        new ImageListData(ImageManager.INCLUDE_VIDEOS,
+                          null,
+                          Item.TYPE_ALL_VIDEOS,
+                          R.string.all_videos),
+    };
+
     class GalleryPickerAdapter extends BaseAdapter {
         ArrayList<Item> mItems = new ArrayList<Item>();
 
@@ -393,35 +435,41 @@ public class GalleryPicker extends Activity {
 
             String cameraItem = ImageManager.CAMERA_IMAGE_BUCKET_ID;
             final HashMap<String, String> hashMap = images.getBucketIds();
-            String cameraBucketId = null;
             for (Map.Entry<String, String> entry : hashMap.entrySet()) {
                 String key = entry.getKey();
                 if (key == null) {
                     continue;
                 }
-                if (key.equals(cameraItem)) {
-                    cameraBucketId = key;
-                } else {
+                if (!key.equals(cameraItem)) {
+                    IImageList list = createImageList(
+                            ImageManager.INCLUDE_IMAGES
+                            | ImageManager.INCLUDE_VIDEOS, key);
                     mItems.add(new Item(Item.TYPE_NORMAL_FOLDERS, key,
-                            entry.getValue()));
+                            entry.getValue(), list));
                 }
             }
             images.deactivate();
-            notifyDataSetInvalidated();
 
-            // Conditionally add all-images and all-videos folders.
-            addBucket(Item.TYPE_ALL_IMAGES, null,
-                    Item.TYPE_CAMERA_IMAGES, cameraBucketId,
-                    R.string.all_images);
-            addBucket(Item.TYPE_ALL_VIDEOS, null,
-                    Item.TYPE_CAMERA_VIDEOS, cameraBucketId,
-                    R.string.all_videos);
+            // Add lists to mItems.
+            IImageList[] lists = new IImageList[4];
+            for (int i = 0; i < 4; i++) {
+                ImageListData data = IMAGE_LIST_DATA[i];
+                lists[i] = createImageList(data.mInclude, data.mBucketId);
+                if (lists[i].isEmpty()) {
+                    continue;
+                }
+                // i >= 2 means we are looking at All Images/All Videos.
+                // lists[i-2] is the corresponding Camera Images/Camera Videos.
+                // We want to add the "All" list only if it's different from
+                // the "Camera" list.
+                if (i >= 2 && lists[i].getCount() == lists[i-2].getCount()) {
+                    continue;
+                }
 
-            if (cameraBucketId != null) {
-                addBucket(Item.TYPE_CAMERA_IMAGES, cameraBucketId,
-                        R.string.gallery_camera_bucket_name);
-                addBucket(Item.TYPE_CAMERA_VIDEOS, cameraBucketId,
-                        R.string.gallery_camera_videos_bucket_name);
+                mItems.add(new Item(data.mType,
+                                    data.mBucketId,
+                                    getResources().getString(data.mStringId),
+                                    lists[i]));
             }
 
             java.util.Collections.sort(mItems);
@@ -430,15 +478,9 @@ public class GalleryPicker extends Activity {
             mWorkerThread = new BitmapThread(new Runnable() {
                 public void run() {
                     try {
-                        // no images, nothing to do
-                        if (mItems.size() == 0) {
-                            return;
-                        }
-
                         for (int i = 0; i < mItems.size() && !mDone; i++) {
                             final Item item = mItems.get(i);
-                            IImageList list = createImageList(
-                                    item.getIncludeMediaTypes(), item.mId);
+                            IImageList list = item.mImageList;
                             try {
                                 if (mPausing) {
                                     break;
@@ -487,6 +529,16 @@ public class GalleryPicker extends Activity {
                                 });
                             } finally {
                                 list.deactivate();
+                                item.mImageList = null;
+                            }
+                        }
+                        // Clear all image lists if we leave the loop early.
+                        for (int i = 0; i < mItems.size(); i++) {
+                            final Item item = mItems.get(i);
+                            IImageList list = item.mImageList;
+                            if (list != null) {
+                                list.deactivate();
+                                item.mImageList = null;
                             }
                         }
                     } catch (RuntimeException ex) {
@@ -497,48 +549,7 @@ public class GalleryPicker extends Activity {
             });
             mWorkerThread.start();
             mWorkerThread.toBackground();
-        }
-
-        /**
-         * Add a bucket, but only if it's interesting.
-         * Interesting means non-empty and not duplicated by the
-         * corresponding camera bucket.
-         */
-        private void addBucket(int itemType, String bucketId,
-                int cameraItemType, String cameraBucketId,
-                int labelId) {
-            int itemCount = bucketItemCount(
-                    Item.convertItemTypeToIncludedMediaType(itemType),
-                    bucketId);
-            if (itemCount == 0) {
-                return; // Bucket is empty, so don't show it.
-            }
-            int cameraItemCount = 0;
-            if (cameraBucketId != null) {
-                cameraItemCount = bucketItemCount(
-                        Item.convertItemTypeToIncludedMediaType(cameraItemType),
-                        cameraBucketId);
-            }
-            if (cameraItemCount == itemCount) {
-                // Bucket is the same as the camera bucket, so don't show it.
-                return;
-            }
-            mItems.add(new Item(itemType, bucketId,
-                    getResources().getString(labelId)));
-        }
-
-        /**
-         * Add a bucket, but only if it's interesting.
-         * Interesting means non-empty.
-         */
-        private void addBucket(int itemType, String bucketId,
-                int labelId) {
-            if (!isEmptyBucket(
-                    Item.convertItemTypeToIncludedMediaType(itemType),
-                    bucketId)) {
-                mItems.add(new Item(itemType, bucketId,
-                        getResources().getString(labelId)));
-            }
+            notifyDataSetInvalidated();
         }
 
         public int getCount() {
@@ -773,26 +784,6 @@ public class GalleryPicker extends Activity {
                 .setIcon(android.R.drawable.ic_menu_preferences);
 
         return true;
-    }
-
-    private boolean isEmptyBucket(int mediaTypes, String bucketId) {
-        // TODO: Find a more efficient way of calculating this
-        IImageList list = createImageList(mediaTypes, bucketId);
-        try {
-            return list.isEmpty();
-        } finally {
-            list.deactivate();
-        }
-    }
-
-    private int bucketItemCount(int mediaTypes, String bucketId) {
-        // TODO: Find a more efficient way of calculating this
-        IImageList list = createImageList(mediaTypes, bucketId);
-        try {
-            return list.getCount();
-        } finally {
-            list.deactivate();
-        }
     }
 
     private IImageList createImageList(int mediaTypes, String bucketId) {
