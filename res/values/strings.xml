@@ -104,6 +104,9 @@
 
     <!-- menu pick to start a slide show -->
     <string name="slide_show">Slideshow</string>
+
+    <!-- menu pick to enter multiselect mode -->
+    <string name="multiselect">Multiselect</string>
     
     <!-- menu pick to go to camera mode to capture a picture -->
     <string name="capture_picture">Capture picture</string>

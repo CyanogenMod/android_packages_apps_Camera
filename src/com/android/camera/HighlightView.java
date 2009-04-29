@@ -408,7 +408,7 @@ class HighlightView {
     private Drawable mResizeDrawableHeight;
     private Drawable mResizeDrawableDiagonal;
 
-    private Paint mFocusPaint = new Paint();
-    private Paint mNoFocusPaint = new Paint();
-    private Paint mOutlinePaint = new Paint();
+    private final Paint mFocusPaint = new Paint();
+    private final Paint mNoFocusPaint = new Paint();
+    private final Paint mOutlinePaint = new Paint();
 }
