@@ -201,7 +201,6 @@ public class ImageLoader {
         mDone = false;
         Thread t = new Thread(new WorkerThread());
         t.setName("image-loader");
-        BitmapManager.instance().allowThreadDecoding(t);
         mDecodeThread = t;
         t.start();
     }

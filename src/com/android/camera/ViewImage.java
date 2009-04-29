@@ -335,7 +335,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                                });
                             }
                         };
-                        BitmapManager.instance().allowThreadDecoding(t);
                         t.start();
                     }
                 });

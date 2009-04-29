@@ -53,7 +53,6 @@ class BitmapThread {
     }
 
     public synchronized void start() {
-        BitmapManager.instance().allowThreadDecoding(mThread);
         mThread.start();
     }
 
