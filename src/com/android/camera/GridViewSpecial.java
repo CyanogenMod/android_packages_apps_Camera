@@ -400,7 +400,6 @@ class GridViewSpecial extends View {
                     } // while
                 } // run
             });
-            BitmapManager.instance().allowThreadDecoding(mWorkerThread);
             mWorkerThread.setName("image-block-manager");
             mWorkerThread.start();
         }
