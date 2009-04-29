@@ -52,6 +52,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +75,7 @@ public class ImageGallery extends Activity implements
     private MenuItem mSlideShowItem;
     private SharedPreferences mPrefs;
     private long mVideoSizeLimit = Long.MAX_VALUE;
+    private View mFooterOrganizeView;
 
     BroadcastReceiver mReceiver = null;
 
@@ -105,6 +108,8 @@ public class ImageGallery extends Activity implements
         mGvs = (GridViewSpecial) findViewById(R.id.grid);
         mGvs.requestFocus();
         mGvs.setListener(this);
+
+        mFooterOrganizeView = findViewById(R.id.footer_organize);
 
         if (isPickIntent()) {
             mVideoSizeLimit = getIntent().getLongExtra(
@@ -471,7 +476,7 @@ public class ImageGallery extends Activity implements
             item.setAlphabeticShortcut('p');
             item.setIcon(android.R.drawable.ic_menu_preferences);
 
-            item = menu.add(R.string.multiselect);
+            item = menu.add(0, 0, 900, R.string.multiselect);
             item.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -597,8 +602,11 @@ public class ImageGallery extends Activity implements
 
             // if in multiselect mode
             if (mMultiSelected != null) {
+                int original = mMultiSelected.size();
                 if (!mMultiSelected.add(img)) mMultiSelected.remove(img);
                 mGvs.invalidateImage(index);
+                if (original == 0) showFooter();
+                if (mMultiSelected.size() == 0) hideFooter();
                 return;
             }
 
@@ -771,6 +779,7 @@ public class ImageGallery extends Activity implements
     private Drawable mVideoOverlay;
     private Drawable mVideoMmsErrorOverlay;
     private Drawable mMultiSelectTrue;
+    private Drawable mMultiSelectFalse;
 
     public void drawImage(Canvas canvas, IImage image,
             Bitmap b, int xPos, int yPos, int w, int h) {
@@ -839,10 +848,12 @@ public class ImageGallery extends Activity implements
             overlay.draw(canvas);
         }
 
-        if (mMultiSelected != null && mMultiSelected.contains(image)) {
+        if (mMultiSelected != null) {
             initializeMultiSelectDrawables();
 
-            Drawable checkBox = mMultiSelectTrue;
+            Drawable checkBox = mMultiSelected.contains(image)
+                    ? mMultiSelectTrue
+                    : mMultiSelectFalse;
             int width = checkBox.getIntrinsicWidth();
             int height = checkBox.getIntrinsicHeight();
             int left = 5 + xPos;
@@ -857,6 +868,10 @@ public class ImageGallery extends Activity implements
         if (mMultiSelectTrue == null) {
             mMultiSelectTrue = getResources()
                     .getDrawable(R.drawable.btn_check_buttonless_on);
+        }
+        if (mMultiSelectFalse == null) {
+            mMultiSelectFalse = getResources()
+                    .getDrawable(R.drawable.btn_check_buttonless_off);
         }
     }
 
@@ -879,6 +894,29 @@ public class ImageGallery extends Activity implements
                         getResources(), R.drawable.ic_missing_thumbnail_video);
             }
             return mMissingVideoThumbnailBitmap;
+        }
+    }
+
+    private Animation mFooterAppear;
+    private Animation mFooterDisappear;
+
+    private void showFooter() {
+        mFooterOrganizeView.setVisibility(View.VISIBLE);
+        if (mFooterAppear == null) {
+            mFooterAppear = AnimationUtils.loadAnimation(
+                    this, R.anim.footer_appear);
+        }
+        mFooterOrganizeView.startAnimation(mFooterAppear);
+    }
+
+    private void hideFooter() {
+        if (mFooterOrganizeView.getVisibility() != View.GONE) {
+            mFooterOrganizeView.setVisibility(View.GONE);
+            if (mFooterDisappear == null) {
+                mFooterDisappear = AnimationUtils.loadAnimation(
+                        this, R.anim.footer_disappear);
+            }
+            mFooterOrganizeView.startAnimation(mFooterDisappear);
         }
     }
 }
