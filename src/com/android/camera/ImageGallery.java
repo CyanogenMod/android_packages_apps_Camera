@@ -61,14 +61,17 @@ import java.util.HashSet;
 
 public class ImageGallery extends Activity implements
         GridViewSpecial.Listener, GridViewSpecial.DrawAdapter {
+    private static final String STATE_SCROLL_POSITION = "scroll_position";
+    private static final String STATE_SELECTED_INDEX = "first_index";
+
     private static final String TAG = "ImageGallery";
-    IImageList mAllImages;
+    private static final float INVALID_POSITION = -1f;
+    private IImageList mAllImages;
     private int mInclusion;
     boolean mSortAscending = false;
     private View mNoImagesView;
     public static final int CROP_MSG = 2;
     public static final int VIEW_MSG = 3;
-    private static final String INSTANCE_STATE_TAG = "scrollY";
 
     private Dialog mMediaScanningDialog;
 
@@ -77,17 +80,19 @@ public class ImageGallery extends Activity implements
     private long mVideoSizeLimit = Long.MAX_VALUE;
     private View mFooterOrganizeView;
 
-    BroadcastReceiver mReceiver = null;
+    private BroadcastReceiver mReceiver = null;
 
-    Handler mHandler = new Handler();
-    boolean mLayoutComplete;
-    boolean mPausing = false;
+    private final Handler mHandler = new Handler();
+    private boolean mLayoutComplete;
+    private boolean mPausing = false;
     ImageLoader mLoader;
 
     GridViewSpecial mGvs;
 
     // The index of the first picture in GridViewSpecial.
-    private int mFirstVisibleIndex = 0;
+    private int mSelectedIndex = GridViewSpecial.SELECT_NONE;
+    private float mScrollPosition = INVALID_POSITION;
+    private boolean mConfigurationChanged = false;
 
     private HashSet<IImage> mMultiSelected = null;
 
@@ -197,7 +202,7 @@ public class ImageGallery extends Activity implements
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mTargetScroll = mGvs.getScrollY();
+        mConfigurationChanged = true;
     }
 
     boolean canHandleEvent() {
@@ -363,17 +368,17 @@ public class ImageGallery extends Activity implements
     @Override
     protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
-        mTargetScroll = mGvs.getScrollY();
-        state.putInt(INSTANCE_STATE_TAG, mTargetScroll);
+        state.putFloat(STATE_SCROLL_POSITION, mScrollPosition);
+        state.putInt(STATE_SELECTED_INDEX, mSelectedIndex);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
-        mTargetScroll = state.getInt(INSTANCE_STATE_TAG, 0);
+        mScrollPosition = state.getFloat(
+                STATE_SCROLL_POSITION, INVALID_POSITION);
+        mSelectedIndex = state.getInt(STATE_SELECTED_INDEX, 0);
     }
-
-    int mTargetScroll;
 
     @Override
     public void onResume() {
@@ -382,8 +387,7 @@ public class ImageGallery extends Activity implements
         BitmapManager.instance().allowAllDecoding();
 
         mGvs.setSizeChoice(Integer.parseInt(
-                mPrefs.getString("pref_gallery_size_key", "1")),
-                mTargetScroll);
+                mPrefs.getString("pref_gallery_size_key", "1")));
         mGvs.requestFocus();
 
         String sortOrder = mPrefs.getString("pref_gallery_sort_key", null);
@@ -593,13 +597,16 @@ public class ImageGallery extends Activity implements
         return mAllImages;
     }
 
-    public void onSelect(int index) {
+    public void onImageSelected(int index) {
+        mSelectedIndex = index;
+    }
+
+    public void onImageClicked(int index) {
         if (index >= 0 && index < mAllImages.getCount()) {
             IImage img = mAllImages.getImageAt(index);
             if (img == null) {
                 return;
             }
-
             // if in multiselect mode
             if (mMultiSelected != null) {
                 int original = mMultiSelected.size();
@@ -720,7 +727,7 @@ public class ImageGallery extends Activity implements
                 menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
-                                onSelect(mGvs.mCurrentSelection);
+                                onImageClicked(mGvs.mCurrentSelection);
                                 return true;
                             }
                         });
@@ -763,17 +770,28 @@ public class ImageGallery extends Activity implements
         }
     }
 
-    public void onLayout() {
+    public void onLayoutComplete(boolean changed) {
         mLayoutComplete = true;
-        if (mSortAscending && mTargetScroll == 0) {
-            mGvs.scrollToImage(mAllImages.getCount() - 1);
+        mGvs.select(mSelectedIndex, false);
+        if (mScrollPosition == INVALID_POSITION) {
+            if (mSortAscending) {
+                mGvs.scrollTo(0, mGvs.getHeight());
+            } else {
+                mGvs.scrollToImage(0);
+            }
+        } else if (mConfigurationChanged) {
+            mConfigurationChanged = false;
+            mGvs.scrollTo(mScrollPosition);
+            if (mGvs.mCurrentSelection != GridViewSpecial.SELECT_NONE) {
+                mGvs.scrollToVisible(mSelectedIndex);
+            }
         } else {
-            mGvs.scrollToImage(mFirstVisibleIndex);
+            mGvs.scrollTo(mScrollPosition);
         }
     }
 
-    public void onScroll(int index) {
-        mFirstVisibleIndex = index;
+    public void onScroll(float scrollPosition) {
+        mScrollPosition = scrollPosition;
     }
 
     private Drawable mVideoOverlay;

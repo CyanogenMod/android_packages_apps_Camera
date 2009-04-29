@@ -30,16 +30,16 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.Scroller;
 
 class GridViewSpecial extends View {
     public static final int ORIGINAL_SELECT = -2;
-    public static final int REMOVE_SELCTION = -1;
+    public static final int SELECT_NONE = -1;
 
     private static final String TAG = "GridViewSpecial";
     private IImageList mAllImages = ImageManager.emptyImageList();
@@ -50,7 +50,7 @@ class GridViewSpecial extends View {
 
     private LayoutSpec mCurrentSpec;
     boolean mShowSelection = false;
-    int mCurrentSelection = -1;
+    int mCurrentSelection = SELECT_NONE;
     private boolean mCurrentSelectionPressed;
 
     private Listener mListener = null;
@@ -59,7 +59,7 @@ class GridViewSpecial extends View {
     long mVideoSizeLimit;
     private boolean mRunning = false;
 
-    class LayoutSpec {
+    static class LayoutSpec {
         LayoutSpec(int cols, int w, int h, int leftEdgePadding,
                    int rightEdgePadding, int intercellSpacing) {
             mColumns = cols;
@@ -79,8 +79,8 @@ class GridViewSpecial extends View {
             new LayoutSpec(0, 67, 67, 14, 14, 8),
             new LayoutSpec(0, 92, 92, 14, 14, 8),
     };
-    private int mSizeChoice = 1;
 
+    private int mSizeChoice = 1;
     private int mMaxScrollY;
 
     private final boolean mFling = true;
@@ -108,7 +108,7 @@ class GridViewSpecial extends View {
 
     public void invalidateAllImages() {
         this.clearCache();
-        mImageBlockManager = new ImageBlockManager(mLoader);
+        mImageBlockManager = new ImageBlockManager();
         mImageBlockManager.moveDataWindow(true);
     }
 
@@ -131,7 +131,7 @@ class GridViewSpecial extends View {
                 if (pos >= 0 && pos < mAllImages.getCount()) {
                     select(pos, true);
                 } else {
-                    select(REMOVE_SELCTION, false);
+                    select(SELECT_NONE, false);
                 }
                 if (mImageBlockManager != null) {
                     mImageBlockManager.repaintSelection(mCurrentSelection);
@@ -150,7 +150,7 @@ class GridViewSpecial extends View {
                     velocityY = -maxVelocity;
                 }
 
-                select(REMOVE_SELCTION, false);
+                select(SELECT_NONE, false);
                 if (mFling) {
                     mScroller = new Scroller(getContext());
                     mScroller.fling(0, mScrollY, 0, -(int) velocityY, 0, 0, 0,
@@ -168,7 +168,7 @@ class GridViewSpecial extends View {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                     float distanceX, float distanceY) {
-                select(REMOVE_SELCTION, false);
+                select(SELECT_NONE, false);
                 scrollBy(0, (int) distanceY);
                 invalidate();
                 return true;
@@ -179,7 +179,7 @@ class GridViewSpecial extends View {
                 select(mCurrentSelection, false);
                 int index = computeSelectedIndex(e.getX(), e.getY());
                 if (index >= 0 && index < mAllImages.getCount()) {
-                    if (mListener != null) mListener.onSelect(index);
+                    if (mListener != null) mListener.onImageClicked(index);
                     return true;
                 }
                 return false;
@@ -189,9 +189,17 @@ class GridViewSpecial extends View {
     }
 
     public static interface Listener {
-        public void onSelect(int index);
-        public void onLayout();
-        public void onScroll(int index);
+        public void onImageSelected(int index);
+        public void onImageClicked(int index);
+        public void onLayoutComplete(boolean changed);
+
+        /**
+         * Invoked when the <code>GridViewSpecial</code> scrolls.
+         *
+         * @param scrollPosition the position of the scroller in the range
+         *         [0, 1], when 0 means on the top and 1 means on the button
+         */
+        public void onScroll(float scrollPosition);
     }
 
     public GridViewSpecial(Context context, AttributeSet attrs, int defStyle) {
@@ -218,10 +226,9 @@ class GridViewSpecial extends View {
         return mMaxScrollY + getHeight();
     }
 
-    public void setSizeChoice(int choice, int scrollY) {
+    public void setSizeChoice(int choice) {
         mSizeChoice = choice;
         clearCache();
-        scrollTo(0, scrollY);
         requestLayout();
         invalidate();
     }
@@ -232,7 +239,7 @@ class GridViewSpecial extends View {
      * @param newPressed
      */
     public void select(int newSel, boolean newPressed) {
-        if (newSel == -2) {
+        if (newSel == ORIGINAL_SELECT) {
             newSel = mCurrentSelection;
         }
         int oldSel = mCurrentSelection;
@@ -240,22 +247,35 @@ class GridViewSpecial extends View {
             return;
         }
 
-        mShowSelection = (newSel != REMOVE_SELCTION);
+        mShowSelection = (newSel != SELECT_NONE);
         mCurrentSelection = newSel;
         mCurrentSelectionPressed = newPressed;
         if (mImageBlockManager != null) {
             mImageBlockManager.repaintSelection(oldSel);
             mImageBlockManager.repaintSelection(newSel);
         }
-
-        if (newSel != REMOVE_SELCTION) {
+        if (newSel != SELECT_NONE) {
             ensureVisible(newSel);
+        }
+        if (mListener != null) {
+            mListener.onImageSelected(mCurrentSelection);
         }
     }
 
     public void scrollToImage(int index) {
         Rect r = getRectForPosition(index);
         scrollTo(0, r.top);
+    }
+
+    public void scrollToVisible(int index) {
+        Rect r = getRectForPosition(index);
+        int top = getScrollY();
+        int bottom = getScrollY() + getHeight();
+        if (r.bottom > bottom) {
+            scrollTo(0, r.bottom - getHeight());
+        } else if (r.top < top) {
+            scrollTo(0, r.top);
+        }
     }
 
     private void ensureVisible(int pos) {
@@ -324,15 +344,14 @@ class GridViewSpecial extends View {
                 * (spec.mCellSpacing + spec.mCellHeight))
                 - (bottom - top);
         if (mImageBlockManager == null) {
-            mImageBlockManager = new ImageBlockManager(mLoader);
+            mImageBlockManager = new ImageBlockManager();
             mImageBlockManager.moveDataWindow(true);
         }
         mLayoutComplete = true;
-        if (mListener != null) mListener.onLayout();
+        if (mListener != null) mListener.onLayoutComplete(changed);
     }
 
     class ImageBlockManager {
-        private final ImageLoader mLoader;
         private int mBlockCacheFirstBlockNumber = 0;
 
         // mBlockCache is an array with a starting point which is not
@@ -350,9 +369,7 @@ class GridViewSpecial extends View {
 
         private Thread mWorkerThread;
 
-        ImageBlockManager(ImageLoader loader) {
-            mLoader = loader;
-
+        ImageBlockManager() {
             mBlockCache = new ImageBlock[ROWS_PER_PAGE
                     * (PAGES_PRE_CACHE + PAGES_POST_CACHE + 1)];
             for (int i = 0; i < mBlockCache.length; i++) {
@@ -654,7 +671,7 @@ class GridViewSpecial extends View {
                 mPaint.setStyle(Paint.Style.FILL);
                 mPaint.setColor(0xFFDDDDDD);
                 mCanvas.drawColor(0xFF000000);
-                mBlockNumber = REMOVE_SELCTION;
+                mBlockNumber = SELECT_NONE;
                 mCellOutline = GridViewSpecial.this.getResources()
                         .getDrawable(android.R.drawable.gallery_thumb);
             }
@@ -932,14 +949,15 @@ class GridViewSpecial extends View {
         scrollTo(x, mScrollY + y);
     }
 
+    public void scrollTo(float scrollPosition) {
+        scrollTo(0, Math.round(scrollPosition * mMaxScrollY));
+    }
+
     @Override
     public void scrollTo(int x, int y) {
-        y = Math.min(mMaxScrollY, y);
-        y = Math.max(0, y);
+        y = Math.max(0, Math.min(mMaxScrollY, y));
         if (mListener != null && mCurrentSpec != null) {
-            int index = Math.min(mAllImages.getCount(),
-                    Math.max(0, computeSelectedIndex(x, y)));
-            mListener.onScroll(index);
+            mListener.onScroll((float) mScrollY / mMaxScrollY);
         }
         super.scrollTo(x, y);
     }
@@ -1039,7 +1057,7 @@ class GridViewSpecial extends View {
             mHandler.removeCallbacks(mLongPressCallback);
 
             // open the photo
-            if (mListener != null) mListener.onSelect(mCurrentSelection);
+            if (mListener != null) mListener.onImageClicked(mCurrentSelection);
             return true;
         }
         return super.onKeyUp(keyCode, event);
