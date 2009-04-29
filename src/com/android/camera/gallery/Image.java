@@ -328,8 +328,7 @@ public class Image extends BaseImage implements IImage {
         // fresh thumbs
         mMiniThumbMagic = 0;
         try {
-            mContainer.checkThumbnail(
-                    this, mContainer.getCursor(), this.getRow());
+            mContainer.checkThumbnail(this, this.getRow(), null);
         } catch (IOException e) {
             // Ignore inability to store mini thumbnail.
         }

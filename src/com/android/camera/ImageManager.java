@@ -314,8 +314,7 @@ public class ImageManager {
     }
 
     private static class EmptyImageList implements IImageList {
-        public void checkThumbnails(IImageList.ThumbCheckCallback cb,
-                int totalThumbnails) {
+        public void checkThumbnail(int index) {
         }
 
         public void deactivate() {

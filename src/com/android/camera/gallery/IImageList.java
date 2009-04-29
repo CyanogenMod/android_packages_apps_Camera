@@ -18,6 +18,7 @@ package com.android.camera.gallery;
 
 import android.net.Uri;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 //
@@ -45,16 +46,6 @@ import java.util.HashMap;
  */
 public interface IImageList {
     public HashMap<String, String> getBucketIds();
-
-    /**
-     * Notify interface of how many thumbnails are processed.
-     */
-    public interface ThumbCheckCallback {
-        public boolean checking(int current, int count);
-    }
-
-    public abstract void checkThumbnails(
-            IImageList.ThumbCheckCallback cb, int totalThumbnails);
 
     public abstract void deactivate();
 
@@ -99,4 +90,10 @@ public interface IImageList {
      * @param i     the position
      */
     public abstract void removeImageAt(int i);
+
+    /**
+     * Generate thumbnail for the image (if it has not been generated.)
+     * @param index     the position of the image
+     */
+    public abstract void checkThumbnail(int index) throws IOException;
 }

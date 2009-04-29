@@ -30,6 +30,7 @@ class GridViewSpecial extends View {
 
     ImageBlockManager mImageBlockManager;
     private Handler mHandler;
+    private ImageLoader mLoader;
 
     private LayoutSpec mCurrentSpec;
     boolean mShowSelection = false;
@@ -91,7 +92,7 @@ class GridViewSpecial extends View {
 
     public void invalidateAllImages() {
         this.clearCache();
-        mImageBlockManager = new ImageBlockManager();
+        mImageBlockManager = new ImageBlockManager(mLoader);
         mImageBlockManager.moveDataWindow(true);
     }
 
@@ -307,7 +308,7 @@ class GridViewSpecial extends View {
                 * (spec.mCellSpacing + spec.mCellHeight))
                 - (bottom - top) ;
         if (mImageBlockManager == null) {
-            mImageBlockManager = new ImageBlockManager();
+            mImageBlockManager = new ImageBlockManager(mLoader);
             mImageBlockManager.moveDataWindow(true);
         }
         mLayoutComplete = true;
@@ -334,8 +335,8 @@ class GridViewSpecial extends View {
 
         private Thread mWorkerThread;
 
-        ImageBlockManager() {
-            mLoader = new ImageLoader(mHandler);
+        ImageBlockManager(ImageLoader loader) {
+            mLoader = loader;
 
             mBlockCache = new ImageBlock[sRowsPerPage
                     * (sPagesPreCache + sPagesPostCache + 1)];
@@ -887,8 +888,9 @@ class GridViewSpecial extends View {
         }
     }
 
-    public void init(Handler handler) {
+    public void init(Handler handler, ImageLoader loader) {
         mHandler = handler;
+        mLoader = loader;
     }
 
     @Override
