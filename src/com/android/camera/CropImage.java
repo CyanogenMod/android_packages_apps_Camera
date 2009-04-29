@@ -105,7 +105,6 @@ public class CropImage extends Activity {
         BitmapManager bitmapManager = BitmapManager.instance();
         bitmapManager.setCheckResourceLock(false);
         bitmapManager.allowAllDecoding();
-        bitmapManager.allowThreadDecoding(Thread.currentThread());
 
         try {
             Intent intent = getIntent();
