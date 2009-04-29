@@ -93,6 +93,9 @@
     <!-- menu pick to view the details of the currently selected image -->
     <string name="details">Details</string>
 
+    <!-- menu pick to show the location of the currently selected image on maps-->
+    <string name="show_on_map">Show on Maps</string>
+
     <!-- menu pick to rotate the currently selected image (brings up submenu) -->
     <string name="rotate">Rotate</string>
 
@@ -455,6 +458,8 @@
     <!-- Do not translate -->
     <string name="details_privateView_text">Private</string>
 
+    <!-- Message to show when there's no lat/lng information in the image -->
+    <string name="no_location_image">No Location information contained in this image.</string>
     <!-- Title of Details dialog  -->
     <string name="details_panel_title">Details</string> 
     <!-- Label in message of Details dialog  -->
