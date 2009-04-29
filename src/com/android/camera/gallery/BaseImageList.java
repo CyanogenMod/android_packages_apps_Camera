@@ -16,7 +16,6 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.BitmapManager;
 import com.android.camera.ExifInterface;
 import com.android.camera.ImageManager;
 import com.android.camera.Util;

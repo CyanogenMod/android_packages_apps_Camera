@@ -452,8 +452,7 @@ public class ImageGallery extends Activity implements
             if (type != null) {
                 if (isImageType(type)) {
                     MenuHelper.addCapturePictureMenuItems(menu, this);
-                }
-                else if (isVideoType(type)) {
+                } else if (isVideoType(type)) {
                     MenuHelper.addCaptureVideoMenuItems(menu, this);
                 }
             }
@@ -468,7 +467,8 @@ public class ImageGallery extends Activity implements
                     new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     Intent preferences = new Intent();
-                    preferences.setClass(ImageGallery.this, GallerySettings.class);
+                    preferences.setClass(ImageGallery.this,
+                            GallerySettings.class);
                     startActivity(preferences);
                     return true;
                 }
@@ -644,7 +644,7 @@ public class ImageGallery extends Activity implements
         private final TextView mProgressTextView;
         private final String mProgressTextFormatString;
         boolean mDidSetProgress = false;
-        private long lastUpdateTime;  // initialized to 0
+        private long mLastUpdateTime;  // initialized to 0
         private PowerManager.WakeLock mWakeLock;
 
         private MyThumbCheckCallback() {
@@ -680,7 +680,7 @@ public class ImageGallery extends Activity implements
             // second since last update, to avoid the UI thread
             // being overwhelmed by the update).
             long currentTime = System.currentTimeMillis();
-            if (currentTime - lastUpdateTime > 1000) {
+            if (currentTime - mLastUpdateTime > 1000) {
                 mHandler.post(new Runnable() {
                     public void run() {
                         String s = String.format(mProgressTextFormatString,
@@ -688,7 +688,7 @@ public class ImageGallery extends Activity implements
                         mProgressTextView.setText(s);
                     }
                 });
-                lastUpdateTime = currentTime;
+                mLastUpdateTime = currentTime;
             }
             return !mPausing;
         }

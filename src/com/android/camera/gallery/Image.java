@@ -18,7 +18,6 @@ package com.android.camera.gallery;
 
 import com.android.camera.BitmapManager;
 import com.android.camera.ExifInterface;
-import com.android.camera.ImageManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
@@ -34,7 +33,6 @@ import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * The class for normal images in gallery.
@@ -261,7 +259,8 @@ public class Image extends BaseImage implements IImage {
     }
 
     public ICancelable<Boolean> saveImageContents(Bitmap image,
-            byte [] jpegData, int orientation, boolean newFile, String filePath) {
+            byte [] jpegData, int orientation, boolean newFile,
+            String filePath) {
         return new SaveImageContentsCancelable(
                 image, jpegData, orientation, filePath);
     }
