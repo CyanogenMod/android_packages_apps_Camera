@@ -355,4 +355,9 @@ public class Util {
             return null;
         }
     }
+
+    public static void debugWhere(String tag, String msg) {
+        Exception ex = new Exception();
+        Log.d(tag, msg, ex);
+    }
 }

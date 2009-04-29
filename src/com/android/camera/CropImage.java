@@ -102,6 +102,11 @@ public class CropImage extends Activity {
 
         MenuHelper.showStorageToast(this);
 
+        BitmapManager bitmapManager = BitmapManager.instance();
+        bitmapManager.setCheckResourceLock(false);
+        bitmapManager.allowAllDecoding();
+        bitmapManager.allowThreadDecoding(Thread.currentThread());
+
         try {
             Intent intent = getIntent();
             Bundle extras = intent.getExtras();

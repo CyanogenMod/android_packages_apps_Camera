@@ -111,21 +111,6 @@ public class ImageManager {
         }
     }
 
-    public static void debugWhere(String tag, String msg) {
-        Exception ex = new Exception();
-        if (msg != null) {
-            Log.v(tag, msg);
-        }
-        boolean first = true;
-        for (StackTraceElement s : ex.getStackTrace()) {
-            if (first) {
-                first = false;
-            } else {
-                Log.v(tag, s.toString());
-            }
-        }
-    }
-
     public static DataLocation getDefaultDataLocation() {
         return DataLocation.EXTERNAL;
     }
