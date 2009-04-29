@@ -397,14 +397,18 @@ public class GalleryPicker extends Activity {
         ArrayList<Item> mItems = new ArrayList<Item>();
 
         boolean mDone = false;
-        BitmapThread mWorkerThread;
+        Thread mWorkerThread;
 
         public void init(boolean assumeMounted) {
 
             if (mWorkerThread != null) {
                 try {
                     mDone = true;
+                    BitmapManager.instance()
+                            .cancelThreadDecoding(mWorkerThread);
                     mWorkerThread.join();
+                } catch (InterruptedException ex) {
+                    // ignore
                 } finally {
                     mWorkerThread = null;
                 }
@@ -467,7 +471,7 @@ public class GalleryPicker extends Activity {
             java.util.Collections.sort(mItems);
 
             mDone = false;
-            mWorkerThread = new BitmapThread(new Runnable() {
+            mWorkerThread = new Thread(new Runnable() {
                 public void run() {
                     try {
                         for (int i = 0; i < mItems.size() && !mDone; i++) {
@@ -491,7 +495,7 @@ public class GalleryPicker extends Activity {
                                 mHandler.post(new Runnable() {
                                     public void run() {
                                         if (mPausing || currentThread
-                                                != mWorkerThread.realThread()) {
+                                                != mWorkerThread) {
                                             if (b != null) {
                                                 b.recycle();
                                             }
@@ -540,7 +544,6 @@ public class GalleryPicker extends Activity {
                 }
             });
             mWorkerThread.start();
-            mWorkerThread.toBackground();
             notifyDataSetInvalidated();
         }
 
