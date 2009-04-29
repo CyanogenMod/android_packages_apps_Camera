@@ -25,7 +25,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
-class PhotoAppWidgetConfigure extends Activity {
+public class PhotoAppWidgetConfigure extends Activity {
 
     @SuppressWarnings("unused")
     private static final String TAG = "PhotoAppWidgetConfigure";
