@@ -320,7 +320,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     if (mIsVideoCaptureIntent) {
                         discardCurrentVideoAndStartPreview();
                     } else {
-                        hideAlertAndStartVideoRecording();
+                        hideAlertAndStartPreview();
                     }
                 } else {
                     startVideoRecording();
