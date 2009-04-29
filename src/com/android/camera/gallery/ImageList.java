@@ -24,8 +24,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.MediaColumns;
 import android.provider.MediaStore.Images.ImageColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.util.Log;
 
 import java.util.HashMap;

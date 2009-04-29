@@ -26,7 +26,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -41,23 +40,22 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore.Images;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,14 +78,9 @@ public class GalleryPicker extends Activity {
 
     Dialog mMediaScanningDialog;
 
-    SharedPreferences mPrefs;
-
     boolean mPausing = false;
 
     private static final long LOW_STORAGE_THRESHOLD = 1024 * 1024 * 2;
-
-    public GalleryPicker() {
-    }
 
     private void rebake(boolean unmounted, boolean scanning) {
         if (mMediaScanningDialog != null) {
@@ -111,7 +104,6 @@ public class GalleryPicker extends Activity {
             // Warn the user if space is getting low
             Thread t = new Thread(new Runnable() {
                 public void run() {
-
                     // Check available space only if we are writable
                     if (ImageManager.hasStorage()) {
                         String storageDirectory = Environment
@@ -120,7 +112,6 @@ public class GalleryPicker extends Activity {
                         long remaining = (long) stat.getAvailableBlocks()
                                 * (long) stat.getBlockSize();
                         if (remaining < LOW_STORAGE_THRESHOLD) {
-
                             mHandler.post(new Runnable() {
                                 public void run() {
                                     Toast.makeText(GalleryPicker.this
@@ -155,13 +146,12 @@ public class GalleryPicker extends Activity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         setContentView(R.layout.gallerypicker);
 
         mNoImagesView = findViewById(R.id.no_images);
         mGridView = (GridView) findViewById(R.id.albums);
         mGridView.setSelector(android.R.color.transparent);
+        setBackgrounds(getResources());
 
         mReceiver = new BroadcastReceiver() {
             @Override
@@ -345,7 +335,7 @@ public class GalleryPicker extends Activity {
             case TYPE_NORMAL_FOLDERS:
                 return R.drawable.frame_overlay_gallery_folder;
             default:
-                return     -1;
+                return -1;
             }
         }
 
@@ -410,19 +400,6 @@ public class GalleryPicker extends Activity {
         BitmapThread mWorkerThread;
 
         public void init(boolean assumeMounted) {
-            mItems.clear();
-
-            IImageList images;
-            if (assumeMounted) {
-                images = ImageManager.allImages(
-                        getContentResolver(),
-                        ImageManager.DataLocation.ALL,
-                        ImageManager.INCLUDE_IMAGES
-                        | ImageManager.INCLUDE_VIDEOS,
-                        ImageManager.SORT_DESCENDING);
-            } else {
-                images = ImageManager.emptyImageList();
-            }
 
             if (mWorkerThread != null) {
                 try {
@@ -433,14 +410,29 @@ public class GalleryPicker extends Activity {
                 }
             }
 
-            String cameraItem = ImageManager.CAMERA_IMAGE_BUCKET_ID;
-            final HashMap<String, String> hashMap = images.getBucketIds();
+            mItems.clear();
+
+            IImageList allImages;
+            if (assumeMounted) {
+                allImages = ImageManager.allImages(
+                        getContentResolver(),
+                        ImageManager.DataLocation.ALL,
+                        ImageManager.INCLUDE_IMAGES
+                        | ImageManager.INCLUDE_VIDEOS,
+                        ImageManager.SORT_DESCENDING);
+            } else {
+                allImages = ImageManager.emptyImageList();
+            }
+
+
+            String cameraBucket = ImageManager.CAMERA_IMAGE_BUCKET_ID;
+            final HashMap<String, String> hashMap = allImages.getBucketIds();
             for (Map.Entry<String, String> entry : hashMap.entrySet()) {
                 String key = entry.getKey();
                 if (key == null) {
                     continue;
                 }
-                if (!key.equals(cameraItem)) {
+                if (!key.equals(cameraBucket)) {
                     IImageList list = createImageList(
                             ImageManager.INCLUDE_IMAGES
                             | ImageManager.INCLUDE_VIDEOS, key);
@@ -448,7 +440,7 @@ public class GalleryPicker extends Activity {
                             entry.getValue(), list));
                 }
             }
-            images.deactivate();
+            allImages.deactivate();
 
             // Add lists to mItems.
             IImageList[] lists = new IImageList[4];
@@ -462,7 +454,7 @@ public class GalleryPicker extends Activity {
                 // lists[i-2] is the corresponding Camera Images/Camera Videos.
                 // We want to add the "All" list only if it's different from
                 // the "Camera" list.
-                if (i >= 2 && lists[i].getCount() == lists[i-2].getCount()) {
+                if (i >= 2 && lists[i].getCount() == lists[i - 2].getCount()) {
                     continue;
                 }
 
@@ -626,7 +618,6 @@ public class GalleryPicker extends Activity {
         BitmapManager.instance().allowAllDecoding();
         mAdapter = new GalleryPickerAdapter();
         mGridView.setAdapter(mAdapter);
-        setBackgrounds(getResources());
 
         boolean scanning = ImageManager.isMediaScannerScanning(
                 getContentResolver());
@@ -685,7 +676,7 @@ public class GalleryPicker extends Activity {
                                                   // images
         imageHeight = (imageHeight - padding) / 2;  // per row and column
 
-        final Paint  p = new Paint();
+        final Paint p = new Paint();
         final Bitmap b = Bitmap.createBitmap(width, height,
                 Bitmap.Config.ARGB_8888);
         final Canvas c = new Canvas(b);

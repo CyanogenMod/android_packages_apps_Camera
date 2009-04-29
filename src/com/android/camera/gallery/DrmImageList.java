@@ -17,7 +17,6 @@
 package com.android.camera.gallery;
 
 import com.android.camera.ImageManager;
-import com.android.camera.gallery.IImage;
 
 import android.content.ContentResolver;
 import android.database.Cursor;

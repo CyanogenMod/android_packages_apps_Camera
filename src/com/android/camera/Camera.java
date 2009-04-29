@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -59,13 +58,13 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -1051,8 +1050,7 @@ public class Camera extends Activity implements View.OnClickListener,
             if (mCurrentBrightness < BRIGHTNESS_MIN) {
                 mCurrentBrightness = BRIGHTNESS_MIN;
             }
-        }
-        catch (NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             // Use the default value if it cannot be parsed.
             mCurrentBrightness = BRIGHTNESS_DEFAULT;
         }
@@ -1409,7 +1407,7 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
 
-        if (!ensureCameraDevice() ) return;
+        if (!ensureCameraDevice()) return;
 
         if (mSurfaceHolder == null) return;
 

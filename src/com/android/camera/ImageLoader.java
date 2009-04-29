@@ -20,7 +20,6 @@ import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 

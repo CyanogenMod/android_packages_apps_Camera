@@ -156,7 +156,8 @@ public abstract class BaseImage implements IImage {
 
     private class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
         private final ParcelFileDescriptor mPFD;
-        private final BitmapFactory.Options mOptions = new BitmapFactory.Options();
+        private final BitmapFactory.Options mOptions =
+                new BitmapFactory.Options();
         private final int mTargetWidthHeight;
 
         public LoadBitmapCancelable(

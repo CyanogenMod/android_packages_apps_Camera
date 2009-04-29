@@ -51,8 +51,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.StringTokenizer;
 
 public class MenuHelper {
     private static final String TAG = "MenuHelper";
@@ -286,7 +284,8 @@ public class MenuHelper {
                     return;
                 }
 
-                final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                final AlertDialog.Builder builder =
+                        new AlertDialog.Builder(activity);
 
                 final View d = View.inflate(activity, R.layout.detailsview,
                         null);
@@ -434,8 +433,10 @@ public class MenuHelper {
                             activity.getString(R.string.details_dimension_x),
                             dimensionWidth, dimensionHeight);
                 } else {
-                    String width = img.getExifTag(ExifInterface.TAG_IMAGE_WIDTH);
-                    String height = img.getExifTag(ExifInterface.TAG_IMAGE_LENGTH);
+                    String width = img.getExifTag(
+                            ExifInterface.TAG_IMAGE_WIDTH);
+                    String height = img.getExifTag(
+                            ExifInterface.TAG_IMAGE_LENGTH);
                     if (width != null && height != null) {
                         value = EMPTY_STRING + width + " x " + height;
                     }
@@ -503,7 +504,8 @@ public class MenuHelper {
                 handler.post(
                         new Runnable() {
                             public void run() {
-                                builder.setIcon(android.R.drawable.ic_dialog_info)
+                                builder.setIcon(
+                                        android.R.drawable.ic_dialog_info)
                                         .setTitle(R.string.details_panel_title)
                                         .setView(d)
                                         .show();
@@ -718,7 +720,8 @@ public class MenuHelper {
             MenuItem detailsMenu = menu.add(0, 0, 80, R.string.details)
             .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    return onDetailsClicked(onInvoke, handler, activity, isImage);
+                    return onDetailsClicked(onInvoke, handler, activity,
+                            isImage);
                 }
             });
             detailsMenu.setIcon(R.drawable.ic_menu_view_details);
