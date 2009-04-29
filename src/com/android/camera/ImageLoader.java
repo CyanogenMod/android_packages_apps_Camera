@@ -20,6 +20,7 @@ import com.android.camera.gallery.IImage;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Handler;
 
 import java.util.ArrayList;
 
@@ -31,35 +32,17 @@ public class ImageLoader {
     private static final String TAG = "ImageLoader";
 
     // queue of work to do in the worker thread
-    private final ArrayList<WorkItem>      mQueue = new ArrayList<WorkItem>();
-    private final ArrayList<WorkItem>      mInProgress = new ArrayList<WorkItem>();
+    private final ArrayList<WorkItem> mQueue = new ArrayList<WorkItem>();
+    private final ArrayList<WorkItem> mInProgress = new ArrayList<WorkItem>();
 
     // the worker thread and a done flag so we know when to exit
     // currently we only exit from finalize
-    private boolean                  mDone;
-    private final ArrayList<Thread>        mDecodeThreads = new ArrayList<Thread>();
-    private final android.os.Handler       mHandler;
-
-    private int                      mThreadCount = 1;
-
-    synchronized void clear(Uri uri) {
-    }
+    private boolean mDone;
+    private Thread mDecodeThread;
+    private final Handler mHandler;
 
     public interface LoadedCallback {
         public void run(Bitmap result);
-    }
-
-    public void pushToFront(final IImage image) {
-        synchronized (mQueue) {
-            WorkItem w = new WorkItem(image, 0, null, false);
-
-            int existing = mQueue.indexOf(w);
-            if (existing >= 1) {
-                WorkItem existingWorkItem = mQueue.remove(existing);
-                mQueue.add(0, existingWorkItem);
-                mQueue.notifyAll();
-            }
-        }
     }
 
     public boolean cancel(final IImage image) {
@@ -75,68 +58,40 @@ public class ImageLoader {
         }
     }
 
-    public Bitmap getBitmap(IImage image,
-                            LoadedCallback imageLoadedRunnable,
-                            boolean postAtFront,
-                            boolean postBack) {
-        return getBitmap(image, 0, imageLoadedRunnable, postAtFront, postBack);
-    }
-
-    public Bitmap getBitmap(IImage image,
-                            int tag,
-                            LoadedCallback imageLoadedRunnable,
-                            boolean postAtFront,
-                            boolean postBack) {
-        synchronized (mDecodeThreads) {
-            if (mDecodeThreads.size() == 0) {
-                start();
-            }
+    public void getBitmap(IImage image,
+                          int tag,
+                          LoadedCallback imageLoadedRunnable,
+                          boolean postAtFront,
+                          boolean postBack) {
+        if (mDecodeThread == null) {
+            start();
         }
         synchronized (mQueue) {
             WorkItem w =
                     new WorkItem(image, tag, imageLoadedRunnable, postBack);
 
-            if (!mInProgress.contains(w)) {
-                boolean contains = mQueue.contains(w);
-                if (contains) {
-                    if (postAtFront) {
-                        // move this item to the front
-                        mQueue.remove(w);
-                        mQueue.add(0, w);
-                    }
-                } else {
-                    if (postAtFront) {
-                        mQueue.add(0, w);
-                    } else {
-                        mQueue.add(w);
-                    }
-                    mQueue.notifyAll();
+            if (mInProgress.contains(w)) return;
+
+            boolean contains = mQueue.contains(w);
+            if (contains) {
+                if (postAtFront) {
+                    // move this item to the front
+                    mQueue.remove(w);
+                    mQueue.add(0, w);
                 }
-            }
-            if (false) {
-                dumpQueue("+" + (postAtFront ? "F " : "B ") + tag + ": ");
-            }
-        }
-        return null;
-    }
-
-    private void dumpQueue(String s) {
-        synchronized (mQueue) {
-            StringBuilder sb = new StringBuilder(s);
-            for (int i = 0; i < mQueue.size(); i++) {
-                sb.append(mQueue.get(i).mTag + " ");
+            } else {
+                if (postAtFront) {
+                    mQueue.add(0, w);
+                } else {
+                    mQueue.add(w);
+                }
+                mQueue.notifyAll();
             }
         }
     }
 
-    long bitmapSize(Bitmap b) {
-        return b.getWidth() * b.getHeight() * 4;
-    }
-
-    class WorkItem {
+    private class WorkItem {
         IImage mImage;
-        int mTargetX;
-        int mTargetY;
         int mTag;
         LoadedCallback mOnLoadedRunnable;
         boolean mPostBack;
@@ -161,89 +116,83 @@ public class ImageLoader {
         }
     }
 
-    public ImageLoader(android.os.Handler handler, int threadCount) {
-        mThreadCount = threadCount;
+    public ImageLoader(Handler handler) {
         mHandler = handler;
         start();
     }
 
-    private synchronized void start() {
-        synchronized (mDecodeThreads) {
-            if (mDecodeThreads.size() > 0) {
-                return;
-            }
-
-            mDone = false;
-            for (int i = 0; i < mThreadCount; i++) {
-                Thread t = new Thread(new Runnable() {
-                    // pick off items on the queue, one by one, and compute
-                    // their bitmap. place the resulting bitmap in the cache.
-                    // then post a notification back to the ui so things can
-                    // get updated appropriately.
-                    public void run() {
-                        while (!mDone) {
-                            WorkItem workItem = null;
-                            synchronized (mQueue) {
-                                if (mQueue.size() > 0) {
-                                    workItem = mQueue.remove(0);
-                                    mInProgress.add(workItem);
-                                } else {
-                                    try {
-                                        mQueue.wait();
-                                    } catch (InterruptedException ex) {
-                                        // ignore the exception
-                                    }
-                                }
-                            }
-                            if (workItem != null) {
-                                if (false) {
-                                    dumpQueue("-" + workItem.mTag + ": ");
-                                }
-                                Bitmap b = workItem.mImage.miniThumbBitmap();
-
-                                synchronized (mQueue) {
-                                    mInProgress.remove(workItem);
-                                }
-
-                                if (workItem.mOnLoadedRunnable != null) {
-                                    if (workItem.mPostBack) {
-                                        if (!mDone) {
-                                            final WorkItem w1 = workItem;
-                                            final Bitmap bitmap = b;
-                                            mHandler.post(new Runnable() {
-                                                public void run() {
-                                                    w1.mOnLoadedRunnable
-                                                            .run(bitmap);
-                                                }
-                                            });
-                                        }
-                                    } else {
-                                        workItem.mOnLoadedRunnable.run(b);
-                                    }
-                                }
-                            }
+    private class WorkerThread implements Runnable {
+        // pick off items on the queue, one by one, and compute
+        // their bitmap. place the resulting bitmap in the cache.
+        // then post a notification back to the ui so things can
+        // get updated appropriately.
+        public void run() {
+            while (!mDone) {
+                WorkItem workItem = null;
+                synchronized (mQueue) {
+                    if (mQueue.size() > 0) {
+                        workItem = mQueue.remove(0);
+                        mInProgress.add(workItem);
+                    } else {
+                        try {
+                            mQueue.wait();
+                        } catch (InterruptedException ex) {
+                            // ignore the exception
                         }
+                        continue;
                     }
-                });
-                t.setName("image-loader-" + i);
-                BitmapManager.instance().allowThreadDecoding(t);
-                mDecodeThreads.add(t);
-                t.start();
+                }
+
+                final Bitmap b = workItem.mImage.miniThumbBitmap();
+
+                synchronized (mQueue) {
+                    mInProgress.remove(workItem);
+                }
+
+                if (mDone) {
+                    break;
+                }
+
+                if (workItem.mOnLoadedRunnable != null) {
+                    if (workItem.mPostBack) {
+                        final WorkItem w = workItem;
+                        mHandler.post(new Runnable() {
+                            public void run() {
+                                w.mOnLoadedRunnable.run(b);
+                            }
+                        });
+                    } else {
+                        workItem.mOnLoadedRunnable.run(b);
+                    }
+                }
             }
         }
     }
 
-    public void stop() {
+    private synchronized void start() {
+        if (mDecodeThread != null) {
+            return;
+        }
+
+        mDone = false;
+        Thread t = new Thread(new WorkerThread());
+        t.setName("image-loader");
+        BitmapManager.instance().allowThreadDecoding(t);
+        mDecodeThread = t;
+        t.start();
+    }
+
+    public synchronized void stop() {
         mDone = true;
         synchronized (mQueue) {
             mQueue.notifyAll();
         }
-        while (mDecodeThreads.size() > 0) {
-            Thread t = mDecodeThreads.get(0);
+        if (mDecodeThread != null) {
             try {
+                Thread t = mDecodeThread;
                 BitmapManager.instance().cancelThreadDecoding(t);
                 t.join();
-                mDecodeThreads.remove(0);
+                mDecodeThread = null;
             } catch (InterruptedException ex) {
                 // so now what?
             }
