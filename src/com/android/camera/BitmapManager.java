@@ -153,8 +153,8 @@ public class BitmapManager {
     public synchronized boolean canThreadDecoding(Thread t) {
         ThreadStatus status = mThreadStatus.get(t);
         if (status == null) {
-            Log.v(TAG, "can't find status for thread " + t);
-            return false;
+            // allow decoding by default
+            return true;
         }
 
         boolean result = (status.state == State.RUNNING) ||
