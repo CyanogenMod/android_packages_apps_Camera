@@ -120,6 +120,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final String PARM_BRIGHTNESS = "exposure-offset";
     public static final String PARM_PICTURE_SIZE = "picture-size";
     public static final String PARM_JPEG_QUALITY = "jpeg-quality";
+    public static final String PARM_ISO = "iso";
     public static final String PARM_ROTATION = "rotation";
     public static final String PARM_GPS_LATITUDE = "gps-latitude";
     public static final String PARM_GPS_LONGITUDE = "gps-longitude";
@@ -129,6 +130,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final String SUPPORTED_EFFECT = "effect-values";
     public static final String SUPPORTED_BRIGHTNESS = "exposure-offset-values";
     public static final String SUPPORTED_PICTURE_SIZE = "picture-size-values";
+    public static final String SUPPORTED_ISO = "iso-values";
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -1535,6 +1537,12 @@ public class Camera extends Activity implements View.OnClickListener,
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
         mParameters.set(PARM_JPEG_QUALITY, jpegQuality);
+
+        // Set ISO parameter.
+        String iso = mPreferences.getString(
+                CameraSettings.KEY_ISO,
+                getString(R.string.pref_camera_iso_default));
+        mParameters.set(PARM_ISO, iso);
 
         mCameraDevice.setParameters(mParameters);
     }
