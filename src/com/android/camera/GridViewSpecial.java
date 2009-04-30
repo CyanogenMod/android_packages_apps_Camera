@@ -314,6 +314,41 @@ class GridViewSpecial extends View {
         }
     }
 
+    // We cache the three outlines from NinePatch to Bitmap to speed up
+    // drawing. The cache must be updated if the cell size is changed.
+    private static final int OUTLINE_EMPTY = 0;
+    private static final int OUTLINE_PRESSED = 1;
+    private static final int OUTLINE_SELECTED = 2;
+
+    private Bitmap mOutline[] = new Bitmap[3];
+
+    private void generateOutlineBitmap() {
+        int w = mCurrentSpec.mCellWidth;
+        int h = mCurrentSpec.mCellHeight;
+
+        for (int i = 0; i < mOutline.length; i++) {
+            mOutline[i] = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        }
+
+        Drawable cellOutline;
+        cellOutline = GridViewSpecial.this.getResources()
+                .getDrawable(android.R.drawable.gallery_thumb);
+        cellOutline.setBounds(0, 0, w, h);
+        Canvas canvas = new Canvas();
+
+        canvas.setBitmap(mOutline[OUTLINE_EMPTY]);
+        cellOutline.setState(EMPTY_STATE_SET);
+        cellOutline.draw(canvas);
+
+        canvas.setBitmap(mOutline[OUTLINE_PRESSED]);
+        cellOutline.setState(PRESSED_ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET);
+        cellOutline.draw(canvas);
+
+        canvas.setBitmap(mOutline[OUTLINE_SELECTED]);
+        cellOutline.setState(ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET);
+        cellOutline.draw(canvas);
+    }
+
     @Override
     public void onLayout(boolean changed, int left, int top,
                          int right, int bottom) {
@@ -343,6 +378,9 @@ class GridViewSpecial extends View {
                 + (rows
                 * (spec.mCellSpacing + spec.mCellHeight))
                 - (bottom - top);
+
+        generateOutlineBitmap();
+
         if (mImageBlockManager == null) {
             mImageBlockManager = new ImageBlockManager();
             mImageBlockManager.moveDataWindow(true);
@@ -616,7 +654,6 @@ class GridViewSpecial extends View {
                 int currentBlock = (scrollPos < 0)
                         ? ((scrollPos - height + 1) / height)
                         : (scrollPos / height);
-                Paint paint = new Paint();
                 while (true) {
                     final int yPos = currentBlock * height;
                     if (yPos >= scrollPos + thisHeight) {
@@ -624,7 +661,7 @@ class GridViewSpecial extends View {
                     }
 
                     if (currentBlock < 0) {
-                        canvas.drawRect(0, yPos, thisWidth, 0, paint);
+                        canvas.drawRect(0, yPos, thisWidth, 0, null);
                         currentBlock += 1;
                         continue;
                     }
@@ -641,7 +678,7 @@ class GridViewSpecial extends View {
 
                     synchronized (block) {
                         Bitmap b = block.mBitmap;
-                        canvas.drawBitmap(b, 0, yPos, paint);
+                        canvas.drawBitmap(b, 0, yPos, null);
                     }
                 }
             }
@@ -652,7 +689,6 @@ class GridViewSpecial extends View {
         }
 
         private class ImageBlock {
-            Drawable mCellOutline;
             Bitmap mBitmap = Bitmap.createBitmap(getWidth(), blockHeight(),
                     Bitmap.Config.RGB_565);
             Canvas mCanvas = new Canvas(mBitmap);
@@ -672,8 +708,6 @@ class GridViewSpecial extends View {
                 mPaint.setColor(0xFFDDDDDD);
                 mCanvas.drawColor(0xFF000000);
                 mBlockNumber = SELECT_NONE;
-                mCellOutline = GridViewSpecial.this.getResources()
-                        .getDrawable(android.R.drawable.gallery_thumb);
             }
 
             private void recycleBitmaps() {
@@ -813,20 +847,16 @@ class GridViewSpecial extends View {
             }
 
             private void paintSel(int pos, int xPos, int yPos) {
-                int[] stateSet = EMPTY_STATE_SET;
+                int type = OUTLINE_EMPTY;
                 if (pos == mCurrentSelection && mShowSelection) {
                     if (mCurrentSelectionPressed) {
-                        stateSet = PRESSED_ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+                        type = OUTLINE_PRESSED;
                     } else {
-                        stateSet = ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+                        type = OUTLINE_SELECTED;
                     }
                 }
 
-                mCellOutline.setState(stateSet);
-                mCellOutline.setBounds(xPos, yPos,
-                        xPos + mCurrentSpec.mCellWidth,
-                        yPos + mCurrentSpec.mCellHeight);
-                mCellOutline.draw(mCanvas);
+                mCanvas.drawBitmap(mOutline[type], xPos, yPos, null);
             }
 
             private synchronized void loadImage(

@@ -801,8 +801,6 @@ public class ImageGallery extends Activity implements
 
     public void drawImage(Canvas canvas, IImage image,
             Bitmap b, int xPos, int yPos, int w, int h) {
-        Paint paint = new Paint();
-
         if (b != null) {
             // if the image is close to the target size then crop,
             // otherwise scale both the bitmap and the view should be
@@ -820,11 +818,11 @@ public class ImageGallery extends Activity implements
                 Rect src = new Rect(0 + halfDeltaW, 0 + halfDeltaH,
                         bw - halfDeltaW, bh - halfDeltaH);
                 Rect dst = new Rect(xPos, yPos, xPos + w, yPos + h);
-                canvas.drawBitmap(b, src, dst, paint);
+                canvas.drawBitmap(b, src, dst, null);
             } else {
                 Rect src = new Rect(0, 0, bw, bh);
                 Rect dst = new Rect(xPos, yPos, xPos + w, yPos + h);
-                canvas.drawBitmap(b, src, dst, paint);
+                canvas.drawBitmap(b, src, dst, null);
             }
         } else {
             // If the thumbnail cannot be drawn, put up an error icon
@@ -836,7 +834,7 @@ public class ImageGallery extends Activity implements
             int left = (w - width) / 2 + xPos;
             int top = (w - height) / 2 + yPos;
             Rect dest = new Rect(left, top, left + width, top + height);
-            canvas.drawBitmap(error, source, dest, paint);
+            canvas.drawBitmap(error, source, dest, null);
         }
         if (ImageManager.isVideo(image)) {
             Drawable overlay = null;
@@ -853,6 +851,7 @@ public class ImageGallery extends Activity implements
                             R.drawable.ic_error_mms_video_overlay);
                 }
                 overlay = mVideoMmsErrorOverlay;
+                Paint paint = new Paint();
                 paint.setARGB(0x80, 0x00, 0x00, 0x00);
                 canvas.drawRect(xPos, yPos, xPos + w, yPos + h, paint);
             }
