@@ -18,9 +18,8 @@ package com.android.camera;
 
 import com.android.camera.gallery.BaseCancelable;
 import com.android.camera.gallery.BaseImageList;
-import com.android.camera.gallery.CanceledException;
+import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.DrmImageList;
-import com.android.camera.gallery.ICancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.gallery.Image;
@@ -47,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * ImageManager is used to retrieve and store images
@@ -54,7 +54,6 @@ import java.util.HashMap;
  */
 public class ImageManager {
     private static final String TAG = "ImageManager";
-    private static ImageManager sInstance = null;
 
     private static final Uri STORAGE_URI = Images.Media.EXTERNAL_CONTENT_URI;
     private static final Uri THUMB_URI
@@ -202,7 +201,6 @@ public class ImageManager {
     }
 
     private static class AddImageCancelable extends BaseCancelable<Void> {
-        private ICancelable<Boolean> mSaveImageCancelable;
         private final Uri mUri;
         private final ContentResolver mCr;
         private final int mOrientation;
@@ -211,7 +209,7 @@ public class ImageManager {
 
         public AddImageCancelable(Uri uri, ContentResolver cr,
                 int orientation, Bitmap source, byte[] jpegData) {
-            if (source == null && jpegData == null) {
+            if (source == null && jpegData == null || uri == null) {
                 throw new IllegalArgumentException("source cannot be null");
             }
             mUri = uri;
@@ -222,60 +220,46 @@ public class ImageManager {
         }
 
         @Override
-        public boolean doCancelWork() {
-            if (mSaveImageCancelable != null) {
-                mSaveImageCancelable.cancel();
-            }
-            return true;
-        }
-
-        public Void get() {
+        protected Void execute() throws InterruptedException,
+                ExecutionException {
+            boolean complete = false;
             try {
-                synchronized (this) {
-                    if (mCancel) {
-                        throw new CanceledException();
-                    }
-                }
                 long id = ContentUris.parseId(mUri);
-
                 BaseImageList il = new ImageList(mCr, STORAGE_URI,
                         THUMB_URI, SORT_ASCENDING, null);
                 Image image = new Image(id, 0, mCr, il, il.getCount(), 0);
                 String[] projection = new String[] {
                         ImageColumns._ID,
                         ImageColumns.MINI_THUMB_MAGIC, ImageColumns.DATA};
-
                 Cursor c = mCr.query(mUri, projection, null, null, null);
+                String filepath;
                 try {
                     c.moveToPosition(0);
-                    synchronized (this) {
-                        checkCanceled();
-                        mSaveImageCancelable = image.saveImageContents(
-                                mSource, mJpegData, mOrientation, true,
-                                c.getString(2));
-                    }
+                    filepath = c.getString(2);
                 } finally {
                     c.close();
                 }
+                runSubTask(image.saveImageContents(
+                        mSource, mJpegData, mOrientation, true, filepath));
 
-                if (mSaveImageCancelable.get()) {
-                    ContentValues values = new ContentValues();
-                    values.put(ImageColumns.MINI_THUMB_MAGIC, 0);
-                    mCr.update(mUri, values, null, null);
-                } else {
-                    throw new CanceledException();
+                ContentValues values = new ContentValues();
+                values.put(ImageColumns.MINI_THUMB_MAGIC, 0);
+                mCr.update(mUri, values, null, null);
+                complete = true;
+                return null;
+            } finally {
+                if (!complete) {
+                    try {
+                        mCr.delete(mUri, null, null);
+                    } catch (Throwable t) {
+                        // ignore it while clean up.
+                    }
                 }
-            } catch (CanceledException ex) {
-                if (mUri != null) {
-                    mCr.delete(mUri, null, null);
-                }
-                acknowledgeCancel();
             }
-            return null;
         }
     }
 
-    public static ICancelable<Void> storeImage(
+    public static Cancelable<Void> storeImage(
             Uri uri, ContentResolver cr, int orientation,
             Bitmap source, byte [] jpegData) {
         return new AddImageCancelable(

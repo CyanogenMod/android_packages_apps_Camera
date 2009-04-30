@@ -16,6 +16,8 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.Cancelable;
+
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -33,7 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @param <T> the type of the return value.
  */
 public abstract class PriorityTask<T>
-        implements Runnable, Comparable<PriorityTask<?>> {
+        implements Cancelable<T>, Runnable, Comparable<PriorityTask<?>> {
     private static final String TAG = "PriorityTask";
 
     private static final int STATE_INITIAL = (1 << 0);
@@ -173,9 +175,8 @@ public abstract class PriorityTask<T>
     /**
      * Requests the task to be canceled.
      *
-     * @return true if the task has not been canceled but will be canceled;
-     *         false otherwise (usually the task has been complete/failed/
-     *         canceled.
+     * @return true if the task is running and has not been requested for
+     *         cancel.
      */
     public synchronized boolean requestCancel() {
         if (mState == STATE_EXECUTING) {
@@ -283,6 +284,10 @@ public abstract class PriorityTask<T>
             if (timeout != 0 && due <= now) return false;
         }
         return true;
+    }
+
+    public synchronized void await() throws InterruptedException {
+        await(0);
     }
 
     // used only by PriorityTaskQueue#remove

@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.ICancelable;
+import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -50,6 +50,8 @@ import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
 import java.util.Random;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 // This activity can display a whole picture and navigate them in a specific
 // gallery. It has two modes: normal mode and slide show mode. In normal mode
@@ -68,7 +70,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     LocalHandler mHandler = new LocalHandler();
 
-    private Random mRandom = new Random(System.currentTimeMillis());
+    private final Random mRandom = new Random(System.currentTimeMillis());
     private int [] mShuffleOrder;
     private boolean mUseShuffleOrder = false;
     private boolean mSlideShowLoop = false;
@@ -94,10 +96,10 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private SharedPreferences mPrefs;
 
     private View mNextImageView, mPrevImageView;
-    private Animation mHideNextImageViewAnimation = new AlphaAnimation(1F, 0F);
-    private Animation mHidePrevImageViewAnimation = new AlphaAnimation(1F, 0F);
-    private Animation mShowNextImageViewAnimation = new AlphaAnimation(0F, 1F);
-    private Animation mShowPrevImageViewAnimation = new AlphaAnimation(0F, 1F);
+    private final Animation mHideNextImageViewAnimation = new AlphaAnimation(1F, 0F);
+    private final Animation mHidePrevImageViewAnimation = new AlphaAnimation(1F, 0F);
+    private final Animation mShowNextImageViewAnimation = new AlphaAnimation(0F, 1F);
+    private final Animation mShowPrevImageViewAnimation = new AlphaAnimation(0F, 1F);
 
     static final int PADDING = 20;
     static final int HYSTERESIS = PADDING * 2;
@@ -106,7 +108,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     IImageList mAllImages;
 
     private int mSlideShowImageCurrent = 0;
-    private ImageViewTouchBase [] mSlideShowImageViews =
+    private final ImageViewTouchBase [] mSlideShowImageViews =
             new ImageViewTouchBase[2];
 
     GestureDetector mGestureDetector;
@@ -1079,7 +1081,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 }
 
 class ImageViewTouch extends ImageViewTouchBase {
-    private ViewImage mViewImage;
+    private final ViewImage mViewImage;
     private boolean mEnableTrackballScroll;
 
     public ImageViewTouch(Context context) {
@@ -1239,7 +1241,7 @@ class ImageGetter {
     private static final String TAG = "ImageGetter";
 
     // The thread which does the work.
-    private Thread mGetterThread;
+    private final Thread mGetterThread;
 
     // The base position that's being retrieved.  The actual images retrieved
     // are this base plus each of the offets.
@@ -1250,7 +1252,7 @@ class ImageGetter {
 
     // This is the loader cancelable that gets set while we're loading an image.
     // If we change position we can cancel the current load using this.
-    private ICancelable<Bitmap> mLoad;
+    private Cancelable<Bitmap> mLoad;
 
     // True if we're canceling the current load.
     private boolean mCancelCurrent = false;
@@ -1268,9 +1270,9 @@ class ImageGetter {
         synchronized (this) {
             if (!mReady) {
                 mCancelCurrent = true;
-                ICancelable<Bitmap> load = mLoad;
+                Cancelable<Bitmap> load = mLoad;
                 if (load != null) {
-                    load.cancel();
+                    load.requestCancel();
                 }
                 mCancelCurrent = false;
             }
@@ -1359,7 +1361,16 @@ class ImageGetter {
                                 if (mLoad != null) {
                                     // The return value could be null if the
                                     // bitmap is too big, or we cancelled it.
-                                    Bitmap b = mLoad.get();
+                                    Bitmap b;
+                                    try {
+                                        b = mLoad.get();
+                                    } catch (InterruptedException e) {
+                                        b = null;
+                                    } catch (ExecutionException e) {
+                                        throw new RuntimeException(e);
+                                    } catch (CancellationException e) {
+                                        b = null;
+                                    }
                                     mLoad = null;
                                     if (b != null) {
                                         if (isCanceled()) {
@@ -1452,7 +1463,7 @@ class BitmapCache implements ImageViewTouchBase.Recycler {
         }
     }
 
-    private Entry[] mCache;
+    private final Entry[] mCache;
 
     public BitmapCache(int size) {
         mCache = new Entry[size];

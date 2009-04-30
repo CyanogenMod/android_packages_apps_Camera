@@ -80,19 +80,21 @@ public abstract class BaseImage implements IImage {
         }
 
         @Override
-        public boolean doCancelWork() {
-            if (mOutputStream != null) {
-                mOutputStream.close();
+        public boolean requestCancel() {
+            if (super.requestCancel()) {
+                if (mOutputStream != null) {
+                    mOutputStream.close();
+                }
                 return true;
             }
             return false;
         }
 
-        public Boolean get() {
+        @Override
+        public Boolean execute() {
             try {
                 OutputStream delegate = mContentResolver.openOutputStream(mUri);
                 synchronized (this) {
-                    checkCanceled();
                     mOutputStream = new ThreadSafeOutputStream(delegate);
                 }
                 if (mBitmap != null) {
@@ -103,13 +105,10 @@ public abstract class BaseImage implements IImage {
                 return true;
             } catch (FileNotFoundException ex) {
                 return false;
-            } catch (CanceledException ex) {
-                return false;
             } catch (IOException ex) {
                 return false;
             } finally {
                 Util.closeSiliently(mOutputStream);
-                acknowledgeCancel();
             }
         }
     }
@@ -122,7 +121,7 @@ public abstract class BaseImage implements IImage {
      * @param uri       where to store the bitmap
      * @return          true if we succeeded
      */
-    protected ICancelable<Boolean> compressImageToFile(
+    protected Cancelable<Boolean> compressImageToFile(
             Bitmap bitmap, byte [] jpegData, Uri uri) {
         return new CompressImageToFile(bitmap, jpegData, uri);
     }
@@ -167,12 +166,16 @@ public abstract class BaseImage implements IImage {
         }
 
         @Override
-        public boolean doCancelWork() {
-            mOptions.requestCancelDecode();
-            return true;
+        public boolean requestCancel() {
+            if (super.requestCancel()) {
+                mOptions.requestCancelDecode();
+                return true;
+            }
+            return false;
         }
 
-        public Bitmap get() {
+        @Override
+        protected Bitmap execute() {
             try {
                 Bitmap b = Util.makeBitmap(
                         mTargetWidthHeight, fullSizeImageUri(),
@@ -185,14 +188,12 @@ public abstract class BaseImage implements IImage {
                 return null;
             } catch (Error e) {
                 return null;
-            } finally {
-                acknowledgeCancel();
             }
         }
     }
 
 
-    public ICancelable<Bitmap> fullSizeBitmapCancelable(
+    public Cancelable<Bitmap> fullSizeBitmapCancelable(
             int targetWidthHeight) {
         try {
             ParcelFileDescriptor pfdInput = mContentResolver

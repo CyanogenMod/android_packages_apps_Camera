@@ -16,53 +16,164 @@
 
 package com.android.camera.gallery;
 
-/**
- * A base class for the interface <code>ICancelable</code>.
- */
-public abstract class BaseCancelable<T> implements ICancelable<T> {
-    protected boolean mCancel = false;
-    protected boolean mFinished = false;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
-    /*
-     * Subclasses should call acknowledgeCancel when they're finished with
-     * their operation.
+/**
+ * An abstract class for the interface <code>Cancelable</code>. Subclass can
+ * simply override the <code>execute()</code> function to provide an
+ * implementation of <code>Cancelable</code>.
+ */
+public abstract class BaseCancelable<T> implements Cancelable<T> {
+
+    /**
+     * The state of the task, possible transitions are:
+     * <pre>
+     *     INITIAL -> CANCELED
+     *     EXECUTING -> COMPLETE, CANCELING, ERROR, CANCELED
+     *     CANCELING -> CANCELED
+     * </pre>
+     * When the task stop, it must be end with one of the following states:
+     * COMPLETE, CANCELED, or ERROR;
      */
-    protected synchronized void acknowledgeCancel() {
-        mFinished = true;
-        if (mCancel) {
-            this.notify();
+    private static final int STATE_INITIAL = (1 << 0);
+    private static final int STATE_EXECUTING = (1 << 1);
+    private static final int STATE_CANCELING = (1 << 2);
+    private static final int STATE_CANCELED = (1 << 3);
+    private static final int STATE_ERROR = (1 << 4);
+    private static final int STATE_COMPLETE = (1 << 5);
+
+    private int mState = STATE_INITIAL;
+
+    private Throwable mError;
+    private T mResult;
+    private Cancelable<?> mCurrentTask;
+    private Thread mThread;
+
+    protected abstract T execute() throws Exception;
+
+    protected synchronized void interruptNow() {
+        if (isInStates(STATE_CANCELING | STATE_EXECUTING)) {
+            mThread.interrupt();
         }
     }
 
-    public synchronized boolean cancel() {
-        if (mCancel || mFinished) {
+    /**
+     * Frees the result (which is not null) when the task has been canceled.
+     */
+    protected void freeCanceledResult(T result) {
+        // Do nothing by default;
+    }
+
+    private boolean isInStates(int states) {
+        return (states & mState) != 0;
+    }
+
+    private T handleTerminalStates() throws ExecutionException {
+        if (mState == STATE_CANCELED) {
+            throw new CancellationException();
+        }
+        if (mState == STATE_ERROR) {
+            throw new ExecutionException(mError);
+        }
+        if (mState == STATE_COMPLETE) return mResult;
+        throw new IllegalStateException();
+    }
+
+    public synchronized void await() throws InterruptedException {
+        while (!isInStates(STATE_COMPLETE | STATE_CANCELED | STATE_ERROR)) {
+            wait();
+        }
+    }
+
+    public final T get() throws InterruptedException, ExecutionException {
+        synchronized (this) {
+            if (mState != STATE_INITIAL) {
+                await();
+                return handleTerminalStates();
+            }
+            mThread = Thread.currentThread();
+            mState = STATE_EXECUTING;
+        }
+        try {
+            mResult = execute();
+        } catch (CancellationException e) {
+            mState = STATE_CANCELED;
+        } catch (InterruptedException e) {
+            mState = STATE_CANCELED;
+        } catch (Throwable error) {
+            synchronized (this) {
+                if (mState != STATE_CANCELING) {
+                    mError = error;
+                    mState = STATE_ERROR;
+                }
+            }
+        }
+        synchronized (this) {
+            if (mState == STATE_CANCELING) mState = STATE_CANCELED;
+            if (mState == STATE_EXECUTING) mState = STATE_COMPLETE;
+            notifyAll();
+            if (mState == STATE_CANCELED && mResult != null) {
+                freeCanceledResult(mResult);
+            }
+            return handleTerminalStates();
+        }
+    }
+
+    /**
+     * Requests the task to be canceled.
+     *
+     * @return true if the task is running and has not been canceled; false
+     *     otherwise
+     */
+
+    public synchronized boolean requestCancel() {
+        if (mState == STATE_INITIAL) {
+            mState = STATE_CANCELED;
+            notifyAll();
             return false;
         }
-        mCancel = true;
-        boolean retVal = doCancelWork();
+        if (mState == STATE_EXECUTING) {
+            if (mCurrentTask != null) mCurrentTask.requestCancel();
+            mState = STATE_CANCELING;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Whether the task's has been requested for cancel.
+     */
+    protected synchronized boolean isCanceling() {
+        return mState == STATE_CANCELING;
+    }
+
+    /**
+     * Runs a <code>Cancelable</code> subtask. This method is helpful, if the
+     * task can be composed of several cancelable tasks. By using this function,
+     * it will pass <code>requestCancel</code> message to those subtasks.
+     *
+     * @param <T> the return type of the sub task
+     * @param cancelable the sub task
+     * @return the result of the subtask
+     */
+    protected <T> T runSubTask(Cancelable<T> cancelable)
+            throws InterruptedException, ExecutionException {
+        synchronized (this) {
+            if (mCurrentTask != null) {
+                throw new IllegalStateException(
+                        "cannot two subtasks at the same time");
+            }
+            if (mState == STATE_CANCELING) throw new CancellationException();
+            mCurrentTask = cancelable;
+        }
         try {
-            this.wait();
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
-        return retVal;
-    }
-
-    /*
-     * Subclasses can call this to see if they have been canceled.
-     * This is the polling model.
-     */
-    protected synchronized void checkCanceled() throws CanceledException {
-        if (mCancel) {
-            throw new CanceledException();
+            return cancelable.get();
+        } finally {
+            synchronized (this) {
+                mCurrentTask = null;
+            }
         }
     }
 
-    /*
-     * Subclasses implement this method to take whatever action
-     * is necessary when getting canceled.  Sometimes it's not
-     * possible to do anything in which case the "checkCanceled"
-     * polling model may be used (or some combination).
-     */
-    protected abstract boolean doCancelWork();
 }

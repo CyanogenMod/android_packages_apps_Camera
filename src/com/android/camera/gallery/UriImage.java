@@ -112,12 +112,16 @@ class UriImage implements IImage {
         }
 
         @Override
-        public boolean doCancelWork() {
-            mOptions.requestCancelDecode();
-            return true;
+        public boolean requestCancel() {
+            if (super.requestCancel()) {
+                mOptions.requestCancelDecode();
+                return true;
+            }
+            return false;
         }
 
-        public Bitmap get() {
+        @Override
+        protected Bitmap execute() {
             try {
                 Bitmap b = Util.makeBitmap(mTargetWidthOrHeight,
                         fullSizeImageUri(), mContentResolver, mPfdInput,
@@ -125,13 +129,11 @@ class UriImage implements IImage {
                 return b;
             } catch (Exception ex) {
                 return null;
-            } finally {
-                acknowledgeCancel();
             }
         }
     }
 
-    public ICancelable<Bitmap> fullSizeBitmapCancelable(
+    public Cancelable<Bitmap> fullSizeBitmapCancelable(
             int targetWidthOrHeight) {
         try {
             ParcelFileDescriptor pfdInput = getPFD();
