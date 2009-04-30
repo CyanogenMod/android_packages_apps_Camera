@@ -289,7 +289,7 @@ class GridViewSpecial extends View {
 
     public void clearCache() {
         if (mImageBlockManager != null) {
-            mImageBlockManager.onPause();
+            mImageBlockManager.stop();
             mImageBlockManager = null;
         }
     }
@@ -341,10 +341,9 @@ class GridViewSpecial extends View {
         private int mBlockCacheStartOffset = 0;
         private ImageBlock [] mBlockCache;
 
-        private static final int sRowsPerPage    = 6;   // should compute this
-
-        private static final int sPagesPreCache  = 2;
-        private static final int sPagesPostCache = 2;
+        private static final int ROWS_PER_PAGE = 6;   // should compute this
+        private static final int PAGES_PRE_CACHE  = 2;
+        private static final int PAGES_POST_CACHE = 2;
 
         private int mWorkCounter = 0;
         private boolean mDone = false;
@@ -354,8 +353,8 @@ class GridViewSpecial extends View {
         ImageBlockManager(ImageLoader loader) {
             mLoader = loader;
 
-            mBlockCache = new ImageBlock[sRowsPerPage
-                    * (sPagesPreCache + sPagesPostCache + 1)];
+            mBlockCache = new ImageBlock[ROWS_PER_PAGE
+                    * (PAGES_PRE_CACHE + PAGES_POST_CACHE + 1)];
             for (int i = 0; i < mBlockCache.length; i++) {
                 mBlockCache[i] = new ImageBlock();
             }
@@ -368,16 +367,12 @@ class GridViewSpecial extends View {
                             workCounter = mWorkCounter;
                         }
                         if (mDone) {
-                            if (mLoader != null) {
-                                mLoader.stop();
-                            }
-                            if (mBlockCache != null) {
-                                for (int i = 0; i < mBlockCache.length; i++) {
-                                    ImageBlock block = mBlockCache[i];
-                                    if (block != null) {
-                                        block.recycleBitmaps();
-                                        mBlockCache[i] = null;
-                                    }
+                            mLoader.stop();
+                            for (int i = 0; i < mBlockCache.length; i++) {
+                                ImageBlock block = mBlockCache[i];
+                                if (block != null) {
+                                    block.recycleBitmaps();
+                                    mBlockCache[i] = null;
                                 }
                             }
                             mBlockCache = null;
@@ -407,9 +402,9 @@ class GridViewSpecial extends View {
         public void invalidateImage(int index) {
             ImageBlock block = getBlockForPos(index);
             LayoutSpec spec = mCurrentSpec;
-            int column = spec.mColumns;
-            int blockIndex = index / column;
-            int base = blockIndex * column;
+            int columns = spec.mColumns;
+            int blockIndex = index / columns;
+            int base = blockIndex * columns;
             int col = index - base;
             int spacing = spec.mCellSpacing;
             final int yPos = spacing;
@@ -445,7 +440,8 @@ class GridViewSpecial extends View {
             }
         }
 
-        private void onPause() {
+        // After calling stop(), the instance should not be used anymore.
+        private void stop() {
             synchronized (ImageBlockManager.this) {
                 mDone = true;
                 ImageBlockManager.this.notify();
@@ -460,7 +456,7 @@ class GridViewSpecial extends View {
                     //
                 }
             }
-            Log.v(TAG, "/ImageBlockManager.onPause");
+            Log.v(TAG, "ImageBlockManager.stop() done");
         }
 
         synchronized void getVisibleRange(int [] range) {
@@ -528,9 +524,9 @@ class GridViewSpecial extends View {
                     (mScrollY - mCurrentSpec.mCellSpacing + getHeight())
                     / blockHeight;
 
-            final int preCache = sPagesPreCache;
+            final int preCache = PAGES_PRE_CACHE;
             final int startBlock = Math.max(0,
-                    firstVisBlock - (preCache * sRowsPerPage));
+                    firstVisBlock - (preCache * ROWS_PER_PAGE));
 
             synchronized (ImageBlockManager.this) {
                 boolean any = false;
@@ -594,14 +590,9 @@ class GridViewSpecial extends View {
         void doDraw(Canvas canvas) {
             synchronized (ImageBlockManager.this) {
                 ImageBlockManager.ImageBlock [] blocks = mBlockCache;
-                int blockCount = 0;
-
-                if (blocks[0] == null) {
-                    return;
-                }
 
                 final int thisHeight = getHeight();
-                final int thisWidth  = getWidth();
+                final int thisWidth = getWidth();
                 final int height = blocks[0].mBitmap.getHeight();
                 final int scrollPos = mScrollY;
 
@@ -630,16 +621,10 @@ class GridViewSpecial extends View {
                     }
 
                     ImageBlock block = blocks[effectiveOffset];
-                    if (block == null) {
-                        break;
-                    }
+
                     synchronized (block) {
                         Bitmap b = block.mBitmap;
-                        if (b == null) {
-                            break;
-                        }
                         canvas.drawBitmap(b, 0, yPos, paint);
-                        blockCount += 1;
                     }
                 }
             }
@@ -665,16 +650,10 @@ class GridViewSpecial extends View {
             int mCompletedMask;
             boolean mIsVisible;
 
-            public synchronized void dump(
-                    StringBuilder line1, StringBuilder line2) {
-                line2.append(mCompletedMask != 0xF ? 'L' : '_');
-                line1.append(mIsVisible ? 'V' : ' ');
-            }
-
             ImageBlock() {
-                mPaint.setTextSize(14F);
                 mPaint.setStyle(Paint.Style.FILL);
-
+                mPaint.setColor(0xFFDDDDDD);
+                mCanvas.drawColor(0xFF000000);
                 mBlockNumber = REMOVE_SELCTION;
                 mCellOutline = GridViewSpecial.this.getResources()
                         .getDrawable(android.R.drawable.gallery_thumb);
@@ -713,8 +692,7 @@ class GridViewSpecial extends View {
                     mBlockNumber = blockNumber;
                     mRequestedMask = 0;
                     mCompletedMask = 0;
-                    mCanvas.drawColor(0xFF000000);
-                    mPaint.setColor(0xFFDDDDDD);
+
                     int imageNumber = blockNumber * mCurrentSpec.mColumns;
                     int lastImageNumber = mAllImages.getCount() - 1;
 
@@ -784,24 +762,8 @@ class GridViewSpecial extends View {
                 return retVal;
             }
 
-            Bitmap resizeBitmap(Bitmap b) {
-                // assume they're both square for now
-                if (b == null || (b.getWidth() == mCurrentSpec.mCellWidth
-                        && b.getHeight() == mCurrentSpec.mCellHeight)) {
-                    return b;
-                }
-                float scale = (float) mCurrentSpec.mCellWidth
-                        / (float) b.getWidth();
-                Matrix m = new Matrix();
-                m.setScale(scale, scale, b.getWidth(), b.getHeight());
-                Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(),
-                        b.getHeight(), m, false);
-                return b2;
-            }
-
             private void drawBitmap(
                     IImage image, int index, Bitmap b, int xPos, int yPos) {
-                mCanvas.setBitmap(mBitmap);
                 if (mDrawAdapter != null) {
                     mDrawAdapter.drawImage(mCanvas, image, b, xPos, yPos,
                             mCurrentSpec.mCellWidth, mCurrentSpec.mCellHeight);
@@ -823,8 +785,7 @@ class GridViewSpecial extends View {
                         int row = 0; // i / mCurrentSpec.mColumns;
                         int col = i - (row * mCurrentSpec.mColumns);
 
-                        // this is duplicated from getOrKick
-                        // (TODO: don't duplicate this code)
+                        // TODO: don't duplicate this code
                         int spacing = mCurrentSpec.mCellSpacing;
                         int leftSpacing = mCurrentSpec.mLeftEdgePadding;
                         final int yPos = spacing
@@ -848,7 +809,6 @@ class GridViewSpecial extends View {
                 }
 
                 mCellOutline.setState(stateSet);
-                mCanvas.setBitmap(mBitmap);
                 mCellOutline.setBounds(xPos, yPos,
                         xPos + mCurrentSpec.mCellWidth,
                         yPos + mCurrentSpec.mCellHeight);
@@ -994,7 +954,6 @@ class GridViewSpecial extends View {
             showContextMenu();
         }
     };
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
