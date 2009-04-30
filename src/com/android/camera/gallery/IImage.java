@@ -35,7 +35,7 @@ public interface IImage {
     public abstract Bitmap fullSizeBitmap(int targetWidthOrHeight);
 
     /** Get the cancelable object for the bitmap of the full size image. */
-    public abstract ICancelable<Bitmap> fullSizeBitmapCancelable(
+    public abstract Cancelable<Bitmap> fullSizeBitmapCancelable(
             int targetWidthOrHeight);
 
     /** Get the input stream associated with a given full size image. */

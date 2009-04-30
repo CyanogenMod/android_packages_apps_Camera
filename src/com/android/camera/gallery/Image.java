@@ -33,6 +33,7 @@ import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * The class for normal images in gallery.
@@ -171,12 +172,11 @@ public class Image extends BaseImage implements IImage {
         mExifData.put(tag, value);
     }
 
-    private class SaveImageContentsCancelable extends BaseCancelable<Boolean> {
+    private class SaveImageContentsCancelable extends BaseCancelable<Void> {
         private final Bitmap mImage;
         private final byte [] mJpegData;
         private final int mOrientation;
         private final String mFilePath;
-        ICancelable<Boolean> mCurrentCancelable = null;
 
         SaveImageContentsCancelable(Bitmap image, byte[] jpegData,
                 int orientation, String filePath) {
@@ -187,80 +187,54 @@ public class Image extends BaseImage implements IImage {
         }
 
         @Override
-        public boolean doCancelWork() {
+        public Void execute() throws InterruptedException, ExecutionException {
+            Bitmap thumbnail = null;
+            Uri uri = mContainer.contentUri(mId);
+            runSubTask(compressImageToFile(mImage, mJpegData, uri));
+
             synchronized (this) {
-                if (mCurrentCancelable != null) mCurrentCancelable.cancel();
-            }
-            return true;
-        }
+                String filePath = mFilePath;
 
-        public Boolean get() {
+                // TODO: If thumbData is present and usable, we should call
+                // the version of storeThumbnail which takes a byte array,
+                // rather than re-encoding a new JPEG of the same
+                // dimensions.
+                byte[] thumbData = null;
+                synchronized (ExifInterface.class) {
+                    thumbData =
+                            (new ExifInterface(filePath)).getThumbnail();
+                }
+
+                if (thumbData != null) {
+                    thumbnail = BitmapFactory.decodeByteArray(
+                            thumbData, 0, thumbData.length);
+                }
+                if (thumbnail == null && mImage != null) {
+                    thumbnail = mImage;
+                }
+                if (thumbnail == null && mJpegData != null) {
+                    thumbnail = BitmapFactory.decodeByteArray(
+                            mJpegData, 0, mJpegData.length);
+                }
+            }
+
+            mContainer.storeThumbnail(
+                    thumbnail, Image.this.fullSizeImageId());
+            if (isCanceling()) return null;
+
             try {
-                Bitmap thumbnail = null;
-
-                Uri uri = mContainer.contentUri(mId);
-                synchronized (this) {
-                    checkCanceled();
-                    mCurrentCancelable =
-                            compressImageToFile(mImage, mJpegData, uri);
-                }
-
-                if (!mCurrentCancelable.get()) return false;
-
-                synchronized (this) {
-                    String filePath = mFilePath;
-
-                    // TODO: If thumbData is present and usable, we should call
-                    // the version of storeThumbnail which takes a byte array,
-                    // rather than re-encoding a new JPEG of the same
-                    // dimensions.
-                    byte[] thumbData = null;
-                    synchronized (ExifInterface.class) {
-                        thumbData =
-                                (new ExifInterface(filePath)).getThumbnail();
-                    }
-
-                    if (thumbData != null) {
-                        thumbnail = BitmapFactory.decodeByteArray(
-                                thumbData, 0, thumbData.length);
-                    }
-                    if (thumbnail == null && mImage != null) {
-                        thumbnail = mImage;
-                    }
-                    if (thumbnail == null && mJpegData != null) {
-                        thumbnail = BitmapFactory.decodeByteArray(
-                                mJpegData, 0, mJpegData.length);
-                    }
-                }
-
-                mContainer.storeThumbnail(
-                        thumbnail, Image.this.fullSizeImageId());
-                checkCanceled();
-
-                try {
-                    thumbnail = Util.rotate(thumbnail, mOrientation);
-                    saveMiniThumb(thumbnail);
-                } catch (IOException e) {
-                    // Ignore if unable to save thumb.
-                }
-                checkCanceled();
-                return true;
-            } catch (CanceledException ex) {
-                // Got canceled... need to cleanup.
-                return false;
-            } finally {
-                /*
-                 * Cursor c = getCursor(); synchronized (c) { if
-                 * (c.moveTo(getRow())) { mContainer.requery(); } }
-                 */
-                acknowledgeCancel();
+                thumbnail = Util.rotate(thumbnail, mOrientation);
+                saveMiniThumb(thumbnail);
+            } catch (IOException e) {
+                // Ignore if unable to save thumb.
+                Log.e(TAG, "unable to rotate / save thumb", e);
             }
+            return null;
         }
     }
 
-    public ICancelable<Boolean> saveImageContents(Bitmap image,
-            byte [] jpegData, int orientation, boolean newFile,
-            String filePath) {
+    public Cancelable<Void> saveImageContents(Bitmap image, byte [] jpegData,
+            int orientation, boolean newFile, String filePath) {
         return new SaveImageContentsCancelable(
                 image, jpegData, orientation, filePath);
     }

@@ -78,7 +78,7 @@ public class VideoObject extends BaseImage implements IImage {
     }
 
     @Override
-    public ICancelable<Bitmap> fullSizeBitmapCancelable(
+    public Cancelable<Bitmap> fullSizeBitmapCancelable(
             int targetWidthHeight) {
         return null;
     }
