@@ -698,37 +698,34 @@ class GridViewSpecial extends View {
                 }
             }
 
-            private void setStart(final int blockNumber) {
-                synchronized (ImageBlock.this) {
-                    if (blockNumber == mBlockNumber) {
-                        return;
-                    }
+            private synchronized void setStart(final int blockNumber) {
+                if (blockNumber == mBlockNumber) {
+                    return;
+                }
 
-                    cancelExistingRequests();
+                cancelExistingRequests();
 
-                    mBlockNumber = blockNumber;
-                    mRequestedMask = 0;
-                    mCompletedMask = 0;
+                mBlockNumber = blockNumber;
+                mRequestedMask = 0;
+                mCompletedMask = 0;
+                mCanvas.drawColor(0xFF000000);
+                mPaint.setColor(0xFFDDDDDD);
 
-                    int imageNumber = blockNumber * mCurrentSpec.mColumns;
-                    int lastImageNumber = mAllImages.getCount() - 1;
+                LayoutSpec spec = GridViewSpecial.this.mCurrentSpec;
+                int columnCount = spec.mColumns;
+                int imageIndex = blockNumber * columnCount;
+                int imageCount = mAllImages.getCount();
 
-                    int spacing = mCurrentSpec.mCellSpacing;
-                    int leftSpacing = mCurrentSpec.mLeftEdgePadding;
+                int yPos = spec.mCellSpacing;
+                int xPos = spec.mLeftEdgePadding;
 
-                    final int yPos = spacing;
-
-                    for (int col = 0; col < mCurrentSpec.mColumns; col++) {
-                        if (imageNumber++ >= lastImageNumber) {
-                            break;
-                        }
-                        final int xPos = leftSpacing
-                                + (col * (mCurrentSpec.mCellWidth + spacing));
-                        mCanvas.drawRect(xPos, yPos,
-                                xPos + mCurrentSpec.mCellWidth,
-                                yPos + mCurrentSpec.mCellHeight, mPaint);
-                        paintSel(0, xPos, yPos);
-                    }
+                for (int i = 0; i < columnCount
+                        && imageIndex < imageCount; ++i, ++imageIndex) {
+                    mCanvas.drawRect(xPos, yPos,
+                            xPos + spec.mCellWidth,
+                            yPos + spec.mCellHeight, mPaint);
+                    paintSel(0, xPos, yPos);
+                    xPos += (spec.mCellWidth + spec.mCellSpacing);
                 }
             }
 
