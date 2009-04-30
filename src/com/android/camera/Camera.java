@@ -1222,7 +1222,7 @@ public class Camera extends Activity implements View.OnClickListener,
         switch (keyCode) {
             // TODO: change the following two handlers to OSD control.
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (mCurrentBrightness > BRIGHTNESS_MIN) {
+                if (mParameters != null && mCurrentBrightness > BRIGHTNESS_MIN) {
                     mParameters.set(PARM_BRIGHTNESS, --mCurrentBrightness);
                     mCameraDevice.setParameters(mParameters);
                     Log.v(TAG, "--brightness=" + mCurrentBrightness);
@@ -1230,7 +1230,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 break;
 
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (mCurrentBrightness < BRIGHTNESS_MAX) {
+                if (mParameters != null && mCurrentBrightness < BRIGHTNESS_MAX) {
                     mParameters.set(PARM_BRIGHTNESS, ++mCurrentBrightness);
                     mCameraDevice.setParameters(mParameters);
                     Log.v(TAG, "++brightness=" + mCurrentBrightness);
