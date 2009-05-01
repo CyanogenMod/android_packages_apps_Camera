@@ -151,5 +151,5 @@
     <string name="gadget_title">"相框"</string>
     <string name="file_info_title">"檔案資訊："</string>
     <string name="video_exceed_mms_limit">"您所錄製的影片太大，無法透過 MMS 傳送。請試著錄製較短的影片。"</string>
-    <string name="too_large_to_attach">"檔案太大，超過附檔上限。"</string>
+    <string name="too_large_to_attach">"檔案過大，超過附件大小限制。"</string>
 </resources>
