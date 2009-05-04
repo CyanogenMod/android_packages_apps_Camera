@@ -582,9 +582,6 @@ public class Camera extends Activity implements View.OnClickListener,
             }
 
             mCapturing = false;
-            if (mPausing) {
-                closeCamera();
-            }
         }
 
         /**
@@ -1123,10 +1120,9 @@ public class Camera extends Activity implements View.OnClickListener,
         mOrientationListener.disable();
 
         stopPreview();
+        // Close the camera now because other activities may need to use it.
+        closeCamera();
 
-        if (!mImageCapture.mCapturing) {
-            closeCamera();
-        }
         if (mDidRegister) {
             unregisterReceiver(mReceiver);
             mDidRegister = false;
