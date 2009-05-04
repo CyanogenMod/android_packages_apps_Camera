@@ -35,7 +35,7 @@ import java.util.HashMap;
 public class VideoList extends BaseImageList implements IImageList {
     private static final String TAG = "BaseImageList";
 
-    private static final String[] sProjection = new String[] {
+    private static final String[] VIDEO_PROJECTION = new String[] {
             Video.Media._ID,
             Video.Media.DATA,
             Video.Media.DATE_TAKEN,
@@ -58,7 +58,7 @@ public class VideoList extends BaseImageList implements IImageList {
             indexOf(Video.Media.MINI_THUMB_MAGIC);
 
     private static int indexOf(String field) {
-        return Util.indexOf(sProjection, field);
+        return Util.indexOf(VIDEO_PROJECTION, field);
     }
 
     public VideoList(ContentResolver cr, Uri uri, Uri thumbUri,
@@ -115,7 +115,7 @@ public class VideoList extends BaseImageList implements IImageList {
 
     protected Cursor createCursor() {
         Cursor c = Images.Media.query(
-                mContentResolver, mBaseUri, sProjection,
+                mContentResolver, mBaseUri, VIDEO_PROJECTION,
                 whereClause(), whereClauseArgs(), sortOrder());
         return c;
     }

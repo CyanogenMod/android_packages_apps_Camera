@@ -74,7 +74,7 @@ public interface IImageList {
      * Returns the image with a particular Uri.
      *
      * @param uri
-     * @return      the image with a particular Uri.
+     * @return      the image with a particular Uri. null if not found.
      */
     public abstract IImage getImageForUri(Uri uri);
 
