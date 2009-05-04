@@ -1213,6 +1213,18 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private void adjustBrightness(int delta) {
+        if (mParameters == null || mCameraDevice == null) return;
+        int newValue = mCurrentBrightness + delta;
+        newValue = Math.min(newValue, BRIGHTNESS_MAX);
+        newValue = Math.max(newValue, BRIGHTNESS_MIN);
+        if (mCurrentBrightness != newValue) {
+            mCurrentBrightness = newValue;
+            mParameters.set(PARM_BRIGHTNESS, mCurrentBrightness);
+            mCameraDevice.setParameters(mParameters);
+            Log.v(TAG, "brightness=" + mCurrentBrightness);
+        }
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1222,19 +1234,11 @@ public class Camera extends Activity implements View.OnClickListener,
         switch (keyCode) {
             // TODO: change the following two handlers to OSD control.
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (mParameters != null && mCurrentBrightness > BRIGHTNESS_MIN) {
-                    mParameters.set(PARM_BRIGHTNESS, --mCurrentBrightness);
-                    mCameraDevice.setParameters(mParameters);
-                    Log.v(TAG, "--brightness=" + mCurrentBrightness);
-                }
+                adjustBrightness(-1);
                 break;
 
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (mParameters != null && mCurrentBrightness < BRIGHTNESS_MAX) {
-                    mParameters.set(PARM_BRIGHTNESS, ++mCurrentBrightness);
-                    mCameraDevice.setParameters(mParameters);
-                    Log.v(TAG, "++brightness=" + mCurrentBrightness);
-                }
+                adjustBrightness(1);
                 break;
 
             case KeyEvent.KEYCODE_BACK:
@@ -1585,18 +1589,6 @@ public class Camera extends Activity implements View.OnClickListener,
             mCaptureObject.dismissFreezeFrame();
         }
     }
-
-    private IImage getImageForURI(Uri uri) {
-        IImageList list = ImageManager.allImages(
-                mContentResolver,
-                dataLocation(),
-                ImageManager.INCLUDE_IMAGES,
-                ImageManager.SORT_ASCENDING);
-        IImage image = list.getImageForUri(uri);
-        list.deactivate();
-        return image;
-    }
-
 
     private void startReceivingLocationUpdates() {
         if (mLocationManager != null) {
