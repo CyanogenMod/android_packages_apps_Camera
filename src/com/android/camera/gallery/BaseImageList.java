@@ -403,16 +403,6 @@ public abstract class BaseImageList implements IImageList {
         }
     }
 
-    public IImage getImageForUri(Uri uri) {
-        // TODO: make this a hash lookup
-        for (int i = 0; i < getCount(); i++) {
-            if (getImageAt(i).fullSizeImageUri().equals(uri)) {
-                return getImageAt(i);
-            }
-        }
-        return null;
-    }
-
     byte [] getMiniThumbFromFile(long id, byte [] data, long magicCheck) {
         return mMiniThumbFile.getMiniThumbFromFile(id, data, magicCheck);
     }
@@ -502,5 +492,28 @@ public abstract class BaseImageList implements IImageList {
         mCache.clear();
         mCursor.requery();
         mCursorDeactivated = false;
+    }
+
+    public IImage getImageForUri(Uri uri) {
+        // Find the id of the input URI.
+        long matchId;
+        try {
+            matchId = ContentUris.parseId(uri);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+
+        // Go through the data and find the entry with the matching id.
+        Cursor c = getCursor();
+        synchronized (c) {
+            int index = indexId();
+            if (!c.moveToFirst()) return null;
+            do {
+                if (matchId == c.getLong(index)) {
+                    return getImageAt(c.getPosition());
+                }
+            } while (c.moveToNext());
+            return null;
+        }
     }
 }

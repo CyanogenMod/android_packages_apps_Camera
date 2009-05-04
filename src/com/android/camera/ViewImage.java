@@ -860,14 +860,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 sort);
 
         uri = uri.buildUpon().query(null).build();
-        // TODO smarter/faster here please
-        for (int i = 0; i < mAllImages.getCount(); i++) {
-            IImage image = mAllImages.getImageAt(i);
-            if (image.fullSizeImageUri().equals(uri)) {
-                mCurrentPosition = i;
-                mLastSlideShowImage = mCurrentPosition;
-                break;
-            }
+
+        IImage image = mAllImages.getImageForUri(uri);
+        if (image != null) {
+            mCurrentPosition = image.getRow();
+            mLastSlideShowImage = mCurrentPosition;
         }
     }
 
