@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -58,13 +57,13 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -1564,16 +1563,13 @@ public class Camera extends Activity implements View.OnClickListener,
             targetUri = targetUri.buildUpon().appendQueryParameter(
                     "bucketId", ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
             Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
-            intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
-                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             intent.putExtra(MediaStore.EXTRA_FULL_SCREEN, true);
             intent.putExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS, true);
             intent.putExtra("com.android.camera.ReviewMode", true);
-
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {
-                // ignore.
+                Log.e(TAG, "review image fail", ex);
             }
         } else {
             Log.e(TAG, "Can't view last image.");
