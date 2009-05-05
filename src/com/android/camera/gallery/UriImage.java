@@ -211,7 +211,7 @@ class UriImage implements IImage {
     }
 
     public int getRow() {
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
     public boolean isReadonly() {
