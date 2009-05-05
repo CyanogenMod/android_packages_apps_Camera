@@ -203,6 +203,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     @Override
     protected void onDestroy() {
+
         // This is necessary to make the ZoomButtonsController unregister
         // its configuration change receiver.
         if (mZoomButtonsController != null) {
@@ -901,8 +902,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         BitmapManager.instance().allowAllDecoding(false);
 
@@ -930,8 +931,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         BitmapManager.instance().cancelAllDecoding();
 
         mGetter.cancelCurrent();
