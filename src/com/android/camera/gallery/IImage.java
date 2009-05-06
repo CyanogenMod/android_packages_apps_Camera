@@ -52,9 +52,13 @@ public interface IImage {
 
     // Get metadata of the image
     public abstract long getDateTaken();
+
     public abstract String getMimeType();
+
     public abstract int getWidth();
+
     public abstract int getHeight();
+
     public abstract String getDisplayName();
 
     // Get property of the image
@@ -68,13 +72,7 @@ public interface IImage {
     // Get the bitmap of the mini thumbnail.
     public abstract Bitmap miniThumbBitmap();
 
-    // Get the row number for this image in the database table.
-    public abstract int getRow();
-
     // Rotate the image
     public abstract boolean rotateImageBy(int degrees);
-
-    // This is called if the image is removed.
-    public abstract void onRemove();
 
 }

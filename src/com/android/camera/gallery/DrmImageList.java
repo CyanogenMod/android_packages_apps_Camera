@@ -29,11 +29,16 @@ import android.provider.DrmStore;
  */
 public class DrmImageList extends ImageList implements IImageList {
 
+    // TODO: get other field from database too ?
     private static final String[] DRM_IMAGE_PROJECTION = new String[] {
-        DrmStore.Audio._ID,
-        DrmStore.Audio.DATA,
-        DrmStore.Audio.MIME_TYPE,
+        DrmStore.Images._ID,
+        DrmStore.Images.DATA,
+        DrmStore.Images.MIME_TYPE,
     };
+
+    private static final int INDEX_ID = 0;
+    private static final int INDEX_DATA_PATH = 1;
+    private static final int INDEX_MIME_TYPE = 2;
 
     public DrmImageList(ContentResolver cr, Uri imageUri,
             int sort, String bucketId) {
@@ -52,9 +57,12 @@ public class DrmImageList extends ImageList implements IImageList {
 
     private static class DrmImage extends Image {
 
-        protected DrmImage(long id, ContentResolver cr,
-                BaseImageList container, int cursorRow) {
-            super(id, 0, cr, container, cursorRow, 0);
+        protected DrmImage(BaseImageList container, ContentResolver cr,
+                long id, int index, Uri uri, String dataPath, long miniThumbMagic,
+                String mimeType, long dateTaken, String title,
+                String displayName, int rotation) {
+            super(container, cr, id, index, uri, dataPath, miniThumbMagic,
+                    mimeType, dateTaken, title, displayName, rotation);
         }
 
         @Override
@@ -84,54 +92,18 @@ public class DrmImageList extends ImageList implements IImageList {
     }
 
     @Override
-    protected IImage make(long id, long miniThumbMagic, ContentResolver cr,
-            IImageList list, int index, int rotation) {
-        return new DrmImage(id, mContentResolver, this, index);
-    }
-
-
-    @Override
-    protected int indexId() {
-        return -1;
-    }
-
-    @Override
-    protected int indexData() {
-        return -1;
-    }
-
-    @Override
-    protected int indexMimeType() {
-        return -1;
-    }
-
-    @Override
-    protected int indexDateTaken() {
-        return -1;
-    }
-
-    @Override
-    protected int indexMiniThumbMagic() {
-        return -1;
-    }
-
-    @Override
-    protected int indexOrientation() {
-        return -1;
-    }
-
-    @Override
-    protected int indexTitle() {
-        return -1;
-    }
-
-    @Override
-    protected int indexDisplayName() {
-        return -1;
+    protected BaseImage loadImageFromCursor(Cursor cursor) {
+        long id = cursor.getLong(INDEX_ID);
+        String dataPath = cursor.getString(INDEX_DATA_PATH);
+        String mimeType = cursor.getString(INDEX_MIME_TYPE);
+        return new DrmImage(this, mContentResolver, id, cursor.getPosition(),
+                contentUri(id), dataPath, 0, mimeType, 0, "DrmImage-" + id,
+                "DrmImage-" + id, 0);
     }
 
     // TODO: Review this probably should be based on DATE_TAKEN same as images
-    private String sortOrder() {
+    @Override
+    protected String sortOrder() {
         String ascending =
                 mSort == ImageManager.SORT_ASCENDING ? " ASC" : " DESC";
         return DrmStore.Images.TITLE  + ascending + "," + DrmStore.Images._ID;

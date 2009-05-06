@@ -223,7 +223,12 @@ public class ImageManager {
                 long id = ContentUris.parseId(mUri);
                 BaseImageList il = new ImageList(mCr, STORAGE_URI,
                         THUMB_URI, SORT_ASCENDING, null);
-                Image image = new Image(id, 0, mCr, il, il.getCount(), 0);
+
+                // TODO: Redesign the process of adding new images. We should
+                //     create an <code>IImage</code> in "ImageManager.addImage"
+                //     and pass the image object to here.
+                Image image = new Image(il, mCr, id, 0, il.contentUri(id), null,
+                        0, null, 0, null, null, 0);
                 String[] projection = new String[] {
                         ImageColumns._ID,
                         ImageColumns.MINI_THUMB_MAGIC, ImageColumns.DATA};
@@ -324,7 +329,12 @@ public class ImageManager {
             return false;
         }
 
-        public void removeImageAt(int i) {
+        public boolean removeImageAt(int i) {
+            return false;
+        }
+
+        public int getImageIndex(IImage image) {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -360,15 +370,13 @@ public class ImageManager {
             }
             if ((inclusion & INCLUDE_VIDEOS) != 0) {
                 try {
-                    l.add(new VideoList(cr, VIDEO_STORAGE_URI,
-                            VIDEO_THUMBNAIL_URI, sort, bucketId));
+                    l.add(new VideoList(cr, VIDEO_STORAGE_URI, sort, bucketId));
                 } catch (UnsupportedOperationException ex) {
                     // ignore exception
                 }
             }
         }
-        if (location == DataLocation.INTERNAL
-                || location == DataLocation.ALL) {
+        if (location == DataLocation.INTERNAL || location == DataLocation.ALL) {
             if ((inclusion & INCLUDE_IMAGES) != 0) {
                 try {
                     l.add(new ImageList(cr,

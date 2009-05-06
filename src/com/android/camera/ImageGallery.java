@@ -793,7 +793,7 @@ public class ImageGallery extends Activity implements
             IImage image = mAllImages.getImageForUri(mCropResultUri);
             mCropResultUri = null;
             if (image != null) {
-                mSelectedIndex = image.getRow();
+                mSelectedIndex = mAllImages.getImageIndex(image);
             }
         }
         mGvs.select(mSelectedIndex, false);

@@ -19,6 +19,7 @@ package com.android.camera.gallery;
 import com.android.camera.ImageManager;
 
 import android.content.ContentResolver;
+import android.database.Cursor;
 import android.net.Uri;
 
 import java.util.HashMap;
@@ -27,7 +28,8 @@ import java.util.HashMap;
  * An implementation of interface <code>IImageList</code> which contains only
  * one image.
  */
-public class SingleImageList extends BaseImageList implements IImageList {
+// TODO: consider implements not extends
+public class SingleImageList extends BaseImageList {
 
     @SuppressWarnings("unused")
     private static final String TAG = "BaseImageList";
@@ -59,6 +61,12 @@ public class SingleImageList extends BaseImageList implements IImageList {
     }
 
     @Override
+    protected long getImageId(Cursor cursor) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    @Override
     public IImage getImageAt(int i) {
         return i == 0 ? mSingleImage : null;
     }
@@ -69,42 +77,12 @@ public class SingleImageList extends BaseImageList implements IImageList {
     }
 
     @Override
-    protected int indexId() {
-        return -1;
+    protected Cursor createCursor() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    protected int indexData() {
-        return -1;
-    }
-
-    @Override
-    protected int indexMimeType() {
-        return -1;
-    }
-
-    @Override
-    protected int indexDateTaken() {
-        return -1;
-    }
-
-    @Override
-    protected int indexMiniThumbMagic() {
-        return -1;
-    }
-
-    @Override
-    protected int indexOrientation() {
-        return -1;
-    }
-
-    @Override
-    protected int indexTitle() {
-        return -1;
-    }
-
-    @Override
-    protected int indexDisplayName() {
-        return -1;
+    protected BaseImage loadImageFromCursor(Cursor cursor) {
+        throw new UnsupportedOperationException();
     }
 }
