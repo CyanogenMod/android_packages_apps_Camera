@@ -652,7 +652,7 @@ public class ImageGallery extends Activity implements
         private final String mProgressTextFormatString;
         boolean mDidSetProgress = false;
         private long mLastUpdateTime;  // initialized to 0
-        private PowerManager.WakeLock mWakeLock;
+        private final PowerManager.WakeLock mWakeLock;
 
         private MyThumbCheckCallback() {
             Resources resources = getResources();
@@ -674,10 +674,12 @@ public class ImageGallery extends Activity implements
 
             if (!mDidSetProgress) {
                 mHandler.post(new Runnable() {
-                        public void run() {
-                            View v = findViewById(R.id.loading_indicator);
-                            v.setVisibility(View.VISIBLE);
-                        }
+                    public void run() {
+                        findViewById(R.id.loading_text).setVisibility(
+                                View.VISIBLE);
+                        findViewById(android.R.id.progress).setVisibility(
+                                View.VISIBLE);
+                    }
                 });
                 mDidSetProgress = true;
             }
@@ -707,7 +709,8 @@ public class ImageGallery extends Activity implements
             mWakeLock.release();
             mHandler.post(new Runnable() {
                 public void run() {
-                    findViewById(R.id.loading_indicator).setVisibility(
+                    findViewById(R.id.loading_text).setVisibility(View.GONE);
+                    findViewById(android.R.id.progress).setVisibility(
                             View.GONE);
                 }
             });
