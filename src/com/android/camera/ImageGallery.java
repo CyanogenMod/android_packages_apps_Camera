@@ -16,6 +16,8 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.BaseCancelable;
+import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.gallery.VideoObject;
@@ -52,8 +54,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,6 +93,8 @@ public class ImageGallery extends Activity implements
 
     GridViewSpecial mGvs;
 
+    private final PriorityTaskQueue mPriorityQueue = new PriorityTaskQueue(1);
+
     // The index of the first picture in GridViewSpecial.
     private int mSelectedIndex = GridViewSpecial.SELECT_NONE;
     private float mScrollPosition = INVALID_POSITION;
@@ -116,6 +122,10 @@ public class ImageGallery extends Activity implements
 
         mFooterOrganizeView = findViewById(R.id.footer_organize);
 
+        // consume all click events on the footer view
+        mFooterOrganizeView.setOnClickListener(Util.getNullOnClickListener());
+        initializeFooterButtons();
+
         if (isPickIntent()) {
             mVideoSizeLimit = getIntent().getLongExtra(
                     MediaStore.EXTRA_SIZE_LIMIT, Long.MAX_VALUE);
@@ -128,6 +138,26 @@ public class ImageGallery extends Activity implements
         }
 
         mLoader = new ImageLoader(mHandler);
+    }
+
+    private void initializeFooterButtons() {
+        Button deleteButton = (Button) findViewById(R.id.button_delete);
+        deleteButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onDeleteClicked();
+            }
+        });
+
+        Button closeButton = (Button) findViewById(R.id.button_close);
+        closeButton.setOnClickListener( new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                closeMultiSelectMode();
+            }
+        });
     }
 
     private MenuItem addSlideShowMenu(Menu menu, int position) {
@@ -484,12 +514,11 @@ public class ImageGallery extends Activity implements
             item.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    if (mMultiSelected == null) {
-                        mMultiSelected = new HashSet<IImage>();
+                    if (isInMultiSelectMode()) {
+                        closeMultiSelectMode();
                     } else {
-                        mMultiSelected = null;
+                        openMultiSelectMode();
                     }
-                    mGvs.invalidateAllImages();
                     return true;
                 }
             });
@@ -938,5 +967,54 @@ public class ImageGallery extends Activity implements
             }
             mFooterOrganizeView.startAnimation(mFooterDisappear);
         }
+    }
+
+    private void onDeleteClicked() {
+        Cancelable<Void> task = new BaseCancelable<Void>() {
+
+            @Override
+            public boolean requestCancel() {
+                return false;
+            }
+
+            @Override
+            protected Void execute() {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                return null;
+            }
+
+        };
+        postBackgroundTask(
+                getResources().getString(R.string.delete_images_message),
+                task);
+
+    }
+
+    private <T> void postBackgroundTask(String message, Cancelable<T> task) {
+        String title = getResources().getString(R.string.progress_dialog_title);
+        PriorityTask<T> pTask = PriorityTask.wrap(task);
+        Util.showProgressDialog(this, title, message, pTask);
+        mPriorityQueue.add(pTask);
+    }
+
+    private boolean isInMultiSelectMode() {
+        return mMultiSelected != null;
+    }
+
+    private void closeMultiSelectMode() {
+        if (mMultiSelected == null) return;
+        mMultiSelected = null;
+        mGvs.invalidateAllImages();
+        hideFooter();
+    }
+
+    private void openMultiSelectMode() {
+        if (mMultiSelected != null) return;
+        mMultiSelected = new HashSet<IImage>();
+        mGvs.invalidateAllImages();
     }
 }

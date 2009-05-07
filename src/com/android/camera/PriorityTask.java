@@ -81,6 +81,38 @@ public abstract class PriorityTask<T>
         setPriority(priority);
     }
 
+    private static class CancelableAdapter<T> extends PriorityTask<T> {
+        private final Cancelable<T> mTask;
+
+        public CancelableAdapter(Cancelable<T> task, int priority) {
+            super(priority);
+            mTask = task;
+        }
+
+        @Override
+        public boolean requestCancel() {
+            if (super.requestCancel()) {
+                mTask.requestCancel();
+                return true;
+            }
+            return false;
+        }
+
+
+        @Override
+        protected T execute() throws Exception {
+            return mTask.get();
+        }
+    }
+
+    public static <T> PriorityTask<T> wrap(Cancelable<T> task, int priority) {
+        return new CancelableAdapter<T>(task, priority);
+    }
+
+    public static <T> PriorityTask<T> wrap(Cancelable<T> task) {
+        return new CancelableAdapter<T>(task, PRIORITY_DEFAULT);
+    }
+
     /**
      * Executes the task. Subclasses should override this function. Note: if
      * this function throws an <code>InterruptedException</code>, the task will

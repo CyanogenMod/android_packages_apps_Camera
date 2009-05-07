@@ -60,6 +60,7 @@
             android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:clickable="false"
             android:layout_alignParentBottom="true"
             android:paddingTop="5dip"
             android:paddingLeft="4dip"
@@ -67,19 +68,19 @@
             android:paddingBottom="1dip"
             android:background="@android:drawable/bottom_bar">
 
-        <Button android:id="@+id/share"
+        <Button android:id="@+id/button_share"
                 android:layout_width="0dip"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:text="@string/multiselect_share" />
 
-        <Button android:id="@+id/delete"
+        <Button android:id="@+id/button_delete"
                 android:layout_width="0dip"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:text="@string/multiselect_delete" />
 
-        <Button android:id="@+id/close"
+        <Button android:id="@+id/button_close"
                 android:layout_width="0dip"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"

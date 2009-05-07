@@ -18,7 +18,9 @@ package com.android.camera;
 
 import com.android.camera.gallery.IImage;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -28,6 +30,8 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -39,6 +43,8 @@ import java.io.IOException;
  */
 public class Util {
     private static final String TAG = "db.Util";
+
+    private static OnClickListener sNullOnClickListener;
 
     private Util() {
     }
@@ -368,5 +374,36 @@ public class Util {
             Log.d(tag, message);
         }
         Log.d(tag, msg + " --- stack trace ends.");
+    }
+
+    public static <T> void showProgressDialog(final Context context,
+            String title, String message, PriorityTask<T> task) {
+        final ProgressDialog dialog =
+                ProgressDialog.show(context, title, message);
+
+        task.addCallback(new PriorityTask.Callback<T>() {
+
+            public void onCanceled(PriorityTask<T> t) {
+                dialog.dismiss();
+            }
+
+            public void onFail(PriorityTask<T> t, Throwable error) {
+                dialog.dismiss();
+            }
+
+            public void onResultAvailable(PriorityTask<T> t, T result) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public synchronized static OnClickListener getNullOnClickListener() {
+        if (sNullOnClickListener == null) {
+            sNullOnClickListener = new OnClickListener() {
+                public void onClick(View v) {
+                }
+            };
+        }
+        return sNullOnClickListener;
     }
 }
