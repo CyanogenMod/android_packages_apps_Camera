@@ -143,8 +143,6 @@ public class ImageGallery extends Activity implements
     private void initializeFooterButtons() {
         Button deleteButton = (Button) findViewById(R.id.button_delete);
         deleteButton.setOnClickListener(new OnClickListener() {
-
-            @Override
             public void onClick(View v) {
                 onDeleteClicked();
             }
@@ -152,8 +150,6 @@ public class ImageGallery extends Activity implements
 
         Button closeButton = (Button) findViewById(R.id.button_close);
         closeButton.setOnClickListener( new OnClickListener() {
-
-            @Override
             public void onClick(View v) {
                 closeMultiSelectMode();
             }
