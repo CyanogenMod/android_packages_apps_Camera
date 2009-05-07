@@ -32,8 +32,8 @@
     <!-- label for the 'pictures application shown in the top level 'all applications' -->
     <string name="gallery_picker_label">Gallery</string>
 
-    <!-- unused (do not translate) -->
-    <string name="gallery_label">Pictures</string>
+    <!-- temporary label for the image gallery before the real label is set in the activity (do not translate) -->
+    <string name="gallery_label"> </string>
     
     <!-- label for the folder that contains Camera pictures in the gallery -->
     <string name="gallery_camera_bucket_name">Camera pictures</string>
