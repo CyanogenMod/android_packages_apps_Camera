@@ -24,7 +24,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
@@ -493,8 +492,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mShowActionIcons = intent.getBooleanExtra(
                 MediaStore.EXTRA_SHOW_ACTION_ICONS, false);
 
-        setRequestedOrientation();
-
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
@@ -603,18 +600,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (mShowActionIcons) {
             mNextImageView.setFocusable(true);
             mPrevImageView.setFocusable(true);
-        }
-    }
-
-    private void setRequestedOrientation() {
-        Intent intent = getIntent();
-        if (intent.hasExtra(MediaStore.EXTRA_SCREEN_ORIENTATION)) {
-            int orientation = intent.getIntExtra(
-                    MediaStore.EXTRA_SCREEN_ORIENTATION,
-                    ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            if (orientation != getRequestedOrientation()) {
-                setRequestedOrientation(orientation);
-            }
         }
     }
 
