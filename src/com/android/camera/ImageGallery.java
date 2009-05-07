@@ -75,7 +75,6 @@ public class ImageGallery extends Activity implements
     boolean mSortAscending = false;
     private View mNoImagesView;
     public static final int CROP_MSG = 2;
-    public static final int VIEW_MSG = 3;
 
     private Dialog mMediaScanningDialog;
 
@@ -259,12 +258,11 @@ public class ImageGallery extends Activity implements
 
         long size = MenuHelper.getImageFileSize(img);
         if (size < 0) {
-            // return if there image file is not available.
+            // Return if the image file is not available.
             return;
         }
 
         if (size > mVideoSizeLimit) {
-
             DialogInterface.OnClickListener buttonListener =
                     new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -297,8 +295,9 @@ public class ImageGallery extends Activity implements
             startActivityForResult(cropIntent, CROP_MSG);
         } else {
             Intent result = new Intent(null, img.fullSizeImageUri());
-            if (myExtras != null && myExtras.getString("return-data") != null) {
-                Bitmap bitmap = img.fullSizeBitmap(1000);
+            if (myExtras != null && myExtras.getBoolean("return-data")) {
+                // The size of a transaction should be below 100K.
+                Bitmap bitmap = img.fullSizeBitmap(192);
                 if (bitmap != null) {
                     result.putExtra("data", bitmap);
                 }
@@ -332,11 +331,6 @@ public class ImageGallery extends Activity implements
                     setResult(resultCode, data);
                     finish();
                 }
-                break;
-            }
-            case VIEW_MSG: {
-                IImage img = mAllImages.getImageForUri(data.getData());
-                launchCropperOrFinish(img);
                 break;
             }
         }
