@@ -301,8 +301,10 @@ public class GalleryPicker extends Activity {
                 Log.e(TAG, "join interrupted");
             }
             mWorkerThread = null;
-            mHandler = null;
-            mHandler = new Handler();
+            // Remove all runnables in mHandler.
+            // (We assume that the "what" field in the messages are 0
+            // for runnables).
+            mHandler.removeMessages(0);
             mAdapter.clear();
             mAdapter.updateDisplay();
             clearImageLists();
