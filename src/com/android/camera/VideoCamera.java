@@ -108,7 +108,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
 
-    private static final int MAX_RECORDING_DURATION_MS = 10 * 60 * 1000;
+    private static final int MAX_RECORDING_DURATION_MS = 600 * 60 * 1000;
 
     private int mStorageStatus = STORAGE_STATUS_OK;
 
