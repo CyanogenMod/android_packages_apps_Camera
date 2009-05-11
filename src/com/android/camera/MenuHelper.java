@@ -17,7 +17,6 @@
 package com.android.camera;
 
 import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.Image;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,9 +48,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * A utility class to handle various kinds of menu operations.
+ */
 public class MenuHelper {
     private static final String TAG = "MenuHelper";
 
@@ -91,6 +94,7 @@ public class MenuHelper {
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
     public static final String EMPTY_STRING = "";
+    public static final String JPEG_MIME_TYPE = "image/jpeg";
     // valid range is -180f to +180f
     public static final float INVALID_LATLNG = 255f;
 
@@ -158,42 +162,43 @@ public class MenuHelper {
         d.findViewById(rowId).setVisibility(View.GONE);
     }
 
-    private static float getLatLng(Image img, String tag) {
-        String value = img.getExifTag(tag);
-        String ref;
-
-        if (tag == ExifInterface.TAG_GPS_LATITUDE) {
-            ref = img.getExifTag(ExifInterface.TAG_GPS_LATITUDE_REF);
-        } else {
-            ref = img.getExifTag(ExifInterface.TAG_GPS_LONGITUDE_REF);
+    private static float[] getLatLng(HashMap<String, String> exifData) {
+        if (exifData == null) {
+            return null;
         }
 
-        float f = INVALID_LATLNG;
-        if (value != null && ref != null) {
-            f = ExifInterface.convertRationalLatLonToFloat(
-                    value, ref);
+        String latValue = exifData.get(ExifInterface.TAG_GPS_LATITUDE);
+        String latRef = exifData.get(ExifInterface.TAG_GPS_LATITUDE_REF);
+        String lngValue = exifData.get(ExifInterface.TAG_GPS_LONGITUDE);
+        String lngRef = exifData.get(ExifInterface.TAG_GPS_LONGITUDE_REF);
+        float[] latlng = null;
+
+        if (latValue != null && latRef != null
+                && lngValue != null && lngRef != null) {
+            latlng = new float[2];
+            latlng[0] = ExifInterface.convertRationalLatLonToFloat(
+                    latValue, latRef);
+            latlng[1] = ExifInterface.convertRationalLatLonToFloat(
+                    lngValue, lngRef);
         }
-        return f;
+
+        return latlng;
     }
 
-    private static float setLatLngDetails(View d, Image img,
-                                          String tag, String refTag) {
-        int valueId = R.id.details_latitude_value;
-        int rowId = R.id.details_latitude_row;
-        float latlng = getLatLng(img, tag);
-
-        if (tag == ExifInterface.TAG_GPS_LONGITUDE) {
-            valueId = R.id.details_longitude_value;
-            rowId = R.id.details_longitude_row;
+    private static void setLatLngDetails(View d, Activity context,
+            HashMap<String, String> exifData) {
+        float[] latlng = getLatLng(exifData);
+        if (latlng != null) {
+            setDetailsValue(d, String.valueOf(latlng[0]),
+                    R.id.details_latitude_value);
+            setDetailsValue(d, String.valueOf(latlng[1]),
+                     R.id.details_longitude_value);
+            setReverseGeocodingDetails(d, context, latlng[0], latlng[1]);
+        } else {
+            hideDetailsRow(d, R.id.details_latitude_row);
+            hideDetailsRow(d, R.id.details_longitude_row);
+            hideDetailsRow(d, R.id.details_location_row);
         }
-
-        if (latlng == INVALID_LATLNG) {
-            hideDetailsRow(d, rowId);
-            return INVALID_LATLNG;
-        }
-
-        setDetailsValue(d, String.valueOf(latlng), valueId);
-        return latlng;
     }
 
     private static void setReverseGeocodingDetails(View d, Activity context,
@@ -233,6 +238,18 @@ public class MenuHelper {
         }
     }
 
+    private static HashMap<String, String> getExifData(IImage image) {
+        if (!JPEG_MIME_TYPE.equals(image.getMimeType())) {
+            return null;
+        }
+
+        ExifInterface exif = new ExifInterface(image.getDataPath());
+        HashMap<String, String> exifData = null;
+        if (exif != null) {
+            exifData = exif.getAttributes();
+        }
+        return exifData;
+    }
     // Called when "Show on Maps" is clicked.
     // Displays image location on Google Maps for further operations.
     private static boolean onShowMapClicked(MenuInvoker onInvoke,
@@ -243,11 +260,8 @@ public class MenuHelper {
                 if (image == null) {
                     return;
                 }
-                float lat = getLatLng((Image) image,
-                        ExifInterface.TAG_GPS_LATITUDE);
-                float lng = getLatLng((Image) image,
-                        ExifInterface.TAG_GPS_LONGITUDE);
-                if (lat == INVALID_LATLNG || lng == INVALID_LATLNG) {
+                float[] latlng = getLatLng(getExifData(image));
+                if (latlng == null) {
                     handler.post(new Runnable() {
                         public void run() {
                             Toast.makeText(activity,
@@ -263,13 +277,58 @@ public class MenuHelper {
                 // for further operations (routing to/from).
                 // The q=(lat, lng) syntax is suggested by geo-team.
                 String uri = "http://maps.google.com/maps?f=q&" +
-                        "q=(" + lat + "," + lng + ")";
+                        "q=(" + latlng[0] + "," + latlng[1] + ")";
                 activity.startActivity(new Intent(
                         android.content.Intent.ACTION_VIEW,
                         Uri.parse(uri)));
             }
         });
         return true;
+    }
+
+    private static void hideExifInformation(View d) {
+        hideDetailsRow(d, R.id.details_resolution_row);
+        hideDetailsRow(d, R.id.details_make_row);
+        hideDetailsRow(d, R.id.details_model_row);
+        hideDetailsRow(d, R.id.details_whitebalance_row);
+        hideDetailsRow(d, R.id.details_latitude_row);
+        hideDetailsRow(d, R.id.details_longitude_row);
+        hideDetailsRow(d, R.id.details_location_row);
+    }
+
+    private static void showExifInformation(IImage image, View d, Activity activity) {
+        HashMap<String, String> exifData = getExifData(image);
+        if (exifData == null) {
+            hideExifInformation(d);
+            return;
+        }
+
+        String value = exifData.get(ExifInterface.TAG_MAKE);
+        if (value != null) {
+            setDetailsValue(d, value, R.id.details_make_value);
+        } else {
+            hideDetailsRow(d, R.id.details_make_row);
+        }
+
+        value = exifData.get(ExifInterface.TAG_MODEL);
+        if (value != null) {
+            setDetailsValue(d, value, R.id.details_model_value);
+        } else {
+            hideDetailsRow(d, R.id.details_model_row);
+        }
+
+        value = exifData.get(ExifInterface.TAG_WHITE_BALANCE);
+        if (value != null) {
+            value = ExifInterface.whiteBalanceToString(
+                    Integer.parseInt(value));
+        }
+        if (value != null && value != EMPTY_STRING) {
+            setDetailsValue(d, value, R.id.details_whitebalance_value);
+        } else {
+            hideDetailsRow(d, R.id.details_whitebalance_row);
+        }
+
+        setLatLngDetails(d, activity, exifData);
     }
 
     // Called when "Details" is clicked.
@@ -426,59 +485,18 @@ public class MenuHelper {
                     }
                 }
 
-                Image img = (Image) image;
                 String value = null;
                 if (dimensionWidth > 0 && dimensionHeight > 0) {
                     value = String.format(
                             activity.getString(R.string.details_dimension_x),
                             dimensionWidth, dimensionHeight);
-                } else {
-                    String width = img.getExifTag(
-                            ExifInterface.TAG_IMAGE_WIDTH);
-                    String height = img.getExifTag(
-                            ExifInterface.TAG_IMAGE_LENGTH);
-                    if (width != null && height != null) {
-                        value = EMPTY_STRING + width + " x " + height;
-                    }
                 }
+
                 if (value != null) {
                     setDetailsValue(d, value, R.id.details_resolution_value);
                 } else {
                     hideDetailsRow(d, R.id.details_resolution_row);
                 }
-
-                value = img.getExifTag(ExifInterface.TAG_MAKE);
-                if (value != null) {
-                    setDetailsValue(d, value, R.id.details_make_value);
-                } else {
-                    hideDetailsRow(d, R.id.details_make_row);
-                }
-
-                value = img.getExifTag(ExifInterface.TAG_MODEL);
-                if (value != null) {
-                    setDetailsValue(d, value, R.id.details_model_value);
-                } else {
-                    hideDetailsRow(d, R.id.details_model_row);
-                }
-
-                value = img.getExifTag(ExifInterface.TAG_WHITE_BALANCE);
-                if (value != null) {
-                    value = ExifInterface.whiteBalanceToString(
-                            Integer.parseInt(value));
-                }
-                if (value != null) {
-                    setDetailsValue(d, value, R.id.details_whitebalance_value);
-                } else {
-                    hideDetailsRow(d, R.id.details_whitebalance_row);
-                }
-
-                float lat = setLatLngDetails(d, img,
-                        ExifInterface.TAG_GPS_LATITUDE,
-                        ExifInterface.TAG_GPS_LATITUDE_REF);
-                float lng = setLatLngDetails(d, img,
-                        ExifInterface.TAG_GPS_LONGITUDE,
-                        ExifInterface.TAG_GPS_LONGITUDE_REF);
-                setReverseGeocodingDetails(d, activity, lat, lng);
 
                 value = EMPTY_STRING;
                 long dateTaken = image.getDateTaken();
@@ -491,6 +509,13 @@ public class MenuHelper {
                     setDetailsValue(d, value, R.id.details_date_taken_value);
                 } else {
                     hideDetailsRow(d, R.id.details_date_taken_row);
+                }
+
+                // Show more EXIF header details for JPEG images.
+                if (JPEG_MIME_TYPE.equals(image.getMimeType())) {
+                    showExifInformation(image, d, activity);
+                } else {
+                    hideExifInformation(d);
                 }
 
                 builder.setNeutralButton(R.string.details_ok,
@@ -728,6 +753,7 @@ public class MenuHelper {
         }
 
         if ((isImage) && ((inclusions & INCLUDE_SHOWMAP_MENU) != 0)) {
+            // TODO: assign an icon to this menu item.
             menu.add(0, 0, 80, R.string.show_on_map)
                 .setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
