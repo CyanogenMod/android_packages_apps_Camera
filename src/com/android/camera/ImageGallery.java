@@ -87,7 +87,7 @@ public class ImageGallery extends Activity implements
 
     private final Handler mHandler = new Handler();
     private boolean mLayoutComplete;
-    private boolean mPausing = false;
+    private boolean mPausing = true;
     ImageLoader mLoader;
 
     GridViewSpecial mGvs;
@@ -116,7 +116,6 @@ public class ImageGallery extends Activity implements
                 R.layout.custom_gallery_title);
 
         mGvs = (GridViewSpecial) findViewById(R.id.grid);
-        mGvs.requestFocus();
         mGvs.setListener(this);
 
         mFooterOrganizeView = findViewById(R.id.footer_organize);
@@ -128,10 +127,8 @@ public class ImageGallery extends Activity implements
         if (isPickIntent()) {
             mVideoSizeLimit = getIntent().getLongExtra(
                     MediaStore.EXTRA_SIZE_LIMIT, Long.MAX_VALUE);
-            mGvs.mVideoSizeLimit = mVideoSizeLimit;
         } else {
             mVideoSizeLimit = Long.MAX_VALUE;
-            mGvs.mVideoSizeLimit = mVideoSizeLimit;
             mGvs.setOnCreateContextMenuListener(
                     new CreateContextMenuListener());
         }
@@ -191,13 +188,12 @@ public class ImageGallery extends Activity implements
 
     private final Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
-            mGvs.clearCache();
+            mGvs.stop();
             IImage currentImage = getCurrentImage();
             if (currentImage != null) {
                 mAllImages.removeImage(currentImage);
             }
-            mGvs.invalidate();
-            mGvs.requestLayout();
+            mGvs.setImageList(mAllImages);
             mGvs.start();
             mNoImagesView.setVisibility(mAllImages.isEmpty()
                     ? View.VISIBLE
@@ -215,7 +211,7 @@ public class ImageGallery extends Activity implements
     }
 
     private IImage getCurrentImage() {
-        int currentSelection = mGvs.mCurrentSelection;
+        int currentSelection = mGvs.getCurrentSelection();
         if (currentSelection < 0
                 || currentSelection >= mAllImages.getCount()) {
             return null;
@@ -357,7 +353,7 @@ public class ImageGallery extends Activity implements
 
     private void rebake(boolean unmounted, boolean scanning) {
         stopCheckingThumbnails();
-        mGvs.clearCache();
+        mGvs.stop();
         if (mAllImages != null) {
             mAllImages.deactivate();
             mAllImages = null;
@@ -378,9 +374,8 @@ public class ImageGallery extends Activity implements
             mAllImages = allImages(!unmounted);
             mGvs.setImageList(mAllImages);
             mGvs.setDrawAdapter(this);
-            mGvs.init(mHandler, mLoader);
+            mGvs.setLoader(mLoader);
             mGvs.start();
-            mGvs.requestLayout();
             checkThumbnails();
         }
     }
@@ -749,7 +744,7 @@ public class ImageGallery extends Activity implements
                 menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
-                                onImageClicked(mGvs.mCurrentSelection);
+                                onImageClicked(mGvs.getCurrentSelection());
                                 return true;
                             }
                         });
@@ -770,10 +765,8 @@ public class ImageGallery extends Activity implements
                         new MenuHelper.MenuInvoker() {
                             public void run(MenuHelper.MenuCallback cb) {
                                 cb.run(getCurrentImageUri(), getCurrentImage());
-
-                                mGvs.clearCache();
-                                mGvs.invalidate();
-                                mGvs.requestLayout();
+                                mGvs.stop();
+                                mGvs.setImageList(mAllImages);
                                 mGvs.start();
                                 mNoImagesView.setVisibility(
                                         mAllImages.getCount() > 0
@@ -804,7 +797,7 @@ public class ImageGallery extends Activity implements
         } else if (mConfigurationChanged) {
             mConfigurationChanged = false;
             mGvs.scrollTo(mScrollPosition);
-            if (mGvs.mCurrentSelection != GridViewSpecial.SELECT_NONE) {
+            if (mGvs.getCurrentSelection() != GridViewSpecial.SELECT_NONE) {
                 mGvs.scrollToVisible(mSelectedIndex);
             }
         } else {
