@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -397,9 +398,11 @@ public class ImageManager {
         // Optimization: If some of the lists are empty, remove them.
         // If there is only one remaining list, return it directly.
 
-        for (IImageList sublist : l) {
+        Iterator<IImageList> iter = l.iterator();
+        while (iter.hasNext()) {
+            IImageList sublist = iter.next();
             if (sublist.isEmpty()) {
-                l.remove(sublist);
+                iter.remove();
             }
         }
 
