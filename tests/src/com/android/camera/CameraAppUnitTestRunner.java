@@ -18,7 +18,7 @@ package com.android.camera;
 
 import android.test.InstrumentationTestRunner;
 import android.test.InstrumentationTestSuite;
-import com.android.camera.unit.*;
+import com.android.camera.tests.unit.*;
 
 import junit.framework.TestSuite;
 
@@ -33,7 +33,7 @@ public class CameraAppUnitTestRunner extends InstrumentationTestRunner {
     @Override
     public TestSuite getAllTests() {
         TestSuite suite = new InstrumentationTestSuite(this);
-        suite.addTestSuite(CameraAppUnitTest.class);
+        suite.addTestSuite(BitmapManagerUnitTest.class);
         return suite;
     }
 
