@@ -966,7 +966,7 @@ class ImageBlockManager {
                                     }
                                 };
                     // Load Image
-                    mLoader.getBitmap(image, pos, cb, isVisible(), false);
+                    mLoader.getBitmap(image, cb, isVisible());
                     mRequestedMask |= (1 << col);
                     retVal += 1;
                 }
