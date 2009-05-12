@@ -31,7 +31,7 @@ import junit.framework.TestSuite;
  * Running all tests:
  *
  * adb shell am instrument -w \
- *    com.android.camera.tests/.CameraStressTestRunner
+ *    com.android.camera.tests/com.android.camera.CameraStressTestRunner
  */
 
 public class CameraStressTestRunner extends InstrumentationTestRunner {
