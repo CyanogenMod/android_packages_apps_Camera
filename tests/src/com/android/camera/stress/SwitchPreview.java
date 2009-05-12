@@ -27,6 +27,12 @@ import android.view.KeyEvent;
 /**
  * Junit / Instrumentation test case for camera test
  *
+ * Running the test suite:
+ *
+ * adb shell am instrument \
+ *    -e class com.android.camera.stress.SwitchPreview \
+ *    -w com.android.camera.tests/com.android.camera.CameraStressTestRunner
+ *
  */
 public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera>{
     private String TAG = "SwitchPreview";

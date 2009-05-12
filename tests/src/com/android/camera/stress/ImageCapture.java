@@ -27,6 +27,12 @@ import android.view.KeyEvent;
 /**
  * Junit / Instrumentation test case for camera test
  *
+ * Running the test suite:
+ *
+ * adb shell am instrument \
+ *    -e class com.android.camera.stress.ImageCapture \
+ *    -w com.android.camera.tests/com.android.camera.CameraStressTestRunner
+ *
  */
 
 public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
