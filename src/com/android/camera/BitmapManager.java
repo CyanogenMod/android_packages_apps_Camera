@@ -154,7 +154,7 @@ public class BitmapManager {
         ThreadStatus status = mThreadStatus.get(t);
         if (status == null) {
             // allow decoding by default
-            return true;
+            return !mCheckResourceLock;
         }
 
         boolean result = (status.state == State.RUNNING) ||
@@ -182,7 +182,7 @@ public class BitmapManager {
      * bitmap decoding.
      */
     public synchronized void cancelAllDecoding() {
-        allowAllDecoding(false);
+        mAllowDecoding = false;
         for (ThreadStatus status : mThreadStatus.values()) {
             status.state = State.CANCEL;
             if (status.options != null) {
