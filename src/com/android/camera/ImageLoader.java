@@ -60,7 +60,7 @@ public class ImageLoader {
 
     public boolean cancel(final IImage image) {
         synchronized (mQueue) {
-            WorkItem w = new WorkItem(image, 0, null, false);
+            WorkItem w = new WorkItem(image, null);
 
             int existing = mQueue.indexOf(w);
             if (existing >= 0) {
@@ -72,16 +72,13 @@ public class ImageLoader {
     }
 
     public void getBitmap(IImage image,
-                          int tag,
                           LoadedCallback imageLoadedRunnable,
-                          boolean postAtFront,
-                          boolean postBack) {
+                          boolean postAtFront) {
         if (mDecodeThread == null) {
             start();
         }
         synchronized (mQueue) {
-            WorkItem w =
-                    new WorkItem(image, tag, imageLoadedRunnable, postBack);
+            WorkItem w = new WorkItem(image, imageLoadedRunnable);
 
             if (mInProgress.contains(w)) return;
 
@@ -105,16 +102,11 @@ public class ImageLoader {
 
     private class WorkItem {
         IImage mImage;
-        int mTag;
         LoadedCallback mOnLoadedRunnable;
-        boolean mPostBack;
 
-        WorkItem(IImage image, int tag, LoadedCallback onLoadedRunnable,
-                 boolean postBack) {
+        WorkItem(IImage image, LoadedCallback onLoadedRunnable) {
             mImage = image;
-            mTag = tag;
             mOnLoadedRunnable = onLoadedRunnable;
-            mPostBack = postBack;
         }
 
         @Override
@@ -136,10 +128,9 @@ public class ImageLoader {
     }
 
     private class WorkerThread implements Runnable {
-        // pick off items on the queue, one by one, and compute
-        // their bitmap. place the resulting bitmap in the cache.
-        // then post a notification back to the ui so things can
-        // get updated appropriately.
+        // pick off items on the queue, one by one, and compute their bitmap.
+        // place the resulting bitmap in the cache. then callback by executing
+        // the given runnable so things can get updated appropriately.
         public void run() {
             while (!mDone) {
                 WorkItem workItem = null;
@@ -178,16 +169,7 @@ public class ImageLoader {
                 }
 
                 if (workItem.mOnLoadedRunnable != null) {
-                    if (workItem.mPostBack) {
-                        final WorkItem w = workItem;
-                        mHandler.post(new Runnable() {
-                            public void run() {
-                                w.mOnLoadedRunnable.run(b);
-                            }
-                        });
-                    } else {
-                        workItem.mOnLoadedRunnable.run(b);
-                    }
+                    workItem.mOnLoadedRunnable.run(b);
                 }
             }
         }
@@ -273,7 +255,7 @@ class ThumbnailChecker {
     }
 
     synchronized void stopCheckingThumbnails() {
-        if (mThumbCheckCallback == null) return;  // alreay stopped.
+        if (mThumbCheckCallback == null) return;  // already stopped.
         mThumbCheckCallback.done();
         mImageListToCheck = null;
         mTotalToCheck = 0;
