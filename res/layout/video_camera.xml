@@ -118,7 +118,7 @@
         />
     </LinearLayout>
     <ImageView
-            android:visibility="visible"
+            android:visibility="invisible"
             android:id="@+id/last_picture_button"
             android:layout_width="72dip"
             android:layout_height="72dip"

@@ -73,6 +73,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private static final String TAG = "videocamera";
 
+    private static final int UPDATE_LAST_VIDEO = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
 
@@ -131,6 +132,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private int mVideoWidth, mVideoHeight;
 
     boolean mPausing = false;
+    boolean mPreviewing = false;  // True if preview is started.
 
     private ContentResolver mContentResolver;
 
@@ -158,6 +160,14 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
                 case UPDATE_RECORD_TIME: {
                     updateRecordingTime();
+                    break;
+                }
+
+                case UPDATE_LAST_VIDEO: {
+                    if (!mThumbController.isUriValid()) {
+                        updateLastVideo();
+                    }
+                    mThumbController.updateDisplayIfNeeded();
                     break;
                 }
 
@@ -200,6 +210,19 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        /*
+         * To reduce startup time, we open camera device in another thread.
+         * Camera is opened in onCreate instead of onResume because there are
+         * lots of things to do here and camera open can be done in parallel.
+         * We will make sure the camera is opened at the end of onCreate.
+         */
+        Thread openCameraThread = new Thread(new Runnable() {
+            public void run() {
+                mCameraDevice = android.hardware.Camera.open();
+            }
+        });
+        openCameraThread.start();
+
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mContentResolver = getContentResolver();
 
@@ -238,6 +261,13 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mThumbController = new ThumbnailController(mLastPictureButton,
                     frame, mContentResolver);
             mThumbController.loadData(ImageManager.getLastVideoThumbPath());
+        }
+
+        // Make sure the camera is opened.
+        try {
+            openCameraThread.join();
+        } catch (InterruptedException ex) {
+            // ignore
         }
     }
 
@@ -443,11 +473,17 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     // Precondition: mSurfaceHolder != null
     private void startPreview() {
         Log.v(TAG, "startPreview");
-        if (mCameraDevice != null) {
-            Log.d(TAG, "already started.");
+        if (mPreviewing) {
+            // After recording a video, preview is not stopped. So just return.
             return;
         }
-        mCameraDevice = android.hardware.Camera.open();
+
+        if (mCameraDevice == null) {
+            // If the activity is paused and resumed, camera device has been
+            // released and we need to open the camera.
+            mCameraDevice = android.hardware.Camera.open();
+        }
+
         setCameraParameters();
         try {
             mCameraDevice.setPreviewDisplay(mSurfaceHolder);
@@ -457,8 +493,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             Log.e(TAG, "failed to set preview display");
             return;
         }
+
         try {
             mCameraDevice.startPreview();
+            mPreviewing = true;
         } catch (Throwable ex) {
             // TODO: change Throwable to IOException once
             //      android.hardware.Camera.startPreview properly declares
@@ -479,6 +517,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
         mCameraDevice.release();
         mCameraDevice = null;
+        mPreviewing = false;
     }
 
     @Override
@@ -518,6 +557,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
 
         stopPreview();
+
+        mHandler.removeMessages(UPDATE_LAST_VIDEO);
     }
 
     @Override
@@ -794,14 +835,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
         mMediaRecorderRecording = false;
 
-        if (!mIsVideoCaptureIntent && !mThumbController.isUriValid()) {
-            updateLastVideo();
+        // Update the last video thumbnail.
+        if (!mIsVideoCaptureIntent
+                && !mHandler.hasMessages(UPDATE_LAST_VIDEO)) {
+            mHandler.sendEmptyMessage(UPDATE_LAST_VIDEO);
         }
-
-        if (!mIsVideoCaptureIntent) {
-            mThumbController.updateDisplayIfNeeded();
-        }
-
         return true;
     }
 
@@ -989,6 +1027,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
             setScreenTimeoutInfinite();
             hideLastPictureButton();
+            // Last picture button is hidden. No need to update last video.
+            mHandler.removeMessages(UPDATE_LAST_VIDEO);
         }
     }
 
