@@ -27,7 +27,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -88,7 +87,7 @@ class GridViewSpecial extends View {
     };
 
     // These are set in init().
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
     private GestureDetector mGestureDetector;
     private ImageBlockManager mImageBlockManager;
 
@@ -118,7 +117,7 @@ class GridViewSpecial extends View {
 
     private boolean mRunning = false;
     private boolean mShowSelection = false;
-    private boolean mFling = true;
+    private final boolean mFling = true;
     private Scroller mScroller = null;
 
     public GridViewSpecial(Context context, AttributeSet attrs) {
@@ -135,7 +134,7 @@ class GridViewSpecial extends View {
         setFocusableInTouchMode(true);
     }
 
-    private Runnable mRedrawCallback = new Runnable() {
+    private final Runnable mRedrawCallback = new Runnable() {
                 public void run() {
                     invalidate();
                 }
@@ -326,7 +325,9 @@ class GridViewSpecial extends View {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            performLongClick();
+            if (GridViewSpecial.this.mRunning) {
+                performLongClick();
+            }
         }
 
         @Override
@@ -441,6 +442,9 @@ class GridViewSpecial extends View {
     // mGvs.set...(...);
     // mGvs.start();
     public void stop() {
+        // Remove the long press callback from the queue if we are going to
+        // stop
+        mHandler.removeCallbacks(mLongPressCallback);
         mScroller = null;
         if (mImageBlockManager != null) {
             mImageBlockManager.recycle();
@@ -911,7 +915,7 @@ class ImageBlockManager {
     // drawn to mBitmap. mBitmap is later used in onDraw() of GridViewSpecial.
     private class ImageBlock {
         private Bitmap mBitmap;
-        private Canvas mCanvas;
+        private final Canvas mCanvas;
 
         // Columns which have been requested to the loader
         private int mRequestedMask;
