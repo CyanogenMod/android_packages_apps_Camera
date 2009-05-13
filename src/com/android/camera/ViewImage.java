@@ -230,6 +230,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 } else {
                     mImageView.zoomOut();
                 }
+                updateZoomButtonsEnabled();
             }
         });
     }
