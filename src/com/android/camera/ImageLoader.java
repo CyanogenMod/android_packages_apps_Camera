@@ -33,9 +33,8 @@ public class ImageLoader {
     @SuppressWarnings("unused")
     private static final String TAG = "ImageLoader";
 
-    // queue of work to do in the worker thread
+    // Queue of work to do in the worker thread. The work is done in order.
     private final ArrayList<WorkItem> mQueue = new ArrayList<WorkItem>();
-    private final ArrayList<WorkItem> mInProgress = new ArrayList<WorkItem>();
 
     // the worker thread and a done flag so we know when to exit
     private boolean mDone;
@@ -58,66 +57,63 @@ public class ImageLoader {
         public void run(Bitmap result);
     }
 
-    public boolean cancel(final IImage image) {
-        synchronized (mQueue) {
-            WorkItem w = new WorkItem(image, null);
-
-            int existing = mQueue.indexOf(w);
-            if (existing >= 0) {
-                mQueue.remove(existing);
-                return true;
-            }
-            return false;
-        }
-    }
-
     public void getBitmap(IImage image,
                           LoadedCallback imageLoadedRunnable,
-                          boolean postAtFront) {
+                          int tag) {
         if (mDecodeThread == null) {
             start();
         }
         synchronized (mQueue) {
-            WorkItem w = new WorkItem(image, imageLoadedRunnable);
+            WorkItem w = new WorkItem(image, imageLoadedRunnable, tag);
+            mQueue.add(w);
+            mQueue.notifyAll();
+        }
+    }
 
-            if (mInProgress.contains(w)) return;
-
-            boolean contains = mQueue.contains(w);
-            if (contains) {
-                if (postAtFront) {
-                    // move this item to the front
-                    mQueue.remove(w);
-                    mQueue.add(0, w);
-                }
+    public boolean cancel(final IImage image) {
+        synchronized (mQueue) {
+            int index = findItem(image);
+            if (index >= 0) {
+                mQueue.remove(index);
+                return true;
             } else {
-                if (postAtFront) {
-                    mQueue.add(0, w);
-                } else {
-                    mQueue.add(w);
-                }
-                mQueue.notifyAll();
+                return false;
             }
+        }
+    }
+
+    // The caller should hold mQueue lock.
+    private int findItem(IImage image) {
+        for (int i = 0; i < mQueue.size(); i++) {
+            if (mQueue.get(i).mImage == image) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Clear the queue. Returns an array of tags that were in the queue.
+    public int[] clearQueue() {
+        synchronized (mQueue) {
+            int n = mQueue.size();
+            int[] tags = new int[n];
+            for (int i = 0; i < n; i++) {
+                tags[i] = mQueue.get(i).mTag;
+            }
+            mQueue.clear();
+            return tags;
         }
     }
 
     private class WorkItem {
         IImage mImage;
         LoadedCallback mOnLoadedRunnable;
+        int mTag;
 
-        WorkItem(IImage image, LoadedCallback onLoadedRunnable) {
+        WorkItem(IImage image, LoadedCallback onLoadedRunnable, int tag) {
             mImage = image;
             mOnLoadedRunnable = onLoadedRunnable;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            WorkItem otherWorkItem = (WorkItem) other;
-            return otherWorkItem.mImage == mImage;
-        }
-
-        @Override
-        public int hashCode() {
-            return mImage.fullSizeImageUri().hashCode();
+            mTag = tag;
         }
     }
 
@@ -128,16 +124,15 @@ public class ImageLoader {
     }
 
     private class WorkerThread implements Runnable {
-        // pick off items on the queue, one by one, and compute their bitmap.
-        // place the resulting bitmap in the cache. then callback by executing
+        // Pick off items on the queue, one by one, and compute their bitmap.
+        // Place the resulting bitmap in the cache, then call back by executing
         // the given runnable so things can get updated appropriately.
         public void run() {
             while (!mDone) {
                 WorkItem workItem = null;
                 synchronized (mQueue) {
-                    if (mQueue.size() > 0) {
+                    if (!mQueue.isEmpty()) {
                         workItem = mQueue.remove(0);
-                        mInProgress.add(workItem);
                     } else {
                         if (!mThumbnailChecker.hasMoreThumbnailsToCheck()) {
                             try {
@@ -159,14 +154,6 @@ public class ImageLoader {
                 }
 
                 final Bitmap b = workItem.mImage.miniThumbBitmap();
-
-                synchronized (mQueue) {
-                    mInProgress.remove(workItem);
-                }
-
-                if (mDone) {
-                    break;
-                }
 
                 if (workItem.mOnLoadedRunnable != null) {
                     workItem.mOnLoadedRunnable.run(b);

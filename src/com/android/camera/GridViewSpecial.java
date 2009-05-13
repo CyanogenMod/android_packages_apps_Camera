@@ -38,6 +38,8 @@ import android.widget.Scroller;
 
 import java.util.HashMap;
 
+import static com.android.camera.Util.Assert;
+
 class GridViewSpecial extends View {
     private static final String TAG = "GridViewSpecial";
 
@@ -140,28 +142,28 @@ class GridViewSpecial extends View {
             };
 
     public void setLoader(ImageLoader loader) {
-        assert mRunning == false;
+        Assert(mRunning == false);
         mLoader = loader;
     }
 
     public void setListener(Listener listener) {
-        assert mRunning == false;
+        Assert(mRunning == false);
         mListener = listener;
     }
 
     public void setDrawAdapter(DrawAdapter adapter) {
-        assert mRunning == false;
+        Assert(mRunning == false);
         mDrawAdapter = adapter;
     }
 
     public void setImageList(IImageList list) {
-        assert mRunning == false;
+        Assert(mRunning == false);
         mAllImages = list;
         mCount = mAllImages.getCount();
     }
 
     public void setSizeChoice(int choice) {
-        assert mRunning == false;
+        Assert(mRunning == false);
         if (mSizeChoice == choice) return;
         mSizeChoice = choice;
     }
@@ -332,7 +334,7 @@ class GridViewSpecial extends View {
         }
 
         @Override
-        public boolean onSingleTapUp(MotionEvent e) {
+        public boolean onSingleTapConfirmed(MotionEvent e) {
             select(mCurrentSelection, false);
             int index = computeSelectedIndex(e.getX(), e.getY());
             if (index >= 0 && index < mCount) {
@@ -418,9 +420,9 @@ class GridViewSpecial extends View {
 
     public void start() {
         // These must be set before start().
-        assert mLoader != null;
-        assert mListener != null;
-        assert mDrawAdapter != null;
+        Assert(mLoader != null);
+        Assert(mListener != null);
+        Assert(mDrawAdapter != null);
         mRunning = true;
         requestLayout();
     }
@@ -706,8 +708,29 @@ class ImageBlockManager {
     static final int REQUESTS_LOW = 3;
     static final int REQUESTS_HIGH = 6;
 
-    // Scan the cache and send requests to ImageLoader if needed.
+    // After clear requests currently in queue, start loading the thumbnails.
+    // We need to clear the queue first because the proper order of loading
+    // may have changed (because the visible region changed, or some images
+    // have been invalidated).
     private void startLoading() {
+        clearLoaderQueue();
+        continueLoading();
+    }
+
+    private void clearLoaderQueue() {
+        int[] tags = mLoader.clearQueue();
+        for (int pos : tags) {
+            int row = pos / mColumns;
+            int col = pos - row * mColumns;
+            ImageBlock blk = mCache.get(row);
+            Assert(blk != null);  // We won't reuse the block if it has pending
+                                  // requests. See getEmptyBlock().
+            blk.cancelRequest(col);
+        }
+    }
+
+    // Scan the cache and send requests to ImageLoader if needed.
+    private void continueLoading() {
         // Check if we still have enough requests in the queue.
         if (mPendingRequest >= REQUESTS_LOW) return;
 
@@ -722,10 +745,10 @@ class ImageBlockManager {
         for (int d = 1; d <= range; d++) {
             int after = mEndRow - 1 + d;
             int before = mStartRow - d;
-            if (after >= mCount && before < 0) {
+            if (after >= mRows && before < 0) {
                 break;  // Nothing more the scan.
             }
-            if (after < mCount && scanOne(after)) return;
+            if (after < mRows && scanOne(after)) return;
             if (before >= 0 && scanOne(before)) return;
         }
     }
@@ -738,7 +761,7 @@ class ImageBlockManager {
 
     // Returns number of requests we issued for this row.
     private int tryToLoad(int row) {
-        assert row >= 0 && row < mRows;
+        Assert(row >= 0 && row < mRows);
         ImageBlock blk = mCache.get(row);
         if (blk == null) {
             // Find an empty block
@@ -762,7 +785,7 @@ class ImageBlockManager {
         for (int index : mCache.keySet()) {
             // Make sure we don't reclaim a block which still has pending
             // request.
-            if (mCache.get(index).isBusy()) {
+            if (mCache.get(index).hasPendingRequests()) {
                 continue;
             }
             int dist = 0;
@@ -906,7 +929,7 @@ class ImageBlockManager {
         }
 
         public void invalidate() {
-            // We do not change mRequestedMask or do cancelExistingRequests()
+            // We do not change mRequestedMask or do cancelAllRequests()
             // because the data coming from pending requests are valid. (We only
             // invalidate data which has been drawn to the bitmap).
             mCompletedMask = 0;
@@ -914,7 +937,7 @@ class ImageBlockManager {
 
         // After recycle, the ImageBlock instance should not be accessed.
         public void recycle() {
-            cancelExistingRequests();
+            cancelAllRequests();
             mBitmap.recycle();
             mBitmap = null;
         }
@@ -925,7 +948,7 @@ class ImageBlockManager {
 
         // Returns number of requests submitted to ImageLoader.
         public int loadImages() {
-            assert mRow != -1;
+            Assert(mRow != -1);
 
             int columns = numColumns(mRow);
 
@@ -966,7 +989,7 @@ class ImageBlockManager {
                                     }
                                 };
                     // Load Image
-                    mLoader.getBitmap(image, cb, isVisible());
+                    mLoader.getBitmap(image, cb, pos);
                     mRequestedMask |= (1 << col);
                     retVal += 1;
                 }
@@ -976,7 +999,7 @@ class ImageBlockManager {
         }
 
         // Whether this block has pending requests.
-        public boolean isBusy() {
+        public boolean hasPendingRequests() {
             return mRequestedMask != 0;
         }
 
@@ -998,20 +1021,18 @@ class ImageBlockManager {
             }
 
             int mask = (1 << col);
-            assert (mRequestedMask & mask) != 0;
-            assert (mCompletedMask & mask) == 0;
+            Assert((mCompletedMask & mask) == 0);
+            Assert((mRequestedMask & mask) != 0);
             mRequestedMask &= ~mask;
             mCompletedMask |= mask;
             mPendingRequest--;
 
-            if (mRequestedMask == 0) {
-                if (isVisible()) {
-                    mRedrawCallback.run();
-                }
+            if (isVisible()) {
+                mRedrawCallback.run();
             }
 
             // Kick start next block loading.
-            startLoading();
+            continueLoading();
         }
 
         // Draw the loaded bitmap to the block bitmap.
@@ -1059,11 +1080,20 @@ class ImageBlockManager {
             }
         }
 
-        // Try to cancel pending requests. After this there could still be
-        // requests not cancelled (because it is already in progress). We deal
-        // with that situation by setting mBitmap to null in recycle() and check
-        // this in loadImageDone().
-        private void cancelExistingRequests() {
+        // Mark a request as cancelled. The request has already been removed
+        // from the queue of ImageLoader, so we only need to mark the fact.
+        public void cancelRequest(int col) {
+            int mask = (1 << col);
+            Assert((mRequestedMask & mask) != 0);
+            mRequestedMask &= ~mask;
+            mPendingRequest--;
+        }
+
+        // Try to cancel all pending requests for this block. After this
+        // completes there could still be requests not cancelled (because it is
+        // already in progress). We deal with that situation by setting mBitmap to
+        // null in recycle() and check this in loadImageDone().
+        private void cancelAllRequests() {
             for (int i = 0; i < mColumns; i++) {
                 int mask = (1 << i);
                 if ((mRequestedMask & mask) != 0) {
