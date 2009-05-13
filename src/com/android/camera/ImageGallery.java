@@ -814,6 +814,12 @@ public class ImageGallery extends Activity implements
     private Drawable mMultiSelectTrue;
     private Drawable mMultiSelectFalse;
 
+    // mSrcRect and mDstRect are only used in drawImage, but we put them as
+    // instance variables to reduce the memory allocation overhead because
+    // drawImage() is called a lot.
+    private Rect mSrcRect = new Rect();
+    private Rect mDstRect = new Rect();
+
     public void drawImage(Canvas canvas, IImage image,
             Bitmap b, int xPos, int yPos, int w, int h) {
         if (b != null) {
@@ -830,14 +836,14 @@ public class ImageGallery extends Activity implements
             if (deltaW < 10 && deltaH < 10) {
                 int halfDeltaW = deltaW / 2;
                 int halfDeltaH = deltaH / 2;
-                Rect src = new Rect(0 + halfDeltaW, 0 + halfDeltaH,
+                mSrcRect.set(0 + halfDeltaW, 0 + halfDeltaH,
                         bw - halfDeltaW, bh - halfDeltaH);
-                Rect dst = new Rect(xPos, yPos, xPos + w, yPos + h);
-                canvas.drawBitmap(b, src, dst, null);
+                mDstRect.set(xPos, yPos, xPos + w, yPos + h);
+                canvas.drawBitmap(b, mSrcRect, mDstRect, null);
             } else {
-                Rect src = new Rect(0, 0, bw, bh);
-                Rect dst = new Rect(xPos, yPos, xPos + w, yPos + h);
-                canvas.drawBitmap(b, src, dst, null);
+                mSrcRect.set(0, 0, bw, bh);
+                mDstRect.set(xPos, yPos, xPos + w, yPos + h);
+                canvas.drawBitmap(b, mSrcRect, mDstRect, null);
             }
         } else {
             // If the thumbnail cannot be drawn, put up an error icon
@@ -845,12 +851,13 @@ public class ImageGallery extends Activity implements
             Bitmap error = getErrorBitmap(image);
             int width = error.getWidth();
             int height = error.getHeight();
-            Rect source = new Rect(0, 0, width, height);
+            mSrcRect.set(0, 0, width, height);
             int left = (w - width) / 2 + xPos;
             int top = (w - height) / 2 + yPos;
-            Rect dest = new Rect(left, top, left + width, top + height);
-            canvas.drawBitmap(error, source, dest, null);
+            mDstRect.set(left, top, left + width, top + height);
+            canvas.drawBitmap(error, mSrcRect, mDstRect, null);
         }
+
         if (ImageManager.isVideo(image)) {
             Drawable overlay = null;
             long size = MenuHelper.getImageFileSize(image);
@@ -874,9 +881,8 @@ public class ImageGallery extends Activity implements
             int height = overlay.getIntrinsicHeight();
             int left = (w - width) / 2 + xPos;
             int top = (h - height) / 2 + yPos;
-            Rect newBounds =
-                    new Rect(left, top, left + width, top + height);
-            overlay.setBounds(newBounds);
+            mSrcRect.set(left, top, left + width, top + height);
+            overlay.setBounds(mSrcRect);
             overlay.draw(canvas);
         }
 
@@ -890,8 +896,8 @@ public class ImageGallery extends Activity implements
             int height = checkBox.getIntrinsicHeight();
             int left = 5 + xPos;
             int top = h - height - 5 + yPos;
-            checkBox.setBounds(new Rect(
-                    left, top, left + width, top + height));
+            mSrcRect.set(left, top, left + width, top + height);
+            checkBox.setBounds(mSrcRect);
             checkBox.draw(canvas);
         }
     }

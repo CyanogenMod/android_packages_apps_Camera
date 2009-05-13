@@ -375,16 +375,16 @@ public abstract class BaseImageList implements IImageList {
             if (moved) {
                 try {
                     long id = c.getLong(indexId());
-                    long miniThumbMagic = 0;
-                    int rotation = 0;
-                    if (indexMiniThumbMagic() != -1) {
-                        miniThumbMagic = c.getLong(indexMiniThumbMagic());
-                    }
-                    if (indexOrientation() != -1) {
-                        rotation = c.getInt(indexOrientation());
-                    }
                     IImage img = mCache.get(id);
                     if (img == null) {
+                        long miniThumbMagic = 0;
+                        int rotation = 0;
+                        if (indexMiniThumbMagic() != -1) {
+                            miniThumbMagic = c.getLong(indexMiniThumbMagic());
+                        }
+                        if (indexOrientation() != -1) {
+                            rotation = c.getInt(indexOrientation());
+                        }
                         img = make(id, miniThumbMagic, mContentResolver, this,
                                 i, rotation);
                         mCache.put(id, img);
