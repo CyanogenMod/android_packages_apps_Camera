@@ -205,6 +205,10 @@ class GridViewSpecial extends View {
         mMaxScrollY = mSpec.mCellSpacing + (mRows * mBlockHeight)
                 - (bottom - top);
 
+        // Put mScrollY in the valid range. This matters if mMaxScrollY is
+        // changed. For example, orientation changed from portrait to landscape.
+        mScrollY = Math.max(0, Math.min(mMaxScrollY, mScrollY));
+
         generateOutlineBitmap();
 
         if (mImageBlockManager != null) {
@@ -215,9 +219,9 @@ class GridViewSpecial extends View {
                 mAllImages, mLoader, mDrawAdapter, mSpec, mColumns, width,
                 mOutline[OUTLINE_EMPTY]);
 
-        moveDataWindow();
-
         mListener.onLayoutComplete(changed);
+
+        moveDataWindow();
 
         mLayoutComplete = true;
     }
@@ -275,11 +279,12 @@ class GridViewSpecial extends View {
         // Calculate visible region according to scroll position.
         int startRow = (mScrollY - mSpec.mCellSpacing) / mBlockHeight;
         int endRow = (mScrollY + getHeight() - mSpec.mCellSpacing - 1)
-                / mBlockHeight + 1;
+                / mBlockHeight;
 
-        startRow = Math.max(0, startRow);
-        endRow = Math.min(mRows, endRow);
-        mImageBlockManager.setVisibleRows(startRow, endRow);
+        // Limit startRow and endRow to the valid range.
+        startRow = Math.min(Math.max(startRow, 0), mRows - 1);
+        endRow = Math.min(Math.max(endRow, 0), mRows - 1);
+        mImageBlockManager.setVisibleRows(startRow, endRow + 1);
     }
 
     private class MyGestureDetector extends SimpleOnGestureListener {
