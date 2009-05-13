@@ -586,7 +586,7 @@ public class Camera extends Activity implements View.OnClickListener,
         /**
          * Initiate the capture of an image.
          */
-        public void initiate(boolean captureOnly) {
+        public void initiate() {
             if (mCameraDevice == null) {
                 return;
             }
@@ -594,7 +594,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mCancel = false;
             mCapturing = true;
 
-            capture(captureOnly);
+            capture();
         }
 
         public Uri getLastCaptureUri() {
@@ -605,7 +605,7 @@ public class Camera extends Activity implements View.OnClickListener,
             return mCaptureOnlyBitmap;
         }
 
-        private void capture(boolean captureOnly) {
+        private void capture() {
             mPreviewing = false;
             mCaptureOnlyBitmap = null;
 
@@ -685,12 +685,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
             mKeepAndRestartPreview = true;
 
-            boolean getContentAction = mIsImageCaptureIntent;
-            if (getContentAction) {
-                mImageCapture.initiate(true);
-            } else {
-                mImageCapture.initiate(false);
-            }
+            mImageCapture.initiate();
         }
 
         private void clearLastBitmap() {
@@ -1103,15 +1098,6 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public void onStop() {
-        keep();
-        stopPreview();
-        closeCamera();
-        mHandler.removeMessages(CLEAR_SCREEN_DELAY);
-        super.onStop();
-    }
-
-    @Override
     protected void onPause() {
         keep();
 
@@ -1147,6 +1133,10 @@ public class Camera extends Activity implements View.OnClickListener,
         mImageCapture.clearLastBitmap();
         mImageCapture = null;
         hidePostCaptureAlert();
+
+        // Remove the messages in the event queue.
+        mHandler.removeMessages(CLEAR_SCREEN_DELAY);
+        mHandler.removeMessages(RESTART_PREVIEW);
 
         super.onPause();
     }
@@ -1227,15 +1217,6 @@ public class Camera extends Activity implements View.OnClickListener,
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         switch (keyCode) {
-            // TODO: change the following two handlers to OSD control.
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                adjustBrightness(-1);
-                break;
-
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                adjustBrightness(1);
-                break;
-
             case KeyEvent.KEYCODE_BACK:
                 if (mStatus == SNAPSHOT_IN_PROGRESS) {
                     // ignore backs while we're taking a picture
