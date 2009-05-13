@@ -105,6 +105,8 @@ public class GalleryPicker extends Activity {
                 onReceiveMediaBroadcast(intent);
             }
         };
+
+        ImageManager.ensureOSXCompatibleFolder();
     }
 
     Dialog mMediaScanningDialog;
@@ -313,13 +315,25 @@ public class GalleryPicker extends Activity {
 
     // This is run in the worker thread.
     private void workerRun() {
+
+        // We collect items from checkImageList() and checkBucketIds() and
+        // put them in allItems. Later we give allItems to checkThumbBitmap()
+        // and generated thumbnail bitmaps for each item. We do this instead of
+        // generating thumbnail bitmaps in checkImageList() and checkBucketIds()
+        // because we want to show all the folders first, then update them with
+        // the thumb bitmaps. (Generating thumbnail bitmaps takes some time.)
+        ArrayList<Item> allItems = new ArrayList<Item>();
+
         checkScanning();
         if (mAbort) return;
 
-        checkImageList();
+        checkImageList(allItems);
         if (mAbort) return;
 
-        checkBucketIds();
+        checkBucketIds(allItems);
+        if (mAbort) return;
+
+        checkThumbBitmap(allItems);
         if (mAbort) return;
 
         checkLowStorage();
@@ -344,7 +358,7 @@ public class GalleryPicker extends Activity {
     }
 
     // This is run in the worker thread.
-    private void checkImageList() {
+    private void checkImageList(ArrayList<Item> allItems) {
         IImageList[] lists = new IImageList[4];
         for (int i = 0; i < 4; i++) {
             ImageListData data = IMAGE_LIST_DATA[i];
@@ -368,24 +382,19 @@ public class GalleryPicker extends Activity {
                             getResources().getString(data.mStringId),
                             lists[i]);
 
-            final Bitmap b = makeMiniThumbBitmap(142, 142, lists[i]);
-            if (mAbort) {
-                if (b != null) b.recycle();
-                return;
-            }
-            item.setThumbBitmap(b);
+            allItems.add(item);
 
             final Item finalItem = item;
             mHandler.post(new Runnable() {
                         public void run() {
-                            checkImageListFinished(finalItem);
+                            updateItem(finalItem);
                         }
                     });
         }
     }
 
     // This is run in the main thread.
-    private void checkImageListFinished(Item item) {
+    private void updateItem(Item item) {
         if (item != null) {
             mAdapter.addItem(item);
             mAdapter.updateDisplay();
@@ -396,7 +405,7 @@ public class GalleryPicker extends Activity {
             ImageManager.CAMERA_IMAGE_BUCKET_ID;
 
     // This is run in the worker thread.
-    private void checkBucketIds() {
+    private void checkBucketIds(ArrayList<Item> allItems) {
         final IImageList allImages;
         if (!mScanning && !mUnmounted) {
             allImages = ImageManager.allImages(
@@ -418,8 +427,6 @@ public class GalleryPicker extends Activity {
         allImages.deactivate();
         if (mAbort) return;
 
-        final ArrayList<Item> items = new ArrayList<Item>();
-
         for (Map.Entry<String, String> entry : hashMap.entrySet()) {
             String key = entry.getKey();
             if (key == null) {
@@ -435,33 +442,26 @@ public class GalleryPicker extends Activity {
                 Item item = new Item(Item.TYPE_NORMAL_FOLDERS, key,
                         entry.getValue(), list);
 
-                final Bitmap b = makeMiniThumbBitmap(142, 142, list);
-                if (mAbort) {
-                    if (b != null) b.recycle();
-                    return;
-                }
-                item.setThumbBitmap(b);
+                allItems.add(item);
 
-                items.add(item);
+                final Item finalItem = item;
+                mHandler.post(new Runnable() {
+                            public void run() {
+                                updateItem(finalItem);
+                            }
+                        });
             }
         }
 
         mHandler.post(new Runnable() {
                     public void run() {
-                        checkBucketIdsFinished(items);
+                        checkBucketIdsFinished();
                     }
                 });
     }
 
     // This is run in the main thread.
-    private void checkBucketIdsFinished(ArrayList<Item> items) {
-        for (Item item : items) {
-            mAdapter.addItem(item);
-        }
-        mAdapter.updateDisplay();
-
-        // This is put here just for convenience.
-        ImageManager.ensureOSXCompatibleFolder();
+    private void checkBucketIdsFinished() {
 
         // If we just have one folder, open it.
         // If we have zero folder, show the "no images" icon.
@@ -475,6 +475,32 @@ public class GalleryPicker extends Activity {
                 return;
             }
         }
+    }
+
+    private static final int THUMB_SIZE = 142;
+    // This is run in the worker thread.
+    private void checkThumbBitmap(ArrayList<Item> allItems) {
+        for (Item item : allItems) {
+            final Bitmap b = makeMiniThumbBitmap(THUMB_SIZE, THUMB_SIZE,
+                    item.mImageList);
+            if (mAbort) {
+                if (b != null) b.recycle();
+                return;
+            }
+
+            final Item finalItem = item;
+            mHandler.post(new Runnable() {
+                        public void run() {
+                            updateThumbBitmap(finalItem, b);
+                        }
+                    });
+        }
+    }
+
+    // This is run in the main thread.
+    private void updateThumbBitmap(Item item, Bitmap b) {
+        item.setThumbBitmap(b);
+        mAdapter.updateDisplay();
     }
 
     private static final long LOW_STORAGE_THRESHOLD = 1024 * 1024 * 2;
