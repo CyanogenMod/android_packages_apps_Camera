@@ -753,7 +753,6 @@ public class MenuHelper {
         }
 
         if ((isImage) && ((inclusions & INCLUDE_SHOWMAP_MENU) != 0)) {
-            // TODO: assign an icon to this menu item.
             menu.add(0, 0, 80, R.string.show_on_map)
                 .setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
@@ -761,7 +760,7 @@ public class MenuHelper {
                                 return onShowMapClicked(onInvoke,
                                         handler, activity);
                             }
-                        });
+                        }).setIcon(R.drawable.ic_menu_3d_globe);
         }
 
         if ((!isImage) && ((inclusions & INCLUDE_VIEWPLAY_MENU) != 0)) {
