@@ -56,19 +56,28 @@ public class BitmapManager {
             return s;
         }
     }
+
+    static class ThreadGroup implements Iterable<Thread> {
+        private final WeakHashMap<Thread, Object> mWeakCollection =
+                new WeakHashMap<Thread, Object>();
+
+        public void add(Thread t) {
+            mWeakCollection.put(t, null);
+        }
+        public void remove(Thread t) {
+            mWeakCollection.remove(t);
+        }
+        public Iterator<Thread> iterator() {
+            return mWeakCollection.keySet().iterator();
+        }
+    }
+
     private final WeakHashMap<Thread, ThreadStatus> mThreadStatus =
             new WeakHashMap<Thread, ThreadStatus>();
-    private boolean mAllowDecoding = false;
+
     private boolean mLocked = false;
     private boolean mCheckResourceLock = false;
-    private static BitmapManager sManager;
-
-    public static BitmapManager instance() {
-        if (sManager == null) {
-            sManager = new BitmapManager();
-        }
-        return sManager;
-    }
+    private static BitmapManager sManager = null;
 
     private BitmapManager() {
     }
@@ -146,6 +155,25 @@ public class BitmapManager {
         status.options = null;
     }
 
+    public synchronized void allowThreadDecoding(ThreadGroup threads) {
+        for (Thread t : threads) {
+            getThreadStatus(t, true).state = State.WAIT;
+        }
+    }
+
+    public synchronized void cancelThreadDecoding(ThreadGroup threads) {
+        for (Thread t : threads) {
+            ThreadStatus status = getThreadStatus(t, true);
+            status.state = State.CANCEL;
+            if (status.options != null) {
+                status.options.requestCancelDecode();
+            }
+        }
+
+        // Wake up threads in waiting list
+        notifyAll();
+    }
+
     /**
      * The following three methods are used to keep track of which thread
      * is being disabled for bitmap decoding.
@@ -182,7 +210,6 @@ public class BitmapManager {
      * bitmap decoding.
      */
     public synchronized void cancelAllDecoding() {
-        mAllowDecoding = false;
         for (ThreadStatus status : mThreadStatus.values()) {
             status.state = State.CANCEL;
             if (status.options != null) {
@@ -194,19 +221,8 @@ public class BitmapManager {
         notifyAll();
     }
 
-    public synchronized void allowAllDecoding() {
-        allowAllDecoding(true);
-    }
-
-    public synchronized void allowAllDecoding(boolean reset) {
-        mAllowDecoding = true;
-        if (reset) {
-            mThreadStatus.clear();
-        }
-    }
-
-    public synchronized boolean canDecode() {
-        return mAllowDecoding;
+    public synchronized void resetThreadStatus() {
+        mThreadStatus.clear();
     }
 
     /**
@@ -224,6 +240,13 @@ public class BitmapManager {
         }
     }
 
+    public static synchronized BitmapManager instance() {
+        if (sManager == null) {
+            sManager = new BitmapManager();
+        }
+        return sManager;
+    }
+
     /**
      * The real place to delegate bitmap decoding to BitmapFactory.
      */
@@ -233,31 +256,21 @@ public class BitmapManager {
             return null;
         }
 
-        // Does the global switch turn on?
-        if (!canDecode()) {
-            // This is a bug, and we should fix the caller.
-            Util.debugWhere(TAG, "canDecode() == false");
-            return null;
-        }
-
-        // Can current thread decode?
         Thread thread = Thread.currentThread();
         if (!canThreadDecoding(thread)) {
-            // This is a bug, and we should fix the caller.
-            Util.debugWhere(TAG, "canThreadDecoding() == false");
+            Log.d(TAG, "Thread " + thread + " is not allowed to decode.");
             return null;
         }
 
         setDecodingOptions(thread, options);
-
         Bitmap b = BitmapFactory.decodeFileDescriptor(fd, null, options);
 
         // In case legacy code cancel it in traditional way
         if (options.mCancel) {
             cancelThreadDecoding(thread);
         }
-        removeDecodingOptions(thread);
 
+        removeDecodingOptions(thread);
         return b;
     }
 }

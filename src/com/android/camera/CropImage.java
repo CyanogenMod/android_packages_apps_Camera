@@ -77,6 +77,7 @@ public class CropImage extends Activity {
 
     private Bitmap mBitmap;
     private Bitmap mCroppedImage;
+    private BitmapManager.ThreadGroup mDecodingThreads = new BitmapManager.ThreadGroup();
     HighlightView mCrop;
 
     private IImage mImage;
@@ -101,10 +102,6 @@ public class CropImage extends Activity {
         mImageView = (CropImageView) findViewById(R.id.image);
 
         MenuHelper.showStorageToast(this);
-
-        BitmapManager bitmapManager = BitmapManager.instance();
-        bitmapManager.setCheckResourceLock(false);
-        bitmapManager.allowAllDecoding();
 
         try {
             Intent intent = getIntent();
@@ -192,7 +189,7 @@ public class CropImage extends Activity {
             mImageView.center(true, true);
         }
 
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             public void run() {
                 final Bitmap b = (mImage != null)
                         ? mImage.fullSizeBitmap(500)
@@ -211,7 +208,9 @@ public class CropImage extends Activity {
                     }
                 });
             }
-        }).start();
+        });
+        mDecodingThreads.add(t);
+        t.start();
     }
 
     private void onSaveClicked() {
@@ -402,15 +401,9 @@ public class CropImage extends Activity {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        BitmapManager.instance().allowAllDecoding();
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-        BitmapManager.instance().cancelAllDecoding();
+        BitmapManager.instance().cancelThreadDecoding(mDecodingThreads);
     }
 
     Handler mHandler = new Handler();

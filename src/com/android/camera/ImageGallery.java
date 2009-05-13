@@ -337,8 +337,8 @@ public class ImageGallery extends Activity implements
         super.onPause();
         mPausing = true;
 
-        BitmapManager.instance().cancelAllDecoding();
-        stopCheckingThumbnails();
+        mLoader.stop();
+
         mGvs.stop();
 
         if (mReceiver != null) {
@@ -398,8 +398,6 @@ public class ImageGallery extends Activity implements
     @Override
     public void onResume() {
         super.onResume();
-
-        BitmapManager.instance().allowAllDecoding();
 
         mGvs.setSizeChoice(Integer.parseInt(
                 mPrefs.getString("pref_gallery_size_key", "1")));

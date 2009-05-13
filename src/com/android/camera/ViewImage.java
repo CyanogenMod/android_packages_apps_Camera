@@ -504,11 +504,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mCache = new BitmapCache(3);
         mImageView.setRecycler(mCache);
 
-
-        BitmapManager bitmapManager = BitmapManager.instance();
-        bitmapManager.setCheckResourceLock(false);
-        bitmapManager.allowAllDecoding();
-
         makeGetter();
 
         mAnimationIndex = -1;
@@ -891,8 +886,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     public void onStart() {
         super.onStart();
 
-        BitmapManager.instance().allowAllDecoding(false);
-
         init(mSavedUri);
 
         // normally this will never be zero but if one "backs" into this
@@ -919,7 +912,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
-        BitmapManager.instance().cancelAllDecoding();
 
         mGetter.cancelCurrent();
         mGetter.stop();
@@ -1382,7 +1374,6 @@ class ImageGetter {
         mViewImage = viewImage;
         mGetterThread = new Thread(new ImageGetterRunnable());
         mGetterThread.setName("ImageGettter");
-        BitmapManager.instance().allowThreadDecoding(mGetterThread);
         mGetterThread.start();
     }
 
@@ -1426,6 +1417,7 @@ class ImageGetter {
             ImageGetter.this.notify();
         }
         try {
+            BitmapManager.instance().cancelThreadDecoding(mGetterThread);
             mGetterThread.join();
         } catch (InterruptedException ex) {
             // Ignore the exception
