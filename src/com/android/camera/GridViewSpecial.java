@@ -65,25 +65,23 @@ class GridViewSpecial extends View {
     public static final int SELECT_NONE = -1;
 
     // There are two cell size we will use. It can be set by setSizeChoice().
-    // The mLeftEdgePadding and mRightEdgePadding fields are filled in
-    // onLayout(). See the comments in onLayout() for details.
+    // The mLeftEdgePadding fields is filled in onLayout(). See the comments
+    // in onLayout() for details.
     static class LayoutSpec {
-        LayoutSpec(int w, int h, int leftEdgePadding,
-                   int rightEdgePadding, int intercellSpacing) {
+        LayoutSpec(int w, int h, int intercellSpacing, int leftEdgePadding) {
             mCellWidth = w;
             mCellHeight = h;
-            mLeftEdgePadding = leftEdgePadding;
-            mRightEdgePadding = rightEdgePadding;
             mCellSpacing = intercellSpacing;
+            mLeftEdgePadding = leftEdgePadding;
         }
         int mCellWidth, mCellHeight;
-        int mLeftEdgePadding, mRightEdgePadding;
         int mCellSpacing;
+        int mLeftEdgePadding;
     }
 
     private final LayoutSpec [] mCellSizeChoices = new LayoutSpec[] {
-            new LayoutSpec(67, 67, 0, 0, 8),
-            new LayoutSpec(92, 92, 0, 0, 8),
+            new LayoutSpec(67, 67, 8, 0),
+            new LayoutSpec(92, 92, 8, 0),
     };
 
     // These are set in init().
@@ -117,7 +115,6 @@ class GridViewSpecial extends View {
 
     private boolean mRunning = false;
     private boolean mShowSelection = false;
-    private final boolean mFling = true;
     private Scroller mScroller = null;
 
     public GridViewSpecial(Context context, AttributeSet attrs) {
@@ -185,7 +182,7 @@ class GridViewSpecial extends View {
         // LeftEdgePadding CellWidth (CellSpacing CellWidth)* RightEdgePadding
         //
         // We determine number of cells (columns) first, then the left and right
-        // padding are derived.
+        // padding are derived. We make left and right paddings the same size.
         //
         // The height is divided into following parts:
         //
@@ -197,7 +194,6 @@ class GridViewSpecial extends View {
         mSpec.mLeftEdgePadding = (width
                 - ((mColumns - 1) * mSpec.mCellSpacing)
                 - (mColumns * mSpec.mCellWidth)) / 2;
-        mSpec.mRightEdgePadding = mSpec.mLeftEdgePadding;
 
         mRows = (mCount + mColumns - 1) / mColumns;
         mBlockHeight = mSpec.mCellSpacing + mSpec.mCellHeight;
@@ -314,12 +310,11 @@ class GridViewSpecial extends View {
             }
 
             select(SELECT_NONE, false);
-            if (mFling) {
-                mScroller = new Scroller(getContext());
-                mScroller.fling(0, mScrollY, 0, -(int) velocityY, 0, 0, 0,
-                        mMaxScrollY);
-                computeScroll();
-            }
+            mScroller = new Scroller(getContext());
+            mScroller.fling(0, mScrollY, 0, -(int) velocityY, 0, 0, 0,
+                    mMaxScrollY);
+            computeScroll();
+
             return true;
         }
 
@@ -637,7 +632,6 @@ class GridViewSpecial extends View {
         int leftSpacing = mSpec.mLeftEdgePadding;
         int xPos = leftSpacing + (col * (mSpec.mCellWidth + spacing));
         int yTop = spacing + (row * mBlockHeight);
-        int yBottom = yTop + mSpec.mCellHeight;
 
         int type = OUTLINE_SELECTED;
         if (mCurrentSelectionPressed) {

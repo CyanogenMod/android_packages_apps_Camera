@@ -85,8 +85,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private static final String TAG = "camera";
 
-    private static final boolean DEBUG_TIME_OPERATIONS = false;
-
     private static final int CROP_MSG = 1;
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
@@ -454,30 +452,11 @@ public class Camera extends Activity implements View.OnClickListener,
     private class ImageCapture implements Capturer {
 
         private boolean mCancel = false;
-        private boolean mCapturing = false;
 
         private Uri mLastContentUri;
         private Cancelable<Void> mAddImageCancelable;
 
         Bitmap mCaptureOnlyBitmap;
-
-        /** These member variables are used for various debug timings */
-        private long mThreadTimeStart;
-        private long mThreadTimeEnd;
-        private long mWallTimeStart;
-        private long mWallTimeEnd;
-
-
-        public ImageCapture() {
-        }
-
-        /**
-         * This method sets whether or not we are capturing a picture. This
-         * method must be called with the ImageCapture.this lock held.
-         */
-        public void setCapturingLocked(boolean capturing) {
-            mCapturing = capturing;
-        }
 
         public void dismissFreezeFrame() {
             if (mStatus == SNAPSHOT_IN_PROGRESS) {
@@ -489,22 +468,8 @@ public class Camera extends Activity implements View.OnClickListener,
             }
         }
 
-        private void startTiming() {
-            mWallTimeStart = SystemClock.elapsedRealtime();
-            mThreadTimeStart = Debug.threadCpuTimeNanos();
-        }
-
-        private void stopTiming() {
-            mThreadTimeEnd = Debug.threadCpuTimeNanos();
-            mWallTimeEnd = SystemClock.elapsedRealtime();
-        }
-
         private void storeImage(byte[] data, Location loc) {
             try {
-                if (DEBUG_TIME_OPERATIONS) {
-                    startTiming();
-                }
-
                 long dateTaken = System.currentTimeMillis();
                 String name = createName(dateTaken) + ".jpg";
                 mLastContentUri = ImageManager.addImage(
@@ -530,15 +495,6 @@ public class Camera extends Activity implements View.OnClickListener,
                             new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
                             name).length());
                 }
-
-                if (DEBUG_TIME_OPERATIONS) {
-                    stopTiming();
-                    Log.d(TAG, "Storing image took "
-                            + (mWallTimeEnd - mWallTimeStart) + " ms. "
-                            + "Thread time was "
-                            + ((mThreadTimeEnd - mThreadTimeStart) / 1000000)
-                            + " ms.");
-                }
             } catch (Exception ex) {
                 Log.e(TAG, "Exception while compressing image.", ex);
             }
@@ -558,29 +514,12 @@ public class Camera extends Activity implements View.OnClickListener,
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 4;
 
-                if (DEBUG_TIME_OPERATIONS) {
-                    startTiming();
-                }
-
                 mCaptureOnlyBitmap = BitmapFactory.decodeByteArray(
                         data, 0, data.length, options);
-
-                if (DEBUG_TIME_OPERATIONS) {
-                    stopTiming();
-                    Log.d(TAG, "Decoded mCaptureOnly bitmap ("
-                            + mCaptureOnlyBitmap.getWidth() + "x"
-                            + mCaptureOnlyBitmap.getHeight() + " ) in "
-                            + (mWallTimeEnd - mWallTimeStart)
-                            + " ms. Thread time was "
-                            + ((mThreadTimeEnd - mThreadTimeStart) / 1000000)
-                            + " ms.");
-                }
 
                 showPostCaptureAlert();
                 cancelAutomaticPreviewRestart();
             }
-
-            mCapturing = false;
         }
 
         /**
@@ -592,7 +531,6 @@ public class Camera extends Activity implements View.OnClickListener,
             }
 
             mCancel = false;
-            mCapturing = true;
 
             capture();
         }
@@ -1426,41 +1364,6 @@ public class Camera extends Activity implements View.OnClickListener,
         final long wallTimeStart = SystemClock.elapsedRealtime();
         final long threadTimeStart = Debug.threadCpuTimeNanos();
 
-        final Object watchDogSync = new Object();
-
-        Thread watchDog = new Thread(new Runnable() {
-            public void run() {
-                int nextWarning = 1;
-                while (true) {
-                    try {
-                        synchronized (watchDogSync) {
-                            watchDogSync.wait(1000);
-                        }
-                    } catch (InterruptedException ex) {
-                        //
-                    }
-                    if (mPreviewing) break;
-
-                    int delay = (int) (SystemClock.elapsedRealtime()
-                            - wallTimeStart) / 1000;
-                    if (delay >= nextWarning) {
-                        Log.e(TAG, "preview hasn't started yet in "
-                                + delay + " seconds");
-                        if (nextWarning < 60) {
-                            nextWarning <<= 1;
-                            if (nextWarning == 16) {
-                                nextWarning = 15;
-                            }
-                        } else {
-                            nextWarning += 60;
-                        }
-                    }
-                }
-            }
-        });
-
-        watchDog.start();
-
         // Set one shot preview callback for latency measurement.
         mCameraDevice.setOneShotPreviewCallback(mOneShotPreviewCallback);
 
@@ -1472,10 +1375,6 @@ public class Camera extends Activity implements View.OnClickListener,
             //      that it throws IOException.
         }
         mPreviewing = true;
-
-        synchronized (watchDogSync) {
-            watchDogSync.notify();
-        }
 
         long threadTimeEnd = Debug.threadCpuTimeNanos();
         long wallTimeEnd = SystemClock.elapsedRealtime();

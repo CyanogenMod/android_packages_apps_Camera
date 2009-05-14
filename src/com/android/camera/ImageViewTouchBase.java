@@ -131,7 +131,6 @@ abstract class ImageViewTouchBase extends ImageView {
     public void setImageBitmapResetBase(final Bitmap bitmap,
             final boolean resetSupp) {
         final int viewWidth = getWidth();
-        final int viewHeight = getHeight();
 
         if (viewWidth <= 0)  {
             mOnLayoutRunnable = new Runnable() {
