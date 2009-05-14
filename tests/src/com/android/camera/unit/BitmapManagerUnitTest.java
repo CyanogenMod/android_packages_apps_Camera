@@ -6,6 +6,7 @@ import com.android.camera.ImageManager;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.test.AndroidTestCase;
 
@@ -16,6 +17,7 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
     IImageList mImageList;
     IImage mImage;
     BitmapManager mBitmapManager;
+    Context mContext;
 
     private class DecodeThread extends Thread {
         Bitmap bitmap;
@@ -41,8 +43,9 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
     }
 
     public void setUp() {
+        mContext = getContext();
         mBitmapManager = BitmapManager.instance();
-        mImageList = ImageManager.allImages(getContext().getContentResolver(),
+        mImageList = ImageManager.allImages(mContext.getContentResolver(),
                                             ImageManager.DataLocation.ALL,
                                             ImageManager.INCLUDE_IMAGES,
                                             ImageManager.SORT_DESCENDING);
@@ -56,16 +59,7 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
         assertSame(manager, mBitmapManager);
     }
 
-    public void testCanDecoding() {
-        assertFalse(mBitmapManager.canDecode());
-        mBitmapManager.allowAllDecoding();
-        assertTrue(mBitmapManager.canDecode());
-        mBitmapManager.cancelAllDecoding();
-        assertFalse(mBitmapManager.canDecode());
-    }
-
     public void testCheckResourceLockWithoutAcquiringLock() {
-        mBitmapManager.allowAllDecoding();
         DecodeThread t = new DecodeThread(false);
         assertTrue(mBitmapManager.canThreadDecoding(t));
         mBitmapManager.setCheckResourceLock(true);
@@ -81,7 +75,6 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
     }
 
     public void testCheckResourceLockWithAcquiringLock() {
-        mBitmapManager.allowAllDecoding();
         DecodeThread t1 = new DecodeThread(true);
         DecodeThread t2 = new DecodeThread(true);
         assertTrue(mBitmapManager.canThreadDecoding(t1));
@@ -119,7 +112,6 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
 
     public void testDecoding() {
         assertNotNull(mImage);
-        mBitmapManager.allowAllDecoding();
         mBitmapManager.setCheckResourceLock(false);
         Bitmap bitmap = mImage.thumbBitmap();
         assertNotNull(bitmap);
@@ -131,7 +123,6 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
     }
 
     public void testCanThreadDecoding() {
-        mBitmapManager.allowAllDecoding();
         Thread t = new DecodeThread(false);
 
         // By default all threads can decode.
@@ -149,7 +140,6 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
     public void testThreadDecoding() {
         DecodeThread t1 = new DecodeThread(false);
         DecodeThread t2 = new DecodeThread(false);
-        mBitmapManager.allowAllDecoding();
         mBitmapManager.setCheckResourceLock(false);
         mBitmapManager.allowThreadDecoding(t1);
         mBitmapManager.cancelThreadDecoding(t2);
