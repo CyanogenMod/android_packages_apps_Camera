@@ -105,7 +105,7 @@ public class ImageLoader {
         }
     }
 
-    private class WorkItem {
+    private static class WorkItem {
         IImage mImage;
         LoadedCallback mOnLoadedRunnable;
         int mTag;

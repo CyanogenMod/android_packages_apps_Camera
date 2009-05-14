@@ -342,7 +342,6 @@ public class Image extends BaseImage implements IImage {
             bitmap = Util.rotate(bitmap, getDegreesRotated());
         }
 
-        long elapsed = System.currentTimeMillis();
         return bitmap;
     }
 

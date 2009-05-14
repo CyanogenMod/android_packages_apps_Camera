@@ -18,6 +18,7 @@ package com.android.camera;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Wrapper for native Exif library
@@ -102,14 +103,13 @@ public class ExifInterface {
             --size;
         }
         sb.append(size + " ");
-        Iterator<String> keyIterator = attributes.keySet().iterator();
-        while (keyIterator.hasNext()) {
-            String key = keyIterator.next();
+        for (Map.Entry<String, String> iter : attributes.entrySet()) {
+            String key = iter.getKey();
             if (key.equals("hasThumbnail")) {
                 // this is a fake attribute not saved as an exif tag
                 continue;
             }
-            String val = attributes.get(key);
+            String val = iter.getValue();
             sb.append(key + "=");
             sb.append(val.length() + " ");
             sb.append(val);

@@ -167,7 +167,7 @@ public class MovieView extends Activity implements MediaPlayer.OnErrorListener,
                             return null;
                         }
 
-                        return new Integer(bookmark);
+                        return Integer.valueOf(bookmark);
                     }
                 } finally {
                     cursor.close();

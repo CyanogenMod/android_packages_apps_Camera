@@ -172,7 +172,6 @@ class UriImage implements IImage {
         ParcelFileDescriptor input = getPFD();
         if (input == null) return null;
         try {
-            Uri uri = fullSizeImageUri();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapManager.instance().decodeFileDescriptor(
