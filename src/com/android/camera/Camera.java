@@ -86,6 +86,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final String TAG = "camera";
 
     private static final int CROP_MSG = 1;
+    private static final int FIRST_TIME_INIT = 2;
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
 
@@ -147,17 +148,12 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mViewFinderWidth, mViewFinderHeight;
     private boolean mPreviewing = false;
 
-    // TODO: Decide whether we should read these values from drivers,
-    // and update the preference screen if needed.
-    private static final int BRIGHTNESS_DEFAULT = 5;
-    private static final int BRIGHTNESS_MAX = 10;
-    private static final int BRIGHTNESS_MIN = 0;
-    private int mCurrentBrightness;
-
     private Capturer mCaptureObject;
     private ImageCapture mImageCapture = null;
 
     private boolean mPausing = false;
+    private boolean mFirstTimeInitialized = false;
+    private boolean mPendingFirstTimeInit = false;
 
     private static final int FOCUS_NOT_STARTED = 0;
     private static final int FOCUSING = 1;
@@ -176,7 +172,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private ShutterButton mShutterButton;
 
     private Animation mFocusBlinkAnimation;
-    private View mFocusIndicator;
+    private ImageView mFocusIndicator;
     private FocusRectangle mFocusRectangle;
     private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
@@ -246,8 +242,119 @@ public class Camera extends Activity implements View.OnClickListener,
                             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     break;
                 }
+
+                case FIRST_TIME_INIT: {
+                    initializeFirstTime();
+                    break;
+                }
             }
         }
+    }
+
+    // This method will be called after surfaceChanged. Snapshots can only be
+    // taken after this is called. It should be called once only. We could have
+    // done these things in onCreate() but we want to make preview screen appear
+    // as soon as possible.
+    void initializeFirstTime() {
+        if (mFirstTimeInitialized) return;
+
+        // Create orientation listenter. This should be done first because it
+        // takes some time to get first orientation.
+        mOrientationListener =
+                new OrientationEventListener(Camera.this) {
+            @Override
+            public void onOrientationChanged(int orientation) {
+                // We keep the last known orientation. So if the user
+                // first orient the camera then point the camera to
+                // floor/sky, we still have the correct orientation.
+                if (orientation != ORIENTATION_UNKNOWN) {
+                    mLastOrientation = orientation;
+                }
+            }
+        };
+        mOrientationListener.enable();
+
+        // Initialize location sevice.
+        mLocationManager = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
+        readPreference();
+        if (mRecordLocation) startReceivingLocationUpdates();
+
+        // Initialize last picture button.
+        mContentResolver = getContentResolver();
+        if (!mIsImageCaptureIntent)  {
+            mLastPictureButton = (ImageView)
+                    findViewById(R.id.last_picture_button);
+            mLastPictureButton.setOnClickListener(Camera.this);
+            Drawable frame =
+                    getResources().getDrawable(R.drawable.frame_thumbnail);
+            mThumbController = new ThumbnailController(mLastPictureButton,
+                    frame, mContentResolver);
+            mThumbController.loadData(ImageManager.getLastImageThumbPath());
+        } else {
+            ViewGroup cameraView = (ViewGroup) findViewById(R.id.camera);
+            getLayoutInflater().inflate(R.layout.post_picture_panel,
+                                        cameraView);
+            mPostCaptureAlert = findViewById(R.id.post_picture_panel);
+        }
+
+        // Update last image thumbnail.
+        if (!mIsImageCaptureIntent) {
+            if (!mThumbController.isUriValid()) {
+                updateLastImage();
+            }
+            mThumbController.updateDisplayIfNeeded();
+        }
+
+        // Initialize shutter button.
+        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
+        mShutterButton.setImageResource(R.drawable.ic_camera_indicator_photo);
+        mShutterButton.setBackgroundResource(
+                R.drawable.ic_btn_camera_background);
+        mShutterButton.setOnShutterButtonListener(Camera.this);
+        mShutterButton.setVisibility(View.VISIBLE);
+
+        // Initialize focus related resources.
+        mFocusBlinkAnimation =
+                AnimationUtils.loadAnimation(Camera.this,
+                                             R.anim.auto_focus_blink);
+        mFocusBlinkAnimation.setRepeatCount(Animation.INFINITE);
+        mFocusBlinkAnimation.setRepeatMode(Animation.REVERSE);
+        mFocusIndicator = (ImageView) findViewById(R.id.focus_indicator);
+        mFocusIndicator.setImageResource(
+                R.drawable.ic_camera_indicator_auto_focus_green);
+        mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
+        updateFocusIndicator();
+
+        // Initialize GPS indicator.
+        mGpsIndicator = (ImageView) findViewById(R.id.gps_indicator);
+        mGpsIndicator.setImageResource(R.drawable.ic_gps_active_camera);
+
+        ImageManager.ensureOSXCompatibleFolder();
+
+        calculatePicturesRemaining();
+
+        installIntentFilter();
+
+        initializeFocusTone();
+
+        mFirstTimeInitialized = true;
+    }
+
+    // If the activity is paused and resumed, this method will be called in
+    // onResume.
+    void initializeSecondTime() {
+        // Start orientation listener as soon as possible because it takes
+        // some time to get first orientation.
+        mOrientationListener.enable();
+
+        // Start location update if needed.
+        readPreference();
+        if (mRecordLocation) startReceivingLocationUpdates();
+
+        installIntentFilter();
+
+        initializeFocusTone();
     }
 
     LocationListener [] mLocationListeners = new LocationListener[] {
@@ -683,38 +790,13 @@ public class Camera extends Activity implements View.OnClickListener,
         });
         openCameraThread.start();
 
-        // To reduce startup time, we run some service creation code in another
-        // thread. We make sure the services are loaded at the end of
-        // onCreate().
-        Thread loadServiceThread = new Thread(new Runnable() {
-            public void run() {
-                mLocationManager = (LocationManager)
-                        getSystemService(Context.LOCATION_SERVICE);
-                mOrientationListener =
-                        new OrientationEventListener(Camera.this) {
-                    @Override
-                    public void onOrientationChanged(int orientation) {
-                        // We keep the last known orientation. So if the user
-                        // first orient the camera then point the camera to
-                        // floor/sky, we still have the correct orientation.
-                        if (orientation != ORIENTATION_UNKNOWN) {
-                            mLastOrientation = orientation;
-                        }
-                    }
-                };
-            }
-        });
-        loadServiceThread.start();
-
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mContentResolver = getContentResolver();
 
         Window win = getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.camera);
 
         mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
-        mGpsIndicator = (ImageView) findViewById(R.id.gps_indicator);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
@@ -725,45 +807,12 @@ public class Camera extends Activity implements View.OnClickListener,
 
         mIsImageCaptureIntent = isImageCaptureIntent();
 
-        if (!mIsImageCaptureIntent)  {
-            mLastPictureButton = (ImageView)
-                    findViewById(R.id.last_picture_button);
-            mLastPictureButton.setOnClickListener(this);
-            Drawable frame =
-                    getResources().getDrawable(R.drawable.frame_thumbnail);
-            mThumbController = new ThumbnailController(mLastPictureButton,
-                    frame, mContentResolver);
-            mThumbController.loadData(ImageManager.getLastImageThumbPath());
-        }
-
-        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
-        mShutterButton.setOnShutterButtonListener(this);
-
-        mFocusIndicator = findViewById(R.id.focus_indicator);
-        mFocusBlinkAnimation =
-                AnimationUtils.loadAnimation(this, R.anim.auto_focus_blink);
-        mFocusBlinkAnimation.setRepeatCount(Animation.INFINITE);
-        mFocusBlinkAnimation.setRepeatMode(Animation.REVERSE);
-
-        mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
-
-        // We load the post_picture_panel layout only if it is needed.
-        if (mIsImageCaptureIntent) {
-            ViewGroup cameraView = (ViewGroup) findViewById(R.id.camera);
-            getLayoutInflater().inflate(R.layout.post_picture_panel,
-                                        cameraView);
-            mPostCaptureAlert = findViewById(R.id.post_picture_panel);
-        }
-
         // Make sure the services are loaded.
         try {
             openCameraThread.join();
-            loadServiceThread.join();
         } catch (InterruptedException ex) {
             // ignore
         }
-
-        ImageManager.ensureOSXCompatibleFolder();
     }
 
     @Override
@@ -964,44 +1013,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    // Reads brightness setting from the preference and store it in
-    // mCurrentBrightness.
-    private void readBrightnessPreference() {
-        String brightness = mPreferences.getString(
-                CameraSettings.KEY_BRIGHTNESS,
-                getString(R.string.pref_camera_brightness_default));
-        try {
-            mCurrentBrightness = Integer.parseInt(brightness);
-            // Limit the brightness to the valid range.
-            if (mCurrentBrightness > BRIGHTNESS_MAX) {
-                mCurrentBrightness = BRIGHTNESS_MAX;
-            }
-            if (mCurrentBrightness < BRIGHTNESS_MIN) {
-                mCurrentBrightness = BRIGHTNESS_MIN;
-            }
-        } catch (NumberFormatException ex) {
-            // Use the default value if it cannot be parsed.
-            mCurrentBrightness = BRIGHTNESS_DEFAULT;
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
-
-        mPausing = false;
-        mOrientationListener.enable();
-        mRecordLocation = mPreferences.getBoolean(
-                "pref_camera_recordlocation_key", false);
-        mFocusMode = mPreferences.getString(
-                CameraSettings.KEY_FOCUS_MODE,
-                getString(R.string.pref_camera_focusmode_default));
-        mGpsIndicator.setVisibility(View.INVISIBLE);
-        mJpegPictureCallbackTime = 0;
-
-        readBrightnessPreference();
-
+    void installIntentFilter() {
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter =
                 new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
@@ -1012,15 +1024,10 @@ public class Camera extends Activity implements View.OnClickListener,
         intentFilter.addDataScheme("file");
         registerReceiver(mReceiver, intentFilter);
         mDidRegister = true;
+    }
 
-        mImageCapture = new ImageCapture();
-
-        restartPreview();
-
-        if (mRecordLocation) startReceivingLocationUpdates();
-
-        updateFocusIndicator();
-
+    void initializeFocusTone() {
+        // Initialize focus tone generator.
         try {
             mFocusToneGenerator = new ToneGenerator(
                     AudioManager.STREAM_SYSTEM, FOCUS_BEEP_VOLUME);
@@ -1029,6 +1036,41 @@ public class Camera extends Activity implements View.OnClickListener,
                     + e);
             mFocusToneGenerator = null;
         }
+    }
+
+    void readPreference() {
+        mRecordLocation = mPreferences.getBoolean(
+                "pref_camera_recordlocation_key", false);
+        mFocusMode = mPreferences.getString(
+                CameraSettings.KEY_FOCUS_MODE,
+                getString(R.string.pref_camera_focusmode_default));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mPausing = false;
+        mJpegPictureCallbackTime = 0;
+        mImageCapture = new ImageCapture();
+
+        // If first time initialization is pending, put it in the message queue.
+        if (mPendingFirstTimeInit) {
+            mHandler.sendEmptyMessage(FIRST_TIME_INIT);
+            mPendingFirstTimeInit = false;
+        } else if (mFirstTimeInitialized) {
+            // If first time initilization is done and the activity is
+            // paused and resumed, we have to start the preview and do some
+            // initialization.
+            mSurfaceView.setAspectRatio(VideoPreview.DONT_CARE);
+            setViewFinder(mOriginalViewFinderWidth, mOriginalViewFinderHeight,
+                          true);
+            mStatus = IDLE;
+
+            initializeSecondTime();
+        }
+
+        mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
     }
 
     private static ImageManager.DataLocation dataLocation() {
@@ -1040,11 +1082,19 @@ public class Camera extends Activity implements View.OnClickListener,
         keep();
 
         mPausing = true;
-        mOrientationListener.disable();
-
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
+
+        if (mFirstTimeInitialized) {
+            mOrientationListener.disable();
+            mGpsIndicator.setVisibility(View.INVISIBLE);
+            if (!mIsImageCaptureIntent) {
+                mThumbController.storeData(
+                        ImageManager.getLastImageThumbPath());
+            }
+            hidePostCaptureAlert();
+        }
 
         if (mDidRegister) {
             unregisterReceiver(mReceiver);
@@ -1057,10 +1107,6 @@ public class Camera extends Activity implements View.OnClickListener,
             mFocusToneGenerator = null;
         }
 
-        if (!mIsImageCaptureIntent) {
-            mThumbController.storeData(ImageManager.getLastImageThumbPath());
-        }
-
         if (mStorageHint != null) {
             mStorageHint.cancel();
             mStorageHint = null;
@@ -1070,11 +1116,14 @@ public class Camera extends Activity implements View.OnClickListener,
         // a picture, we just clear it in onPause.
         mImageCapture.clearLastBitmap();
         mImageCapture = null;
-        hidePostCaptureAlert();
 
         // Remove the messages in the event queue.
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
         mHandler.removeMessages(RESTART_PREVIEW);
+        if (mHandler.hasMessages(FIRST_TIME_INIT)) {
+            mHandler.removeMessages(FIRST_TIME_INIT);
+            mPendingFirstTimeInit = true;
+        }
 
         super.onPause();
     }
@@ -1119,6 +1168,8 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void updateFocusIndicator() {
+        if (mFocusIndicator == null || mFocusRectangle == null) return;
+
         if (mFocusState == FOCUSING || mFocusState == FOCUSING_SNAP_ON_FINISH) {
             mFocusRectangle.showStart();
         } else if (mFocusState == FOCUS_SUCCESS) {
@@ -1136,19 +1187,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    private void adjustBrightness(int delta) {
-        if (mParameters == null || mCameraDevice == null) return;
-        int newValue = mCurrentBrightness + delta;
-        newValue = Math.min(newValue, BRIGHTNESS_MAX);
-        newValue = Math.max(newValue, BRIGHTNESS_MIN);
-        if (mCurrentBrightness != newValue) {
-            mCurrentBrightness = newValue;
-            mParameters.set(PARM_BRIGHTNESS, mCurrentBrightness);
-            mCameraDevice.setParameters(mParameters);
-            Log.v(TAG, "brightness=" + mCurrentBrightness);
-        }
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
@@ -1162,19 +1200,19 @@ public class Camera extends Activity implements View.OnClickListener,
                 }
                 break;
             case KeyEvent.KEYCODE_FOCUS:
-                if (event.getRepeatCount() == 0) {
+                if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
                     doFocus(true);
                 }
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
-                if (event.getRepeatCount() == 0) {
+                if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
                     doSnap();
                 }
                 return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 // If we get a dpad center event without any focused view, move
                 // the focus to the shutter button and press it.
-                if (event.getRepeatCount() == 0) {
+                if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
                     // Start auto-focus immediately to reduce shutter lag. After
                     // the shutter button gets the focus, doFocus() will be
                     // called again but it is fine.
@@ -1196,7 +1234,9 @@ public class Camera extends Activity implements View.OnClickListener,
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
-                doFocus(false);
+                if (mFirstTimeInitialized) {
+                    doFocus(false);
+                }
                 return true;
         }
         return super.onKeyUp(keyCode, event);
@@ -1247,9 +1287,15 @@ public class Camera extends Activity implements View.OnClickListener,
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         mSurfaceView.setVisibility(View.VISIBLE);
         // if we're creating the surface, start the preview as well.
-        boolean preview = holder.isCreating();
-        setViewFinder(w, h, preview);
+        boolean creating = holder.isCreating();
+        setViewFinder(w, h, creating);
         mCaptureObject = mImageCapture;
+        // If the surface is creating, send a message to do first time
+        // initialization later. We want to finish surfaceChanged as soon as
+        // possible to let user see preview images first.
+        if (creating && !mFirstTimeInitialized) {
+            mHandler.sendEmptyMessage(FIRST_TIME_INIT);
+        }
     }
 
     public void surfaceCreated(SurfaceHolder holder) {

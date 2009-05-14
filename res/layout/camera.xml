@@ -30,8 +30,7 @@
             android:id="@+id/shutter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_camera_indicator_photo"
-            android:background="@drawable/ic_btn_camera_background"
+            android:visibility="invisible"
             android:clickable="true"
             android:focusable="true"
             android:layout_alignParentRight="true"
@@ -50,14 +49,12 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="18dip"
-            android:layout_marginTop="18dip"
-            android:src="@drawable/ic_gps_active_camera" />
+            android:layout_marginTop="18dip"/>
 
     <ImageView
             android:id="@+id/focus_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_camera_indicator_auto_focus_green"
             android:layout_alignLeft="@id/shutter_button"
             android:layout_alignTop="@id/shutter_button"
             android:layout_marginLeft="39dip"
