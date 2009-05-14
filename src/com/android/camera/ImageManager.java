@@ -27,6 +27,7 @@ import com.android.camera.gallery.ImageList;
 import com.android.camera.gallery.ImageListUber;
 import com.android.camera.gallery.SingleImageList;
 import com.android.camera.gallery.VideoList;
+import com.android.camera.gallery.VideoObject;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -156,7 +157,9 @@ public class ImageManager {
      * @return true if the image is a video.
      */
     public static boolean isVideo(IImage image) {
-        return Util.isVideoMimeType(image.getMimeType());
+        // This is the right implementation, but we use instanceof for speed.
+        //return Util.isVideoMimeType(image.getMimeType());
+        return (image instanceof VideoObject);
     }
 
     public static void setImageSize(ContentResolver cr, Uri uri, long size) {
