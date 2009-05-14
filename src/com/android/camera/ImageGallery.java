@@ -493,6 +493,7 @@ public class ImageGallery extends Activity implements
             item.setAlphabeticShortcut('p');
             item.setIcon(android.R.drawable.ic_menu_preferences);
 
+            /* Disable multiselect
             item = menu.add(0, 0, 900, R.string.multiselect);
             item.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
@@ -506,7 +507,7 @@ public class ImageGallery extends Activity implements
                 }
             });
             item.setIcon(R.drawable.ic_menu_multiselect_gallery);
-
+            */
         }
         return true;
     }
