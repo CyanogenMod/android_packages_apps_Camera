@@ -320,9 +320,8 @@ class GridViewSpecial extends View {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            if (GridViewSpecial.this.mRunning) {
-                performLongClick();
-            }
+            if (!canHandleEvent()) return;
+            performLongClick();
         }
 
         @Override
@@ -351,10 +350,12 @@ class GridViewSpecial extends View {
     }
 
     public void invalidateImage(int index) {
+        if (!canHandleEvent()) return;
         mImageBlockManager.invalidateImage(index);
     }
 
     public void invalidateAllImages() {
+        if (!canHandleEvent()) return;
         mImageBlockManager.invalidateAllImages();
     }
 
@@ -438,7 +439,7 @@ class GridViewSpecial extends View {
     // mGvs.start();
     public void stop() {
         // Remove the long press callback from the queue if we are going to
-        // stop
+        // stop.
         mHandler.removeCallbacks(mLongPressCallback);
         mScroller = null;
         if (mImageBlockManager != null) {
@@ -451,7 +452,7 @@ class GridViewSpecial extends View {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (!mRunning) return;
+        if (!canHandleEvent()) return;
         mImageBlockManager.doDraw(canvas, getWidth(), getHeight(), mScrollY);
         paintSelection(canvas);
         moveDataWindow();
