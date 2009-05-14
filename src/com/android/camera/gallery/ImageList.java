@@ -38,6 +38,9 @@ public class ImageList extends BaseImageList implements IImageList {
 
     private static final String TAG = "ImageList";
 
+    private static final String[] ACCEPTABLE_IMAGE_TYPES =
+            new String[] { "image/jpeg", "image/png", "image/gif" };
+
     public HashMap<String, String> getBucketIds() {
         Uri uri = mBaseUri.buildUpon()
                 .appendQueryParameter("distinct", "true").build();

@@ -245,7 +245,7 @@ public class Image extends BaseImage implements IImage {
         synchronized (c) {
             filePath = c.getString(mContainer.indexData());
         }
-        ExifInterface mExif = new ExifInterface(filePath);
+        mExif = new ExifInterface(filePath);
         if (mExifData == null) {
             mExifData = mExif.getAttributes();
         }

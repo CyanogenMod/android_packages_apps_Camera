@@ -50,7 +50,7 @@ public class DrmImageList extends ImageList implements IImageList {
     public void checkThumbnail(int index) {
     }
 
-    private class DrmImage extends Image {
+    private static class DrmImage extends Image {
 
         protected DrmImage(long id, ContentResolver cr,
                 BaseImageList container, int cursorRow) {

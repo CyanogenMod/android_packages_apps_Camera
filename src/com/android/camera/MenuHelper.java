@@ -212,16 +212,13 @@ public class MenuHelper {
 
         try {
             Geocoder geocoder = new Geocoder(context);
-            List<Address> address = geocoder.getFromLocation(
-                    lat, lng, 1);
-            Iterator<Address> iterator = address.iterator();
-
-            while (iterator.hasNext()) {
-                Address addr = iterator.next();
-                value += addr.getAddressLine(
-                        addr.getMaxAddressLineIndex());
-                Log.v(TAG, addr.toString());
+            List<Address> address = geocoder.getFromLocation(lat, lng, 1);
+            StringBuilder sb = new StringBuilder();
+            for (Address addr : address) {
+                int index = addr.getMaxAddressLineIndex();
+                sb.append(addr.getAddressLine(index));
             }
+            value = sb.toString();
         } catch (IOException ex) {
             // Ignore this exception.
             value = EMPTY_STRING;
@@ -665,26 +662,24 @@ public class MenuHelper {
             // is really a framework bug in that it shouldn't show the submenu
             // if the submenu has no visible items.
             requiresWriteAccessItems.add(rotateSubmenu.getItem());
-            if (rotateSubmenu != null) {
-                requiresWriteAccessItems.add(
-                        rotateSubmenu.add(0, MENU_IMAGE_ROTATE_LEFT, 50,
-                        R.string.rotate_left)
-                        .setOnMenuItemClickListener(
-                        new MenuItem.OnMenuItemClickListener() {
-                            public boolean onMenuItemClick(MenuItem item) {
-                                return onRotateClicked(onInvoke, -90);
-                            }
-                        }).setAlphabeticShortcut('l'));
-                requiresWriteAccessItems.add(
-                        rotateSubmenu.add(0, MENU_IMAGE_ROTATE_RIGHT, 60,
-                        R.string.rotate_right)
-                        .setOnMenuItemClickListener(
-                        new MenuItem.OnMenuItemClickListener() {
-                            public boolean onMenuItemClick(MenuItem item) {
-                                return onRotateClicked(onInvoke, 90);
-                            }
-                        }).setAlphabeticShortcut('r'));
-            }
+            requiresWriteAccessItems.add(
+                    rotateSubmenu.add(0, MENU_IMAGE_ROTATE_LEFT, 50,
+                    R.string.rotate_left)
+                    .setOnMenuItemClickListener(
+                    new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            return onRotateClicked(onInvoke, -90);
+                        }
+                    }).setAlphabeticShortcut('l'));
+            requiresWriteAccessItems.add(
+                    rotateSubmenu.add(0, MENU_IMAGE_ROTATE_RIGHT, 60,
+                    R.string.rotate_right)
+                    .setOnMenuItemClickListener(
+                    new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            return onRotateClicked(onInvoke, 90);
+                        }
+                    }).setAlphabeticShortcut('r'));
         }
 
         if (isImage && ((inclusions & INCLUDE_CROP_MENU) != 0)) {

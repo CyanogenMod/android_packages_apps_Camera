@@ -39,7 +39,6 @@ public class ImageLoader {
     // the worker thread and a done flag so we know when to exit
     private boolean mDone;
     private Thread mDecodeThread;
-    private final Handler mHandler;
 
     // Thumbnail checking will be done when there is no getBitmap requests
     // need to be processed.
@@ -118,7 +117,6 @@ public class ImageLoader {
     }
 
     public ImageLoader(Handler handler) {
-        mHandler = handler;
         mThumbnailChecker = new ThumbnailChecker();
         start();
     }
@@ -128,9 +126,12 @@ public class ImageLoader {
         // Place the resulting bitmap in the cache, then call back by executing
         // the given runnable so things can get updated appropriately.
         public void run() {
-            while (!mDone) {
+            while (true) {
                 WorkItem workItem = null;
                 synchronized (mQueue) {
+                    if (mDone) {
+                        break;
+                    }
                     if (!mQueue.isEmpty()) {
                         workItem = mQueue.remove(0);
                     } else {
@@ -162,7 +163,7 @@ public class ImageLoader {
         }
     }
 
-    private synchronized void start() {
+    private void start() {
         if (mDecodeThread != null) {
             return;
         }
@@ -174,9 +175,9 @@ public class ImageLoader {
         t.start();
     }
 
-    public synchronized void stop() {
-        mDone = true;
+    public void stop() {
         synchronized (mQueue) {
+            mDone = true;
             mQueue.notifyAll();
         }
         if (mDecodeThread != null) {

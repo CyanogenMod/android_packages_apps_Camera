@@ -183,7 +183,8 @@ class MiniThumbFile {
                         return null;
                     }
                     int length = r.readInt();
-                    r.read(data, 0, length);
+                    int got = r.read(data, 0, length);
+                    if (got != length) return null;
                     return data;
                 } else {
                     return null;

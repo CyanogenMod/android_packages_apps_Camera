@@ -100,7 +100,7 @@ public class ImageListUber implements IImageList {
     // we don't have to allocate each time through.  Otherwise
     // it could just as easily be a local.
 
-    public synchronized IImage getImageAt(int index) {
+    public IImage getImageAt(int index) {
         if (index < 0 || index > getCount()) {
             throw new IndexOutOfBoundsException(
                     "index " + index + " out of range max is " + getCount());

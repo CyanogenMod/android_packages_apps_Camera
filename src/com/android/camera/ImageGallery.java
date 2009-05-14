@@ -541,7 +541,7 @@ public class ImageGallery extends Activity implements
                 || type.equals("video/*");
     }
 
-    private synchronized IImageList allImages(boolean assumeMounted) {
+    private IImageList allImages(boolean assumeMounted) {
         if (mAllImages == null) {
             mNoImagesView = findViewById(R.id.no_images);
 
