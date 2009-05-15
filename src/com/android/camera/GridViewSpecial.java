@@ -274,12 +274,13 @@ class GridViewSpecial extends View {
         // Calculate visible region according to scroll position.
         int startRow = (mScrollY - mSpec.mCellSpacing) / mBlockHeight;
         int endRow = (mScrollY + getHeight() - mSpec.mCellSpacing - 1)
-                / mBlockHeight;
+                / mBlockHeight + 1;
 
         // Limit startRow and endRow to the valid range.
-        startRow = Math.min(Math.max(startRow, 0), mRows - 1);
-        endRow = Math.min(Math.max(endRow, 0), mRows - 1);
-        mImageBlockManager.setVisibleRows(startRow, endRow + 1);
+        // Make sure we handle the mRows == 0 case right.
+        startRow = Math.max(Math.min(startRow, mRows - 1), 0);
+        endRow = Math.max(Math.min(endRow, mRows), 0);
+        mImageBlockManager.setVisibleRows(startRow, endRow);
     }
 
     private class MyGestureDetector extends SimpleOnGestureListener {
