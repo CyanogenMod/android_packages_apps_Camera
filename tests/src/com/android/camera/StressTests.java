@@ -19,9 +19,7 @@ package com.android.camera;
 import com.android.camera.stress.ImageCapture;
 import com.android.camera.stress.SwitchPreview;
 
-import android.test.InstrumentationTestRunner;
-import android.test.InstrumentationTestSuite;
-
+import junit.framework.Test;
 import junit.framework.TestSuite;
 
 
@@ -34,18 +32,11 @@ import junit.framework.TestSuite;
  *    com.android.camera.tests/com.android.camera.CameraStressTestRunner
  */
 
-public class CameraStressTestRunner extends InstrumentationTestRunner {
-
-    @Override
-    public TestSuite getAllTests() {
-        TestSuite suite = new InstrumentationTestSuite(this);
-        suite.addTestSuite(SwitchPreview.class);
-        suite.addTestSuite(ImageCapture.class);
-        return suite;
-    }
-
-    @Override
-    public ClassLoader getLoader() {
-        return CameraStressTestRunner.class.getClassLoader();
+public class StressTests extends TestSuite {
+    public static Test suite() {
+        TestSuite result = new TestSuite();
+        result.addTestSuite(SwitchPreview.class);
+        result.addTestSuite(ImageCapture.class);
+        return result;
     }
 }

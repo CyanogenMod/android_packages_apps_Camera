@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutionException;
  * Test cases for <code>PriorityTaskQueue</code>.
  */
 @SmallTest
-public class PriorityTaskQueueTest extends AndroidTestCase {
+public class PriorityTaskQueueUnitTests extends AndroidTestCase {
 
     private static class TestTask extends PriorityTask<Integer> {
         private boolean mDone = false;

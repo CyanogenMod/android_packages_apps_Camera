@@ -6,7 +6,7 @@ import android.util.Log;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
-public class BaseCancelableTest extends AndroidTestCase {
+public class BaseCancelableUnitTests extends AndroidTestCase {
     private static final String TAG = "BaseCancelableTest";
 
     private static class TestTask extends BaseCancelable<Integer> {
