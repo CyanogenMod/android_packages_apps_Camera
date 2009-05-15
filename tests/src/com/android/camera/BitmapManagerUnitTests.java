@@ -1,8 +1,6 @@
 
-package com.android.camera.tests.unit;
+package com.android.camera;
 
-import com.android.camera.BitmapManager;
-import com.android.camera.ImageManager;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -13,7 +11,7 @@ import android.test.AndroidTestCase;
 /**
  * BitmapManager's unit tests.
  */
-public class BitmapManagerUnitTest extends AndroidTestCase {
+public class BitmapManagerUnitTests extends AndroidTestCase {
     IImageList mImageList;
     IImage mImage;
     BitmapManager mBitmapManager;
@@ -27,6 +25,7 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
             this.needsLock = needsLock;
         }
 
+        @Override
         public void run() {
             if (needsLock) {
                 BitmapManager.instance().acquireResourceLock();
@@ -42,6 +41,7 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
         }
     }
 
+    @Override
     public void setUp() {
         mContext = getContext();
         mBitmapManager = BitmapManager.instance();
@@ -91,7 +91,7 @@ public class BitmapManagerUnitTest extends AndroidTestCase {
             t1.start();
             t2.start();
 
-            Thread.currentThread().sleep(100);
+            Thread.sleep(100);
             boolean b1 = mBitmapManager.canThreadDecoding(t1);
             boolean b2 = mBitmapManager.canThreadDecoding(t2);
 

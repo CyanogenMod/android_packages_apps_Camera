@@ -24,17 +24,12 @@ import android.test.LaunchPerformanceBase;
  * Instrumentation class for Camera launch performance testing.
  */
 public class CameraLaunchPerformance extends LaunchPerformanceBase {
-
-    public static final String LOG_TAG = "CameraLaunchPerformance";
-
-    public CameraLaunchPerformance() {
-        super();
-    }
+    @SuppressWarnings("unused")
+    private static final String TAG = "CameraLaunchPerformance";
 
     @Override
     public void onCreate(Bundle arguments) {
         super.onCreate(arguments);
-
         mIntent.setClassName(getTargetContext(), "com.android.camera.Camera");
         start();
     }
