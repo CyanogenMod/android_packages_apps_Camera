@@ -131,7 +131,6 @@ public class BitmapManager {
      * Make sure "acquire/release" are pairing correctly
      */
     public synchronized void releaseResourceLock() {
-        Thread t = Thread.currentThread();
         mLocked = false;
         notifyAll();
     }

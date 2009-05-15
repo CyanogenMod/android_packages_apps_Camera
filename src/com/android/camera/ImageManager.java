@@ -183,14 +183,6 @@ public class ImageManager {
         values.put(Images.Media.MIME_TYPE, "image/jpeg");
         values.put(Images.Media.ORIENTATION, orientation);
 
-        File parentFile = new File(directory);
-
-        // Lowercase the path for hashing. This avoids duplicate buckets if the
-        // filepath case is changed externally.
-        // Keep the original case for display.
-        String path = parentFile.toString().toLowerCase();
-        String name = parentFile.getName();
-
         if (location != null) {
             values.put(Images.Media.LATITUDE, location.getLatitude());
             values.put(Images.Media.LONGITUDE, location.getLongitude());

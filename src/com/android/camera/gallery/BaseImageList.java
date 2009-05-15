@@ -43,9 +43,6 @@ import java.util.HashMap;
 public abstract class BaseImageList implements IImageList {
     private static final String TAG = "BaseImageList";
 
-    protected static final String[] ACCEPTABLE_IMAGE_TYPES =
-            new String[] { "image/jpeg", "image/png", "image/gif" };
-
     protected ContentResolver mContentResolver;
     protected int mSort;
     protected Uri mBaseUri;
