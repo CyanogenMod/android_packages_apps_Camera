@@ -16,29 +16,21 @@
 
 package com.android.camera;
 
-import android.test.InstrumentationTestRunner;
-import android.test.InstrumentationTestSuite;
-import com.android.camera.tests.unit.*;
+import com.android.camera.gallery.BaseCancelableUnitTests;
 
+import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Instrumentation Test Runner for all camera application unit tests.
- * Usage: adb shell am instrument -w -e package com.android.camera.tests \
- * com.android.camera.tests/android.test.InstrumentationTest
+ * TestSuite for all Camera unit tests.
  */
+public class UnitTests extends TestSuite {
 
-public class CameraAppUnitTestRunner extends InstrumentationTestRunner {
-
-    @Override
-    public TestSuite getAllTests() {
-        TestSuite suite = new InstrumentationTestSuite(this);
-        suite.addTestSuite(BitmapManagerUnitTest.class);
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        suite.addTestSuite(BitmapManagerUnitTests.class);
+        suite.addTestSuite(PriorityTaskQueueUnitTests.class);
+        suite.addTestSuite(BaseCancelableUnitTests.class);
         return suite;
-    }
-
-    @Override
-    public ClassLoader getLoader() {
-        return CameraAppUnitTestRunner.class.getClassLoader();
     }
 }
