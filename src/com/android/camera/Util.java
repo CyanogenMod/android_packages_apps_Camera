@@ -25,7 +25,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
@@ -411,5 +414,22 @@ public class Util {
         if (!cond) {
             throw new AssertionError();
         }
+    }
+
+    public static Bitmap makeRoundedCorner(Bitmap thumb, int rx, int ry) {
+        if (thumb == null) return null;
+        int width = thumb.getWidth();
+        int height = thumb.getHeight();
+
+        Bitmap result = Bitmap.createBitmap(
+                width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Path path = new Path();
+        path.addRoundRect(new RectF(
+                0, 0, width, height), rx, ry, Path.Direction.CCW);
+        canvas.clipPath(path);
+        canvas.drawBitmap(thumb, 0, 0, paint);
+        return result;
     }
 }

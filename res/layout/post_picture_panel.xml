@@ -17,9 +17,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:visibility="gone"
     android:id="@+id/post_picture_panel"
-    android:layout_alignBottom="@id/shutter_button"
-    android:layout_toLeftOf="@id/shutter_button"
-    android:layout_marginRight="20dip"
+    android:layout_alignParentTop="true"
+    android:layout_toLeftOf="@id/button_bar"
+    android:layout_marginTop="20dp"
+    android:layout_marginRight="20dp"
     android:layout_width="wrap_content" 
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -28,14 +29,14 @@
         android:id="@+id/attach"
         android:drawableTop="@drawable/ic_menu_attach"
         android:text="@string/camera_attach"
-        android:layout_marginLeft="20dip"
+        android:layout_marginLeft="20dp"
         style="@style/OnscreenActionIcon"
     />
     <com.android.camera.ActionMenuButton
         android:id="@+id/cancel"
         android:drawableTop="@drawable/ic_menu_cancel"
         android:text="@string/camera_cancel"
-        android:layout_marginLeft="20dip"
+        android:layout_marginLeft="20dp"
         style="@style/OnscreenActionIcon"
     />
 </LinearLayout>
