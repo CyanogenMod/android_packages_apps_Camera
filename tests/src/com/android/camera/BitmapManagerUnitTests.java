@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2009 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.android.camera;
 
@@ -19,21 +34,13 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
 
     private class DecodeThread extends Thread {
         Bitmap bitmap;
-        boolean needsLock;
 
-        public DecodeThread(boolean needsLock) {
-            this.needsLock = needsLock;
+        public DecodeThread() {
         }
 
         @Override
         public void run() {
-            if (needsLock) {
-                BitmapManager.instance().acquireResourceLock();
-            }
             bitmap = mImage.thumbBitmap();
-            if (needsLock) {
-                BitmapManager.instance().releaseResourceLock();
-            }
         }
 
         public Bitmap getBitmap() {
@@ -59,71 +66,8 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
         assertSame(manager, mBitmapManager);
     }
 
-    public void testCheckResourceLockWithoutAcquiringLock() {
-        DecodeThread t = new DecodeThread(false);
-        assertTrue(mBitmapManager.canThreadDecoding(t));
-        mBitmapManager.setCheckResourceLock(true);
-        try {
-            assertFalse(mBitmapManager.canThreadDecoding(t));
-            t.start();
-            t.join();
-        } catch (InterruptedException ex) {
-        } finally {
-            mBitmapManager.setCheckResourceLock(false);
-            assertNull(t.getBitmap());
-        }
-    }
-
-    public void testCheckResourceLockWithAcquiringLock() {
-        DecodeThread t1 = new DecodeThread(true);
-        DecodeThread t2 = new DecodeThread(true);
-        assertTrue(mBitmapManager.canThreadDecoding(t1));
-        assertTrue(mBitmapManager.canThreadDecoding(t2));
-
-        // If checking resource lock is necessary, then we can't
-        // proceed without acquiring the lock first.
-        mBitmapManager.setCheckResourceLock(true);
-        assertFalse(mBitmapManager.canThreadDecoding(t1));
-        assertFalse(mBitmapManager.canThreadDecoding(t2));
-
-        try {
-            // Start two threads at the same time.
-            t1.start();
-            t2.start();
-
-            Thread.sleep(100);
-            boolean b1 = mBitmapManager.canThreadDecoding(t1);
-            boolean b2 = mBitmapManager.canThreadDecoding(t2);
-
-            // Only one of them can get the lock.
-            assertTrue(b1 ^ b2);
-
-            t1.join();
-            t2.join();
-        } catch (InterruptedException ex) {
-        } finally {
-            mBitmapManager.setCheckResourceLock(false);
-
-            // Both threads can decode the bitmap eventually.
-            assertNotNull(t1.getBitmap());
-            assertNotNull(t2.getBitmap());
-        }
-    }
-
-    public void testDecoding() {
-        assertNotNull(mImage);
-        mBitmapManager.setCheckResourceLock(false);
-        Bitmap bitmap = mImage.thumbBitmap();
-        assertNotNull(bitmap);
-
-        // Disable all decoding.
-        mBitmapManager.cancelAllDecoding();
-        bitmap = mImage.thumbBitmap();
-        assertNull(bitmap);
-    }
-
     public void testCanThreadDecoding() {
-        Thread t = new DecodeThread(false);
+        Thread t = new DecodeThread();
 
         // By default all threads can decode.
         assertTrue(mBitmapManager.canThreadDecoding(t));
@@ -137,10 +81,45 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
         assertTrue(mBitmapManager.canThreadDecoding(t));
     }
 
+    public void testDefaultAllowDecoding() {
+        DecodeThread t = new DecodeThread();
+        try {
+            t.start();
+            t.join();
+        } catch (InterruptedException ex) {
+        } finally {
+            assertNotNull(t.getBitmap());
+        }
+    }
+
+    public void testCancelDecoding() {
+        DecodeThread t = new DecodeThread();
+        mBitmapManager.cancelThreadDecoding(t);
+        try {
+            t.start();
+            t.join();
+        } catch (InterruptedException ex) {
+        } finally {
+            assertNull(t.getBitmap());
+        }
+    }
+
+    public void testAllowDecoding() {
+        DecodeThread t = new DecodeThread();
+        mBitmapManager.cancelThreadDecoding(t);
+        mBitmapManager.allowThreadDecoding(t);
+        try {
+            t.start();
+            t.join();
+        } catch (InterruptedException ex) {
+        } finally {
+            assertNotNull(t.getBitmap());
+        }
+    }
+
     public void testThreadDecoding() {
-        DecodeThread t1 = new DecodeThread(false);
-        DecodeThread t2 = new DecodeThread(false);
-        mBitmapManager.setCheckResourceLock(false);
+        DecodeThread t1 = new DecodeThread();
+        DecodeThread t2 = new DecodeThread();
         mBitmapManager.allowThreadDecoding(t1);
         mBitmapManager.cancelThreadDecoding(t2);
         t1.start();
@@ -156,8 +135,32 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
             assertFalse(mBitmapManager.canThreadDecoding(t2));
             assertNull(t2.getBitmap());
         }
+    }
 
-        mBitmapManager.cancelAllDecoding();
+    public void testThreadSetDecoding() {
+        DecodeThread t1 = new DecodeThread();
+        DecodeThread t2 = new DecodeThread();
+        DecodeThread t3 = new DecodeThread();
+        BitmapManager.ThreadSet set = new BitmapManager.ThreadSet();
+        set.add(t1);
+        set.add(t2);
+        mBitmapManager.cancelThreadDecoding(set);
+        t1.start();
+        t2.start();
+        t3.start();
+        try {
+            t1.join();
+            t2.join();
+            t3.join();
+        } catch (InterruptedException ex) {
+        } finally {
+            assertFalse(mBitmapManager.canThreadDecoding(t1));
+            assertNull(t1.getBitmap());
+            assertFalse(mBitmapManager.canThreadDecoding(t2));
+            assertNull(t2.getBitmap());
+            assertTrue(mBitmapManager.canThreadDecoding(t3));
+            assertNotNull(t3.getBitmap());
+        }
     }
 
     @Override

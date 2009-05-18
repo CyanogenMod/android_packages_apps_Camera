@@ -77,7 +77,7 @@ public class CropImage extends Activity {
 
     private Bitmap mBitmap;
     private Bitmap mCroppedImage;
-    private BitmapManager.ThreadGroup mDecodingThreads = new BitmapManager.ThreadGroup();
+    private BitmapManager.ThreadSet mDecodingThreads = new BitmapManager.ThreadSet();
     HighlightView mCrop;
 
     private IImage mImage;

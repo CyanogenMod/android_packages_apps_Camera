@@ -397,7 +397,7 @@ public class Util {
         });
     }
 
-    public synchronized static OnClickListener getNullOnClickListener() {
+    public static synchronized OnClickListener getNullOnClickListener() {
         if (sNullOnClickListener == null) {
             sNullOnClickListener = new OnClickListener() {
                 public void onClick(View v) {
