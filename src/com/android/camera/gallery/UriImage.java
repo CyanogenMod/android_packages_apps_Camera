@@ -178,7 +178,7 @@ class UriImage implements IImage {
                     input.getFileDescriptor(), options);
             return options;
         } finally {
-            Util.closeSiliently(input);
+            Util.closeSilently(input);
         }
     }
 

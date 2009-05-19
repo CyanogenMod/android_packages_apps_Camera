@@ -282,7 +282,7 @@ public class Util {
         return -1;
     }
 
-    public static void closeSiliently(Closeable c) {
+    public static void closeSilently(Closeable c) {
         if (c == null) return;
         try {
             c.close();
@@ -291,7 +291,7 @@ public class Util {
         }
     }
 
-    public static void closeSiliently(ParcelFileDescriptor c) {
+    public static void closeSilently(ParcelFileDescriptor c) {
         if (c == null) return;
         try {
             c.close();
@@ -314,7 +314,7 @@ public class Util {
         } catch (IOException ex) {
             return null;
         } finally {
-            closeSiliently(input);
+            closeSilently(input);
         }
     }
 
@@ -348,7 +348,7 @@ public class Util {
             Log.e(TAG, "Got oom exception ", ex);
             return null;
         } finally {
-            closeSiliently(pfd);
+            closeSilently(pfd);
         }
         return b;
     }

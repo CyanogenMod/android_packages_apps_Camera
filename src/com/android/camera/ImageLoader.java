@@ -26,6 +26,8 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.android.camera.Util.Assert;
+
 /**
  * A dedicated decoding thread used by ImageGallery.
  */
@@ -229,8 +231,8 @@ class ThumbnailChecker {
     // Both imageList and cb must be non-null.
     synchronized void startCheckingThumbnails(IImageList imageList,
             ImageLoader.ThumbCheckCallback cb) {
-        assert imageList != null;
-        assert cb != null;
+        Assert(imageList != null);
+        Assert(cb != null);
         mImageListToCheck = imageList;
         mTotalToCheck = imageList.getCount();
         mNextToCheck = 0;

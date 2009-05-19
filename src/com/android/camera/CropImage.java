@@ -29,6 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -47,6 +48,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -59,37 +61,34 @@ public class CropImage extends Activity {
     private static final String TAG = "CropImage";
     private ProgressDialog mFaceDetectionDialog = null;
     private ProgressDialog mSavingProgressDialog = null;
-    private IImageList mAllImages;
-    private Bitmap.CompressFormat mSaveFormat =
+
+    // These are various options can be specified in the intent.
+    private Bitmap.CompressFormat mOutputFormat =
             Bitmap.CompressFormat.JPEG; // only used with mSaveUri
     private Uri mSaveUri = null;
     private int mAspectX, mAspectY;
-    private int mOutputX, mOutputY;
     private boolean mDoFaceDetection = true;
     private boolean mCircleCrop = false;
-    boolean mWaitingToPick;
+
+    // These options specifiy the output image size and whether we should
+    // scale the output to fit it (or just crop it).
+    private int mOutputX, mOutputY;
     private boolean mScale;
-    boolean mSaving;
     private boolean mScaleUp = true;
 
+    boolean mWaitingToPick; // Whether we are wait the user to pick a face.
+    boolean mSaving;  // Whether the "save" button is already clicked.
     private CropImageView mImageView;
     private ContentResolver mContentResolver;
 
     private Bitmap mBitmap;
     private Bitmap mCroppedImage;
-    private BitmapManager.ThreadSet mDecodingThreads = new BitmapManager.ThreadSet();
+    private BitmapManager.ThreadSet mDecodingThreads =
+            new BitmapManager.ThreadSet();
     HighlightView mCrop;
 
+    private IImageList mAllImages;
     private IImage mImage;
-
-    private static void fillCanvas(int width, int height, Canvas c) {
-        Paint paint = new Paint();
-        paint.setColor(0x00000000);  // pure alpha
-        paint.setStyle(android.graphics.Paint.Style.FILL);
-        paint.setAntiAlias(true);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        c.drawRect(0F, 0F, width, height, paint);
-    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -103,66 +102,62 @@ public class CropImage extends Activity {
 
         MenuHelper.showStorageToast(this);
 
-        try {
-            Intent intent = getIntent();
-            Bundle extras = intent.getExtras();
-            if (extras != null) {
-                if (extras.getString("circleCrop") != null) {
-                    mCircleCrop = true;
-                    mAspectX = 1;
-                    mAspectY = 1;
-                }
-                mSaveUri = (Uri) extras.getParcelable(MediaStore.EXTRA_OUTPUT);
-                if (mSaveUri != null) {
-                    String compressFormatString
-                            = extras.getString("outputFormat");
-                    if (compressFormatString != null) {
-                        mSaveFormat = Bitmap.CompressFormat.valueOf(
-                                compressFormatString);
-                    }
-                }
-                mBitmap = (Bitmap) extras.getParcelable("data");
-                mAspectX = extras.getInt("aspectX");
-                mAspectY = extras.getInt("aspectY");
-                mOutputX = extras.getInt("outputX");
-                mOutputY = extras.getInt("outputY");
-                mScale = extras.getBoolean("scale", true);
-                mScaleUp = extras.getBoolean("scaleUpIfNeeded", true);
-                mDoFaceDetection = extras.containsKey("noFaceDetection")
-                        ? !extras.getBoolean("noFaceDetection")
-                        : true;
-            }
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
 
-            if (mBitmap == null) {
-                Uri target = intent.getData();
-                mAllImages = ImageManager.makeImageList(target,
-                        mContentResolver, ImageManager.SORT_ASCENDING);
-                mImage = mAllImages.getImageForUri(target);
-                if (mImage != null) {
-                    // don't read in really large bitmaps.  max out at 1000.
-                    // TODO when saving the resulting bitmap use the
-                    // decode/crop/encode api so we don't lose any resolution.
-                    mBitmap = mImage.thumbBitmap();
+        if (extras != null) {
+            if (extras.getString("circleCrop") != null) {
+                mCircleCrop = true;
+                mAspectX = 1;
+                mAspectY = 1;
+            }
+            mSaveUri = (Uri) extras.getParcelable(MediaStore.EXTRA_OUTPUT);
+            if (mSaveUri != null) {
+                String outputFormatString = extras.getString("outputFormat");
+                if (outputFormatString != null) {
+                    mOutputFormat = Bitmap.CompressFormat.valueOf(
+                            outputFormatString);
                 }
             }
-
-            if (mBitmap == null) {
-                finish();
-                return;
-            }
-
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    startFaceDetection();
-                }
-            }, 100);
-        } catch (RuntimeException e) {
-            Log.e(TAG, "Failed to load bitmap", e);
-            finish();
+            mBitmap = (Bitmap) extras.getParcelable("data");
+            mAspectX = extras.getInt("aspectX");
+            mAspectY = extras.getInt("aspectY");
+            mOutputX = extras.getInt("outputX");
+            mOutputY = extras.getInt("outputY");
+            mScale = extras.getBoolean("scale", true);
+            mScaleUp = extras.getBoolean("scaleUpIfNeeded", true);
+            mDoFaceDetection = extras.containsKey("noFaceDetection")
+                    ? !extras.getBoolean("noFaceDetection")
+                    : true;
         }
 
+        if (mBitmap == null) {
+            Uri target = intent.getData();
+            mAllImages = ImageManager.makeImageList(target,
+                    mContentResolver, ImageManager.SORT_ASCENDING);
+            mImage = mAllImages.getImageForUri(target);
+            if (mImage != null) {
+                // Don't read in really large bitmaps. Use the (big) thumbnail
+                // instead.
+                // TODO when saving the resulting bitmap use the
+                // decode/crop/encode api so we don't lose any resolution.
+                mBitmap = mImage.thumbBitmap();
+            }
+        }
+
+        if (mBitmap == null) {
+            finish();
+            return;
+        }
+
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                startFaceDetection();
+            }
+        }, 100);
+
         findViewById(R.id.discard).setOnClickListener(
-                new android.view.View.OnClickListener() {
+                new View.OnClickListener() {
                     public void onClick(View v) {
                         setResult(RESULT_CANCELED);
                         finish();
@@ -170,7 +165,7 @@ public class CropImage extends Activity {
                 });
 
         findViewById(R.id.save).setOnClickListener(
-                new android.view.View.OnClickListener() {
+                new View.OnClickListener() {
                     public void onClick(View v) {
                         onSaveClicked();
                     }
@@ -225,17 +220,18 @@ public class CropImage extends Activity {
 
             Rect r = mCrop.getCropRect();
 
-            int width  = r.width();
+            int width = r.width();
             int height = r.height();
 
-            // if we're circle cropping we'll want alpha which is the third
-            // param here
+            // If we are circle cropping, we want alpha channel, which is the
+            // third param here.
             mCroppedImage = Bitmap.createBitmap(width, height,
                     mCircleCrop
                     ? Bitmap.Config.ARGB_8888
                     : Bitmap.Config.RGB_565);
-            Canvas c1 = new Canvas(mCroppedImage);
-            c1.drawBitmap(mBitmap, r, new Rect(0, 0, width, height), null);
+            Canvas canvas = new Canvas(mCroppedImage);
+            Rect dstRect = new Rect(0, 0, width, height);
+            canvas.drawBitmap(mBitmap, r, dstRect, null);
 
             if (mCircleCrop) {
                 // OK, so what's all this about?
@@ -243,13 +239,12 @@ public class CropImage extends Activity {
                 // something that's basically a circle.  So we fill in the
                 // area around the circle with alpha.  Note the all important
                 // PortDuff.Mode.CLEAR.
-                Canvas c = new Canvas (mCroppedImage);
-                android.graphics.Path p = new android.graphics.Path();
+                Canvas c = new Canvas(mCroppedImage);
+                Path p = new Path();
                 p.addCircle(width / 2F, height / 2F, width / 2F,
-                        android.graphics.Path.Direction.CW);
+                        Path.Direction.CW);
                 c.clipPath(p, Region.Op.DIFFERENCE);
-
-                fillCanvas(width, height, c);
+                c.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
             }
         }
 
@@ -270,14 +265,22 @@ public class CropImage extends Activity {
                 // required dimension
                 Bitmap b = Bitmap.createBitmap(mOutputX, mOutputY,
                         Bitmap.Config.RGB_565);
-                Canvas c1 = new Canvas(b);
+                Canvas canvas = new Canvas(b);
+
+                Rect srcRect = mCrop.getCropRect();
+                Rect dstRect = new Rect(0, 0, mOutputX, mOutputY);
+
+                int dx = (srcRect.width() - dstRect.width()) / 2;
+                int dy = (srcRect.height() - dstRect.height()) / 2;
+
+                /* If the srcRect is too big, use the center part of it. */
+                srcRect.inset(Math.max(0, dx), Math.max(0, dy));
+
+                /* If the dstRect is too big, use the center part of it. */
+                dstRect.inset(Math.max(0, -dx), Math.max(0, -dy));
 
                 /* Draw the cropped bitmap in the center */
-                Rect r = mCrop.getCropRect();
-                int left = (mOutputX / 2) - (r.width() / 2);
-                int top = (mOutputY / 2) - (r.width() / 2);
-                c1.drawBitmap(mBitmap, r, new Rect(left, top, left
-                        + r.width(), top + r.height()), null);
+                canvas.drawBitmap(mBitmap, srcRect, dstRect, null);
 
                 /* Set the cropped bitmap as the new bitmap */
                 mCroppedImage = b;
@@ -294,110 +297,89 @@ public class CropImage extends Activity {
                     (new Intent()).setAction("inline-data").putExtras(extras));
             finish();
         } else {
-            if (!isFinishing()) {
-                mSavingProgressDialog = ProgressDialog.show(CropImage.this,
-                        null,
-                        getResources().getString(R.string.savingImage),
-                        true, true);
-            }
+            mSavingProgressDialog = ProgressDialog.show(CropImage.this,
+                    null, getResources().getString(R.string.savingImage),
+                    true, true);
+
             Runnable r = new Runnable() {
                 public void run() {
-                    if (mSaveUri != null) {
-                        OutputStream outputStream = null;
-                        try {
-                            String scheme = mSaveUri.getScheme();
-                            if (scheme.equals("file")) {
-                                outputStream = new FileOutputStream(
-                                        mSaveUri.toString().substring(
-                                        scheme.length() + ":/".length()));
-                            } else {
-                                outputStream = mContentResolver
-                                        .openOutputStream(mSaveUri);
-                            }
-                            if (outputStream != null) {
-                                mCroppedImage.compress(mSaveFormat, 75,
-                                        outputStream);
-                            }
-                        } catch (IOException ex) {
-
-                        } finally {
-                            if (outputStream != null)  {
-                                try {
-                                    outputStream.close();
-                                } catch (IOException ex) {
-                                    // ignore.
-                                }
-                            }
-                        }
-                        Bundle extras = new Bundle();
-                        setResult(RESULT_OK,
-                                new Intent(mSaveUri.toString())
-                                .putExtras(extras));
-                    } else {
-                        Bundle extras = new Bundle();
-                        extras.putString("rect",
-                                mCrop.getCropRect().toString());
-
-                        java.io.File oldPath
-                                = new java.io.File(mImage.getDataPath());
-                        java.io.File directory
-                                = new java.io.File(oldPath.getParent());
-
-                        int x = 0;
-                        String fileName = oldPath.getName();
-                        fileName = fileName.substring(0,
-                                fileName.lastIndexOf("."));
-
-                        while (true) {
-                            x += 1;
-                            String candidate = directory.toString()
-                                    + "/" + fileName + "-" + x + ".jpg";
-                            boolean exists =
-                                    (new java.io.File(candidate)).exists();
-                            if (!exists) {
-                                break;
-                            }
-                        }
-
-                        try {
-                            Uri newUri = ImageManager.addImage(
-                                    getContentResolver(),
-                                    mImage.getTitle(),
-                                    mImage.getDateTaken(),
-                                    null,    // TODO this null is
-                                             // going to cause us to
-                                             // lose the location (gps)
-                                    0,       // TODO this is going to
-                                             // cause the orientation
-                                             // to reset
-                                    directory.toString(),
-                                    fileName + "-" + x + ".jpg");
-
-                            Cancelable<Void> cancelable =
-                                    ImageManager.storeImage(
-                                    newUri,
-                                    getContentResolver(),
-                                    0, // TODO fix this orientation
-                                    mCroppedImage,
-                                    null);
-
-                            cancelable.get();
-                            setResult(RESULT_OK,
-                                    (new Intent())
-                                    .setAction(newUri.toString())
-                                    .putExtras(extras));
-                        } catch (Exception ex) {
-                            // basically ignore this or put up
-                            // some ui saying we failed
-                        }
-                    }
-                    finish();
+                    saveOutput();
                 }
             };
-            Thread t = new Thread(r);
-            t.start();
-        }
 
+            new Thread(r).start();
+        }
+    }
+
+    private void saveOutput() {
+        if (mSaveUri != null) {
+            OutputStream outputStream = null;
+            try {
+                outputStream = mContentResolver.openOutputStream(mSaveUri);
+                if (outputStream != null) {
+                    mCroppedImage.compress(mOutputFormat, 75, outputStream);
+                }
+            } catch (IOException ex) {
+                // ignore.
+            } finally {
+                Util.closeSilently(outputStream);
+            }
+            Bundle extras = new Bundle();
+            setResult(RESULT_OK, new Intent(mSaveUri.toString())
+                    .putExtras(extras));
+        } else {
+            Bundle extras = new Bundle();
+            extras.putString("rect", mCrop.getCropRect().toString());
+
+            File oldPath = new File(mImage.getDataPath());
+            File directory = new File(oldPath.getParent());
+
+            int x = 0;
+            String fileName = oldPath.getName();
+            fileName = fileName.substring(0, fileName.lastIndexOf("."));
+
+            // Try file-1.jpg, file-2.jpg, ... until we find a filename which
+            // does not exist yet.
+            while (true) {
+                x += 1;
+                String candidate = directory.toString()
+                        + "/" + fileName + "-" + x + ".jpg";
+                boolean exists = (new File(candidate)).exists();
+                if (!exists) {
+                    break;
+                }
+            }
+
+            try {
+                Uri newUri = ImageManager.addImage(
+                        mContentResolver,
+                        mImage.getTitle(),
+                        mImage.getDateTaken(),
+                        null,    // TODO this null is going to cause us to lose
+                                 // the location (gps).
+                        0,       // TODO this is going to cause the orientation
+                                 // to reset.
+                        directory.toString(),
+                        fileName + "-" + x + ".jpg");
+
+                Cancelable<Void> cancelable =
+                        ImageManager.storeImage(
+                        newUri,
+                        mContentResolver,
+                        0, // TODO fix this orientation
+                        mCroppedImage,
+                        null);
+
+                cancelable.get();
+                setResult(RESULT_OK, new Intent()
+                        .setAction(newUri.toString())
+                        .putExtras(extras));
+            } catch (Exception ex) {
+                // basically ignore this or put up
+                // some ui saying we failed
+            }
+        }
+        finish();
     }
 
     @Override
@@ -551,11 +533,14 @@ public class CropImage extends Activity {
         closeProgressDialog();
         super.onStop();
         if (mAllImages != null) {
+            // TODO: This doesn't seem quite right: can we use mImage after
+            // mAllImages is deactivated?
             mAllImages.deactivate();
+            mAllImages = null;
         }
     }
 
-    private synchronized void closeProgressDialog() {
+    private void closeProgressDialog() {
         if (mFaceDetectionDialog != null) {
             mFaceDetectionDialog.dismiss();
             mFaceDetectionDialog = null;
