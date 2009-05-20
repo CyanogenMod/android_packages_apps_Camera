@@ -33,6 +33,8 @@ public class CameraSettings extends PreferenceActivity implements
         OnSharedPreferenceChangeListener {
     public static final String KEY_VIDEO_QUALITY =
             "pref_camera_videoquality_key";
+    public static final String KEY_VIDEO_DURATION =
+            "pref_camera_video_duration_key";
     public static final String KEY_WHITE_BALANCE =
             "pref_camera_whitebalance_key";
     public static final String KEY_EFFECT = "pref_camera_effect_key";
@@ -42,8 +44,10 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final String KEY_ISO = "pref_camera_iso_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
+    public static final int DEFAULT_VIDEO_DURATION_VALUE = 1;  // 1 minute
 
     private ListPreference mVideoQuality;
+    private ListPreference mVideoDuration;
     private ListPreference mWhiteBalance;
     private ListPreference mEffect;
     private ListPreference mBrightness;
@@ -66,6 +70,7 @@ public class CameraSettings extends PreferenceActivity implements
         super.onResume();
 
         updateVideoQualitySummary();
+        updateVideoDurationSummary();
         updateWhiteBalanceSummary();
         updateEffectSummary();
         updateBrightnessSummary();
@@ -77,6 +82,7 @@ public class CameraSettings extends PreferenceActivity implements
 
     private void initUI() {
         mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
+        mVideoDuration = (ListPreference) findPreference(KEY_VIDEO_DURATION);
         mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
         mEffect = (ListPreference) findPreference(KEY_EFFECT);
         mBrightness = (ListPreference) findPreference(KEY_BRIGHTNESS);
@@ -179,6 +185,10 @@ public class CameraSettings extends PreferenceActivity implements
         mVideoQuality.setSummary(mVideoQuality.getEntry());
     }
 
+    private void updateVideoDurationSummary() {
+        mVideoDuration.setSummary(mVideoDuration.getEntry());
+    }
+
     private void updateWhiteBalanceSummary() {
         mWhiteBalance.setSummary(mWhiteBalance.getEntry());
     }
@@ -211,6 +221,8 @@ public class CameraSettings extends PreferenceActivity implements
             String key) {
         if (key.equals(KEY_VIDEO_QUALITY)) {
             updateVideoQualitySummary();
+        } else if (key.equals(KEY_VIDEO_DURATION)) {
+            updateVideoDurationSummary();
         } else if (key.equals(KEY_WHITE_BALANCE)) {
             updateWhiteBalanceSummary();
         } else if (key.equals(KEY_EFFECT)) {

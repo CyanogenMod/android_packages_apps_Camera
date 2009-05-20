@@ -104,7 +104,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Afficher les images"</string>
     <string name="pref_camera_recordlocation_title">"Enregistrer le lieu"</string>
     <string name="pref_camera_recordlocation_summary">"Enregistrer la position géographique dans les données d\'image"</string>
-    <string name="pref_camera_videoquality_category">"Paramètres vidéo"</string>
     <string name="pref_camera_videoquality_title">"Qualité vidéo"</string>
     <string name="pref_camera_videoquality_entry_0">"Basse (pour les MMS)"</string>
     <string name="pref_camera_videoquality_entry_1">"Haute (pour la carte SD)"</string>
