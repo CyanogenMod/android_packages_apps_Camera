@@ -108,7 +108,7 @@ public abstract class BaseImage implements IImage {
             } catch (IOException ex) {
                 return false;
             } finally {
-                Util.closeSiliently(mOutputStream);
+                Util.closeSilently(mOutputStream);
             }
         }
     }
@@ -324,7 +324,7 @@ public abstract class BaseImage implements IImage {
             mWidth = 0;
             mHeight = 0;
         } finally {
-            Util.closeSiliently(input);
+            Util.closeSilently(input);
         }
     }
 

@@ -51,7 +51,7 @@ class GridViewSpecial extends View {
          * Invoked when the <code>GridViewSpecial</code> scrolls.
          *
          * @param scrollPosition the position of the scroller in the range
-         *         [0, 1], when 0 means on the top and 1 means on the button
+         *         [0, 1], when 0 means on the top and 1 means on the buttom
          */
         public void onScroll(float scrollPosition);
     }
@@ -362,7 +362,8 @@ class GridViewSpecial extends View {
 
     /**
      *
-     * @param newSel -2 means use old selection, -1 means remove selection
+     * @param newSel ORIGINAL_SELECT (-2) means use old selection,
+     *               SELECT_NONE (-1) means remove selection.
      * @param newPressed
      */
     public void select(int newSel, boolean newPressed) {
@@ -374,9 +375,11 @@ class GridViewSpecial extends View {
             return;
         }
 
+        // This happens when the last picture is deleted.
         if (newSel > mCount - 1) {
-            newSel = mCount - 1;  // This happens when the last picture is deleted.
+            newSel = mCount - 1;
         }
+
         mShowSelection = (newSel != SELECT_NONE);
         mCurrentSelection = newSel;
         mCurrentSelectionPressed = newPressed;
@@ -708,7 +711,7 @@ class ImageBlockManager {
     }
 
     int mPendingRequest;  // Number of pending requests (sent to ImageLoader).
-    // We want to keep enough requests in ImageLoader's queue so, but not too
+    // We want to keep enough requests in ImageLoader's queue, but not too
     // many.
     static final int REQUESTS_LOW = 3;
     static final int REQUESTS_HIGH = 6;
