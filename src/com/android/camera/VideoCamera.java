@@ -109,8 +109,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
 
-    private static final int MAX_RECORDING_DURATION_MS = 600 * 60 * 1000;
-
     private int mStorageStatus = STORAGE_STATUS_OK;
 
     private MediaRecorder mMediaRecorder;
@@ -130,6 +128,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     // The video frame size we will record (like 352x288).
     private int mVideoWidth, mVideoHeight;
+
+    // The video duration limit.
+    private int mMaxVideoDurationInMs;
 
     boolean mPausing = false;
     boolean mPreviewing = false;  // True if preview is started.
@@ -416,6 +417,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         boolean videoQualityHigh = getBooleanPreference(
                 CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+
+        // 1 minute = 60000ms
+        mMaxVideoDurationInMs = 60000 * getIntPreference(
+                CameraSettings.KEY_VIDEO_DURATION,
+                CameraSettings.DEFAULT_VIDEO_DURATION_VALUE);
 
         Intent intent = getIntent();
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
@@ -794,7 +800,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mMediaRecorder.setMaxDuration(MAX_RECORDING_DURATION_MS);
+        mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
 
         if (mStorageStatus != STORAGE_STATUS_OK) {
             mMediaRecorder.setOutputFile("/dev/null");
@@ -1274,10 +1280,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // Starting a minute before reaching the max duration
         // limit, we'll countdown the remaining time instead.
         boolean countdownRemainingTime =
-            (delta >= MAX_RECORDING_DURATION_MS - 60000);
+            (delta >= mMaxVideoDurationInMs - 60000);
 
         if (countdownRemainingTime) {
-            delta = Math.max(0, MAX_RECORDING_DURATION_MS - delta);
+            delta = Math.max(0, mMaxVideoDurationInMs - delta);
         }
 
         long seconds = (delta + 500) / 1000;  // round to nearest
