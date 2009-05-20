@@ -471,7 +471,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     // Precondition: mSurfaceHolder != null
-    private void startPreview() {
+    // Returns true if starting preview succeeds.
+    private boolean startPreview() {
         Log.v(TAG, "startPreview");
         if (mPreviewing) {
             // We should just return here, but we stop and start again to avoid
@@ -480,7 +481,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mCameraDevice.stopPreview();
             mCameraDevice.startPreview();
             mCameraDevice.unlock();
-            return;
+            return true;
         }
 
         if (mCameraDevice == null) {
@@ -496,7 +497,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mCameraDevice.release();
             mCameraDevice = null;
             Log.e(TAG, "failed to set preview display");
-            return;
+            return false;
         }
 
         try {
@@ -509,9 +510,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mCameraDevice.release();
             mCameraDevice = null;
             Log.e(TAG, "failed to start preview");
-            return;
+            return false;
         }
         mCameraDevice.unlock();
+        return true;
     }
 
     private void closeCamera() {
@@ -783,7 +785,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             Log.v(TAG, "SurfaceHolder is null");
             return false;
         }
-        startPreview();
+
+        if (!startPreview()) return false;
+
         mMediaRecorder = new MediaRecorder();
 
         mMediaRecorder.setCamera(mCameraDevice);
