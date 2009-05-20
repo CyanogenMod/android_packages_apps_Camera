@@ -1079,8 +1079,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     @Override
     protected void onPause() {
-        keep();
-
         mPausing = true;
         stopPreview();
         // Close the camera now because other activities may need to use it.
@@ -1502,12 +1500,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    void keep() {
-        if (mCaptureObject != null) {
-            mCaptureObject.dismissFreezeFrame();
-        }
-    }
-
     private void startReceivingLocationUpdates() {
         if (mLocationManager != null) {
             try {
@@ -1567,7 +1559,6 @@ public class Camera extends Activity implements View.OnClickListener,
             // save the image if we presented the "advanced" menu
             // which happens if "menu" is pressed while in
             // SNAPSHOT_IN_PROGRESS  or SNAPSHOT_COMPLETED modes
-            keep();
             mHandler.sendEmptyMessage(RESTART_PREVIEW);
         }
     }
