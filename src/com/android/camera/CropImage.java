@@ -28,11 +28,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
@@ -49,7 +47,6 @@ import android.view.Window;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -83,7 +80,7 @@ public class CropImage extends Activity {
 
     private Bitmap mBitmap;
     private Bitmap mCroppedImage;
-    private BitmapManager.ThreadSet mDecodingThreads =
+    private final BitmapManager.ThreadSet mDecodingThreads =
             new BitmapManager.ThreadSet();
     HighlightView mCrop;
 
@@ -320,7 +317,8 @@ public class CropImage extends Activity {
                     mCroppedImage.compress(mOutputFormat, 75, outputStream);
                 }
             } catch (IOException ex) {
-                // ignore.
+                // TODO: report error to caller
+                Log.e(TAG, "Cannot open file: " + mSaveUri, ex);
             } finally {
                 Util.closeSilently(outputStream);
             }
