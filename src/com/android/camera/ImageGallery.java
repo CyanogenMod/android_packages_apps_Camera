@@ -88,9 +88,10 @@ public class ImageGallery extends Activity implements
     private final Handler mHandler = new Handler();
     private boolean mLayoutComplete;
     private boolean mPausing = true;
-    ImageLoader mLoader;
+    private ImageLoader mLoader;
+    private GridViewSpecial mGvs;
 
-    GridViewSpecial mGvs;
+    private Uri mCropResultUri;
 
     private final PriorityTaskQueue mPriorityQueue = new PriorityTaskQueue(1);
 
@@ -115,6 +116,8 @@ public class ImageGallery extends Activity implements
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
                 R.layout.custom_gallery_title);
 
+        mNoImagesView = findViewById(R.id.no_images);
+
         mGvs = (GridViewSpecial) findViewById(R.id.grid);
         mGvs.setListener(this);
 
@@ -132,6 +135,8 @@ public class ImageGallery extends Activity implements
             mGvs.setOnCreateContextMenuListener(
                     new CreateContextMenuListener());
         }
+
+        setupInclusion();
 
         mLoader = new ImageLoader(mHandler);
     }
@@ -312,13 +317,9 @@ public class ImageGallery extends Activity implements
 
                     // The CropImage activity passes back the Uri of the cropped
                     // image as the Action rather than the Data.
-                    Uri dataUri = Uri.parse(data.getAction());
-                    rebake(false, false);
-                    IImage image = mAllImages.getImageForUri(dataUri);
-                    if (image != null) {
-                        int rowId = image.getRow();
-                        mGvs.select(rowId, false);
-                    }
+                    // We store this URI so we can move the selection box to it
+                    // later.
+                    mCropResultUri = Uri.parse(data.getAction());
                 }
                 break;
             }
@@ -349,6 +350,7 @@ public class ImageGallery extends Activity implements
         // Now that we've paused the threads that are using the cursor it is
         // safe to deactivate it.
         mAllImages.deactivate();
+        mAllImages = null;
     }
 
     private void rebake(boolean unmounted, boolean scanning) {
@@ -369,15 +371,17 @@ public class ImageGallery extends Activity implements
                     getResources().getString(R.string.wait),
                     true,
                     true);
-            mAllImages = ImageManager.emptyImageList();
-        } else {
-            mAllImages = allImages(!unmounted);
-            mGvs.setImageList(mAllImages);
-            mGvs.setDrawAdapter(this);
-            mGvs.setLoader(mLoader);
-            mGvs.start();
-            checkThumbnails();
         }
+
+        mAllImages = allImages(!unmounted && !scanning);
+        mGvs.setImageList(mAllImages);
+        mGvs.setDrawAdapter(this);
+        mGvs.setLoader(mLoader);
+        mGvs.start();
+        checkThumbnails();
+        mNoImagesView.setVisibility(mAllImages.getCount() > 0
+                ? View.GONE
+                : View.VISIBLE);
     }
 
     @Override
@@ -455,11 +459,7 @@ public class ImageGallery extends Activity implements
 
     private void checkThumbnails() {
        ImageLoader.ThumbCheckCallback cb = new MyThumbCheckCallback();
-       IImageList imageList = allImages(true);
-       mLoader.startCheckingThumbnails(imageList, cb);
-       mNoImagesView.setVisibility(imageList.getCount() > 0
-                ? View.GONE
-                : View.VISIBLE);
+       mLoader.startCheckingThumbnails(mAllImages, cb);
     }
 
     @Override
@@ -541,73 +541,73 @@ public class ImageGallery extends Activity implements
                 || type.equals("video/*");
     }
 
-    private IImageList allImages(boolean assumeMounted) {
-        if (mAllImages == null) {
-            mNoImagesView = findViewById(R.id.no_images);
+    // According to the intent, setup what we include (image/video) in the
+    // gallery and the title of the gallery.
+    private void setupInclusion() {
+        mInclusion = ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS;
 
-            mInclusion = ImageManager.INCLUDE_IMAGES
-                    | ImageManager.INCLUDE_VIDEOS;
-
-            Intent intent = getIntent();
-            if (intent != null) {
-                String type = intent.resolveType(this);
-                TextView leftText = (TextView) findViewById(R.id.left_text);
-                if (type != null) {
-                    if (isImageType(type)) {
-                        mInclusion = ImageManager.INCLUDE_IMAGES;
-                        if (isPickIntent()) {
-                            leftText.setText(
-                                    R.string.pick_photos_gallery_title);
-                        } else {
-                            leftText.setText(R.string.photos_gallery_title);
-                        }
-                    }
-                    if (isVideoType(type)) {
-                        mInclusion = ImageManager.INCLUDE_VIDEOS;
-                        if (isPickIntent()) {
-                            leftText.setText(
-                                    R.string.pick_videos_gallery_title);
-                        } else {
-                            leftText.setText(R.string.videos_gallery_title);
-                        }
+        Intent intent = getIntent();
+        if (intent != null) {
+            String type = intent.resolveType(this);
+            TextView leftText = (TextView) findViewById(R.id.left_text);
+            if (type != null) {
+                if (isImageType(type)) {
+                    mInclusion = ImageManager.INCLUDE_IMAGES;
+                    if (isPickIntent()) {
+                        leftText.setText(R.string.pick_photos_gallery_title);
+                    } else {
+                        leftText.setText(R.string.photos_gallery_title);
                     }
                 }
-                Bundle extras = intent.getExtras();
-                String title = (extras != null)
-                        ? extras.getString("windowTitle")
-                        : null;
-                if (title != null && title.length() > 0) {
-                    leftText.setText(title);
-                }
-
-                if (extras != null) {
-                    mInclusion = (ImageManager.INCLUDE_IMAGES
-                            | ImageManager.INCLUDE_VIDEOS)
-                            & extras.getInt("mediaTypes", mInclusion);
-                }
-
-                if (extras != null && extras.getBoolean("pick-drm")) {
-                    Log.d(TAG, "pick-drm is true");
-                    mInclusion = ImageManager.INCLUDE_DRM_IMAGES;
+                if (isVideoType(type)) {
+                    mInclusion = ImageManager.INCLUDE_VIDEOS;
+                    if (isPickIntent()) {
+                        leftText.setText(R.string.pick_videos_gallery_title);
+                    } else {
+                        leftText.setText(R.string.videos_gallery_title);
+                    }
                 }
             }
-            Uri uri = getIntent().getData();
-            if (!assumeMounted) {
-                mAllImages = ImageManager.emptyImageList();
-            } else {
-                mAllImages = ImageManager.allImages(
-                        getContentResolver(),
-                        ImageManager.DataLocation.NONE,
-                        mInclusion,
-                        mSortAscending
-                        ? ImageManager.SORT_ASCENDING
-                        : ImageManager.SORT_DESCENDING,
-                        (uri != null)
-                        ? uri.getQueryParameter("bucketId")
-                        : null);
+            Bundle extras = intent.getExtras();
+            String title = (extras != null)
+                    ? extras.getString("windowTitle")
+                    : null;
+            if (title != null && title.length() > 0) {
+                leftText.setText(title);
+            }
+
+            if (extras != null) {
+                mInclusion = (ImageManager.INCLUDE_IMAGES
+                        | ImageManager.INCLUDE_VIDEOS)
+                        & extras.getInt("mediaTypes", mInclusion);
+            }
+
+            if (extras != null && extras.getBoolean("pick-drm")) {
+                Log.d(TAG, "pick-drm is true");
+                mInclusion = ImageManager.INCLUDE_DRM_IMAGES;
             }
         }
-        return mAllImages;
+    }
+
+    // Returns the image list which contains the subset of image/video we want.
+    private IImageList allImages(boolean storageAvailable) {
+        Uri uri = getIntent().getData();
+        IImageList imageList;
+        if (!storageAvailable) {
+            imageList = ImageManager.emptyImageList();
+        } else {
+            imageList = ImageManager.allImages(
+                    getContentResolver(),
+                    ImageManager.DataLocation.EXTERNAL,
+                    mInclusion,
+                    mSortAscending
+                    ? ImageManager.SORT_ASCENDING
+                    : ImageManager.SORT_DESCENDING,
+                    (uri != null)
+                    ? uri.getQueryParameter("bucketId")
+                    : null);
+        }
+        return imageList;
     }
 
     public void onImageSelected(int index) {
@@ -786,6 +786,13 @@ public class ImageGallery extends Activity implements
 
     public void onLayoutComplete(boolean changed) {
         mLayoutComplete = true;
+        if (mCropResultUri != null) {
+            IImage image = mAllImages.getImageForUri(mCropResultUri);
+            mCropResultUri = null;
+            if (image != null) {
+                mSelectedIndex = image.getRow();
+            }
+        }
         mGvs.select(mSelectedIndex, false);
         if (mScrollPosition == INVALID_POSITION) {
             if (mSortAscending) {
