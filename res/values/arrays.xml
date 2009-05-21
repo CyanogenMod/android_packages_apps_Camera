@@ -32,12 +32,14 @@
     <string-array name="pref_camera_video_duration_entries">
         <item>@string/pref_camera_video_duration_entry_1</item>
         <item>@string/pref_camera_video_duration_entry_10</item>
+        <item>@string/pref_camera_video_duration_entry_30</item>
     </string-array>
 
     <!-- Do not localize entryvalues -->
     <string-array name="pref_camera_video_duration_entryvalues">
         <item>1</item>
         <item>10</item>
+        <item>30</item>
     </string-array>
 
     <!-- Camera Preferences White Balance dialog box entries -->
