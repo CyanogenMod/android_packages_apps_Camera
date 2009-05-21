@@ -1097,8 +1097,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // and the target for actions (play, delete, ...) will be correct.
 
         if (!mIsVideoCaptureIntent) {
-            mCurrentVideoUri = mThumbController.getUri();
-            mCurrentVideoFilename = getDataPath(mCurrentVideoUri);
+            if (mThumbController.isUriValid()) {
+                mCurrentVideoUri = mThumbController.getUri();
+                mCurrentVideoFilename = getDataPath(mCurrentVideoUri);
+            } else {
+                return;
+            }
         }
 
         String path = mCurrentVideoFilename;
