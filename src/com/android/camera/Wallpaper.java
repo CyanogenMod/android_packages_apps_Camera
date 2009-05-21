@@ -52,9 +52,9 @@ public class Wallpaper extends Activity {
 
     private ProgressDialog mProgressDialog = null;
     private boolean mDoLaunch = true;
-    private String mTempFilePath;
+    private File mTempFile;
 
-    private Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -114,14 +114,14 @@ public class Wallpaper extends Activity {
         super.onCreate(icicle);
         if (icicle != null) {
             mDoLaunch = icicle.getBoolean(DO_LAUNCH_ICICLE);
-            mTempFilePath = icicle.getString(TEMP_FILE_PATH_ICICLE);
+            mTempFile = new File(icicle.getString(TEMP_FILE_PATH_ICICLE));
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle icicle) {
         icicle.putBoolean(DO_LAUNCH_ICICLE, mDoLaunch);
-        icicle.putString(TEMP_FILE_PATH_ICICLE, mTempFilePath);
+        icicle.putString(TEMP_FILE_PATH_ICICLE, mTempFile.getAbsolutePath());
     }
 
     @Override
@@ -159,10 +159,8 @@ public class Wallpaper extends Activity {
         // The CropImage intent should be able to set the wallpaper directly
         // without writing to a file, which we then need to read here to write
         // it again as the final wallpaper, this is silly
-        File f = getFileStreamPath("temp-wallpaper");
-        (new File(f.getParent())).mkdirs();
-        mTempFilePath = f.toString();
-        f.delete();
+        mTempFile = getFileStreamPath("temp-wallpaper");
+        mTempFile.getParentFile().mkdirs();
 
         int width = getWallpaperDesiredMinimumWidth();
         int height = getWallpaperDesiredMinimumHeight();
@@ -172,10 +170,8 @@ public class Wallpaper extends Activity {
         intent.putExtra("aspectY",         height);
         intent.putExtra("scale",           true);
         intent.putExtra("noFaceDetection", true);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.parse("file:/" + mTempFilePath));
-        intent.putExtra("outputFormat",
-                        Bitmap.CompressFormat.PNG.name());
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mTempFile));
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.name());
         // TODO: we should have an extra called "setWallpaper" to ask CropImage
         // to set the cropped image as a wallpaper directly. This means the
         // SetWallpaperThread should be moved out of this class to CropImage
@@ -187,21 +183,24 @@ public class Wallpaper extends Activity {
         if ((requestCode == PHOTO_PICKED || requestCode == CROP_DONE)
                 && (resultCode == RESULT_OK) && (data != null)) {
             try {
-                File tempFile = new File(mTempFilePath);
-                InputStream s = new FileInputStream(tempFile);
-                Bitmap bitmap = BitmapFactory.decodeStream(s);
-                if (bitmap == null) {
-                    Log.e(LOG_TAG, "Failed to set wallpaper. "
-                                   + "Couldn't get bitmap for path "
-                                   + mTempFilePath);
-                } else {
-                    mHandler.sendEmptyMessage(SHOW_PROGRESS);
-                    new SetWallpaperThread(bitmap, mHandler,
-                                           this, tempFile).start();
+                InputStream s = new FileInputStream(mTempFile);
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeStream(s);
+                    if (bitmap == null) {
+                        Log.e(LOG_TAG, "Failed to set wallpaper. "
+                                       + "Couldn't get bitmap for path "
+                                       + mTempFile);
+                    } else {
+                        mHandler.sendEmptyMessage(SHOW_PROGRESS);
+                        new SetWallpaperThread(
+                                bitmap, mHandler, this, mTempFile).start();
+                    }
+                    mDoLaunch = false;
+                } finally {
+                    Util.closeSilently(s);
                 }
-                mDoLaunch = false;
             } catch (FileNotFoundException ex) {
-                // ignore
+                Log.e(LOG_TAG, "file not found: " + mTempFile, ex);
             }
         } else {
             setResult(RESULT_CANCELED);
