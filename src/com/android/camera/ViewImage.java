@@ -62,27 +62,36 @@ import java.util.concurrent.ExecutionException;
 // button to see the previous or next image. In slide show mode it shows one
 // image after another, with some transition effect.
 public class ViewImage extends Activity implements View.OnClickListener {
-    private static final String KEY_URI = "uri";
-
+    private static final String PREF_SLIDESHOW_REPEAT =
+            "pref_gallery_slideshow_repeat_key";
+    private static final String PREF_SHUFFLE_SLIDESHOW =
+            "pref_gallery_slideshow_shuffle_key";
+    private static final String STATE_URI = "uri";
+    private static final String STATE_SLIDESHOW = "slideshow";
+    private static final String EXTRA_SLIDESHOW = "slideshow";
     private static final String TAG = "ViewImage";
+
+    private static final boolean AUTO_DISMISS = true;
+    private static final boolean NO_AUTO_DISMISS = false;
 
     private ImageGetter mGetter;
     private Uri mSavedUri;
 
     // Choices for what adjacents to load.
-    private static final int[] sOrder_adjacents = new int[] {0, 1, -1};
-    private static final int[] sOrder_slideshow = new int[] {0};
+    private static final int[] sOrderAdjacents = new int[] {0, 1, -1};
+    private static final int[] sOrderSlideshow = new int[] {0};
 
-    LocalHandler mHandler = new LocalHandler();
+    final LocalHandler mHandler = new LocalHandler();
 
     private final Random mRandom = new Random(System.currentTimeMillis());
-    private int [] mShuffleOrder;
+    private int [] mShuffleOrder = null;
     private boolean mUseShuffleOrder = false;
     private boolean mSlideShowLoop = false;
 
     static final int MODE_NORMAL = 1;
     static final int MODE_SLIDESHOW = 2;
     private int mMode = MODE_NORMAL;
+
     private boolean mFullScreenInNormalMode;
     private boolean mShowActionIcons;
     private View mActionIconPanel;
@@ -99,7 +108,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private SharedPreferences mPrefs;
 
-    private View mNextImageView, mPrevImageView;
+    private View mNextImageView;
+    private View mPrevImageView;
     private final Animation mHideNextImageViewAnimation = new AlphaAnimation(1F, 0F);
     private final Animation mHidePrevImageViewAnimation = new AlphaAnimation(1F, 0F);
     private final Animation mShowNextImageViewAnimation = new AlphaAnimation(0F, 1F);
@@ -161,11 +171,31 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
     }
 
-    private void showOnScreenControls() {
+    private void showOnScreenControls(final boolean autoDismiss) {
+        // If the view has not been attached to the window yet, the
+        // zoomButtonControls will not able to show up. So delay it until the
+        // view has attached to window.
+        if (mActionIconPanel.getWindowToken() == null) {
+            mHandler.postGetterCallback(new Runnable() {
+                public void run() {
+                    showOnScreenControls(autoDismiss);
+                }
+            });
+            return;
+        }
         mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
         updateNextPrevControls();
         updateZoomButtonsEnabled();
         mZoomButtonsController.setVisible(true);
+
+        if (mShowActionIcons
+                && mActionIconPanel.getVisibility() != View.VISIBLE) {
+            Animation animation = new AlphaAnimation(0, 1);
+            animation.setDuration(500);
+            mActionIconPanel.startAnimation(animation);
+            mActionIconPanel.setVisibility(View.VISIBLE);
+        }
+        if (autoDismiss) scheduleDismissOnScreenControls();
     }
 
     @Override
@@ -180,7 +210,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (mMode == MODE_NORMAL) {
             switch (m.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    showOnScreenControls();
+                    showOnScreenControls(NO_AUTO_DISMISS);
                     break;
                 case MotionEvent.ACTION_UP:
                     scheduleDismissOnScreenControls();
@@ -265,21 +295,27 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private void setupDismissOnScreenControlRunnable() {
         mDismissOnScreenControlsRunnable = new Runnable() {
             public void run() {
-                if (!mShowActionIcons) {
-                    if (mNextImageView.getVisibility() == View.VISIBLE) {
-                        Animation a = mHideNextImageViewAnimation;
-                        a.setDuration(500);
-                        mNextImageView.startAnimation(a);
-                        mNextImageView.setVisibility(View.INVISIBLE);
-                    }
+                if (mNextImageView.getVisibility() == View.VISIBLE) {
+                    Animation a = mHideNextImageViewAnimation;
+                    a.setDuration(500);
+                    mNextImageView.startAnimation(a);
+                    mNextImageView.setVisibility(View.INVISIBLE);
+                }
 
-                    if (mPrevImageView.getVisibility() == View.VISIBLE) {
-                        Animation a = mHidePrevImageViewAnimation;
-                        a.setDuration(500);
-                        mPrevImageView.startAnimation(a);
-                        mPrevImageView.setVisibility(View.INVISIBLE);
-                    }
-                    mZoomButtonsController.setVisible(false);
+                if (mPrevImageView.getVisibility() == View.VISIBLE) {
+                    Animation a = mHidePrevImageViewAnimation;
+                    a.setDuration(500);
+                    mPrevImageView.startAnimation(a);
+                    mPrevImageView.setVisibility(View.INVISIBLE);
+                }
+                mZoomButtonsController.setVisible(false);
+
+                if (mShowActionIcons
+                        && mActionIconPanel.getVisibility() == View.VISIBLE) {
+                    Animation animation = new AlphaAnimation(1, 0);
+                    animation.setDuration(500);
+                    mActionIconPanel.startAnimation(animation);
+                    mActionIconPanel.setVisibility(View.INVISIBLE);
                 }
             }
         };
@@ -371,8 +407,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                showOnScreenControls();
-                scheduleDismissOnScreenControls();
+                showOnScreenControls(AUTO_DISMISS);
                 return true;
             }
         })
@@ -446,7 +481,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
 
             public boolean wantsFullImage(int pos, int offset) {
-                return (offset == 0);
+                return offset == 0;
             }
 
             public int fullImageSizeToUse(int pos, int offset) {
@@ -460,7 +495,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
 
             public int [] loadOrder() {
-                return sOrder_adjacents;
+                return sOrderAdjacents;
             }
 
             public void imageLoaded(int pos, int offset, Bitmap bitmap,
@@ -491,20 +526,20 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mGetter.setPosition(pos, cb);
         }
 
-        showOnScreenControls();
-        scheduleDismissOnScreenControls();
+        showOnScreenControls(AUTO_DISMISS);
     }
 
     @Override
     public void onCreate(Bundle instanceState) {
         super.onCreate(instanceState);
+
         Intent intent = getIntent();
         mCameraReviewMode = intent.getBooleanExtra(
                 "com.android.camera.ReviewMode", false);
         mFullScreenInNormalMode = intent.getBooleanExtra(
                 MediaStore.EXTRA_FULL_SCREEN, true);
         mShowActionIcons = intent.getBooleanExtra(
-                MediaStore.EXTRA_SHOW_ACTION_ICONS, false);
+                MediaStore.EXTRA_SHOW_ACTION_ICONS, true);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -543,45 +578,37 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
 
         mActionIconPanel = findViewById(R.id.action_icon_panel);
-        {
-            int[] pickIds = {R.id.attach, R.id.cancel};
-            int[] normalIds = {R.id.gallery, R.id.setas, R.id.share,
-                               R.id.discard};
-            int[] hideIds = pickIds;
-            int[] connectIds = normalIds;
-            if (isPickIntent()) {
-                hideIds = normalIds;
-                connectIds = pickIds;
-            }
-            for (int id : hideIds) {
-                mActionIconPanel.findViewById(id).setVisibility(View.GONE);
-            }
-            for (int id : connectIds) {
-                View view = mActionIconPanel.findViewById(id);
-                view.setOnClickListener(this);
-                Animation animation = new AlphaAnimation(0F, 1F);
-                animation.setDuration(500);
-                view.setAnimation(animation);
-            }
-        }
 
         Uri uri = getIntent().getData();
         IImageList imageList = getIntent().getParcelableExtra(KEY_IMAGE_LIST);
+        boolean slideshow = intent.getBooleanExtra(EXTRA_SLIDESHOW, false);
+
         if (instanceState != null) {
-            uri = instanceState.getParcelable(KEY_URI);
-            imageList = instanceState.getParcelable(KEY_IMAGE_LIST);
+            uri = instanceState.getParcelable(STATE_URI);
+            slideshow = instanceState.getBoolean(STATE_SLIDESHOW, false);
         }
+
         if (!init(uri, imageList)) {
             finish();
             return;
         }
 
-        Bundle b = getIntent().getExtras();
+        if (mShowActionIcons) {
+            int[] pickIds = {R.id.attach, R.id.cancel};
+            int[] reviewIds = {
+                    R.id.gallery, R.id.setas, R.id.share, R.id.discard};
+            int[] normalIds = {R.id.setas, R.id.share, R.id.discard};
+            int[] connectIds = isPickIntent()
+                    ? pickIds
+                    : mCameraReviewMode ? reviewIds : normalIds;
+            for (int id : connectIds) {
+                View view = mActionIconPanel.findViewById(id);
+                view.setVisibility(View.VISIBLE);
+                view.setOnClickListener(this);
+            }
+        }
 
-        boolean slideShow = (b != null)
-                ? b.getBoolean("slideshow", false)
-                : false;
-        if (slideShow) {
+        if (slideshow) {
             setMode(MODE_SLIDESHOW);
         } else {
             if (mFullScreenInNormalMode) {
@@ -633,7 +660,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
     }
 
-
     private Animation makeInAnimation(int id) {
         Animation inAnimation = AnimationUtils.loadAnimation(this, id);
         return inAnimation;
@@ -644,25 +670,37 @@ public class ViewImage extends Activity implements View.OnClickListener {
         return outAnimation;
     }
 
+    private static int getPreferencesInteger(
+            SharedPreferences prefs, String key, int defaultValue) {
+        String value = prefs.getString(key, null);
+        try {
+            return value == null ? defaultValue : Integer.parseInt(value);
+        } catch (NumberFormatException ex) {
+            Log.e(TAG, "couldn't parse preference: " + value, ex);
+            return defaultValue;
+        }
+    }
+
     void setMode(int mode) {
         if (mMode == mode) {
             return;
         }
-
-        findViewById(R.id.slideShowContainer).setVisibility(
-                mode == MODE_SLIDESHOW ? View.VISIBLE : View.GONE);
-        findViewById(R.id.abs).setVisibility(mode == MODE_NORMAL
-                ? View.VISIBLE : View.GONE);
+        View slideshowPanel = findViewById(R.id.slideShowContainer);
+        View normalPanel = findViewById(R.id.abs);
 
         Window win = getWindow();
         mMode = mode;
         if (mode == MODE_SLIDESHOW) {
+            slideshowPanel.setVisibility(View.VISIBLE);
+            normalPanel.setVisibility(View.GONE);
+
             win.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                     | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
             mImageView.clear();
             mActionIconPanel.setVisibility(View.GONE);
 
-            findViewById(R.id.slideShowContainer).getRootView().requestLayout();
+            slideshowPanel.getRootView().requestLayout();
 
             // The preferences we want to read:
             //   mUseShuffleOrder
@@ -670,30 +708,19 @@ public class ViewImage extends Activity implements View.OnClickListener {
             //   mAnimationIndex
             //   mSlideShowInterval
 
-            mUseShuffleOrder   = mPrefs.getBoolean(
-                    "pref_gallery_slideshow_shuffle_key", false);
-            mSlideShowLoop     = mPrefs.getBoolean(
-                    "pref_gallery_slideshow_repeat_key", false);
-            try {
-                mAnimationIndex = Integer.parseInt(mPrefs.getString(
-                        "pref_gallery_slideshow_transition_key", "0"));
-            } catch (NumberFormatException ex) {
-                Log.e(TAG, "couldn't parse preference: " + ex.toString());
-                mAnimationIndex = 0;
-            }
-            try {
-                mSlideShowInterval = Integer.parseInt(mPrefs.getString(
-                        "pref_gallery_slideshow_interval_key", "3")) * 1000;
-            } catch (NumberFormatException ex) {
-                Log.e(TAG, "couldn't parse preference: " + ex.toString());
-                mSlideShowInterval = 3000;
-            }
-
-
+            mUseShuffleOrder = mPrefs.getBoolean(PREF_SHUFFLE_SLIDESHOW, false);
+            mSlideShowLoop = mPrefs.getBoolean(PREF_SLIDESHOW_REPEAT, false);
+            mAnimationIndex = getPreferencesInteger(
+                    mPrefs, "pref_gallery_slideshow_transition_key", 0);
+            mSlideShowInterval = getPreferencesInteger(
+                    mPrefs, "pref_gallery_slideshow_interval_key", 3) * 1000;
             if (mUseShuffleOrder) {
                 generateShuffleOrder();
             }
         } else {
+            slideshowPanel.setVisibility(View.GONE);
+            normalPanel.setVisibility(View.VISIBLE);
+
             win.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             if (mFullScreenInNormalMode) {
                 win.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -706,6 +733,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
 
             if (mShowActionIcons) {
+                Animation animation = new AlphaAnimation(0F, 1F);
+                animation.setDuration(500);
+                mActionIconPanel.setAnimation(animation);
                 mActionIconPanel.setVisibility(View.VISIBLE);
             }
 
@@ -730,17 +760,18 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (mShuffleOrder == null
                 || mShuffleOrder.length != mAllImages.getCount()) {
             mShuffleOrder = new int[mAllImages.getCount()];
+            for (int i = 0, n = mShuffleOrder.length; i < n; i++) {
+                mShuffleOrder[i] = i;
+            }
         }
 
-        for (int i = 0; i < mShuffleOrder.length; i++) {
-            mShuffleOrder[i] = i;
-        }
-
-        for (int i = mShuffleOrder.length - 1; i > 0; i--) {
-            int r = mRandom.nextInt(i);
-            int tmp = mShuffleOrder[r];
-            mShuffleOrder[r] = mShuffleOrder[i];
-            mShuffleOrder[i] = tmp;
+        for (int i = mShuffleOrder.length - 1; i >= 0; i--) {
+            int r = mRandom.nextInt(i + 1);
+            if (r != i) {
+                int tmp = mShuffleOrder[r];
+                mShuffleOrder[r] = mShuffleOrder[i];
+                mShuffleOrder[i] = tmp;
+            }
         }
     }
 
@@ -765,7 +796,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
 
             public int [] loadOrder() {
-                return sOrder_slideshow;
+                return sOrderSlideshow;
             }
 
             public int fullImageSizeToUse(int pos, int offset) {
@@ -881,9 +912,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
     @Override
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
-        b.putParcelable(KEY_URI,
+        b.putParcelable(STATE_URI,
                 mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri());
-        b.putBoolean("slideshow", mMode == MODE_SLIDESHOW);
+        b.putBoolean(STATE_SLIDESHOW, mMode == MODE_SLIDESHOW);
     }
 
     @Override
