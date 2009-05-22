@@ -83,36 +83,42 @@
 
             <com.android.camera.ActionMenuButton
                     android:id="@+id/gallery"
+                    android:visibility="gone"
                     android:drawableTop="@drawable/ic_menu_gallery"
                     android:text="@string/camera_gallery"
                     style="@style/OnscreenActionIcon"
             />
             <com.android.camera.ActionMenuButton
                     android:id="@+id/setas"
+                    android:visibility="gone"
                     android:drawableTop="@drawable/ic_menu_set_as"
                     android:text="@string/camera_set"
                     style="@style/OnscreenActionIcon"
             />
             <com.android.camera.ActionMenuButton
                     android:id="@+id/share"
+                    android:visibility="gone"
                     android:drawableTop="@drawable/ic_menu_share"
                     android:text="@string/camera_share"
                     style="@style/OnscreenActionIcon"
             />
             <com.android.camera.ActionMenuButton
                     android:id="@+id/discard"
+                    android:visibility="gone"
                     android:drawableTop="@drawable/ic_menu_delete"
                     android:text="@string/camera_toss"
                     style="@style/OnscreenActionIcon"
             />
             <com.android.camera.ActionMenuButton
                     android:id="@+id/attach"
+                    android:visibility="gone"
                     android:drawableTop="@drawable/ic_menu_attach"
                     android:text="@string/camera_attach"
                     style="@style/OnscreenActionIcon"
             />
             <com.android.camera.ActionMenuButton
                     android:id="@+id/cancel"
+                    android:visibility="gone"
                     android:drawableTop="@drawable/ic_menu_cancel"
                     android:text="@string/camera_cancel"
                     style="@style/OnscreenActionIcon"
