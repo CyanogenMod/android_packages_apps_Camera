@@ -22,7 +22,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.view.View;
@@ -56,22 +55,20 @@ public class ThumbnailController {
 
     @SuppressWarnings("unused")
     private static final String TAG = "ThumbnailController";
-    private ContentResolver mContentResolver;
+    private final ContentResolver mContentResolver;
     private Uri mUri;
     private Bitmap mThumb;
-    private ImageView mButton;
-    private Drawable mFrame;
+    private final ImageView mButton;
     private Drawable[] mThumbs;
     private TransitionDrawable mThumbTransition;
     private boolean mShouldAnimateThumb;
-    private Animation mShowButtonAnimation = new AlphaAnimation(0F, 1F);
+    private final Animation mShowButtonAnimation = new AlphaAnimation(0F, 1F);
     private boolean mShouldAnimateButton;
 
     // The "frame" is a drawable we want to put on top of the thumbnail.
-    public ThumbnailController(ImageView button, Drawable frame,
-                           ContentResolver contentResolver) {
+    public ThumbnailController(
+            ImageView button, ContentResolver contentResolver) {
         mButton = button;
-        mFrame = frame;
         mContentResolver = contentResolver;
         mShowButtonAnimation.setDuration(500);
     }
@@ -176,33 +173,29 @@ public class ThumbnailController {
         // Make the mini-thumb size smaller than the button size so that the
         // image corners don't peek out from the rounded corners of the
         // frame_thumb graphic:
-        final int PADDING_WIDTH = 12;
-        final int PADDING_HEIGHT = 12;
-        LayoutParams layoutParams = mButton.getLayoutParams();
-        final int miniThumbWidth = layoutParams.width - 2 * PADDING_WIDTH;
-        final int miniThumbHeight = layoutParams.height - 2 * PADDING_HEIGHT;
+        final int PADDING_WIDTH = 4;
+        final int PADDING_HEIGHT = 4;
+        LayoutParams param = mButton.getLayoutParams();
+        final int miniThumbWidth = param.width - 2 * PADDING_WIDTH;
+        final int miniThumbHeight = param.height - 2 * PADDING_HEIGHT;
         mThumb = Util.extractMiniThumb(
                 original, miniThumbWidth, miniThumbHeight, false);
-
-        Drawable[] vignetteLayers = new Drawable[2];
-        vignetteLayers[0] = mFrame;
+        Drawable drawable;
         if (mThumbs == null) {
             mThumbs = new Drawable[2];
-            mThumbs[1] = new BitmapDrawable(mThumb);
-            vignetteLayers[1] = mThumbs[1];
+            mThumbs[1] = new BitmapDrawable(
+                    Util.makeRoundedCorner(mThumb, 4, 4));
+            drawable = mThumbs[1];
             mShouldAnimateThumb = false;
         } else {
             mThumbs[0] = mThumbs[1];
-            mThumbs[1] = new BitmapDrawable(mThumb);
+            mThumbs[1] = new BitmapDrawable(
+                    Util.makeRoundedCorner(mThumb, 4, 4));
             mThumbTransition = new TransitionDrawable(mThumbs);
-            vignetteLayers[1] = mThumbTransition;
+            drawable = mThumbTransition;
             mShouldAnimateThumb = true;
         }
-
-        LayerDrawable mVignette = new LayerDrawable(vignetteLayers);
-        mVignette.setLayerInset(1, PADDING_WIDTH, PADDING_HEIGHT,
-                PADDING_WIDTH, PADDING_HEIGHT);
-        mButton.setImageDrawable(mVignette);
+        mButton.setImageDrawable(drawable);
 
         if (mButton.getVisibility() != View.VISIBLE) {
             mShouldAnimateButton = true;

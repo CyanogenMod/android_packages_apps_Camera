@@ -26,19 +26,6 @@
             android:layout_height="fill_parent"
             android:layout_centerInParent="true" />
 
-    <com.android.camera.ShutterButton
-            android:id="@+id/shutter_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="5dip"
-            android:layout_marginTop="5dip"
-            android:scaleType="center" />
-
     <ImageView
             android:id="@+id/gps_indicator"
             android:layout_width="wrap_content"
@@ -48,35 +35,12 @@
             android:focusable="false"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="18dip"
-            android:layout_marginTop="18dip"/>
-
-    <ImageView
-            android:id="@+id/focus_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/shutter_button"
-            android:layout_alignTop="@id/shutter_button"
-            android:layout_marginLeft="39dip"
-            android:layout_marginTop="16dip"
-            android:scaleType="center"
-            android:visibility="gone" />
-
-    <ImageView
-            android:visibility="gone"
-            android:id="@+id/last_picture_button"
-            android:layout_width="72dip"
-            android:layout_height="72dip"
-            android:clickable="true"
-            android:focusable="false"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="5dip"
-            android:layout_marginTop="5dip" />
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="18dp"/>
 
     <com.android.camera.FocusRectangle
             android:id="@+id/focus_rectangle"
-            android:layout_width="276dip"
-            android:layout_height="168dip"
+            android:layout_width="276dp"
+            android:layout_height="168dp"
             android:layout_centerInParent="true"/>
 </RelativeLayout>

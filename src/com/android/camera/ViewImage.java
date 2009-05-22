@@ -40,11 +40,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
@@ -85,6 +87,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private boolean mSortAscending = false;
     private int mSlideShowInterval;
     private int mLastSlideShowImage;
+    private ThumbnailController mThumbController;
     int mCurrentPosition = 0;
 
     // represents which style animation to use
@@ -551,8 +554,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 view.setAnimation(animation);
             }
         }
-        mShutterButton = findViewById(R.id.shutter_button);
-        mShutterButton.setOnClickListener(this);
 
         Uri uri = getIntent().getData();
 
@@ -581,11 +582,10 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
             if (mShowActionIcons) {
                 mActionIconPanel.setVisibility(View.VISIBLE);
-                mShutterButton.setVisibility(View.VISIBLE);
             }
         }
 
-        setupZoomButtonController(findViewById(R.id.rootLayout));
+        setupZoomButtonController(findViewById(R.id.mainPanel));
         setupDismissOnScreenControlRunnable();
 
         mNextImageView = findViewById(R.id.next_image);
@@ -597,7 +597,34 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mNextImageView.setFocusable(true);
             mPrevImageView.setFocusable(true);
         }
+
+        if (mCameraReviewMode) {
+            ViewGroup buttonBar = (ViewGroup) findViewById(R.id.button_bar);
+            buttonBar.setVisibility(View.VISIBLE);
+            buttonBar.findViewById(
+                    R.id.review_indicator).setVisibility(View.VISIBLE);
+            ImageView reviewButton = (ImageView)
+                    buttonBar.findViewById(R.id.review_button);
+            reviewButton.setClickable(false);
+            reviewButton.setFocusable(false);
+            mThumbController = new ThumbnailController(
+                    reviewButton, getContentResolver());
+            buttonBar.findViewById(R.id.camera_button).setOnClickListener(this);
+            buttonBar.findViewById(R.id.video_button).setOnClickListener(this);
+        }
     }
+
+    private void updateLastImage() {
+        int count = mAllImages.getCount();
+        if (count > 0) {
+            IImage image = mAllImages.getImageAt(count - 1);
+            Uri uri = image.fullSizeImageUri();
+            mThumbController.setData(uri, image.miniThumbBitmap());
+        } else {
+            mThumbController.setData(null, null);
+        }
+    }
+
 
     private Animation makeInAnimation(int id) {
         Animation inAnimation = AnimationUtils.loadAnimation(this, id);
@@ -887,6 +914,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
         super.onStart();
 
         init(mSavedUri);
+        if (mCameraReviewMode) {
+            updateLastImage();
+        }
 
         // normally this will never be zero but if one "backs" into this
         // activity after removing the sdcard it could be zero.  in that
@@ -940,15 +970,12 @@ public class ViewImage extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
 
-        case R.id.shutter_button: {
-            if (mCameraReviewMode) {
-                finish();
-            } else {
-                MenuHelper.gotoStillImageCapture(this);
-            }
-        }
-        break;
-
+        case R.id.camera_button:
+            MenuHelper.gotoCameraMode(this);
+            break;
+        case R.id.video_button:
+            MenuHelper.gotoVideoMode(this);
+            break;
         case R.id.gallery: {
             MenuHelper.gotoCameraImageGallery(this);
         }

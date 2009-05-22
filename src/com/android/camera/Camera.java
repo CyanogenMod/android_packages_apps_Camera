@@ -32,7 +32,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.location.Location;
@@ -171,8 +170,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private ShutterButton mShutterButton;
 
-    private Animation mFocusBlinkAnimation;
-    private ImageView mFocusIndicator;
     private FocusRectangle mFocusRectangle;
     private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
@@ -283,46 +280,32 @@ public class Camera extends Activity implements View.OnClickListener,
         // Initialize last picture button.
         mContentResolver = getContentResolver();
         if (!mIsImageCaptureIntent)  {
-            mLastPictureButton = (ImageView)
-                    findViewById(R.id.last_picture_button);
-            mLastPictureButton.setOnClickListener(Camera.this);
-            Drawable frame =
-                    getResources().getDrawable(R.drawable.frame_thumbnail);
-            mThumbController = new ThumbnailController(mLastPictureButton,
-                    frame, mContentResolver);
+            findViewById(R.id.video_button).setOnClickListener(this);
+            mLastPictureButton = (ImageView) findViewById(R.id.review_button);
+            mLastPictureButton.setOnClickListener(this);
+            mThumbController = new ThumbnailController(
+                    mLastPictureButton, mContentResolver);
             mThumbController.loadData(ImageManager.getLastImageThumbPath());
-        } else {
-            ViewGroup cameraView = (ViewGroup) findViewById(R.id.camera);
-            getLayoutInflater().inflate(R.layout.post_picture_panel,
-                                        cameraView);
-            mPostCaptureAlert = findViewById(R.id.post_picture_panel);
-        }
-
-        // Update last image thumbnail.
-        if (!mIsImageCaptureIntent) {
+            // Update last image thumbnail.
             if (!mThumbController.isUriValid()) {
                 updateLastImage();
             }
             mThumbController.updateDisplayIfNeeded();
+        } else {
+            findViewById(R.id.review_button).setVisibility(View.INVISIBLE);
+            findViewById(R.id.video_button).setVisibility(View.INVISIBLE);
+            ViewGroup cameraView = (ViewGroup) findViewById(R.id.camera);
+            getLayoutInflater().inflate(
+                    R.layout.post_picture_panel, cameraView);
+            mPostCaptureAlert = findViewById(R.id.post_picture_panel);
         }
 
+        findViewById(R.id.photo_indicator).setVisibility(View.VISIBLE);
         // Initialize shutter button.
-        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
-        mShutterButton.setImageResource(R.drawable.ic_camera_indicator_photo);
-        mShutterButton.setBackgroundResource(
-                R.drawable.ic_btn_camera_background);
-        mShutterButton.setOnShutterButtonListener(Camera.this);
+        mShutterButton = (ShutterButton) findViewById(R.id.camera_button);
+        mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.setVisibility(View.VISIBLE);
 
-        // Initialize focus related resources.
-        mFocusBlinkAnimation =
-                AnimationUtils.loadAnimation(Camera.this,
-                                             R.anim.auto_focus_blink);
-        mFocusBlinkAnimation.setRepeatCount(Animation.INFINITE);
-        mFocusBlinkAnimation.setRepeatMode(Animation.REVERSE);
-        mFocusIndicator = (ImageView) findViewById(R.id.focus_indicator);
-        mFocusIndicator.setImageResource(
-                R.drawable.ic_camera_indicator_auto_focus_green);
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
         updateFocusIndicator();
 
@@ -806,6 +789,8 @@ public class Camera extends Activity implements View.OnClickListener,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mIsImageCaptureIntent = isImageCaptureIntent();
+        getLayoutInflater().inflate(
+                R.layout.button_bar, (ViewGroup) findViewById(R.id.camera));
 
         // Make sure the services are loaded.
         try {
@@ -836,16 +821,19 @@ public class Camera extends Activity implements View.OnClickListener,
 
     public void onClick(View v) {
         switch (v.getId()) {
-        case R.id.last_picture_button:
-            if (mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED) {
-                viewLastImage();
-            }
-            break;
-        case R.id.attach:
-            doAttach();
-            break;
-        case R.id.cancel:
-            doCancel();
+            case R.id.video_button:
+                MenuHelper.gotoVideoMode(this);
+                break;
+            case R.id.review_button:
+                if (mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED) {
+                    viewLastImage();
+                }
+                break;
+            case R.id.attach:
+                doAttach();
+                break;
+            case R.id.cancel:
+                doCancel();
         }
     }
 
@@ -963,7 +951,7 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
         switch (button.getId()) {
-            case R.id.shutter_button:
+            case R.id.camera_button:
                 doFocus(pressed);
                 break;
         }
@@ -974,7 +962,7 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
         switch (button.getId()) {
-            case R.id.shutter_button:
+            case R.id.camera_button:
                 doSnap();
                 break;
         }
@@ -1166,21 +1154,15 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void updateFocusIndicator() {
-        if (mFocusIndicator == null || mFocusRectangle == null) return;
+        if (mFocusRectangle == null) return;
 
         if (mFocusState == FOCUSING || mFocusState == FOCUSING_SNAP_ON_FINISH) {
             mFocusRectangle.showStart();
         } else if (mFocusState == FOCUS_SUCCESS) {
-            mFocusIndicator.setVisibility(View.VISIBLE);
-            mFocusIndicator.clearAnimation();
             mFocusRectangle.showSuccess();
         } else if (mFocusState == FOCUS_FAIL) {
-            mFocusIndicator.setVisibility(View.VISIBLE);
-            mFocusIndicator.startAnimation(mFocusBlinkAnimation);
             mFocusRectangle.showFail();
         } else {
-            mFocusIndicator.setVisibility(View.GONE);
-            mFocusIndicator.clearAnimation();
             mFocusRectangle.clear();
         }
     }

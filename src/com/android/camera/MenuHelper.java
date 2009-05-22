@@ -36,9 +36,9 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +49,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -881,6 +880,14 @@ public class MenuHelper {
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         activity.startActivity(intent);
         return true;
+    }
+
+    public static void gotoCameraMode(Activity activity) {
+        onSwitchModeClicked(activity, false);
+    }
+
+    public static void gotoVideoMode(Activity activity) {
+        onSwitchModeClicked(activity, true);
     }
 
     static void gotoStillImageCapture(Activity activity) {

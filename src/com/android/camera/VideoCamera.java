@@ -46,11 +46,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -145,7 +145,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     View mPostPictureAlert;
 
-    private Handler mHandler = new MainHandler();
+    private final Handler mHandler = new MainHandler();
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -248,20 +248,24 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             findViewById(id).setOnClickListener(this);
         }
 
-        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
+        findViewById(R.id.video_indicator).setVisibility(View.VISIBLE);
+        mShutterButton = (ShutterButton) findViewById(R.id.video_button);
         mShutterButton.setOnShutterButtonListener(this);
+        mShutterButton.requestFocus();
+
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
         mIsVideoCaptureIntent = isVideoCaptureIntent();
         if (!mIsVideoCaptureIntent) {
-            mLastPictureButton = (ImageView) findViewById(
-                    R.id.last_picture_button);
+            mLastPictureButton = (ImageView) findViewById(R.id.review_button);
             mLastPictureButton.setOnClickListener(this);
-            Drawable frame = getResources().getDrawable(
-                    R.drawable.frame_thumbnail);
-            mThumbController = new ThumbnailController(mLastPictureButton,
-                    frame, mContentResolver);
+            mThumbController = new ThumbnailController(
+                    mLastPictureButton, mContentResolver);
             mThumbController.loadData(ImageManager.getLastVideoThumbPath());
+            findViewById(R.id.camera_button).setOnClickListener(this);
+        } else {
+            findViewById(R.id.camera_button).setVisibility(View.INVISIBLE);
+            findViewById(R.id.review_button).setVisibility(View.INVISIBLE);
         }
 
         // Make sure the camera is opened.
@@ -293,6 +297,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.camera_button:
+                MenuHelper.gotoCameraMode(this);
+                break;
 
             case R.id.gallery:
                 gotoGallery();
@@ -326,7 +333,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 break;
             }
 
-            case R.id.last_picture_button: {
+            case R.id.review_button: {
                 stopVideoRecordingAndShowAlert();
                 break;
             }
@@ -339,7 +346,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     public void onShutterButtonClick(ShutterButton button) {
         switch (button.getId()) {
-            case R.id.shutter_button:
+            case R.id.video_button:
                 if (mMediaRecorderRecording) {
                     if (mIsVideoCaptureIntent) {
                         stopVideoRecordingAndShowAlert();
@@ -479,6 +486,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     // Precondition: mSurfaceHolder != null
     // Returns true if starting preview succeeds.
     private boolean startPreview() {
+        findViewById(R.id.review_indicator).setVisibility(View.INVISIBLE);
+        findViewById(R.id.video_indicator).setVisibility(View.VISIBLE);
+
         Log.v(TAG, "startPreview");
         if (mPreviewing) {
             // We should just return here, but we stop and start again to avoid
@@ -1041,7 +1051,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mRecordingTimeView.setVisibility(View.VISIBLE);
             mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
             setScreenTimeoutInfinite();
-            hideLastPictureButton();
             // Last picture button is hidden. No need to update last video.
             mHandler.removeMessages(UPDATE_LAST_VIDEO);
         }
@@ -1049,7 +1058,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private void updateRecordingIndicator(boolean showRecording) {
         int drawableId = showRecording
-                ? R.drawable.ic_camera_bar_indicator_record
+                ? R.drawable.ic_camera_indicator_stop
                 : R.drawable.ic_camera_indicator_video;
         Drawable drawable = getResources().getDrawable(drawableId);
         mShutterButton.setImageDrawable(drawable);
@@ -1066,6 +1075,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void showAlert() {
+        findViewById(R.id.review_indicator).setVisibility(View.VISIBLE);
+        findViewById(R.id.video_indicator).setVisibility(View.INVISIBLE);
+
         int[] pickIds = {R.id.attach, R.id.cancel};
         int[] normalIds = {R.id.gallery, R.id.share, R.id.discard};
         int[] alwaysOnIds = {R.id.play};
@@ -1084,8 +1096,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 mCurrentVideoFileLength > SHARE_FILE_LENGTH_LIMIT);
         connectAndFadeIn(connectIds);
         connectAndFadeIn(alwaysOnIds);
-        hideLastPictureButton();
         mPostPictureAlert.setVisibility(View.VISIBLE);
+        mVideoPreview.setVisibility(View.INVISIBLE);
 
         // There are two cases we are here:
         // (1) We are in a capture video intent, and we are reviewing the video
@@ -1114,6 +1126,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void hideAlert() {
+        mVideoPreview.setVisibility(View.VISIBLE);
         mVideoFrame.setVisibility(View.INVISIBLE);
         mPostPictureAlert.setVisibility(View.INVISIBLE);
         showLastPictureButton();
@@ -1222,12 +1235,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private void showLastPictureButton() {
         if (!mIsVideoCaptureIntent) {
             mLastPictureButton.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideLastPictureButton() {
-        if (!mIsVideoCaptureIntent) {
-            mLastPictureButton.setVisibility(View.INVISIBLE);
         }
     }
 
