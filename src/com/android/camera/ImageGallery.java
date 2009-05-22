@@ -514,6 +514,7 @@ public class ImageGallery extends Activity implements
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        if (!canHandleEvent()) return false;
         if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
             boolean videoSelected = isVideoSelected();
             // TODO: Only enable slide show if there is at least one image in
@@ -734,6 +735,8 @@ public class ImageGallery extends Activity implements
             View.OnCreateContextMenuListener {
         public void onCreateContextMenu(ContextMenu menu, View v,
                 ContextMenu.ContextMenuInfo menuInfo) {
+            if (!canHandleEvent()) return;
+
             if (getCurrentImage() == null) {
                 return;
             }

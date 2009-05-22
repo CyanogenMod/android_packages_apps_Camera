@@ -283,9 +283,13 @@ class GridViewSpecial extends View {
         mImageBlockManager.setVisibleRows(startRow, endRow);
     }
 
+    // In MyGestureDetector we have to check canHandleEvent() because
+    // GestureDetector could queue events and fire them later. At that time
+    // stop() may have already been called and we can't handle the events.
     private class MyGestureDetector extends SimpleOnGestureListener {
         @Override
         public boolean onDown(MotionEvent e) {
+            if (!canHandleEvent()) return false;
             if (mScroller != null && !mScroller.isFinished()) {
                 mScroller.forceFinished(true);
                 return false;
@@ -303,6 +307,7 @@ class GridViewSpecial extends View {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2,
                 float velocityX, float velocityY) {
+            if (!canHandleEvent()) return false;
             final float maxVelocity = 2500;
             if (velocityY > maxVelocity) {
                 velocityY = maxVelocity;
@@ -328,6 +333,7 @@ class GridViewSpecial extends View {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
+            if (!canHandleEvent()) return false;
             select(SELECT_NONE, false);
             scrollBy(0, (int) distanceY);
             invalidate();
@@ -336,6 +342,7 @@ class GridViewSpecial extends View {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (!canHandleEvent()) return false;
             select(mCurrentSelection, false);
             int index = computeSelectedIndex(e.getX(), e.getY());
             if (index >= 0 && index < mCount) {
