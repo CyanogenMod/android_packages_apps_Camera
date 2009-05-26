@@ -82,7 +82,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private boolean mFullScreenInNormalMode;
     private boolean mShowActionIcons;
     private View mActionIconPanel;
-    private View mShutterButton;
 
     private boolean mSortAscending = false;
     private int mSlideShowInterval;
@@ -660,7 +659,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             mImageView.clear();
             mActionIconPanel.setVisibility(View.GONE);
-            mShutterButton.setVisibility(View.GONE);
 
             findViewById(R.id.slideShowContainer).getRootView().requestLayout();
 
@@ -707,7 +705,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
             if (mShowActionIcons) {
                 mActionIconPanel.setVisibility(View.VISIBLE);
-                mShutterButton.setVisibility(View.VISIBLE);
             }
 
             ImageViewTouchBase dst = mImageView;
