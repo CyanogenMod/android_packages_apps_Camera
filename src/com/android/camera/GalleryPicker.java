@@ -287,11 +287,11 @@ public class GalleryPicker extends Activity {
     private void startWorker() {
         mAbort = false;
         mWorkerThread = new Thread("GalleryPicker Worker") {
-                    @Override
-                    public void run() {
-                        workerRun();
-                    }
-                };
+            @Override
+            public void run() {
+                workerRun();
+            }
+        };
         mWorkerThread.start();
     }
 

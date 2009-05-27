@@ -1211,11 +1211,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         initializeVideo();
     }
 
-    private void hideAlertAndStartVideoRecording() {
-        hideAlert();
-        startVideoRecording();
-    }
-
     private void acquireVideoThumb() {
         Bitmap videoFrame = Util.createVideoThumbnail(mCurrentVideoFilename);
         mThumbController.setData(mCurrentVideoUri, videoFrame);

@@ -832,8 +832,8 @@ public class ImageGallery extends Activity implements
     // mSrcRect and mDstRect are only used in drawImage, but we put them as
     // instance variables to reduce the memory allocation overhead because
     // drawImage() is called a lot.
-    private Rect mSrcRect = new Rect();
-    private Rect mDstRect = new Rect();
+    private final Rect mSrcRect = new Rect();
+    private final Rect mDstRect = new Rect();
 
     public void drawImage(Canvas canvas, IImage image,
             Bitmap b, int xPos, int yPos, int w, int h) {
@@ -1005,9 +1005,10 @@ public class ImageGallery extends Activity implements
         mPriorityQueue.add(pTask);
     }
 
+    /* Disable for multiselect
     private boolean isInMultiSelectMode() {
         return mMultiSelected != null;
-    }
+    }*/
 
     private void closeMultiSelectMode() {
         if (mMultiSelected == null) return;
@@ -1016,9 +1017,10 @@ public class ImageGallery extends Activity implements
         hideFooter();
     }
 
+    /* Disable for multiselect
     private void openMultiSelectMode() {
         if (mMultiSelected != null) return;
         mMultiSelected = new HashSet<IImage>();
         mGvs.invalidateAllImages();
-    }
+    }*/
 }

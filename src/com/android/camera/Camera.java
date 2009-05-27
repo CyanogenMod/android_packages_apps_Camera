@@ -50,7 +50,6 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.util.Config;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -65,7 +64,6 @@ import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -1497,11 +1495,9 @@ public class Camera extends Activity implements View.OnClickListener,
                         0F,
                         mLocationListeners[1]);
             } catch (java.lang.SecurityException ex) {
-                // ok
+                Log.i(TAG, "fail to request location update, ignore", ex);
             } catch (IllegalArgumentException ex) {
-                if (Config.LOGD) {
-                    Log.d(TAG, "provider does not exist " + ex.getMessage());
-                }
+                Log.d(TAG, "provider does not exist " + ex.getMessage());
             }
             try {
                 mLocationManager.requestLocationUpdates(
@@ -1510,11 +1506,9 @@ public class Camera extends Activity implements View.OnClickListener,
                         0F,
                         mLocationListeners[0]);
             } catch (java.lang.SecurityException ex) {
-                // ok
+                Log.i(TAG, "fail to request location update, ignore", ex);
             } catch (IllegalArgumentException ex) {
-                if (Config.LOGD) {
-                    Log.d(TAG, "provider does not exist " + ex.getMessage());
-                }
+                Log.d(TAG, "provider does not exist " + ex.getMessage());
             }
         }
     }
@@ -1525,7 +1519,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 try {
                     mLocationManager.removeUpdates(mLocationListeners[i]);
                 } catch (Exception ex) {
-                    // ok
+                    Log.i(TAG, "fail to remove location listners, ignore", ex);
                 }
             }
         }
@@ -1677,6 +1671,8 @@ public class Camera extends Activity implements View.OnClickListener,
 }
 
 class FocusRectangle extends View {
+
+    @SuppressWarnings("unused")
     private static final String TAG = "FocusRectangle";
 
     public FocusRectangle(Context context, AttributeSet attrs) {
