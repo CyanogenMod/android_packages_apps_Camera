@@ -463,6 +463,13 @@ public class ViewImage extends Activity implements View.OnClickListener {
             public void imageLoaded(int pos, int offset, Bitmap bitmap,
                                     boolean isThumb) {
                 // shouldn't get here after onPause()
+
+                // We may get a result from a previous request. Ignore it.
+                if (pos != mCurrentPosition) {
+                    bitmap.recycle();
+                    return;
+                }
+
                 if (isThumb) {
                     mCache.put(pos + offset, bitmap);
                 }
