@@ -19,8 +19,11 @@ package com.android.camera.gallery;
 import com.android.camera.ImageManager;
 import com.android.camera.Util;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.util.Log;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -31,7 +34,6 @@ import java.util.PriorityQueue;
 /**
  * A union of different <code>IImageList</code>.
  */
-//TODO: add unittest for this class
 public class ImageListUber implements IImageList {
     @SuppressWarnings("unused")
     private static final String TAG = "ImageListUber";
@@ -58,11 +60,41 @@ public class ImageListUber implements IImageList {
                 sort == ImageManager.SORT_ASCENDING
                 ? new AscendingComparator()
                 : new DescendingComparator());
-        for (int i = 0, n = sublist.length; i < n; ++i) {
-            MergeSlot slot = new MergeSlot(sublist[i], i);
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeParcelableArray(mSubList, flags);
+        out.writeInt(mQueue.comparator() instanceof AscendingComparator
+                ? ImageManager.SORT_ASCENDING
+                : ImageManager.SORT_DESCENDING);
+    }
+
+    protected ImageListUber(Parcel in) {
+        Parcelable array[] = in.readParcelableArray(null);
+        mSubList = new IImageList[array.length];
+        System.arraycopy(array, 0, mSubList, 0, array.length);
+        int sort = in.readInt();
+        mSkipCounts = new int[mSubList.length];
+        mQueue = new PriorityQueue<MergeSlot>(4,
+                sort == ImageManager.SORT_ASCENDING
+                ? new AscendingComparator()
+                : new DescendingComparator());
+        for (int i = 0, n = mSubList.length; i < n; ++i) {
+            MergeSlot slot = new MergeSlot(mSubList[i], i);
             if (slot.next()) mQueue.add(slot);
         }
     }
+
+    public static final Creator<ImageListUber> CREATOR =
+            new Creator<ImageListUber>() {
+        public ImageListUber createFromParcel(Parcel in) {
+            return new ImageListUber(in);
+        }
+
+        public ImageListUber[] newArray(int size) {
+            return new ImageListUber[size];
+        }
+    };
 
     public HashMap<String, String> getBucketIds() {
         HashMap<String, String> hashMap = new HashMap<String, String>();
@@ -297,6 +329,30 @@ public class ImageListUber implements IImageList {
             mImage = mList.getImageAt(++mOffset);
             mDateTaken = mImage.getDateTaken();
             return true;
+        }
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void open(ContentResolver cr) {
+        for (int i = 0, n = mSubList.length; i < n; ++i) {
+            IImageList list = mSubList[i];
+            if (list instanceof BaseImageList) {
+                ((BaseImageList) list).open(cr);
+            }
+            MergeSlot slot = new MergeSlot(list, i);
+            if (slot.next()) mQueue.add(slot);
+        }
+    }
+
+    public void close() {
+        for (int i = 0, n = mSubList.length; i < n; ++i) {
+            IImageList list = mSubList[i];
+            if (list instanceof BaseImageList) {
+                ((BaseImageList) list).close();
+            }
         }
     }
 }

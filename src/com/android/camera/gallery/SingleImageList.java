@@ -34,11 +34,15 @@ public class SingleImageList extends BaseImageList {
     @SuppressWarnings("unused")
     private static final String TAG = "BaseImageList";
 
-    private final IImage mSingleImage;
+    private IImage mSingleImage;
 
-    public SingleImageList(ContentResolver cr, Uri uri) {
-        super(cr, uri, ImageManager.SORT_ASCENDING, null);
-        mSingleImage = new UriImage(this, cr, uri);
+    public SingleImageList(Uri uri) {
+        super(uri, ImageManager.SORT_ASCENDING, null);
+    }
+
+    @Override
+    public void open(ContentResolver resolver) {
+        mSingleImage = new UriImage(this, resolver, mBaseUri);
     }
 
     public HashMap<String, String> getBucketIds() {

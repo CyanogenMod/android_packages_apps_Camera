@@ -18,9 +18,9 @@ package com.android.camera.gallery;
 
 import com.android.camera.ImageManager;
 
-import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Video.Media;
 
@@ -71,8 +71,22 @@ public class VideoList extends BaseImageList {
                 miniThumbMagic, mimeType, dateTaken, title, displayName);
     }
 
-    public VideoList(ContentResolver cr, Uri uri, int sort, String bucketId) {
-        super(cr, uri, sort, bucketId);
+    public VideoList(Uri uri, int sort, String bucketId) {
+        super(uri, sort, bucketId);
+    }
+
+    public static final Creator<VideoList> CREATOR = new Creator<VideoList>() {
+        public VideoList createFromParcel(Parcel in) {
+            return new VideoList(in);
+        }
+
+        public VideoList[] newArray(int size) {
+            return new VideoList[size];
+        }
+    };
+
+    protected VideoList(Parcel in) {
+        super(in);
     }
 
     public HashMap<String, String> getBucketIds() {

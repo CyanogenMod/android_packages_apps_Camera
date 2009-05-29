@@ -37,6 +37,7 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Parcel;
 import android.provider.DrmStore;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
@@ -218,8 +219,9 @@ public class ImageManager {
             boolean complete = false;
             try {
                 long id = ContentUris.parseId(mUri);
-                BaseImageList il = new ImageList(mCr, STORAGE_URI,
-                        THUMB_URI, SORT_ASCENDING, null);
+                BaseImageList il = new ImageList(
+                        STORAGE_URI, THUMB_URI, SORT_ASCENDING, null);
+                il.open(mCr);
 
                 // TODO: Redesign the process of adding new images. We should
                 //     create an <code>IImage</code> in "ImageManager.addImage"
@@ -278,7 +280,8 @@ public class ImageManager {
                     cr, ImageManager.DataLocation.ALL,
                     ImageManager.INCLUDE_DRM_IMAGES, sort);
         } else if (isSingleImageMode(uriString)) {
-            imageList = new SingleImageList(cr, uri);
+            imageList = new SingleImageList(uri);
+            ((SingleImageList) imageList).open(cr);
         } else {
             String bucketId = uri.getQueryParameter("bucketId");
             imageList = ImageManager.allImages(
@@ -296,6 +299,23 @@ public class ImageManager {
     }
 
     private static class EmptyImageList implements IImageList {
+        public static final Creator<EmptyImageList> CREATOR =
+                new Creator<EmptyImageList>() {
+            public EmptyImageList createFromParcel(Parcel in) {
+                return new EmptyImageList();
+            }
+
+            public EmptyImageList[] newArray(int size) {
+                return new EmptyImageList[size];
+            }
+        };
+
+        public void open(ContentResolver resolver) {
+        }
+
+        public void close() {
+        }
+
         public void checkThumbnail(int index) {
         }
 
@@ -333,6 +353,13 @@ public class ImageManager {
         public int getImageIndex(IImage image) {
             throw new UnsupportedOperationException();
         }
+
+        public int describeContents() {
+            return 0;
+        }
+
+        public void writeToParcel(Parcel dest, int flags) {
+        }
     }
 
     public static IImageList emptyImageList() {
@@ -354,64 +381,50 @@ public class ImageManager {
         boolean haveSdCard = hasStorage(false);
 
         // use this code to merge videos and stills into the same list
-        ArrayList<IImageList> l = new ArrayList<IImageList>();
+        ArrayList<BaseImageList> l = new ArrayList<BaseImageList>();
 
         if (haveSdCard && location != DataLocation.INTERNAL) {
             if ((inclusion & INCLUDE_IMAGES) != 0) {
-                try {
-                    l.add(new ImageList(cr, STORAGE_URI,
-                            THUMB_URI, sort, bucketId));
-                } catch (UnsupportedOperationException ex) {
-                    // ignore exception
-                }
+                l.add(new ImageList(
+                        STORAGE_URI, THUMB_URI, sort, bucketId));
             }
             if ((inclusion & INCLUDE_VIDEOS) != 0) {
-                try {
-                    l.add(new VideoList(cr, VIDEO_STORAGE_URI, sort, bucketId));
-                } catch (UnsupportedOperationException ex) {
-                    // ignore exception
-                }
+                l.add(new VideoList(VIDEO_STORAGE_URI, sort, bucketId));
             }
         }
         if (location == DataLocation.INTERNAL || location == DataLocation.ALL) {
             if ((inclusion & INCLUDE_IMAGES) != 0) {
-                try {
-                    l.add(new ImageList(cr,
-                            Images.Media.INTERNAL_CONTENT_URI,
-                            Images.Thumbnails.INTERNAL_CONTENT_URI,
-                            sort, bucketId));
-                } catch (UnsupportedOperationException ex) {
-                    // ignore exception
-                }
+                l.add(new ImageList(
+                        Images.Media.INTERNAL_CONTENT_URI,
+                        Images.Thumbnails.INTERNAL_CONTENT_URI,
+                        sort, bucketId));
             }
             if ((inclusion & INCLUDE_DRM_IMAGES) != 0) {
-                try {
-                    l.add(new DrmImageList(cr,
-                            DrmStore.Images.CONTENT_URI,
-                            sort, bucketId));
-                } catch (UnsupportedOperationException ex) {
-                    // ignore exception
-                }
+                l.add(new DrmImageList(
+                        DrmStore.Images.CONTENT_URI, sort, bucketId));
             }
         }
 
         // Optimization: If some of the lists are empty, remove them.
         // If there is only one remaining list, return it directly.
-
-        Iterator<IImageList> iter = l.iterator();
+        Iterator<BaseImageList> iter = l.iterator();
         while (iter.hasNext()) {
-            IImageList sublist = iter.next();
-            if (sublist.isEmpty()) {
-                iter.remove();
-            }
+            BaseImageList sublist = iter.next();
+            sublist.open(cr);
+            if (sublist.isEmpty()) iter.remove();
+            sublist.close();
         }
 
         if (l.size() == 1) {
-            return l.get(0);
+            BaseImageList list = l.get(0);
+            list.open(cr);
+            return list;
         }
 
-        IImageList [] imageList = l.toArray(new IImageList[l.size()]);
-        return new ImageListUber(imageList, sort);
+        ImageListUber uber = new ImageListUber(
+                l.toArray(new IImageList[l.size()]), sort);
+        uber.open(cr);
+        return uber;
     }
 
     private static boolean checkFsWritable() {
