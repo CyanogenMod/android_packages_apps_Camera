@@ -16,7 +16,7 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.BaseCancelableUnitTests;
+import android.test.suitebuilder.UnitTestSuiteBuilder;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -27,10 +27,10 @@ import junit.framework.TestSuite;
 public class UnitTests extends TestSuite {
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(BitmapManagerUnitTests.class);
-        suite.addTestSuite(PriorityTaskQueueUnitTests.class);
-        suite.addTestSuite(BaseCancelableUnitTests.class);
-        return suite;
+        return new UnitTestSuiteBuilder(UnitTests.class)
+                .includeAllPackagesUnderHere()
+                .excludePackages("com.android.camera.stress")
+                .named("Camera Unit Tests")
+                .build();
     }
 }
