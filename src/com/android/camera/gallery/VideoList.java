@@ -17,69 +17,62 @@
 package com.android.camera.gallery;
 
 import com.android.camera.ImageManager;
-import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Video;
-import android.provider.MediaStore.Video.VideoColumns;
-import android.util.Log;
+import android.provider.MediaStore.Video.Media;
 
 import java.util.HashMap;
 
 /**
  * A collection of all the <code>VideoObject</code> in gallery.
  */
-public class VideoList extends BaseImageList implements IImageList {
+public class VideoList extends BaseImageList {
+
+    @SuppressWarnings("unused")
     private static final String TAG = "BaseImageList";
 
     private static final String[] VIDEO_PROJECTION = new String[] {
-            Video.Media._ID,
-            Video.Media.DATA,
-            Video.Media.DATE_TAKEN,
-            Video.Media.TITLE,
-            Video.Media.DISPLAY_NAME,
-            Video.Media.TAGS,
-            Video.Media.CATEGORY,
-            Video.Media.LANGUAGE,
-            Video.Media.MINI_THUMB_MAGIC,
-            Video.Media.MIME_TYPE};
+            Media._ID,
+            Media.DATA,
+            Media.DATE_TAKEN,
+            Media.TITLE,
+            Media.DISPLAY_NAME,
+            Media.MINI_THUMB_MAGIC,
+            Media.MIME_TYPE};
 
-    private static final int INDEX_ID = indexOf(Video.Media._ID);
-    private static final int INDEX_DATA = indexOf(Video.Media.DATA);
-    private static final int INDEX_DATE_TAKEN = indexOf(Video.Media.DATE_TAKEN);
-    private static final int INDEX_TITLE = indexOf(Video.Media.TITLE);
-    private static final int INDEX_DISPLAY_NAME =
-            indexOf(Video.Media.DISPLAY_NAME);
-    private static final int INDEX_MIME_TYPE = indexOf(Video.Media.MIME_TYPE);
-    private static final int INDEX_MINI_THUMB_MAGIC =
-            indexOf(Video.Media.MINI_THUMB_MAGIC);
+    private static final int INDEX_ID = 0;
+    private static final int INDEX_DATA_PATH = 1;
+    private static final int INDEX_DATE_TAKEN = 2;
+    private static final int INDEX_TITLE = 3;
+    private static final int INDEX_DISPLAY_NAME = 4;
+    private static final int INDEX_MIMI_THUMB_MAGIC = 5;
+    private static final int INDEX_MIME_TYPE = 6;
 
-    private static int indexOf(String field) {
-        return Util.indexOf(VIDEO_PROJECTION, field);
+    @Override
+    protected long getImageId(Cursor cursor) {
+        return cursor.getLong(INDEX_ID);
     }
 
-    public VideoList(ContentResolver cr, Uri uri, Uri thumbUri,
-            int sort, String bucketId) {
+    @Override
+    protected BaseImage loadImageFromCursor(Cursor cursor) {
+        long id = cursor.getLong(INDEX_ID);
+        String dataPath = cursor.getString(INDEX_DATA_PATH);
+        long dateTaken = cursor.getLong(INDEX_DATE_TAKEN);
+        String title = cursor.getString(INDEX_TITLE);
+        String displayName = cursor.getString(INDEX_DISPLAY_NAME);
+        long miniThumbMagic = cursor.getLong(INDEX_MIMI_THUMB_MAGIC);
+        String mimeType = cursor.getString(INDEX_MIME_TYPE);
+
+        return new VideoObject(this, mContentResolver,
+                id, cursor.getPosition(), contentUri(id), dataPath,
+                miniThumbMagic, mimeType, dateTaken, title, displayName);
+    }
+
+    public VideoList(ContentResolver cr, Uri uri, int sort, String bucketId) {
         super(cr, uri, sort, bucketId);
-
-        mCursor = createCursor();
-        if (mCursor == null) {
-            Log.e(TAG, "unable to create video cursor for " + mBaseUri);
-            throw new UnsupportedOperationException();
-        }
-
-        if (mCursor.moveToFirst()) {
-            int row = 0;
-            do {
-                long imageId = mCursor.getLong(indexId());
-                long miniThumbMagic = mCursor.getLong(indexMiniThumbMagic());
-                mCache.put(imageId, new VideoObject(imageId, miniThumbMagic,
-                        mContentResolver, this, row++));
-            } while (mCursor.moveToNext());
-        }
     }
 
     public HashMap<String, String> getBucketIds() {
@@ -88,31 +81,32 @@ public class VideoList extends BaseImageList implements IImageList {
         Cursor c = Images.Media.query(
                 mContentResolver, uri,
                 new String[] {
-                    VideoColumns.BUCKET_DISPLAY_NAME,
-                    VideoColumns.BUCKET_ID
+                    Media.BUCKET_DISPLAY_NAME,
+                    Media.BUCKET_ID
                 },
                 whereClause(), whereClauseArgs(), sortOrder());
-        HashMap<String, String> hash = new HashMap<String, String>();
-        if (c != null && c.moveToFirst()) {
-            do {
+        try {
+            HashMap<String, String> hash = new HashMap<String, String>();
+            while (c.moveToNext()) {
                 hash.put(c.getString(1), c.getString(0));
-            } while (c.moveToNext());
+            }
+            return hash;
+        } finally {
+            c.close();
         }
-        return hash;
     }
 
     protected String whereClause() {
-        if (mBucketId != null) {
-            return Images.Media.BUCKET_ID + " = '" + mBucketId + "'";
-        } else {
-            return null;
-        }
+        return mBucketId != null
+                ? Images.Media.BUCKET_ID + " = '" + mBucketId + "'"
+                : null;
     }
 
     protected String[] whereClauseArgs() {
         return null;
     }
 
+    @Override
     protected Cursor createCursor() {
         Cursor c = Images.Media.query(
                 mContentResolver, mBaseUri, VIDEO_PROJECTION,
@@ -120,55 +114,8 @@ public class VideoList extends BaseImageList implements IImageList {
         return c;
     }
 
-    @Override
-    protected int indexId() {
-        return INDEX_ID;
-    }
-
-    @Override
-    protected int indexData() {
-        return INDEX_DATA;
-    }
-
-    @Override
-    protected int indexMimeType() {
-        return INDEX_MIME_TYPE;
-    }
-
-    @Override
-    protected int indexDateTaken() {
-        return INDEX_DATE_TAKEN;
-    }
-
-    @Override
-    protected int indexMiniThumbMagic() {
-        return INDEX_MINI_THUMB_MAGIC;
-    }
-
-    @Override
-    protected int indexOrientation() {
-        return -1;
-    }
-
-    @Override
-    protected int indexTitle() {
-        return INDEX_TITLE;
-    }
-
-    @Override
-    protected int indexDisplayName() {
-        return -1;
-    }
-
-    @Override
-    protected IImage make(long id, long miniThumbMagic, ContentResolver cr,
-            IImageList list, int index, int rotation) {
-        return new VideoObject(id, miniThumbMagic, mContentResolver, this,
-                index);
-    }
-
     private String sortOrder() {
-        return Video.Media.DATE_TAKEN +
+        return Media.DATE_TAKEN +
                 (mSort == ImageManager.SORT_ASCENDING ? " ASC " : " DESC");
     }
 }

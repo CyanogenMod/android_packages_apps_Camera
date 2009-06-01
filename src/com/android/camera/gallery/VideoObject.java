@@ -19,8 +19,8 @@ package com.android.camera.gallery;
 import com.android.camera.ImageManager;
 
 import android.content.ContentResolver;
-import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,9 +38,11 @@ public class VideoObject extends BaseImage implements IImage {
      * @param id        the image id of the image
      * @param cr        the content resolver
      */
-    protected VideoObject(long id, long miniThumbMagic, ContentResolver cr,
-            VideoList container, int row) {
-        super(id, miniThumbMagic, cr, container, row);
+    protected VideoObject(BaseImageList container, ContentResolver cr,
+            long id, int index, Uri uri, String dataPath, long miniThumbMagic,
+            String mimeType, long dateTaken, String title, String displayName) {
+        super(container, cr, id, index, uri, dataPath, miniThumbMagic,
+                mimeType, dateTaken, title, displayName);
     }
 
     @Override
@@ -58,18 +60,6 @@ public class VideoObject extends BaseImage implements IImage {
     @Override
     public int hashCode() {
         return fullSizeImageUri().toString().hashCode();
-    }
-
-    public String getDataPath() {
-        String path = null;
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                int column = ((VideoList) getContainer()).indexData();
-                if (column >= 0) path = c.getString(column);
-            }
-        }
-        return path;
     }
 
     @Override
@@ -127,8 +117,6 @@ public class VideoObject extends BaseImage implements IImage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("" + mId);
-        return sb.toString();
+        return new StringBuilder("VideoObject").append(mId).toString();
     }
 }

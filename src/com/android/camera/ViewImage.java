@@ -876,7 +876,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         IImage image = mAllImages.getImageForUri(uri);
         if (image != null) {
-            mCurrentPosition = image.getRow();
+            mCurrentPosition = mAllImages.getImageIndex(image);
             mLastSlideShowImage = mCurrentPosition;
         }
     }

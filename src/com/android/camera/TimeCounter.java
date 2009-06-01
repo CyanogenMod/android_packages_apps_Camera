@@ -30,9 +30,9 @@ import android.util.Log;
 // between begin() and end() every 128 times.
 public class TimeCounter {
     private static final String TAG = "TimeCounter";
-    private String mName;
+    private final String mName;
     private int mSamples;
-    private int mPeriod;
+    private final int mPeriod;
 
     // To avoid overflow, these values are in microseconds.
     private long mSum;
@@ -81,4 +81,4 @@ public class TimeCounter {
                 + ", Max = " + mMax
                 + ", Min = " + mMin);
     }
-};
+}

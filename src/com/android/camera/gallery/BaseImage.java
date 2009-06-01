@@ -20,19 +20,18 @@ import com.android.camera.BitmapManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
-import android.database.Cursor;
+import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore.Images;
+import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 
 /**
  * Represents a particular image and provides access to the underlying bitmap
@@ -47,21 +46,38 @@ public abstract class BaseImage implements IImage {
             new byte[MiniThumbFile.BYTES_PER_MINTHUMB];
 
     protected ContentResolver mContentResolver;
-    protected long mId, mMiniThumbMagic;
+
+
+    // Database field
+    protected Uri mUri;
+    protected long mId;
+    protected String mDataPath;
+    protected long mMiniThumbMagic;
+    protected final int mIndex;
+    protected String mMimeType;
+    private final long mDateTaken;
+    private String mTitle;
+    private final String mDisplayName;
+
     protected BaseImageList mContainer;
-    protected HashMap<String, String> mExifData;
-    protected int mCursorRow;
 
     private int mWidth = UNKNOWN_LENGTH;
     private int mHeight = UNKNOWN_LENGTH;
 
-    protected BaseImage(long id, long miniThumbMagic, ContentResolver cr,
-            BaseImageList container, int cursorRow) {
+    protected BaseImage(BaseImageList container, ContentResolver cr,
+            long id, int index, Uri uri, String dataPath, long miniThumbMagic,
+            String mimeType, long dateTaken, String title, String displayName) {
+        mContainer = container;
         mContentResolver = cr;
-        mId              = id;
-        mMiniThumbMagic  = miniThumbMagic;
-        mContainer       = container;
-        mCursorRow       = cursorRow;
+        mId = id;
+        mIndex = index;
+        mUri = uri;
+        mDataPath = dataPath;
+        mMiniThumbMagic = miniThumbMagic;
+        mMimeType = mimeType;
+        mDateTaken = dateTaken;
+        mTitle = title;
+        mDisplayName = displayName;
     }
 
     protected abstract Bitmap.CompressFormat compressionType();
@@ -70,12 +86,12 @@ public abstract class BaseImage implements IImage {
         private ThreadSafeOutputStream mOutputStream = null;
 
         private final Bitmap mBitmap;
-        private final Uri mUri;
+        private final Uri mDestinationUri;
         private final byte[] mJpegData;
 
         public CompressImageToFile(Bitmap bitmap, byte[] jpegData, Uri uri) {
             mBitmap = bitmap;
-            mUri = uri;
+            mDestinationUri = uri;
             mJpegData = jpegData;
         }
 
@@ -93,7 +109,8 @@ public abstract class BaseImage implements IImage {
         @Override
         public Boolean execute() {
             try {
-                OutputStream delegate = mContentResolver.openOutputStream(mUri);
+                OutputStream delegate =
+                        mContentResolver.openOutputStream(mDestinationUri);
                 synchronized (this) {
                     mOutputStream = new ThreadSafeOutputStream(delegate);
                 }
@@ -126,15 +143,19 @@ public abstract class BaseImage implements IImage {
         return new CompressImageToFile(bitmap, jpegData, uri);
     }
 
+    public String getDataPath() {
+        return mDataPath;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other == null || !(other instanceof Image)) return false;
-        return fullSizeImageUri().equals(((Image) other).fullSizeImageUri());
+        return mUri.equals(((Image) other).mUri);
     }
 
     @Override
     public int hashCode() {
-        return fullSizeImageUri().toString().hashCode();
+        return mUri.hashCode();
     }
 
     public Bitmap fullSizeBitmap(int targetWidthHeight) {
@@ -177,8 +198,7 @@ public abstract class BaseImage implements IImage {
         @Override
         protected Bitmap execute() {
             try {
-                Bitmap b = Util.makeBitmap(
-                        mTargetWidthHeight, fullSizeImageUri(),
+                Bitmap b = Util.makeBitmap(mTargetWidthHeight, mUri,
                         mContentResolver, mPFD, mOptions);
                 if (b != null) {
                     b = Util.rotate(b, getDegreesRotated());
@@ -192,12 +212,11 @@ public abstract class BaseImage implements IImage {
         }
     }
 
-
     public Cancelable<Bitmap> fullSizeBitmapCancelable(
             int targetWidthHeight) {
         try {
             ParcelFileDescriptor pfdInput = mContentResolver
-                    .openFileDescriptor(fullSizeImageUri(), "r");
+                    .openFileDescriptor(mUri, "r");
             return new LoadBitmapCancelable(pfdInput, targetWidthHeight);
         } catch (FileNotFoundException ex) {
             return null;
@@ -208,8 +227,7 @@ public abstract class BaseImage implements IImage {
 
     public InputStream fullSizeImageData() {
         try {
-            InputStream input = mContentResolver.openInputStream(
-                    fullSizeImageUri());
+            InputStream input = mContentResolver.openInputStream(mUri);
             return input;
         } catch (IOException ex) {
             return null;
@@ -221,24 +239,15 @@ public abstract class BaseImage implements IImage {
     }
 
     public Uri fullSizeImageUri() {
-        return mContainer.contentUri(mId);
+        return mUri;
     }
 
     public IImageList getContainer() {
         return mContainer;
     }
 
-    Cursor getCursor() {
-        return mContainer.getCursor();
-    }
-
     public long getDateTaken() {
-        if (mContainer.indexDateTaken() < 0) return 0;
-        Cursor c = getCursor();
-        synchronized (c) {
-            c.moveToPosition(getRow());
-            return c.getLong(mContainer.indexDateTaken());
-        }
+        return mDateTaken;
     }
 
     protected int getDegreesRotated() {
@@ -246,74 +255,21 @@ public abstract class BaseImage implements IImage {
     }
 
     public String getMimeType() {
-        if (mContainer.indexMimeType() < 0) {
-            Cursor c = mContentResolver.query(fullSizeImageUri(),
-                    new String[] { "_id", Images.Media.MIME_TYPE },
-                    null, null, null);
-            try {
-                return c.moveToFirst() ? c.getString(1) : "";
-            } finally {
-                c.close();
-            }
-        } else {
-            String mimeType = null;
-            Cursor c = getCursor();
-            synchronized (c) {
-                if (c.moveToPosition(getRow())) {
-                    mimeType = c.getString(mContainer.indexMimeType());
-                }
-            }
-            return mimeType;
-        }
+        return mMimeType;
     }
 
     public String getTitle() {
-        String name = null;
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                if (mContainer.indexTitle() != -1) {
-                    name = c.getString(mContainer.indexTitle());
-                }
-            }
-        }
-        return name != null && name.length() > 0 ? name : String.valueOf(mId);
+        return mTitle;
     }
 
     public String getDisplayName() {
-        if (mContainer.indexDisplayName() < 0) {
-            Cursor c = mContentResolver.query(fullSizeImageUri(),
-                    new String[] { "_id", Images.Media.DISPLAY_NAME },
-                    null, null, null);
-            try {
-                if (c.moveToFirst()) return c.getString(1);
-            } finally {
-                c.close();
-            }
-        } else {
-            String name = null;
-            Cursor c = getCursor();
-            synchronized (c) {
-                if (c.moveToPosition(getRow())) {
-                    name = c.getString(mContainer.indexDisplayName());
-                }
-            }
-            if (name != null && name.length() > 0) {
-                return name;
-            }
-        }
-        return String.valueOf(mId);
-    }
-
-    public int getRow() {
-        return mCursorRow;
+        return mDisplayName;
     }
 
     private void setupDimension() {
         ParcelFileDescriptor input = null;
         try {
-            input = mContentResolver
-                    .openFileDescriptor(fullSizeImageUri(), "r");
+            input = mContentResolver.openFileDescriptor(mUri, "r");
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapManager.instance().decodeFileDescriptor(
@@ -343,8 +299,8 @@ public abstract class BaseImage implements IImage {
             long id = mId;
             long dbMagic = mMiniThumbMagic;
             if (dbMagic == 0 || dbMagic == id) {
-                dbMagic = ((BaseImageList) getContainer())
-                        .checkThumbnail(this, getRow(), null);
+                dbMagic = ((BaseImageList)
+                        getContainer()).checkThumbnail(this, null);
             }
 
             synchronized (sMiniThumbData) {
@@ -355,8 +311,7 @@ public abstract class BaseImage implements IImage {
                     byte[][] createdThumbData = new byte[1][];
                     try {
                         dbMagic = ((BaseImageList) getContainer())
-                                .checkThumbnail(this, getRow(),
-                                createdThumbData);
+                                .checkThumbnail(this, createdThumbData);
                     } catch (IOException ex) {
                         // Typically IOException because the sd card is full.
                         // But createdThumbData may have been filled in, so
@@ -388,8 +343,7 @@ public abstract class BaseImage implements IImage {
         }
     }
 
-    public void onRemove() {
-        mContainer.mCache.remove(mId);
+    protected void onRemove() {
     }
 
     protected void saveMiniThumb(Bitmap source) throws IOException {
@@ -397,25 +351,21 @@ public abstract class BaseImage implements IImage {
     }
 
     public void setTitle(String name) {
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                c.updateString(mContainer.indexTitle(), name);
-                c.commitUpdates();
-            }
-        }
+        if (mTitle.equals(name)) return;
+        mTitle = name;
+        ContentValues values = new ContentValues();
+        values.put(ImageColumns.TITLE, name);
+        mContentResolver.update(mUri, values, null, null);
     }
 
     public Uri thumbUri() {
-        Uri uri = fullSizeImageUri();
         // The value for the query parameter cannot be null :-(,
         // so using a dummy "1"
-        uri = uri.buildUpon().appendQueryParameter("thumb", "1").build();
-        return uri;
+        return mUri.buildUpon().appendQueryParameter("thumb", "1").build();
     }
 
     @Override
     public String toString() {
-        return fullSizeImageUri().toString();
+        return mUri.toString();
     }
 }

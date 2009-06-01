@@ -89,7 +89,9 @@ public interface IImageList {
      * Removes the image at the ith position.
      * @param i     the position
      */
-    public abstract void removeImageAt(int i);
+    public abstract boolean removeImageAt(int i);
+
+    public int getImageIndex(IImage image);
 
     /**
      * Generate thumbnail for the image (if it has not been generated.)
