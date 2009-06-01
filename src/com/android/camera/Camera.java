@@ -637,9 +637,15 @@ public class Camera extends Activity implements View.OnClickListener,
             mPreviewing = false;
             mCaptureOnlyBitmap = null;
 
-            final int latchedOrientation =
-                    ImageManager.roundOrientation(mLastOrientation + 90);
-            mParameters.set(PARM_ROTATION, latchedOrientation);
+            int orientation = mLastOrientation;
+            if (orientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
+                orientation += 90;
+            }
+            orientation = ImageManager.roundOrientation(orientation);
+            Log.v(TAG, "mLastOrientation = " + mLastOrientation
+                    + ", orientation = " + orientation);
+
+            mParameters.set(PARM_ROTATION, orientation);
 
             Location loc = mRecordLocation ? getCurrentLocation() : null;
 
