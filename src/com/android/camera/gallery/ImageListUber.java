@@ -20,6 +20,7 @@ import com.android.camera.ImageManager;
 import com.android.camera.Util;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -257,8 +258,10 @@ public class ImageListUber implements IImageList {
     private static class DescendingComparator implements Comparator<MergeSlot> {
 
         public int compare(MergeSlot m1, MergeSlot m2) {
+            Log.v(TAG, String.format(
+                    "compare %s : %s", m1.mDateTaken, m2.mDateTaken ));
             if (m1.mDateTaken != m2.mDateTaken) {
-                return m1.mDateTaken < m2.mDateTaken ? -1 : 1;
+                return m1.mDateTaken < m2.mDateTaken ? 1 : -1;
             }
             return m1.mListIndex - m2.mListIndex;
         }
@@ -267,6 +270,8 @@ public class ImageListUber implements IImageList {
     private static class AscendingComparator implements Comparator<MergeSlot> {
 
         public int compare(MergeSlot m1, MergeSlot m2) {
+            Log.v(TAG, String.format(
+                    "compare %s : %s", m1.mDateTaken, m2.mDateTaken ));
             if (m1.mDateTaken != m2.mDateTaken) {
                 return m1.mDateTaken < m2.mDateTaken ? -1 : 1;
             }
