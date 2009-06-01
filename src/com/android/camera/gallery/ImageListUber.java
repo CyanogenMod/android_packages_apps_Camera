@@ -17,30 +17,51 @@
 package com.android.camera.gallery;
 
 import com.android.camera.ImageManager;
+import com.android.camera.Util;
 
 import android.net.Uri;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 
 /**
  * A union of different <code>IImageList</code>.
  */
+//TODO: add unittest for this class
 public class ImageListUber implements IImageList {
     @SuppressWarnings("unused")
     private static final String TAG = "ImageListUber";
 
     private final IImageList [] mSubList;
-    private final int mSort;
+    private final PriorityQueue<MergeSlot> mQueue;
 
-    // This is an array of Longs wherein each Long consists of
-    // two components.  The first component indicates the number of
-    // consecutive entries that belong to a given sublist.
-    // The second component indicates which sublist we're referring
-    // to (an int which is used to index into mSubList).
-    private ArrayList<Long> mSkipList = null;
+    // This is an array of Longs wherein each Long consists of two components:
+    // "a number" and "an index of sublist".
+    //   * The lower 32bit indicates the number of consecutive entries that
+    //     belong to a given sublist.
+    //
+    //   * The higher 32bit component indicates which sublist we're referring
+    //     to.
+    private long[] mSkipList = new long[16];
+    private int mSkipListSize = 0;
     private int [] mSkipCounts = null;
+    private int mLastListIndex = -1;
+
+    public ImageListUber(IImageList [] sublist, int sort) {
+        mSubList = sublist.clone();
+        mSkipCounts = new int[mSubList.length];
+        mQueue = new PriorityQueue<MergeSlot>(4,
+                sort == ImageManager.SORT_ASCENDING
+                ? new AscendingComparator()
+                : new DescendingComparator());
+        for (int i = 0, n = sublist.length; i < n; ++i) {
+            MergeSlot slot = new MergeSlot(sublist[i], i);
+            if (slot.next()) mQueue.add(slot);
+        }
+    }
 
     public HashMap<String, String> getBucketIds() {
         HashMap<String, String> hashMap = new HashMap<String, String>();
@@ -50,47 +71,37 @@ public class ImageListUber implements IImageList {
         return hashMap;
     }
 
-    public ImageListUber(IImageList [] sublist, int sort) {
-        mSubList = sublist.clone();
-        mSort = sort;
-    }
-
     public void checkThumbnail(int index) throws IOException {
+        // The index is not refer to the index of the image but in another order
+        // sequence. Since this function is only used to check all thumbnails
+        // is created, it should be fine.
         for (IImageList list : mSubList) {
             int count = list.getCount();
             if (count > index) {
                 list.checkThumbnail(index);
+                return;
             }
             index -= count;
         }
     }
 
     public void deactivate() {
-        final IImageList sublist[] = mSubList;
-        final int length = sublist.length;
-        int pos = -1;
-        while (++pos < length) {
-            IImageList sub = sublist[pos];
-            sub.deactivate();
+        for (IImageList subList : mSubList) {
+            subList.deactivate();
         }
     }
 
     public int getCount() {
-        final IImageList sublist[] = mSubList;
-        final int length = sublist.length;
         int count = 0;
-        for (int i = 0; i < length; i++)
-            count += sublist[i].getCount();
+        for (IImageList subList : mSubList) {
+            count += subList.getCount();
+        }
         return count;
     }
 
     public boolean isEmpty() {
-        final IImageList sublist[] = mSubList;
-        final int length = sublist.length;
-        for (int i = 0; i < length; i++) {
-            if (!sublist[i].isEmpty()) {
-                return false;
-            }
+        for (IImageList subList : mSubList) {
+            if (!subList.isEmpty()) return false;
         }
         return true;
     }
@@ -106,20 +117,10 @@ public class ImageListUber implements IImageList {
                     "index " + index + " out of range max is " + getCount());
         }
 
-        // first make sure our allocations are in order
-        if (mSkipCounts == null || mSubList.length > mSkipCounts.length) {
-            mSkipCounts = new int[mSubList.length];
-        }
-
-        if (mSkipList == null) {
-            mSkipList = new ArrayList<Long>();
-        }
-
+        int skipCounts[] = mSkipCounts;
         // zero out the mSkipCounts since that's only used for the
         // duration of the function call.
-        for (int i = 0; i < mSubList.length; i++) {
-            mSkipCounts[i] = 0;
-        }
+        Arrays.fill(skipCounts, 0);
 
         // a counter of how many images we've skipped in
         // trying to get to index.  alternatively we could
@@ -129,87 +130,53 @@ public class ImageListUber implements IImageList {
 
         // scan the existing mSkipList to see if we've computed
         // enough to just return the answer
-        for (int i = 0; i < mSkipList.size(); i++) {
-            long v = mSkipList.get(i);
+        for (int i = 0, n = mSkipListSize; i < n; ++i) {
+            long v = mSkipList[i];
 
             int offset = (int) (v & 0xFFFFFFFF);
             int which  = (int) (v >> 32);
-
             if (skipCount + offset > index) {
                 int subindex = mSkipCounts[which] + (index - skipCount);
-                IImage img = mSubList[which].getImageAt(subindex);
-                return img;
+                return mSubList[which].getImageAt(subindex);
             }
-
             skipCount += offset;
             mSkipCounts[which] += offset;
         }
 
-        // if we get here we haven't computed the answer for
-        // "index" yet so keep computing.  This means running
-        // through the list of images and either modifying the
-        // last entry or creating a new one.
-        while (true) {
-            // We are merging the sublists into this uber list.
-            // We pick the next image by choosing the one with
-            // max/min timestamp from the next image of each sublists.
-            // Then we record this fact in mSkipList (which encodes
-            // sublist number in a run-length encoding fashion).
-            long maxTimestamp = mSort == ImageManager.SORT_ASCENDING
-                    ? Long.MAX_VALUE
-                    : Long.MIN_VALUE;
-            int which = -1;
-            for (int i = 0; i < mSubList.length; i++) {
-                int pos = mSkipCounts[i];
-                IImageList list = mSubList[i];
-                if (pos < list.getCount()) {
-                    IImage image = list.getImageAt(pos);
-                    // this should never be null but sometimes the database is
-                    // causing problems and it is null
-                    if (image != null) {
-                        long timestamp = image.getDateTaken();
-                        if (mSort == ImageManager.SORT_ASCENDING
-                                ? (timestamp < maxTimestamp)
-                                : (timestamp > maxTimestamp)) {
-                            maxTimestamp = timestamp;
-                            which = i;
-                        }
-                    }
-                }
+        for (;true; ++skipCount) {
+            MergeSlot slot = nextMergeSlot();
+            if (slot == null) return null;
+            if (skipCount == index) {
+                IImage result = slot.mImage;
+                if (slot.next()) mQueue.add(slot);
+                return result;
             }
-
-            if (which == -1) {
-                return null;
-            }
-
-            boolean done = false;
-            if (mSkipList.size() > 0) {
-                int pos = mSkipList.size() - 1;
-                long oldEntry = mSkipList.get(pos);
-                if ((oldEntry >> 32) == which) {
-                    long newEntry = oldEntry + 1;
-                    mSkipList.set(pos, newEntry);
-                    done = true;
-                }
-            }
-            if (!done) {
-                long newEntry = ((long) which << 32) | 1;  // initial count = 1
-                mSkipList.add(newEntry);
-            }
-
-            if (skipCount++ == index) {
-                return mSubList[which].getImageAt(mSkipCounts[which]);
-            }
-            mSkipCounts[which] += 1;
+            if (slot.next()) mQueue.add(slot);
         }
     }
 
+    private MergeSlot nextMergeSlot() {
+        MergeSlot slot = mQueue.poll();
+        if (slot == null) return null;
+        if (slot.mListIndex == mLastListIndex) {
+            int lastIndex = mSkipListSize - 1;
+            ++ mSkipList[lastIndex];
+        } else {
+            mLastListIndex = slot.mListIndex;
+            if (mSkipList.length == mSkipListSize) {
+                long [] temp = new long[mSkipListSize * 2];
+                System.arraycopy(mSkipList, 0, temp, 0, mSkipListSize);
+                mSkipList = temp;
+            }
+            mSkipList[mSkipListSize++] = (((long) mLastListIndex) << 32) | 1;
+        }
+        return slot;
+    }
+
     public IImage getImageForUri(Uri uri) {
-        // TODO: perhaps we can preflight the base of the uri
-        // against each sublist first
-        for (int i = 0; i < mSubList.length; i++) {
-            IImage img = mSubList[i].getImageForUri(uri);
-            if (img != null) return img;
+        for (IImageList sublist : mSubList) {
+            IImage image = sublist.getImageForUri(uri);
+            if (image != null) return image;
         }
         return null;
     }
@@ -220,51 +187,111 @@ public class ImageListUber implements IImageList {
      * counter.  This is simple because deletion can never
      * cause change the order of images.
      */
-    public void modifySkipCountForDeletedImage(int index) {
+    private void modifySkipCountForDeletedImage(int index) {
         int skipCount = 0;
-
-        for (int i = 0; i < mSkipList.size(); i++) {
-            long v = mSkipList.get(i);
-
+        for (int i = 0, n = mSkipListSize; i < n; i++) {
+            long v = mSkipList[i];
             int offset = (int) (v & 0xFFFFFFFF);
             int which  = (int) (v >> 32);
-
             if (skipCount + offset > index) {
-                mSkipList.set(i, v - 1);
+                mSkipList[i] = v - 1;
                 break;
             }
-
             skipCount += offset;
         }
     }
 
-    public boolean removeImage(IImage image) {
-        IImageList parent = image.getContainer();
-        int pos = -1;
-        int baseIndex = 0;
-        while (++pos < mSubList.length) {
-            IImageList sub = mSubList[pos];
-            if (sub == parent) {
-                if (sub.removeImage(image)) {
-                    modifySkipCountForDeletedImage(baseIndex);
-                    return true;
-                } else {
-                    break;
-                }
-            }
-            baseIndex += sub.getCount();
+    private boolean removeImage(IImage image, int index) {
+        IImageList list = image.getContainer();
+        if (list != null && list.removeImage(image)) {
+            modifySkipCountForDeletedImage(index);
+            return true;
         }
         return false;
     }
 
-    public void removeImageAt(int index) {
-        IImage img = getImageAt(index);
-        if (img != null) {
-            IImageList list = img.getContainer();
-            if (list != null) {
-                list.removeImage(img);
-                modifySkipCountForDeletedImage(index);
+    public boolean removeImage(IImage image) {
+        return removeImage(image, getImageIndex(image));
+    }
+
+    public boolean removeImageAt(int index) {
+        IImage image = getImageAt(index);
+        if (image == null) return false;
+        return removeImage(image, index);
+    }
+
+    public synchronized int getImageIndex(IImage image) {
+        IImageList list = image.getContainer();
+        int listIndex = Util.indexOf(mSubList, list);
+        if (listIndex == -1) {
+            throw new IllegalArgumentException();
+        }
+        int listOffset = list.getImageIndex(image);
+
+        // Similar algorithm as getImageAt(int index)
+        int skipCount = 0;
+        for (int i = 0, n = mSkipListSize; i < n; ++i) {
+            long value = mSkipList[i];
+            int offset = (int) (value & 0xFFFFFFFF);
+            int which  = (int) (value >> 32);
+            if (which == listIndex) {
+                if (listOffset < offset) {
+                    return skipCount + listOffset;
+                }
+                listOffset -= offset;
             }
+            skipCount += offset;
+        }
+
+        for (;true; ++skipCount) {
+            MergeSlot slot = nextMergeSlot();
+            if (slot == null) return -1;
+            if (slot.mImage == image) {
+                if (slot.next()) mQueue.add(slot);
+                return skipCount;
+            }
+            if (slot.next()) mQueue.add(slot);
+        }
+    }
+
+    private static class DescendingComparator implements Comparator<MergeSlot> {
+
+        public int compare(MergeSlot m1, MergeSlot m2) {
+            if (m1.mDateTaken != m2.mDateTaken) {
+                return m1.mDateTaken < m2.mDateTaken ? -1 : 1;
+            }
+            return m1.mListIndex - m2.mListIndex;
+        }
+    }
+
+    private static class AscendingComparator implements Comparator<MergeSlot> {
+
+        public int compare(MergeSlot m1, MergeSlot m2) {
+            if (m1.mDateTaken != m2.mDateTaken) {
+                return m1.mDateTaken < m2.mDateTaken ? -1 : 1;
+            }
+            return m1.mListIndex - m2.mListIndex;
+        }
+    }
+
+    private static class MergeSlot {
+        private int mOffset = -1;
+        private final IImageList mList;
+
+        int mListIndex;
+        long mDateTaken;
+        IImage mImage;
+
+        public MergeSlot(IImageList list, int index) {
+            mList = list;
+            mListIndex = index;
+        }
+
+        public boolean next() {
+            if (mOffset >= mList.getCount() - 1) return false;
+            mImage = mList.getImageAt(++mOffset);
+            mDateTaken = mImage.getDateTaken();
+            return true;
         }
     }
 }

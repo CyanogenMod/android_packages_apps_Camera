@@ -221,10 +221,6 @@ class UriImage implements IImage {
         return false;
     }
 
-    public void onRemove() {
-        throw new UnsupportedOperationException();
-    }
-
     public boolean rotateImageBy(int degrees) {
         return false;
     }

@@ -276,7 +276,7 @@ public class Util {
         return bitmap;
     }
 
-    public static int indexOf(String [] array, String s) {
+    public static <T>  int indexOf(T [] array, T s) {
         for (int i = 0; i < array.length; i++) {
             if (array[i].equals(s)) {
                 return i;

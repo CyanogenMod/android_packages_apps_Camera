@@ -22,17 +22,20 @@ import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
+import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -41,26 +44,18 @@ import java.util.concurrent.ExecutionException;
 public class Image extends BaseImage implements IImage {
     private static final String TAG = "BaseImage";
 
-    private int mRotation;
+    private HashMap<String, String> mExifData;
+
     private ExifInterface mExif;
+    private int mRotation;
 
-    public Image(long id, long miniThumbMagic, ContentResolver cr,
-            BaseImageList container, int cursorRow, int rotation) {
-        super(id, miniThumbMagic, cr, container, cursorRow);
+    public Image(BaseImageList container, ContentResolver cr,
+            long id, int index, Uri uri, String dataPath, long miniThumbMagic,
+            String mimeType, long dateTaken, String title, String displayName,
+            int rotation) {
+        super(container, cr, id, index, uri, dataPath, miniThumbMagic,
+                mimeType, dateTaken, title, displayName);
         mRotation = rotation;
-    }
-
-    public String getDataPath() {
-        String path = null;
-        Cursor c = getCursor();
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                int column = ((ImageList) getContainer()).indexData();
-                if (column >= 0)
-                    path = c.getString(column);
-            }
-        }
-        return path;
     }
 
     @Override
@@ -69,17 +64,14 @@ public class Image extends BaseImage implements IImage {
     }
 
     protected void setDegreesRotated(int degrees) {
-        Cursor c = getCursor();
+        if (mRotation == degrees) return;
         mRotation = degrees;
-        synchronized (c) {
-            if (c.moveToPosition(getRow())) {
-                int column = ((ImageList) getContainer()).indexOrientation();
-                if (column >= 0) {
-                    c.updateInt(column, degrees);
-                    c.commitUpdates();
-                }
-            }
-        }
+        ContentValues values = new ContentValues();
+        values.put(ImageColumns.ORIENTATION, mRotation);
+        mContentResolver.update(mUri, values, null, null);
+
+        //TODO: Consider invalidate the cursor in container
+        // ((BaseImageList) getContainer()).invalidateCursor();
     }
 
     @Override
@@ -94,7 +86,7 @@ public class Image extends BaseImage implements IImage {
     }
 
     /**
-     * Does not replace the tag if already there. Otherwise, adds to the exif
+     * Does not replace the tag if already there. Otherwise, adds to the EXIF
      * tags.
      *
      * @param tag
@@ -111,8 +103,7 @@ public class Image extends BaseImage implements IImage {
     }
 
     /**
-     * Return the value of the Exif tag as an int. Returns 0 on any type of
-     * error.
+     * Returns the value of the EXIF tag as an integer.
      *
      * @param tag
      */
@@ -130,7 +121,7 @@ public class Image extends BaseImage implements IImage {
     }
 
     /**
-     * Return the value of the Exif tag as a String. It's caller's
+     * Return the value of the EXIF tag as a String. It's caller's
      * responsibility to check nullity.
      */
     public String getExifTag(String tag) {
@@ -219,7 +210,7 @@ public class Image extends BaseImage implements IImage {
             }
 
             mContainer.storeThumbnail(
-                    thumbnail, Image.this.fullSizeImageId());
+                    thumbnail, Image.this.fullSizeImageUri());
             if (isCanceling()) return null;
 
             try {
@@ -240,12 +231,7 @@ public class Image extends BaseImage implements IImage {
     }
 
     private void loadExifData() {
-        Cursor c = getCursor();
-        String filePath;
-        synchronized (c) {
-            filePath = c.getString(mContainer.indexData());
-        }
-        mExif = new ExifInterface(filePath);
+        mExif = new ExifInterface(mDataPath);
         if (mExifData == null) {
             mExifData = mExif.getAttributes();
         }
@@ -301,7 +287,7 @@ public class Image extends BaseImage implements IImage {
         // fresh thumbs
         mMiniThumbMagic = 0;
         try {
-            mContainer.checkThumbnail(this, this.getRow(), null);
+            mContainer.checkThumbnail(this, null);
         } catch (IOException e) {
             // Ignore inability to store mini thumbnail.
         }
@@ -335,7 +321,7 @@ public class Image extends BaseImage implements IImage {
         if (bitmap == null) {
             bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE, false);
             // No thumbnail found... storing the new one.
-            bitmap = mContainer.storeThumbnail(bitmap, fullSizeImageId());
+            bitmap = mContainer.storeThumbnail(bitmap, fullSizeImageUri());
         }
 
         if (bitmap != null) {

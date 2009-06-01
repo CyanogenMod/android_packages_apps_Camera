@@ -17,7 +17,6 @@
 package com.android.camera.gallery;
 
 import com.android.camera.ExifInterface;
-import com.android.camera.ImageManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
@@ -27,31 +26,35 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.provider.BaseColumns;
-import android.provider.MediaStore.Images;
+import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.util.Random;
 
 /**
  * A collection of <code>BaseImage</code>s.
  */
 public abstract class BaseImageList implements IImageList {
     private static final String TAG = "BaseImageList";
+    private static final int CACHE_CAPACITY = 512;
+    private final LruCache<Integer, BaseImage> mCache =
+            new LruCache<Integer, BaseImage>(CACHE_CAPACITY);
 
     protected ContentResolver mContentResolver;
     protected int mSort;
+
     protected Uri mBaseUri;
     protected Cursor mCursor;
-    protected boolean mCursorDeactivated;
     protected String mBucketId;
-    protected HashMap<Long, IImage> mCache = new HashMap<Long, IImage>();
     protected MiniThumbFile mMiniThumbFile;
     protected Uri mThumbUri;
+    protected boolean mCursorDeactivated = false;
 
     public BaseImageList(ContentResolver cr, Uri uri, int sort,
             String bucketId) {
@@ -60,16 +63,15 @@ public abstract class BaseImageList implements IImageList {
         mBucketId = bucketId;
         mContentResolver = cr;
         mMiniThumbFile = new MiniThumbFile(uri);
+        mCursor = createCursor();
     }
 
     /**
      * Store a given thumbnail in the database.
      */
-    protected Bitmap storeThumbnail(Bitmap thumb, long imageId) {
+    protected Bitmap storeThumbnail(Bitmap thumb, Uri uri) {
         if (thumb == null) return null;
         try {
-            Uri uri = getThumbnailUri(
-                    imageId, thumb.getWidth(), thumb.getHeight());
             if (uri == null) {
                 return thumb;
             }
@@ -111,39 +113,32 @@ public abstract class BaseImageList implements IImageList {
     };
 
     private Uri getThumbnailUri(long imageId, int width, int height) {
+
         // we do not store thumbnails for DRM'd images
         if (mThumbUri == null) {
             return null;
         }
 
-        Uri uri = null;
-
         Cursor c = mContentResolver.query(mThumbUri, THUMB_PROJECTION,
                 Thumbnails.IMAGE_ID + "=?",
                 new String[]{String.valueOf(imageId)}, null);
         try {
-            if (c.moveToFirst()) {
-                // If, for some reason, we already have a row with a matching
-                // image id, then just update that row rather than creating a
-                // new row.
-                uri = ContentUris.withAppendedId(mThumbUri, c.getLong(0));
+            if (c.moveToNext()) {
+                return ContentUris.withAppendedId(mThumbUri, c.getLong(0));
             }
         } finally {
             c.close();
         }
-        if (uri == null) {
-            ContentValues values = new ContentValues(4);
-            values.put(Images.Thumbnails.KIND, Images.Thumbnails.MINI_KIND);
-            values.put(Images.Thumbnails.IMAGE_ID, imageId);
-            values.put(Images.Thumbnails.HEIGHT, height);
-            values.put(Images.Thumbnails.WIDTH, width);
-            uri = mContentResolver.insert(mThumbUri, values);
-        }
-        return uri;
+        ContentValues values = new ContentValues(4);
+        values.put(Thumbnails.KIND, Thumbnails.MINI_KIND);
+        values.put(Thumbnails.IMAGE_ID, imageId);
+        values.put(Thumbnails.HEIGHT, height);
+        values.put(Thumbnails.WIDTH, width);
+        return mContentResolver.insert(mThumbUri, values);
     }
 
-    private static final java.util.Random sRandom =
-            new java.util.Random(System.currentTimeMillis());
+    private static final Random sRandom =
+            new Random(System.currentTimeMillis());
 
     // If the photo has an EXIF thumbnail and it's big enough, extract it and
     // save that JPEG as the large thumbnail without re-encoding it. We still
@@ -190,12 +185,11 @@ public abstract class BaseImageList implements IImageList {
     // The fallback case is to decode the original photo to thumbnail size,
     // then encode it as a JPEG. We return the thumbnail Bitmap in order to
     // create the minithumb from it.
-    private Bitmap createThumbnailFromUri(Cursor c, long id) {
-        Uri uri = ContentUris.withAppendedId(mBaseUri, id);
+    private Bitmap createThumbnailFromUri(Uri uri) {
         Bitmap bitmap = Util.makeBitmap(IImage.THUMBNAIL_TARGET_SIZE, uri,
                 mContentResolver);
         if (bitmap != null) {
-            storeThumbnail(bitmap, id);
+            storeThumbnail(bitmap, uri);
         } else {
             bitmap = Util.makeBitmap(IImage.MINI_THUMB_TARGET_SIZE, uri,
                 mContentResolver);
@@ -204,14 +198,12 @@ public abstract class BaseImageList implements IImageList {
     }
 
     public void checkThumbnail(int index) throws IOException {
-        checkThumbnail(null, index, null);
+        checkThumbnail((BaseImage) getImageAt(index), null);
     }
 
     /**
      * Checks to see if a mini thumbnail exists in the cache. If not, tries to
      * create it and add it to the cache.
-     * @param existingImage
-     * @param i
      * @param createdThumbnailData if this parameter is non-null, and a new
      *         mini-thumbnail bitmap is created, the new bitmap's data will be
      *         stored in createdThumbnailData[0]. Note that if the sdcard is
@@ -221,26 +213,12 @@ public abstract class BaseImageList implements IImageList {
      *         thumbnail even if the sdcard is full.
      * @throws IOException
      */
-    public long checkThumbnail(BaseImage existingImage, int i,
+    public long checkThumbnail(BaseImage existingImage,
             byte[][] createdThumbnailData) throws IOException {
         long magic, id;
 
-        Cursor c = getCursor();
-        if (existingImage == null) {
-            // if we don't have an Image object then get the id and magic
-            // from the cursor.  Synchronize on the cursor object.
-            synchronized (c) {
-                if (!c.moveToPosition(i)) {
-                    return -1;
-                }
-                magic = c.getLong(indexMiniThumbMagic());
-                id = c.getLong(indexId());
-            }
-        } else {
-            // if we have an Image object then ask them for the magic/id
-            magic = existingImage.mMiniThumbMagic;
-            id = existingImage.fullSizeImageId();
-        }
+        magic = existingImage.mMiniThumbMagic;
+        id = existingImage.fullSizeImageId();
 
         if (magic != 0) {
             long fileMagic = mMiniThumbFile.getMagic(id);
@@ -253,32 +231,23 @@ public abstract class BaseImageList implements IImageList {
         // embedded in the EXIF data. If not, or it's not big enough,
         // decompress the full size image.
         Bitmap bitmap = null;
-        String filePath = null;
-        synchronized (c) {
-            if (c.moveToPosition(i)) {
-                filePath = c.getString(indexData());
-            }
-        }
+        String filePath = existingImage.getDataPath();
+
         if (filePath != null) {
-            String mimeType = c.getString(indexMimeType());
+            String mimeType = existingImage.getMimeType();
             boolean isVideo = Util.isVideoMimeType(mimeType);
             if (isVideo) {
                 bitmap = Util.createVideoThumbnail(filePath);
             } else {
                 bitmap = createThumbnailFromEXIF(filePath, id);
                 if (bitmap == null) {
-                    bitmap = createThumbnailFromUri(c, id);
+                    bitmap = createThumbnailFromUri(
+                            ContentUris.withAppendedId(mBaseUri, id));
                 }
             }
-            synchronized (c) {
-                int degrees = 0;
-                if (c.moveToPosition(i)) {
-                    int column = indexOrientation();
-                    if (column >= 0) degrees = c.getInt(column);
-                }
-                if (degrees != 0) {
-                    bitmap = Util.rotate(bitmap, degrees);
-                }
+            int degrees = existingImage.getDegreesRotated();
+            if (degrees != 0) {
+                bitmap = Util.rotate(bitmap, degrees);
             }
         }
 
@@ -286,6 +255,7 @@ public abstract class BaseImageList implements IImageList {
         do {
             magic = sRandom.nextLong();
         } while (magic == 0);
+
         if (bitmap != null) {
             byte [] data = Util.miniThumbData(bitmap);
             if (createdThumbnailData != null) {
@@ -294,21 +264,18 @@ public abstract class BaseImageList implements IImageList {
             saveMiniThumbToFile(data, id, magic);
         }
 
-        synchronized (c) {
-            c.moveToPosition(i);
-            c.updateLong(indexMiniThumbMagic(), magic);
-            c.commitUpdates();
-            c.requery();
-            c.moveToPosition(i);
-
-            if (existingImage != null) {
-                existingImage.mMiniThumbMagic = magic;
-            }
-            return magic;
-        }
+        ContentValues values = new ContentValues();
+        values.put(ImageColumns.MINI_THUMB_MAGIC, magic);
+        mContentResolver.update(
+                existingImage.fullSizeImageUri(), values, null, null);
+        existingImage.mMiniThumbMagic = magic;
+        return magic;
     }
 
-    protected Uri contentUri(long id) {
+    // TODO: Change public to protected
+    public Uri contentUri(long id) {
+
+        // TODO: avoid using exception for most cases
         try {
             // does our uri already have an id (single image query)?
             // if so just return it
@@ -322,9 +289,8 @@ public abstract class BaseImageList implements IImageList {
     }
 
     public void deactivate() {
-        mCursorDeactivated = true;
         try {
-            mCursor.deactivate();
+            invalidateCursor();
         } catch (IllegalStateException e) {
             // IllegalStateException may be thrown if the cursor is stale.
             Log.e(TAG, "Caught exception while deactivating cursor.", e);
@@ -333,13 +299,9 @@ public abstract class BaseImageList implements IImageList {
     }
 
     public int getCount() {
-        Cursor c = getCursor();
-        synchronized (c) {
-            try {
-                return c.getCount();
-            } catch (RuntimeException ex) {
-                return 0;
-            }
+        Cursor cursor = getCursor();
+        synchronized (cursor) {
+            return cursor.getCount();
         }
     }
 
@@ -347,57 +309,28 @@ public abstract class BaseImageList implements IImageList {
         return getCount() == 0;
     }
 
-    protected Cursor getCursor() {
+    private Cursor getCursor() {
         synchronized (mCursor) {
             if (mCursorDeactivated) {
-                activateCursor();
+                mCursor.requery();
+                mCursorDeactivated = false;
             }
             return mCursor;
         }
     }
 
-    protected void activateCursor() {
-        requery();
-    }
-
     public IImage getImageAt(int i) {
-        Cursor c = getCursor();
-        synchronized (c) {
-            boolean moved;
-            try {
-                moved = c.moveToPosition(i);
-            } catch (RuntimeException ex) {
-                return null;
-            }
-            if (moved) {
-                try {
-                    long id = c.getLong(indexId());
-                    IImage img = mCache.get(id);
-                    if (img == null) {
-                        long miniThumbMagic = 0;
-                        int rotation = 0;
-                        if (indexMiniThumbMagic() != -1) {
-                            miniThumbMagic = c.getLong(indexMiniThumbMagic());
-                        }
-                        if (indexOrientation() != -1) {
-                            rotation = c.getInt(indexOrientation());
-                        }
-                        img = make(id, miniThumbMagic, mContentResolver, this,
-                                i, rotation);
-                        mCache.put(id, img);
-                    }
-                    return img;
-                } catch (RuntimeException ex) {
-                    Log.e(TAG, "got this exception trying to create image: "
-                            + ex);
-                    return null;
-                }
-            } else {
-                Log.e(TAG, "unable to moveTo to " + i + "; count is "
-                        + c.getCount());
-                return null;
+        BaseImage result = mCache.get(i);
+        if (result == null) {
+            Cursor cursor = getCursor();
+            synchronized (cursor) {
+                result = cursor.moveToPosition(i)
+                        ? loadImageFromCursor(cursor)
+                        : null;
+                mCache.put(i, result);
             }
         }
+        return result;
     }
 
     byte [] getMiniThumbFromFile(long id, byte [] data, long magicCheck) {
@@ -414,81 +347,36 @@ public abstract class BaseImageList implements IImageList {
         mMiniThumbFile.saveMiniThumbToFile(data, id, magic);
     }
 
-    protected abstract int indexId();
-
-    protected abstract int indexData();
-
-    protected abstract int indexMimeType();
-
-    protected abstract int indexDateTaken();
-
-    protected abstract int indexMiniThumbMagic();
-
-    protected abstract int indexOrientation();
-
-    protected abstract int indexTitle();
-
-    protected abstract int indexDisplayName();
-
-    protected IImage make(long id, long miniThumbMagic, ContentResolver cr,
-            IImageList list, int index, int rotation) {
-        return null;
-    }
-
     public boolean removeImage(IImage image) {
-        Cursor c = getCursor();
-        synchronized (c) {
-            /*
-             * TODO: consider putting the image in a holding area so
-             *       we can get it back as needed
-             * TODO: need to delete the thumbnails as well
-             */
-            boolean moved;
-            try {
-                moved = c.moveToPosition(image.getRow());
-            } catch (RuntimeException ex) {
-                Log.e(TAG, "removeImage got exception " + ex.toString());
-                return false;
-            }
-            if (moved) {
-                Uri u = image.fullSizeImageUri();
-                mContentResolver.delete(u, null, null);
-                image.onRemove();
-                requery();
-            }
-        }
-        return true;
-    }
-
-    public void removeImageAt(int i) {
-        Cursor c = getCursor();
-        synchronized (c) {
-            /*
-             * TODO: consider putting the image in a holding area so
-             *       we can get it back as needed
-             * TODO: need to delete the thumbnails as well
-             */
-            IImage image = getImageAt(i);
-            boolean moved;
-            try {
-                moved = c.moveToPosition(i);
-            } catch (RuntimeException ex) {
-                Log.e(TAG, "removeImageAt " + i + " get " + ex);
-                return;
-            }
-            if (moved) {
-                Uri u = image.fullSizeImageUri();
-                mContentResolver.delete(u, null, null);
-                requery();
-                image.onRemove();
-            }
+        // TODO: need to delete the thumbnails as well
+        if (mContentResolver.delete(image.fullSizeImageUri(), null, null) > 0) {
+            ((BaseImage) image).onRemove();
+            invalidateCursor();
+            invalidateCache();
+            return true;
+        } else {
+            return false;
         }
     }
 
-    protected void requery() {
+    public boolean removeImageAt(int i) {
+        // TODO: need to delete the thumbnails as well
+        return removeImage(getImageAt(i));
+    }
+
+    abstract protected Cursor createCursor();
+
+    abstract protected BaseImage loadImageFromCursor(Cursor cursor);
+
+    abstract protected long getImageId(Cursor cursor);
+
+    protected void invalidateCursor() {
+        mCursor.deactivate();
+        mCursorDeactivated = true;
+    }
+
+    protected void invalidateCache() {
         mCache.clear();
-        mCursor.requery();
-        mCursorDeactivated = false;
     }
 
     public IImage getImageForUri(Uri uri) {
@@ -497,20 +385,26 @@ public abstract class BaseImageList implements IImageList {
         try {
             matchId = ContentUris.parseId(uri);
         } catch (NumberFormatException ex) {
+            Log.i(TAG, "fail to get id in: " + uri, ex);
             return null;
         }
-
-        // Go through the data and find the entry with the matching id.
-        Cursor c = getCursor();
-        synchronized (c) {
-            int index = indexId();
-            if (!c.moveToFirst()) return null;
-            do {
-                if (matchId == c.getLong(index)) {
-                    return getImageAt(c.getPosition());
+        // TODO: design a better method to get URI of specified ID
+        long startTimestamp = SystemClock.elapsedRealtime();
+        Cursor cursor = getCursor();
+        synchronized (cursor) {
+            cursor.moveToPosition(-1); // before first
+            for (int i = 0; cursor.moveToNext(); ++i) {
+                if (getImageId(cursor) == matchId) {
+                    Log.v(TAG, "find object at " + i + ", it takes"
+                            + (SystemClock.elapsedRealtime() - startTimestamp));
+                    return loadImageFromCursor(cursor);
                 }
-            } while (c.moveToNext());
+            }
             return null;
         }
+    }
+
+    public int getImageIndex(IImage image) {
+        return ((BaseImage) image).mIndex;
     }
 }
