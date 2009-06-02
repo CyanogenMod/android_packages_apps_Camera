@@ -531,6 +531,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             Log.d(TAG, "already stopped.");
             return;
         }
+        // If we don't lock the camera, release() will fail.
+        mCameraDevice.lock();
         mCameraDevice.release();
         mCameraDevice = null;
         mPreviewing = false;
@@ -546,6 +548,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     protected void onPause() {
         super.onPause();
 
+        mPausing = true;
+
         // This is similar to what mShutterButton.performClick() does,
         // but not quite the same.
         if (mMediaRecorderRecording) {
@@ -557,8 +561,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         } else {
             stopVideoRecording();
         }
-
-        mPausing = true;
+        closeCamera();
 
         unregisterReceiver(mReceiver);
         setScreenTimeoutSystemDefault();
@@ -572,13 +575,16 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mStorageHint = null;
         }
 
-        closeCamera();
-
         mHandler.removeMessages(UPDATE_LAST_VIDEO);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // Do not handle any key if the activity is paused.
+        if (mPausing) {
+            return true;
+        }
+
         setScreenTimeoutLong();
 
         switch (keyCode) {
