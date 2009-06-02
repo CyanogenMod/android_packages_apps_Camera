@@ -168,6 +168,9 @@ public class ImageGallery extends Activity implements
     }
 
     public boolean onSlideShowClicked() {
+        if (!canHandleEvent()) {
+            return false;
+        }
         IImage img = getCurrentImage();
         if (img == null) {
             img = mAllImages.getImageAt(0);
@@ -766,6 +769,9 @@ public class ImageGallery extends Activity implements
                         mDeletePhotoRunnable,
                         new MenuHelper.MenuInvoker() {
                             public void run(MenuHelper.MenuCallback cb) {
+                                if (!canHandleEvent()) {
+                                    return;
+                                }
                                 cb.run(getCurrentImageUri(), getCurrentImage());
                                 mGvs.stop();
                                 mGvs.setImageList(mAllImages);
