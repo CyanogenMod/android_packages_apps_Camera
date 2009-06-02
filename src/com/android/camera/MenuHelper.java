@@ -88,8 +88,6 @@ public class MenuHelper {
     public static final int MENU_VIDEO_PLAY = 23;
     public static final int MENU_VIDEO_SHARE = 24;
 
-    private static final long SHARE_FILE_LENGTH_LIMIT = 3L * 1024L * 1024L;
-
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
     public static final String EMPTY_STRING = "";
@@ -595,13 +593,6 @@ public class MenuHelper {
         onInvoke.run(new MenuCallback() {
             public void run(Uri u, IImage image) {
                 if (image == null) return;
-                if (!isImage && getImageFileSize(image)
-                        > SHARE_FILE_LENGTH_LIMIT) {
-                    Toast.makeText(activity,
-                            R.string.too_large_to_attach,
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
 
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_SEND);

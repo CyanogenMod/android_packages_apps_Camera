@@ -82,7 +82,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private static final long NO_STORAGE_ERROR = -1L;
     private static final long CANNOT_STAT_ERROR = -2L;
     private static final long LOW_STORAGE_THRESHOLD = 512L * 1024L;
-    private static final long SHARE_FILE_LENGTH_LIMIT = 3L * 1024L * 1024L;
 
     private static final int STORAGE_STATUS_OK = 0;
     private static final int STORAGE_STATUS_LOW = 1;
@@ -122,7 +121,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     // The video file that has already been recorded, and that is being
     // examined by the user.
     private String mCurrentVideoFilename;
-    private long mCurrentVideoFileLength = 0L;
     private Uri mCurrentVideoUri;
     private ContentValues mCurrentVideoValues;
 
@@ -277,11 +275,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void startShareVideoActivity() {
-        if (mCurrentVideoFileLength > SHARE_FILE_LENGTH_LIMIT) {
-            Toast.makeText(VideoCamera.this,
-                    R.string.too_large_to_attach, Toast.LENGTH_LONG).show();
-            return;
-        }
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("video/3gpp");
@@ -1090,10 +1083,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         for (int id : hideIds) {
             mPostPictureAlert.findViewById(id).setVisibility(View.GONE);
         }
-        ActionMenuButton shareButton =
-                (ActionMenuButton) mPostPictureAlert.findViewById(R.id.share);
-        shareButton.setRestricted(
-                mCurrentVideoFileLength > SHARE_FILE_LENGTH_LIMIT);
+
         connectAndFadeIn(connectIds);
         connectAndFadeIn(alwaysOnIds);
         mPostPictureAlert.setVisibility(View.VISIBLE);
@@ -1160,13 +1150,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 }
 
                 mCurrentVideoFilename = mCameraVideoFilename;
-                try {
-                    mCurrentVideoFileLength =
-                            new File(mCurrentVideoFilename).length();
-                } catch (RuntimeException e) {
-                    Log.e(TAG, "get file length fail: " + e.getMessage());
-                    mCurrentVideoFileLength = 0;
-                }
                 Log.v(TAG, "Setting current video filename: "
                         + mCurrentVideoFilename);
                 needToRegisterRecording = true;
