@@ -44,19 +44,19 @@ import android.os.StatFs;
 import android.provider.MediaStore.Images;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -287,6 +287,7 @@ public class GalleryPicker extends Activity {
     private void startWorker() {
         mAbort = false;
         mWorkerThread = new Thread("GalleryPicker Worker") {
+                    @Override
                     public void run() {
                         workerRun();
                     }
@@ -359,8 +360,9 @@ public class GalleryPicker extends Activity {
 
     // This is run in the worker thread.
     private void checkImageList(ArrayList<Item> allItems) {
-        IImageList[] lists = new IImageList[4];
-        for (int i = 0; i < 4; i++) {
+        int length = IMAGE_LIST_DATA.length;
+        IImageList[] lists = new IImageList[length];
+        for (int i = 0; i < length; i++) {
             ImageListData data = IMAGE_LIST_DATA[i];
             lists[i] = createImageList(data.mInclude, data.mBucketId,
                     getContentResolver());
@@ -369,11 +371,11 @@ public class GalleryPicker extends Activity {
 
             if (lists[i].isEmpty()) continue;
 
-            // i >= 2 means we are looking at All Images/All Videos.
-            // lists[i-2] is the corresponding Camera Images/Camera Videos.
+            // i >= 3 means we are looking at All Images/All Videos.
+            // lists[i-3] is the corresponding Camera Images/Camera Videos.
             // We want to add the "All" list only if it's different from
             // the "Camera" list.
-            if (i >= 2 && lists[i].getCount() == lists[i - 2].getCount()) {
+            if (i >= 3 && lists[i].getCount() == lists[i - 3].getCount()) {
                 continue;
             }
 
@@ -558,6 +560,13 @@ public class GalleryPicker extends Activity {
                           ImageManager.INCLUDE_VIDEOS,
                           ImageManager.CAMERA_IMAGE_BUCKET_ID,
                           R.string.gallery_camera_videos_bucket_name),
+
+        // Camera Medias
+        new ImageListData(Item.TYPE_CAMERA_MEDIAS,
+                ImageManager.INCLUDE_VIDEOS | ImageManager.INCLUDE_IMAGES,
+                ImageManager.CAMERA_IMAGE_BUCKET_ID,
+                R.string.gallery_camera_media_bucket_name),
+
         // All Images
         new ImageListData(Item.TYPE_ALL_IMAGES,
                           ImageManager.INCLUDE_IMAGES,
@@ -762,7 +771,8 @@ class Item {
     public static final int TYPE_ALL_VIDEOS = 1;
     public static final int TYPE_CAMERA_IMAGES = 2;
     public static final int TYPE_CAMERA_VIDEOS = 3;
-    public static final int TYPE_NORMAL_FOLDERS = 4;
+    public static final int TYPE_CAMERA_MEDIAS = 4;
+    public static final int TYPE_NORMAL_FOLDERS = 5;
 
     public final int mType;
     public final String mBucketId;
@@ -822,6 +832,7 @@ class Item {
         case TYPE_CAMERA_VIDEOS:
             return ImageManager.INCLUDE_VIDEOS;
         case TYPE_NORMAL_FOLDERS:
+        case TYPE_CAMERA_MEDIAS:
         default:
             return ImageManager.INCLUDE_IMAGES
                     | ImageManager.INCLUDE_VIDEOS;
@@ -835,6 +846,7 @@ class Item {
                 return R.drawable.frame_overlay_gallery_camera;
             case TYPE_ALL_VIDEOS:
             case TYPE_CAMERA_VIDEOS:
+            case TYPE_CAMERA_MEDIAS:
                 return R.drawable.frame_overlay_gallery_video;
             case TYPE_NORMAL_FOLDERS:
             default:
