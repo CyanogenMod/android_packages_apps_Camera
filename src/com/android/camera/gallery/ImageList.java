@@ -18,9 +18,9 @@ package com.android.camera.gallery;
 
 import com.android.camera.ImageManager;
 
-import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
 
@@ -61,10 +61,30 @@ public class ImageList extends BaseImageList implements IImageList {
     /**
      * ImageList constructor.
      */
-    public ImageList(ContentResolver cr, Uri imageUri,
-            Uri thumbUri, int sort, String bucketId) {
-        super(cr, imageUri, sort, bucketId);
+    public ImageList(Uri imageUri, Uri thumbUri, int sort, String bucketId) {
+        super(imageUri, sort, bucketId);
         mThumbUri = thumbUri;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        super.writeToParcel(out, flags);
+        out.writeParcelable(mThumbUri, flags);
+    }
+
+    public static final Creator<ImageList> CREATOR = new Creator<ImageList>() {
+        public ImageList createFromParcel(Parcel in) {
+            return new ImageList(in);
+        }
+
+        public ImageList[] newArray(int size) {
+            return new ImageList[size];
+        }
+    };
+
+    protected ImageList(Parcel in) {
+        super(in);
+        mThumbUri = (Uri) in.readParcelable(null);
     }
 
     private static final String WHERE_CLAUSE =

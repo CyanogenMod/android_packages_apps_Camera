@@ -1,6 +1,8 @@
 package com.android.camera.gallery;
 
+import android.content.ContentResolver;
 import android.net.Uri;
+import android.os.Parcel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,5 +52,19 @@ public class MockImageList implements IImageList {
     public void addImage(MockImage image) {
         mList.add(image);
         image.setContainer(this);
+    }
+
+    public void open(ContentResolver resolver) {
+    }
+
+    public void close() {
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        throw new UnsupportedOperationException();
+    }
+
+    public int describeContents() {
+        return 0;
     }
 }

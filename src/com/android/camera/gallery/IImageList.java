@@ -16,7 +16,9 @@
 
 package com.android.camera.gallery;
 
+import android.content.ContentResolver;
 import android.net.Uri;
+import android.os.Parcelable;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,23 +46,22 @@ import java.util.HashMap;
 /**
  * The interface of all image collections used in gallery.
  */
-public interface IImageList {
+public interface IImageList extends Parcelable {
     public HashMap<String, String> getBucketIds();
 
-    public abstract void deactivate();
+    public void deactivate();
 
     /**
      * Returns the count of image objects.
      *
      * @return       the number of images
      */
-    public abstract int getCount();
+    public int getCount();
 
     /**
      * @return true if the count of image objects is zero.
      */
-
-    public abstract boolean isEmpty();
+    public boolean isEmpty();
 
     /**
      * Returns the image at the ith position.
@@ -68,7 +69,7 @@ public interface IImageList {
      * @param i     the position
      * @return      the image at the ith position
      */
-    public abstract IImage getImageAt(int i);
+    public IImage getImageAt(int i);
 
     /**
      * Returns the image with a particular Uri.
@@ -76,20 +77,20 @@ public interface IImageList {
      * @param uri
      * @return      the image with a particular Uri. null if not found.
      */
-    public abstract IImage getImageForUri(Uri uri);
+    public IImage getImageForUri(Uri uri);
 
     /**
      *
      * @param image
      * @return true if the image was removed.
      */
-    public abstract boolean removeImage(IImage image);
+    public boolean removeImage(IImage image);
 
     /**
      * Removes the image at the ith position.
      * @param i     the position
      */
-    public abstract boolean removeImageAt(int i);
+    public boolean removeImageAt(int i);
 
     public int getImageIndex(IImage image);
 
@@ -97,5 +98,15 @@ public interface IImageList {
      * Generate thumbnail for the image (if it has not been generated.)
      * @param index     the position of the image
      */
-    public abstract void checkThumbnail(int index) throws IOException;
+    public void checkThumbnail(int index) throws IOException;
+
+    /**
+     * Opens this list for operation.
+     */
+    public void open(ContentResolver resolver);
+
+    /**
+     * Closes this list to release resources, no further operation is allowed.
+     */
+    public void close();
 }

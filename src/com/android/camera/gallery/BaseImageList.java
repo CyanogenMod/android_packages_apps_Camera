@@ -26,6 +26,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Parcel;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Images.ImageColumns;
@@ -56,14 +57,41 @@ public abstract class BaseImageList implements IImageList {
     protected Uri mThumbUri;
     protected boolean mCursorDeactivated = false;
 
-    public BaseImageList(ContentResolver cr, Uri uri, int sort,
-            String bucketId) {
+    public BaseImageList(Uri uri, int sort, String bucketId) {
         mSort = sort;
         mBaseUri = uri;
         mBucketId = bucketId;
-        mContentResolver = cr;
         mMiniThumbFile = new MiniThumbFile(uri);
+    }
+
+    protected BaseImageList(Parcel in) {
+        mSort = in.readInt();
+        mBaseUri = (Uri) in.readParcelable(null);
+        mBucketId = in.readString();
+        mMiniThumbFile = new MiniThumbFile(mBaseUri);
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(mSort);
+        out.writeParcelable(mBaseUri, flags);
+        out.writeString(mBucketId);
+    }
+
+    public void open(ContentResolver resolver) {
+        mContentResolver = resolver;
         mCursor = createCursor();
+    }
+
+    public void close() {
+        mContentResolver = null;
+        if (mCursor != null) {
+            mCursor.close();
+            mCursor = null;
+        }
+    }
+
+    public int describeContents() {
+        return 0;
     }
 
     /**
