@@ -17,7 +17,6 @@
 package com.android.camera;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -170,8 +169,6 @@ public class ExifInterface {
     /**
      * Given a numerical white balance value, return a
      * human-readable string describing it.
-     * @param orientation
-     * @return String
      */
     public static String whiteBalanceToString(int whitebalance) {
         switch (whitebalance) {

@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.SurfaceView;
 
 class VideoPreview extends SurfaceView {
+    @SuppressWarnings("unused")
     private static final String TAG = "VideoPreview";
     private float mAspectRatio;
     private int mHorizontalTileSize = 1;

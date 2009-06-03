@@ -64,9 +64,6 @@ public class ImageManager {
     private static final Uri VIDEO_STORAGE_URI =
             Uri.parse("content://media/external/video/media");
 
-    private static final Uri VIDEO_THUMBNAIL_URI =
-            Uri.parse("content://media/external/video/thumbnails");
-
     /**
      * Enumerate type for the location of the images in gallery.
      */

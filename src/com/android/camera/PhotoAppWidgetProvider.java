@@ -26,7 +26,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Config;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -37,8 +36,8 @@ import java.io.IOException;
  * Simple widget to show a user-selected picture.
  */
 public class PhotoAppWidgetProvider extends AppWidgetProvider {
-    static final String TAG = "PhotoAppWidgetProvider";
-    static final boolean LOGD = Config.LOGD || true;
+    private static final String TAG = "PhotoAppWidgetProvider";
+    private static final boolean LOGD = true;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,

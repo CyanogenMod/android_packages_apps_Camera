@@ -16,6 +16,8 @@
 
 package com.android.camera;
 
+import static com.android.camera.Util.Assert;
+
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -37,9 +39,8 @@ import android.widget.Scroller;
 
 import java.util.HashMap;
 
-import static com.android.camera.Util.Assert;
-
 class GridViewSpecial extends View {
+    @SuppressWarnings("unused")
     private static final String TAG = "GridViewSpecial";
 
     public static interface Listener {
@@ -259,15 +260,6 @@ class GridViewSpecial extends View {
         canvas.setBitmap(mOutline[OUTLINE_SELECTED]);
         cellOutline.setState(ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET);
         cellOutline.draw(canvas);
-    }
-
-    private void clearOutlineBitmap() {
-        for (int i = 0; i < mOutline.length; i++) {
-            if (mOutline[i] != null) {
-                mOutline[i].recycle();
-                mOutline[i] = null;
-            }
-        }
     }
 
     private void moveDataWindow() {
@@ -655,6 +647,7 @@ class GridViewSpecial extends View {
 }
 
 class ImageBlockManager {
+    @SuppressWarnings("unused")
     private static final String TAG = "ImageBlockManager";
 
     // Number of rows we want to cache.
