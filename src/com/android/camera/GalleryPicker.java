@@ -413,8 +413,7 @@ public class GalleryPicker extends Activity {
             allImages = ImageManager.allImages(
                     getContentResolver(),
                     ImageManager.DataLocation.ALL,
-                    ImageManager.INCLUDE_IMAGES
-                    | ImageManager.INCLUDE_VIDEOS,
+                    ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS,
                     ImageManager.SORT_DESCENDING);
         } else {
             allImages = ImageManager.emptyImageList();
