@@ -16,7 +16,7 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.ImageManager;
+import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
@@ -64,7 +64,7 @@ public class VideoObject extends BaseImage implements IImage {
 
     @Override
     public Bitmap fullSizeBitmap(int targetWidthHeight) {
-        return ImageManager.NO_IMAGE_BITMAP;
+        return Util.createVideoThumbnail(mDataPath);
     }
 
     @Override

@@ -637,28 +637,18 @@ public class ImageGallery extends Activity implements
             if (isPickIntent()) {
                 launchCropperOrFinish(img);
             } else {
-                Uri targetUri = img.fullSizeImageUri();
-                Uri thisUri = getIntent().getData();
-                if (thisUri != null) {
-                    String bucket = thisUri.getQueryParameter("bucketId");
-                    if (bucket != null) {
-                        targetUri = targetUri.buildUpon()
-                                .appendQueryParameter("bucketId", bucket)
-                                .build();
-                    }
-                }
-                Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
-
+                Intent intent;
                 if (img instanceof VideoObject) {
+                    intent = new Intent(
+                            Intent.ACTION_VIEW, img.fullSizeImageUri());
                     intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION,
                             ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                } else {
+                    intent = new Intent(this, ViewImage.class);
+                    intent.putExtra(ViewImage.KEY_IMAGE_LIST, mAllImages);
+                    intent.setData(img.fullSizeImageUri());
                 }
-
-                try {
-                    startActivity(intent);
-                } catch (Exception ex) {
-                    // sdcard removal??
-                }
+                startActivity(intent);
             }
         }
     }

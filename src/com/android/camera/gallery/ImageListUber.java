@@ -21,9 +21,9 @@ import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.net.Uri;
-import android.util.Log;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -32,7 +32,9 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 
 /**
- * A union of different <code>IImageList</code>.
+ * A union of different <code>IImageList</code>. This class can merge several
+ * <code>IImageList</code> into one list and sort them according to the
+ * timestamp (The sorting must be same as all the given lists).
  */
 public class ImageListUber implements IImageList {
     @SuppressWarnings("unused")
@@ -70,7 +72,8 @@ public class ImageListUber implements IImageList {
     }
 
     protected ImageListUber(Parcel in) {
-        Parcelable array[] = in.readParcelableArray(null);
+        Parcelable array[] =
+                in.readParcelableArray(ImageListUber.class.getClassLoader());
         mSubList = new IImageList[array.length];
         System.arraycopy(array, 0, mSubList, 0, array.length);
         int sort = in.readInt();
@@ -79,10 +82,6 @@ public class ImageListUber implements IImageList {
                 sort == ImageManager.SORT_ASCENDING
                 ? new AscendingComparator()
                 : new DescendingComparator());
-        for (int i = 0, n = mSubList.length; i < n; ++i) {
-            MergeSlot slot = new MergeSlot(mSubList[i], i);
-            if (slot.next()) mQueue.add(slot);
-        }
     }
 
     public static final Creator<ImageListUber> CREATOR =
@@ -311,6 +310,14 @@ public class ImageListUber implements IImageList {
         }
     }
 
+    /**
+     * A merging slot is used to trace the current position of a sublist. For
+     * each given sub list, there will be one corresponding merge slot. We
+     * use merge-sort-like algorithm to build the merged list. At begining,
+     * we put all the slots in a sorted heap (by timestamp). Each time, we
+     * pop the slot with earliest timestamp out, get the image, and then move
+     * the index forward, and put it back to the heap.
+     */
     private static class MergeSlot {
         private int mOffset = -1;
         private final IImageList mList;

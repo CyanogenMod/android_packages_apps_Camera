@@ -19,6 +19,8 @@ package com.android.camera;
 import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.SingleImageList;
+import com.android.camera.gallery.VideoObject;
 
 import android.app.Activity;
 import android.content.Context;
@@ -60,6 +62,8 @@ import java.util.concurrent.ExecutionException;
 // button to see the previous or next image. In slide show mode it shows one
 // image after another, with some transition effect.
 public class ViewImage extends Activity implements View.OnClickListener {
+    private static final String KEY_URI = "uri";
+
     private static final String TAG = "ViewImage";
 
     private ImageGetter mGetter;
@@ -83,7 +87,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private boolean mShowActionIcons;
     private View mActionIconPanel;
 
-    private boolean mSortAscending = false;
     private int mSlideShowInterval;
     private int mLastSlideShowImage;
     private ThumbnailController mThumbController;
@@ -105,6 +108,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
     static final int PADDING = 20;
     static final int HYSTERESIS = PADDING * 2;
     static final int BASE_SCROLL_DURATION = 1000; // ms
+
+    public static final String KEY_IMAGE_LIST = "image_list";
 
     IImageList mAllImages;
 
@@ -374,7 +379,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         .setAlphabeticShortcut('z')
         .setVisible(false);
 
-
         return true;
     }
 
@@ -562,17 +566,15 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
 
         Uri uri = getIntent().getData();
-
+        IImageList imageList = getIntent().getParcelableExtra(KEY_IMAGE_LIST);
         if (instanceState != null) {
-            if (instanceState.containsKey("uri")) {
-                uri = Uri.parse(instanceState.getString("uri"));
-            }
+            uri = instanceState.getParcelable(KEY_URI);
+            imageList = instanceState.getParcelable(KEY_IMAGE_LIST);
         }
-        if (uri == null) {
+        if (!init(uri, imageList)) {
             finish();
             return;
         }
-        init(uri);
 
         Bundle b = getIntent().getExtras();
 
@@ -847,38 +849,15 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mGetter = new ImageGetter(this);
     }
 
-    private boolean desiredSortOrder() {
-        String sortOrder = mPrefs.getString("pref_gallery_sort_key", null);
-        boolean sortAscending = false;
-        if (sortOrder != null) {
-            sortAscending = sortOrder.equals("ascending");
-        }
-        if (mCameraReviewMode) {
-            // Force left-arrow older pictures, right-arrow newer pictures.
-            sortAscending = true;
-        }
-        return sortAscending;
-    }
-
-    private void init(Uri uri) {
-        if (uri == null) {
-            return;
-        }
-
-        mSortAscending = desiredSortOrder();
-        int sort = mSortAscending
-                ? ImageManager.SORT_ASCENDING
-                : ImageManager.SORT_DESCENDING;
-        mAllImages = ImageManager.makeImageList(uri, getContentResolver(),
-                sort);
-
-        uri = uri.buildUpon().query(null).build();
-
+    private boolean init(Uri uri, IImageList imageList) {
+        if (uri == null) return false;
+        mAllImages = imageList == null ? new SingleImageList(uri) : imageList;
+        mAllImages.open(getContentResolver());
         IImage image = mAllImages.getImageForUri(uri);
-        if (image != null) {
-            mCurrentPosition = mAllImages.getImageIndex(image);
-            mLastSlideShowImage = mCurrentPosition;
-        }
+        if (image == null) return false;
+        mCurrentPosition = mAllImages.getImageIndex(image);
+        mLastSlideShowImage = mCurrentPosition;
+        return true;
     }
 
     private Uri getCurrentUri() {
@@ -902,22 +881,16 @@ public class ViewImage extends Activity implements View.OnClickListener {
     @Override
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
-
-        Uri uri = getCurrentUri();
-        if (uri != null) {
-            b.putString("uri", uri.toString());
-        }
-
-        if (mMode == MODE_SLIDESHOW) {
-            b.putBoolean("slideshow", true);
-        }
+        b.putParcelable(KEY_URI,
+                mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri());
+        b.putBoolean("slideshow", mMode == MODE_SLIDESHOW);
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        init(mSavedUri);
+        init(mSavedUri, mAllImages);
         if (mCameraReviewMode) {
             updateLastImage();
         }
@@ -1358,7 +1331,8 @@ class ImageGetter {
                         if (imageNumber >= 0 && imageNumber < imageCount) {
                             IImage image = mViewImage.mAllImages
                                     .getImageAt(lastPosition + offset);
-                            if (mCB.wantsFullImage(lastPosition, offset)) {
+                            if (mCB.wantsFullImage(lastPosition, offset)
+                                    && !(image instanceof VideoObject)) {
                                 int sizeToUse = mCB.fullImageSizeToUse(
                                         lastPosition, offset);
                                 if (image != null && !isCanceled()) {

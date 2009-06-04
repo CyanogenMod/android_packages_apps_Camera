@@ -423,9 +423,12 @@ public abstract class BaseImageList implements IImageList {
             cursor.moveToPosition(-1); // before first
             for (int i = 0; cursor.moveToNext(); ++i) {
                 if (getImageId(cursor) == matchId) {
-                    Log.v(TAG, "find object at " + i + ", it takes"
-                            + (SystemClock.elapsedRealtime() - startTimestamp));
-                    return loadImageFromCursor(cursor);
+                    BaseImage image = mCache.get(i);
+                    if (image == null) {
+                        image = loadImageFromCursor(cursor);
+                        mCache.put(i, image);
+                    }
+                    return image;
                 }
             }
             return null;
