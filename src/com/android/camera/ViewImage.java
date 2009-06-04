@@ -880,9 +880,20 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mGetter = new ImageGetter(this);
     }
 
+    private IImageList buildImageListFromUri(Uri uri) {
+        String sortOrder = mPrefs.getString(
+                "pref_gallery_sort_key", "descending");
+        int sort = (mCameraReviewMode || sortOrder.equals("ascending"))
+                ? ImageManager.SORT_ASCENDING
+                : ImageManager.SORT_DESCENDING;
+        return ImageManager.makeImageList(uri, getContentResolver(), sort);
+    }
+
     private boolean init(Uri uri, IImageList imageList) {
         if (uri == null) return false;
-        mAllImages = imageList == null ? new SingleImageList(uri) : imageList;
+        mAllImages = (imageList == null)
+                ? buildImageListFromUri(uri)
+                : imageList;
         mAllImages.open(getContentResolver());
         IImage image = mAllImages.getImageForUri(uri);
         if (image == null) return false;
