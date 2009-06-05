@@ -69,6 +69,10 @@ public class SingleImageList extends BaseImageList {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public int getImageIndex(IImage image) {
+        return image == mSingleImage ? 0 : -1;
+    }
 
     @Override
     public IImage getImageAt(int i) {
