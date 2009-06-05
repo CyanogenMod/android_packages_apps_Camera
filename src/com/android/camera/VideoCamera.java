@@ -484,12 +484,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         Log.v(TAG, "startPreview");
         if (mPreviewing) {
-            // We should just return here, but we stop and start again to avoid
-            // the bug in driver.
-            mCameraDevice.lock();
-            mCameraDevice.stopPreview();
-            mCameraDevice.startPreview();
-            mCameraDevice.unlock();
+            // After recording a video, preview is not stopped. So just return.
             return true;
         }
 
