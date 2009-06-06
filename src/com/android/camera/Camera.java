@@ -190,6 +190,13 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mPicturesRemaining;
     private boolean mRecordLocation;
 
+    //Add the camera latency time
+    public static long mAutoFocusTime;
+    public static long mShutterLag;
+    public static long mShutterAndRawPictureCallbackTime;
+    public static long mJpegPictureCallbackTimeLag;
+    public static long mRawPictureAndJpegPictureCallbackTime;
+
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
 
@@ -427,9 +434,9 @@ public class Camera extends Activity implements View.OnClickListener,
                                    android.hardware.Camera camera) {
             long now = System.currentTimeMillis();
             if (mJpegPictureCallbackTime != 0) {
-                Log.v(TAG, (now - mJpegPictureCallbackTime)
-                        + "ms elapsed between JpegPictureCallback and preview "
-                        + "restarted.");
+                mJpegPictureCallbackTimeLag = now - mJpegPictureCallbackTime;
+                Log.v(TAG, "mJpegPictureCallbackTimeLag = "
+                        + mJpegPictureCallbackTimeLag + "ms");
                 mJpegPictureCallbackTime = 0;
             }
         }
@@ -439,9 +446,8 @@ public class Camera extends Activity implements View.OnClickListener,
             implements android.hardware.Camera.ShutterCallback {
         public void onShutter() {
             mShutterCallbackTime = System.currentTimeMillis();
-            Log.v(TAG, "Shutter lag was "
-                    + (mShutterCallbackTime - mCaptureStartTime) + " ms.");
-
+            mShutterLag = mShutterCallbackTime - mCaptureStartTime;
+            Log.v(TAG, "mShutterLag = " + mShutterLag + "ms");
             clearFocusState();
             // We are going to change the size of surface view and show captured
             // image. Set it to invisible now and set it back to visible in
@@ -459,9 +465,10 @@ public class Camera extends Activity implements View.OnClickListener,
         public void onPictureTaken(
                 byte [] rawData, android.hardware.Camera camera) {
             mRawPictureCallbackTime = System.currentTimeMillis();
-            Log.v(TAG, (mRawPictureCallbackTime - mShutterCallbackTime)
-                    + "ms elapsed between"
-                    + " ShutterCallback and RawPictureCallback.");
+            mShutterAndRawPictureCallbackTime =
+                mRawPictureCallbackTime - mShutterCallbackTime;
+            Log.v(TAG, "mShutterAndRawPictureCallbackTime = "
+                    + mShutterAndRawPictureCallbackTime + "ms");
         }
     }
 
@@ -479,10 +486,10 @@ public class Camera extends Activity implements View.OnClickListener,
             }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
-            Log.v(TAG, (mJpegPictureCallbackTime - mRawPictureCallbackTime)
-                    + "ms elapsed between"
-                    + " RawPictureCallback and JpegPictureCallback.");
-
+            mRawPictureAndJpegPictureCallbackTime =
+                mJpegPictureCallbackTime - mRawPictureCallbackTime;
+            Log.v(TAG, "mRawPictureAndJpegPictureCallbackTime = "
+                    + mRawPictureAndJpegPictureCallbackTime +"ms");
             if (jpegData != null) {
                 mImageCapture.storeImage(jpegData, camera, mLocation);
             }
@@ -503,9 +510,8 @@ public class Camera extends Activity implements View.OnClickListener,
         public void onAutoFocus(
                 boolean focused, android.hardware.Camera camera) {
             mFocusCallbackTime = System.currentTimeMillis();
-            Log.v(TAG, "Auto focus took "
-                    + (mFocusCallbackTime - mFocusStartTime) + " ms.");
-
+            mAutoFocusTime = mFocusCallbackTime - mFocusStartTime;
+            Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
             if (mFocusState == FOCUSING_SNAP_ON_FINISH
                     && mCaptureObject != null) {
                 // Take the picture no matter focus succeeds or fails. No need
