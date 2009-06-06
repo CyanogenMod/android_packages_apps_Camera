@@ -96,6 +96,13 @@
                     style="@style/OnscreenActionIcon"
             />
             <com.android.camera.ActionMenuButton
+                    android:id="@+id/play"
+                    android:visibility="gone"
+                    android:drawableTop="@drawable/ic_menu_camera_play"
+                    android:text="@string/camera_play"
+                    style="@style/OnscreenActionIcon"
+            />
+            <com.android.camera.ActionMenuButton
                     android:id="@+id/share"
                     android:visibility="gone"
                     android:drawableTop="@drawable/ic_menu_share"

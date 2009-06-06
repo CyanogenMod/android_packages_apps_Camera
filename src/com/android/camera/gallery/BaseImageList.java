@@ -27,7 +27,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
-import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
@@ -416,8 +415,10 @@ public abstract class BaseImageList implements IImageList {
             Log.i(TAG, "fail to get id in: " + uri, ex);
             return null;
         }
+        if (!ContentUris.withAppendedId(mBaseUri, matchId).equals(uri)) {
+            return null;
+        }
         // TODO: design a better method to get URI of specified ID
-        long startTimestamp = SystemClock.elapsedRealtime();
         Cursor cursor = getCursor();
         synchronized (cursor) {
             cursor.moveToPosition(-1); // before first
