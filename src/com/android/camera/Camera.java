@@ -55,6 +55,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -66,6 +67,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ZoomButtonsController;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -73,6 +75,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Activity of the Camera which used to see preview and take pictures.
@@ -107,8 +110,11 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final int MENU_SAVE_CAMERA_VIDEO_DONE = 37;
 
     private android.hardware.Camera.Parameters mParameters;
+    private int mZoomIndex = 0;  // The index of the current zoom value.
+    private String[] mZoomValues;  // All possible zoom values.
 
     // The parameter strings to communicate with camera driver.
+    public static final String PARM_ZOOM = "zoom";
     public static final String PARM_WHITE_BALANCE = "whitebalance";
     public static final String PARM_EFFECT = "effect";
     public static final String PARM_BRIGHTNESS = "exposure-offset";
@@ -120,6 +126,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final String PARM_GPS_LONGITUDE = "gps-longitude";
     public static final String PARM_GPS_ALTITUDE = "gps-altitude";
     public static final String PARM_GPS_TIMESTAMP = "gps-timestamp";
+    public static final String SUPPORTED_ZOOM = "zoom-values";
     public static final String SUPPORTED_WHITE_BALANCE = "whitebalance-values";
     public static final String SUPPORTED_EFFECT = "effect-values";
     public static final String SUPPORTED_BRIGHTNESS = "exposure-offset-values";
@@ -140,17 +147,31 @@ public class Camera extends Activity implements View.OnClickListener,
     private android.hardware.Camera mCameraDevice;
     private VideoPreview mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
+    private ShutterButton mShutterButton;
+    private FocusRectangle mFocusRectangle;
+    private ImageView mGpsIndicator;
+    private ToneGenerator mFocusToneGenerator;
+    private ZoomButtonsController mZoomButtons;
+
+    // mPostCaptureAlert, mLastPictureButton, mThumbController
+    // are non-null only if isImageCaptureIntent() is true.
+    private View mPostCaptureAlert;
+    private ImageView mLastPictureButton;
+    private ThumbnailController mThumbController;
 
     private int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
     private int mViewFinderWidth, mViewFinderHeight;
-    private boolean mPreviewing = false;
 
     private Capturer mCaptureObject;
     private ImageCapture mImageCapture = null;
 
-    private boolean mPausing = false;
-    private boolean mFirstTimeInitialized = false;
-    private boolean mPendingFirstTimeInit = false;
+    private boolean mPreviewing;
+    private boolean mPausing;
+    private boolean mFirstTimeInitialized;
+    private boolean mPendingFirstTimeInit;
+    private boolean mKeepAndRestartPreview;
+    private boolean mIsImageCaptureIntent;
+    private boolean mRecordLocation;
 
     private static final int FOCUS_NOT_STARTED = 0;
     private static final int FOCUSING = 1;
@@ -165,12 +186,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private LocationManager mLocationManager = null;
-
-    private ShutterButton mShutterButton;
-
-    private FocusRectangle mFocusRectangle;
-    private ImageView mGpsIndicator;
-    private ToneGenerator mFocusToneGenerator;
 
     // Use OneShotPreviewCallback to measure the time between
     // JpegPictureCallback and preview.
@@ -188,7 +203,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
     private int mPicturesRemaining;
-    private boolean mRecordLocation;
 
     //Add the camera latency time
     public static long mAutoFocusTime;
@@ -199,16 +213,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
-
-    private boolean mKeepAndRestartPreview;
-
-    private boolean mIsImageCaptureIntent;
-
-    // mPostCaptureAlert, mLastPictureButton, mThumbController
-    // are non-null only if isImageCaptureIntent() is true.
-    private View mPostCaptureAlert;
-    private ImageView mLastPictureButton;
-    private ThumbnailController mThumbController;
 
     private final Handler mHandler = new MainHandler();
 
@@ -326,6 +330,8 @@ public class Camera extends Activity implements View.OnClickListener,
 
         initializeFocusTone();
 
+        initializeZoom();
+
         mFirstTimeInitialized = true;
     }
 
@@ -344,6 +350,70 @@ public class Camera extends Activity implements View.OnClickListener,
 
         initializeFocusTone();
     }
+
+    private void initializeZoom() {
+        String zoomValuesStr = mParameters.get(SUPPORTED_ZOOM);
+        if (zoomValuesStr == null) return;
+
+        mZoomValues = getZoomValues(zoomValuesStr);
+        if (mZoomValues == null) return;
+
+        mZoomButtons = new ZoomButtonsController(mSurfaceView);
+        mZoomButtons.setAutoDismissed(true);
+        mZoomButtons.setOnZoomListener(
+                new ZoomButtonsController.OnZoomListener() {
+            public void onVisibilityChanged(boolean visible) {
+                if (visible) {
+                    updateZoomButtonsEnabled();
+                }
+            }
+
+            public void onZoom(boolean zoomIn) {
+                if (zoomIn) {
+                    zoomIn();
+                } else {
+                    zoomOut();
+                }
+                updateZoomButtonsEnabled();
+            }
+        });
+    }
+
+    private void zoomIn() {
+        if (mZoomIndex < mZoomValues.length - 1) {
+            mZoomIndex++;
+            mParameters.set(PARM_ZOOM, mZoomValues[mZoomIndex]);
+            mCameraDevice.setParameters(mParameters);
+        }
+    }
+
+    private void zoomOut() {
+        if (mZoomIndex > 0) {
+            mZoomIndex--;
+            mParameters.set(PARM_ZOOM, mZoomValues[mZoomIndex]);
+            mCameraDevice.setParameters(mParameters);
+        }
+    }
+
+    private void updateZoomButtonsEnabled() {
+        mZoomButtons.setZoomInEnabled(mZoomIndex < mZoomValues.length - 1);
+        mZoomButtons.setZoomOutEnabled(mZoomIndex > 0);
+    }
+
+    private String[] getZoomValues(String zoomValuesStr) {
+        ArrayList<String> list = new ArrayList<String>();
+        String[] zoomValues = null;
+        StringTokenizer tokenizer = new StringTokenizer(zoomValuesStr, ",");
+
+        while (tokenizer.hasMoreElements()) {
+            list.add(tokenizer.nextToken());
+        }
+        if (list.size() > 0) {
+            zoomValues = list.toArray(new String[list.size()]);
+        }
+        return zoomValues;
+    }
+
 
     LocationListener [] mLocationListeners = new LocationListener[] {
             new LocationListener(LocationManager.GPS_PROVIDER),
@@ -767,7 +837,6 @@ public class Camera extends Activity implements View.OnClickListener,
         return m;
     }
 
-    /** Called with the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -1113,6 +1182,12 @@ public class Camera extends Activity implements View.OnClickListener,
         mImageCapture.clearLastBitmap();
         mImageCapture = null;
 
+        // This is necessary to make the ZoomButtonsController unregister
+        // its configuration change receiver.
+        if (mZoomButtons != null) {
+            mZoomButtons.setVisible(false);
+        }
+
         // Remove the messages in the event queue.
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
         mHandler.removeMessages(RESTART_PREVIEW);
@@ -1230,6 +1305,20 @@ public class Camera extends Activity implements View.OnClickListener,
                 return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mPausing) return true;
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (mZoomButtons != null) {
+                    mZoomButtons.setVisible(true);
+                }
+                return true;
+        }
+        return super.onTouchEvent(event);
     }
 
     private void doSnap() {
@@ -1456,6 +1545,11 @@ public class Camera extends Activity implements View.OnClickListener,
                 CameraSettings.KEY_ISO,
                 getString(R.string.pref_camera_iso_default));
         mParameters.set(PARM_ISO, iso);
+
+        // Set zoom.
+        if (mZoomValues != null) {
+            mParameters.set(PARM_ZOOM, mZoomValues[mZoomIndex]);
+        }
 
         mCameraDevice.setParameters(mParameters);
     }
