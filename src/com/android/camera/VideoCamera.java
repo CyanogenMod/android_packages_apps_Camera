@@ -291,19 +291,15 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             case R.id.camera_button:
                 MenuHelper.gotoCameraMode(this);
                 break;
-
             case R.id.gallery:
                 gotoGallery();
                 break;
-
             case R.id.attach:
                 doReturnToCaller(true);
                 break;
-
             case R.id.cancel:
                 doReturnToCaller(false);
                 break;
-
             case R.id.discard: {
                 Runnable deleteCallback = new Runnable() {
                     public void run() {
@@ -313,17 +309,14 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 MenuHelper.deleteVideo(this, deleteCallback);
                 break;
             }
-
             case R.id.share: {
                 startShareVideoActivity();
                 break;
             }
-
             case R.id.play: {
                 doPlayCurrentVideo();
                 break;
             }
-
             case R.id.review_button: {
                 stopVideoRecordingAndShowAlert();
                 break;

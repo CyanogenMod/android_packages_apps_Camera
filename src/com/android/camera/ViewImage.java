@@ -19,7 +19,6 @@ package com.android.camera;
 import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.SingleImageList;
 import com.android.camera.gallery.VideoObject;
 
 import android.app.Activity;
@@ -185,9 +184,14 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
         mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
         updateNextPrevControls();
-        updateZoomButtonsEnabled();
-        mZoomButtonsController.setVisible(true);
 
+        IImage image = mAllImages.getImageAt(mCurrentPosition);
+        if (image instanceof VideoObject) {
+            mZoomButtonsController.setVisible(false);
+        } else {
+            updateZoomButtonsEnabled();
+            mZoomButtonsController.setVisible(true);
+        }
         if (mShowActionIcons
                 && mActionIconPanel.getVisibility() != View.VISIBLE) {
             Animation animation = new AlphaAnimation(0, 1);
@@ -525,7 +529,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (mGetter != null) {
             mGetter.setPosition(pos, cb);
         }
-
+        updateActionIcons();
         showOnScreenControls(AUTO_DISMISS);
     }
 
@@ -595,9 +599,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         if (mShowActionIcons) {
             int[] pickIds = {R.id.attach, R.id.cancel};
-            int[] reviewIds = {
-                    R.id.gallery, R.id.setas, R.id.share, R.id.discard};
-            int[] normalIds = {R.id.setas, R.id.share, R.id.discard};
+            int[] reviewIds = {R.id.gallery, R.id.setas, R.id.play, R.id.share,
+                    R.id.discard};
+            int[] normalIds = {R.id.setas, R.id.play, R.id.share, R.id.discard};
             int[] connectIds = isPickIntent()
                     ? pickIds
                     : mCameraReviewMode ? reviewIds : normalIds;
@@ -646,6 +650,20 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     reviewButton, getContentResolver());
             buttonBar.findViewById(R.id.camera_button).setOnClickListener(this);
             buttonBar.findViewById(R.id.video_button).setOnClickListener(this);
+        }
+    }
+
+    private void updateActionIcons() {
+        if (isPickIntent()) return;
+
+        IImage image = mAllImages.getImageAt(mCurrentPosition);
+        View panel = mActionIconPanel;
+        if (image instanceof VideoObject) {
+            panel.findViewById(R.id.setas).setVisibility(View.GONE);
+            panel.findViewById(R.id.play).setVisibility(View.VISIBLE);
+        } else {
+            panel.findViewById(R.id.setas).setVisibility(View.VISIBLE);
+            panel.findViewById(R.id.play).setVisibility(View.GONE);
         }
     }
 
@@ -904,20 +922,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private Uri getCurrentUri() {
         IImage image = mAllImages.getImageAt(mCurrentPosition);
-        Uri uri = null;
-        if (image != null){
-            String bucket = null;
-            uri = image.fullSizeImageUri();
-            if (getIntent() != null && getIntent().getData() != null) {
-                bucket = getIntent().getData().getQueryParameter("bucketId");
-            }
-
-            if (bucket != null) {
-                uri = uri.buildUpon().appendQueryParameter("bucketId", bucket)
-                        .build();
-            }
-        }
-        return uri;
+        return image.fullSizeImageUri();
     }
 
     @Override
@@ -986,66 +991,77 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
     }
 
+    private void startShareMediaActivity(IImage image) {
+        boolean isVideo = image instanceof VideoObject;
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType(image.getMimeType());
+        intent.putExtra(Intent.EXTRA_STREAM, image.fullSizeImageUri());
+        try {
+            startActivity(Intent.createChooser(intent, getText(
+                    isVideo ? R.string.sendVideo : R.string.sendImage)));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, isVideo
+                    ? R.string.no_way_to_share_image
+                    : R.string.no_way_to_share_video,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startPlayVideoActivity() {
+        IImage image = mAllImages.getImageAt(mCurrentPosition);
+        Intent intent = new Intent(
+                Intent.ACTION_VIEW, image.fullSizeImageUri());
+        try {
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Log.e(TAG, "Couldn't view video " + image.fullSizeImageUri(), ex);
+        }
+    }
+
     public void onClick(View v) {
         switch (v.getId()) {
-
-        case R.id.camera_button:
-            MenuHelper.gotoCameraMode(this);
-            break;
-        case R.id.video_button:
-            MenuHelper.gotoVideoMode(this);
-            break;
-        case R.id.gallery: {
-            MenuHelper.gotoCameraImageGallery(this);
-        }
-        break;
-
-        case R.id.discard: {
-            MenuHelper.deletePhoto(this, mDeletePhotoRunnable);
-        }
-        break;
-
-        case R.id.share: {
-            Uri u = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
-            if (MenuHelper.isMMSUri(u)) {
-                return;
+            case R.id.camera_button:
+                MenuHelper.gotoCameraMode(this);
+                break;
+            case R.id.video_button:
+                MenuHelper.gotoVideoMode(this);
+                break;
+            case R.id.gallery:
+                MenuHelper.gotoCameraImageGallery(this);
+                break;
+            case R.id.discard:
+                MenuHelper.deletePhoto(this, mDeletePhotoRunnable);
+                break;
+            case R.id.play:
+                startPlayVideoActivity();
+                break;
+            case R.id.share: {
+                IImage image = mAllImages.getImageAt(mCurrentPosition);
+                if (MenuHelper.isMMSUri(image.fullSizeImageUri())) {
+                    return;
+                }
+                startShareMediaActivity(image);
+                break;
             }
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_SEND);
-            intent.setType("image/jpeg");
-            intent.putExtra(Intent.EXTRA_STREAM, u);
-            try {
-                startActivity(Intent.createChooser(
-                        intent, getText(R.string.sendImage)));
-            } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(this, R.string.no_way_to_share_image,
-                        Toast.LENGTH_SHORT).show();
+            case R.id.setas: {
+                Uri u = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
+                Intent intent = new Intent(Intent.ACTION_ATTACH_DATA, u);
+                try {
+                    startActivity(Intent.createChooser(
+                            intent, getText(R.string.setImage)));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(this, R.string.no_way_to_share_video,
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
             }
-        }
-        break;
-
-        case R.id.setas: {
-            Uri u = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
-            Intent intent = new Intent(Intent.ACTION_ATTACH_DATA, u);
-            try {
-                startActivity(Intent.createChooser(
-                        intent, getText(R.string.setImage)));
-            } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(this, R.string.no_way_to_share_video,
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-        break;
-
-        case R.id.next_image: {
-            moveNextOrPrevious(1);
-        }
-        break;
-
-        case R.id.prev_image: {
-            moveNextOrPrevious(-1);
-        }
-        break;
+            case R.id.next_image:
+                moveNextOrPrevious(1);
+                break;
+            case R.id.prev_image:
+                moveNextOrPrevious(-1);
+                break;
         }
     }
 
