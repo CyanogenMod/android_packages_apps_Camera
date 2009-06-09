@@ -21,6 +21,7 @@ import com.android.camera.gallery.IImage;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
@@ -970,7 +971,7 @@ public class MenuHelper {
         addCaptureVideoMenuItems(menu, activity);
     }
 
-    public static String formatDuration(final Activity activity,
+    public static String formatDuration(final Context context,
             int durationMs) {
         int duration = durationMs / 1000;
         int h = duration / 3600;
@@ -979,10 +980,10 @@ public class MenuHelper {
         String durationValue;
         if (h == 0) {
             durationValue = String.format(
-                    activity.getString(R.string.details_ms), m, s);
+                    context.getString(R.string.details_ms), m, s);
         } else {
             durationValue = String.format(
-                    activity.getString(R.string.details_hms), h, m, s);
+                    context.getString(R.string.details_hms), h, m, s);
         }
         return durationValue;
     }
