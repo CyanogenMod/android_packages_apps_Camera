@@ -192,6 +192,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             updateZoomButtonsEnabled();
             mZoomButtonsController.setVisible(true);
         }
+
         if (mShowActionIcons
                 && mActionIconPanel.getVisibility() != View.VISIBLE) {
             Animation animation = new AlphaAnimation(0, 1);
@@ -595,6 +596,16 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (!init(uri, imageList)) {
             finish();
             return;
+        }
+
+        // We don't show action icons for MMS uri because we don't have
+        // delete and share action icons for MMS. It is obvious that we don't
+        // need the "delete" action, but for the share part, although we get
+        // read permission (for the image) from the MMS application, we cannot
+        // pass the permission to other activities due to the current framework
+        // design.
+        if (MenuHelper.isMMSUri(uri)) {
+            mShowActionIcons = false;
         }
 
         if (mShowActionIcons) {
