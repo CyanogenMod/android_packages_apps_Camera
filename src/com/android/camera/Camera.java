@@ -1131,9 +1131,8 @@ public class Camera extends Activity implements View.OnClickListener,
         try {
             mFocusToneGenerator = new ToneGenerator(
                     AudioManager.STREAM_SYSTEM, FOCUS_BEEP_VOLUME);
-        } catch (RuntimeException e) {
-            Log.w(TAG, "Exception caught while creating local tone generator: "
-                    + e);
+        } catch (Throwable ex) {
+            Log.w(TAG, "Exception caught while creating tone generator: ", ex);
             mFocusToneGenerator = null;
         }
     }
@@ -1514,11 +1513,9 @@ public class Camera extends Activity implements View.OnClickListener,
         // this blanks the screen if the surface changed, no-op otherwise
         try {
             mCameraDevice.setPreviewDisplay(mSurfaceHolder);
-        } catch (IOException exception) {
-            CameraHolder.instance().release();
-            mCameraDevice = null;
-            // TODO: add more exception handling logic here
-            return;
+        } catch (Throwable ex) {
+            closeCamera();
+            throw new RuntimeException("setPreviewDisplay failed", ex);
         }
 
         setCameraParameter();
@@ -1531,10 +1528,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
         try {
             mCameraDevice.startPreview();
-        } catch (Throwable e) {
-            // TODO: change Throwable to IOException once
-            //      android.hardware.Camera.startPreview properly declares
-            //      that it throws IOException.
+        } catch (Throwable ex) {
+            closeCamera();
+            throw new RuntimeException("startPreview failed", ex);
         }
         mPreviewing = true;
 
