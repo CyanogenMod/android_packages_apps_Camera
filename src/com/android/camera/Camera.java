@@ -1163,8 +1163,7 @@ public class Camera extends Activity implements View.OnClickListener,
             // paused and resumed, we have to start the preview and do some
             // initialization.
             mSurfaceView.setAspectRatio(VideoPreview.DONT_CARE);
-            setViewFinder(mOriginalViewFinderWidth, mOriginalViewFinderHeight,
-                          true);
+            setViewFinder(mOriginalViewFinderWidth, mOriginalViewFinderHeight);
             mStatus = IDLE;
 
             initializeSecondTime();
@@ -1413,9 +1412,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         mSurfaceView.setVisibility(View.VISIBLE);
-        // if we're creating the surface, start the preview as well.
+        // Start the preview.
+        setViewFinder(w, h);
         boolean creating = holder.isCreating();
-        setViewFinder(w, h, creating);
         // If the surface is creating, send a message to do first time
         // initialization later. We want to finish surfaceChanged as soon as
         // possible to let user see preview images first.
@@ -1471,8 +1470,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         // make sure the surfaceview fills the whole screen when previewing
         surfaceView.setAspectRatio(VideoPreview.DONT_CARE);
-        setViewFinder(mOriginalViewFinderWidth, mOriginalViewFinderHeight,
-                true);
+        setViewFinder(mOriginalViewFinderWidth, mOriginalViewFinderHeight);
         mStatus = IDLE;
 
         // Calculate this in advance of each shot so we don't add to shutter
@@ -1484,7 +1482,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     }
 
-    private void setViewFinder(int w, int h, boolean startPreview) {
+    private void setViewFinder(int w, int h) {
         if (mPausing) return;
 
         if (mPreviewing && w == mViewFinderWidth && h == mViewFinderHeight) {
@@ -1507,9 +1505,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mOriginalViewFinderHeight = h;
         }
 
-        if (startPreview == false) return;
-
-        // start the preview if we're asked to...
+        // start the preview
         //
         // we want to start the preview and we're previewing already,
         // stop the preview first (this will blank the screen).
