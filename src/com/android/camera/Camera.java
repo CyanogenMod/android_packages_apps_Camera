@@ -865,7 +865,7 @@ public class Camera extends Activity implements View.OnClickListener,
          */
         Thread openCameraThread = new Thread(new Runnable() {
             public void run() {
-                mCameraDevice = android.hardware.Camera.open();
+                mCameraDevice = CameraHolder.instance().open();
             }
         });
         openCameraThread.start();
@@ -1435,7 +1435,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void closeCamera() {
         if (mCameraDevice != null) {
-            mCameraDevice.release();
+            CameraHolder.instance().release();
             mCameraDevice = null;
             mPreviewing = false;
         }
@@ -1443,7 +1443,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private boolean ensureCameraDevice() {
         if (mCameraDevice == null) {
-            mCameraDevice = android.hardware.Camera.open();
+            mCameraDevice = CameraHolder.instance().open();
         }
         return mCameraDevice != null;
     }
@@ -1519,7 +1519,7 @@ public class Camera extends Activity implements View.OnClickListener,
         try {
             mCameraDevice.setPreviewDisplay(mSurfaceHolder);
         } catch (IOException exception) {
-            mCameraDevice.release();
+            CameraHolder.instance().release();
             mCameraDevice = null;
             // TODO: add more exception handling logic here
             return;

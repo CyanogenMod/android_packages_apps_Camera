@@ -95,9 +95,9 @@ public class CameraSettings extends PreferenceActivity implements
                 registerOnSharedPreferenceChangeListener(this);
 
         // Get parameters.
-        android.hardware.Camera device = android.hardware.Camera.open();
+        android.hardware.Camera device = CameraHolder.instance().open();
         mParameters = device.getParameters();
-        device.release();
+        CameraHolder.instance().release();
 
         // Create white balance settings.
         createSettings(mWhiteBalance, Camera.SUPPORTED_WHITE_BALANCE,

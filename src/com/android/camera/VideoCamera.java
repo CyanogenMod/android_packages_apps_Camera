@@ -215,7 +215,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
          */
         Thread openCameraThread = new Thread(new Runnable() {
             public void run() {
-                mCameraDevice = android.hardware.Camera.open();
+                mCameraDevice = CameraHolder.instance().open();
             }
         });
         openCameraThread.start();
@@ -491,14 +491,14 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (mCameraDevice == null) {
             // If the activity is paused and resumed, camera device has been
             // released and we need to open the camera.
-            mCameraDevice = android.hardware.Camera.open();
+            mCameraDevice = CameraHolder.instance().open();
         }
 
         setCameraParameters();
         try {
             mCameraDevice.setPreviewDisplay(mSurfaceHolder);
         } catch (IOException ex) {
-            mCameraDevice.release();
+            CameraHolder.instance().release();
             mCameraDevice = null;
             Log.e(TAG, "failed to set preview display");
             return false;
@@ -511,7 +511,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             // TODO: change Throwable to IOException once
             //      android.hardware.Camera.startPreview properly declares
             //      that it throws IOException.
-            mCameraDevice.release();
+            CameraHolder.instance().release();
             mCameraDevice = null;
             Log.e(TAG, "failed to start preview");
             return false;
@@ -528,7 +528,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
         // If we don't lock the camera, release() will fail.
         mCameraDevice.lock();
-        mCameraDevice.release();
+        CameraHolder.instance().release();
         mCameraDevice = null;
         mPreviewing = false;
     }
