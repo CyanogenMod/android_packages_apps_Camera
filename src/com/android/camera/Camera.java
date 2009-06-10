@@ -89,6 +89,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final int FIRST_TIME_INIT = 2;
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
+    private static final int STORE_IMAGE_DONE = 5;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
@@ -162,7 +163,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
     private int mViewFinderWidth, mViewFinderHeight;
 
-    private Capturer mCaptureObject;
     private ImageCapture mImageCapture = null;
 
     private boolean mPreviewing;
@@ -214,6 +214,7 @@ public class Camera extends Activity implements View.OnClickListener,
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
 
+    private Thread mStoreImageThread = null;
     private final Handler mHandler = new MainHandler();
 
     private interface Capturer {
@@ -237,9 +238,23 @@ public class Camera extends Activity implements View.OnClickListener,
                         // TODO: remove polling
                         mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, 100);
                     } else if (mStatus == SNAPSHOT_COMPLETED){
-                        mCaptureObject.dismissFreezeFrame();
+                        mImageCapture.dismissFreezeFrame();
                         hidePostCaptureAlert();
                     }
+                    break;
+                }
+
+                case STORE_IMAGE_DONE: {
+                    if (!mIsImageCaptureIntent) {
+                        setLastPictureThumb((byte[])msg.obj, mImageCapture.getLastCaptureUri());
+                        if (!mThumbController.isUriValid()) {
+                            updateLastImage();
+                        }
+                        mThumbController.updateDisplayIfNeeded();
+                    } else {
+                        showPostCaptureAlert();
+                    }
+                    mStoreImageThread = null;
                     break;
                 }
 
@@ -550,7 +565,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void onPictureTaken(
-                byte [] jpegData, android.hardware.Camera camera) {
+                final byte [] jpegData, final android.hardware.Camera camera) {
             if (mPausing) {
                 return;
             }
@@ -561,9 +576,13 @@ public class Camera extends Activity implements View.OnClickListener,
             Log.v(TAG, "mRawPictureAndJpegPictureCallbackTime = "
                     + mRawPictureAndJpegPictureCallbackTime +"ms");
             if (jpegData != null) {
-                mImageCapture.storeImage(jpegData, camera, mLocation);
+                mStoreImageThread = new Thread() {
+                     public void run() {
+                         mImageCapture.storeImage(jpegData, camera, mLocation);
+                     }
+                };
+                mStoreImageThread.start();
             }
-
             mStatus = SNAPSHOT_COMPLETED;
 
             if (mKeepAndRestartPreview) {
@@ -583,7 +602,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mAutoFocusTime = mFocusCallbackTime - mFocusStartTime;
             Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
             if (mFocusState == FOCUSING_SNAP_ON_FINISH
-                    && mCaptureObject != null) {
+                    && mImageCapture != null) {
                 // Take the picture no matter focus succeeds or fails. No need
                 // to play the AF sound if we're about to play the shutter
                 // sound.
@@ -592,7 +611,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 } else {
                     mFocusState = FOCUS_FAIL;
                 }
-                mCaptureObject.onSnap();
+                mImageCapture.onSnap();
             } else if (mFocusState == FOCUSING) {
                 // User is half-pressing the focus key. Play the focus tone.
                 // Do not take the picture now.
@@ -665,15 +684,14 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void storeImage(
-                byte[] data, android.hardware.Camera camera, Location loc) {
+                final byte[] data, android.hardware.Camera camera, Location loc) {
             boolean captureOnly = mIsImageCaptureIntent;
-
+            Message msg = mHandler.obtainMessage(STORE_IMAGE_DONE);
             if (!captureOnly) {
                 storeImage(data, loc);
                 sendBroadcast(new Intent(
                         "com.android.camera.NEW_PICTURE", mLastContentUri));
-                setLastPictureThumb(data, mCaptureObject.getLastCaptureUri());
-                dismissFreezeFrame();
+                msg.obj = data;
             } else {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 4;
@@ -681,9 +699,9 @@ public class Camera extends Activity implements View.OnClickListener,
                 mCaptureOnlyBitmap = BitmapFactory.decodeByteArray(
                         data, 0, data.length, options);
 
-                showPostCaptureAlert();
                 cancelAutomaticPreviewRestart();
             }
+            mHandler.sendMessage(msg);
         }
 
         /**
@@ -905,6 +923,9 @@ public class Camera extends Activity implements View.OnClickListener,
                 break;
             case R.id.review_button:
                 if (mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED) {
+                    // Make sure image storing has completed before viewing 
+                    // last image.
+                    waitForStoreImageThread();
                     viewLastImage();
                 }
                 break;
@@ -1031,7 +1052,13 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         switch (button.getId()) {
             case R.id.camera_button:
-                doFocus(pressed);
+                if (mStoreImageThread == null) {
+                    doFocus(pressed);
+                } else {
+                    Toast.makeText(Camera.this,
+                            getResources().getString(R.string.wait), 
+                            Toast.LENGTH_SHORT);
+                }
                 break;
         }
     }
@@ -1042,7 +1069,13 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         switch (button.getId()) {
             case R.id.camera_button:
-                doSnap();
+                if (mStoreImageThread == null) {
+                    doSnap();
+                } else {
+                    Toast.makeText(Camera.this,
+                            getResources().getString(R.string.wait), 
+                            Toast.LENGTH_SHORT);
+                }
                 break;
         }
     }
@@ -1144,12 +1177,27 @@ public class Camera extends Activity implements View.OnClickListener,
         return ImageManager.DataLocation.EXTERNAL;
     }
 
+    private void waitForStoreImageThread() {
+        if (mStoreImageThread != null) {
+            try {
+                mStoreImageThread.join();
+            } catch (InterruptedException ex) {
+                // Ignore this exception.
+                Log.e(TAG, "", ex);
+            } finally {
+                mStoreImageThread = null;
+            }
+        }
+    }
+
     @Override
     protected void onPause() {
         mPausing = true;
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
+
+        waitForStoreImageThread();
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -1191,6 +1239,7 @@ public class Camera extends Activity implements View.OnClickListener,
         // Remove the messages in the event queue.
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
         mHandler.removeMessages(RESTART_PREVIEW);
+        mHandler.removeMessages(STORE_IMAGE_DONE);
         if (mHandler.hasMessages(FIRST_TIME_INIT)) {
             mHandler.removeMessages(FIRST_TIME_INIT);
             mPendingFirstTimeInit = true;
@@ -1329,9 +1378,8 @@ public class Camera extends Activity implements View.OnClickListener,
                 R.string.pref_camera_focusmode_value_infinity))
                 || (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)
                 || !mPreviewing) {
-            // doesn't get set until the idler runs
-            if (mCaptureObject != null) {
-                mCaptureObject.onSnap();
+            if (mImageCapture != null) {
+                mImageCapture.onSnap();
             }
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
@@ -1350,9 +1398,9 @@ public class Camera extends Activity implements View.OnClickListener,
             if (pressed) {  // Focus key down.
                 if (mPreviewing) {
                     autoFocus();
-                } else if (mCaptureObject != null) {
+                } else if (mImageCapture != null) {
                     // Save and restart preview
-                    mCaptureObject.onSnap();
+                    mImageCapture.onSnap();
                 }
             } else {  // Focus key up.
                 if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
@@ -1368,7 +1416,6 @@ public class Camera extends Activity implements View.OnClickListener,
         // if we're creating the surface, start the preview as well.
         boolean creating = holder.isCreating();
         setViewFinder(w, h, creating);
-        mCaptureObject = mImageCapture;
         // If the surface is creating, send a message to do first time
         // initialization later. We want to finish surfaceChanged as soon as
         // possible to let user see preview images first.
@@ -1434,13 +1481,7 @@ public class Camera extends Activity implements View.OnClickListener,
         // shutter press and saving the JPEG too.
         calculatePicturesRemaining();
 
-        if (!mIsImageCaptureIntent && !mThumbController.isUriValid()) {
-            updateLastImage();
-        }
 
-        if (!mIsImageCaptureIntent) {
-            mThumbController.updateDisplayIfNeeded();
-        }
     }
 
     private void setViewFinder(int w, int h, boolean startPreview) {
