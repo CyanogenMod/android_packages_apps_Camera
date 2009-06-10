@@ -23,6 +23,8 @@
     <string name="gallery_picker_label">"Galeria"</string>
     <string name="gallery_camera_bucket_name">"Imagens da câmera"</string>
     <string name="gallery_camera_videos_bucket_name">"Vídeos da câmera"</string>
+    <!-- no translation found for gallery_camera_media_bucket_name (7239093767839943966) -->
+    <skip />
     <string name="switch_to_video_lable">"Alternar para vídeo"</string>
     <string name="switch_to_camera_lable">"Alternar para câmera"</string>
     <string name="crop_label">"Cortar imagem"</string>
@@ -40,10 +42,14 @@
     <string name="settings">"Configurações"</string>
     <string name="view">"Visualizar"</string>
     <string name="details">"Detalhes"</string>
+    <!-- no translation found for show_on_map (441725587731006228) -->
+    <skip />
     <string name="rotate">"Girar"</string>
     <string name="rotate_left">"Girar para a esquerda"</string>
     <string name="rotate_right">"Girar para a direita"</string>
     <string name="slide_show">"Apresentação de slides"</string>
+    <!-- no translation found for multiselect (4761682939945434146) -->
+    <skip />
     <string name="capture_picture">"Capturar imagem"</string>
     <string name="capture_video">"Capturar vídeo"</string>
     <string name="crop_save_text">"Salvar"</string>
@@ -114,21 +120,136 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Mostrar imagens em ordem aleatória"</string>
     <string name="pref_camera_recordlocation_title">"Armazenar local nas imagens"</string>
     <string name="pref_camera_recordlocation_summary">"Registrar local nos dados da imagem"</string>
-    <string name="pref_camera_videoquality_category">"Qualidade do vídeo"</string>
+    <!-- no translation found for pref_camera_video_settings_category (5788821601203523037) -->
+    <skip />
     <!-- no translation found for pref_camera_videoquality_title (3836197291744160920) -->
     <skip />
     <string name="pref_camera_videoquality_entry_0">"Baixa (para mensagens MMS)"</string>
     <string name="pref_camera_videoquality_entry_1">"Alta (para cartão SD)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Qualidade do vídeo"</string>
+    <!-- no translation found for pref_camera_video_duration_title (3659987702892910722) -->
+    <skip />
+    <!-- no translation found for pref_camera_video_duration_entry_1 (886640327548814447) -->
+    <skip />
+    <!-- no translation found for pref_camera_video_duration_entry_10 (664455443394175885) -->
+    <skip />
+    <!-- no translation found for pref_camera_video_duration_entry_30 (1197298883102352735) -->
+    <skip />
+    <!-- no translation found for pref_camera_video_duration_dialogtitle (5762031980003877975) -->
+    <skip />
+    <!-- no translation found for pref_camera_picture_settings_category (1513001949820030759) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_title (2756537812337124731) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_auto (6580665476983469293) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_incandescent (8856667786449549938) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_daylight (2534757270149561027) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_fluorescent (2435332872847454032) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_cloudy (3531996716997959326) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_twilight (2257942426397244556) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_shade (4685730287406277702) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_dialogtitle (8978388629257577909) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_title (4914320939058424556) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_off (8886904740291649742) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_mono (8855894641721641755) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_sepia (1140386541736136378) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_negative (4543039133688988499) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_solarize (6038735847229504972) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_posterize (2482626618781180303) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_whiteboard (5470662301397802316) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_blackboard (270353561128282285) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_aqua (217673047138564200) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_pastel (7448668656894605817) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_entry_mosaic (3311376232776084648) -->
+    <skip />
+    <!-- no translation found for pref_camera_effect_dialogtitle (2208375525985287062) -->
+    <skip />
+    <!-- no translation found for pref_camera_brightness_title (3535304748059340394) -->
+    <skip />
+    <!-- no translation found for pref_camera_brightness_dialogtitle (7288855995285037584) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_title (8391466986280182397) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (7304479270077279178) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (6722733164421134734) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (6648351357102402892) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_dialogtitle (2741153309776113961) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_title (3045390831339734843) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_entry_superfine (4087830022547613205) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_entry_fine (4474043704802385370) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_entry_normal (1274801937207351293) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_dialogtitle (18195886066728203) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_title (3829707410870789496) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_entry_auto (7374820710300362457) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_entry_infinity (3413922419264967552) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_value_infinity (3629041045019224450) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_dialogtitle (3464580667965511167) -->
+    <skip />
+    <!-- no translation found for pref_camera_iso_title (879238905422151573) -->
+    <skip />
+    <!-- no translation found for pref_camera_iso_entry_auto (4643201946133801954) -->
+    <skip />
+    <!-- no translation found for pref_camera_iso_entry_high (7213306040716719006) -->
+    <skip />
+    <!-- no translation found for pref_camera_iso_value_high (8360668699146262731) -->
+    <skip />
+    <!-- no translation found for pref_camera_iso_dialogtitle (7395329188129398383) -->
+    <skip />
     <string name="camerasettings">"Configurações"</string>
     <!-- no translation found for image_gallery_NoImageView_text (409595259802877447) -->
     <skip />
     <string name="pref_gallery_confirm_delete_title">"Confirmar exclusões"</string>
     <!-- no translation found for pref_gallery_confirm_delete_summary (5253456492765525245) -->
     <skip />
+    <!-- no translation found for no_location_image (6929172123058811834) -->
+    <skip />
     <string name="details_panel_title">"Detalhes"</string>
     <string name="details_file_size">"Tamanho do arquivo:"</string>
     <string name="details_image_resolution">"Resolução:"</string>
+    <!-- no translation found for details_image_make (2888477930210903540) -->
+    <skip />
+    <!-- no translation found for details_image_model (3608007849933924336) -->
+    <skip />
+    <!-- no translation found for details_image_whitebalance (4412514247882436065) -->
+    <skip />
+    <!-- no translation found for details_image_latitude (6701704806314765468) -->
+    <skip />
+    <!-- no translation found for details_image_longitude (5583629669864057389) -->
+    <skip />
+    <!-- no translation found for details_image_location (6460201074393148978) -->
+    <skip />
     <!-- no translation found for details_duration (1028116471387901402) -->
     <skip />
     <string name="details_date_taken">"Data em que foi tirada:"</string>
@@ -184,5 +305,15 @@
     <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
     <skip />
     <!-- no translation found for too_large_to_attach (8944461117941172986) -->
+    <skip />
+    <!-- no translation found for multiselect_share (5261644537749253581) -->
+    <skip />
+    <!-- no translation found for multiselect_delete (9113461994546744603) -->
+    <skip />
+    <!-- no translation found for multiselect_close (6546017730363209274) -->
+    <skip />
+    <!-- no translation found for progress_dialog_title (4771577387849747804) -->
+    <skip />
+    <!-- no translation found for delete_images_message (4504926868037899430) -->
     <skip />
 </resources>
