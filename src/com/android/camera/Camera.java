@@ -140,7 +140,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private static final int IDLE = 1;
     private static final int SNAPSHOT_IN_PROGRESS = 2;
-    private static final int SNAPSHOT_COMPLETED = 3;
 
     private int mStatus = IDLE;
     private static final String sTempCropFilename = "crop-temp";
@@ -160,7 +159,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
 
-    private int mOriginalViewFinderWidth, mOriginalViewFinderHeight;
     private int mViewFinderWidth, mViewFinderHeight;
 
     private ImageCapture mImageCapture = null;
@@ -168,8 +166,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private boolean mPreviewing;
     private boolean mPausing;
     private boolean mFirstTimeInitialized;
-    private boolean mPendingFirstTimeInit;
-    private boolean mKeepAndRestartPreview;
     private boolean mIsImageCaptureIntent;
     private boolean mRecordLocation;
 
@@ -220,7 +216,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private interface Capturer {
         Uri getLastCaptureUri();
         void onSnap();
-        void dismissFreezeFrame();
     }
 
     /**
@@ -232,15 +227,7 @@ public class Camera extends Activity implements View.OnClickListener,
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case RESTART_PREVIEW: {
-                    if (mStatus == SNAPSHOT_IN_PROGRESS) {
-                        // We are still in the processing of taking the picture,
-                        // wait. This is strange.  Why are we polling?
-                        // TODO: remove polling
-                        mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, 100);
-                    } else if (mStatus == SNAPSHOT_COMPLETED){
-                        mImageCapture.dismissFreezeFrame();
-                        hidePostCaptureAlert();
-                    }
+                    restartPreview();
                     break;
                 }
 
@@ -272,10 +259,9 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    // This method will be called after surfaceChanged. Snapshots can only be
-    // taken after this is called. It should be called once only. We could have
-    // done these things in onCreate() but we want to make preview screen appear
-    // as soon as possible.
+    // Snapshots can only be taken after this is called. It should be called
+    // once only. We could have done these things in onCreate() but we want to
+    // make preview screen appear as soon as possible.
     void initializeFirstTime() {
         if (mFirstTimeInitialized) return;
 
@@ -583,9 +569,8 @@ public class Camera extends Activity implements View.OnClickListener,
                 };
                 mStoreImageThread.start();
             }
-            mStatus = SNAPSHOT_COMPLETED;
 
-            if (mKeepAndRestartPreview) {
+            if (!mIsImageCaptureIntent) {
                 long delay = 1500 - (
                         System.currentTimeMillis() - mRawPictureCallbackTime);
                 mHandler.sendEmptyMessageDelayed(
@@ -641,16 +626,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
         Bitmap mCaptureOnlyBitmap;
 
-        public void dismissFreezeFrame() {
-            if (mStatus == SNAPSHOT_IN_PROGRESS) {
-                // If we are still in the process of taking a picture,
-                // then just post a message.
-                mHandler.sendEmptyMessage(RESTART_PREVIEW);
-            } else {
-                restartPreview();
-            }
-        }
-
         private void storeImage(byte[] data, Location loc) {
             try {
                 long dateTaken = System.currentTimeMillis();
@@ -685,9 +660,8 @@ public class Camera extends Activity implements View.OnClickListener,
 
         public void storeImage(
                 final byte[] data, android.hardware.Camera camera, Location loc) {
-            boolean captureOnly = mIsImageCaptureIntent;
             Message msg = mHandler.obtainMessage(STORE_IMAGE_DONE);
-            if (!captureOnly) {
+            if (!mIsImageCaptureIntent) {
                 storeImage(data, loc);
                 sendBroadcast(new Intent(
                         "com.android.camera.NEW_PICTURE", mLastContentUri));
@@ -698,8 +672,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
                 mCaptureOnlyBitmap = BitmapFactory.decodeByteArray(
                         data, 0, data.length, options);
-
-                cancelAutomaticPreviewRestart();
             }
             mHandler.sendMessage(msg);
         }
@@ -784,20 +756,11 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         public void onSnap() {
-            if (mPausing) {
+            // If we are already in the middle of taking a snapshot then ignore.
+            if (mPausing || mStatus == SNAPSHOT_IN_PROGRESS) {
                 return;
             }
             mCaptureStartTime = System.currentTimeMillis();
-
-            // If we are already in the middle of taking a snapshot then we
-            // should just save
-            // the image after we have returned from the camera service.
-            if (mStatus == SNAPSHOT_IN_PROGRESS
-                    || mStatus == SNAPSHOT_COMPLETED) {
-                mKeepAndRestartPreview = true;
-                mHandler.sendEmptyMessage(RESTART_PREVIEW);
-                return;
-            }
 
             // Don't check the filesystem here, we can't afford the latency.
             // Instead, check the cached value which was calculated when the
@@ -808,8 +771,6 @@ public class Camera extends Activity implements View.OnClickListener,
             }
 
             mStatus = SNAPSHOT_IN_PROGRESS;
-
-            mKeepAndRestartPreview = true;
 
             mImageCapture.initiate();
         }
@@ -879,7 +840,7 @@ public class Camera extends Activity implements View.OnClickListener,
         mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
-        // surfaceCreated / surfaceDestroyed, other parts of the code
+        // surfaceChanged / surfaceDestroyed, other parts of the code
         // assume that when it is set, the surface is also set.
         SurfaceHolder holder = mSurfaceView.getHolder();
         holder.addCallback(this);
@@ -1069,7 +1030,14 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         switch (button.getId()) {
             case R.id.camera_button:
-                if (mStoreImageThread == null) {
+                if (mIsImageCaptureIntent 
+                        && mPostCaptureAlert.getVisibility() == View.VISIBLE) {
+                    // User was reviewing the capture image. Hide the action
+                    // items and start the preview now.
+                    hidePostCaptureAlert();
+                    restartPreview();        
+                } else if (mStoreImageThread == null) {
+                    // Take a picture.
                     doSnap();
                 } else {
                     Toast.makeText(Camera.this,
@@ -1081,7 +1049,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void updateStorageHint() {
-      updateStorageHint(MenuHelper.calculatePicturesRemaining());
+        updateStorageHint(MenuHelper.calculatePicturesRemaining());
     }
 
     private OnScreenHint mStorageHint;
@@ -1153,19 +1121,19 @@ public class Camera extends Activity implements View.OnClickListener,
         mJpegPictureCallbackTime = 0;
         mImageCapture = new ImageCapture();
 
-        // If first time initialization is pending, put it in the message queue.
-        if (mPendingFirstTimeInit) {
-            mHandler.sendEmptyMessage(FIRST_TIME_INIT);
-            mPendingFirstTimeInit = false;
-        } else if (mFirstTimeInitialized) {
-            // If first time initilization is done and the activity is
-            // paused and resumed, we have to start the preview and do some
-            // initialization.
+        if (mSurfaceHolder != null) {
+            // If surface holder is created, start the preview now. Otherwise,
+            // wait until surfaceChanged.
             mSurfaceView.setAspectRatio(VideoPreview.DONT_CARE);
-            setViewFinder(mOriginalViewFinderWidth, mOriginalViewFinderHeight);
-            mStatus = IDLE;
+            startPreview();
 
-            initializeSecondTime();
+            // If first time initialization is not finished, put it in the
+            // message queue.
+            if (!mFirstTimeInitialized) {
+                mHandler.sendEmptyMessage(FIRST_TIME_INIT);
+            } else {
+                initializeSecondTime();
+            }
         }
 
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
@@ -1237,11 +1205,8 @@ public class Camera extends Activity implements View.OnClickListener,
         // Remove the messages in the event queue.
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
         mHandler.removeMessages(RESTART_PREVIEW);
+        mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(STORE_IMAGE_DONE);
-        if (mHandler.hasMessages(FIRST_TIME_INIT)) {
-            mHandler.removeMessages(FIRST_TIME_INIT);
-            mPendingFirstTimeInit = true;
-        }
 
         super.onPause();
     }
@@ -1410,20 +1375,31 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        mSurfaceHolder = holder;
+        mViewFinderWidth = w;
+        mViewFinderHeight = h;
+
+        // Sometimes surfaceChanged is called after onPause. Ignore it.
+        if (mPausing) return;
+
         mSurfaceView.setVisibility(View.VISIBLE);
+
+        // Do not start preview if we changed surface view ratio to show
+        // captured image after snapshot.
+        if (mStatus == SNAPSHOT_IN_PROGRESS) return;
+
         // Start the preview.
-        setViewFinder(w, h);
-        boolean creating = holder.isCreating();
-        // If the surface is creating, send a message to do first time
-        // initialization later. We want to finish surfaceChanged as soon as
-        // possible to let user see preview images first.
-        if (creating && !mFirstTimeInitialized) {
+        startPreview();
+
+        // If first time initialization is not finished, send a message to do
+        // it later. We want to finish surfaceChanged as soon as possible to let
+        // user see preview first.
+        if (!mFirstTimeInitialized) {
             mHandler.sendEmptyMessage(FIRST_TIME_INIT);
         }
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-        mSurfaceHolder = holder;
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -1465,28 +1441,19 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void restartPreview() {
-        VideoPreview surfaceView = mSurfaceView;
-
         // make sure the surfaceview fills the whole screen when previewing
-        surfaceView.setAspectRatio(VideoPreview.DONT_CARE);
-        setViewFinder(mOriginalViewFinderWidth, mOriginalViewFinderHeight);
-        mStatus = IDLE;
+        mSurfaceView.setAspectRatio(VideoPreview.DONT_CARE);
+        startPreview();
 
         // Calculate this in advance of each shot so we don't add to shutter
         // latency. It's true that someone else could write to the SD card in
         // the mean time and fill it, but that could have happened between the
         // shutter press and saving the JPEG too.
         calculatePicturesRemaining();
-
-
     }
 
-    private void setViewFinder(int w, int h) {
+    private void startPreview() {
         if (mPausing) return;
-
-        if (mPreviewing && w == mViewFinderWidth && h == mViewFinderHeight) {
-            return;
-        }
 
         if (!ensureCameraDevice()) return;
 
@@ -1494,20 +1461,8 @@ public class Camera extends Activity implements View.OnClickListener,
 
         if (isFinishing()) return;
 
-        if (mPausing) return;
-
-        // remember view finder size
-        mViewFinderWidth = w;
-        mViewFinderHeight = h;
-        if (mOriginalViewFinderHeight == 0) {
-            mOriginalViewFinderWidth = w;
-            mOriginalViewFinderHeight = h;
-        }
-
-        // start the preview
-        //
-        // we want to start the preview and we're previewing already,
-        // stop the preview first (this will blank the screen).
+        // If we're previewing already, stop the preview first (this will blank
+        // the screen).
         if (mPreviewing) stopPreview();
 
         // this blanks the screen if the surface changed, no-op otherwise
@@ -1533,6 +1488,7 @@ public class Camera extends Activity implements View.OnClickListener,
             throw new RuntimeException("startPreview failed", ex);
         }
         mPreviewing = true;
+        mStatus = IDLE;
 
         long threadTimeEnd = Debug.threadCpuTimeNanos();
         long wallTimeEnd = SystemClock.elapsedRealtime();
@@ -1668,27 +1624,6 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        super.onOptionsMenuClosed(menu);
-        if (mImageSavingItem) {
-            // save the image if we presented the "advanced" menu
-            // which happens if "menu" is pressed while in
-            // SNAPSHOT_IN_PROGRESS  or SNAPSHOT_COMPLETED modes
-            mHandler.sendEmptyMessage(RESTART_PREVIEW);
-        }
-    }
-
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        if (featureId == Window.FEATURE_OPTIONS_PANEL) {
-            if (mStatus == SNAPSHOT_IN_PROGRESS) {
-                cancelAutomaticPreviewRestart();
-            }
-        }
-        return super.onMenuOpened(featureId, menu);
-    }
-
-    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
@@ -1698,7 +1633,7 @@ public class Camera extends Activity implements View.OnClickListener,
             }
         }
 
-        if (mStatus == SNAPSHOT_IN_PROGRESS || mStatus == SNAPSHOT_COMPLETED) {
+        if (mStatus == SNAPSHOT_IN_PROGRESS) {
             menu.setGroupVisible(MenuHelper.IMAGE_SAVING_ITEM, true);
             mImageSavingItem = true;
         } else {
@@ -1707,11 +1642,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         return true;
-    }
-
-    private void cancelAutomaticPreviewRestart() {
-        mKeepAndRestartPreview = false;
-        mHandler.removeMessages(RESTART_PREVIEW);
     }
 
     private boolean isImageCaptureIntent() {
