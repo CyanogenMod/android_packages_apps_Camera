@@ -97,7 +97,10 @@ public class CameraHolder {
     }
 
     public synchronized void keep() {
-        Assert(users == 1);
+        // We allow (users == 0) for the convenience of the calling activity.
+        // The activity may not have a chance to call open() before the user
+        // choose the menu item to switch to another activity.
+        Assert(users == 1 || users == 0);
         // Keep the camera instance for 3 seconds.
         keepBeforeTime = System.currentTimeMillis() + 3000;
     }
