@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2007 The Android Open Source Project
+<!-- Copyright (C) 2009 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,16 +15,29 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@drawable/camera_background"
         android:id="@+id/camera"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="horizontal">
 
-    <com.android.camera.VideoPreview
-            android:id="@+id/camera_preview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_centerInParent="true" />
+    <include android:id="@+id/control_bar" layout="@layout/camera_control"/>
+
+    <FrameLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true" 
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
+            android:background="@drawable/border_view_finder">
+        <com.android.camera.VideoPreview
+                android:id="@+id/camera_preview"
+                android:layout_width="384dp"
+                android:layout_height="288dp"/>
+        <com.android.camera.FocusRectangle
+                android:id="@+id/focus_rectangle"
+                android:layout_width="384dp"
+                android:layout_height="288dp"/>
+    </FrameLayout>
 
     <ImageView
             android:id="@+id/gps_indicator"
@@ -33,14 +46,9 @@
             android:visibility="invisible"
             android:clickable="false"
             android:focusable="false"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="18dp"
+            android:layout_marginLeft="18dp"
             android:layout_marginTop="18dp"/>
 
-    <com.android.camera.FocusRectangle
-            android:id="@+id/focus_rectangle"
-            android:layout_width="276dp"
-            android:layout_height="168dp"
-            android:layout_centerInParent="true"/>
 </RelativeLayout>

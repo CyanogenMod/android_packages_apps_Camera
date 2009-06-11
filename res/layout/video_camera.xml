@@ -16,111 +16,47 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/video_camera"
+        android:background="@drawable/camera_background"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="horizontal">
 
-    <include android:id="@+id/button_bar" layout="@layout/button_bar"/>
+    <include android:id="@+id/control_bar" layout="@layout/camera_control"/>
 
-    <RelativeLayout android:layout_toLeftOf="@id/button_bar"
-                android:layout_height="fill_parent"
-                android:layout_width="fill_parent">
+    <FrameLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true" 
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="32dp"
+            android:background="@drawable/border_view_finder">
         <com.android.camera.VideoPreview
                 android:id="@+id/camera_preview"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="352dp"
+                android:layout_height="288dp"
                 android:layout_centerInParent="true" />
-        <ImageView
-                android:id="@+id/video_frame"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_toLeftOf="@id/button_bar"
-                android:visibility="gone" />
-    </RelativeLayout>
-
+    </FrameLayout>
 
     <!-- Note: In this TextView the paddingRight="2"
          attribute is required because otherwise the
          text's drop shadow will be clipped. -->
     <TextView
             android:id="@+id/recording_time"
-            android:layout_width="90dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/button_bar"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="26dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="29dp"
+            android:layout_marginLeft="49dp"
             android:paddingRight="2dp"
-            android:drawablePadding="5dp"
-            android:drawableRight="@drawable/ic_camera_bar_indicator_record"
+            android:drawablePadding="8dp"
+            android:drawableLeft="@drawable/ic_recording_indicator"
             android:shadowColor="#c0000000"
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="1"
-            android:gravity="right"
+            android:gravity="left|center_vertical"
             android:textColor="@color/recording_time_elapsed_text"
-            android:textSize="20dp"
+            android:textSize="23dp"
             android:textStyle="bold"
             android:visibility="gone"/>
-
-    <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/post_picture_panel"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@id/button_bar"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-        <com.android.camera.ActionMenuButton
-                android:id="@+id/gallery"
-                android:drawableTop="@drawable/ic_menu_gallery"
-                android:text="@string/camera_gallery"
-                style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
-                android:id="@+id/play"
-                android:drawableTop="@drawable/ic_menu_camera_play"
-                android:text="@string/camera_play"
-                style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
-                android:id="@+id/share"
-                android:drawableTop="@drawable/ic_menu_share"
-                android:text="@string/camera_share"
-                style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
-                android:id="@+id/discard"
-                android:drawableTop="@drawable/ic_menu_delete"
-                android:text="@string/camera_toss"
-                style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
-                android:id="@+id/attach"
-                android:drawableTop="@drawable/ic_menu_attach"
-                android:text="@string/camera_attach"
-                style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
-                android:id="@+id/cancel"
-                android:drawableTop="@drawable/ic_menu_cancel"
-                android:text="@string/camera_cancel"
-                style="@style/OnscreenActionIcon"
-        />
-    </LinearLayout>
-    <ImageView
-            android:visibility="invisible"
-            android:id="@+id/last_picture_button"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:clickable="true"
-            android:focusable="false"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"/>
 </RelativeLayout>
