@@ -477,15 +477,14 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     // Precondition: mSurfaceHolder != null
-    // Returns true if starting preview succeeds.
-    private boolean startPreview() {
+    private void startPreview() {
         findViewById(R.id.review_indicator).setVisibility(View.INVISIBLE);
         findViewById(R.id.video_indicator).setVisibility(View.VISIBLE);
 
         Log.v(TAG, "startPreview");
         if (mPreviewing) {
             // After recording a video, preview is not stopped. So just return.
-            return true;
+            return;
         }
 
         if (mCameraDevice == null) {
@@ -497,27 +496,19 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         setCameraParameters();
         try {
             mCameraDevice.setPreviewDisplay(mSurfaceHolder);
-        } catch (IOException ex) {
-            CameraHolder.instance().release();
-            mCameraDevice = null;
-            Log.e(TAG, "failed to set preview display");
-            return false;
+        } catch (Throwable ex) {
+            closeCamera();
+            throw new RuntimeException("setPreviewDisplay failed", ex);
         }
 
         try {
             mCameraDevice.startPreview();
             mPreviewing = true;
         } catch (Throwable ex) {
-            // TODO: change Throwable to IOException once
-            //      android.hardware.Camera.startPreview properly declares
-            //      that it throws IOException.
-            CameraHolder.instance().release();
-            mCameraDevice = null;
-            Log.e(TAG, "failed to start preview");
-            return false;
+            closeCamera();
+            throw new RuntimeException("startPreview failed", ex);
         }
         mCameraDevice.unlock();
-        return true;
     }
 
     private void closeCamera() {
