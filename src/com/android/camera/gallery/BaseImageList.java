@@ -415,9 +415,6 @@ public abstract class BaseImageList implements IImageList {
             Log.i(TAG, "fail to get id in: " + uri, ex);
             return null;
         }
-        if (!ContentUris.withAppendedId(mBaseUri, matchId).equals(uri)) {
-            return null;
-        }
         // TODO: design a better method to get URI of specified ID
         Cursor cursor = getCursor();
         synchronized (cursor) {
