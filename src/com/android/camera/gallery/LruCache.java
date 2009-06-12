@@ -25,7 +25,7 @@ public class LruCache<K, V> {
         };
     }
 
-    public V put(K key, V value) {
+    public synchronized V put(K key, V value) {
         if (++mAddBeforeSweep > MAXIMUM_ADD_BEFORE_SWEEP) {
             mAddBeforeSweep = 0;
             Iterator<Map.Entry<K, WeakReference<V>>> iter =
@@ -40,7 +40,7 @@ public class LruCache<K, V> {
         return ref == null ? null : ref.get();
     }
 
-    public V get(K key) {
+    public synchronized V get(K key) {
         V value = mLruMap.get(key);
         if (value != null) return value;
         WeakReference<V> ref = mWeakMap.get(key);
@@ -51,7 +51,7 @@ public class LruCache<K, V> {
         return value;
     }
 
-    public void clear() {
+    public synchronized void clear() {
         mLruMap.clear();
         mWeakMap.clear();
     }
