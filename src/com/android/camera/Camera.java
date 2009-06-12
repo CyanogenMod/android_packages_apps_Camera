@@ -1237,6 +1237,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private void autoFocus() {
         if (mFocusState != FOCUSING && mFocusState != FOCUSING_SNAP_ON_FINISH) {
             if (mCameraDevice != null) {
+                Log.v(TAG, "Start autofocus.");
                 mFocusStartTime = System.currentTimeMillis();
                 mFocusState = FOCUSING;
                 mCameraDevice.autoFocus(mAutoFocusCallback);
