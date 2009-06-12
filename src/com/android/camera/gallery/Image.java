@@ -209,8 +209,7 @@ public class Image extends BaseImage implements IImage {
                 }
             }
 
-            mContainer.storeThumbnail(
-                    thumbnail, Image.this.fullSizeImageUri());
+            mContainer.storeThumbnail(thumbnail, mId);
             if (isCanceling()) return null;
 
             try {
@@ -321,7 +320,7 @@ public class Image extends BaseImage implements IImage {
         if (bitmap == null) {
             bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE, false);
             // No thumbnail found... storing the new one.
-            bitmap = mContainer.storeThumbnail(bitmap, fullSizeImageUri());
+            bitmap = mContainer.storeThumbnail(bitmap, mId);
         }
 
         if (bitmap != null) {
