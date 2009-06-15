@@ -234,10 +234,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 case STORE_IMAGE_DONE: {
                     if (!mIsImageCaptureIntent) {
                         setLastPictureThumb((byte[])msg.obj, mImageCapture.getLastCaptureUri());
-                        if (!mThumbController.isUriValid()) {
-                            updateLastImage();
-                        }
-                        mThumbController.updateDisplayIfNeeded();
+                        updateThumbnailButton();
                     } else {
                         showPostCaptureAlert();
                     }
@@ -297,10 +294,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     mLastPictureButton, mContentResolver);
             mThumbController.loadData(ImageManager.getLastImageThumbPath());
             // Update last image thumbnail.
-            if (!mThumbController.isUriValid()) {
-                updateLastImage();
-            }
-            mThumbController.updateDisplayIfNeeded();
+            updateThumbnailButton();
         } else {
             findViewById(R.id.review_button).setVisibility(View.INVISIBLE);
             findViewById(R.id.video_button).setVisibility(View.INVISIBLE);
@@ -336,6 +330,13 @@ public class Camera extends Activity implements View.OnClickListener,
         mFirstTimeInitialized = true;
     }
 
+    private void updateThumbnailButton() {
+        if (!mThumbController.isUriValid()) {
+            updateLastImage();
+        }
+        mThumbController.updateDisplayIfNeeded();
+    }
+
     // If the activity is paused and resumed, this method will be called in
     // onResume.
     void initializeSecondTime() {
@@ -350,6 +351,10 @@ public class Camera extends Activity implements View.OnClickListener,
         installIntentFilter();
 
         initializeFocusTone();
+
+        if (!mIsImageCaptureIntent) {
+            updateThumbnailButton();
+        }
     }
 
     private void initializeZoom() {
@@ -884,7 +889,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 break;
             case R.id.review_button:
                 if (mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED) {
-                    // Make sure image storing has completed before viewing 
+                    // Make sure image storing has completed before viewing
                     // last image.
                     waitForStoreImageThread();
                     viewLastImage();
@@ -1017,7 +1022,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     doFocus(pressed);
                 } else {
                     Toast.makeText(Camera.this,
-                            getResources().getString(R.string.wait), 
+                            getResources().getString(R.string.wait),
                             Toast.LENGTH_SHORT);
                 }
                 break;
@@ -1030,18 +1035,18 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         switch (button.getId()) {
             case R.id.camera_button:
-                if (mIsImageCaptureIntent 
+                if (mIsImageCaptureIntent
                         && mPostCaptureAlert.getVisibility() == View.VISIBLE) {
                     // User was reviewing the capture image. Hide the action
                     // items and start the preview now.
                     hidePostCaptureAlert();
-                    restartPreview();        
+                    restartPreview();
                 } else if (mStoreImageThread == null) {
                     // Take a picture.
                     doSnap();
                 } else {
                     Toast.makeText(Camera.this,
-                            getResources().getString(R.string.wait), 
+                            getResources().getString(R.string.wait),
                             Toast.LENGTH_SHORT);
                 }
                 break;
@@ -1397,6 +1402,8 @@ public class Camera extends Activity implements View.OnClickListener,
         // user see preview first.
         if (!mFirstTimeInitialized) {
             mHandler.sendEmptyMessage(FIRST_TIME_INIT);
+        } else {
+            initializeSecondTime();
         }
     }
 
