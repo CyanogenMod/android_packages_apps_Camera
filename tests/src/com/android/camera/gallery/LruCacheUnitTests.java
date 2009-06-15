@@ -1,6 +1,7 @@
 package com.android.camera.gallery;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 public class LruCacheUnitTests extends AndroidTestCase {
 
@@ -33,5 +34,41 @@ public class LruCacheUnitTests extends AndroidTestCase {
         }
         System.gc();
         assertEquals(Integer.valueOf(0), cache.get(0));
+    }
+
+    private static final int TEST_COUNT = 10000;
+
+    static class Accessor extends Thread {
+        private final LruCache<Integer,Integer> mMap;
+
+        public Accessor(LruCache<Integer, Integer> map) {
+            mMap = map;
+        }
+
+        @Override
+        public void run() {
+            Log.v("TAG", "start get " + this);
+            for (int i = 0; i < TEST_COUNT; ++i) {
+                mMap.get(i % 2);
+            }
+            Log.v("TAG", "finish get " + this);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testConcurrentAccess() throws Exception {
+        LruCache<Integer, Integer> cache = new LruCache<Integer, Integer>(4);
+        cache.put(0, 0);
+        cache.put(1, 1);
+        Accessor accessor[] = new Accessor[4];
+        for (int i = 0; i < accessor.length; ++i) {
+            accessor[i] = new Accessor(cache);
+        }
+        for (int i = 0; i < accessor.length; ++i) {
+            accessor[i].start();
+        }
+        for (int i = 0; i < accessor.length; ++i) {
+            accessor[i].join();
+        }
     }
 }
