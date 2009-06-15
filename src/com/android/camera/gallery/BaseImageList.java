@@ -96,9 +96,11 @@ public abstract class BaseImageList implements IImageList {
     /**
      * Store a given thumbnail in the database.
      */
-    protected Bitmap storeThumbnail(Bitmap thumb, Uri uri) {
+    protected Bitmap storeThumbnail(Bitmap thumb, long imageId) {
         if (thumb == null) return null;
         try {
+            Uri uri = getThumbnailUri(imageId, thumb.getWidth(),
+                    thumb.getHeight());
             if (uri == null) {
                 return thumb;
             }
@@ -212,11 +214,11 @@ public abstract class BaseImageList implements IImageList {
     // The fallback case is to decode the original photo to thumbnail size,
     // then encode it as a JPEG. We return the thumbnail Bitmap in order to
     // create the minithumb from it.
-    private Bitmap createThumbnailFromUri(Uri uri) {
+    private Bitmap createThumbnailFromUri(Uri uri, long id) {
         Bitmap bitmap = Util.makeBitmap(IImage.THUMBNAIL_TARGET_SIZE, uri,
                 mContentResolver);
         if (bitmap != null) {
-            storeThumbnail(bitmap, uri);
+            storeThumbnail(bitmap, id);
         } else {
             bitmap = Util.makeBitmap(IImage.MINI_THUMB_TARGET_SIZE, uri,
                 mContentResolver);
@@ -269,7 +271,7 @@ public abstract class BaseImageList implements IImageList {
                 bitmap = createThumbnailFromEXIF(filePath, id);
                 if (bitmap == null) {
                     bitmap = createThumbnailFromUri(
-                            ContentUris.withAppendedId(mBaseUri, id));
+                            ContentUris.withAppendedId(mBaseUri, id), id);
                 }
             }
             int degrees = existingImage.getDegreesRotated();
