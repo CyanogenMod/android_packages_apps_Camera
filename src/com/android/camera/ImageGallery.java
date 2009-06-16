@@ -196,6 +196,7 @@ public class ImageGallery extends Activity implements
 
     private final Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
+            if (!canHandleEvent()) return;
             mGvs.stop();
             IImage currentImage = getCurrentImage();
             if (currentImage != null) {
