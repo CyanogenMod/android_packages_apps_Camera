@@ -523,15 +523,6 @@ public class Camera extends Activity implements View.OnClickListener,
             mShutterLag = mShutterCallbackTime - mCaptureStartTime;
             Log.v(TAG, "mShutterLag = " + mShutterLag + "ms");
             clearFocusState();
-            // We are going to change the size of surface view and show captured
-            // image. Set it to invisible now and set it back to visible in
-            // surfaceChanged() so that users won't see the image is resized on
-            // the screen.
-            mSurfaceView.setVisibility(View.INVISIBLE);
-            // Resize the SurfaceView to the aspect-ratio of the still image
-            // and so that we can see the full image that was taken.
-            Size pictureSize = mParameters.getPictureSize();
-            mSurfaceView.setAspectRatio(pictureSize.width, pictureSize.height);
         }
     }
 
@@ -1383,12 +1374,6 @@ public class Camera extends Activity implements View.OnClickListener,
         // Sometimes surfaceChanged is called after onPause. Ignore it.
         if (mPausing) return;
 
-        mSurfaceView.setVisibility(View.VISIBLE);
-
-        // Do not start preview if we changed surface view ratio to show
-        // captured image after snapshot.
-        if (mStatus == SNAPSHOT_IN_PROGRESS) return;
-
         // Start the preview.
         startPreview();
 
@@ -1485,6 +1470,7 @@ public class Camera extends Activity implements View.OnClickListener,
         mCameraDevice.setOneShotPreviewCallback(mOneShotPreviewCallback);
 
         try {
+            Log.v(TAG, "startPreview");
             mCameraDevice.startPreview();
         } catch (Throwable ex) {
             closeCamera();
@@ -1504,6 +1490,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void stopPreview() {
         if (mCameraDevice != null && mPreviewing) {
+            Log.v(TAG, "stopPreview");
             mCameraDevice.stopPreview();
         }
         mPreviewing = false;
