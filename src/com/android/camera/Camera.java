@@ -502,8 +502,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    private boolean mImageSavingItem = false;
-
     private final class OneShotPreviewCallback
             implements android.hardware.Camera.PreviewCallback {
         public void onPreviewFrame(byte[] data,
@@ -591,8 +589,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mFocusCallbackTime = System.currentTimeMillis();
             mAutoFocusTime = mFocusCallbackTime - mFocusStartTime;
             Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
-            if (mFocusState == FOCUSING_SNAP_ON_FINISH
-                    && mImageCapture != null) {
+            if (mFocusState == FOCUSING_SNAP_ON_FINISH) {
                 // Take the picture no matter focus succeeds or fails. No need
                 // to play the AF sound if we're about to play the shutter
                 // sound.
@@ -703,7 +700,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         private void capture() {
-            mPreviewing = false;
             mCaptureOnlyBitmap = null;
 
             int orientation = mLastOrientation;
@@ -758,6 +754,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
             mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                     new JpegPictureCallback(loc));
+            mPreviewing = false;
         }
 
         public void onSnap() {
@@ -885,10 +882,12 @@ public class Camera extends Activity implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.video_button:
-                MenuHelper.gotoVideoMode(this);
+                if (isCameraIdle()) {
+                    MenuHelper.gotoVideoMode(this);
+                }
                 break;
             case R.id.review_button:
-                if (mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED) {
+                if (isCameraIdle()) {
                     // Make sure image storing has completed before viewing
                     // last image.
                     waitForStoreImageThread();
@@ -1240,15 +1239,14 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void autoFocus() {
-        if (mFocusState != FOCUSING && mFocusState != FOCUSING_SNAP_ON_FINISH) {
-            if (mCameraDevice != null) {
-                Log.v(TAG, "Start autofocus.");
-                mFocusStartTime = System.currentTimeMillis();
-                mFocusState = FOCUSING;
-                mCameraDevice.autoFocus(mAutoFocusCallback);
-            }
+        if (isCameraIdle() && mCameraDevice != null) {
+            Log.v(TAG, "Start autofocus.");
+            mZoomButtons.setVisible(false);
+            mFocusStartTime = System.currentTimeMillis();
+            mFocusState = FOCUSING;
+            updateFocusIndicator();
+            mCameraDevice.autoFocus(mAutoFocusCallback);
         }
-        updateFocusIndicator();
     }
 
     private void clearFocusState() {
@@ -1277,7 +1275,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                if (mStatus == SNAPSHOT_IN_PROGRESS) {
+                if (!isCameraIdle()) {
                     // ignore backs while we're taking a picture
                     return true;
                 }
@@ -1327,7 +1325,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mPausing) return true;
+        if (mPausing || !isCameraIdle()) {
+            return true;
+        }
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -1345,11 +1345,9 @@ public class Camera extends Activity implements View.OnClickListener,
         // also take the photo.
         if (mFocusMode.equals(getString(
                 R.string.pref_camera_focusmode_value_infinity))
-                || (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)
-                || !mPreviewing) {
-            if (mImageCapture != null) {
-                mImageCapture.onSnap();
-            }
+                || (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)) {
+            mZoomButtons.setVisible(false);
+            mImageCapture.onSnap();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
             // already have requested AF for us, so just request capture on
@@ -1365,12 +1363,7 @@ public class Camera extends Activity implements View.OnClickListener,
         if (mFocusMode.equals(getString(
                 R.string.pref_camera_focusmode_value_auto))) {
             if (pressed) {  // Focus key down.
-                if (mPreviewing) {
-                    autoFocus();
-                } else if (mImageCapture != null) {
-                    // Save and restart preview
-                    mImageCapture.onSnap();
-                }
+                autoFocus();
             } else {  // Focus key up.
                 if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
                     // User releases half-pressed focus key.
@@ -1507,6 +1500,15 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private void stopPreview() {
+        if (mCameraDevice != null && mPreviewing) {
+            mCameraDevice.stopPreview();
+        }
+        mPreviewing = false;
+        // If auto focus was in progress, it would have been canceled.
+        clearFocusState();
+    }
+
     private void setCameraParameter() {
         // request the preview size, the hardware may not honor it,
         // if we depended on it we would have to query the size again
@@ -1549,15 +1551,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         mCameraDevice.setParameters(mParameters);
-    }
-
-    private void stopPreview() {
-        if (mCameraDevice != null && mPreviewing) {
-            mCameraDevice.stopPreview();
-        }
-        mPreviewing = false;
-        // If auto focus was in progress, it would have been canceled.
-        clearFocusState();
     }
 
     void gotoGallery() {
@@ -1631,25 +1624,8 @@ public class Camera extends Activity implements View.OnClickListener,
         return null;
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        for (int i = 1; i <= MenuHelper.MENU_ITEM_MAX; i++) {
-            if (i != MenuHelper.GENERIC_ITEM) {
-                menu.setGroupVisible(i, false);
-            }
-        }
-
-        if (mStatus == SNAPSHOT_IN_PROGRESS) {
-            menu.setGroupVisible(MenuHelper.IMAGE_SAVING_ITEM, true);
-            mImageSavingItem = true;
-        } else {
-            menu.setGroupVisible(MenuHelper.IMAGE_MODE_ITEM, true);
-            mImageSavingItem = false;
-        }
-
-        return true;
+    private boolean isCameraIdle() {
+        return mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED;
     }
 
     private boolean isImageCaptureIntent() {
@@ -1677,6 +1653,28 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private int calculatePicturesRemaining() {
+        mPicturesRemaining = MenuHelper.calculatePicturesRemaining();
+        return mPicturesRemaining;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        for (int i = 1; i <= MenuHelper.MENU_ITEM_MAX; i++) {
+            menu.setGroupVisible(i, false);
+        }
+
+        // Only show the menu when camera is idle.
+        if (isCameraIdle()) {
+            menu.setGroupVisible(MenuHelper.GENERIC_ITEM, true);
+            menu.setGroupVisible(MenuHelper.IMAGE_MODE_ITEM, true);
+        }
+
+        return true;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -1688,11 +1686,6 @@ public class Camera extends Activity implements View.OnClickListener,
             addBaseMenuItems(menu);
         }
         return true;
-    }
-
-    private int calculatePicturesRemaining() {
-        mPicturesRemaining = MenuHelper.calculatePicturesRemaining();
-        return mPicturesRemaining;
     }
 
     private void addBaseMenuItems(Menu menu) {
@@ -1728,12 +1721,9 @@ public class Camera extends Activity implements View.OnClickListener,
                 0, R.string.settings)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                // Do not go to camera settings during capture.
-                if (mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED) {
-                    Intent intent = new Intent();
-                    intent.setClass(Camera.this, CameraSettings.class);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent();
+                intent.setClass(Camera.this, CameraSettings.class);
+                startActivity(intent);
                 return true;
             }
         });

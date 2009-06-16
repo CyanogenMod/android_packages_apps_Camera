@@ -182,43 +182,6 @@ public class Image extends BaseImage implements IImage {
             Bitmap thumbnail = null;
             Uri uri = mContainer.contentUri(mId);
             runSubTask(compressImageToFile(mImage, mJpegData, uri));
-
-            synchronized (this) {
-                String filePath = mFilePath;
-
-                // TODO: If thumbData is present and usable, we should call
-                // the version of storeThumbnail which takes a byte array,
-                // rather than re-encoding a new JPEG of the same
-                // dimensions.
-                byte[] thumbData = null;
-                synchronized (ExifInterface.class) {
-                    thumbData =
-                            (new ExifInterface(filePath)).getThumbnail();
-                }
-
-                if (thumbData != null) {
-                    thumbnail = BitmapFactory.decodeByteArray(
-                            thumbData, 0, thumbData.length);
-                }
-                if (thumbnail == null && mImage != null) {
-                    thumbnail = mImage;
-                }
-                if (thumbnail == null && mJpegData != null) {
-                    thumbnail = BitmapFactory.decodeByteArray(
-                            mJpegData, 0, mJpegData.length);
-                }
-            }
-
-            mContainer.storeThumbnail(thumbnail, mId);
-            if (isCanceling()) return null;
-
-            try {
-                thumbnail = Util.rotate(thumbnail, mOrientation);
-                saveMiniThumb(thumbnail);
-            } catch (IOException e) {
-                // Ignore if unable to save thumb.
-                Log.e(TAG, "unable to rotate / save thumb", e);
-            }
             return null;
         }
     }
