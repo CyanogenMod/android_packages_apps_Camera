@@ -1239,7 +1239,9 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void autoFocus() {
-        if (isCameraIdle() && mCameraDevice != null) {
+        // Initiate autofocus only when preview is started and snapshot is not
+        // in progress.
+        if (isCameraIdle() && mPreviewing) {
             Log.v(TAG, "Start autofocus.");
             mZoomButtons.setVisible(false);
             mFocusStartTime = System.currentTimeMillis();
@@ -1325,13 +1327,13 @@ public class Camera extends Activity implements View.OnClickListener,
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mPausing || !isCameraIdle()) {
-            return true;
-        }
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (mZoomButtons != null) {
+                // Show zoom buttons only when preview is started and snapshot
+                // is not in progress. mZoomButtons may be null if it is not
+                // initialized.
+                if (!mPausing && isCameraIdle() && mPreviewing
+                        && mZoomButtons != null) {
                     mZoomButtons.setVisible(true);
                 }
                 return true;
