@@ -325,7 +325,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
         initializeFocusTone();
 
-        initializeZoom();
+        // Disable zoom until driver is ready.
+        // TODO: enable this.
+        //initializeZoom();
 
         mFirstTimeInitialized = true;
     }
@@ -1234,7 +1236,7 @@ public class Camera extends Activity implements View.OnClickListener,
         // in progress.
         if (isCameraIdle() && mPreviewing) {
             Log.v(TAG, "Start autofocus.");
-            mZoomButtons.setVisible(false);
+            if (mZoomButtons != null) mZoomButtons.setVisible(false);
             mFocusStartTime = System.currentTimeMillis();
             mFocusState = FOCUSING;
             updateFocusIndicator();
@@ -1339,7 +1341,7 @@ public class Camera extends Activity implements View.OnClickListener,
         if (mFocusMode.equals(getString(
                 R.string.pref_camera_focusmode_value_infinity))
                 || (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)) {
-            mZoomButtons.setVisible(false);
+            if (mZoomButtons != null) mZoomButtons.setVisible(false);
             mImageCapture.onSnap();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
