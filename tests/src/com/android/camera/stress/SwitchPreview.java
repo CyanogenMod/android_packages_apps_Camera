@@ -18,6 +18,9 @@ package com.android.camera.stress;
 
 import com.android.camera.VideoCamera;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -39,6 +42,9 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
     private static final int TOTAL_NUMBER_OF_SWITCHING = 200;
     private static final long WAIT_FOR_PREVIEW = 2000;
 
+    private static final String CAMERA_TEST_OUTPUT_FILE = "/sdcard/mediaStressOut.txt";
+    private BufferedWriter mOut;
+    private FileWriter mfstream;
 
     public SwitchPreview() {
         super("com.android.camera", VideoCamera.class);
@@ -47,13 +53,34 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
     @Override
     protected void setUp() throws Exception {
         getActivity();
+        prepareOutputFile();
         super.setUp();
     }
 
     @Override
     protected void tearDown() throws Exception {
         getActivity().finish();
+        closeOutputFile();
         super.tearDown();
+    }
+
+    private void prepareOutputFile(){
+        try{
+            mfstream = new FileWriter(CAMERA_TEST_OUTPUT_FILE, true);
+            mOut = new BufferedWriter(mfstream);
+        } catch (Exception e){
+            assertTrue("Camera Switch Mode",false);
+        }
+    }
+
+    private void closeOutputFile() {
+        try {
+            mOut.write("\n");
+            mOut.close();
+            mfstream.close();
+        } catch (Exception e) {
+            assertTrue("CameraSwitchMode close output", false);
+        }
     }
 
     @LargeTest
@@ -61,12 +88,17 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
         //Switching the video and the video recorder mode
         Instrumentation inst = getInstrumentation();
         try{
+            mOut.write("Camera Switch Mode:\n");
+            mOut.write("No of loops :" + TOTAL_NUMBER_OF_SWITCHING + "\n");
+            mOut.write("loop: ");
             for (int i=0; i< TOTAL_NUMBER_OF_SWITCHING; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_LEFT);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
                 Thread.sleep(WAIT_FOR_PREVIEW);
+                mOut.write(" ," + i);
+                mOut.flush();
             }
         } catch (Exception e){
             Log.v(TAG, e.toString());
