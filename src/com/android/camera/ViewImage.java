@@ -425,8 +425,10 @@ public class ViewImage extends Activity implements View.OnClickListener {
     protected Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             mAllImages.removeImageAt(mCurrentPosition);
-            updateLastImage();
-            mThumbController.updateDisplayIfNeeded();
+            if (mCameraReviewMode) {
+                updateLastImage();
+                mThumbController.updateDisplayIfNeeded();
+            }
             if (mAllImages.getCount() == 0) {
                 finish();
             } else {
