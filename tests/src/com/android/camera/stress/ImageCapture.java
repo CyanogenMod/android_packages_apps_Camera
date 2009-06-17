@@ -102,6 +102,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
                 Thread.sleep(WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
                 mOut.write(" ," + i);
+                mOut.flush();
             }
         } catch (Exception e) {
             Log.v(TAG, e.toString());
@@ -132,6 +133,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 mOut.write(" ," + i);
+                mOut.flush();
             }
         } catch (Exception e) {
             Log.v(TAG, e.toString());
