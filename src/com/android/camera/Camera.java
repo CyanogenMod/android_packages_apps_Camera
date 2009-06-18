@@ -116,23 +116,15 @@ public class Camera extends Activity implements View.OnClickListener,
 
     // The parameter strings to communicate with camera driver.
     public static final String PARM_ZOOM = "zoom";
-    public static final String PARM_WHITE_BALANCE = "whitebalance";
-    public static final String PARM_EFFECT = "effect";
-    public static final String PARM_BRIGHTNESS = "exposure-offset";
     public static final String PARM_PICTURE_SIZE = "picture-size";
     public static final String PARM_JPEG_QUALITY = "jpeg-quality";
-    public static final String PARM_ISO = "iso";
     public static final String PARM_ROTATION = "rotation";
     public static final String PARM_GPS_LATITUDE = "gps-latitude";
     public static final String PARM_GPS_LONGITUDE = "gps-longitude";
     public static final String PARM_GPS_ALTITUDE = "gps-altitude";
     public static final String PARM_GPS_TIMESTAMP = "gps-timestamp";
     public static final String SUPPORTED_ZOOM = "zoom-values";
-    public static final String SUPPORTED_WHITE_BALANCE = "whitebalance-values";
-    public static final String SUPPORTED_EFFECT = "effect-values";
-    public static final String SUPPORTED_BRIGHTNESS = "exposure-offset-values";
     public static final String SUPPORTED_PICTURE_SIZE = "picture-size-values";
-    public static final String SUPPORTED_ISO = "iso-values";
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -1512,18 +1504,6 @@ public class Camera extends Activity implements View.OnClickListener,
         mParameters = mCameraDevice.getParameters();
         mParameters.setPreviewSize(mViewFinderWidth, mViewFinderHeight);
 
-        // Set white balance parameter.
-        String whiteBalance = mPreferences.getString(
-                CameraSettings.KEY_WHITE_BALANCE,
-                getString(R.string.pref_camera_whitebalance_default));
-        mParameters.set(PARM_WHITE_BALANCE, whiteBalance);
-
-        // Set effect parameter.
-        String effect = mPreferences.getString(
-                CameraSettings.KEY_EFFECT,
-                getString(R.string.pref_camera_effect_default));
-        mParameters.set(PARM_EFFECT, effect);
-
         // Set picture size parameter.
         String pictureSize = mPreferences.getString(
                 CameraSettings.KEY_PICTURE_SIZE,
@@ -1535,12 +1515,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
         mParameters.set(PARM_JPEG_QUALITY, jpegQuality);
-
-        // Set ISO parameter.
-        String iso = mPreferences.getString(
-                CameraSettings.KEY_ISO,
-                getString(R.string.pref_camera_iso_default));
-        mParameters.set(PARM_ISO, iso);
 
         // Set zoom.
         if (mZoomValues != null) {

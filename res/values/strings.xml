@@ -344,55 +344,6 @@
     <!-- Settings screen, Picture setting category title -->
     <string name="pref_camera_picture_settings_category">Picture settings</string>
 
-    <!-- Default white balance setting. Do not translate. -->
-    <string name="pref_camera_whitebalance_default">auto</string>
-
-    <!-- Settings screen, Select White balance title -->
-    <string name="pref_camera_whitebalance_title">Select white balance</string>
-
-    <!-- Settings screen, White balance dialog radio button choices -->
-    <string name="pref_camera_whitebalance_entry_auto">Auto</string>
-    <string name="pref_camera_whitebalance_entry_incandescent">Incandescent</string>
-    <string name="pref_camera_whitebalance_entry_daylight">Daylight</string>
-    <string name="pref_camera_whitebalance_entry_fluorescent">Fluorescent</string>
-    <string name="pref_camera_whitebalance_entry_cloudy">Cloudy</string>
-    <string name="pref_camera_whitebalance_entry_twilight">Twilight</string>
-    <string name="pref_camera_whitebalance_entry_shade">Shade</string>
-
-    <!-- Settings screen, white balance dialog title -->
-    <string name="pref_camera_whitebalance_dialogtitle">White balance</string>
-
-    <!-- Default effect setting. Do not translate. -->
-    <string name="pref_camera_effect_default">off</string>
-
-    <!-- Settings screen, Select Effect title -->
-    <string name="pref_camera_effect_title">Select effect</string>
-
-    <!-- Settings screen, Effect dialog radio button choices -->
-    <string name="pref_camera_effect_entry_off">Off</string>
-    <string name="pref_camera_effect_entry_mono">Mono</string>
-    <string name="pref_camera_effect_entry_sepia">Sepia</string>
-    <string name="pref_camera_effect_entry_negative">Negative</string>
-    <string name="pref_camera_effect_entry_solarize">Solarize</string>
-    <string name="pref_camera_effect_entry_posterize">Posterize</string>
-    <string name="pref_camera_effect_entry_whiteboard">Whiteboard</string>
-    <string name="pref_camera_effect_entry_blackboard">Blackboard</string>
-    <string name="pref_camera_effect_entry_aqua">Aqua</string>
-    <string name="pref_camera_effect_entry_pastel">Pastel</string>
-    <string name="pref_camera_effect_entry_mosaic">Mosaic</string>
-
-    <!-- Settings screen, effect dialog title -->
-    <string name="pref_camera_effect_dialogtitle">Effect</string>
-
-    <!-- Default brightness setting. Do not translate. -->
-    <string name="pref_camera_brightness_default">5</string>
-
-    <!-- Settings screen, Select Brightness title -->
-    <string name="pref_camera_brightness_title">Select brightness</string>
-
-    <!-- Settings screen, brightness dialog title -->
-    <string name="pref_camera_brightness_dialogtitle">Brightness</string>
-
     <!-- Default picture size setting. Do not translate. -->
     <string name="pref_camera_picturesize_default">2048x1536</string>
 
@@ -437,23 +388,6 @@
 
     <!-- Settings screen, focus mode dialog title -->
     <string name="pref_camera_focusmode_dialogtitle">Focus mode</string>
-
-    <!-- Default iso setting. Do not translate. -->
-    <string name="pref_camera_iso_default">auto</string>
-
-    <!-- Settings screen, Select Iso title -->
-    <string name="pref_camera_iso_title">Select ISO</string>
-
-    <!-- Settings screen, ISO dialog radio button choices -->
-    <string name="pref_camera_iso_entry_auto">Auto</string>
-    <string name="pref_camera_iso_entry_high">High ISO</string>
-
-    <!-- ISO entry values. Do not translate. -->
-    <string name="pref_camera_iso_value_auto">auto</string>
-    <string name="pref_camera_iso_value_high">high</string>
-
-    <!-- Settings screen, ISO dialog title -->
-    <string name="pref_camera_iso_dialogtitle">ISO</string>
 
     <!-- Menu item to go to the settings screen -->
     <string name="camerasettings">Settings</string>

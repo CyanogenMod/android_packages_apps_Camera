@@ -35,26 +35,17 @@ public class CameraSettings extends PreferenceActivity implements
             "pref_camera_videoquality_key";
     public static final String KEY_VIDEO_DURATION =
             "pref_camera_video_duration_key";
-    public static final String KEY_WHITE_BALANCE =
-            "pref_camera_whitebalance_key";
-    public static final String KEY_EFFECT = "pref_camera_effect_key";
-    public static final String KEY_BRIGHTNESS = "pref_camera_brightness_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
-    public static final String KEY_ISO = "pref_camera_iso_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
     public static final int DEFAULT_VIDEO_DURATION_VALUE = 1;  // 1 minute
 
     private ListPreference mVideoQuality;
     private ListPreference mVideoDuration;
-    private ListPreference mWhiteBalance;
-    private ListPreference mEffect;
-    private ListPreference mBrightness;
     private ListPreference mPictureSize;
     private ListPreference mJpegQuality;
     private ListPreference mFocusMode;
-    private ListPreference mIso;
     private Parameters mParameters;
 
     @Override
@@ -71,26 +62,18 @@ public class CameraSettings extends PreferenceActivity implements
 
         updateVideoQualitySummary();
         updateVideoDurationSummary();
-        updateWhiteBalanceSummary();
-        updateEffectSummary();
-        updateBrightnessSummary();
         updatePictureSizeSummary();
         updateJpegQualitySummary();
         updateFocusModeSummary();
-        updateIsoSummary();
     }
 
     private void initUI() {
         mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
         mVideoDuration = (ListPreference) findPreference(KEY_VIDEO_DURATION);
-        mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
-        mEffect = (ListPreference) findPreference(KEY_EFFECT);
-        mBrightness = (ListPreference) findPreference(KEY_BRIGHTNESS);
 
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
         mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
-        mIso = (ListPreference) findPreference(KEY_ISO);
         getPreferenceScreen().getSharedPreferences().
                 registerOnSharedPreferenceChangeListener(this);
 
@@ -99,30 +82,10 @@ public class CameraSettings extends PreferenceActivity implements
         mParameters = device.getParameters();
         CameraHolder.instance().release();
 
-        // Create white balance settings.
-        createSettings(mWhiteBalance, Camera.SUPPORTED_WHITE_BALANCE,
-                       R.array.pref_camera_whitebalance_entries,
-                       R.array.pref_camera_whitebalance_entryvalues);
-
-        // Create effect settings.
-        createSettings(mEffect, Camera.SUPPORTED_EFFECT,
-                       R.array.pref_camera_effect_entries,
-                       R.array.pref_camera_effect_entryvalues);
-
-        // Create brightness settings.
-        createSettings(mBrightness, Camera.SUPPORTED_BRIGHTNESS,
-                       R.array.pref_camera_brightness_entries,
-                       R.array.pref_camera_brightness_entryvalues);
-
         // Create picture size settings.
         createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE,
                        R.array.pref_camera_picturesize_entries,
                        R.array.pref_camera_picturesize_entryvalues);
-
-        // Create iso settings.
-        createSettings(mIso, Camera.SUPPORTED_ISO,
-                       R.array.pref_camera_iso_entries,
-                       R.array.pref_camera_iso_entryvalues);
 
         // Set default JPEG quality value if it is empty.
         if (mJpegQuality.getValue() == null) {
@@ -189,18 +152,6 @@ public class CameraSettings extends PreferenceActivity implements
         mVideoDuration.setSummary(mVideoDuration.getEntry());
     }
 
-    private void updateWhiteBalanceSummary() {
-        mWhiteBalance.setSummary(mWhiteBalance.getEntry());
-    }
-
-    private void updateEffectSummary() {
-        mEffect.setSummary(mEffect.getEntry());
-    }
-
-    private void updateBrightnessSummary() {
-        mBrightness.setSummary(mBrightness.getEntry());
-    }
-
     private void updatePictureSizeSummary() {
         mPictureSize.setSummary(mPictureSize.getEntry());
     }
@@ -213,30 +164,18 @@ public class CameraSettings extends PreferenceActivity implements
         mFocusMode.setSummary(mFocusMode.getEntry());
     }
 
-    private void updateIsoSummary() {
-        mIso.setSummary(mIso.getEntry());
-    }
-
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals(KEY_VIDEO_QUALITY)) {
             updateVideoQualitySummary();
         } else if (key.equals(KEY_VIDEO_DURATION)) {
             updateVideoDurationSummary();
-        } else if (key.equals(KEY_WHITE_BALANCE)) {
-            updateWhiteBalanceSummary();
-        } else if (key.equals(KEY_EFFECT)) {
-            updateEffectSummary();
         } else if (key.equals(KEY_PICTURE_SIZE)) {
             updatePictureSizeSummary();
         } else if (key.equals(KEY_JPEG_QUALITY)) {
             updateJpegQualitySummary();
         } else if (key.equals(KEY_FOCUS_MODE)) {
             updateFocusModeSummary();
-        } else if (key.equals(KEY_BRIGHTNESS)) {
-            updateBrightnessSummary();
-        } else if (key.equals(KEY_ISO)) {
-            updateIsoSummary();
         }
     }
 }
