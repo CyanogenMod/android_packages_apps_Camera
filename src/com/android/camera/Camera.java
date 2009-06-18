@@ -1369,6 +1369,12 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        // Make sure we have a surface in the holder before proceeding.
+        if (holder.getSurface() == null) {
+            Log.d(TAG, "holder.getSurface() == null");
+            return;
+        }
+
         mSurfaceHolder = holder;
         mViewFinderWidth = w;
         mViewFinderHeight = h;
