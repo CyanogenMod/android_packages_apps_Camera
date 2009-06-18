@@ -1096,6 +1096,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     // The CropImage activity passes back the Uri of the
                     // cropped image as the Action rather than the Data.
                     mSavedUri = Uri.parse(data.getAction());
+                    // This forces us to renew the image list in init.
+                    mAllImages = null;
                 }
                 break;
         }
