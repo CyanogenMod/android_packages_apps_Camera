@@ -24,6 +24,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AlphaAnimation;
@@ -207,7 +209,13 @@ public class ThumbnailController {
             return false;
         }
         try {
-            mContentResolver.openFileDescriptor(mUri, "r").close();
+            ParcelFileDescriptor pfd =
+                    mContentResolver.openFileDescriptor(mUri, "r");
+            if (pfd == null) {
+                Log.e(TAG, "Fail to open URI.");
+                return false;
+            }
+            pfd.close();
         } catch (IOException ex) {
             return false;
         }
