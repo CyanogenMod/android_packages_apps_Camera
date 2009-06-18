@@ -175,8 +175,8 @@ public class ThumbnailController {
         // Make the mini-thumb size smaller than the button size so that the
         // image corners don't peek out from the rounded corners of the
         // frame_thumb graphic:
-        final int PADDING_WIDTH = 4;
-        final int PADDING_HEIGHT = 4;
+        final int PADDING_WIDTH = 2;
+        final int PADDING_HEIGHT = 2;
         LayoutParams param = mButton.getLayoutParams();
         final int miniThumbWidth = param.width - 2 * PADDING_WIDTH;
         final int miniThumbHeight = param.height - 2 * PADDING_HEIGHT;
@@ -185,14 +185,12 @@ public class ThumbnailController {
         Drawable drawable;
         if (mThumbs == null) {
             mThumbs = new Drawable[2];
-            mThumbs[1] = new BitmapDrawable(
-                    Util.makeRoundedCorner(mThumb, 4, 4));
+            mThumbs[1] = new BitmapDrawable(mThumb);
             drawable = mThumbs[1];
             mShouldAnimateThumb = false;
         } else {
             mThumbs[0] = mThumbs[1];
-            mThumbs[1] = new BitmapDrawable(
-                    Util.makeRoundedCorner(mThumb, 4, 4));
+            mThumbs[1] = new BitmapDrawable(mThumb);
             mThumbTransition = new TransitionDrawable(mThumbs);
             drawable = mThumbTransition;
             mShouldAnimateThumb = true;

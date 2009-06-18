@@ -31,9 +31,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera.PictureCallback;
-import android.hardware.Camera.Size;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
@@ -51,7 +49,6 @@ import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -279,8 +276,9 @@ public class Camera extends Activity implements View.OnClickListener,
         // Initialize last picture button.
         mContentResolver = getContentResolver();
         if (!mIsImageCaptureIntent)  {
-            findViewById(R.id.video_button).setOnClickListener(this);
-            mLastPictureButton = (ImageView) findViewById(R.id.review_button);
+            findViewById(R.id.camera_switch).setOnClickListener(this);
+            mLastPictureButton =
+                    (ImageView) findViewById(R.id.review_thumbnail);
             mLastPictureButton.setOnClickListener(this);
             mThumbController = new ThumbnailController(
                     mLastPictureButton, mContentResolver);
@@ -288,17 +286,16 @@ public class Camera extends Activity implements View.OnClickListener,
             // Update last image thumbnail.
             updateThumbnailButton();
         } else {
-            findViewById(R.id.review_button).setVisibility(View.INVISIBLE);
-            findViewById(R.id.video_button).setVisibility(View.INVISIBLE);
+            findViewById(R.id.review_thumbnail).setVisibility(View.INVISIBLE);
+
             ViewGroup cameraView = (ViewGroup) findViewById(R.id.camera);
             getLayoutInflater().inflate(
                     R.layout.post_picture_panel, cameraView);
             mPostCaptureAlert = findViewById(R.id.post_picture_panel);
         }
 
-        findViewById(R.id.photo_indicator).setVisibility(View.VISIBLE);
         // Initialize shutter button.
-        mShutterButton = (ShutterButton) findViewById(R.id.camera_button);
+        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.setVisibility(View.VISIBLE);
 
@@ -307,7 +304,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         // Initialize GPS indicator.
         mGpsIndicator = (ImageView) findViewById(R.id.gps_indicator);
-        mGpsIndicator.setImageResource(R.drawable.ic_gps_active_camera);
+        mGpsIndicator.setImageResource(R.drawable.ic_camera_sym_gps);
 
         ImageManager.ensureOSXCompatibleFolder();
 
@@ -551,7 +548,8 @@ public class Camera extends Activity implements View.OnClickListener,
                     + mRawPictureAndJpegPictureCallbackTime +"ms");
             if (jpegData != null) {
                 mStoreImageThread = new Thread() {
-                     public void run() {
+                     @Override
+                    public void run() {
                          mImageCapture.storeImage(jpegData, camera, mLocation);
                      }
                 };
@@ -834,8 +832,7 @@ public class Camera extends Activity implements View.OnClickListener,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mIsImageCaptureIntent = isImageCaptureIntent();
-        getLayoutInflater().inflate(
-                R.layout.button_bar, (ViewGroup) findViewById(R.id.camera));
+        ((Switcher) findViewById(R.id.camera_switch)).setSwitch(true);
 
         // Make sure the services are loaded.
         try {
@@ -866,12 +863,12 @@ public class Camera extends Activity implements View.OnClickListener,
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.video_button:
+            case R.id.camera_switch:
                 if (isCameraIdle()) {
                     MenuHelper.gotoVideoMode(this);
                 }
                 break;
-            case R.id.review_button:
+            case R.id.review_thumbnail:
                 if (isCameraIdle()) {
                     // Make sure image storing has completed before viewing
                     // last image.
@@ -1001,7 +998,7 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
         switch (button.getId()) {
-            case R.id.camera_button:
+            case R.id.shutter_button:
                 if (mStoreImageThread == null) {
                     doFocus(pressed);
                 } else {
@@ -1018,7 +1015,7 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
         switch (button.getId()) {
-            case R.id.camera_button:
+            case R.id.shutter_button:
                 if (mIsImageCaptureIntent
                         && mPostCaptureAlert.getVisibility() == View.VISIBLE) {
                     // User was reviewing the capture image. Hide the action
@@ -1374,6 +1371,10 @@ public class Camera extends Activity implements View.OnClickListener,
         // Sometimes surfaceChanged is called after onPause. Ignore it.
         if (mPausing) return;
 
+        // Do not start preview if we changed surface view ratio to show
+        // captured image after snapshot.
+        if (mStatus == SNAPSHOT_IN_PROGRESS) return;
+
         // Start the preview.
         startPreview();
 
@@ -1716,22 +1717,19 @@ class FocusRectangle extends View {
     }
 
     private void setDrawable(int resid) {
-        BitmapDrawable d = (BitmapDrawable) getResources().getDrawable(resid);
-        // We do this because we don't want the bitmap to be scaled.
-        d.setGravity(Gravity.CENTER);
-        setBackgroundDrawable(d);
+        setBackgroundDrawable(getResources().getDrawable(resid));
     }
 
     public void showStart() {
-        setDrawable(R.drawable.frame_autofocus_rectangle);
+        setDrawable(R.drawable.focus_focusing);
     }
 
     public void showSuccess() {
-        setDrawable(R.drawable.frame_focused_rectangle);
+        setDrawable(R.drawable.focus_focused);
     }
 
     public void showFail() {
-        setDrawable(R.drawable.frame_nofocus_rectangle);
+        setDrawable(R.drawable.focus_focus_failed);
     }
 
     public void clear() {
