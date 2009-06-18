@@ -967,6 +967,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 R.string.settings)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
+                        // Keep the camera instance for a while.
+                        // This avoids re-opening the camera and saves time.
+                        CameraHolder.instance().keep();
+
                         Intent intent = new Intent();
                         intent.setClass(VideoCamera.this, CameraSettings.class);
                         startActivity(intent);
