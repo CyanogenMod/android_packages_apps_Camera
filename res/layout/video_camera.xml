@@ -21,8 +21,6 @@
         android:layout_height="fill_parent"
         android:orientation="horizontal">
 
-    <include android:id="@+id/control_bar" layout="@layout/camera_control"/>
-
     <FrameLayout android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true" 
@@ -65,37 +63,4 @@
             android:textSize="23dp"
             android:textStyle="bold"
             android:visibility="gone"/>
-
-
-    <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/post_picture_panel"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@id/button_bar"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-        <com.android.camera.ActionMenuButton
-                android:id="@+id/play"
-                android:drawableTop="@drawable/ic_menu_camera_play"
-                android:text="@string/camera_play"
-                style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
-                android:id="@+id/attach"
-                android:drawableTop="@drawable/ic_menu_attach"
-                android:text="@string/camera_attach"
-                style="@style/OnscreenActionIcon"
-        />
-        <com.android.camera.ActionMenuButton
-                android:id="@+id/cancel"
-                android:drawableTop="@drawable/ic_menu_cancel"
-                android:text="@string/camera_cancel"
-                style="@style/OnscreenActionIcon"
-        />
-    </LinearLayout>
 </RelativeLayout>
