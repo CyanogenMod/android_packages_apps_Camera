@@ -876,6 +876,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private void registerVideo() {
         if (mCameraVideoFileDescriptor == null) {
             Uri videoTable = Uri.parse("content://media/external/video/media");
+            mCurrentVideoValues.put(Video.Media.SIZE,
+                    new File(mCurrentVideoFilename).length());
             mCurrentVideoUri = mContentResolver.insert(videoTable,
                     mCurrentVideoValues);
             Log.v(TAG, "Current video URI: " + mCurrentVideoUri);
