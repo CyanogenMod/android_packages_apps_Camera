@@ -18,8 +18,7 @@
         android:background="@drawable/camera_background"
         android:id="@+id/camera"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="horizontal">
+        android:layout_height="fill_parent">
 
     <include android:id="@+id/control_bar" layout="@layout/camera_control"/>
 

@@ -279,6 +279,10 @@ public class ImageManager {
             imageList = ImageManager.allImages(
                     cr, ImageManager.DataLocation.ALL,
                     ImageManager.INCLUDE_DRM_IMAGES, sort);
+        } else if (uriString.startsWith("content://media/external/video")) {
+            imageList = ImageManager.allImages(
+                cr, ImageManager.DataLocation.EXTERNAL,
+                ImageManager.INCLUDE_VIDEOS, sort);
         } else if (isSingleImageMode(uriString)) {
             imageList = new SingleImageList(uri);
             ((SingleImageList) imageList).open(cr);

@@ -42,6 +42,7 @@ public class SingleImageList extends BaseImageList {
 
     @Override
     public void open(ContentResolver resolver) {
+        mContentResolver = resolver;
         mSingleImage = new UriImage(this, resolver, mBaseUri);
     }
 
@@ -77,6 +78,15 @@ public class SingleImageList extends BaseImageList {
     @Override
     public IImage getImageAt(int i) {
         return i == 0 ? mSingleImage : null;
+    }
+
+    @Override
+    public boolean removeImage(IImage image) {
+        if (mContentResolver.delete(image.fullSizeImageUri(), null, null) > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
