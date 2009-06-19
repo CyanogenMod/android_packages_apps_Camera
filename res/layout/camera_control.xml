@@ -34,7 +34,8 @@
             android:focusable="false"
             android:background="@drawable/border_last_picture"/>
 
-    <LinearLayout android:orientation="vertical"
+    <LinearLayout android:id="@+id/camera_switch_set"
+            android:orientation="vertical"
             android:layout_centerInParent="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content">

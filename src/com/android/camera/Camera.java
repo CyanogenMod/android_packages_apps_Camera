@@ -286,8 +286,6 @@ public class Camera extends Activity implements View.OnClickListener,
             // Update last image thumbnail.
             updateThumbnailButton();
         } else {
-            findViewById(R.id.review_thumbnail).setVisibility(View.INVISIBLE);
-
             ViewGroup cameraView = (ViewGroup) findViewById(R.id.camera);
             getLayoutInflater().inflate(
                     R.layout.post_picture_panel, cameraView);
@@ -833,6 +831,10 @@ public class Camera extends Activity implements View.OnClickListener,
 
         mIsImageCaptureIntent = isImageCaptureIntent();
         ((Switcher) findViewById(R.id.camera_switch)).setSwitch(true);
+        if (mIsImageCaptureIntent) {
+            findViewById(R.id.review_thumbnail).setVisibility(View.INVISIBLE);
+            findViewById(R.id.camera_switch_set).setVisibility(View.INVISIBLE);
+        }
 
         // Make sure the services are loaded.
         try {
