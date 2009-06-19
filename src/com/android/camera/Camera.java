@@ -1534,7 +1534,8 @@ public class Camera extends Activity implements View.OnClickListener,
             Uri targetUri = mThumbController.getUri();
             targetUri = targetUri.buildUpon().appendQueryParameter(
                     "bucketId", ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
-            Intent intent = new Intent(Intent.ACTION_VIEW, targetUri);
+            Intent intent = new Intent(this, ReviewImage.class);
+            intent.setData(targetUri);
             intent.putExtra(MediaStore.EXTRA_FULL_SCREEN, true);
             intent.putExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS, true);
             intent.putExtra("com.android.camera.ReviewMode", true);

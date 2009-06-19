@@ -127,7 +127,14 @@
                 <category android:name="android.intent.category.SELECTED_ALTERNATIVE" />
             </intent-filter>
         </activity>
-
+        <activity android:name="ReviewImage"
+                android:label="@string/view_label"
+                android:screenOrientation="behind"
+                android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name="ViewImage" 
                 android:label="@string/view_label"
                 android:screenOrientation="behind"

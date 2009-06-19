@@ -20,6 +20,7 @@ import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -302,7 +303,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 break;
             }
             case R.id.review_thumbnail: {
-                stopVideoRecordingAndShowAlert();
+                stopVideoRecordingAndShowReview();
                 break;
             }
         }
@@ -317,7 +318,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             case R.id.shutter_button:
                 if (mMediaRecorderRecording) {
                     if (mIsVideoCaptureIntent) {
-                        stopVideoRecordingAndShowAlert();
+                        stopVideoRecordingAndShowReview();
                     } else {
                         stopVideoRecordingAndGetThumbnail();
                         mRecorderInitialized = false;
@@ -515,7 +516,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // but not quite the same.
         if (mMediaRecorderRecording) {
             if (mIsVideoCaptureIntent) {
-                stopVideoRecordingAndShowAlert();
+                stopVideoRecordingAndShowReview();
             } else {
                 stopVideoRecordingAndGetThumbnail();
             }
@@ -1009,7 +1010,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
             mMediaRecorderRecording = true;
             mRecordingStartTime = SystemClock.uptimeMillis();
-            updateRecordingIndicator(true);
+            updateRecordingIndicator(false);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
@@ -1030,8 +1031,23 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         acquireVideoThumb();
     }
 
-    private void stopVideoRecordingAndShowAlert() {
+    private void stopVideoRecordingAndShowReview() {
         stopVideoRecording();
+        if (mThumbController.isUriValid()) {
+            Uri targetUri = mThumbController.getUri();
+            Intent intent = new Intent(this, ReviewImage.class);
+            intent.setData(targetUri);
+            intent.putExtra(MediaStore.EXTRA_FULL_SCREEN, true);
+            intent.putExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS, true);
+            intent.putExtra("com.android.camera.ReviewMode", true);
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException ex) {
+                Log.e(TAG, "review video fail", ex);
+            }
+        } else {
+            Log.e(TAG, "Can't view last video.");
+        }
     }
 
     private void stopVideoRecording() {
@@ -1054,7 +1070,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 mMediaRecorderRecording = false;
             }
             releaseMediaRecorder();
-            updateRecordingIndicator(false);
+            updateRecordingIndicator(true);
             mRecordingTimeView.setVisibility(View.GONE);
             setScreenTimeoutLong();
         }

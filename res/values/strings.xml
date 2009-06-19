@@ -131,25 +131,28 @@
     <!-- Confirmation dialog message after deleting a video -->
     <string name="confirm_delete_video_message">The video will be deleted.</string>
     <!-- button indicating that the picture just taken should be deleted -->
-    <string name="camera_toss">Delete</string>
+    <string name="camera_toss">DELETE</string>
 
     <!-- Lable for the button that takes the user to the camera pictures Gallery -->
     <string name="camera_gallery">Gallery</string>
 
     <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
-    <string name="camera_share">Share</string>
+    <string name="camera_share">SHARE</string>
 
     <!-- button indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
-    <string name="camera_set">Set as</string>
+    <string name="camera_set">SET AS</string>
 
     <!-- button indicating that the video just taken should be played -->
-    <string name="camera_play">Play</string>
+    <string name="camera_play">PLAY</string>
 
     <!-- button indicating that the video just taken should be accepted as an attachment -->
-    <string name="camera_attach">Attach</string>
+    <string name="camera_attach">ATTACH</string>
 
     <!-- button indicating that the video recording session should be canceled -->
-    <string name="camera_cancel">Cancel</string>
+    <string name="camera_cancel">CANCEL</string>
+
+    <!-- button indicating that the the review activity should be finished -->
+    <string name="camera_done">DONE</string>
 
     <!-- button indicating that the picture just taken should be cropped -->
     <string name="camera_crop">Crop</string>
