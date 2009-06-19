@@ -20,15 +20,15 @@
         android:layout_height="fill_parent"
         android:layout_width="wrap_content"
         android:layout_marginRight="4dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="13dp"
         android:layout_marginBottom="10dp"
         android:layout_alignParentRight="true">
 
     <ImageView android:id="@+id/review_thumbnail"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_height="54dp"
-            android:layout_width="54dp"
+            android:layout_height="52dp"
+            android:layout_width="52dp"
             android:scaleType="center"
             android:clickable="true"
             android:focusable="false"
