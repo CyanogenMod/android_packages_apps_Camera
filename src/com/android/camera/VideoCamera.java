@@ -51,6 +51,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,6 +100,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private static final float VIDEO_ASPECT_RATIO = 176.0f / 144.0f;
     VideoPreview mVideoPreview;
     SurfaceHolder mSurfaceHolder = null;
+    ImageView mVideoFrame;
 
     private boolean mIsVideoCaptureIntent;
     // mLastPictureButton and mThumbController
@@ -138,6 +141,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private boolean mRecordingTimeCountsDown = false;
 
     ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
+
+    View mPostPictureAlert;
 
     private final Handler mHandler = new MainHandler();
 
@@ -231,22 +236,31 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
+        mPostPictureAlert = findViewById(R.id.post_picture_panel);
+
+        int[] ids = new int[]{R.id.play, R.id.cancel, R.id.attach};
+        for (int id : ids) {
+            findViewById(id).setOnClickListener(this);
+        }
+
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterButton.setImageResource(R.drawable.btn_ic_video_record);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
+        mVideoFrame = (ImageView) findViewById(R.id.video_frame);
         mIsVideoCaptureIntent = isVideoCaptureIntent();
+        mLastPictureButton = (ImageView) findViewById(R.id.review_thumbnail);
+        mThumbController = new ThumbnailController(
+                mLastPictureButton, mContentResolver);
         if (!mIsVideoCaptureIntent) {
-            mLastPictureButton = (ImageView) findViewById(R.id.review_thumbnail);
             mLastPictureButton.setOnClickListener(this);
-            mThumbController = new ThumbnailController(
-                    mLastPictureButton, mContentResolver);
             mThumbController.loadData(ImageManager.getLastVideoThumbPath());
             findViewById(R.id.camera_switch).setOnClickListener(this);
         } else {
-            findViewById(R.id.review_thumbnail).setVisibility(View.INVISIBLE);
+            mLastPictureButton.setVisibility(View.INVISIBLE);
+            findViewById(R.id.camera_switch_set).setVisibility(View.INVISIBLE);
         }
 
         // Make sure the camera is opened.
@@ -318,13 +332,15 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             case R.id.shutter_button:
                 if (mMediaRecorderRecording) {
                     if (mIsVideoCaptureIntent) {
-                        stopVideoRecordingAndShowReview();
+                        stopVideoRecordingAndShowAlert();
                     } else {
                         stopVideoRecordingAndGetThumbnail();
                         mRecorderInitialized = false;
                         initializeRecorder();
                     }
-                } else if (mRecorderInitialized) {
+                } else if (isAlertVisible()) {
+                    discardCurrentVideoAndInitRecorder();
+                }  else if (mRecorderInitialized) {
                     // If the click comes before recorder initialization, it is
                     // ignored. If users click the button during initialization,
                     // the event is put in the queue and record will be started
@@ -742,6 +758,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         Log.v(TAG, "initializeRecorder");
         if (mRecorderInitialized) return true;
 
+        // We will call initializeRecorder() again when the alert is hidden.
+        if (isAlertVisible()) {
+            return false;
+        }
+
         Intent intent = getIntent();
         Bundle myExtras = intent.getExtras();
 
@@ -1031,6 +1052,45 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         acquireVideoThumb();
     }
 
+    private void stopVideoRecordingAndShowAlert() {
+        stopVideoRecording();
+        showAlert();
+    }
+
+    private void showAlert() {
+        int[] ids = {R.id.attach, R.id.cancel, R.id.play};
+        connectAndFadeIn(ids);
+        mPostPictureAlert.setVisibility(View.VISIBLE);
+        mVideoPreview.setVisibility(View.INVISIBLE);
+
+        String path = mCurrentVideoFilename;
+        if (path != null) {
+            Bitmap videoFrame = Util.createVideoThumbnail(path);
+            mVideoFrame.setImageBitmap(videoFrame);
+            mVideoFrame.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideAlert() {
+        mVideoPreview.setVisibility(View.VISIBLE);
+        mVideoFrame.setVisibility(View.INVISIBLE);
+        mPostPictureAlert.setVisibility(View.INVISIBLE);
+    }
+
+    private void connectAndFadeIn(int[] connectIds) {
+        for (int id : connectIds) {
+            View view = mPostPictureAlert.findViewById(id);
+            view.setOnClickListener(this);
+            Animation animation = new AlphaAnimation(0F, 1F);
+            animation.setDuration(500);
+            view.startAnimation(animation);
+        }
+    }
+
+    private boolean isAlertVisible() {
+        return mPostPictureAlert.getVisibility() == View.VISIBLE;
+    }
+
     private void stopVideoRecordingAndShowReview() {
         stopVideoRecording();
         if (mThumbController.isUriValid()) {
@@ -1115,6 +1175,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void hideAlertAndInitializeRecorder() {
+        hideAlert();
         mRecorderInitialized = false;
         mHandler.sendEmptyMessage(INIT_RECORDER);
     }
