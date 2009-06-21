@@ -154,6 +154,9 @@
     <!-- button indicating that the the review activity should be finished -->
     <string name="camera_done">DONE</string>
 
+    <!-- button indicate the user want to retake another picture for attachment -->
+    <string name="camera_retake">RETAKE</string>
+
     <!-- button indicating that the picture just taken should be cropped -->
     <string name="camera_crop">Crop</string>
 

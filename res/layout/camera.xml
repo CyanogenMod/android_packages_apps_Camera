@@ -20,8 +20,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-    <include android:id="@+id/control_bar" layout="@layout/camera_control"/>
-
     <FrameLayout android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true" 

@@ -50,6 +50,7 @@ import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -60,8 +61,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
@@ -144,7 +143,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     // mPostCaptureAlert, mLastPictureButton, mThumbController
     // are non-null only if isImageCaptureIntent() is true.
-    private View mPostCaptureAlert;
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
 
@@ -285,11 +283,6 @@ public class Camera extends Activity implements View.OnClickListener,
             mThumbController.loadData(ImageManager.getLastImageThumbPath());
             // Update last image thumbnail.
             updateThumbnailButton();
-        } else {
-            ViewGroup cameraView = (ViewGroup) findViewById(R.id.camera);
-            getLayoutInflater().inflate(
-                    R.layout.post_picture_panel, cameraView);
-            mPostCaptureAlert = findViewById(R.id.post_picture_panel);
         }
 
         // Initialize shutter button.
@@ -830,10 +823,18 @@ public class Camera extends Activity implements View.OnClickListener,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mIsImageCaptureIntent = isImageCaptureIntent();
-        ((Switcher) findViewById(R.id.camera_switch)).setSwitch(true);
+        LayoutInflater inflater = getLayoutInflater();
+
+        ViewGroup rootView =(ViewGroup) findViewById(R.id.camera);
         if (mIsImageCaptureIntent) {
-            findViewById(R.id.review_thumbnail).setVisibility(View.INVISIBLE);
-            findViewById(R.id.camera_switch_set).setVisibility(View.INVISIBLE);
+            View controlBar = inflater.inflate(
+                    R.layout.attach_camera_control, rootView);
+            controlBar.findViewById(R.id.btn_cancel).setOnClickListener(this);
+            controlBar.findViewById(R.id.btn_retake).setOnClickListener(this);
+            controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
+        } else {
+            inflater.inflate(R.layout.camera_control, rootView);
+            ((Switcher) findViewById(R.id.camera_switch)).setSwitch(true);
         }
 
         // Make sure the services are loaded.
@@ -865,6 +866,10 @@ public class Camera extends Activity implements View.OnClickListener,
 
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_retake:
+                hidePostCaptureAlert();
+                restartPreview();
+                break;
             case R.id.camera_switch:
                 if (isCameraIdle()) {
                     MenuHelper.gotoVideoMode(this);
@@ -878,10 +883,10 @@ public class Camera extends Activity implements View.OnClickListener,
                     viewLastImage();
                 }
                 break;
-            case R.id.attach:
+            case R.id.btn_done:
                 doAttach();
                 break;
-            case R.id.cancel:
+            case R.id.btn_cancel:
                 doCancel();
         }
     }
@@ -1018,13 +1023,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         switch (button.getId()) {
             case R.id.shutter_button:
-                if (mIsImageCaptureIntent
-                        && mPostCaptureAlert.getVisibility() == View.VISIBLE) {
-                    // User was reviewing the capture image. Hide the action
-                    // items and start the preview now.
-                    hidePostCaptureAlert();
-                    restartPreview();
-                } else if (mStoreImageThread == null) {
+                if (mStoreImageThread == null) {
                     // Take a picture.
                     doSnap();
                 } else {
@@ -1610,21 +1609,23 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void showPostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            mPostCaptureAlert.setVisibility(View.VISIBLE);
-            int[] pickIds = {R.id.attach, R.id.cancel};
+            findViewById(R.id.shutter_button).setVisibility(View.INVISIBLE);
+            int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
-                View view = mPostCaptureAlert.findViewById(id);
-                view.setOnClickListener(this);
-                Animation animation = new AlphaAnimation(0F, 1F);
-                animation.setDuration(500);
-                view.setAnimation(animation);
+                View button = findViewById(id);
+                ((View) button.getParent()).setVisibility(View.VISIBLE);
             }
         }
     }
 
     private void hidePostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            mPostCaptureAlert.setVisibility(View.INVISIBLE);
+            findViewById(R.id.shutter_button).setVisibility(View.VISIBLE);
+            int[] pickIds = {R.id.btn_retake, R.id.btn_done};
+            for (int id : pickIds) {
+                View button = findViewById(id);
+                ((View) button.getParent()).setVisibility(View.GONE);
+            }
         }
     }
 
