@@ -36,6 +36,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A collection of <code>BaseImage</code>s.
@@ -79,8 +81,14 @@ public abstract class BaseImageList implements IImageList {
     public void open(ContentResolver resolver) {
         mContentResolver = resolver;
         mCursor = createCursor();
+
+        // TODO: We need to clear the cache because we may "reopen" the image
+        // list. After we implement the image list state, we can remove this
+        // kind of usage.
+        mCache.clear();
     }
 
+    // TODO: merge close() and deactivate()
     public void close() {
         mContentResolver = null;
         if (mCursor != null) {
@@ -408,7 +416,28 @@ public abstract class BaseImageList implements IImageList {
         mCache.clear();
     }
 
+    private static final Pattern sPathWithId = Pattern.compile("(.*)/\\d+");
+
+    private static String getPathWithoutId(Uri uri) {
+        String path = uri.getPath();
+        Matcher matcher = sPathWithId.matcher(path);
+        return matcher.matches() ? matcher.group(1) : path;
+    }
+
+    private boolean isChildImageUri(Uri uri) {
+        // Sometimes, the URI of an image contains a query string with key
+        // "bucketId" inorder to restore the image list. However, the query
+        // string is not part of the mBaseUri. So, we check only other parts
+        // of the two Uri to see if they are the same.
+        Uri base = mBaseUri;
+        return Util.equals(base.getScheme(), uri.getScheme())
+                && Util.equals(base.getHost(), uri.getHost())
+                && Util.equals(base.getAuthority(), uri.getAuthority())
+                && Util.equals(base.getPath(), getPathWithoutId(uri));
+    }
+
     public IImage getImageForUri(Uri uri) {
+        if (!isChildImageUri(uri)) return null;
         // Find the id of the input URI.
         long matchId;
         try {
