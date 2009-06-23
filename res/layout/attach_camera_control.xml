@@ -112,12 +112,12 @@
                 android:scaleType="center"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/btn_ic_review_attach"
+                android:src="@drawable/btn_ic_review_done"
                 android:background="@drawable/btn_camera_review"/>
         <TextView android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textSize="12sp"
-                android:text="@string/review_attach" />
+                android:text="@string/review_ok" />
     </LinearLayout>
 </RelativeLayout>
 

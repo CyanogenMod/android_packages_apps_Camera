@@ -149,6 +149,9 @@
     <!-- button in review mode indicating that the the review activity should be finished -->
     <string name="review_done">DONE</string>
 
+    <!-- button in review mode indicating that the taken video is OK to be attached/uploaded -->
+    <string name="review_ok">OK</string>
+
     <!-- button in review mode indicate the user want to retake another picture for attachment -->
     <string name="review_retake">RETAKE</string>
 
