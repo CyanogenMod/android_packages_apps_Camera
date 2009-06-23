@@ -44,7 +44,7 @@
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="12sp"
-                    android:text="@string/camera_cancel" />
+                    android:text="@string/review_cancel" />
         </LinearLayout>
 
         <LinearLayout android:orientation="vertical"
@@ -64,7 +64,7 @@
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="12sp"
-                    android:text="@string/camera_retake" />
+                    android:text="@string/review_retake" />
         </LinearLayout>
         
         <LinearLayout android:orientation="vertical"
@@ -84,7 +84,7 @@
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="12sp"
-                    android:text="@string/camera_play" />
+                    android:text="@string/review_play" />
         </LinearLayout>
     </LinearLayout>
 
@@ -117,7 +117,7 @@
         <TextView android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textSize="12sp"
-                android:text="@string/camera_attach" />
+                android:text="@string/review_attach" />
     </LinearLayout>
 </RelativeLayout>
 

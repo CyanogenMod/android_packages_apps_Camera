@@ -84,9 +84,6 @@
 
 
     <!-- Menu items: -->
-    <!-- menu pick to change the orientation of the screen -->
-    <string name="flip_orientation">Flip orientation</string>
-
     <!-- menu pick to go to the settings screen -->
     <string name="settings">Settings</string>
 
@@ -130,38 +127,54 @@
     <string name="confirm_delete_message">The picture will be deleted.</string>
     <!-- Confirmation dialog message after deleting a video -->
     <string name="confirm_delete_video_message">The video will be deleted.</string>
+    
+    <!-- button in review mode indicating that the picture just taken should be deleted -->
+    <string name="review_toss">DELETE</string>
+
+    <!-- button in review mode indicating that the picture just taken are going to shared by email, mms, etc -->
+    <string name="review_share">SHARE</string>
+
+    <!-- button in review mode indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
+    <string name="review_set">SET AS</string>
+
+    <!-- button in review mode indicating that the video just taken should be played -->
+    <string name="review_play">PLAY</string>
+
+    <!-- button in review mode indicating that the video just taken should be accepted as an attachment -->
+    <string name="review_attach">ATTACH</string>
+
+    <!-- button in review mode indicating that the video recording session should be canceled -->
+    <string name="review_cancel">CANCEL</string>
+
+    <!-- button in review mode indicating that the the review activity should be finished -->
+    <string name="review_done">DONE</string>
+
+    <!-- button in review mode indicate the user want to retake another picture for attachment -->
+    <string name="review_retake">RETAKE</string>
+
     <!-- button indicating that the picture just taken should be deleted -->
-    <string name="camera_toss">DELETE</string>
+    <string name="camera_toss">Delete</string>
 
     <!-- Lable for the button that takes the user to the camera pictures Gallery -->
     <string name="camera_gallery">Gallery</string>
 
     <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
-    <string name="camera_share">SHARE</string>
+    <string name="camera_share">Share</string>
 
     <!-- button indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
-    <string name="camera_set">SET AS</string>
+    <string name="camera_set">Set as</string>
 
     <!-- button indicating that the video just taken should be played -->
-    <string name="camera_play">PLAY</string>
+    <string name="camera_play">Play</string>
 
     <!-- button indicating that the video just taken should be accepted as an attachment -->
-    <string name="camera_attach">ATTACH</string>
+    <string name="camera_attach">Attach</string>
 
     <!-- button indicating that the video recording session should be canceled -->
-    <string name="camera_cancel">CANCEL</string>
-
-    <!-- button indicating that the the review activity should be finished -->
-    <string name="camera_done">DONE</string>
-
-    <!-- button indicate the user want to retake another picture for attachment -->
-    <string name="camera_retake">RETAKE</string>
+    <string name="camera_cancel">Cancel</string>
 
     <!-- button indicating that the picture just taken should be cropped -->
     <string name="camera_crop">Crop</string>
-
-    <!-- Toast after deleting a picture -->
-    <string name="camera_tossing">Deleting\u2026</string>
 
     <!-- Toast after trying to share a picture indicating that there are no applications which are capable of so doing. -->
     <string name="no_way_to_share_image">This picture cannot be shared.</string>
@@ -307,15 +320,6 @@
 
     <!-- Settings screen, setting summary text -->
     <string name="pref_camera_recordlocation_summary">Record location in picture data</string>
-
-    <!-- Do not translate -->
-    <string name="pref_camera_upload_albumname_title">Picasa album name</string>
-
-    <!-- Do not translate -->
-    <string name="pref_camera_upload_albumname_summary">Name the destination album for your pictures (<xliff:g id="summary">%s</xliff:g>)</string>
-
-    <!-- Do not translate -->
-    <string name="pref_camera_upload_albumname_dialogtitle">Picasa album name</string>
 
     <!-- Settings screen, Video setting category title -->
     <string name="pref_camera_video_settings_category">Video settings</string>
@@ -519,8 +523,6 @@
     <!-- shown in the video player view while the video is being loaded, before it starts playing -->
     <string name="loading_video">Loading video\u2026</string>
 
-    <!-- Low-memory dialog title -->
-    <string name="spaceIsLow_title">Space is low</string>
     <!-- Low-memory dialog message -->
     <string name="spaceIsLow_content">Your SD card is running out of space. Change the quality setting or delete items from Gallery.</string>
 
@@ -548,10 +550,6 @@
 
     <!-- The video is execeed the size limit of a MMS, and suggest user to record a shorter length clip -->
     <string name="video_exceed_mms_limit">The video you recorded is too large to send via MMS. Try recording a shorter length clip.</string>
-
-    <!-- Displayed as a toast when a video file is too large to attach
-         to a Gmail message. -->
-    <string name="too_large_to_attach">File too large to attach.</string>
 
     <!-- The title shown on the button which share the selected images by gmail, mms, and etc. -->
     <string name="multiselect_share">Share</string>

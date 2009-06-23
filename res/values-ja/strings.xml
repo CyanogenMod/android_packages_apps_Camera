@@ -34,7 +34,6 @@
     <string name="wallpaper">"壁紙を設定しています。しばらくお待ちください..."</string>
     <string name="savingImage">"写真を保存中..."</string>
     <string name="runningFaceDetection">"お待ちください..."</string>
-    <string name="flip_orientation">"画面の向きを変更"</string>
     <string name="settings">"設定"</string>
     <string name="view">"表示"</string>
     <string name="details">"詳細"</string>
@@ -57,7 +56,6 @@
     <string name="camera_attach">"添付"</string>
     <string name="camera_cancel">"キャンセル"</string>
     <string name="camera_crop">"トリミング"</string>
-    <string name="camera_tossing">"削除中..."</string>
     <string name="no_way_to_share_image">"この画像は共有できません。"</string>
     <string name="no_way_to_share_video">"この動画は共有できません。"</string>
     <string name="video_play">"再生"</string>
@@ -141,7 +139,6 @@
     <string name="sendVideo">"動画を共有"</string>
     <string name="movieviewlabel">"映画"</string>
     <string name="loading_video">"動画を読み込み中..."</string>
-    <string name="spaceIsLow_title">"空き容量が残り少なくなっています"</string>
     <string name="spaceIsLow_content">"SDカードの容量が足りません。クオリティ設定を変更するか、ギャラリーからアイテムを削除してください。"</string>
     <string name="resume_playing_title">"動画の再開"</string>
     <string name="resume_playing_message">"再生を%sから再開しますか？"</string>
@@ -150,5 +147,4 @@
     <string name="gadget_title">"写真フレーム"</string>
     <string name="file_info_title">"ファイル情報:"</string>
     <string name="video_exceed_mms_limit">"録画した動画のサイズが大きすぎるため送信できません。録画時間を短縮してみてください。"</string>
-    <string name="too_large_to_attach">"添付ファイルが大きすぎます。"</string>
 </resources>

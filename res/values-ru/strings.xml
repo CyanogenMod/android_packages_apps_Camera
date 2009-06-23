@@ -34,7 +34,6 @@
     <string name="wallpaper">"Установка фонового рисунка, подождите…"</string>
     <string name="savingImage">"Идет сохранение изображения…"</string>
     <string name="runningFaceDetection">"Подождите…"</string>
-    <string name="flip_orientation">"Изменить ориентацию"</string>
     <string name="settings">"Настройки"</string>
     <string name="view">"Просмотреть"</string>
     <string name="details">"Сведения"</string>
@@ -57,7 +56,6 @@
     <string name="camera_attach">"Вложить"</string>
     <string name="camera_cancel">"Отмена"</string>
     <string name="camera_crop">"Обрезать"</string>
-    <string name="camera_tossing">"Идет удаление…"</string>
     <string name="no_way_to_share_image">"Отправить это изображение нельзя."</string>
     <string name="no_way_to_share_video">"Отправить это видео нельзя."</string>
     <string name="video_play">"Воспроизвести"</string>
@@ -141,7 +139,6 @@
     <string name="sendVideo">"Отправить видео при помощи"</string>
     <string name="movieviewlabel">"Фильмы"</string>
     <string name="loading_video">"Идет загрузка видео…"</string>
-    <string name="spaceIsLow_title">"Осталось мало места"</string>
     <string name="spaceIsLow_content">"Место на карте SD заканчивается. Измените настройки качества или удалите элементы из галереи."</string>
     <string name="resume_playing_title">"Продолжение просмотра видео"</string>
     <string name="resume_playing_message">"Продолжить воспроизведение с %s ?"</string>
@@ -150,5 +147,4 @@
     <string name="gadget_title">"Рамка фотографии"</string>
     <string name="file_info_title">"Сведения о файле:"</string>
     <string name="video_exceed_mms_limit">"Записанное видео имеет слишком большой размер для отправки в MMS. Запишите более короткий ролик."</string>
-    <string name="too_large_to_attach">"Файл имеет слишком большой размер и не может быть вложен."</string>
 </resources>

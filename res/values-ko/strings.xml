@@ -34,7 +34,6 @@
     <string name="wallpaper">"배경화면 설정 중. 잠시 기다려 주세요..."</string>
     <string name="savingImage">"사진 저장 중..."</string>
     <string name="runningFaceDetection">"잠시 기다려 주세요..."</string>
-    <string name="flip_orientation">"방향 바꾸기"</string>
     <string name="settings">"설정"</string>
     <string name="view">"보기"</string>
     <string name="details">"상세정보"</string>
@@ -57,7 +56,6 @@
     <string name="camera_attach">"첨부"</string>
     <string name="camera_cancel">"취소"</string>
     <string name="camera_crop">"자르기"</string>
-    <string name="camera_tossing">"삭제 중..."</string>
     <string name="no_way_to_share_image">"공유할 수 없는 사진입니다."</string>
     <string name="no_way_to_share_video">"공유할 수 없는 동영상입니다."</string>
     <string name="video_play">"재생"</string>
@@ -141,7 +139,6 @@
     <string name="sendVideo">"동영상 공유 응용프로그램"</string>
     <string name="movieviewlabel">"영화"</string>
     <string name="loading_video">"동영상 로드 중..."</string>
-    <string name="spaceIsLow_title">"공간부족"</string>
     <string name="spaceIsLow_content">"SD 카드의 공간이 부족합니다. 화질 설정을 변경하거나 갤러리에서 항목을 삭제하세요."</string>
     <string name="resume_playing_title">"동영상 다시 시작"</string>
     <string name="resume_playing_message">"%s에서 재생을 다시 시작하시겠습니까?"</string>
@@ -150,5 +147,4 @@
     <string name="gadget_title">"사진 프레임"</string>
     <string name="file_info_title">"파일 정보:"</string>
     <string name="video_exceed_mms_limit">"녹화한 동영상이 너무 커서 MMS를 통해 전송할 수 없습니다. 클립의 길이를 더 짧게 녹화하세요."</string>
-    <string name="too_large_to_attach">"파일이 너무 커서 첨부할 수 없습니다."</string>
 </resources>

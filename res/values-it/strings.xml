@@ -34,7 +34,6 @@
     <string name="wallpaper">"Impostazione sfondo, attendi..."</string>
     <string name="savingImage">"Salvataggio foto..."</string>
     <string name="runningFaceDetection">"Attendere..."</string>
-    <string name="flip_orientation">"Capovolgi orientamento"</string>
     <string name="settings">"Impostazioni"</string>
     <string name="view">"Visualizza"</string>
     <string name="details">"Dettagli"</string>
@@ -57,7 +56,6 @@
     <string name="camera_attach">"Allega"</string>
     <string name="camera_cancel">"Annulla"</string>
     <string name="camera_crop">"Ritaglia"</string>
-    <string name="camera_tossing">"Eliminazione..."</string>
     <string name="no_way_to_share_image">"Impossibile condividere la foto."</string>
     <string name="no_way_to_share_video">"Impossibile condividere il video."</string>
     <string name="video_play">"Riproduci"</string>
@@ -141,7 +139,6 @@
     <string name="sendVideo">"Condividi video via"</string>
     <string name="movieviewlabel">"Film"</string>
     <string name="loading_video">"Caricamento video..."</string>
-    <string name="spaceIsLow_title">"Spazio in esaurimento"</string>
     <string name="spaceIsLow_content">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina elementi nella galleria."</string>
     <string name="resume_playing_title">"Riprendi video"</string>
     <string name="resume_playing_message">"Riprendi riproduzione da %s ?"</string>
@@ -150,5 +147,4 @@
     <string name="gadget_title">"Cornice immagine"</string>
     <string name="file_info_title">"Info file:"</string>
     <string name="video_exceed_mms_limit">"Il video registrato è troppo grande per essere inviato tramite MMS. Prova a registrare un clip più corto."</string>
-    <string name="too_large_to_attach">"File troppo grande. Impossibile allegarlo."</string>
 </resources>

@@ -34,7 +34,6 @@
     <string name="wallpaper">"Configuration de l\'arrière-plan en cours. Veuillez patienter..."</string>
     <string name="savingImage">"Enregistrement de l\'image"</string>
     <string name="runningFaceDetection">"Veuillez patienter..."</string>
-    <string name="flip_orientation">"Orientation"</string>
     <string name="settings">"Paramètres"</string>
     <string name="view">"Afficher"</string>
     <string name="details">"Détails"</string>
@@ -57,7 +56,6 @@
     <string name="camera_attach">"Joindre"</string>
     <string name="camera_cancel">"Annuler"</string>
     <string name="camera_crop">"Rogner"</string>
-    <string name="camera_tossing">"Suppression..."</string>
     <string name="no_way_to_share_image">"Impossible de partager cette image."</string>
     <string name="no_way_to_share_video">"Cette vidéo ne peut pas être partagée."</string>
     <string name="video_play">"Lire"</string>
@@ -141,7 +139,6 @@
     <string name="sendVideo">"Partager la vidéo via"</string>
     <string name="movieviewlabel">"Films"</string>
     <string name="loading_video">"Chargement de la vidéo..."</string>
-    <string name="spaceIsLow_title">"L\'espace restant est faible"</string>
     <string name="spaceIsLow_content">"Votre carte SD est pleine. Modifiez le paramètre de qualité ou supprimez des éléments de la galerie."</string>
     <string name="resume_playing_title">"Reprendre la vidéo"</string>
     <string name="resume_playing_message">"Reprendre la lecture à partir de %s ?"</string>
@@ -150,5 +147,4 @@
     <string name="gadget_title">"Cadre d\'image"</string>
     <string name="file_info_title">"Informations sur le fichier :"</string>
     <string name="video_exceed_mms_limit">"La vidéo que vous avez enregistrée est trop volumineuse et ne peut être envoyée par MMS. Enregistrez une vidéo plus courte."</string>
-    <string name="too_large_to_attach">"Impossible de joindre le fichier, car il est trop volumineux."</string>
 </resources>
