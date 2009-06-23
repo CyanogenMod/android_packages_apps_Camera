@@ -18,6 +18,9 @@ package com.android.camera.stress;
 
 import com.android.camera.Camera;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -33,6 +36,7 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
     private String TAG = "CameraLatency";
     private static final int TOTAL_NUMBER_OF_IMAGECAPTURE = 20;
     private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 3000;
+    private static final String CAMERA_TEST_OUTPUT_FILE = "/sdcard/mediaStressOut.txt";
 
     private long mTotalAutoFocusTime;
     private long mTotalShutterLag;
@@ -98,12 +102,30 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
         mAvgRawPictureAndJpegPictureCallbackTime =
                 mTotalRawPictureAndJpegPictureCallbackTime / numberofRun;
 
+        try {
+            FileWriter fstream = null;
+            fstream = new FileWriter(CAMERA_TEST_OUTPUT_FILE, true);
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write("Camera Latency : \n");
+            out.write("Number of loop: " + TOTAL_NUMBER_OF_IMAGECAPTURE + "\n");
+            out.write("Avg AutoFocus = " + mAvgAutoFocusTime + "\n");
+            out.write("Avg mShutterLag = " + mAvgShutterLag + "\n");
+            out.write("Avg mShutterAndRawPictureCallbackTime = "
+                    + mAvgShutterAndRawPictureCallbackTime + "\n");
+            out.write("Avg mJpegPictureCallbackTimeLag = " + mAveJpegPictureCallbackTimeLag + "\n");
+            out.write("Avg mRawPictureAndJpegPictureCallbackTime = "
+                    + mAvgRawPictureAndJpegPictureCallbackTime + "\n");
+            out.close();
+            fstream.close();
+        } catch (Exception e) {
+            fail("Camera Latency write output to file");
+        }
+
         Log.v(TAG, "Avg AutoFocus = " + mAvgAutoFocusTime);
         Log.v(TAG, "Avg mShutterLag = " + mAvgShutterLag);
         Log.v(TAG, "Avg mShutterAndRawPictureCallbackTime = "
                 + mAvgShutterAndRawPictureCallbackTime);
-        Log.v(TAG, "Avg mJpegPictureCallbackTimeLag = "
-                + mAveJpegPictureCallbackTimeLag);
+        Log.v(TAG, "Avg mJpegPictureCallbackTimeLag = " + mAveJpegPictureCallbackTimeLag);
         Log.v(TAG, "Avg mRawPictureAndJpegPictureCallbackTime = "
                 + mAvgRawPictureAndJpegPictureCallbackTime);
         assertTrue("testImageCapture", true);
