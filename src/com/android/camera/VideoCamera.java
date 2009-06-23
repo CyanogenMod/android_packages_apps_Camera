@@ -251,7 +251,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         } else {
             View controlBar = inflater.inflate(R.layout.attach_camera_control, rootView);
             controlBar.findViewById(R.id.btn_cancel).setOnClickListener(this);
-            controlBar.findViewById(R.id.btn_retake).setOnClickListener(this);
+            ImageView retake = (ImageView) controlBar.findViewById(R.id.btn_retake);
+            retake.setOnClickListener(this);
+            retake.setImageResource(R.drawable.btn_ic_review_retake_video);
             controlBar.findViewById(R.id.btn_play).setOnClickListener(this);
             controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
         }
