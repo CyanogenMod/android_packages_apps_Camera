@@ -613,6 +613,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        // Make sure we have a surface in the holder before proceeding.
+        if (holder.getSurface() == null) {
+            Log.d(TAG, "holder.getSurface() == null");
+            return;
+        }
+
         if (mPausing) {
             // We're pausing, the screen is off and we already stopped
             // video recording. We don't want to start the camera again
