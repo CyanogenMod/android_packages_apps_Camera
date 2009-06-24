@@ -237,7 +237,6 @@ public class ReviewImage extends Activity implements View.OnClickListener {
 
     @Override
     protected void onDestroy() {
-
         // This is necessary to make the ZoomButtonsController unregister
         // its configuration change receiver.
         if (mZoomButtonsController != null) {

@@ -49,6 +49,7 @@ import android.widget.Toast;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -163,52 +164,52 @@ public class MenuHelper {
         d.findViewById(rowId).setVisibility(View.GONE);
     }
 
-    private static void setLatLngDetails(View d, Activity context,
+    private static class UpdateLocationCallback implements
+            ReverseGeocoderTask.Callback {
+        WeakReference<View> mView;
+
+        public UpdateLocationCallback(WeakReference<View> view) {
+            mView = view;
+        }
+
+        public void onComplete(String location) {
+            // View d is per-thread data, so when setDetailsValue is
+            // executed by UI thread, it doesn't matter whether the
+            // details dialog is dismissed or not.
+            View view = mView.get();
+            if (view == null) return;
+            if (location != MenuHelper.EMPTY_STRING) {
+                MenuHelper.setDetailsValue(view, location,
+                        R.id.details_location_value);
+            } else {
+                MenuHelper.hideDetailsRow(view, R.id.details_location_row);
+            }
+        }
+    }
+
+    private static void setLatLngDetails(final View d, Activity context,
             HashMap<String, String> exifData) {
         float[] latlng = ExifInterface.getLatLng(exifData);
         if (latlng != null) {
             setDetailsValue(d, String.valueOf(latlng[0]),
                     R.id.details_latitude_value);
             setDetailsValue(d, String.valueOf(latlng[1]),
-                     R.id.details_longitude_value);
-            setReverseGeocodingDetails(d, context, latlng[0], latlng[1]);
+                    R.id.details_longitude_value);
+
+            if (latlng[0] == INVALID_LATLNG || latlng[1] == INVALID_LATLNG) {
+                hideDetailsRow(d, R.id.details_latitude_row);
+                hideDetailsRow(d, R.id.details_longitude_row);
+                hideDetailsRow(d, R.id.details_location_row);
+                return;
+            }
+
+            UpdateLocationCallback cb = new UpdateLocationCallback(
+                    new WeakReference<View>(d));
+            Geocoder geocoder = new Geocoder(context);
+            new ReverseGeocoderTask(geocoder, latlng, cb).execute();
         } else {
             hideDetailsRow(d, R.id.details_latitude_row);
             hideDetailsRow(d, R.id.details_longitude_row);
-            hideDetailsRow(d, R.id.details_location_row);
-        }
-    }
-
-    private static void setReverseGeocodingDetails(View d, Activity context,
-                                                   float lat, float lng) {
-        // Fill in reverse-geocoded address
-        String value = EMPTY_STRING;
-        if (lat == INVALID_LATLNG || lng == INVALID_LATLNG) {
-            hideDetailsRow(d, R.id.details_location_row);
-            return;
-        }
-
-        try {
-            Geocoder geocoder = new Geocoder(context);
-            List<Address> address = geocoder.getFromLocation(lat, lng, 1);
-            StringBuilder sb = new StringBuilder();
-            for (Address addr : address) {
-                int index = addr.getMaxAddressLineIndex();
-                sb.append(addr.getAddressLine(index));
-            }
-            value = sb.toString();
-        } catch (IOException ex) {
-            // Ignore this exception.
-            value = EMPTY_STRING;
-            Log.e(TAG, "Geocoder exception: ", ex);
-        } catch (RuntimeException ex) {
-            // Ignore this exception.
-            value = EMPTY_STRING;
-            Log.e(TAG, "Geocoder exception: ", ex);
-        }
-        if (value != EMPTY_STRING) {
-            setDetailsValue(d, value, R.id.details_location_value);
-        } else {
             hideDetailsRow(d, R.id.details_location_row);
         }
     }
