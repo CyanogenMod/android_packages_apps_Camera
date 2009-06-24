@@ -1372,10 +1372,6 @@ public class Camera extends Activity implements View.OnClickListener,
         // Sometimes surfaceChanged is called after onPause. Ignore it.
         if (mPausing) return;
 
-        // Do not start preview if we changed surface view ratio to show
-        // captured image after snapshot.
-        if (mStatus == SNAPSHOT_IN_PROGRESS) return;
-
         // Start the preview.
         startPreview();
 
