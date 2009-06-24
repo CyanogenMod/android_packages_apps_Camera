@@ -34,7 +34,6 @@
     <string name="wallpaper">"設定桌布中，請稍候…"</string>
     <string name="savingImage">"儲存相片中…"</string>
     <string name="runningFaceDetection">"請稍候…"</string>
-    <string name="flip_orientation">"旋轉方向"</string>
     <string name="settings">"設定"</string>
     <string name="view">"檢視"</string>
     <string name="details">"詳細資料"</string>
@@ -57,7 +56,6 @@
     <string name="camera_attach">"附加"</string>
     <string name="camera_cancel">"取消"</string>
     <string name="camera_crop">"裁剪"</string>
-    <string name="camera_tossing">"刪除中…"</string>
     <string name="no_way_to_share_image">"此相片無法分享。"</string>
     <string name="no_way_to_share_video">"此影片無法分享。"</string>
     <string name="video_play">"播放"</string>
@@ -141,7 +139,6 @@
     <string name="sendVideo">"透過…分享影片"</string>
     <string name="movieviewlabel">"電影"</string>
     <string name="loading_video">"正在載入影片…"</string>
-    <string name="spaceIsLow_title">"空間不足"</string>
     <string name="spaceIsLow_content">"您的 SD 卡空間已快用完。請變更品質設定或刪除圖庫中的項目。"</string>
     <string name="resume_playing_title">"繼續播放影片"</string>
     <string name="resume_playing_message">"要從 %s 繼續播放嗎？"</string>
@@ -150,5 +147,4 @@
     <string name="gadget_title">"相框"</string>
     <string name="file_info_title">"檔案資訊："</string>
     <string name="video_exceed_mms_limit">"您所錄製的影片太大，無法透過 MMS 傳送。請試著錄製較短的影片。"</string>
-    <string name="too_large_to_attach">"檔案過大，超過附件大小限制。"</string>
 </resources>

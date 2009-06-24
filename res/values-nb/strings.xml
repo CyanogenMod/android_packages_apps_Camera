@@ -35,7 +35,6 @@
     <string name="wallpaper">"Setter bakgrunnsbilde, vent litt…"</string>
     <string name="savingImage">"Lagrer bilde…"</string>
     <string name="runningFaceDetection">"Vent litt…"</string>
-    <string name="flip_orientation">"Roter skjerm"</string>
     <string name="settings">"Innstillinger"</string>
     <string name="view">"Vis"</string>
     <string name="details">"Detaljer"</string>
@@ -58,7 +57,6 @@
     <string name="camera_attach">"Legg ved"</string>
     <string name="camera_cancel">"Avbryt"</string>
     <string name="camera_crop">"Beskjær"</string>
-    <string name="camera_tossing">"Sletter…"</string>
     <string name="no_way_to_share_image">"Bildet kan ikke deles."</string>
     <string name="no_way_to_share_video">"Videoen kan ikke deles."</string>
     <!-- no translation found for video_play (5287787282508002895) -->
@@ -143,7 +141,6 @@
     <string name="sendVideo">"Del video via"</string>
     <string name="movieviewlabel">"Filmer"</string>
     <string name="loading_video">"Laster video…"</string>
-    <string name="spaceIsLow_title">"Lite plass"</string>
     <string name="spaceIsLow_content">"Minnekortet begynner å gå tom for plass. Endre kvalitetsinnstillingen eller slett bilder fra galleriet."</string>
     <string name="resume_playing_title">"Fortsett avspilling"</string>
     <string name="resume_playing_message">"Fortsett avspilling fra %s?"</string>
@@ -152,6 +149,5 @@
     <string name="gadget_title">"Bilderamme"</string>
     <string name="file_info_title">"Filinformasjon:"</string>
     <string name="video_exceed_mms_limit">"Videoen er for stor til å sendes over MMS. Prøv å ta opp en kortere video."</string>
-    <!-- no translation found for too_large_to_attach (8944461117941172986) -->
     <skip />
 </resources>

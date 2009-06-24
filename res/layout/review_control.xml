@@ -44,7 +44,7 @@
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="12sp"
-                    android:text="@string/camera_toss" />
+                    android:text="@string/review_toss" />
         </LinearLayout>
         <LinearLayout android:orientation="vertical"
                 android:gravity="top|center_horizontal"
@@ -62,7 +62,7 @@
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="12sp"
-                    android:text="@string/camera_share" />
+                    android:text="@string/review_share" />
         </LinearLayout>
         <LinearLayout android:orientation="vertical"
                 android:gravity="top|center_horizontal"
@@ -80,7 +80,7 @@
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="12sp"
-                    android:text="@string/camera_play" />
+                    android:text="@string/review_play" />
         </LinearLayout>
         <LinearLayout android:orientation="vertical"
                 android:gravity="top|center_horizontal"
@@ -98,7 +98,7 @@
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="12sp"
-                    android:text="@string/camera_set" />
+                    android:text="@string/review_set" />
         </LinearLayout>
         <LinearLayout android:orientation="vertical"
                 android:gravity="top|center_horizontal"
@@ -116,7 +116,7 @@
                     android:layout_width="wrap_content"
                     android:textStyle="bold"
                     android:textSize="12sp"
-                    android:text="@string/camera_done" />
+                    android:text="@string/review_done" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

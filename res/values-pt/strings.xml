@@ -38,7 +38,6 @@
     <string name="wallpaper">"Configurando papel de parede, aguarde..."</string>
     <string name="savingImage">"Salvando imagem..."</string>
     <string name="runningFaceDetection">"Aguarde..."</string>
-    <string name="flip_orientation">"Inverter orientação"</string>
     <string name="settings">"Configurações"</string>
     <string name="view">"Visualizar"</string>
     <string name="details">"Detalhes"</string>
@@ -68,7 +67,6 @@
     <!-- no translation found for camera_cancel (8203341746672085747) -->
     <skip />
     <string name="camera_crop">"Cortar"</string>
-    <string name="camera_tossing">"Excluindo..."</string>
     <string name="no_way_to_share_image">"Esta imagem não pode ser compartilhada."</string>
     <string name="no_way_to_share_video">"Este vídeo não pode ser compartilhado."</string>
     <!-- no translation found for video_play (5287787282508002895) -->
@@ -288,7 +286,6 @@
     <string name="sendVideo">"Compartilhar vídeo via"</string>
     <string name="movieviewlabel">"Filmes"</string>
     <string name="loading_video">"Carregando vídeo…"</string>
-    <string name="spaceIsLow_title">"Pouco espaço disponível"</string>
     <string name="spaceIsLow_content">"O cartão SD não possui mais espaço disponível. Altere as configurações de qualidade ou exclua itens da Galeria."</string>
     <!-- no translation found for resume_playing_title (8996677350649355013) -->
     <skip />
@@ -304,7 +301,6 @@
     <skip />
     <!-- no translation found for video_exceed_mms_limit (3835075281230780010) -->
     <skip />
-    <!-- no translation found for too_large_to_attach (8944461117941172986) -->
     <skip />
     <!-- no translation found for multiselect_share (5261644537749253581) -->
     <skip />

@@ -35,7 +35,6 @@
     <string name="wallpaper">"Configurando papel tapiz. Espera, por favor..."</string>
     <string name="savingImage">"Guardando imagen..."</string>
     <string name="runningFaceDetection">"Espera, por favor..."</string>
-    <string name="flip_orientation">"Girar la orientación"</string>
     <string name="settings">"Configuración"</string>
     <string name="view">"Ver"</string>
     <string name="details">"Detalles"</string>
@@ -58,7 +57,6 @@
     <string name="camera_attach">"Adjuntar"</string>
     <string name="camera_cancel">"Cancelar"</string>
     <string name="camera_crop">"Cortar"</string>
-    <string name="camera_tossing">"Eliminando..."</string>
     <string name="no_way_to_share_image">"Esta imagen no se puede compartir."</string>
     <string name="no_way_to_share_video">"Este video no se puede compartir."</string>
     <!-- no translation found for video_play (5287787282508002895) -->
@@ -189,7 +187,6 @@
     <string name="sendVideo">"Compartir video mediante"</string>
     <string name="movieviewlabel">"Películas"</string>
     <string name="loading_video">"Cargando el video..."</string>
-    <string name="spaceIsLow_title">"El espacio es pequeño"</string>
     <string name="spaceIsLow_content">"Tu tarjeta SD se está quedando sin espacio. Cambia la configuración de calidad o elimina elementos de la galería."</string>
     <string name="resume_playing_title">"Retomar video"</string>
     <string name="resume_playing_message">"¿Deseas retomar la reproducción desde %s?"</string>
@@ -198,5 +195,4 @@
     <string name="gadget_title">"Marco de imagen"</string>
     <string name="file_info_title">"Información del archivo:"</string>
     <string name="video_exceed_mms_limit">"El video que has grabado es demasiado grande para enviarlo por MMS. Intenta grabar uno más corto."</string>
-    <string name="too_large_to_attach">"El archivo es demasiado grande para adjuntarlo."</string>
 </resources>
