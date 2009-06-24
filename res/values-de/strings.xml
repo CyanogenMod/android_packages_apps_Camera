@@ -34,7 +34,6 @@
     <string name="wallpaper">"Hintergrund wird eingestellt, bitte warten..."</string>
     <string name="savingImage">"Bild wird gespeichert..."</string>
     <string name="runningFaceDetection">"Bitte warten..."</string>
-    <string name="flip_orientation">"Ausrichtung drehen"</string>
     <string name="settings">"Einstellungen"</string>
     <string name="view">"Anzeigen"</string>
     <string name="details">"Details"</string>
@@ -57,7 +56,6 @@
     <string name="camera_attach">"Anhängen"</string>
     <string name="camera_cancel">"Abbrechen"</string>
     <string name="camera_crop">"Zuschneiden"</string>
-    <string name="camera_tossing">"Löschvorgang..."</string>
     <string name="no_way_to_share_image">"Dieses Bild kann nicht weitergeleitet werden."</string>
     <string name="no_way_to_share_video">"Dieses Video kann nicht weitergeleitet werden."</string>
     <string name="video_play">"Wiedergeben"</string>
@@ -141,7 +139,6 @@
     <string name="sendVideo">"Video weiterleiten via"</string>
     <string name="movieviewlabel">"Filme"</string>
     <string name="loading_video">"Video wird geladen..."</string>
-    <string name="spaceIsLow_title">"Geringer Speicherplatz"</string>
     <string name="spaceIsLow_content">"Auf Ihrer SD-Karte ist nicht mehr genügend Speicherplatz vorhanden. Ändern Sie die Qualitätseinstellung oder löschen Sie Elemente aus der Galerie."</string>
     <string name="resume_playing_title">"Mit Video fortfahren"</string>
     <string name="resume_playing_message">"Mit Wiedergabe fortfahren ab %s ?"</string>
@@ -150,5 +147,4 @@
     <string name="gadget_title">"Bildrahmen"</string>
     <string name="file_info_title">"Dateiinfo:"</string>
     <string name="video_exceed_mms_limit">"Das aufgenommene Video ist zu groß und kann nicht per MMS gesendet werden. Nehmen Sie einen kürzeren Clip auf."</string>
-    <string name="too_large_to_attach">"Dateianhang zu groß"</string>
 </resources>

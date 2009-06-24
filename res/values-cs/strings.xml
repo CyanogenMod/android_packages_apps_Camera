@@ -34,7 +34,6 @@
     <string name="wallpaper">"Nastavování tapety, čekejte prosím..."</string>
     <string name="savingImage">"Ukládání fotografie..."</string>
     <string name="runningFaceDetection">"Čekejte prosím..."</string>
-    <string name="flip_orientation">"Změnit orientaci"</string>
     <string name="settings">"Nastavení"</string>
     <string name="view">"Zobrazit"</string>
     <string name="details">"Podrobnosti"</string>
@@ -57,7 +56,6 @@
     <string name="camera_attach">"Připojit přílohu"</string>
     <string name="camera_cancel">"Zrušit"</string>
     <string name="camera_crop">"Oříznout"</string>
-    <string name="camera_tossing">"Mazání..."</string>
     <string name="no_way_to_share_image">"Tuto fotografii nelze sdílet."</string>
     <string name="no_way_to_share_video">"Toto video nelze sdílet."</string>
     <string name="video_play">"Přehrát"</string>
@@ -141,7 +139,6 @@
     <string name="sendVideo">"Sdílet video pomocí"</string>
     <string name="movieviewlabel">"Filmy"</string>
     <string name="loading_video">"Načítání videa..."</string>
-    <string name="spaceIsLow_title">"Dochází volné místo"</string>
     <string name="spaceIsLow_content">"Na vaší kartě SD je málo místa. Změňte nastavení kvality nebo smažte položky z Galerie."</string>
     <string name="resume_playing_title">"Pokračovat v přehrávání videa"</string>
     <string name="resume_playing_message">"Pokračovat v přehrávání od %s?"</string>
@@ -150,5 +147,4 @@
     <string name="gadget_title">"Rámeček fotografie"</string>
     <string name="file_info_title">"Informace o souboru:"</string>
     <string name="video_exceed_mms_limit">"Zaznamenané video je pro odeslání ve zprávě MMS příliš velké. Zkuste zaznamenat kratší videoklip."</string>
-    <string name="too_large_to_attach">"Soubor nelze připojit, protože je příliš velký."</string>
 </resources>

@@ -34,7 +34,6 @@
     <string name="wallpaper">"Ustawianie tapety, poczekaj…"</string>
     <string name="savingImage">"Trwa zapisywanie zdjęcia…"</string>
     <string name="runningFaceDetection">"Poczekaj…"</string>
-    <string name="flip_orientation">"Zmień orientację"</string>
     <string name="settings">"Ustawienia"</string>
     <string name="view">"Wyświetl"</string>
     <string name="details">"Szczegóły"</string>
@@ -57,7 +56,6 @@
     <string name="camera_attach">"Załącz"</string>
     <string name="camera_cancel">"Anuluj"</string>
     <string name="camera_crop">"Przytnij"</string>
-    <string name="camera_tossing">"Trwa usuwanie…"</string>
     <string name="no_way_to_share_image">"Nie można przesłać tego zdjęcia."</string>
     <string name="no_way_to_share_video">"Nie można przesłać tego filmu."</string>
     <string name="video_play">"Odtwórz"</string>
@@ -141,7 +139,6 @@
     <string name="sendVideo">"Prześlij film następującą drogą:"</string>
     <string name="movieviewlabel">"Filmy"</string>
     <string name="loading_video">"Ładowanie filmu..."</string>
-    <string name="spaceIsLow_title">"Miejsca jest mało"</string>
     <string name="spaceIsLow_content">"Na karcie SD brakuje miejsca. Zmień ustawienie jakości lub usuń elementy z Galerii."</string>
     <string name="resume_playing_title">"Wznów film"</string>
     <string name="resume_playing_message">"Wznowić odtwarzanie od %s?"</string>
@@ -150,5 +147,4 @@
     <string name="gadget_title">"Ramka zdjęcia"</string>
     <string name="file_info_title">"Informacje o pliku:"</string>
     <string name="video_exceed_mms_limit">"Nagrany film wideo jest zbyt duży, aby wysłać go w wiadomości MMS. Spróbuj nagrać krótszy film wideo."</string>
-    <string name="too_large_to_attach">"Plik jest zbyt duży do załączenia."</string>
 </resources>
