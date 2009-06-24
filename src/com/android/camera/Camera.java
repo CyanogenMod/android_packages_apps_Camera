@@ -85,7 +85,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final int FIRST_TIME_INIT = 2;
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
-    private static final int STORE_IMAGE_DONE = 5;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
@@ -197,7 +196,6 @@ public class Camera extends Activity implements View.OnClickListener,
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
 
-    private Thread mStoreImageThread = null;
     private final Handler mHandler = new MainHandler();
 
     private interface Capturer {
@@ -215,17 +213,6 @@ public class Camera extends Activity implements View.OnClickListener,
             switch (msg.what) {
                 case RESTART_PREVIEW: {
                     restartPreview();
-                    break;
-                }
-
-                case STORE_IMAGE_DONE: {
-                    if (!mIsImageCaptureIntent) {
-                        setLastPictureThumb((byte[])msg.obj, mImageCapture.getLastCaptureUri());
-                        updateThumbnailButton();
-                    } else {
-                        showPostCaptureAlert();
-                    }
-                    mStoreImageThread = null;
                     break;
                 }
 
@@ -537,18 +524,10 @@ public class Camera extends Activity implements View.OnClickListener,
                 mJpegPictureCallbackTime - mRawPictureCallbackTime;
             Log.v(TAG, "mRawPictureAndJpegPictureCallbackTime = "
                     + mRawPictureAndJpegPictureCallbackTime +"ms");
-            if (jpegData != null) {
-                mStoreImageThread = new Thread() {
-                     @Override
-                    public void run() {
-                         mImageCapture.storeImage(jpegData, camera, mLocation);
-                     }
-                };
-                mStoreImageThread.start();
-            }
+            mImageCapture.storeImage(jpegData, camera, mLocation);
 
             if (!mIsImageCaptureIntent) {
-                long delay = 1500 - (
+                long delay = 1200 - (
                         System.currentTimeMillis() - mRawPictureCallbackTime);
                 mHandler.sendEmptyMessageDelayed(
                         RESTART_PREVIEW, Math.max(delay, 0));
@@ -636,20 +615,19 @@ public class Camera extends Activity implements View.OnClickListener,
 
         public void storeImage(
                 final byte[] data, android.hardware.Camera camera, Location loc) {
-            Message msg = mHandler.obtainMessage(STORE_IMAGE_DONE);
             if (!mIsImageCaptureIntent) {
                 storeImage(data, loc);
                 sendBroadcast(new Intent(
                         "com.android.camera.NEW_PICTURE", mLastContentUri));
-                msg.obj = data;
+                setLastPictureThumb(data, mImageCapture.getLastCaptureUri());
+                mThumbController.updateDisplayIfNeeded();
             } else {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 4;
-
                 mCaptureOnlyBitmap = BitmapFactory.decodeByteArray(
                         data, 0, data.length, options);
+                showPostCaptureAlert();
             }
-            mHandler.sendMessage(msg);
         }
 
         /**
@@ -877,9 +855,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 break;
             case R.id.review_thumbnail:
                 if (isCameraIdle()) {
-                    // Make sure image storing has completed before viewing
-                    // last image.
-                    waitForStoreImageThread();
                     viewLastImage();
                 }
                 break;
@@ -1006,13 +981,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         switch (button.getId()) {
             case R.id.shutter_button:
-                if (mStoreImageThread == null) {
-                    doFocus(pressed);
-                } else {
-                    Toast.makeText(Camera.this,
-                            getResources().getString(R.string.wait),
-                            Toast.LENGTH_SHORT);
-                }
+                doFocus(pressed);
                 break;
         }
     }
@@ -1023,14 +992,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         switch (button.getId()) {
             case R.id.shutter_button:
-                if (mStoreImageThread == null) {
-                    // Take a picture.
-                    doSnap();
-                } else {
-                    Toast.makeText(Camera.this,
-                            getResources().getString(R.string.wait),
-                            Toast.LENGTH_SHORT);
-                }
+                doSnap();
                 break;
         }
     }
@@ -1130,27 +1092,12 @@ public class Camera extends Activity implements View.OnClickListener,
         return ImageManager.DataLocation.EXTERNAL;
     }
 
-    private void waitForStoreImageThread() {
-        if (mStoreImageThread != null) {
-            try {
-                mStoreImageThread.join();
-            } catch (InterruptedException ex) {
-                // Ignore this exception.
-                Log.e(TAG, "", ex);
-            } finally {
-                mStoreImageThread = null;
-            }
-        }
-    }
-
     @Override
     protected void onPause() {
         mPausing = true;
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
-
-        waitForStoreImageThread();
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -1193,7 +1140,6 @@ public class Camera extends Activity implements View.OnClickListener,
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
         mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
-        mHandler.removeMessages(STORE_IMAGE_DONE);
 
         super.onPause();
     }
