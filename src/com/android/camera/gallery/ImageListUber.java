@@ -50,14 +50,13 @@ public class ImageListUber implements IImageList {
     //
     //   * The higher 32bit component indicates which sublist we're referring
     //     to.
-    private long[] mSkipList = new long[16];
-    private int mSkipListSize = 0;
-    private int [] mSkipCounts = null;
-    private int mLastListIndex = -1;
+    private long[] mSkipList;
+    private int mSkipListSize;
+    private int [] mSkipCounts;
+    private int mLastListIndex;
 
     public ImageListUber(IImageList [] sublist, int sort) {
         mSubList = sublist.clone();
-        mSkipCounts = new int[mSubList.length];
         mQueue = new PriorityQueue<MergeSlot>(4,
                 sort == ImageManager.SORT_ASCENDING
                 ? new AscendingComparator()
@@ -340,6 +339,11 @@ public class ImageListUber implements IImageList {
     }
 
     public void open(ContentResolver cr) {
+        mSkipList = new long[16];
+        mSkipListSize = 0;
+        mSkipCounts = new int[mSubList.length];
+        mLastListIndex = -1;
+        mQueue.clear();
         for (int i = 0, n = mSubList.length; i < n; ++i) {
             IImageList list = mSubList[i];
             if (list instanceof BaseImageList) {

@@ -432,4 +432,9 @@ public class Util {
         canvas.drawBitmap(thumb, 0, 0, paint);
         return result;
     }
+
+    public static boolean equals(String a, String b) {
+        // return true if both string are null or the content equals
+        return a == b || a.equals(b);
+    }
 }
