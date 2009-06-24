@@ -740,6 +740,7 @@ public class ImageGallery extends Activity implements
                 menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
+                                if (!canHandleEvent()) return false;
                                 onImageClicked(mGvs.getCurrentSelection());
                                 return true;
                             }
