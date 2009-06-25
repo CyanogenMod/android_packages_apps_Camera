@@ -41,13 +41,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
@@ -98,7 +96,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private int mSlideShowInterval;
     private int mLastSlideShowImage;
-    private ThumbnailController mThumbController;
     int mCurrentPosition = 0;
 
     // represents which style animation to use
@@ -141,7 +138,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private MenuHelper.MenuItemsResult mImageMenuRunnable;
 
     private Runnable mDismissOnScreenControlsRunnable;
-    private boolean mCameraReviewMode;
 
     private void updateNextPrevControls() {
         boolean showPrev = mCurrentPosition > 0;
@@ -342,20 +338,18 @@ public class ViewImage extends Activity implements View.OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        if (!mCameraReviewMode) {
-            MenuItem item = menu.add(Menu.CATEGORY_SECONDARY, 203, 0,
-                                     R.string.slide_show);
-            item.setOnMenuItemClickListener(
-                    new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    setMode(MODE_SLIDESHOW);
-                    mLastSlideShowImage = mCurrentPosition;
-                    loadNextImage(mCurrentPosition, 0, true);
-                    return true;
-                }
-            });
-            item.setIcon(android.R.drawable.ic_menu_slideshow);
-        }
+        MenuItem item = menu.add(Menu.CATEGORY_SECONDARY, 203, 0,
+                                 R.string.slide_show);
+        item.setOnMenuItemClickListener(
+                new MenuItem.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                setMode(MODE_SLIDESHOW);
+                mLastSlideShowImage = mCurrentPosition;
+                loadNextImage(mCurrentPosition, 0, true);
+                return true;
+            }
+        });
+        item.setIcon(android.R.drawable.ic_menu_slideshow);
 
         final SelectedImageGetter selectedImageGetter =
                 new SelectedImageGetter() {
@@ -397,7 +391,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 });
 
         if (true) {
-            MenuItem item = menu.add(Menu.CATEGORY_SECONDARY, 203, 1000,
+            item = menu.add(Menu.CATEGORY_SECONDARY, 203, 1000,
                     R.string.camerasettings);
             item.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
@@ -431,10 +425,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     protected Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             mAllImages.removeImageAt(mCurrentPosition);
-            if (mCameraReviewMode) {
-                updateLastImage();
-                mThumbController.updateDisplayIfNeeded();
-            }
             if (mAllImages.getCount() == 0) {
                 finish();
             } else {
@@ -551,8 +541,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         super.onCreate(instanceState);
 
         Intent intent = getIntent();
-        mCameraReviewMode = intent.getBooleanExtra(
-                "com.android.camera.ReviewMode", false);
         mFullScreenInNormalMode = intent.getBooleanExtra(
                 MediaStore.EXTRA_FULL_SCREEN, true);
         mShowActionIcons = intent.getBooleanExtra(
@@ -622,12 +610,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         if (mShowActionIcons) {
             int[] pickIds = {R.id.attach, R.id.cancel};
-            int[] reviewIds = {R.id.gallery, R.id.setas, R.id.play, R.id.share,
-                    R.id.discard};
             int[] normalIds = {R.id.setas, R.id.play, R.id.share, R.id.discard};
-            int[] connectIds = isPickIntent()
-                    ? pickIds
-                    : mCameraReviewMode ? reviewIds : normalIds;
+            int[] connectIds = isPickIntent() ? pickIds : normalIds;
             for (int id : connectIds) {
                 View view = mActionIconPanel.findViewById(id);
                 view.setVisibility(View.VISIBLE);
@@ -647,7 +631,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
         }
 
-        setupZoomButtonController(findViewById(R.id.mainPanel));
+        setupZoomButtonController(findViewById(R.id.abs));
         setupDismissOnScreenControlRunnable();
 
         mNextImageView = findViewById(R.id.next_image);
@@ -660,20 +644,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mPrevImageView.setFocusable(true);
         }
 
-        if (mCameraReviewMode) {
-            ViewGroup buttonBar = (ViewGroup) findViewById(R.id.button_bar);
-            buttonBar.setVisibility(View.VISIBLE);
-            buttonBar.findViewById(
-                    R.id.review_indicator).setVisibility(View.VISIBLE);
-            ImageView reviewButton = (ImageView)
-                    buttonBar.findViewById(R.id.review_button);
-            reviewButton.setClickable(false);
-            reviewButton.setFocusable(false);
-            mThumbController = new ThumbnailController(
-                    reviewButton, getContentResolver());
-            buttonBar.findViewById(R.id.camera_button).setOnClickListener(this);
-            buttonBar.findViewById(R.id.video_button).setOnClickListener(this);
-        }
     }
 
     private void updateActionIcons() {
@@ -687,17 +657,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         } else {
             panel.findViewById(R.id.setas).setVisibility(View.VISIBLE);
             panel.findViewById(R.id.play).setVisibility(View.GONE);
-        }
-    }
-
-    private void updateLastImage() {
-        int count = mAllImages.getCount();
-        if (count > 0) {
-            IImage image = mAllImages.getImageAt(count - 1);
-            Uri uri = image.fullSizeImageUri();
-            mThumbController.setData(uri, image.miniThumbBitmap());
-        } else {
-            mThumbController.setData(null, null);
         }
     }
 
@@ -924,7 +883,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private IImageList buildImageListFromUri(Uri uri) {
         String sortOrder = mPrefs.getString(
                 "pref_gallery_sort_key", "descending");
-        int sort = (mCameraReviewMode || sortOrder.equals("ascending"))
+        int sort = sortOrder.equals("ascending")
                 ? ImageManager.SORT_ASCENDING
                 : ImageManager.SORT_DESCENDING;
         return ImageManager.makeImageList(uri, getContentResolver(), sort);
@@ -963,9 +922,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mPaused = false;
 
         init(mSavedUri, mAllImagesState);
-        if (mCameraReviewMode) {
-            updateLastImage();
-        }
 
         // normally this will never be zero but if one "backs" into this
         // activity after removing the sdcard it could be zero.  in that
@@ -1050,15 +1006,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.camera_button:
-                MenuHelper.gotoCameraMode(this);
-                break;
-            case R.id.video_button:
-                MenuHelper.gotoVideoMode(this);
-                break;
-            case R.id.gallery:
-                MenuHelper.gotoCameraImageGallery(this);
-                break;
             case R.id.discard:
                 MenuHelper.deletePhoto(this, mDeletePhotoRunnable);
                 break;
