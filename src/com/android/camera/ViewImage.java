@@ -75,6 +75,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private ImageGetter mGetter;
     private Uri mSavedUri;
+    private boolean mPaused = true;
 
     // Choices for what adjacents to load.
     private static final int[] sOrderAdjacents = new int[] {0, 1, -1};
@@ -121,6 +122,10 @@ public class ViewImage extends Activity implements View.OnClickListener {
     public static final String KEY_IMAGE_LIST = "image_list";
 
     IImageList mAllImages;
+
+    // this is used to store the state of the image list. Right now, it is the
+    // image list itself.
+    private IImageList mAllImagesState;
 
     private int mSlideShowImageCurrent = 0;
     private final ImageViewTouchBase [] mSlideShowImageViews =
@@ -444,9 +449,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        setMode(MODE_NORMAL);
 
+        super.onPrepareOptionsMenu(menu);
+        if (mPaused) return false;
+
+        setMode(MODE_NORMAL);
         if (mImageMenuRunnable != null) {
             mImageMenuRunnable.gettingReadyToOpen(menu,
                     mAllImages.getImageAt(mCurrentPosition));
@@ -924,9 +931,10 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private boolean init(Uri uri, IImageList imageList) {
         if (uri == null) return false;
-        mAllImages = (imageList == null)
+        mAllImagesState = (imageList == null)
                 ? buildImageListFromUri(uri)
                 : imageList;
+        mAllImages = mAllImagesState;
         mAllImages.open(getContentResolver());
         IImage image = mAllImages.getImageForUri(uri);
         if (image == null) return false;
@@ -951,8 +959,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
+        mPaused = false;
 
-        init(mSavedUri, mAllImages);
+        init(mSavedUri, mAllImagesState);
         if (mCameraReviewMode) {
             updateLastImage();
         }
@@ -981,6 +990,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
+        mPaused = true;
 
         mGetter.cancelCurrent();
         mGetter.stop();
@@ -993,6 +1003,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mSavedUri = getCurrentUri();
 
         mAllImages.deactivate();
+        mAllImages.close();
+        mAllImages = null;
+
         mDismissOnScreenControlsRunnable.run();
         if (mDismissOnScreenControlsRunnable != null) {
             mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
@@ -1096,8 +1109,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     // The CropImage activity passes back the Uri of the
                     // cropped image as the Action rather than the Data.
                     mSavedUri = Uri.parse(data.getAction());
-                    // This forces us to renew the image list in init.
-                    mAllImages = null;
                 }
                 break;
         }
