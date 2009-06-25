@@ -161,7 +161,7 @@ abstract class ImageViewTouchBase extends ImageView {
     // view's dimensions then center it (literally).  If the image
     // is scaled larger than the view and is translated out of view
     // then translate it back into view (i.e. eliminate black bars).
-    protected void center(boolean vertical, boolean horizontal) {
+    protected void center(boolean horizontal, boolean vertical) {
         if (mBitmapDisplayed == null) {
             return;
         }
