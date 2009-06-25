@@ -176,7 +176,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     }
 
     private void showOnScreenControls(final boolean autoDismiss) {
-        if (mPaused) return;
         // If the view has not been attached to the window yet, the
         // zoomButtonControls will not able to show up. So delay it until the
         // view has attached to window.
@@ -1110,14 +1109,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     // The CropImage activity passes back the Uri of the
                     // cropped image as the Action rather than the Data.
                     mSavedUri = Uri.parse(data.getAction());
-
-                    // if onStart() runs before, then set the returned
-                    // image as currentImage.
-                    if (mAllImages != null) {
-                        Image image = mAllImages.getImageForUri(mSavedUri);
-                        mCurrentPosition = mAllImages.getImageIndex(image);
-                        setImage(mCurrentPosition);
-                    }
                 }
                 break;
         }
