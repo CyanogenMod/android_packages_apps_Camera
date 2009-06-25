@@ -42,7 +42,7 @@
     <string name="gallery_camera_videos_bucket_name">Camera videos</string>
 
     <!-- label for the folder that contains Camera videos in the gallery -->
-    <string name="gallery_camera_media_bucket_name">Camera medias</string>
+    <string name="gallery_camera_media_bucket_name">Camera media</string>
 
     <!-- menu pick: switch to Video cam mode -->
     <string name="switch_to_video_lable">Switch to video</string>
