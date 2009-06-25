@@ -939,7 +939,8 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_delete:
-                MenuHelper.deletePhoto(this, mDeletePhotoRunnable);
+                MenuHelper.deleteImage(this, mDeletePhotoRunnable,
+                        mAllImages.getImageAt(mCurrentPosition));
                 break;
             case R.id.btn_play:
                 startPlayVideoActivity();
