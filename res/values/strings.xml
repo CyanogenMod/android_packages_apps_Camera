@@ -128,6 +128,9 @@
     <!-- Confirmation dialog message after deleting a video -->
     <string name="confirm_delete_video_message">The video will be deleted.</string>
     
+    <!-- Confirmation dialog message after deleting a multiple media files -->
+    <string name="confirm_delete_multiple_message">These media files will be deleted.</string>
+
     <!-- button in review mode indicating that the picture just taken should be deleted -->
     <string name="review_toss">DELETE</string>
 

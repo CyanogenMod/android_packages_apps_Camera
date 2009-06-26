@@ -135,7 +135,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="ViewImage" 
+        <activity android:name="ViewImage"
                 android:label="@string/view_label"
                 android:screenOrientation="behind"
                 android:configChanges="orientation|keyboardHidden">
@@ -171,6 +171,10 @@
                 <data android:mimeType="video/3gpp" />
                 <data android:mimeType="video/3gpp2" />
              </intent-filter>
+        </activity>
+        <activity android:name=".DeleteImage"
+                android:label="@string/delete_images_message"
+                android:theme="@style/Theme.DeleteImageDialog">
         </activity>
 
         <activity android:name="CameraSettings" android:label="@string/preferences_label">
