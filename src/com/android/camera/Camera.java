@@ -77,7 +77,8 @@ import java.util.StringTokenizer;
  * Activity of the Camera which used to see preview and take pictures.
  */
 public class Camera extends Activity implements View.OnClickListener,
-        ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback {
+        ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
+        Switcher.OnSwitchListener {
 
     private static final String TAG = "camera";
 
@@ -127,6 +128,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private static final int IDLE = 1;
     private static final int SNAPSHOT_IN_PROGRESS = 2;
+
+    private static final boolean SWITCH_CAMERA = true;
+    private static final boolean SWITCH_VIDEO = false;
 
     private int mStatus = IDLE;
     private static final String sTempCropFilename = "crop-temp";
@@ -812,7 +816,9 @@ public class Camera extends Activity implements View.OnClickListener,
             controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
         } else {
             inflater.inflate(R.layout.camera_control, rootView);
-            ((Switcher) findViewById(R.id.camera_switch)).setSwitch(true);
+            Switcher switcher = ((Switcher) findViewById(R.id.camera_switch));
+            switcher.setSwitch(SWITCH_CAMERA);
+            switcher.setOnSwitchListener(this);
         }
 
         // Make sure the services are loaded.
@@ -847,11 +853,6 @@ public class Camera extends Activity implements View.OnClickListener,
             case R.id.btn_retake:
                 hidePostCaptureAlert();
                 restartPreview();
-                break;
-            case R.id.camera_switch:
-                if (isCameraIdle()) {
-                    MenuHelper.gotoVideoMode(this);
-                }
                 break;
             case R.id.review_thumbnail:
                 if (isCameraIdle()) {
@@ -1650,6 +1651,12 @@ public class Camera extends Activity implements View.OnClickListener,
             }
         });
         item.setIcon(android.R.drawable.ic_menu_preferences);
+    }
+
+    public void onSwitchChanged(Switcher source, boolean onOff) {
+        if (onOff == SWITCH_VIDEO && isCameraIdle()) {
+            MenuHelper.gotoVideoMode(this);
+        }
     }
 }
 
