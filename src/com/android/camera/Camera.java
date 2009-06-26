@@ -1662,6 +1662,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public void onSwitchChanged(Switcher source, boolean onOff) {
         if (onOff == SWITCH_VIDEO && isCameraIdle()) {
             MenuHelper.gotoVideoMode(this);
+            finish();
         }
     }
 }
