@@ -1256,13 +1256,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (mRecordingTimeCountsDown != countdownRemainingTime) {
             // Avoid setting the color on every update, do it only
             // when it needs changing.
-
             mRecordingTimeCountsDown = countdownRemainingTime;
 
-            int color =
-                    getResources().getColor(
-                            countdownRemainingTime ? R.color.recording_time_remaining_text
-                                    : R.color.recording_time_elapsed_text);
+            int color = getResources().getColor(countdownRemainingTime
+                    ? R.color.recording_time_remaining_text
+                    : R.color.recording_time_elapsed_text);
 
             mRecordingTimeView.setTextColor(color);
         }
