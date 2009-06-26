@@ -71,7 +71,8 @@ import java.util.Date;
  */
 public class VideoCamera extends Activity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
-        MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
+        MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
+        Switcher.OnSwitchListener {
 
     private static final String TAG = "videocamera";
 
@@ -88,6 +89,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private static final int STORAGE_STATUS_OK = 0;
     private static final int STORAGE_STATUS_LOW = 1;
     private static final int STORAGE_STATUS_NONE = 2;
+
+    private static final boolean SWITCH_CAMERA = true;
+    private static final boolean SWITCH_VIDEO = false;
 
     public static final int MENU_SETTINGS = 6;
     public static final int MENU_GALLERY_PHOTOS = 7;
@@ -247,7 +251,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mThumbController = new ThumbnailController(mLastPictureButton, mContentResolver);
             mLastPictureButton.setOnClickListener(this);
             mThumbController.loadData(ImageManager.getLastVideoThumbPath());
-            findViewById(R.id.camera_switch).setOnClickListener(this);
+
+            Switcher switcher = ((Switcher) findViewById(R.id.camera_switch));
+            switcher.setSwitch(SWITCH_VIDEO);
+            switcher.setOnSwitchListener(this);
+
         } else {
             View controlBar = inflater.inflate(R.layout.attach_camera_control, rootView);
             controlBar.findViewById(R.id.btn_cancel).setOnClickListener(this);
@@ -298,9 +306,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.btn_retake:
                 discardCurrentVideoAndInitRecorder();
-                break;
-            case R.id.camera_switch:
-                MenuHelper.gotoCameraMode(this);
                 break;
             case R.id.btn_play:
                 startPlayVideoActivity();
@@ -1282,5 +1287,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // overlapping view's contents.
         mVideoPreview.invalidate();
         mHandler.sendEmptyMessageDelayed(UPDATE_RECORD_TIME, 1000);
+    }
+
+    public void onSwitchChanged(Switcher source, boolean onOff) {
+        if (onOff == SWITCH_CAMERA) {
+            MenuHelper.gotoCameraMode(this);
+        }
     }
 }
