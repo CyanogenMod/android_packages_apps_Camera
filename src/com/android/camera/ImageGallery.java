@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -61,6 +62,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class ImageGallery extends Activity implements
@@ -145,7 +147,7 @@ public class ImageGallery extends Activity implements
         Button deleteButton = (Button) findViewById(R.id.button_delete);
         deleteButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                onDeleteClicked();
+                onDeleteMultipleClicked();
             }
         });
 
@@ -497,7 +499,6 @@ public class ImageGallery extends Activity implements
             item.setAlphabeticShortcut('p');
             item.setIcon(android.R.drawable.ic_menu_preferences);
 
-            /* Disable multiselect
             item = menu.add(0, 0, 900, R.string.multiselect);
             item.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
@@ -511,7 +512,6 @@ public class ImageGallery extends Activity implements
                 }
             });
             item.setIcon(R.drawable.ic_menu_multiselect_gallery);
-            */
         }
         return true;
     }
@@ -965,29 +965,25 @@ public class ImageGallery extends Activity implements
         }
     }
 
-    private void onDeleteClicked() {
-        Cancelable<Void> task = new BaseCancelable<Void>() {
-
-            @Override
-            public boolean requestCancel() {
-                return false;
-            }
-
-            @Override
-            protected Void execute() {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+    private void onDeleteMultipleClicked() {
+        Runnable action = new Runnable() {
+            public void run() {
+                ArrayList<Uri> uriList = new ArrayList<Uri>();
+                for (IImage image : mMultiSelected) {
+                    uriList.add(image.fullSizeImageUri());
                 }
-                return null;
+                closeMultiSelectMode();
+                Intent intent = new Intent(ImageGallery.this,
+                        DeleteImage.class);
+                intent.putExtra("delete-uris", uriList);
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    Log.e(TAG, "Delete images fail", ex);
+                }
             }
-
         };
-        postBackgroundTask(
-                getResources().getString(R.string.delete_images_message),
-                task);
-
+        MenuHelper.deleteMultiple(this, action);
     }
 
     private <T> void postBackgroundTask(String message, Cancelable<T> task) {
@@ -997,10 +993,9 @@ public class ImageGallery extends Activity implements
         mPriorityQueue.add(pTask);
     }
 
-    /* Disable for multiselect
     private boolean isInMultiSelectMode() {
         return mMultiSelected != null;
-    }*/
+    }
 
     private void closeMultiSelectMode() {
         if (mMultiSelected == null) return;
@@ -1009,10 +1004,9 @@ public class ImageGallery extends Activity implements
         hideFooter();
     }
 
-    /* Disable for multiselect
     private void openMultiSelectMode() {
         if (mMultiSelected != null) return;
         mMultiSelected = new HashSet<IImage>();
         mGvs.invalidateAllImages();
-    }*/
+    }
 }
