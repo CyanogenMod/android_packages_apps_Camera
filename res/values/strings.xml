@@ -564,7 +564,7 @@
     <string name="multiselect_delete">Delete</string>
 
     <!-- Title shown on the button which will close the multiselction mode -->
-    <string name="multiselect_close">Close</string>
+    <string name="multiselect_cancel">Cancel</string>
 
     <!-- The title of the progress dialog which will be shown for tasks that may take a long time -->
     <string name="progress_dialog_title">In progress</string>
