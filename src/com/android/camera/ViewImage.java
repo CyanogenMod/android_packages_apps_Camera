@@ -905,6 +905,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     }
 
     private Uri getCurrentUri() {
+        if (mAllImages.getCount() == 0) return null;
         IImage image = mAllImages.getImageAt(mCurrentPosition);
         return image.fullSizeImageUri();
     }
