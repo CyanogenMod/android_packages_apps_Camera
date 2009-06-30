@@ -199,6 +199,8 @@ public class ImageGallery extends Activity implements
     private final Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             if (!canHandleEvent()) return;
+            stopCheckingThumbnails();
+
             mGvs.stop();
             IImage currentImage = getCurrentImage();
             if (currentImage != null) {
@@ -206,6 +208,8 @@ public class ImageGallery extends Activity implements
             }
             mGvs.setImageList(mAllImages);
             mGvs.start();
+
+            checkThumbnails();
             mNoImagesView.setVisibility(mAllImages.isEmpty()
                     ? View.VISIBLE
                     : View.GONE);
@@ -765,13 +769,6 @@ public class ImageGallery extends Activity implements
                                     return;
                                 }
                                 cb.run(getCurrentImageUri(), getCurrentImage());
-                                mGvs.stop();
-                                mGvs.setImageList(mAllImages);
-                                mGvs.start();
-                                mNoImagesView.setVisibility(
-                                        mAllImages.getCount() > 0
-                                        ? View.GONE
-                                        : View.VISIBLE);
                             }
                         });
                 if (r != null) {
