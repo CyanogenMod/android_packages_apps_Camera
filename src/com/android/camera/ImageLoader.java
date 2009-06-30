@@ -124,6 +124,14 @@ public class ImageLoader {
     }
 
     private class WorkerThread implements Runnable {
+
+        // IDLE_TIME is the time we wait before we start checking thumbnail.
+        // This gives the thumbnail generation work priority because there
+        // may be a short period of time when the queue is empty while
+        // ImageBlockManager is calculating what to load next.
+        private static final long IDLE_TIME = 1000000000;  // in nanoseconds.
+        private long lastWorkTime = System.nanoTime();
+
         // Pick off items on the queue, one by one, and compute their bitmap.
         // Place the resulting bitmap in the cache, then call back by executing
         // the given runnable so things can get updated appropriately.
@@ -137,6 +145,18 @@ public class ImageLoader {
                     if (!mQueue.isEmpty()) {
                         workItem = mQueue.remove(0);
                     } else {
+                        // Calculate the time we need to be idle before we
+                        // start checking thumbnail.
+                        long t = IDLE_TIME - (System.nanoTime() - lastWorkTime);
+                        if (t > 0) {
+                            try {
+                                mQueue.wait(t / 1000000);  // in milliseconds.
+                            } catch (InterruptedException ex) {
+                                // ignore the exception
+                            }
+                            continue;
+                        }
+
                         if (!mThumbnailChecker.hasMoreThumbnailsToCheck()) {
                             try {
                                 mQueue.wait();
@@ -161,6 +181,8 @@ public class ImageLoader {
                 if (workItem.mOnLoadedRunnable != null) {
                     workItem.mOnLoadedRunnable.run(b);
                 }
+
+                lastWorkTime = System.nanoTime();
             }
         }
     }
