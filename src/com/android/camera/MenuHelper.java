@@ -24,6 +24,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.location.Address;
 import android.location.Geocoder;
 import android.media.MediaMetadataRetriever;
@@ -31,6 +32,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.text.format.Formatter;
@@ -794,52 +796,59 @@ public class MenuHelper {
         deleteImpl(activity, onDelete, false);
     }
 
-    static void deleteImage(Activity activity, Runnable onDelete,
-            IImage image) {
-        if (image != null) {
-            deleteImpl(activity, onDelete, ImageManager.isImage(image));
-        }
+    static void deleteImage(
+            Activity activity, Runnable onDelete, IImage image) {
+        deleteImpl(activity, onDelete, ImageManager.isImage(image));
     }
 
-    private static void deleteImpl(Activity activity, final Runnable onDelete,
-            boolean isPhoto) {
-        boolean confirm = android.preference.PreferenceManager
-                .getDefaultSharedPreferences(activity)
-                .getBoolean("pref_gallery_confirm_delete_key", true);
-        if (!confirm) {
-            if (onDelete != null) {
-                onDelete.run();
-            }
+    static void deleteImpl(
+            Activity activity, Runnable onDelete, boolean isImage) {
+        boolean needConfirm = PreferenceManager
+                 .getDefaultSharedPreferences(activity)
+                 .getBoolean("pref_gallery_confirm_delete_key", true);
+        if (!needConfirm) {
+            if (onDelete != null) onDelete.run();
         } else {
-            displayDeleteDialog(activity, onDelete, isPhoto);
+            String title = activity.getString(R.string.confirm_delete_title);
+            String message = activity.getString(isImage
+                    ? R.string.confirm_delete_message
+                    : R.string.confirm_delete_video_message);
+            confirmAction(activity, title, message, onDelete);
         }
     }
 
-    private static void displayDeleteDialog(Activity activity,
-            final Runnable onDelete, boolean isPhoto) {
-        android.app.AlertDialog.Builder b =
-                new android.app.AlertDialog.Builder(activity);
-        b.setIcon(android.R.drawable.ic_dialog_alert);
-        b.setTitle(R.string.confirm_delete_title);
-        b.setMessage(isPhoto
-                ? R.string.confirm_delete_message
-                : R.string.confirm_delete_video_message);
-        b.setPositiveButton(android.R.string.ok,
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(android.content.DialogInterface v,
-                                        int x) {
-                        if (onDelete != null) {
-                            onDelete.run();
-                        }
-                    }
-                });
-        b.setNegativeButton(android.R.string.cancel,
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(android.content.DialogInterface v,
-                                        int x) {
-                    }
-                });
-        b.create().show();
+    public static void deleteMultiple(Context context, Runnable action) {
+        boolean needConfirm = PreferenceManager
+            .getDefaultSharedPreferences(context)
+            .getBoolean("pref_gallery_confirm_delete_key", true);
+        if (!needConfirm) {
+            if (action != null) action.run();
+        } else {
+            String title = context.getString(R.string.confirm_delete_title);
+            String message = context.getString(
+                    R.string.confirm_delete_multiple_message);
+            confirmAction(context, title, message, action);
+        }
+    }
+
+    public static void confirmAction(Context context, String title,
+            String message, final Runnable action) {
+        OnClickListener listener = new OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        if (action != null) action.run();
+                }
+            }
+        };
+        new AlertDialog.Builder(context)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok, listener)
+            .setNegativeButton(android.R.string.cancel, listener)
+            .create()
+            .show();
     }
 
     static void addSwitchModeMenuItem(Menu menu, final Activity activity,

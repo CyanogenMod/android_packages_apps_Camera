@@ -51,4 +51,6 @@
         <item name="android:layout_weight">1</item>
         <item name="android:drawablePadding">3dip</item>
     </style>
+    <style name="Theme.DeleteImageDialog" parent="android:style/Theme.Dialog.Alert">
+    </style>
 </resources>
