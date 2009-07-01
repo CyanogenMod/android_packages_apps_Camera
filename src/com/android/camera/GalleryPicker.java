@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -36,6 +37,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.provider.MediaStore;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -71,6 +73,7 @@ public class GalleryPicker extends Activity {
     Handler mHandler = new Handler();  // handler for the main thread
     Thread mWorkerThread;
     BroadcastReceiver mReceiver;
+    ContentObserver mDbObserver;
     GridView mGridView;
     GalleryPickerAdapter mAdapter;  // mAdapter is only accessed in main thread.
     boolean mScanning;
@@ -106,6 +109,14 @@ public class GalleryPicker extends Activity {
             }
         };
 
+        mDbObserver = new ContentObserver(mHandler) {
+            @Override
+            public void onChange(boolean selfChange) {
+                rebake(false, ImageManager.isMediaScannerScanning(
+                        getContentResolver()));
+            }
+        };
+
         ImageManager.ensureOSXCompatibleFolder();
     }
 
@@ -114,12 +125,12 @@ public class GalleryPicker extends Activity {
     // Display a dialog if the storage is being scanned now.
     public void updateScanningDialog(boolean scanning) {
         boolean prevScanning = (mMediaScanningDialog != null);
-        if (prevScanning == scanning) return;
+        if (prevScanning == scanning && mAdapter.mItems.size() == 0) return;
         // Now we are certain the state is changed.
         if (prevScanning) {
             mMediaScanningDialog.cancel();
             mMediaScanningDialog = null;
-        } else {
+        } else if (scanning && mAdapter.mItems.size() == 0) {
             mMediaScanningDialog = ProgressDialog.show(
                     this,
                     null,
@@ -170,12 +181,8 @@ public class GalleryPicker extends Activity {
             // TODO put up a "please wait" message
         } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
             // SD card unavailable
-            Toast.makeText(GalleryPicker.this,
-                    getResources().getString(R.string.wait), 5000);
             rebake(true, false);
         } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
-            Toast.makeText(GalleryPicker.this,
-                    getResources().getString(R.string.wait), 5000);
             rebake(false, true);
         } else if (action.equals(
                 Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
@@ -250,6 +257,11 @@ public class GalleryPicker extends Activity {
 
         unregisterReceiver(mReceiver);
 
+        if (mDbObserver != null) {
+            getContentResolver().unregisterContentObserver(mDbObserver);
+            mDbObserver = null;
+        }
+
         // free up some ram
         mAdapter = null;
         mGridView.setAdapter(null);
@@ -273,6 +285,10 @@ public class GalleryPicker extends Activity {
         intentFilter.addDataScheme("file");
 
         registerReceiver(mReceiver, intentFilter);
+
+        getContentResolver().registerContentObserver(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                true, mDbObserver);
 
         // Assume the storage is mounted and not scanning.
         mUnmounted = false;
@@ -338,7 +354,6 @@ public class GalleryPicker extends Activity {
         if (mAbort) return;
 
         checkLowStorage();
-        if (mAbort) return;
     }
 
     // This is run in the worker thread.
