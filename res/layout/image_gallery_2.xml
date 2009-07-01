@@ -86,7 +86,7 @@
                 android:layout_width="0dip"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:text="@string/multiselect_close" />
+                android:text="@string/multiselect_cancel" />
     </LinearLayout>
 
 </RelativeLayout>
