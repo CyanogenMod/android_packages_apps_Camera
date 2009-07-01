@@ -851,8 +851,8 @@ public class MenuHelper {
             .show();
     }
 
-    static void addSwitchModeMenuItem(Menu menu, final Activity activity,
-            final boolean switchToVideo) {
+    static void addSwitchModeMenuItem(
+            Menu menu, final Activity activity, boolean switchToVideo) {
         int group = switchToVideo
                 ? MenuHelper.IMAGE_MODE_ITEM
                 : MenuHelper.VIDEO_MODE_ITEM;
@@ -862,20 +862,20 @@ public class MenuHelper {
         int iconId = switchToVideo
                 ? R.drawable.ic_menu_camera_video_view
                 : android.R.drawable.ic_menu_camera;
+        final String action = switchToVideo
+                ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
+                : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
         MenuItem item = menu.add(group, MENU_SWITCH_CAMERA_MODE, 0, labelId)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        return onSwitchModeClicked(activity, switchToVideo);
-                    }
-                });
+            public boolean onMenuItemClick(MenuItem item) {
+                startCameraActivity(activity, action);
+                return true;
+            }
+        });
         item.setIcon(iconId);
     }
 
-    private static boolean onSwitchModeClicked(Activity activity,
-                boolean switchToVideo) {
-        String action = switchToVideo
-                ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
-                : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
+    private static void startCameraActivity(Activity activity, String action) {
         Intent intent = new Intent(action);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
@@ -885,33 +885,23 @@ public class MenuHelper {
         CameraHolder.instance().keep();
 
         activity.startActivity(intent);
-        return true;
-    }
-
-    public static void gotoCameraMode(Activity activity) {
-        onSwitchModeClicked(activity, false);
     }
 
     public static void gotoVideoMode(Activity activity) {
-        onSwitchModeClicked(activity, true);
+        startCameraActivity(activity, MediaStore.INTENT_ACTION_VIDEO_CAMERA);
     }
 
-    static void gotoStillImageCapture(Activity activity) {
-        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        try {
-            activity.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Log.e(TAG, "Could not start still image capture activity", e);
-        }
+    public static void gotoCameraMode(Activity activity) {
+        startCameraActivity(
+                activity, MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
     }
 
-    static void gotoCameraImageGallery(Activity activity) {
+    public static void gotoCameraImageGallery(Activity activity) {
         gotoGallery(activity, R.string.gallery_camera_bucket_name,
                 ImageManager.INCLUDE_IMAGES);
     }
 
-    static void gotoCameraVideoGallery(Activity activity) {
+    public static void gotoCameraVideoGallery(Activity activity) {
         gotoGallery(activity, R.string.gallery_camera_videos_bucket_name,
                 ImageManager.INCLUDE_VIDEOS);
     }

@@ -47,7 +47,7 @@
                 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
                 android:screenOrientation="landscape"
                 android:clearTaskOnLaunch="true"
-                android:taskAffinity="android.task.videocamera">
+                android:taskAffinity="android.task.camera">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
