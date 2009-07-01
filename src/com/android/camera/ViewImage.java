@@ -260,6 +260,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mGestureDetector = new GestureDetector(this, new MyGestureListener());
         mZoomButtonsController = new ZoomButtonsController(rootView);
         mZoomButtonsController.setAutoDismissed(false);
+        mZoomButtonsController.setZoomSpeed(100);
         mZoomButtonsController.setOnZoomListener(
                 new ZoomButtonsController.OnZoomListener() {
             public void onVisibilityChanged(boolean visible) {
