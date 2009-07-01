@@ -145,6 +145,13 @@ public class ImageManager {
     }
 
     /**
+     * @return true if the mimetype is a video mimetype.
+     */
+    public static boolean isVideoMimeType(String mimeType) {
+        return mimeType.startsWith("video/");
+    }
+
+    /**
      * @return true if the image is an image.
      */
     public static boolean isImage(IImage image) {
@@ -156,7 +163,7 @@ public class ImageManager {
      */
     public static boolean isVideo(IImage image) {
         // This is the right implementation, but we use instanceof for speed.
-        //return Util.isVideoMimeType(image.getMimeType());
+        //return isVideoMimeType(image.getMimeType());
         return (image instanceof VideoObject);
     }
 

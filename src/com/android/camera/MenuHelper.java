@@ -332,8 +332,7 @@ public class MenuHelper {
     // Displays detailed information about the image/video.
     private static boolean onDetailsClicked(MenuInvoker onInvoke,
                                             final Handler handler,
-                                            final Activity activity,
-                                            final boolean isImage) {
+                                            final Activity activity) {
         onInvoke.run(new MenuCallback() {
             public void run(Uri u, IImage image) {
                 if (image == null) {
@@ -364,7 +363,7 @@ public class MenuHelper {
 
                 int dimensionWidth = 0;
                 int dimensionHeight = 0;
-                if (isImage) {
+                if (ImageManager.isImage(image)) {
                     // getWidth is much slower than reading from EXIF
                     dimensionWidth = image.getWidth();
                     dimensionHeight = image.getHeight();
@@ -592,7 +591,7 @@ public class MenuHelper {
 
     // Called when "Share" is clicked.
     private static boolean onImageShareClicked(MenuInvoker onInvoke,
-            final Activity activity, final boolean isImage) {
+            final Activity activity) {
         onInvoke.run(new MenuCallback() {
             public void run(Uri u, IImage image) {
                 if (image == null) return;
@@ -602,7 +601,7 @@ public class MenuHelper {
                 String mimeType = image.getMimeType();
                 intent.setType(mimeType);
                 intent.putExtra(Intent.EXTRA_STREAM, u);
-                boolean isImage = ImageManager.isImageMimeType(mimeType);
+                boolean isImage = ImageManager.isImage(image);
                 try {
                     activity.startActivity(Intent.createChooser(intent,
                             activity.getText(isImage
@@ -633,10 +632,21 @@ public class MenuHelper {
         return true;
     }
 
+    // Called when "Delete" is clicked.
+    private static boolean onDeleteClicked(MenuInvoker onInvoke,
+            final Activity activity, final Runnable onDelete) {
+        onInvoke.run(new MenuCallback() {
+            public void run(Uri uri, IImage image) {
+                if (image != null) {
+                    deleteImage(activity, onDelete, image);
+                }
+            }});
+        return true;
+    }
+
     static MenuItemsResult addImageMenuItems(
             Menu menu,
             int inclusions,
-            final boolean isImage,
             final Activity activity,
             final Handler handler,
             final Runnable onDelete,
@@ -645,8 +655,12 @@ public class MenuHelper {
                 new ArrayList<MenuItem>();
         final ArrayList<MenuItem> requiresNoDrmAccessItems =
                 new ArrayList<MenuItem>();
+        final ArrayList<MenuItem> requiresImageItems =
+                new ArrayList<MenuItem>();
+        final ArrayList<MenuItem> requiresVideoItems =
+                new ArrayList<MenuItem>();
 
-        if (isImage && ((inclusions & INCLUDE_ROTATE_MENU) != 0)) {
+        if ((inclusions & INCLUDE_ROTATE_MENU) != 0) {
             SubMenu rotateSubmenu = menu.addSubMenu(IMAGE_SAVING_ITEM,
                     MENU_IMAGE_ROTATE, 40, R.string.rotate)
                     .setIcon(android.R.drawable.ic_menu_rotate);
@@ -654,28 +668,34 @@ public class MenuHelper {
             // since the items within the submenu won't be shown anyway. This
             // is really a framework bug in that it shouldn't show the submenu
             // if the submenu has no visible items.
-            requiresWriteAccessItems.add(rotateSubmenu.getItem());
-            requiresWriteAccessItems.add(
-                    rotateSubmenu.add(0, MENU_IMAGE_ROTATE_LEFT, 50,
-                    R.string.rotate_left)
+            MenuItem rotateLeft = rotateSubmenu.add(0, MENU_IMAGE_ROTATE_LEFT,
+                    50, R.string.rotate_left)
                     .setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             return onRotateClicked(onInvoke, -90);
                         }
-                    }).setAlphabeticShortcut('l'));
-            requiresWriteAccessItems.add(
-                    rotateSubmenu.add(0, MENU_IMAGE_ROTATE_RIGHT, 60,
-                    R.string.rotate_right)
+                    }).setAlphabeticShortcut('l');
+
+            MenuItem rotateRight = rotateSubmenu.add(0, MENU_IMAGE_ROTATE_RIGHT,
+                    60, R.string.rotate_right)
                     .setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             return onRotateClicked(onInvoke, 90);
                         }
-                    }).setAlphabeticShortcut('r'));
+                    }).setAlphabeticShortcut('r');
+
+            requiresWriteAccessItems.add(rotateSubmenu.getItem());
+            requiresWriteAccessItems.add(rotateLeft);
+            requiresWriteAccessItems.add(rotateRight);
+
+            requiresImageItems.add(rotateSubmenu.getItem());
+            requiresImageItems.add(rotateLeft);
+            requiresImageItems.add(rotateRight);
         }
 
-        if (isImage && ((inclusions & INCLUDE_CROP_MENU) != 0)) {
+        if ((inclusions & INCLUDE_CROP_MENU) != 0) {
             MenuItem autoCrop = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_CROP, 73,
                     R.string.camera_crop);
             autoCrop.setIcon(android.R.drawable.ic_menu_crop);
@@ -686,9 +706,10 @@ public class MenuHelper {
                         }
                     });
             requiresWriteAccessItems.add(autoCrop);
+            requiresImageItems.add(autoCrop);
         }
 
-        if (isImage && ((inclusions & INCLUDE_SET_MENU) != 0)) {
+        if ((inclusions & INCLUDE_SET_MENU) != 0) {
             MenuItem setMenu = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_SET, 75,
                     R.string.camera_set);
             setMenu.setIcon(android.R.drawable.ic_menu_set_as);
@@ -698,6 +719,7 @@ public class MenuHelper {
                             return onSetAsClicked(onInvoke, activity);
                         }
                     });
+            requiresImageItems.add(setMenu);
         }
 
         if ((inclusions & INCLUDE_SHARE_MENU) != 0) {
@@ -705,8 +727,7 @@ public class MenuHelper {
                     R.string.camera_share).setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
-                            return onImageShareClicked(onInvoke, activity,
-                                    isImage);
+                            return onImageShareClicked(onInvoke, activity);
                         }
                     });
             item1.setIcon(android.R.drawable.ic_menu_share);
@@ -721,8 +742,7 @@ public class MenuHelper {
             deleteItem.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
-                            deleteImpl(activity, onDelete, isImage);
-                            return true;
+                            return onDeleteClicked(onInvoke, activity, onDelete);
                         }
                     })
                     .setAlphabeticShortcut('d')
@@ -733,15 +753,14 @@ public class MenuHelper {
             MenuItem detailsMenu = menu.add(0, 0, 80, R.string.details)
             .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    return onDetailsClicked(onInvoke, handler, activity,
-                            isImage);
+                    return onDetailsClicked(onInvoke, handler, activity);
                 }
             });
             detailsMenu.setIcon(R.drawable.ic_menu_view_details);
         }
 
-        if ((isImage) && ((inclusions & INCLUDE_SHOWMAP_MENU) != 0)) {
-            menu.add(0, 0, 80, R.string.show_on_map)
+        if ((inclusions & INCLUDE_SHOWMAP_MENU) != 0) {
+            MenuItem showOnMapItem = menu.add(0, 0, 80, R.string.show_on_map)
                 .setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
@@ -749,16 +768,20 @@ public class MenuHelper {
                                         handler, activity);
                             }
                         }).setIcon(R.drawable.ic_menu_3d_globe);
+            requiresImageItems.add(showOnMapItem);
         }
 
-        if ((!isImage) && ((inclusions & INCLUDE_VIEWPLAY_MENU) != 0)) {
-            menu.add(VIDEO_SAVING_ITEM, MENU_VIDEO_PLAY, 0, R.string.video_play)
+        if ((inclusions & INCLUDE_VIEWPLAY_MENU) != 0) {
+            MenuItem videoPlayItem = menu.add(VIDEO_SAVING_ITEM,
+                MENU_VIDEO_PLAY, 0, R.string.video_play)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     return onViewPlayClicked(onInvoke, activity);
                 }
             });
+            videoPlayItem.setIcon(com.android.internal.R.drawable.ic_menu_play_clip);
+            requiresVideoItems.add(videoPlayItem);
         }
 
         return new MenuItemsResult() {
@@ -769,16 +792,31 @@ public class MenuHelper {
                 if (image == null) {
                     return;
                 }
-                boolean readOnly = image.isReadonly();
-                boolean isDrm = image.isDrm();
 
-                for (MenuItem item : requiresWriteAccessItems) {
-                    item.setVisible(!readOnly);
-                    item.setEnabled(!readOnly);
+                ArrayList<MenuItem> enableList = new ArrayList<MenuItem>();
+                ArrayList<MenuItem> disableList = new ArrayList<MenuItem>();
+                ArrayList<MenuItem> list;
+
+                list = image.isReadonly() ? disableList : enableList;
+                list.addAll(requiresWriteAccessItems);
+
+                list = image.isDrm() ? disableList : enableList;
+                list.addAll(requiresNoDrmAccessItems);
+
+                list = ImageManager.isImage(image) ? enableList : disableList;
+                list.addAll(requiresImageItems);
+
+                list = ImageManager.isVideo(image) ? enableList : disableList;
+                list.addAll(requiresVideoItems);
+                
+                for (MenuItem item : enableList) {
+                    item.setVisible(true);
+                    item.setEnabled(true);
                 }
-                for (MenuItem item : requiresNoDrmAccessItems) {
-                    item.setVisible(!isDrm);
-                    item.setEnabled(!isDrm);
+
+                for (MenuItem item : disableList) {
+                    item.setVisible(false);
+                    item.setEnabled(false);
                 }
             }
 

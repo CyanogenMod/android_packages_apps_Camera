@@ -352,42 +352,22 @@ public class ViewImage extends Activity implements View.OnClickListener {
         });
         item.setIcon(android.R.drawable.ic_menu_slideshow);
 
-        final SelectedImageGetter selectedImageGetter =
-                new SelectedImageGetter() {
-            public IImage getCurrentImage() {
-                return mAllImages.getImageAt(mCurrentPosition);
-            }
-
-            public Uri getCurrentImageUri() {
-                return mAllImages.getImageAt(mCurrentPosition)
-                        .fullSizeImageUri();
-            }
-        };
-
         mImageMenuRunnable = MenuHelper.addImageMenuItems(
                 menu,
                 MenuHelper.INCLUDE_ALL,
-                true,
                 ViewImage.this,
                 mHandler,
                 mDeletePhotoRunnable,
                 new MenuHelper.MenuInvoker() {
                     public void run(final MenuHelper.MenuCallback cb) {
-                        setMode(MODE_NORMAL);
-                        Thread t = new Thread() {
-                            @Override
-                            public void run() {
-                               cb.run(selectedImageGetter.getCurrentImageUri(),
-                                       selectedImageGetter.getCurrentImage());
-                               mHandler.post(new Runnable() {
-                                 public void run() {
-                                     mImageView.clear();
-                                     setImage(mCurrentPosition);
-                                 }
-                               });
-                            }
-                        };
-                        t.start();
+                       setMode(MODE_NORMAL);
+
+                       IImage image = mAllImages.getImageAt(mCurrentPosition);
+                       Uri uri = image.fullSizeImageUri();
+                       cb.run(uri, image);
+
+                       mImageView.clear();
+                       setImage(mCurrentPosition);
                     }
                 });
 

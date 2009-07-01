@@ -243,13 +243,6 @@ public class Util {
     }
 
     /**
-     * @return true if the mimetype is a video mimetype.
-     */
-    public static boolean isVideoMimeType(String mimeType) {
-        return mimeType.startsWith("video/");
-    }
-
-    /**
      * Create a video thumbnail for a video. May return null if the video is
      * corrupt.
      *

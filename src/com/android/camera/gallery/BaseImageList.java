@@ -18,6 +18,7 @@ package com.android.camera.gallery;
 
 import com.android.camera.ExifInterface;
 import com.android.camera.Util;
+import com.android.camera.ImageManager;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -271,8 +272,7 @@ public abstract class BaseImageList implements IImageList {
         String filePath = existingImage.getDataPath();
 
         if (filePath != null) {
-            String mimeType = existingImage.getMimeType();
-            boolean isVideo = Util.isVideoMimeType(mimeType);
+            boolean isVideo = ImageManager.isVideo(existingImage);
             if (isVideo) {
                 bitmap = Util.createVideoThumbnail(filePath);
             } else {

@@ -698,31 +698,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             return false;
         } else {
             addBaseMenuItems(menu);
-            int menuFlags =
-                    MenuHelper.INCLUDE_ALL & ~MenuHelper.INCLUDE_ROTATE_MENU
-                            & ~MenuHelper.INCLUDE_DETAILS_MENU;
-            MenuHelper.addImageMenuItems(menu, menuFlags, false, VideoCamera.this, mHandler,
-            // Handler for deletion
-                    new Runnable() {
-                        public void run() {
-                            // What do we do here?
-                            // mContentResolver.delete(uri, null, null);
-                        }
-                    }, new MenuHelper.MenuInvoker() {
-                        public void run(final MenuHelper.MenuCallback cb) {
-                        }
-                    });
-
-            MenuItem gallery =
-                    menu.add(MenuHelper.IMAGE_SAVING_ITEM, MENU_SAVE_GALLERY_PHOTO, 0,
-                            R.string.camera_gallery_photos_text).setOnMenuItemClickListener(
-                            new MenuItem.OnMenuItemClickListener() {
-                                public boolean onMenuItemClick(MenuItem item) {
-                                    gotoGallery();
-                                    return true;
-                                }
-                            });
-            gallery.setIcon(android.R.drawable.ic_menu_gallery);
         }
         return true;
     }
