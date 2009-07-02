@@ -73,6 +73,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
 
     private ReviewImageGetter mGetter;
     private Uri mSavedUri;
+    private boolean mPaused = true;
 
     // Choices for what adjacents to load.
     private static final int[] sOrderAdjacents = new int[] {0, 1, -1};
@@ -325,14 +326,15 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                 mDeletePhotoRunnable,
                 new MenuHelper.MenuInvoker() {
                     public void run(final MenuHelper.MenuCallback cb) {
-                       setMode(MODE_NORMAL);
+                        if (mPaused) return;
+                        setMode(MODE_NORMAL);
 
-                       IImage image = mAllImages.getImageAt(mCurrentPosition);
-                       Uri uri = image.fullSizeImageUri();
-                       cb.run(uri, image);
+                        IImage image = mAllImages.getImageAt(mCurrentPosition);
+                        Uri uri = image.fullSizeImageUri();
+                        cb.run(uri, image);
 
-                       mImageView.clear();
-                       setImage(mCurrentPosition);
+                        mImageView.clear();
+                        setImage(mCurrentPosition);
                     }
                 });
 
@@ -838,6 +840,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
+        mPaused = false;
 
         init(mSavedUri, mAllImages);
 
@@ -865,6 +868,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
+        mPaused = true;
 
         mGetter.cancelCurrent();
         mGetter.stop();
