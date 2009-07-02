@@ -759,7 +759,6 @@ public class ImageGallery extends Activity implements
                 MenuHelper.MenuItemsResult r = MenuHelper.addImageMenuItems(
                         menu,
                         MenuHelper.INCLUDE_ALL,
-                        isImage,
                         ImageGallery.this,
                         mHandler,
                         mDeletePhotoRunnable,
