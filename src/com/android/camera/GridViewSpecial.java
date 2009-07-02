@@ -450,6 +450,7 @@ class GridViewSpecial extends View {
             mImageBlockManager = null;
         }
         mRunning = false;
+        mCurrentSelection = SELECT_NONE;
     }
 
     @Override
