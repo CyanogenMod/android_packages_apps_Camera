@@ -16,13 +16,13 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.ImageManager;
-import com.android.camera.Util;
-
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.android.camera.ImageManager;
+import com.android.camera.Util;
 
 import java.io.IOException;
 import java.util.Arrays;

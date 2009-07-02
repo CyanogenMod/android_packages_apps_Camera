@@ -47,7 +47,6 @@ public interface Cancelable<T> {
     /**
      * Gets the results of this <code>Cancelable</code> task.
      *
-     * @throws CancellationException if the task has been cancelled
      * @throws ExecutionException if exception is thrown during the execution of
      *         the task
      */

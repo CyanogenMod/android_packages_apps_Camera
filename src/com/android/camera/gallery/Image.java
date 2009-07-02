@@ -16,10 +16,6 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.BitmapManager;
-import com.android.camera.ExifInterface;
-import com.android.camera.Util;
-
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -32,6 +28,10 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
+
+import com.android.camera.BitmapManager;
+import com.android.camera.ExifInterface;
+import com.android.camera.Util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -166,15 +166,11 @@ public class Image extends BaseImage implements IImage {
     private class SaveImageContentsCancelable extends BaseCancelable<Void> {
         private final Bitmap mImage;
         private final byte [] mJpegData;
-        private final int mOrientation;
-        private final String mFilePath;
 
         SaveImageContentsCancelable(Bitmap image, byte[] jpegData,
                 int orientation, String filePath) {
             mImage = image;
             mJpegData = jpegData;
-            mOrientation = orientation;
-            mFilePath = filePath;
         }
 
         @Override

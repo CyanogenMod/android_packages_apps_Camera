@@ -27,12 +27,14 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 
 public class DeleteImage extends Activity {
+
+    @SuppressWarnings("unused")
     private static final String TAG = "DeleteImage";
     private ProgressBar mProgressBar;
     private ArrayList<Uri> mUriList;  // a list of image uri
     private int mIndex = 0;  // next image to delete
-    private Handler mHandler = new Handler();
-    private Runnable mDeleteNextRunnable = new Runnable() {
+    private final Handler mHandler = new Handler();
+    private final Runnable mDeleteNextRunnable = new Runnable() {
         public void run() {
             deleteNext();
         }
