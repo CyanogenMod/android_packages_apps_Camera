@@ -145,18 +145,6 @@ public class ImageLoader {
                     if (!mQueue.isEmpty()) {
                         workItem = mQueue.remove(0);
                     } else {
-                        // Calculate the time we need to be idle before we
-                        // start checking thumbnail.
-                        long t = IDLE_TIME - (System.nanoTime() - lastWorkTime);
-                        if (t > 0) {
-                            try {
-                                mQueue.wait(t / 1000000);  // in milliseconds.
-                            } catch (InterruptedException ex) {
-                                // ignore the exception
-                            }
-                            continue;
-                        }
-
                         if (!mThumbnailChecker.hasMoreThumbnailsToCheck()) {
                             try {
                                 mQueue.wait();
@@ -164,6 +152,19 @@ public class ImageLoader {
                                 // ignore the exception
                             }
                             continue;
+                        } else {
+                            // Calculate the time we need to be idle before we
+                            // start checking thumbnail.
+                            long t = IDLE_TIME - (System.nanoTime() - lastWorkTime);
+                            t = t / 1000000;  // convert to milliseconds.
+                            if (t > 0) {
+                                try {
+                                    mQueue.wait(t);
+                                } catch (InterruptedException ex) {
+                                    // ignore the exception
+                                }
+                                continue;
+                            }
                         }
                     }
                 }
