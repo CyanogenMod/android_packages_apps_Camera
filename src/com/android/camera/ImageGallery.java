@@ -251,8 +251,11 @@ public class ImageGallery extends Activity implements
         if (!canHandleEvent()) return false;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DEL:
-                MenuHelper.deleteImage(
-                        this, mDeletePhotoRunnable, getCurrentImage());
+                IImage image = getCurrentImage();
+                if (image != null) {
+                    MenuHelper.deleteImage(
+                            this, mDeletePhotoRunnable, getCurrentImage());
+                }
                 return true;
         }
         return super.onKeyDown(keyCode, event);
