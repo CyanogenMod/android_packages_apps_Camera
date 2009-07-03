@@ -179,6 +179,10 @@ public class Camera extends Activity implements View.OnClickListener,
             new RawPictureCallback();
     private final AutoFocusCallback mAutoFocusCallback =
             new AutoFocusCallback();
+    // Use the ErrorCallback to capture the crash count
+    // on the mediaserver
+    private final ErrorCallback mErrorCallback = new ErrorCallback();
+
     private long mFocusStartTime;
     private long mFocusCallbackTime;
     private long mCaptureStartTime;
@@ -194,6 +198,8 @@ public class Camera extends Activity implements View.OnClickListener,
     public long mJpegPictureCallbackTimeLag;
     public long mRawPictureAndJpegPictureCallbackTime;
 
+    //Add the media server tag
+    public static boolean mMediaServerDied = false;
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
 
@@ -507,6 +513,16 @@ public class Camera extends Activity implements View.OnClickListener,
                 // Do nothing.
             }
             updateFocusIndicator();
+        }
+    }
+
+    private final class ErrorCallback
+        implements android.hardware.Camera.ErrorCallback {
+        public void  onError(int error, android.hardware.Camera camera) {
+            if (error == android.hardware.Camera.CAMERA_ERROR_SERVER_DIED) {
+                 mMediaServerDied = true;
+                 Log.v(TAG, "media server died");
+            }
         }
     }
 
@@ -1353,6 +1369,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         // Set one shot preview callback for latency measurement.
         mCameraDevice.setOneShotPreviewCallback(mOneShotPreviewCallback);
+        mCameraDevice.setErrorCallback(mErrorCallback);
 
         try {
             Log.v(TAG, "startPreview");
