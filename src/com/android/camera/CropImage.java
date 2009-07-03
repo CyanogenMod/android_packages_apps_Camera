@@ -20,8 +20,6 @@ import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -50,14 +48,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * The activity can crop specific region of interest from an image.
  */
-public class CropImage extends Activity {
+public class CropImage extends MonitoredActivity {
     private static final String TAG = "CropImage";
-    private ProgressDialog mFaceDetectionDialog = null;
-    private ProgressDialog mSavingProgressDialog = null;
 
     // These are various options can be specified in the intent.
     private Bitmap.CompressFormat mOutputFormat =
@@ -66,6 +63,7 @@ public class CropImage extends Activity {
     private int mAspectX, mAspectY;
     private boolean mDoFaceDetection = true;
     private boolean mCircleCrop = false;
+    private final Handler mHandler = new Handler();
 
     // These options specifiy the output image size and whether we should
     // scale the output to fit it (or just crop it).
@@ -75,6 +73,7 @@ public class CropImage extends Activity {
 
     boolean mWaitingToPick; // Whether we are wait the user to pick a face.
     boolean mSaving;  // Whether the "save" button is already clicked.
+
     private CropImageView mImageView;
     private ContentResolver mContentResolver;
 
@@ -147,12 +146,6 @@ public class CropImage extends Activity {
             return;
         }
 
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
-                startFaceDetection();
-            }
-        }, 100);
-
         findViewById(R.id.discard).setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
@@ -167,22 +160,25 @@ public class CropImage extends Activity {
                         onSaveClicked();
                     }
                 });
+
+        startFaceDetection();
     }
 
     private void startFaceDetection() {
         if (isFinishing()) {
             return;
         }
-        mFaceDetectionDialog = ProgressDialog.show(CropImage.this, null,
-                getResources().getString(R.string.runningFaceDetection),
-                true, false);
+
         mImageView.setImageBitmapResetBase(mBitmap, true);
         if (mImageView.getScale() == 1F) {
             mImageView.center(true, true);
         }
 
-        Thread t = new Thread(new Runnable() {
+        Util.startBackgroundJob(this, null,
+                getResources().getString(R.string.runningFaceDetection),
+                new Runnable() {
             public void run() {
+                final CountDownLatch latch = new CountDownLatch(1);
                 final Bitmap b = (mImage != null)
                         ? mImage.fullSizeBitmap(500)
                         : mBitmap;
@@ -195,14 +191,17 @@ public class CropImage extends Activity {
                         if (mImageView.getScale() == 1F) {
                             mImageView.center(true, true);
                         }
-
-                        new Thread(mRunFaceDetection).start();
+                        latch.countDown();
                     }
                 });
+                try {
+                    latch.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                mRunFaceDetection.run();
             }
-        });
-        mDecodingThreads.add(t);
-        t.start();
+        }, mHandler);
     }
 
     private void onSaveClicked() {
@@ -294,17 +293,13 @@ public class CropImage extends Activity {
                     (new Intent()).setAction("inline-data").putExtras(extras));
             finish();
         } else {
-            mSavingProgressDialog = ProgressDialog.show(CropImage.this,
-                    null, getResources().getString(R.string.savingImage),
-                    true, true);
-
-            Runnable r = new Runnable() {
+            Util.startBackgroundJob(this, null,
+                    getResources().getString(R.string.savingImage),
+                    new Runnable() {
                 public void run() {
                     saveOutput();
                 }
-            };
-
-            new Thread(r).start();
+            }, mHandler);
         }
     }
 
@@ -375,18 +370,23 @@ public class CropImage extends Activity {
             } catch (Exception ex) {
                 // basically ignore this or put up
                 // some ui saying we failed
+                Log.e(TAG, "store image fail, continue anyway", ex);
             }
         }
         finish();
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
         BitmapManager.instance().cancelThreadDecoding(mDecodingThreads);
     }
 
-    Handler mHandler = new Handler();
+    @Override
+    protected void onDestroy() {
+        mAllImages.deactivate();
+        super.onDestroy();
+    }
 
     Runnable mRunFaceDetection = new Runnable() {
         @SuppressWarnings("hiding")
@@ -513,8 +513,6 @@ public class CropImage extends Activity {
                         mCrop.setFocus(true);
                     }
 
-                    closeProgressDialog();
-
                     if (mNumFaces > 1) {
                         Toast t = Toast.makeText(CropImage.this,
                                 R.string.multiface_crop_help,
@@ -525,29 +523,6 @@ public class CropImage extends Activity {
             });
         }
     };
-
-    @Override
-    public void onStop() {
-        closeProgressDialog();
-        super.onStop();
-        if (mAllImages != null) {
-            // TODO: This doesn't seem quite right: can we use mImage after
-            // mAllImages is deactivated?
-            mAllImages.deactivate();
-            mAllImages = null;
-        }
-    }
-
-    private void closeProgressDialog() {
-        if (mFaceDetectionDialog != null) {
-            mFaceDetectionDialog.dismiss();
-            mFaceDetectionDialog = null;
-        }
-        if (mSavingProgressDialog != null) {
-            mSavingProgressDialog.dismiss();
-            mSavingProgressDialog = null;
-        }
-    }
 }
 
 class CropImageView extends ImageViewTouchBase {
