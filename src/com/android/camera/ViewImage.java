@@ -360,14 +360,15 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 mDeletePhotoRunnable,
                 new MenuHelper.MenuInvoker() {
                     public void run(final MenuHelper.MenuCallback cb) {
-                       setMode(MODE_NORMAL);
+                        if (mPaused) return;
+                        setMode(MODE_NORMAL);
 
-                       IImage image = mAllImages.getImageAt(mCurrentPosition);
-                       Uri uri = image.fullSizeImageUri();
-                       cb.run(uri, image);
+                        IImage image = mAllImages.getImageAt(mCurrentPosition);
+                        Uri uri = image.fullSizeImageUri();
+                        cb.run(uri, image);
 
-                       mImageView.clear();
-                       setImage(mCurrentPosition);
+                        mImageView.clear();
+                        setImage(mCurrentPosition);
                     }
                 });
 
