@@ -75,13 +75,14 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
                 Thread.sleep(WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
                 //skip the first measurement
                 if (i != 0) {
-                    mTotalAutoFocusTime += Camera.mAutoFocusTime;
-                    mTotalShutterLag += Camera.mShutterLag;
+                    Camera c = getActivity();
+                    mTotalAutoFocusTime += c.mAutoFocusTime;
+                    mTotalShutterLag += c.mShutterLag;
                     mTotalShutterAndRawPictureCallbackTime +=
-                            Camera.mShutterAndRawPictureCallbackTime;
-                    mTotalJpegPictureCallbackTimeLag += Camera.mJpegPictureCallbackTimeLag;
+                            c.mShutterAndRawPictureCallbackTime;
+                    mTotalJpegPictureCallbackTimeLag += c.mJpegPictureCallbackTimeLag;
                     mTotalRawPictureAndJpegPictureCallbackTime +=
-                            Camera.mRawPictureAndJpegPictureCallbackTime;
+                            c.mRawPictureAndJpegPictureCallbackTime;
                 }
             }
         } catch (Exception e) {

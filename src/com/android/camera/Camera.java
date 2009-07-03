@@ -191,12 +191,12 @@ public class Camera extends Activity implements View.OnClickListener,
     private long mJpegPictureCallbackTime;
     private int mPicturesRemaining;
 
-    //Add the camera latency time
-    public static long mAutoFocusTime;
-    public static long mShutterLag;
-    public static long mShutterAndRawPictureCallbackTime;
-    public static long mJpegPictureCallbackTimeLag;
-    public static long mRawPictureAndJpegPictureCallbackTime;
+    // These latency time are for the CameraLatency test.
+    public long mAutoFocusTime;
+    public long mShutterLag;
+    public long mShutterAndRawPictureCallbackTime;
+    public long mJpegPictureCallbackTimeLag;
+    public long mRawPictureAndJpegPictureCallbackTime;
 
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
