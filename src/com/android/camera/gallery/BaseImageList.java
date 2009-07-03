@@ -83,6 +83,22 @@ public abstract class BaseImageList implements IImageList {
         mContentResolver = resolver;
         mCursor = createCursor();
 
+        // If the media provider is killed, we will fail to get the cursor.
+        // This is a workaround to wait a bit and retry in the hope that the
+        // new instance of media provider will be created soon enough.
+        if (mCursor == null) {
+            for (int i = 0; i < 10; i++) {
+                Log.w(TAG, "createCursor failed, retry...");
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException ex) {
+                    // ignore.
+                }
+                mCursor = createCursor();
+                if (mCursor != null) break;
+            }
+        }
+
         // TODO: We need to clear the cache because we may "reopen" the image
         // list. After we implement the image list state, we can remove this
         // kind of usage.
