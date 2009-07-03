@@ -1003,8 +1003,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 break;
             }
             case R.id.setas: {
-                Uri u = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
-                Intent intent = new Intent(Intent.ACTION_ATTACH_DATA, u);
+                IImage image = mAllImages.getImageAt(mCurrentPosition);
+                Intent intent = Util.createSetAsIntent(image);                
                 try {
                     startActivity(Intent.createChooser(
                             intent, getText(R.string.setImage)));

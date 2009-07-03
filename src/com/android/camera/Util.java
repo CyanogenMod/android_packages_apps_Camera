@@ -21,6 +21,7 @@ import com.android.camera.gallery.IImage;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -460,5 +461,14 @@ public class Util {
         ProgressDialog dialog = ProgressDialog.show(
                 activity, title, message, true, false);
         new Thread(new BackgroundJob(activity, job, dialog, handler)).start();
+    }
+
+    // Returns an intent which is used for "set as" menu items.
+    public static Intent createSetAsIntent(IImage image) {
+        Uri u = image.fullSizeImageUri();
+        Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+        intent.setDataAndType(u, image.getMimeType());
+        intent.putExtra("mimeType", image.getMimeType());
+        return intent;
     }
 }

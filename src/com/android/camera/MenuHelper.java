@@ -579,9 +579,7 @@ public class MenuHelper {
                     return;
                 }
 
-                Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
-                intent.setDataAndType(u, image.getMimeType());
-                intent.putExtra("mimeType", image.getMimeType());
+                Intent intent = Util.createSetAsIntent(image);
                 activity.startActivity(Intent.createChooser(intent,
                         activity.getText(R.string.setImage)));
             }
