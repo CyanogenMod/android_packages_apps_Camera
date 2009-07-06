@@ -16,10 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.Cancelable;
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -64,6 +60,10 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
+
+import com.android.camera.gallery.Cancelable;
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -143,6 +143,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
     private ZoomButtonsController mZoomButtons;
+    private Switcher mSwitcher;
 
     // mPostCaptureAlert, mLastPictureButton, mThumbController
     // are non-null only if isImageCaptureIntent() is true.
@@ -818,9 +819,8 @@ public class Camera extends Activity implements View.OnClickListener,
             controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
         } else {
             inflater.inflate(R.layout.camera_control, rootView);
-            Switcher switcher = ((Switcher) findViewById(R.id.camera_switch));
-            switcher.setSwitch(SWITCH_CAMERA);
-            switcher.setOnSwitchListener(this);
+            mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
+            mSwitcher.setOnSwitchListener(this);
         }
 
         // Make sure preview is started.
@@ -834,7 +834,9 @@ public class Camera extends Activity implements View.OnClickListener,
     @Override
     public void onStart() {
         super.onStart();
-
+        if (!mIsImageCaptureIntent) {
+            mSwitcher.setSwitch(SWITCH_CAMERA);
+        }
         Thread t = new Thread(new Runnable() {
             public void run() {
                 final boolean storageOK = calculatePicturesRemaining() > 0;

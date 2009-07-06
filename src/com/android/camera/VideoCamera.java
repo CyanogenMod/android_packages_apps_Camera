@@ -16,9 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -58,6 +55,9 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -144,6 +144,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
+    private Switcher mSwitcher;
     private boolean mRecordingTimeCountsDown = false;
 
     ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
@@ -251,10 +252,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mThumbController = new ThumbnailController(mLastPictureButton, mContentResolver);
             mLastPictureButton.setOnClickListener(this);
             mThumbController.loadData(ImageManager.getLastVideoThumbPath());
-
-            Switcher switcher = ((Switcher) findViewById(R.id.camera_switch));
-            switcher.setSwitch(SWITCH_VIDEO);
-            switcher.setOnSwitchListener(this);
+            mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
+            mSwitcher.setOnSwitchListener(this);
 
         } else {
             View controlBar = inflater.inflate(R.layout.attach_camera_control, rootView);
@@ -276,6 +275,14 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             startPreviewThread.join();
         } catch (InterruptedException ex) {
             // ignore
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!mIsVideoCaptureIntent) {
+            mSwitcher.setSwitch(SWITCH_VIDEO);
         }
     }
 
