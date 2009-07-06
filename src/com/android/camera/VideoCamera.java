@@ -195,7 +195,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 // SD card unavailable
                 // handled in ACTION_MEDIA_EJECT
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
-                Toast.makeText(VideoCamera.this, getResources().getString(R.string.wait), 5000);
+                Toast.makeText(VideoCamera.this,
+                        getResources().getString(R.string.wait), 5000);
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
                 updateAndShowStorageHint(true);
             }
@@ -247,18 +248,22 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         ViewGroup rootView = (ViewGroup) findViewById(R.id.video_camera);
         LayoutInflater inflater = this.getLayoutInflater();
         if (!mIsVideoCaptureIntent) {
-            View controlBar = inflater.inflate(R.layout.camera_control, rootView);
-            mLastPictureButton = (ImageView) controlBar.findViewById(R.id.review_thumbnail);
-            mThumbController = new ThumbnailController(mLastPictureButton, mContentResolver);
+            View controlBar = inflater.inflate(
+                    R.layout.camera_control, rootView);
+            mLastPictureButton =
+                    (ImageView) controlBar.findViewById(R.id.review_thumbnail);
+            mThumbController = new ThumbnailController(mLastPictureButton,
+                    mContentResolver);
             mLastPictureButton.setOnClickListener(this);
             mThumbController.loadData(ImageManager.getLastVideoThumbPath());
             mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
             mSwitcher.setOnSwitchListener(this);
-
         } else {
-            View controlBar = inflater.inflate(R.layout.attach_camera_control, rootView);
+            View controlBar = inflater.inflate(
+                    R.layout.attach_camera_control, rootView);
             controlBar.findViewById(R.id.btn_cancel).setOnClickListener(this);
-            ImageView retake = (ImageView) controlBar.findViewById(R.id.btn_retake);
+            ImageView retake =
+                    (ImageView) controlBar.findViewById(R.id.btn_retake);
             retake.setOnClickListener(this);
             retake.setImageResource(R.drawable.btn_ic_review_retake_video);
             controlBar.findViewById(R.id.btn_play).setOnClickListener(this);
@@ -292,10 +297,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         intent.setType("video/3gpp");
         intent.putExtra(Intent.EXTRA_STREAM, mCurrentVideoUri);
         try {
-            startActivity(Intent.createChooser(intent, getText(R.string.sendVideo)));
+            startActivity(Intent.createChooser(intent,
+                    getText(R.string.sendVideo)));
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(VideoCamera.this, R.string.no_way_to_share_video, Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(VideoCamera.this, R.string.no_way_to_share_video,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -423,7 +429,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (remaining == NO_STORAGE_ERROR) {
             return STORAGE_STATUS_NONE;
         }
-        return remaining < LOW_STORAGE_THRESHOLD ? STORAGE_STATUS_LOW : STORAGE_STATUS_OK;
+        return remaining < LOW_STORAGE_THRESHOLD
+                ? STORAGE_STATUS_LOW
+                : STORAGE_STATUS_OK;
     }
 
     private void readVideoSizePreference() {
@@ -438,7 +446,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         Intent intent = getIntent();
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
-            int extraVideoQuality = intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+            int extraVideoQuality =
+                    intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
             videoQualityHigh = (extraVideoQuality > 0);
         }
 
@@ -466,7 +475,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         setScreenTimeoutLong();
 
         // install an intent filter to receive SD card related events.
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
+        IntentFilter intentFilter =
+                new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_EJECT);
         intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
@@ -737,9 +747,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             if (!ImageManager.hasStorage()) {
                 return NO_STORAGE_ERROR;
             } else {
-                String storageDirectory = Environment.getExternalStorageDirectory().toString();
+                String storageDirectory =
+                        Environment.getExternalStorageDirectory().toString();
                 StatFs stat = new StatFs(storageDirectory);
-                return ((long) stat.getAvailableBlocks() * (long) stat.getBlockSize());
+                return (long) stat.getAvailableBlocks()
+                        * (long) stat.getBlockSize();
             }
         } catch (RuntimeException ex) {
             // if we can't stat the filesystem then we don't know how many
@@ -779,7 +791,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             if (saveUri != null) {
                 try {
                     mCameraVideoFileDescriptor =
-                            mContentResolver.openFileDescriptor(saveUri, "rw").getFileDescriptor();
+                            mContentResolver.openFileDescriptor(saveUri, "rw")
+                            .getFileDescriptor();
                     mCurrentVideoUri = saveUri;
                 } catch (java.io.FileNotFoundException ex) {
                     // invalid uri
@@ -825,7 +838,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // of that to make it more likely that recording can complete
         // successfully.
         try {
-            mMediaRecorder.setMaxFileSize(remaining - LOW_STORAGE_THRESHOLD / 4);
+            mMediaRecorder.setMaxFileSize(
+                    remaining - LOW_STORAGE_THRESHOLD / 4);
         } catch (RuntimeException exception) {
             // We are going to ignore failure of setMaxFileSize here, as
             // a) The composer selected may simply not support it, or
@@ -886,8 +900,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
         File cameraDir = new File(cameraDirPath);
         cameraDir.mkdirs();
-        SimpleDateFormat dateFormat =
-                new SimpleDateFormat(getString(R.string.video_file_name_format));
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                getString(R.string.video_file_name_format));
         Date date = new Date(dateTaken);
         String filepart = dateFormat.format(date);
         String filename = cameraDirPath + "/" + filepart + ".3gp";
@@ -905,8 +919,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private void registerVideo() {
         if (mCameraVideoFileDescriptor == null) {
             Uri videoTable = Uri.parse("content://media/external/video/media");
-            mCurrentVideoValues.put(Video.Media.SIZE, new File(mCurrentVideoFilename).length());
-            mCurrentVideoUri = mContentResolver.insert(videoTable, mCurrentVideoValues);
+            mCurrentVideoValues.put(Video.Media.SIZE,
+                    new File(mCurrentVideoFilename).length());
+            mCurrentVideoUri = mContentResolver.insert(videoTable,
+                    mCurrentVideoValues);
             Log.v(TAG, "Current video URI: " + mCurrentVideoUri);
         }
         mCurrentVideoValues = null;
@@ -937,45 +953,50 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         {
             MenuItem gallery =
                     menu.add(MenuHelper.IMAGE_MODE_ITEM, MENU_GALLERY_PHOTOS, 0,
-                            R.string.camera_gallery_photos_text).setOnMenuItemClickListener(
-                            new OnMenuItemClickListener() {
-                                public boolean onMenuItemClick(MenuItem item) {
-                                    gotoGallery();
-                                    return true;
-                                }
-                            });
+                    R.string.camera_gallery_photos_text)
+                    .setOnMenuItemClickListener(
+                        new OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                gotoGallery();
+                                return true;
+                            }
+                        });
             gallery.setIcon(android.R.drawable.ic_menu_gallery);
             mGalleryItems.add(gallery);
         }
         {
             MenuItem gallery =
                     menu.add(MenuHelper.VIDEO_MODE_ITEM, MENU_GALLERY_VIDEOS, 0,
-                            R.string.camera_gallery_photos_text).setOnMenuItemClickListener(
-                            new OnMenuItemClickListener() {
-                                public boolean onMenuItemClick(MenuItem item) {
-                                    gotoGallery();
-                                    return true;
-                                }
-                            });
+                    R.string.camera_gallery_photos_text)
+                    .setOnMenuItemClickListener(
+                        new OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                gotoGallery();
+                                return true;
+                            }
+                        });
             gallery.setIcon(android.R.drawable.ic_menu_gallery);
             mGalleryItems.add(gallery);
         }
 
         MenuItem item =
-                menu.add(MenuHelper.GENERIC_ITEM, MENU_SETTINGS, 0, R.string.settings)
-                        .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                            public boolean onMenuItemClick(MenuItem item) {
-                                // Keep the camera instance for a while.
-                                // This avoids re-opening the camera and saves
-                                // time.
-                                CameraHolder.instance().keep();
+                menu.add(MenuHelper.GENERIC_ITEM, MENU_SETTINGS, 0,
+                R.string.settings)
+                .setOnMenuItemClickListener(
+                    new OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            // Keep the camera instance for a while.
+                            // This avoids re-opening the camera and saves
+                            // time.
+                            CameraHolder.instance().keep();
 
-                                Intent intent = new Intent();
-                                intent.setClass(VideoCamera.this, CameraSettings.class);
-                                startActivity(intent);
-                                return true;
-                            }
-                        });
+                            Intent intent = new Intent();
+                            intent.setClass(VideoCamera.this,
+                                    CameraSettings.class);
+                            startActivity(intent);
+                            return true;
+                        }
+                    });
         item.setIcon(android.R.drawable.ic_menu_preferences);
     }
 
@@ -992,7 +1013,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
             mShutterButton.performClick();
-        } else if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
+        } else if (what
+                == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
             mShutterButton.performClick();
             updateAndShowStorageHint(true);
         }
@@ -1141,7 +1163,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 }
 
                 mCurrentVideoFilename = mCameraVideoFilename;
-                Log.v(TAG, "Setting current video filename: " + mCurrentVideoFilename);
+                Log.v(TAG, "Setting current video filename: "
+                        + mCurrentVideoFilename);
                 needToRegisterRecording = true;
                 mMediaRecorderRecording = false;
             }
@@ -1208,7 +1231,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private void updateLastVideo() {
         IImageList list =
                 ImageManager.allImages(mContentResolver, dataLocation(),
-                        ImageManager.INCLUDE_VIDEOS, ImageManager.SORT_ASCENDING,
+                        ImageManager.INCLUDE_VIDEOS,
+                        ImageManager.SORT_ASCENDING,
                         ImageManager.CAMERA_IMAGE_BUCKET_ID);
         int count = list.getCount();
         if (count > 0) {
@@ -1230,7 +1254,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         // Starting a minute before reaching the max duration
         // limit, we'll countdown the remaining time instead.
-        boolean countdownRemainingTime = (delta >= mMaxVideoDurationInMs - 60000);
+        boolean countdownRemainingTime =
+                (delta >= mMaxVideoDurationInMs - 60000);
 
         if (countdownRemainingTime) {
             delta = Math.max(0, mMaxVideoDurationInMs - delta);

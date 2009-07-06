@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.BaseCancelable;
 import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
@@ -152,7 +151,7 @@ public class ImageGallery extends Activity implements
         });
 
         Button closeButton = (Button) findViewById(R.id.button_close);
-        closeButton.setOnClickListener( new OnClickListener() {
+        closeButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 closeMultiSelectMode();
             }

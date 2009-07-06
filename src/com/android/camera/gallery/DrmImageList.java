@@ -74,9 +74,9 @@ public class DrmImageList extends ImageList implements IImageList {
     private static class DrmImage extends Image {
 
         protected DrmImage(BaseImageList container, ContentResolver cr,
-                long id, int index, Uri uri, String dataPath, long miniThumbMagic,
-                String mimeType, long dateTaken, String title,
-                String displayName, int rotation) {
+                long id, int index, Uri uri, String dataPath,
+                long miniThumbMagic, String mimeType, long dateTaken,
+                String title, String displayName, int rotation) {
             super(container, cr, id, index, uri, dataPath, miniThumbMagic,
                     mimeType, dateTaken, title, displayName, rotation);
         }

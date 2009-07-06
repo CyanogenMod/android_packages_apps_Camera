@@ -16,7 +16,6 @@
 
 package com.android.camera.gallery;
 
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 /**

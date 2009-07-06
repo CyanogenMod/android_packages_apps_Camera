@@ -1100,8 +1100,8 @@ class ImageBlockManager {
 
         // Try to cancel all pending requests for this block. After this
         // completes there could still be requests not cancelled (because it is
-        // already in progress). We deal with that situation by setting mBitmap to
-        // null in recycle() and check this in loadImageDone().
+        // already in progress). We deal with that situation by setting mBitmap
+        // to null in recycle() and check this in loadImageDone().
         private void cancelAllRequests() {
             for (int i = 0; i < mColumns; i++) {
                 int mask = (1 << i);
