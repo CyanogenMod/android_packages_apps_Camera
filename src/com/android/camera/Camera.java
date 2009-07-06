@@ -71,7 +71,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 /**
  * Activity of the Camera which used to see preview and take pictures.
@@ -107,11 +106,8 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final int MENU_SAVE_CAMERA_VIDEO_DONE = 37;
 
     private android.hardware.Camera.Parameters mParameters;
-    private int mZoomIndex = 0;  // The index of the current zoom value.
-    private String[] mZoomValues;  // All possible zoom values.
 
     // The parameter strings to communicate with camera driver.
-    public static final String PARM_ZOOM = "zoom";
     public static final String PARM_PICTURE_SIZE = "picture-size";
     public static final String PARM_JPEG_QUALITY = "jpeg-quality";
     public static final String PARM_ROTATION = "rotation";
@@ -331,75 +327,10 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    private void initializeZoom() {
-        String zoomValuesStr = mParameters.get(SUPPORTED_ZOOM);
-        if (zoomValuesStr == null) return;
-
-        mZoomValues = getZoomValues(zoomValuesStr);
-        if (mZoomValues == null) return;
-
-        mZoomButtons = new ZoomButtonsController(mSurfaceView);
-        mZoomButtons.setAutoDismissed(true);
-        mZoomButtons.setOnZoomListener(
-                new ZoomButtonsController.OnZoomListener() {
-            public void onVisibilityChanged(boolean visible) {
-                if (visible) {
-                    updateZoomButtonsEnabled();
-                }
-            }
-
-            public void onZoom(boolean zoomIn) {
-                if (zoomIn) {
-                    zoomIn();
-                } else {
-                    zoomOut();
-                }
-                updateZoomButtonsEnabled();
-            }
-        });
-    }
-
-    private void zoomIn() {
-        if (mZoomIndex < mZoomValues.length - 1) {
-            mZoomIndex++;
-            mParameters.set(PARM_ZOOM, mZoomValues[mZoomIndex]);
-            mCameraDevice.setParameters(mParameters);
-        }
-    }
-
-    private void zoomOut() {
-        if (mZoomIndex > 0) {
-            mZoomIndex--;
-            mParameters.set(PARM_ZOOM, mZoomValues[mZoomIndex]);
-            mCameraDevice.setParameters(mParameters);
-        }
-    }
-
-    private void updateZoomButtonsEnabled() {
-        mZoomButtons.setZoomInEnabled(mZoomIndex < mZoomValues.length - 1);
-        mZoomButtons.setZoomOutEnabled(mZoomIndex > 0);
-    }
-
-    private String[] getZoomValues(String zoomValuesStr) {
-        ArrayList<String> list = new ArrayList<String>();
-        String[] zoomValues = null;
-        StringTokenizer tokenizer = new StringTokenizer(zoomValuesStr, ",");
-
-        while (tokenizer.hasMoreElements()) {
-            list.add(tokenizer.nextToken());
-        }
-        if (list.size() > 0) {
-            zoomValues = list.toArray(new String[list.size()]);
-        }
-        return zoomValues;
-    }
-
-
     LocationListener [] mLocationListeners = new LocationListener[] {
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
-
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -1469,11 +1400,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
         mParameters.set(PARM_JPEG_QUALITY, jpegQuality);
-
-        // Set zoom.
-        if (mZoomValues != null) {
-            mParameters.set(PARM_ZOOM, mZoomValues[mZoomIndex]);
-        }
 
         mCameraDevice.setParameters(mParameters);
     }

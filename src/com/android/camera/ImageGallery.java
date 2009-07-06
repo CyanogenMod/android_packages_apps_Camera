@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.gallery.VideoObject;
@@ -93,8 +92,6 @@ public class ImageGallery extends Activity implements
     private GridViewSpecial mGvs;
 
     private Uri mCropResultUri;
-
-    private final PriorityTaskQueue mPriorityQueue = new PriorityTaskQueue(1);
 
     // The index of the first picture in GridViewSpecial.
     private int mSelectedIndex = GridViewSpecial.SELECT_NONE;
@@ -982,13 +979,6 @@ public class ImageGallery extends Activity implements
             }
         };
         MenuHelper.deleteMultiple(this, action);
-    }
-
-    private <T> void postBackgroundTask(String message, Cancelable<T> task) {
-        String title = getResources().getString(R.string.progress_dialog_title);
-        PriorityTask<T> pTask = PriorityTask.wrap(task);
-        Util.showProgressDialog(this, title, message, pTask);
-        mPriorityQueue.add(pTask);
     }
 
     private boolean isInMultiSelectMode() {
