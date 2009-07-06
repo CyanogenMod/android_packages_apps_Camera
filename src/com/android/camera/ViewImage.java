@@ -107,10 +107,14 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private View mNextImageView;
     private View mPrevImageView;
-    private final Animation mHideNextImageViewAnimation = new AlphaAnimation(1F, 0F);
-    private final Animation mHidePrevImageViewAnimation = new AlphaAnimation(1F, 0F);
-    private final Animation mShowNextImageViewAnimation = new AlphaAnimation(0F, 1F);
-    private final Animation mShowPrevImageViewAnimation = new AlphaAnimation(0F, 1F);
+    private final Animation mHideNextImageViewAnimation =
+            new AlphaAnimation(1F, 0F);
+    private final Animation mHidePrevImageViewAnimation =
+            new AlphaAnimation(1F, 0F);
+    private final Animation mShowNextImageViewAnimation =
+            new AlphaAnimation(0F, 1F);
+    private final Animation mShowPrevImageViewAnimation =
+            new AlphaAnimation(0F, 1F);
 
     static final int PADDING = 20;
     static final int HYSTERESIS = PADDING * 2;
@@ -372,21 +376,19 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     }
                 });
 
-        if (true) {
-            item = menu.add(Menu.CATEGORY_SECONDARY, 203, 1000,
-                    R.string.camerasettings);
-            item.setOnMenuItemClickListener(
-                    new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    Intent preferences = new Intent();
-                    preferences.setClass(ViewImage.this, GallerySettings.class);
-                    startActivity(preferences);
-                    return true;
-                }
-            });
-            item.setAlphabeticShortcut('p');
-            item.setIcon(android.R.drawable.ic_menu_preferences);
-        }
+        item = menu.add(Menu.CATEGORY_SECONDARY, 203, 1000,
+                R.string.camerasettings);
+        item.setOnMenuItemClickListener(
+                new MenuItem.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent preferences = new Intent();
+                preferences.setClass(ViewImage.this, GallerySettings.class);
+                startActivity(preferences);
+                return true;
+            }
+        });
+        item.setAlphabeticShortcut('p');
+        item.setIcon(android.R.drawable.ic_menu_preferences);
 
         // Hidden menu just so the shortcut will bring up the zoom controls
         // the string resource is a placeholder

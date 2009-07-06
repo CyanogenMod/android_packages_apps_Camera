@@ -17,8 +17,8 @@
 package com.android.camera.gallery;
 
 import com.android.camera.ExifInterface;
-import com.android.camera.Util;
 import com.android.camera.ImageManager;
+import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -417,11 +417,11 @@ public abstract class BaseImageList implements IImageList {
         return removeImage(getImageAt(i));
     }
 
-    abstract protected Cursor createCursor();
+    protected abstract Cursor createCursor();
 
-    abstract protected BaseImage loadImageFromCursor(Cursor cursor);
+    protected abstract BaseImage loadImageFromCursor(Cursor cursor);
 
-    abstract protected long getImageId(Cursor cursor);
+    protected abstract long getImageId(Cursor cursor);
 
     protected void invalidateCursor() {
         mCursor.deactivate();

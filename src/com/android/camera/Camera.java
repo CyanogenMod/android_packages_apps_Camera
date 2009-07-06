@@ -530,7 +530,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mRawPictureAndJpegPictureCallbackTime =
                 mJpegPictureCallbackTime - mRawPictureCallbackTime;
             Log.v(TAG, "mRawPictureAndJpegPictureCallbackTime = "
-                    + mRawPictureAndJpegPictureCallbackTime +"ms");
+                    + mRawPictureAndJpegPictureCallbackTime + "ms");
             mImageCapture.storeImage(jpegData, camera, mLocation);
 
             if (!mIsImageCaptureIntent) {
@@ -620,8 +620,8 @@ public class Camera extends Activity implements View.OnClickListener,
             }
         }
 
-        public void storeImage(
-                final byte[] data, android.hardware.Camera camera, Location loc) {
+        public void storeImage(final byte[] data,
+                android.hardware.Camera camera, Location loc) {
             if (!mIsImageCaptureIntent) {
                 storeImage(data, loc);
                 sendBroadcast(new Intent(
@@ -810,7 +810,7 @@ public class Camera extends Activity implements View.OnClickListener,
         mIsImageCaptureIntent = isImageCaptureIntent();
         LayoutInflater inflater = getLayoutInflater();
 
-        ViewGroup rootView =(ViewGroup) findViewById(R.id.camera);
+        ViewGroup rootView = (ViewGroup) findViewById(R.id.camera);
         if (mIsImageCaptureIntent) {
             View controlBar = inflater.inflate(
                     R.layout.attach_camera_control, rootView);
@@ -1281,7 +1281,8 @@ public class Camera extends Activity implements View.OnClickListener,
         // also take the photo.
         if (mFocusMode.equals(getString(
                 R.string.pref_camera_focusmode_value_infinity))
-                || (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)) {
+                || (mFocusState == FOCUS_SUCCESS
+                || mFocusState == FOCUS_FAIL)) {
             if (mZoomButtons != null) mZoomButtons.setVisible(false);
             mImageCapture.onSnap();
         } else if (mFocusState == FOCUSING) {

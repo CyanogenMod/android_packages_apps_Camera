@@ -107,10 +107,14 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     private View mControlBar;
     private View mNextImageView;
     private View mPrevImageView;
-    private final Animation mHideNextImageViewAnimation = new AlphaAnimation(1F, 0F);
-    private final Animation mHidePrevImageViewAnimation = new AlphaAnimation(1F, 0F);
-    private final Animation mShowNextImageViewAnimation = new AlphaAnimation(0F, 1F);
-    private final Animation mShowPrevImageViewAnimation = new AlphaAnimation(0F, 1F);
+    private final Animation mHideNextImageViewAnimation =
+            new AlphaAnimation(1F, 0F);
+    private final Animation mHidePrevImageViewAnimation =
+            new AlphaAnimation(1F, 0F);
+    private final Animation mShowNextImageViewAnimation =
+            new AlphaAnimation(0F, 1F);
+    private final Animation mShowPrevImageViewAnimation =
+            new AlphaAnimation(0F, 1F);
 
     static final int PADDING = 20;
     static final int HYSTERESIS = PADDING * 2;
@@ -338,21 +342,19 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                     }
                 });
 
-        if (true) {
-            MenuItem item = menu.add(Menu.CATEGORY_SECONDARY, 203, 1000,
-                    R.string.camerasettings);
-            item.setOnMenuItemClickListener(
-                    new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    Intent preferences = new Intent();
-                    preferences.setClass(ReviewImage.this, GallerySettings.class);
-                    startActivity(preferences);
-                    return true;
-                }
-            });
-            item.setAlphabeticShortcut('p');
-            item.setIcon(android.R.drawable.ic_menu_preferences);
-        }
+        MenuItem item = menu.add(Menu.CATEGORY_SECONDARY, 203, 1000,
+                R.string.camerasettings);
+        item.setOnMenuItemClickListener(
+                new MenuItem.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent preferences = new Intent();
+                preferences.setClass(ReviewImage.this, GallerySettings.class);
+                startActivity(preferences);
+                return true;
+            }
+        });
+        item.setAlphabeticShortcut('p');
+        item.setIcon(android.R.drawable.ic_menu_preferences);
 
         // Hidden menu just so the shortcut will bring up the zoom controls
         // the string resource is a placeholder
@@ -541,8 +543,8 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         }
 
         int[] pickIds = {R.id.attach, R.id.cancel};
-        int[] reviewIds = {R.id.btn_delete, R.id.btn_share, R.id.btn_set_as, R.id.btn_play,
-                R.id.btn_done};
+        int[] reviewIds = {R.id.btn_delete, R.id.btn_share, R.id.btn_set_as,
+                R.id.btn_play, R.id.btn_done};
         int[] connectIds = isPickIntent() ? pickIds : reviewIds;
         for (int id : connectIds) {
             View view = mControlBar.findViewById(id);

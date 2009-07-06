@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2009 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.android.camera;
 
 import android.os.Handler;
@@ -24,9 +40,9 @@ import static com.android.camera.Util.Assert;
 public class CameraHolder {
     private static final String TAG = "CameraHolder";
     private android.hardware.Camera mCameraDevice;
-    private long keepBeforeTime = 0;  // Keep the Camera before this time.
+    private long mKeepBeforeTime = 0;  // Keep the Camera before this time.
     private Handler mHandler;
-    private int users = 0;  // number of open() - number of release()
+    private int mUsers = 0;  // number of open() - number of release()
 
     // Use a singleton.
     private static CameraHolder sHolder;
@@ -60,7 +76,7 @@ public class CameraHolder {
     }
 
     public synchronized android.hardware.Camera open() {
-        Assert(users == 0);
+        Assert(mUsers == 0);
         if (mCameraDevice == null) {
             mCameraDevice = android.hardware.Camera.open();
         } else {
@@ -70,26 +86,26 @@ public class CameraHolder {
                 Log.e(TAG, "reconnect failed.");
             }
         }
-        ++users;
+        ++mUsers;
         mHandler.removeMessages(RELEASE_CAMERA);
-        keepBeforeTime = 0;
+        mKeepBeforeTime = 0;
         return mCameraDevice;
     }
 
     public synchronized void release() {
-        Assert(users == 1);
-        --users;
+        Assert(mUsers == 1);
+        --mUsers;
         mCameraDevice.stopPreview();
         releaseCamera();
     }
 
     private synchronized void releaseCamera() {
-        Assert(users == 0);
+        Assert(mUsers == 0);
         Assert(mCameraDevice != null);
         long now = System.currentTimeMillis();
-        if (now < keepBeforeTime) {
+        if (now < mKeepBeforeTime) {
             mHandler.sendEmptyMessageDelayed(RELEASE_CAMERA,
-                    keepBeforeTime - now);
+                    mKeepBeforeTime - now);
             return;
         }
         mCameraDevice.release();
@@ -97,11 +113,11 @@ public class CameraHolder {
     }
 
     public synchronized void keep() {
-        // We allow (users == 0) for the convenience of the calling activity.
+        // We allow (mUsers == 0) for the convenience of the calling activity.
         // The activity may not have a chance to call open() before the user
         // choose the menu item to switch to another activity.
-        Assert(users == 1 || users == 0);
+        Assert(mUsers == 1 || mUsers == 0);
         // Keep the camera instance for 3 seconds.
-        keepBeforeTime = System.currentTimeMillis() + 3000;
+        mKeepBeforeTime = System.currentTimeMillis() + 3000;
     }
 }

@@ -23,7 +23,6 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -174,7 +173,7 @@ public class ImageListUber implements IImageList {
             mSkipCounts[which] += offset;
         }
 
-        for (;true; ++skipCount) {
+        for (; true; ++skipCount) {
             MergeSlot slot = nextMergeSlot();
             if (slot == null) return null;
             if (skipCount == index) {
@@ -191,7 +190,7 @@ public class ImageListUber implements IImageList {
         if (slot == null) return null;
         if (slot.mListIndex == mLastListIndex) {
             int lastIndex = mSkipListSize - 1;
-            ++ mSkipList[lastIndex];
+            ++mSkipList[lastIndex];
         } else {
             mLastListIndex = slot.mListIndex;
             if (mSkipList.length == mSkipListSize) {
@@ -274,7 +273,7 @@ public class ImageListUber implements IImageList {
             skipCount += offset;
         }
 
-        for (;true; ++skipCount) {
+        for (; true; ++skipCount) {
             MergeSlot slot = nextMergeSlot();
             if (slot == null) return -1;
             if (slot.mImage == image) {

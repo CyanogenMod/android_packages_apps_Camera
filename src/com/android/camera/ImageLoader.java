@@ -130,7 +130,7 @@ public class ImageLoader {
         // may be a short period of time when the queue is empty while
         // ImageBlockManager is calculating what to load next.
         private static final long IDLE_TIME = 1000000000;  // in nanoseconds.
-        private long lastWorkTime = System.nanoTime();
+        private long mLastWorkTime = System.nanoTime();
 
         // Pick off items on the queue, one by one, and compute their bitmap.
         // Place the resulting bitmap in the cache, then call back by executing
@@ -155,7 +155,8 @@ public class ImageLoader {
                         } else {
                             // Calculate the time we need to be idle before we
                             // start checking thumbnail.
-                            long t = IDLE_TIME - (System.nanoTime() - lastWorkTime);
+                            long t = IDLE_TIME -
+                                    (System.nanoTime() - mLastWorkTime);
                             t = t / 1000000;  // convert to milliseconds.
                             if (t > 0) {
                                 try {
@@ -183,7 +184,7 @@ public class ImageLoader {
                     workItem.mOnLoadedRunnable.run(b);
                 }
 
-                lastWorkTime = System.nanoTime();
+                mLastWorkTime = System.nanoTime();
             }
         }
     }

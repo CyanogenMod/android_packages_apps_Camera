@@ -293,7 +293,8 @@ public class MenuHelper {
         hideDetailsRow(d, R.id.details_location_row);
     }
 
-    private static void showExifInformation(IImage image, View d, Activity activity) {
+    private static void showExifInformation(IImage image, View d,
+            Activity activity) {
         HashMap<String, String> exifData = getExifData(image);
         if (exifData == null) {
             hideExifInformation(d);
@@ -740,7 +741,8 @@ public class MenuHelper {
             deleteItem.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
-                            return onDeleteClicked(onInvoke, activity, onDelete);
+                            return onDeleteClicked(onInvoke, activity,
+                                    onDelete);
                         }
                     })
                     .setAlphabeticShortcut('d')
@@ -778,7 +780,8 @@ public class MenuHelper {
                     return onViewPlayClicked(onInvoke, activity);
                 }
             });
-            videoPlayItem.setIcon(com.android.internal.R.drawable.ic_menu_play_clip);
+            videoPlayItem.setIcon(
+                    com.android.internal.R.drawable.ic_menu_play_clip);
             requiresVideoItems.add(videoPlayItem);
         }
 
