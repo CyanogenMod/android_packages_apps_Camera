@@ -16,7 +16,6 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.ExifInterface;
 import com.android.camera.ImageManager;
 import com.android.camera.Util;
 
@@ -26,6 +25,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Parcel;
 import android.provider.BaseColumns;
@@ -200,10 +200,7 @@ public abstract class BaseImageList implements IImageList {
     private Bitmap createThumbnailFromEXIF(String filePath, long id) {
         if (filePath == null) return null;
 
-        byte [] thumbData = null;
-        synchronized (ExifInterface.class) {
-            thumbData = (new ExifInterface(filePath)).getThumbnail();
-        }
+        byte [] thumbData = ExifInterface.getExifThumbnail(filePath);
         if (thumbData == null) return null;
 
         // Sniff the size of the EXIF thumbnail before decoding it. Photos

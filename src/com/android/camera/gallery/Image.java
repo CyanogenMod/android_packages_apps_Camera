@@ -16,22 +16,22 @@
 
 package com.android.camera.gallery;
 
+import com.android.camera.BitmapManager;
+import com.android.camera.Util;
+
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
-
-import com.android.camera.BitmapManager;
-import com.android.camera.ExifInterface;
-import com.android.camera.Util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -46,7 +46,6 @@ public class Image extends BaseImage implements IImage {
 
     private HashMap<String, String> mExifData;
 
-    private ExifInterface mExif;
     private int mRotation;
 
     public Image(BaseImageList container, ContentResolver cr,
@@ -189,15 +188,12 @@ public class Image extends BaseImage implements IImage {
     }
 
     private void loadExifData() {
-        mExif = new ExifInterface(mDataPath);
-        if (mExifData == null) {
-            mExifData = mExif.getAttributes();
-        }
+        mExifData = ExifInterface.loadExifData(mDataPath);
     }
 
     private void saveExifData() {
-        if (mExif != null && mExifData != null) {
-            mExif.saveAttributes(mExifData);
+        if (mExifData != null) {
+            ExifInterface.saveExifData(mDataPath, mExifData);
         }
     }
 
