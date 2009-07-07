@@ -37,12 +37,12 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.provider.MediaStore;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -256,11 +256,7 @@ public class GalleryPicker extends Activity {
         abortWorker();
 
         unregisterReceiver(mReceiver);
-
-        if (mDbObserver != null) {
-            getContentResolver().unregisterContentObserver(mDbObserver);
-            mDbObserver = null;
-        }
+        getContentResolver().unregisterContentObserver(mDbObserver);
 
         // free up some ram
         mAdapter = null;
