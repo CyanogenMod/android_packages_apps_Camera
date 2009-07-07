@@ -660,7 +660,7 @@ public class ImageGallery extends Activity implements
             if (mMultiSelected != null) {
                 int original = mMultiSelected.size();
                 if (!mMultiSelected.add(img)) mMultiSelected.remove(img);
-                mGvs.invalidateImage(index);
+                mGvs.invalidate();
                 if (original == 0) showFooter();
                 if (mMultiSelected.size() == 0) hideFooter();
                 return;
@@ -915,7 +915,14 @@ public class ImageGallery extends Activity implements
             overlay.setBounds(mSrcRect);
             overlay.draw(canvas);
         }
+    }
 
+    public boolean needsDecoration() {
+        return (mMultiSelected != null);
+    }
+    
+    public void drawDecoration(Canvas canvas, IImage image,
+            int xPos, int yPos, int w, int h) {
         if (mMultiSelected != null) {
             initializeMultiSelectDrawables();
 
@@ -1016,13 +1023,13 @@ public class ImageGallery extends Activity implements
     private void closeMultiSelectMode() {
         if (mMultiSelected == null) return;
         mMultiSelected = null;
-        mGvs.invalidateAllImages();
+        mGvs.invalidate();
         hideFooter();
     }
 
     private void openMultiSelectMode() {
         if (mMultiSelected != null) return;
         mMultiSelected = new HashSet<IImage>();
-        mGvs.invalidateAllImages();
+        mGvs.invalidate();
     }
 }
