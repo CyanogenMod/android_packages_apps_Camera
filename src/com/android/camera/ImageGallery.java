@@ -34,6 +34,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -77,13 +78,30 @@ public class ImageGallery extends Activity implements
     public static final int CROP_MSG = 2;
 
     private Dialog mMediaScanningDialog;
-
     private MenuItem mSlideShowItem;
     private SharedPreferences mPrefs;
     private long mVideoSizeLimit = Long.MAX_VALUE;
     private View mFooterOrganizeView;
 
     private BroadcastReceiver mReceiver = null;
+    private class CameraContentObserver extends ContentObserver {
+        private long mLastDbUpdateTime = 0;
+        public CameraContentObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            long now = System.currentTimeMillis();
+            // To avoid frequent rebake.
+            if (now - mLastDbUpdateTime > 3000) {
+                rebake(false, ImageManager.isMediaScannerScanning(
+                        getContentResolver()));
+                mLastDbUpdateTime = now;
+            }
+        }
+    }
+    private ContentObserver mDbObserver = null;
 
     private final Handler mHandler = new Handler();
     private boolean mLayoutComplete;
@@ -349,6 +367,11 @@ public class ImageGallery extends Activity implements
 
         mLoader.stop();
 
+        if (mDbObserver != null) {
+            getContentResolver().unregisterContentObserver(mDbObserver);
+            mDbObserver = null;
+        }
+
         mGvs.stop();
 
         if (mReceiver != null) {
@@ -369,11 +392,15 @@ public class ImageGallery extends Activity implements
             mAllImages.deactivate();
             mAllImages = null;
         }
+
         if (mMediaScanningDialog != null) {
             mMediaScanningDialog.cancel();
             mMediaScanningDialog = null;
         }
-        if (scanning) {
+
+        mAllImages = allImages(!unmounted && !scanning);
+
+        if (scanning && (mAllImages.getCount() == 0)) {
             mMediaScanningDialog = ProgressDialog.show(
                     this,
                     null,
@@ -382,7 +409,6 @@ public class ImageGallery extends Activity implements
                     true);
         }
 
-        mAllImages = allImages(!unmounted && !scanning);
         mGvs.setImageList(mAllImages);
         mGvs.setDrawAdapter(this);
         mGvs.setLoader(mLoader);
@@ -442,12 +468,8 @@ public class ImageGallery extends Activity implements
                     // TODO also listen for the media scanner finished message
                 } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                     // SD card unavailable
-                    Toast.makeText(ImageGallery.this,
-                            getResources().getString(R.string.wait), 5000);
                     rebake(true, false);
                 } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
-                    Toast.makeText(ImageGallery.this,
-                            getResources().getString(R.string.wait), 5000);
                     rebake(false, true);
                 } else if (action.equals(
                         Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
@@ -458,6 +480,12 @@ public class ImageGallery extends Activity implements
             }
         };
         registerReceiver(mReceiver, intentFilter);
+
+        mDbObserver = new CameraContentObserver(mHandler);
+        getContentResolver().registerContentObserver(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                true, mDbObserver);
+
         rebake(false, ImageManager.isMediaScannerScanning(
                 getContentResolver()));
     }
