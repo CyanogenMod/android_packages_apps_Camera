@@ -60,6 +60,9 @@ class GridViewSpecial extends View {
     public static interface DrawAdapter {
         public void drawImage(Canvas canvas, IImage image,
                 Bitmap b, int xPos, int yPos, int w, int h);
+        public void drawDecoration(Canvas canvas, IImage image,
+                int xPos, int yPos, int w, int h);
+        public boolean needsDecoration();
     }
 
     public static final int ORIGINAL_SELECT = -2;
@@ -349,16 +352,6 @@ class GridViewSpecial extends View {
         return mCurrentSelection;
     }
 
-    public void invalidateImage(int index) {
-        if (!canHandleEvent()) return;
-        mImageBlockManager.invalidateImage(index);
-    }
-
-    public void invalidateAllImages() {
-        if (!canHandleEvent()) return;
-        mImageBlockManager.invalidateAllImages();
-    }
-
     /**
      *
      * @param newSel ORIGINAL_SELECT (-2) means use old selection,
@@ -458,6 +451,7 @@ class GridViewSpecial extends View {
         super.onDraw(canvas);
         if (!canHandleEvent()) return;
         mImageBlockManager.doDraw(canvas, getWidth(), getHeight(), mScrollY);
+        paintDecoration(canvas);
         paintSelection(canvas);
         moveDataWindow();
     }
@@ -625,6 +619,43 @@ class GridViewSpecial extends View {
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    private void paintDecoration(Canvas canvas) {
+        if (!mDrawAdapter.needsDecoration()) return;
+
+        // Calculate visible region according to scroll position.
+        int startRow = (mScrollY - mSpec.mCellSpacing) / mBlockHeight;
+        int endRow = (mScrollY + getHeight() - mSpec.mCellSpacing - 1)
+                / mBlockHeight + 1;
+
+        // Limit startRow and endRow to the valid range.
+        // Make sure we handle the mRows == 0 case right.
+        startRow = Math.max(Math.min(startRow, mRows - 1), 0);
+        endRow = Math.max(Math.min(endRow, mRows), 0);
+
+        int startIndex = startRow * mColumns;
+        int endIndex = Math.min(endRow * mColumns, mCount);
+
+        int xPos = mSpec.mLeftEdgePadding;
+        int yPos = mSpec.mCellSpacing + startRow * mBlockHeight;
+        int off = 0;
+        for (int i = startIndex; i < endIndex; i++) {
+            IImage image = mAllImages.getImageAt(i);
+
+            mDrawAdapter.drawDecoration(canvas, image, xPos, yPos,
+                    mSpec.mCellWidth, mSpec.mCellHeight);
+
+            // Calculate next position
+            off += 1;
+            if (off == mColumns) {
+                xPos = mSpec.mLeftEdgePadding;
+                yPos += mBlockHeight;
+                off = 0;
+            } else {
+                xPos += mSpec.mCellWidth + mSpec.mCellSpacing;
+            }
+        }
     }
 
     private void paintSelection(Canvas canvas) {
@@ -812,26 +843,6 @@ class ImageBlockManager {
             }
         }
         return mCache.remove(bestIndex);
-    }
-
-    // invalidateAllImages and invalidateImage causes bitmaps in the blocks
-    // to be re-drawn. This is used to draw the check mark for multiselect.
-    public void invalidateAllImages() {
-        for (ImageBlock blk : mCache.values()) {
-            blk.invalidate();
-        }
-        startLoading();
-    }
-
-    public void invalidateImage(int index) {
-        int row = index / mColumns;
-        int col = index - (row * mColumns);
-        ImageBlock blk = mCache.get(row);
-        if (blk == null) return;
-        if ((blk.mCompletedMask & (1 << col)) != 0) {
-            blk.mCompletedMask &= ~(1 << col);
-        }
-        startLoading();
     }
 
     // After calling recycle(), the instance should not be used anymore.
