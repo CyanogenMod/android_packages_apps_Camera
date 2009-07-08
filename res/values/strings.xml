@@ -572,4 +572,7 @@
     <!-- The messsage shown on progress dialog when deleting images -->
     <string name="delete_images_message">Deleting images, please wait\u2026</string>
 
+    <!-- The messsage shown when video record reaches size limit. -->
+    <string name="video_reach_size_limit">Size limit reached.</string>
+
 </resources>

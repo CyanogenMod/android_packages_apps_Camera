@@ -133,7 +133,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     // The video frame size we will record (like 352x288).
     private int mVideoWidth, mVideoHeight;
 
-    // The video duration limit.
+    // The video duration limit. 0 menas no limit.
     private int mMaxVideoDurationInMs;
 
     boolean mPausing = false;
@@ -439,16 +439,23 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 getBooleanPreference(CameraSettings.KEY_VIDEO_QUALITY,
                         CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
 
-        // 1 minute = 60000ms
-        mMaxVideoDurationInMs =
-                60000 * getIntPreference(CameraSettings.KEY_VIDEO_DURATION,
-                        CameraSettings.DEFAULT_VIDEO_DURATION_VALUE);
-
+        // Set video quality.
         Intent intent = getIntent();
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
             int extraVideoQuality =
                     intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
             videoQualityHigh = (extraVideoQuality > 0);
+        }
+
+        // Set video duration limit.
+        if (intent.hasExtra(MediaStore.EXTRA_SIZE_LIMIT)) {
+            // No duration limit if file size limit is requested.
+            mMaxVideoDurationInMs = 0;
+        } else {
+            // 1 minute = 60000ms
+            mMaxVideoDurationInMs =
+                    60000 * getIntPreference(CameraSettings.KEY_VIDEO_DURATION,
+                            CameraSettings.DEFAULT_VIDEO_DURATION_VALUE);
         }
 
         if (videoQualityHigh) {
@@ -786,6 +793,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         Intent intent = getIntent();
         Bundle myExtras = intent.getExtras();
 
+        long requestedSizeLimit = 0;
         if (mIsVideoCaptureIntent && myExtras != null) {
             Uri saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
             if (saveUri != null) {
@@ -799,6 +807,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     Log.e(TAG, ex.toString());
                 }
             }
+            requestedSizeLimit = myExtras.getLong(MediaStore.EXTRA_SIZE_LIMIT);
         }
         releaseMediaRecorder();
 
@@ -833,13 +842,17 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
 
-        long remaining = getAvailableStorage();
+        // Set maximum file size.
         // remaining >= LOW_STORAGE_THRESHOLD at this point, reserve a quarter
         // of that to make it more likely that recording can complete
         // successfully.
+        long maxFileSize = getAvailableStorage() - LOW_STORAGE_THRESHOLD / 4;
+        if (requestedSizeLimit > 0 && requestedSizeLimit < maxFileSize) {
+            maxFileSize = requestedSizeLimit;
+        }
+
         try {
-            mMediaRecorder.setMaxFileSize(
-                    remaining - LOW_STORAGE_THRESHOLD / 4);
+            mMediaRecorder.setMaxFileSize(maxFileSize);
         } catch (RuntimeException exception) {
             // We are going to ignore failure of setMaxFileSize here, as
             // a) The composer selected may simply not support it, or
@@ -1016,7 +1029,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         } else if (what
                 == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
             mShutterButton.performClick();
-            updateAndShowStorageHint(true);
+            // Show the toast.
+            Toast.makeText(VideoCamera.this, R.string.video_reach_size_limit,
+                           Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1254,8 +1269,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         // Starting a minute before reaching the max duration
         // limit, we'll countdown the remaining time instead.
-        boolean countdownRemainingTime =
-                (delta >= mMaxVideoDurationInMs - 60000);
+        boolean countdownRemainingTime = (mMaxVideoDurationInMs != 0 
+                && delta >= mMaxVideoDurationInMs - 60000);
 
         if (countdownRemainingTime) {
             delta = Math.max(0, mMaxVideoDurationInMs - delta);
