@@ -176,14 +176,19 @@ public abstract class BaseImage implements IImage {
 
     private class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
         private final ParcelFileDescriptor mPFD;
-        private final BitmapFactory.Options mOptions =
-                new BitmapFactory.Options();
         private final int mTargetWidthHeight;
+        private BitmapFactory.Options mOptions;
 
         public LoadBitmapCancelable(
-                ParcelFileDescriptor pfdInput, int targetWidthHeight) {
+                ParcelFileDescriptor pfdInput, int targetWidthHeight,
+                BitmapFactory.Options options) {
             mPFD = pfdInput;
             mTargetWidthHeight = targetWidthHeight;
+            if (options != null) {
+                 mOptions = options;
+            } else {
+                 mOptions = new BitmapFactory.Options();
+            }
         }
 
         @Override
@@ -213,11 +218,12 @@ public abstract class BaseImage implements IImage {
     }
 
     public Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthHeight) {
+            int targetWidthHeight, BitmapFactory.Options options) {
         try {
             ParcelFileDescriptor pfdInput = mContentResolver
                     .openFileDescriptor(mUri, "r");
-            return new LoadBitmapCancelable(pfdInput, targetWidthHeight);
+            return new LoadBitmapCancelable(pfdInput,
+                    targetWidthHeight, options);
         } catch (FileNotFoundException ex) {
             return null;
         } catch (UnsupportedOperationException ex) {

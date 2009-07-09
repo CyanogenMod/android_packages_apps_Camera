@@ -438,12 +438,12 @@ public class ReviewImage extends Activity implements View.OnClickListener {
             }
 
             public int fullImageSizeToUse(int pos, int offset) {
-                // TODO
                 // this number should be bigger so that we can zoom.  we may
                 // need to get fancier and read in the fuller size image as the
-                // user starts to zoom.  use -1 to get the full full size image.
-                // for now use 480 so we don't run out of memory
-                final int imageViewSize = 480;
+                // user starts to zoom.
+                // Originally the value is set to 480 in order to avoid OOM.
+                // Now we set it to 2048 because of using purgeable Bitmaps.
+                final int imageViewSize = 2048;
                 return imageViewSize;
             }
 
@@ -1023,6 +1023,9 @@ class ReviewImageGetter {
     @SuppressWarnings("unused")
     private static final String TAG = "ImageGetter";
 
+    // The delay in msec between decoding a thumbnail and a full size image.
+    private static final int delayOfDecodingFullSizeImage = 1000;
+
     // The thread which does the work.
     private final Thread mGetterThread;
 
@@ -1140,7 +1143,8 @@ class ReviewImageGetter {
                                         lastPosition, offset);
                                 if (image != null && !isCanceled()) {
                                     mLoad = image.fullSizeBitmapCancelable(
-                                            sizeToUse);
+                                            sizeToUse,
+                                            Util.createPurgeableOption());
                                 }
                                 if (mLoad != null) {
                                     // The return value could be null if the
@@ -1164,7 +1168,9 @@ class ReviewImageGetter {
                                                     lastPosition, offset,
                                                     false, b);
                                             mViewImage.mHandler
-                                                    .postGetterCallback(cb);
+                                                    .postDelayedGetterCallback(
+                                                    cb,
+                                                    delayOfDecodingFullSizeImage);
                                         }
                                     }
                                 }

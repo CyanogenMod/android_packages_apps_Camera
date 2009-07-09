@@ -1,6 +1,7 @@
 package com.android.camera.gallery;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import java.io.InputStream;
@@ -23,7 +24,8 @@ public class MockImage implements IImage {
         return null;
     }
 
-    public Cancelable<Bitmap> fullSizeBitmapCancelable(int targetWidthOrHeight) {
+    public Cancelable<Bitmap> fullSizeBitmapCancelable(int targetWidthOrHeight,
+            BitmapFactory.Options options) {
         return null;
     }
 

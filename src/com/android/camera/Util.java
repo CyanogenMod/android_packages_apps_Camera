@@ -471,4 +471,12 @@ public class Util {
         intent.putExtra("mimeType", image.getMimeType());
         return intent;
     }
+
+    // Returns Options that set the puregeable flag for Bitmap decode.
+    public static BitmapFactory.Options createPurgeableOption() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+        return options;
+    }
 }
