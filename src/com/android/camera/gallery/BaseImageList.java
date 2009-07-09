@@ -188,7 +188,11 @@ public abstract class BaseImageList implements IImageList {
         values.put(Thumbnails.IMAGE_ID, imageId);
         values.put(Thumbnails.HEIGHT, height);
         values.put(Thumbnails.WIDTH, width);
-        return mContentResolver.insert(mThumbUri, values);
+        try {
+            return mContentResolver.insert(mThumbUri, values);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     private static final Random sRandom =
@@ -212,8 +216,12 @@ public abstract class BaseImageList implements IImageList {
         int width = options.outWidth;
         int height = options.outHeight;
         if (width >= IImage.THUMBNAIL_TARGET_SIZE
-                && height >= IImage.THUMBNAIL_TARGET_SIZE
-                && storeThumbnail(thumbData, id, width, height)) {
+                && height >= IImage.THUMBNAIL_TARGET_SIZE) {
+            
+            // We do not check the return value of storeThumbnail because
+            // we should return the mini thumb even if the storing fails.
+            storeThumbnail(thumbData, id, width, height);
+
             // this is used for *encoding* the minithumb, so
             // we don't want to dither or convert to 565 here.
             //
@@ -264,7 +272,7 @@ public abstract class BaseImageList implements IImageList {
      *         thumbnail even if the sdcard is full.
      * @throws IOException
      */
-    public long checkThumbnail(BaseImage existingImage,
+    public void checkThumbnail(BaseImage existingImage,
             byte[][] createdThumbnailData) throws IOException {
         long magic, id;
 
@@ -273,8 +281,8 @@ public abstract class BaseImageList implements IImageList {
 
         if (magic != 0) {
             long fileMagic = mMiniThumbFile.getMagic(id);
-            if (fileMagic == magic && magic != 0 && magic != id) {
-                return magic;
+            if (fileMagic == magic) {
+                return;
             }
         }
 
@@ -311,6 +319,8 @@ public abstract class BaseImageList implements IImageList {
             if (createdThumbnailData != null) {
                 createdThumbnailData[0] = data;
             }
+
+            // This could throw IOException.
             saveMiniThumbToFile(data, id, magic);
         }
 
@@ -319,7 +329,6 @@ public abstract class BaseImageList implements IImageList {
         mContentResolver.update(
                 existingImage.fullSizeImageUri(), values, null, null);
         existingImage.mMiniThumbMagic = magic;
-        return magic;
     }
 
     // TODO: Change public to protected

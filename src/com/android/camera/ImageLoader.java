@@ -297,10 +297,12 @@ class ThumbnailChecker {
             Log.e(TAG, "Failed to check thumbnail..."
                     + " was the sd card removed? - " + ex.getMessage());
             stopCheckingThumbnails();
+            return;
         }
 
         if (!mThumbCheckCallback.checking(mNextToCheck, mTotalToCheck)) {
             stopCheckingThumbnails();
+            return;
         }
 
         mNextToCheck++;
