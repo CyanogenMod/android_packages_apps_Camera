@@ -297,20 +297,21 @@ public abstract class BaseImage implements IImage {
     public Bitmap miniThumbBitmap() {
         try {
             long id = mId;
-            long dbMagic = mMiniThumbMagic;
-            if (dbMagic == 0 || dbMagic == id) {
-                dbMagic = ((BaseImageList)
-                        getContainer()).checkThumbnail(this, null);
-            }
 
             synchronized (sMiniThumbData) {
-                dbMagic = mMiniThumbMagic;
-                byte [] data = mContainer.getMiniThumbFromFile(id,
-                        sMiniThumbData, dbMagic);
+                byte [] data = null;
+                
+                // Try to get it from the file.
+                if (mMiniThumbMagic != 0) {
+                    data = mContainer.getMiniThumbFromFile(id, sMiniThumbData,
+                            mMiniThumbMagic);
+                }
+
+                // If it does not exist, try to create the thumbnail
                 if (data == null) {
                     byte[][] createdThumbData = new byte[1][];
                     try {
-                        dbMagic = ((BaseImageList) getContainer())
+                        ((BaseImageList) getContainer())
                                 .checkThumbnail(this, createdThumbData);
                     } catch (IOException ex) {
                         // Typically IOException because the sd card is full.
@@ -319,13 +320,11 @@ public abstract class BaseImage implements IImage {
                     }
                     data = createdThumbData[0];
                 }
+
                 if (data == null) {
-                    data = mContainer.getMiniThumbFromFile(id, sMiniThumbData,
-                            dbMagic);
+                    // Unable to get mini-thumb.
                 }
-                if (data == null) {
-                    // Unable to get mini-thumb data from file.
-                }
+
                 if (data != null) {
                     Bitmap b = BitmapFactory.decodeByteArray(data, 0,
                             data.length);

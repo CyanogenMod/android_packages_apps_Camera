@@ -79,7 +79,13 @@ class MiniThumbFile {
             try {
                 mMiniThumbFile = new RandomAccessFile(f, "rw");
             } catch (IOException ex) {
-                // ignore exception
+                // Open as read-only so we can at least read the existing
+                // thumbnails.
+                try {
+                    mMiniThumbFile = new RandomAccessFile(f, "r");
+                } catch (IOException ex2) {
+                    // ignore exception
+                }
             }
         }
         return mMiniThumbFile;
