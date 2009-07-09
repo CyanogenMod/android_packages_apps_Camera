@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.location.Address;
 import android.location.Geocoder;
+import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
@@ -162,32 +163,9 @@ public class MenuHelper {
         d.findViewById(rowId).setVisibility(View.GONE);
     }
 
-    private static float[] getLatLng(HashMap<String, String> exifData) {
-        if (exifData == null) {
-            return null;
-        }
-
-        String latValue = exifData.get(ExifInterface.TAG_GPS_LATITUDE);
-        String latRef = exifData.get(ExifInterface.TAG_GPS_LATITUDE_REF);
-        String lngValue = exifData.get(ExifInterface.TAG_GPS_LONGITUDE);
-        String lngRef = exifData.get(ExifInterface.TAG_GPS_LONGITUDE_REF);
-        float[] latlng = null;
-
-        if (latValue != null && latRef != null
-                && lngValue != null && lngRef != null) {
-            latlng = new float[2];
-            latlng[0] = ExifInterface.convertRationalLatLonToFloat(
-                    latValue, latRef);
-            latlng[1] = ExifInterface.convertRationalLatLonToFloat(
-                    lngValue, lngRef);
-        }
-
-        return latlng;
-    }
-
     private static void setLatLngDetails(View d, Activity context,
             HashMap<String, String> exifData) {
-        float[] latlng = getLatLng(exifData);
+        float[] latlng = ExifInterface.getLatLng(exifData);
         if (latlng != null) {
             setDetailsValue(d, String.valueOf(latlng[0]),
                     R.id.details_latitude_value);
@@ -240,12 +218,7 @@ public class MenuHelper {
             return null;
         }
 
-        ExifInterface exif = new ExifInterface(image.getDataPath());
-        HashMap<String, String> exifData = null;
-        if (exif != null) {
-            exifData = exif.getAttributes();
-        }
-        return exifData;
+        return ExifInterface.loadExifData(image.getDataPath());
     }
     // Called when "Show on Maps" is clicked.
     // Displays image location on Google Maps for further operations.
@@ -257,7 +230,7 @@ public class MenuHelper {
                 if (image == null) {
                     return;
                 }
-                float[] latlng = getLatLng(getExifData(image));
+                float[] latlng = ExifInterface.getLatLng(getExifData(image));
                 if (latlng == null) {
                     handler.post(new Runnable() {
                         public void run() {
@@ -809,7 +782,7 @@ public class MenuHelper {
 
                 list = ImageManager.isVideo(image) ? enableList : disableList;
                 list.addAll(requiresVideoItems);
-                
+
                 for (MenuItem item : enableList) {
                     item.setVisible(true);
                     item.setEnabled(true);
