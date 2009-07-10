@@ -434,7 +434,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
 
         Uri uri = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
-        MenuHelper.enableShareMenuItem(menu, !MenuHelper.isMMSUri(uri));
+        MenuHelper.enableShareMenuItem(menu, MenuHelper.isWhiteListUri(uri));
 
         return true;
     }
@@ -581,13 +581,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
             return;
         }
 
-        // We don't show action icons for MMS uri because we don't have
-        // delete and share action icons for MMS. It is obvious that we don't
-        // need the "delete" action, but for the share part, although we get
-        // read permission (for the image) from the MMS application, we cannot
-        // pass the permission to other activities due to the current framework
-        // design.
-        if (MenuHelper.isMMSUri(uri)) {
+        // We only show action icons for URIs that we know we can share and
+        // delete. Although we get read permission (for the images) from
+        // applications like MMS, we cannot pass the permission to other
+        // activities due to the current framework design.
+        if (!MenuHelper.isWhiteListUri(uri)) {
             mShowActionIcons = false;
         }
 
@@ -998,7 +996,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 break;
             case R.id.share: {
                 IImage image = mAllImages.getImageAt(mCurrentPosition);
-                if (MenuHelper.isMMSUri(image.fullSizeImageUri())) {
+                if (!MenuHelper.isWhiteListUri(image.fullSizeImageUri())) {
                     return;
                 }
                 startShareMediaActivity(image);

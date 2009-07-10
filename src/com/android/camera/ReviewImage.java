@@ -398,7 +398,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         }
 
         Uri uri = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
-        MenuHelper.enableShareMenuItem(menu, !MenuHelper.isMMSUri(uri));
+        MenuHelper.enableShareMenuItem(menu, MenuHelper.isWhiteListUri(uri));
 
         return true;
     }
@@ -934,7 +934,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                 break;
             case R.id.btn_share: {
                 IImage image = mAllImages.getImageAt(mCurrentPosition);
-                if (MenuHelper.isMMSUri(image.fullSizeImageUri())) {
+                if (!MenuHelper.isWhiteListUri(image.fullSizeImageUri())) {
                     return;
                 }
                 startShareMediaActivity(image);
