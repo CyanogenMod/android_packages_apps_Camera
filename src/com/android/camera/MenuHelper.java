@@ -140,12 +140,29 @@ public class MenuHelper {
     }
 
     // This is a hack before we find a solution to pass a permission to other
-    // applications. See bug #1735149.
-    // Checks if the URI starts with "content://mms".
-    public static boolean isMMSUri(Uri uri) {
-        return (uri != null) &&
-               uri.getScheme().equals("content") &&
-               uri.getAuthority().equals("mms");
+    // applications. See bug #1735149, #1836138.
+    // Checks if the URI is on our whitelist:
+    // content://media/... (MediaProvider)
+    // file:///sdcard/... (Browser download)
+    public static boolean isWhiteListUri(Uri uri) {
+        if (uri == null) return false;
+
+        String scheme = uri.getScheme();
+        String authority = uri.getAuthority();
+
+        if (scheme.equals("content") && authority.equals("media")) {
+            return true;
+        }
+
+        if (scheme.equals("file")) {
+            List<String> p = uri.getPathSegments();
+
+            if (p.size() >= 1 && p.get(0).equals("sdcard")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static void enableShareMenuItem(Menu menu, boolean enabled) {
