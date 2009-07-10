@@ -196,8 +196,12 @@ public class ImageGallery extends Activity implements
             if (!canHandleEvent()) return;
             stopCheckingThumbnails();
 
-            mGvs.stop();
             IImage currentImage = getCurrentImage();
+
+            // The selection will be cleared when mGvs.stop() is called, so
+            // we need to call getCurrentImage() before mGvs.stop().
+            mGvs.stop();
+
             if (currentImage != null) {
                 mAllImages.removeImage(currentImage);
             }
