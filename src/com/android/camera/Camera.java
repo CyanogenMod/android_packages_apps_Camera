@@ -423,8 +423,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 Log.v(TAG, "mJpegPictureCallbackTimeLag = "
                         + mJpegPictureCallbackTimeLag + "ms");
                 mJpegPictureCallbackTime = 0;
-            } else {
-                Log.v(TAG, "Got first frame");
             }
         }
     }
@@ -728,24 +726,24 @@ public class Camera extends Activity implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        /*
+         * To reduce startup time, we open camera device in another thread.
+         * We make sure the camera is opened at the end of onCreate.
+         */
+        Thread openCameraThread = new Thread(new Runnable() {
+            public void run() {
+                mCameraDevice = CameraHolder.instance().open();
+            }
+        });
+        openCameraThread.start();
+
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         Window win = getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.camera);
-        mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
-        mViewFinderWidth = mSurfaceView.getLayoutParams().width;
-        mViewFinderHeight = mSurfaceView.getLayoutParams().height;
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        /*
-         * To reduce startup time, we start the preview in another thread.
-         * We make sure the preview is started at the end of onCreate.
-         */
-        Thread startPreviewThread = new Thread(new Runnable() {
-            public void run() {
-                startPreview();
-            }
-        });
-        startPreviewThread.start();
+        mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceChanged / surfaceDestroyed, other parts of the code
@@ -770,9 +768,9 @@ public class Camera extends Activity implements View.OnClickListener,
             mSwitcher.setOnSwitchListener(this);
         }
 
-        // Make sure preview is started.
+        // Make sure the services are loaded.
         try {
-            startPreviewThread.join();
+            openCameraThread.join();
         } catch (InterruptedException ex) {
             // ignore
         }
@@ -1022,12 +1020,12 @@ public class Camera extends Activity implements View.OnClickListener,
         mJpegPictureCallbackTime = 0;
         mImageCapture = new ImageCapture();
 
-        // Start the preview if it is not started.
-        if (!mPreviewing) {
-            startPreview();
-        }
-
         if (mSurfaceHolder != null) {
+            // If surface holder is created, start the preview now. Otherwise,
+            // wait until surfaceChanged.
+            mSurfaceView.setAspectRatio(VideoPreview.DONT_CARE);
+            startPreview();
+
             // If first time initialization is not finished, put it in the
             // message queue.
             if (!mFirstTimeInitialized) {
@@ -1271,11 +1269,8 @@ public class Camera extends Activity implements View.OnClickListener,
         // Sometimes surfaceChanged is called after onPause. Ignore it.
         if (mPausing) return;
 
-        // Set preview display if the surface is being created. Preview was
-        // already started.
-        if (holder.isCreating()) {
-            setPreviewDisplay(holder);
-        }
+        // Start the preview.
+        startPreview();
 
         // If first time initialization is not finished, send a message to do
         // it later. We want to finish surfaceChanged as soon as possible to let
@@ -1340,19 +1335,12 @@ public class Camera extends Activity implements View.OnClickListener,
         calculatePicturesRemaining();
     }
 
-    private void setPreviewDisplay(SurfaceHolder holder) {
-        try {
-            mCameraDevice.setPreviewDisplay(holder);
-        } catch (Throwable ex) {
-            closeCamera();
-            throw new RuntimeException("setPreviewDisplay failed", ex);
-        }
-    }
-
     private void startPreview() {
         if (mPausing) return;
 
         if (!ensureCameraDevice()) return;
+
+        if (mSurfaceHolder == null) return;
 
         if (isFinishing()) return;
 
@@ -1360,7 +1348,13 @@ public class Camera extends Activity implements View.OnClickListener,
         // the screen).
         if (mPreviewing) stopPreview();
 
-        setPreviewDisplay(mSurfaceHolder);
+        // this blanks the screen if the surface changed, no-op otherwise
+        try {
+            mCameraDevice.setPreviewDisplay(mSurfaceHolder);
+        } catch (Throwable ex) {
+            closeCamera();
+            throw new RuntimeException("setPreviewDisplay failed", ex);
+        }
 
         setCameraParameter();
 

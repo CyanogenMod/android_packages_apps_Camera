@@ -212,20 +212,20 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        readVideoSizePreference();
-
         /*
-         * To reduce startup time, we start the preview in another thread.
-         * We make sure the preview is started at the end of onCreate.
+         * To reduce startup time, we open camera device in another thread.
+         * Camera is opened in onCreate instead of onResume because there are
+         * lots of things to do here and camera open can be done in parallel. We
+         * will make sure the camera is opened at the end of onCreate.
          */
-        Thread startPreviewThread = new Thread(new Runnable() {
+        Thread openCameraThread = new Thread(new Runnable() {
             public void run() {
-                startPreview();
+                mCameraDevice = CameraHolder.instance().open();
             }
         });
-        startPreviewThread.start();
+        openCameraThread.start();
 
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mContentResolver = getContentResolver();
 
         requestWindowFeature(Window.FEATURE_PROGRESS);
@@ -275,9 +275,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
-        // Make sure preview is started.
+        // Make sure the camera is opened.
         try {
-            startPreviewThread.join();
+            openCameraThread.join();
         } catch (InterruptedException ex) {
             // ignore
         }
@@ -474,12 +474,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         super.onResume();
         mPausing = false;
 
-        readVideoSizePreference();
-        if (!mPreviewing) {
-            startPreview();
-        }
-
         setScreenTimeoutLong();
+        readVideoSizePreference();
 
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter =
@@ -499,6 +495,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }, 200);
 
         if (mSurfaceHolder != null) {
+            startPreview();
             mRecorderInitialized = false;
             mHandler.sendEmptyMessage(INIT_RECORDER);
         }
@@ -511,15 +508,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mCameraDevice.setParameters(param);
     }
 
-    private void setPreviewDisplay(SurfaceHolder holder) {
-        try {
-            mCameraDevice.setPreviewDisplay(holder);
-        } catch (Throwable ex) {
-            closeCamera();
-            throw new RuntimeException("setPreviewDisplay failed", ex);
-        }
-    }
-
+    // Precondition: mSurfaceHolder != null
     private void startPreview() {
         Log.v(TAG, "startPreview");
         if (mPreviewing) {
@@ -534,8 +523,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
 
         setCameraParameters();
-
-        setPreviewDisplay(mSurfaceHolder);
+        try {
+            mCameraDevice.setPreviewDisplay(mSurfaceHolder);
+        } catch (Throwable ex) {
+            closeCamera();
+            throw new RuntimeException("setPreviewDisplay failed", ex);
+        }
 
         try {
             mCameraDevice.startPreview();
@@ -544,13 +537,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
         }
-
-        // If setPreviewDisplay has been set with a valid surface, unlock now.
-        // If surface is null, unlock later. Otherwise, setPreviewDisplay in
-        // surfaceChanged will fail.
-        if (mSurfaceHolder != null) {
-            mCameraDevice.unlock();
-        }
+        mCameraDevice.unlock();
     }
 
     private void closeCamera() {
@@ -677,11 +664,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             stopVideoRecording();
         }
 
-        // Set preview display if the surface is being created. Preview was
-        // already started.
-        if (holder.isCreating()) {
-            setPreviewDisplay(holder);
-            mCameraDevice.unlock();
+        // Start the preview if it is not started yet. Preview may be already
+        // started in onResume and then surfaceChanged is called due to
+        // orientation change.
+        if (!mPreviewing) {
+            startPreview();
             mRecorderInitialized = false;
             mHandler.sendEmptyMessage(INIT_RECORDER);
         }
