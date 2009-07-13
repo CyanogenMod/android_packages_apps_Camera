@@ -22,6 +22,7 @@
     <string name="gallery_picker_label">"Galerie"</string>
     <string name="gallery_camera_bucket_name">"Kamerabilder"</string>
     <string name="gallery_camera_videos_bucket_name">"Kameravideos"</string>
+    <string name="gallery_camera_media_bucket_name">"Kameramedien"</string>
     <string name="switch_to_video_lable">"Zu Video wechseln"</string>
     <string name="switch_to_camera_lable">"Zu Kamera wechseln"</string>
     <string name="crop_label">"Bild zuschneiden"</string>
@@ -37,10 +38,12 @@
     <string name="settings">"Einstellungen"</string>
     <string name="view">"Anzeigen"</string>
     <string name="details">"Details"</string>
+    <string name="show_on_map">"In Google Maps anzeigen"</string>
     <string name="rotate">"Drehen"</string>
     <string name="rotate_left">"Nach links drehen"</string>
     <string name="rotate_right">"Nach rechts drehen"</string>
     <string name="slide_show">"Diashow"</string>
+    <string name="multiselect">"Mehrfachauswahl"</string>
     <string name="capture_picture">"Bild aufnehmen"</string>
     <string name="capture_video">"Video aufnehmen"</string>
     <string name="crop_save_text">"Speichern"</string>
@@ -48,6 +51,17 @@
     <string name="confirm_delete_title">"Löschen"</string>
     <string name="confirm_delete_message">"Das Bild wird gelöscht."</string>
     <string name="confirm_delete_video_message">"Das Video wird gelöscht."</string>
+    <!-- no translation found for confirm_delete_multiple_message (5962369828035778779) -->
+    <skip />
+    <string name="review_toss">"LÖSCHEN"</string>
+    <string name="review_share">"SENDEN"</string>
+    <string name="review_set">"FESTLEGEN ALS"</string>
+    <string name="review_play">"WIEDERGEBEN"</string>
+    <string name="review_attach">"ANHÄNGEN"</string>
+    <string name="review_cancel">"ABBRECHEN"</string>
+    <string name="review_done">"FERTIG"</string>
+    <string name="review_ok">"OK"</string>
+    <string name="review_retake">"ERNEUT AUFNEHMEN"</string>
     <string name="camera_toss">"Löschen"</string>
     <string name="camera_gallery">"Galerie"</string>
     <string name="camera_share">"Senden"</string>
@@ -102,17 +116,46 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Bilder in zufälliger Reihenfolge anzeigen"</string>
     <string name="pref_camera_recordlocation_title">"Aufnahmeort speichern"</string>
     <string name="pref_camera_recordlocation_summary">"Aufnahmeort in Bilddaten speichern"</string>
+    <string name="pref_camera_video_settings_category">"Videoeinstellungen"</string>
     <string name="pref_camera_videoquality_title">"Videoqualität auswählen"</string>
     <string name="pref_camera_videoquality_entry_0">"Niedrig (für MMS-Mitteilungen)"</string>
     <string name="pref_camera_videoquality_entry_1">"Hoch (für SD-Karte)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Videoqualität"</string>
+    <string name="pref_camera_video_duration_title">"Videodauer auswählen"</string>
+    <string name="pref_camera_video_duration_entry_1">"1 Minute (zum Senden)"</string>
+    <string name="pref_camera_video_duration_entry_10">"10 Minuten"</string>
+    <string name="pref_camera_video_duration_entry_30">"30 Minuten"</string>
+    <string name="pref_camera_video_duration_dialogtitle">"Videodauer"</string>
+    <string name="pref_camera_picture_settings_category">"Bildeinstellungen"</string>
+    <string name="pref_camera_picturesize_title">"Bildgröße auswählen"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">"3M (2048 x 1536)"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">"2M (1600 x 1200)"</string>
+    <string name="pref_camera_picturesize_entry_1024x768">"1M (1024 x 768)"</string>
+    <string name="pref_camera_picturesize_dialogtitle">"Bildgröße"</string>
+    <string name="pref_camera_jpegquality_title">"Bildqualität auswählen"</string>
+    <string name="pref_camera_jpegquality_entry_superfine">"Extrafein"</string>
+    <string name="pref_camera_jpegquality_entry_fine">"Fein"</string>
+    <string name="pref_camera_jpegquality_entry_normal">"Normal"</string>
+    <string name="pref_camera_jpegquality_dialogtitle">"Bildqualität"</string>
+    <string name="pref_camera_focusmode_title">"Fokussierungsmodus auswählen"</string>
+    <string name="pref_camera_focusmode_entry_auto">"Autom."</string>
+    <string name="pref_camera_focusmode_entry_infinity">"Unendlich"</string>
+    <string name="pref_camera_focusmode_value_infinity">"Unendlich"</string>
+    <string name="pref_camera_focusmode_dialogtitle">"Fokussierungsmodus"</string>
     <string name="camerasettings">"Einstellungen"</string>
     <string name="image_gallery_NoImageView_text">"Keine Medien gefunden."</string>
     <string name="pref_gallery_confirm_delete_title">"Löschvorgang bestätigen"</string>
     <string name="pref_gallery_confirm_delete_summary">"Bestätigung vor dem Löschen eines Bildes oder Videos anzeigen"</string>
+    <string name="no_location_image">"In diesem Bild sind keine Standortinformationen enthalten."</string>
     <string name="details_panel_title">"Details"</string>
     <string name="details_file_size">"Dateigröße:"</string>
     <string name="details_image_resolution">"Auflösung:"</string>
+    <string name="details_image_make">"Hersteller:"</string>
+    <string name="details_image_model">"Modell:"</string>
+    <string name="details_image_whitebalance">"Weißabgleich:"</string>
+    <string name="details_image_latitude">"GPS-Breitengrad:"</string>
+    <string name="details_image_longitude">"GPS-Längengrad:"</string>
+    <string name="details_image_location">"Ort:"</string>
     <string name="details_duration">"Dauer:"</string>
     <string name="details_date_taken">"Aufnahmedatum:"</string>
     <string name="details_frame_rate">"Framerate:"</string>
@@ -147,4 +190,12 @@
     <string name="gadget_title">"Bildrahmen"</string>
     <string name="file_info_title">"Dateiinfo:"</string>
     <string name="video_exceed_mms_limit">"Das aufgenommene Video ist zu groß und kann nicht per MMS gesendet werden. Nehmen Sie einen kürzeren Clip auf."</string>
+    <string name="multiselect_share">"Senden"</string>
+    <string name="multiselect_delete">"Löschen"</string>
+    <!-- no translation found for multiselect_cancel (5969428692864002165) -->
+    <skip />
+    <string name="progress_dialog_title">"Vorgang läuft."</string>
+    <string name="delete_images_message">"Bilder werden gelöscht. Bitte warten..."</string>
+    <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
+    <skip />
 </resources>

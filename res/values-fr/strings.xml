@@ -22,6 +22,7 @@
     <string name="gallery_picker_label">"Galerie"</string>
     <string name="gallery_camera_bucket_name">"Photos de l\'appareil"</string>
     <string name="gallery_camera_videos_bucket_name">"Vidéos de la caméra"</string>
+    <string name="gallery_camera_media_bucket_name">"Vidéos"</string>
     <string name="switch_to_video_lable">"Passer en mode vidéo"</string>
     <string name="switch_to_camera_lable">"Passer en mode appareil photo"</string>
     <string name="crop_label">"Rogner l\'image"</string>
@@ -31,16 +32,18 @@
     <string name="no_storage">"Veuillez insérer une carte SD avant d\'utiliser l\'appareil photo."</string>
     <string name="not_enough_space">"Votre carte SD est pleine."</string>
     <string name="preparing_sd">"Préparation de la carte SD..."</string>
-    <string name="wallpaper">"Configuration de l\'arrière-plan en cours. Veuillez patienter..."</string>
+    <string name="wallpaper">"Configuration du fond d\'écran en cours. Veuillez patienter..."</string>
     <string name="savingImage">"Enregistrement de l\'image"</string>
     <string name="runningFaceDetection">"Veuillez patienter..."</string>
     <string name="settings">"Paramètres"</string>
     <string name="view">"Afficher"</string>
     <string name="details">"Détails"</string>
+    <string name="show_on_map">"Afficher sur une carte"</string>
     <string name="rotate">"Faire pivoter"</string>
     <string name="rotate_left">"Faire pivoter à gauche"</string>
     <string name="rotate_right">"Faire pivoter à droite"</string>
     <string name="slide_show">"Diaporama"</string>
+    <string name="multiselect">"Sélection multiple"</string>
     <string name="capture_picture">"Prendre une photo"</string>
     <string name="capture_video">"Prendre une vidéo"</string>
     <string name="crop_save_text">"Enregistrer"</string>
@@ -48,12 +51,23 @@
     <string name="confirm_delete_title">"Supprimer"</string>
     <string name="confirm_delete_message">"L\'image sera supprimée."</string>
     <string name="confirm_delete_video_message">"La vidéo va être supprimée."</string>
+    <!-- no translation found for confirm_delete_multiple_message (5962369828035778779) -->
+    <skip />
+    <string name="review_toss">"SUPPRIMER"</string>
+    <string name="review_share">"PARTAGER"</string>
+    <string name="review_set">"DÉFINIR COMME"</string>
+    <string name="review_play">"LIRE"</string>
+    <string name="review_attach">"JOINDRE"</string>
+    <string name="review_cancel">"ANNULER"</string>
+    <string name="review_done">"FERMER"</string>
+    <string name="review_ok">"OK"</string>
+    <string name="review_retake">"AUTRE PHOTO"</string>
     <string name="camera_toss">"Supprimer"</string>
     <string name="camera_gallery">"Galerie"</string>
     <string name="camera_share">"Partager"</string>
     <string name="camera_set">"Définir comme"</string>
     <string name="camera_play">"Lire"</string>
-    <string name="camera_attach">"Joindre"</string>
+    <string name="camera_attach">"Pièce jointe"</string>
     <string name="camera_cancel">"Annuler"</string>
     <string name="camera_crop">"Rogner"</string>
     <string name="no_way_to_share_image">"Impossible de partager cette image."</string>
@@ -61,7 +75,7 @@
     <string name="video_play">"Lire"</string>
     <string name="camera_gallery_photos_text">"Galerie"</string>
     <string name="camera_pick_wallpaper">"Images"</string>
-    <string name="camera_setas_wallpaper">"Arrière-plan"</string>
+    <string name="camera_setas_wallpaper">"Fond d\'écran"</string>
     <string name="pref_gallery_category">"Paramètres généraux"</string>
     <string name="pref_slideshow_category">"Paramètres du diaporama"</string>
     <string name="pref_camera_general_settings_category">"Paramètres généraux"</string>
@@ -79,7 +93,7 @@
     <item>"La plus récente en premier"</item>
     <item>"La plus récente en dernier"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_interval_title">"Intervalle du diaporama"</string>
+    <string name="pref_gallery_slideshow_interval_title">"Intervalle entre photos"</string>
     <string name="pref_gallery_slideshow_interval_summary">"Sélectionner la durée d\'affichage de chaque diapositive dans le diaporama"</string>
     <string name="pref_gallery_slideshow_interval_dialogtitle">"Intervalle du diaporama"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
@@ -102,17 +116,46 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Afficher les images"</string>
     <string name="pref_camera_recordlocation_title">"Enregistrer le lieu"</string>
     <string name="pref_camera_recordlocation_summary">"Enregistrer la position géographique dans les données d\'image"</string>
+    <string name="pref_camera_video_settings_category">"Paramètres vidéo"</string>
     <string name="pref_camera_videoquality_title">"Qualité vidéo"</string>
-    <string name="pref_camera_videoquality_entry_0">"Basse (pour les MMS)"</string>
-    <string name="pref_camera_videoquality_entry_1">"Haute (pour la carte SD)"</string>
+    <string name="pref_camera_videoquality_entry_0">"Basse (MMS)"</string>
+    <string name="pref_camera_videoquality_entry_1">"Haute (carte SD)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Qualité vidéo"</string>
+    <string name="pref_camera_video_duration_title">"Sélectionner la durée de vidéo"</string>
+    <string name="pref_camera_video_duration_entry_1">"1 minute (pour le partage)"</string>
+    <string name="pref_camera_video_duration_entry_10">"10 minutes"</string>
+    <string name="pref_camera_video_duration_entry_30">"30 minutes"</string>
+    <string name="pref_camera_video_duration_dialogtitle">"Durée de la vidéo"</string>
+    <string name="pref_camera_picture_settings_category">"Paramètres d\'image"</string>
+    <string name="pref_camera_picturesize_title">"Sélectionner une taille d\'image"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">"3 mégapixels (2 048 x 1 536)"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">"2 mégapixels (1 600 x 1 200)"</string>
+    <string name="pref_camera_picturesize_entry_1024x768">"1 mégapixels (1 024 x 768)"</string>
+    <string name="pref_camera_picturesize_dialogtitle">"Taille d\'image"</string>
+    <string name="pref_camera_jpegquality_title">"Sélectionner une qualité d\'image"</string>
+    <string name="pref_camera_jpegquality_entry_superfine">"Très haute qualité"</string>
+    <string name="pref_camera_jpegquality_entry_fine">"Haute qualité"</string>
+    <string name="pref_camera_jpegquality_entry_normal">"Normale"</string>
+    <string name="pref_camera_jpegquality_dialogtitle">"Qualité d\'image"</string>
+    <string name="pref_camera_focusmode_title">"Sélectionner un mode de mise au point"</string>
+    <string name="pref_camera_focusmode_entry_auto">"Automatique"</string>
+    <string name="pref_camera_focusmode_entry_infinity">"Infini"</string>
+    <string name="pref_camera_focusmode_value_infinity">"infini"</string>
+    <string name="pref_camera_focusmode_dialogtitle">"Mode de mise au point"</string>
     <string name="camerasettings">"Paramètres"</string>
     <string name="image_gallery_NoImageView_text">"Aucun fichier trouvé."</string>
     <string name="pref_gallery_confirm_delete_title">"Confirmer suppressions"</string>
     <string name="pref_gallery_confirm_delete_summary">"Afficher une confirmation avant de supprimer une image ou une vidéo"</string>
+    <string name="no_location_image">"Cette image ne contient pas d\'informations de localisation."</string>
     <string name="details_panel_title">"Détails"</string>
     <string name="details_file_size">"Taille du fichier :"</string>
     <string name="details_image_resolution">"Résolution :"</string>
+    <string name="details_image_make">"Fabricant :"</string>
+    <string name="details_image_model">"Modèle :"</string>
+    <string name="details_image_whitebalance">"Balance des blancs :"</string>
+    <string name="details_image_latitude">"Latitude GPS :"</string>
+    <string name="details_image_longitude">"Longitude GPS :"</string>
+    <string name="details_image_location">"Lieu :"</string>
     <string name="details_duration">"Durée :"</string>
     <string name="details_date_taken">"Date de création :"</string>
     <string name="details_frame_rate">"Fréquence d\'images :"</string>
@@ -128,7 +171,7 @@
     <string name="details_ok">"OK"</string>
     <string name="context_menu_header">"Options de l\'image"</string>
     <string name="video_context_menu_header">"Options vidéo"</string>
-    <string name="multiface_crop_help">"Cliquez sur un visage pour commencer."</string>
+    <string name="multiface_crop_help">"Appuyez sur un visage pour commencer."</string>
     <string name="photos_gallery_title">"Galerie"</string>
     <string name="pick_photos_gallery_title">"Sélectionnez une image"</string>
     <string name="videos_gallery_title">"Galerie"</string>
@@ -147,4 +190,12 @@
     <string name="gadget_title">"Cadre d\'image"</string>
     <string name="file_info_title">"Informations sur le fichier :"</string>
     <string name="video_exceed_mms_limit">"La vidéo que vous avez enregistrée est trop volumineuse et ne peut être envoyée par MMS. Enregistrez une vidéo plus courte."</string>
+    <string name="multiselect_share">"Partager"</string>
+    <string name="multiselect_delete">"Supprimer"</string>
+    <!-- no translation found for multiselect_cancel (5969428692864002165) -->
+    <skip />
+    <string name="progress_dialog_title">"En cours…"</string>
+    <string name="delete_images_message">"Suppression des images en cours, veuillez patienter..."</string>
+    <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
+    <skip />
 </resources>
