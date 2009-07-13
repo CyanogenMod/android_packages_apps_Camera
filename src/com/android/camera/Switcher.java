@@ -20,13 +20,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 public class Switcher extends ImageView {
+    private static final String TAG = "Switcher";
+
     public interface OnSwitchListener {
-        public void onSwitchChanged(Switcher source, boolean onOff);
+        // Returns true if the listener agrees that the switch can be changed.
+        public boolean onSwitchChanged(Switcher source, boolean onOff);
     }
 
     private static final int ANIMATION_SPEED = 200;
@@ -42,9 +46,19 @@ public class Switcher extends ImageView {
     }
 
     public void setSwitch(boolean onOff) {
-        if (mSwitch == onOff) return;
-        mSwitch = onOff;
-        if (mListener != null) mListener.onSwitchChanged(this, mSwitch);
+        try {
+            if (mSwitch == onOff) return;
+
+            if (mListener != null) {
+                if (!mListener.onSwitchChanged(this, onOff)) {
+                    return;
+                }
+            }
+
+            mSwitch = onOff;
+        } finally {
+            startParkingAnimation();
+        }
     }
 
     public void setOnSwitchListener(OnSwitchListener listener) {
@@ -72,13 +86,12 @@ public class Switcher extends ImageView {
             case MotionEvent.ACTION_UP:
                 trackTouchEvent(event);
                 setSwitch(mPosition >= available / 2);
-                startParkingAnimation();
                 setPressed(false);
                 break;
 
             case MotionEvent.ACTION_CANCEL:
+                setSwitch(mSwitch);
                 setPressed(false);
-                startParkingAnimation();
                 break;
         }
         return true;
