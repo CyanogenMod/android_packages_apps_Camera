@@ -304,11 +304,13 @@ public class GalleryPicker extends Activity {
                 workerRun();
             }
         };
+        BitmapManager.instance().allowThreadDecoding(mWorkerThread);
         mWorkerThread.start();
     }
 
     private void abortWorker() {
         if (mWorkerThread != null) {
+            BitmapManager.instance().cancelThreadDecoding(mWorkerThread);
             mAbort = true;
             try {
                 mWorkerThread.join();
