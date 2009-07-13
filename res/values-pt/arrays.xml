@@ -27,42 +27,6 @@
     <!-- no translation found for pref_camera_video_duration_entryvalues:0 (1464827609202838923) -->
     <!-- no translation found for pref_camera_video_duration_entryvalues:1 (8774526811603963446) -->
     <!-- no translation found for pref_camera_video_duration_entryvalues:2 (2162726354815338735) -->
-    <!-- no translation found for pref_camera_whitebalance_entries:0 (7380919110029371897) -->
-    <!-- no translation found for pref_camera_whitebalance_entries:1 (5846817089057144353) -->
-    <!-- no translation found for pref_camera_whitebalance_entries:2 (5188541155459035614) -->
-    <!-- no translation found for pref_camera_whitebalance_entries:3 (8014710638918804167) -->
-    <!-- no translation found for pref_camera_whitebalance_entries:4 (1259951844914382302) -->
-    <!-- no translation found for pref_camera_whitebalance_entries:5 (8925759761247257364) -->
-    <!-- no translation found for pref_camera_whitebalance_entries:6 (2646857223813119774) -->
-    <!-- no translation found for pref_camera_whitebalance_entryvalues:0 (6184691896277386782) -->
-    <!-- no translation found for pref_camera_whitebalance_entryvalues:1 (399103181509687736) -->
-    <!-- no translation found for pref_camera_whitebalance_entryvalues:2 (7298629202572037539) -->
-    <!-- no translation found for pref_camera_whitebalance_entryvalues:3 (692320259860325999) -->
-    <!-- no translation found for pref_camera_whitebalance_entryvalues:4 (5534223222777368499) -->
-    <!-- no translation found for pref_camera_whitebalance_entryvalues:5 (2959334170595206903) -->
-    <!-- no translation found for pref_camera_whitebalance_entryvalues:6 (953931275599906170) -->
-    <!-- no translation found for pref_camera_effect_entries:0 (6111306175712245429) -->
-    <!-- no translation found for pref_camera_effect_entries:1 (7795463117829651230) -->
-    <!-- no translation found for pref_camera_effect_entries:2 (7006097468180455948) -->
-    <!-- no translation found for pref_camera_effect_entries:3 (4276207244456575289) -->
-    <!-- no translation found for pref_camera_effect_entries:4 (1691263603065183222) -->
-    <!-- no translation found for pref_camera_effect_entries:5 (6172440915265439150) -->
-    <!-- no translation found for pref_camera_effect_entries:6 (4160265797038388750) -->
-    <!-- no translation found for pref_camera_effect_entries:7 (735874793273897468) -->
-    <!-- no translation found for pref_camera_effect_entries:8 (2578296411723042326) -->
-    <!-- no translation found for pref_camera_effect_entries:9 (8705741661268435129) -->
-    <!-- no translation found for pref_camera_effect_entries:10 (4402393779739127238) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:0 (4380767962600571282) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:1 (6765506553289735069) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:2 (1209048711657244255) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:3 (5901778296104391322) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:4 (1513030700825869618) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:5 (3516811476214331456) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:6 (4275454372937850276) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:7 (8321756350818376365) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:8 (5795897884426992061) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:9 (6478631864638345255) -->
-    <!-- no translation found for pref_camera_effect_entryvalues:10 (5205003307922236962) -->
     <!-- no translation found for pref_camera_picturesize_entries:0 (4050594067848730193) -->
     <!-- no translation found for pref_camera_picturesize_entries:1 (3790683023711477464) -->
     <!-- no translation found for pref_camera_picturesize_entries:2 (9171438155465781615) -->
@@ -79,30 +43,4 @@
     <!-- no translation found for pref_camera_focusmode_entries:1 (1318390243219309490) -->
     <!-- no translation found for pref_camera_focusmode_entryvalues:0 (7221493087424876092) -->
     <!-- no translation found for pref_camera_focusmode_entryvalues:1 (1972869374425157325) -->
-    <!-- no translation found for pref_camera_brightness_entries:0 (777260112024885678) -->
-    <!-- no translation found for pref_camera_brightness_entries:1 (3680555174097753827) -->
-    <!-- no translation found for pref_camera_brightness_entries:2 (6784304788228789705) -->
-    <!-- no translation found for pref_camera_brightness_entries:3 (3865924008475791921) -->
-    <!-- no translation found for pref_camera_brightness_entries:4 (16289740472006512) -->
-    <!-- no translation found for pref_camera_brightness_entries:5 (2461500954987726142) -->
-    <!-- no translation found for pref_camera_brightness_entries:6 (4396971201598482478) -->
-    <!-- no translation found for pref_camera_brightness_entries:7 (4858182870870973310) -->
-    <!-- no translation found for pref_camera_brightness_entries:8 (1686436276410255735) -->
-    <!-- no translation found for pref_camera_brightness_entries:9 (4860794116006112067) -->
-    <!-- no translation found for pref_camera_brightness_entries:10 (4239319673806423205) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:0 (4708362201092225249) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:1 (9020783603219300790) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:2 (3307031904307601633) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:3 (8178606470692410649) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:4 (4142396946354606453) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:5 (5754296605685728045) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:6 (381339534398558033) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:7 (7402624082100457014) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:8 (2332091555100984621) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:9 (1840127105226056731) -->
-    <!-- no translation found for pref_camera_brightness_entryvalues:10 (8831464859883776363) -->
-    <!-- no translation found for pref_camera_iso_entries:0 (1853732092821410543) -->
-    <!-- no translation found for pref_camera_iso_entries:1 (8480038315286137371) -->
-    <!-- no translation found for pref_camera_iso_entryvalues:0 (676388509562329082) -->
-    <!-- no translation found for pref_camera_iso_entryvalues:1 (6262336877320366177) -->
 </resources>

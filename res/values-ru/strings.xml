@@ -15,104 +15,188 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="all_images">"Все изображения"</string>
+    <string name="all_images">"Все картинки"</string>
     <string name="all_videos">"Все видео"</string>
-    <string name="camera_label">"Камера"</string>
+    <string name="camera_label">"Фотографии"</string>
     <string name="video_camera_label">"Видеокамера"</string>
-    <string name="gallery_picker_label">"Галерея"</string>
-    <string name="gallery_camera_bucket_name">"Фотографии с камеры"</string>
-    <string name="gallery_camera_videos_bucket_name">"Видео с камеры"</string>
-    <string name="switch_to_video_lable">"Перейти в режим видео"</string>
-    <string name="switch_to_camera_lable">"Перейти в режим камеры"</string>
-    <string name="crop_label">"Обрезать изображение"</string>
-    <string name="view_label">"Просмотреть изображение"</string>
+    <string name="gallery_picker_label">"Фотоальбом"</string>
+    <string name="gallery_camera_bucket_name">"Снимки, сделанные камерой"</string>
+    <string name="gallery_camera_videos_bucket_name">"Видео"</string>
+    <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
+    <skip />
+    <string name="switch_to_video_lable">"Переключить на видео"</string>
+    <string name="switch_to_camera_lable">"Переключить на камеру"</string>
+    <string name="crop_label">"Обрезать фотографию"</string>
+    <string name="view_label">"Просмотр картинки"</string>
     <string name="preferences_label">"Настройки камеры"</string>
-    <string name="wait">"Подождите…"</string>
-    <string name="no_storage">"Перед использованием камеры вставьте карту SD."</string>
-    <string name="not_enough_space">"Карта SD заполнена."</string>
+    <string name="wait">"Подождите..."</string>
+    <string name="no_storage">"Прежде чем использовать камеру, вставьте SD-карту."</string>
+    <string name="not_enough_space">"Ваша SD-карта заполнена."</string>
     <string name="preparing_sd">"Подготовка карты SD..."</string>
-    <string name="wallpaper">"Установка фонового рисунка, подождите…"</string>
-    <string name="savingImage">"Идет сохранение изображения…"</string>
-    <string name="runningFaceDetection">"Подождите…"</string>
+    <string name="wallpaper">"Установка обоев, подождите..."</string>
+    <string name="savingImage">"Сохранение картинки..."</string>
+    <string name="runningFaceDetection">"Подождите..."</string>
     <string name="settings">"Настройки"</string>
-    <string name="view">"Просмотреть"</string>
+    <string name="view">"Просмотр"</string>
     <string name="details">"Сведения"</string>
+    <!-- no translation found for show_on_map (441725587731006228) -->
+    <skip />
     <string name="rotate">"Повернуть"</string>
-    <string name="rotate_left">"Повернуть налево"</string>
-    <string name="rotate_right">"Повернуть направо"</string>
+    <string name="rotate_left">"Повернуть влево"</string>
+    <string name="rotate_right">"Повернуть вправо"</string>
     <string name="slide_show">"Слайд-шоу"</string>
+    <!-- no translation found for multiselect (4761682939945434146) -->
+    <skip />
     <string name="capture_picture">"Сделать фотографию"</string>
     <string name="capture_video">"Снять видео"</string>
     <string name="crop_save_text">"Сохранить"</string>
     <string name="crop_discard_text">"Отменить"</string>
-    <string name="confirm_delete_title">"Удаление"</string>
-    <string name="confirm_delete_message">"Изображение будет удалено."</string>
+    <string name="confirm_delete_title">"Удалить"</string>
+    <string name="confirm_delete_message">"Картинка будет удалена."</string>
     <string name="confirm_delete_video_message">"Видео будет удалено."</string>
-    <string name="camera_toss">"Удаление"</string>
-    <string name="camera_gallery">"Галерея"</string>
+    <!-- no translation found for confirm_delete_multiple_message (5962369828035778779) -->
+    <skip />
+    <!-- no translation found for review_toss (7255331999518617841) -->
+    <skip />
+    <!-- no translation found for review_share (7294755861072174509) -->
+    <skip />
+    <!-- no translation found for review_set (8304758352155378636) -->
+    <skip />
+    <!-- no translation found for review_play (6015456244323302817) -->
+    <skip />
+    <!-- no translation found for review_attach (7957325229025880473) -->
+    <skip />
+    <!-- no translation found for review_cancel (8188009385853399254) -->
+    <skip />
+    <!-- no translation found for review_done (5417465988786728114) -->
+    <skip />
+    <!-- no translation found for review_ok (5305096180300056529) -->
+    <skip />
+    <!-- no translation found for review_retake (7804864054896088338) -->
+    <skip />
+    <string name="camera_toss">"Удалить"</string>
+    <string name="camera_gallery">"Фотоальбом"</string>
     <string name="camera_share">"Отправить"</string>
     <string name="camera_set">"Установить как"</string>
     <string name="camera_play">"Воспроизвести"</string>
     <string name="camera_attach">"Вложить"</string>
     <string name="camera_cancel">"Отмена"</string>
     <string name="camera_crop">"Обрезать"</string>
-    <string name="no_way_to_share_image">"Отправить это изображение нельзя."</string>
-    <string name="no_way_to_share_video">"Отправить это видео нельзя."</string>
+    <string name="no_way_to_share_image">"Эту фотографию нельзя отправить."</string>
+    <string name="no_way_to_share_video">"Это видео нельзя отправить."</string>
     <string name="video_play">"Воспроизвести"</string>
-    <string name="camera_gallery_photos_text">"Галерея"</string>
-    <string name="camera_pick_wallpaper">"Изображения"</string>
-    <string name="camera_setas_wallpaper">"Фоновый рисунок"</string>
+    <string name="camera_gallery_photos_text">"Фотоальбом"</string>
+    <string name="camera_pick_wallpaper">"Картинки"</string>
+    <string name="camera_setas_wallpaper">"Обои"</string>
     <string name="pref_gallery_category">"Общие настройки"</string>
     <string name="pref_slideshow_category">"Настройки слайд-шоу"</string>
     <string name="pref_camera_general_settings_category">"Общие настройки"</string>
     <string name="pref_gallery_size_title">"Отображаемый размер"</string>
     <string name="pref_gallery_size_summary">"Выбор отображаемого размера изображений и видео"</string>
-    <string name="pref_gallery_size_dialogtitle">"Размер изображения"</string>
+    <string name="pref_gallery_size_dialogtitle">"Размер картинки"</string>
   <string-array name="pref_gallery_size_choices">
-    <item>"Крупный"</item>
-    <item>"Мелкий"</item>
+    <item>"Большой"</item>
+    <item>"Небольшой"</item>
   </string-array>
     <string name="pref_gallery_sort_title">"Порядок сортировки"</string>
     <string name="pref_gallery_sort_summary">"Выберите порядок сортировки изображений и видео"</string>
-    <string name="pref_gallery_sort_dialogtitle">"Сортировка изображений"</string>
+    <string name="pref_gallery_sort_dialogtitle">"Сортировать картинки"</string>
   <string-array name="pref_gallery_sort_choices">
-    <item>"Начиная с новых"</item>
-    <item>"Заканчивая новыми"</item>
+    <item>"Сначала новые"</item>
+    <item>"Сначала старые"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_interval_title">"Интервал слайд-шоу"</string>
-    <string name="pref_gallery_slideshow_interval_summary">"Выберите время отображения каждого слайда"</string>
+    <string name="pref_gallery_slideshow_interval_title">"Интервал в слайд-шоу"</string>
+    <string name="pref_gallery_slideshow_interval_summary">"Выбор длительности показа каждого слайда"</string>
     <string name="pref_gallery_slideshow_interval_dialogtitle">"Интервал слайд-шоу"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
-    <item>"2 секунды"</item>
-    <item>"3 секунды"</item>
-    <item>"4 секунды"</item>
+    <item>"2 сек."</item>
+    <item>"3 сек."</item>
+    <item>"4 сек."</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title">"Переходы слайд-шоу"</string>
-    <string name="pref_gallery_slideshow_transition_summary">"Выберите эффект для перехода от одного слайда к другому"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle">"Переходы слайд-шоу"</string>
+    <string name="pref_gallery_slideshow_transition_title">"Переход в слайд-шоу"</string>
+    <string name="pref_gallery_slideshow_transition_summary">"Выбор эффекта при переходе от одного слайда к другому"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle">"Переход в слайд-шоу"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
-    <item>"Затемнение"</item>
-    <item>"Слайды слева направо"</item>
-    <item>"Слайды сверху вниз"</item>
+    <item>"Затемнение и проявление"</item>
+    <item>"Прокрутка слева направо"</item>
+    <item>"Прокрутка сверху вниз"</item>
     <item>"Случайный выбор"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_repeat_title">"Повторить слайд-шоу"</string>
-    <string name="pref_gallery_slideshow_repeat_summary">"Воспроизвести слайд-шоу несколько раз"</string>
+    <string name="pref_gallery_slideshow_repeat_title">"Повтор слайд-шоу"</string>
+    <string name="pref_gallery_slideshow_repeat_summary">"Воспроизвести слайд-шоу более одного раза"</string>
     <string name="pref_gallery_slideshow_shuffle_title">"Перемешать слайды"</string>
-    <string name="pref_gallery_slideshow_shuffle_summary">"Показывать изображения в случайном порядке"</string>
-    <string name="pref_camera_recordlocation_title">"Сохранять адрес в изображениях"</string>
-    <string name="pref_camera_recordlocation_summary">"Записывать адрес в данные изображения"</string>
+    <string name="pref_gallery_slideshow_shuffle_summary">"Показ фотографий в случайном порядке"</string>
+    <string name="pref_camera_recordlocation_title">"Сохранять местоположение в фотографиях"</string>
+    <string name="pref_camera_recordlocation_summary">"Записывать местоположение в данных фотографии"</string>
+    <!-- no translation found for pref_camera_video_settings_category (5788821601203523037) -->
+    <skip />
     <string name="pref_camera_videoquality_title">"Выбор качества видео"</string>
-    <string name="pref_camera_videoquality_entry_0">"Низкое (для MMS)"</string>
-    <string name="pref_camera_videoquality_entry_1">"Высокое (для карты SD)"</string>
+    <string name="pref_camera_videoquality_entry_0">"Низкое (для сообщений MMS)"</string>
+    <string name="pref_camera_videoquality_entry_1">"Высокое (для SD-карты)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Качество видео"</string>
+    <!-- no translation found for pref_camera_video_duration_title (3659987702892910722) -->
+    <skip />
+    <!-- no translation found for pref_camera_video_duration_entry_1 (886640327548814447) -->
+    <skip />
+    <!-- no translation found for pref_camera_video_duration_entry_10 (664455443394175885) -->
+    <skip />
+    <!-- no translation found for pref_camera_video_duration_entry_30 (1197298883102352735) -->
+    <skip />
+    <!-- no translation found for pref_camera_video_duration_dialogtitle (5762031980003877975) -->
+    <skip />
+    <!-- no translation found for pref_camera_picture_settings_category (1513001949820030759) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_title (8391466986280182397) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (7304479270077279178) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (6722733164421134734) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (6648351357102402892) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_dialogtitle (2741153309776113961) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_title (3045390831339734843) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_entry_superfine (4087830022547613205) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_entry_fine (4474043704802385370) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_entry_normal (1274801937207351293) -->
+    <skip />
+    <!-- no translation found for pref_camera_jpegquality_dialogtitle (18195886066728203) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_title (3829707410870789496) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_entry_auto (7374820710300362457) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_entry_infinity (3413922419264967552) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_value_infinity (3629041045019224450) -->
+    <skip />
+    <!-- no translation found for pref_camera_focusmode_dialogtitle (3464580667965511167) -->
+    <skip />
     <string name="camerasettings">"Настройки"</string>
     <string name="image_gallery_NoImageView_text">"Нет мультимедийных материалов."</string>
-    <string name="pref_gallery_confirm_delete_title">"Подтверждение удаления"</string>
+    <string name="pref_gallery_confirm_delete_title">"Подтверждать удаление"</string>
     <string name="pref_gallery_confirm_delete_summary">"Запрашивать подтверждения перед удалением изображения или видео"</string>
+    <!-- no translation found for no_location_image (6929172123058811834) -->
+    <skip />
     <string name="details_panel_title">"Сведения"</string>
     <string name="details_file_size">"Размер файла:"</string>
     <string name="details_image_resolution">"Разрешение:"</string>
+    <!-- no translation found for details_image_make (2888477930210903540) -->
+    <skip />
+    <!-- no translation found for details_image_model (3608007849933924336) -->
+    <skip />
+    <!-- no translation found for details_image_whitebalance (4412514247882436065) -->
+    <skip />
+    <!-- no translation found for details_image_latitude (6701704806314765468) -->
+    <skip />
+    <!-- no translation found for details_image_longitude (5583629669864057389) -->
+    <skip />
+    <!-- no translation found for details_image_location (6460201074393148978) -->
+    <skip />
     <string name="details_duration">"Продолжительность:"</string>
     <string name="details_date_taken">"Дата съемки:"</string>
     <string name="details_frame_rate">"Частота кадров:"</string>
@@ -124,27 +208,39 @@
     <string name="details_hms">"%1$d:%2$02d:%3$02d"</string>
     <string name="details_fps">"%1$d кадров/с"</string>
     <string name="details_kbps">"%1$d кбит/с"</string>
-    <string name="details_mbps">"%1$g мбит/с"</string>
+    <string name="details_mbps">"%1$g Мбит/с"</string>
     <string name="details_ok">"ОК"</string>
-    <string name="context_menu_header">"Параметры изображения"</string>
+    <string name="context_menu_header">"Параметры картинки"</string>
     <string name="video_context_menu_header">"Параметры видео"</string>
-    <string name="multiface_crop_help">"Чтобы начать, выберите лицо."</string>
-    <string name="photos_gallery_title">"Галерея"</string>
-    <string name="pick_photos_gallery_title">"Выбор изображения"</string>
-    <string name="videos_gallery_title">"Галерея"</string>
-    <string name="pick_videos_gallery_title">"Выбрать видео"</string>
+    <string name="multiface_crop_help">"Нажмите лицо, чтобы начать."</string>
+    <string name="photos_gallery_title">"Фотоальбом"</string>
+    <string name="pick_photos_gallery_title">"Выбор картинок"</string>
+    <string name="videos_gallery_title">"Фотоальбом"</string>
+    <string name="pick_videos_gallery_title">"Выбор видео"</string>
     <string name="loading_progress_format_string">"Осталось: <xliff:g id="COUNTER">%d</xliff:g>"</string>
-    <string name="sendImage">"Отправить изображение при помощи"</string>
-    <string name="setImage">"Установить изображение как"</string>
+    <string name="sendImage">"Отправить картинку через"</string>
+    <string name="setImage">"Установить картинку как"</string>
     <string name="sendVideo">"Отправить видео при помощи"</string>
     <string name="movieviewlabel">"Фильмы"</string>
-    <string name="loading_video">"Идет загрузка видео…"</string>
-    <string name="spaceIsLow_content">"Место на карте SD заканчивается. Измените настройки качества или удалите элементы из галереи."</string>
+    <string name="loading_video">"Загрузка видео…"</string>
+    <string name="spaceIsLow_content">"Место на вашей SD-карте заканчивается. Измените настройки качества или удалите содержимое из фотоальбома."</string>
     <string name="resume_playing_title">"Продолжение просмотра видео"</string>
-    <string name="resume_playing_message">"Продолжить воспроизведение с %s ?"</string>
+    <string name="resume_playing_message">"Продолжить воспроизведение с %s?"</string>
     <string name="resume_playing_resume">"Продолжить воспроизведение"</string>
     <string name="resume_playing_restart">"Начать с начала"</string>
     <string name="gadget_title">"Рамка фотографии"</string>
     <string name="file_info_title">"Сведения о файле:"</string>
     <string name="video_exceed_mms_limit">"Записанное видео имеет слишком большой размер для отправки в MMS. Запишите более короткий ролик."</string>
+    <!-- no translation found for multiselect_share (5261644537749253581) -->
+    <skip />
+    <!-- no translation found for multiselect_delete (9113461994546744603) -->
+    <skip />
+    <!-- no translation found for multiselect_cancel (5969428692864002165) -->
+    <skip />
+    <!-- no translation found for progress_dialog_title (4771577387849747804) -->
+    <skip />
+    <!-- no translation found for delete_images_message (4504926868037899430) -->
+    <skip />
+    <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
+    <skip />
 </resources>

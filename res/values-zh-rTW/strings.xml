@@ -22,6 +22,7 @@
     <string name="gallery_picker_label">"圖庫"</string>
     <string name="gallery_camera_bucket_name">"相機圖片"</string>
     <string name="gallery_camera_videos_bucket_name">"相機影片"</string>
+    <string name="gallery_camera_media_bucket_name">"相機媒體"</string>
     <string name="switch_to_video_lable">"切換為影片"</string>
     <string name="switch_to_camera_lable">"切換為相機"</string>
     <string name="crop_label">"裁剪相片"</string>
@@ -37,10 +38,12 @@
     <string name="settings">"設定"</string>
     <string name="view">"檢視"</string>
     <string name="details">"詳細資料"</string>
+    <string name="show_on_map">"顯示在地圖上"</string>
     <string name="rotate">"旋轉"</string>
     <string name="rotate_left">"向左旋轉"</string>
     <string name="rotate_right">"向右旋轉"</string>
     <string name="slide_show">"投影片"</string>
+    <string name="multiselect">"複選"</string>
     <string name="capture_picture">"拍攝照片"</string>
     <string name="capture_video">"拍攝影片"</string>
     <string name="crop_save_text">"儲存"</string>
@@ -48,6 +51,17 @@
     <string name="confirm_delete_title">"刪除"</string>
     <string name="confirm_delete_message">"刪除相片？"</string>
     <string name="confirm_delete_video_message">"刪除這部影片？"</string>
+    <!-- no translation found for confirm_delete_multiple_message (5962369828035778779) -->
+    <skip />
+    <string name="review_toss">"刪除"</string>
+    <string name="review_share">"分享"</string>
+    <string name="review_set">"設為"</string>
+    <string name="review_play">"播放"</string>
+    <string name="review_attach">"附加"</string>
+    <string name="review_cancel">"取消"</string>
+    <string name="review_done">"完成"</string>
+    <string name="review_ok">"確定"</string>
+    <string name="review_retake">"重拍"</string>
     <string name="camera_toss">"刪除"</string>
     <string name="camera_gallery">"圖庫"</string>
     <string name="camera_share">"分享"</string>
@@ -102,17 +116,46 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"隨機顯示相片"</string>
     <string name="pref_camera_recordlocation_title">"在相片儲存位置資訊"</string>
     <string name="pref_camera_recordlocation_summary">"在相片中記錄位置資訊"</string>
+    <string name="pref_camera_video_settings_category">"影片設定"</string>
     <string name="pref_camera_videoquality_title">"選取影片品質"</string>
     <string name="pref_camera_videoquality_entry_0">"低 (適用於多媒體簡訊)"</string>
     <string name="pref_camera_videoquality_entry_1">"高 (適用於 SD 卡)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"影片品質"</string>
+    <string name="pref_camera_video_duration_title">"選取影片長度"</string>
+    <string name="pref_camera_video_duration_entry_1">"1 分鐘 (分享影片)"</string>
+    <string name="pref_camera_video_duration_entry_10">"10 分鐘"</string>
+    <string name="pref_camera_video_duration_entry_30">"30 分鐘"</string>
+    <string name="pref_camera_video_duration_dialogtitle">"影片長度"</string>
+    <string name="pref_camera_picture_settings_category">"相片設定"</string>
+    <string name="pref_camera_picturesize_title">"選取相片大小"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">"3M (2048x1536)"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">"2M (1600x1200)"</string>
+    <string name="pref_camera_picturesize_entry_1024x768">"1M (1024x768)"</string>
+    <string name="pref_camera_picturesize_dialogtitle">"相片大小"</string>
+    <string name="pref_camera_jpegquality_title">"選取相片品質"</string>
+    <string name="pref_camera_jpegquality_entry_superfine">"超精細"</string>
+    <string name="pref_camera_jpegquality_entry_fine">"精細"</string>
+    <string name="pref_camera_jpegquality_entry_normal">"適中"</string>
+    <string name="pref_camera_jpegquality_dialogtitle">"相片品質"</string>
+    <string name="pref_camera_focusmode_title">"選擇對焦模式"</string>
+    <string name="pref_camera_focusmode_entry_auto">"自動"</string>
+    <string name="pref_camera_focusmode_entry_infinity">"無限遠"</string>
+    <string name="pref_camera_focusmode_value_infinity">"無限遠"</string>
+    <string name="pref_camera_focusmode_dialogtitle">"對焦模式"</string>
     <string name="camerasettings">"設定"</string>
     <string name="image_gallery_NoImageView_text">"找不到媒體。"</string>
     <string name="pref_gallery_confirm_delete_title">"刪除確認"</string>
     <string name="pref_gallery_confirm_delete_summary">"刪除相片或影片前要顯示確認"</string>
+    <string name="no_location_image">"此圖片沒有地點資訊。"</string>
     <string name="details_panel_title">"詳細資料"</string>
     <string name="details_file_size">"檔案大小："</string>
     <string name="details_image_resolution">"解析度："</string>
+    <string name="details_image_make">"製造商："</string>
+    <string name="details_image_model">"型號："</string>
+    <string name="details_image_whitebalance">"白平衡："</string>
+    <string name="details_image_latitude">"GPS 緯度："</string>
+    <string name="details_image_longitude">"GPS 經度："</string>
+    <string name="details_image_location">"地點："</string>
     <string name="details_duration">"所需時間："</string>
     <string name="details_date_taken">"拍攝日期："</string>
     <string name="details_frame_rate">"影格速率："</string>
@@ -147,4 +190,12 @@
     <string name="gadget_title">"相框"</string>
     <string name="file_info_title">"檔案資訊："</string>
     <string name="video_exceed_mms_limit">"您所錄製的影片太大，無法透過 MMS 傳送。請試著錄製較短的影片。"</string>
+    <string name="multiselect_share">"分享"</string>
+    <string name="multiselect_delete">"刪除"</string>
+    <!-- no translation found for multiselect_cancel (5969428692864002165) -->
+    <skip />
+    <string name="progress_dialog_title">"進行中"</string>
+    <string name="delete_images_message">"正在刪除圖片，請稍候..."</string>
+    <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
+    <skip />
 </resources>
