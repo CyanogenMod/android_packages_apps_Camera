@@ -769,6 +769,9 @@ public class ImageGallery extends Activity implements
                                     return;
                                 }
                                 cb.run(getCurrentImageUri(), getCurrentImage());
+                                rebake(false,
+                                        ImageManager.isMediaScannerScanning(
+                                                getContentResolver()));
                             }
                         });
                 if (r != null) {
@@ -894,7 +897,7 @@ public class ImageGallery extends Activity implements
     public boolean needsDecoration() {
         return (mMultiSelected != null);
     }
-    
+
     public void drawDecoration(Canvas canvas, IImage image,
             int xPos, int yPos, int w, int h) {
         if (mMultiSelected != null) {
