@@ -1309,10 +1309,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mHandler.sendEmptyMessageDelayed(UPDATE_RECORD_TIME, 1000);
     }
 
-    public void onSwitchChanged(Switcher source, boolean onOff) {
+    public boolean onSwitchChanged(Switcher source, boolean onOff) {
         if (onOff == SWITCH_CAMERA) {
             MenuHelper.gotoCameraMode(this);
             finish();
         }
+        return true;
     }
 }

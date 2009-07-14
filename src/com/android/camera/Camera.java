@@ -1599,11 +1599,13 @@ public class Camera extends Activity implements View.OnClickListener,
         item.setIcon(android.R.drawable.ic_menu_preferences);
     }
 
-    public void onSwitchChanged(Switcher source, boolean onOff) {
-        if (onOff == SWITCH_VIDEO && isCameraIdle()) {
+    public boolean onSwitchChanged(Switcher source, boolean onOff) {
+        if (onOff == SWITCH_VIDEO) {
+            if (!isCameraIdle()) return false;
             MenuHelper.gotoVideoMode(this);
             finish();
         }
+        return true;
     }
 }
 
