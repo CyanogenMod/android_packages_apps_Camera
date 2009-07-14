@@ -39,9 +39,9 @@
 
     <ProgressBar android:id="@android:id/progress"
             style="?android:attr/progressBarStyleSmallTitle"
-            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
             android:paddingRight="5dip"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0" />
 </LinearLayout>
