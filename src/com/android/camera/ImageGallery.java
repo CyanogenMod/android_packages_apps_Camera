@@ -769,9 +769,7 @@ public class ImageGallery extends Activity implements
                                     return;
                                 }
                                 cb.run(getCurrentImageUri(), getCurrentImage());
-                                rebake(false,
-                                        ImageManager.isMediaScannerScanning(
-                                                getContentResolver()));
+                                mGvs.invalidateImage(mGvs.getCurrentSelection());
                             }
                         });
                 if (r != null) {
