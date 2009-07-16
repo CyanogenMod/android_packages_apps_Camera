@@ -352,6 +352,12 @@ class GridViewSpecial extends View {
         return mCurrentSelection;
     }
 
+    public void invalidateImage(int index) {
+        if (index != SELECT_NONE) {
+            mImageBlockManager.invalidateImage(index);
+        }
+    }
+
     /**
      *
      * @param newSel ORIGINAL_SELECT (-2) means use old selection,
@@ -843,6 +849,17 @@ class ImageBlockManager {
             }
         }
         return mCache.remove(bestIndex);
+    }
+
+    public void invalidateImage(int index) {
+        int row = index / mColumns;
+        int col = index - (row * mColumns);
+        ImageBlock blk = mCache.get(row);
+        if (blk == null) return;
+        if ((blk.mCompletedMask & (1 << col)) != 0) {
+            blk.mCompletedMask &= ~(1 << col);
+        }
+        startLoading();
     }
 
     // After calling recycle(), the instance should not be used anymore.
