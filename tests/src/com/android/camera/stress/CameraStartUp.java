@@ -69,7 +69,8 @@ public class CameraStartUp extends InstrumentationTestCase {
         return startupTime;
     }
 
-    private void writeToOutputFile(String startupTag, long totalStartupTime) throws Exception {
+    private void writeToOutputFile(String startupTag, long totalStartupTime,
+            String individualStartupTime) throws Exception {
         //TODO (yslau) : Need to integrate the output data with central dashboard
         try {
             FileWriter fstream = null;
@@ -78,6 +79,7 @@ public class CameraStartUp extends InstrumentationTestCase {
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(startupTag + "\n");
             out.write("Number of loop: " + TOTAL_NUMBER_OF_STARTUP + "\n");
+            out.write(individualStartupTime + "\n\n");
             out.write("Average startup time :" + averageStartupTime + " ms\n\n");
             out.close();
             fstream.close();
@@ -88,21 +90,33 @@ public class CameraStartUp extends InstrumentationTestCase {
 
     @LargeTest
     public void testLaunchVideo() throws Exception {
-        long totalStartupTime =0;
+        String individualStartupTime;
+        individualStartupTime = "Individual Video Startup Time = ";
+        long totalStartupTime = 0;
+        long startupTime = 0;
         for ( int i =0; i< TOTAL_NUMBER_OF_STARTUP; i++){
-            totalStartupTime += launchVideo();
+            startupTime = launchVideo();
+            totalStartupTime += startupTime;
+            individualStartupTime += startupTime + " ,";
         }
         Log.v(TAG, "totalStartupTime =" + totalStartupTime);
-        writeToOutputFile("Video Recorder Startup Time: ", totalStartupTime);
+        writeToOutputFile("Video Recorder Startup Time: ", totalStartupTime,
+                individualStartupTime);
     }
 
     @LargeTest
     public void testLaunchCamera() throws Exception {
+        String individualStartupTime;
+        individualStartupTime = "Individual Camera Startup Time = ";
         long totalStartupTime =0;
+        long startupTime = 0;
         for ( int i =0; i< TOTAL_NUMBER_OF_STARTUP; i++){
-            totalStartupTime += launchCamera();
+            startupTime = launchCamera();
+            totalStartupTime += startupTime;
+            individualStartupTime += startupTime + " ,";
         }
         Log.v(TAG, "totalStartupTime =" + totalStartupTime);
-        writeToOutputFile("Camera Startup Time: ", totalStartupTime);
+        writeToOutputFile("Camera Startup Time: ", totalStartupTime,
+                individualStartupTime);
     }
 }
