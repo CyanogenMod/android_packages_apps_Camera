@@ -1244,9 +1244,6 @@ class ImageGetter {
     @SuppressWarnings("unused")
     private static final String TAG = "ImageGetter";
 
-    // The delay in msec between decoding a thumbnail and a full size image.
-    private static final int delayOfDecodingFullSizeImage = 1000;
-
     // The thread which does the work.
     private final Thread mGetterThread;
 
@@ -1365,7 +1362,7 @@ class ImageGetter {
                                 if (image != null && !isCanceled()) {
                                     mLoad = image.fullSizeBitmapCancelable(
                                             sizeToUse,
-                                            Util.createPurgeableOption());
+                                            Util.createNativeAllocOptions());
                                 }
                                 if (mLoad != null) {
                                     // The return value could be null if the
@@ -1388,10 +1385,8 @@ class ImageGetter {
                                             Runnable cb = callback(
                                                     lastPosition, offset,
                                                     false, b);
-                                            mViewImage.mHandler
-                                                    .postDelayedGetterCallback(
-                                                    cb,
-                                                    delayOfDecodingFullSizeImage);
+                                            mViewImage.mHandler.
+                                                    postGetterCallback(cb);
                                         }
                                     }
                                 }
