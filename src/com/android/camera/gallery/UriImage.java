@@ -42,6 +42,10 @@ class UriImage implements IImage {
         mUri = uri;
     }
 
+    public int getDegreesRotated() {
+        return 0;
+    }
+
     public String getDataPath() {
         return mUri.getPath();
     }
@@ -79,6 +83,12 @@ class UriImage implements IImage {
     }
 
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
+            boolean rotateAsNeeded) {
+        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
+                rotateAsNeeded, IImage.NO_NATIVE);
+    }
+
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
             boolean rotateAsNeeded, boolean useNative) {
         try {
             ParcelFileDescriptor pfdInput = getPFD();
@@ -100,7 +110,7 @@ class UriImage implements IImage {
     }
 
     public Bitmap miniThumbBitmap() {
-        return thumbBitmap();
+        return thumbBitmap(IImage.ROTATE_AS_NEEDED);
     }
 
     public String getTitle() {
@@ -111,8 +121,9 @@ class UriImage implements IImage {
         return getTitle();
     }
 
-    public Bitmap thumbBitmap() {
-        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, IImage.UNCONSTRAINED);
+    public Bitmap thumbBitmap(boolean rotateAsNeeded) {
+        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, IImage.UNCONSTRAINED,
+                rotateAsNeeded);
     }
 
     private BitmapFactory.Options snifBitmapOptions() {

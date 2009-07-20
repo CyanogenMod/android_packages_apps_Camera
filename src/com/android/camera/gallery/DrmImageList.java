@@ -82,6 +82,11 @@ public class DrmImageList extends ImageList implements IImageList {
         }
 
         @Override
+        public int getDegreesRotated() {
+            return 0;
+        }
+
+        @Override
         public boolean isDrm() {
             return true;
         }
@@ -98,7 +103,7 @@ public class DrmImageList extends ImageList implements IImageList {
         }
 
         @Override
-        public Bitmap thumbBitmap() {
+        public Bitmap thumbBitmap(boolean rotateAsNeeded) {
             return fullSizeBitmap(IImage.THUMBNAIL_TARGET_SIZE,
                     IImage.UNCONSTRAINED);
         }

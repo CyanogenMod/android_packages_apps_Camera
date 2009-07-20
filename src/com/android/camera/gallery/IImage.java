@@ -34,9 +34,13 @@ public interface IImage {
     public abstract IImageList getContainer();
 
     /** Get the bitmap for the full size image. */
-    public abstract Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels);
+    public abstract Bitmap fullSizeBitmap(int minSideLength,
+            int maxNumberOfPixels);
+    public abstract Bitmap fullSizeBitmap(int minSideLength,
+            int maxNumberOfPixels, boolean rotateAsNeeded);
     public abstract Bitmap fullSizeBitmap(int minSideLength,
             int maxNumberOfPixels, boolean rotateAsNeeded, boolean useNative);
+    public abstract int getDegreesRotated();
     public static final boolean ROTATE_AS_NEEDED = true;
     public static final boolean NO_ROTATE = false;
     public static final boolean USE_NATIVE = true;
@@ -70,7 +74,7 @@ public interface IImage {
     public abstract boolean isDrm();
 
     // Get the bitmap/uri of the medium thumbnail
-    public abstract Bitmap thumbBitmap();
+    public abstract Bitmap thumbBitmap(boolean rotateAsNeeded);
     public abstract Uri thumbUri();
 
     // Get the bitmap of the mini thumbnail.

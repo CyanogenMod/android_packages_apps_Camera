@@ -40,7 +40,7 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
 
         @Override
         public void run() {
-            bitmap = mImage.thumbBitmap();
+            bitmap = mImage.thumbBitmap(IImage.ROTATE_AS_NEEDED);
         }
 
         public Bitmap getBitmap() {

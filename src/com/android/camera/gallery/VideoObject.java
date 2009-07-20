@@ -107,7 +107,7 @@ public class VideoObject extends BaseImage implements IImage {
        return false;
     }
 
-    public Bitmap thumbBitmap() {
+    public Bitmap thumbBitmap(boolean rotateAsNeeded) {
         return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, UNCONSTRAINED);
     }
 
