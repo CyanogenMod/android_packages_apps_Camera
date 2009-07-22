@@ -367,6 +367,7 @@
     <string name="pref_camera_picturesize_title">Select picture size</string>
 
     <!-- Settings screen, Picture size dialog radio button choices -->
+    <string name="pref_camera_picturesize_entry_2592x1936">5M (2592x1936)</string>
     <string name="pref_camera_picturesize_entry_2048x1536">3M (2048x1536)</string>
     <string name="pref_camera_picturesize_entry_1600x1200">2M (1600x1200)</string>
     <string name="pref_camera_picturesize_entry_1024x768">1M (1024x768)</string>

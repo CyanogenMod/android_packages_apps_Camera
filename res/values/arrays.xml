@@ -44,6 +44,7 @@
 
     <!-- Camera Preferences Picture size dialog box entries -->
     <string-array name="pref_camera_picturesize_entries">
+        <item>@string/pref_camera_picturesize_entry_2592x1936</item>
         <item>@string/pref_camera_picturesize_entry_2048x1536</item>
         <item>@string/pref_camera_picturesize_entry_1600x1200</item>
         <item>@string/pref_camera_picturesize_entry_1024x768</item>
@@ -51,6 +52,7 @@
 
     <!-- Do not localize entryvalues -->
     <string-array name="pref_camera_picturesize_entryvalues">
+        <item>2592x1936</item>
         <item>2048x1536</item>
         <item>1600x1200</item>
         <item>1024x768</item>
