@@ -211,6 +211,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
+        if (mPaused) return true;
         boolean sup = super.dispatchTouchEvent(m);
 
         // This is a hack to show the on screen controls. We should make sure
