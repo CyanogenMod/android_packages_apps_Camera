@@ -302,10 +302,19 @@ public class Util {
      */
     public static Bitmap makeBitmap(int targetWidthOrHeight, Uri uri,
             ContentResolver cr) {
+        return makeBitmap(targetWidthOrHeight, uri, cr, false);
+    }
+    
+    public static Bitmap makeBitmap(int targetWidthOrHeight, Uri uri,
+            ContentResolver cr, boolean useNative) {
         ParcelFileDescriptor input = null;
         try {
             input = cr.openFileDescriptor(uri, "r");
-            return makeBitmap(targetWidthOrHeight, uri, cr, input, null);
+            BitmapFactory.Options options = null;
+            if (useNative) {
+                options = createNativeAllocOptions();
+            }
+            return makeBitmap(targetWidthOrHeight, uri, cr, input, options);
         } catch (IOException ex) {
             return null;
         } finally {
@@ -313,6 +322,15 @@ public class Util {
         }
     }
 
+    public static Bitmap makeBitmap(int targetWidthHeight,
+            ParcelFileDescriptor pfd, boolean useNative) {
+        BitmapFactory.Options options = null;
+        if (useNative) {
+            options = createNativeAllocOptions();
+        }
+        return makeBitmap(targetWidthHeight, null, null, pfd, options);
+    }
+    
     public static Bitmap makeBitmap(int targetWidthHeight, Uri uri,
             ContentResolver cr, ParcelFileDescriptor pfd,
             BitmapFactory.Options options) {

@@ -34,6 +34,12 @@ public interface IImage {
 
     /** Get the bitmap for the full size image. */
     public abstract Bitmap fullSizeBitmap(int targetWidthOrHeight);
+    public abstract Bitmap fullSizeBitmap(int targetWidthOrHeight,
+            boolean rotateAsNeeded, boolean useNative);
+    public static final boolean ROTATE_AS_NEEDED = true;
+    public static final boolean NO_ROTATE = false;
+    public static final boolean USE_NATIVE = true;
+    public static final boolean NO_NATIVE = false;
 
     /** Get the cancelable object for the bitmap of the full size image. */
     public abstract Cancelable<Bitmap> fullSizeBitmapCancelable(

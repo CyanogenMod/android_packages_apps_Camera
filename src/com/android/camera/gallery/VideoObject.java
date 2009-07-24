@@ -64,7 +64,8 @@ public class VideoObject extends BaseImage implements IImage {
     }
 
     @Override
-    public Bitmap fullSizeBitmap(int targetWidthHeight) {
+    public Bitmap fullSizeBitmap(int targetWidthHeight, boolean rotateAsNeeded,
+            boolean useNative) {
         return Util.createVideoThumbnail(mDataPath);
     }
 

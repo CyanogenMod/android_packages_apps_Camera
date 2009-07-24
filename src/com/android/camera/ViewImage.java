@@ -79,7 +79,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private static final int[] sOrderAdjacents = new int[] {0, 1, -1};
     private static final int[] sOrderSlideshow = new int[] {0};
 
-    final LocalHandler mHandler = new LocalHandler();
+    final GetterHandler mHandler = new GetterHandler();
 
     private final Random mRandom = new Random(System.currentTimeMillis());
     private int [] mShuffleOrder = null;
@@ -460,7 +460,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
 
         ImageGetterCallback cb = new ImageGetterCallback() {
-            public void completed(boolean wasCanceled) {
+            public void completed() {
                 if (!mShowActionIcons) {
                     mImageView.setFocusableInTouchMode(true);
                     mImageView.requestFocus();
@@ -514,7 +514,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         // Could be null if we're stopping a slide show in the course of pausing
         if (mGetter != null) {
-            mGetter.setPosition(pos, cb);
+            mGetter.setPosition(pos, cb, mAllImages, mHandler);
         }
         updateActionIcons();
         showOnScreenControls(AUTO_DISMISS);
@@ -766,7 +766,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         final long targetDisplayTime = System.currentTimeMillis() + delay;
 
         ImageGetterCallback cb = new ImageGetterCallback() {
-            public void completed(boolean wasCanceled) {
+            public void completed() {
             }
 
             public boolean wantsThumbnail(int pos, int offset) {
@@ -854,12 +854,12 @@ public class ViewImage extends Activity implements View.OnClickListener {
             if (mShuffleOrder != null) {
                 pos = mShuffleOrder[pos];
             }
-            mGetter.setPosition(pos, cb);
+            mGetter.setPosition(pos, cb, mAllImages, mHandler);
         }
     }
 
     private void makeGetter() {
-        mGetter = new ImageGetter(this);
+        mGetter = new ImageGetter();
     }
 
     private IImageList buildImageListFromUri(Uri uri) {
@@ -1052,37 +1052,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 break;
         }
     }
-
-    static class LocalHandler extends Handler {
-        private static final int IMAGE_GETTER_CALLBACK = 1;
-
-        @Override
-        public void handleMessage(Message message) {
-            switch(message.what) {
-                case IMAGE_GETTER_CALLBACK:
-                    ((Runnable) message.obj).run();
-                    break;
-            }
-        }
-
-        public void postGetterCallback(Runnable callback) {
-           postDelayedGetterCallback(callback, 0);
-        }
-
-        public void postDelayedGetterCallback(Runnable callback, long delay) {
-            if (callback == null) {
-                throw new NullPointerException();
-            }
-            Message message = Message.obtain();
-            message.what = IMAGE_GETTER_CALLBACK;
-            message.obj = callback;
-            sendMessageDelayed(message, delay);
-        }
-
-        public void removeAllGetterCallbacks() {
-            removeMessages(IMAGE_GETTER_CALLBACK);
-        }
-    }
 }
 
 class ImageViewTouch extends ImageViewTouchBase {
@@ -1205,254 +1174,6 @@ class ImageViewTouch extends ImageViewTouchBase {
             retval = t1[0] + maxOffset < getWidth();
         }
         return retval;
-    }
-}
-
-/*
- * Here's the loading strategy.  For any given image, load the thumbnail
- * into memory and post a callback to display the resulting bitmap.
- *
- * Then proceed to load the full image bitmap.   Three things can
- * happen at this point:
- *
- * 1.  the image fails to load because the UI thread decided
- * to move on to a different image.  This "cancellation" happens
- * by virtue of the UI thread closing the stream containing the
- * image being decoded.  BitmapFactory.decodeStream returns null
- * in this case.
- *
- * 2.  the image loaded successfully.  At that point we post
- * a callback to the UI thread to actually show the bitmap.
- *
- * 3.  when the post runs it checks to see if the image that was
- * loaded is still the one we want.  The UI may have moved on
- * to some other image and if so we just drop the newly loaded
- * bitmap on the floor.
- */
-
-interface ImageGetterCallback {
-    public void imageLoaded(int pos, int offset, Bitmap bitmap,
-                            boolean isThumb);
-    public boolean wantsThumbnail(int pos, int offset);
-    public boolean wantsFullImage(int pos, int offset);
-    public int fullImageSizeToUse(int pos, int offset);
-    public void completed(boolean wasCanceled);
-    public int [] loadOrder();
-}
-
-class ImageGetter {
-
-    @SuppressWarnings("unused")
-    private static final String TAG = "ImageGetter";
-
-    // The thread which does the work.
-    private final Thread mGetterThread;
-
-    // The base position that's being retrieved.  The actual images retrieved
-    // are this base plus each of the offets.
-    private int mCurrentPosition = -1;
-
-    // The callback to invoke for each image.
-    private ImageGetterCallback mCB;
-
-    // This is the loader cancelable that gets set while we're loading an image.
-    // If we change position we can cancel the current load using this.
-    private Cancelable<Bitmap> mLoad;
-
-    // True if we're canceling the current load.
-    private boolean mCancelCurrent = false;
-
-    // True when the therad should exit.
-    private boolean mDone = false;
-
-    // True when the loader thread is waiting for work.
-    private boolean mReady = false;
-
-    // The ViewImage this ImageGetter belongs to
-    ViewImage mViewImage;
-
-    void cancelCurrent() {
-        synchronized (this) {
-            if (!mReady) {
-                mCancelCurrent = true;
-                Cancelable<Bitmap> load = mLoad;
-                if (load != null) {
-                    load.requestCancel();
-                }
-                mCancelCurrent = false;
-            }
-        }
-    }
-
-    private class ImageGetterRunnable implements Runnable {
-        private Runnable callback(final int position, final int offset,
-                                  final boolean isThumb, final Bitmap bitmap) {
-            return new Runnable() {
-                public void run() {
-                    // check for inflight callbacks that aren't applicable
-                    // any longer before delivering them
-                    if (!isCanceled() && position == mCurrentPosition) {
-                        mCB.imageLoaded(position, offset, bitmap, isThumb);
-                    } else if (bitmap != null) {
-                        bitmap.recycle();
-                    }
-                }
-            };
-        }
-
-        private Runnable completedCallback(final boolean wasCanceled) {
-            return new Runnable() {
-                public void run() {
-                    mCB.completed(wasCanceled);
-                }
-            };
-        }
-
-        public void run() {
-            int lastPosition = -1;
-            while (!mDone) {
-                synchronized (ImageGetter.this) {
-                    mReady = true;
-                    ImageGetter.this.notify();
-
-                    if (mCurrentPosition == -1
-                            || lastPosition == mCurrentPosition) {
-                        try {
-                            ImageGetter.this.wait();
-                        } catch (InterruptedException ex) {
-                            continue;
-                        }
-                    }
-
-                    lastPosition = mCurrentPosition;
-                    mReady = false;
-                }
-
-                if (lastPosition != -1) {
-                    int imageCount = mViewImage.mAllImages.getCount();
-
-                    int [] order = mCB.loadOrder();
-                    for (int i = 0; i < order.length; i++) {
-                        int offset = order[i];
-                        int imageNumber = lastPosition + offset;
-                        if (imageNumber >= 0 && imageNumber < imageCount) {
-                            IImage image = mViewImage.mAllImages
-                                    .getImageAt(lastPosition + offset);
-                            if (image == null || isCanceled()) {
-                                break;
-                            }
-                            if (mCB.wantsThumbnail(lastPosition, offset)) {
-                                Bitmap b = image.thumbBitmap();
-                                mViewImage.mHandler.postGetterCallback(
-                                        callback(lastPosition, offset,
-                                        true, b));
-                            }
-                        }
-                    }
-
-                    for (int i = 0; i < order.length; i++) {
-                        int offset = order[i];
-                        int imageNumber = lastPosition + offset;
-                        if (imageNumber >= 0 && imageNumber < imageCount) {
-                            IImage image = mViewImage.mAllImages
-                                    .getImageAt(lastPosition + offset);
-                            if (mCB.wantsFullImage(lastPosition, offset)
-                                    && !(image instanceof VideoObject)) {
-                                int sizeToUse = mCB.fullImageSizeToUse(
-                                        lastPosition, offset);
-                                if (image != null && !isCanceled()) {
-                                    mLoad = image.fullSizeBitmapCancelable(
-                                            sizeToUse,
-                                            Util.createNativeAllocOptions());
-                                }
-                                if (mLoad != null) {
-                                    // The return value could be null if the
-                                    // bitmap is too big, or we cancelled it.
-                                    Bitmap b;
-                                    try {
-                                        b = mLoad.get();
-                                    } catch (InterruptedException e) {
-                                        b = null;
-                                    } catch (ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    } catch (CancellationException e) {
-                                        b = null;
-                                    }
-                                    mLoad = null;
-                                    if (b != null) {
-                                        if (isCanceled()) {
-                                            b.recycle();
-                                        } else {
-                                            Runnable cb = callback(
-                                                    lastPosition, offset,
-                                                    false, b);
-                                            mViewImage.mHandler.
-                                                    postGetterCallback(cb);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    mViewImage.mHandler.postGetterCallback(
-                            completedCallback(isCanceled()));
-                }
-            }
-        }
-    }
-
-    public ImageGetter(ViewImage viewImage) {
-        mViewImage = viewImage;
-        mGetterThread = new Thread(new ImageGetterRunnable());
-        mGetterThread.setName("ImageGettter");
-        mGetterThread.start();
-    }
-
-    private boolean isCanceled() {
-        synchronized (this) {
-            return mCancelCurrent;
-        }
-    }
-
-    public void setPosition(int position, ImageGetterCallback cb) {
-        synchronized (this) {
-            if (!mReady) {
-                try {
-                    mCancelCurrent = true;
-                    // if the thread is waiting before loading the full size
-                    // image then this will free it up
-                    BitmapManager.instance()
-                            .cancelThreadDecoding(mGetterThread);
-                    ImageGetter.this.notify();
-                    ImageGetter.this.wait();
-                    BitmapManager.instance()
-                            .allowThreadDecoding(mGetterThread);
-                    mCancelCurrent = false;
-                } catch (InterruptedException ex) {
-                    // not sure what to do here
-                }
-            }
-        }
-
-        mCurrentPosition = position;
-        mCB = cb;
-
-        synchronized (this) {
-            ImageGetter.this.notify();
-        }
-    }
-
-    public void stop() {
-        synchronized (this) {
-            mDone = true;
-            ImageGetter.this.notify();
-        }
-        try {
-            BitmapManager.instance().cancelThreadDecoding(mGetterThread);
-            mGetterThread.join();
-        } catch (InterruptedException ex) {
-            // Ignore the exception
-        }
     }
 }
 
