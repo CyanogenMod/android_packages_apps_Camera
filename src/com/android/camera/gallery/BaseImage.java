@@ -176,63 +176,6 @@ public abstract class BaseImage implements IImage {
         return b;
     }
 
-    private class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
-        private final ParcelFileDescriptor mPFD;
-        private final int mTargetWidthHeight;
-        private BitmapFactory.Options mOptions;
-
-        public LoadBitmapCancelable(
-                ParcelFileDescriptor pfdInput, int targetWidthHeight,
-                BitmapFactory.Options options) {
-            mPFD = pfdInput;
-            mTargetWidthHeight = targetWidthHeight;
-            if (options != null) {
-                 mOptions = options;
-            } else {
-                 mOptions = new BitmapFactory.Options();
-            }
-        }
-
-        @Override
-        public boolean requestCancel() {
-            if (super.requestCancel()) {
-                mOptions.requestCancelDecode();
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        protected Bitmap execute() {
-            try {
-                Bitmap b = Util.makeBitmap(mTargetWidthHeight, mUri,
-                        mContentResolver, mPFD, mOptions);
-                if (b != null) {
-                    b = Util.rotate(b, getDegreesRotated());
-                }
-                return b;
-            } catch (RuntimeException ex) {
-                return null;
-            } catch (Error e) {
-                return null;
-            }
-        }
-    }
-
-    public Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthHeight, BitmapFactory.Options options) {
-        try {
-            ParcelFileDescriptor pfdInput = mContentResolver
-                    .openFileDescriptor(mUri, "r");
-            return new LoadBitmapCancelable(pfdInput,
-                    targetWidthHeight, options);
-        } catch (FileNotFoundException ex) {
-            return null;
-        } catch (UnsupportedOperationException ex) {
-            return null;
-        }
-    }
-
     public InputStream fullSizeImageData() {
         try {
             InputStream input = mContentResolver.openInputStream(mUri);

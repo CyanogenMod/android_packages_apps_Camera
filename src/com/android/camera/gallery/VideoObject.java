@@ -70,12 +70,6 @@ public class VideoObject extends BaseImage implements IImage {
     }
 
     @Override
-    public Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthHeight, BitmapFactory.Options options) {
-        return null;
-    }
-
-    @Override
     public InputStream fullSizeImageData() {
         try {
             InputStream input = mContentResolver.openInputStream(
