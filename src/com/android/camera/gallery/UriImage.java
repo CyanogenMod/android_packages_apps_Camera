@@ -74,28 +74,19 @@ class UriImage implements IImage {
     }
 
     public Bitmap fullSizeBitmap(int targetWidthHeight) {
+        return fullSizeBitmap(targetWidthHeight, IImage.ROTATE_AS_NEEDED,
+                IImage.NO_NATIVE);
+    }
+
+    public Bitmap fullSizeBitmap(int targetWidthHeight, boolean rotateAsNeeded,
+            boolean useNative) {
         try {
             ParcelFileDescriptor pfdInput = getPFD();
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), options);
-
-            if (targetWidthHeight != -1) {
-                options.inSampleSize =
-                        Util.computeSampleSize(options, targetWidthHeight);
-            }
-
-            options.inJustDecodeBounds = false;
-            options.inDither = false;
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-            Bitmap b = BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), options);
-            pfdInput.close();
+            Bitmap b = Util.makeBitmap(targetWidthHeight, pfdInput,
+                    useNative);
             return b;
         } catch (Exception ex) {
-            Log.e(TAG, "got exception decoding bitmap " + ex.toString());
+            Log.e(TAG, "got exception decoding bitmap ", ex);
             return null;
         }
     }

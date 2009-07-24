@@ -24,6 +24,11 @@ public class MockImage implements IImage {
         return null;
     }
 
+    public Bitmap fullSizeBitmap(int targetWidthOrHeight,
+            boolean rotateAsNeeded, boolean useNative) {
+        return null;
+    }
+
     public Cancelable<Bitmap> fullSizeBitmapCancelable(int targetWidthOrHeight,
             BitmapFactory.Options options) {
         return null;
