@@ -389,27 +389,6 @@ public class Util {
         Log.d(tag, msg + " --- stack trace ends.");
     }
 
-    public static <T> void showProgressDialog(final Context context,
-            String title, String message, PriorityTask<T> task) {
-        final ProgressDialog dialog =
-                ProgressDialog.show(context, title, message);
-
-        task.addCallback(new PriorityTask.Callback<T>() {
-
-            public void onCanceled(PriorityTask<T> t) {
-                dialog.dismiss();
-            }
-
-            public void onFail(PriorityTask<T> t, Throwable error) {
-                dialog.dismiss();
-            }
-
-            public void onResultAvailable(PriorityTask<T> t, T result) {
-                dialog.dismiss();
-            }
-        });
-    }
-
     public static synchronized OnClickListener getNullOnClickListener() {
         if (sNullOnClickListener == null) {
             sNullOnClickListener = new OnClickListener() {
