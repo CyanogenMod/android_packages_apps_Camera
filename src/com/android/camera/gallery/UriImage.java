@@ -91,56 +91,6 @@ class UriImage implements IImage {
         }
     }
 
-    final class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
-        ParcelFileDescriptor mPfdInput;
-        BitmapFactory.Options mOptions;
-        int mTargetWidthOrHeight;
-
-        public LoadBitmapCancelable(ParcelFileDescriptor pfd,
-                int targetWidthOrHeight, BitmapFactory.Options options) {
-            mPfdInput = pfd;
-            mTargetWidthOrHeight = targetWidthOrHeight;
-            if (options != null) {
-                mOptions = options;
-           } else {
-                mOptions = new BitmapFactory.Options();
-           }
-        }
-
-        @Override
-        public boolean requestCancel() {
-            if (super.requestCancel()) {
-                mOptions.requestCancelDecode();
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        protected Bitmap execute() {
-            try {
-                Bitmap b = Util.makeBitmap(mTargetWidthOrHeight,
-                        fullSizeImageUri(), mContentResolver, mPfdInput,
-                        mOptions);
-                return b;
-            } catch (Exception ex) {
-                return null;
-            }
-        }
-    }
-
-    public Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthOrHeight, BitmapFactory.Options options) {
-        try {
-            ParcelFileDescriptor pfdInput = getPFD();
-            if (pfdInput == null) return null;
-            return new LoadBitmapCancelable(pfdInput,
-                    targetWidthOrHeight, options);
-        } catch (UnsupportedOperationException ex) {
-            return null;
-        }
-    }
-
     public Uri fullSizeImageUri() {
         return mUri;
     }

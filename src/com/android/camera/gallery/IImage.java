@@ -41,10 +41,6 @@ public interface IImage {
     public static final boolean USE_NATIVE = true;
     public static final boolean NO_NATIVE = false;
 
-    /** Get the cancelable object for the bitmap of the full size image. */
-    public abstract Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthOrHeight, BitmapFactory.Options mOptions);
-
     /** Get the input stream associated with a given full size image. */
     public abstract InputStream fullSizeImageData();
     public abstract long fullSizeImageId();
