@@ -4,9 +4,9 @@
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-  
+
           http://www.apache.org/licenses/LICENSE-2.0
-  
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@
 
     <!-- label for the icon meaning 'show me all the videos' -->
     <string name="all_videos">All videos</string>
-    
+
     <!-- label for the icon meaning 'show me all the images that were taken with the camera' -->
     <string name="camera_label">Camera</string>
 
@@ -32,21 +32,24 @@
     <!-- label for the 'pictures application shown in the top level 'all applications' -->
     <string name="gallery_picker_label">Gallery</string>
 
-    <!-- unused (do not translate) -->
-    <string name="gallery_label">Pictures</string>
-    
+    <!-- temporary label for the image gallery before the real label is set in the activity (do not translate) -->
+    <string name="gallery_label"> </string>
+
     <!-- label for the folder that contains Camera pictures in the gallery -->
     <string name="gallery_camera_bucket_name">Camera pictures</string>
 
     <!-- label for the folder that contains Camera videos in the gallery -->
     <string name="gallery_camera_videos_bucket_name">Camera videos</string>
-    
+
+    <!-- label for the folder that contains Camera videos in the gallery -->
+    <string name="gallery_camera_media_bucket_name">Camera media</string>
+
     <!-- menu pick: switch to Video cam mode -->
     <string name="switch_to_video_lable">Switch to video</string>
 
     <!-- menu pick: switch to camera mode -->
     <string name="switch_to_camera_lable">Switch to camera</string>
-    
+
     <!-- menu pick: crop the currently selected image -->
     <string name="crop_label">Crop picture</string>
 
@@ -79,11 +82,8 @@
     <!-- Toast/alert that the face detection is being run -->
     <string name="runningFaceDetection">Please wait\u2026</string>
 
-    
-    <!-- Menu items: -->
-    <!-- menu pick to change the orientation of the screen -->
-    <string name="flip_orientation">Flip orientation</string>
 
+    <!-- Menu items: -->
     <!-- menu pick to go to the settings screen -->
     <string name="settings">Settings</string>
 
@@ -92,6 +92,9 @@
 
     <!-- menu pick to view the details of the currently selected image -->
     <string name="details">Details</string>
+
+    <!-- menu pick to show the location of the currently selected image on maps-->
+    <string name="show_on_map">Show on Maps</string>
 
     <!-- menu pick to rotate the currently selected image (brings up submenu) -->
     <string name="rotate">Rotate</string>
@@ -104,12 +107,15 @@
 
     <!-- menu pick to start a slide show -->
     <string name="slide_show">Slideshow</string>
-    
+
+    <!-- menu pick to enter multiselect mode -->
+    <string name="multiselect">Multiselect</string>
+
     <!-- menu pick to go to camera mode to capture a picture -->
     <string name="capture_picture">Capture picture</string>
     <!-- menu pick to go to video mode to capture a video -->
     <string name="capture_video">Capture video</string>
-    
+
     <!-- button indicating that the cropped image should be saved -->
     <string name="crop_save_text">Save</string>
     <!-- button indicating that the cropped image should be reverted back to the original -->
@@ -121,12 +127,43 @@
     <string name="confirm_delete_message">The picture will be deleted.</string>
     <!-- Confirmation dialog message after deleting a video -->
     <string name="confirm_delete_video_message">The video will be deleted.</string>
+    
+    <!-- Confirmation dialog message after deleting a multiple media files -->
+    <string name="confirm_delete_multiple_message">These media files will be deleted.</string>
+
+    <!-- button in review mode indicating that the picture just taken should be deleted -->
+    <string name="review_toss">DELETE</string>
+
+    <!-- button in review mode indicating that the picture just taken are going to shared by email, mms, etc -->
+    <string name="review_share">SHARE</string>
+
+    <!-- button in review mode indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
+    <string name="review_set">SET AS</string>
+
+    <!-- button in review mode indicating that the video just taken should be played -->
+    <string name="review_play">PLAY</string>
+
+    <!-- button in review mode indicating that the video just taken should be accepted as an attachment -->
+    <string name="review_attach">ATTACH</string>
+
+    <!-- button in review mode indicating that the video recording session should be canceled -->
+    <string name="review_cancel">CANCEL</string>
+
+    <!-- button in review mode indicating that the the review activity should be finished -->
+    <string name="review_done">DONE</string>
+
+    <!-- button in review mode indicating that the taken video is OK to be attached/uploaded -->
+    <string name="review_ok">OK</string>
+
+    <!-- button in review mode indicate the user want to retake another picture for attachment -->
+    <string name="review_retake">RETAKE</string>
+
     <!-- button indicating that the picture just taken should be deleted -->
     <string name="camera_toss">Delete</string>
 
     <!-- Lable for the button that takes the user to the camera pictures Gallery -->
     <string name="camera_gallery">Gallery</string>
-    
+
     <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
     <string name="camera_share">Share</string>
 
@@ -135,18 +172,15 @@
 
     <!-- button indicating that the video just taken should be played -->
     <string name="camera_play">Play</string>
-    
+
     <!-- button indicating that the video just taken should be accepted as an attachment -->
     <string name="camera_attach">Attach</string>
-    
+
     <!-- button indicating that the video recording session should be canceled -->
     <string name="camera_cancel">Cancel</string>
-    
+
     <!-- button indicating that the picture just taken should be cropped -->
     <string name="camera_crop">Crop</string>
-
-    <!-- Toast after deleting a picture -->
-    <string name="camera_tossing">Deleting\u2026</string>
 
     <!-- Toast after trying to share a picture indicating that there are no applications which are capable of so doing. -->
     <string name="no_way_to_share_image">This picture cannot be shared.</string>
@@ -293,31 +327,84 @@
     <!-- Settings screen, setting summary text -->
     <string name="pref_camera_recordlocation_summary">Record location in picture data</string>
 
-    <!-- Do not translate -->
-    <string name="pref_camera_upload_albumname_title">Picasa album name</string>
+    <!-- Settings screen, Video setting category title -->
+    <string name="pref_camera_video_settings_category">Video settings</string>
 
-    <!-- Do not translate -->
-    <string name="pref_camera_upload_albumname_summary">Name the destination album for your pictures (<xliff:g id="summary">%s</xliff:g>)</string>
-
-    <!-- Do not translate -->
-    <string name="pref_camera_upload_albumname_dialogtitle">Picasa album name</string>
-
-    <!-- Settings screen, Video quality category title -->
-    <string name="pref_camera_videoquality_category">Video quality</string>
-    
     <!-- Default video quality setting. A numerical value. Do not translate. -->
     <string name="pref_camera_videoquality_default">1</string>
-    
+
     <!-- Settings screen, Select Video quality title -->
     <string name="pref_camera_videoquality_title">Select video quality</string>
-    
+
     <!-- Settings screen, Video quality dialog radio button choices -->
     <string name="pref_camera_videoquality_entry_0">Low (for MMS messages)</string>
     <string name="pref_camera_videoquality_entry_1">High (for SD card)</string>
-    
+
     <!-- Settings screen, Video codec dialog title -->
     <string name="pref_camera_videoquality_dialogtitle">Video quality</string>
-    
+
+    <!-- Default video duration setting. A numerical value. Do not translate. -->
+    <string name="pref_camera_video_duration_default">1</string>
+
+    <!-- Settings screen, Select Video duration title -->
+    <string name="pref_camera_video_duration_title">Select video duration</string>
+
+    <!-- Settings screen, Video duration dialog radio button choices -->
+    <string name="pref_camera_video_duration_entry_1">1 minute (for sharing)</string>
+    <string name="pref_camera_video_duration_entry_10">10 minutes</string>
+    <string name="pref_camera_video_duration_entry_30">30 minutes</string>
+
+    <!-- Settings screen, Video duration dialog title -->
+    <string name="pref_camera_video_duration_dialogtitle">Video duration</string>
+
+    <!-- Settings screen, Picture setting category title -->
+    <string name="pref_camera_picture_settings_category">Picture settings</string>
+
+    <!-- Default picture size setting. Do not translate. -->
+    <string name="pref_camera_picturesize_default">2048x1536</string>
+
+    <!-- Settings screen, Select Picture size title -->
+    <string name="pref_camera_picturesize_title">Select picture size</string>
+
+    <!-- Settings screen, Picture size dialog radio button choices -->
+    <string name="pref_camera_picturesize_entry_2048x1536">3M (2048x1536)</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">2M (1600x1200)</string>
+    <string name="pref_camera_picturesize_entry_1024x768">1M (1024x768)</string>
+
+    <!-- Settings screen, picture size dialog title -->
+    <string name="pref_camera_picturesize_dialogtitle">Picture size</string>
+
+    <!-- Default picture quality setting. Do not translate. -->
+    <string name="pref_camera_jpegquality_default">85</string>
+
+    <!-- Settings screen, Select Picture quality title -->
+    <string name="pref_camera_jpegquality_title">Select picture quality</string>
+
+    <!-- Settings screen, Picture quality dialog radio button choices -->
+    <string name="pref_camera_jpegquality_entry_superfine">Super fine</string>
+    <string name="pref_camera_jpegquality_entry_fine">Fine</string>
+    <string name="pref_camera_jpegquality_entry_normal">Normal</string>
+
+    <!-- Settings screen, picture quality dialog title -->
+    <string name="pref_camera_jpegquality_dialogtitle">Picture quality</string>
+
+    <!-- Default focus mode setting. Do not translate. -->
+    <string name="pref_camera_focusmode_default">auto</string>
+
+    <!-- Settings screen, Select Focus mode title -->
+    <string name="pref_camera_focusmode_title">Select focus mode</string>
+
+    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <string name="pref_camera_focusmode_entry_auto">Auto</string>
+    <string name="pref_camera_focusmode_entry_infinity">Infinity</string>
+
+    <!-- Focus mode entry values. Do not translate. -->
+    <string name="pref_camera_focusmode_value_auto">auto</string>
+    <string name="pref_camera_focusmode_value_infinity">infinity</string>
+
+    <!-- Settings screen, focus mode dialog title -->
+    <string name="pref_camera_focusmode_dialogtitle">Focus mode</string>
+
     <!-- Menu item to go to the settings screen -->
     <string name="camerasettings">Settings</string>
 
@@ -355,12 +442,26 @@
     <!-- Do not translate -->
     <string name="details_privateView_text">Private</string>
 
+    <!-- Message to show when there's no lat/lng information in the image -->
+    <string name="no_location_image">No Location information contained in this image.</string>
     <!-- Title of Details dialog  -->
-    <string name="details_panel_title">Details</string> 
+    <string name="details_panel_title">Details</string>
     <!-- Label in message of Details dialog  -->
     <string name="details_file_size">File size:</string>
     <!-- Label in message of Details dialog  -->
     <string name="details_image_resolution">Resolution:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_make">Manufacturer:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_model">Model:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_whitebalance">WhiteBalance:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_latitude">GPS Latitude:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_longitude">GPS Longitude:</string>
+    <!-- Label in message of Details dialog  -->
+    <string name="details_image_location">Location:</string>
     <!-- Label in message of Details dialog  -->
     <string name="details_duration">Duration:</string>
     <!-- Label in message of Details dialog  -->
@@ -373,7 +474,7 @@
     <string name="details_codec">Codec:</string>
     <!-- Label in message of Details dialog  -->
     <string name="details_format">Format:</string>
-    
+
     <!-- Used to format image dimensions in Details dialog. e.g. 64 x 64 -->
     <string name="details_dimension_x">%1$d x %2$d</string>
     <!-- Used to format short video duration in Details dialog. minutes:seconds e.g. 00:30 -->
@@ -388,18 +489,18 @@
     <string name="details_mbps">%1$g Mbps</string>
     <!-- Details dialog "OK" button. Dismisses dialog. -->
     <string name="details_ok">OK</string>
-    
+
     <!-- Text of context menu when an image is selected -->
     <string name="context_menu_header">Picture options</string>
     <!-- Text of context menu when a video is selected -->
     <string name="video_context_menu_header">Video options</string>
     <!-- Hint that appears when cropping an image with more than one face -->
     <string name="multiface_crop_help">Tap a face to begin.</string>
-    
-    <!-- Activity title when in the image gallery to see pictures -->   
+
+    <!-- Activity title when in the image gallery to see pictures -->
     <string name="photos_gallery_title">Gallery</string>
 
-    <!-- Activity title when in the image gallery to select a picture -->   
+    <!-- Activity title when in the image gallery to select a picture -->
     <string name="pick_photos_gallery_title">Select picture</string>
 
     <!-- Activity title when in the image gallery to see videos -->
@@ -407,10 +508,10 @@
 
     <!-- Activity title when in the image gallery to select a video -->
     <string name="pick_videos_gallery_title">Select video</string>
-    
-    <!-- onscreen text indicating the progress of generating thumbnails.  Basically some number followed by the word "remaining" -->    
+
+    <!-- onscreen text indicating the progress of generating thumbnails.  Basically some number followed by the word "remaining" -->
     <string name="loading_progress_format_string"><xliff:g id="counter">%d</xliff:g> remaining</string>
-    
+
     <!-- Displayed in the title of the dialog for things to do with a picture that
          is to be sent to another application: -->
     <string name="sendImage">Share picture via</string>
@@ -418,48 +519,60 @@
     <!-- Displayed in the title of the dialog for things to do with a picture that
          is to be "set as" (e.g. set as contact photo or set as wallpaper) -->
     <string name="setImage">Set picture as</string>
-    
+
     <!-- Displayed in the title of the dialog for things to do with a video that
          is to be sent to another application. -->
     <string name="sendVideo">Share video via</string>
-    
+
     <!-- Activity label. This might show up in the activity-picker -->
     <string name="movieviewlabel">Movies</string>
     <!-- shown in the video player view while the video is being loaded, before it starts playing -->
     <string name="loading_video">Loading video\u2026</string>
- 
-    <!-- Low-memory dialog title -->
-    <string name="spaceIsLow_title">Space is low</string>
+
     <!-- Low-memory dialog message -->
     <string name="spaceIsLow_content">Your SD card is running out of space. Change the quality setting or delete items from Gallery.</string>
-    
+
     <!-- Movie View Resume Playing dialog title -->
     <string name="resume_playing_title">Resume video</string>
-    
+
     <!-- Movie View Start Playing dialog title -->
     <string name="resume_playing_message">Resume playing from %s ?</string>
-    
+
     <!-- Movie View Start Playing button "Resume from bookmark" -->
     <string name="resume_playing_resume">Resume playing</string>
-    
+
     <!-- Movie View Start Playing button "Beginning" -->
     <string name="resume_playing_restart">Start over</string>
-    
+
     <!-- Title for picture frame gadget to show in list of all available gadgets -->
     <string name="gadget_title">Picture frame</string>
-    
+
     <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat.
          Do not localize -->
     <string name="video_file_name_format" translatable="false">"'video'-yyyy-MM-dd-HH-mm-ss"</string>
 
     <!-- Title for the file information dialog -->
     <string name="file_info_title">File info:</string>
-    
+
     <!-- The video is execeed the size limit of a MMS, and suggest user to record a shorter length clip -->
     <string name="video_exceed_mms_limit">The video you recorded is too large to send via MMS. Try recording a shorter length clip.</string>
 
-    <!-- Displayed as a toast when a video file is too large to attach
-         to a Gmail message. -->
-    <string name="too_large_to_attach">File too large to attach.</string>
-    
+    <!-- The title shown on the button which share the selected images by gmail, mms, and etc. -->
+    <string name="multiselect_share">Share</string>
+
+    <!-- The title shown on the button which will delete all the selected images -->
+    <string name="multiselect_delete">Delete</string>
+
+    <!-- Title shown on the button which will close the multiselction mode -->
+    <string name="multiselect_cancel">Cancel</string>
+
+    <!-- The title of the progress dialog which will be shown for tasks that may take a long time -->
+    <string name="progress_dialog_title">In progress</string>
+
+    <!-- The messsage shown on progress dialog when deleting images -->
+    <string name="delete_images_message">Deleting images, please wait\u2026</string>
+
+    <!-- The messsage shown when video record reaches size limit. -->
+    <string name="video_reach_size_limit">Size limit reached.</string>
+
 </resources>

@@ -18,7 +18,8 @@
     <string name="all_images">"Alle bilder"</string>
     <string name="all_videos">"Alle videoer"</string>
     <string name="camera_label">"Kamera"</string>
-    <string name="video_camera_label">"Video"</string>
+    <!-- no translation found for video_camera_label (2899292505526427293) -->
+    <skip />
     <string name="gallery_picker_label">"Galleri"</string>
     <string name="gallery_camera_bucket_name">"Bilder fra kamera"</string>
     <string name="gallery_camera_videos_bucket_name">"Videoer fra kamera"</string>
@@ -34,7 +35,6 @@
     <string name="wallpaper">"Setter bakgrunnsbilde, vent litt…"</string>
     <string name="savingImage">"Lagrer bilde…"</string>
     <string name="runningFaceDetection">"Vent litt…"</string>
-    <string name="flip_orientation">"Roter skjerm"</string>
     <string name="settings">"Innstillinger"</string>
     <string name="view">"Vis"</string>
     <string name="details">"Detaljer"</string>
@@ -57,10 +57,10 @@
     <string name="camera_attach">"Legg ved"</string>
     <string name="camera_cancel">"Avbryt"</string>
     <string name="camera_crop">"Beskjær"</string>
-    <string name="camera_tossing">"Sletter…"</string>
     <string name="no_way_to_share_image">"Bildet kan ikke deles."</string>
     <string name="no_way_to_share_video">"Videoen kan ikke deles."</string>
-    <string name="video_play">"Spill"</string>
+    <!-- no translation found for video_play (5287787282508002895) -->
+    <skip />
     <string name="camera_gallery_photos_text">"Galleri"</string>
     <string name="camera_pick_wallpaper">"Bilder"</string>
     <string name="camera_setas_wallpaper">"Bakgrunnsbilder"</string>
@@ -104,7 +104,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Vis bilder i tilfeldig rekkefølge"</string>
     <string name="pref_camera_recordlocation_title">"Lagre sted i bilder"</string>
     <string name="pref_camera_recordlocation_summary">"Lagre sted i bildedata"</string>
-    <string name="pref_camera_videoquality_category">"Videokvalitet"</string>
     <string name="pref_camera_videoquality_title">"Videokvalitet"</string>
     <string name="pref_camera_videoquality_entry_0">"Lav (for MMS-meldinger)"</string>
     <string name="pref_camera_videoquality_entry_1">"Høy (for minnekort)"</string>
@@ -142,7 +141,6 @@
     <string name="sendVideo">"Del video via"</string>
     <string name="movieviewlabel">"Filmer"</string>
     <string name="loading_video">"Laster video…"</string>
-    <string name="spaceIsLow_title">"Lite plass"</string>
     <string name="spaceIsLow_content">"Minnekortet begynner å gå tom for plass. Endre kvalitetsinnstillingen eller slett bilder fra galleriet."</string>
     <string name="resume_playing_title">"Fortsett avspilling"</string>
     <string name="resume_playing_message">"Fortsett avspilling fra %s?"</string>
@@ -151,5 +149,5 @@
     <string name="gadget_title">"Bilderamme"</string>
     <string name="file_info_title">"Filinformasjon:"</string>
     <string name="video_exceed_mms_limit">"Videoen er for stor til å sendes over MMS. Prøv å ta opp en kortere video."</string>
-    <string name="too_large_to_attach">"Filen er for stor til å legges ved."</string>
+    <skip />
 </resources>

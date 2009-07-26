@@ -20,34 +20,29 @@ import com.android.camera.PhotoAppWidgetProvider.PhotoDatabaseHelper;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.widget.RemoteViews;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 public class PhotoAppWidgetConfigure extends Activity {
-    static final private String TAG = "PhotoAppWidgetConfigure";
-    
+
+    @SuppressWarnings("unused")
+    private static final String TAG = "PhotoAppWidgetConfigure";
     static final int REQUEST_GET_PHOTO = 2;
-    
-    int appWidgetId = -1;
+
+    int mAppWidgetId = -1;
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        
-        // Someone is requesting that we configure the given appWidgetId, which means
-        // we prompt the user to pick and crop a photo.
-        
-        appWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        if (appWidgetId == -1) {
+
+        // Someone is requesting that we configure the given mAppWidgetId, which
+        // means we prompt the user to pick and crop a photo.
+
+        mAppWidgetId = getIntent().getIntExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        if (mAppWidgetId == -1) {
             setResult(Activity.RESULT_CANCELED);
             finish();
         }
@@ -63,35 +58,39 @@ public class PhotoAppWidgetConfigure extends Activity {
         intent.putExtra("outputY", 192);
         intent.putExtra("noFaceDetection", true);
         intent.putExtra("return-data", true);
-        
+
         startActivityForResult(intent, REQUEST_GET_PHOTO);
     }
-    
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && appWidgetId != -1) {
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        if (resultCode == RESULT_OK && mAppWidgetId != -1) {
             // Store the cropped photo in our database
             Bitmap bitmap = (Bitmap) data.getParcelableExtra("data");
-            
+
             PhotoDatabaseHelper helper = new PhotoDatabaseHelper(this);
-            if (helper.setPhoto(appWidgetId, bitmap)) {
+            if (helper.setPhoto(mAppWidgetId, bitmap)) {
                 resultCode = Activity.RESULT_OK;
 
                 // Push newly updated widget to surface
-                RemoteViews views = PhotoAppWidgetProvider.buildUpdate(this, appWidgetId, helper);
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-                appWidgetManager.updateAppWidget(new int[] { appWidgetId }, views);
+                RemoteViews views = PhotoAppWidgetProvider.buildUpdate(this,
+                        mAppWidgetId, helper);
+                AppWidgetManager appWidgetManager =
+                        AppWidgetManager.getInstance(this);
+                appWidgetManager.updateAppWidget(new int[] {mAppWidgetId},
+                                                 views);
             }
             helper.close();
         } else {
             resultCode = Activity.RESULT_CANCELED;
         }
-        
-        // Make sure we pass back the original appWidgetId
+
+        // Make sure we pass back the original mAppWidgetId
         Intent resultValue = new Intent();
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         setResult(resultCode, resultValue);
         finish();
     }
-    
+
 }

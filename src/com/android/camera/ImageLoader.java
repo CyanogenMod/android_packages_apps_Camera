@@ -16,327 +16,293 @@
 
 package com.android.camera;
 
-import java.util.ArrayList;
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Rect;
-import android.net.Uri;
-import android.util.Config;
+import android.os.Handler;
 import android.util.Log;
 
-class ImageLoader {
+import java.io.IOException;
+import java.util.ArrayList;
+
+import static com.android.camera.Util.Assert;
+
+/**
+ * A dedicated decoding thread used by ImageGallery.
+ */
+public class ImageLoader {
+    @SuppressWarnings("unused")
     private static final String TAG = "ImageLoader";
 
-    // queue of work to do in the worker thread
-    private ArrayList<WorkItem>      mQueue = new ArrayList<WorkItem>();
-    private ArrayList<WorkItem>      mInProgress = new ArrayList<WorkItem>();
+    // Queue of work to do in the worker thread. The work is done in order.
+    private final ArrayList<WorkItem> mQueue = new ArrayList<WorkItem>();
 
     // the worker thread and a done flag so we know when to exit
-    // currently we only exit from finalize
-    private boolean                  mDone;
-    private ArrayList<Thread>        mDecodeThreads = new ArrayList<Thread>();
-    private android.os.Handler       mHandler;
+    private boolean mDone;
+    private Thread mDecodeThread;
 
-    private int                      mThreadCount = 1;
+    // Thumbnail checking will be done when there is no getBitmap requests
+    // need to be processed.
+    private ThumbnailChecker mThumbnailChecker;
 
-    synchronized void clear(Uri uri) {
-    }
-
-    synchronized public void dump() {
-        synchronized (mQueue) {
-            if (Config.LOGV)
-                Log.v(TAG, "Loader queue length is " + mQueue.size());
-        }
+    /**
+     * Notify interface of how many thumbnails are processed.
+     */
+    public interface ThumbCheckCallback {
+        public boolean checking(int current, int count);
+        public void done();
     }
 
     public interface LoadedCallback {
         public void run(Bitmap result);
     }
 
-    public void pushToFront(final ImageManager.IImage image) {
+    public void getBitmap(IImage image,
+                          LoadedCallback imageLoadedRunnable,
+                          int tag) {
+        if (mDecodeThread == null) {
+            start();
+        }
         synchronized (mQueue) {
-            WorkItem w = new WorkItem(image, 0, null, false);
-
-            int existing = mQueue.indexOf(w);
-            if (existing >= 1) {
-                WorkItem existingWorkItem = mQueue.remove(existing);
-                mQueue.add(0, existingWorkItem);
-                mQueue.notifyAll();
-            }
+            WorkItem w = new WorkItem(image, imageLoadedRunnable, tag);
+            mQueue.add(w);
+            mQueue.notifyAll();
         }
     }
 
-    public boolean cancel(final ImageManager.IImage image) {
+    public boolean cancel(final IImage image) {
         synchronized (mQueue) {
-            WorkItem w = new WorkItem(image, 0, null, false);
-
-            int existing = mQueue.indexOf(w);
-            if (existing >= 0) {
-                mQueue.remove(existing);
+            int index = findItem(image);
+            if (index >= 0) {
+                mQueue.remove(index);
                 return true;
-            }
-            return false;
-        }
-    }
-
-    public Bitmap getBitmap(final ImageManager.IImage image, final LoadedCallback imageLoadedRunnable, final boolean postAtFront, boolean postBack) {
-        return getBitmap(image, 0, imageLoadedRunnable, postAtFront, postBack);
-    }
-
-    public Bitmap getBitmap(final ImageManager.IImage image, int tag, final LoadedCallback imageLoadedRunnable, final boolean postAtFront, boolean postBack) {
-        synchronized (mDecodeThreads) {
-            if (mDecodeThreads.size() == 0) {
-                start();
-            }
-        }
-        long t1 = System.currentTimeMillis();
-        long t2,t3,t4;
-        synchronized (mQueue) {
-            t2 = System.currentTimeMillis();
-            WorkItem w = new WorkItem(image, tag, imageLoadedRunnable, postBack);
-
-            if (!mInProgress.contains(w)) {
-                boolean contains = mQueue.contains(w);
-                if (contains) {
-                    if (postAtFront) {
-                        // move this item to the front
-                        mQueue.remove(w);
-                        mQueue.add(0, w);
-                    }
-                } else {
-                    if (postAtFront)
-                        mQueue.add(0, w);
-                    else
-                        mQueue.add(w);
-                    mQueue.notifyAll();
-                }
-            }
-            if (false)
-                dumpQueue("+" + (postAtFront ? "F " : "B ") + tag + ": ");
-            t3 = System.currentTimeMillis();
-        }
-        t4 = System.currentTimeMillis();
-//        Log.v(TAG, "getBitmap breakdown: tot= " + (t4-t1) + "; " + "; " + (t4-t3) + "; " + (t3-t2) + "; " + (t2-t1));
-        return null;
-    }
-
-    private void dumpQueue(String s) {
-        synchronized (mQueue) {
-            StringBuilder sb = new StringBuilder(s);
-            for (int i = 0; i < mQueue.size(); i++) {
-                sb.append(mQueue.get(i).mTag + " ");
-            }
-            if (Config.LOGV)
-                Log.v(TAG, sb.toString());
-        }
-    }
-
-    long bitmapSize(Bitmap b) {
-        return b.getWidth() * b.getHeight() * 4;
-    }
-
-    class WorkItem {
-        ImageManager.IImage mImage;
-        int mTargetX, mTargetY;
-        int mTag;
-        LoadedCallback mOnLoadedRunnable;
-        boolean mPostBack;
-
-        WorkItem(ImageManager.IImage image, int tag, LoadedCallback onLoadedRunnable, boolean postBack) {
-            mImage = image;
-            mTag = tag;
-            mOnLoadedRunnable = onLoadedRunnable;
-            mPostBack = postBack;
-        }
-
-        public boolean equals(Object other) {
-            WorkItem otherWorkItem = (WorkItem) other;
-            if (otherWorkItem.mImage != mImage)
+            } else {
                 return false;
-
-            return true;
-        }
-
-        public int hashCode() {
-            return mImage.fullSizeImageUri().hashCode();
+            }
         }
     }
 
-    public ImageLoader(android.os.Handler handler, int threadCount) {
-        mThreadCount = threadCount;
-        mHandler = handler;
+    // The caller should hold mQueue lock.
+    private int findItem(IImage image) {
+        for (int i = 0; i < mQueue.size(); i++) {
+            if (mQueue.get(i).mImage == image) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Clear the queue. Returns an array of tags that were in the queue.
+    public int[] clearQueue() {
+        synchronized (mQueue) {
+            int n = mQueue.size();
+            int[] tags = new int[n];
+            for (int i = 0; i < n; i++) {
+                tags[i] = mQueue.get(i).mTag;
+            }
+            mQueue.clear();
+            return tags;
+        }
+    }
+
+    private static class WorkItem {
+        IImage mImage;
+        LoadedCallback mOnLoadedRunnable;
+        int mTag;
+
+        WorkItem(IImage image, LoadedCallback onLoadedRunnable, int tag) {
+            mImage = image;
+            mOnLoadedRunnable = onLoadedRunnable;
+            mTag = tag;
+        }
+    }
+
+    public ImageLoader(Handler handler) {
+        mThumbnailChecker = new ThumbnailChecker();
         start();
     }
 
-    synchronized private void start() {
-        if (Config.LOGV)
-            Log.v(TAG, "ImageLoader.start() <<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    private class WorkerThread implements Runnable {
 
-        synchronized (mDecodeThreads) {
-            if (mDecodeThreads.size() > 0)
-                return;
+        // IDLE_TIME is the time we wait before we start checking thumbnail.
+        // This gives the thumbnail generation work priority because there
+        // may be a short period of time when the queue is empty while
+        // ImageBlockManager is calculating what to load next.
+        private static final long IDLE_TIME = 1000000000;  // in nanoseconds.
+        private long mLastWorkTime = System.nanoTime();
 
-            mDone = false;
-            for (int i = 0;i < mThreadCount; i++) {
-                Thread t = new Thread(new Runnable() {
-                    // pick off items on the queue, one by one, and compute their bitmap.
-                    // place the resulting bitmap in the cache.  then post a notification
-                    // back to the ui so things can get updated appropriately.
-                    public void run() {
-                        while (!mDone) {
-                            WorkItem workItem = null;
-                            synchronized (mQueue) {
-                                if (mQueue.size() > 0) {
-                                    workItem = mQueue.remove(0);
-                                    mInProgress.add(workItem);
-                                }
-                                else {
-                                    try {
-                                        mQueue.wait();
-                                    } catch (InterruptedException ex) {
-                                    }
-                                }
+        // Pick off items on the queue, one by one, and compute their bitmap.
+        // Place the resulting bitmap in the cache, then call back by executing
+        // the given runnable so things can get updated appropriately.
+        public void run() {
+            while (true) {
+                WorkItem workItem = null;
+                synchronized (mQueue) {
+                    if (mDone) {
+                        break;
+                    }
+                    if (!mQueue.isEmpty()) {
+                        workItem = mQueue.remove(0);
+                    } else {
+                        if (!mThumbnailChecker.hasMoreThumbnailsToCheck()) {
+                            try {
+                                mQueue.wait();
+                            } catch (InterruptedException ex) {
+                                // ignore the exception
                             }
-                            if (workItem != null) {
-                                if (false)
-                                    dumpQueue("-" + workItem.mTag + ": ");
-                                Bitmap b = null;
+                            continue;
+                        } else {
+                            // Calculate the time we need to be idle before we
+                            // start checking thumbnail.
+                            long t = IDLE_TIME -
+                                    (System.nanoTime() - mLastWorkTime);
+                            t = t / 1000000;  // convert to milliseconds.
+                            if (t > 0) {
                                 try {
-                                    b = workItem.mImage.miniThumbBitmap();
-                                } catch (Exception ex) {
-                                    if (Config.LOGV) Log.v(TAG, "couldn't load miniThumbBitmap " + ex.toString());
-                                    // sd card removal or sd card full
+                                    mQueue.wait(t);
+                                } catch (InterruptedException ex) {
+                                    // ignore the exception
                                 }
-                                if (b == null) {
-                                    if (Config.LOGV) Log.v(TAG, "unable to read thumbnail for " + workItem.mImage.fullSizeImageUri());
-                                }
-
-                                synchronized (mQueue) {
-                                    mInProgress.remove(workItem);
-                                }
-
-                                if (workItem.mOnLoadedRunnable != null) {
-                                    if (workItem.mPostBack) {
-                                        final WorkItem w1 = workItem;
-                                        final Bitmap bitmap = b;
-                                        if (!mDone) {
-                                            mHandler.post(new Runnable() {
-                                                public void run() {
-                                                    w1.mOnLoadedRunnable.run(bitmap);
-                                                }
-                                            });
-                                        }
-                                    } else {
-                                        workItem.mOnLoadedRunnable.run(b);
-                                    }
-                                }
+                                continue;
                             }
                         }
                     }
-                });
-                t.setName("image-loader-" + i);
-                mDecodeThreads.add(t);
-                t.start();
+                }
+
+                // This holds if and only if the above
+                // hasMoreThumbnailsToCheck() returns true. (We put the call
+                // here because we want to release the lock on mQueue.
+                if (workItem == null) {
+                    mThumbnailChecker.checkNextThumbnail();
+                    continue;
+                }
+
+                final Bitmap b = workItem.mImage.miniThumbBitmap();
+
+                if (workItem.mOnLoadedRunnable != null) {
+                    workItem.mOnLoadedRunnable.run(b);
+                }
+
+                mLastWorkTime = System.nanoTime();
             }
         }
     }
 
-    public static Bitmap transform(Matrix scaler, Bitmap source, int targetWidth, int targetHeight,
-            boolean scaleUp) {
-        int deltaX = source.getWidth() - targetWidth;
-        int deltaY = source.getHeight() - targetHeight;
-        if (!scaleUp && (deltaX < 0 || deltaY < 0)) {
-            /*
-             * In this case the bitmap is smaller, at least in one dimension, than the
-             * target.  Transform it by placing as much of the image as possible into
-             * the target and leaving the top/bottom or left/right (or both) black.
-             */
-            Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(b2);
-
-            int deltaXHalf = Math.max(0, deltaX/2);
-            int deltaYHalf = Math.max(0, deltaY/2);
-            Rect src = new Rect(
-                    deltaXHalf,
-                    deltaYHalf,
-                    deltaXHalf + Math.min(targetWidth, source.getWidth()),
-                    deltaYHalf + Math.min(targetHeight, source.getHeight()));
-            int dstX = (targetWidth  - src.width())  / 2;
-            int dstY = (targetHeight - src.height()) / 2;
-            Rect dst = new Rect(
-                    dstX,
-                    dstY,
-                    targetWidth - dstX,
-                    targetHeight - dstY);
-            if (Config.LOGV)
-                Log.v(TAG, "draw " + src.toString() + " ==> " + dst.toString());
-            c.drawBitmap(source, src, dst, null);
-            return b2;
-        }
-        float bitmapWidthF = source.getWidth();
-        float bitmapHeightF = source.getHeight();
-
-        float bitmapAspect = bitmapWidthF / bitmapHeightF;
-        float viewAspect   = (float) targetWidth / (float) targetHeight;
-
-        if (bitmapAspect > viewAspect) {
-            float scale = targetHeight / bitmapHeightF;
-            if (scale < .9F || scale > 1F) {
-                scaler.setScale(scale, scale);
-            } else {
-                scaler = null;
-            }
-        } else {
-            float scale = targetWidth / bitmapWidthF;
-            if (scale < .9F || scale > 1F) {
-                scaler.setScale(scale, scale);
-            } else {
-                scaler = null;
-            }
+    private void start() {
+        if (mDecodeThread != null) {
+            return;
         }
 
-        Bitmap b1;
-        if (scaler != null) {
-            // this is used for minithumb and crop, so we want to filter here.
-            b1 = Bitmap.createBitmap(source, 0, 0,
-                    source.getWidth(), source.getHeight(), scaler, true);
-        } else {
-            b1 = source;
-        }
-
-        int dx1 = Math.max(0, b1.getWidth() - targetWidth);
-        int dy1 = Math.max(0, b1.getHeight() - targetHeight);
-
-        Bitmap b2 = Bitmap.createBitmap(
-                b1,
-                dx1/2,
-                dy1/2,
-                targetWidth,
-                targetHeight);
-
-        if (b1 != source)
-            b1.recycle();
-
-        return b2;
+        mDone = false;
+        Thread t = new Thread(new WorkerThread());
+        t.setName("image-loader");
+        mDecodeThread = t;
+        t.start();
     }
 
     public void stop() {
-        if (Config.LOGV)
-            Log.v(TAG, "ImageLoader.stop " + mDecodeThreads.size() + " threads");
-        mDone = true;
         synchronized (mQueue) {
+            mDone = true;
             mQueue.notifyAll();
         }
-        while (mDecodeThreads.size() > 0) {
-            Thread t = mDecodeThreads.get(0);
+        if (mDecodeThread != null) {
             try {
+                Thread t = mDecodeThread;
+                BitmapManager.instance().cancelThreadDecoding(t);
                 t.join();
-                mDecodeThreads.remove(0);
+                mDecodeThread = null;
             } catch (InterruptedException ex) {
                 // so now what?
             }
         }
+        stopCheckingThumbnails();
+    }
+
+    // Passthrough to ThumbnailChecker.
+    public void startCheckingThumbnails(IImageList imageList,
+            ThumbCheckCallback cb) {
+        mThumbnailChecker.startCheckingThumbnails(imageList, cb);
+        // Kick WorkerThread to start working.
+        synchronized (mQueue) {
+            mQueue.notifyAll();
+        }
+    }
+
+    public void stopCheckingThumbnails() {
+        mThumbnailChecker.stopCheckingThumbnails();
+    }
+}
+
+// This is part of ImageLoader which is responsible for checking thumbnails.
+//
+// The methods of ThumbnailChecker need to be synchronized because the data
+// will also be accessed by the WorkerThread. The methods of ThumbnailChecker
+// is only called by ImageLoader.
+class ThumbnailChecker {
+    private static final String TAG = "ThumbnailChecker";
+
+    private IImageList mImageListToCheck;  // The image list we will check.
+    private int mTotalToCheck;  // total number of thumbnails to check.
+    private int mNextToCheck;  // next thumbnail to check,
+                               // -1 if no further checking is needed.
+    private ImageLoader.ThumbCheckCallback mThumbCheckCallback;
+
+    ThumbnailChecker() {
+        mNextToCheck = -1;
+    }
+
+    // Both imageList and cb must be non-null.
+    synchronized void startCheckingThumbnails(IImageList imageList,
+            ImageLoader.ThumbCheckCallback cb) {
+        Assert(imageList != null);
+        Assert(cb != null);
+        mImageListToCheck = imageList;
+        mTotalToCheck = imageList.getCount();
+        mNextToCheck = 0;
+        mThumbCheckCallback = cb;
+
+        if (!ImageManager.hasStorage()) {
+            Log.v(TAG, "bailing from the image checker -- no storage");
+            stopCheckingThumbnails();
+        }
+    }
+
+    synchronized void stopCheckingThumbnails() {
+        if (mThumbCheckCallback == null) return;  // already stopped.
+        mThumbCheckCallback.done();
+        mImageListToCheck = null;
+        mTotalToCheck = 0;
+        mNextToCheck = -1;
+        mThumbCheckCallback = null;
+    }
+
+    synchronized boolean hasMoreThumbnailsToCheck() {
+        return mNextToCheck != -1;
+    }
+
+    synchronized void checkNextThumbnail() {
+        if (mNextToCheck == -1) {
+            return;
+        }
+
+        if (mNextToCheck >= mTotalToCheck) {
+            stopCheckingThumbnails();
+            return;
+        }
+
+        try {
+            mImageListToCheck.checkThumbnail(mNextToCheck);
+        } catch (IOException ex) {
+            Log.e(TAG, "Failed to check thumbnail..."
+                    + " was the sd card removed? - " + ex.getMessage());
+            stopCheckingThumbnails();
+        }
+
+        if (!mThumbCheckCallback.checking(mNextToCheck, mTotalToCheck)) {
+            stopCheckingThumbnails();
+        }
+
+        mNextToCheck++;
     }
 }

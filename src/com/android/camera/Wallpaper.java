@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,14 +29,15 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Wallpaper picker for the camera application. This just redirects to the standard pick action.
+ * Wallpaper picker for the camera application. This just redirects to the
+ * standard pick action.
  */
 public class Wallpaper extends Activity {
     private static final String LOG_TAG = "Camera";
@@ -47,20 +47,21 @@ public class Wallpaper extends Activity {
     static final int SHOW_PROGRESS = 0;
     static final int FINISH = 1;
 
-    static final String sDoLaunchIcicle = "do_launch";
-    static final String sTempFilePathIcicle = "temp_file_path";
+    static final String DO_LAUNCH_ICICLE = "do_launch";
+    static final String TEMP_FILE_PATH_ICICLE = "temp_file_path";
 
     private ProgressDialog mProgressDialog = null;
     private boolean mDoLaunch = true;
-    private String mTempFilePath;
+    private File mTempFile;
 
-    private Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SHOW_PROGRESS: {
                     CharSequence c = getText(R.string.wallpaper);
-                    mProgressDialog = ProgressDialog.show(Wallpaper.this, "", c, true, false);
+                    mProgressDialog = ProgressDialog.show(Wallpaper.this,
+                            "", c, true, false);
                     break;
                 }
 
@@ -80,7 +81,8 @@ public class Wallpaper extends Activity {
         private final Context mContext;
         private final File mFile;
 
-        public SetWallpaperThread(Bitmap bitmap, Handler handler, Context context, File file) {
+        public SetWallpaperThread(Bitmap bitmap, Handler handler,
+                                  Context context, File file) {
             mBitmap = bitmap;
             mHandler = handler;
             mContext = context;
@@ -111,15 +113,15 @@ public class Wallpaper extends Activity {
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         if (icicle != null) {
-            mDoLaunch = icicle.getBoolean(sDoLaunchIcicle);
-            mTempFilePath = icicle.getString(sTempFilePathIcicle);
+            mDoLaunch = icicle.getBoolean(DO_LAUNCH_ICICLE);
+            mTempFile = new File(icicle.getString(TEMP_FILE_PATH_ICICLE));
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle icicle) {
-        icicle.putBoolean(sDoLaunchIcicle, mDoLaunch);
-        icicle.putString(sTempFilePathIcicle, mTempFilePath);
+        icicle.putBoolean(DO_LAUNCH_ICICLE, mDoLaunch);
+        icicle.putString(TEMP_FILE_PATH_ICICLE, mTempFile.getAbsolutePath());
     }
 
     @Override
@@ -138,7 +140,8 @@ public class Wallpaper extends Activity {
         Uri imageToUse = getIntent().getData();
         if (imageToUse != null) {
             Intent intent = new Intent();
-            intent.setClassName("com.android.camera", "com.android.camera.CropImage");
+            intent.setClassName("com.android.camera",
+                                "com.android.camera.CropImage");
             intent.setData(imageToUse);
             formatIntent(intent);
             startActivityForResult(intent, CROP_DONE);
@@ -156,10 +159,8 @@ public class Wallpaper extends Activity {
         // The CropImage intent should be able to set the wallpaper directly
         // without writing to a file, which we then need to read here to write
         // it again as the final wallpaper, this is silly
-        File f = getFileStreamPath("temp-wallpaper");
-        (new File(f.getParent())).mkdirs();
-        mTempFilePath = f.toString();
-        f.delete();
+        mTempFile = getFileStreamPath("temp-wallpaper");
+        mTempFile.getParentFile().mkdirs();
 
         int width = getWallpaperDesiredMinimumWidth();
         int height = getWallpaperDesiredMinimumHeight();
@@ -169,34 +170,37 @@ public class Wallpaper extends Activity {
         intent.putExtra("aspectY",         height);
         intent.putExtra("scale",           true);
         intent.putExtra("noFaceDetection", true);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse("file:/" + mTempFilePath));
-        intent.putExtra("outputFormat",    Bitmap.CompressFormat.PNG.name());
-        // TODO: we should have an extra called "setWallpaper" to ask CropImage to
-        // set the cropped image as a wallpaper directly
-        // This means the SetWallpaperThread should be moved out of this class to CropImage
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mTempFile));
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.name());
+        // TODO: we should have an extra called "setWallpaper" to ask CropImage
+        // to set the cropped image as a wallpaper directly. This means the
+        // SetWallpaperThread should be moved out of this class to CropImage
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ((requestCode == PHOTO_PICKED || requestCode == CROP_DONE) && (resultCode == RESULT_OK)
-                && (data != null)) {
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        if ((requestCode == PHOTO_PICKED || requestCode == CROP_DONE)
+                && (resultCode == RESULT_OK) && (data != null)) {
             try {
-                File tempFile = new File(mTempFilePath);
-                InputStream s = new FileInputStream(tempFile);
-                Bitmap bitmap = BitmapFactory.decodeStream(s);
-                if (bitmap == null) {
-                    Log.e(LOG_TAG, "Failed to set wallpaper.  Couldn't get bitmap for path " + mTempFilePath);
-                } else {
-                    if (android.util.Config.LOGV)
-                        Log.v(LOG_TAG, "bitmap size is " + bitmap.getWidth() + " / " + bitmap.getHeight());
-                    mHandler.sendEmptyMessage(SHOW_PROGRESS);
-                    new SetWallpaperThread(bitmap, mHandler, this, tempFile).start();
+                InputStream s = new FileInputStream(mTempFile);
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeStream(s);
+                    if (bitmap == null) {
+                        Log.e(LOG_TAG, "Failed to set wallpaper. "
+                                       + "Couldn't get bitmap for path "
+                                       + mTempFile);
+                    } else {
+                        mHandler.sendEmptyMessage(SHOW_PROGRESS);
+                        new SetWallpaperThread(
+                                bitmap, mHandler, this, mTempFile).start();
+                    }
+                    mDoLaunch = false;
+                } finally {
+                    Util.closeSilently(s);
                 }
-                mDoLaunch = false;
             } catch (FileNotFoundException ex) {
-
-            } catch (IOException ex) {
-
+                Log.e(LOG_TAG, "file not found: " + mTempFile, ex);
             }
         } else {
             setResult(RESULT_CANCELED);

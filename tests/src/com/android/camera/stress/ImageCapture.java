@@ -14,83 +14,260 @@
  * limitations under the License.
  */
 
-package com.android.camera.tests.stress;
-
-import android.app.Activity;
-import android.app.Instrumentation;
-import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.test.suitebuilder.annotation.LargeTest;
+package com.android.camera.stress;
 
 import com.android.camera.Camera;
 
+import android.app.Instrumentation;
+import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Log;
+import android.view.KeyEvent;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
 /**
  * Junit / Instrumentation test case for camera test
- * 
+ *
+ * Running the test suite:
+ *
+ * adb shell am instrument \
+ *    -e class com.android.camera.stress.ImageCapture \
+ *    -w com.android.camera.tests/com.android.camera.CameraStressTestRunner
+ *
  */
 
 public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     private String TAG = "ImageCapture";
     private static final int TOTAL_NUMBER_OF_IMAGECAPTURE = 100;
     private static final int TOTAL_NUMBER_OF_VIDEOCAPTURE = 100;
-    private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 1000;
-    private static final long WAIT_FOR_VIDEO_CAPTURE_TO_BE_TAKEN = 50000; //50seconds
-    private static final long WAIT_FOR_PREVIEW = 1000; //1 seconds
+    private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 1500;   //1.5 sedconds
+    private static final long WAIT_FOR_VIDEO_CAPTURE_TO_BE_TAKEN = 20000; //20seconds
+    private static final long WAIT_FOR_PREVIEW = 1500; //1.5 seconds
+    private static final long WAIT_FOR_STABLE_STATE = 2000; //2 seconds
+    private static final int NO_OF_LOOPS_TAKE_MEMORY_SNAPSHOT = 10;
+    private static final String CAMERA_MEM_OUTPUTFILE = "/sdcard/ImageCaptureMemOut.txt";
+
+    //the tolerant memory leak
+    private static final int MAX_ACCEPTED_MEMORY_LEAK_KB = 150;
+
+    private static int mStartMemory = 0;
+    private static int mEndMemory = 0;
+    private static int mStartPid = 0;
+    private static int mEndPid = 0;
+
+    private static final String CAMERA_TEST_OUTPUT_FILE = "/sdcard/mediaStressOut.txt";
+    private BufferedWriter mOut;
+    private FileWriter mfstream;
 
     public ImageCapture() {
-        super("com.android.camera", Camera.class);       
+        super("com.android.camera", Camera.class);
     }
-    
-    @Override 
-    protected void setUp() throws Exception {  
+
+    @Override
+    protected void setUp() throws Exception {
         getActivity();
-        super.setUp();     
+        prepareOutputFile();
+        super.setUp();
     }
-    
-    @Override 
-    protected void tearDown() throws Exception {     
-        super.tearDown();              
+
+    @Override
+    protected void tearDown() throws Exception {
+        closeOutputFile();
+        super.tearDown();
     }
-        
+
+    private void prepareOutputFile(){
+        try{
+            mfstream = new FileWriter(CAMERA_TEST_OUTPUT_FILE, true);
+            mOut = new BufferedWriter(mfstream);
+        } catch (Exception e){
+            assertTrue("ImageCapture open output",false);
+        }
+    }
+
+    private void closeOutputFile() {
+        try {
+            mOut.write("\n");
+            mOut.close();
+            mfstream.close();
+        } catch (Exception e) {
+            assertTrue("ImageCapture close output", false);
+        }
+    }
+
+    //Write the ps output to the file
+    public void getMemoryWriteToLog(Writer output) {
+        String memusage = null;
+        memusage = captureMediaserverInfo();
+        Log.v(TAG, memusage);
+        try {
+            //Write to file output
+            output.write(memusage);
+        } catch (Exception e) {
+            e.toString();
+        }
+    }
+
+    public String captureMediaserverInfo() {
+        String cm = "ps mediaserver";
+        String memoryUsage = null;
+
+        int ch;
+        try {
+            Process p = Runtime.getRuntime().exec(cm);
+            InputStream in = p.getInputStream();
+            StringBuffer sb = new StringBuffer(512);
+            while ((ch = in.read()) != -1) {
+                sb.append((char) ch);
+            }
+            memoryUsage = sb.toString();
+        } catch (IOException e) {
+            Log.v(TAG, e.toString());
+        }
+        String[] poList = memoryUsage.split("\r|\n|\r\n");
+        String memusage = poList[1].concat("\n");
+        return memusage;
+    }
+
+    public int getMediaserverPid(){
+        String memoryUsage = null;
+        int pidvalue = 0;
+        memoryUsage = captureMediaserverInfo();
+        String[] poList2 = memoryUsage.split("\t|\\s+");
+        String pid = poList2[1];
+        pidvalue = Integer.parseInt(pid);
+        Log.v(TAG, "PID = " + pidvalue);
+        return pidvalue;
+    }
+
+    public int getMediaserverVsize(){
+        String memoryUsage = captureMediaserverInfo();
+        String[] poList2 = memoryUsage.split("\t|\\s+");
+        String vsize = poList2[3];
+        int vsizevalue = Integer.parseInt(vsize);
+        Log.v(TAG, "VSIZE = " + vsizevalue);
+        return vsizevalue;
+    }
+
+    public boolean validateMemoryResult (int startPid, int startMemory, Writer output) throws Exception {
+        mEndPid = getMediaserverPid();
+        mEndMemory = getMediaserverVsize();
+        Log.v(TAG, "End memory :" + mEndMemory);
+        //Write the total memory different into the output file
+        output.write("The total diff = " + (mEndMemory - startMemory));
+        output.write("\n\n");
+        //mediaserver crash
+        if (startPid != mEndPid){
+            output.write("mediaserver died. Test failed\n");
+            return false;
+        }
+        //memory leak greter than the tolerant
+        if ((mEndMemory - startMemory) > MAX_ACCEPTED_MEMORY_LEAK_KB )
+            return false;
+        return true;
+    }
+
     @LargeTest
     public void testImageCapture() {
+        //TODO(yslau): Need to integrate the outoput with the central dashboard,
+        //write to a txt file as a temp solution
+        boolean memoryResult = false;
         Instrumentation inst = getInstrumentation();
+        File imageCaptureMemFile = new File(CAMERA_MEM_OUTPUTFILE);
+        mStartPid = getMediaserverPid();
+        mStartMemory = getMediaserverVsize();
+        Log.v(TAG, "start memory : " + mStartMemory);
+
         try {
+            Writer output = new BufferedWriter(new FileWriter(imageCaptureMemFile, true));
+            output.write("Camera Image capture\n");
+            output.write("No of loops : " + TOTAL_NUMBER_OF_VIDEOCAPTURE + "\n");
+            getMemoryWriteToLog(output);
+
+            mOut.write("Video Camera Capture\n");
+            mOut.write("No of loops :" + TOTAL_NUMBER_OF_VIDEOCAPTURE + "\n");
+            mOut.write("loop: ");
+
             for (int i = 0; i < TOTAL_NUMBER_OF_IMAGECAPTURE; i++) {
                 Thread.sleep(WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
                 Thread.sleep(WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
+                if (( i % NO_OF_LOOPS_TAKE_MEMORY_SNAPSHOT) == 0){
+                    Log.v(TAG, "value of i :" + i);
+                    getMemoryWriteToLog(output);
+                }
+                //Check if the mediaserver died, if so, exit the test
+                if (Camera.mMediaServerDied){
+                    mOut.write("\nmedia server died\n");
+                    mOut.flush();
+                    output.close();
+                    Camera.mMediaServerDied = false;
+                    assertTrue("Camera Image Capture", false);
+                }
+                mOut.write(" ," + i);
+                mOut.flush();
             }
+            Thread.sleep(WAIT_FOR_STABLE_STATE);
+            memoryResult = validateMemoryResult(mStartPid, mStartMemory, output);
+            Log.v(TAG, "End memory : " + getMediaserverVsize());
+            output.close();
+            assertTrue("Camera image capture memory test", memoryResult);
         } catch (Exception e) {
             Log.v(TAG, e.toString());
+            assertTrue("testImageCapture", false);
         }
-            assertTrue("testImageCapture", true);
+        assertTrue("testImageCapture", true);
     }
-    
+
     @LargeTest
     public void testVideoCapture() {
+        //TODO(yslau): Need to integrate the output with the central dashboard,
+        //write to a txt file as a temp solution
+        boolean memoryResult = false;
         Instrumentation inst = getInstrumentation();
-        //Switch to the video mode
-        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
-        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
+        File imageCaptureMemFile = new File(CAMERA_MEM_OUTPUTFILE);
+        mStartPid = getMediaserverPid();
+        mStartMemory = getMediaserverVsize();
+        Log.v(TAG, "start memory : " + mStartMemory);
+
         try {
+            Writer output = new BufferedWriter(new FileWriter(imageCaptureMemFile, true));
+            output.write("Camera Image capture\n");
+            output.write("No of loops : " + TOTAL_NUMBER_OF_VIDEOCAPTURE + "\n");
+            getMemoryWriteToLog(output);
+            mOut.write("Video Camera Capture\n");
+            mOut.write("No of loops :" + TOTAL_NUMBER_OF_VIDEOCAPTURE + "\n");
+            mOut.write("loop: ");
+            // Switch to the video mode
+            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
+            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
+
             for (int i = 0; i < TOTAL_NUMBER_OF_VIDEOCAPTURE; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
-                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
-                //record an video
+                // record a video
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
                 Thread.sleep(WAIT_FOR_VIDEO_CAPTURE_TO_BE_TAKEN);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
                 Thread.sleep(WAIT_FOR_PREVIEW);
-                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
+                mOut.write(" ," + i);
+                mOut.flush();
             }
+            Thread.sleep(WAIT_FOR_STABLE_STATE);
+            memoryResult = validateMemoryResult(mStartPid, mStartMemory, output);
+            Log.v(TAG, "End memory : " + getMediaserverVsize());
+            output.close();
+            assertTrue("Camera video capture memory test", memoryResult);
         } catch (Exception e) {
             Log.v(TAG, e.toString());
+            fail("Fails to capture video");
         }
-            assertTrue("testVideoCapture", true);
     }
 
 }
-    
+

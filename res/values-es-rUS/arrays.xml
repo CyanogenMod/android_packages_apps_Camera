@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- no translation found for pref_camera_videoquality_entries:0 (4155278146225809483) -->
+    <!-- no translation found for pref_camera_videoquality_entries:1 (2439895494739176281) -->
+  <string-array name="pref_camera_videoquality_entryvalues">
+    <item>"0"</item>
+    <item>"1"</item>
+  </string-array>
+    <!-- no translation found for pref_camera_whitebalance_entries:0 (7380919110029371897) -->
+    <!-- no translation found for pref_camera_whitebalance_entries:1 (5846817089057144353) -->
+    <!-- no translation found for pref_camera_whitebalance_entries:2 (5188541155459035614) -->
+    <!-- no translation found for pref_camera_whitebalance_entries:3 (8014710638918804167) -->
+    <!-- no translation found for pref_camera_whitebalance_entries:4 (1259951844914382302) -->
+    <!-- no translation found for pref_camera_whitebalance_entries:5 (8925759761247257364) -->
+    <!-- no translation found for pref_camera_whitebalance_entries:6 (2646857223813119774) -->
+    <!-- no translation found for pref_camera_whitebalance_entryvalues:0 (6184691896277386782) -->
+    <!-- no translation found for pref_camera_whitebalance_entryvalues:1 (399103181509687736) -->
+    <!-- no translation found for pref_camera_whitebalance_entryvalues:2 (7298629202572037539) -->
+    <!-- no translation found for pref_camera_whitebalance_entryvalues:3 (692320259860325999) -->
+    <!-- no translation found for pref_camera_whitebalance_entryvalues:4 (5534223222777368499) -->
+    <!-- no translation found for pref_camera_whitebalance_entryvalues:5 (2959334170595206903) -->
+    <!-- no translation found for pref_camera_whitebalance_entryvalues:6 (953931275599906170) -->
+    <!-- no translation found for pref_camera_effect_entries:0 (6111306175712245429) -->
+    <!-- no translation found for pref_camera_effect_entries:1 (7795463117829651230) -->
+    <!-- no translation found for pref_camera_effect_entries:2 (7006097468180455948) -->
+    <!-- no translation found for pref_camera_effect_entries:3 (4276207244456575289) -->
+    <!-- no translation found for pref_camera_effect_entries:4 (1691263603065183222) -->
+    <!-- no translation found for pref_camera_effect_entries:5 (6172440915265439150) -->
+    <!-- no translation found for pref_camera_effect_entries:6 (4160265797038388750) -->
+    <!-- no translation found for pref_camera_effect_entries:7 (735874793273897468) -->
+    <!-- no translation found for pref_camera_effect_entries:8 (2578296411723042326) -->
+    <!-- no translation found for pref_camera_effect_entries:9 (8705741661268435129) -->
+    <!-- no translation found for pref_camera_effect_entries:10 (4402393779739127238) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:0 (4380767962600571282) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:1 (6765506553289735069) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:2 (1209048711657244255) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:3 (5901778296104391322) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:4 (1513030700825869618) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:5 (3516811476214331456) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:6 (4275454372937850276) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:7 (8321756350818376365) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:8 (5795897884426992061) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:9 (6478631864638345255) -->
+    <!-- no translation found for pref_camera_effect_entryvalues:10 (5205003307922236962) -->
+</resources>

@@ -34,10 +34,9 @@
     <string name="wallpaper">"壁紙を設定しています。しばらくお待ちください..."</string>
     <string name="savingImage">"写真を保存中..."</string>
     <string name="runningFaceDetection">"お待ちください..."</string>
-    <string name="flip_orientation">"画面の向きを変更"</string>
     <string name="settings">"設定"</string>
     <string name="view">"表示"</string>
-    <string name="details">"詳細情報"</string>
+    <string name="details">"詳細"</string>
     <string name="rotate">"回転"</string>
     <string name="rotate_left">"左に回転"</string>
     <string name="rotate_right">"右に回転"</string>
@@ -52,12 +51,11 @@
     <string name="camera_toss">"削除"</string>
     <string name="camera_gallery">"ギャラリー"</string>
     <string name="camera_share">"共有"</string>
-    <string name="camera_set">"この画像を登録する"</string>
+    <string name="camera_set">"連絡先等に設定する"</string>
     <string name="camera_play">"再生"</string>
     <string name="camera_attach">"添付"</string>
     <string name="camera_cancel">"キャンセル"</string>
     <string name="camera_crop">"トリミング"</string>
-    <string name="camera_tossing">"削除中..."</string>
     <string name="no_way_to_share_image">"この画像は共有できません。"</string>
     <string name="no_way_to_share_video">"この動画は共有できません。"</string>
     <string name="video_play">"再生"</string>
@@ -104,7 +102,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"順不同に表示する"</string>
     <string name="pref_camera_recordlocation_title">"位置情報を写真に記録する"</string>
     <string name="pref_camera_recordlocation_summary">"位置情報を写真データに記録する"</string>
-    <string name="pref_camera_videoquality_category">"動画のクオリティ"</string>
     <string name="pref_camera_videoquality_title">"動画の画質を選択"</string>
     <string name="pref_camera_videoquality_entry_0">"低 (MMSメッセージ向け)"</string>
     <string name="pref_camera_videoquality_entry_1">"高 (SDカード向け)"</string>
@@ -113,7 +110,7 @@
     <string name="image_gallery_NoImageView_text">"メディアが見つかりません。"</string>
     <string name="pref_gallery_confirm_delete_title">"削除確認"</string>
     <string name="pref_gallery_confirm_delete_summary">"画像や動画を削除する前に確認する"</string>
-    <string name="details_panel_title">"詳細情報"</string>
+    <string name="details_panel_title">"詳細"</string>
     <string name="details_file_size">"ファイルサイズ:"</string>
     <string name="details_image_resolution">"解像度:"</string>
     <string name="details_duration">"再生時間:"</string>
@@ -138,11 +135,10 @@
     <string name="pick_videos_gallery_title">"動画を選択"</string>
     <string name="loading_progress_format_string">"残り<xliff:g id="COUNTER">%d</xliff:g>件"</string>
     <string name="sendImage">"画像を共有:"</string>
-    <string name="setImage">"この画像を登録する"</string>
+    <string name="setImage">"設定タイプ:"</string>
     <string name="sendVideo">"動画を共有"</string>
     <string name="movieviewlabel">"映画"</string>
     <string name="loading_video">"動画を読み込み中..."</string>
-    <string name="spaceIsLow_title">"空き容量が残り少なくなっています"</string>
     <string name="spaceIsLow_content">"SDカードの容量が足りません。クオリティ設定を変更するか、ギャラリーからアイテムを削除してください。"</string>
     <string name="resume_playing_title">"動画の再開"</string>
     <string name="resume_playing_message">"再生を%sから再開しますか？"</string>
@@ -151,5 +147,4 @@
     <string name="gadget_title">"写真フレーム"</string>
     <string name="file_info_title">"ファイル情報:"</string>
     <string name="video_exceed_mms_limit">"録画した動画のサイズが大きすぎるため送信できません。録画時間を短縮してみてください。"</string>
-    <string name="too_large_to_attach">"添付ファイルが大きすぎます。"</string>
 </resources>

@@ -2,9 +2,12 @@
         package="com.android.camera"
         android:sharedUserId="android.media">
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- Needed by the ZoomRingController to set the bit saying we've already shown the
          tutorial toast. -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
@@ -44,7 +47,7 @@
                 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
                 android:screenOrientation="landscape"
                 android:clearTaskOnLaunch="true"
-                android:taskAffinity="android.task.videocamera">
+                android:taskAffinity="android.task.camera">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -70,7 +73,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ImageGallery2" android:label="@string/gallery_label"
+        <activity android:name="ImageGallery" android:label="@string/gallery_label"
                 android:configChanges="orientation|keyboardHidden"
                 android:icon="@drawable/ic_launcher_gallery">
             <intent-filter>
@@ -124,9 +127,17 @@
                 <category android:name="android.intent.category.SELECTED_ALTERNATIVE" />
             </intent-filter>
         </activity>
-
-        <activity android:name="ViewImage" 
-        		android:label="@string/view_label"
+        <activity android:name="ReviewImage"
+                android:label="@string/view_label"
+                android:screenOrientation="behind"
+                android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="ViewImage"
+                android:label="@string/view_label"
+                android:screenOrientation="behind"
                 android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -161,6 +172,10 @@
                 <data android:mimeType="video/3gpp2" />
              </intent-filter>
         </activity>
+        <activity android:name=".DeleteImage"
+                android:label="@string/delete_images_message"
+                android:theme="@style/Theme.DeleteImageDialog">
+        </activity>
 
         <activity android:name="CameraSettings" android:label="@string/preferences_label">
             <intent-filter>
@@ -173,14 +188,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEVELOPMENT_PREFERENCE" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name="SlideShow" android:label="Raw Image Viewer"
-                android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.TEST" />
             </intent-filter>
         </activity>
 
