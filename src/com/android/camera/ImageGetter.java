@@ -190,7 +190,7 @@ class ImageGetter {
 
                     int sizeToUse = mCB.fullImageSizeToUse(
                             mCurrentPosition, offset);
-                    Bitmap b = image.fullSizeBitmap(sizeToUse,
+                    Bitmap b = image.fullSizeBitmap(sizeToUse, 3 * 1024 * 1024,
                             IImage.ROTATE_AS_NEEDED, IImage.USE_NATIVE);
                     if (b == null) continue;
                     if (mCancel) {

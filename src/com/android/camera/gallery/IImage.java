@@ -28,14 +28,15 @@ import java.io.InputStream;
 public interface IImage {
     static final int THUMBNAIL_TARGET_SIZE = 320;
     static final int MINI_THUMB_TARGET_SIZE = 96;
+    static final int UNCONSTRAINED = -1;
 
     /** Get the image list which contains this image. */
     public abstract IImageList getContainer();
 
     /** Get the bitmap for the full size image. */
-    public abstract Bitmap fullSizeBitmap(int targetWidthOrHeight);
-    public abstract Bitmap fullSizeBitmap(int targetWidthOrHeight,
-            boolean rotateAsNeeded, boolean useNative);
+    public abstract Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels);
+    public abstract Bitmap fullSizeBitmap(int minSideLength,
+            int maxNumberOfPixels, boolean rotateAsNeeded, boolean useNative);
     public static final boolean ROTATE_AS_NEEDED = true;
     public static final boolean NO_ROTATE = false;
     public static final boolean USE_NATIVE = true;

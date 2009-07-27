@@ -73,17 +73,17 @@ class UriImage implements IImage {
         }
     }
 
-    public Bitmap fullSizeBitmap(int targetWidthHeight) {
-        return fullSizeBitmap(targetWidthHeight, IImage.ROTATE_AS_NEEDED,
-                IImage.NO_NATIVE);
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels) {
+        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
+                IImage.ROTATE_AS_NEEDED, IImage.NO_NATIVE);
     }
 
-    public Bitmap fullSizeBitmap(int targetWidthHeight, boolean rotateAsNeeded,
-            boolean useNative) {
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
+            boolean rotateAsNeeded, boolean useNative) {
         try {
             ParcelFileDescriptor pfdInput = getPFD();
-            Bitmap b = Util.makeBitmap(targetWidthHeight, pfdInput,
-                    useNative);
+            Bitmap b = Util.makeBitmap(minSideLength, maxNumberOfPixels,
+                    pfdInput, useNative);
             return b;
         } catch (Exception ex) {
             Log.e(TAG, "got exception decoding bitmap ", ex);
@@ -112,7 +112,7 @@ class UriImage implements IImage {
     }
 
     public Bitmap thumbBitmap() {
-        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE);
+        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, IImage.UNCONSTRAINED);
     }
 
     private BitmapFactory.Options snifBitmapOptions() {

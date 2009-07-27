@@ -93,12 +93,14 @@ public class DrmImageList extends ImageList implements IImageList {
 
         @Override
         public Bitmap miniThumbBitmap() {
-            return fullSizeBitmap(IImage.MINI_THUMB_TARGET_SIZE);
+            return fullSizeBitmap(IImage.MINI_THUMB_TARGET_SIZE,
+                    IImage.UNCONSTRAINED);
         }
 
         @Override
         public Bitmap thumbBitmap() {
-            return fullSizeBitmap(IImage.THUMBNAIL_TARGET_SIZE);
+            return fullSizeBitmap(IImage.THUMBNAIL_TARGET_SIZE,
+                    IImage.UNCONSTRAINED);
         }
 
         @Override
