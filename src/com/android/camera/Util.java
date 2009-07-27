@@ -73,33 +73,37 @@ public class Util {
     }
 
     /*
-     * Compute the sample size as a function of the image size and the target.
-     * Scale the image down so that both the width and height are just above the
-     * target. If this means that one of the dimension goes from above the
-     * target to below the target (e.g. given a width of 480 and an image width
-     * of 600 but sample size of 2 -- i.e. new width 300 -- bump the sample size
-     * down by 1.
+     * Compute the sample size as a function of minSideLength
+     * and maxNumOfPixels.
+     * minSideLength is used to specify that minimal width or height of a bitmap.
+     * maxNumOfPixels is used to specify the maximal size in pixels that are tolerable
+     * in terms of memory usage.
+     *
+     * The function returns a sample size based on the constraints.
+     * Both size and minSideLength can be passed in as IImage.UNCONSTRAINED,
+     * which indicates no care of the corresponding constraint.
+     * The functions prefers returning a sample size that
+     * generates a smaller bitmap, unless minSideLength = IImage.UNCONSTRAINED.
      */
-    public static int computeSampleSize(
-            BitmapFactory.Options options, int target) {
-        int w = options.outWidth;
-        int h = options.outHeight;
+    public static int computeSampleSize(BitmapFactory.Options options,
+            int minSideLength, int maxNumOfPixels) {
+        double w = options.outWidth;
+        double h = options.outHeight;
 
-        int candidateW = w / target;
-        int candidateH = h / target;
-        int candidate = Math.max(candidateW, candidateH);
+        int lowerBound = (maxNumOfPixels == IImage.UNCONSTRAINED) ? 1 :
+                (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
+        int upperBound = (minSideLength == IImage.UNCONSTRAINED) ? 128 :
+                (int) Math.min(Math.floor(w / minSideLength),
+                Math.floor(h / minSideLength));
 
-        if (candidate == 0) return 1;
-
-        if (candidate > 1) {
-            if ((w > target) && (w / candidate) < target) candidate -= 1;
+        if ((maxNumOfPixels == IImage.UNCONSTRAINED) &&
+                (minSideLength == IImage.UNCONSTRAINED)) {
+            return 1;
+        } else if (minSideLength == IImage.UNCONSTRAINED) {
+            return lowerBound;
+        } else {
+            return upperBound;
         }
-
-        if (candidate > 1) {
-            if ((h > target) && (h / candidate) < target) candidate -= 1;
-        }
-
-        return candidate;
     }
 
     public static Bitmap transform(Matrix scaler,
@@ -300,13 +304,14 @@ public class Util {
      *
      * @param uri
      */
-    public static Bitmap makeBitmap(int targetWidthOrHeight, Uri uri,
-            ContentResolver cr) {
-        return makeBitmap(targetWidthOrHeight, uri, cr, false);
+    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
+            Uri uri, ContentResolver cr) {
+        return makeBitmap(minSideLength, maxNumOfPixels, uri, cr,
+                IImage.NO_NATIVE);
     }
     
-    public static Bitmap makeBitmap(int targetWidthOrHeight, Uri uri,
-            ContentResolver cr, boolean useNative) {
+    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
+            Uri uri, ContentResolver cr, boolean useNative) {
         ParcelFileDescriptor input = null;
         try {
             input = cr.openFileDescriptor(uri, "r");
@@ -314,7 +319,8 @@ public class Util {
             if (useNative) {
                 options = createNativeAllocOptions();
             }
-            return makeBitmap(targetWidthOrHeight, uri, cr, input, options);
+            return makeBitmap(minSideLength, maxNumOfPixels, uri, cr, input,
+                    options);
         } catch (IOException ex) {
             return null;
         } finally {
@@ -322,17 +328,18 @@ public class Util {
         }
     }
 
-    public static Bitmap makeBitmap(int targetWidthHeight,
+    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
             ParcelFileDescriptor pfd, boolean useNative) {
         BitmapFactory.Options options = null;
         if (useNative) {
             options = createNativeAllocOptions();
         }
-        return makeBitmap(targetWidthHeight, null, null, pfd, options);
+        return makeBitmap(minSideLength, maxNumOfPixels, null, null, pfd,
+                options);
     }
     
-    public static Bitmap makeBitmap(int targetWidthHeight, Uri uri,
-            ContentResolver cr, ParcelFileDescriptor pfd,
+    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
+            Uri uri, ContentResolver cr, ParcelFileDescriptor pfd,
             BitmapFactory.Options options) {
         Bitmap b = null;
         try {
@@ -342,17 +349,15 @@ public class Util {
 
             FileDescriptor fd = pfd.getFileDescriptor();
             options.inSampleSize = 1;
-            if (targetWidthHeight != -1) {
-                options.inJustDecodeBounds = true;
-                BitmapManager.instance().decodeFileDescriptor(fd, options);
-                if (options.mCancel || options.outWidth == -1
-                        || options.outHeight == -1) {
-                    return null;
-                }
-                options.inSampleSize =
-                        computeSampleSize(options, targetWidthHeight);
-                options.inJustDecodeBounds = false;
+            options.inJustDecodeBounds = true;
+            BitmapManager.instance().decodeFileDescriptor(fd, options);
+            if (options.mCancel || options.outWidth == -1
+                    || options.outHeight == -1) {
+                return null;
             }
+            options.inSampleSize = computeSampleSize(
+                    options, minSideLength, maxNumOfPixels);
+            options.inJustDecodeBounds = false;
 
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;

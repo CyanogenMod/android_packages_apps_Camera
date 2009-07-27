@@ -20,17 +20,12 @@ public class MockImage implements IImage {
         this.mContainer = container;
     }
 
-    public Bitmap fullSizeBitmap(int targetWidthOrHeight) {
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels) {
         return null;
     }
 
-    public Bitmap fullSizeBitmap(int targetWidthOrHeight,
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
             boolean rotateAsNeeded, boolean useNative) {
-        return null;
-    }
-
-    public Cancelable<Bitmap> fullSizeBitmapCancelable(int targetWidthOrHeight,
-            BitmapFactory.Options options) {
         return null;
     }
 

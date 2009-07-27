@@ -179,7 +179,8 @@ public class CropImage extends MonitoredActivity {
             public void run() {
                 final CountDownLatch latch = new CountDownLatch(1);
                 final Bitmap b = (mImage != null)
-                        ? mImage.fullSizeBitmap(500)
+                        ? mImage.fullSizeBitmap(IImage.UNCONSTRAINED,
+                        1024 * 1024)
                         : mBitmap;
                 mHandler.post(new Runnable() {
                     public void run() {

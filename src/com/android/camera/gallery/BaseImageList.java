@@ -217,7 +217,7 @@ public abstract class BaseImageList implements IImageList {
         int height = options.outHeight;
         if (width >= IImage.THUMBNAIL_TARGET_SIZE
                 && height >= IImage.THUMBNAIL_TARGET_SIZE) {
-            
+
             // We do not check the return value of storeThumbnail because
             // we should return the mini thumb even if the storing fails.
             storeThumbnail(thumbData, id, width, height);
@@ -231,7 +231,7 @@ public abstract class BaseImageList implements IImageList {
             // and is significantly faster.
             options.inSampleSize =
                     Util.computeSampleSize(options,
-                    IImage.MINI_THUMB_TARGET_SIZE);
+                    IImage.MINI_THUMB_TARGET_SIZE, IImage.UNCONSTRAINED);
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             options.inJustDecodeBounds = false;
@@ -245,13 +245,13 @@ public abstract class BaseImageList implements IImageList {
     // then encode it as a JPEG. We return the thumbnail Bitmap in order to
     // create the minithumb from it.
     private Bitmap createThumbnailFromUri(Uri uri, long id) {
-        Bitmap bitmap = Util.makeBitmap(IImage.THUMBNAIL_TARGET_SIZE, uri,
-                mContentResolver);
+        Bitmap bitmap = Util.makeBitmap(IImage.THUMBNAIL_TARGET_SIZE,
+                IImage.UNCONSTRAINED, uri, mContentResolver);
         if (bitmap != null) {
             storeThumbnail(bitmap, id);
         } else {
-            bitmap = Util.makeBitmap(IImage.MINI_THUMB_TARGET_SIZE, uri,
-                mContentResolver);
+            bitmap = Util.makeBitmap(IImage.MINI_THUMB_TARGET_SIZE,
+                    IImage.UNCONSTRAINED, uri, mContentResolver);
         }
         return bitmap;
     }

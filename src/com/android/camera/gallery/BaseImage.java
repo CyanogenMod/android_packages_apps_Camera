@@ -158,18 +158,19 @@ public abstract class BaseImage implements IImage {
         return mUri.hashCode();
     }
 
-    public Bitmap fullSizeBitmap(int targetWidthHeight) {
-        return fullSizeBitmap(targetWidthHeight, IImage.ROTATE_AS_NEEDED,
-                IImage.NO_NATIVE);
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels) {
+        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
+                IImage.ROTATE_AS_NEEDED, IImage.NO_NATIVE);
     }
 
-    public Bitmap fullSizeBitmap(
-            int targetWidthHeight, boolean rotateAsNeeded, boolean useNative) {
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
+            boolean rotateAsNeeded, boolean useNative) {
         Uri url = mContainer.contentUri(mId);
         if (url == null) return null;
 
-        Bitmap b = Util.makeBitmap(targetWidthHeight, url, mContentResolver,
-                useNative);
+        Bitmap b = Util.makeBitmap(minSideLength, maxNumberOfPixels,
+                url, mContentResolver, useNative);
+
         if (b != null && rotateAsNeeded) {
             b = Util.rotate(b, getDegreesRotated());
         }
@@ -251,7 +252,7 @@ public abstract class BaseImage implements IImage {
 
             synchronized (sMiniThumbData) {
                 byte [] data = null;
-                
+
                 // Try to get it from the file.
                 if (mMiniThumbMagic != 0) {
                     data = mContainer.getMiniThumbFromFile(id, sMiniThumbData,
