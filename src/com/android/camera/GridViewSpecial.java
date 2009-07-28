@@ -21,6 +21,7 @@ import static com.android.camera.Util.Assert;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -29,6 +30,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -72,21 +75,34 @@ class GridViewSpecial extends View {
     // The mLeftEdgePadding fields is filled in onLayout(). See the comments
     // in onLayout() for details.
     static class LayoutSpec {
-        LayoutSpec(int w, int h, int intercellSpacing, int leftEdgePadding) {
-            mCellWidth = w;
-            mCellHeight = h;
-            mCellSpacing = intercellSpacing;
-            mLeftEdgePadding = leftEdgePadding;
+        LayoutSpec(int w, int h, int intercellSpacing, int leftEdgePadding,
+                DisplayMetrics metrics) {
+            mCellWidth = dpToPx(w, metrics);
+            mCellHeight = dpToPx(h, metrics);
+            mCellSpacing = dpToPx(intercellSpacing, metrics);
+            mLeftEdgePadding = dpToPx(leftEdgePadding, metrics);
         }
         int mCellWidth, mCellHeight;
         int mCellSpacing;
         int mLeftEdgePadding;
     }
 
-    private final LayoutSpec [] mCellSizeChoices = new LayoutSpec[] {
-            new LayoutSpec(67, 67, 8, 0),
-            new LayoutSpec(92, 92, 8, 0),
-    };
+    private LayoutSpec [] mCellSizeChoices;
+
+    private void initCellSize() {
+        Activity a = (Activity) getContext();
+        DisplayMetrics metrics = new DisplayMetrics();
+        a.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        mCellSizeChoices = new LayoutSpec[] {
+            new LayoutSpec(67, 67, 8, 0, metrics),
+            new LayoutSpec(92, 92, 8, 0, metrics),
+        };
+    }
+
+    // Converts dp to pixel.
+    private static int dpToPx(int dp, DisplayMetrics metrics) {
+        return (int) (metrics.density * dp);
+    }
 
     // These are set in init().
     private final Handler mHandler = new Handler();
@@ -134,6 +150,7 @@ class GridViewSpecial extends View {
         mGestureDetector = new GestureDetector(context,
                 new MyGestureDetector());
         setFocusableInTouchMode(true);
+        initCellSize();
     }
 
     private final Runnable mRedrawCallback = new Runnable() {
