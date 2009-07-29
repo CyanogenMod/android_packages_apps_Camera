@@ -26,7 +26,7 @@
                 android:id="@+id/grid"
                 android:focusable="true"
                 android:layout_width="fill_parent"
-                android:layout_height="0dip"
+                android:layout_height="0dp"
                 android:layout_weight="1"
                 android:listSelector="@drawable/grid_background"
         />
@@ -38,28 +38,26 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:clickable="false"
-                android:paddingTop="5dip"
-                android:paddingLeft="4dip"
-                android:paddingRight="4dip"
-                android:paddingBottom="1dip"
+                android:paddingTop="5dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingBottom="1dp"
                 android:background="@android:drawable/bottom_bar">
 
-            <!--
-                <Button android:id="@+id/button_share"
-                    android:layout_width="0dip"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:text="@string/multiselect_share" />
-            -->
+            <Button android:id="@+id/button_share"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="@string/multiselect_share" />
 
             <Button android:id="@+id/button_delete"
-                    android:layout_width="0dip"
+                    android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:text="@string/multiselect_delete" />
 
             <Button android:id="@+id/button_close"
-                    android:layout_width="0dip"
+                    android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:text="@string/multiselect_cancel" />
@@ -85,13 +83,13 @@
         <TextView
                 android:layout_below="@id/no_pictures_image"
                 android:layout_centerHorizontal="true"
-                android:paddingTop="5dip"
+                android:paddingTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/image_gallery_NoImageView_text"
                 android:textColor="#FFBEBEBE"
-                android:textSize="18dip"
+                android:textSize="18dp"
         />
     </RelativeLayout>
 </RelativeLayout>

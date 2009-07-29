@@ -16,10 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.VideoObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -43,6 +39,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -58,6 +55,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.VideoObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -107,7 +109,7 @@ public class ImageGallery extends Activity implements
         // Must be called before setContentView().
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
-        setContentView(R.layout.image_gallery_2);
+        setContentView(R.layout.image_gallery);
 
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
                 R.layout.custom_gallery_title);
@@ -142,6 +144,13 @@ public class ImageGallery extends Activity implements
         deleteButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 onDeleteMultipleClicked();
+            }
+        });
+
+        Button shareButton = (Button) findViewById(R.id.button_share);
+        shareButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                onShareMultipleClicked();
             }
         });
 
@@ -987,6 +996,41 @@ public class ImageGallery extends Activity implements
                         this, R.anim.footer_disappear);
             }
             mFooterOrganizeView.startAnimation(mFooterDisappear);
+        }
+    }
+
+    private String getShareMultipleMimeType() {
+        final int FLAG_IMAGE = 1, FLAG_VIDEO = 2;
+        int flag = 0;
+        for (IImage image : mMultiSelected) {
+            flag |= ImageManager.isImage(image) ? FLAG_IMAGE : FLAG_VIDEO;
+        }
+        return flag == FLAG_IMAGE
+                ? "image/*"
+                : flag == FLAG_VIDEO ? "video/*" : "*/*";
+    }
+
+    private void onShareMultipleClicked() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+
+        String mimeType = getShareMultipleMimeType();
+        intent.setType(mimeType);
+        ArrayList<Parcelable> list = new ArrayList<Parcelable>();
+        for (IImage image : mMultiSelected) {
+            list.add(image.fullSizeImageUri());
+        }
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, list);
+
+        boolean isImage = ImageManager.isImageMimeType(mimeType);
+        try {
+            startActivity(Intent.createChooser(intent, getText(
+                    isImage ? R.string.sendImage : R.string.sendVideo)));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, isImage
+                    ? R.string.no_way_to_share_image
+                    : R.string.no_way_to_share_video,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
