@@ -15,45 +15,45 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="all_images">"Alle bilder"</string>
+    <string name="all_images">"Alle billeder"</string>
     <string name="all_videos">"Alle videoer"</string>
     <string name="camera_label">"Kamera"</string>
-    <string name="video_camera_label">"Video"</string>
+    <string name="video_camera_label">"Videokamera"</string>
     <string name="gallery_picker_label">"Galleri"</string>
-    <string name="gallery_camera_bucket_name">"Bilder fra kamera"</string>
-    <string name="gallery_camera_videos_bucket_name">"Videoer fra kamera"</string>
+    <string name="gallery_camera_bucket_name">"Kamerabilleder"</string>
+    <string name="gallery_camera_videos_bucket_name">"Kameravideoer"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"Bytt til video"</string>
-    <string name="switch_to_camera_lable">"Bytt til kamera"</string>
-    <string name="crop_label">"Beskjær bilde"</string>
-    <string name="view_label">"Se på bilde"</string>
-    <string name="preferences_label">"Kamerainnstillinger"</string>
-    <string name="wait">"Vent litt…"</string>
-    <string name="no_storage">"Sett inn et minnekort før du bruker kameraet."</string>
-    <string name="not_enough_space">"Minnekortet er fullt."</string>
-    <string name="preparing_sd">"Forbereder minnekort…"</string>
-    <string name="wallpaper">"Setter bakgrunnsbilde, vent litt…"</string>
-    <string name="savingImage">"Lagrer bilde…"</string>
-    <string name="runningFaceDetection">"Vent litt…"</string>
-    <string name="settings">"Innstillinger"</string>
+    <string name="switch_to_video_lable">"Skift til video"</string>
+    <string name="switch_to_camera_lable">"Skift til kamera"</string>
+    <string name="crop_label">"Beskær billede"</string>
+    <string name="view_label">"Vis billede"</string>
+    <string name="preferences_label">"Kameraindstillinger"</string>
+    <string name="wait">"Vent ..."</string>
+    <string name="no_storage">"Indsæt et SD-kort, inden du bruger kameraet."</string>
+    <string name="not_enough_space">"Dit SD-kort er fuldt."</string>
+    <string name="preparing_sd">"Forbereder SD-kort ..."</string>
+    <string name="wallpaper">"Indstiller tapet. Vent et øjeblik ..."</string>
+    <string name="savingImage">"Gemmer billede ..."</string>
+    <string name="runningFaceDetection">"Vent ..."</string>
+    <string name="settings">"Indstillinger"</string>
     <string name="view">"Vis"</string>
     <string name="details">"Detaljer"</string>
     <!-- no translation found for show_on_map (441725587731006228) -->
     <skip />
     <string name="rotate">"Roter"</string>
-    <string name="rotate_left">"Roter mot venstre"</string>
-    <string name="rotate_right">"Roter mot høyre"</string>
-    <string name="slide_show">"Lysbildevisning"</string>
+    <string name="rotate_left">"Roter til venstre"</string>
+    <string name="rotate_right">"Roter til højre"</string>
+    <string name="slide_show">"Diasshow"</string>
     <!-- no translation found for multiselect (4761682939945434146) -->
     <skip />
-    <string name="capture_picture">"Ta bilde"</string>
-    <string name="capture_video">"Ta opp video"</string>
-    <string name="crop_save_text">"Lagre"</string>
-    <string name="crop_discard_text">"Forkast"</string>
-    <string name="confirm_delete_title">"Slett"</string>
-    <string name="confirm_delete_message">"Bildet vil bli slettet."</string>
-    <string name="confirm_delete_video_message">"Videoen vil bli slettet."</string>
+    <string name="capture_picture">"Fotografer billede"</string>
+    <string name="capture_video">"Fotografer video"</string>
+    <string name="crop_save_text">"Gem"</string>
+    <string name="crop_discard_text">"Kassér"</string>
+    <string name="confirm_delete_title">"Slet"</string>
+    <string name="confirm_delete_message">"Billedet slettes."</string>
+    <string name="confirm_delete_video_message">"Videoen slettes."</string>
     <!-- no translation found for confirm_delete_multiple_message (5962369828035778779) -->
     <skip />
     <!-- no translation found for review_toss (7255331999518617841) -->
@@ -74,65 +74,65 @@
     <skip />
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
-    <string name="camera_toss">"Slett"</string>
+    <string name="camera_toss">"Slet"</string>
     <string name="camera_gallery">"Galleri"</string>
     <string name="camera_share">"Del"</string>
-    <string name="camera_set">"Bruk som"</string>
-    <string name="camera_play">"Spill"</string>
-    <string name="camera_attach">"Legg ved"</string>
-    <string name="camera_cancel">"Avbryt"</string>
-    <string name="camera_crop">"Beskjær"</string>
-    <string name="no_way_to_share_image">"Bildet kan ikke deles."</string>
-    <string name="no_way_to_share_video">"Videoen kan ikke deles."</string>
-    <string name="video_play">"Spill"</string>
+    <string name="camera_set">"Indstil som"</string>
+    <string name="camera_play">"Afspil"</string>
+    <string name="camera_attach">"Vedhæft"</string>
+    <string name="camera_cancel">"Annuller"</string>
+    <string name="camera_crop">"Beskær"</string>
+    <string name="no_way_to_share_image">"Dette billede kan ikke deles."</string>
+    <string name="no_way_to_share_video">"Denne video kan ikke deles."</string>
+    <string name="video_play">"Afspil"</string>
     <string name="camera_gallery_photos_text">"Galleri"</string>
-    <string name="camera_pick_wallpaper">"Bilder"</string>
-    <string name="camera_setas_wallpaper">"Bakgrunnsbilder"</string>
-    <string name="pref_gallery_category">"Generelle innstillinger"</string>
-    <string name="pref_slideshow_category">"Innstillinger for lysbildevisning"</string>
-    <string name="pref_camera_general_settings_category">"Generelle innstillinger"</string>
-    <string name="pref_gallery_size_title">"Bildestørrelse"</string>
-    <string name="pref_gallery_size_summary">"Velg hvor stort bilder skal vises"</string>
-    <string name="pref_gallery_size_dialogtitle">"Bildestørrelse"</string>
+    <string name="camera_pick_wallpaper">"Billeder"</string>
+    <string name="camera_setas_wallpaper">"Tapet"</string>
+    <string name="pref_gallery_category">"Generelle indstillinger"</string>
+    <string name="pref_slideshow_category">"Diasshowindstillinger"</string>
+    <string name="pref_camera_general_settings_category">"Generelle indstillinger"</string>
+    <string name="pref_gallery_size_title">"Visningsstørrelse"</string>
+    <string name="pref_gallery_size_summary">"Vælg, hvilken størrelse billeder og videoer skal vises i"</string>
+    <string name="pref_gallery_size_dialogtitle">"Billedstørrelse"</string>
   <string-array name="pref_gallery_size_choices">
     <item>"Stor"</item>
-    <item>"Liten"</item>
+    <item>"Lille"</item>
   </string-array>
-    <string name="pref_gallery_sort_title">"Bildesortering"</string>
-    <string name="pref_gallery_sort_summary">"Velg i hvilken rekkefølge bildene skal sorteres"</string>
-    <string name="pref_gallery_sort_dialogtitle">"Bildesortering"</string>
+    <string name="pref_gallery_sort_title">"Sorter rækkefølge"</string>
+    <string name="pref_gallery_sort_summary">"Vælg rækkefølge på billeder og videoer"</string>
+    <string name="pref_gallery_sort_dialogtitle">"Sorter billeder"</string>
   <string-array name="pref_gallery_sort_choices">
     <item>"Nyeste først"</item>
-    <item>"Nyeste sist"</item>
+    <item>"Nyeste sidst"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_interval_title">"Pause i lysbildevisning"</string>
-    <string name="pref_gallery_slideshow_interval_summary">"Velg hvor lenge hvert lysbilde skal vises"</string>
-    <string name="pref_gallery_slideshow_interval_dialogtitle">"Pause i lysbildevisning"</string>
+    <string name="pref_gallery_slideshow_interval_title">"Diasshowinterval"</string>
+    <string name="pref_gallery_slideshow_interval_summary">"Vælg, hvor længe hvert dias skal vises i showet"</string>
+    <string name="pref_gallery_slideshow_interval_dialogtitle">"Diasshowinterval"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
     <item>"2 sekunder"</item>
     <item>"3 sekunder"</item>
     <item>"4 sekunder"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title">"Lysbildeovergang"</string>
-    <string name="pref_gallery_slideshow_transition_summary">"Velg effekten som skal brukes mellom lysbilder"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle">"Lysbildevergang"</string>
+    <string name="pref_gallery_slideshow_transition_title">"Diasshowovergang"</string>
+    <string name="pref_gallery_slideshow_transition_summary">"Vælg den effekt, der skal bruges, når man går fra et dias til det næste"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle">"Diasshowovergang"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
-    <item>"Ton inn og ut"</item>
-    <item>"Skli venstre - høyre"</item>
-    <item>"Skli opp - ned"</item>
-    <item>"Tilfeldig"</item>
+    <item>"Ton ind og ud"</item>
+    <item>"Glid til venstre – højre"</item>
+    <item>"Glid op – ned"</item>
+    <item>"Tilfældigt udvalg"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_repeat_title">"Gjenta lysbildeserie"</string>
-    <string name="pref_gallery_slideshow_repeat_summary">"Vis lydbildeserie mer enn en gang"</string>
-    <string name="pref_gallery_slideshow_shuffle_title">"Stokk lysbilder"</string>
-    <string name="pref_gallery_slideshow_shuffle_summary">"Vis bilder i tilfeldig rekkefølge"</string>
-    <string name="pref_camera_recordlocation_title">"Lagre sted i bilder"</string>
-    <string name="pref_camera_recordlocation_summary">"Lagre sted i bildedata"</string>
+    <string name="pref_gallery_slideshow_repeat_title">"Gentag diasshow"</string>
+    <string name="pref_gallery_slideshow_repeat_summary">"Afspil diasshow mere end en gang"</string>
+    <string name="pref_gallery_slideshow_shuffle_title">"Bland dias"</string>
+    <string name="pref_gallery_slideshow_shuffle_summary">"Vis billeder i tilfældig rækkefølge"</string>
+    <string name="pref_camera_recordlocation_title">"Gem placeringer i billeder"</string>
+    <string name="pref_camera_recordlocation_summary">"Registrer placering i billeddata"</string>
     <!-- no translation found for pref_camera_video_settings_category (5788821601203523037) -->
     <skip />
-    <string name="pref_camera_videoquality_title">"Videokvalitet"</string>
-    <string name="pref_camera_videoquality_entry_0">"Lav (for MMS-meldinger)"</string>
-    <string name="pref_camera_videoquality_entry_1">"Høy (for minnekort)"</string>
+    <string name="pref_camera_videoquality_title">"Vælg videokvalitet"</string>
+    <string name="pref_camera_videoquality_entry_0">"Lav (til MMS-beskeder)"</string>
+    <string name="pref_camera_videoquality_entry_1">"Høj (til SD-kort)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Videokvalitet"</string>
     <!-- no translation found for pref_camera_video_duration_title (3659987702892910722) -->
     <skip />
@@ -176,15 +176,15 @@
     <skip />
     <!-- no translation found for pref_camera_focusmode_dialogtitle (3464580667965511167) -->
     <skip />
-    <string name="camerasettings">"Innstillinger"</string>
-    <string name="image_gallery_NoImageView_text">"Fant ingen bilder."</string>
-    <string name="pref_gallery_confirm_delete_title">"Bekreft sletting"</string>
-    <string name="pref_gallery_confirm_delete_summary">"Vis bekreftelse før bilder slettes"</string>
+    <string name="camerasettings">"Indstillinger"</string>
+    <string name="image_gallery_NoImageView_text">"Der blev ikke fundet nogen medier."</string>
+    <string name="pref_gallery_confirm_delete_title">"Bekræft sletninger"</string>
+    <string name="pref_gallery_confirm_delete_summary">"Vis bekræftelse, inden der slettes et billede eller en video"</string>
     <!-- no translation found for no_location_image (6929172123058811834) -->
     <skip />
     <string name="details_panel_title">"Detaljer"</string>
     <string name="details_file_size">"Filstørrelse:"</string>
-    <string name="details_image_resolution">"Oppløsning:"</string>
+    <string name="details_image_resolution">"Opløsning:"</string>
     <!-- no translation found for details_image_make (2888477930210903540) -->
     <skip />
     <!-- no translation found for details_image_model (3608007849933924336) -->
@@ -197,40 +197,40 @@
     <skip />
     <!-- no translation found for details_image_location (6460201074393148978) -->
     <skip />
-    <string name="details_duration">"Varighet:"</string>
-    <string name="details_date_taken">"Dato tatt:"</string>
-    <string name="details_frame_rate">"Bildefrekvens:"</string>
-    <string name="details_bit_rate">"Bitrate:"</string>
-    <string name="details_codec">"Kodek:"</string>
+    <string name="details_duration">"Varighed:"</string>
+    <string name="details_date_taken">"Dato taget:"</string>
+    <string name="details_frame_rate">"Rammefrekvens"</string>
+    <string name="details_bit_rate">"Bithastighed:"</string>
+    <string name="details_codec">"Codec:"</string>
     <string name="details_format">"Format:"</string>
     <string name="details_dimension_x">"%1$d x %2$d"</string>
     <string name="details_ms">"%1$02d:%2$02d"</string>
     <string name="details_hms">"%1$d:%2$02d:%3$02d"</string>
     <string name="details_fps">"%1$d fps"</string>
-    <string name="details_kbps">"%1$d kbps"</string>
+    <string name="details_kbps">"%1$d Kbps"</string>
     <string name="details_mbps">"%1$g Mbps"</string>
     <string name="details_ok">"OK"</string>
-    <string name="context_menu_header">"Bildeinnstillinger"</string>
-    <string name="video_context_menu_header">"Videoinnstillinger"</string>
-    <string name="multiface_crop_help">"Trykk på et ansikt for å begynne."</string>
+    <string name="context_menu_header">"Billedvalgmuligheder"</string>
+    <string name="video_context_menu_header">"Videovalgmuligheder"</string>
+    <string name="multiface_crop_help">"Tryk på et ansigt for at begynde."</string>
     <string name="photos_gallery_title">"Galleri"</string>
-    <string name="pick_photos_gallery_title">"Velg bilde"</string>
+    <string name="pick_photos_gallery_title">"Vælg billede"</string>
     <string name="videos_gallery_title">"Galleri"</string>
-    <string name="pick_videos_gallery_title">"Velg video"</string>
-    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> gjenstår"</string>
-    <string name="sendImage">"Del bilde via"</string>
-    <string name="setImage">"Bruk bilde som"</string>
+    <string name="pick_videos_gallery_title">"Vælg video"</string>
+    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> tilbage"</string>
+    <string name="sendImage">"Del billede via"</string>
+    <string name="setImage">"Indstil billedet som"</string>
     <string name="sendVideo">"Del video via"</string>
-    <string name="movieviewlabel">"Filmer"</string>
-    <string name="loading_video">"Laster video…"</string>
-    <string name="spaceIsLow_content">"Minnekortet begynner å gå tom for plass. Endre kvalitetsinnstillingen eller slett bilder fra galleriet."</string>
-    <string name="resume_playing_title">"Fortsett avspilling"</string>
-    <string name="resume_playing_message">"Fortsett avspilling fra %s?"</string>
-    <string name="resume_playing_resume">"Fortsett avspilling"</string>
-    <string name="resume_playing_restart">"Begynn på nytt"</string>
-    <string name="gadget_title">"Bilderamme"</string>
-    <string name="file_info_title">"Filinformasjon:"</string>
-    <string name="video_exceed_mms_limit">"Videoen er for stor til å sendes over MMS. Prøv å ta opp en kortere video."</string>
+    <string name="movieviewlabel">"Film"</string>
+    <string name="loading_video">"Indlæser video ..."</string>
+    <string name="spaceIsLow_content">"Dit SD-kort er ved at løbe tør for plads. Skift kvalitetsindstillingerne, eller slet elementer fra Galleriet."</string>
+    <string name="resume_playing_title">"Genoptag video"</string>
+    <string name="resume_playing_message">"Genoptag afspilning fra %s ?"</string>
+    <string name="resume_playing_resume">"Genoptag afspilning"</string>
+    <string name="resume_playing_restart">"Start igen"</string>
+    <string name="gadget_title">"Billedramme"</string>
+    <string name="file_info_title">"Filoplysninger:"</string>
+    <string name="video_exceed_mms_limit">"Den video, du optog, er for stor til at sende via MMS. Prøv at optage et klip af kortere varighed."</string>
     <!-- no translation found for multiselect_share (5261644537749253581) -->
     <skip />
     <!-- no translation found for multiselect_delete (9113461994546744603) -->

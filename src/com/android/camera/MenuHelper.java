@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.location.Address;
 import android.location.Geocoder;
+import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
@@ -48,6 +49,7 @@ import android.widget.Toast;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -138,12 +140,29 @@ public class MenuHelper {
     }
 
     // This is a hack before we find a solution to pass a permission to other
-    // applications. See bug #1735149.
-    // Checks if the URI starts with "content://mms".
-    public static boolean isMMSUri(Uri uri) {
-        return (uri != null) &&
-               uri.getScheme().equals("content") &&
-               uri.getAuthority().equals("mms");
+    // applications. See bug #1735149, #1836138.
+    // Checks if the URI is on our whitelist:
+    // content://media/... (MediaProvider)
+    // file:///sdcard/... (Browser download)
+    public static boolean isWhiteListUri(Uri uri) {
+        if (uri == null) return false;
+
+        String scheme = uri.getScheme();
+        String authority = uri.getAuthority();
+
+        if (scheme.equals("content") && authority.equals("media")) {
+            return true;
+        }
+
+        if (scheme.equals("file")) {
+            List<String> p = uri.getPathSegments();
+
+            if (p.size() >= 1 && p.get(0).equals("sdcard")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static void enableShareMenuItem(Menu menu, boolean enabled) {
@@ -162,75 +181,52 @@ public class MenuHelper {
         d.findViewById(rowId).setVisibility(View.GONE);
     }
 
-    private static float[] getLatLng(HashMap<String, String> exifData) {
-        if (exifData == null) {
-            return null;
+    private static class UpdateLocationCallback implements
+            ReverseGeocoderTask.Callback {
+        WeakReference<View> mView;
+
+        public UpdateLocationCallback(WeakReference<View> view) {
+            mView = view;
         }
 
-        String latValue = exifData.get(ExifInterface.TAG_GPS_LATITUDE);
-        String latRef = exifData.get(ExifInterface.TAG_GPS_LATITUDE_REF);
-        String lngValue = exifData.get(ExifInterface.TAG_GPS_LONGITUDE);
-        String lngRef = exifData.get(ExifInterface.TAG_GPS_LONGITUDE_REF);
-        float[] latlng = null;
-
-        if (latValue != null && latRef != null
-                && lngValue != null && lngRef != null) {
-            latlng = new float[2];
-            latlng[0] = ExifInterface.convertRationalLatLonToFloat(
-                    latValue, latRef);
-            latlng[1] = ExifInterface.convertRationalLatLonToFloat(
-                    lngValue, lngRef);
+        public void onComplete(String location) {
+            // View d is per-thread data, so when setDetailsValue is
+            // executed by UI thread, it doesn't matter whether the
+            // details dialog is dismissed or not.
+            View view = mView.get();
+            if (view == null) return;
+            if (location != MenuHelper.EMPTY_STRING) {
+                MenuHelper.setDetailsValue(view, location,
+                        R.id.details_location_value);
+            } else {
+                MenuHelper.hideDetailsRow(view, R.id.details_location_row);
+            }
         }
-
-        return latlng;
     }
 
-    private static void setLatLngDetails(View d, Activity context,
+    private static void setLatLngDetails(final View d, Activity context,
             HashMap<String, String> exifData) {
-        float[] latlng = getLatLng(exifData);
+        float[] latlng = ExifInterface.getLatLng(exifData);
         if (latlng != null) {
             setDetailsValue(d, String.valueOf(latlng[0]),
                     R.id.details_latitude_value);
             setDetailsValue(d, String.valueOf(latlng[1]),
-                     R.id.details_longitude_value);
-            setReverseGeocodingDetails(d, context, latlng[0], latlng[1]);
+                    R.id.details_longitude_value);
+
+            if (latlng[0] == INVALID_LATLNG || latlng[1] == INVALID_LATLNG) {
+                hideDetailsRow(d, R.id.details_latitude_row);
+                hideDetailsRow(d, R.id.details_longitude_row);
+                hideDetailsRow(d, R.id.details_location_row);
+                return;
+            }
+
+            UpdateLocationCallback cb = new UpdateLocationCallback(
+                    new WeakReference<View>(d));
+            Geocoder geocoder = new Geocoder(context);
+            new ReverseGeocoderTask(geocoder, latlng, cb).execute();
         } else {
             hideDetailsRow(d, R.id.details_latitude_row);
             hideDetailsRow(d, R.id.details_longitude_row);
-            hideDetailsRow(d, R.id.details_location_row);
-        }
-    }
-
-    private static void setReverseGeocodingDetails(View d, Activity context,
-                                                   float lat, float lng) {
-        // Fill in reverse-geocoded address
-        String value = EMPTY_STRING;
-        if (lat == INVALID_LATLNG || lng == INVALID_LATLNG) {
-            hideDetailsRow(d, R.id.details_location_row);
-            return;
-        }
-
-        try {
-            Geocoder geocoder = new Geocoder(context);
-            List<Address> address = geocoder.getFromLocation(lat, lng, 1);
-            StringBuilder sb = new StringBuilder();
-            for (Address addr : address) {
-                int index = addr.getMaxAddressLineIndex();
-                sb.append(addr.getAddressLine(index));
-            }
-            value = sb.toString();
-        } catch (IOException ex) {
-            // Ignore this exception.
-            value = EMPTY_STRING;
-            Log.e(TAG, "Geocoder exception: ", ex);
-        } catch (RuntimeException ex) {
-            // Ignore this exception.
-            value = EMPTY_STRING;
-            Log.e(TAG, "Geocoder exception: ", ex);
-        }
-        if (value != EMPTY_STRING) {
-            setDetailsValue(d, value, R.id.details_location_value);
-        } else {
             hideDetailsRow(d, R.id.details_location_row);
         }
     }
@@ -240,12 +236,7 @@ public class MenuHelper {
             return null;
         }
 
-        ExifInterface exif = new ExifInterface(image.getDataPath());
-        HashMap<String, String> exifData = null;
-        if (exif != null) {
-            exifData = exif.getAttributes();
-        }
-        return exifData;
+        return ExifInterface.loadExifData(image.getDataPath());
     }
     // Called when "Show on Maps" is clicked.
     // Displays image location on Google Maps for further operations.
@@ -257,7 +248,7 @@ public class MenuHelper {
                 if (image == null) {
                     return;
                 }
-                float[] latlng = getLatLng(getExifData(image));
+                float[] latlng = ExifInterface.getLatLng(getExifData(image));
                 if (latlng == null) {
                     handler.post(new Runnable() {
                         public void run() {
@@ -809,7 +800,7 @@ public class MenuHelper {
 
                 list = ImageManager.isVideo(image) ? enableList : disableList;
                 list.addAll(requiresVideoItems);
-                
+
                 for (MenuItem item : enableList) {
                     item.setVisible(true);
                     item.setEnabled(true);

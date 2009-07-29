@@ -237,7 +237,6 @@ public class ReviewImage extends Activity implements View.OnClickListener {
 
     @Override
     protected void onDestroy() {
-
         // This is necessary to make the ZoomButtonsController unregister
         // its configuration change receiver.
         if (mZoomButtonsController != null) {
@@ -399,7 +398,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         }
 
         Uri uri = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
-        MenuHelper.enableShareMenuItem(menu, !MenuHelper.isMMSUri(uri));
+        MenuHelper.enableShareMenuItem(menu, MenuHelper.isWhiteListUri(uri));
 
         return true;
     }
@@ -438,12 +437,12 @@ public class ReviewImage extends Activity implements View.OnClickListener {
             }
 
             public int fullImageSizeToUse(int pos, int offset) {
-                // TODO
                 // this number should be bigger so that we can zoom.  we may
                 // need to get fancier and read in the fuller size image as the
-                // user starts to zoom.  use -1 to get the full full size image.
-                // for now use 480 so we don't run out of memory
-                final int imageViewSize = 480;
+                // user starts to zoom.
+                // Originally the value is set to 480 in order to avoid OOM.
+                // Now we set it to 2048 because of using purgeable Bitmaps.
+                final int imageViewSize = 2048;
                 return imageViewSize;
             }
 
@@ -935,7 +934,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                 break;
             case R.id.btn_share: {
                 IImage image = mAllImages.getImageAt(mCurrentPosition);
-                if (MenuHelper.isMMSUri(image.fullSizeImageUri())) {
+                if (!MenuHelper.isWhiteListUri(image.fullSizeImageUri())) {
                     return;
                 }
                 startShareMediaActivity(image);
@@ -1140,7 +1139,8 @@ class ReviewImageGetter {
                                         lastPosition, offset);
                                 if (image != null && !isCanceled()) {
                                     mLoad = image.fullSizeBitmapCancelable(
-                                            sizeToUse);
+                                            sizeToUse,
+                                            Util.createNativeAllocOptions());
                                 }
                                 if (mLoad != null) {
                                     // The return value could be null if the

@@ -420,6 +420,12 @@ public class Util {
         private final ProgressDialog mDialog;
         private final Runnable mJob;
         private final Handler mHandler;
+        private final Runnable mCleanupRunner = new Runnable() {
+            public void run() {
+                mActivity.removeLifeCycleListener(BackgroundJob.this);
+                if (mDialog.getWindow() != null) mDialog.dismiss();
+            }
+        };
 
         public BackgroundJob(MonitoredActivity activity, Runnable job,
                 ProgressDialog dialog, Handler handler) {
@@ -434,13 +440,17 @@ public class Util {
             try {
                 mJob.run();
             } finally {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        mActivity.removeLifeCycleListener(BackgroundJob.this);
-                        mDialog.dismiss();
-                    }
-                });
+                mHandler.post(mCleanupRunner);
             }
+        }
+
+
+        @Override
+        public void onActivityDestroyed(MonitoredActivity activity) {
+            // We get here only when the onDestroyed being called before
+            // the mCleanupRunner. So, run it now and remove it from the queue
+            mCleanupRunner.run();
+            mHandler.removeCallbacks(mCleanupRunner);
         }
 
         @Override
@@ -470,5 +480,12 @@ public class Util {
         intent.setDataAndType(u, image.getMimeType());
         intent.putExtra("mimeType", image.getMimeType());
         return intent;
+    }
+
+    // Returns Options that set the puregeable flag for Bitmap decode.
+    public static BitmapFactory.Options createNativeAllocOptions() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inNativeAlloc = true;
+        return options;
     }
 }

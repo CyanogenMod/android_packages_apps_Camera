@@ -250,7 +250,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     @Override
     protected void onDestroy() {
-
         // This is necessary to make the ZoomButtonsController unregister
         // its configuration change receiver.
         if (mZoomButtonsController != null) {
@@ -435,7 +434,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
 
         Uri uri = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
-        MenuHelper.enableShareMenuItem(menu, !MenuHelper.isMMSUri(uri));
+        MenuHelper.enableShareMenuItem(menu, MenuHelper.isWhiteListUri(uri));
 
         return true;
     }
@@ -476,12 +475,12 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
 
             public int fullImageSizeToUse(int pos, int offset) {
-                // TODO
                 // this number should be bigger so that we can zoom.  we may
                 // need to get fancier and read in the fuller size image as the
-                // user starts to zoom.  use -1 to get the full full size image.
-                // for now use 480 so we don't run out of memory
-                final int imageViewSize = 480;
+                // user starts to zoom.
+                // Originally the value is set to 480 in order to avoid OOM.
+                // Now we set it to 2048 because of using purgeable Bitmaps.
+                final int imageViewSize = 2048;
                 return imageViewSize;
             }
 
@@ -582,13 +581,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
             return;
         }
 
-        // We don't show action icons for MMS uri because we don't have
-        // delete and share action icons for MMS. It is obvious that we don't
-        // need the "delete" action, but for the share part, although we get
-        // read permission (for the image) from the MMS application, we cannot
-        // pass the permission to other activities due to the current framework
-        // design.
-        if (MenuHelper.isMMSUri(uri)) {
+        // We only show action icons for URIs that we know we can share and
+        // delete. Although we get read permission (for the images) from
+        // applications like MMS, we cannot pass the permission to other
+        // activities due to the current framework design.
+        if (!MenuHelper.isWhiteListUri(uri)) {
             mShowActionIcons = false;
         }
 
@@ -999,7 +996,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 break;
             case R.id.share: {
                 IImage image = mAllImages.getImageAt(mCurrentPosition);
-                if (MenuHelper.isMMSUri(image.fullSizeImageUri())) {
+                if (!MenuHelper.isWhiteListUri(image.fullSizeImageUri())) {
                     return;
                 }
                 startShareMediaActivity(image);
@@ -1007,7 +1004,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
             case R.id.setas: {
                 IImage image = mAllImages.getImageAt(mCurrentPosition);
-                Intent intent = Util.createSetAsIntent(image);                
+                Intent intent = Util.createSetAsIntent(image);
                 try {
                     startActivity(Intent.createChooser(
                             intent, getText(R.string.setImage)));
@@ -1364,7 +1361,8 @@ class ImageGetter {
                                         lastPosition, offset);
                                 if (image != null && !isCanceled()) {
                                     mLoad = image.fullSizeBitmapCancelable(
-                                            sizeToUse);
+                                            sizeToUse,
+                                            Util.createNativeAllocOptions());
                                 }
                                 if (mLoad != null) {
                                     // The return value could be null if the
@@ -1387,8 +1385,8 @@ class ImageGetter {
                                             Runnable cb = callback(
                                                     lastPosition, offset,
                                                     false, b);
-                                            mViewImage.mHandler
-                                                    .postGetterCallback(cb);
+                                            mViewImage.mHandler.
+                                                    postGetterCallback(cb);
                                         }
                                     }
                                 }

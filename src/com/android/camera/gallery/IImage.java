@@ -17,6 +17,7 @@
 package com.android.camera.gallery;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import java.io.InputStream;
@@ -36,7 +37,7 @@ public interface IImage {
 
     /** Get the cancelable object for the bitmap of the full size image. */
     public abstract Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthOrHeight);
+            int targetWidthOrHeight, BitmapFactory.Options mOptions);
 
     /** Get the input stream associated with a given full size image. */
     public abstract InputStream fullSizeImageData();

@@ -20,6 +20,7 @@ import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class VideoObject extends BaseImage implements IImage {
 
     @Override
     public Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthHeight) {
+            int targetWidthHeight, BitmapFactory.Options options) {
         return null;
     }
 

@@ -42,10 +42,11 @@ import java.util.HashMap;
 class GridViewSpecial extends View {
     @SuppressWarnings("unused")
     private static final String TAG = "GridViewSpecial";
+    private static final float MAX_FLING_VELOCITY = 2500;
 
     public static interface Listener {
-        public void onImageSelected(int index);
         public void onImageClicked(int index);
+        public void onImageTapped(int index);
         public void onLayoutComplete(boolean changed);
 
         /**
@@ -65,8 +66,7 @@ class GridViewSpecial extends View {
         public boolean needsDecoration();
     }
 
-    public static final int ORIGINAL_SELECT = -2;
-    public static final int SELECT_NONE = -1;
+    public static final int INDEX_NONE = -1;
 
     // There are two cell size we will use. It can be set by setSizeChoice().
     // The mLeftEdgePadding fields is filled in onLayout(). See the comments
@@ -109,8 +109,10 @@ class GridViewSpecial extends View {
     private boolean mLayoutComplete = false;
 
     // Selection state
-    private int mCurrentSelection = SELECT_NONE;
-    private boolean mCurrentSelectionPressed = false;
+    private int mCurrentSelection = INDEX_NONE;
+    private int mCurrentPressState = 0;
+    private static final int TAPPING_FLAG = 1;
+    private static final int CLICKING_FLAG = 2;
 
     // These are cached derived information.
     private int mCount;  // Cache mImageList.getCount();
@@ -118,7 +120,6 @@ class GridViewSpecial extends View {
     private int mBlockHeight; // Cache mSpec.mCellSpacing + mSpec.mCellHeight
 
     private boolean mRunning = false;
-    private boolean mShowSelection = false;
     private Scroller mScroller = null;
 
     public GridViewSpecial(Context context, AttributeSet attrs) {
@@ -257,7 +258,8 @@ class GridViewSpecial extends View {
         cellOutline.draw(canvas);
 
         canvas.setBitmap(mOutline[OUTLINE_PRESSED]);
-        cellOutline.setState(PRESSED_ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET);
+        cellOutline.setState(
+                PRESSED_ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET);
         cellOutline.draw(canvas);
 
         canvas.setBitmap(mOutline[OUTLINE_SELECTED]);
@@ -289,12 +291,11 @@ class GridViewSpecial extends View {
                 mScroller.forceFinished(true);
                 return false;
             }
-
-            int pos = computeSelectedIndex(e.getX(), e.getY());
-            if (pos >= 0 && pos < mCount) {
-                select(pos, true);
+            int index = computeSelectedIndex(e.getX(), e.getY());
+            if (index >= 0 && index < mCount) {
+                setSelectedIndex(index);
             } else {
-                select(SELECT_NONE, false);
+                setSelectedIndex(INDEX_NONE);
             }
             return true;
         }
@@ -303,14 +304,13 @@ class GridViewSpecial extends View {
         public boolean onFling(MotionEvent e1, MotionEvent e2,
                 float velocityX, float velocityY) {
             if (!canHandleEvent()) return false;
-            final float maxVelocity = 2500;
-            if (velocityY > maxVelocity) {
-                velocityY = maxVelocity;
-            } else if (velocityY < -maxVelocity) {
-                velocityY = -maxVelocity;
+            if (velocityY > MAX_FLING_VELOCITY) {
+                velocityY = MAX_FLING_VELOCITY;
+            } else if (velocityY < -MAX_FLING_VELOCITY) {
+                velocityY = -MAX_FLING_VELOCITY;
             }
 
-            select(SELECT_NONE, false);
+            setSelectedIndex(INDEX_NONE);
             mScroller = new Scroller(getContext());
             mScroller.fling(0, mScrollY, 0, -(int) velocityY, 0, 0, 0,
                     mMaxScrollY);
@@ -329,7 +329,7 @@ class GridViewSpecial extends View {
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
             if (!canHandleEvent()) return false;
-            select(SELECT_NONE, false);
+            setSelectedIndex(INDEX_NONE);
             scrollBy(0, (int) distanceY);
             invalidate();
             return true;
@@ -338,10 +338,9 @@ class GridViewSpecial extends View {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             if (!canHandleEvent()) return false;
-            select(mCurrentSelection, false);
             int index = computeSelectedIndex(e.getX(), e.getY());
             if (index >= 0 && index < mCount) {
-                mListener.onImageClicked(index);
+                mListener.onImageTapped(index);
                 return true;
             }
             return false;
@@ -352,34 +351,34 @@ class GridViewSpecial extends View {
         return mCurrentSelection;
     }
 
+    public void invalidateImage(int index) {
+        if (index != INDEX_NONE) {
+            mImageBlockManager.invalidateImage(index);
+        }
+    }
+
     /**
      *
-     * @param newSel ORIGINAL_SELECT (-2) means use old selection,
-     *               SELECT_NONE (-1) means remove selection.
-     * @param newPressed
+     * @param index <code>INDEX_NONE</code> (-1) means remove selection.
      */
-    public void select(int newSel, boolean newPressed) {
-        if (newSel == ORIGINAL_SELECT) {
-            newSel = mCurrentSelection;
-        }
-        int oldSel = mCurrentSelection;
-        if ((oldSel == newSel) && (mCurrentSelectionPressed == newPressed)) {
+    public void setSelectedIndex(int index) {
+        // A selection box will be shown for the image that being selected,
+        // (by finger or by the dpad center key). The selection box can be drawn
+        // in two colors. One color (yellow) is used when the the image is
+        // still being tapped or clicked (the finger is still on the touch screen
+        // or the dpad center key is not released). Another color (orange) is
+        // used after the finger leaves touch screen or the dpad center
+        // key is released.
+
+        if (mCurrentSelection == index) {
             return;
         }
-
         // This happens when the last picture is deleted.
-        if (newSel > mCount - 1) {
-            newSel = mCount - 1;
-        }
+        mCurrentSelection = Math.min(index, mCount - 1);
 
-        mShowSelection = (newSel != SELECT_NONE);
-        mCurrentSelection = newSel;
-        mCurrentSelectionPressed = newPressed;
-        if (newSel != SELECT_NONE) {
-            ensureVisible(newSel);
+        if (mCurrentSelection != INDEX_NONE) {
+            ensureVisible(mCurrentSelection);
         }
-
-        mListener.onImageSelected(mCurrentSelection);
         invalidate();
     }
 
@@ -443,7 +442,7 @@ class GridViewSpecial extends View {
             mImageBlockManager = null;
         }
         mRunning = false;
-        mCurrentSelection = SELECT_NONE;
+        mCurrentSelection = INDEX_NONE;
     }
 
     @Override
@@ -504,7 +503,18 @@ class GridViewSpecial extends View {
         if (!canHandleEvent()) {
             return false;
         }
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mCurrentPressState |= TAPPING_FLAG;
+                invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                mCurrentPressState &= ~TAPPING_FLAG;
+                invalidate();
+                break;
+        }
         mGestureDetector.onTouchEvent(ev);
+        // Consume all events
         return true;
     }
 
@@ -532,7 +542,7 @@ class GridViewSpecial extends View {
 
     private final Runnable mLongPressCallback = new Runnable() {
         public void run() {
-            select(GridViewSpecial.ORIGINAL_SELECT, false);
+            mCurrentPressState &= ~CLICKING_FLAG;
             showContextMenu();
         }
     };
@@ -540,11 +550,8 @@ class GridViewSpecial extends View {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (!canHandleEvent()) return false;
-
-        boolean handled = true;
         int sel = mCurrentSelection;
-        boolean pressed = false;
-        if (mShowSelection) {
+        if (sel != INDEX_NONE) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
                     if (sel != mCount - 1 && (sel % mColumns < mColumns - 1)) {
@@ -565,13 +572,12 @@ class GridViewSpecial extends View {
                     sel = Math.min(mCount - 1, sel + mColumns);
                     break;
                 case KeyEvent.KEYCODE_DPAD_CENTER:
-                    pressed = true;
+                    mCurrentPressState |= CLICKING_FLAG;
                     mHandler.postDelayed(mLongPressCallback,
                             ViewConfiguration.getLongPressTimeout());
                     break;
                 default:
-                    handled = false;
-                    break;
+                    return super.onKeyDown(keyCode, event);
             }
         } else {
             switch (keyCode) {
@@ -590,16 +596,11 @@ class GridViewSpecial extends View {
                         sel = topPos;
                     break;
                 default:
-                    handled = false;
-                    break;
+                    return super.onKeyDown(keyCode, event);
             }
         }
-        if (handled) {
-            select(sel, pressed);
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
+        setSelectedIndex(sel);
+        return true;
     }
 
     @Override
@@ -607,7 +608,8 @@ class GridViewSpecial extends View {
         if (!canHandleEvent()) return false;
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-            select(GridViewSpecial.ORIGINAL_SELECT, false);
+            mCurrentPressState &= ~CLICKING_FLAG;
+            invalidate();
 
             // The keyUp doesn't get called when the longpress menu comes up. We
             // only get here when the user lets go of the center key before the
@@ -659,7 +661,7 @@ class GridViewSpecial extends View {
     }
 
     private void paintSelection(Canvas canvas) {
-        if (mCurrentSelection == SELECT_NONE) return;
+        if (mCurrentSelection == INDEX_NONE) return;
 
         int row = mCurrentSelection / mColumns;
         int col = mCurrentSelection - (row * mColumns);
@@ -670,10 +672,9 @@ class GridViewSpecial extends View {
         int yTop = spacing + (row * mBlockHeight);
 
         int type = OUTLINE_SELECTED;
-        if (mCurrentSelectionPressed) {
+        if (mCurrentPressState != 0) {
             type = OUTLINE_PRESSED;
         }
-
         canvas.drawBitmap(mOutline[type], xPos, yTop, null);
     }
 }
@@ -843,6 +844,17 @@ class ImageBlockManager {
             }
         }
         return mCache.remove(bestIndex);
+    }
+
+    public void invalidateImage(int index) {
+        int row = index / mColumns;
+        int col = index - (row * mColumns);
+        ImageBlock blk = mCache.get(row);
+        if (blk == null) return;
+        if ((blk.mCompletedMask & (1 << col)) != 0) {
+            blk.mCompletedMask &= ~(1 << col);
+        }
+        startLoading();
     }
 
     // After calling recycle(), the instance should not be used anymore.
