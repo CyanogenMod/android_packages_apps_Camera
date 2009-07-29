@@ -136,7 +136,7 @@ public class CropImage extends MonitoredActivity {
                 // instead.
                 // TODO when saving the resulting bitmap use the
                 // decode/crop/encode api so we don't lose any resolution.
-                mBitmap = mImage.thumbBitmap();
+                mBitmap = mImage.thumbBitmap(IImage.ROTATE_AS_NEEDED);
             }
         }
 

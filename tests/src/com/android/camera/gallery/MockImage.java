@@ -16,11 +16,20 @@ public class MockImage implements IImage {
         mTakenDate = takenDate;
     }
 
+    public int getDegreesRotated() {
+        return 0;
+    }
+
     protected void setContainer(IImageList container) {
         this.mContainer = container;
     }
 
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels) {
+        return null;
+    }
+
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
+            boolean rotateAsNeeded) {
         return null;
     }
 
@@ -92,7 +101,7 @@ public class MockImage implements IImage {
     public void setTitle(String name) {
     }
 
-    public Bitmap thumbBitmap() {
+    public Bitmap thumbBitmap(boolean rotateAsNeeded) {
         return null;
     }
 

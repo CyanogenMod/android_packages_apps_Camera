@@ -47,7 +47,7 @@ import android.os.Message;
  */
 
 interface ImageGetterCallback {
-    public void imageLoaded(int pos, int offset, Bitmap bitmap,
+    public void imageLoaded(int pos, int offset, RotateBitmap bitmap,
                             boolean isThumb);
     public boolean wantsThumbnail(int pos, int offset);
     public boolean wantsFullImage(int pos, int offset);
@@ -95,7 +95,8 @@ class ImageGetter {
     private class ImageGetterRunnable implements Runnable {
 
         private Runnable callback(final int position, final int offset,
-                                  final boolean isThumb, final Bitmap bitmap,
+                                  final boolean isThumb,
+                                  final RotateBitmap bitmap,
                                   final int requestSerial) {
             return new Runnable() {
                 public void run() {
@@ -160,7 +161,7 @@ class ImageGetter {
                     if (image == null) continue;
                     if (mCancel) return;
 
-                    Bitmap b = image.thumbBitmap();
+                    Bitmap b = image.thumbBitmap(IImage.NO_ROTATE);
                     if (b == null) continue;
                     if (mCancel) {
                         b.recycle();
@@ -168,7 +169,9 @@ class ImageGetter {
                     }
 
                     Runnable cb = callback(mCurrentPosition, offset,
-                            true, b, mCurrentSerial);
+                            true,
+                            new RotateBitmap(b, image.getDegreesRotated()),
+                            mCurrentSerial);
                     mHandler.postGetterCallback(cb);
                 }
             }
@@ -190,15 +193,19 @@ class ImageGetter {
                     int sizeToUse = mCB.fullImageSizeToUse(
                             mCurrentPosition, offset);
                     Bitmap b = image.fullSizeBitmap(sizeToUse, 3 * 1024 * 1024,
-                            IImage.ROTATE_AS_NEEDED, IImage.USE_NATIVE);
+                            IImage.NO_ROTATE, IImage.USE_NATIVE);
+
                     if (b == null) continue;
                     if (mCancel) {
                         b.recycle();
                         return;
                     }
 
+                    RotateBitmap rb = new RotateBitmap(b,
+                            image.getDegreesRotated());
+
                     Runnable cb = callback(mCurrentPosition, offset,
-                            false, b, mCurrentSerial);
+                            false, rb, mCurrentSerial);
                     mHandler.postGetterCallback(cb);
                 }
             }

@@ -164,6 +164,12 @@ public abstract class BaseImage implements IImage {
     }
 
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
+            boolean rotateAsNeeded) {
+        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
+                rotateAsNeeded, IImage.NO_NATIVE);
+    }
+
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
             boolean rotateAsNeeded, boolean useNative) {
         Uri url = mContainer.contentUri(mId);
         if (url == null) return null;
@@ -174,6 +180,7 @@ public abstract class BaseImage implements IImage {
         if (b != null && rotateAsNeeded) {
             b = Util.rotate(b, getDegreesRotated());
         }
+
         return b;
     }
 
@@ -202,7 +209,7 @@ public abstract class BaseImage implements IImage {
         return mDateTaken;
     }
 
-    protected int getDegreesRotated() {
+    public int getDegreesRotated() {
         return 0;
     }
 

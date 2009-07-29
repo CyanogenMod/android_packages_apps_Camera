@@ -425,7 +425,9 @@ public class ReviewImage extends Activity implements View.OnClickListener {
 
         Bitmap b = mCache.getBitmap(pos);
         if (b != null) {
-            mImageView.setImageBitmapResetBase(b, true);
+            IImage image = mAllImages.getImageAt(pos);
+            mImageView.setImageRotateBitmapResetBase(
+                    new RotateBitmap(b, image.getDegreesRotated()), true);
             updateZoomButtonsEnabled();
         }
 
@@ -458,7 +460,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                 return sOrderAdjacents;
             }
 
-            public void imageLoaded(int pos, int offset, Bitmap bitmap,
+            public void imageLoaded(int pos, int offset, RotateBitmap bitmap,
                                     boolean isThumb) {
                 // shouldn't get here after onPause()
 
@@ -469,13 +471,13 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                 }
 
                 if (isThumb) {
-                    mCache.put(pos + offset, bitmap);
+                    mCache.put(pos + offset, bitmap.getBitmap());
                 }
                 if (offset == 0) {
                     // isThumb: We always load thumb bitmap first, so we will
                     // reset the supp matrix for then thumb bitmap, and keep
                     // the supp matrix when the full bitmap is loaded.
-                    mImageView.setImageBitmapResetBase(bitmap, isThumb);
+                    mImageView.setImageRotateBitmapResetBase(bitmap, isThumb);
                     updateZoomButtonsEnabled();
                 }
             }
@@ -736,7 +738,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
             }
 
             public void imageLoaded(final int pos, final int offset,
-                    final Bitmap bitmap, final boolean isThumb) {
+                    final RotateBitmap bitmap, final boolean isThumb) {
                 long timeRemaining = Math.max(0,
                         targetDisplayTime - System.currentTimeMillis());
                 mHandler.postDelayedGetterCallback(new Runnable() {
@@ -756,7 +758,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                         ImageViewTouchBase newView =
                                 mSlideShowImageViews[mSlideShowImageCurrent];
                         newView.setVisibility(View.VISIBLE);
-                        newView.setImageBitmapResetBase(bitmap, true);
+                        newView.setImageRotateBitmapResetBase(bitmap, true);
                         newView.bringToFront();
 
                         int animation = 0;
@@ -1101,7 +1103,7 @@ class ImageViewTouch2 extends ImageViewTouchBase {
 
     protected boolean isShiftedToNextImage(boolean left, int maxOffset) {
         boolean retval;
-        Bitmap bitmap = mBitmapDisplayed;
+        RotateBitmap bitmap = mBitmapDisplayed;
         Matrix m = getImageViewMatrix();
         if (left) {
             float [] t1 = new float[] { 0, 0 };
