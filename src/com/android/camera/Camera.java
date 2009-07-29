@@ -345,16 +345,13 @@ public class Camera extends Activity implements View.OnClickListener,
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED) ||
-                    action.equals(Intent.ACTION_MEDIA_CHECKING)) {
-                // SD card unavailable
-                mPicturesRemaining = MenuHelper.NO_STORAGE_ERROR;
-                updateStorageHint(mPicturesRemaining);
-            } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
-                mPicturesRemaining = MenuHelper.NO_STORAGE_ERROR;
-                updateStorageHint(mPicturesRemaining);
+            if (action.equals(Intent.ACTION_MEDIA_MOUNTED)
+                    || action.equals(Intent.ACTION_MEDIA_UNMOUNTED)
+                    || action.equals(Intent.ACTION_MEDIA_CHECKING)
+                    || action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
+                checkStorage();
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                updateStorageHint(calculatePicturesRemaining());
+                checkStorage();
                 if (!mIsImageCaptureIntent)  {
                     updateThumbnailButton();
                 }
@@ -790,14 +787,13 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void checkStorage() {
-        calculatePicturesRemaining();
         if (ImageManager.isMediaScannerScanning(getContentResolver())) {
             mPicturesRemaining = MenuHelper.NO_STORAGE_ERROR;
+        } else {
+            calculatePicturesRemaining();
         }
-        if (mPicturesRemaining < 0) {
-            updateStorageHint(mPicturesRemaining);
-        }
-      }
+        updateStorageHint(mPicturesRemaining);
+    }
 
     public void onClick(View v) {
         switch (v.getId()) {
