@@ -23,7 +23,6 @@ import com.android.camera.gallery.VideoObject;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;         
 
 /*
  * Here's the loading strategy.  For any given image, load the thumbnail
