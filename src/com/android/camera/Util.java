@@ -20,7 +20,6 @@ import com.android.camera.gallery.IImage;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -95,6 +94,11 @@ public class Util {
         int upperBound = (minSideLength == IImage.UNCONSTRAINED) ? 128 :
                 (int) Math.min(Math.floor(w / minSideLength),
                 Math.floor(h / minSideLength));
+
+        if (upperBound < lowerBound) {
+            // return the larger one when there is no overlapping zone.
+            return lowerBound;
+        }
 
         if ((maxNumOfPixels == IImage.UNCONSTRAINED) &&
                 (minSideLength == IImage.UNCONSTRAINED)) {
@@ -309,7 +313,7 @@ public class Util {
         return makeBitmap(minSideLength, maxNumOfPixels, uri, cr,
                 IImage.NO_NATIVE);
     }
-    
+
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
             Uri uri, ContentResolver cr, boolean useNative) {
         ParcelFileDescriptor input = null;
@@ -337,7 +341,7 @@ public class Util {
         return makeBitmap(minSideLength, maxNumOfPixels, null, null, pfd,
                 options);
     }
-    
+
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
             Uri uri, ContentResolver cr, ParcelFileDescriptor pfd,
             BitmapFactory.Options options) {

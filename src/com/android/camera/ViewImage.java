@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.gallery.VideoObject;
@@ -27,11 +26,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
@@ -44,7 +40,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -55,8 +50,6 @@ import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
 import java.util.Random;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 // This activity can display a whole picture and navigate them in a specific
 // gallery. It has two modes: normal mode and slide show mode. In normal mode
@@ -494,7 +487,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 // need to get fancier and read in the fuller size image as the
                 // user starts to zoom.
                 // Originally the value is set to 480 in order to avoid OOM.
-                // Now we set it to 2048 because of using purgeable Bitmaps.
+                // Now we set it to 2048 because of using
+                // native memory allocation for Bitmaps.
                 final int imageViewSize = 2048;
                 return imageViewSize;
             }
