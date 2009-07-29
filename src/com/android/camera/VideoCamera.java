@@ -829,9 +829,17 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // if the frame rate is too large, it can cause camera to become
         // unstable. We need to fix the MediaRecorder to disable the support
         // of setting frame rate for now.
-        mMediaRecorder.setVideoFrameRate(mProfile.mFps);
+        mMediaRecorder.setVideoFrameRate(mProfile.mVideoFps);
         mMediaRecorder.setVideoSize(
                 mProfile.mVideoWidth, mProfile.mVideoHeight);
+        mMediaRecorder.setParameters(String.format(
+                "video-param-encoding-bitrate=%d", mProfile.mVideoBitrate));
+        mMediaRecorder.setParameters(String.format(
+                "audio-param-encoding-bitrate=%d", mProfile.mAudioBitrate));
+        mMediaRecorder.setParameters(String.format(
+                "audio-param-number-of-channels=%d", mProfile.mAudioChannels));
+        mMediaRecorder.setParameters(String.format(
+                "audio-param-sampling-rate=%d", mProfile.mAudioSamplingRate));
         mMediaRecorder.setVideoEncoder(mProfile.mVideoEncoder);
         mMediaRecorder.setAudioEncoder(mProfile.mAudioEncoder);
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
@@ -1355,7 +1363,11 @@ class MediaRecorderProfile {
     public final int mAudioEncoder;
     public final int mVideoWidth;
     public final int mVideoHeight;
-    public final int mFps;
+    public final int mVideoFps;
+    public final int mVideoBitrate;
+    public final int mAudioBitrate;
+    public final int mAudioChannels;
+    public final int mAudioSamplingRate;
 
     MediaRecorderProfile(boolean hiQuality) {
         mHiQuality = hiQuality;
@@ -1380,9 +1392,25 @@ class MediaRecorderProfile {
                               "ro.media.enc.lprof.vid.height",
                               288, 144);
 
-        mFps = getInt("ro.media.enc.hprof.vid.fps",
-                      "ro.media.enc.lprof.vid.fps",
-                      20, 20);
+        mVideoFps = getInt("ro.media.enc.hprof.vid.fps",
+                           "ro.media.enc.lprof.vid.fps",
+                           20, 20);
+
+        mVideoBitrate = getInt("ro.media.enc.hprof.vid.bps",
+                               "ro.media.enc.lprof.vid.bps",
+                               360000, 192000);
+
+        mAudioBitrate = getInt("ro.media.enc.hprof.aud.bps",
+                               "ro.media.enc.lprof.aud.bps",
+                               23450, 23450);
+
+        mAudioChannels = getInt("ro.media.enc.hprof.aud.ch",
+                                "ro.media.enc.lprof.aud.ch",
+                                1, 1);
+
+        mAudioSamplingRate = getInt("ro.media.enc.hprof.aud.hz",
+                                    "ro.media.enc.lprof.aud.hz",
+                                    8000, 8000);
     }
 
     private int getFromTable(String highKey, String lowKey,
