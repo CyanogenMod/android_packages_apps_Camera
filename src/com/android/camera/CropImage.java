@@ -175,9 +175,6 @@ public class CropImage extends MonitoredActivity {
         }
 
         mImageView.setImageBitmapResetBase(mBitmap, true);
-        if (mImageView.getScale() == 1F) {
-            mImageView.center(true, true);
-        }
 
         Util.startBackgroundJob(this, null,
                 getResources().getString(R.string.runningFaceDetection),
@@ -557,7 +554,7 @@ class CropImageView extends ImageViewTouchBase {
     protected void onLayout(boolean changed, int left, int top,
                             int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (mBitmapDisplayed != null) {
+        if (mBitmapDisplayed.getBitmap() != null) {
             for (HighlightView hv : mHighlightViews) {
                 hv.mMatrix.set(getImageMatrix());
                 hv.invalidate();
