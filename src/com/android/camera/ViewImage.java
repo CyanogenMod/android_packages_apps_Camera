@@ -33,19 +33,16 @@ import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
@@ -263,15 +260,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mZoomButtonsController = new ZoomButtonsController(rootView);
         mZoomButtonsController.setAutoDismissed(false);
         mZoomButtonsController.setZoomSpeed(100);
-
-        View controls = mZoomButtonsController.getZoomControls();
-        ViewGroup.LayoutParams params = controls.getLayoutParams();
-        if (params instanceof FrameLayout.LayoutParams) {
-            FrameLayout.LayoutParams frameParams =
-                    (FrameLayout.LayoutParams) params;
-            frameParams.gravity = Gravity.RIGHT;
-        }
-
         mZoomButtonsController.setOnZoomListener(
                 new ZoomButtonsController.OnZoomListener() {
             public void onVisibilityChanged(boolean visible) {
