@@ -555,6 +555,7 @@ public class MenuHelper {
                 Intent cropIntent = new Intent();
                 cropIntent.setClass(activity, CropImage.class);
                 cropIntent.setData(u);
+                cropIntent.putExtra(MediaStore.EXTRA_FULL_SCREEN, true);
                 activity.startActivityForResult(cropIntent,
                         RESULT_COMMON_MENU_CROP);
             }
