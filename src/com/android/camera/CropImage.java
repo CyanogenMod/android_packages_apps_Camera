@@ -42,6 +42,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.File;
@@ -124,6 +125,11 @@ public class CropImage extends MonitoredActivity {
             mDoFaceDetection = extras.containsKey("noFaceDetection")
                     ? !extras.getBoolean("noFaceDetection")
                     : true;
+
+            if (intent.getBooleanExtra(MediaStore.EXTRA_FULL_SCREEN, true)) {
+                getWindow().addFlags(
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
         }
 
         if (mBitmap == null) {

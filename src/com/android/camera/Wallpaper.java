@@ -143,6 +143,7 @@ public class Wallpaper extends Activity {
             intent.setClassName("com.android.camera",
                                 "com.android.camera.CropImage");
             intent.setData(imageToUse);
+            intent.putExtra(MediaStore.EXTRA_FULL_SCREEN, true);
             formatIntent(intent);
             startActivityForResult(intent, CROP_DONE);
         } else {

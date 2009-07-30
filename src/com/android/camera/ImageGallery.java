@@ -296,6 +296,7 @@ public class ImageGallery extends Activity implements
             if (cropValue.equals("circle")) {
                 newExtras.putString("circleCrop", "true");
             }
+            newExtras.putBoolean(MediaStore.EXTRA_FULL_SCREEN, true);
 
             Intent cropIntent = new Intent();
             cropIntent.setData(img.fullSizeImageUri());
