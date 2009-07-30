@@ -16,16 +16,13 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.VideoObject;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,6 +42,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
+
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.VideoObject;
 
 import java.util.Random;
 
@@ -191,6 +192,16 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         if (autoDismiss) scheduleDismissOnScreenControls();
     }
 
+    private boolean isTouchOnImage(MotionEvent m) {
+        View panel = findViewById(R.id.mainPanel);
+        int pos[] = new int[2];
+        Rect frame = new Rect();
+        panel.getHitRect(frame);
+        ((View) panel.getParent()).getLocationOnScreen(pos);
+        return frame.contains(
+                (int) m.getRawX() - pos[0], (int) m.getRawY() - pos[1]);
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         boolean sup = super.dispatchTouchEvent(m);
@@ -200,7 +211,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         // the events on zoom/prev/next buttons.
         // However, since we have no other pressable views, it is OK now.
         // TODO: Fix the above issue.
-        if (mMode == MODE_NORMAL) {
+        if (mMode == MODE_NORMAL && isTouchOnImage(m)) {
             switch (m.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     showOnScreenControls(NO_AUTO_DISMISS);
