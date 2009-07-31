@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -40,6 +39,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnTouchListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -62,9 +62,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private static final String STATE_SLIDESHOW = "slideshow";
     private static final String EXTRA_SLIDESHOW = "slideshow";
     private static final String TAG = "ViewImage";
-
-    private static final boolean AUTO_DISMISS = true;
-    private static final boolean NO_AUTO_DISMISS = false;
 
     private ImageGetter mGetter;
     private Uri mSavedUri;
@@ -131,8 +128,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
     // This is the cache for thumbnail bitmaps.
     private BitmapCache mCache;
     private MenuHelper.MenuItemsResult mImageMenuRunnable;
-
-    private Runnable mDismissOnScreenControlsRunnable;
+    private final Runnable mDismissOnScreenControlRunner = new Runnable() {
+        public void run() {
+            hideOnScreenControls();
+        }
+    };
 
     private void updateNextPrevControls() {
         boolean showPrev = mCurrentPosition > 0;
@@ -166,7 +166,33 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
     }
 
-    private void showOnScreenControls(final boolean autoDismiss) {
+    private void hideOnScreenControls() {
+        if (mShowActionIcons
+                && mActionIconPanel.getVisibility() == View.VISIBLE) {
+            Animation animation = new AlphaAnimation(1, 0);
+            animation.setDuration(500);
+            mActionIconPanel.startAnimation(animation);
+            mActionIconPanel.setVisibility(View.INVISIBLE);
+        }
+
+        if (mNextImageView.getVisibility() == View.VISIBLE) {
+            Animation a = mHideNextImageViewAnimation;
+            a.setDuration(500);
+            mNextImageView.startAnimation(a);
+            mNextImageView.setVisibility(View.INVISIBLE);
+        }
+
+        if (mPrevImageView.getVisibility() == View.VISIBLE) {
+            Animation a = mHidePrevImageViewAnimation;
+            a.setDuration(500);
+            mPrevImageView.startAnimation(a);
+            mPrevImageView.setVisibility(View.INVISIBLE);
+        }
+
+        mZoomButtonsController.setVisible(false);
+    }
+
+    private void showOnScreenControls() {
         if (mPaused) return;
         // If the view has not been attached to the window yet, the
         // zoomButtonControls will not able to show up. So delay it until the
@@ -174,12 +200,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (mActionIconPanel.getWindowToken() == null) {
             mHandler.postGetterCallback(new Runnable() {
                 public void run() {
-                    showOnScreenControls(autoDismiss);
+                    showOnScreenControls();
                 }
             });
             return;
         }
-        mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
         updateNextPrevControls();
 
         IImage image = mAllImages.getImageAt(mCurrentPosition);
@@ -197,40 +222,19 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mActionIconPanel.startAnimation(animation);
             mActionIconPanel.setVisibility(View.VISIBLE);
         }
-        if (autoDismiss) scheduleDismissOnScreenControls();
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mPaused) return true;
-        boolean sup = super.dispatchTouchEvent(m);
-
-        // This is a hack to show the on screen controls. We should make sure
-        // this event is not handled by others(ie. sup == false), and listen for
-        // the events on zoom/prev/next buttons.
-        // However, since we have no other pressable views, it is OK now.
-        // TODO: Fix the above issue.
-        if (mMode == MODE_NORMAL) {
-            switch (m.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    showOnScreenControls(NO_AUTO_DISMISS);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    scheduleDismissOnScreenControls();
-                    break;
-            }
+        if (mZoomButtonsController.isVisible()
+                && mZoomButtonsController.onTouch(null, m)) {
+            scheduleDismissOnScreenControls();
         }
-
-        if (sup == false) {
-            mGestureDetector.onTouchEvent(m);
-            return true;
+        if (!super.dispatchTouchEvent(m)) {
+            return mGestureDetector.onTouchEvent(m);
         }
         return true;
-    }
-
-    private void scheduleDismissOnScreenControls() {
-        mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
-        mHandler.postDelayed(mDismissOnScreenControlsRunnable, 1500);
     }
 
     private void updateZoomButtonsEnabled() {
@@ -251,7 +255,37 @@ public class ViewImage extends Activity implements View.OnClickListener {
         super.onDestroy();
     }
 
-    private void setupZoomButtonController(View rootView) {
+    private void scheduleDismissOnScreenControls() {
+        mHandler.removeCallbacks(mDismissOnScreenControlRunner);
+        mHandler.postDelayed(mDismissOnScreenControlRunner, 2000);
+    }
+
+    private void setupOnScreenControls(final View rootView) {
+        final OnTouchListener otListener = new OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                scheduleDismissOnScreenControls();
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showOnScreenControls();
+                }
+                return false;
+            }
+        };
+        rootView.setOnTouchListener(otListener);
+
+        setupZoomButtonController(rootView, otListener);
+
+        mNextImageView = findViewById(R.id.next_image);
+        mPrevImageView = findViewById(R.id.prev_image);
+
+        mNextImageView.setOnClickListener(this);
+        mPrevImageView.setOnClickListener(this);
+        mNextImageView.setOnTouchListener(otListener);
+        mPrevImageView.setOnTouchListener(otListener);
+    }
+
+    private void setupZoomButtonController(
+            final View rootView, final OnTouchListener otListener) {
+
         mGestureDetector = new GestureDetector(this, new MyGestureListener());
         mZoomButtonsController = new ZoomButtonsController(rootView);
         mZoomButtonsController.setAutoDismissed(false);
@@ -261,6 +295,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
             public void onVisibilityChanged(boolean visible) {
                 if (visible) {
                     updateZoomButtonsEnabled();
+                } else {
+                    rootView.setOnTouchListener(otListener);
                 }
             }
 
@@ -293,35 +329,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
             setMode(MODE_NORMAL);
             return true;
         }
-    }
-
-    private void setupDismissOnScreenControlRunnable() {
-        mDismissOnScreenControlsRunnable = new Runnable() {
-            public void run() {
-                if (mNextImageView.getVisibility() == View.VISIBLE) {
-                    Animation a = mHideNextImageViewAnimation;
-                    a.setDuration(500);
-                    mNextImageView.startAnimation(a);
-                    mNextImageView.setVisibility(View.INVISIBLE);
-                }
-
-                if (mPrevImageView.getVisibility() == View.VISIBLE) {
-                    Animation a = mHidePrevImageViewAnimation;
-                    a.setDuration(500);
-                    mPrevImageView.startAnimation(a);
-                    mPrevImageView.setVisibility(View.INVISIBLE);
-                }
-                mZoomButtonsController.setVisible(false);
-
-                if (mShowActionIcons
-                        && mActionIconPanel.getVisibility() == View.VISIBLE) {
-                    Animation animation = new AlphaAnimation(1, 0);
-                    animation.setDuration(500);
-                    mActionIconPanel.startAnimation(animation);
-                    mActionIconPanel.setVisibility(View.INVISIBLE);
-                }
-            }
-        };
     }
 
     boolean isPickIntent() {
@@ -387,7 +394,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                showOnScreenControls(AUTO_DISMISS);
+                showOnScreenControls();
                 return true;
             }
         })
@@ -402,6 +409,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mAllImages.removeImageAt(mCurrentPosition);
             if (mAllImages.getCount() == 0) {
                 finish();
+                return;
             } else {
                 if (mCurrentPosition == mAllImages.getCount()) {
                     mCurrentPosition -= 1;
@@ -507,7 +515,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mGetter.setPosition(pos, cb, mAllImages, mHandler);
         }
         updateActionIcons();
-        showOnScreenControls(AUTO_DISMISS);
+        showOnScreenControls();
+        scheduleDismissOnScreenControls();
     }
 
     @Override
@@ -603,16 +612,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
         }
 
-        setupZoomButtonController(findViewById(R.id.abs));
-        setupDismissOnScreenControlRunnable();
-
-        mNextImageView = findViewById(R.id.next_image);
-        mPrevImageView = findViewById(R.id.prev_image);
-        mNextImageView.setOnClickListener(this);
-        mPrevImageView.setOnClickListener(this);
-
-        mImageView.setFocusable(true);
-        mImageView.setFocusableInTouchMode(true);
+        setupOnScreenControls(findViewById(R.id.abs));
     }
 
     private void updateActionIcons() {
@@ -899,6 +899,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         int count = mAllImages.getCount();
         if (count == 0) {
             finish();
+            return;
         } else if (count <= mCurrentPosition) {
             mCurrentPosition = count - 1;
         }
@@ -933,11 +934,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mAllImages.close();
         mAllImages = null;
 
-        mDismissOnScreenControlsRunnable.run();
-        if (mDismissOnScreenControlsRunnable != null) {
-            mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
-        }
-
+        hideOnScreenControls();
         mImageView.clear();
         mCache.clear();
 
@@ -1015,6 +1012,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         int nextImagePos = mCurrentPosition + delta;
         if ((0 <= nextImagePos) && (nextImagePos < mAllImages.getCount())) {
             setImage(nextImagePos);
+            showOnScreenControls();
         }
     }
 
