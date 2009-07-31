@@ -256,10 +256,10 @@ abstract class ImageViewTouchBase extends ImageView {
         int rotation = bitmap.getRotation();
         matrix.reset();
 
-        // Up-scaling is not allowed because the result may look bad if it's
-        // a thumbnail icon.
-        float widthScale = Math.min(viewWidth / w, 1.0f);
-        float heightScale = Math.min(viewHeight / h, 1.0f);
+        // We limit up-scaling to 2x otherwise the result may look bad if it's
+        // a small icon.
+        float widthScale = Math.min(viewWidth / w, 2.0f);
+        float heightScale = Math.min(viewHeight / h, 2.0f);
         float scale = Math.min(widthScale, heightScale);
 
         matrix.postConcat(bitmap.getRotateMatrix());

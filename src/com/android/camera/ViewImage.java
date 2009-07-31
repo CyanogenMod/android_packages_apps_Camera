@@ -111,10 +111,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private final Animation mShowPrevImageViewAnimation =
             new AlphaAnimation(0F, 1F);
 
-    static final int PADDING = 20;
-    static final int HYSTERESIS = PADDING * 2;
-    static final int BASE_SCROLL_DURATION = 1000; // ms
-
     public static final String KEY_IMAGE_LIST = "image_list";
 
     IImageList mAllImages;
@@ -458,10 +454,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         ImageGetterCallback cb = new ImageGetterCallback() {
             public void completed() {
-                if (!mShowActionIcons) {
-                    mImageView.setFocusableInTouchMode(true);
-                    mImageView.requestFocus();
-                }
             }
 
             public boolean wantsThumbnail(int pos, int offset) {
@@ -535,7 +527,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         setContentView(R.layout.viewimage);
 
         mImageView = (ImageViewTouch) findViewById(R.id.image);
-        mImageView.setEnableTrackballScroll(!mShowActionIcons);
+        mImageView.setEnableTrackballScroll(true);
         mCache = new BitmapCache(3);
         mImageView.setRecycler(mCache);
 
@@ -619,11 +611,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mNextImageView.setOnClickListener(this);
         mPrevImageView.setOnClickListener(this);
 
-        if (mShowActionIcons) {
-            mNextImageView.setFocusable(true);
-            mPrevImageView.setFocusable(true);
-        }
-
+        mImageView.setFocusable(true);
+        mImageView.setFocusableInTouchMode(true);
     }
 
     private void updateActionIcons() {
@@ -1077,6 +1066,9 @@ class ImageViewTouch extends ImageViewTouchBase {
 
     static final float PAN_RATE = 20;
 
+    // This is the time we allow the dpad to change the image position again.
+    static long nextChangePositionTime;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Don't respond to arrow keys if trackball scrolling is not enabled
@@ -1103,10 +1095,10 @@ class ImageViewTouch extends ImageViewTouchBase {
                     break;
                 }
                 case KeyEvent.KEYCODE_DPAD_LEFT: {
-                    int maxOffset = (current == 0) ? 0 : ViewImage.HYSTERESIS;
-                    if (getScale() <= 1F
-                            || isShiftedToNextImage(true, maxOffset)) {
+                    if (getScale() <= 1F && event.getEventTime()
+                            >= nextChangePositionTime) {
                         nextImagePos = current - 1;
+                        nextChangePositionTime = event.getEventTime() + 500;
                     } else {
                         panBy(PAN_RATE, 0);
                         center(true, false);
@@ -1114,13 +1106,10 @@ class ImageViewTouch extends ImageViewTouchBase {
                     return true;
                 }
                 case KeyEvent.KEYCODE_DPAD_RIGHT: {
-                    int maxOffset =
-                            (current == mViewImage.mAllImages.getCount() - 1)
-                            ? 0
-                            : ViewImage.HYSTERESIS;
-                    if (getScale() <= 1F
-                            || isShiftedToNextImage(false, maxOffset)) {
+                    if (getScale() <= 1F && event.getEventTime()
+                            >= nextChangePositionTime) {
                         nextImagePos = current + 1;
+                        nextChangePositionTime = event.getEventTime() + 500;
                     } else {
                         panBy(-PAN_RATE, 0);
                         center(true, false);
@@ -1155,23 +1144,6 @@ class ImageViewTouch extends ImageViewTouchBase {
         }
 
         return super.onKeyDown(keyCode, event);
-    }
-
-    protected boolean isShiftedToNextImage(boolean left, int maxOffset) {
-        boolean retval;
-        RotateBitmap bitmap = mBitmapDisplayed;
-        Matrix m = getImageViewMatrix();
-        if (left) {
-            float [] t1 = new float[] { 0, 0 };
-            m.mapPoints(t1);
-            retval = t1[0] > maxOffset;
-        } else {
-            int width = bitmap != null ? bitmap.getWidth() : getWidth();
-            float [] t1 = new float[] { width, 0 };
-            m.mapPoints(t1);
-            retval = t1[0] + maxOffset < getWidth();
-        }
-        return retval;
     }
 }
 
