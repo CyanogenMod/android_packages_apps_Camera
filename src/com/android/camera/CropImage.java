@@ -398,7 +398,9 @@ public class CropImage extends MonitoredActivity {
 
     @Override
     protected void onDestroy() {
-        mAllImages.deactivate();
+        if (mAllImages != null) {
+            mAllImages.deactivate();
+        }
         super.onDestroy();
     }
 
