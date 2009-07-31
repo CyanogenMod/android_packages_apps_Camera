@@ -908,7 +908,6 @@ public class Camera extends Activity implements View.OnClickListener,
             } else {
                 newExtras.putBoolean("return-data", true);
             }
-            newExtras.putBoolean(MediaStore.EXTRA_FULL_SCREEN, true);
 
             Intent cropIntent = new Intent();
             cropIntent.setClass(Camera.this, CropImage.class);

@@ -125,11 +125,6 @@ public class CropImage extends MonitoredActivity {
             mDoFaceDetection = extras.containsKey("noFaceDetection")
                     ? !extras.getBoolean("noFaceDetection")
                     : true;
-
-            if (intent.getBooleanExtra(MediaStore.EXTRA_FULL_SCREEN, true)) {
-                getWindow().addFlags(
-                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            }
         }
 
         if (mBitmap == null) {
@@ -150,6 +145,9 @@ public class CropImage extends MonitoredActivity {
             finish();
             return;
         }
+
+        // Make UI fullscreen.
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         findViewById(R.id.discard).setOnClickListener(
                 new View.OnClickListener() {
