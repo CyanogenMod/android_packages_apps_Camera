@@ -71,6 +71,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Activity of the Camera which used to see preview and take pictures.
@@ -115,8 +116,10 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final String PARM_GPS_LONGITUDE = "gps-longitude";
     public static final String PARM_GPS_ALTITUDE = "gps-altitude";
     public static final String PARM_GPS_TIMESTAMP = "gps-timestamp";
+    public static final String PARM_FLASH_MODE = "flash-mode";
     public static final String SUPPORTED_ZOOM = "zoom-values";
     public static final String SUPPORTED_PICTURE_SIZE = "picture-size-values";
+    public static final String SUPPORTED_FLASH_MODE = "flash-mode-values";
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -1381,23 +1384,57 @@ public class Camera extends Activity implements View.OnClickListener,
         clearFocusState();
     }
 
+    private ArrayList<String> getParameterArrayList(String supportedParamKey) {
+        String supportedParamStr = mParameters.get(supportedParamKey);
+        if (supportedParamStr == null) return null;
+
+        StringTokenizer tokenizer = new StringTokenizer(supportedParamStr, ",");
+        ArrayList<String> supportedParam = new ArrayList<String>();
+        while (tokenizer.hasMoreElements()) {
+            supportedParam.add(tokenizer.nextToken());
+        }
+        return supportedParam;
+    }
+
+    private boolean parameterExists(String supportedParamKey,
+                                    String paramValue) {
+        ArrayList<String> parameters = getParameterArrayList(supportedParamKey);
+        if (parameters == null) return false;
+
+        return (parameters.indexOf(paramValue) != -1);
+    }
+
     private void setCameraParameter() {
-        // request the preview size, the hardware may not honor it,
-        // if we depended on it we would have to query the size again
         mParameters = mCameraDevice.getParameters();
+
+        // Set preview size.
         mParameters.setPreviewSize(mViewFinderWidth, mViewFinderHeight);
 
-        // Set picture size parameter.
-        String pictureSize = mPreferences.getString(
-                CameraSettings.KEY_PICTURE_SIZE,
-                getString(R.string.pref_camera_picturesize_default));
-        mParameters.set(PARM_PICTURE_SIZE, pictureSize);
+        // Set picture size.
+        if (mParameters.get(Camera.SUPPORTED_PICTURE_SIZE) != null) {
+            String pictureSize = mPreferences.getString(
+                    CameraSettings.KEY_PICTURE_SIZE,
+                    getString(R.string.pref_camera_picturesize_default));
+            if (parameterExists(Camera.SUPPORTED_PICTURE_SIZE, pictureSize)) {
+                mParameters.set(PARM_PICTURE_SIZE, pictureSize);
+            }
+        }
 
-        // Set JPEG quality parameter.
+        // Set JPEG quality.
         String jpegQuality = mPreferences.getString(
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
         mParameters.set(PARM_JPEG_QUALITY, jpegQuality);
+
+        // Set flash mode.
+        if (mParameters.get(Camera.SUPPORTED_FLASH_MODE) != null) {
+            String flashMode = mPreferences.getString(
+                    CameraSettings.KEY_FLASH_MODE,
+                    getString(R.string.pref_camera_flashmode_default));
+            if (parameterExists(Camera.SUPPORTED_FLASH_MODE, flashMode)) {
+                mParameters.set(PARM_FLASH_MODE, flashMode);
+            }
+        }
 
         mCameraDevice.setParameters(mParameters);
     }

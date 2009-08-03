@@ -21,7 +21,9 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceGroup;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -38,6 +40,7 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
+    public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
     public static final int DEFAULT_VIDEO_DURATION_VALUE = 1;  // 1 minute
 
@@ -46,6 +49,7 @@ public class CameraSettings extends PreferenceActivity implements
     private ListPreference mPictureSize;
     private ListPreference mJpegQuality;
     private ListPreference mFocusMode;
+    private ListPreference mFlashMode;
     private Parameters mParameters;
 
     @Override
@@ -65,15 +69,16 @@ public class CameraSettings extends PreferenceActivity implements
         updatePictureSizeSummary();
         updateJpegQualitySummary();
         updateFocusModeSummary();
+        updateFlashModeSummary();
     }
 
     private void initUI() {
         mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
         mVideoDuration = (ListPreference) findPreference(KEY_VIDEO_DURATION);
-
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
         mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
+        mFlashMode = (ListPreference) findPreference(KEY_FLASH_MODE);
         getPreferenceScreen().getSharedPreferences().
                 registerOnSharedPreferenceChangeListener(this);
 
@@ -83,9 +88,7 @@ public class CameraSettings extends PreferenceActivity implements
         CameraHolder.instance().release();
 
         // Create picture size settings.
-        createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE,
-                       R.array.pref_camera_picturesize_entries,
-                       R.array.pref_camera_picturesize_entryvalues);
+        createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE);
 
         // Set default JPEG quality value if it is empty.
         if (mJpegQuality.getValue() == null) {
@@ -98,15 +101,30 @@ public class CameraSettings extends PreferenceActivity implements
             mFocusMode.setValue(getString(
                 R.string.pref_camera_focusmode_default));
         }
+
+        // Create flash mode settings.
+        createSettings(mFlashMode, Camera.SUPPORTED_FLASH_MODE);
     }
 
-    private void createSettings(
-            ListPreference pref, String paramName, int prefEntriesResId,
-            int prefEntryValuesResId) {
-        // Disable the preference if the parameter is not supported.
+    private boolean removePreference(PreferenceGroup group, Preference remove) {
+        if (group.removePreference(remove)) return true;
+
+        for (int i = 0; i < group.getPreferenceCount(); i++) {
+            final Preference child = group.getPreference(i);
+            if (child instanceof PreferenceGroup) {
+                if (removePreference((PreferenceGroup)child, remove)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void createSettings(ListPreference pref, String paramName) {
+        // Remove the preference if the parameter is not supported.
         String supportedParamStr = mParameters.get(paramName);
         if (supportedParamStr == null) {
-            pref.setEnabled(false);
+            removePreference(getPreferenceScreen(), pref);
             return;
         }
 
@@ -118,9 +136,8 @@ public class CameraSettings extends PreferenceActivity implements
         }
 
         // Prepare setting entries and entry values.
-        String[] allEntries = getResources().getStringArray(prefEntriesResId);
-        String[] allEntryValues = getResources().getStringArray(
-                prefEntryValuesResId);
+        CharSequence[] allEntries = pref.getEntries();
+        CharSequence[] allEntryValues = pref.getEntryValues();
         ArrayList<CharSequence> entries = new ArrayList<CharSequence>();
         ArrayList<CharSequence> entryValues = new ArrayList<CharSequence>();
         for (int i = 0, len = allEntryValues.length; i < len; i++) {
@@ -164,6 +181,10 @@ public class CameraSettings extends PreferenceActivity implements
         mFocusMode.setSummary(mFocusMode.getEntry());
     }
 
+    private void updateFlashModeSummary() {
+        mFlashMode.setSummary(mFlashMode.getEntry());
+    }
+
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals(KEY_VIDEO_QUALITY)) {
@@ -176,6 +197,8 @@ public class CameraSettings extends PreferenceActivity implements
             updateJpegQualitySummary();
         } else if (key.equals(KEY_FOCUS_MODE)) {
             updateFocusModeSummary();
+        } else if (key.equals(KEY_FLASH_MODE)) {
+            updateFlashModeSummary();
         }
     }
 }

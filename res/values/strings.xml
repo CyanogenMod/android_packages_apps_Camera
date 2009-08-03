@@ -403,6 +403,25 @@
     <!-- Settings screen, focus mode dialog title -->
     <string name="pref_camera_focusmode_dialogtitle">Focus mode</string>
 
+    <!-- Default flash mode setting. Do not translate. -->
+    <string name="pref_camera_flashmode_default">auto</string>
+
+    <!-- Settings screen, Select Focus mode title -->
+    <string name="pref_camera_flashmode_title">Select flash mode</string>
+
+    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <string name="pref_camera_flashmode_entry_auto">Auto</string>
+    <string name="pref_camera_flashmode_entry_on">On</string>
+    <string name="pref_camera_flashmode_entry_off">Off</string>
+
+    <!-- Focus mode entry values. Do not translate. -->
+    <string name="pref_camera_flashmode_value_auto">auto</string>
+    <string name="pref_camera_flashmode_value_on">on</string>
+    <string name="pref_camera_flashmode_value_off">off</string>
+
+    <!-- Settings screen, flash mode dialog title -->
+    <string name="pref_camera_flashmode_dialogtitle">Flash mode</string>
+
     <!-- Menu item to go to the settings screen -->
     <string name="camerasettings">Settings</string>
 
