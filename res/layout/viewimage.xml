@@ -44,6 +44,7 @@
     </AbsoluteLayout>
     <ImageView android:id="@+id/prev_image"
             android:clickable="true"
+            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_alignParentLeft="true"
@@ -54,6 +55,7 @@
 
     <ImageView android:id="@+id/next_image"
             android:clickable="true"
+            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_alignParentRight="true"

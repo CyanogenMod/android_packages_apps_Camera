@@ -42,6 +42,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.File;
@@ -136,7 +137,7 @@ public class CropImage extends MonitoredActivity {
                 // instead.
                 // TODO when saving the resulting bitmap use the
                 // decode/crop/encode api so we don't lose any resolution.
-                mBitmap = mImage.thumbBitmap();
+                mBitmap = mImage.thumbBitmap(IImage.ROTATE_AS_NEEDED);
             }
         }
 
@@ -144,6 +145,9 @@ public class CropImage extends MonitoredActivity {
             finish();
             return;
         }
+
+        // Make UI fullscreen.
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         findViewById(R.id.discard).setOnClickListener(
                 new View.OnClickListener() {
@@ -169,9 +173,6 @@ public class CropImage extends MonitoredActivity {
         }
 
         mImageView.setImageBitmapResetBase(mBitmap, true);
-        if (mImageView.getScale() == 1F) {
-            mImageView.center(true, true);
-        }
 
         Util.startBackgroundJob(this, null,
                 getResources().getString(R.string.runningFaceDetection),
@@ -179,7 +180,8 @@ public class CropImage extends MonitoredActivity {
             public void run() {
                 final CountDownLatch latch = new CountDownLatch(1);
                 final Bitmap b = (mImage != null)
-                        ? mImage.fullSizeBitmap(500)
+                        ? mImage.fullSizeBitmap(IImage.UNCONSTRAINED,
+                        1024 * 1024)
                         : mBitmap;
                 mHandler.post(new Runnable() {
                     public void run() {
@@ -394,7 +396,9 @@ public class CropImage extends MonitoredActivity {
 
     @Override
     protected void onDestroy() {
-        mAllImages.deactivate();
+        if (mAllImages != null) {
+            mAllImages.deactivate();
+        }
         super.onDestroy();
     }
 
@@ -550,7 +554,7 @@ class CropImageView extends ImageViewTouchBase {
     protected void onLayout(boolean changed, int left, int top,
                             int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (mBitmapDisplayed != null) {
+        if (mBitmapDisplayed.getBitmap() != null) {
             for (HighlightView hv : mHighlightViews) {
                 hv.mMatrix.set(getImageMatrix());
                 hv.invalidate();

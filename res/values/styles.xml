@@ -37,7 +37,7 @@
         <item name="android:windowExitAnimation">@anim/on_screen_hint_exit</item>
     </style>
     <style name="OnscreenActionIcon">
-        <item name="android:focusable">true</item>
+        <item name="android:focusable">false</item>
         <item name="android:clickable">true</item>
         <item name="android:textSize">13dip</item>
         <item name="android:singleLine">true</item>

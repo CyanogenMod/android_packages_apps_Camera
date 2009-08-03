@@ -28,16 +28,23 @@ import java.io.InputStream;
 public interface IImage {
     static final int THUMBNAIL_TARGET_SIZE = 320;
     static final int MINI_THUMB_TARGET_SIZE = 96;
+    static final int UNCONSTRAINED = -1;
 
     /** Get the image list which contains this image. */
     public abstract IImageList getContainer();
 
     /** Get the bitmap for the full size image. */
-    public abstract Bitmap fullSizeBitmap(int targetWidthOrHeight);
-
-    /** Get the cancelable object for the bitmap of the full size image. */
-    public abstract Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthOrHeight, BitmapFactory.Options mOptions);
+    public abstract Bitmap fullSizeBitmap(int minSideLength,
+            int maxNumberOfPixels);
+    public abstract Bitmap fullSizeBitmap(int minSideLength,
+            int maxNumberOfPixels, boolean rotateAsNeeded);
+    public abstract Bitmap fullSizeBitmap(int minSideLength,
+            int maxNumberOfPixels, boolean rotateAsNeeded, boolean useNative);
+    public abstract int getDegreesRotated();
+    public static final boolean ROTATE_AS_NEEDED = true;
+    public static final boolean NO_ROTATE = false;
+    public static final boolean USE_NATIVE = true;
+    public static final boolean NO_NATIVE = false;
 
     /** Get the input stream associated with a given full size image. */
     public abstract InputStream fullSizeImageData();
@@ -67,7 +74,7 @@ public interface IImage {
     public abstract boolean isDrm();
 
     // Get the bitmap/uri of the medium thumbnail
-    public abstract Bitmap thumbBitmap();
+    public abstract Bitmap thumbBitmap(boolean rotateAsNeeded);
     public abstract Uri thumbUri();
 
     // Get the bitmap of the mini thumbnail.

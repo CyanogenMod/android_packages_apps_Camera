@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.gallery.VideoObject;
@@ -26,11 +25,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
@@ -43,6 +39,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnTouchListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -50,8 +47,6 @@ import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
 import java.util.Random;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 // This activity can display a whole picture and navigate them in a specific
 // gallery. It has two modes: normal mode and slide show mode. In normal mode
@@ -68,9 +63,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private static final String EXTRA_SLIDESHOW = "slideshow";
     private static final String TAG = "ViewImage";
 
-    private static final boolean AUTO_DISMISS = true;
-    private static final boolean NO_AUTO_DISMISS = false;
-
     private ImageGetter mGetter;
     private Uri mSavedUri;
     private boolean mPaused = true;
@@ -79,7 +71,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private static final int[] sOrderAdjacents = new int[] {0, 1, -1};
     private static final int[] sOrderSlideshow = new int[] {0};
 
-    final LocalHandler mHandler = new LocalHandler();
+    final GetterHandler mHandler = new GetterHandler();
 
     private final Random mRandom = new Random(System.currentTimeMillis());
     private int [] mShuffleOrder = null;
@@ -116,10 +108,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private final Animation mShowPrevImageViewAnimation =
             new AlphaAnimation(0F, 1F);
 
-    static final int PADDING = 20;
-    static final int HYSTERESIS = PADDING * 2;
-    static final int BASE_SCROLL_DURATION = 1000; // ms
-
     public static final String KEY_IMAGE_LIST = "image_list";
 
     IImageList mAllImages;
@@ -140,8 +128,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
     // This is the cache for thumbnail bitmaps.
     private BitmapCache mCache;
     private MenuHelper.MenuItemsResult mImageMenuRunnable;
-
-    private Runnable mDismissOnScreenControlsRunnable;
+    private final Runnable mDismissOnScreenControlRunner = new Runnable() {
+        public void run() {
+            hideOnScreenControls();
+        }
+    };
 
     private void updateNextPrevControls() {
         boolean showPrev = mCurrentPosition > 0;
@@ -175,7 +166,33 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
     }
 
-    private void showOnScreenControls(final boolean autoDismiss) {
+    private void hideOnScreenControls() {
+        if (mShowActionIcons
+                && mActionIconPanel.getVisibility() == View.VISIBLE) {
+            Animation animation = new AlphaAnimation(1, 0);
+            animation.setDuration(500);
+            mActionIconPanel.startAnimation(animation);
+            mActionIconPanel.setVisibility(View.INVISIBLE);
+        }
+
+        if (mNextImageView.getVisibility() == View.VISIBLE) {
+            Animation a = mHideNextImageViewAnimation;
+            a.setDuration(500);
+            mNextImageView.startAnimation(a);
+            mNextImageView.setVisibility(View.INVISIBLE);
+        }
+
+        if (mPrevImageView.getVisibility() == View.VISIBLE) {
+            Animation a = mHidePrevImageViewAnimation;
+            a.setDuration(500);
+            mPrevImageView.startAnimation(a);
+            mPrevImageView.setVisibility(View.INVISIBLE);
+        }
+
+        mZoomButtonsController.setVisible(false);
+    }
+
+    private void showOnScreenControls() {
         if (mPaused) return;
         // If the view has not been attached to the window yet, the
         // zoomButtonControls will not able to show up. So delay it until the
@@ -183,12 +200,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (mActionIconPanel.getWindowToken() == null) {
             mHandler.postGetterCallback(new Runnable() {
                 public void run() {
-                    showOnScreenControls(autoDismiss);
+                    showOnScreenControls();
                 }
             });
             return;
         }
-        mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
         updateNextPrevControls();
 
         IImage image = mAllImages.getImageAt(mCurrentPosition);
@@ -206,39 +222,19 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mActionIconPanel.startAnimation(animation);
             mActionIconPanel.setVisibility(View.VISIBLE);
         }
-        if (autoDismiss) scheduleDismissOnScreenControls();
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        boolean sup = super.dispatchTouchEvent(m);
-
-        // This is a hack to show the on screen controls. We should make sure
-        // this event is not handled by others(ie. sup == false), and listen for
-        // the events on zoom/prev/next buttons.
-        // However, since we have no other pressable views, it is OK now.
-        // TODO: Fix the above issue.
-        if (mMode == MODE_NORMAL) {
-            switch (m.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    showOnScreenControls(NO_AUTO_DISMISS);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    scheduleDismissOnScreenControls();
-                    break;
-            }
+        if (mPaused) return true;
+        if (mZoomButtonsController.isVisible()
+                && mZoomButtonsController.onTouch(null, m)) {
+            scheduleDismissOnScreenControls();
         }
-
-        if (sup == false) {
-            mGestureDetector.onTouchEvent(m);
-            return true;
+        if (!super.dispatchTouchEvent(m)) {
+            return mGestureDetector.onTouchEvent(m);
         }
         return true;
-    }
-
-    private void scheduleDismissOnScreenControls() {
-        mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
-        mHandler.postDelayed(mDismissOnScreenControlsRunnable, 1500);
     }
 
     private void updateZoomButtonsEnabled() {
@@ -259,7 +255,37 @@ public class ViewImage extends Activity implements View.OnClickListener {
         super.onDestroy();
     }
 
-    private void setupZoomButtonController(View rootView) {
+    private void scheduleDismissOnScreenControls() {
+        mHandler.removeCallbacks(mDismissOnScreenControlRunner);
+        mHandler.postDelayed(mDismissOnScreenControlRunner, 2000);
+    }
+
+    private void setupOnScreenControls(final View rootView) {
+        final OnTouchListener otListener = new OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                scheduleDismissOnScreenControls();
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showOnScreenControls();
+                }
+                return false;
+            }
+        };
+        rootView.setOnTouchListener(otListener);
+
+        setupZoomButtonController(rootView, otListener);
+
+        mNextImageView = findViewById(R.id.next_image);
+        mPrevImageView = findViewById(R.id.prev_image);
+
+        mNextImageView.setOnClickListener(this);
+        mPrevImageView.setOnClickListener(this);
+        mNextImageView.setOnTouchListener(otListener);
+        mPrevImageView.setOnTouchListener(otListener);
+    }
+
+    private void setupZoomButtonController(
+            final View rootView, final OnTouchListener otListener) {
+
         mGestureDetector = new GestureDetector(this, new MyGestureListener());
         mZoomButtonsController = new ZoomButtonsController(rootView);
         mZoomButtonsController.setAutoDismissed(false);
@@ -269,6 +295,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
             public void onVisibilityChanged(boolean visible) {
                 if (visible) {
                     updateZoomButtonsEnabled();
+                } else {
+                    rootView.setOnTouchListener(otListener);
                 }
             }
 
@@ -301,35 +329,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
             setMode(MODE_NORMAL);
             return true;
         }
-    }
-
-    private void setupDismissOnScreenControlRunnable() {
-        mDismissOnScreenControlsRunnable = new Runnable() {
-            public void run() {
-                if (mNextImageView.getVisibility() == View.VISIBLE) {
-                    Animation a = mHideNextImageViewAnimation;
-                    a.setDuration(500);
-                    mNextImageView.startAnimation(a);
-                    mNextImageView.setVisibility(View.INVISIBLE);
-                }
-
-                if (mPrevImageView.getVisibility() == View.VISIBLE) {
-                    Animation a = mHidePrevImageViewAnimation;
-                    a.setDuration(500);
-                    mPrevImageView.startAnimation(a);
-                    mPrevImageView.setVisibility(View.INVISIBLE);
-                }
-                mZoomButtonsController.setVisible(false);
-
-                if (mShowActionIcons
-                        && mActionIconPanel.getVisibility() == View.VISIBLE) {
-                    Animation animation = new AlphaAnimation(1, 0);
-                    animation.setDuration(500);
-                    mActionIconPanel.startAnimation(animation);
-                    mActionIconPanel.setVisibility(View.INVISIBLE);
-                }
-            }
-        };
     }
 
     boolean isPickIntent() {
@@ -395,7 +394,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                showOnScreenControls(AUTO_DISMISS);
+                showOnScreenControls();
                 return true;
             }
         })
@@ -410,6 +409,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mAllImages.removeImageAt(mCurrentPosition);
             if (mAllImages.getCount() == 0) {
                 finish();
+                return;
             } else {
                 if (mCurrentPosition == mAllImages.getCount()) {
                     mCurrentPosition -= 1;
@@ -454,16 +454,14 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         Bitmap b = mCache.getBitmap(pos);
         if (b != null) {
-            mImageView.setImageBitmapResetBase(b, true);
+            IImage image = mAllImages.getImageAt(pos);
+            mImageView.setImageRotateBitmapResetBase(
+                    new RotateBitmap(b, image.getDegreesRotated()), true);
             updateZoomButtonsEnabled();
         }
 
         ImageGetterCallback cb = new ImageGetterCallback() {
-            public void completed(boolean wasCanceled) {
-                if (!mShowActionIcons) {
-                    mImageView.setFocusableInTouchMode(true);
-                    mImageView.requestFocus();
-                }
+            public void completed() {
             }
 
             public boolean wantsThumbnail(int pos, int offset) {
@@ -479,7 +477,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 // need to get fancier and read in the fuller size image as the
                 // user starts to zoom.
                 // Originally the value is set to 480 in order to avoid OOM.
-                // Now we set it to 2048 because of using purgeable Bitmaps.
+                // Now we set it to 2048 because of using
+                // native memory allocation for Bitmaps.
                 final int imageViewSize = 2048;
                 return imageViewSize;
             }
@@ -488,7 +487,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 return sOrderAdjacents;
             }
 
-            public void imageLoaded(int pos, int offset, Bitmap bitmap,
+            public void imageLoaded(int pos, int offset, RotateBitmap bitmap,
                                     boolean isThumb) {
                 // shouldn't get here after onPause()
 
@@ -499,13 +498,13 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 }
 
                 if (isThumb) {
-                    mCache.put(pos + offset, bitmap);
+                    mCache.put(pos + offset, bitmap.getBitmap());
                 }
                 if (offset == 0) {
                     // isThumb: We always load thumb bitmap first, so we will
                     // reset the supp matrix for then thumb bitmap, and keep
                     // the supp matrix when the full bitmap is loaded.
-                    mImageView.setImageBitmapResetBase(bitmap, isThumb);
+                    mImageView.setImageRotateBitmapResetBase(bitmap, isThumb);
                     updateZoomButtonsEnabled();
                 }
             }
@@ -513,10 +512,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         // Could be null if we're stopping a slide show in the course of pausing
         if (mGetter != null) {
-            mGetter.setPosition(pos, cb);
+            mGetter.setPosition(pos, cb, mAllImages, mHandler);
         }
         updateActionIcons();
-        showOnScreenControls(AUTO_DISMISS);
+        showOnScreenControls();
+        scheduleDismissOnScreenControls();
     }
 
     @Override
@@ -536,7 +536,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         setContentView(R.layout.viewimage);
 
         mImageView = (ImageViewTouch) findViewById(R.id.image);
-        mImageView.setEnableTrackballScroll(!mShowActionIcons);
+        mImageView.setEnableTrackballScroll(true);
         mCache = new BitmapCache(3);
         mImageView.setRecycler(mCache);
 
@@ -612,19 +612,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
         }
 
-        setupZoomButtonController(findViewById(R.id.abs));
-        setupDismissOnScreenControlRunnable();
-
-        mNextImageView = findViewById(R.id.next_image);
-        mPrevImageView = findViewById(R.id.prev_image);
-        mNextImageView.setOnClickListener(this);
-        mPrevImageView.setOnClickListener(this);
-
-        if (mShowActionIcons) {
-            mNextImageView.setFocusable(true);
-            mPrevImageView.setFocusable(true);
-        }
-
+        setupOnScreenControls(findViewById(R.id.abs));
     }
 
     private void updateActionIcons() {
@@ -765,7 +753,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         final long targetDisplayTime = System.currentTimeMillis() + delay;
 
         ImageGetterCallback cb = new ImageGetterCallback() {
-            public void completed(boolean wasCanceled) {
+            public void completed() {
             }
 
             public boolean wantsThumbnail(int pos, int offset) {
@@ -785,7 +773,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
 
             public void imageLoaded(final int pos, final int offset,
-                    final Bitmap bitmap, final boolean isThumb) {
+                    final RotateBitmap bitmap, final boolean isThumb) {
                 long timeRemaining = Math.max(0,
                         targetDisplayTime - System.currentTimeMillis());
                 mHandler.postDelayedGetterCallback(new Runnable() {
@@ -805,7 +793,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                         ImageViewTouchBase newView =
                                 mSlideShowImageViews[mSlideShowImageCurrent];
                         newView.setVisibility(View.VISIBLE);
-                        newView.setImageBitmapResetBase(bitmap, true);
+                        newView.setImageRotateBitmapResetBase(bitmap, true);
                         newView.bringToFront();
 
                         int animation = 0;
@@ -853,12 +841,12 @@ public class ViewImage extends Activity implements View.OnClickListener {
             if (mShuffleOrder != null) {
                 pos = mShuffleOrder[pos];
             }
-            mGetter.setPosition(pos, cb);
+            mGetter.setPosition(pos, cb, mAllImages, mHandler);
         }
     }
 
     private void makeGetter() {
-        mGetter = new ImageGetter(this);
+        mGetter = new ImageGetter();
     }
 
     private IImageList buildImageListFromUri(Uri uri) {
@@ -911,6 +899,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         int count = mAllImages.getCount();
         if (count == 0) {
             finish();
+            return;
         } else if (count <= mCurrentPosition) {
             mCurrentPosition = count - 1;
         }
@@ -945,11 +934,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mAllImages.close();
         mAllImages = null;
 
-        mDismissOnScreenControlsRunnable.run();
-        if (mDismissOnScreenControlsRunnable != null) {
-            mHandler.removeCallbacks(mDismissOnScreenControlsRunnable);
-        }
-
+        hideOnScreenControls();
         mImageView.clear();
         mCache.clear();
 
@@ -1027,6 +1012,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         int nextImagePos = mCurrentPosition + delta;
         if ((0 <= nextImagePos) && (nextImagePos < mAllImages.getCount())) {
             setImage(nextImagePos);
+            showOnScreenControls();
         }
     }
 
@@ -1049,37 +1035,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     }
                 }
                 break;
-        }
-    }
-
-    static class LocalHandler extends Handler {
-        private static final int IMAGE_GETTER_CALLBACK = 1;
-
-        @Override
-        public void handleMessage(Message message) {
-            switch(message.what) {
-                case IMAGE_GETTER_CALLBACK:
-                    ((Runnable) message.obj).run();
-                    break;
-            }
-        }
-
-        public void postGetterCallback(Runnable callback) {
-           postDelayedGetterCallback(callback, 0);
-        }
-
-        public void postDelayedGetterCallback(Runnable callback, long delay) {
-            if (callback == null) {
-                throw new NullPointerException();
-            }
-            Message message = Message.obtain();
-            message.what = IMAGE_GETTER_CALLBACK;
-            message.obj = callback;
-            sendMessageDelayed(message, delay);
-        }
-
-        public void removeAllGetterCallbacks() {
-            removeMessages(IMAGE_GETTER_CALLBACK);
         }
     }
 }
@@ -1109,6 +1064,9 @@ class ImageViewTouch extends ImageViewTouchBase {
 
     static final float PAN_RATE = 20;
 
+    // This is the time we allow the dpad to change the image position again.
+    static long nextChangePositionTime;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Don't respond to arrow keys if trackball scrolling is not enabled
@@ -1135,10 +1093,10 @@ class ImageViewTouch extends ImageViewTouchBase {
                     break;
                 }
                 case KeyEvent.KEYCODE_DPAD_LEFT: {
-                    int maxOffset = (current == 0) ? 0 : ViewImage.HYSTERESIS;
-                    if (getScale() <= 1F
-                            || isShiftedToNextImage(true, maxOffset)) {
+                    if (getScale() <= 1F && event.getEventTime()
+                            >= nextChangePositionTime) {
                         nextImagePos = current - 1;
+                        nextChangePositionTime = event.getEventTime() + 500;
                     } else {
                         panBy(PAN_RATE, 0);
                         center(true, false);
@@ -1146,13 +1104,10 @@ class ImageViewTouch extends ImageViewTouchBase {
                     return true;
                 }
                 case KeyEvent.KEYCODE_DPAD_RIGHT: {
-                    int maxOffset =
-                            (current == mViewImage.mAllImages.getCount() - 1)
-                            ? 0
-                            : ViewImage.HYSTERESIS;
-                    if (getScale() <= 1F
-                            || isShiftedToNextImage(false, maxOffset)) {
+                    if (getScale() <= 1F && event.getEventTime()
+                            >= nextChangePositionTime) {
                         nextImagePos = current + 1;
+                        nextChangePositionTime = event.getEventTime() + 500;
                     } else {
                         panBy(-PAN_RATE, 0);
                         center(true, false);
@@ -1187,271 +1142,6 @@ class ImageViewTouch extends ImageViewTouchBase {
         }
 
         return super.onKeyDown(keyCode, event);
-    }
-
-    protected boolean isShiftedToNextImage(boolean left, int maxOffset) {
-        boolean retval;
-        Bitmap bitmap = mBitmapDisplayed;
-        Matrix m = getImageViewMatrix();
-        if (left) {
-            float [] t1 = new float[] { 0, 0 };
-            m.mapPoints(t1);
-            retval = t1[0] > maxOffset;
-        } else {
-            int width = bitmap != null ? bitmap.getWidth() : getWidth();
-            float [] t1 = new float[] { width, 0 };
-            m.mapPoints(t1);
-            retval = t1[0] + maxOffset < getWidth();
-        }
-        return retval;
-    }
-}
-
-/*
- * Here's the loading strategy.  For any given image, load the thumbnail
- * into memory and post a callback to display the resulting bitmap.
- *
- * Then proceed to load the full image bitmap.   Three things can
- * happen at this point:
- *
- * 1.  the image fails to load because the UI thread decided
- * to move on to a different image.  This "cancellation" happens
- * by virtue of the UI thread closing the stream containing the
- * image being decoded.  BitmapFactory.decodeStream returns null
- * in this case.
- *
- * 2.  the image loaded successfully.  At that point we post
- * a callback to the UI thread to actually show the bitmap.
- *
- * 3.  when the post runs it checks to see if the image that was
- * loaded is still the one we want.  The UI may have moved on
- * to some other image and if so we just drop the newly loaded
- * bitmap on the floor.
- */
-
-interface ImageGetterCallback {
-    public void imageLoaded(int pos, int offset, Bitmap bitmap,
-                            boolean isThumb);
-    public boolean wantsThumbnail(int pos, int offset);
-    public boolean wantsFullImage(int pos, int offset);
-    public int fullImageSizeToUse(int pos, int offset);
-    public void completed(boolean wasCanceled);
-    public int [] loadOrder();
-}
-
-class ImageGetter {
-
-    @SuppressWarnings("unused")
-    private static final String TAG = "ImageGetter";
-
-    // The thread which does the work.
-    private final Thread mGetterThread;
-
-    // The base position that's being retrieved.  The actual images retrieved
-    // are this base plus each of the offets.
-    private int mCurrentPosition = -1;
-
-    // The callback to invoke for each image.
-    private ImageGetterCallback mCB;
-
-    // This is the loader cancelable that gets set while we're loading an image.
-    // If we change position we can cancel the current load using this.
-    private Cancelable<Bitmap> mLoad;
-
-    // True if we're canceling the current load.
-    private boolean mCancelCurrent = false;
-
-    // True when the therad should exit.
-    private boolean mDone = false;
-
-    // True when the loader thread is waiting for work.
-    private boolean mReady = false;
-
-    // The ViewImage this ImageGetter belongs to
-    ViewImage mViewImage;
-
-    void cancelCurrent() {
-        synchronized (this) {
-            if (!mReady) {
-                mCancelCurrent = true;
-                Cancelable<Bitmap> load = mLoad;
-                if (load != null) {
-                    load.requestCancel();
-                }
-                mCancelCurrent = false;
-            }
-        }
-    }
-
-    private class ImageGetterRunnable implements Runnable {
-        private Runnable callback(final int position, final int offset,
-                                  final boolean isThumb, final Bitmap bitmap) {
-            return new Runnable() {
-                public void run() {
-                    // check for inflight callbacks that aren't applicable
-                    // any longer before delivering them
-                    if (!isCanceled() && position == mCurrentPosition) {
-                        mCB.imageLoaded(position, offset, bitmap, isThumb);
-                    } else if (bitmap != null) {
-                        bitmap.recycle();
-                    }
-                }
-            };
-        }
-
-        private Runnable completedCallback(final boolean wasCanceled) {
-            return new Runnable() {
-                public void run() {
-                    mCB.completed(wasCanceled);
-                }
-            };
-        }
-
-        public void run() {
-            int lastPosition = -1;
-            while (!mDone) {
-                synchronized (ImageGetter.this) {
-                    mReady = true;
-                    ImageGetter.this.notify();
-
-                    if (mCurrentPosition == -1
-                            || lastPosition == mCurrentPosition) {
-                        try {
-                            ImageGetter.this.wait();
-                        } catch (InterruptedException ex) {
-                            continue;
-                        }
-                    }
-
-                    lastPosition = mCurrentPosition;
-                    mReady = false;
-                }
-
-                if (lastPosition != -1) {
-                    int imageCount = mViewImage.mAllImages.getCount();
-
-                    int [] order = mCB.loadOrder();
-                    for (int i = 0; i < order.length; i++) {
-                        int offset = order[i];
-                        int imageNumber = lastPosition + offset;
-                        if (imageNumber >= 0 && imageNumber < imageCount) {
-                            IImage image = mViewImage.mAllImages
-                                    .getImageAt(lastPosition + offset);
-                            if (image == null || isCanceled()) {
-                                break;
-                            }
-                            if (mCB.wantsThumbnail(lastPosition, offset)) {
-                                Bitmap b = image.thumbBitmap();
-                                mViewImage.mHandler.postGetterCallback(
-                                        callback(lastPosition, offset,
-                                        true, b));
-                            }
-                        }
-                    }
-
-                    for (int i = 0; i < order.length; i++) {
-                        int offset = order[i];
-                        int imageNumber = lastPosition + offset;
-                        if (imageNumber >= 0 && imageNumber < imageCount) {
-                            IImage image = mViewImage.mAllImages
-                                    .getImageAt(lastPosition + offset);
-                            if (mCB.wantsFullImage(lastPosition, offset)
-                                    && !(image instanceof VideoObject)) {
-                                int sizeToUse = mCB.fullImageSizeToUse(
-                                        lastPosition, offset);
-                                if (image != null && !isCanceled()) {
-                                    mLoad = image.fullSizeBitmapCancelable(
-                                            sizeToUse,
-                                            Util.createNativeAllocOptions());
-                                }
-                                if (mLoad != null) {
-                                    // The return value could be null if the
-                                    // bitmap is too big, or we cancelled it.
-                                    Bitmap b;
-                                    try {
-                                        b = mLoad.get();
-                                    } catch (InterruptedException e) {
-                                        b = null;
-                                    } catch (ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    } catch (CancellationException e) {
-                                        b = null;
-                                    }
-                                    mLoad = null;
-                                    if (b != null) {
-                                        if (isCanceled()) {
-                                            b.recycle();
-                                        } else {
-                                            Runnable cb = callback(
-                                                    lastPosition, offset,
-                                                    false, b);
-                                            mViewImage.mHandler.
-                                                    postGetterCallback(cb);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    mViewImage.mHandler.postGetterCallback(
-                            completedCallback(isCanceled()));
-                }
-            }
-        }
-    }
-
-    public ImageGetter(ViewImage viewImage) {
-        mViewImage = viewImage;
-        mGetterThread = new Thread(new ImageGetterRunnable());
-        mGetterThread.setName("ImageGettter");
-        mGetterThread.start();
-    }
-
-    private boolean isCanceled() {
-        synchronized (this) {
-            return mCancelCurrent;
-        }
-    }
-
-    public void setPosition(int position, ImageGetterCallback cb) {
-        synchronized (this) {
-            if (!mReady) {
-                try {
-                    mCancelCurrent = true;
-                    // if the thread is waiting before loading the full size
-                    // image then this will free it up
-                    BitmapManager.instance()
-                            .cancelThreadDecoding(mGetterThread);
-                    ImageGetter.this.notify();
-                    ImageGetter.this.wait();
-                    BitmapManager.instance()
-                            .allowThreadDecoding(mGetterThread);
-                    mCancelCurrent = false;
-                } catch (InterruptedException ex) {
-                    // not sure what to do here
-                }
-            }
-        }
-
-        mCurrentPosition = position;
-        mCB = cb;
-
-        synchronized (this) {
-            ImageGetter.this.notify();
-        }
-    }
-
-    public void stop() {
-        synchronized (this) {
-            mDone = true;
-            ImageGetter.this.notify();
-        }
-        try {
-            BitmapManager.instance().cancelThreadDecoding(mGetterThread);
-            mGetterThread.join();
-        } catch (InterruptedException ex) {
-            // Ignore the exception
-        }
     }
 }
 

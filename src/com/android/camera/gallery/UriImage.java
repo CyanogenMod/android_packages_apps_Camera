@@ -42,6 +42,10 @@ class UriImage implements IImage {
         mUri = uri;
     }
 
+    public int getDegreesRotated() {
+        return 0;
+    }
+
     public String getDataPath() {
         return mUri.getPath();
     }
@@ -73,79 +77,26 @@ class UriImage implements IImage {
         }
     }
 
-    public Bitmap fullSizeBitmap(int targetWidthHeight) {
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels) {
+        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
+                IImage.ROTATE_AS_NEEDED, IImage.NO_NATIVE);
+    }
+
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
+            boolean rotateAsNeeded) {
+        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
+                rotateAsNeeded, IImage.NO_NATIVE);
+    }
+
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
+            boolean rotateAsNeeded, boolean useNative) {
         try {
             ParcelFileDescriptor pfdInput = getPFD();
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), options);
-
-            if (targetWidthHeight != -1) {
-                options.inSampleSize =
-                        Util.computeSampleSize(options, targetWidthHeight);
-            }
-
-            options.inJustDecodeBounds = false;
-            options.inDither = false;
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-            Bitmap b = BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), options);
-            pfdInput.close();
+            Bitmap b = Util.makeBitmap(minSideLength, maxNumberOfPixels,
+                    pfdInput, useNative);
             return b;
         } catch (Exception ex) {
-            Log.e(TAG, "got exception decoding bitmap " + ex.toString());
-            return null;
-        }
-    }
-
-    final class LoadBitmapCancelable extends BaseCancelable<Bitmap> {
-        ParcelFileDescriptor mPfdInput;
-        BitmapFactory.Options mOptions;
-        int mTargetWidthOrHeight;
-
-        public LoadBitmapCancelable(ParcelFileDescriptor pfd,
-                int targetWidthOrHeight, BitmapFactory.Options options) {
-            mPfdInput = pfd;
-            mTargetWidthOrHeight = targetWidthOrHeight;
-            if (options != null) {
-                mOptions = options;
-           } else {
-                mOptions = new BitmapFactory.Options();
-           }
-        }
-
-        @Override
-        public boolean requestCancel() {
-            if (super.requestCancel()) {
-                mOptions.requestCancelDecode();
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        protected Bitmap execute() {
-            try {
-                Bitmap b = Util.makeBitmap(mTargetWidthOrHeight,
-                        fullSizeImageUri(), mContentResolver, mPfdInput,
-                        mOptions);
-                return b;
-            } catch (Exception ex) {
-                return null;
-            }
-        }
-    }
-
-    public Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthOrHeight, BitmapFactory.Options options) {
-        try {
-            ParcelFileDescriptor pfdInput = getPFD();
-            if (pfdInput == null) return null;
-            return new LoadBitmapCancelable(pfdInput,
-                    targetWidthOrHeight, options);
-        } catch (UnsupportedOperationException ex) {
+            Log.e(TAG, "got exception decoding bitmap ", ex);
             return null;
         }
     }
@@ -159,7 +110,7 @@ class UriImage implements IImage {
     }
 
     public Bitmap miniThumbBitmap() {
-        return thumbBitmap();
+        return thumbBitmap(IImage.ROTATE_AS_NEEDED);
     }
 
     public String getTitle() {
@@ -170,8 +121,9 @@ class UriImage implements IImage {
         return getTitle();
     }
 
-    public Bitmap thumbBitmap() {
-        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE);
+    public Bitmap thumbBitmap(boolean rotateAsNeeded) {
+        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, IImage.UNCONSTRAINED,
+                rotateAsNeeded);
     }
 
     private BitmapFactory.Options snifBitmapOptions() {

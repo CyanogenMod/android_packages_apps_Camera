@@ -265,6 +265,8 @@ public class Camera extends Activity implements View.OnClickListener,
         readPreference();
         if (mRecordLocation) startReceivingLocationUpdates();
 
+        checkStorage();
+
         // Initialize last picture button.
         mContentResolver = getContentResolver();
         if (!mIsImageCaptureIntent)  {
@@ -293,8 +295,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
         ImageManager.ensureOSXCompatibleFolder();
 
-        calculatePicturesRemaining();
-
         installIntentFilter();
 
         initializeFocusTone();
@@ -307,7 +307,8 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void updateThumbnailButton() {
-        if (!mThumbController.isUriValid()) {
+        // Update last image if URI is invalid and the storage is ready.
+        if (!mThumbController.isUriValid() && mPicturesRemaining >= 0) {
             updateLastImage();
         }
         mThumbController.updateDisplayIfNeeded();
@@ -328,6 +329,8 @@ public class Camera extends Activity implements View.OnClickListener,
 
         initializeFocusTone();
 
+        checkStorage();
+
         if (!mIsImageCaptureIntent) {
             updateThumbnailButton();
         }
@@ -342,19 +345,16 @@ public class Camera extends Activity implements View.OnClickListener,
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                // SD card available
-                updateStorageHint(calculatePicturesRemaining());
-            } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED) ||
-                    action.equals(Intent.ACTION_MEDIA_CHECKING)) {
-                // SD card unavailable
-                mPicturesRemaining = MenuHelper.NO_STORAGE_ERROR;
-                updateStorageHint(mPicturesRemaining);
-            } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
-                Toast.makeText(Camera.this,
-                        getResources().getString(R.string.wait), 5000);
+            if (action.equals(Intent.ACTION_MEDIA_MOUNTED)
+                    || action.equals(Intent.ACTION_MEDIA_UNMOUNTED)
+                    || action.equals(Intent.ACTION_MEDIA_CHECKING)
+                    || action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
+                checkStorage();
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                updateStorageHint();
+                checkStorage();
+                if (!mIsImageCaptureIntent)  {
+                    updateThumbnailButton();
+                }
             }
         }
     };
@@ -784,19 +784,15 @@ public class Camera extends Activity implements View.OnClickListener,
         if (!mIsImageCaptureIntent) {
             mSwitcher.setSwitch(SWITCH_CAMERA);
         }
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-                final boolean storageOK = calculatePicturesRemaining() > 0;
-                if (!storageOK) {
-                    mHandler.post(new Runnable() {
-                        public void run() {
-                            updateStorageHint(mPicturesRemaining);
-                        }
-                    });
-                }
-            }
-        });
-        t.start();
+    }
+
+    private void checkStorage() {
+        if (ImageManager.isMediaScannerScanning(getContentResolver())) {
+            mPicturesRemaining = MenuHelper.NO_STORAGE_ERROR;
+        } else {
+            calculatePicturesRemaining();
+        }
+        updateStorageHint(mPicturesRemaining);
     }
 
     public void onClick(View v) {
@@ -960,7 +956,8 @@ public class Camera extends Activity implements View.OnClickListener,
 
         if (remaining == MenuHelper.NO_STORAGE_ERROR) {
             String state = Environment.getExternalStorageState();
-            if (state == Environment.MEDIA_CHECKING) {
+            if (state == Environment.MEDIA_CHECKING ||
+                    ImageManager.isMediaScannerScanning(getContentResolver())) {
                 noStorageText = getString(R.string.preparing_sd);
             } else {
                 noStorageText = getString(R.string.no_storage);

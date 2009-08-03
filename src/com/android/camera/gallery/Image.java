@@ -58,7 +58,7 @@ public class Image extends BaseImage implements IImage {
     }
 
     @Override
-    protected int getDegreesRotated() {
+    public int getDegreesRotated() {
         return mRotation;
     }
 
@@ -199,6 +199,7 @@ public class Image extends BaseImage implements IImage {
 
     private void setExifRotation(int degrees) {
         try {
+            degrees %= 360;
             if (degrees < 0) degrees += 360;
 
             int orientation = ExifInterface.ORIENTATION_NORMAL;
@@ -233,7 +234,7 @@ public class Image extends BaseImage implements IImage {
      * @param degrees
      */
     public boolean rotateImageBy(int degrees) {
-        int newDegrees = getDegreesRotated() + degrees;
+        int newDegrees = (getDegreesRotated() + degrees) % 360;
         setExifRotation(newDegrees);
         setDegreesRotated(newDegrees);
 
@@ -252,7 +253,7 @@ public class Image extends BaseImage implements IImage {
         BaseColumns._ID,
     };
 
-    public Bitmap thumbBitmap() {
+    public Bitmap thumbBitmap(boolean rotateAsNeeded) {
         Bitmap bitmap = null;
         if (mContainer.mThumbUri != null) {
             Cursor c = mContentResolver.query(
@@ -273,12 +274,13 @@ public class Image extends BaseImage implements IImage {
         }
 
         if (bitmap == null) {
-            bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE, false);
+            bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE, IImage.UNCONSTRAINED,
+                    IImage.NO_ROTATE, IImage.NO_NATIVE);
             // No thumbnail found... storing the new one.
             bitmap = mContainer.storeThumbnail(bitmap, mId);
         }
 
-        if (bitmap != null) {
+        if (bitmap != null && rotateAsNeeded) {
             bitmap = Util.rotate(bitmap, getDegreesRotated());
         }
 

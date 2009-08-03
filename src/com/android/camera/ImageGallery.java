@@ -309,7 +309,8 @@ public class ImageGallery extends Activity implements
             Intent result = new Intent(null, img.fullSizeImageUri());
             if (myExtras != null && myExtras.getBoolean("return-data")) {
                 // The size of a transaction should be below 100K.
-                Bitmap bitmap = img.fullSizeBitmap(192);
+                Bitmap bitmap = img.fullSizeBitmap(
+                        IImage.UNCONSTRAINED, 100 * 1024);
                 if (bitmap != null) {
                     result.putExtra("data", bitmap);
                 }

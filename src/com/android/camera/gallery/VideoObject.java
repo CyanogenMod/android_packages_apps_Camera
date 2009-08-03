@@ -64,14 +64,9 @@ public class VideoObject extends BaseImage implements IImage {
     }
 
     @Override
-    public Bitmap fullSizeBitmap(int targetWidthHeight) {
+    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
+            boolean rotateAsNeeded, boolean useNative) {
         return Util.createVideoThumbnail(mDataPath);
-    }
-
-    @Override
-    public Cancelable<Bitmap> fullSizeBitmapCancelable(
-            int targetWidthHeight, BitmapFactory.Options options) {
-        return null;
     }
 
     @Override
@@ -112,8 +107,8 @@ public class VideoObject extends BaseImage implements IImage {
        return false;
     }
 
-    public Bitmap thumbBitmap() {
-        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE);
+    public Bitmap thumbBitmap(boolean rotateAsNeeded) {
+        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, UNCONSTRAINED);
     }
 
     @Override
