@@ -15,187 +15,184 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="all_images">"Alle foto\'s"</string>
-    <string name="all_videos">"Alle video\'s"</string>
-    <string name="camera_label">"Camera"</string>
-    <string name="video_camera_label">"Camcorder"</string>
-    <string name="gallery_picker_label">"Galerij"</string>
-    <string name="gallery_camera_bucket_name">"Camerafoto\'s"</string>
-    <string name="gallery_camera_videos_bucket_name">"Cameravideo\'s"</string>
-    <string name="gallery_camera_media_bucket_name">"Cameramedia"</string>
-    <string name="switch_to_video_lable">"Overschakelen naar video"</string>
-    <string name="switch_to_camera_lable">"Overschakelen naar camera"</string>
-    <string name="crop_label">"Foto bijsnijden"</string>
-    <string name="view_label">"Foto weergeven"</string>
-    <string name="preferences_label">"Camera-instellingen"</string>
-    <string name="wait">"Een ogenblik geduld..."</string>
-    <string name="no_storage">"Plaats een SD-kaart voordat u de camera gebruikt."</string>
-    <string name="not_enough_space">"De SD-kaart is vol."</string>
-    <string name="preparing_sd">"SD-kaart voorbereiden…"</string>
-    <string name="wallpaper">"Achtergrond wordt ingesteld. Een ogenblik geduld..."</string>
-    <string name="savingImage">"Foto opslaan..."</string>
-    <string name="runningFaceDetection">"Een ogenblik geduld..."</string>
-    <string name="settings">"Instellingen"</string>
-    <string name="view">"Weergeven"</string>
-    <string name="details">"Details"</string>
-    <string name="show_on_map">"Weergeven op Maps"</string>
-    <string name="rotate">"Draaien"</string>
-    <string name="rotate_left">"Linksom draaien"</string>
-    <string name="rotate_right">"Rechtsom draaien"</string>
-    <string name="slide_show">"Diavoorstelling"</string>
-    <string name="multiselect">"Meerdere selecteren"</string>
-    <string name="capture_picture">"Foto nemen"</string>
-    <string name="capture_video">"Video opnemen"</string>
-    <string name="crop_save_text">"Opslaan"</string>
-    <string name="crop_discard_text">"Ongedaan maken"</string>
-    <string name="confirm_delete_title">"Verwijderen"</string>
-    <string name="confirm_delete_message">"De foto wordt verwijderd."</string>
-    <string name="confirm_delete_video_message">"De video wordt verwijderd."</string>
-    <!-- no translation found for confirm_delete_multiple_message (5962369828035778779) -->
-    <skip />
-    <string name="review_toss">"VERWIJDEREN"</string>
-    <string name="review_share">"DELEN"</string>
-    <string name="review_set">"INSTELLEN ALS"</string>
-    <string name="review_play">"AFSPELEN"</string>
-    <string name="review_attach">"BIJVOEGEN"</string>
-    <string name="review_cancel">"ANNULEREN"</string>
-    <string name="review_done">"GEREED"</string>
-    <string name="review_ok">"OK"</string>
-    <string name="review_retake">"OPNIEUW OPNEMEN"</string>
-    <string name="camera_toss">"Verwijderen"</string>
-    <string name="camera_gallery">"Galerij"</string>
-    <string name="camera_share">"Delen"</string>
-    <string name="camera_set">"Instellen als"</string>
-    <string name="camera_play">"Afspelen"</string>
-    <string name="camera_attach">"Bijvoegen"</string>
-    <string name="camera_cancel">"Annuleren"</string>
-    <string name="camera_crop">"Bijsnijden"</string>
-    <string name="no_way_to_share_image">"Deze foto kan niet worden gedeeld."</string>
-    <string name="no_way_to_share_video">"Deze video kan niet worden gedeeld."</string>
-    <string name="video_play">"Afspelen"</string>
-    <string name="camera_gallery_photos_text">"Galerij"</string>
-    <string name="camera_pick_wallpaper">"Foto\'s"</string>
-    <string name="camera_setas_wallpaper">"Achtergrond"</string>
-    <string name="pref_gallery_category">"Algemene instellingen"</string>
-    <string name="pref_slideshow_category">"Instellingen van diavoorstelling"</string>
-    <string name="pref_camera_general_settings_category">"Algemene instellingen"</string>
-    <string name="pref_gallery_size_title">"Weergavegrootte"</string>
-    <string name="pref_gallery_size_summary">"De weergavegrootte van foto\'s en video\'s selecteren"</string>
-    <string name="pref_gallery_size_dialogtitle">"Grootte van foto"</string>
+    <string name="all_images" msgid="1195501551939178807">"Alle foto\'s"</string>
+    <string name="all_videos" msgid="3380966619230896013">"Alle video\'s"</string>
+    <string name="camera_label" msgid="6346560772074764302">"Camera"</string>
+    <string name="video_camera_label" msgid="2899292505526427293">"Camcorder"</string>
+    <string name="gallery_picker_label" msgid="3080425245006492787">"Galerij"</string>
+    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Camerafoto\'s"</string>
+    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Cameravideo\'s"</string>
+    <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Cameramedia"</string>
+    <string name="switch_to_video_lable" msgid="4525451949497982385">"Overschakelen naar video"</string>
+    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Overschakelen naar camera"</string>
+    <string name="crop_label" msgid="521114301871349328">"Foto bijsnijden"</string>
+    <string name="view_label" msgid="4450531507947335704">"Foto weergeven"</string>
+    <string name="preferences_label" msgid="5955678162525051163">"Camera-instellingen"</string>
+    <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld..."</string>
+    <string name="no_storage" msgid="820691042667338625">"Plaats een SD-kaart voordat u de camera gebruikt."</string>
+    <string name="not_enough_space" msgid="6655334407957844653">"De SD-kaart is vol."</string>
+    <string name="preparing_sd" msgid="2914969119574812666">"SD-kaart voorbereiden…"</string>
+    <string name="wallpaper" msgid="9222901738515471972">"Achtergrond wordt ingesteld. Een ogenblik geduld..."</string>
+    <string name="savingImage" msgid="3051745378545909260">"Foto opslaan..."</string>
+    <string name="runningFaceDetection" msgid="2293932204708167704">"Een ogenblik geduld..."</string>
+    <string name="settings" msgid="1534847740615665736">"Instellingen"</string>
+    <string name="view" msgid="6277795271119411881">"Weergeven"</string>
+    <string name="details" msgid="8415120088556445230">"Details"</string>
+    <string name="show_on_map" msgid="441725587731006228">"Weergeven op Maps"</string>
+    <string name="rotate" msgid="460017689320955494">"Draaien"</string>
+    <string name="rotate_left" msgid="5888273317282539839">"Linksom draaien"</string>
+    <string name="rotate_right" msgid="6776325835923384839">"Rechtsom draaien"</string>
+    <string name="slide_show" msgid="1965192737233824143">"Diavoorstelling"</string>
+    <string name="multiselect" msgid="4761682939945434146">"Meerdere selecteren"</string>
+    <string name="capture_picture" msgid="4114265595549284643">"Foto nemen"</string>
+    <string name="capture_video" msgid="4047046282358697155">"Video opnemen"</string>
+    <string name="crop_save_text" msgid="8140440041190264400">"Opslaan"</string>
+    <string name="crop_discard_text" msgid="5303657888280340603">"Ongedaan maken"</string>
+    <string name="confirm_delete_title" msgid="263478358046514887">"Verwijderen"</string>
+    <string name="confirm_delete_message" msgid="4161389939579284604">"De foto wordt verwijderd."</string>
+    <string name="confirm_delete_video_message" msgid="5796154324948010221">"De video wordt verwijderd."</string>
+    <string name="confirm_delete_multiple_message" msgid="5962369828035778779">"Deze mediabestanden worden verwijderd."</string>
+    <string name="review_toss" msgid="7255331999518617841">"VERWIJDEREN"</string>
+    <string name="review_share" msgid="7294755861072174509">"DELEN"</string>
+    <string name="review_set" msgid="8304758352155378636">"INSTELLEN ALS"</string>
+    <string name="review_play" msgid="6015456244323302817">"AFSPELEN"</string>
+    <string name="review_attach" msgid="7957325229025880473">"BIJVOEGEN"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"ANNULEREN"</string>
+    <string name="review_done" msgid="5417465988786728114">"GEREED"</string>
+    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_retake" msgid="7804864054896088338">"OPNIEUW OPNEMEN"</string>
+    <string name="camera_toss" msgid="3781186798552460833">"Verwijderen"</string>
+    <string name="camera_gallery" msgid="815753042966032398">"Galerij"</string>
+    <string name="camera_share" msgid="8207701858325694182">"Delen"</string>
+    <string name="camera_set" msgid="3422192914806971182">"Instellen als"</string>
+    <string name="camera_play" msgid="8248000517869959980">"Afspelen"</string>
+    <string name="camera_attach" msgid="4048659554893435232">"Bijvoegen"</string>
+    <string name="camera_cancel" msgid="8203341746672085747">"Annuleren"</string>
+    <string name="camera_crop" msgid="5584000454518174632">"Bijsnijden"</string>
+    <string name="no_way_to_share_image" msgid="8193970133742126201">"Deze foto kan niet worden gedeeld."</string>
+    <string name="no_way_to_share_video" msgid="7822400095945256426">"Deze video kan niet worden gedeeld."</string>
+    <string name="video_play" msgid="5287787282508002895">"Afspelen"</string>
+    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerij"</string>
+    <string name="camera_pick_wallpaper" msgid="7026385960511811641">"Foto\'s"</string>
+    <string name="camera_setas_wallpaper" msgid="797463183863414289">"Achtergrond"</string>
+    <string name="pref_gallery_category" msgid="5826488887237959433">"Algemene instellingen"</string>
+    <string name="pref_slideshow_category" msgid="9097962086335681667">"Instellingen van diavoorstelling"</string>
+    <string name="pref_camera_general_settings_category" msgid="2135384248699549300">"Algemene instellingen"</string>
+    <string name="pref_gallery_size_title" msgid="1363406603879434418">"Weergavegrootte"</string>
+    <string name="pref_gallery_size_summary" msgid="8179967445295243638">"De weergavegrootte van foto\'s en video\'s selecteren"</string>
+    <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Grootte van foto"</string>
   <string-array name="pref_gallery_size_choices">
-    <item>"Groot"</item>
-    <item>"Klein"</item>
+    <item msgid="7157691836846678936">"Groot"</item>
+    <item msgid="1033164600689216410">"Klein"</item>
   </string-array>
-    <string name="pref_gallery_sort_title">"Sorteervolgorde"</string>
-    <string name="pref_gallery_sort_summary">"De sorteervolgorde van foto\'s en video\'s selecteren"</string>
-    <string name="pref_gallery_sort_dialogtitle">"Foto\'s sorteren"</string>
+    <string name="pref_gallery_sort_title" msgid="7447949250045443386">"Sorteervolgorde"</string>
+    <string name="pref_gallery_sort_summary" msgid="6644398051645595214">"De sorteervolgorde van foto\'s en video\'s selecteren"</string>
+    <string name="pref_gallery_sort_dialogtitle" msgid="5787417105532562739">"Foto\'s sorteren"</string>
   <string-array name="pref_gallery_sort_choices">
-    <item>"Nieuwste eerst"</item>
-    <item>"Nieuwste laatst"</item>
+    <item msgid="5546009539334018063">"Nieuwste eerst"</item>
+    <item msgid="7931283047572866748">"Nieuwste laatst"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_interval_title">"Interval in diavoorstelling"</string>
-    <string name="pref_gallery_slideshow_interval_summary">"Selecteren hoe lang elke dia wordt weergegeven in de voorstelling"</string>
-    <string name="pref_gallery_slideshow_interval_dialogtitle">"Interval in diavoorstelling"</string>
+    <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Interval in diavoorstelling"</string>
+    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Selecteren hoe lang elke dia wordt weergegeven in de voorstelling"</string>
+    <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Interval in diavoorstelling"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
-    <item>"2 seconden"</item>
-    <item>"3 seconden"</item>
-    <item>"4 seconden"</item>
+    <item msgid="3089037742117543119">"2 seconden"</item>
+    <item msgid="738579316565625730">"3 seconden"</item>
+    <item msgid="5670078787463530498">"4 seconden"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title">"Overgangen in diavoorstellingen"</string>
-    <string name="pref_gallery_slideshow_transition_summary">"Het effect selecteren dat wordt gebruikt om naar de volgende dia te gaan"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle">"Overgangen in diavoorstellingen"</string>
+    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Overgangen in diavoorstellingen"</string>
+    <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Het effect selecteren dat wordt gebruikt om naar de volgende dia te gaan"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Overgangen in diavoorstellingen"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
-    <item>"Infaden/uitfaden"</item>
-    <item>"Dia vanaf linkerkant/rechterkant"</item>
-    <item>"Dia vanaf bovenkant/onderkant"</item>
-    <item>"Willekeurige selectie"</item>
+    <item msgid="2825716730899894863">"Infaden/uitfaden"</item>
+    <item msgid="403116336404005687">"Dia vanaf linkerkant/rechterkant"</item>
+    <item msgid="4901733079450971731">"Dia vanaf bovenkant/onderkant"</item>
+    <item msgid="9006732482485375438">"Willekeurige selectie"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_repeat_title">"Diavoorstelling herhalen"</string>
-    <string name="pref_gallery_slideshow_repeat_summary">"Diavoorstelling meerdere keren afspelen"</string>
-    <string name="pref_gallery_slideshow_shuffle_title">"Dia\'s in willekeurige volgorde weergeven"</string>
-    <string name="pref_gallery_slideshow_shuffle_summary">"Foto\'s in willekeurige volgorde weergeven"</string>
-    <string name="pref_camera_recordlocation_title">"Locatie opslaan in foto\'s"</string>
-    <string name="pref_camera_recordlocation_summary">"Locatie vastleggen in de gegevens van de foto"</string>
-    <string name="pref_camera_video_settings_category">"Video-instellingen"</string>
-    <string name="pref_camera_videoquality_title">"Videokwaliteit selecteren"</string>
-    <string name="pref_camera_videoquality_entry_0">"Laag (voor MMS-berichten)"</string>
-    <string name="pref_camera_videoquality_entry_1">"Hoog (voor SD-kaart)"</string>
-    <string name="pref_camera_videoquality_dialogtitle">"Videokwaliteit"</string>
-    <string name="pref_camera_video_duration_title">"Duur van video selecteren"</string>
-    <string name="pref_camera_video_duration_entry_1">"1 minuut (voor delen)"</string>
-    <string name="pref_camera_video_duration_entry_10">"10 minuten"</string>
-    <string name="pref_camera_video_duration_entry_30">"30 minuten"</string>
-    <string name="pref_camera_video_duration_dialogtitle">"Duur van video"</string>
-    <string name="pref_camera_picture_settings_category">"Foto-instellingen"</string>
-    <string name="pref_camera_picturesize_title">"Grootte van foto selecteren"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536">"3M (2048x1536)"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200">"2M (1600x1200)"</string>
-    <string name="pref_camera_picturesize_entry_1024x768">"1M (1024x768)"</string>
-    <string name="pref_camera_picturesize_dialogtitle">"Grootte van foto"</string>
-    <string name="pref_camera_jpegquality_title">"Fotokwaliteit selecteren"</string>
-    <string name="pref_camera_jpegquality_entry_superfine">"Zeer fijn"</string>
-    <string name="pref_camera_jpegquality_entry_fine">"Fijn"</string>
-    <string name="pref_camera_jpegquality_entry_normal">"Normaal"</string>
-    <string name="pref_camera_jpegquality_dialogtitle">"Fotokwaliteit"</string>
-    <string name="pref_camera_focusmode_title">"Scherpstelmodus selecteren"</string>
-    <string name="pref_camera_focusmode_entry_auto">"Automatisch"</string>
-    <string name="pref_camera_focusmode_entry_infinity">"Oneindig"</string>
-    <string name="pref_camera_focusmode_value_infinity">"oneindig"</string>
-    <string name="pref_camera_focusmode_dialogtitle">"Scherpstelmodus"</string>
-    <string name="camerasettings">"Instellingen"</string>
-    <string name="image_gallery_NoImageView_text">"Geen medium gevonden."</string>
-    <string name="pref_gallery_confirm_delete_title">"Verwijderen bevestigen"</string>
-    <string name="pref_gallery_confirm_delete_summary">"Bevestiging weergeven voordat een foto of video wordt verwijderd"</string>
-    <string name="no_location_image">"Deze afbeelding bevat geen locatiegegevens."</string>
-    <string name="details_panel_title">"Details"</string>
-    <string name="details_file_size">"Bestandsgrootte:"</string>
-    <string name="details_image_resolution">"Resolutie:"</string>
-    <string name="details_image_make">"Fabrikant:"</string>
-    <string name="details_image_model">"Model:"</string>
-    <string name="details_image_whitebalance">"Witbalans:"</string>
-    <string name="details_image_latitude">"GPS-breedtegraad:"</string>
-    <string name="details_image_longitude">"GPS-lengtegraad:"</string>
-    <string name="details_image_location">"Locatie:"</string>
-    <string name="details_duration">"Duur:"</string>
-    <string name="details_date_taken">"Gemaakt op:"</string>
-    <string name="details_frame_rate">"Framesnelheid:"</string>
-    <string name="details_bit_rate">"Bitsnelheid:"</string>
-    <string name="details_codec">"Codec:"</string>
-    <string name="details_format">"Indeling:"</string>
-    <string name="details_dimension_x">"%1$d x %2$d"</string>
-    <string name="details_ms">"%1$02d:%2$02d"</string>
-    <string name="details_hms">"%1$d:%2$02d:%3$02d"</string>
-    <string name="details_fps">"%1$d fps"</string>
-    <string name="details_kbps">"%1$d Kbps"</string>
-    <string name="details_mbps">"%1$g Mbps"</string>
-    <string name="details_ok">"OK"</string>
-    <string name="context_menu_header">"Opties voor foto\'s"</string>
-    <string name="video_context_menu_header">"Video-opties"</string>
-    <string name="multiface_crop_help">"Tik op een gezicht om te beginnen."</string>
-    <string name="photos_gallery_title">"Galerij"</string>
-    <string name="pick_photos_gallery_title">"Foto selecteren"</string>
-    <string name="videos_gallery_title">"Galerij"</string>
-    <string name="pick_videos_gallery_title">"Video selecteren"</string>
-    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> resterend"</string>
-    <string name="sendImage">"Foto delen via"</string>
-    <string name="setImage">"Foto instellen als"</string>
-    <string name="sendVideo">"Video delen via"</string>
-    <string name="movieviewlabel">"Films"</string>
-    <string name="loading_video">"Video laden..."</string>
-    <string name="spaceIsLow_content">"Er is weinig ruimte beschikbaar op uw SD-kaart. U kunt de kwaliteitsinstelling wijzigen of items uit de galerij verwijderen."</string>
-    <string name="resume_playing_title">"Video hervatten"</string>
-    <string name="resume_playing_message">"Afspelen hervatten vanaf %s ?"</string>
-    <string name="resume_playing_resume">"Afspelen hervatten"</string>
-    <string name="resume_playing_restart">"Opnieuw starten"</string>
-    <string name="gadget_title">"Fotolijstje"</string>
-    <string name="file_info_title">"Bestandsinformatie:"</string>
-    <string name="video_exceed_mms_limit">"De video die u heeft opgenomen, is te lang om via MMS te verzenden. Neem een kortere video op."</string>
-    <string name="multiselect_share">"Delen"</string>
-    <string name="multiselect_delete">"Verwijderen"</string>
-    <!-- no translation found for multiselect_cancel (5969428692864002165) -->
-    <skip />
-    <string name="progress_dialog_title">"In behandeling"</string>
-    <string name="delete_images_message">"Afbeeldingen verwijderen. Een ogenblik geduld…"</string>
-    <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
-    <skip />
+    <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Diavoorstelling herhalen"</string>
+    <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Diavoorstelling meerdere keren afspelen"</string>
+    <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Dia\'s in willekeurige volgorde weergeven"</string>
+    <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Foto\'s in willekeurige volgorde weergeven"</string>
+    <string name="pref_camera_recordlocation_title" msgid="273727672426306702">"Locatie opslaan in foto\'s"</string>
+    <string name="pref_camera_recordlocation_summary" msgid="3275371402016128548">"Locatie vastleggen in de gegevens van de foto"</string>
+    <string name="pref_camera_video_settings_category" msgid="5788821601203523037">"Video-instellingen"</string>
+    <string name="pref_camera_videoquality_title" msgid="3836197291744160920">"Videokwaliteit selecteren"</string>
+    <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Laag (voor MMS-berichten)"</string>
+    <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Hoog (voor SD-kaart)"</string>
+    <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Videokwaliteit"</string>
+    <string name="pref_camera_video_duration_title" msgid="3659987702892910722">"Duur van video selecteren"</string>
+    <string name="pref_camera_video_duration_entry_1" msgid="886640327548814447">"1 minuut (voor delen)"</string>
+    <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 minuten"</string>
+    <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 minuten"</string>
+    <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Duur van video"</string>
+    <string name="pref_camera_picture_settings_category" msgid="1513001949820030759">"Foto-instellingen"</string>
+    <string name="pref_camera_picturesize_title" msgid="8391466986280182397">"Grootte van foto selecteren"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="7304479270077279178">"3M (2048x1536)"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="6722733164421134734">"2M (1600x1200)"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6648351357102402892">"1M (1024x768)"</string>
+    <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Grootte van foto"</string>
+    <string name="pref_camera_jpegquality_title" msgid="3045390831339734843">"Fotokwaliteit selecteren"</string>
+    <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Zeer fijn"</string>
+    <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fijn"</string>
+    <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normaal"</string>
+    <string name="pref_camera_jpegquality_dialogtitle" msgid="18195886066728203">"Fotokwaliteit"</string>
+    <string name="pref_camera_focusmode_title" msgid="3829707410870789496">"Scherpstelmodus selecteren"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatisch"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Oneindig"</string>
+    <string name="pref_camera_focusmode_value_infinity" msgid="3629041045019224450">"oneindig"</string>
+    <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Scherpstelmodus"</string>
+    <string name="camerasettings" msgid="2433519618178453928">"Instellingen"</string>
+    <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Geen medium gevonden."</string>
+    <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Verwijderen bevestigen"</string>
+    <string name="pref_gallery_confirm_delete_summary" msgid="5253456492765525245">"Bevestiging weergeven voordat een foto of video wordt verwijderd"</string>
+    <string name="no_location_image" msgid="6929172123058811834">"Deze afbeelding bevat geen locatiegegevens."</string>
+    <string name="details_panel_title" msgid="4753347516759338122">"Details"</string>
+    <string name="details_file_size" msgid="2468878774843246797">"Bestandsgrootte:"</string>
+    <string name="details_image_resolution" msgid="8773315928100529437">"Resolutie:"</string>
+    <string name="details_image_make" msgid="2888477930210903540">"Fabrikant:"</string>
+    <string name="details_image_model" msgid="3608007849933924336">"Model:"</string>
+    <string name="details_image_whitebalance" msgid="4412514247882436065">"Witbalans:"</string>
+    <string name="details_image_latitude" msgid="6701704806314765468">"GPS-breedtegraad:"</string>
+    <string name="details_image_longitude" msgid="5583629669864057389">"GPS-lengtegraad:"</string>
+    <string name="details_image_location" msgid="6460201074393148978">"Locatie:"</string>
+    <string name="details_duration" msgid="1028116471387901402">"Duur:"</string>
+    <string name="details_date_taken" msgid="348356840586463178">"Gemaakt op:"</string>
+    <string name="details_frame_rate" msgid="122397836963498191">"Framesnelheid:"</string>
+    <string name="details_bit_rate" msgid="5632311789455402186">"Bitsnelheid:"</string>
+    <string name="details_codec" msgid="5580300450432398126">"Codec:"</string>
+    <string name="details_format" msgid="3700860266600796363">"Indeling:"</string>
+    <string name="details_dimension_x" msgid="4479200210424701240">"%1$d x %2$d"</string>
+    <string name="details_ms" msgid="940634969189855292">"%1$02d:%2$02d"</string>
+    <string name="details_hms" msgid="3215779248094151255">"%1$d:%2$02d:%3$02d"</string>
+    <string name="details_fps" msgid="2707670327505979317">"%1$d fps"</string>
+    <string name="details_kbps" msgid="59196416864960850">"%1$d Kbps"</string>
+    <string name="details_mbps" msgid="3978720645766601106">"%1$g Mbps"</string>
+    <string name="details_ok" msgid="6848594369924424312">"OK"</string>
+    <string name="context_menu_header" msgid="1185348426222302182">"Opties voor foto\'s"</string>
+    <string name="video_context_menu_header" msgid="7318971116949475029">"Video-opties"</string>
+    <string name="multiface_crop_help" msgid="3127018992717032779">"Tik op een gezicht om te beginnen."</string>
+    <string name="photos_gallery_title" msgid="6914406246471015448">"Galerij"</string>
+    <string name="pick_photos_gallery_title" msgid="12912682424915943">"Foto selecteren"</string>
+    <string name="videos_gallery_title" msgid="6150354029982749479">"Galerij"</string>
+    <string name="pick_videos_gallery_title" msgid="326727095201227333">"Video selecteren"</string>
+    <string name="loading_progress_format_string" msgid="7401961873257843731">"<xliff:g id="COUNTER">%d</xliff:g> resterend"</string>
+    <string name="sendImage" msgid="7279510542799399570">"Foto delen via"</string>
+    <string name="setImage" msgid="7246975856983303047">"Foto instellen als"</string>
+    <string name="sendVideo" msgid="3598567735831863073">"Video delen via"</string>
+    <string name="movieviewlabel" msgid="7363495772706775465">"Films"</string>
+    <string name="loading_video" msgid="4013492720121891585">"Video laden..."</string>
+    <string name="spaceIsLow_content" msgid="2848517537672543641">"Er is weinig ruimte beschikbaar op uw SD-kaart. U kunt de kwaliteitsinstelling wijzigen of items uit de galerij verwijderen."</string>
+    <string name="resume_playing_title" msgid="8996677350649355013">"Video hervatten"</string>
+    <string name="resume_playing_message" msgid="5184414518126703481">"Afspelen hervatten vanaf %s ?"</string>
+    <string name="resume_playing_resume" msgid="3847915469173852416">"Afspelen hervatten"</string>
+    <string name="resume_playing_restart" msgid="5471008499835769292">"Opnieuw starten"</string>
+    <string name="gadget_title" msgid="259405922673466798">"Fotolijstje"</string>
+    <string name="file_info_title" msgid="1628963357466012538">"Bestandsinformatie:"</string>
+    <string name="video_exceed_mms_limit" msgid="3835075281230780010">"De video die u heeft opgenomen, is te lang om via MMS te verzenden. Neem een kortere video op."</string>
+    <string name="multiselect_share" msgid="5261644537749253581">"Delen"</string>
+    <string name="multiselect_delete" msgid="9113461994546744603">"Verwijderen"</string>
+    <string name="multiselect_cancel" msgid="5969428692864002165">"Annuleren"</string>
+    <string name="progress_dialog_title" msgid="4771577387849747804">"In behandeling"</string>
+    <string name="delete_images_message" msgid="4504926868037899430">"Afbeeldingen verwijderen. Een ogenblik geduld…"</string>
+    <string name="video_reach_size_limit" msgid="6179877322015552390">"Maximale grootte bereikt"</string>
 </resources>
