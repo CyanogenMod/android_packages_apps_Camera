@@ -302,7 +302,7 @@ public class ImageManager {
         return imageList;
     }
 
-    private static boolean isSingleImageMode(String uriString) {
+    static boolean isSingleImageMode(String uriString) {
         return !uriString.startsWith(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString())
                 && !uriString.startsWith(

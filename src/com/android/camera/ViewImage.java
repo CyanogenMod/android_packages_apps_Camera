@@ -600,6 +600,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
         }
 
+        // Don't show the "delete" icon for SingleImageList.
+        if (ImageManager.isSingleImageMode(uri.toString())) {
+            mActionIconPanel.findViewById(R.id.discard).setVisibility(View.GONE);
+        }
+
         if (slideshow) {
             setMode(MODE_SLIDESHOW);
         } else {
