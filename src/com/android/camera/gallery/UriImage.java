@@ -142,7 +142,9 @@ class UriImage implements IImage {
 
     public String getMimeType() {
         BitmapFactory.Options options = snifBitmapOptions();
-        return (options != null) ? options.outMimeType : "";
+        return (options != null && options.outMimeType != null)
+                ? options.outMimeType
+                : "";
     }
 
     public int getHeight() {
