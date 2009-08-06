@@ -1442,7 +1442,7 @@ class MediaRecorderProfile {
 
         VIDEO_ENCODER_TABLE.put("h263", MediaRecorder.VideoEncoder.H263);
         VIDEO_ENCODER_TABLE.put("h264", MediaRecorder.VideoEncoder.H264);
-        VIDEO_ENCODER_TABLE.put("mp4", MediaRecorder.VideoEncoder.MPEG_4_SP);
+        VIDEO_ENCODER_TABLE.put("m4v", MediaRecorder.VideoEncoder.MPEG_4_SP);
         VIDEO_ENCODER_TABLE.putDefault(MediaRecorder.VideoEncoder.DEFAULT);
 
         AUDIO_ENCODER_TABLE.put("amrnb", MediaRecorder.AudioEncoder.AMR_NB);
