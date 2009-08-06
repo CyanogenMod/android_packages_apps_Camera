@@ -169,10 +169,6 @@ class UriImage implements IImage {
         return 0;
     }
 
-    public int getRow() {
-        return 0;
-    }
-
     public boolean isReadonly() {
         return true;
     }

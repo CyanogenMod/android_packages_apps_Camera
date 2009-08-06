@@ -56,7 +56,6 @@
     <string name="review_share" msgid="7294755861072174509">"UDOSTĘPNIJ"</string>
     <string name="review_set" msgid="8304758352155378636">"USTAW JAKO"</string>
     <string name="review_play" msgid="6015456244323302817">"ODTWÓRZ"</string>
-    <string name="review_attach" msgid="7957325229025880473">"DOŁĄCZ"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANULUJ"</string>
     <string name="review_done" msgid="5417465988786728114">"GOTOWE"</string>
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
@@ -192,7 +191,6 @@
     <string name="multiselect_share" msgid="5261644537749253581">"Udostępnij"</string>
     <string name="multiselect_delete" msgid="9113461994546744603">"Usuń"</string>
     <string name="multiselect_cancel" msgid="5969428692864002165">"Anuluj"</string>
-    <string name="progress_dialog_title" msgid="4771577387849747804">"W toku"</string>
     <string name="delete_images_message" msgid="4504926868037899430">"Trwa usuwanie zdjęć, czekaj…"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Osiągnięto limit rozmiaru."</string>
 </resources>

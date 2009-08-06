@@ -113,69 +113,6 @@ public class OnScreenHint {
     }
 
     /**
-     * Set the margins of the view.
-     *
-     * @param horizontalMargin The horizontal margin, in percentage of the
-     *        container width, between the container's edges and the
-     *        notification
-     * @param verticalMargin The vertical margin, in percentage of the
-     *        container height, between the container's edges and the
-     *        notification
-     */
-    public void setMargin(float horizontalMargin, float verticalMargin) {
-        mHorizontalMargin = horizontalMargin;
-        mVerticalMargin = verticalMargin;
-    }
-
-    /**
-     * Return the horizontal margin.
-     */
-    public float getHorizontalMargin() {
-        return mHorizontalMargin;
-    }
-
-    /**
-     * Return the vertical margin.
-     */
-    public float getVerticalMargin() {
-        return mVerticalMargin;
-    }
-
-    /**
-     * Set the location at which the notification should appear on the screen.
-     * @see android.view.Gravity
-     * @see #getGravity
-     */
-    public void setGravity(int gravity, int xOffset, int yOffset) {
-        mGravity = gravity;
-        mX = xOffset;
-        mY = yOffset;
-    }
-
-     /**
-     * Get the location at which the notification should appear on the screen.
-     * @see android.view.Gravity
-     * @see #getGravity
-     */
-    public int getGravity() {
-        return mGravity;
-    }
-
-    /**
-     * Return the X offset in pixels to apply to the gravity's location.
-     */
-    public int getXOffset() {
-        return mX;
-    }
-
-    /**
-     * Return the Y offset in pixels to apply to the gravity's location.
-     */
-    public int getYOffset() {
-        return mY;
-    }
-
-    /**
      * Make a standard hint that just contains a text view.
      *
      * @param context  The context to use.  Usually your

@@ -46,16 +46,6 @@ class VideoPreview extends SurfaceView {
         super(context, attrs, defStyle);
     }
 
-    public void setTileSize(int horizontalTileSize, int verticalTileSize) {
-        if ((mHorizontalTileSize != horizontalTileSize)
-                || (mVerticalTileSize != verticalTileSize)) {
-            mHorizontalTileSize = horizontalTileSize;
-            mVerticalTileSize = verticalTileSize;
-            requestLayout();
-            invalidate();
-        }
-    }
-
     public void setAspectRatio(int width, int height) {
         setAspectRatio(((float) width) / ((float) height));
     }

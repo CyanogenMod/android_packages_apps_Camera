@@ -56,7 +56,6 @@
     <string name="review_share" msgid="7294755861072174509">"分享"</string>
     <string name="review_set" msgid="8304758352155378636">"設為"</string>
     <string name="review_play" msgid="6015456244323302817">"播放"</string>
-    <string name="review_attach" msgid="7957325229025880473">"附加"</string>
     <string name="review_cancel" msgid="8188009385853399254">"取消"</string>
     <string name="review_done" msgid="5417465988786728114">"完成"</string>
     <string name="review_ok" msgid="5305096180300056529">"確定"</string>
@@ -192,7 +191,6 @@
     <string name="multiselect_share" msgid="5261644537749253581">"分享"</string>
     <string name="multiselect_delete" msgid="9113461994546744603">"刪除"</string>
     <string name="multiselect_cancel" msgid="5969428692864002165">"取消"</string>
-    <string name="progress_dialog_title" msgid="4771577387849747804">"進行中"</string>
     <string name="delete_images_message" msgid="4504926868037899430">"正在刪除圖片，請稍候..."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"已達大小上限。"</string>
 </resources>
