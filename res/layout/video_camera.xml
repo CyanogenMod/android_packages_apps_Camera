@@ -14,53 +14,51 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/video_camera"
         android:background="@drawable/camera_background"
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="horizontal">
+        android:layout_height="fill_parent">
 
-    <FrameLayout android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="32dp"
-            android:background="@drawable/border_view_finder">
-        <com.android.camera.VideoPreview
-                android:id="@+id/camera_preview"
-                android:layout_width="352dp"
-                android:layout_height="288dp"
-                android:layout_centerInParent="true" />
-        <ImageView
-                android:id="@+id/video_frame"
-                android:layout_width="352dp"
-                android:layout_height="288dp"
-                android:layout_toLeftOf="@id/button_bar"
-                android:visibility="gone" />
-    </FrameLayout>
-
-    <!-- Note: In this TextView the paddingRight="2"
-         attribute is required because otherwise the
-         text's drop shadow will be clipped. -->
-    <TextView
-            android:id="@+id/recording_time"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="29dp"
-            android:layout_marginLeft="49dp"
-            android:paddingRight="2dp"
-            android:drawablePadding="8dp"
-            android:drawableLeft="@drawable/ic_recording_indicator"
-            android:shadowColor="#c0000000"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="1"
-            android:gravity="left|center_vertical"
-            android:textColor="@color/recording_time_elapsed_text"
-            android:textSize="23dp"
-            android:textStyle="bold"
-            android:visibility="gone"/>
-</RelativeLayout>
+    <RelativeLayout android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+        <FrameLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/border_view_finder">
+            <com.android.camera.VideoPreview
+                    android:id="@+id/camera_preview"
+                    android:layout_width="352dp"
+                    android:layout_height="288dp"/>
+            <ImageView
+                    android:id="@+id/video_frame"
+                    android:layout_width="352dp"
+                    android:layout_height="288dp"
+                    android:visibility="gone" />
+            <!-- Note: In this TextView the paddingRight="2"
+                 attribute is required because otherwise the
+                 text's drop shadow will be clipped. -->
+            <TextView
+                    android:id="@+id/recording_time"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|bottom"
+                    android:layout_marginBottom="13dp"
+                    android:layout_marginLeft="17dp"
+                    android:paddingRight="2dp"
+                    android:drawablePadding="8dp"
+                    android:drawableLeft="@drawable/ic_recording_indicator"
+                    android:shadowColor="#c0000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:gravity="left|center_vertical"
+                    android:textColor="@color/recording_time_elapsed_text"
+                    android:textSize="23dp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+        </FrameLayout>
+    </RelativeLayout>
+</LinearLayout>
