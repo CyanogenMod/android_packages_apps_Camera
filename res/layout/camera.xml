@@ -14,38 +14,38 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:background="@drawable/camera_background"
         android:id="@+id/camera"
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-    <FrameLayout android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="13dp"
-            android:background="@drawable/border_view_finder">
-        <com.android.camera.VideoPreview
-                android:id="@+id/camera_preview"
-                android:layout_width="384dp"
-                android:layout_height="288dp"/>
-        <com.android.camera.FocusRectangle
-                android:id="@+id/focus_rectangle"
-                android:layout_width="384dp"
-                android:layout_height="288dp"/>
-    </FrameLayout>
+    <RelativeLayout android:layout_width="0px"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+        <FrameLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/border_view_finder">
+            <com.android.camera.VideoPreview
+                    android:id="@+id/camera_preview"
+                    android:layout_width="384dp"
+                    android:layout_height="288dp"/>
+            <com.android.camera.FocusRectangle
+                    android:id="@+id/focus_rectangle"
+                    android:layout_width="384dp"
+                    android:layout_height="288dp"/>
+            <ImageView
+                    android:id="@+id/gps_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"/>
+        </FrameLayout>
+    </RelativeLayout>
 
-    <ImageView
-            android:id="@+id/gps_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:clickable="false"
-            android:focusable="false"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="18dp"
-            android:layout_marginTop="18dp"/>
-
-</RelativeLayout>
+</LinearLayout>
