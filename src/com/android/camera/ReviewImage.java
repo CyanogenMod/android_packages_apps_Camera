@@ -57,6 +57,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     private ImageGetter mGetter;
     private Uri mSavedUri;
     private boolean mPaused = true;
+    private boolean mShowControls = true;
 
     // Choices for what adjacents to load.
     private static final int[] sOrderAdjacents = new int[] {0, 1, -1};
@@ -85,6 +86,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
             new AlphaAnimation(0F, 1F);
 
     public static final String KEY_IMAGE_LIST = "image_list";
+    private static final String STATE_SHOW_CONTROLS = "show_controls";
 
     IImageList mAllImages;
 
@@ -311,7 +313,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                         cb.run(uri, image);
 
                         mImageView.clear();
-                        setImage(mCurrentPosition);
+                        setImage(mCurrentPosition, false);
                     }
                 });
 
@@ -358,7 +360,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
             }
             mImageView.clear();
             mCache.clear();  // Because the position number is changed.
-            setImage(mCurrentPosition);
+            setImage(mCurrentPosition, true);
         }
     };
 
@@ -387,7 +389,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         return b;
     }
 
-    void setImage(int pos) {
+    void setImage(int pos, boolean showControls) {
         mCurrentPosition = pos;
 
         Bitmap b = mCache.getBitmap(pos);
@@ -453,7 +455,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
             mGetter.setPosition(pos, cb, mAllImages, mHandler);
         }
         updateActionIcons();
-        showOnScreenControls();
+        if (showControls) showOnScreenControls();
         scheduleDismissOnScreenControls();
     }
 
@@ -478,6 +480,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         mCache = new BitmapCache(3);
         mImageView.setRecycler(mCache);
 
+
         makeGetter();
 
         mSlideShowImageViews[0] =
@@ -494,6 +497,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
 
         if (instanceState != null) {
             uri = instanceState.getParcelable(STATE_URI);
+            mShowControls = instanceState.getBoolean(STATE_SHOW_CONTROLS, true);
         }
 
         if (!init(uri, imageList)) {
@@ -572,6 +576,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         super.onSaveInstanceState(b);
         b.putParcelable(STATE_URI,
                 mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri());
+        b.putBoolean(STATE_SHOW_CONTROLS, mShowControls);
     }
 
     @Override
@@ -596,7 +601,9 @@ public class ReviewImage extends Activity implements View.OnClickListener {
             makeGetter();
         }
 
-        setImage(mCurrentPosition);
+        //show controls only for first time
+        setImage(mCurrentPosition, mShowControls);
+        mShowControls = false;
     }
 
     @Override
@@ -695,7 +702,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     private void moveNextOrPrevious(int delta) {
         int nextImagePos = mCurrentPosition + delta;
         if ((0 <= nextImagePos) && (nextImagePos < mAllImages.getCount())) {
-            setImage(nextImagePos);
+            setImage(nextImagePos, true);
             showOnScreenControls();
         }
     }
@@ -809,7 +816,7 @@ class ImageViewTouch2 extends ImageViewTouchBase {
             if (nextImagePos >= 0
                     && nextImagePos < mViewImage.mAllImages.getCount()) {
                 synchronized (mViewImage) {
-                    mViewImage.setImage(nextImagePos);
+                    mViewImage.setImage(nextImagePos, true);
                 }
            } else if (nextImagePos != -2) {
                center(true, true);
