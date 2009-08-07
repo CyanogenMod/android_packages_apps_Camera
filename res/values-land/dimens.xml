@@ -14,21 +14,7 @@
      limitations under the License.
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/appwidget_width"
-    android:layout_height="@dimen/appwidget_height"
-    android:background="@drawable/appwidget_bg">
-
-    <ImageView
-        android:id="@+id/photo"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scaleType="center"
-        android:cropToPadding="true" />
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@drawable/photo_inner" />
-
-</FrameLayout>
+<resources>
+    <dimen name="appwidget_width">206dip</dimen>
+    <dimen name="appwidget_height">143dip</dimen>
+</resources>
