@@ -1116,10 +1116,14 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private boolean canTakePicture() {
+        return isCameraIdle() && mPreviewing && (mPicturesRemaining > 0);
+    }
+
     private void autoFocus() {
         // Initiate autofocus only when preview is started and snapshot is not
         // in progress.
-        if (isCameraIdle() && mPreviewing) {
+        if (canTakePicture()) {
             Log.v(TAG, "Start autofocus.");
             if (mZoomButtons != null) mZoomButtons.setVisible(false);
             mFocusStartTime = System.currentTimeMillis();
