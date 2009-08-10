@@ -258,6 +258,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mThumbController.loadData(ImageManager.getLastVideoThumbPath());
             mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
             mSwitcher.setOnSwitchListener(this);
+            mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         } else {
             View controlBar = inflater.inflate(
                     R.layout.attach_camera_control, rootView);

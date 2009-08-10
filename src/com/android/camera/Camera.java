@@ -747,6 +747,7 @@ public class Camera extends Activity implements View.OnClickListener,
             inflater.inflate(R.layout.camera_control, rootView);
             mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
             mSwitcher.setOnSwitchListener(this);
+            mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         }
 
         // Make sure preview is started.
