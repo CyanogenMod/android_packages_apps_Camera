@@ -703,27 +703,6 @@ public class Camera extends Activity implements View.OnClickListener,
         return DateFormat.format("yyyy-MM-dd kk.mm.ss", dateTaken).toString();
     }
 
-    public static Matrix getDisplayMatrix(Bitmap b, ImageView v) {
-        Matrix m = new Matrix();
-        float bw = b.getWidth();
-        float bh = b.getHeight();
-        float vw = v.getWidth();
-        float vh = v.getHeight();
-        float scale, x, y;
-        if (bw * vh > vw * bh) {
-            scale = vh / bh;
-            x = (vw - scale * bw) * 0.5F;
-            y = 0;
-        } else {
-            scale = vw / bw;
-            x = 0;
-            y = (vh - scale * bh) * 0.5F;
-        }
-        m.setScale(scale, scale, 0.5F, 0.5F);
-        m.postTranslate(x, y);
-        return m;
-    }
-
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);

@@ -52,12 +52,6 @@ public abstract class BaseCancelable<T> implements Cancelable<T> {
 
     protected abstract T execute() throws Exception;
 
-    protected synchronized void interruptNow() {
-        if (isInStates(STATE_CANCELING | STATE_EXECUTING)) {
-            mThread.interrupt();
-        }
-    }
-
     /**
      * Frees the result (which is not null) when the task has been canceled.
      */
@@ -139,13 +133,6 @@ public abstract class BaseCancelable<T> implements Cancelable<T> {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Whether the task's has been requested for cancel.
-     */
-    protected synchronized boolean isCanceling() {
-        return mState == STATE_CANCELING;
     }
 
     /**

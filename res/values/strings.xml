@@ -143,9 +143,6 @@
     <!-- button in review mode indicating that the video just taken should be played -->
     <string name="review_play">PLAY</string>
 
-    <!-- button in review mode indicating that the video just taken should be accepted as an attachment -->
-    <string name="review_attach">ATTACH</string>
-
     <!-- button in review mode indicating that the video recording session should be canceled -->
     <string name="review_cancel">CANCEL</string>
 
@@ -566,9 +563,6 @@
 
     <!-- Title shown on the button which will close the multiselction mode -->
     <string name="multiselect_cancel">Cancel</string>
-
-    <!-- The title of the progress dialog which will be shown for tasks that may take a long time -->
-    <string name="progress_dialog_title">In progress</string>
 
     <!-- The messsage shown on progress dialog when deleting images -->
     <string name="delete_images_message">Deleting images, please wait\u2026</string>

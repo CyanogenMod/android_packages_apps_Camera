@@ -166,10 +166,6 @@ class HighlightView {
         }
     }
 
-    public ModifyMode getMode() {
-        return mMode;
-    }
-
     public void setMode(ModifyMode mode) {
         if (mode != mMode) {
             mMode = mode;

@@ -57,7 +57,6 @@
     <string name="review_share">"COMPARTIR"</string>
     <string name="review_set">"ESTABLECER COMO"</string>
     <string name="review_play">"REPRODUCIR"</string>
-    <string name="review_attach">"ADJUNTAR"</string>
     <string name="review_cancel">"CANCELAR"</string>
     <string name="review_done">"HECHO"</string>
     <string name="review_ok">"Aceptar"</string>
@@ -194,7 +193,6 @@
     <string name="multiselect_delete">"Suprimir"</string>
     <!-- no translation found for multiselect_cancel (5969428692864002165) -->
     <skip />
-    <string name="progress_dialog_title">"En curso"</string>
     <string name="delete_images_message">"Eliminando imágenes; por favor, espera…"</string>
     <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
     <skip />

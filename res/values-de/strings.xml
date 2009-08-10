@@ -57,7 +57,6 @@
     <string name="review_share">"SENDEN"</string>
     <string name="review_set">"FESTLEGEN ALS"</string>
     <string name="review_play">"WIEDERGEBEN"</string>
-    <string name="review_attach">"ANHÄNGEN"</string>
     <string name="review_cancel">"ABBRECHEN"</string>
     <string name="review_done">"FERTIG"</string>
     <string name="review_ok">"OK"</string>
@@ -194,7 +193,6 @@
     <string name="multiselect_delete">"Löschen"</string>
     <!-- no translation found for multiselect_cancel (5969428692864002165) -->
     <skip />
-    <string name="progress_dialog_title">"Vorgang läuft."</string>
     <string name="delete_images_message">"Bilder werden gelöscht. Bitte warten..."</string>
     <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
     <skip />

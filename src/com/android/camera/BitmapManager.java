@@ -105,11 +105,6 @@ public class BitmapManager {
         getOrCreateThreadStatus(t).mOptions = options;
     }
 
-    synchronized BitmapFactory.Options getDecodingOptions(Thread t) {
-        ThreadStatus status = mThreadStatus.get(t);
-        return status != null ? status.mOptions : null;
-    }
-
     synchronized void removeDecodingOptions(Thread t) {
         ThreadStatus status = mThreadStatus.get(t);
         status.mOptions = null;
@@ -159,21 +154,6 @@ public class BitmapManager {
 
         // Wake up threads in waiting list
         notifyAll();
-    }
-
-    /**
-     * A debugging routine.
-     */
-    public synchronized void dump() {
-        Iterator<Map.Entry<Thread, ThreadStatus>> i =
-                mThreadStatus.entrySet().iterator();
-
-        while (i.hasNext()) {
-            Map.Entry<Thread, ThreadStatus> entry = i.next();
-            Log.v(TAG, "[Dump] Thread " + entry.getKey() + " ("
-                    + entry.getKey().getId()
-                    + ")'s status is " + entry.getValue());
-        }
     }
 
     public static synchronized BitmapManager instance() {

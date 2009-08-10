@@ -57,7 +57,6 @@
     <string name="review_share">"DELEN"</string>
     <string name="review_set">"INSTELLEN ALS"</string>
     <string name="review_play">"AFSPELEN"</string>
-    <string name="review_attach">"BIJVOEGEN"</string>
     <string name="review_cancel">"ANNULEREN"</string>
     <string name="review_done">"GEREED"</string>
     <string name="review_ok">"OK"</string>
@@ -194,7 +193,6 @@
     <string name="multiselect_delete">"Verwijderen"</string>
     <!-- no translation found for multiselect_cancel (5969428692864002165) -->
     <skip />
-    <string name="progress_dialog_title">"In behandeling"</string>
     <string name="delete_images_message">"Afbeeldingen verwijderen. Een ogenblik geduld…"</string>
     <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
     <skip />
