@@ -122,7 +122,7 @@ class UriImage implements IImage {
     }
 
     public Bitmap thumbBitmap(boolean rotateAsNeeded) {
-        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, IImage.UNCONSTRAINED,
+        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, THUMBNAIL_MAX_NUM_PIXELS,
                 rotateAsNeeded);
     }
 
