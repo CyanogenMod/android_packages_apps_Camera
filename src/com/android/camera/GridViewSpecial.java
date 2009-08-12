@@ -28,6 +28,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -301,6 +302,8 @@ class GridViewSpecial extends View {
     // GestureDetector could queue events and fire them later. At that time
     // stop() may have already been called and we can't handle the events.
     private class MyGestureDetector extends SimpleOnGestureListener {
+        private AudioManager mAudioManager;
+
         @Override
         public boolean onDown(MotionEvent e) {
             if (!canHandleEvent()) return false;
@@ -357,6 +360,13 @@ class GridViewSpecial extends View {
             if (!canHandleEvent()) return false;
             int index = computeSelectedIndex(e.getX(), e.getY());
             if (index >= 0 && index < mCount) {
+                // Play click sound.
+                if (mAudioManager == null) {
+                    mAudioManager = (AudioManager)
+                            getContext().getSystemService(Context.AUDIO_SERVICE);
+                }
+                mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
+
                 mListener.onImageTapped(index);
                 return true;
             }
