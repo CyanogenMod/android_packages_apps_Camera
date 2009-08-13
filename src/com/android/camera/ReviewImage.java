@@ -317,33 +317,6 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                     }
                 });
 
-        MenuItem item = menu.add(Menu.CATEGORY_SECONDARY, 203, 1000,
-                R.string.camerasettings);
-        item.setOnMenuItemClickListener(
-                new MenuItem.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent preferences = new Intent();
-                preferences.setClass(ReviewImage.this, GallerySettings.class);
-                startActivity(preferences);
-                return true;
-            }
-        });
-        item.setAlphabeticShortcut('p');
-        item.setIcon(android.R.drawable.ic_menu_preferences);
-
-        // Hidden menu just so the shortcut will bring up the zoom controls
-        // the string resource is a placeholder
-        menu.add(Menu.CATEGORY_SECONDARY, 203, 0, R.string.camerasettings)
-                .setOnMenuItemClickListener(
-                new MenuItem.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                showOnScreenControls();
-                return true;
-            }
-        })
-        .setAlphabeticShortcut('z')
-        .setVisible(false);
-
         return true;
     }
 
