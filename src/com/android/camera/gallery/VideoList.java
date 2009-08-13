@@ -41,7 +41,8 @@ public class VideoList extends BaseImageList {
             Media.TITLE,
             Media.DISPLAY_NAME,
             Media.MINI_THUMB_MAGIC,
-            Media.MIME_TYPE};
+            Media.MIME_TYPE,
+            Media.DATE_MODIFIED};
 
     private static final int INDEX_ID = 0;
     private static final int INDEX_DATA_PATH = 1;
@@ -50,6 +51,7 @@ public class VideoList extends BaseImageList {
     private static final int INDEX_DISPLAY_NAME = 4;
     private static final int INDEX_MIMI_THUMB_MAGIC = 5;
     private static final int INDEX_MIME_TYPE = 6;
+    private static final int INDEX_DATE_MODIFIED = 7;
 
     @Override
     protected long getImageId(Cursor cursor) {
@@ -61,6 +63,9 @@ public class VideoList extends BaseImageList {
         long id = cursor.getLong(INDEX_ID);
         String dataPath = cursor.getString(INDEX_DATA_PATH);
         long dateTaken = cursor.getLong(INDEX_DATE_TAKEN);
+        if (dateTaken == 0) {
+            dateTaken = cursor.getLong(INDEX_DATE_MODIFIED);
+        }
         String title = cursor.getString(INDEX_TITLE);
         String displayName = cursor.getString(INDEX_DISPLAY_NAME);
         long miniThumbMagic = cursor.getLong(INDEX_MIMI_THUMB_MAGIC);
@@ -126,10 +131,5 @@ public class VideoList extends BaseImageList {
                 mContentResolver, mBaseUri, VIDEO_PROJECTION,
                 whereClause(), whereClauseArgs(), sortOrder());
         return c;
-    }
-
-    private String sortOrder() {
-        return Media.DATE_TAKEN +
-                (mSort == ImageManager.SORT_ASCENDING ? " ASC " : " DESC");
     }
 }

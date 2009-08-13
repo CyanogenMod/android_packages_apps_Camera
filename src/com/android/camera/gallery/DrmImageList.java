@@ -123,12 +123,4 @@ public class DrmImageList extends ImageList implements IImageList {
                 contentUri(id), dataPath, 0, mimeType, 0, "DrmImage-" + id,
                 "DrmImage-" + id, 0);
     }
-
-    // TODO: Review this probably should be based on DATE_TAKEN same as images
-    @Override
-    protected String sortOrder() {
-        String ascending =
-                mSort == ImageManager.SORT_ASCENDING ? " ASC" : " DESC";
-        return DrmStore.Images.TITLE  + ascending + "," + DrmStore.Images._ID;
-    }
 }

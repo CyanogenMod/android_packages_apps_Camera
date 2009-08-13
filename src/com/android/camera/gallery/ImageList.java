@@ -124,7 +124,8 @@ public class ImageList extends BaseImageList implements IImageList {
             Media.MINI_THUMB_MAGIC,
             Media.ORIENTATION,
             Media.TITLE,
-            Media.MIME_TYPE};
+            Media.MIME_TYPE,
+            Media.DATE_MODIFIED};
 
     private static final int INDEX_ID = 0;
     private static final int INDEX_DATA_PATH = 1;
@@ -133,6 +134,7 @@ public class ImageList extends BaseImageList implements IImageList {
     private static final int INDEX_ORIENTATION = 4;
     private static final int INDEX_TITLE = 5;
     private static final int INDEX_MIME_TYPE = 6;
+    private static final int INDEX_DATE_MODIFIED = 7;
 
     @Override
     protected long getImageId(Cursor cursor) {
@@ -144,6 +146,9 @@ public class ImageList extends BaseImageList implements IImageList {
         long id = cursor.getLong(INDEX_ID);
         String dataPath = cursor.getString(INDEX_DATA_PATH);
         long dateTaken = cursor.getLong(INDEX_DATE_TAKEN);
+        if (dateTaken == 0) {
+            dateTaken = cursor.getLong(INDEX_DATE_MODIFIED);
+        }
         long miniThumbMagic = cursor.getLong(INDEX_MINI_THUMB_MAGIC);
         int orientation = cursor.getInt(INDEX_ORIENTATION);
         String title = cursor.getString(INDEX_TITLE);
@@ -155,15 +160,5 @@ public class ImageList extends BaseImageList implements IImageList {
         return new Image(this, mContentResolver, id, cursor.getPosition(),
                 contentUri(id), dataPath, miniThumbMagic, mimeType, dateTaken,
                 title, displayName, orientation);
-    }
-
-    protected String sortOrder() {
-        // add id to the end so that we don't ever get random sorting
-        // which could happen, I suppose, if the first two values were
-        // duplicated
-        String ascending =
-                mSort == ImageManager.SORT_ASCENDING ? " ASC" : " DESC";
-        return Images.Media.DATE_TAKEN + ascending + "," + Images.Media._ID
-                + ascending;
     }
 }

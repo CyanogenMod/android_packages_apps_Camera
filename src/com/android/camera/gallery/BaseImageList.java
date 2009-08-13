@@ -490,4 +490,27 @@ public abstract class BaseImageList implements IImageList {
     public int getImageIndex(IImage image) {
         return ((BaseImage) image).mIndex;
     }
+
+    // This provides a default sorting order string for subclasses.
+    // The list is first sorted by date, then by id. The order can be ascending
+    // or descending, depending on the mSort variable.
+    // The date is obtained from the "datetaken" column. But if it is null,
+    // the "date_modified" column is used instead.
+    protected String sortOrder() {
+        String ascending =
+                (mSort == ImageManager.SORT_ASCENDING)
+                ? " ASC"
+                : " DESC";
+
+        // Use DATE_TAKEN if it's non-null, otherwise use DATE_MODIFIED.
+        String dateExpr =
+                "case ifnull(datetaken,0)" +
+                " when 0 then date_modified" +
+                " else datetaken" +
+                " end";
+
+        // Add id to the end so that we don't ever get random sorting
+        // which could happen, I suppose, if the date values are the same.
+        return dateExpr + ascending + ", _id" + ascending;
+    }
 }
