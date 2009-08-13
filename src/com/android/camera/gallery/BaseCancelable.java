@@ -48,7 +48,6 @@ public abstract class BaseCancelable<T> implements Cancelable<T> {
     private Throwable mError;
     private T mResult;
     private Cancelable<?> mCurrentTask;
-    private Thread mThread;
 
     protected abstract T execute() throws Exception;
 
@@ -86,7 +85,6 @@ public abstract class BaseCancelable<T> implements Cancelable<T> {
                 await();
                 return handleTerminalStates();
             }
-            mThread = Thread.currentThread();
             mState = STATE_EXECUTING;
         }
         try {

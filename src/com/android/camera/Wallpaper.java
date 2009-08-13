@@ -18,6 +18,7 @@ package com.android.camera;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -92,7 +93,7 @@ public class Wallpaper extends Activity {
         @Override
         public void run() {
             try {
-                mContext.setWallpaper(mBitmap);
+                WallpaperManager.getInstance(mContext).setBitmap(mBitmap);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Failed to set wallpaper.", e);
             } finally {

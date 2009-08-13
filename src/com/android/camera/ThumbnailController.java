@@ -18,6 +18,7 @@ package com.android.camera;
 
 
 import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -66,10 +67,12 @@ public class ThumbnailController {
     private boolean mShouldAnimateThumb;
     private final Animation mShowButtonAnimation = new AlphaAnimation(0F, 1F);
     private boolean mShouldAnimateButton;
+    private final Resources mResources;
 
     // The "frame" is a drawable we want to put on top of the thumbnail.
-    public ThumbnailController(
+    public ThumbnailController(Resources resources,
             ImageView button, ContentResolver contentResolver) {
+        mResources = resources;
         mButton = button;
         mContentResolver = contentResolver;
         mShowButtonAnimation.setDuration(500);
@@ -185,12 +188,12 @@ public class ThumbnailController {
         Drawable drawable;
         if (mThumbs == null) {
             mThumbs = new Drawable[2];
-            mThumbs[1] = new BitmapDrawable(mThumb);
+            mThumbs[1] = new BitmapDrawable(mResources, mThumb);
             drawable = mThumbs[1];
             mShouldAnimateThumb = false;
         } else {
             mThumbs[0] = mThumbs[1];
-            mThumbs[1] = new BitmapDrawable(mThumb);
+            mThumbs[1] = new BitmapDrawable(mResources, mThumb);
             mThumbTransition = new TransitionDrawable(mThumbs);
             drawable = mThumbTransition;
             mShouldAnimateThumb = true;

@@ -58,7 +58,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
 import com.android.camera.gallery.Cancelable;
@@ -278,7 +277,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     (ImageView) findViewById(R.id.review_thumbnail);
             mLastPictureButton.setOnClickListener(this);
             mThumbController = new ThumbnailController(
-                    mLastPictureButton, mContentResolver);
+                    getResources(), mLastPictureButton, mContentResolver);
             mThumbController.loadData(ImageManager.getLastImageThumbPath());
             // Update last image thumbnail.
             updateThumbnailButton();
@@ -926,10 +925,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 doSnap();
                 break;
         }
-    }
-
-    private void updateStorageHint() {
-        updateStorageHint(MenuHelper.calculatePicturesRemaining());
     }
 
     private OnScreenHint mStorageHint;
