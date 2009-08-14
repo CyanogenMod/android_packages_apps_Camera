@@ -19,7 +19,10 @@ package com.android.camera;
 import com.android.camera.gallery.IImage;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,6 +47,10 @@ import java.io.IOException;
  */
 public class Util {
     private static final String TAG = "db.Util";
+    private static final String MAPS_PACKAGE_NAME =
+            "com.google.android.apps.maps";
+    private static final String MAPS_CLASS_NAME =
+            "com.google.android.maps.MapsActivity";
 
     private static OnClickListener sNullOnClickListener;
 
@@ -503,5 +510,37 @@ public class Util {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inNativeAlloc = true;
         return options;
+    }
+
+    // Opens Maps application for a map with given latlong. There is a bug
+    // which crashes the Browser when opening this kind of URL. So, we open
+    // it in GMM instead. For those platforms which have no GMM installed,
+    // the default Maps application will be chosen.
+    //
+    // TODO: Once the bug in browser has been fixed, this workaround should be
+    // removed.
+    public static void openMaps(Context context, float lat, float lng) {
+
+        try {
+            // Try to open the GMM first
+
+            // We don't use "geo:latitude,longitude" because it only centers
+            // the MapView to the specified location, but we need a marker
+            // for further operations (routing to/from).
+            // The q=(lat, lng) syntax is suggested by geo-team.
+            String url = String.format(
+                    "http://maps.google.com/maps?f=q&q=(%s,%s)", lat, lng);
+            ComponentName compName =
+                    new ComponentName(MAPS_PACKAGE_NAME, MAPS_CLASS_NAME);
+            Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    .setComponent(compName);
+            context.startActivity(mapsIntent);
+        } catch (ActivityNotFoundException e) {
+            // Use the "geo intent" if no GMM is installed
+            Log.e(TAG, "GMM activity not found!", e);
+            String url = String.format("geo:%s,%s", lat, lng);
+            Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(mapsIntent);
+        }
     }
 }
