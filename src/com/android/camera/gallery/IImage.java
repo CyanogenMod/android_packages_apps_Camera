@@ -17,7 +17,6 @@
 package com.android.camera.gallery;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import java.io.InputStream;
@@ -28,6 +27,8 @@ import java.io.InputStream;
 public interface IImage {
     static final int THUMBNAIL_TARGET_SIZE = 320;
     static final int MINI_THUMB_TARGET_SIZE = 96;
+    static final int THUMBNAIL_MAX_NUM_PIXELS = 512 * 384;
+    static final int MINI_THUMB_MAX_NUM_PIXELS = 128 * 128;
     static final int UNCONSTRAINED = -1;
 
     /** Get the image list which contains this image. */
