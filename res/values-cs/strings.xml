@@ -15,7 +15,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="all_images" msgid="1195501551939178807">"Všechny fotografie"</string>
+    <string name="all_images" msgid="1195501551939178807">"Všechny fotky"</string>
     <string name="all_videos" msgid="3380966619230896013">"Všechna videa"</string>
     <string name="camera_label" msgid="6346560772074764302">"Fotoaparát"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videokamera"</string>
@@ -79,13 +79,13 @@
     <string name="pref_camera_general_settings_category" msgid="2135384248699549300">"Obecné nastavení"</string>
     <string name="pref_gallery_size_title" msgid="1363406603879434418">"Zobrazovaná velikost"</string>
     <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Vyberte zobrazovanou velikost obrázků a videí"</string>
-    <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Velikost fotografie"</string>
+    <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Velikost fotografií"</string>
   <string-array name="pref_gallery_size_choices">
     <item msgid="7157691836846678936">"Velké"</item>
     <item msgid="1033164600689216410">"Malé"</item>
   </string-array>
     <string name="pref_gallery_sort_title" msgid="7447949250045443386">"Řazení"</string>
-    <string name="pref_gallery_sort_summary" msgid="6644398051645595214">"Vyberte způsob řazení obrázků a videí"</string>
+    <string name="pref_gallery_sort_summary" msgid="6644398051645595214">"Vyberte způsob řazení fotografií a videí"</string>
     <string name="pref_gallery_sort_dialogtitle" msgid="5787417105532562739">"Řazení fotografií"</string>
   <string-array name="pref_gallery_sort_choices">
     <item msgid="5546009539334018063">"Od nejnovějších"</item>
@@ -100,7 +100,7 @@
     <item msgid="5670078787463530498">"4 sekundy"</item>
   </string-array>
     <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Přechod v prezentaci"</string>
-    <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Vyberte efekt, který má být použit při přechodu z jednoho snímku na další"</string>
+    <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Vyberte efekt při přechodu z jednoho snímku na další"</string>
     <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Přechod v prezentaci"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
     <item msgid="2825716730899894863">"Prolínat"</item>
@@ -129,7 +129,7 @@
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="7304479270077279178">"3M (2048×1536)"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="6722733164421134734">"2M (1600×1200)"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6648351357102402892">"1M (1024×768)"</string>
-    <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Velikost fotografie"</string>
+    <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Velikost fotografií"</string>
     <string name="pref_camera_jpegquality_title" msgid="3045390831339734843">"Výběr kvality fotografie"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Velmi jemná"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Jemná"</string>
