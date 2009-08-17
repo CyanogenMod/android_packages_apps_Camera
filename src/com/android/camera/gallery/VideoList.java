@@ -64,7 +64,7 @@ public class VideoList extends BaseImageList {
         String dataPath = cursor.getString(INDEX_DATA_PATH);
         long dateTaken = cursor.getLong(INDEX_DATE_TAKEN);
         if (dateTaken == 0) {
-            dateTaken = cursor.getLong(INDEX_DATE_MODIFIED);
+            dateTaken = cursor.getLong(INDEX_DATE_MODIFIED) * 1000;
         }
         String title = cursor.getString(INDEX_TITLE);
         String displayName = cursor.getString(INDEX_DISPLAY_NAME);

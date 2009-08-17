@@ -503,9 +503,10 @@ public abstract class BaseImageList implements IImageList {
                 : " DESC";
 
         // Use DATE_TAKEN if it's non-null, otherwise use DATE_MODIFIED.
+        // DATE_TAKEN is in milliseconds, but DATE_MODIFIED is in seconds.
         String dateExpr =
                 "case ifnull(datetaken,0)" +
-                " when 0 then date_modified" +
+                " when 0 then date_modified*1000" +
                 " else datetaken" +
                 " end";
 
