@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -143,6 +144,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private ToneGenerator mFocusToneGenerator;
     private ZoomButtonsController mZoomButtons;
     private Switcher mSwitcher;
+    private boolean mStartPreviewFail = false;
 
     // mPostCaptureAlert, mLastPictureButton, mThumbController
     // are non-null only if isImageCaptureIntent() is true.
@@ -734,7 +736,12 @@ public class Camera extends Activity implements View.OnClickListener,
          */
         Thread startPreviewThread = new Thread(new Runnable() {
             public void run() {
-                startPreview();
+                try {
+                    mStartPreviewFail = false;
+                    startPreview();
+                } catch (CameraHardwareException e) {
+                    mStartPreviewFail = true;
+                }
             }
         });
         startPreviewThread.start();
@@ -766,6 +773,7 @@ public class Camera extends Activity implements View.OnClickListener,
         // Make sure preview is started.
         try {
             startPreviewThread.join();
+            if (mStartPreviewFail) showCameraErrorAndFinish();
         } catch (InterruptedException ex) {
             // ignore
         }
@@ -1009,8 +1017,13 @@ public class Camera extends Activity implements View.OnClickListener,
         mImageCapture = new ImageCapture();
 
         // Start the preview if it is not started.
-        if (!mPreviewing) {
-            startPreview();
+        if (!mPreviewing && !mStartPreviewFail) {
+            try {
+                startPreview();
+            } catch (CameraHardwareException e) {
+                showCameraErrorAndFinish();
+                return;
+            }
         }
 
         if (mSurfaceHolder != null) {
@@ -1254,12 +1267,17 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
 
+        // The mCameraDevice will be null if it is fail to connect to the 
+        // camera hardware. In this case we will show a dialog and then 
+        // finish the activity, so it's OK to ignore it.
+        if (mCameraDevice == null) return;
+
         mSurfaceHolder = holder;
         mViewFinderWidth = w;
         mViewFinderHeight = h;
 
         // Sometimes surfaceChanged is called after onPause. Ignore it.
-        if (mPausing) return;
+        if (mPausing || isFinishing()) return;
 
         // Set preview display if the surface is being created. Preview was
         // already started.
@@ -1293,11 +1311,10 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    private boolean ensureCameraDevice() {
+    private void ensureCameraDevice() throws CameraHardwareException {
         if (mCameraDevice == null) {
             mCameraDevice = CameraHolder.instance().open();
         }
-        return mCameraDevice != null;
     }
 
     private void updateLastImage() {
@@ -1318,10 +1335,22 @@ public class Camera extends Activity implements View.OnClickListener,
         list.close();
     }
 
+    private void showCameraErrorAndFinish() {
+        Resources ress = getResources();
+        Util.showFatalErrorAndFinish(Camera.this,
+                ress.getString(R.string.camera_error_title),
+                ress.getString(R.string.cannot_connect_camera));
+    }
+
     private void restartPreview() {
         // make sure the surfaceview fills the whole screen when previewing
         mSurfaceView.setAspectRatio(VideoPreview.DONT_CARE);
-        startPreview();
+        try {
+            startPreview();
+        } catch (CameraHardwareException e) {
+            showCameraErrorAndFinish();
+            return;
+        }
 
         // Calculate this in advance of each shot so we don't add to shutter
         // latency. It's true that someone else could write to the SD card in
@@ -1339,12 +1368,10 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    private void startPreview() {
-        if (mPausing) return;
+    private void startPreview() throws CameraHardwareException {
+        if (mPausing || isFinishing()) return;
 
-        if (!ensureCameraDevice()) return;
-
-        if (isFinishing()) return;
+        ensureCameraDevice();
 
         // If we're previewing already, stop the preview first (this will blank
         // the screen).

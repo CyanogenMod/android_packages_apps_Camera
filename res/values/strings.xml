@@ -17,6 +17,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
 
+    <!-- title for the dialog showing the error of camera hardware -->
+    <string name="camera_error_title">Camera Error</string>
+
+    <!-- message for the dialog showing the error of camera hardware -->
+    <string name="cannot_connect_camera">Cannot connect to camera.</string>
+
     <!-- label for the icon meaning 'show me all the images' -->
     <string name="all_images">All pictures</string>
 
