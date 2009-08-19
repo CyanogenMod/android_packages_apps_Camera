@@ -699,12 +699,8 @@ public class GalleryPicker extends Activity {
                     temp = newMap;
                 }
 
-                Bitmap temp2 = Util.transform(m, temp, imageWidth,
-                                              imageHeight, true);
-                if (temp2 != temp) {
-                    temp.recycle();
-                }
-                temp = temp2;
+                temp = Util.transform(m, temp, imageWidth,
+                        imageHeight, true, Util.RECYCLE_INPUT);
             }
 
             Bitmap thumb = Bitmap.createBitmap(imageWidth, imageHeight,

@@ -43,7 +43,7 @@ import java.io.IOException;
  * Collection of utility functions used in this package.
  */
 public class Util {
-    private static final String TAG = "db.Util";
+    private static final String TAG = "Util";
 
     private static OnClickListener sNullOnClickListener;
 
@@ -134,11 +134,16 @@ public class Util {
         }
     }
 
+    // Whether we should recycle the input (unless the output is the input).
+    public static boolean RECYCLE_INPUT = true;
+    public static boolean NO_RECYCLE_INPUT = false;
+
     public static Bitmap transform(Matrix scaler,
                                    Bitmap source,
                                    int targetWidth,
                                    int targetHeight,
-                                   boolean scaleUp) {
+                                   boolean scaleUp,
+                                   boolean recycle) {
         int deltaX = source.getWidth() - targetWidth;
         int deltaY = source.getHeight() - targetHeight;
         if (!scaleUp && (deltaX < 0 || deltaY < 0)) {
@@ -167,6 +172,9 @@ public class Util {
                     targetWidth - dstX,
                     targetHeight - dstY);
             c.drawBitmap(source, src, dst, null);
+            if (recycle) {
+                source.recycle();
+            }
             return b2;
         }
         float bitmapWidthF = source.getWidth();
@@ -200,6 +208,10 @@ public class Util {
             b1 = source;
         }
 
+        if (recycle && b1 != source) {
+            source.recycle();
+        }
+
         int dx1 = Math.max(0, b1.getWidth() - targetWidth);
         int dy1 = Math.max(0, b1.getHeight() - targetHeight);
 
@@ -210,22 +222,20 @@ public class Util {
                 targetWidth,
                 targetHeight);
 
-        if (b1 != source) {
-            b1.recycle();
+        if (b2 != b1) {
+            if (recycle || b1 != source) {
+                b1.recycle();
+            }
         }
 
         return b2;
     }
 
     /**
-     * Creates a centered bitmap of the desired size. Recycles the input.
+     * Creates a centered bitmap of the desired size.
      * @param source
+     * @param recycle whether we want to recycle the input
      */
-    public static Bitmap extractMiniThumb(
-            Bitmap source, int width, int height) {
-        return Util.extractMiniThumb(source, width, height, true);
-    }
-
     public static Bitmap extractMiniThumb(
             Bitmap source, int width, int height, boolean recycle) {
         if (source == null) {
@@ -240,11 +250,7 @@ public class Util {
         }
         Matrix matrix = new Matrix();
         matrix.setScale(scale, scale);
-        Bitmap miniThumbnail = transform(matrix, source, width, height, false);
-
-        if (recycle && miniThumbnail != source) {
-            source.recycle();
-        }
+        Bitmap miniThumbnail = transform(matrix, source, width, height, false, recycle);
         return miniThumbnail;
     }
 
@@ -257,7 +263,8 @@ public class Util {
 
         Bitmap miniThumbnail = extractMiniThumb(
                 source, IImage.MINI_THUMB_TARGET_SIZE,
-                IImage.MINI_THUMB_TARGET_SIZE);
+                IImage.MINI_THUMB_TARGET_SIZE,
+                Util.RECYCLE_INPUT);
 
         ByteArrayOutputStream miniOutStream = new ByteArrayOutputStream();
         miniThumbnail.compress(Bitmap.CompressFormat.JPEG, 75, miniOutStream);
