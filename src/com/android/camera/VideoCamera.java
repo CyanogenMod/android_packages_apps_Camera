@@ -253,8 +253,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     R.layout.camera_control, rootView);
             mLastPictureButton =
                     (ImageView) controlBar.findViewById(R.id.review_thumbnail);
-            mThumbController = new ThumbnailController(mLastPictureButton,
-                    mContentResolver);
+            mThumbController = new ThumbnailController(
+                    getResources(), mLastPictureButton, mContentResolver);
             mLastPictureButton.setOnClickListener(this);
             mThumbController.loadData(ImageManager.getLastVideoThumbPath());
             mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
@@ -1357,6 +1357,8 @@ class DefaultHashMap<K, V> extends HashMap<K, V> {
 // values for various parameters for MediaRecorder.
 //
 class MediaRecorderProfile {
+
+    @SuppressWarnings("unused")
     private static final String TAG = "MediaRecorderProfile";
     public final boolean mHiQuality;
     public final int mOutputFormat;

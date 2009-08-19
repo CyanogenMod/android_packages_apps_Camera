@@ -18,9 +18,6 @@ package com.android.camera;
 
 import static com.android.camera.Util.Assert;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -32,7 +29,6 @@ import android.media.AudioManager;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -40,6 +36,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.Scroller;
+
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
 
 import java.util.HashMap;
 

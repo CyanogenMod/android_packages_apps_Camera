@@ -16,11 +16,11 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.Util;
-
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.net.Uri;
+
+import com.android.camera.Util;
 
 import java.io.IOException;
 import java.io.InputStream;

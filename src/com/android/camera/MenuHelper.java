@@ -16,8 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -25,7 +23,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
-import android.location.Address;
 import android.location.Geocoder;
 import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
@@ -47,8 +44,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.camera.gallery.IImage;
+
 import java.io.Closeable;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
