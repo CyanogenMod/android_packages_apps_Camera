@@ -147,7 +147,7 @@ public class ImageList extends BaseImageList implements IImageList {
         String dataPath = cursor.getString(INDEX_DATA_PATH);
         long dateTaken = cursor.getLong(INDEX_DATE_TAKEN);
         if (dateTaken == 0) {
-            dateTaken = cursor.getLong(INDEX_DATE_MODIFIED);
+            dateTaken = cursor.getLong(INDEX_DATE_MODIFIED) * 1000;
         }
         long miniThumbMagic = cursor.getLong(INDEX_MINI_THUMB_MAGIC);
         int orientation = cursor.getInt(INDEX_ORIENTATION);
