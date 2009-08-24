@@ -307,8 +307,11 @@ public class CropImage extends MonitoredActivity {
             finish();
         } else {
             final Bitmap b = croppedImage;
+            final int msdId = mSetWallpaper
+                    ? R.string.wallpaper
+                    : R.string.savingImage;
             Util.startBackgroundJob(this, null,
-                    getResources().getString(R.string.savingImage),
+                    getResources().getString(msdId),
                     new Runnable() {
                 public void run() {
                     saveOutput(b);
