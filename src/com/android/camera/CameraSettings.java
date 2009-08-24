@@ -49,7 +49,6 @@ public class CameraSettings extends PreferenceActivity implements
     private ListPreference mPictureSize;
     private ListPreference mJpegQuality;
     private ListPreference mFocusMode;
-    private ListPreference mFlashMode;
     private Parameters mParameters;
 
     @Override
@@ -69,7 +68,6 @@ public class CameraSettings extends PreferenceActivity implements
         updatePictureSizeSummary();
         updateJpegQualitySummary();
         updateFocusModeSummary();
-        updateFlashModeSummary();
     }
 
     private void initUI() {
@@ -78,7 +76,6 @@ public class CameraSettings extends PreferenceActivity implements
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
         mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
-        mFlashMode = (ListPreference) findPreference(KEY_FLASH_MODE);
         getPreferenceScreen().getSharedPreferences().
                 registerOnSharedPreferenceChangeListener(this);
 
@@ -101,9 +98,6 @@ public class CameraSettings extends PreferenceActivity implements
             mFocusMode.setValue(getString(
                 R.string.pref_camera_focusmode_default));
         }
-
-        // Create flash mode settings.
-        createSettings(mFlashMode, Camera.SUPPORTED_FLASH_MODE);
     }
 
     private boolean removePreference(PreferenceGroup group, Preference remove) {
@@ -181,10 +175,6 @@ public class CameraSettings extends PreferenceActivity implements
         mFocusMode.setSummary(mFocusMode.getEntry());
     }
 
-    private void updateFlashModeSummary() {
-        mFlashMode.setSummary(mFlashMode.getEntry());
-    }
-
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals(KEY_VIDEO_QUALITY)) {
@@ -197,8 +187,6 @@ public class CameraSettings extends PreferenceActivity implements
             updateJpegQualitySummary();
         } else if (key.equals(KEY_FOCUS_MODE)) {
             updateFocusModeSummary();
-        } else if (key.equals(KEY_FLASH_MODE)) {
-            updateFlashModeSummary();
         }
     }
 }

@@ -84,18 +84,4 @@
         <item>@string/pref_camera_focusmode_value_infinity</item>
     </string-array>
 
-    <!-- Camera Preferences flash mode dialog box entries -->
-    <string-array name="pref_camera_flashmode_entries">
-        <item>@string/pref_camera_flashmode_entry_auto</item>
-        <item>@string/pref_camera_flashmode_entry_on</item>
-        <item>@string/pref_camera_flashmode_entry_off</item>
-    </string-array>
-
-    <!-- Do not localize entryvalues -->
-    <string-array name="pref_camera_flashmode_entryvalues">
-        <item>@string/pref_camera_flashmode_value_auto</item>
-        <item>@string/pref_camera_flashmode_value_on</item>
-        <item>@string/pref_camera_flashmode_value_off</item>
-    </string-array>
-
 </resources>
