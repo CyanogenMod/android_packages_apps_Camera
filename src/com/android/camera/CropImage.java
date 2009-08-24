@@ -20,6 +20,7 @@ import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
+import android.app.WallpaperManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -61,6 +62,7 @@ public class CropImage extends MonitoredActivity {
     private Bitmap.CompressFormat mOutputFormat =
             Bitmap.CompressFormat.JPEG; // only used with mSaveUri
     private Uri mSaveUri = null;
+    private boolean mSetWallpaper = false;
     private int mAspectX, mAspectY;
     private boolean mDoFaceDetection = true;
     private boolean mCircleCrop = false;
@@ -114,6 +116,8 @@ public class CropImage extends MonitoredActivity {
                     mOutputFormat = Bitmap.CompressFormat.valueOf(
                             outputFormatString);
                 }
+            } else {
+                mSetWallpaper = extras.getBoolean("setWallpaper");
             }
             mBitmap = (Bitmap) extras.getParcelable("data");
             mAspectX = extras.getInt("aspectX");
@@ -330,6 +334,14 @@ public class CropImage extends MonitoredActivity {
             Bundle extras = new Bundle();
             setResult(RESULT_OK, new Intent(mSaveUri.toString())
                     .putExtras(extras));
+        } else if (mSetWallpaper) {
+            try {
+                WallpaperManager.getInstance(this).setBitmap(croppedImage);
+                setResult(RESULT_OK);
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to set wallpaper.", e);
+                setResult(RESULT_CANCELED);
+            }
         } else {
             Bundle extras = new Bundle();
             extras.putString("rect", mCrop.getCropRect().toString());
