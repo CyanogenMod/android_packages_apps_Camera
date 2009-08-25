@@ -449,15 +449,25 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             videoQualityHigh = (extraVideoQuality > 0);
         }
 
-        // Set video duration limit.
-        if (intent.hasExtra(MediaStore.EXTRA_SIZE_LIMIT)) {
-            // No duration limit if file size limit is requested.
-            mMaxVideoDurationInMs = 0;
+        // Set video duration limit. The limit is read from the preference,
+        // unless it is specified in the intent.
+        if (intent.hasExtra(MediaStore.EXTRA_DURATION_LIMIT)) {
+            int seconds = intent.getIntExtra(MediaStore.EXTRA_DURATION_LIMIT, 0);
+            mMaxVideoDurationInMs = 1000 * seconds;
         } else {
-            // 1 minute = 60000ms
-            mMaxVideoDurationInMs =
-                    60000 * getIntPreference(CameraSettings.KEY_VIDEO_DURATION,
+            int minutes = getIntPreference(CameraSettings.KEY_VIDEO_DURATION,
                             CameraSettings.DEFAULT_VIDEO_DURATION_VALUE);
+            if (minutes == 1) {
+                // This is a special case: the value 1 means we want to use the
+                // device-dependent duration for MMS messages. The value is
+                // represented in seconds.
+                int seconds = SystemProperties.getInt(
+                        "ro.media.enc.lprof.duration", 60);
+                mMaxVideoDurationInMs = 1000 * seconds;
+            } else {
+                // 1 minute = 60000ms
+                mMaxVideoDurationInMs = 60000 * minutes;
+            }
         }
 
         mProfile = new MediaRecorderProfile(videoQualityHigh);
