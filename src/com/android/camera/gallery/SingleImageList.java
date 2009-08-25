@@ -36,23 +36,13 @@ public class SingleImageList extends BaseImageList {
 
     private IImage mSingleImage;
 
-    public SingleImageList(Uri uri) {
-        super(uri, ImageManager.SORT_ASCENDING, null);
-    }
-
-    @Override
-    public void open(ContentResolver resolver) {
-        mContentResolver = resolver;
+    public SingleImageList(ContentResolver resolver, Uri uri) {
+        super(resolver, uri, ImageManager.SORT_ASCENDING, null);
         mSingleImage = new UriImage(this, resolver, mBaseUri);
     }
 
     public HashMap<String, String> getBucketIds() {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void deactivate() {
-        // nothing to do here
     }
 
     @Override

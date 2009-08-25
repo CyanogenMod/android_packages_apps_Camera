@@ -133,8 +133,8 @@ public class CropImage extends MonitoredActivity {
 
         if (mBitmap == null) {
             Uri target = intent.getData();
-            mAllImages = ImageManager.makeImageList(target,
-                    mContentResolver, ImageManager.SORT_ASCENDING);
+            mAllImages = ImageManager.makeImageList(mContentResolver, target,
+                    ImageManager.SORT_ASCENDING);
             mImage = mAllImages.getImageForUri(target);
             if (mImage != null) {
                 // Don't read in really large bitmaps. Use the (big) thumbnail
@@ -419,7 +419,7 @@ public class CropImage extends MonitoredActivity {
     @Override
     protected void onDestroy() {
         if (mAllImages != null) {
-            mAllImages.deactivate();
+            mAllImages.close();
         }
         super.onDestroy();
     }

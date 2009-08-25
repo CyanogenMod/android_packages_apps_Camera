@@ -52,10 +52,12 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
     public void setUp() {
         mContext = getContext();
         mBitmapManager = BitmapManager.instance();
-        mImageList = ImageManager.allImages(mContext.getContentResolver(),
-                                            ImageManager.DataLocation.ALL,
-                                            ImageManager.INCLUDE_IMAGES,
-                                            ImageManager.SORT_DESCENDING);
+        mImageList = ImageManager.makeImageList(
+                mContext.getContentResolver(),
+                ImageManager.DataLocation.ALL,
+                ImageManager.INCLUDE_IMAGES,
+                ImageManager.SORT_DESCENDING,
+                null);
         mImage = mImageList.getImageAt(0);
     }
 

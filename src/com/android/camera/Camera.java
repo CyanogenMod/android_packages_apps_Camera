@@ -1301,7 +1301,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void updateLastImage() {
-        IImageList list = ImageManager.allImages(
+        IImageList list = ImageManager.makeImageList(
             mContentResolver,
             dataLocation(),
             ImageManager.INCLUDE_IMAGES,
@@ -1315,7 +1315,7 @@ public class Camera extends Activity implements View.OnClickListener,
         } else {
             mThumbController.setData(null, null);
         }
-        list.deactivate();
+        list.close();
     }
 
     private void restartPreview() {

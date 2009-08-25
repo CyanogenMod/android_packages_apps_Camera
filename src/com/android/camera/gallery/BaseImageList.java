@@ -27,7 +27,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Parcel;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Thumbnails;
@@ -59,27 +58,11 @@ public abstract class BaseImageList implements IImageList {
     protected Uri mThumbUri;
     protected boolean mCursorDeactivated = false;
 
-    public BaseImageList(Uri uri, int sort, String bucketId) {
+    public BaseImageList(ContentResolver resolver, Uri uri, int sort, String bucketId) {
         mSort = sort;
         mBaseUri = uri;
         mBucketId = bucketId;
         mMiniThumbFile = new MiniThumbFile(uri);
-    }
-
-    protected BaseImageList(Parcel in) {
-        mSort = in.readInt();
-        mBaseUri = (Uri) in.readParcelable(null);
-        mBucketId = in.readString();
-        mMiniThumbFile = new MiniThumbFile(mBaseUri);
-    }
-
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(mSort);
-        out.writeParcelable(mBaseUri, flags);
-        out.writeString(mBucketId);
-    }
-
-    public void open(ContentResolver resolver) {
         mContentResolver = resolver;
         mCursor = createCursor();
 
@@ -105,17 +88,19 @@ public abstract class BaseImageList implements IImageList {
         mCache.clear();
     }
 
-    // TODO: merge close() and deactivate()
     public void close() {
+        try {
+            invalidateCursor();
+        } catch (IllegalStateException e) {
+            // IllegalStateException may be thrown if the cursor is stale.
+            Log.e(TAG, "Caught exception while deactivating cursor.", e);
+        }
+        mMiniThumbFile.deactivate();
         mContentResolver = null;
         if (mCursor != null) {
             mCursor.close();
             mCursor = null;
         }
-    }
-
-    public int describeContents() {
-        return 0;
     }
 
     /**
@@ -346,16 +331,6 @@ public abstract class BaseImageList implements IImageList {
             // otherwise tack on the id
             return ContentUris.withAppendedId(mBaseUri, id);
         }
-    }
-
-    public void deactivate() {
-        try {
-            invalidateCursor();
-        } catch (IllegalStateException e) {
-            // IllegalStateException may be thrown if the cursor is stale.
-            Log.e(TAG, "Caught exception while deactivating cursor.", e);
-        }
-        mMiniThumbFile.deactivate();
     }
 
     public int getCount() {

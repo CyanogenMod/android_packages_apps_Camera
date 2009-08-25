@@ -88,6 +88,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     public static final String KEY_IMAGE_LIST = "image_list";
     private static final String STATE_SHOW_CONTROLS = "show_controls";
 
+    ImageManager.ImageListParam mParam;
     IImageList mAllImages;
 
     private final ImageViewTouchBase [] mSlideShowImageViews =
@@ -465,17 +466,13 @@ public class ReviewImage extends Activity implements View.OnClickListener {
             v.setRecycler(mCache);
         }
 
-        Uri uri = getIntent().getData();
-        IImageList imageList = getIntent().getParcelableExtra(KEY_IMAGE_LIST);
+        mParam = getIntent().getParcelableExtra(KEY_IMAGE_LIST);
 
         if (instanceState != null) {
-            uri = instanceState.getParcelable(STATE_URI);
+            mSavedUri = instanceState.getParcelable(STATE_URI);
             mShowControls = instanceState.getBoolean(STATE_SHOW_CONTROLS, true);
-        }
-
-        if (!init(uri, imageList)) {
-            finish();
-            return;
+        } else {
+            mSavedUri = getIntent().getData();
         }
 
         int[] pickIds = {R.id.attach, R.id.cancel};
@@ -520,18 +517,15 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     }
 
     private IImageList buildImageListFromUri(Uri uri) {
-        String sortOrder = mPrefs.getString(
-                "pref_gallery_sort_key", "descending");
         int sort = ImageManager.SORT_ASCENDING;
-        return ImageManager.makeImageList(uri, getContentResolver(), sort);
+        return ImageManager.makeImageList(getContentResolver(), uri, sort);
     }
 
-    private boolean init(Uri uri, IImageList imageList) {
+    private boolean init(Uri uri) {
         if (uri == null) return false;
-        mAllImages = (imageList == null)
+        mAllImages = (mParam == null)
                 ? buildImageListFromUri(uri)
-                : imageList;
-        mAllImages.open(getContentResolver());
+                : ImageManager.makeImageList(getContentResolver(), mParam);
         IImage image = mAllImages.getImageForUri(uri);
         if (image == null) return false;
         mCurrentPosition = mAllImages.getImageIndex(image);
@@ -557,7 +551,10 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         super.onStart();
         mPaused = false;
 
-        init(mSavedUri, mAllImages);
+        if (!init(mSavedUri)) {
+            finish();
+            return;
+        }
 
         // normally this will never be zero but if one "backs" into this
         // activity after removing the sdcard it could be zero.  in that
@@ -591,9 +588,12 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         // removing all callback in the message queue
         mHandler.removeAllGetterCallbacks();
 
-        mSavedUri = getCurrentUri();
+        if (mAllImages != null) {
+            mSavedUri = getCurrentUri();
+            mAllImages.close();
+            mAllImages = null;
+        }
 
-        mAllImages.deactivate();
         hideOnScreenControls();
         mImageView.clear();
         mCache.clear();

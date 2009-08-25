@@ -114,9 +114,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     IImageList mAllImages;
 
-    // this is used to store the state of the image list. Right now, it is the
-    // image list itself.
-    private IImageList mAllImagesState;
+    private ImageManager.ImageListParam mParam;
 
     private int mSlideShowImageCurrent = 0;
     private final ImageViewTouchBase [] mSlideShowImageViews =
@@ -555,26 +553,23 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         mActionIconPanel = findViewById(R.id.action_icon_panel);
 
-        Uri uri = getIntent().getData();
-        IImageList imageList = getIntent().getParcelableExtra(KEY_IMAGE_LIST);
-        boolean slideshow = intent.getBooleanExtra(EXTRA_SLIDESHOW, false);
+        mParam = getIntent().getParcelableExtra(KEY_IMAGE_LIST);
 
+        boolean slideshow;
         if (instanceState != null) {
-            uri = instanceState.getParcelable(STATE_URI);
+            mSavedUri = instanceState.getParcelable(STATE_URI);
             slideshow = instanceState.getBoolean(STATE_SLIDESHOW, false);
             mShowControls = instanceState.getBoolean(STATE_SHOW_CONTROLS, true);
-        }
-
-        if (!init(uri, imageList)) {
-            finish();
-            return;
+        } else {
+            mSavedUri = getIntent().getData();
+            slideshow = intent.getBooleanExtra(EXTRA_SLIDESHOW, false);
         }
 
         // We only show action icons for URIs that we know we can share and
         // delete. Although we get read permission (for the images) from
         // applications like MMS, we cannot pass the permission to other
         // activities due to the current framework design.
-        if (!MenuHelper.isWhiteListUri(uri)) {
+        if (!MenuHelper.isWhiteListUri(mSavedUri)) {
             mShowActionIcons = false;
         }
 
@@ -590,7 +585,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         }
 
         // Don't show the "delete" icon for SingleImageList.
-        if (ImageManager.isSingleImageMode(uri.toString())) {
+        if (ImageManager.isSingleImageMode(mSavedUri.toString())) {
             mActionIconPanel.findViewById(R.id.discard).setVisibility(View.GONE);
         }
 
@@ -849,16 +844,14 @@ public class ViewImage extends Activity implements View.OnClickListener {
         int sort = sortOrder.equals("ascending")
                 ? ImageManager.SORT_ASCENDING
                 : ImageManager.SORT_DESCENDING;
-        return ImageManager.makeImageList(uri, getContentResolver(), sort);
+        return ImageManager.makeImageList(getContentResolver(), uri, sort);
     }
 
-    private boolean init(Uri uri, IImageList imageList) {
+    private boolean init(Uri uri) {
         if (uri == null) return false;
-        mAllImagesState = (imageList == null)
+        mAllImages = (mParam == null)
                 ? buildImageListFromUri(uri)
-                : imageList;
-        mAllImages = mAllImagesState;
-        mAllImages.open(getContentResolver());
+                : ImageManager.makeImageList(getContentResolver(), mParam);
         IImage image = mAllImages.getImageForUri(uri);
         if (image == null) return false;
         mCurrentPosition = mAllImages.getImageIndex(image);
@@ -885,7 +878,10 @@ public class ViewImage extends Activity implements View.OnClickListener {
         super.onStart();
         mPaused = false;
 
-        init(mSavedUri, mAllImagesState);
+        if (!init(mSavedUri)) {
+            finish();
+            return;
+        }
 
         // normally this will never be zero but if one "backs" into this
         // activity after removing the sdcard it could be zero.  in that
@@ -923,11 +919,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
         // removing all callback in the message queue
         mHandler.removeAllGetterCallbacks();
 
-        mSavedUri = getCurrentUri();
-
-        mAllImages.deactivate();
-        mAllImages.close();
-        mAllImages = null;
+        if (mAllImages != null) {
+            mSavedUri = getCurrentUri();
+            mAllImages.close();
+            mAllImages = null;
+        }
 
         hideOnScreenControls();
         mImageView.clear();
