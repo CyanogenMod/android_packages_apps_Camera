@@ -16,7 +16,6 @@
 
 package com.android.camera.gallery;
 
-import android.content.ContentResolver;
 import android.net.Uri;
 
 import java.io.IOException;

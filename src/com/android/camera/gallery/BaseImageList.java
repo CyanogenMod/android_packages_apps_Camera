@@ -58,7 +58,8 @@ public abstract class BaseImageList implements IImageList {
     protected Uri mThumbUri;
     protected boolean mCursorDeactivated = false;
 
-    public BaseImageList(ContentResolver resolver, Uri uri, int sort, String bucketId) {
+    public BaseImageList(ContentResolver resolver, Uri uri, int sort,
+            String bucketId) {
         mSort = sort;
         mBaseUri = uri;
         mBucketId = bucketId;

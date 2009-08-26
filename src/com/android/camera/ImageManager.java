@@ -396,8 +396,8 @@ public class ImageManager {
             return makeImageList(cr, DataLocation.ALL, INCLUDE_DRM_IMAGES, sort,
                     null);
         } else if (uriString.startsWith("content://media/external/video")) {
-            return makeImageList(cr, DataLocation.EXTERNAL, INCLUDE_VIDEOS, sort,
-                    null);
+            return makeImageList(cr, DataLocation.EXTERNAL, INCLUDE_VIDEOS,
+                    sort, null);
         } else if (isSingleImageMode(uriString)) {
             return makeSingleImageList(cr, uri);
         } else {

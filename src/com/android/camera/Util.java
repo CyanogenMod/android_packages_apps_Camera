@@ -96,7 +96,7 @@ public class Util {
                 maxNumOfPixels);
 
         int roundedSize;
-        if (initialSize <= 8 ) {
+        if (initialSize <= 8) {
             roundedSize = 1;
             while (roundedSize < initialSize) {
                 roundedSize <<= 1;
@@ -135,8 +135,8 @@ public class Util {
     }
 
     // Whether we should recycle the input (unless the output is the input).
-    public static boolean RECYCLE_INPUT = true;
-    public static boolean NO_RECYCLE_INPUT = false;
+    public static final boolean RECYCLE_INPUT = true;
+    public static final boolean NO_RECYCLE_INPUT = false;
 
     public static Bitmap transform(Matrix scaler,
                                    Bitmap source,
@@ -250,7 +250,8 @@ public class Util {
         }
         Matrix matrix = new Matrix();
         matrix.setScale(scale, scale);
-        Bitmap miniThumbnail = transform(matrix, source, width, height, false, recycle);
+        Bitmap miniThumbnail = transform(matrix, source, width, height,
+                false, recycle);
         return miniThumbnail;
     }
 

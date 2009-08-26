@@ -361,8 +361,8 @@ class GridViewSpecial extends View {
             if (index >= 0 && index < mCount) {
                 // Play click sound.
                 if (mAudioManager == null) {
-                    mAudioManager = (AudioManager)
-                            getContext().getSystemService(Context.AUDIO_SERVICE);
+                    mAudioManager = (AudioManager) getContext()
+                            .getSystemService(Context.AUDIO_SERVICE);
                 }
                 mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
 
@@ -391,10 +391,10 @@ class GridViewSpecial extends View {
         // A selection box will be shown for the image that being selected,
         // (by finger or by the dpad center key). The selection box can be drawn
         // in two colors. One color (yellow) is used when the the image is
-        // still being tapped or clicked (the finger is still on the touch screen
-        // or the dpad center key is not released). Another color (orange) is
-        // used after the finger leaves touch screen or the dpad center
-        // key is released.
+        // still being tapped or clicked (the finger is still on the touch
+        // screen or the dpad center key is not released). Another color
+        // (orange) is used after the finger leaves touch screen or the dpad
+        // center key is released.
 
         if (mCurrentSelection == index) {
             return;
