@@ -16,12 +16,9 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.ImageManager;
-
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
 
 import java.util.HashMap;

@@ -718,10 +718,10 @@ class ImageViewTouch2 extends ImageViewTouchBase {
         center(true, true);
     }
 
-    static final float PAN_RATE = 20;
+    private static final float PAN_RATE = 20;
 
     // This is the time we allow the dpad to change the image position again.
-    static long nextChangePositionTime;
+    private long mNextChangePositionTime;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -750,9 +750,9 @@ class ImageViewTouch2 extends ImageViewTouchBase {
                 }
                 case KeyEvent.KEYCODE_DPAD_LEFT: {
                     if (getScale() <= 1F && event.getEventTime()
-                            >= nextChangePositionTime) {
+                            >= mNextChangePositionTime) {
                         nextImagePos = current - 1;
-                        nextChangePositionTime = event.getEventTime() + 500;
+                        mNextChangePositionTime = event.getEventTime() + 500;
                     } else {
                         panBy(PAN_RATE, 0);
                         center(true, false);
@@ -761,9 +761,9 @@ class ImageViewTouch2 extends ImageViewTouchBase {
                 }
                 case KeyEvent.KEYCODE_DPAD_RIGHT: {
                     if (getScale() <= 1F && event.getEventTime()
-                            >= nextChangePositionTime) {
+                            >= mNextChangePositionTime) {
                         nextImagePos = current + 1;
-                        nextChangePositionTime = event.getEventTime() + 500;
+                        mNextChangePositionTime = event.getEventTime() + 500;
                     } else {
                         panBy(-PAN_RATE, 0);
                         center(true, false);

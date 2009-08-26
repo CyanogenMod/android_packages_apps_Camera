@@ -106,7 +106,7 @@ public class CameraSettings extends PreferenceActivity implements
         for (int i = 0; i < group.getPreferenceCount(); i++) {
             final Preference child = group.getPreference(i);
             if (child instanceof PreferenceGroup) {
-                if (removePreference((PreferenceGroup)child, remove)) {
+                if (removePreference((PreferenceGroup) child, remove)) {
                     return true;
                 }
             }

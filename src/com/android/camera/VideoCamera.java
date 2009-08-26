@@ -103,12 +103,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     public static final int MENU_SAVE_SELECT_VIDEO = 36;
     public static final int MENU_SAVE_NEW_VIDEO = 37;
 
-    SharedPreferences mPreferences;
+    private SharedPreferences mPreferences;
 
     private static final float VIDEO_ASPECT_RATIO = 176.0f / 144.0f;
-    VideoPreview mVideoPreview;
-    SurfaceHolder mSurfaceHolder = null;
-    ImageView mVideoFrame;
+    private VideoPreview mVideoPreview;
+    private SurfaceHolder mSurfaceHolder = null;
+    private ImageView mVideoFrame;
 
     private boolean mIsVideoCaptureIntent;
     // mLastPictureButton and mThumbController
@@ -148,7 +148,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private Switcher mSwitcher;
     private boolean mRecordingTimeCountsDown = false;
 
-    ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
+    private ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private final Handler mHandler = new MainHandler();
 
@@ -452,7 +452,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // Set video duration limit. The limit is read from the preference,
         // unless it is specified in the intent.
         if (intent.hasExtra(MediaStore.EXTRA_DURATION_LIMIT)) {
-            int seconds = intent.getIntExtra(MediaStore.EXTRA_DURATION_LIMIT, 0);
+            int seconds =
+                    intent.getIntExtra(MediaStore.EXTRA_DURATION_LIMIT, 0);
             mMaxVideoDurationInMs = 1000 * seconds;
         } else {
             int minutes = getIntPreference(CameraSettings.KEY_VIDEO_DURATION,
@@ -1462,7 +1463,8 @@ class MediaRecorderProfile {
         AUDIO_ENCODER_TABLE.put("amrwb", MediaRecorder.AudioEncoder.AMR_WB);
         AUDIO_ENCODER_TABLE.put("aac", MediaRecorder.AudioEncoder.AAC);
         AUDIO_ENCODER_TABLE.put("aacplus", MediaRecorder.AudioEncoder.AAC_PLUS);
-        AUDIO_ENCODER_TABLE.put("eaacplus", MediaRecorder.AudioEncoder.EAAC_PLUS);
+        AUDIO_ENCODER_TABLE.put("eaacplus",
+                MediaRecorder.AudioEncoder.EAAC_PLUS);
         AUDIO_ENCODER_TABLE.putDefault(MediaRecorder.AudioEncoder.DEFAULT);
     }
 }

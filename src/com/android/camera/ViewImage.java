@@ -586,7 +586,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         // Don't show the "delete" icon for SingleImageList.
         if (ImageManager.isSingleImageMode(mSavedUri.toString())) {
-            mActionIconPanel.findViewById(R.id.discard).setVisibility(View.GONE);
+            mActionIconPanel.findViewById(R.id.discard)
+                    .setVisibility(View.GONE);
         }
 
         if (slideshow) {
@@ -1053,10 +1054,10 @@ class ImageViewTouch extends ImageViewTouchBase {
         center(true, true);
     }
 
-    static final float PAN_RATE = 20;
+    private static final float PAN_RATE = 20;
 
     // This is the time we allow the dpad to change the image position again.
-    static long nextChangePositionTime;
+    private long mNextChangePositionTime;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1085,9 +1086,9 @@ class ImageViewTouch extends ImageViewTouchBase {
                 }
                 case KeyEvent.KEYCODE_DPAD_LEFT: {
                     if (getScale() <= 1F && event.getEventTime()
-                            >= nextChangePositionTime) {
+                            >= mNextChangePositionTime) {
                         nextImagePos = current - 1;
-                        nextChangePositionTime = event.getEventTime() + 500;
+                        mNextChangePositionTime = event.getEventTime() + 500;
                     } else {
                         panBy(PAN_RATE, 0);
                         center(true, false);
@@ -1096,9 +1097,9 @@ class ImageViewTouch extends ImageViewTouchBase {
                 }
                 case KeyEvent.KEYCODE_DPAD_RIGHT: {
                     if (getScale() <= 1F && event.getEventTime()
-                            >= nextChangePositionTime) {
+                            >= mNextChangePositionTime) {
                         nextImagePos = current + 1;
-                        nextChangePositionTime = event.getEventTime() + 500;
+                        mNextChangePositionTime = event.getEventTime() + 500;
                     } else {
                         panBy(-PAN_RATE, 0);
                         center(true, false);

@@ -243,7 +243,7 @@ public class Camera extends Activity implements View.OnClickListener,
     // Snapshots can only be taken after this is called. It should be called
     // once only. We could have done these things in onCreate() but we want to
     // make preview screen appear as soon as possible.
-    void initializeFirstTime() {
+    private void initializeFirstTime() {
         if (mFirstTimeInitialized) return;
 
         // Create orientation listenter. This should be done first because it
@@ -329,7 +329,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     // If the activity is paused and resumed, this method will be called in
     // onResume.
-    void initializeSecondTime() {
+    private void initializeSecondTime() {
         // Start orientation listener as soon as possible because it takes
         // some time to get first orientation.
         mOrientationListener.enable();
@@ -349,7 +349,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    LocationListener [] mLocationListeners = new LocationListener[] {
+    private final LocationListener [] mLocationListeners = new LocationListener[] {
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
@@ -968,7 +968,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    void installIntentFilter() {
+    private void installIntentFilter() {
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter =
                 new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
@@ -981,7 +981,7 @@ public class Camera extends Activity implements View.OnClickListener,
         mDidRegister = true;
     }
 
-    void initializeFocusTone() {
+    private void initializeFocusTone() {
         // Initialize focus tone generator.
         try {
             mFocusToneGenerator = new ToneGenerator(
@@ -992,7 +992,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    void readPreference() {
+    private void readPreference() {
         mRecordLocation = mPreferences.getBoolean(
                 "pref_camera_recordlocation_key", false);
         mFocusMode = mPreferences.getString(
@@ -1435,7 +1435,7 @@ public class Camera extends Activity implements View.OnClickListener,
         mCameraDevice.setParameters(mParameters);
     }
 
-    void gotoGallery() {
+    private void gotoGallery() {
         MenuHelper.gotoCameraImageGallery(this);
     }
 

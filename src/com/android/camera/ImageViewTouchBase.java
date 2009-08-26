@@ -55,7 +55,7 @@ abstract class ImageViewTouchBase extends ImageView {
     private final float[] mMatrixValues = new float[9];
 
     // The current bitmap being displayed.
-    final protected RotateBitmap mBitmapDisplayed = new RotateBitmap(null);
+    protected final RotateBitmap mBitmapDisplayed = new RotateBitmap(null);
 
     int mThisWidth = -1, mThisHeight = -1;
 

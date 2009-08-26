@@ -16,8 +16,6 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.ImageManager;
-
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -76,7 +74,8 @@ public class VideoList extends BaseImageList {
                 miniThumbMagic, mimeType, dateTaken, title, displayName);
     }
 
-    public VideoList(ContentResolver resolver, Uri uri, int sort, String bucketId) {
+    public VideoList(ContentResolver resolver, Uri uri, int sort,
+            String bucketId) {
         super(resolver, uri, sort, bucketId);
     }
 
