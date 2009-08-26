@@ -330,8 +330,8 @@
     <!-- Default video quality setting. A numerical value. Do not translate. -->
     <string name="pref_camera_videoquality_default">1</string>
 
-    <!-- Settings screen, Select Video quality title -->
-    <string name="pref_camera_videoquality_title">Select video quality</string>
+    <!-- Settings screen, Video quality title -->
+    <string name="pref_camera_videoquality_title">Video quality</string>
 
     <!-- Settings screen, Video quality dialog radio button choices -->
     <string name="pref_camera_videoquality_entry_0">Low (for MMS messages)</string>
@@ -343,8 +343,8 @@
     <!-- Default video duration setting. A numerical value. Do not translate. -->
     <string name="pref_camera_video_duration_default">1</string>
 
-    <!-- Settings screen, Select Video duration title -->
-    <string name="pref_camera_video_duration_title">Select video duration</string>
+    <!-- Settings screen, Video duration title -->
+    <string name="pref_camera_video_duration_title">Video duration</string>
 
     <!-- Settings screen, Video duration dialog radio button choices -->
     <string name="pref_camera_video_duration_entry_1">1 minute (for sharing)</string>
@@ -360,8 +360,8 @@
     <!-- Default picture size setting. Do not translate. -->
     <string name="pref_camera_picturesize_default">2048x1536</string>
 
-    <!-- Settings screen, Select Picture size title -->
-    <string name="pref_camera_picturesize_title">Select picture size</string>
+    <!-- Settings screen, Picture size title -->
+    <string name="pref_camera_picturesize_title">Picture size</string>
 
     <!-- Settings screen, Picture size dialog radio button choices -->
     <string name="pref_camera_picturesize_entry_2592x1936">5M (2592x1936)</string>
@@ -375,8 +375,8 @@
     <!-- Default picture quality setting. Do not translate. -->
     <string name="pref_camera_jpegquality_default">85</string>
 
-    <!-- Settings screen, Select Picture quality title -->
-    <string name="pref_camera_jpegquality_title">Select picture quality</string>
+    <!-- Settings screen, Picture quality title -->
+    <string name="pref_camera_jpegquality_title">Picture quality</string>
 
     <!-- Settings screen, Picture quality dialog radio button choices -->
     <string name="pref_camera_jpegquality_entry_superfine">Super fine</string>
@@ -389,8 +389,8 @@
     <!-- Default focus mode setting. Do not translate. -->
     <string name="pref_camera_focusmode_default">auto</string>
 
-    <!-- Settings screen, Select Focus mode title -->
-    <string name="pref_camera_focusmode_title">Select focus mode</string>
+    <!-- Settings screen, Focus mode title -->
+    <string name="pref_camera_focusmode_title">Focus mode</string>
 
     <!-- Settings screen, Focue mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_auto">Auto</string>
