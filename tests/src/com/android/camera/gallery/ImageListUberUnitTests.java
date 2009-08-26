@@ -14,7 +14,6 @@ public class ImageListUberUnitTests extends AndroidTestCase {
         listB.addImage(new MockImage(1, 1));
         ImageListUber uber = new ImageListUber(
                 new IImageList[] {listA, listB}, ImageManager.SORT_DESCENDING);
-        uber.open(getContext().getContentResolver());
 
         assertEquals(2, uber.getImageAt(0).fullSizeImageId());
         assertEquals(1, uber.getImageAt(1).fullSizeImageId());
@@ -23,7 +22,6 @@ public class ImageListUberUnitTests extends AndroidTestCase {
 
         uber = new ImageListUber(
                 new IImageList[] {listA, listB}, ImageManager.SORT_DESCENDING);
-        uber.open(getContext().getContentResolver());
         assertEquals(2, uber.getImageAt(0).fullSizeImageId());
         assertEquals(1, uber.getImageAt(1).fullSizeImageId());
         assertEquals(0, uber.getImageAt(2).fullSizeImageId());
@@ -39,7 +37,6 @@ public class ImageListUberUnitTests extends AndroidTestCase {
         ImageListUber uber = new ImageListUber(
                 new IImageList[] {listB, listA}, ImageManager.SORT_DESCENDING);
 
-        uber.open(getContext().getContentResolver());
         assertEquals(2, uber.getImageAt(0).fullSizeImageId());
         assertEquals(1, uber.getImageAt(1).fullSizeImageId());
         assertEquals(0, uber.getImageAt(2).fullSizeImageId());
@@ -48,7 +45,6 @@ public class ImageListUberUnitTests extends AndroidTestCase {
         uber = new ImageListUber(
                 new IImageList[] {listA, listB}, ImageManager.SORT_DESCENDING);
 
-        uber.open(getContext().getContentResolver());
         assertEquals(2, uber.getImageAt(0).fullSizeImageId());
         assertEquals(1, uber.getImageAt(1).fullSizeImageId());
         assertEquals(0, uber.getImageAt(2).fullSizeImageId());
@@ -64,7 +60,6 @@ public class ImageListUberUnitTests extends AndroidTestCase {
         listB.addImage(target);
         ImageListUber uber = new ImageListUber(
                 new IImageList[] {listB, listA}, ImageManager.SORT_DESCENDING);
-        uber.open(getContext().getContentResolver());
         uber.removeImage(target);
         assertEquals(2, uber.getImageAt(0).fullSizeImageId());
         assertEquals(0, uber.getImageAt(1).fullSizeImageId());
@@ -83,7 +78,6 @@ public class ImageListUberUnitTests extends AndroidTestCase {
         listB.addImage(target);
         ImageListUber uber = new ImageListUber(
                 new IImageList[] {listB, listA}, ImageManager.SORT_DESCENDING);
-        uber.open(getContext().getContentResolver());
         uber.removeImageAt(1);
         assertEquals(2, uber.getImageAt(0).fullSizeImageId());
         assertEquals(0, uber.getImageAt(1).fullSizeImageId());

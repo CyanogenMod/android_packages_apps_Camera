@@ -18,8 +18,6 @@ package com.android.camera.gallery;
 
 import android.content.ContentResolver;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.android.camera.ImageManager;
 import com.android.camera.Util;
@@ -60,38 +58,17 @@ public class ImageListUber implements IImageList {
                 sort == ImageManager.SORT_ASCENDING
                 ? new AscendingComparator()
                 : new DescendingComparator());
-    }
-
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeParcelableArray(mSubList, flags);
-        out.writeInt(mQueue.comparator() instanceof AscendingComparator
-                ? ImageManager.SORT_ASCENDING
-                : ImageManager.SORT_DESCENDING);
-    }
-
-    protected ImageListUber(Parcel in) {
-        Parcelable array[] =
-                in.readParcelableArray(ImageListUber.class.getClassLoader());
-        mSubList = new IImageList[array.length];
-        System.arraycopy(array, 0, mSubList, 0, array.length);
-        int sort = in.readInt();
+        mSkipList = new long[16];
+        mSkipListSize = 0;
         mSkipCounts = new int[mSubList.length];
-        mQueue = new PriorityQueue<MergeSlot>(4,
-                sort == ImageManager.SORT_ASCENDING
-                ? new AscendingComparator()
-                : new DescendingComparator());
+        mLastListIndex = -1;
+        mQueue.clear();
+        for (int i = 0, n = mSubList.length; i < n; ++i) {
+            IImageList list = mSubList[i];
+            MergeSlot slot = new MergeSlot(list, i);
+            if (slot.next()) mQueue.add(slot);
+        }
     }
-
-    public static final Creator<ImageListUber> CREATOR =
-            new Creator<ImageListUber>() {
-        public ImageListUber createFromParcel(Parcel in) {
-            return new ImageListUber(in);
-        }
-
-        public ImageListUber[] newArray(int size) {
-            return new ImageListUber[size];
-        }
-    };
 
     public HashMap<String, String> getBucketIds() {
         HashMap<String, String> hashMap = new HashMap<String, String>();
@@ -112,12 +89,6 @@ public class ImageListUber implements IImageList {
                 return;
             }
             index -= count;
-        }
-    }
-
-    public void deactivate() {
-        for (IImageList subList : mSubList) {
-            subList.deactivate();
         }
     }
 
@@ -333,32 +304,9 @@ public class ImageListUber implements IImageList {
         }
     }
 
-    public int describeContents() {
-        return 0;
-    }
-
-    public void open(ContentResolver cr) {
-        mSkipList = new long[16];
-        mSkipListSize = 0;
-        mSkipCounts = new int[mSubList.length];
-        mLastListIndex = -1;
-        mQueue.clear();
-        for (int i = 0, n = mSubList.length; i < n; ++i) {
-            IImageList list = mSubList[i];
-            if (list instanceof BaseImageList) {
-                ((BaseImageList) list).open(cr);
-            }
-            MergeSlot slot = new MergeSlot(list, i);
-            if (slot.next()) mQueue.add(slot);
-        }
-    }
-
     public void close() {
         for (int i = 0, n = mSubList.length; i < n; ++i) {
-            IImageList list = mSubList[i];
-            if (list instanceof BaseImageList) {
-                ((BaseImageList) list).close();
-            }
+            mSubList[i].close();
         }
     }
 }

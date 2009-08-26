@@ -425,22 +425,23 @@ public class GalleryPicker extends Activity {
     private void checkBucketIds(ArrayList<Item> allItems) {
         final IImageList allImages;
         if (!mScanning && !mUnmounted) {
-            allImages = ImageManager.allImages(
+            allImages = ImageManager.makeImageList(
                     getContentResolver(),
                     ImageManager.DataLocation.ALL,
                     ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS,
-                    ImageManager.SORT_DESCENDING);
+                    ImageManager.SORT_DESCENDING,
+                    null);
         } else {
-            allImages = ImageManager.emptyImageList();
+            allImages = ImageManager.makeEmptyImageList();
         }
 
         if (mAbort) {
-            allImages.deactivate();
+            allImages.close();
             return;
         }
 
         HashMap<String, String> hashMap = allImages.getBucketIds();
-        allImages.deactivate();
+        allImages.close();
         if (mAbort) return;
 
         for (Map.Entry<String, String> entry : hashMap.entrySet()) {
@@ -748,14 +749,14 @@ public class GalleryPicker extends Activity {
     }
 
     // image lists created by createImageList() are collected in mAllLists.
-    // They will be deactivated in clearImageList, so they don't hold open files
+    // They will be closed in clearImageList, so they don't hold open files
     // on SD card. We will be killed if we don't close files when the SD card
     // is unmounted.
     ArrayList<IImageList> mAllLists = new ArrayList<IImageList>();
 
     private IImageList createImageList(int mediaTypes, String bucketId,
             ContentResolver cr) {
-        IImageList list = ImageManager.allImages(
+        IImageList list = ImageManager.makeImageList(
                 cr,
                 ImageManager.DataLocation.ALL,
                 mediaTypes,
@@ -767,7 +768,7 @@ public class GalleryPicker extends Activity {
 
     private void clearImageLists() {
         for (IImageList list : mAllLists) {
-            list.deactivate();
+            list.close();
         }
         mAllLists.clear();
     }

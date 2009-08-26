@@ -1257,8 +1257,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void updateLastVideo() {
-        IImageList list =
-                ImageManager.allImages(mContentResolver, dataLocation(),
+        IImageList list = ImageManager.makeImageList(
+                        mContentResolver,
+                        dataLocation(),
                         ImageManager.INCLUDE_VIDEOS,
                         ImageManager.SORT_ASCENDING,
                         ImageManager.CAMERA_IMAGE_BUCKET_ID);
@@ -1270,7 +1271,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         } else {
             mThumbController.setData(null, null);
         }
-        list.deactivate();
+        list.close();
     }
 
     private void updateRecordingTime() {

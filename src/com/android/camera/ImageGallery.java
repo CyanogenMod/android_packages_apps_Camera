@@ -71,6 +71,7 @@ public class ImageGallery extends Activity implements
 
     private static final String TAG = "ImageGallery";
     private static final float INVALID_POSITION = -1f;
+    private ImageManager.ImageListParam mParam;
     private IImageList mAllImages;
     private int mInclusion;
     boolean mSortAscending = false;
@@ -369,8 +370,8 @@ public class ImageGallery extends Activity implements
         }
 
         // Now that we've paused the threads that are using the cursor it is
-        // safe to deactivate it.
-        mAllImages.deactivate();
+        // safe to close it.
+        mAllImages.close();
         mAllImages = null;
     }
 
@@ -378,7 +379,7 @@ public class ImageGallery extends Activity implements
         stopCheckingThumbnails();
         mGvs.stop();
         if (mAllImages != null) {
-            mAllImages.deactivate();
+            mAllImages.close();
             mAllImages = null;
         }
 
@@ -396,7 +397,8 @@ public class ImageGallery extends Activity implements
                     true);
         }
 
-        mAllImages = allImages(!unmounted && !scanning);
+        mParam = allImages(!unmounted && !scanning);
+        mAllImages = ImageManager.makeImageList(getContentResolver(), mParam);
 
         mGvs.setImageList(mAllImages);
         mGvs.setDrawAdapter(this);
@@ -608,15 +610,14 @@ public class ImageGallery extends Activity implements
         }
     }
 
-    // Returns the image list which contains the subset of image/video we want.
-    private IImageList allImages(boolean storageAvailable) {
-        Uri uri = getIntent().getData();
-        IImageList imageList;
+    // Returns the image list parameter which contains the subset of image/video
+    // we want.
+    private ImageManager.ImageListParam allImages(boolean storageAvailable) {
         if (!storageAvailable) {
-            imageList = ImageManager.emptyImageList();
+            return ImageManager.getEmptyImageListParam();
         } else {
-            imageList = ImageManager.allImages(
-                    getContentResolver(),
+            Uri uri = getIntent().getData();
+            return ImageManager.getImageListParam(
                     ImageManager.DataLocation.EXTERNAL,
                     mInclusion,
                     mSortAscending
@@ -626,7 +627,6 @@ public class ImageGallery extends Activity implements
                     ? uri.getQueryParameter("bucketId")
                     : null);
         }
-        return imageList;
     }
 
     private void toggleMultiSelected(IImage image) {
@@ -664,7 +664,7 @@ public class ImageGallery extends Activity implements
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             } else {
                 intent = new Intent(this, ViewImage.class);
-                intent.putExtra(ViewImage.KEY_IMAGE_LIST, mAllImages);
+                intent.putExtra(ViewImage.KEY_IMAGE_LIST, mParam);
                 intent.setData(image.fullSizeImageUri());
             }
             startActivity(intent);

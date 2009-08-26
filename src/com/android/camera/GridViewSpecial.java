@@ -113,7 +113,7 @@ class GridViewSpecial extends View {
     private ImageLoader mLoader;
     private Listener mListener = null;
     private DrawAdapter mDrawAdapter = null;
-    private IImageList mAllImages = ImageManager.emptyImageList();
+    private IImageList mAllImages = ImageManager.makeEmptyImageList();
     private int mSizeChoice = 1;  // default is big cell size
 
     // These are set in onLayout().

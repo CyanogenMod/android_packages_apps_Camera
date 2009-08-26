@@ -18,7 +18,6 @@ package com.android.camera.gallery;
 
 import android.content.ContentResolver;
 import android.net.Uri;
-import android.os.Parcelable;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,10 +45,8 @@ import java.util.HashMap;
 /**
  * The interface of all image collections used in gallery.
  */
-public interface IImageList extends Parcelable {
+public interface IImageList {
     public HashMap<String, String> getBucketIds();
-
-    public void deactivate();
 
     /**
      * Returns the count of image objects.
@@ -99,11 +96,6 @@ public interface IImageList extends Parcelable {
      * @param index     the position of the image
      */
     public void checkThumbnail(int index) throws IOException;
-
-    /**
-     * Opens this list for operation.
-     */
-    public void open(ContentResolver resolver);
 
     /**
      * Closes this list to release resources, no further operation is allowed.
