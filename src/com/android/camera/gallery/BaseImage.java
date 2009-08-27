@@ -304,10 +304,6 @@ public abstract class BaseImage implements IImage {
     protected void onRemove() {
     }
 
-    protected void saveMiniThumb(Bitmap source) throws IOException {
-        mContainer.saveMiniThumbToFile(source, fullSizeImageId(), 0);
-    }
-
     public void setTitle(String name) {
         if (mTitle.equals(name)) return;
         mTitle = name;

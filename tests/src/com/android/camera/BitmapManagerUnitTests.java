@@ -139,32 +139,6 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
         }
     }
 
-    public void testThreadSetDecoding() {
-        DecodeThread t1 = new DecodeThread();
-        DecodeThread t2 = new DecodeThread();
-        DecodeThread t3 = new DecodeThread();
-        BitmapManager.ThreadSet set = new BitmapManager.ThreadSet();
-        set.add(t1);
-        set.add(t2);
-        mBitmapManager.cancelThreadDecoding(set);
-        t1.start();
-        t2.start();
-        t3.start();
-        try {
-            t1.join();
-            t2.join();
-            t3.join();
-        } catch (InterruptedException ex) {
-        } finally {
-            assertFalse(mBitmapManager.canThreadDecoding(t1));
-            assertNull(t1.getBitmap());
-            assertFalse(mBitmapManager.canThreadDecoding(t2));
-            assertNull(t2.getBitmap());
-            assertTrue(mBitmapManager.canThreadDecoding(t3));
-            assertNotNull(t3.getBitmap());
-        }
-    }
-
     @Override
     public String toString() {
         return "BitmapManagerUnitTest";

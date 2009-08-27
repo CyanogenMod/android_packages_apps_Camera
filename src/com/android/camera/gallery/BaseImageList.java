@@ -373,11 +373,6 @@ public abstract class BaseImageList implements IImageList {
         return mMiniThumbFile.getMiniThumbFromFile(id, data, magicCheck);
     }
 
-    void saveMiniThumbToFile(Bitmap bitmap, long id, long magic)
-            throws IOException {
-        mMiniThumbFile.saveMiniThumbToFile(bitmap, id, magic);
-    }
-
     void saveMiniThumbToFile(byte[] data, long id, long magic)
             throws IOException {
         mMiniThumbFile.saveMiniThumbToFile(data, id, magic);
