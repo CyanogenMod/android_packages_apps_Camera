@@ -49,7 +49,6 @@ import java.io.IOException;
  *    public void setData(Uri uri, Bitmap original)
  *    public void updateDisplayIfNeeded()
  *    public Uri getUri()
- *    public Bitmap getThumb()
  *    public boolean storeData(String filePath)
  *    public boolean loadData(String filePath)
  * </pre>
@@ -91,10 +90,6 @@ public class ThumbnailController {
 
     public Uri getUri() {
         return mUri;
-    }
-
-    public Bitmap getThumb() {
-        return mThumb;
     }
 
     private static final int BUFSIZE = 4096;

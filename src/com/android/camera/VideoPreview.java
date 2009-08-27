@@ -46,10 +46,6 @@ class VideoPreview extends SurfaceView {
         super(context, attrs, defStyle);
     }
 
-    public void setAspectRatio(int width, int height) {
-        setAspectRatio(((float) width) / ((float) height));
-    }
-
     public void setAspectRatio(float aspectRatio) {
         if (mAspectRatio != aspectRatio) {
             mAspectRatio = aspectRatio;

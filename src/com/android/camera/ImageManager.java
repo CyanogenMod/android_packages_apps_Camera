@@ -189,9 +189,11 @@ public class ImageManager {
     /**
      * @return true if the mimetype is a video mimetype.
      */
+    /* This is commented out because isVideo is not calling this now.
     public static boolean isVideoMimeType(String mimeType) {
         return mimeType.startsWith("video/");
     }
+    */
 
     /**
      * @return true if the image is an image.
@@ -451,13 +453,6 @@ public class ImageManager {
 
         public int getImageIndex(IImage image) {
             throw new UnsupportedOperationException();
-        }
-
-        public int describeContents() {
-            return 0;
-        }
-
-        public void writeToParcel(Parcel dest, int flags) {
         }
     }
 

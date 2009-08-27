@@ -134,12 +134,6 @@ class MiniThumbFile {
         return 0;
     }
 
-    public void saveMiniThumbToFile(Bitmap bitmap, long id, long magic)
-            throws IOException {
-        byte[] data = Util.miniThumbData(bitmap);
-        saveMiniThumbToFile(data, id, magic);
-    }
-
     public void saveMiniThumbToFile(byte[] data, long id, long magic)
             throws IOException {
         RandomAccessFile r = miniThumbDataFile();

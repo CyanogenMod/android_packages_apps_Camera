@@ -81,8 +81,6 @@ public class CropImage extends MonitoredActivity {
     private ContentResolver mContentResolver;
 
     private Bitmap mBitmap;
-    private final BitmapManager.ThreadSet mDecodingThreads =
-            new BitmapManager.ThreadSet();
     HighlightView mCrop;
 
     private IImageList mAllImages;
@@ -413,7 +411,6 @@ public class CropImage extends MonitoredActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        BitmapManager.instance().cancelThreadDecoding(mDecodingThreads);
     }
 
     @Override
