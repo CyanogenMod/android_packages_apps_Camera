@@ -474,17 +474,17 @@
     <string name="details_format">Format:</string>
 
     <!-- Used to format image dimensions in Details dialog. e.g. 64 x 64 -->
-    <string name="details_dimension_x">%1$d x %2$d</string>
+    <string name="details_dimension_x"><xliff:g id="width" example="640">%1$d</xliff:g> x <xliff:g id="height" example="480">%2$d</xliff:g></string>
     <!-- Used to format short video duration in Details dialog. minutes:seconds e.g. 00:30 -->
-    <string name="details_ms">%1$02d:%2$02d</string>
+    <string name="details_ms"><xliff:g id="minutes">%1$02d</xliff:g>:<xliff:g id="seconds">%2$02d</xliff:g></string>
     <!-- Used to format video duration in Details dialog. hours:minutes:seconds e.g. 0:21:30 -->
-    <string name="details_hms">%1$d:%2$02d:%3$02d</string>
+    <string name="details_hms"><xliff:g id="hours">%1$d</xliff:g>:<xliff:g id="minutes">%2$02d</xliff:g>:<xliff:g id="seconds">%3$02d</xliff:g></string>
     <!-- Unit of measure in the Details dialog frames per second. e.g. 20 fps -->
-    <string name="details_fps">%1$d fps</string>
+        <string name="details_fps"><xliff:g id="frames" example="30">%1$d</xliff:g> fps</string>
     <!-- Unit of measure in the Details dialog K bits per second. e.g. 192 Kbps -->
-    <string name="details_kbps">%1$d Kbps</string>
+    <string name="details_kbps"><xliff:g id="speed" example="192">%1$d</xliff:g> Kbps</string>
     <!-- Unit of measure in the Details dialog M bits per second. e.g. 2.3 Mbps -->
-    <string name="details_mbps">%1$g Mbps</string>
+    <string name="details_mbps"><xliff:g id="speed" example="2.3">%1$g</xliff:g> Mbps</string>
     <!-- Details dialog "OK" button. Dismisses dialog. -->
     <string name="details_ok">OK</string>
 
@@ -534,7 +534,7 @@
     <string name="resume_playing_title">Resume video</string>
 
     <!-- Movie View Start Playing dialog title -->
-    <string name="resume_playing_message">Resume playing from %s ?</string>
+    <string name="resume_playing_message">Resume playing from <xliff:g id="duration" example="5:30">%s</xliff:g> ?</string>
 
     <!-- Movie View Start Playing button "Resume from bookmark" -->
     <string name="resume_playing_resume">Resume playing</string>
