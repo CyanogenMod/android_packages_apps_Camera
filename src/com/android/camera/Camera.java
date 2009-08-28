@@ -1432,6 +1432,13 @@ public class Camera extends Activity implements View.OnClickListener,
                 getString(R.string.pref_camera_jpegquality_default));
         mParameters.set(PARM_JPEG_QUALITY, jpegQuality);
 
+        // Set flash mode.
+        if (mParameters.get(Camera.SUPPORTED_FLASH_MODE) != null) {
+            String flashMode = mPreferences.getString(
+                    CameraSettings.KEY_FLASH_MODE, "auto");
+            mParameters.set(PARM_FLASH_MODE, flashMode);
+        }
+
         mCameraDevice.setParameters(mParameters);
     }
 
@@ -1710,9 +1717,6 @@ class FlashButton extends ImageView implements View.OnClickListener {
 
     public void setListener(ModeChangeListener listener) {
         mListener = listener;
-        if (listener != null) {
-            mListener.onFlashModeChanged(MODE_STRINGS[mCurrentMode]);
-        }
     }
 
     public void onClick(View v) {
