@@ -30,7 +30,7 @@ import java.util.HashMap;
 //      - VideoList
 //      - ImageList
 //        - DrmImageList
-//      - SingleImageList (contains UriImage)
+//    - SingleImageList (contains UriImage)
 //    - ImageListUber
 //
 //    IImage
