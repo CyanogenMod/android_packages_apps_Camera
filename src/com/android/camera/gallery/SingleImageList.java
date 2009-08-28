@@ -70,9 +70,6 @@ public class SingleImageList implements IImageList {
         return uri.equals(mUri) ? mSingleImage : null;
     }
 
-    public void checkThumbnail(int index) {
-    }
-
     public void close() {
         mSingleImage = null;
         mUri = null;

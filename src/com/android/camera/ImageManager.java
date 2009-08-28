@@ -269,13 +269,12 @@ public class ImageManager {
             Image image = new Image(il, cr, id, 0, il.contentUri(id), null,
                     0, null, 0, null, null, 0);
             String[] projection = new String[] {
-                    ImageColumns._ID,
-                    ImageColumns.MINI_THUMB_MAGIC, ImageColumns.DATA};
+                    ImageColumns._ID, ImageColumns.DATA};
             Cursor c = cr.query(uri, projection, null, null, null);
             String filepath;
             try {
                 c.moveToPosition(0);
-                filepath = c.getString(2);
+                filepath = c.getString(1);
             } finally {
                 c.close();
             }
@@ -335,7 +334,6 @@ public class ImageManager {
     // This is the factory function to create an image list.
     public static IImageList makeImageList(ContentResolver cr,
             ImageListParam param) {
-
         DataLocation location = param.mLocation;
         int inclusion = param.mInclusion;
         int sort = param.mSort;
@@ -430,9 +428,6 @@ public class ImageManager {
 
     private static class EmptyImageList implements IImageList {
         public void close() {
-        }
-
-        public void checkThumbnail(int index) {
         }
 
         public HashMap<String, String> getBucketIds() {

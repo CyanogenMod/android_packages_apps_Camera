@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Size;
 import android.hardware.Camera.Parameters;
 import android.media.MediaRecorder;
+import android.media.ThumbnailUtil;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -1155,7 +1156,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         fadeOut(findViewById(R.id.shutter_button));
         if (mCurrentVideoFilename != null) {
             mVideoFrame.setImageBitmap(
-                    Util.createVideoThumbnail(mCurrentVideoFilename));
+                    ThumbnailUtil.createVideoThumbnail(mCurrentVideoFilename));
             mVideoFrame.setVisibility(View.VISIBLE);
         }
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
@@ -1267,7 +1268,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void acquireVideoThumb() {
-        Bitmap videoFrame = Util.createVideoThumbnail(mCurrentVideoFilename);
+        Bitmap videoFrame = ThumbnailUtil.createVideoThumbnail(mCurrentVideoFilename);
         mThumbController.setData(mCurrentVideoUri, videoFrame);
     }
 
