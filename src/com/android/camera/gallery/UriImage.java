@@ -180,12 +180,4 @@ class UriImage implements IImage {
     public boolean rotateImageBy(int degrees) {
         return false;
     }
-
-    public void setTitle(String name) {
-        throw new UnsupportedOperationException();
-    }
-
-    public Uri thumbUri() {
-        throw new UnsupportedOperationException();
-    }
 }

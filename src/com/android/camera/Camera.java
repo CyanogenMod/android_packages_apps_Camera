@@ -210,11 +210,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private final Handler mHandler = new MainHandler();
 
-    private interface Capturer {
-        Uri getLastCaptureUri();
-        void onSnap();
-    }
-
     /**
      * This Handler is used to post message back onto the main thread of the
      * application
@@ -541,7 +536,7 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    private class ImageCapture implements Capturer {
+    private class ImageCapture {
 
         private boolean mCancel = false;
 

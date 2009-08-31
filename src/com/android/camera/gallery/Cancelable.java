@@ -42,8 +42,6 @@ public interface Cancelable<T> {
      */
     public boolean requestCancel();
 
-    public void await() throws InterruptedException;
-
     /**
      * Gets the results of this <code>Cancelable</code> task.
      *
