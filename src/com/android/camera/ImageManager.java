@@ -327,11 +327,7 @@ public class ImageManager {
         Uri singleImageUri = param.mSingleImageUri;
         boolean isEmptyImageList = param.mIsEmptyImageList;
 
-        if (cr == null) {
-            return null;
-        }
-
-        if (isEmptyImageList) {
+        if (isEmptyImageList || cr == null) {
             return new EmptyImageList();
         }
 

@@ -67,20 +67,8 @@ public abstract class BaseImageList implements IImageList {
         mContentResolver = resolver;
         mCursor = createCursor();
 
-        // If the media provider is killed, we will fail to get the cursor.
-        // This is a workaround to wait a bit and retry in the hope that the
-        // new instance of media provider will be created soon enough.
         if (mCursor == null) {
-            for (int i = 0; i < 10; i++) {
-                Log.w(TAG, "createCursor failed, retry...");
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException ex) {
-                    // ignore.
-                }
-                mCursor = createCursor();
-                if (mCursor != null) break;
-            }
+            Log.w(TAG, "createCursor returns null.");
         }
 
         // TODO: We need to clear the cache because we may "reopen" the image
@@ -336,7 +324,8 @@ public abstract class BaseImageList implements IImageList {
 
     public int getCount() {
         Cursor cursor = getCursor();
-        synchronized (cursor) {
+        if (cursor == null) return 0;
+        synchronized (this) {
             return cursor.getCount();
         }
     }
@@ -346,7 +335,8 @@ public abstract class BaseImageList implements IImageList {
     }
 
     private Cursor getCursor() {
-        synchronized (mCursor) {
+        synchronized (this) {
+            if (mCursor == null) return null;
             if (mCursorDeactivated) {
                 mCursor.requery();
                 mCursorDeactivated = false;
@@ -359,7 +349,8 @@ public abstract class BaseImageList implements IImageList {
         BaseImage result = mCache.get(i);
         if (result == null) {
             Cursor cursor = getCursor();
-            synchronized (cursor) {
+            if (cursor == null) return null;
+            synchronized (this) {
                 result = cursor.moveToPosition(i)
                         ? loadImageFromCursor(cursor)
                         : null;
@@ -402,6 +393,7 @@ public abstract class BaseImageList implements IImageList {
     protected abstract long getImageId(Cursor cursor);
 
     protected void invalidateCursor() {
+        if (mCursor == null) return;
         mCursor.deactivate();
         mCursorDeactivated = true;
     }
@@ -442,7 +434,8 @@ public abstract class BaseImageList implements IImageList {
         }
         // TODO: design a better method to get URI of specified ID
         Cursor cursor = getCursor();
-        synchronized (cursor) {
+        if (cursor == null) return null;
+        synchronized (this) {
             cursor.moveToPosition(-1); // before first
             for (int i = 0; cursor.moveToNext(); ++i) {
                 if (getImageId(cursor) == matchId) {
