@@ -108,7 +108,16 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private android.hardware.Camera.Parameters mParameters;
 
+    private double mZoomValue = 1.0;  // The current zoom value.
+    public static final String ZOOM_STOP = "stop";
+    public static final String ZOOM_IMMEDIATE = "zoom-immediate";
+    public static final double ZOOM_STEP = 0.25;
+    public static final double ZOOM_MAX = 4.0;
+    public static final double ZOOM_MIN = 1.0;
+
     // The parameter strings to communicate with camera driver.
+    public static final String PARM_ZOOM_STATE = "zoom-state";
+    public static final String PARM_ZOOM_TO_LEVEL = "zoom-to-level";
     public static final String PARM_PICTURE_SIZE = "picture-size";
     public static final String PARM_JPEG_QUALITY = "jpeg-quality";
     public static final String PARM_ROTATION = "rotation";
@@ -309,9 +318,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         initializeFocusTone();
 
-        // Disable zoom until driver is ready.
-        // TODO: enable this.
-        //initializeZoom();
+        initializeZoom();
 
         mFirstTimeInitialized = true;
     }
@@ -346,7 +353,57 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    private final LocationListener [] mLocationListeners = new LocationListener[] {
+    private void initializeZoom() {
+        // Check if the phone has zoom capability.
+        String zoomState = mParameters.get(PARM_ZOOM_STATE);
+        if (zoomState == null) return;
+
+        mZoomButtons = new ZoomButtonsController(mSurfaceView);
+        mZoomButtons.setAutoDismissed(true);
+        mZoomButtons.setZoomSpeed(100);
+        mZoomButtons.setOnZoomListener(
+                new ZoomButtonsController.OnZoomListener() {
+            public void onVisibilityChanged(boolean visible) {
+                if (visible) {
+                    updateZoomButtonsEnabled();
+                }
+            }
+
+            public void onZoom(boolean zoomIn) {
+                if (zoomIn) {
+                    if (mZoomValue < ZOOM_MAX) {
+                        mZoomValue += ZOOM_STEP;
+                        zoomToLevel();
+                    }
+                } else {
+                    if (mZoomValue > ZOOM_MIN) {
+                        mZoomValue -= ZOOM_STEP;
+                        zoomToLevel();
+                    }
+                }
+                updateZoomButtonsEnabled();
+            }
+        });
+    }
+
+    private void zoomToLevel() {
+        // If the application sets a unchanged zoom value, the driver will stuck
+        // at the zoom state "zoom-immediate". This is a work-around to ensure
+        // the state is at "stop".
+        mParameters.set(PARM_ZOOM_STATE, ZOOM_STOP);
+        mCameraDevice.setParameters(mParameters);
+
+        mParameters.set(PARM_ZOOM_TO_LEVEL, Double.toString(mZoomValue));
+        mParameters.set(PARM_ZOOM_STATE, ZOOM_IMMEDIATE);
+        mCameraDevice.setParameters(mParameters);
+    }
+
+    private void updateZoomButtonsEnabled() {
+        mZoomButtons.setZoomInEnabled(mZoomValue < ZOOM_MAX);
+        mZoomButtons.setZoomOutEnabled(mZoomValue > ZOOM_MIN);
+    }
+
+    LocationListener [] mLocationListeners = new LocationListener[] {
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
@@ -1399,6 +1456,14 @@ public class Camera extends Activity implements View.OnClickListener,
             Log.w(TAG, "startPreview() to " + (wallTimeEnd - wallTimeStart)
                     + " ms. Thread time was"
                     + (threadTimeEnd - threadTimeStart) / 1000000 + " ms.");
+        }
+
+        // Currently the camera driver resets the zoom back to 1.0 after taking
+        // a picture. But setting zoom to original value from the application
+        // does not work now. Set the value to 1.0 in the app as a work-around.
+        if (mZoomButtons != null) {
+            mZoomValue = 1.0;
+            zoomToLevel();
         }
     }
 
