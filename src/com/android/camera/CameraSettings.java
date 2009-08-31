@@ -18,6 +18,7 @@ package com.android.camera;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Resources;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -80,7 +81,16 @@ public class CameraSettings extends PreferenceActivity implements
                 registerOnSharedPreferenceChangeListener(this);
 
         // Get parameters.
-        android.hardware.Camera device = CameraHolder.instance().open();
+        android.hardware.Camera device;
+        try {
+            device = CameraHolder.instance().open();
+        } catch (CameraHardwareException e) {
+            Resources ress = getResources();
+            Util.showFatalErrorAndFinish(this,
+                    ress.getString(R.string.camera_error_title),
+                    ress.getString(R.string.cannot_connect_camera));
+            return;
+        }
         mParameters = device.getParameters();
         CameraHolder.instance().release();
 

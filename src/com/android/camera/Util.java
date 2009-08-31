@@ -16,10 +16,11 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,6 +34,8 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import com.android.camera.gallery.IImage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -511,5 +514,22 @@ public class Util {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inNativeAlloc = true;
         return options;
+    }
+
+    public static void showFatalErrorAndFinish(
+            final Activity activity, String title, String message) {
+        DialogInterface.OnClickListener buttonListener =
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                activity.finish();
+            }
+        };
+        new AlertDialog.Builder(activity)
+                .setCancelable(false)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(title)
+                .setMessage(message)
+                .setNeutralButton(R.string.details_ok, buttonListener)
+                .show();
     }
 }

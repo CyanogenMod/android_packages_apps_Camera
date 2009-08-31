@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
@@ -115,6 +116,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     // are non-null only if mIsVideoCaptureIntent is true.
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
+    private boolean mStartPreviewFail = false;
 
     private int mStorageStatus = STORAGE_STATUS_OK;
 
@@ -181,7 +183,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
     }
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mReceiver = null;
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -202,10 +206,17 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 updateAndShowStorageHint(true);
             }
         }
-    };
+    }
 
     private static String createName(long dateTaken) {
         return DateFormat.format("yyyy-MM-dd kk.mm.ss", dateTaken).toString();
+    }
+
+    private void showCameraBusyAndFinish() {
+        Resources ress = getResources();
+        Util.showFatalErrorAndFinish(VideoCamera.this,
+                ress.getString(R.string.camera_error_title),
+                ress.getString(R.string.cannot_connect_camera));
     }
 
     /** Called with the activity is first created. */
@@ -222,7 +233,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
          */
         Thread startPreviewThread = new Thread(new Runnable() {
             public void run() {
-                startPreview();
+                try {
+                    mStartPreviewFail = false;
+                    startPreview();
+                } catch (CameraHardwareException e) {
+                    mStartPreviewFail = true;
+                }
             }
         });
         startPreviewThread.start();
@@ -280,6 +296,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // Make sure preview is started.
         try {
             startPreviewThread.join();
+            if (mStartPreviewFail) showCameraBusyAndFinish();
         } catch (InterruptedException ex) {
             // ignore
         }
@@ -480,10 +497,14 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mPausing = false;
 
         readVideoSizePreference();
-        if (!mPreviewing) {
-            startPreview();
+        if (!mPreviewing && !mStartPreviewFail) {
+            try {
+                startPreview();
+            } catch (CameraHardwareException e) {
+                showCameraBusyAndFinish();
+                return;
+            }
         }
-
         setScreenTimeoutLong();
 
         // install an intent filter to receive SD card related events.
@@ -494,6 +515,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
         intentFilter.addDataScheme("file");
+        mReceiver = new MyBroadcastReceiver();
         registerReceiver(mReceiver, intentFilter);
         mStorageStatus = getStorageStatus(true);
 
@@ -525,7 +547,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
     }
 
-    private void startPreview() {
+    private void startPreview() throws CameraHardwareException {
         Log.v(TAG, "startPreview");
         if (mPreviewing) {
             // After recording a video, preview is not stopped. So just return.
@@ -597,7 +619,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
         closeCamera();
 
-        unregisterReceiver(mReceiver);
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+            mReceiver = null;
+        }
         setScreenTimeoutSystemDefault();
 
         if (!mIsVideoCaptureIntent) {
@@ -677,6 +702,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             // to portrait orientation possibly triggering the notification.
             return;
         }
+
+        // The mCameraDevice will be null if it is fail to connect to the 
+        // camera hardware. In this case we will show a dialog and then 
+        // finish the activity, so it's OK to ignore it.
+        if (mCameraDevice == null) return;
 
         if (mMediaRecorderRecording) {
             stopVideoRecording();
@@ -791,7 +821,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (mRecorderInitialized) return true;
 
         // We will call initializeRecorder() again when the alert is hidden.
-        if (isAlertVisible()) {
+        // If the mCameraDevice is null, then this activity is going to finish
+        if (isAlertVisible() || mCameraDevice == null) {
             return false;
         }
 

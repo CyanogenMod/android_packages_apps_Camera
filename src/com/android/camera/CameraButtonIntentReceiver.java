@@ -26,6 +26,16 @@ public class CameraButtonIntentReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        // Try to get the camera hardware
+        try {
+            CameraHolder holder = CameraHolder.instance();
+            android.hardware.Camera device = holder.open();
+            holder.keep();
+            holder.release();
+        } catch (CameraHardwareException e) {
+            // ignore the event if camera hardware cannot be connected
+            return;
+        }
         Intent i = new Intent(Intent.ACTION_MAIN);
         i.setClass(context, Camera.class);
         i.addCategory("android.intent.category.LAUNCHER");

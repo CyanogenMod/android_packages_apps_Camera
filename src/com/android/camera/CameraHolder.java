@@ -16,6 +16,8 @@
 
 package com.android.camera;
 
+import static com.android.camera.Util.Assert;
+
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -23,8 +25,6 @@ import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
-
-import static com.android.camera.Util.Assert;
 
 //
 // CameraHolder is used to hold an android.hardware.Camera instance.
@@ -41,7 +41,7 @@ public class CameraHolder {
     private static final String TAG = "CameraHolder";
     private android.hardware.Camera mCameraDevice;
     private long mKeepBeforeTime = 0;  // Keep the Camera before this time.
-    private Handler mHandler;
+    private final Handler mHandler;
     private int mUsers = 0;  // number of open() - number of release()
 
     // Use a singleton.
@@ -75,10 +75,16 @@ public class CameraHolder {
         mHandler = new MyHandler(ht.getLooper());
     }
 
-    public synchronized android.hardware.Camera open() {
+    public synchronized android.hardware.Camera open()
+            throws CameraHardwareException {
         Assert(mUsers == 0);
         if (mCameraDevice == null) {
-            mCameraDevice = android.hardware.Camera.open();
+            try {
+                mCameraDevice = android.hardware.Camera.open();
+            } catch (RuntimeException e) {
+                Log.e(TAG, "fail to connect Camera", e);
+                throw new CameraHardwareException();
+            }
         } else {
             try {
                 mCameraDevice.reconnect();
