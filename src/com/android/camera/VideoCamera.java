@@ -225,6 +225,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         super.onCreate(icicle);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        CameraSettings.upgradePreferences(mPreferences);
         readVideoSizePreference();
 
         /*
@@ -475,13 +476,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         } else {
             int minutes = getIntPreference(CameraSettings.KEY_VIDEO_DURATION,
                             CameraSettings.DEFAULT_VIDEO_DURATION_VALUE);
-            if (minutes == 1) {
-                // This is a special case: the value 1 means we want to use the
+            if (minutes == -1) {
+                // This is a special case: the value -1 means we want to use the
                 // device-dependent duration for MMS messages. The value is
                 // represented in seconds.
-                int seconds = SystemProperties.getInt(
-                        "ro.media.enc.lprof.duration", 60);
-                mMaxVideoDurationInMs = 1000 * seconds;
+                mMaxVideoDurationInMs = 1000 * CameraSettings.MMS_VIDEO_DURATION;
             } else {
                 // 1 minute = 60000ms
                 mMaxVideoDurationInMs = 60000 * minutes;
