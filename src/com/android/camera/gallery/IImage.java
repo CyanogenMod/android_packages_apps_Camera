@@ -38,8 +38,6 @@ public interface IImage {
     public abstract Bitmap fullSizeBitmap(int minSideLength,
             int maxNumberOfPixels);
     public abstract Bitmap fullSizeBitmap(int minSideLength,
-            int maxNumberOfPixels, boolean rotateAsNeeded);
-    public abstract Bitmap fullSizeBitmap(int minSideLength,
             int maxNumberOfPixels, boolean rotateAsNeeded, boolean useNative);
     public abstract int getDegreesRotated();
     public static final boolean ROTATE_AS_NEEDED = true;
@@ -55,8 +53,7 @@ public interface IImage {
     /** Get the path of the (full size) image data. */
     public abstract String getDataPath();
 
-    // Get/Set the title of the image
-    public abstract void setTitle(String name);
+    // Get the title of the image
     public abstract String getTitle();
 
     // Get metadata of the image
@@ -74,9 +71,8 @@ public interface IImage {
     public abstract boolean isReadonly();
     public abstract boolean isDrm();
 
-    // Get the bitmap/uri of the medium thumbnail
+    // Get the bitmap of the medium thumbnail
     public abstract Bitmap thumbBitmap(boolean rotateAsNeeded);
-    public abstract Uri thumbUri();
 
     // Get the bitmap of the mini thumbnail.
     public abstract Bitmap miniThumbBitmap();

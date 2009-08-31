@@ -164,12 +164,6 @@ public abstract class BaseImage implements IImage {
     }
 
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
-            boolean rotateAsNeeded) {
-        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
-                rotateAsNeeded, IImage.NO_NATIVE);
-    }
-
-    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
             boolean rotateAsNeeded, boolean useNative) {
         Uri url = mContainer.contentUri(mId);
         if (url == null) return null;
@@ -302,20 +296,6 @@ public abstract class BaseImage implements IImage {
     }
 
     protected void onRemove() {
-    }
-
-    public void setTitle(String name) {
-        if (mTitle.equals(name)) return;
-        mTitle = name;
-        ContentValues values = new ContentValues();
-        values.put(ImageColumns.TITLE, name);
-        mContentResolver.update(mUri, values, null, null);
-    }
-
-    public Uri thumbUri() {
-        // The value for the query parameter cannot be null :-(,
-        // so using a dummy "1"
-        return mUri.buildUpon().appendQueryParameter("thumb", "1").build();
     }
 
     @Override
