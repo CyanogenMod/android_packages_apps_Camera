@@ -121,7 +121,6 @@
     <string name="pref_camera_videoquality_entry_1">"高 (適用於 SD 卡)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"影片品質"</string>
     <string name="pref_camera_video_duration_title">"選取影片長度"</string>
-    <string name="pref_camera_video_duration_entry_1">"1 分鐘 (分享影片)"</string>
     <string name="pref_camera_video_duration_entry_10">"10 分鐘"</string>
     <string name="pref_camera_video_duration_entry_30">"30 分鐘"</string>
     <string name="pref_camera_video_duration_dialogtitle">"影片長度"</string>

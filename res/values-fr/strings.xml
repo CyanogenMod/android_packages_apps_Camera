@@ -121,7 +121,6 @@
     <string name="pref_camera_videoquality_entry_1">"Haute (carte SD)"</string>
     <string name="pref_camera_videoquality_dialogtitle">"Qualité vidéo"</string>
     <string name="pref_camera_video_duration_title">"Sélectionner la durée de vidéo"</string>
-    <string name="pref_camera_video_duration_entry_1">"1 minute (pour le partage)"</string>
     <string name="pref_camera_video_duration_entry_10">"10 minutes"</string>
     <string name="pref_camera_video_duration_entry_30">"30 minutes"</string>
     <string name="pref_camera_video_duration_dialogtitle">"Durée de la vidéo"</string>

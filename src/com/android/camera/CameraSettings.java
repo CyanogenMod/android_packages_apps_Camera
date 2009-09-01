@@ -21,10 +21,12 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -38,12 +40,18 @@ public class CameraSettings extends PreferenceActivity implements
             "pref_camera_videoquality_key";
     public static final String KEY_VIDEO_DURATION =
             "pref_camera_video_duration_key";
+    public static final String KEY_VERSION = "pref_version_key";
+    public static final int CURRENT_VERSION = 1;
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
-    public static final int DEFAULT_VIDEO_DURATION_VALUE = 1;  // 1 minute
+    public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;  // MMS video length
+
+    // max mms video duration in seconds.
+    public static final int MMS_VIDEO_DURATION =
+            SystemProperties.getInt("ro.media.enc.lprof.duration", 60);
 
     private ListPreference mVideoQuality;
     private ListPreference mVideoDuration;
@@ -77,8 +85,9 @@ public class CameraSettings extends PreferenceActivity implements
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
         mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
-        getPreferenceScreen().getSharedPreferences().
-                registerOnSharedPreferenceChangeListener(this);
+        SharedPreferences pref = getPreferenceScreen().getSharedPreferences();
+        upgradePreferences(pref);
+        pref.registerOnSharedPreferenceChangeListener(this);
 
         // Get parameters.
         android.hardware.Camera device;
@@ -96,6 +105,12 @@ public class CameraSettings extends PreferenceActivity implements
 
         // Create picture size settings.
         createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE);
+
+        // Modify video duration settings.
+        // The first entry is for MMS video duration, and we need to fill in the
+        // device-dependent value (in seconds).
+        CharSequence[] entries = mVideoDuration.getEntries();
+        entries[0] = String.format(entries[0].toString(), MMS_VIDEO_DURATION);
 
         // Set default JPEG quality value if it is empty.
         if (mJpegQuality.getValue() == null) {
@@ -197,6 +212,26 @@ public class CameraSettings extends PreferenceActivity implements
             updateJpegQualitySummary();
         } else if (key.equals(KEY_FOCUS_MODE)) {
             updateFocusModeSummary();
+        }
+    }
+
+    private static final String TAG = "CameraSettings";
+    public static void upgradePreferences(SharedPreferences pref) {
+        int version;
+        try {
+            version = pref.getInt(KEY_VERSION, 0);
+        } catch (Exception ex) {
+            version = 0;
+        }
+
+        if (version == 0) {
+            SharedPreferences.Editor editor = pref.edit();
+            // For old version, change 1 to -1 for video duration preference.
+            if (pref.getString(KEY_VIDEO_DURATION, "1").equals("1")) {
+                editor.putString(KEY_VIDEO_DURATION, "-1");
+            }
+            editor.putInt(KEY_VERSION, CURRENT_VERSION);
+            editor.commit();
         }
     }
 }
