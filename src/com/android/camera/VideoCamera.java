@@ -106,7 +106,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private SharedPreferences mPreferences;
 
-    private static final float VIDEO_ASPECT_RATIO = 176.0f / 144.0f;
     private VideoPreview mVideoPreview;
     private SurfaceHolder mSurfaceHolder = null;
     private ImageView mVideoFrame;
@@ -250,7 +249,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         setContentView(R.layout.video_camera);
 
         mVideoPreview = (VideoPreview) findViewById(R.id.camera_preview);
-        mVideoPreview.setAspectRatio(VIDEO_ASPECT_RATIO);
+        mVideoFrame = (ImageView) findViewById(R.id.video_frame);
+        // Resize mVideoPreview and mVideoFrame to the right aspect ratio.
+        resizeForPreviewAspectRatio(mVideoPreview);
+        resizeForPreviewAspectRatio(mVideoFrame);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
@@ -261,7 +263,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         mIsVideoCaptureIntent = isVideoCaptureIntent();
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
-        mVideoFrame = (ImageView) findViewById(R.id.video_frame);
 
         ViewGroup rootView = (ViewGroup) findViewById(R.id.video_camera);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -488,6 +489,15 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
 
         mProfile = new MediaRecorderProfile(videoQualityHigh);
+    }
+
+    private void resizeForPreviewAspectRatio(View v) {
+        ViewGroup.LayoutParams params;
+        params = v.getLayoutParams();
+        params.width = (int)
+                (params.height * mProfile.mVideoWidth / mProfile.mVideoHeight);
+        Log.v(TAG, "resize to " + params.width + "x" + params.height);
+        v.setLayoutParams(params);
     }
 
     @Override
