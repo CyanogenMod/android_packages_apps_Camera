@@ -585,4 +585,7 @@
     <!-- The messsage shown when video record reaches size limit. -->
     <string name="video_reach_size_limit">Size limit reached.</string>
 
+    <!-- The title of the menu item for users to go back to the main menu from the sub menu -->
+    <string name="on_screen_menu_back">Back</string>
+
 </resources>
