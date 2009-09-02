@@ -10,10 +10,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!-- Needed by the ZoomRingController to set the bit saying we've already shown the
-         tutorial toast. -->
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+
     <application android:icon="@drawable/ic_launcher_camera"
             android:label="@string/camera_label"
             android:taskAffinity="">
@@ -51,11 +48,6 @@
                 android:screenOrientation="landscape"
                 android:clearTaskOnLaunch="true"
                 android:taskAffinity="android.task.camcorder">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <intent-filter>
                 <action android:name="android.media.action.VIDEO_CAMERA" />
                 <category android:name="android.intent.category.DEFAULT" />
