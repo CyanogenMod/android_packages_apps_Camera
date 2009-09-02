@@ -16,10 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.VideoObject;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +41,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
+
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.VideoObject;
 
 import java.util.Random;
 
@@ -227,8 +227,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mPaused) return true;
-        if (mZoomButtonsController.isVisible()
-                && mZoomButtonsController.onTouch(null, m)) {
+        if (mZoomButtonsController.isVisible()) {
             scheduleDismissOnScreenControls();
         }
         if (!super.dispatchTouchEvent(m)) {
