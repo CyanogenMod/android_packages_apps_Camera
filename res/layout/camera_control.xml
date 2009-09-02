@@ -51,7 +51,7 @@
                 android:layout_marginBottom="3dp"
                 android:src="@drawable/btn_ic_mode_switch_camera"/>
     </LinearLayout>
-    
+
     <com.android.camera.ShutterButton android:id="@+id/shutter_button"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
