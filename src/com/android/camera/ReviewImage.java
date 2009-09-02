@@ -16,10 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.VideoObject;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +40,10 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Toast;
 import android.widget.ZoomButtonsController;
+
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.VideoObject;
 
 // This activity can display a whole picture and navigate them in a specific
 // gallery. It has two modes: normal mode and slide show mode. In normal mode
@@ -190,8 +190,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        if (mZoomButtonsController.isVisible()
-                && mZoomButtonsController.onTouch(null, m)) {
+        if (mZoomButtonsController.isVisible()) {
             scheduleDismissOnScreenControls();
         }
 
