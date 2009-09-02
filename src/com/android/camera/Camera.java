@@ -28,7 +28,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.Size;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
@@ -71,6 +73,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -106,8 +109,6 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final int MENU_SAVE_CAMERA_DONE = 36;
     public static final int MENU_SAVE_CAMERA_VIDEO_DONE = 37;
 
-    private android.hardware.Camera.Parameters mParameters;
-
     private double mZoomValue = 1.0;  // The current zoom value.
     public static final String ZOOM_STOP = "stop";
     public static final String ZOOM_IMMEDIATE = "zoom-immediate";
@@ -118,17 +119,8 @@ public class Camera extends Activity implements View.OnClickListener,
     // The parameter strings to communicate with camera driver.
     public static final String PARM_ZOOM_STATE = "zoom-state";
     public static final String PARM_ZOOM_TO_LEVEL = "zoom-to-level";
-    public static final String PARM_PICTURE_SIZE = "picture-size";
-    public static final String PARM_JPEG_QUALITY = "jpeg-quality";
-    public static final String PARM_ROTATION = "rotation";
-    public static final String PARM_GPS_LATITUDE = "gps-latitude";
-    public static final String PARM_GPS_LONGITUDE = "gps-longitude";
-    public static final String PARM_GPS_ALTITUDE = "gps-altitude";
-    public static final String PARM_GPS_TIMESTAMP = "gps-timestamp";
-    public static final String PARM_FLASH_MODE = "flash-mode";
-    public static final String SUPPORTED_ZOOM = "zoom-values";
-    public static final String SUPPORTED_PICTURE_SIZE = "picture-size-values";
-    public static final String SUPPORTED_FLASH_MODE = "flash-mode-values";
+
+    private Parameters mParameters;
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -299,7 +291,7 @@ public class Camera extends Activity implements View.OnClickListener,
         updateFocusIndicator();
 
         // Initialize flash button
-        if (mParameters.get(Camera.SUPPORTED_FLASH_MODE) != null) {
+        if (mParameters.getSupportedFlashModes() != null) {
             mFlashButton = (FlashButton) findViewById(R.id.flash_button);
             String flashMode = mPreferences.getString(
                     CameraSettings.KEY_FLASH_MODE, "auto");
@@ -675,6 +667,7 @@ public class Camera extends Activity implements View.OnClickListener,
         private void capture() {
             mCaptureOnlyBitmap = null;
 
+            // Set rotation.
             int orientation = mLastOrientation;
             if (orientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
                 orientation += 90;
@@ -682,41 +675,34 @@ public class Camera extends Activity implements View.OnClickListener,
             orientation = ImageManager.roundOrientation(orientation);
             Log.v(TAG, "mLastOrientation = " + mLastOrientation
                     + ", orientation = " + orientation);
+            mParameters.setRotation(orientation);
 
-            mParameters.set(PARM_ROTATION, orientation);
+            // Clear previous GPS location from the parameters.
+            mParameters.removeGpsData();
 
+            // Set GPS location.
             Location loc = mRecordLocation ? getCurrentLocation() : null;
-
-            mParameters.remove(PARM_GPS_LATITUDE);
-            mParameters.remove(PARM_GPS_LONGITUDE);
-            mParameters.remove(PARM_GPS_ALTITUDE);
-            mParameters.remove(PARM_GPS_TIMESTAMP);
-
             if (loc != null) {
                 double lat = loc.getLatitude();
                 double lon = loc.getLongitude();
                 boolean hasLatLon = (lat != 0.0d) || (lon != 0.0d);
 
                 if (hasLatLon) {
-                    String latString = String.valueOf(lat);
-                    String lonString = String.valueOf(lon);
-                    mParameters.set(PARM_GPS_LATITUDE,  latString);
-                    mParameters.set(PARM_GPS_LONGITUDE, lonString);
+                    mParameters.setGpsLatitude(lat);
+                    mParameters.setGpsLongitude(lon);
                     if (loc.hasAltitude()) {
-                        mParameters.set(PARM_GPS_ALTITUDE,
-                                        String.valueOf(loc.getAltitude()));
+                        mParameters.setGpsAltitude(loc.getAltitude());
                     } else {
                         // for NETWORK_PROVIDER location provider, we may have
                         // no altitude information, but the driver needs it, so
                         // we fake one.
-                        mParameters.set(PARM_GPS_ALTITUDE,  "0");
+                        mParameters.setGpsAltitude(0);
                     }
                     if (loc.getTime() != 0) {
                         // Location.getTime() is UTC in milliseconds.
                         // gps-timestamp is UTC in seconds.
                         long utcTimeSeconds = loc.getTime() / 1000;
-                        mParameters.set(PARM_GPS_TIMESTAMP,
-                                        String.valueOf(utcTimeSeconds));
+                        mParameters.setGpsTimestamp(utcTimeSeconds);
                     }
                 } else {
                     loc = null;
@@ -1477,26 +1463,6 @@ public class Camera extends Activity implements View.OnClickListener,
         clearFocusState();
     }
 
-    private ArrayList<String> getParameterArrayList(String supportedParamKey) {
-        String supportedParamStr = mParameters.get(supportedParamKey);
-        if (supportedParamStr == null) return null;
-
-        StringTokenizer tokenizer = new StringTokenizer(supportedParamStr, ",");
-        ArrayList<String> supportedParam = new ArrayList<String>();
-        while (tokenizer.hasMoreElements()) {
-            supportedParam.add(tokenizer.nextToken());
-        }
-        return supportedParam;
-    }
-
-    private boolean parameterExists(String supportedParamKey,
-                                    String paramValue) {
-        ArrayList<String> parameters = getParameterArrayList(supportedParamKey);
-        if (parameters == null) return false;
-
-        return (parameters.indexOf(paramValue) != -1);
-    }
-
     private void setCameraParameter() {
         mParameters = mCameraDevice.getParameters();
 
@@ -1504,12 +1470,18 @@ public class Camera extends Activity implements View.OnClickListener,
         mParameters.setPreviewSize(mViewFinderWidth, mViewFinderHeight);
 
         // Set picture size.
-        if (mParameters.get(Camera.SUPPORTED_PICTURE_SIZE) != null) {
-            String pictureSize = mPreferences.getString(
+        List<Size> pictureSizes = mParameters.getSupportedPictureSizes();
+        if (pictureSizes != null) {
+            String str = mPreferences.getString(
                     CameraSettings.KEY_PICTURE_SIZE,
                     getString(R.string.pref_camera_picturesize_default));
-            if (parameterExists(Camera.SUPPORTED_PICTURE_SIZE, pictureSize)) {
-                mParameters.set(PARM_PICTURE_SIZE, pictureSize);
+            int width = Integer.parseInt(str.substring(0, str.indexOf('x')));
+            int height = Integer.parseInt(str.substring(str.indexOf('x') + 1));
+            for (Size size: pictureSizes) {
+                if (size.width == width && size.height == height) {
+                    mParameters.setPictureSize(width, height);
+                    break;
+                }
             }
         }
 
@@ -1517,13 +1489,13 @@ public class Camera extends Activity implements View.OnClickListener,
         String jpegQuality = mPreferences.getString(
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
-        mParameters.set(PARM_JPEG_QUALITY, jpegQuality);
+        mParameters.setJpegQuality(Integer.parseInt(jpegQuality));
 
         // Set flash mode.
-        if (mParameters.get(Camera.SUPPORTED_FLASH_MODE) != null) {
+        if (mParameters.getSupportedFlashModes() != null) {
             String flashMode = mPreferences.getString(
                     CameraSettings.KEY_FLASH_MODE, "auto");
-            mParameters.set(PARM_FLASH_MODE, flashMode);
+            mParameters.setFlashMode(flashMode);
         }
 
         mCameraDevice.setParameters(mParameters);
@@ -1723,7 +1695,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     public void onFlashModeChanged(String modeString) {
-        mParameters.set(PARM_FLASH_MODE, modeString);
+        mParameters.setFlashMode(modeString);
         mCameraDevice.setParameters(mParameters);
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putString(CameraSettings.KEY_FLASH_MODE, modeString);

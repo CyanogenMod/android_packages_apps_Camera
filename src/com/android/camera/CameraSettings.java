@@ -20,6 +20,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.SystemProperties;
 import android.preference.ListPreference;
@@ -29,6 +30,7 @@ import android.preference.PreferenceGroup;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -79,6 +81,16 @@ public class CameraSettings extends PreferenceActivity implements
         updateFocusModeSummary();
     }
 
+    private ArrayList<String> sizeToStr(List<Size> sizes) {
+        if (sizes == null) return null;
+
+        ArrayList<String> sizesInString = new ArrayList<String>();
+        for (Size size : sizes) {
+            sizesInString.add("" + size.width + "x" + size.height);
+        }
+        return sizesInString;
+    }
+
     private void initUI() {
         mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
         mVideoDuration = (ListPreference) findPreference(KEY_VIDEO_DURATION);
@@ -104,7 +116,9 @@ public class CameraSettings extends PreferenceActivity implements
         CameraHolder.instance().release();
 
         // Create picture size settings.
-        createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE);
+        List<Size> pictureSizes = mParameters.getSupportedPictureSizes();
+        ArrayList<String> pictureSizesInString = sizeToStr(pictureSizes);
+        createSettings(mPictureSize, pictureSizesInString);
 
         // Modify video duration settings.
         // The first entry is for MMS video duration, and we need to fill in the
@@ -139,19 +153,12 @@ public class CameraSettings extends PreferenceActivity implements
         return false;
     }
 
-    private void createSettings(ListPreference pref, String paramName) {
+    private void createSettings(ListPreference pref,
+                                List<String> supportedParam) {
         // Remove the preference if the parameter is not supported.
-        String supportedParamStr = mParameters.get(paramName);
-        if (supportedParamStr == null) {
+        if (supportedParam == null) {
             removePreference(getPreferenceScreen(), pref);
             return;
-        }
-
-        // Get the supported parameter settings.
-        StringTokenizer tokenizer = new StringTokenizer(supportedParamStr, ",");
-        ArrayList<CharSequence> supportedParam = new ArrayList<CharSequence>();
-        while (tokenizer.hasMoreElements()) {
-            supportedParam.add(tokenizer.nextToken());
         }
 
         // Prepare setting entries and entry values.
