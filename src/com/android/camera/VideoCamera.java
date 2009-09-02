@@ -712,8 +712,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             return;
         }
 
-        // The mCameraDevice will be null if it is fail to connect to the 
-        // camera hardware. In this case we will show a dialog and then 
+        // The mCameraDevice will be null if it is fail to connect to the
+        // camera hardware. In this case we will show a dialog and then
         // finish the activity, so it's OK to ignore it.
         if (mCameraDevice == null) return;
 

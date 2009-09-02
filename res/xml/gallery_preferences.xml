@@ -20,7 +20,7 @@
 
     <PreferenceCategory
             android:title="@string/pref_gallery_category">
-            
+
         <!-- Display size -->
         <ListPreference
                 android:key="pref_gallery_size_key"
