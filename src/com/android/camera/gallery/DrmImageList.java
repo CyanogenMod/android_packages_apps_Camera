@@ -48,7 +48,7 @@ public class DrmImageList extends ImageList implements IImageList {
         // We have no date information in DrmStore, so we just sort by _id.
         return "_id ASC";
     }
-    
+
     @Override
     protected Cursor createCursor() {
         return mContentResolver.query(

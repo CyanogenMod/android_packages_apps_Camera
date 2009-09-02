@@ -66,7 +66,7 @@
                     android:textSize="12sp"
                     android:text="@string/review_retake" />
         </LinearLayout>
-        
+
         <LinearLayout android:orientation="vertical"
                 android:visibility="invisible"
                 android:layout_marginBottom="15dp"
