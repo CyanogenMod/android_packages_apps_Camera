@@ -19,7 +19,10 @@ package com.android.camera;
 import com.android.camera.gallery.IImage;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,6 +47,10 @@ import java.io.IOException;
  */
 public class Util {
     private static final String TAG = "db.Util";
+    private static final String MAPS_PACKAGE_NAME =
+            "com.google.android.apps.maps";
+    private static final String MAPS_CLASS_NAME =
+            "com.google.android.maps.MapsActivity";
 
     private static OnClickListener sNullOnClickListener;
 
@@ -74,17 +81,41 @@ public class Util {
     /*
      * Compute the sample size as a function of minSideLength
      * and maxNumOfPixels.
-     * minSideLength is used to specify that minimal width or height of a bitmap.
-     * maxNumOfPixels is used to specify the maximal size in pixels that are tolerable
-     * in terms of memory usage.
+     * minSideLength is used to specify that minimal width or height of a
+     * bitmap.
+     * maxNumOfPixels is used to specify the maximal size in pixels that is
+     * tolerable in terms of memory usage.
      *
      * The function returns a sample size based on the constraints.
      * Both size and minSideLength can be passed in as IImage.UNCONSTRAINED,
      * which indicates no care of the corresponding constraint.
      * The functions prefers returning a sample size that
      * generates a smaller bitmap, unless minSideLength = IImage.UNCONSTRAINED.
+     *
+     * Also, the function rounds up the sample size to a power of 2 or multiple
+     * of 8 because BitmapFactory only honors sample size this way.
+     * For example, BitmapFactory downsamples an image by 2 even though the
+     * request is 3. So we round up the sample size to avoid OOM.
      */
     public static int computeSampleSize(BitmapFactory.Options options,
+            int minSideLength, int maxNumOfPixels) {
+        int initialSize = computeInitialSampleSize(options, minSideLength,
+                maxNumOfPixels);
+
+        int roundedSize;
+        if (initialSize <= 8 ) {
+            roundedSize = 1;
+            while (roundedSize < initialSize) {
+                roundedSize <<= 1;
+            }
+        } else {
+            roundedSize = (initialSize + 7) / 8 * 8;
+        }
+
+        return roundedSize;
+    }
+
+    private static int computeInitialSampleSize(BitmapFactory.Options options,
             int minSideLength, int maxNumOfPixels) {
         double w = options.outWidth;
         double h = options.outHeight;
@@ -384,20 +415,6 @@ public class Util {
         }
     }
 
-    public static void debugWhere(String tag, String msg) {
-        Log.d(tag, msg + " --- stack trace begins: ");
-        StackTraceElement elements[] = Thread.currentThread().getStackTrace();
-        // skip first 3 element, they are not related to the caller
-        for (int i = 3, n = elements.length; i < n; ++i) {
-            StackTraceElement st = elements[i];
-            String message = String.format("    at %s.%s(%s:%s)",
-                    st.getClassName(), st.getMethodName(), st.getFileName(),
-                    st.getLineNumber());
-            Log.d(tag, message);
-        }
-        Log.d(tag, msg + " --- stack trace ends.");
-    }
-
     public static synchronized OnClickListener getNullOnClickListener() {
         if (sNullOnClickListener == null) {
             sNullOnClickListener = new OnClickListener() {
@@ -493,5 +510,37 @@ public class Util {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inNativeAlloc = true;
         return options;
+    }
+
+    // Opens Maps application for a map with given latlong. There is a bug
+    // which crashes the Browser when opening this kind of URL. So, we open
+    // it in GMM instead. For those platforms which have no GMM installed,
+    // the default Maps application will be chosen.
+    //
+    // TODO: Once the bug in browser has been fixed, this workaround should be
+    // removed.
+    public static void openMaps(Context context, float lat, float lng) {
+
+        try {
+            // Try to open the GMM first
+
+            // We don't use "geo:latitude,longitude" because it only centers
+            // the MapView to the specified location, but we need a marker
+            // for further operations (routing to/from).
+            // The q=(lat, lng) syntax is suggested by geo-team.
+            String url = String.format(
+                    "http://maps.google.com/maps?f=q&q=(%s,%s)", lat, lng);
+            ComponentName compName =
+                    new ComponentName(MAPS_PACKAGE_NAME, MAPS_CLASS_NAME);
+            Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    .setComponent(compName);
+            context.startActivity(mapsIntent);
+        } catch (ActivityNotFoundException e) {
+            // Use the "geo intent" if no GMM is installed
+            Log.e(TAG, "GMM activity not found!", e);
+            String url = String.format("geo:%s,%s", lat, lng);
+            Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(mapsIntent);
+        }
     }
 }

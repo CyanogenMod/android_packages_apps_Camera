@@ -703,27 +703,6 @@ public class Camera extends Activity implements View.OnClickListener,
         return DateFormat.format("yyyy-MM-dd kk.mm.ss", dateTaken).toString();
     }
 
-    public static Matrix getDisplayMatrix(Bitmap b, ImageView v) {
-        Matrix m = new Matrix();
-        float bw = b.getWidth();
-        float bh = b.getHeight();
-        float vw = v.getWidth();
-        float vh = v.getHeight();
-        float scale, x, y;
-        if (bw * vh > vw * bh) {
-            scale = vh / bh;
-            x = (vw - scale * bw) * 0.5F;
-            y = 0;
-        } else {
-            scale = vw / bw;
-            x = 0;
-            y = (vh - scale * bh) * 0.5F;
-        }
-        m.setScale(scale, scale, 0.5F, 0.5F);
-        m.postTranslate(x, y);
-        return m;
-    }
-
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -768,6 +747,7 @@ public class Camera extends Activity implements View.OnClickListener,
             inflater.inflate(R.layout.camera_control, rootView);
             mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
             mSwitcher.setOnSwitchListener(this);
+            mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         }
 
         // Make sure preview is started.
@@ -1116,10 +1096,14 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private boolean canTakePicture() {
+        return isCameraIdle() && mPreviewing && (mPicturesRemaining > 0);
+    }
+
     private void autoFocus() {
         // Initiate autofocus only when preview is started and snapshot is not
         // in progress.
-        if (isCameraIdle() && mPreviewing) {
+        if (canTakePicture()) {
             Log.v(TAG, "Start autofocus.");
             if (mZoomButtons != null) mZoomButtons.setVisible(false);
             mFocusStartTime = System.currentTimeMillis();

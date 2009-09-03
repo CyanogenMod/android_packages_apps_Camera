@@ -22,10 +22,11 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-public class Switcher extends ImageView {
+public class Switcher extends ImageView implements View.OnTouchListener {
     private static final String TAG = "Switcher";
 
     public interface OnSwitchListener {
@@ -46,6 +47,13 @@ public class Switcher extends ImageView {
     }
 
     public void setSwitch(boolean onOff) {
+        if (mSwitch == onOff) return;
+        mSwitch = onOff;
+        invalidate();
+    }
+
+    // Try to change the switch position. (The client can veto it.)
+    private void tryToSetSwitch(boolean onOff) {
         try {
             if (mSwitch == onOff) return;
 
@@ -85,12 +93,12 @@ public class Switcher extends ImageView {
 
             case MotionEvent.ACTION_UP:
                 trackTouchEvent(event);
-                setSwitch(mPosition >= available / 2);
+                tryToSetSwitch(mPosition >= available / 2);
                 setPressed(false);
                 break;
 
             case MotionEvent.ACTION_CANCEL:
-                setSwitch(mSwitch);
+                tryToSetSwitch(mSwitch);
                 setPressed(false);
                 break;
         }
@@ -160,4 +168,15 @@ public class Switcher extends ImageView {
         canvas.restoreToCount(saveCount);
     }
 
+    // Consume the touch events for the specified view.
+    public void addTouchView(View v) {
+        v.setOnTouchListener(this);
+    }
+
+    // This implements View.OnTouchListener so we intercept the touch events
+    // and pass them to ourselves.
+    public boolean onTouch(View v, MotionEvent event) {
+        onTouchEvent(event);
+        return true;
+    }
 }

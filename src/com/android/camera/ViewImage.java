@@ -66,6 +66,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private ImageGetter mGetter;
     private Uri mSavedUri;
     private boolean mPaused = true;
+    private boolean mShowControls = true;
 
     // Choices for what adjacents to load.
     private static final int[] sOrderAdjacents = new int[] {0, 1, -1};
@@ -109,6 +110,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             new AlphaAnimation(0F, 1F);
 
     public static final String KEY_IMAGE_LIST = "image_list";
+    private static final String STATE_SHOW_CONTROLS = "show_controls";
 
     IImageList mAllImages;
 
@@ -251,7 +253,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (mZoomButtonsController != null) {
             mZoomButtonsController.setVisible(false);
         }
-
         super.onDestroy();
     }
 
@@ -370,7 +371,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                         cb.run(uri, image);
 
                         mImageView.clear();
-                        setImage(mCurrentPosition);
+                        setImage(mCurrentPosition, false);
                     }
                 });
 
@@ -417,7 +418,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
             mImageView.clear();
             mCache.clear();  // Because the position number is changed.
-            setImage(mCurrentPosition);
+            setImage(mCurrentPosition, true);
         }
     };
 
@@ -449,7 +450,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         return b;
     }
 
-    void setImage(int pos) {
+    void setImage(int pos, boolean showControls) {
         mCurrentPosition = pos;
 
         Bitmap b = mCache.getBitmap(pos);
@@ -515,7 +516,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             mGetter.setPosition(pos, cb, mAllImages, mHandler);
         }
         updateActionIcons();
-        showOnScreenControls();
+        if (showControls) showOnScreenControls();
         scheduleDismissOnScreenControls();
     }
 
@@ -574,6 +575,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (instanceState != null) {
             uri = instanceState.getParcelable(STATE_URI);
             slideshow = instanceState.getBoolean(STATE_SLIDESHOW, false);
+            mShowControls = instanceState.getBoolean(STATE_SHOW_CONTROLS, true);
         }
 
         if (!init(uri, imageList)) {
@@ -598,6 +600,11 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 view.setVisibility(View.VISIBLE);
                 view.setOnClickListener(this);
             }
+        }
+
+        // Don't show the "delete" icon for SingleImageList.
+        if (ImageManager.isSingleImageMode(uri.toString())) {
+            mActionIconPanel.findViewById(R.id.discard).setVisibility(View.GONE);
         }
 
         if (slideshow) {
@@ -720,7 +727,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
             // mGetter null is a proxy for being paused
             if (mGetter != null) {
-                setImage(mCurrentPosition);
+                setImage(mCurrentPosition, true);
             }
         }
     }
@@ -911,7 +918,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (mMode == MODE_SLIDESHOW) {
             loadNextImage(mCurrentPosition, 0, true);
         } else {  // MODE_NORMAL
-            setImage(mCurrentPosition);
+            setImage(mCurrentPosition, mShowControls);
+            mShowControls = false;
         }
     }
 
@@ -1011,7 +1019,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
     private void moveNextOrPrevious(int delta) {
         int nextImagePos = mCurrentPosition + delta;
         if ((0 <= nextImagePos) && (nextImagePos < mAllImages.getCount())) {
-            setImage(nextImagePos);
+            setImage(nextImagePos, true);
             showOnScreenControls();
         }
     }
@@ -1031,7 +1039,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     if (mAllImages != null) {
                         IImage image = mAllImages.getImageForUri(mSavedUri);
                         mCurrentPosition = mAllImages.getImageIndex(image);
-                        setImage(mCurrentPosition);
+                        setImage(mCurrentPosition, false);
                     }
                 }
                 break;
@@ -1134,7 +1142,7 @@ class ImageViewTouch extends ImageViewTouchBase {
                     && nextImagePos < mViewImage.mAllImages.getCount()) {
                 synchronized (mViewImage) {
                     mViewImage.setMode(ViewImage.MODE_NORMAL);
-                    mViewImage.setImage(nextImagePos);
+                    mViewImage.setImage(nextImagePos, true);
                 }
            } else if (nextImagePos != -2) {
                center(true, true);

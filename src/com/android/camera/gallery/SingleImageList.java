@@ -82,11 +82,7 @@ public class SingleImageList extends BaseImageList {
 
     @Override
     public boolean removeImage(IImage image) {
-        if (mContentResolver.delete(image.fullSizeImageUri(), null, null) > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return false;
     }
 
     @Override

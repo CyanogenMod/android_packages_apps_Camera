@@ -231,7 +231,8 @@ public abstract class BaseImageList implements IImageList {
             // and is significantly faster.
             options.inSampleSize =
                     Util.computeSampleSize(options,
-                    IImage.MINI_THUMB_TARGET_SIZE, IImage.UNCONSTRAINED);
+                    IImage.MINI_THUMB_TARGET_SIZE,
+                    IImage.MINI_THUMB_MAX_NUM_PIXELS);
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             options.inJustDecodeBounds = false;
@@ -246,12 +247,12 @@ public abstract class BaseImageList implements IImageList {
     // create the minithumb from it.
     private Bitmap createThumbnailFromUri(Uri uri, long id) {
         Bitmap bitmap = Util.makeBitmap(IImage.THUMBNAIL_TARGET_SIZE,
-                IImage.UNCONSTRAINED, uri, mContentResolver);
+                IImage.THUMBNAIL_MAX_NUM_PIXELS, uri, mContentResolver);
         if (bitmap != null) {
             storeThumbnail(bitmap, id);
         } else {
             bitmap = Util.makeBitmap(IImage.MINI_THUMB_TARGET_SIZE,
-                    IImage.UNCONSTRAINED, uri, mContentResolver);
+                    IImage.MINI_THUMB_MAX_NUM_PIXELS, uri, mContentResolver);
         }
         return bitmap;
     }

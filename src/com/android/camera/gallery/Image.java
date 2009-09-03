@@ -84,52 +84,6 @@ public class Image extends BaseImage implements IImage {
         return Bitmap.CompressFormat.JPEG;
     }
 
-    /**
-     * Does not replace the tag if already there. Otherwise, adds to the EXIF
-     * tags.
-     *
-     * @param tag
-     * @param value
-     */
-    public void addExifTag(String tag, String value) {
-        if (mExifData == null) {
-            loadExifData();
-        }
-        // If the key is already there, ignore it.
-        if (!mExifData.containsKey(tag)) {
-            mExifData.put(tag, value);
-        }
-    }
-
-    /**
-     * Returns the value of the EXIF tag as an integer.
-     *
-     * @param tag
-     */
-    public int getExifTagInt(String tag, int defaultValue) {
-        String tagValue = getExifTag(tag);
-        try {
-            if (tagValue != null) {
-                return Integer.parseInt(tagValue);
-            }
-        } catch (NumberFormatException ex) {
-            // Simply return defaultValue if exception is thrown.
-            Log.v(TAG, ex.toString());
-        }
-        return defaultValue;
-    }
-
-    /**
-     * Return the value of the EXIF tag as a String. It's caller's
-     * responsibility to check nullity.
-     */
-    public String getExifTag(String tag) {
-        if (mExifData == null) {
-            loadExifData();
-        }
-        return mExifData.get(tag);
-    }
-
     public boolean isReadonly() {
         String mimeType = getMimeType();
         return !"image/jpeg".equals(mimeType) && !"image/png".equals(mimeType);
@@ -137,17 +91,6 @@ public class Image extends BaseImage implements IImage {
 
     public boolean isDrm() {
         return false;
-    }
-
-    /**
-     * Remove tag if already there. Otherwise, does nothing.
-     * @param tag
-     */
-    public void removeExifTag(String tag) {
-        if (mExifData == null) {
-            loadExifData();
-        }
-        mExifData.remove(tag);
     }
 
     /**
@@ -274,8 +217,8 @@ public class Image extends BaseImage implements IImage {
         }
 
         if (bitmap == null) {
-            bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE, IImage.UNCONSTRAINED,
-                    IImage.NO_ROTATE, IImage.NO_NATIVE);
+            bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE,
+                    THUMBNAIL_MAX_NUM_PIXELS, NO_ROTATE, NO_NATIVE);
             // No thumbnail found... storing the new one.
             bitmap = mContainer.storeThumbnail(bitmap, mId);
         }

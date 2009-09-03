@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
-import android.location.Address;
 import android.location.Geocoder;
 import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
@@ -48,7 +47,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -260,15 +258,7 @@ public class MenuHelper {
                     return;
                 }
 
-                // Can't use geo:latitude,longitude because it only centers
-                // the MapView to specified location, but we need a bubble
-                // for further operations (routing to/from).
-                // The q=(lat, lng) syntax is suggested by geo-team.
-                String uri = "http://maps.google.com/maps?f=q&" +
-                        "q=(" + latlng[0] + "," + latlng[1] + ")";
-                activity.startActivity(new Intent(
-                        android.content.Intent.ACTION_VIEW,
-                        Uri.parse(uri)));
+                Util.openMaps(activity, latlng[0], latlng[1]);
             }
         });
         return true;

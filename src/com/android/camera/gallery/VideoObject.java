@@ -20,7 +20,6 @@ import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import java.io.IOException;
@@ -108,7 +107,7 @@ public class VideoObject extends BaseImage implements IImage {
     }
 
     public Bitmap thumbBitmap(boolean rotateAsNeeded) {
-        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, UNCONSTRAINED);
+        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, THUMBNAIL_MAX_NUM_PIXELS);
     }
 
     @Override

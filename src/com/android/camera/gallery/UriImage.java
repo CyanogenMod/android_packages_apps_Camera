@@ -122,7 +122,7 @@ class UriImage implements IImage {
     }
 
     public Bitmap thumbBitmap(boolean rotateAsNeeded) {
-        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, IImage.UNCONSTRAINED,
+        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, THUMBNAIL_MAX_NUM_PIXELS,
                 rotateAsNeeded);
     }
 
@@ -142,7 +142,9 @@ class UriImage implements IImage {
 
     public String getMimeType() {
         BitmapFactory.Options options = snifBitmapOptions();
-        return (options != null) ? options.outMimeType : "";
+        return (options != null && options.outMimeType != null)
+                ? options.outMimeType
+                : "";
     }
 
     public int getHeight() {
@@ -164,10 +166,6 @@ class UriImage implements IImage {
     }
 
     public long getDateTaken() {
-        return 0;
-    }
-
-    public int getRow() {
         return 0;
     }
 

@@ -110,10 +110,6 @@ public class ImageManager {
         }
     }
 
-    public static DataLocation getDefaultDataLocation() {
-        return DataLocation.EXTERNAL;
-    }
-
     public static int roundOrientation(int orientationInput) {
         int orientation = orientationInput;
         if (orientation == -1) {
@@ -302,7 +298,7 @@ public class ImageManager {
         return imageList;
     }
 
-    private static boolean isSingleImageMode(String uriString) {
+    static boolean isSingleImageMode(String uriString) {
         return !uriString.startsWith(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString())
                 && !uriString.startsWith(
