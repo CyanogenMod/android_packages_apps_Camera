@@ -67,8 +67,9 @@ public class MovieView extends Activity  {
     }
 
     @Override
-    public void onResume() {
-        mControl.onResume();
-        super.onResume();
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus) {
+            mControl.onResume();
+        }
     }
 }
