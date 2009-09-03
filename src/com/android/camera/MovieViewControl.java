@@ -60,6 +60,7 @@ public class MovieViewControl implements MediaPlayer.OnErrorListener,
     // State maintained for proper onPause/OnResume behaviour.
     private int mPositionWhenPaused = -1;
     private boolean mWasPlayingWhenPaused = false;
+    private MediaController mMediaController;
 
     Handler mHandler = new Handler();
 
@@ -93,7 +94,8 @@ public class MovieViewControl implements MediaPlayer.OnErrorListener,
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setVideoURI(mUri);
-        mVideoView.setMediaController(new MediaController(context));
+        mMediaController = new MediaController(context);
+        mVideoView.setMediaController(mMediaController);
 
         // make the video view handle keys for seeking and pausing
         mVideoView.requestFocus();
@@ -216,8 +218,9 @@ public class MovieViewControl implements MediaPlayer.OnErrorListener,
         if (mPositionWhenPaused >= 0) {
             mVideoView.setVideoURI(mUri);
             mVideoView.seekTo(mPositionWhenPaused);
+            mPositionWhenPaused = -1;
             if (mWasPlayingWhenPaused) {
-                mVideoView.start();
+                mMediaController.show(0);
             }
         }
     }
