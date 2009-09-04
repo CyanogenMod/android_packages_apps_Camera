@@ -16,10 +16,7 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.ImageManager;
-
 import android.content.ContentResolver;
-import android.database.Cursor;
 import android.net.Uri;
 
 import java.util.HashMap;

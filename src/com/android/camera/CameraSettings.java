@@ -27,11 +27,9 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  *  CameraSettings
@@ -49,7 +47,9 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
-    public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;  // MMS video length
+    
+    // MMS video length
+    public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
 
     // max mms video duration in seconds.
     public static final int MMS_VIDEO_DURATION =

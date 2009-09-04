@@ -107,10 +107,6 @@ public class Switcher extends ImageView implements View.OnTouchListener {
     }
 
     private void startParkingAnimation() {
-        int drawableHeight = getDrawable().getIntrinsicHeight();
-        int target = mSwitch
-                ? getHeight() - drawableHeight - mPaddingBottom
-                : mPaddingTop;
         mAnimationStartTime = AnimationUtils.currentAnimationTimeMillis();
     }
 
@@ -133,10 +129,6 @@ public class Switcher extends ImageView implements View.OnTouchListener {
         Drawable drawable = getDrawable();
         int drawableHeight = drawable.getIntrinsicHeight();
         int drawableWidth = drawable.getIntrinsicWidth();
-
-        if (drawable == null) {
-            return; // couldn't resolve the URI
-        }
 
         if (drawableWidth == 0 || drawableHeight == 0) {
             return;     // nothing to draw (empty bounds)
