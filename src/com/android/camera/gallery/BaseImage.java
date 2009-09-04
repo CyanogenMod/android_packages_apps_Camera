@@ -82,54 +82,6 @@ public abstract class BaseImage implements IImage {
 
     protected abstract Bitmap.CompressFormat compressionType();
 
-    private class CompressImageToFile extends BaseCancelable<Boolean> {
-        private ThreadSafeOutputStream mOutputStream = null;
-
-        private final Bitmap mBitmap;
-        private final Uri mDestinationUri;
-        private final byte[] mJpegData;
-
-        public CompressImageToFile(Bitmap bitmap, byte[] jpegData, Uri uri) {
-            mBitmap = bitmap;
-            mDestinationUri = uri;
-            mJpegData = jpegData;
-        }
-
-        @Override
-        public boolean requestCancel() {
-            if (super.requestCancel()) {
-                if (mOutputStream != null) {
-                    mOutputStream.close();
-                }
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public Boolean execute() {
-            try {
-                OutputStream delegate =
-                        mContentResolver.openOutputStream(mDestinationUri);
-                synchronized (this) {
-                    mOutputStream = new ThreadSafeOutputStream(delegate);
-                }
-                if (mBitmap != null) {
-                    mBitmap.compress(compressionType(), 75, mOutputStream);
-                } else {
-                    mOutputStream.write(mJpegData);
-                }
-                return true;
-            } catch (FileNotFoundException ex) {
-                return false;
-            } catch (IOException ex) {
-                return false;
-            } finally {
-                Util.closeSilently(mOutputStream);
-            }
-        }
-    }
-
     /**
      * Take a given bitmap and compress it to a file as described
      * by the Uri parameter.
@@ -138,9 +90,24 @@ public abstract class BaseImage implements IImage {
      * @param uri       where to store the bitmap
      * @return          true if we succeeded
      */
-    protected Cancelable<Boolean> compressImageToFile(
+    protected boolean compressImageToFile(
             Bitmap bitmap, byte [] jpegData, Uri uri) {
-        return new CompressImageToFile(bitmap, jpegData, uri);
+        OutputStream outputStream = null;
+        try {
+            outputStream = mContentResolver.openOutputStream(uri);
+            if (bitmap != null) {
+                bitmap.compress(compressionType(), 75, outputStream);
+            } else {
+                outputStream.write(jpegData);
+            }
+            return true;
+        } catch (FileNotFoundException ex) {
+            return false;
+        } catch (IOException ex) {
+            return false;
+        } finally {
+            Util.closeSilently(outputStream);
+        }
     }
 
     public String getDataPath() {
