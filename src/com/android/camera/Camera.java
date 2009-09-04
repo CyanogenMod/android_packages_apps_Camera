@@ -64,7 +64,6 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 import android.widget.ZoomButtonsController;
 
-import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -687,7 +686,6 @@ public class Camera extends Activity implements View.OnClickListener,
         private boolean mCancel = false;
 
         private Uri mLastContentUri;
-        private Cancelable<Void> mAddImageCancelable;
 
         Bitmap mCaptureOnlyBitmap;
 
@@ -709,11 +707,9 @@ public class Camera extends Activity implements View.OnClickListener,
                     mCancel = true;
                 }
                 if (!mCancel) {
-                    mAddImageCancelable = ImageManager.storeImage(
+                    ImageManager.storeImage(
                             mLastContentUri, mContentResolver,
                             0, null, data);
-                    mAddImageCancelable.get();
-                    mAddImageCancelable = null;
                     ImageManager.setImageSize(mContentResolver, mLastContentUri,
                             new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
                             name).length());

@@ -16,9 +16,7 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.BaseCancelable;
 import com.android.camera.gallery.BaseImageList;
-import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.DrmImageList;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
@@ -50,7 +48,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
 
 /**
  * ImageManager is used to retrieve and store images
@@ -245,75 +242,52 @@ public class ImageManager {
         return cr.insert(STORAGE_URI, values);
     }
 
-    private static class AddImageCancelable extends BaseCancelable<Void> {
-        private final Uri mUri;
-        private final ContentResolver mCr;
-        private final int mOrientation;
-        private final Bitmap mSource;
-        private final byte [] mJpegData;
-
-        public AddImageCancelable(Uri uri, ContentResolver cr,
-                int orientation, Bitmap source, byte[] jpegData) {
-            if (source == null && jpegData == null || uri == null) {
-                throw new IllegalArgumentException("source cannot be null");
-            }
-            mUri = uri;
-            mCr = cr;
-            mOrientation = orientation;
-            mSource = source;
-            mJpegData = jpegData;
-        }
-
-        @Override
-        protected Void execute() throws InterruptedException,
-                ExecutionException {
-            boolean complete = false;
-            try {
-                long id = ContentUris.parseId(mUri);
-                BaseImageList il = new ImageList(
-                        mCr, STORAGE_URI, THUMB_URI, SORT_ASCENDING, null);
-
-                // TODO: Redesign the process of adding new images. We should
-                //     create an <code>IImage</code> in "ImageManager.addImage"
-                //     and pass the image object to here.
-                Image image = new Image(il, mCr, id, 0, il.contentUri(id), null,
-                        0, null, 0, null, null, 0);
-                String[] projection = new String[] {
-                        ImageColumns._ID,
-                        ImageColumns.MINI_THUMB_MAGIC, ImageColumns.DATA};
-                Cursor c = mCr.query(mUri, projection, null, null, null);
-                String filepath;
-                try {
-                    c.moveToPosition(0);
-                    filepath = c.getString(2);
-                } finally {
-                    c.close();
-                }
-                runSubTask(image.saveImageContents(
-                        mSource, mJpegData, mOrientation, true, filepath));
-
-                ContentValues values = new ContentValues();
-                values.put(ImageColumns.MINI_THUMB_MAGIC, 0);
-                mCr.update(mUri, values, null, null);
-                complete = true;
-                return null;
-            } finally {
-                if (!complete) {
-                    try {
-                        mCr.delete(mUri, null, null);
-                    } catch (Throwable t) {
-                        // ignore it while clean up.
-                    }
-                }
-            }
-        }
-    }
-
-    public static Cancelable<Void> storeImage(
+    public static void storeImage(
             Uri uri, ContentResolver cr, int orientation,
             Bitmap source, byte [] jpegData) {
-        return new AddImageCancelable(
-                uri, cr, orientation, source, jpegData);
+
+        if (source == null && jpegData == null || uri == null) {
+            throw new IllegalArgumentException("source cannot be null");
+        }
+
+        boolean complete = false;
+        try {
+            long id = ContentUris.parseId(uri);
+            BaseImageList il = new ImageList(
+                    cr, STORAGE_URI, THUMB_URI, SORT_ASCENDING, null);
+
+            // TODO: Redesign the process of adding new images. We should
+            //     create an <code>IImage</code> in "ImageManager.addImage"
+            //     and pass the image object to here.
+            Image image = new Image(il, cr, id, 0, il.contentUri(id), null,
+                    0, null, 0, null, null, 0);
+            String[] projection = new String[] {
+                    ImageColumns._ID,
+                    ImageColumns.MINI_THUMB_MAGIC, ImageColumns.DATA};
+            Cursor c = cr.query(uri, projection, null, null, null);
+            String filepath;
+            try {
+                c.moveToPosition(0);
+                filepath = c.getString(2);
+            } finally {
+                c.close();
+            }
+            image.saveImageContents(
+                    source, jpegData, orientation, true, filepath);
+
+            ContentValues values = new ContentValues();
+            values.put(ImageColumns.MINI_THUMB_MAGIC, 0);
+            cr.update(uri, values, null, null);
+            complete = true;
+        } finally {
+            if (!complete) {
+                try {
+                    cr.delete(uri, null, null);
+                } catch (Throwable t) {
+                    // ignore it while clean up.
+                }
+            }
+        }
     }
 
     // This is the factory function to create an image list.

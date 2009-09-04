@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -378,15 +377,13 @@ public class CropImage extends MonitoredActivity {
                         directory.toString(),
                         fileName + "-" + x + ".jpg");
 
-                Cancelable<Void> cancelable =
-                        ImageManager.storeImage(
+                ImageManager.storeImage(
                         newUri,
                         mContentResolver,
                         0, // TODO fix this orientation
                         croppedImage,
                         null);
 
-                cancelable.get();
                 setResult(RESULT_OK, new Intent()
                         .setAction(newUri.toString())
                         .putExtras(extras));
