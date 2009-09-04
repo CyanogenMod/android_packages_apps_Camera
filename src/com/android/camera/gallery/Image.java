@@ -36,7 +36,6 @@ import android.util.Log;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 /**
  * The class for normal images in gallery.
@@ -105,29 +104,11 @@ public class Image extends BaseImage implements IImage {
         mExifData.put(tag, value);
     }
 
-    private class SaveImageContentsCancelable extends BaseCancelable<Void> {
-        private final Bitmap mImage;
-        private final byte [] mJpegData;
-
-        SaveImageContentsCancelable(Bitmap image, byte[] jpegData,
-                int orientation, String filePath) {
-            mImage = image;
-            mJpegData = jpegData;
-        }
-
-        @Override
-        public Void execute() throws InterruptedException, ExecutionException {
-            Bitmap thumbnail = null;
-            Uri uri = mContainer.contentUri(mId);
-            runSubTask(compressImageToFile(mImage, mJpegData, uri));
-            return null;
-        }
-    }
-
-    public Cancelable<Void> saveImageContents(Bitmap image, byte [] jpegData,
+    public void saveImageContents(Bitmap image, byte [] jpegData,
             int orientation, boolean newFile, String filePath) {
-        return new SaveImageContentsCancelable(
-                image, jpegData, orientation, filePath);
+        Bitmap thumbnail = null;
+        Uri uri = mContainer.contentUri(mId);
+        compressImageToFile(image, jpegData, uri);
     }
 
     private void loadExifData() {
