@@ -854,6 +854,8 @@ public class ImageGallery extends Activity implements
     private final Rect mSrcRect = new Rect();
     private final Rect mDstRect = new Rect();
 
+    private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+
     public void drawImage(Canvas canvas, IImage image,
             Bitmap b, int xPos, int yPos, int w, int h) {
         if (b != null) {
@@ -867,7 +869,8 @@ public class ImageGallery extends Activity implements
             int deltaW = bw - w;
             int deltaH = bh - h;
 
-            if (deltaW < 10 && deltaH < 10) {
+            if (deltaW >= 0 && deltaW < 10 &&
+                deltaH >= 0 && deltaH < 10) {
                 int halfDeltaW = deltaW / 2;
                 int halfDeltaH = deltaH / 2;
                 mSrcRect.set(0 + halfDeltaW, 0 + halfDeltaH,
@@ -877,7 +880,7 @@ public class ImageGallery extends Activity implements
             } else {
                 mSrcRect.set(0, 0, bw, bh);
                 mDstRect.set(xPos, yPos, xPos + w, yPos + h);
-                canvas.drawBitmap(b, mSrcRect, mDstRect, null);
+                canvas.drawBitmap(b, mSrcRect, mDstRect, mPaint);
             }
         } else {
             // If the thumbnail cannot be drawn, put up an error icon
