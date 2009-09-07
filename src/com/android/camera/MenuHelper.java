@@ -88,6 +88,7 @@ public class MenuHelper {
     public static final int MENU_IMAGE_ROTATE_LEFT = 20;
     public static final int MENU_IMAGE_ROTATE_RIGHT = 21;
     public static final int MENU_IMAGE_TOSS = 22;
+    public static final int MENU_IMAGE_SHOWMAP = 25;
     public static final int MENU_VIDEO_PLAY = 23;
     public static final int MENU_VIDEO_SHARE = 24;
 
@@ -167,6 +168,17 @@ public class MenuHelper {
         MenuItem item = menu.findItem(MENU_IMAGE_SHARE);
         if (item != null) {
             item.setVisible(enabled);
+            item.setEnabled(enabled);
+        }
+    }
+
+    public static boolean hasLatLngData(IImage image) {
+        return ExifInterface.getLatLng(getExifData(image)) != null;
+    }
+    
+    public static void enableShowOnMapMenuItem(Menu menu, boolean enabled) {
+        MenuItem item = menu.findItem(MENU_IMAGE_SHOWMAP);
+        if (item != null) {
             item.setEnabled(enabled);
         }
     }
@@ -749,8 +761,9 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_SHOWMAP_MENU) != 0) {
-            MenuItem showOnMapItem = menu.add(0, 0, 80, R.string.show_on_map)
-                .setOnMenuItemClickListener(
+            MenuItem showOnMapItem = menu.add(0, MENU_IMAGE_SHOWMAP,
+                    80, R.string.show_on_map);
+            showOnMapItem.setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
                                 return onShowMapClicked(onInvoke,
