@@ -203,7 +203,7 @@ public class GalleryPicker extends Activity {
         // "Slide Show"
         if ((mAdapter.getIncludeMediaTypes(position)
                 & ImageManager.INCLUDE_IMAGES) != 0) {
-            menu.add(0, 207, 0, R.string.slide_show)
+            menu.add(R.string.slide_show)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             return onSlideShowClicked(menuInfo);
@@ -211,7 +211,7 @@ public class GalleryPicker extends Activity {
                     });
         }
         // "View"
-        menu.add(0, 208, 0, R.string.view)
+        menu.add(R.string.view)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                             return onViewClicked(menuInfo);
@@ -732,7 +732,8 @@ public class GalleryPicker extends Activity {
 
         MenuHelper.addCaptureMenuItems(menu, this);
 
-        menu.add(0, 0, 5, R.string.camerasettings)
+        menu.add(Menu.NONE, Menu.NONE, MenuHelper.POSITION_GALLERY_SETTING,
+                R.string.camerasettings)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         Intent preferences = new Intent();

@@ -96,22 +96,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
-    public static final int MENU_SWITCH_TO_VIDEO = 0;
-    public static final int MENU_SWITCH_TO_CAMERA = 1;
-    public static final int MENU_FLASH_SETTING = 2;
-    public static final int MENU_FLASH_AUTO = 3;
-    public static final int MENU_FLASH_ON = 4;
-    public static final int MENU_FLASH_OFF = 5;
-    public static final int MENU_SETTINGS = 6;
-    public static final int MENU_GALLERY_PHOTOS = 7;
-    public static final int MENU_GALLERY_VIDEOS = 8;
-    public static final int MENU_SAVE_SELECT_PHOTOS = 30;
-    public static final int MENU_SAVE_NEW_PHOTO = 31;
-    public static final int MENU_SAVE_GALLERY_PHOTO = 34;
-    public static final int MENU_SAVE_GALLERY_VIDEO_PHOTO = 35;
-    public static final int MENU_SAVE_CAMERA_DONE = 36;
-    public static final int MENU_SAVE_CAMERA_VIDEO_DONE = 37;
-
     private double mZoomValue;  // The current zoom value.
     private boolean mZooming = false;
     private double mZoomStep;
@@ -1718,7 +1702,8 @@ public class Camera extends Activity implements View.OnClickListener,
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, this, true);
 
-        MenuItem gallery = menu.add(0, MENU_GALLERY_PHOTOS, 0,
+        MenuItem gallery = menu.add(Menu.NONE, Menu.NONE,
+                MenuHelper.POSITION_GOTO_GALLERY,
                 R.string.camera_gallery_photos_text)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
@@ -1729,7 +1714,8 @@ public class Camera extends Activity implements View.OnClickListener,
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
         mGalleryItems.add(gallery);
 
-        MenuItem item = menu.add(0, MENU_SETTINGS, 0, R.string.settings)
+        MenuItem item = menu.add(Menu.NONE, Menu.NONE,
+                MenuHelper.POSITION_CAMERA_SETTING, R.string.settings)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 if (mSettings == null) {

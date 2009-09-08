@@ -339,8 +339,9 @@ public class ViewImage extends Activity implements View.OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        MenuItem item = menu.add(Menu.CATEGORY_SECONDARY, 203, 0,
-                                 R.string.slide_show);
+        MenuItem item = menu.add(Menu.NONE, Menu.NONE,
+                MenuHelper.POSITION_SLIDESHOW,
+                R.string.slide_show);
         item.setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
@@ -372,8 +373,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     }
                 });
 
-        item = menu.add(Menu.CATEGORY_SECONDARY, 203, 1000,
-                R.string.camerasettings);
+        item = menu.add(Menu.NONE, Menu.NONE,
+                MenuHelper.POSITION_GALLERY_SETTING, R.string.camerasettings);
         item.setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
