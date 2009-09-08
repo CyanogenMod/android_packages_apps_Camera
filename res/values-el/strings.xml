@@ -15,226 +15,208 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="all_images">"Όλες οι εικόνες"</string>
-    <string name="all_videos">"Όλα τα βίντεο"</string>
-    <string name="camera_label">"Φωτογραφική μηχανή"</string>
-    <string name="video_camera_label">"Βιντεοκάμερα"</string>
-    <string name="gallery_picker_label">"Συλλογή"</string>
-    <string name="gallery_camera_bucket_name">"Εικόνες φωτογραφικής μηχανής"</string>
-    <string name="gallery_camera_videos_bucket_name">"Βίντεο φωτογραφικής μηχανής"</string>
-    <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
+    <!-- no translation found for camera_error_title (1202232535191653443) -->
     <skip />
-    <string name="switch_to_video_lable">"Αλλαγή σε λειτουργία βίντεο"</string>
-    <string name="switch_to_camera_lable">"Αλλαγή σε λειτουργία φωτογραφικής μηχανής"</string>
-    <string name="crop_label">"Περικοπή εικόνας"</string>
-    <string name="view_label">"Προβολή εικόνας"</string>
-    <string name="preferences_label">"Ρυθμίσεις φωτογραφικής μηχανής"</string>
-    <string name="wait">"Περιμένετε..."</string>
-    <string name="no_storage">"Πριν χρησιμοποιήσετε τη φωτογραφική μηχανή, εισάγετε μία κάρτα SD."</string>
-    <string name="not_enough_space">"Η κάρτα SD είναι πλήρης."</string>
-    <string name="preparing_sd">"Προετοιμασία κάρτας SD…"</string>
-    <string name="wallpaper">"Ρύθμιση ταπετσαρίας, περιμένετε..."</string>
-    <string name="savingImage">"Αποθήκευση εικόνας..."</string>
-    <string name="runningFaceDetection">"Περιμένετε..."</string>
-    <string name="settings">"Ρυθμίσεις"</string>
-    <string name="view">"Προβολή"</string>
-    <string name="details">"Λεπτομέρειες"</string>
-    <!-- no translation found for show_on_map (441725587731006228) -->
+    <!-- no translation found for cannot_connect_camera (8029009101380114174) -->
     <skip />
-    <string name="rotate">"Περιστροφή"</string>
-    <string name="rotate_left">"Αριστερή περιστροφή"</string>
-    <string name="rotate_right">"Δεξιά περιστροφή"</string>
-    <string name="slide_show">"Προβολή διαφανειών (slideshow)"</string>
-    <!-- no translation found for multiselect (4761682939945434146) -->
+    <string name="all_images" msgid="1195501551939178807">"Όλες οι εικόνες"</string>
+    <string name="all_videos" msgid="3380966619230896013">"Όλα τα βίντεο"</string>
+    <string name="camera_label" msgid="6346560772074764302">"Φωτογ.μηχανή"</string>
+    <string name="video_camera_label" msgid="2899292505526427293">"Βιντεοκάμ."</string>
+    <string name="gallery_picker_label" msgid="3080425245006492787">"Συλλογή"</string>
+    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Εικόνες φωτογραφικής μηχανής"</string>
+    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Βίντεο φωτογραφικής μηχανής"</string>
+    <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Μέσα φωτογραφικής μηχανής"</string>
+    <string name="switch_to_video_lable" msgid="4525451949497982385">"Αλλαγή σε λειτουργία βίντεο"</string>
+    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Αλλαγή σε λειτουργία φωτογραφικής μηχανής"</string>
+    <string name="crop_label" msgid="521114301871349328">"Περικοπή εικόνας"</string>
+    <string name="view_label" msgid="4450531507947335704">"Προβολή εικόνας"</string>
+    <string name="preferences_label" msgid="5955678162525051163">"Ρυθμίσεις φωτογραφικής μηχανής"</string>
+    <string name="wait" msgid="8600187532323801552">"Περιμένετε..."</string>
+    <string name="no_storage" msgid="820691042667338625">"Πριν χρησιμοποιήσετε τη φωτογραφική μηχανή, εισάγετε μία κάρτα SD."</string>
+    <string name="not_enough_space" msgid="6655334407957844653">"Η κάρτα SD είναι πλήρης."</string>
+    <string name="preparing_sd" msgid="2914969119574812666">"Προετοιμασία κάρτας SD…"</string>
+    <string name="wallpaper" msgid="9222901738515471972">"Ρύθμιση ταπετσαρίας, περιμένετε..."</string>
+    <string name="savingImage" msgid="3051745378545909260">"Αποθήκευση εικόνας..."</string>
+    <string name="runningFaceDetection" msgid="2293932204708167704">"Περιμένετε..."</string>
+    <string name="settings" msgid="1534847740615665736">"Ρυθμίσεις"</string>
+    <string name="view" msgid="6277795271119411881">"Προβολή"</string>
+    <string name="details" msgid="8415120088556445230">"Λεπτομέρειες"</string>
+    <string name="show_on_map" msgid="441725587731006228">"Προβολή στους Χάρτες"</string>
+    <string name="rotate" msgid="460017689320955494">"Περιστροφή"</string>
+    <string name="rotate_left" msgid="5888273317282539839">"Αριστερή περιστροφή"</string>
+    <string name="rotate_right" msgid="6776325835923384839">"Δεξιά περιστροφή"</string>
+    <string name="slide_show" msgid="1965192737233824143">"Προβολή διαφανειών"</string>
+    <string name="multiselect" msgid="4761682939945434146">"Πολλαπλή επιλογή"</string>
+    <string name="capture_picture" msgid="4114265595549284643">"Λήψη εικόνας"</string>
+    <string name="capture_video" msgid="4047046282358697155">"Λήψη βίντεο"</string>
+    <string name="crop_save_text" msgid="8140440041190264400">"Αποθήκευση"</string>
+    <string name="crop_discard_text" msgid="5303657888280340603">"Απόρριψη"</string>
+    <string name="confirm_delete_title" msgid="263478358046514887">"Διαγραφή"</string>
+    <string name="confirm_delete_message" msgid="4161389939579284604">"Η εικόνα θα διαγραφεί."</string>
+    <string name="confirm_delete_video_message" msgid="5796154324948010221">"Το βίντεο θα διαγραφεί."</string>
+    <string name="confirm_delete_multiple_message" msgid="5962369828035778779">"Αυτά τα αρχεία μέσων θα διαγραφούν."</string>
+    <string name="review_toss" msgid="7255331999518617841">"ΔΙΑΓΡΑΦΗ"</string>
+    <string name="review_share" msgid="7294755861072174509">"ΚΟΙΝΗ ΧΡΗΣΗ"</string>
+    <string name="review_set" msgid="8304758352155378636">"ΟΡΙΣΜΟΣ ΩΣ"</string>
+    <string name="review_play" msgid="6015456244323302817">"ΑΝΑΠΑΡΑΓΩΓΗ"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"ΑΚΥΡΩΣΗ"</string>
+    <string name="review_done" msgid="5417465988786728114">"ΟΛΟΚΛΗΡΩΘΗΚΕ"</string>
+    <string name="review_ok" msgid="5305096180300056529">"ΟΚ"</string>
+    <string name="review_retake" msgid="7804864054896088338">"ΝΕΑ ΛΗΨΗ"</string>
+    <string name="camera_toss" msgid="3781186798552460833">"Διαγραφή"</string>
+    <string name="camera_gallery" msgid="815753042966032398">"Συλλογή"</string>
+    <string name="camera_share" msgid="8207701858325694182">"Κοινή χρήση"</string>
+    <string name="camera_set" msgid="3422192914806971182">"Ορισμός ως"</string>
+    <string name="camera_play" msgid="8248000517869959980">"Αναπαραγωγή"</string>
+    <string name="camera_attach" msgid="4048659554893435232">"Επισύναψη"</string>
+    <string name="camera_cancel" msgid="8203341746672085747">"Ακύρωση"</string>
+    <string name="camera_crop" msgid="5584000454518174632">"Περικοπή"</string>
+    <!-- no translation found for no_way_to_share_image (5011985309980187927) -->
     <skip />
-    <string name="capture_picture">"Λήψη εικόνας"</string>
-    <string name="capture_video">"Λήψη βίντεο"</string>
-    <string name="crop_save_text">"Αποθήκευση"</string>
-    <string name="crop_discard_text">"Απόρριψη"</string>
-    <string name="confirm_delete_title">"Διαγραφή"</string>
-    <string name="confirm_delete_message">"Η εικόνα θα διαγραφεί."</string>
-    <string name="confirm_delete_video_message">"Το βίντεο θα διαγραφεί."</string>
-    <!-- no translation found for confirm_delete_multiple_message (5962369828035778779) -->
+    <!-- no translation found for no_way_to_share_video (3684571102267072206) -->
     <skip />
-    <!-- no translation found for review_toss (7255331999518617841) -->
+    <!-- no translation found for no_way_to_share (863323712875014752) -->
     <skip />
-    <!-- no translation found for review_share (7294755861072174509) -->
-    <skip />
-    <!-- no translation found for review_set (8304758352155378636) -->
-    <skip />
-    <!-- no translation found for review_play (6015456244323302817) -->
-    <skip />
-    <!-- no translation found for review_cancel (8188009385853399254) -->
-    <skip />
-    <!-- no translation found for review_done (5417465988786728114) -->
-    <skip />
-    <!-- no translation found for review_ok (5305096180300056529) -->
-    <skip />
-    <!-- no translation found for review_retake (7804864054896088338) -->
-    <skip />
-    <string name="camera_toss">"Διαγραφή"</string>
-    <string name="camera_gallery">"Συλλογή"</string>
-    <string name="camera_share">"Κοινή χρήση"</string>
-    <string name="camera_set">"Ορισμός ως"</string>
-    <string name="camera_play">"Αναπαραγωγή"</string>
-    <string name="camera_attach">"Επισύναψη"</string>
-    <string name="camera_cancel">"Ακύρωση"</string>
-    <string name="camera_crop">"Περικοπή"</string>
-    <string name="no_way_to_share_image">"Δεν είναι δυνατή η κοινή χρήση αυτής της εικόνας."</string>
-    <string name="no_way_to_share_video">"Δεν είναι δυνατή η κοινή χρήση αυτού του βίντεο."</string>
-    <string name="video_play">"Αναπαραγωγή"</string>
-    <string name="camera_gallery_photos_text">"Συλλογή"</string>
-    <string name="camera_pick_wallpaper">"Εικόνες"</string>
-    <string name="camera_setas_wallpaper">"Ταπετσαρία"</string>
-    <string name="pref_gallery_category">"Γενικές ρυθμίσεις"</string>
-    <string name="pref_slideshow_category">"Ρυθμίσεις προβολής διαφανειών (slideshow)"</string>
-    <string name="pref_camera_general_settings_category">"Γενικές ρυθμίσεις"</string>
-    <string name="pref_gallery_size_title">"Μέγεθος προβολής"</string>
-    <string name="pref_gallery_size_summary">"Επιλέξτε το μέγεθος προβολής των εικόνων και των βίντεο"</string>
-    <string name="pref_gallery_size_dialogtitle">"Μέγεθος εικόνας"</string>
+    <string name="video_play" msgid="5287787282508002895">"Αναπαραγωγή"</string>
+    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Συλλογή"</string>
+    <string name="camera_pick_wallpaper" msgid="7026385960511811641">"Εικόνες"</string>
+    <string name="camera_setas_wallpaper" msgid="797463183863414289">"Ταπετσαρία"</string>
+    <string name="pref_gallery_category" msgid="5826488887237959433">"Γενικές ρυθμίσεις"</string>
+    <string name="pref_slideshow_category" msgid="9097962086335681667">"Ρυθμίσεις προβολής διαφανειών (slideshow)"</string>
+    <string name="pref_camera_general_settings_category" msgid="2135384248699549300">"Γενικές ρυθμίσεις"</string>
+    <string name="pref_gallery_size_title" msgid="1363406603879434418">"Μέγεθος προβολής"</string>
+    <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Επιλέξτε το μέγεθος προβολής των εικόνων και των βίντεο"</string>
+    <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Μέγεθος εικόνας"</string>
   <string-array name="pref_gallery_size_choices">
-    <item>"Μεγάλο"</item>
-    <item>"Μικρό"</item>
+    <item msgid="7157691836846678936">"Μεγάλο"</item>
+    <item msgid="1033164600689216410">"Μικρό"</item>
   </string-array>
-    <string name="pref_gallery_sort_title">"Σειρά ταξινόμησης"</string>
-    <string name="pref_gallery_sort_summary">"Επιλέξτε τη σειρά ταξινόμησης των εικόνων και των βίντεο"</string>
-    <string name="pref_gallery_sort_dialogtitle">"Ταξινόμηση εικόνων"</string>
+    <string name="pref_gallery_sort_title" msgid="7447949250045443386">"Σειρά ταξινόμησης"</string>
+    <string name="pref_gallery_sort_summary" msgid="6644398051645595214">"Επιλέξτε τη σειρά ταξινόμησης των εικόνων και των βίντεο"</string>
+    <string name="pref_gallery_sort_dialogtitle" msgid="5787417105532562739">"Ταξινόμηση εικόνων"</string>
   <string-array name="pref_gallery_sort_choices">
-    <item>"Πρώτα οι πιο πρόσφατες"</item>
-    <item>"Οι πιο πρόσφατες τελευταίες"</item>
+    <item msgid="5546009539334018063">"Πρώτα οι πιο πρόσφατες"</item>
+    <item msgid="7931283047572866748">"Οι πιο πρόσφατες τελευταίες"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_interval_title">"Διάστημα προβολής διαφανειών (slideshow)"</string>
-    <string name="pref_gallery_slideshow_interval_summary">"Επιλέξτε πόση ώρα θα προβάλλεται κάθε διαφάνεια στην προβολή διαφανειών"</string>
-    <string name="pref_gallery_slideshow_interval_dialogtitle">"Διάστημα προβολής διαφανειών (slideshow)"</string>
+    <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Διάστημα προβολής διαφανειών (slideshow)"</string>
+    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Επιλέξτε πόση ώρα θα προβάλλεται κάθε διαφάνεια στην προβολή διαφανειών"</string>
+    <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Διάστημα προβολής διαφανειών (slideshow)"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
-    <item>"2 δευτερόλεπτα"</item>
-    <item>"3 δευτερόλεπτα"</item>
-    <item>"4 δευτερόλεπτα"</item>
+    <item msgid="3089037742117543119">"2 δευτερόλεπτα"</item>
+    <item msgid="738579316565625730">"3 δευτερόλεπτα"</item>
+    <item msgid="5670078787463530498">"4 δευτερόλεπτα"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title">"Εναλλαγή προβολής διαφανειών (slideshow)"</string>
-    <string name="pref_gallery_slideshow_transition_summary">"Επιλέξτε το εφέ που θα χρησιμοποιηθεί κατά τη μετάβαση από τη μία διαφάνεια στην επόμενη"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle">"Εναλλαγή προβολής διαφανειών (slideshow)"</string>
+    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Εναλλαγή προβολής διαφανειών (slideshow)"</string>
+    <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Επιλ. του εφέ που θα χρησιμοποιηθεί κατά τη μετάβαση από μία διαφάνεια στην επόμενη"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Εναλλαγή προβολής διαφανειών (slideshow)"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
-    <item>"Σταδιακή εμφάνιση &amp; εξαφάνιση"</item>
-    <item>"Ολίσθηση αριστερά - δεξιά"</item>
-    <item>"Ολίσθηση πάνω - κάτω"</item>
-    <item>"Τυχαία επιλογή"</item>
+    <item msgid="2825716730899894863">"Σταδιακή εμφάνιση &amp; εξαφάνιση"</item>
+    <item msgid="403116336404005687">"Ολίσθηση αριστερά - δεξιά"</item>
+    <item msgid="4901733079450971731">"Ολίσθηση πάνω - κάτω"</item>
+    <item msgid="9006732482485375438">"Τυχαία επιλογή"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_repeat_title">"Επανάληψη προβολής διαφανειών (slideshow)"</string>
-    <string name="pref_gallery_slideshow_repeat_summary">"Αναπαραγωγή προβολής διαφανειών (slideshow) περισσότερες από μία φορά"</string>
-    <string name="pref_gallery_slideshow_shuffle_title">"Τυχαία αναπαραγωγή διαφανειών"</string>
-    <string name="pref_gallery_slideshow_shuffle_summary">"Εμφάνιση εικόνων με τυχαία σειρά"</string>
-    <string name="pref_camera_recordlocation_title">"Αποθήκευση τοποθεσίας στις εικόνες"</string>
-    <string name="pref_camera_recordlocation_summary">"Εγγραφή τοποθεσίας στα δεδομένα εικόνας"</string>
-    <!-- no translation found for pref_camera_video_settings_category (5788821601203523037) -->
+    <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Επανάληψη προβολής διαφανειών (slideshow)"</string>
+    <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Αναπαρ.προβ.διαφαν.περισσότ.από μία φορά"</string>
+    <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Τυχαία αναπαραγωγή διαφανειών"</string>
+    <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Εμφάνιση εικόνων με τυχαία σειρά"</string>
+    <string name="pref_camera_recordlocation_title" msgid="273727672426306702">"Αποθήκευση τοποθεσίας στις εικόνες"</string>
+    <string name="pref_camera_recordlocation_summary" msgid="3275371402016128548">"Εγγραφή τοποθεσίας στα δεδομένα εικόνας"</string>
+    <string name="pref_camera_video_settings_category" msgid="5788821601203523037">"Ρυθμίσεις βίντεο"</string>
+    <!-- no translation found for pref_camera_videoquality_title (4127153321803677407) -->
     <skip />
-    <string name="pref_camera_videoquality_title">"Επιλογή ποιότητας βίντεο"</string>
-    <string name="pref_camera_videoquality_entry_0">"Χαμηλή (για μηνύματα MMS)"</string>
-    <string name="pref_camera_videoquality_entry_1">"Υψηλή (για κάρτα SD)"</string>
-    <string name="pref_camera_videoquality_dialogtitle">"Ποιότητα βίντεο"</string>
-    <!-- no translation found for pref_camera_video_duration_title (3659987702892910722) -->
+    <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Χαμηλή (για μηνύματα MMS)"</string>
+    <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Υψηλή (για κάρτα SD)"</string>
+    <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Ποιότητα βίντεο"</string>
+    <!-- no translation found for pref_camera_video_duration_title (8049279326917441484) -->
     <skip />
-    <!-- no translation found for pref_camera_video_duration_entry_10 (664455443394175885) -->
+    <!-- no translation found for pref_camera_video_duration_entry_mms (9067623003661464481) -->
     <skip />
-    <!-- no translation found for pref_camera_video_duration_entry_30 (1197298883102352735) -->
+    <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 λεπτά"</string>
+    <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 λεπτά"</string>
+    <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Διάρκεια βίντεο"</string>
+    <string name="pref_camera_picture_settings_category" msgid="1513001949820030759">"Ρυθμίσεις εικόνας"</string>
+    <!-- no translation found for pref_camera_picturesize_title (4333724936665883006) -->
     <skip />
-    <!-- no translation found for pref_camera_video_duration_dialogtitle (5762031980003877975) -->
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="2293389043895753549">"5M (2592x1936)"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="7304479270077279178">"3M (2048x1536)"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="6722733164421134734">"2M (1600x1200)"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6648351357102402892">"1M (1024x768)"</string>
+    <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Μέγεθος εικόνας"</string>
+    <!-- no translation found for pref_camera_jpegquality_title (6074540285403193970) -->
     <skip />
-    <!-- no translation found for pref_camera_picture_settings_category (1513001949820030759) -->
+    <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Πολύ υψηλή"</string>
+    <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Λεπτή"</string>
+    <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Κανονική"</string>
+    <string name="pref_camera_jpegquality_dialogtitle" msgid="18195886066728203">"Ποιότητα εικόνας"</string>
+    <!-- no translation found for pref_camera_focusmode_title (2877248921829329127) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_title (8391466986280182397) -->
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Αυτόματο"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Άπειρο"</string>
+    <string name="pref_camera_focusmode_value_infinity" msgid="3629041045019224450">"άπειρο"</string>
+    <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Λειτουργία εστίασης"</string>
+    <string name="camerasettings" msgid="2433519618178453928">"Ρυθμίσεις"</string>
+    <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Δεν βρέθηκαν μέσα."</string>
+    <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Επιβεβαίωση διαγραφών"</string>
+    <string name="pref_gallery_confirm_delete_summary" msgid="5253456492765525245">"Εμφ.μηνύμ.επιβεβ.πριν τη διαγρ.μιας εικόν.ή ενός βίντ."</string>
+    <string name="no_location_image" msgid="6929172123058811834">"Δεν περιλαμβάνονται πληροφορίες τοποθεσίας σε αυτήν την εικόνα."</string>
+    <string name="details_panel_title" msgid="4753347516759338122">"Λεπτομέρειες"</string>
+    <string name="details_file_size" msgid="2468878774843246797">"Μέγεθος αρχείου:"</string>
+    <string name="details_image_resolution" msgid="8773315928100529437">"Ανάλυση:"</string>
+    <string name="details_image_make" msgid="2888477930210903540">"Κατασκευαστής:"</string>
+    <string name="details_image_model" msgid="3608007849933924336">"Μοντέλο:"</string>
+    <string name="details_image_whitebalance" msgid="4412514247882436065">"Ισορροπία λευκού:"</string>
+    <string name="details_image_latitude" msgid="6701704806314765468">"Γεωγραφικό πλάτος GPS:"</string>
+    <string name="details_image_longitude" msgid="5583629669864057389">"Γεωγραφικό μήκος GPS:"</string>
+    <string name="details_image_location" msgid="6460201074393148978">"Τοποθεσία:"</string>
+    <string name="details_duration" msgid="1028116471387901402">"Διάρκεια:"</string>
+    <string name="details_date_taken" msgid="348356840586463178">"Ημερομηνία λήψης:"</string>
+    <string name="details_frame_rate" msgid="122397836963498191">"Ρυθμός καρέ:"</string>
+    <string name="details_bit_rate" msgid="5632311789455402186">"Ρυθμός δεδομένων:"</string>
+    <string name="details_codec" msgid="5580300450432398126">"Κωδικοποιητής:"</string>
+    <string name="details_format" msgid="3700860266600796363">"Μορφή:"</string>
+    <!-- no translation found for details_dimension_x (4923037334136168978) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (7304479270077279178) -->
+    <!-- no translation found for details_ms (7574063760642857397) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (6722733164421134734) -->
+    <!-- no translation found for details_hms (772340067838331166) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (6648351357102402892) -->
+    <!-- no translation found for details_fps (5450871169477340537) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_dialogtitle (2741153309776113961) -->
+    <!-- no translation found for details_kbps (1515369011744784592) -->
     <skip />
-    <!-- no translation found for pref_camera_jpegquality_title (3045390831339734843) -->
+    <!-- no translation found for details_mbps (3291428849607323284) -->
     <skip />
-    <!-- no translation found for pref_camera_jpegquality_entry_superfine (4087830022547613205) -->
+    <string name="details_ok" msgid="6848594369924424312">"OK"</string>
+    <string name="context_menu_header" msgid="1185348426222302182">"Επιλογές εικόνας"</string>
+    <string name="video_context_menu_header" msgid="7318971116949475029">"Επιλογές βίντεο"</string>
+    <string name="multiface_crop_help" msgid="3127018992717032779">"Πατήστε σε ένα πρόσωπο για να ξεκινήσετε."</string>
+    <string name="photos_gallery_title" msgid="6914406246471015448">"Συλλογή"</string>
+    <string name="pick_photos_gallery_title" msgid="12912682424915943">"Επιλογή εικόνας"</string>
+    <string name="videos_gallery_title" msgid="6150354029982749479">"Συλλογή"</string>
+    <string name="pick_videos_gallery_title" msgid="326727095201227333">"Επιλογή βίντεο"</string>
+    <string name="loading_progress_format_string" msgid="7401961873257843731">"Απομένουν <xliff:g id="COUNTER">%d</xliff:g>"</string>
+    <string name="sendImage" msgid="7279510542799399570">"Κοινή χρήση εικόνας μέσω"</string>
+    <string name="setImage" msgid="7246975856983303047">"Ορισμός εικόνας ως"</string>
+    <string name="sendVideo" msgid="3598567735831863073">"Κοινή χρήση βίντεο μέσω"</string>
+    <!-- no translation found for send_media_files (8201083279723850611) -->
     <skip />
-    <!-- no translation found for pref_camera_jpegquality_entry_fine (4474043704802385370) -->
+    <string name="movieviewlabel" msgid="7363495772706775465">"Ταινίες"</string>
+    <string name="loading_video" msgid="4013492720121891585">"Φόρτωση βίντεο..."</string>
+    <string name="spaceIsLow_content" msgid="2848517537672543641">"Ο διαθέσιμος χώρος στην κάρτα SD είναι ελάχιστος. Αλλάξτε τη ρύθμιση ποιότητας ή διαγράψτε στοιχεία από τη συλλογή."</string>
+    <string name="resume_playing_title" msgid="8996677350649355013">"Συνέχιση βίντεο"</string>
+    <!-- no translation found for resume_playing_message (7293000708492271389) -->
     <skip />
-    <!-- no translation found for pref_camera_jpegquality_entry_normal (1274801937207351293) -->
-    <skip />
-    <!-- no translation found for pref_camera_jpegquality_dialogtitle (18195886066728203) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_title (3829707410870789496) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_entry_auto (7374820710300362457) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_entry_infinity (3413922419264967552) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_value_infinity (3629041045019224450) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_dialogtitle (3464580667965511167) -->
-    <skip />
-    <string name="camerasettings">"Ρυθμίσεις"</string>
-    <string name="image_gallery_NoImageView_text">"Δεν βρέθηκαν μέσα."</string>
-    <string name="pref_gallery_confirm_delete_title">"Επιβεβαίωση διαγραφών"</string>
-    <string name="pref_gallery_confirm_delete_summary">"Εμφάνιση μηνύματος επιβεβαίωσης πριν τη διαγραφή μιας εικόνας ή ενός βίντεο"</string>
-    <!-- no translation found for no_location_image (6929172123058811834) -->
-    <skip />
-    <string name="details_panel_title">"Λεπτομέρειες"</string>
-    <string name="details_file_size">"Μέγεθος αρχείου:"</string>
-    <string name="details_image_resolution">"Ανάλυση:"</string>
-    <!-- no translation found for details_image_make (2888477930210903540) -->
-    <skip />
-    <!-- no translation found for details_image_model (3608007849933924336) -->
-    <skip />
-    <!-- no translation found for details_image_whitebalance (4412514247882436065) -->
-    <skip />
-    <!-- no translation found for details_image_latitude (6701704806314765468) -->
-    <skip />
-    <!-- no translation found for details_image_longitude (5583629669864057389) -->
-    <skip />
-    <!-- no translation found for details_image_location (6460201074393148978) -->
-    <skip />
-    <string name="details_duration">"Διάρκεια:"</string>
-    <string name="details_date_taken">"Ημερομηνία λήψης:"</string>
-    <string name="details_frame_rate">"Ρυθμός καρέ:"</string>
-    <string name="details_bit_rate">"Ρυθμός δεδομένων:"</string>
-    <string name="details_codec">"Κωδικοποιητής:"</string>
-    <string name="details_format">"Μορφή:"</string>
-    <string name="details_dimension_x">"%1$d x %2$d"</string>
-    <string name="details_ms">"%1$02d:%2$02d"</string>
-    <string name="details_hms">"%1$d:%2$02d:%3$02d"</string>
-    <string name="details_fps">"%1$d fps"</string>
-    <string name="details_kbps">"%1$d Kbps"</string>
-    <string name="details_mbps">"%1$g Mbps"</string>
-    <string name="details_ok">"OK"</string>
-    <string name="context_menu_header">"Επιλογές εικόνας"</string>
-    <string name="video_context_menu_header">"Επιλογές βίντεο"</string>
-    <string name="multiface_crop_help">"Πατήστε σε ένα πρόσωπο για να ξεκινήσετε."</string>
-    <string name="photos_gallery_title">"Συλλογή"</string>
-    <string name="pick_photos_gallery_title">"Επιλογή εικόνας"</string>
-    <string name="videos_gallery_title">"Συλλογή"</string>
-    <string name="pick_videos_gallery_title">"Επιλογή βίντεο"</string>
-    <string name="loading_progress_format_string">"Απομένουν <xliff:g id="COUNTER">%d</xliff:g>"</string>
-    <string name="sendImage">"Κοινή χρήση εικόνας μέσω"</string>
-    <string name="setImage">"Ορισμός εικόνας ως"</string>
-    <string name="sendVideo">"Κοινή χρήση βίντεο μέσω"</string>
-    <string name="movieviewlabel">"Ταινίες"</string>
-    <string name="loading_video">"Φόρτωση βίντεο..."</string>
-    <string name="spaceIsLow_content">"Ο διαθέσιμος χώρος στην κάρτα SD είναι ελάχιστος. Αλλάξτε τη ρύθμιση ποιότητας ή διαγράψτε στοιχεία από τη συλλογή."</string>
-    <string name="resume_playing_title">"Συνέχιση βίντεο"</string>
-    <string name="resume_playing_message">"Συνέχιση αναπαραγωγής από το %s;"</string>
-    <string name="resume_playing_resume">"Συνέχιση αναπαραγωγής"</string>
-    <string name="resume_playing_restart">"Έναρξη από την αρχή"</string>
-    <string name="gadget_title">"Πλαίσιο εικόνας"</string>
-    <string name="file_info_title">"Πληροφορίες αρχείου:"</string>
-    <string name="video_exceed_mms_limit">"Το βίντεο που εγγράψατε είναι πολύ μεγάλο για να αποσταλεί μέσω μηνύματος MMS. Δοκιμάστε να εγγράψετε μικρότερου μεγέθους βίντεο."</string>
-    <!-- no translation found for multiselect_share (5261644537749253581) -->
-    <skip />
-    <!-- no translation found for multiselect_delete (9113461994546744603) -->
-    <skip />
-    <!-- no translation found for multiselect_cancel (5969428692864002165) -->
-    <skip />
-    <!-- no translation found for delete_images_message (4504926868037899430) -->
-    <skip />
-    <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
+    <string name="resume_playing_resume" msgid="3847915469173852416">"Συνέχιση αναπαραγωγής"</string>
+    <string name="resume_playing_restart" msgid="5471008499835769292">"Έναρξη από την αρχή"</string>
+    <string name="gadget_title" msgid="259405922673466798">"Πλαίσιο εικόνας"</string>
+    <string name="file_info_title" msgid="1628963357466012538">"Πληροφορίες αρχείου:"</string>
+    <string name="video_exceed_mms_limit" msgid="3835075281230780010">"Το βίντεο που εγγράψατε είναι πολύ μεγάλο για να αποσταλεί μέσω μηνύματος MMS. Δοκιμάστε να εγγράψετε μικρότερου μεγέθους βίντεο."</string>
+    <string name="multiselect_share" msgid="5261644537749253581">"Κοινή χρήση"</string>
+    <string name="multiselect_delete" msgid="9113461994546744603">"Διαγραφή"</string>
+    <string name="multiselect_cancel" msgid="5969428692864002165">"Ακύρωση"</string>
+    <string name="delete_images_message" msgid="4504926868037899430">"Πραγματοποιείται διαγραφή εικόνων, περιμένετε…"</string>
+    <string name="video_reach_size_limit" msgid="6179877322015552390">"Συμπληρώθηκε το όριο μεγέθους."</string>
+    <!-- no translation found for on_screen_menu_back (1252087782192565742) -->
     <skip />
 </resources>
