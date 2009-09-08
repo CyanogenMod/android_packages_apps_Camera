@@ -186,10 +186,13 @@
     <string name="camera_crop">Crop</string>
 
     <!-- Toast after trying to share a picture indicating that there are no applications which are capable of so doing. -->
-    <string name="no_way_to_share_image">This picture cannot be shared.</string>
+    <string name="no_way_to_share_image">No application available to share the picture.</string>
 
     <!-- Toast after trying to share a video indicating that there are no applications which are capable of so doing. -->
-    <string name="no_way_to_share_video">This video cannot be shared.</string>
+    <string name="no_way_to_share_video">No application available to share the video.</string>
+
+    <!-- Toast after trying to share multiple media files indicating that there are no applications which are capable of so doing. -->
+    <string name="no_way_to_share">No application available to share the media file(s).</string>
 
     <!-- Menu item for playing the video. -->
     <string name="video_play">Play</string>
@@ -529,6 +532,10 @@
     <!-- Displayed in the title of the dialog for things to do with a video that
          is to be sent to another application. -->
     <string name="sendVideo">Share video via</string>
+
+    <!-- Displayed in the title of the dialog for things to do with media files that
+         are to be sent to another application: -->
+    <string name="send_media_files">Share media files via</string>
 
     <!-- Activity label. This might show up in the activity-picker -->
     <string name="movieviewlabel">Movies</string>

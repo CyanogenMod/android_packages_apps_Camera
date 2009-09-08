@@ -1014,26 +1014,41 @@ public class ImageGallery extends Activity implements
     }
 
     private void onShareMultipleClicked() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        if (mMultiSelected.size() > 1) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
 
-        String mimeType = getShareMultipleMimeType();
-        intent.setType(mimeType);
-        ArrayList<Parcelable> list = new ArrayList<Parcelable>();
-        for (IImage image : mMultiSelected) {
-            list.add(image.fullSizeImageUri());
-        }
-        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, list);
-
-        boolean isImage = ImageManager.isImageMimeType(mimeType);
-        try {
-            startActivity(Intent.createChooser(intent, getText(
-                    isImage ? R.string.sendImage : R.string.sendVideo)));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, isImage
-                    ? R.string.no_way_to_share_image
-                    : R.string.no_way_to_share_video,
-                    Toast.LENGTH_SHORT).show();
+            String mimeType = getShareMultipleMimeType();
+            intent.setType(mimeType);
+            ArrayList<Parcelable> list = new ArrayList<Parcelable>();
+            for (IImage image : mMultiSelected) {
+                list.add(image.fullSizeImageUri());
+            }
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, list);
+            try {
+                startActivity(Intent.createChooser(
+                        intent, getText(R.string.send_media_files)));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, R.string.no_way_to_share,
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else if (mMultiSelected.size() == 1) {
+            IImage image = mMultiSelected.iterator().next();
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            String mimeType = image.getMimeType();
+            intent.setType(mimeType);
+            intent.putExtra(Intent.EXTRA_STREAM, image.fullSizeImageUri());
+            boolean isImage = ImageManager.isImage(image);
+            try {
+                startActivity(Intent.createChooser(intent, getText(
+                        isImage ? R.string.sendImage : R.string.sendVideo)));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, isImage
+                        ? R.string.no_way_to_share_image
+                        : R.string.no_way_to_share_video,
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
