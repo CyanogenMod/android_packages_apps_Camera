@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,6 +45,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
@@ -74,14 +76,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Activity of the Camera which used to see preview and take pictures.
  */
 public class Camera extends Activity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
-        Switcher.OnSwitchListener, FlashButton.ModeChangeListener {
+        Switcher.OnSwitchListener, FlashButton.ModeChangeListener,
+        OnSharedPreferenceChangeListener {
 
     private static final String TAG = "camera";
 
@@ -219,6 +221,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private String mFocusMode;
 
     private final Handler mHandler = new MainHandler();
+    private OnScreenSettings mSettings;
 
     /**
      * This Handler is used to post message back onto the main thread of the
@@ -860,6 +863,7 @@ public class Camera extends Activity implements View.OnClickListener,
         mViewFinderWidth = mSurfaceView.getLayoutParams().width;
         mViewFinderHeight = mSurfaceView.getLayoutParams().height;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
 
         /*
          * To reduce startup time, we start the preview in another thread.
@@ -1180,6 +1184,10 @@ public class Camera extends Activity implements View.OnClickListener,
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
+
+        if (mSettings != null && mSettings.isVisible()) {
+            mSettings.setVisible(false);
+        }
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -1547,20 +1555,10 @@ public class Camera extends Activity implements View.OnClickListener,
         mParameters.setPreviewSize(mViewFinderWidth, mViewFinderHeight);
 
         // Set picture size.
-        List<Size> pictureSizes = mParameters.getSupportedPictureSizes();
-        if (pictureSizes != null) {
-            String str = mPreferences.getString(
-                    CameraSettings.KEY_PICTURE_SIZE,
-                    getString(R.string.pref_camera_picturesize_default));
-            int width = Integer.parseInt(str.substring(0, str.indexOf('x')));
-            int height = Integer.parseInt(str.substring(str.indexOf('x') + 1));
-            for (Size size: pictureSizes) {
-                if (size.width == width && size.height == height) {
-                    mParameters.setPictureSize(width, height);
-                    break;
-                }
-            }
-        }
+        String pictureSize = mPreferences.getString(
+                CameraSettings.KEY_PICTURE_SIZE,
+                getString(R.string.pref_camera_picturesize_default));
+        setCameraPictureSizeIfSupported(pictureSize);
 
         // Set JPEG quality.
         String jpegQuality = mPreferences.getString(
@@ -1749,13 +1747,15 @@ public class Camera extends Activity implements View.OnClickListener,
                 0, R.string.settings)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                // Keep the camera instance for a while.
-                // This avoids re-opening the camera and saves time.
-                CameraHolder.instance().keep();
-
-                Intent intent = new Intent();
-                intent.setClass(Camera.this, CameraSettings.class);
-                startActivity(intent);
+                if (mSettings == null) {
+                    mSettings = new OnScreenSettings(
+                            findViewById(R.id.camera_preview));
+                    CameraSettingsHelper helper =
+                            new CameraSettingsHelper(Camera.this, mParameters);
+                    PreferenceScreen screen = helper.getPreferenceScreen();
+                    mSettings.setPreferenceScreen(screen);
+                }
+                mSettings.setVisible(true);
                 return true;
             }
         });
@@ -1778,6 +1778,53 @@ public class Camera extends Activity implements View.OnClickListener,
         editor.putString(CameraSettings.KEY_FLASH_MODE, modeString);
         editor.commit();
     }
+
+    private void setCameraPictureSizeIfSupported(String sizeString) {
+        List<Size> pictureSizes = mParameters.getSupportedPictureSizes();
+        if (pictureSizes != null) {
+            int index = sizeString.indexOf('x');
+            int width = Integer.parseInt(sizeString.substring(0, index));
+            int height = Integer.parseInt(sizeString.substring(index + 1));
+            for (Size size: pictureSizes) {
+                if (size.width == width && size.height == height) {
+                    mParameters.setPictureSize(width, height);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void onSharedPreferenceChanged(
+            SharedPreferences preferences, String key) {
+        // ignore the events after "onPause()"
+        if (mPausing) return;
+
+        if (CameraSettingsHelper.KEY_FLASH_MODE.equals(key)) {
+            mParameters.setFlashMode(preferences.getString(key, "auto"));
+            mCameraDevice.setParameters(mParameters);
+        } else if (CameraSettingsHelper.KEY_FOCUS_MODE.equals(key)) {
+            mFocusMode = preferences.getString(key,
+                    getString(R.string.pref_camera_focusmode_default));
+        } else if (CameraSettingsHelper.KEY_PICTURE_SIZE.equals(key)) {
+            String pictureSize = preferences.getString(key,
+                    getString(R.string.pref_camera_picturesize_default));
+            setCameraPictureSizeIfSupported(pictureSize);
+            mCameraDevice.setParameters(mParameters);
+        } else if (CameraSettingsHelper.KEY_JPEG_QUALITY.equals(key)) {
+            String jpegQuality = preferences.getString(key,
+                    getString(R.string.pref_camera_jpegquality_default));
+            mParameters.setJpegQuality(Integer.parseInt(jpegQuality));
+            mCameraDevice.setParameters(mParameters);
+        } else if (CameraSettingsHelper.KEY_RECORD_LOCATION.equals(key)) {
+            mRecordLocation = preferences.getBoolean(key, false);
+            if (mRecordLocation) {
+                startReceivingLocationUpdates();
+            } else {
+                stopReceivingLocationUpdates();
+            }
+        }
+    }
+
 }
 
 class FocusRectangle extends View {

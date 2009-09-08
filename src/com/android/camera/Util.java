@@ -34,6 +34,8 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 
 import com.android.camera.gallery.IImage;
 
@@ -47,6 +49,10 @@ import java.io.IOException;
  */
 public class Util {
     private static final String TAG = "Util";
+    public static final int DIRECTION_LEFT = 0;
+    public static final int DIRECTION_RIGHT = 1;
+    public static final int DIRECTION_UP = 2;
+    public static final int DIRECTION_DOWN = 3;
 
     private static OnClickListener sNullOnClickListener;
 
@@ -531,5 +537,56 @@ public class Util {
                 .setMessage(message)
                 .setNeutralButton(R.string.details_ok, buttonListener)
                 .show();
+    }
+
+    public static void slideOut(View view, int to) {
+        view.setVisibility(View.INVISIBLE);
+        Animation anim;
+        switch (to) {
+            case DIRECTION_LEFT:
+                anim = new TranslateAnimation(0, -view.getWidth(), 0, 0);
+                break;
+            case DIRECTION_RIGHT:
+                anim = new TranslateAnimation(0, view.getWidth(), 0, 0);
+                break;
+            case DIRECTION_UP:
+                anim = new TranslateAnimation(0, 0, 0, -view.getHeight());
+                break;
+            case DIRECTION_DOWN:
+                anim = new TranslateAnimation(0, 0, 0, view.getHeight());
+                break;
+            default:
+                throw new IllegalArgumentException(Integer.toString(to));
+        }
+        anim.setDuration(500);
+        view.startAnimation(anim);
+    }
+
+    public static void slideIn(View view, int from) {
+        view.setVisibility(View.VISIBLE);
+        Animation anim;
+        switch (from) {
+            case DIRECTION_LEFT:
+                anim = new TranslateAnimation(-view.getWidth(), 0, 0, 0);
+                break;
+            case DIRECTION_RIGHT:
+                anim = new TranslateAnimation(view.getWidth(), 0, 0, 0);
+                break;
+            case DIRECTION_UP:
+                anim = new TranslateAnimation(0, 0, -view.getHeight(), 0);
+                break;
+            case DIRECTION_DOWN:
+                anim = new TranslateAnimation(0, 0, view.getHeight(), 0);
+                break;
+            default:
+                throw new IllegalArgumentException(Integer.toString(from));
+        }
+        anim.setDuration(500);
+        view.startAnimation(anim);
+    }
+
+    public static <T> T checkNotNull(T object) {
+        if (object == null) throw new NullPointerException();
+        return object;
     }
 }
