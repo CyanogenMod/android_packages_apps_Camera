@@ -75,6 +75,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -1548,6 +1549,14 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void setCameraParameter() {
         mParameters = mCameraDevice.getParameters();
+
+        // Reset preview frame rate to the maximum because it may be lowered by
+        // video camera application.
+        List<Integer> frameRates = mParameters.getSupportedPreviewFrameRates();
+        if (frameRates != null) {
+            Integer max = Collections.max(frameRates);
+            mParameters.setPreviewFrameRate(max);
+        }
 
         // Set preview size.
         mParameters.setPreviewSize(mViewFinderWidth, mViewFinderHeight);
