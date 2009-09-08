@@ -341,14 +341,16 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
+        IImage image = mAllImages.getImageAt(mCurrentPosition);
         if (mImageMenuRunnable != null) {
-            mImageMenuRunnable.gettingReadyToOpen(menu,
-                    mAllImages.getImageAt(mCurrentPosition));
+            mImageMenuRunnable.gettingReadyToOpen(menu, image);
         }
 
         Uri uri = mAllImages.getImageAt(mCurrentPosition).fullSizeImageUri();
         MenuHelper.enableShareMenuItem(menu, MenuHelper.isWhiteListUri(uri));
 
+        MenuHelper.enableShowOnMapMenuItem(menu, MenuHelper.hasLatLngData(image));
+        
         return true;
     }
 

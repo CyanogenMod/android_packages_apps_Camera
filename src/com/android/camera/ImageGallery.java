@@ -765,11 +765,13 @@ public class ImageGallery extends Activity implements
                 ContextMenu.ContextMenuInfo menuInfo) {
             if (!canHandleEvent()) return;
 
-            if (getCurrentImage() == null) {
+            IImage image = getCurrentImage();
+
+            if (image == null) {
                 return;
             }
 
-            boolean isImage = ImageManager.isImage(getCurrentImage());
+            boolean isImage = ImageManager.isImage(image);
             if (isImage) {
                 menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
@@ -801,11 +803,14 @@ public class ImageGallery extends Activity implements
                                 mGvs.invalidateImage(mGvs.getCurrentSelection());
                             }
                         });
+
                 if (r != null) {
-                    r.gettingReadyToOpen(menu, getCurrentImage());
+                    r.gettingReadyToOpen(menu, image);
                 }
 
                 if (isImage) {
+                    MenuHelper.enableShowOnMapMenuItem(
+                            menu, MenuHelper.hasLatLngData(image));
                     addSlideShowMenu(menu, 1000);
                 }
             }

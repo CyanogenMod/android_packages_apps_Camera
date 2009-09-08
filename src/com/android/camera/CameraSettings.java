@@ -47,7 +47,7 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
-    
+
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
 
