@@ -70,20 +70,25 @@ public class MenuHelper {
     public static final int INCLUDE_DETAILS_MENU  = (1 << 6);
     public static final int INCLUDE_SHOWMAP_MENU  = (1 << 7);
 
-    public static final int MENU_SWITCH_CAMERA_MODE = 0;
-    public static final int MENU_CAPTURE_PICTURE = 1;
-    public static final int MENU_CAPTURE_VIDEO = 2;
-    public static final int MENU_IMAGE_SHARE = 3;
-    public static final int MENU_IMAGE_SET = 4;
-    public static final int MENU_IMAGE_SET_WALLPAPER = 5;
-    public static final int MENU_IMAGE_CROP = 6;
-    public static final int MENU_IMAGE_ROTATE = 7;
-    public static final int MENU_IMAGE_ROTATE_LEFT = 8;
-    public static final int MENU_IMAGE_ROTATE_RIGHT = 9;
-    public static final int MENU_IMAGE_TOSS = 10;
-    public static final int MENU_IMAGE_SHOWMAP = 11;
-    public static final int MENU_VIDEO_PLAY = 12;
-    public static final int MENU_VIDEO_SHARE = 13;
+    public static final int MENU_IMAGE_SHARE = 1;
+    public static final int MENU_IMAGE_SHOWMAP = 2;
+
+    public static final int POSITION_SWITCH_CAMERA_MODE = 1;
+    public static final int POSITION_GOTO_GALLERY = 2;
+    public static final int POSITION_VIEWPLAY = 3;
+    public static final int POSITION_CAPTURE_PICTURE = 4;
+    public static final int POSITION_CAPTURE_VIDEO = 5;
+    public static final int POSITION_IMAGE_SHARE = 6;
+    public static final int POSITION_IMAGE_ROTATE = 7;
+    public static final int POSITION_IMAGE_TOSS = 8;
+    public static final int POSITION_IMAGE_CROP = 9;
+    public static final int POSITION_IMAGE_SET = 10;
+    public static final int POSITION_DETAILS = 11;
+    public static final int POSITION_SHOWMAP = 12;
+    public static final int POSITION_SLIDESHOW = 13;
+    public static final int POSITION_MULTISELECT = 14;
+    public static final int POSITION_CAMERA_SETTING = 15;
+    public static final int POSITION_GALLERY_SETTING = 16;
 
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
@@ -168,7 +173,7 @@ public class MenuHelper {
     public static boolean hasLatLngData(IImage image) {
         return ExifInterface.getLatLng(getExifData(image)) != null;
     }
-    
+
     public static void enableShowOnMapMenuItem(Menu menu, boolean enabled) {
         MenuItem item = menu.findItem(MENU_IMAGE_SHOWMAP);
         if (item != null) {
@@ -654,15 +659,14 @@ public class MenuHelper {
                 new ArrayList<MenuItem>();
 
         if ((inclusions & INCLUDE_ROTATE_MENU) != 0) {
-            SubMenu rotateSubmenu = menu.addSubMenu(0, MENU_IMAGE_ROTATE, 40,
-                    R.string.rotate)
+            SubMenu rotateSubmenu = menu.addSubMenu(Menu.NONE, Menu.NONE,
+                    POSITION_IMAGE_ROTATE, R.string.rotate)
                     .setIcon(android.R.drawable.ic_menu_rotate);
             // Don't show the rotate submenu if the item at hand is read only
             // since the items within the submenu won't be shown anyway. This
             // is really a framework bug in that it shouldn't show the submenu
             // if the submenu has no visible items.
-            MenuItem rotateLeft = rotateSubmenu.add(0, MENU_IMAGE_ROTATE_LEFT,
-                    50, R.string.rotate_left)
+            MenuItem rotateLeft = rotateSubmenu.add(R.string.rotate_left)
                     .setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
@@ -670,8 +674,7 @@ public class MenuHelper {
                         }
                     }).setAlphabeticShortcut('l');
 
-            MenuItem rotateRight = rotateSubmenu.add(0, MENU_IMAGE_ROTATE_RIGHT,
-                    60, R.string.rotate_right)
+            MenuItem rotateRight = rotateSubmenu.add(R.string.rotate_right)
                     .setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
@@ -689,8 +692,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_CROP_MENU) != 0) {
-            MenuItem autoCrop = menu.add(0, MENU_IMAGE_CROP, 73,
-                    R.string.camera_crop);
+            MenuItem autoCrop = menu.add(Menu.NONE, Menu.NONE,
+                    POSITION_IMAGE_CROP, R.string.camera_crop);
             autoCrop.setIcon(android.R.drawable.ic_menu_crop);
             autoCrop.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
@@ -703,8 +706,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_SET_MENU) != 0) {
-            MenuItem setMenu = menu.add(0, MENU_IMAGE_SET, 75,
-                    R.string.camera_set);
+            MenuItem setMenu = menu.add(Menu.NONE, Menu.NONE,
+                    POSITION_IMAGE_SET, R.string.camera_set);
             setMenu.setIcon(android.R.drawable.ic_menu_set_as);
             setMenu.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
@@ -716,8 +719,9 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_SHARE_MENU) != 0) {
-            MenuItem item1 = menu.add(0, MENU_IMAGE_SHARE, 10,
-                    R.string.camera_share).setOnMenuItemClickListener(
+            MenuItem item1 = menu.add(Menu.NONE, MENU_IMAGE_SHARE,
+                    POSITION_IMAGE_SHARE, R.string.camera_share)
+                    .setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             return onImageShareClicked(onInvoke, activity);
@@ -729,8 +733,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_DELETE_MENU) != 0) {
-            MenuItem deleteItem = menu.add(0, MENU_IMAGE_TOSS,
-                    70, R.string.camera_toss);
+            MenuItem deleteItem = menu.add(Menu.NONE, Menu.NONE,
+                    POSITION_IMAGE_TOSS, R.string.camera_toss);
             requiresWriteAccessItems.add(deleteItem);
             deleteItem.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
@@ -744,7 +748,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_DETAILS_MENU) != 0) {
-            MenuItem detailsMenu = menu.add(0, 0, 80, R.string.details)
+            MenuItem detailsMenu = menu.add(Menu.NONE, Menu.NONE,
+                POSITION_DETAILS, R.string.details)
             .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     return onDetailsClicked(onInvoke, handler, activity);
@@ -754,8 +759,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_SHOWMAP_MENU) != 0) {
-            MenuItem showOnMapItem = menu.add(0, MENU_IMAGE_SHOWMAP,
-                    80, R.string.show_on_map);
+            MenuItem showOnMapItem = menu.add(Menu.NONE, MENU_IMAGE_SHOWMAP,
+                    POSITION_SHOWMAP, R.string.show_on_map);
             showOnMapItem.setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
@@ -767,8 +772,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_VIEWPLAY_MENU) != 0) {
-            MenuItem videoPlayItem = menu.add(0, MENU_VIDEO_PLAY, 0,
-                R.string.video_play)
+            MenuItem videoPlayItem = menu.add(Menu.NONE, Menu.NONE,
+                POSITION_VIEWPLAY, R.string.video_play)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -896,7 +901,8 @@ public class MenuHelper {
         final String action = switchToVideo
                 ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
                 : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
-        MenuItem item = menu.add(0, MENU_SWITCH_CAMERA_MODE, 0, labelId)
+        MenuItem item = menu.add(Menu.NONE, Menu.NONE,
+                POSITION_SWITCH_CAMERA_MODE, labelId)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 startCameraActivity(activity, action);
@@ -955,7 +961,8 @@ public class MenuHelper {
     }
 
     static void addCapturePictureMenuItems(Menu menu, final Activity activity) {
-        menu.add(0, MENU_CAPTURE_PICTURE, 1, R.string.capture_picture)
+        menu.add(Menu.NONE, Menu.NONE, POSITION_CAPTURE_PICTURE,
+                R.string.capture_picture)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
@@ -976,7 +983,8 @@ public class MenuHelper {
     }
 
     static void addCaptureVideoMenuItems(Menu menu, final Activity activity) {
-        menu.add(0, MENU_CAPTURE_VIDEO, 2, R.string.capture_video)
+        menu.add(Menu.NONE, Menu.NONE, POSITION_CAPTURE_VIDEO,
+                R.string.capture_video)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
