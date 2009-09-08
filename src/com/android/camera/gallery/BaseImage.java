@@ -20,12 +20,10 @@ import com.android.camera.BitmapManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 
 import java.io.FileNotFoundException;

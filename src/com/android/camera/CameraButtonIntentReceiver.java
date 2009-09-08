@@ -29,7 +29,7 @@ public class CameraButtonIntentReceiver extends BroadcastReceiver {
         // Try to get the camera hardware
         try {
             CameraHolder holder = CameraHolder.instance();
-            android.hardware.Camera device = holder.open();
+            holder.open();
             holder.keep();
             holder.release();
         } catch (CameraHardwareException e) {

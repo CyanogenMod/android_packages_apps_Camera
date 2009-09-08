@@ -17,7 +17,6 @@
 package com.android.camera;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.view.Gravity;
