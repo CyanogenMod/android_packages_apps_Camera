@@ -120,7 +120,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final String ZOOM_IMMEDIATE = "zoom-immediate";
     public static final String ZOOM_CONTINUOUS = "zoom-continuous";
     public static final double ZOOM_MIN = 1.0;
-    public static final String ZOOM_SPEED ="99";
+    public static final String ZOOM_SPEED = "99";
 
     // The parameter strings to communicate with camera driver.
     public static final String PARM_ZOOM_STATE = "zoom-state";
@@ -215,7 +215,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public long mJpegPictureCallbackTimeLag;
     public long mRawPictureAndJpegPictureCallbackTime;
 
-    //Add the media server tag
+    // Add the media server tag
     public static boolean mMediaServerDied = false;
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
@@ -455,8 +455,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     // Wait for a while so we are not changing zoom too fast.
                     try {
                         Thread.currentThread().sleep(5);
-                    }
-                    catch (InterruptedException ex) {
+                    } catch (InterruptedException ex) {
                     }
                 }
             } else {
@@ -467,8 +466,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     // Wait for a while so we are not changing zoom too fast.
                     try {
                         Thread.currentThread().sleep(5);
-                    }
-                    catch (InterruptedException ex) {
+                    } catch (InterruptedException ex) {
                     }
                 }
             }
@@ -667,7 +665,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private final class ErrorCallback
         implements android.hardware.Camera.ErrorCallback {
-        public void  onError(int error, android.hardware.Camera camera) {
+        public void onError(int error, android.hardware.Camera camera) {
             if (error == android.hardware.Camera.CAMERA_ERROR_SERVER_DIED) {
                  mMediaServerDied = true;
                  Log.v(TAG, "media server died");
@@ -679,7 +677,7 @@ public class Camera extends Activity implements View.OnClickListener,
         implements android.hardware.Camera.ZoomCallback {
         public void onZoomUpdate(int zoomLevel,
                                  android.hardware.Camera camera) {
-            mZoomValue = (double)zoomLevel / 1000;
+            mZoomValue = (double) zoomLevel / 1000;
             mZooming = false;
         }
     }

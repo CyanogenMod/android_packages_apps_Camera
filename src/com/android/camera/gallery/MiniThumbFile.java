@@ -16,9 +16,6 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.Util;
-
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;

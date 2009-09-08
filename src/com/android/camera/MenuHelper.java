@@ -193,7 +193,7 @@ public class MenuHelper {
             // details dialog is dismissed or not.
             View view = mView.get();
             if (view == null) return;
-            if (location != MenuHelper.EMPTY_STRING) {
+            if (!location.equals(MenuHelper.EMPTY_STRING)) {
                 MenuHelper.setDetailsValue(view, location,
                         R.id.details_location_value);
             } else {

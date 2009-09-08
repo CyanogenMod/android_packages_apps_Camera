@@ -481,7 +481,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 // This is a special case: the value -1 means we want to use the
                 // device-dependent duration for MMS messages. The value is
                 // represented in seconds.
-                mMaxVideoDurationInMs = 1000 * CameraSettings.MMS_VIDEO_DURATION;
+                mMaxVideoDurationInMs =
+                        1000 * CameraSettings.MMS_VIDEO_DURATION;
             } else {
                 // 1 minute = 60000ms
                 mMaxVideoDurationInMs = 60000 * minutes;

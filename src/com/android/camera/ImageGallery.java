@@ -676,9 +676,9 @@ public class ImageGallery extends Activity implements
         // the selection box by setting the selected index to none. However, if
         // we use the dpad center key, we will keep the selected index in order
         // to show the the selection box. We do this because we have the
-        // multiselect marker on the images to indicate which of them are selected,
-        // so we don't need the selection box, but in the dpad case we still
-        // need the selection box to show as a "cursor".
+        // multiselect marker on the images to indicate which of them are
+        // selected, so we don't need the selection box, but in the dpad case
+        // we still need the selection box to show as a "cursor".
 
         if (isInMultiSelectMode()) {
             mGvs.setSelectedIndex(GridViewSpecial.INDEX_NONE);
