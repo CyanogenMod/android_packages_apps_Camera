@@ -96,14 +96,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
 
-    public static final int MENU_SETTINGS = 6;
-    public static final int MENU_GALLERY_PHOTOS = 7;
-    public static final int MENU_GALLERY_VIDEOS = 8;
-    public static final int MENU_SAVE_GALLERY_PHOTO = 34;
-    public static final int MENU_SAVE_PLAY_VIDEO = 35;
-    public static final int MENU_SAVE_SELECT_VIDEO = 36;
-    public static final int MENU_SAVE_NEW_VIDEO = 37;
-
     private SharedPreferences mPreferences;
 
     private VideoPreview mVideoPreview;
@@ -1005,8 +997,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, this, false);
 
-        MenuItem gallery =
-                menu.add(0, MENU_GALLERY_VIDEOS, 0,
+        MenuItem gallery = menu.add(Menu.NONE, Menu.NONE,
+                MenuHelper.POSITION_GOTO_GALLERY,
                 R.string.camera_gallery_photos_text)
                 .setOnMenuItemClickListener(
                     new OnMenuItemClickListener() {
@@ -1018,8 +1010,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
         mGalleryItems.add(gallery);
 
-        MenuItem item =
-                menu.add(0, MENU_SETTINGS, 0, R.string.settings)
+        MenuItem item = menu.add(Menu.NONE, Menu.NONE,
+                MenuHelper.POSITION_CAMERA_SETTING,
+                R.string.settings)
                 .setOnMenuItemClickListener(
                     new OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {

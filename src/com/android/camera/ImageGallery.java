@@ -163,8 +163,9 @@ public class ImageGallery extends Activity implements
         });
     }
 
-    private MenuItem addSlideShowMenu(Menu menu, int position) {
-        return menu.add(0, 207, position, R.string.slide_show)
+    private MenuItem addSlideShowMenu(Menu menu) {
+        return menu.add(Menu.NONE, Menu.NONE, MenuHelper.POSITION_SLIDESHOW,
+                R.string.slide_show)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
@@ -498,10 +499,12 @@ public class ImageGallery extends Activity implements
         } else {
             MenuHelper.addCaptureMenuItems(menu, this);
             if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
-                mSlideShowItem = addSlideShowMenu(menu, 5);
+                mSlideShowItem = addSlideShowMenu(menu);
             }
 
-            MenuItem item = menu.add(0, 0, 1000, R.string.camerasettings);
+            MenuItem item = menu.add(Menu.NONE, Menu.NONE,
+                    MenuHelper.POSITION_GALLERY_SETTING,
+                    R.string.camerasettings);
             item.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -515,7 +518,9 @@ public class ImageGallery extends Activity implements
             item.setAlphabeticShortcut('p');
             item.setIcon(android.R.drawable.ic_menu_preferences);
 
-            item = menu.add(0, 0, 900, R.string.multiselect);
+            item = menu.add(Menu.NONE, Menu.NONE,
+                    MenuHelper.POSITION_MULTISELECT,
+                    R.string.multiselect);
             item.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -773,7 +778,8 @@ public class ImageGallery extends Activity implements
 
             boolean isImage = ImageManager.isImage(image);
             if (isImage) {
-                menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(
+                menu.add(R.string.view)
+                        .setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
                                 if (!canHandleEvent()) return false;
@@ -811,7 +817,7 @@ public class ImageGallery extends Activity implements
                 if (isImage) {
                     MenuHelper.enableShowOnMapMenuItem(
                             menu, MenuHelper.hasLatLngData(image));
-                    addSlideShowMenu(menu, 1000);
+                    addSlideShowMenu(menu);
                 }
             }
         }
