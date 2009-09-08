@@ -1685,15 +1685,9 @@ public class Camera extends Activity implements View.OnClickListener,
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
-        for (int i = 1; i <= MenuHelper.MENU_ITEM_MAX; i++) {
-            menu.setGroupVisible(i, false);
-        }
-
         // Only show the menu when camera is idle.
-        if (isCameraIdle()) {
-            menu.setGroupVisible(MenuHelper.GENERIC_ITEM, true);
-            menu.setGroupVisible(MenuHelper.IMAGE_MODE_ITEM, true);
+        for (int i = 0; i < menu.size(); i++) {
+            menu.getItem(i).setVisible(isCameraIdle());
         }
 
         return true;
@@ -1714,35 +1708,19 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, this, true);
-        {
-            MenuItem gallery = menu.add(
-                    MenuHelper.IMAGE_MODE_ITEM, MENU_GALLERY_PHOTOS, 0,
-                    R.string.camera_gallery_photos_text)
-                    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    gotoGallery();
-                    return true;
-                }
-            });
-            gallery.setIcon(android.R.drawable.ic_menu_gallery);
-            mGalleryItems.add(gallery);
-        }
-        {
-            MenuItem gallery = menu.add(
-                    MenuHelper.VIDEO_MODE_ITEM, MENU_GALLERY_VIDEOS, 0,
-                    R.string.camera_gallery_photos_text)
-                    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    gotoGallery();
-                    return true;
-                }
-            });
-            gallery.setIcon(android.R.drawable.ic_menu_gallery);
-            mGalleryItems.add(gallery);
-        }
 
-        MenuItem item = menu.add(MenuHelper.GENERIC_ITEM, MENU_SETTINGS,
-                0, R.string.settings)
+        MenuItem gallery = menu.add(0, MENU_GALLERY_PHOTOS, 0,
+                R.string.camera_gallery_photos_text)
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                gotoGallery();
+                return true;
+            }
+        });
+        gallery.setIcon(android.R.drawable.ic_menu_gallery);
+        mGalleryItems.add(gallery);
+
+        MenuItem item = menu.add(0, MENU_SETTINGS, 0, R.string.settings)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 if (mSettings == null) {

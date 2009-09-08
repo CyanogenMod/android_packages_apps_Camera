@@ -60,13 +60,6 @@ import java.util.List;
 public class MenuHelper {
     private static final String TAG = "MenuHelper";
 
-    public static final int GENERIC_ITEM      = 1;
-    public static final int IMAGE_SAVING_ITEM = 2;
-    public static final int VIDEO_SAVING_ITEM = 3;
-    public static final int IMAGE_MODE_ITEM   = 4;
-    public static final int VIDEO_MODE_ITEM   = 5;
-    public static final int MENU_ITEM_MAX     = 5;
-
     public static final int INCLUDE_ALL           = 0xFFFFFFFF;
     public static final int INCLUDE_VIEWPLAY_MENU = (1 << 0);
     public static final int INCLUDE_SHARE_MENU    = (1 << 1);
@@ -80,17 +73,17 @@ public class MenuHelper {
     public static final int MENU_SWITCH_CAMERA_MODE = 0;
     public static final int MENU_CAPTURE_PICTURE = 1;
     public static final int MENU_CAPTURE_VIDEO = 2;
-    public static final int MENU_IMAGE_SHARE = 10;
-    public static final int MENU_IMAGE_SET = 14;
-    public static final int MENU_IMAGE_SET_WALLPAPER = 15;
-    public static final int MENU_IMAGE_CROP = 18;
-    public static final int MENU_IMAGE_ROTATE = 19;
-    public static final int MENU_IMAGE_ROTATE_LEFT = 20;
-    public static final int MENU_IMAGE_ROTATE_RIGHT = 21;
-    public static final int MENU_IMAGE_TOSS = 22;
-    public static final int MENU_IMAGE_SHOWMAP = 25;
-    public static final int MENU_VIDEO_PLAY = 23;
-    public static final int MENU_VIDEO_SHARE = 24;
+    public static final int MENU_IMAGE_SHARE = 3;
+    public static final int MENU_IMAGE_SET = 4;
+    public static final int MENU_IMAGE_SET_WALLPAPER = 5;
+    public static final int MENU_IMAGE_CROP = 6;
+    public static final int MENU_IMAGE_ROTATE = 7;
+    public static final int MENU_IMAGE_ROTATE_LEFT = 8;
+    public static final int MENU_IMAGE_ROTATE_RIGHT = 9;
+    public static final int MENU_IMAGE_TOSS = 10;
+    public static final int MENU_IMAGE_SHOWMAP = 11;
+    public static final int MENU_VIDEO_PLAY = 12;
+    public static final int MENU_VIDEO_SHARE = 13;
 
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
@@ -661,8 +654,8 @@ public class MenuHelper {
                 new ArrayList<MenuItem>();
 
         if ((inclusions & INCLUDE_ROTATE_MENU) != 0) {
-            SubMenu rotateSubmenu = menu.addSubMenu(IMAGE_SAVING_ITEM,
-                    MENU_IMAGE_ROTATE, 40, R.string.rotate)
+            SubMenu rotateSubmenu = menu.addSubMenu(0, MENU_IMAGE_ROTATE, 40,
+                    R.string.rotate)
                     .setIcon(android.R.drawable.ic_menu_rotate);
             // Don't show the rotate submenu if the item at hand is read only
             // since the items within the submenu won't be shown anyway. This
@@ -696,7 +689,7 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_CROP_MENU) != 0) {
-            MenuItem autoCrop = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_CROP, 73,
+            MenuItem autoCrop = menu.add(0, MENU_IMAGE_CROP, 73,
                     R.string.camera_crop);
             autoCrop.setIcon(android.R.drawable.ic_menu_crop);
             autoCrop.setOnMenuItemClickListener(
@@ -710,7 +703,7 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_SET_MENU) != 0) {
-            MenuItem setMenu = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_SET, 75,
+            MenuItem setMenu = menu.add(0, MENU_IMAGE_SET, 75,
                     R.string.camera_set);
             setMenu.setIcon(android.R.drawable.ic_menu_set_as);
             setMenu.setOnMenuItemClickListener(
@@ -723,7 +716,7 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_SHARE_MENU) != 0) {
-            MenuItem item1 = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_SHARE, 10,
+            MenuItem item1 = menu.add(0, MENU_IMAGE_SHARE, 10,
                     R.string.camera_share).setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
@@ -736,7 +729,7 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_DELETE_MENU) != 0) {
-            MenuItem deleteItem = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_TOSS,
+            MenuItem deleteItem = menu.add(0, MENU_IMAGE_TOSS,
                     70, R.string.camera_toss);
             requiresWriteAccessItems.add(deleteItem);
             deleteItem.setOnMenuItemClickListener(
@@ -774,8 +767,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_VIEWPLAY_MENU) != 0) {
-            MenuItem videoPlayItem = menu.add(VIDEO_SAVING_ITEM,
-                MENU_VIDEO_PLAY, 0, R.string.video_play)
+            MenuItem videoPlayItem = menu.add(0, MENU_VIDEO_PLAY, 0,
+                R.string.video_play)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -894,9 +887,6 @@ public class MenuHelper {
 
     static void addSwitchModeMenuItem(
             Menu menu, final Activity activity, boolean switchToVideo) {
-        int group = switchToVideo
-                ? MenuHelper.IMAGE_MODE_ITEM
-                : MenuHelper.VIDEO_MODE_ITEM;
         int labelId = switchToVideo
                 ? R.string.switch_to_video_lable
                 : R.string.switch_to_camera_lable;
@@ -906,7 +896,7 @@ public class MenuHelper {
         final String action = switchToVideo
                 ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
                 : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
-        MenuItem item = menu.add(group, MENU_SWITCH_CAMERA_MODE, 0, labelId)
+        MenuItem item = menu.add(0, MENU_SWITCH_CAMERA_MODE, 0, labelId)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 startCameraActivity(activity, action);
