@@ -31,6 +31,7 @@ public class CameraSettingsHelper {
     public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
     public static final String KEY_WHITE_BALANCE =
             "pref_camera_whitebalance_key";
+    public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
 
     // max mms video duration in seconds.
     public static final int MMS_VIDEO_DURATION =
@@ -77,6 +78,8 @@ public class CameraSettingsHelper {
                 (ListPreference) screen.findPreference(KEY_WHITE_BALANCE);
         ListPreference colorEffect =
                 (ListPreference) screen.findPreference(KEY_COLOR_EFFECT);
+        ListPreference sceneMode =
+            (ListPreference) screen.findPreference(KEY_SCENE_MODE);
 
         // Modify video duration settings.
         // The first entry is for MMS video duration, and we need to fill in the
@@ -91,6 +94,8 @@ public class CameraSettingsHelper {
                 whiteBalance, mParameters.getSupportedWhiteBalance());
         filterUnsupportedOptions(screen,
                 colorEffect, mParameters.getSupportedColorEffects());
+        filterUnsupportedOptions(screen,
+                sceneMode, mParameters.getSupportedSceneModes());
 
         setDefaultIfNull(
                 KEY_JPEG_QUALITY, R.string.pref_camera_jpegquality_default);

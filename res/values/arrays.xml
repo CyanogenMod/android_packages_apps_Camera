@@ -145,4 +145,36 @@
         <item>blue-tint</item>
         <item>green-tint</item>
     </string-array>
+
+    <!-- Camera Preferences Scene Mode dialog box entries -->
+    <string-array name="pref_camera_scenemode_entries" translatable="fasle">
+        <item>@string/pref_camera_scenemode_entry_auto</item>
+        <item>@string/pref_camera_scenemode_entry_action</item>
+        <item>@string/pref_camera_scenemode_entry_portrait</item>
+        <item>@string/pref_camera_scenemode_entry_landscape</item>
+        <item>@string/pref_camera_scenemode_entry_night</item>
+        <item>@string/pref_camera_scenemode_entry_night_portrait</item>
+        <item>@string/pref_camera_scenemode_entry_theatre</item>
+        <item>@string/pref_camera_scenemode_entry_beach</item>
+        <item>@string/pref_camera_scenemode_entry_snow</item>
+        <item>@string/pref_camera_scenemode_entry_sunset</item>
+        <item>@string/pref_camera_scenemode_entry_steadyphoto</item>
+        <item>@string/pref_camera_scenemode_entry_fireworks</item>
+    </string-array>
+
+    <!-- Do not localize entryvalues -->
+    <string-array name="pref_camera_scenemode_entryvalues" translatable="false">
+        <item>auto</item>
+        <item>action</item>
+        <item>portrait</item>
+        <item>landscape</item>
+        <item>night</item>
+        <item>night-portrait</item>
+        <item>theatre</item>
+        <item>beach</item>
+        <item>snow</item>
+        <item>sunset</item>
+        <item>steadyphoto</item>
+        <item>fireworks</item>
+    </string-array>
 </resources>
