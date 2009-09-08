@@ -745,20 +745,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        for (int i = 1; i <= MenuHelper.MENU_ITEM_MAX; i++) {
-            if (i != MenuHelper.GENERIC_ITEM) {
-                menu.setGroupVisible(i, false);
-            }
-        }
-
-        menu.setGroupVisible(MenuHelper.VIDEO_MODE_ITEM, true);
-        return true;
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
@@ -1018,38 +1004,22 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, this, false);
-        {
-            MenuItem gallery =
-                    menu.add(MenuHelper.IMAGE_MODE_ITEM, MENU_GALLERY_PHOTOS, 0,
-                    R.string.camera_gallery_photos_text)
-                    .setOnMenuItemClickListener(
-                        new OnMenuItemClickListener() {
-                            public boolean onMenuItemClick(MenuItem item) {
-                                gotoGallery();
-                                return true;
-                            }
-                        });
-            gallery.setIcon(android.R.drawable.ic_menu_gallery);
-            mGalleryItems.add(gallery);
-        }
-        {
-            MenuItem gallery =
-                    menu.add(MenuHelper.VIDEO_MODE_ITEM, MENU_GALLERY_VIDEOS, 0,
-                    R.string.camera_gallery_photos_text)
-                    .setOnMenuItemClickListener(
-                        new OnMenuItemClickListener() {
-                            public boolean onMenuItemClick(MenuItem item) {
-                                gotoGallery();
-                                return true;
-                            }
-                        });
-            gallery.setIcon(android.R.drawable.ic_menu_gallery);
-            mGalleryItems.add(gallery);
-        }
+
+        MenuItem gallery =
+                menu.add(0, MENU_GALLERY_VIDEOS, 0,
+                R.string.camera_gallery_photos_text)
+                .setOnMenuItemClickListener(
+                    new OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            gotoGallery();
+                            return true;
+                        }
+                    });
+        gallery.setIcon(android.R.drawable.ic_menu_gallery);
+        mGalleryItems.add(gallery);
 
         MenuItem item =
-                menu.add(MenuHelper.GENERIC_ITEM, MENU_SETTINGS, 0,
-                R.string.settings)
+                menu.add(0, MENU_SETTINGS, 0, R.string.settings)
                 .setOnMenuItemClickListener(
                     new OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
