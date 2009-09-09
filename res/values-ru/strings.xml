@@ -152,7 +152,6 @@
     <skip />
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Авто"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Бесконечность"</string>
-    <string name="pref_camera_focusmode_value_infinity" msgid="3629041045019224450">"бесконечность"</string>
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Режим фокусировки"</string>
     <string name="camerasettings" msgid="2433519618178453928">"Настройки"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Нет мультимедийных материалов."</string>
