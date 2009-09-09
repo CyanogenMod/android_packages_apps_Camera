@@ -414,6 +414,51 @@
     <!-- Settings screen, focus mode dialog title -->
     <string name="pref_camera_focusmode_dialogtitle">Focus mode</string>
 
+    <!-- Default white balance setting. Do not translate. -->
+    <string name="pref_camera_whitebalance_default">auto</string>
+
+    <!-- Settings screen, white balance dialog title -->
+    <string name="pref_camera_whitebalance_dialogtitle">White balance</string>
+
+    <!-- Settings screen, white balance title -->
+    <string name="pref_camera_whitebalance_title">White balance</string>
+
+    <!-- Settings screen, White balance dialog radio button choices -->
+    <string name="pref_camera_whitebalance_entry_auto">Auto</string>
+    <string name="pref_camera_whitebalance_entry_incandescent">Incandescent</string>
+    <string name="pref_camera_whitebalance_entry_daylight">Daylight</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent">Fluorescent</string>
+    <string name="pref_camera_whitebalance_entry_cloudy">Cloudy</string>
+    <string name="pref_camera_whitebalance_entry_twilight">Twilight</string>
+    <string name="pref_camera_whitebalance_entry_shade">Shade</string>
+    <string name="pref_camera_whitebalance_entry_warm_fluorescent">Warm Fluorescent</string>
+    <string name="pref_camera_whitebalance_entry_halogen">Halogen</string>
+
+    <!-- Settings screen, color effect dialog title -->
+    <string name="pref_camera_coloreffect_dialogtitle">Color effect</string>
+
+    <!-- Default color effect setting. Do not translate. -->
+    <string name="pref_camera_coloreffect_default">none</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Color effect</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">None</string>
+    <string name="pref_camera_coloreffect_entry_mono">Mono</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negative</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarize</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterize</string>
+    <string name="pref_camera_coloreffect_entry_whiteboard">Whiteboard</string>
+    <string name="pref_camera_coloreffect_entry_blackboard">Blackboard</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaic</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Red Tint</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blue Tint</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Green Tint</string>
+
     <!-- Menu item to go to the settings screen -->
     <string name="camerasettings">Settings</string>
 
@@ -427,7 +472,7 @@
     <!-- Preference summary for whether the user should be prompted form confirmation when deleting images  -->
     <string name="pref_gallery_confirm_delete_summary">Show confirmation before deleting a picture or video</string>
 
-   <!-- Details stuff -->
+    <!-- Details stuff -->
     <!-- Do not translate -->
     <string name="details_title_text">myvideo</string>
     <!-- Do not translate -->

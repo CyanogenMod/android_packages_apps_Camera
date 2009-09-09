@@ -46,6 +46,9 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
+    public static final String KEY_WHITE_BALANCE =
+            "pref_camera_whitebalance_key";
+    public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
     // MMS video length
@@ -60,6 +63,8 @@ public class CameraSettings extends PreferenceActivity implements
     private ListPreference mPictureSize;
     private ListPreference mJpegQuality;
     private ListPreference mFocusMode;
+    private ListPreference mWhiteBalance;
+    private ListPreference mColorEffect;
     private Parameters mParameters;
 
     @Override
@@ -79,6 +84,8 @@ public class CameraSettings extends PreferenceActivity implements
         updatePictureSizeSummary();
         updateJpegQualitySummary();
         updateFocusModeSummary();
+        updateWhiteBalanceSummary();
+        updateEffectSummary();
     }
 
     private ArrayList<String> sizeToStr(List<Size> sizes) {
@@ -97,6 +104,9 @@ public class CameraSettings extends PreferenceActivity implements
         mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
         mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
         mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
+        mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
+        mColorEffect = (ListPreference) findPreference(KEY_COLOR_EFFECT);
+
         SharedPreferences pref = getPreferenceScreen().getSharedPreferences();
         upgradePreferences(pref);
         pref.registerOnSharedPreferenceChangeListener(this);
@@ -120,6 +130,12 @@ public class CameraSettings extends PreferenceActivity implements
         ArrayList<String> pictureSizesInString = sizeToStr(pictureSizes);
         createSettings(mPictureSize, pictureSizesInString);
 
+        // Create white balance settings.
+        createSettings(mWhiteBalance, mParameters.getSupportedWhiteBalance());
+
+        // Create color effect settings.
+        createSettings(mColorEffect, mParameters.getSupportedColorEffects());
+
         // Modify video duration settings.
         // The first entry is for MMS video duration, and we need to fill in the
         // device-dependent value (in seconds).
@@ -137,6 +153,7 @@ public class CameraSettings extends PreferenceActivity implements
             mFocusMode.setValue(getString(
                 R.string.pref_camera_focusmode_default));
         }
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
     private boolean removePreference(PreferenceGroup group, Preference remove) {
@@ -153,8 +170,8 @@ public class CameraSettings extends PreferenceActivity implements
         return false;
     }
 
-    private void createSettings(ListPreference pref,
-                                List<String> supportedParam) {
+    private void createSettings(
+            ListPreference pref, List<String> supportedParam) {
         // Remove the preference if the parameter is not supported.
         if (supportedParam == null) {
             removePreference(getPreferenceScreen(), pref);
@@ -203,8 +220,16 @@ public class CameraSettings extends PreferenceActivity implements
         mJpegQuality.setSummary(mJpegQuality.getEntry());
     }
 
+    private void updateWhiteBalanceSummary() {
+        mWhiteBalance.setSummary(mWhiteBalance.getEntry());
+    }
+
     private void updateFocusModeSummary() {
         mFocusMode.setSummary(mFocusMode.getEntry());
+    }
+
+    private void updateEffectSummary() {
+        mColorEffect.setSummary(mColorEffect.getEntry());
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -219,10 +244,13 @@ public class CameraSettings extends PreferenceActivity implements
             updateJpegQualitySummary();
         } else if (key.equals(KEY_FOCUS_MODE)) {
             updateFocusModeSummary();
+        } else if (key.equals(KEY_WHITE_BALANCE)) {
+            updateWhiteBalanceSummary();
+        } else if (key.equals(KEY_COLOR_EFFECT)) {
+            updateEffectSummary();
         }
     }
 
-    private static final String TAG = "CameraSettings";
     public static void upgradePreferences(SharedPreferences pref) {
         int version;
         try {
