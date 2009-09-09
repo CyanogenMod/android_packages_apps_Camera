@@ -15,226 +15,208 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="all_images">"Alle bilder"</string>
-    <string name="all_videos">"Alle videoer"</string>
-    <string name="camera_label">"Kamera"</string>
-    <string name="video_camera_label">"Video"</string>
-    <string name="gallery_picker_label">"Galleri"</string>
-    <string name="gallery_camera_bucket_name">"Bilder fra kamera"</string>
-    <string name="gallery_camera_videos_bucket_name">"Videoer fra kamera"</string>
-    <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
+    <!-- no translation found for camera_error_title (1202232535191653443) -->
     <skip />
-    <string name="switch_to_video_lable">"Bytt til video"</string>
-    <string name="switch_to_camera_lable">"Bytt til kamera"</string>
-    <string name="crop_label">"Beskjær bilde"</string>
-    <string name="view_label">"Se på bilde"</string>
-    <string name="preferences_label">"Kamerainnstillinger"</string>
-    <string name="wait">"Vent litt…"</string>
-    <string name="no_storage">"Sett inn et minnekort før du bruker kameraet."</string>
-    <string name="not_enough_space">"Minnekortet er fullt."</string>
-    <string name="preparing_sd">"Forbereder minnekort…"</string>
-    <string name="wallpaper">"Setter bakgrunnsbilde, vent litt…"</string>
-    <string name="savingImage">"Lagrer bilde…"</string>
-    <string name="runningFaceDetection">"Vent litt…"</string>
-    <string name="settings">"Innstillinger"</string>
-    <string name="view">"Vis"</string>
-    <string name="details">"Detaljer"</string>
-    <!-- no translation found for show_on_map (441725587731006228) -->
+    <!-- no translation found for cannot_connect_camera (8029009101380114174) -->
     <skip />
-    <string name="rotate">"Roter"</string>
-    <string name="rotate_left">"Roter mot venstre"</string>
-    <string name="rotate_right">"Roter mot høyre"</string>
-    <string name="slide_show">"Lysbildevisning"</string>
-    <!-- no translation found for multiselect (4761682939945434146) -->
+    <string name="all_images" msgid="1195501551939178807">"Alle bilder"</string>
+    <string name="all_videos" msgid="3380966619230896013">"Alle videoer"</string>
+    <string name="camera_label" msgid="6346560772074764302">"Kamera"</string>
+    <string name="video_camera_label" msgid="2899292505526427293">"Video"</string>
+    <string name="gallery_picker_label" msgid="3080425245006492787">"Galleri"</string>
+    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Bilder fra kamera"</string>
+    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videoer fra kamera"</string>
+    <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Kameramedier"</string>
+    <string name="switch_to_video_lable" msgid="4525451949497982385">"Bytt til video"</string>
+    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Bytt til kamera"</string>
+    <string name="crop_label" msgid="521114301871349328">"Beskjær bilde"</string>
+    <string name="view_label" msgid="4450531507947335704">"Se på bilde"</string>
+    <string name="preferences_label" msgid="5955678162525051163">"Kamerainnstillinger"</string>
+    <string name="wait" msgid="8600187532323801552">"Vent litt…"</string>
+    <string name="no_storage" msgid="820691042667338625">"Sett inn et minnekort før du bruker kameraet."</string>
+    <string name="not_enough_space" msgid="6655334407957844653">"Minnekortet er fullt."</string>
+    <string name="preparing_sd" msgid="2914969119574812666">"Forbereder minnekort…"</string>
+    <string name="wallpaper" msgid="9222901738515471972">"Setter bakgrunnsbilde, vent litt…"</string>
+    <string name="savingImage" msgid="3051745378545909260">"Lagrer bilde…"</string>
+    <string name="runningFaceDetection" msgid="2293932204708167704">"Vent litt…"</string>
+    <string name="settings" msgid="1534847740615665736">"Innstillinger"</string>
+    <string name="view" msgid="6277795271119411881">"Vis"</string>
+    <string name="details" msgid="8415120088556445230">"Detaljer"</string>
+    <string name="show_on_map" msgid="441725587731006228">"Vis i Maps"</string>
+    <string name="rotate" msgid="460017689320955494">"Roter"</string>
+    <string name="rotate_left" msgid="5888273317282539839">"Roter mot venstre"</string>
+    <string name="rotate_right" msgid="6776325835923384839">"Roter mot høyre"</string>
+    <string name="slide_show" msgid="1965192737233824143">"Lysbildevisning"</string>
+    <string name="multiselect" msgid="4761682939945434146">"Flervalg"</string>
+    <string name="capture_picture" msgid="4114265595549284643">"Ta bilde"</string>
+    <string name="capture_video" msgid="4047046282358697155">"Ta opp video"</string>
+    <string name="crop_save_text" msgid="8140440041190264400">"Lagre"</string>
+    <string name="crop_discard_text" msgid="5303657888280340603">"Forkast"</string>
+    <string name="confirm_delete_title" msgid="263478358046514887">"Slett"</string>
+    <string name="confirm_delete_message" msgid="4161389939579284604">"Bildet vil bli slettet."</string>
+    <string name="confirm_delete_video_message" msgid="5796154324948010221">"Videoen vil bli slettet."</string>
+    <string name="confirm_delete_multiple_message" msgid="5962369828035778779">"Disse mediefilene vil bli slettet."</string>
+    <string name="review_toss" msgid="7255331999518617841">"Slett"</string>
+    <string name="review_share" msgid="7294755861072174509">"Del"</string>
+    <string name="review_set" msgid="8304758352155378636">"Bruk som"</string>
+    <string name="review_play" msgid="6015456244323302817">"Spill"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"Avbryt"</string>
+    <string name="review_done" msgid="5417465988786728114">"Ferdig"</string>
+    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_retake" msgid="7804864054896088338">"Ta på nytt"</string>
+    <string name="camera_toss" msgid="3781186798552460833">"Slett"</string>
+    <string name="camera_gallery" msgid="815753042966032398">"Galleri"</string>
+    <string name="camera_share" msgid="8207701858325694182">"Del"</string>
+    <string name="camera_set" msgid="3422192914806971182">"Bruk som"</string>
+    <string name="camera_play" msgid="8248000517869959980">"Spill"</string>
+    <string name="camera_attach" msgid="4048659554893435232">"Legg ved"</string>
+    <string name="camera_cancel" msgid="8203341746672085747">"Avbryt"</string>
+    <string name="camera_crop" msgid="5584000454518174632">"Beskjær"</string>
+    <!-- no translation found for no_way_to_share_image (5011985309980187927) -->
     <skip />
-    <string name="capture_picture">"Ta bilde"</string>
-    <string name="capture_video">"Ta opp video"</string>
-    <string name="crop_save_text">"Lagre"</string>
-    <string name="crop_discard_text">"Forkast"</string>
-    <string name="confirm_delete_title">"Slett"</string>
-    <string name="confirm_delete_message">"Bildet vil bli slettet."</string>
-    <string name="confirm_delete_video_message">"Videoen vil bli slettet."</string>
-    <!-- no translation found for confirm_delete_multiple_message (5962369828035778779) -->
+    <!-- no translation found for no_way_to_share_video (3684571102267072206) -->
     <skip />
-    <!-- no translation found for review_toss (7255331999518617841) -->
+    <!-- no translation found for no_way_to_share (863323712875014752) -->
     <skip />
-    <!-- no translation found for review_share (7294755861072174509) -->
-    <skip />
-    <!-- no translation found for review_set (8304758352155378636) -->
-    <skip />
-    <!-- no translation found for review_play (6015456244323302817) -->
-    <skip />
-    <!-- no translation found for review_cancel (8188009385853399254) -->
-    <skip />
-    <!-- no translation found for review_done (5417465988786728114) -->
-    <skip />
-    <!-- no translation found for review_ok (5305096180300056529) -->
-    <skip />
-    <!-- no translation found for review_retake (7804864054896088338) -->
-    <skip />
-    <string name="camera_toss">"Slett"</string>
-    <string name="camera_gallery">"Galleri"</string>
-    <string name="camera_share">"Del"</string>
-    <string name="camera_set">"Bruk som"</string>
-    <string name="camera_play">"Spill"</string>
-    <string name="camera_attach">"Legg ved"</string>
-    <string name="camera_cancel">"Avbryt"</string>
-    <string name="camera_crop">"Beskjær"</string>
-    <string name="no_way_to_share_image">"Bildet kan ikke deles."</string>
-    <string name="no_way_to_share_video">"Videoen kan ikke deles."</string>
-    <string name="video_play">"Spill"</string>
-    <string name="camera_gallery_photos_text">"Galleri"</string>
-    <string name="camera_pick_wallpaper">"Bilder"</string>
-    <string name="camera_setas_wallpaper">"Bakgrunnsbilder"</string>
-    <string name="pref_gallery_category">"Generelle innstillinger"</string>
-    <string name="pref_slideshow_category">"Innstillinger for lysbildevisning"</string>
-    <string name="pref_camera_general_settings_category">"Generelle innstillinger"</string>
-    <string name="pref_gallery_size_title">"Bildestørrelse"</string>
-    <string name="pref_gallery_size_summary">"Velg hvor stort bilder skal vises"</string>
-    <string name="pref_gallery_size_dialogtitle">"Bildestørrelse"</string>
+    <string name="video_play" msgid="5287787282508002895">"Spill"</string>
+    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galleri"</string>
+    <string name="camera_pick_wallpaper" msgid="7026385960511811641">"Bilder"</string>
+    <string name="camera_setas_wallpaper" msgid="797463183863414289">"Bakgrunnsbilde"</string>
+    <string name="pref_gallery_category" msgid="5826488887237959433">"Generelle innstillinger"</string>
+    <string name="pref_slideshow_category" msgid="9097962086335681667">"Innstillinger for lysbildevisning"</string>
+    <string name="pref_camera_general_settings_category" msgid="2135384248699549300">"Generelle innstillinger"</string>
+    <string name="pref_gallery_size_title" msgid="1363406603879434418">"Bildestørrelse"</string>
+    <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Velg hvor stort bilder skal vises"</string>
+    <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Bildestørrelse"</string>
   <string-array name="pref_gallery_size_choices">
-    <item>"Stor"</item>
-    <item>"Liten"</item>
+    <item msgid="7157691836846678936">"Stor"</item>
+    <item msgid="1033164600689216410">"Liten"</item>
   </string-array>
-    <string name="pref_gallery_sort_title">"Bildesortering"</string>
-    <string name="pref_gallery_sort_summary">"Velg i hvilken rekkefølge bildene skal sorteres"</string>
-    <string name="pref_gallery_sort_dialogtitle">"Bildesortering"</string>
+    <string name="pref_gallery_sort_title" msgid="7447949250045443386">"Bildesortering"</string>
+    <string name="pref_gallery_sort_summary" msgid="6644398051645595214">"Velg i hvilken rekkefølge bildene skal sorteres"</string>
+    <string name="pref_gallery_sort_dialogtitle" msgid="5787417105532562739">"Bildesortering"</string>
   <string-array name="pref_gallery_sort_choices">
-    <item>"Nyeste først"</item>
-    <item>"Nyeste sist"</item>
+    <item msgid="5546009539334018063">"Nyeste først"</item>
+    <item msgid="7931283047572866748">"Nyeste sist"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_interval_title">"Pause i lysbildevisning"</string>
-    <string name="pref_gallery_slideshow_interval_summary">"Velg hvor lenge hvert lysbilde skal vises"</string>
-    <string name="pref_gallery_slideshow_interval_dialogtitle">"Pause i lysbildevisning"</string>
+    <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Pause i lysbildevisning"</string>
+    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Velg hvor lenge hvert lysbilde skal vises"</string>
+    <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Pause i lysbildevisning"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
-    <item>"2 sekunder"</item>
-    <item>"3 sekunder"</item>
-    <item>"4 sekunder"</item>
+    <item msgid="3089037742117543119">"2 sekunder"</item>
+    <item msgid="738579316565625730">"3 sekunder"</item>
+    <item msgid="5670078787463530498">"4 sekunder"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title">"Lysbildeovergang"</string>
-    <string name="pref_gallery_slideshow_transition_summary">"Velg effekten som skal brukes mellom lysbilder"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle">"Lysbildevergang"</string>
+    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Lysbildeovergang"</string>
+    <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Velg effekten som skal brukes mellom lysbilder"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Lysbildevergang"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
-    <item>"Ton inn og ut"</item>
-    <item>"Skli venstre - høyre"</item>
-    <item>"Skli opp - ned"</item>
-    <item>"Tilfeldig"</item>
+    <item msgid="2825716730899894863">"Ton inn og ut"</item>
+    <item msgid="403116336404005687">"Skli venstre - høyre"</item>
+    <item msgid="4901733079450971731">"Skli opp - ned"</item>
+    <item msgid="9006732482485375438">"Tilfeldig"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_repeat_title">"Gjenta lysbildeserie"</string>
-    <string name="pref_gallery_slideshow_repeat_summary">"Vis lydbildeserie mer enn en gang"</string>
-    <string name="pref_gallery_slideshow_shuffle_title">"Stokk lysbilder"</string>
-    <string name="pref_gallery_slideshow_shuffle_summary">"Vis bilder i tilfeldig rekkefølge"</string>
-    <string name="pref_camera_recordlocation_title">"Lagre sted i bilder"</string>
-    <string name="pref_camera_recordlocation_summary">"Lagre sted i bildedata"</string>
-    <!-- no translation found for pref_camera_video_settings_category (5788821601203523037) -->
+    <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Gjenta lysbildeserie"</string>
+    <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Vis lydbildeserie mer enn én gang"</string>
+    <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Stokk lysbilder"</string>
+    <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Vis bilder i tilfeldig rekkefølge"</string>
+    <string name="pref_camera_recordlocation_title" msgid="273727672426306702">"Lagre sted i bilder"</string>
+    <string name="pref_camera_recordlocation_summary" msgid="3275371402016128548">"Lagre sted i bildedata"</string>
+    <string name="pref_camera_video_settings_category" msgid="5788821601203523037">"Videoinnstillinger"</string>
+    <!-- no translation found for pref_camera_videoquality_title (4127153321803677407) -->
     <skip />
-    <string name="pref_camera_videoquality_title">"Videokvalitet"</string>
-    <string name="pref_camera_videoquality_entry_0">"Lav (for MMS-meldinger)"</string>
-    <string name="pref_camera_videoquality_entry_1">"Høy (for minnekort)"</string>
-    <string name="pref_camera_videoquality_dialogtitle">"Videokvalitet"</string>
-    <!-- no translation found for pref_camera_video_duration_title (3659987702892910722) -->
+    <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Lav (for MMS-meldinger)"</string>
+    <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Høy (for minnekort)"</string>
+    <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Videokvalitet"</string>
+    <!-- no translation found for pref_camera_video_duration_title (8049279326917441484) -->
     <skip />
-    <!-- no translation found for pref_camera_video_duration_entry_10 (664455443394175885) -->
+    <!-- no translation found for pref_camera_video_duration_entry_mms (9067623003661464481) -->
     <skip />
-    <!-- no translation found for pref_camera_video_duration_entry_30 (1197298883102352735) -->
+    <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 minutter"</string>
+    <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 minutter"</string>
+    <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Videolengde"</string>
+    <string name="pref_camera_picture_settings_category" msgid="1513001949820030759">"Bildeinnstillinger"</string>
+    <!-- no translation found for pref_camera_picturesize_title (4333724936665883006) -->
     <skip />
-    <!-- no translation found for pref_camera_video_duration_dialogtitle (5762031980003877975) -->
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="2293389043895753549">"5M (2592x1936)"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="7304479270077279178">"3M (2048x1536)"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="6722733164421134734">"2M (1600x1200)"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6648351357102402892">"1M (1024x768)"</string>
+    <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Bildestørrelse"</string>
+    <!-- no translation found for pref_camera_jpegquality_title (6074540285403193970) -->
     <skip />
-    <!-- no translation found for pref_camera_picture_settings_category (1513001949820030759) -->
+    <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Ekstra fin"</string>
+    <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fin"</string>
+    <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normal"</string>
+    <string name="pref_camera_jpegquality_dialogtitle" msgid="18195886066728203">"Bildekvalitet"</string>
+    <!-- no translation found for pref_camera_focusmode_title (2877248921829329127) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_title (8391466986280182397) -->
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Autofokus"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Uendelig"</string>
+    <string name="pref_camera_focusmode_value_infinity" msgid="3629041045019224450">"uendelig"</string>
+    <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Fokustype"</string>
+    <string name="camerasettings" msgid="2433519618178453928">"Innstillinger"</string>
+    <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Fant ingen bilder."</string>
+    <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Bekreft sletting"</string>
+    <string name="pref_gallery_confirm_delete_summary" msgid="5253456492765525245">"Vis bekreftelse før bilder slettes"</string>
+    <string name="no_location_image" msgid="6929172123058811834">"Bildet inneholder ingen stedsinformasjon."</string>
+    <string name="details_panel_title" msgid="4753347516759338122">"Detaljer"</string>
+    <string name="details_file_size" msgid="2468878774843246797">"Filstørrelse:"</string>
+    <string name="details_image_resolution" msgid="8773315928100529437">"Oppløsning:"</string>
+    <string name="details_image_make" msgid="2888477930210903540">"Produsent:"</string>
+    <string name="details_image_model" msgid="3608007849933924336">"Modell:"</string>
+    <string name="details_image_whitebalance" msgid="4412514247882436065">"Hvitbalanse:"</string>
+    <string name="details_image_latitude" msgid="6701704806314765468">"GPS-breddegrad:"</string>
+    <string name="details_image_longitude" msgid="5583629669864057389">"GPS-lengdegrad:"</string>
+    <string name="details_image_location" msgid="6460201074393148978">"Sted:"</string>
+    <string name="details_duration" msgid="1028116471387901402">"Varighet:"</string>
+    <string name="details_date_taken" msgid="348356840586463178">"Dato tatt:"</string>
+    <string name="details_frame_rate" msgid="122397836963498191">"Bildefrekvens:"</string>
+    <string name="details_bit_rate" msgid="5632311789455402186">"Bitrate:"</string>
+    <string name="details_codec" msgid="5580300450432398126">"Kodek:"</string>
+    <string name="details_format" msgid="3700860266600796363">"Format:"</string>
+    <!-- no translation found for details_dimension_x (4923037334136168978) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (7304479270077279178) -->
+    <!-- no translation found for details_ms (7574063760642857397) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (6722733164421134734) -->
+    <!-- no translation found for details_hms (772340067838331166) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (6648351357102402892) -->
+    <!-- no translation found for details_fps (5450871169477340537) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_dialogtitle (2741153309776113961) -->
+    <!-- no translation found for details_kbps (1515369011744784592) -->
     <skip />
-    <!-- no translation found for pref_camera_jpegquality_title (3045390831339734843) -->
+    <!-- no translation found for details_mbps (3291428849607323284) -->
     <skip />
-    <!-- no translation found for pref_camera_jpegquality_entry_superfine (4087830022547613205) -->
+    <string name="details_ok" msgid="6848594369924424312">"OK"</string>
+    <string name="context_menu_header" msgid="1185348426222302182">"Bildeinnstillinger"</string>
+    <string name="video_context_menu_header" msgid="7318971116949475029">"Videoinnstillinger"</string>
+    <string name="multiface_crop_help" msgid="3127018992717032779">"Trykk på et ansikt for å begynne."</string>
+    <string name="photos_gallery_title" msgid="6914406246471015448">"Galleri"</string>
+    <string name="pick_photos_gallery_title" msgid="12912682424915943">"Velg bilde"</string>
+    <string name="videos_gallery_title" msgid="6150354029982749479">"Galleri"</string>
+    <string name="pick_videos_gallery_title" msgid="326727095201227333">"Velg video"</string>
+    <string name="loading_progress_format_string" msgid="7401961873257843731">"<xliff:g id="COUNTER">%d</xliff:g> gjenstår"</string>
+    <string name="sendImage" msgid="7279510542799399570">"Del bilde via"</string>
+    <string name="setImage" msgid="7246975856983303047">"Bruk bilde som"</string>
+    <string name="sendVideo" msgid="3598567735831863073">"Del video via"</string>
+    <!-- no translation found for send_media_files (8201083279723850611) -->
     <skip />
-    <!-- no translation found for pref_camera_jpegquality_entry_fine (4474043704802385370) -->
+    <string name="movieviewlabel" msgid="7363495772706775465">"Filmer"</string>
+    <string name="loading_video" msgid="4013492720121891585">"Laster video…"</string>
+    <string name="spaceIsLow_content" msgid="2848517537672543641">"Minnekortet begynner å gå tom for plass. Endre kvalitetsinnstillingen eller slett bilder fra galleriet."</string>
+    <string name="resume_playing_title" msgid="8996677350649355013">"Fortsett avspilling"</string>
+    <!-- no translation found for resume_playing_message (7293000708492271389) -->
     <skip />
-    <!-- no translation found for pref_camera_jpegquality_entry_normal (1274801937207351293) -->
-    <skip />
-    <!-- no translation found for pref_camera_jpegquality_dialogtitle (18195886066728203) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_title (3829707410870789496) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_entry_auto (7374820710300362457) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_entry_infinity (3413922419264967552) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_value_infinity (3629041045019224450) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_dialogtitle (3464580667965511167) -->
-    <skip />
-    <string name="camerasettings">"Innstillinger"</string>
-    <string name="image_gallery_NoImageView_text">"Fant ingen bilder."</string>
-    <string name="pref_gallery_confirm_delete_title">"Bekreft sletting"</string>
-    <string name="pref_gallery_confirm_delete_summary">"Vis bekreftelse før bilder slettes"</string>
-    <!-- no translation found for no_location_image (6929172123058811834) -->
-    <skip />
-    <string name="details_panel_title">"Detaljer"</string>
-    <string name="details_file_size">"Filstørrelse:"</string>
-    <string name="details_image_resolution">"Oppløsning:"</string>
-    <!-- no translation found for details_image_make (2888477930210903540) -->
-    <skip />
-    <!-- no translation found for details_image_model (3608007849933924336) -->
-    <skip />
-    <!-- no translation found for details_image_whitebalance (4412514247882436065) -->
-    <skip />
-    <!-- no translation found for details_image_latitude (6701704806314765468) -->
-    <skip />
-    <!-- no translation found for details_image_longitude (5583629669864057389) -->
-    <skip />
-    <!-- no translation found for details_image_location (6460201074393148978) -->
-    <skip />
-    <string name="details_duration">"Varighet:"</string>
-    <string name="details_date_taken">"Dato tatt:"</string>
-    <string name="details_frame_rate">"Bildefrekvens:"</string>
-    <string name="details_bit_rate">"Bitrate:"</string>
-    <string name="details_codec">"Kodek:"</string>
-    <string name="details_format">"Format:"</string>
-    <string name="details_dimension_x">"%1$d x %2$d"</string>
-    <string name="details_ms">"%1$02d:%2$02d"</string>
-    <string name="details_hms">"%1$d:%2$02d:%3$02d"</string>
-    <string name="details_fps">"%1$d fps"</string>
-    <string name="details_kbps">"%1$d kbps"</string>
-    <string name="details_mbps">"%1$g Mbps"</string>
-    <string name="details_ok">"OK"</string>
-    <string name="context_menu_header">"Bildeinnstillinger"</string>
-    <string name="video_context_menu_header">"Videoinnstillinger"</string>
-    <string name="multiface_crop_help">"Trykk på et ansikt for å begynne."</string>
-    <string name="photos_gallery_title">"Galleri"</string>
-    <string name="pick_photos_gallery_title">"Velg bilde"</string>
-    <string name="videos_gallery_title">"Galleri"</string>
-    <string name="pick_videos_gallery_title">"Velg video"</string>
-    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> gjenstår"</string>
-    <string name="sendImage">"Del bilde via"</string>
-    <string name="setImage">"Bruk bilde som"</string>
-    <string name="sendVideo">"Del video via"</string>
-    <string name="movieviewlabel">"Filmer"</string>
-    <string name="loading_video">"Laster video…"</string>
-    <string name="spaceIsLow_content">"Minnekortet begynner å gå tom for plass. Endre kvalitetsinnstillingen eller slett bilder fra galleriet."</string>
-    <string name="resume_playing_title">"Fortsett avspilling"</string>
-    <string name="resume_playing_message">"Fortsett avspilling fra %s?"</string>
-    <string name="resume_playing_resume">"Fortsett avspilling"</string>
-    <string name="resume_playing_restart">"Begynn på nytt"</string>
-    <string name="gadget_title">"Bilderamme"</string>
-    <string name="file_info_title">"Filinformasjon:"</string>
-    <string name="video_exceed_mms_limit">"Videoen er for stor til å sendes over MMS. Prøv å ta opp en kortere video."</string>
-    <!-- no translation found for multiselect_share (5261644537749253581) -->
-    <skip />
-    <!-- no translation found for multiselect_delete (9113461994546744603) -->
-    <skip />
-    <!-- no translation found for multiselect_cancel (5969428692864002165) -->
-    <skip />
-    <!-- no translation found for delete_images_message (4504926868037899430) -->
-    <skip />
-    <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
+    <string name="resume_playing_resume" msgid="3847915469173852416">"Fortsett avspilling"</string>
+    <string name="resume_playing_restart" msgid="5471008499835769292">"Begynn på nytt"</string>
+    <string name="gadget_title" msgid="259405922673466798">"Bilderamme"</string>
+    <string name="file_info_title" msgid="1628963357466012538">"Filinformasjon:"</string>
+    <string name="video_exceed_mms_limit" msgid="3835075281230780010">"Videoen er for stor til å sendes over MMS. Prøv å ta opp en kortere video."</string>
+    <string name="multiselect_share" msgid="5261644537749253581">"Del"</string>
+    <string name="multiselect_delete" msgid="9113461994546744603">"Slett"</string>
+    <string name="multiselect_cancel" msgid="5969428692864002165">"Avbryt"</string>
+    <string name="delete_images_message" msgid="4504926868037899430">"Sletter bilder, vennligst vent …"</string>
+    <string name="video_reach_size_limit" msgid="6179877322015552390">"Videoen ble for stor."</string>
+    <!-- no translation found for on_screen_menu_back (1252087782192565742) -->
     <skip />
 </resources>
