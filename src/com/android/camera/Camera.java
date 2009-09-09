@@ -895,6 +895,9 @@ public class Camera extends Activity implements View.OnClickListener,
         } catch (InterruptedException ex) {
             // ignore
         }
+
+        // Resize mVideoPreview to the right aspect ratio.
+        resizeForPreviewAspectRatio(mSurfaceView);
     }
 
     @Override
@@ -1531,6 +1534,31 @@ public class Camera extends Activity implements View.OnClickListener,
         clearFocusState();
     }
 
+    private void resizeForPreviewAspectRatio(View v) {
+        ViewGroup.LayoutParams params;
+        params = v.getLayoutParams();
+        Size size = mParameters.getPreviewSize();
+        params.width = (int) (params.height * size.width / size.height);
+        Log.v(TAG, "resize to " + params.width + "x" + params.height);
+        v.setLayoutParams(params);
+    }
+
+    private Size getOptimalPreviewSize(List<Size> sizes) {
+        Size optimalSize = null;
+        if (sizes != null) {
+            optimalSize = sizes.get(0);
+            for (int i = 1; i < sizes.size(); i++) {
+                if (Math.abs(sizes.get(i).height - mViewFinderHeight) <
+                        Math.abs(optimalSize.height - mViewFinderHeight)) {
+                    optimalSize = sizes.get(i);
+                }
+            }
+            Log.v(TAG, "Optimal preview size is " + optimalSize.width + "x"
+                    + optimalSize.height);
+        }
+        return optimalSize;
+    }
+
     private void setCameraParameter() {
         mParameters = mCameraDevice.getParameters();
 
@@ -1542,8 +1570,12 @@ public class Camera extends Activity implements View.OnClickListener,
             mParameters.setPreviewFrameRate(max);
         }
 
-        // Set preview size.
-        mParameters.setPreviewSize(mViewFinderWidth, mViewFinderHeight);
+        // Set a preview size that is closest to the viewfinder height.
+        List<Size> sizes = mParameters.getSupportedPreviewSizes();
+        Size optimalSize = getOptimalPreviewSize(sizes);
+        if (optimalSize != null) {
+            mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
+        }
 
         // Set picture size.
         String pictureSize = mPreferences.getString(
