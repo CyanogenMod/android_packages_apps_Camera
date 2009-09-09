@@ -459,6 +459,29 @@
     <string name="pref_camera_coloreffect_entry_bluetint">Blue Tint</string>
     <string name="pref_camera_coloreffect_entry_greentint">Green Tint</string>
 
+    <!-- Default scene mode setting. Do not translate. -->
+    <string name="pref_camera_scenemode_default" translatable="false">auto</string>
+
+    <!-- Settings screen, Select Scene mode -->
+    <string name="pref_camera_scenemode_title">Scene mode</string>
+
+    <!-- Settings screen, Select Scene mode -->
+    <string name="pref_camera_scenemode_dialogtitle">Scene mode</string>
+
+    <!-- Settings menu, scene mode choices -->
+    <string name="pref_camera_scenemode_entry_auto">Auto</string>
+    <string name="pref_camera_scenemode_entry_action">Action</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portrait</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landscape</string>
+    <string name="pref_camera_scenemode_entry_night">Night</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">Night Portrait</string>
+    <string name="pref_camera_scenemode_entry_theatre">Theatre</string>
+    <string name="pref_camera_scenemode_entry_beach">Beach</string>
+    <string name="pref_camera_scenemode_entry_snow">Snow</string>
+    <string name="pref_camera_scenemode_entry_sunset">Sunset</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Steady Photo</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
+
     <!-- Menu item to go to the settings screen -->
     <string name="camerasettings">Settings</string>
 

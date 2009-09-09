@@ -49,6 +49,8 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_WHITE_BALANCE =
             "pref_camera_whitebalance_key";
     public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
+    public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
+
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
     // MMS video length
@@ -65,6 +67,7 @@ public class CameraSettings extends PreferenceActivity implements
     private ListPreference mFocusMode;
     private ListPreference mWhiteBalance;
     private ListPreference mColorEffect;
+    private ListPreference mSceneMode;
     private Parameters mParameters;
 
     @Override
@@ -86,6 +89,7 @@ public class CameraSettings extends PreferenceActivity implements
         updateFocusModeSummary();
         updateWhiteBalanceSummary();
         updateEffectSummary();
+        updateSceneModeSummary();
     }
 
     private ArrayList<String> sizeToStr(List<Size> sizes) {
@@ -106,6 +110,7 @@ public class CameraSettings extends PreferenceActivity implements
         mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
         mWhiteBalance = (ListPreference) findPreference(KEY_WHITE_BALANCE);
         mColorEffect = (ListPreference) findPreference(KEY_COLOR_EFFECT);
+        mSceneMode = (ListPreference) findPreference(KEY_SCENE_MODE);
 
         SharedPreferences pref = getPreferenceScreen().getSharedPreferences();
         upgradePreferences(pref);
@@ -135,6 +140,9 @@ public class CameraSettings extends PreferenceActivity implements
 
         // Create color effect settings.
         createSettings(mColorEffect, mParameters.getSupportedColorEffects());
+
+        // Create scene mode settings.
+        createSettings(mSceneMode, mParameters.getSupportedSceneModes());
 
         // Modify video duration settings.
         // The first entry is for MMS video duration, and we need to fill in the
@@ -224,6 +232,10 @@ public class CameraSettings extends PreferenceActivity implements
         mWhiteBalance.setSummary(mWhiteBalance.getEntry());
     }
 
+    private void updateSceneModeSummary() {
+        mSceneMode.setSummary(mSceneMode.getEntry());
+    }
+
     private void updateFocusModeSummary() {
         mFocusMode.setSummary(mFocusMode.getEntry());
     }
@@ -248,6 +260,8 @@ public class CameraSettings extends PreferenceActivity implements
             updateWhiteBalanceSummary();
         } else if (key.equals(KEY_COLOR_EFFECT)) {
             updateEffectSummary();
+        } else if (key.equals(KEY_SCENE_MODE)) {
+            updateSceneModeSummary();
         }
     }
 
