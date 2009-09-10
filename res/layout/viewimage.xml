@@ -46,7 +46,7 @@
             android:clickable="true"
             android:focusable="true"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:visibility="invisible"
@@ -57,23 +57,19 @@
             android:clickable="true"
             android:focusable="true"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:visibility="invisible"
             android:src="@drawable/btn_camera_arrow_right"
     />
 
-    <LinearLayout
+    <com.android.camera.EvenlySpacedLayout
             android:visibility="gone"
             android:id="@+id/action_icon_panel"
-            android:layout_alignParentRight="true"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
         <com.android.camera.ActionMenuButton
                 android:id="@+id/setas"
                 android:visibility="gone"
@@ -116,6 +112,6 @@
                 android:text="@string/camera_cancel"
                 style="@style/OnscreenActionIcon"
         />
-    </LinearLayout>
+    </com.android.camera.EvenlySpacedLayout>
 </RelativeLayout>
 

@@ -230,10 +230,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         if (mZoomButtonsController.isVisible()) {
             scheduleDismissOnScreenControls();
         }
-        if (!super.dispatchTouchEvent(m)) {
-            return mGestureDetector.onTouchEvent(m);
-        }
-        return true;
+        return super.dispatchTouchEvent(m);
     }
 
     private void updateZoomButtonsEnabled() {
@@ -258,34 +255,19 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mHandler.postDelayed(mDismissOnScreenControlRunner, 2000);
     }
 
-    private void setupOnScreenControls(final View rootView) {
-        final OnTouchListener otListener = new OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                scheduleDismissOnScreenControls();
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    showOnScreenControls();
-                }
-                return false;
-            }
-        };
-        rootView.setOnTouchListener(otListener);
-
-        setupZoomButtonController(rootView, otListener);
-
-        mNextImageView = findViewById(R.id.next_image);
-        mPrevImageView = findViewById(R.id.prev_image);
+    private void setupOnScreenControls(View rootView, View ownerView) {
+        mNextImageView = rootView.findViewById(R.id.next_image);
+        mPrevImageView = rootView.findViewById(R.id.prev_image);
 
         mNextImageView.setOnClickListener(this);
         mPrevImageView.setOnClickListener(this);
-        mNextImageView.setOnTouchListener(otListener);
-        mPrevImageView.setOnTouchListener(otListener);
+
+        setupZoomButtonController(ownerView);
+        setupOnTouchListeners(rootView);
     }
 
-    private void setupZoomButtonController(
-            final View rootView, final OnTouchListener otListener) {
-
-        mGestureDetector = new GestureDetector(this, new MyGestureListener());
-        mZoomButtonsController = new ZoomButtonsController(rootView);
+    private void setupZoomButtonController(final View ownerView) {
+        mZoomButtonsController = new ZoomButtonsController(ownerView);
         mZoomButtonsController.setAutoDismissed(false);
         mZoomButtonsController.setZoomSpeed(100);
         mZoomButtonsController.setOnZoomListener(
@@ -293,8 +275,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
             public void onVisibilityChanged(boolean visible) {
                 if (visible) {
                     updateZoomButtonsEnabled();
-                } else {
-                    rootView.setOnTouchListener(otListener);
                 }
             }
 
@@ -304,9 +284,41 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 } else {
                     mImageView.zoomOut();
                 }
+                mZoomButtonsController.setVisible(true);
                 updateZoomButtonsEnabled();
             }
         });
+    }
+
+    private void setupOnTouchListeners(View rootView) {
+        mGestureDetector = new GestureDetector(this, new MyGestureListener());
+
+        // If the user touches anywhere on the panel (including the
+        // next/prev button). We show the on-screen controls. In addition
+        // to that, if the touch is not on the prev/next button, we
+        // pass the event to the gesture detector to detect double tap.
+        final OnTouchListener buttonListener = new OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                scheduleDismissOnScreenControls();
+                return false;
+            }
+        };
+
+        OnTouchListener rootListener = new OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                buttonListener.onTouch(v, event);
+                mGestureDetector.onTouchEvent(event);
+
+                // We do not use the return value of
+                // mGestureDetector.onTouchEvent because we will not receive
+                // the "up" event if we return false for the "down" event.
+                return true;
+            }
+        };
+
+        mNextImageView.setOnTouchListener(buttonListener);
+        mPrevImageView.setOnTouchListener(buttonListener);
+        rootView.setOnTouchListener(rootListener);
     }
 
     private class MyGestureListener extends
@@ -325,6 +337,26 @@ public class ViewImage extends Activity implements View.OnClickListener {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             setMode(MODE_NORMAL);
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            showOnScreenControls();
+            scheduleDismissOnScreenControls();
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            ImageViewTouch imageView = mImageView;
+
+            // Switch between the original scale and 3x scale.
+            if (imageView.getScale() > 2F) {
+                mImageView.zoomTo(1f);
+            } else {
+                mImageView.zoomToPoint(3f, e.getX(), e.getY());
+            }
             return true;
         }
     }
@@ -415,7 +447,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
         setMode(MODE_NORMAL);
         IImage image = mAllImages.getImageAt(mCurrentPosition);
-        
+
         if (mImageMenuRunnable != null) {
             mImageMenuRunnable.gettingReadyToOpen(menu, image);
         }
@@ -605,7 +637,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
             }
         }
 
-        setupOnScreenControls(findViewById(R.id.abs));
+        setupOnScreenControls(findViewById(R.id.rootLayout), mImageView);
     }
 
     private void updateActionIcons() {
