@@ -299,9 +299,15 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
+        // These are the menu items already covered by the side buttons.
+        int sideButtons = MenuHelper.INCLUDE_DELETE_MENU
+                | MenuHelper.INCLUDE_SHARE_MENU
+                | MenuHelper.INCLUDE_SET_MENU
+                | MenuHelper.INCLUDE_VIEWPLAY_MENU;
+
         mImageMenuRunnable = MenuHelper.addImageMenuItems(
                 menu,
-                MenuHelper.INCLUDE_ALL,
+                MenuHelper.INCLUDE_ALL & ~sideButtons,
                 ReviewImage.this,
                 mHandler,
                 mDeletePhotoRunnable,
