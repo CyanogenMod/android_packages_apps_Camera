@@ -138,7 +138,6 @@
     <string name="pref_camera_focusmode_title">"Sélectionner un mode de mise au point"</string>
     <string name="pref_camera_focusmode_entry_auto">"Automatique"</string>
     <string name="pref_camera_focusmode_entry_infinity">"Infini"</string>
-    <string name="pref_camera_focusmode_value_infinity">"infini"</string>
     <string name="pref_camera_focusmode_dialogtitle">"Mode de mise au point"</string>
     <string name="camerasettings">"Paramètres"</string>
     <string name="image_gallery_NoImageView_text">"Aucun fichier trouvé."</string>

@@ -138,7 +138,6 @@
     <string name="pref_camera_focusmode_title">"Výběr režimu zaostření"</string>
     <string name="pref_camera_focusmode_entry_auto">"Automaticky"</string>
     <string name="pref_camera_focusmode_entry_infinity">"Nekonečno"</string>
-    <string name="pref_camera_focusmode_value_infinity">"nekonečno"</string>
     <string name="pref_camera_focusmode_dialogtitle">"Režim zaostření"</string>
     <string name="camerasettings">"Nastavení"</string>
     <string name="image_gallery_NoImageView_text">"Žádná média nebyla nalezena."</string>

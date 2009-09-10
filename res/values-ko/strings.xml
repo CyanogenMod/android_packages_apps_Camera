@@ -168,8 +168,6 @@
     <skip />
     <!-- no translation found for pref_camera_focusmode_entry_infinity (3413922419264967552) -->
     <skip />
-    <!-- no translation found for pref_camera_focusmode_value_infinity (3629041045019224450) -->
-    <skip />
     <!-- no translation found for pref_camera_focusmode_dialogtitle (3464580667965511167) -->
     <skip />
     <string name="camerasettings">"설정"</string>

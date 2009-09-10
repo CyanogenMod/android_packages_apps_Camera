@@ -138,7 +138,6 @@
     <string name="pref_camera_focusmode_title">"Scherpstelmodus selecteren"</string>
     <string name="pref_camera_focusmode_entry_auto">"Automatisch"</string>
     <string name="pref_camera_focusmode_entry_infinity">"Oneindig"</string>
-    <string name="pref_camera_focusmode_value_infinity">"oneindig"</string>
     <string name="pref_camera_focusmode_dialogtitle">"Scherpstelmodus"</string>
     <string name="camerasettings">"Instellingen"</string>
     <string name="image_gallery_NoImageView_text">"Geen medium gevonden."</string>

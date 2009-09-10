@@ -138,7 +138,6 @@
     <string name="pref_camera_focusmode_title">"Seleziona modalità messa a fuoco"</string>
     <string name="pref_camera_focusmode_entry_auto">"Automatico"</string>
     <string name="pref_camera_focusmode_entry_infinity">"Infinito"</string>
-    <string name="pref_camera_focusmode_value_infinity">"infinito"</string>
     <string name="pref_camera_focusmode_dialogtitle">"Modalità messa a fuoco"</string>
     <string name="camerasettings">"Impostazioni"</string>
     <string name="image_gallery_NoImageView_text">"Nessun media trovato."</string>
