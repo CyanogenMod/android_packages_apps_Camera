@@ -98,6 +98,18 @@ public class CameraHolder {
         return mCameraDevice;
     }
 
+    /**
+     * Tries to open the hardware camera. If the camera is being used or
+     * unavailable then return {@code null}.
+     */
+    public synchronized android.hardware.Camera tryOpen() {
+        try {
+            return mUsers == 0 ? open() : null;
+        } catch (CameraHardwareException e) {
+            return null;
+        }
+    }
+
     public synchronized void release() {
         Assert(mUsers == 1);
         --mUsers;
