@@ -173,13 +173,6 @@
                 android:theme="@style/Theme.DeleteImageDialog">
         </activity>
 
-        <activity android:name="CameraSettings" android:label="@string/preferences_label">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEVELOPMENT_PREFERENCE" />
-            </intent-filter>
-        </activity>
-
         <activity android:name="GallerySettings" android:label="@string/preferences_label">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

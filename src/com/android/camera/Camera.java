@@ -1761,8 +1761,8 @@ public class Camera extends Activity implements View.OnClickListener,
                 if (mSettings == null) {
                     mSettings = new OnScreenSettings(
                             findViewById(R.id.camera_preview));
-                    CameraSettingsHelper helper =
-                            new CameraSettingsHelper(Camera.this, mParameters);
+                    CameraSettings helper =
+                            new CameraSettings(Camera.this, mParameters);
                     mSettings.setPreferenceScreen(helper
                             .getPreferenceScreen(R.xml.camera_preferences));
                 }
@@ -1810,23 +1810,23 @@ public class Camera extends Activity implements View.OnClickListener,
         // ignore the events after "onPause()"
         if (mPausing) return;
 
-        if (CameraSettingsHelper.KEY_FLASH_MODE.equals(key)) {
+        if (CameraSettings.KEY_FLASH_MODE.equals(key)) {
             mParameters.setFlashMode(preferences.getString(key, "auto"));
             mCameraDevice.setParameters(mParameters);
-        } else if (CameraSettingsHelper.KEY_FOCUS_MODE.equals(key)) {
+        } else if (CameraSettings.KEY_FOCUS_MODE.equals(key)) {
             mFocusMode = preferences.getString(key,
                     getString(R.string.pref_camera_focusmode_default));
-        } else if (CameraSettingsHelper.KEY_PICTURE_SIZE.equals(key)) {
+        } else if (CameraSettings.KEY_PICTURE_SIZE.equals(key)) {
             String pictureSize = preferences.getString(key,
                     getString(R.string.pref_camera_picturesize_default));
             setCameraPictureSizeIfSupported(pictureSize);
             mCameraDevice.setParameters(mParameters);
-        } else if (CameraSettingsHelper.KEY_JPEG_QUALITY.equals(key)) {
+        } else if (CameraSettings.KEY_JPEG_QUALITY.equals(key)) {
             String jpegQuality = preferences.getString(key,
                     getString(R.string.pref_camera_jpegquality_default));
             mParameters.setJpegQuality(Integer.parseInt(jpegQuality));
             mCameraDevice.setParameters(mParameters);
-        } else if (CameraSettingsHelper.KEY_RECORD_LOCATION.equals(key)) {
+        } else if (CameraSettings.KEY_RECORD_LOCATION.equals(key)) {
             mRecordLocation = preferences.getBoolean(key, false);
             if (mRecordLocation) {
                 startReceivingLocationUpdates();
