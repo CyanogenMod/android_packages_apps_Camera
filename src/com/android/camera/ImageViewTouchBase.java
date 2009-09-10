@@ -334,6 +334,14 @@ abstract class ImageViewTouchBase extends ImageView {
         zoomTo(scale, cx, cy);
     }
 
+    protected void zoomToPoint(float scale, float pointX, float pointY) {
+        float cx = getWidth() / 2F;
+        float cy = getHeight() / 2F;
+
+        panBy(cx - pointX, cy - pointY);
+        zoomTo(scale, cx, cy);
+    }
+
     protected void zoomIn() {
         zoomIn(SCALE_RATE);
     }
