@@ -43,33 +43,24 @@ public class CameraSettingsHelper {
     private static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
     private static final String TAG = "CameraSettingsHelper";
 
-
     private final Context mContext;
     private final Parameters mParameters;
-    private final PreferenceScreen mScreen;
+    private final PreferenceManager mManager;
 
     public CameraSettingsHelper(Activity activity, Parameters parameters) {
         mContext = activity;
         mParameters = parameters;
-        PreferenceManager manager =
-                new PreferenceManager(activity, FIRST_REQUEST_CODE);
-        mScreen = manager.createPreferenceScreen(activity);
-        manager.inflateFromResource(
-                activity, R.xml.camera_preferences, mScreen);
-        initPreference(mScreen);
+        mManager = new PreferenceManager(activity, FIRST_REQUEST_CODE);
     }
 
-    public PreferenceScreen getPreferenceScreen() {
-        return mScreen;
-    }
-
-    private void setDefaultIfNull(String key, int strRes) {
-        ListPreference pref = (ListPreference) mScreen.findPreference(key);
-        if (pref.getValue() == null) pref.setValue(mContext.getString(strRes));
+    public PreferenceScreen getPreferenceScreen(int preferenceRes) {
+        PreferenceScreen screen = mManager.createPreferenceScreen(mContext);
+        mManager.inflateFromResource(mContext, preferenceRes, screen);
+        initPreference(screen);
+        return screen;
     }
 
     private void initPreference(PreferenceScreen screen) {
-
         ListPreference videoDuration =
                 (ListPreference) screen.findPreference(KEY_VIDEO_DURATION);
         ListPreference pictureSize =
@@ -79,28 +70,36 @@ public class CameraSettingsHelper {
         ListPreference colorEffect =
                 (ListPreference) screen.findPreference(KEY_COLOR_EFFECT);
         ListPreference sceneMode =
-            (ListPreference) screen.findPreference(KEY_SCENE_MODE);
+                (ListPreference) screen.findPreference(KEY_SCENE_MODE);
 
-        // Modify video duration settings.
-        // The first entry is for MMS video duration, and we need to fill in the
-        // device-dependent value (in seconds).
-        CharSequence[] entries = videoDuration.getEntries();
-        entries[0] = String.format(entries[0].toString(), MMS_VIDEO_DURATION);
+        // Since the screen could be loaded from different resources, we need
+        // to check if the preference is available here
+        if (videoDuration != null) {
+            // Modify video duration settings.
+            // The first entry is for MMS video duration, and we need to fill
+            // in the device-dependent value (in seconds).
+            CharSequence[] entries = videoDuration.getEntries();
+            entries[0] = String.format(
+                    entries[0].toString(), MMS_VIDEO_DURATION);
+        }
 
         // Filter out unsupported settings / options
-        filterUnsupportedOptions(screen, pictureSize,
-                sizeListToStringList(mParameters.getSupportedPictureSizes()));
-        filterUnsupportedOptions(screen,
-                whiteBalance, mParameters.getSupportedWhiteBalance());
-        filterUnsupportedOptions(screen,
-                colorEffect, mParameters.getSupportedColorEffects());
-        filterUnsupportedOptions(screen,
-                sceneMode, mParameters.getSupportedSceneModes());
-
-        setDefaultIfNull(
-                KEY_JPEG_QUALITY, R.string.pref_camera_jpegquality_default);
-        setDefaultIfNull(
-                KEY_FOCUS_MODE, R.string.pref_camera_focusmode_default);
+        if (pictureSize != null) {
+            filterUnsupportedOptions(screen, pictureSize, sizeListToStringList(
+                    mParameters.getSupportedPictureSizes()));
+        }
+        if (whiteBalance != null) {
+            filterUnsupportedOptions(screen,
+                    whiteBalance, mParameters.getSupportedWhiteBalance());
+        }
+        if (colorEffect != null) {
+            filterUnsupportedOptions(screen,
+                    colorEffect, mParameters.getSupportedColorEffects());
+        }
+        if (sceneMode != null) {
+            filterUnsupportedOptions(screen,
+                    sceneMode, mParameters.getSupportedSceneModes());
+        }
     }
 
     private boolean removePreference(PreferenceGroup group, Preference remove) {
