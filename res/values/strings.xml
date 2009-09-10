@@ -38,8 +38,8 @@
     <!-- label for the 'pictures application shown in the top level 'all applications' -->
     <string name="gallery_picker_label">Gallery</string>
 
-    <!-- temporary label for the image gallery before the real label is set in the activity (do not translate) -->
-    <string name="gallery_label"> </string>
+    <!-- temporary label for the image gallery before the real label is set in the activity-->
+    <string name="gallery_label" translatable="false"> </string>
 
     <!-- label for the folder that contains Camera pictures in the gallery -->
     <string name="gallery_camera_bucket_name">Camera pictures</string>
@@ -225,15 +225,13 @@
         <!-- size choice of "small" -->
         <item>Small</item>
     </string-array>
-    <!-- Do not translate. Option values in dialog that appears after selecting Picture size setting option -->
-    <string-array name="pref_gallery_size_values">
-        <!-- do not translate -->
+    <!-- Option values in dialog that appears after selecting Picture size setting option -->
+    <string-array name="pref_gallery_size_values" translatable="false">
         <item>1</item>
-        <!-- do not translate -->
         <item>0</item>
     </string-array>
-    <!-- Do not translate. Default option value in dialog that appears after selecting Picture size setting option -->
-    <string name="default_value_pref_gallery_size">1</string>
+    <!-- Default option value in dialog that appears after selecting Picture size setting option -->
+    <string name="default_value_pref_gallery_size" translatable="false">1</string>
     <!-- Settings screen, setting option name -->
     <string name="pref_gallery_sort_title">Sort order</string>
     <!-- Settings screen, setting summary text -->
@@ -247,23 +245,20 @@
         <!-- Preference choice to show "newest last" -->
         <item>Newest last</item>
     </string-array>
-    <!-- Do not translate. Option values in dialog that appears after selecting Picture sort setting option -->
-    <string-array name="pref_gallery_sort_values">
-        <!-- do not translate -->
+    <!-- Option values in dialog that appears after selecting Picture sort setting option -->
+    <string-array name="pref_gallery_sort_values" translatable="false">
         <item>descending</item>
-        <!-- do not translate -->
         <item>ascending</item>
     </string-array>
-    <!-- Do not translate. Default option value in dialog that appears after selecting Picture sort setting option -->
-    <string name="default_value_pref_gallery_sort">descending</string>
+    <!-- Default option value in dialog that appears after selecting Picture sort setting option -->
+    <string name="default_value_pref_gallery_sort" translatable="false">descending</string>
     <!-- Settings screen, setting option name -->
     <string name="pref_gallery_slideshow_interval_title">Slideshow interval</string>
     <!-- Settings screen, setting summary text -->
     <string name="pref_gallery_slideshow_interval_summary">Select how long each slide displays in the show</string>
     <!-- Title of dialog that appears after selecting Slideshow interval setting option -->
     <string name="pref_gallery_slideshow_interval_dialogtitle">Slideshow interval</string>
-    <!-- Options in dialog that appears after selecting Slideshow interval
-     setting option -->
+    <!-- Options in dialog that appears after selecting Slideshow interval setting option -->
     <string-array name="pref_gallery_slideshow_interval_choices">
         <!-- slide show interval "N seconds" where N is 2 -->
         <item>2 seconds</item>
@@ -272,17 +267,14 @@
         <!-- slide show interval "N seconds" where N is 4 -->
         <item>4 seconds</item>
     </string-array>
-    <!-- Do not translate. Option values in dialog that appears after selecting Slideshow interval setting option -->
-    <string-array name="pref_gallery_slideshow_interval_values">
-        <!-- do not translate -->
+    <!-- Option values in dialog that appears after selecting Slideshow interval setting option -->
+    <string-array name="pref_gallery_slideshow_interval_values" translatable="false">
         <item>"2"</item>
-        <!-- do not translate -->
         <item>"3"</item>
-        <!-- do not translate -->
         <item>"4"</item>
     </string-array>
-    <!-- Do not translate. Default option value in dialog that appears after selecting Slideshow interval setting option -->
-    <string name="default_value_pref_gallery_slideshow_interval">"2"</string>
+    <!-- Default option value in dialog that appears after selecting Slideshow interval setting option -->
+    <string name="default_value_pref_gallery_slideshow_interval" translatable="false">"2"</string>
     <!-- Settings screen, setting option name -->
     <string name="pref_gallery_slideshow_transition_title">Slideshow transition</string>
     <!-- Settings screen, setting summary text -->
@@ -301,19 +293,15 @@
         <!-- Slide show transition to be chosen randomly -->
         <item>Random selection</item>
     </string-array>
-    <!-- Do not translate. Option values in dialog that appears after selecting Slideshow transition setting option -->
-    <string-array name="pref_gallery_slideshow_transition_values">
-        <!-- do not translate -->
+    <!-- Option values in dialog that appears after selecting Slideshow transition setting option -->
+    <string-array name="pref_gallery_slideshow_transition_values" translatable="false">
         <item>"0"</item>
-        <!-- do not translate -->
         <item>"1"</item>
-        <!-- do not translate -->
         <item>"2"</item>
-        <!-- do not translate -->
         <item>"-1"</item>
     </string-array>
-    <!-- Do not translate. Default option value in dialog that appears after selecting Slideshow transition setting option -->
-    <string name="default_value_pref_gallery_slideshow_transition">"0"</string>
+    <!-- Default option value in dialog that appears after selecting Slideshow transition setting option -->
+    <string name="default_value_pref_gallery_slideshow_transition" translatable="false">"0"</string>
 
     <!-- Settings screen, setting check box name -->
     <string name="pref_gallery_slideshow_repeat_title">Repeat slideshow</string>
@@ -336,8 +324,8 @@
     <!-- Settings screen, Video setting category title -->
     <string name="pref_camera_video_settings_category">Video settings</string>
 
-    <!-- Default video quality setting. A numerical value. Do not translate. -->
-    <string name="pref_camera_videoquality_default">1</string>
+    <!-- Default video quality setting. A numerical value. -->
+    <string name="pref_camera_videoquality_default" translatable="false">1</string>
 
     <!-- Settings screen, Video quality title -->
     <string name="pref_camera_videoquality_title">Video quality</string>
@@ -349,8 +337,8 @@
     <!-- Settings screen, Video codec dialog title -->
     <string name="pref_camera_videoquality_dialogtitle">Video quality</string>
 
-    <!-- Default video duration setting. A numerical value. Do not translate. -->
-    <string name="pref_camera_video_duration_default">-1</string>
+    <!-- Default video duration setting. A numerical value.-->
+    <string name="pref_camera_video_duration_default" translatable="false">-1</string>
 
     <!-- Settings screen, Video duration title -->
     <string name="pref_camera_video_duration_title">Video duration</string>
@@ -368,8 +356,8 @@
     <!-- Settings screen, Picture setting category title -->
     <string name="pref_camera_picture_settings_category">Picture settings</string>
 
-    <!-- Default picture size setting. Do not translate. -->
-    <string name="pref_camera_picturesize_default">2048x1536</string>
+    <!-- Default picture size setting. -->
+    <string name="pref_camera_picturesize_default" translatable="false">2048x1536</string>
 
     <!-- Settings screen, Picture size title -->
     <string name="pref_camera_picturesize_title">Picture size</string>
@@ -383,8 +371,8 @@
     <!-- Settings screen, picture size dialog title -->
     <string name="pref_camera_picturesize_dialogtitle">Picture size</string>
 
-    <!-- Default picture quality setting. Do not translate. -->
-    <string name="pref_camera_jpegquality_default">85</string>
+    <!-- Default picture quality setting.-->
+    <string name="pref_camera_jpegquality_default" translatable="false">85</string>
 
     <!-- Settings screen, Picture quality title -->
     <string name="pref_camera_jpegquality_title">Picture quality</string>
@@ -397,8 +385,8 @@
     <!-- Settings screen, picture quality dialog title -->
     <string name="pref_camera_jpegquality_dialogtitle">Picture quality</string>
 
-    <!-- Default focus mode setting. Do not translate. -->
-    <string name="pref_camera_focusmode_default">auto</string>
+    <!-- Default focus mode setting.-->
+    <string name="pref_camera_focusmode_default" translatable="false">auto</string>
 
     <!-- Settings screen, Focus mode title -->
     <string name="pref_camera_focusmode_title">Focus mode</string>
@@ -407,15 +395,15 @@
     <string name="pref_camera_focusmode_entry_auto">Auto</string>
     <string name="pref_camera_focusmode_entry_infinity">Infinity</string>
 
-    <!-- Focus mode entry values. Do not translate. -->
-    <string name="pref_camera_focusmode_value_auto">auto</string>
-    <string name="pref_camera_focusmode_value_infinity">infinity</string>
+    <!-- Focus mode entry values.-->
+    <string name="pref_camera_focusmode_value_auto" translatable="false">auto</string>
+    <string name="pref_camera_focusmode_value_infinity" translatable="false">infinity</string>
 
     <!-- Settings screen, focus mode dialog title -->
     <string name="pref_camera_focusmode_dialogtitle">Focus mode</string>
 
-    <!-- Default white balance setting. Do not translate. -->
-    <string name="pref_camera_whitebalance_default">auto</string>
+    <!-- Default white balance setting. -->
+    <string name="pref_camera_whitebalance_default" translatable="false">auto</string>
 
     <!-- Settings screen, white balance dialog title -->
     <string name="pref_camera_whitebalance_dialogtitle">White balance</string>
@@ -437,8 +425,8 @@
     <!-- Settings screen, color effect dialog title -->
     <string name="pref_camera_coloreffect_dialogtitle">Color effect</string>
 
-    <!-- Default color effect setting. Do not translate. -->
-    <string name="pref_camera_coloreffect_default">none</string>
+    <!-- Default color effect setting. -->
+    <string name="pref_camera_coloreffect_default" translatable="false">none</string>
 
     <!-- Settings screen, Select Color effect title -->
     <string name="pref_camera_coloreffect_title">Color effect</string>
@@ -459,7 +447,7 @@
     <string name="pref_camera_coloreffect_entry_bluetint">Blue Tint</string>
     <string name="pref_camera_coloreffect_entry_greentint">Green Tint</string>
 
-    <!-- Default scene mode setting. Do not translate. -->
+    <!-- Default scene mode setting. -->
     <string name="pref_camera_scenemode_default" translatable="false">auto</string>
 
     <!-- Settings screen, Select Scene mode -->
@@ -496,28 +484,17 @@
     <string name="pref_gallery_confirm_delete_summary">Show confirmation before deleting a picture or video</string>
 
     <!-- Details stuff -->
-    <!-- Do not translate -->
-    <string name="details_title_text">myvideo</string>
-    <!-- Do not translate -->
-    <string name="details_tags_text">monster</string>
-    <!-- Do not translate -->
-    <string name="details_category_label">Category:</string>
-    <!-- Do not translate -->
-    <string name="details_description_label">Description:</string>
-    <!-- Do not translate -->
-    <string name="details_publicView_text">Public</string>
-    <!-- Do not translate -->
-    <string name="details_tags_label">Tags:</string>
-    <!-- Do not translate -->
-    <string name="details_description_text">testdescription</string>
-    <!-- Do not translate -->
-    <string name="details_title_label">Title:</string>
-    <!-- Do not translate -->
-    <string name="details_save_text">Save</string>
-    <!-- Do not translate -->
-    <string name="details_language_label">Language:</string>
-    <!-- Do not translate -->
-    <string name="details_privateView_text">Private</string>
+    <string name="details_title_text" translatable="false">myvideo</string>
+    <string name="details_tags_text" translatable="false">monster</string>
+    <string name="details_category_label" translatable="false">Category:</string>
+    <string name="details_description_label" translatable="false">Description:</string>
+    <string name="details_publicView_text" translatable="false">Public</string>
+    <string name="details_tags_label" translatable="false">Tags:</string>
+    <string name="details_description_text" translatable="false">testdescription</string>
+    <string name="details_title_label" translatable="false">Title:</string>
+    <string name="details_save_text" translatable="false">Save</string>
+    <string name="details_language_label" translatable="false">Language:</string>
+    <string name="details_privateView_text" translatable="false">Private</string>
 
     <!-- Message to show when there's no lat/lng information in the image -->
     <string name="no_location_image">No Location information contained in this image.</string>
@@ -628,8 +605,7 @@
     <!-- Title for picture frame gadget to show in list of all available gadgets -->
     <string name="gadget_title">Picture frame</string>
 
-    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat.
-         Do not localize -->
+    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
     <string name="video_file_name_format" translatable="false">"'video'-yyyy-MM-dd-HH-mm-ss"</string>
 
     <!-- Title for the file information dialog -->
