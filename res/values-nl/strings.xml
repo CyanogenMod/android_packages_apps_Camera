@@ -77,7 +77,6 @@
     <string name="camera_setas_wallpaper">"Achtergrond"</string>
     <string name="pref_gallery_category">"Algemene instellingen"</string>
     <string name="pref_slideshow_category">"Instellingen van diavoorstelling"</string>
-    <string name="pref_camera_general_settings_category">"Algemene instellingen"</string>
     <string name="pref_gallery_size_title">"Weergavegrootte"</string>
     <string name="pref_gallery_size_summary">"De weergavegrootte van foto\'s en video\'s selecteren"</string>
     <string name="pref_gallery_size_dialogtitle">"Grootte van foto"</string>
@@ -115,7 +114,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Foto\'s in willekeurige volgorde weergeven"</string>
     <string name="pref_camera_recordlocation_title">"Locatie opslaan in foto\'s"</string>
     <string name="pref_camera_recordlocation_summary">"Locatie vastleggen in de gegevens van de foto"</string>
-    <string name="pref_camera_video_settings_category">"Video-instellingen"</string>
     <string name="pref_camera_videoquality_title">"Videokwaliteit selecteren"</string>
     <string name="pref_camera_videoquality_entry_0">"Laag (voor MMS-berichten)"</string>
     <string name="pref_camera_videoquality_entry_1">"Hoog (voor SD-kaart)"</string>
@@ -124,7 +122,6 @@
     <string name="pref_camera_video_duration_entry_10">"10 minuten"</string>
     <string name="pref_camera_video_duration_entry_30">"30 minuten"</string>
     <string name="pref_camera_video_duration_dialogtitle">"Duur van video"</string>
-    <string name="pref_camera_picture_settings_category">"Foto-instellingen"</string>
     <string name="pref_camera_picturesize_title">"Grootte van foto selecteren"</string>
     <string name="pref_camera_picturesize_entry_2048x1536">"3M (2048x1536)"</string>
     <string name="pref_camera_picturesize_entry_1600x1200">"2M (1600x1200)"</string>

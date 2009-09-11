@@ -77,7 +77,6 @@
     <string name="camera_setas_wallpaper">"Fond d\'écran"</string>
     <string name="pref_gallery_category">"Paramètres généraux"</string>
     <string name="pref_slideshow_category">"Paramètres du diaporama"</string>
-    <string name="pref_camera_general_settings_category">"Paramètres généraux"</string>
     <string name="pref_gallery_size_title">"Taille d\'affichage"</string>
     <string name="pref_gallery_size_summary">"Sélectionner la taille d\'affichage des images et des vidéos"</string>
     <string name="pref_gallery_size_dialogtitle">"Taille de l\'image"</string>
@@ -115,7 +114,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Afficher les images"</string>
     <string name="pref_camera_recordlocation_title">"Enregistrer le lieu"</string>
     <string name="pref_camera_recordlocation_summary">"Enregistrer la position géographique dans les données d\'image"</string>
-    <string name="pref_camera_video_settings_category">"Paramètres vidéo"</string>
     <string name="pref_camera_videoquality_title">"Qualité vidéo"</string>
     <string name="pref_camera_videoquality_entry_0">"Basse (MMS)"</string>
     <string name="pref_camera_videoquality_entry_1">"Haute (carte SD)"</string>
@@ -124,7 +122,6 @@
     <string name="pref_camera_video_duration_entry_10">"10 minutes"</string>
     <string name="pref_camera_video_duration_entry_30">"30 minutes"</string>
     <string name="pref_camera_video_duration_dialogtitle">"Durée de la vidéo"</string>
-    <string name="pref_camera_picture_settings_category">"Paramètres d\'image"</string>
     <string name="pref_camera_picturesize_title">"Sélectionner une taille d\'image"</string>
     <string name="pref_camera_picturesize_entry_2048x1536">"3 mégapixels (2 048 x 1 536)"</string>
     <string name="pref_camera_picturesize_entry_1600x1200">"2 mégapixels (1 600 x 1 200)"</string>

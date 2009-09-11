@@ -88,7 +88,6 @@
     <string name="camera_setas_wallpaper">"Duvar Kağıdı"</string>
     <string name="pref_gallery_category">"Genel ayarlar"</string>
     <string name="pref_slideshow_category">"Slayt gösterisi ayarları"</string>
-    <string name="pref_camera_general_settings_category">"Genel ayarlar"</string>
     <string name="pref_gallery_size_title">"Görüntü boyutu"</string>
     <string name="pref_gallery_size_summary">"Resimlerin ve videoların görüntülenme boyutunu seçin"</string>
     <string name="pref_gallery_size_dialogtitle">"Resim boyutu"</string>
@@ -126,7 +125,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Resimleri rasgele sırada göster"</string>
     <string name="pref_camera_recordlocation_title">"Resimlerde konumu depola"</string>
     <string name="pref_camera_recordlocation_summary">"Konumu resim verilerinde kaydet"</string>
-    <!-- no translation found for pref_camera_video_settings_category (5788821601203523037) -->
     <skip />
     <string name="pref_camera_videoquality_title">"Video kalitesini seç"</string>
     <string name="pref_camera_videoquality_entry_0">"Düşük (MMS iletileri için)"</string>
@@ -140,7 +138,6 @@
     <skip />
     <!-- no translation found for pref_camera_video_duration_dialogtitle (5762031980003877975) -->
     <skip />
-    <!-- no translation found for pref_camera_picture_settings_category (1513001949820030759) -->
     <skip />
     <!-- no translation found for pref_camera_picturesize_title (8391466986280182397) -->
     <skip />

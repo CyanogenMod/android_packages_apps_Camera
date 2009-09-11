@@ -77,7 +77,6 @@
     <string name="camera_setas_wallpaper">"桌布"</string>
     <string name="pref_gallery_category">"一般設定"</string>
     <string name="pref_slideshow_category">"投影片設定"</string>
-    <string name="pref_camera_general_settings_category">"一般設定"</string>
     <string name="pref_gallery_size_title">"顯示大小"</string>
     <string name="pref_gallery_size_summary">"選取相片和影片的顯示大小"</string>
     <string name="pref_gallery_size_dialogtitle">"相片大小"</string>
@@ -115,7 +114,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"隨機顯示相片"</string>
     <string name="pref_camera_recordlocation_title">"在相片儲存位置資訊"</string>
     <string name="pref_camera_recordlocation_summary">"在相片中記錄位置資訊"</string>
-    <string name="pref_camera_video_settings_category">"影片設定"</string>
     <string name="pref_camera_videoquality_title">"選取影片品質"</string>
     <string name="pref_camera_videoquality_entry_0">"低 (適用於多媒體簡訊)"</string>
     <string name="pref_camera_videoquality_entry_1">"高 (適用於 SD 卡)"</string>
@@ -124,7 +122,6 @@
     <string name="pref_camera_video_duration_entry_10">"10 分鐘"</string>
     <string name="pref_camera_video_duration_entry_30">"30 分鐘"</string>
     <string name="pref_camera_video_duration_dialogtitle">"影片長度"</string>
-    <string name="pref_camera_picture_settings_category">"相片設定"</string>
     <string name="pref_camera_picturesize_title">"選取相片大小"</string>
     <string name="pref_camera_picturesize_entry_2048x1536">"3M (2048x1536)"</string>
     <string name="pref_camera_picturesize_entry_1600x1200">"2M (1600x1200)"</string>

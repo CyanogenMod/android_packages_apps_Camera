@@ -88,7 +88,6 @@
     <string name="camera_setas_wallpaper">"Bakgrunnsbilder"</string>
     <string name="pref_gallery_category">"Generelle innstillinger"</string>
     <string name="pref_slideshow_category">"Innstillinger for lysbildevisning"</string>
-    <string name="pref_camera_general_settings_category">"Generelle innstillinger"</string>
     <string name="pref_gallery_size_title">"Bildestørrelse"</string>
     <string name="pref_gallery_size_summary">"Velg hvor stort bilder skal vises"</string>
     <string name="pref_gallery_size_dialogtitle">"Bildestørrelse"</string>
@@ -126,7 +125,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Vis bilder i tilfeldig rekkefølge"</string>
     <string name="pref_camera_recordlocation_title">"Lagre sted i bilder"</string>
     <string name="pref_camera_recordlocation_summary">"Lagre sted i bildedata"</string>
-    <!-- no translation found for pref_camera_video_settings_category (5788821601203523037) -->
     <skip />
     <string name="pref_camera_videoquality_title">"Videokvalitet"</string>
     <string name="pref_camera_videoquality_entry_0">"Lav (for MMS-meldinger)"</string>
@@ -140,7 +138,6 @@
     <skip />
     <!-- no translation found for pref_camera_video_duration_dialogtitle (5762031980003877975) -->
     <skip />
-    <!-- no translation found for pref_camera_picture_settings_category (1513001949820030759) -->
     <skip />
     <!-- no translation found for pref_camera_picturesize_title (8391466986280182397) -->
     <skip />

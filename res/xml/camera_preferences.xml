@@ -14,82 +14,14 @@
      limitations under the License.
 -->
 
-<!-- This is a primitive example showing the different types of preferences available. -->
-<PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android">
-
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-      android:title="@string/pref_camera_general_settings_category">
-
+            android:title="@string/pref_camera_settings_category">
         <CheckBoxPreference
                 android:key="pref_camera_recordlocation_key"
                 android:title="@string/pref_camera_recordlocation_title"
                 android:summary="@string/pref_camera_recordlocation_summary"
                 android:defaultValue="false"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory
-      android:title="@string/pref_camera_video_settings_category">
-        <!-- android:summary is filled in by CameraSettings -->
-        <ListPreference
-                android:key="pref_camera_videoquality_key"
-                android:defaultValue="@string/pref_camera_videoquality_default"
-                android:title="@string/pref_camera_videoquality_title"
-                android:entries="@array/pref_camera_videoquality_entries"
-                android:entryValues="@array/pref_camera_videoquality_entryvalues"
-                android:dialogTitle="@string/pref_camera_videoquality_dialogtitle" />
-        <ListPreference
-                android:key="pref_camera_video_duration_key"
-                android:defaultValue="@string/pref_camera_video_duration_default"
-                android:title="@string/pref_camera_video_duration_title"
-                android:entries="@array/pref_camera_video_duration_entries"
-                android:entryValues="@array/pref_camera_video_duration_entryvalues"
-                android:dialogTitle="@string/pref_camera_video_duration_dialogtitle" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-      android:title="@string/pref_camera_picture_settings_category">
-        <!-- summary, entries, entryValues are filled in by CameraSettings -->
-        <ListPreference
-                android:key="pref_camera_picturesize_key"
-                android:defaultValue="@string/pref_camera_picturesize_default"
-                android:title="@string/pref_camera_picturesize_title"
-                android:entries="@array/pref_camera_picturesize_entries"
-                android:entryValues="@array/pref_camera_picturesize_entryvalues"
-                android:dialogTitle="@string/pref_camera_picturesize_dialogtitle" />
-
-        <ListPreference
-                android:key="pref_camera_jpegquality_key"
-                android:defaultValue="@string/pref_camera_jpegquality_default"
-                android:title="@string/pref_camera_jpegquality_title"
-                android:entries="@array/pref_camera_jpegquality_entries"
-                android:entryValues="@array/pref_camera_jpegquality_entryvalues"
-                android:dialogTitle="@string/pref_camera_jpegquality_dialogtitle" />
-
-        <ListPreference
-                android:key="pref_camera_focusmode_key"
-                android:defaultValue="@string/pref_camera_focusmode_default"
-                android:title="@string/pref_camera_focusmode_title"
-                android:entries="@array/pref_camera_focusmode_entries"
-                android:entryValues="@array/pref_camera_focusmode_entryvalues"
-                android:dialogTitle="@string/pref_camera_focusmode_dialogtitle" />
-
-        <ListPreference
-                android:key="pref_camera_whitebalance_key"
-                android:defaultValue="@string/pref_camera_whitebalance_default"
-                android:title="@string/pref_camera_whitebalance_title"
-                android:entries="@array/pref_camera_whitebalance_entries"
-                android:entryValues="@array/pref_camera_whitebalance_entryvalues"
-                android:dialogTitle="@string/pref_camera_whitebalance_dialogtitle" />
-
-        <ListPreference
-                android:key="pref_camera_coloreffect_key"
-                android:defaultValue="@string/pref_camera_coloreffect_default"
-                android:title="@string/pref_camera_coloreffect_title"
-                android:entries="@array/pref_camera_coloreffect_entries"
-                android:entryValues="@array/pref_camera_coloreffect_entryvalues"
-                android:dialogTitle="@string/pref_camera_coloreffect_dialogtitle" />
-
         <ListPreference
                 android:key="pref_camera_scenemode_key"
                 android:defaultValue="@string/pref_camera_scenemode_default"
@@ -97,5 +29,40 @@
                 android:entries="@array/pref_camera_scenemode_entries"
                 android:entryValues="@array/pref_camera_scenemode_entryvalues"
                 android:dialogTitle="@string/pref_camera_scenemode_dialogtitle" />
+        <ListPreference
+                android:key="pref_camera_whitebalance_key"
+                android:defaultValue="@string/pref_camera_whitebalance_default"
+                android:title="@string/pref_camera_whitebalance_title"
+                android:entries="@array/pref_camera_whitebalance_entries"
+                android:entryValues="@array/pref_camera_whitebalance_entryvalues"
+                android:dialogTitle="@string/pref_camera_whitebalance_dialogtitle" />
+        <ListPreference
+                android:key="pref_camera_coloreffect_key"
+                android:defaultValue="@string/pref_camera_coloreffect_default"
+                android:title="@string/pref_camera_coloreffect_title"
+                android:entries="@array/pref_camera_coloreffect_entries"
+                android:entryValues="@array/pref_camera_coloreffect_entryvalues"
+                android:dialogTitle="@string/pref_camera_coloreffect_dialogtitle" />
+        <ListPreference
+                android:key="pref_camera_picturesize_key"
+                android:defaultValue="@string/pref_camera_picturesize_default"
+                android:title="@string/pref_camera_picturesize_title"
+                android:entries="@array/pref_camera_picturesize_entries"
+                android:entryValues="@array/pref_camera_picturesize_entryvalues"
+                android:dialogTitle="@string/pref_camera_picturesize_dialogtitle" />
+        <ListPreference
+                android:key="pref_camera_jpegquality_key"
+                android:defaultValue="@string/pref_camera_jpegquality_default"
+                android:title="@string/pref_camera_jpegquality_title"
+                android:entries="@array/pref_camera_jpegquality_entries"
+                android:entryValues="@array/pref_camera_jpegquality_entryvalues"
+                android:dialogTitle="@string/pref_camera_jpegquality_dialogtitle" />
+        <ListPreference
+                android:key="pref_camera_focusmode_key"
+                android:defaultValue="@string/pref_camera_focusmode_default"
+                android:title="@string/pref_camera_focusmode_title"
+                android:entries="@array/pref_camera_focusmode_entries"
+                android:entryValues="@array/pref_camera_focusmode_entryvalues"
+                android:dialogTitle="@string/pref_camera_focusmode_dialogtitle" />
     </PreferenceCategory>
 </PreferenceScreen>

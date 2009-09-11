@@ -25,9 +25,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.hardware.Camera.Parameters;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -75,7 +77,7 @@ import java.util.HashMap;
 public class VideoCamera extends Activity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        Switcher.OnSwitchListener {
+        Switcher.OnSwitchListener, OnSharedPreferenceChangeListener {
 
     private static final String TAG = "videocamera";
 
@@ -144,6 +146,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private final Handler mHandler = new MainHandler();
+    private Parameters mParameters;
+    private OnScreenSettings mSettings;
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -217,7 +221,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         CameraSettings.upgradePreferences(mPreferences);
-        readVideoSizePreference();
+
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
+        readVideoPreferences();
 
         /*
          * To reduce startup time, we start the preview in another thread.
@@ -447,10 +453,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 : STORAGE_STATUS_OK;
     }
 
-    private void readVideoSizePreference() {
+    private void readVideoPreferences() {
         boolean videoQualityHigh =
                 getBooleanPreference(CameraSettings.KEY_VIDEO_QUALITY,
-                        CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+                CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
 
         // Set video quality.
         Intent intent = getIntent();
@@ -498,7 +504,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         super.onResume();
         mPausing = false;
 
-        readVideoSizePreference();
+        readVideoPreferences();
         if (!mPreviewing && !mStartPreviewFail) {
             try {
                 startPreview();
@@ -533,13 +539,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
     }
 
-    private void setCameraParameters() {
-        android.hardware.Camera.Parameters param;
-        param = mCameraDevice.getParameters();
-        param.setPreviewSize(mProfile.mVideoWidth, mProfile.mVideoHeight);
-        mCameraDevice.setParameters(param);
-    }
-
     private void setPreviewDisplay(SurfaceHolder holder) {
         try {
             mCameraDevice.setPreviewDisplay(holder);
@@ -562,8 +561,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mCameraDevice = CameraHolder.instance().open();
         }
 
+        mCameraDevice.lock();
         setCameraParameters();
-
         setPreviewDisplay(mSurfaceHolder);
 
         try {
@@ -606,6 +605,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         super.onPause();
 
         mPausing = true;
+
+        if (mSettings != null && mSettings.isVisible()) {
+            mSettings.setVisible(false);
+        }
 
         // This is similar to what mShutterButton.performClick() does,
         // but not quite the same.
@@ -921,6 +924,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
+            mRecorderInitialized = false;
         }
     }
 
@@ -1011,23 +1015,23 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mGalleryItems.add(gallery);
 
         MenuItem item = menu.add(Menu.NONE, Menu.NONE,
-                MenuHelper.POSITION_CAMERA_SETTING,
-                R.string.settings)
-                .setOnMenuItemClickListener(
-                    new OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            // Keep the camera instance for a while.
-                            // This avoids re-opening the camera and saves
-                            // time.
-                            CameraHolder.instance().keep();
-
-                            Intent intent = new Intent();
-                            intent.setClass(VideoCamera.this,
-                                    CameraSettings.class);
-                            startActivity(intent);
-                            return true;
-                        }
-                    });
+                MenuHelper.POSITION_CAMERA_SETTING, R.string.settings)
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                if (mSettings == null) {
+                    mSettings = new OnScreenSettings(
+                            findViewById(R.id.camera_preview));
+                    if (mParameters == null) {
+                        mParameters = mCameraDevice.getParameters();
+                    }
+                    CameraSettingsHelper helper = new CameraSettingsHelper(
+                            VideoCamera.this, mParameters);
+                    mSettings.setPreferenceScreen(helper
+                            .getPreferenceScreen(R.xml.video_preferences));
+                }
+                mSettings.setVisible(true);
+                return true;
+            }});
         item.setIcon(android.R.drawable.ic_menu_preferences);
     }
 
@@ -1341,12 +1345,60 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mHandler.sendEmptyMessageDelayed(UPDATE_RECORD_TIME, 1000);
     }
 
+    private void setCameraParameters() {
+        mParameters = mCameraDevice.getParameters();
+
+        mParameters.setPreviewSize(mProfile.mVideoWidth, mProfile.mVideoHeight);
+
+        // Set white balance parameter.
+        if (mParameters.getSupportedWhiteBalance() != null) {
+            String whiteBalance = mPreferences.getString(
+                    CameraSettings.KEY_WHITE_BALANCE,
+                    getString(R.string.pref_camera_whitebalance_default));
+            mParameters.setWhiteBalance(whiteBalance);
+        }
+
+        // Set color effect parameter.
+        if (mParameters.getSupportedColorEffects() != null) {
+            String colorEffect = mPreferences.getString(
+                    CameraSettings.KEY_COLOR_EFFECT,
+                    getString(R.string.pref_camera_coloreffect_default));
+            mParameters.setColorEffect(colorEffect);
+        }
+        mCameraDevice.setParameters(mParameters);
+    }
+
     public boolean onSwitchChanged(Switcher source, boolean onOff) {
         if (onOff == SWITCH_CAMERA) {
             MenuHelper.gotoCameraMode(this);
             finish();
         }
         return true;
+    }
+
+    public void onSharedPreferenceChanged(
+            SharedPreferences preferences, String key) {
+        // ignore the events after "onPause()" or preview has not started yet
+        if (mPausing) return;
+
+        if (CameraSettings.KEY_VIDEO_DURATION.equals(key)
+                || CameraSettings.KEY_VIDEO_QUALITY.equals(key)) {
+            readVideoPreferences();
+        }
+
+        // If mCameraDevice is not ready then we can set the parameter in
+        // startPreview().
+        if (mCameraDevice == null) return;
+
+        // we need lock the camera device before writing parameters
+        releaseMediaRecorder();
+        if (mCameraDevice.lock() == 0) {
+            setCameraParameters();
+            mCameraDevice.unlock();
+        } else {
+            Log.e(TAG, "unable to lock camera to set parameters");
+        }
+        initializeRecorder();
     }
 }
 

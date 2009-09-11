@@ -1765,8 +1765,8 @@ public class Camera extends Activity implements View.OnClickListener,
                             findViewById(R.id.camera_preview));
                     CameraSettingsHelper helper =
                             new CameraSettingsHelper(Camera.this, mParameters);
-                    PreferenceScreen screen = helper.getPreferenceScreen();
-                    mSettings.setPreferenceScreen(screen);
+                    mSettings.setPreferenceScreen(helper
+                            .getPreferenceScreen(R.xml.camera_preferences));
                 }
                 mSettings.setVisible(true);
                 return true;

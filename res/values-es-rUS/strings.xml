@@ -88,7 +88,6 @@
     <string name="camera_setas_wallpaper">"Papel tapiz"</string>
     <string name="pref_gallery_category">"Configuración general"</string>
     <string name="pref_slideshow_category">"Configuración de presentación de diapositivas"</string>
-    <string name="pref_camera_general_settings_category">"Configuración general"</string>
     <string name="pref_gallery_size_title">"Visualizar tamaño"</string>
     <string name="pref_gallery_size_summary">"Seleccionar el tamaño de visualización de imágenes y videos"</string>
     <string name="pref_gallery_size_dialogtitle">"Tamaño de imagen"</string>
@@ -126,7 +125,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary">"Mostrar imágenes en orden aleatorio"</string>
     <string name="pref_camera_recordlocation_title">"Almacenar ubicación en imágenes"</string>
     <string name="pref_camera_recordlocation_summary">"Grabar la ubicación en los datos de la imagen"</string>
-    <!-- no translation found for pref_camera_video_settings_category (5788821601203523037) -->
     <skip />
     <string name="pref_camera_videoquality_title">"Seleccionar calidad de video"</string>
     <string name="pref_camera_videoquality_entry_0">"Bajo (para mensajes MMS)"</string>
@@ -140,7 +138,6 @@
     <skip />
     <!-- no translation found for pref_camera_video_duration_dialogtitle (5762031980003877975) -->
     <skip />
-    <!-- no translation found for pref_camera_picture_settings_category (1513001949820030759) -->
     <skip />
     <!-- no translation found for pref_camera_picturesize_title (8391466986280182397) -->
     <skip />
