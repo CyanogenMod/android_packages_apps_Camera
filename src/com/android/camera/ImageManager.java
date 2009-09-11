@@ -97,6 +97,12 @@ public class ImageManager {
             mIsEmptyImageList = (in.readInt() != 0);
         }
 
+        public String toString() {
+            return String.format("ImageListParam{loc=%s,inc=%d,sort=%d," +
+                "bucket=%s,empty=%b,single=%s}", mLocation, mInclusion,
+                mSort, mBucketId, mIsEmptyImageList, mSingleImageUri);
+        }
+
         public static final Parcelable.Creator CREATOR
                 = new Parcelable.Creator() {
             public ImageListParam createFromParcel(Parcel in) {

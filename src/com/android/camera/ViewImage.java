@@ -885,6 +885,8 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private boolean init(Uri uri) {
         if (uri == null) return false;
+        Log.d(TAG, "init: uri = " + uri +
+                ", mParam = " + mParam);
         mAllImages = (mParam == null)
                 ? buildImageListFromUri(uri)
                 : ImageManager.makeImageList(getContentResolver(), mParam);
@@ -1051,12 +1053,16 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 if (resultCode == RESULT_OK) {
                     // The CropImage activity passes back the Uri of the
                     // cropped image as the Action rather than the Data.
+                    Log.d(TAG, "mSavedUri was " + mSavedUri);
                     mSavedUri = Uri.parse(data.getAction());
 
                     // if onStart() runs before, then set the returned
                     // image as currentImage.
                     if (mAllImages != null) {
                         IImage image = mAllImages.getImageForUri(mSavedUri);
+                        Log.d(TAG, "data.getAction() = " + data.getAction() +
+                                ", mSavedUri = " + mSavedUri +
+                                ", image = " + image);
                         mCurrentPosition = mAllImages.getImageIndex(image);
                         setImage(mCurrentPosition, false);
                     }
