@@ -84,7 +84,6 @@
     <string name="camera_setas_wallpaper" msgid="797463183863414289">"Bakgrunnsbilde"</string>
     <string name="pref_gallery_category" msgid="5826488887237959433">"Generelle innstillinger"</string>
     <string name="pref_slideshow_category" msgid="9097962086335681667">"Innstillinger for lysbildevisning"</string>
-    <string name="pref_camera_general_settings_category" msgid="2135384248699549300">"Generelle innstillinger"</string>
     <string name="pref_gallery_size_title" msgid="1363406603879434418">"Bildestørrelse"</string>
     <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Velg hvor stort bilder skal vises"</string>
     <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Bildestørrelse"</string>
@@ -122,7 +121,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Vis bilder i tilfeldig rekkefølge"</string>
     <string name="pref_camera_recordlocation_title" msgid="273727672426306702">"Lagre sted i bilder"</string>
     <string name="pref_camera_recordlocation_summary" msgid="3275371402016128548">"Lagre sted i bildedata"</string>
-    <string name="pref_camera_video_settings_category" msgid="5788821601203523037">"Videoinnstillinger"</string>
     <!-- no translation found for pref_camera_videoquality_title (4127153321803677407) -->
     <skip />
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Lav (for MMS-meldinger)"</string>
@@ -135,7 +133,6 @@
     <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 minutter"</string>
     <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 minutter"</string>
     <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Videolengde"</string>
-    <string name="pref_camera_picture_settings_category" msgid="1513001949820030759">"Bildeinnstillinger"</string>
     <!-- no translation found for pref_camera_picturesize_title (4333724936665883006) -->
     <skip />
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="2293389043895753549">"5M (2592x1936)"</string>

@@ -84,7 +84,6 @@
     <string name="camera_setas_wallpaper" msgid="797463183863414289">"Duvar Kağıdı"</string>
     <string name="pref_gallery_category" msgid="5826488887237959433">"Genel ayarlar"</string>
     <string name="pref_slideshow_category" msgid="9097962086335681667">"Slayt gösterisi ayarları"</string>
-    <string name="pref_camera_general_settings_category" msgid="2135384248699549300">"Genel ayarlar"</string>
     <string name="pref_gallery_size_title" msgid="1363406603879434418">"Görüntü boyutu"</string>
     <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Resimlerin ve videoların görüntülenme boyutunu seçin"</string>
     <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Resim boyutu"</string>
@@ -122,7 +121,6 @@
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Resimleri rasgele sırada göster"</string>
     <string name="pref_camera_recordlocation_title" msgid="273727672426306702">"Resimlerde konumu depola"</string>
     <string name="pref_camera_recordlocation_summary" msgid="3275371402016128548">"Konumu resim verilerinde kaydet"</string>
-    <string name="pref_camera_video_settings_category" msgid="5788821601203523037">"Video ayarları"</string>
     <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Video kalitesi"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Düşük (MMS mesajları için)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Yüksek (SD kart için)"</string>
@@ -134,7 +132,6 @@
     <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 dakika"</string>
     <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 dakika"</string>
     <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Video süresi"</string>
-    <string name="pref_camera_picture_settings_category" msgid="1513001949820030759">"Resim ayarları"</string>
     <!-- no translation found for pref_camera_picturesize_title (4333724936665883006) -->
     <skip />
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="2293389043895753549">"5M (2592x1936)"</string>
