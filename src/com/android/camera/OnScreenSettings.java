@@ -165,6 +165,7 @@ public class OnScreenSettings {
     private void showSubMenu() {
         Util.slideOut(mMainMenu, Util.DIRECTION_LEFT);
         Util.slideIn(mSubMenu, Util.DIRECTION_RIGHT);
+        mSubMenu.requestFocus();
     }
 
     private void closeSubMenu() {
@@ -420,12 +421,17 @@ public class OnScreenSettings {
 
         public void onItemClick(
                 AdapterView<?> parent, View view, int position, long id) {
-            CharSequence entry[] = mPreference.getEntries();
-            if (position <= entry.length) {
-                mPreference.setValue(
-                        mPreference.getEntryValues()[position - 1].toString());
-                notifyDataSetChanged();
+            CharSequence values[] = mPreference.getEntryValues();
+            if (position <= values.length) {
+                int idx = mPreference.findIndexOfValue(mPreference.getValue());
+                if (idx != position - 1) {
+                    mPreference.setValueIndex(position - 1);
+                    notifyDataSetChanged();
+                    return;
+                }
             }
+            // Close the sub menu when user presses on "back" or the original
+            // option.
             closeSubMenu();
         }
     }
