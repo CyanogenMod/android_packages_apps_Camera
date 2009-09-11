@@ -1516,14 +1516,6 @@ public class Camera extends Activity implements View.OnClickListener,
                     + " ms. Thread time was"
                     + (threadTimeEnd - threadTimeStart) / 1000000 + " ms.");
         }
-
-        // Currently the camera driver resets the zoom back to 1.0 after taking
-        // a picture. But setting zoom to original value from the application
-        // does not work now. Set the value to 1.0 in the app as a work-around.
-        if (mZoomButtons != null && mZoomValue != ZOOM_MIN) {
-            mZoomValue = ZOOM_MIN;
-            zoomToLevel(ZOOM_IMMEDIATE);
-        }
     }
 
     private void stopPreview() {
