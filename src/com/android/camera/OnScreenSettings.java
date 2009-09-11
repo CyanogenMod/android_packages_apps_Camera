@@ -34,6 +34,10 @@ public class OnScreenSettings {
     private static final String TAG = "OnScreenSettings";
     private static final int MSG_POST_SET_VISIBLE = 1;
 
+    public interface OnVisibilityChangedListener {
+        public void onVisibilityChanged(boolean visibility);
+    }
+
     private LayoutParams mContainerLayoutParams;
     private final Context mContext;
     private final Container mContainer;
@@ -42,6 +46,7 @@ public class OnScreenSettings {
     private ListView mMainMenu;
     private ListView mSubMenu;
     private boolean mIsVisible = false;
+    private OnVisibilityChangedListener mVisibilityListener;
 
     /**
      * When showing the on-screen settings, we add the view as a new window.
@@ -79,6 +84,11 @@ public class OnScreenSettings {
         return mIsVisible;
     }
 
+    public void setOnVisibilityChangedListener(
+            OnVisibilityChangedListener listener) {
+        mVisibilityListener = listener;
+    }
+
     public void setVisible(boolean visible) {
         if (visible) {
             if (mOwnerView.getWindowToken() == null) {
@@ -113,8 +123,16 @@ public class OnScreenSettings {
             mWindowManager.addView(mContainer, mContainerLayoutParams);
             mHandler.post(mPostedVisibleInitializer);
         } else {
+            // Reset the two menus
+            mSubMenu.setAdapter(null);
+            mSubMenu.setVisibility(View.INVISIBLE);
+            mMainMenu.setVisibility(View.VISIBLE);
+
             mWindowManager.removeView(mContainer);
             mHandler.removeCallbacks(mPostedVisibleInitializer);
+        }
+        if (mVisibilityListener != null) {
+            mVisibilityListener.onVisibilityChanged(mIsVisible);
         }
     }
 
