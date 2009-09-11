@@ -1022,7 +1022,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     if (mParameters == null) {
                         mParameters = mCameraDevice.getParameters();
                     }
-                    CameraSettingsHelper helper = new CameraSettingsHelper(
+                    CameraSettings helper = new CameraSettings(
                             VideoCamera.this, mParameters);
                     mSettings.setPreferenceScreen(helper
                             .getPreferenceScreen(R.xml.video_preferences));
