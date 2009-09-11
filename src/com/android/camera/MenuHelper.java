@@ -890,28 +890,6 @@ public class MenuHelper {
             .show();
     }
 
-    static void addSwitchModeMenuItem(
-            Menu menu, final Activity activity, boolean switchToVideo) {
-        int labelId = switchToVideo
-                ? R.string.switch_to_video_lable
-                : R.string.switch_to_camera_lable;
-        int iconId = switchToVideo
-                ? R.drawable.ic_menu_camera_video_view
-                : android.R.drawable.ic_menu_camera;
-        final String action = switchToVideo
-                ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
-                : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
-        MenuItem item = menu.add(Menu.NONE, Menu.NONE,
-                POSITION_SWITCH_CAMERA_MODE, labelId)
-                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                startCameraActivity(activity, action);
-                return true;
-            }
-        });
-        item.setIcon(iconId);
-    }
-
     private static void startCameraActivity(Activity activity, String action) {
         Intent intent = new Intent(action);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
