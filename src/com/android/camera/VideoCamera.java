@@ -77,7 +77,8 @@ import java.util.HashMap;
 public class VideoCamera extends Activity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        Switcher.OnSwitchListener, OnSharedPreferenceChangeListener {
+        Switcher.OnSwitchListener, OnSharedPreferenceChangeListener,
+        OnScreenSettings.OnVisibilityChangedListener {
 
     private static final String TAG = "videocamera";
 
@@ -1024,6 +1025,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     }
                     CameraSettings helper = new CameraSettings(
                             VideoCamera.this, mParameters);
+                    mSettings.setOnVisibilityChangedListener(VideoCamera.this);
                     mSettings.setPreferenceScreen(helper
                             .getPreferenceScreen(R.xml.video_preferences));
                 }
@@ -1031,6 +1033,14 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 return true;
             }});
         item.setIcon(android.R.drawable.ic_menu_preferences);
+    }
+
+    public void onVisibilityChanged(boolean visible) {
+        if (visible) {
+            releaseMediaRecorder();
+        } else {
+            initializeRecorder();
+        }
     }
 
     // from MediaRecorder.OnErrorListener
@@ -1389,14 +1399,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (mCameraDevice == null) return;
 
         // we need lock the camera device before writing parameters
-        releaseMediaRecorder();
         if (mCameraDevice.lock() == 0) {
             setCameraParameters();
             mCameraDevice.unlock();
         } else {
             Log.e(TAG, "unable to lock camera to set parameters");
         }
-        initializeRecorder();
     }
 }
 
