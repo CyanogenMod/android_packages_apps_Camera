@@ -1782,14 +1782,14 @@ public class Camera extends Activity implements View.OnClickListener,
         return true;
     }
 
-    public boolean onFlashModeChanged(String modeString) {
-        if (mPausing) return false;
-        mParameters.setFlashMode(modeString);
-        mCameraDevice.setParameters(mParameters);
+    public void onFlashModeChanged(String modeString) {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putString(CameraSettings.KEY_FLASH_MODE, modeString);
         editor.commit();
-        return true;
+        if (!mPausing) {
+            mParameters.setFlashMode(modeString);
+            mCameraDevice.setParameters(mParameters);
+        }
     }
 
     private void setCameraPictureSizeIfSupported(String sizeString) {
@@ -1907,8 +1907,7 @@ class FlashButton extends ImageView implements View.OnClickListener {
     private ModeChangeListener mListener;
 
     public interface ModeChangeListener {
-        // Returns true if the listener agrees to change mode.
-        public boolean onFlashModeChanged(String modeString);
+        public void onFlashModeChanged(String modeString);
     }
     public FlashButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -1944,9 +1943,10 @@ class FlashButton extends ImageView implements View.OnClickListener {
     }
 
     private void updateMode(int mode) {
-        if (mListener == null) return;
-        if (!mListener.onFlashModeChanged(MODE_STRINGS[mode])) return;
         mCurrentMode = mode;
         setImageResource(FLASH_IMAGES[mode]);
+        if (mListener != null) {
+            mListener.onFlashModeChanged(MODE_STRINGS[mode]);
+        }
     }
 }
