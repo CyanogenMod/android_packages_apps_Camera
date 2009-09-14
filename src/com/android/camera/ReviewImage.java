@@ -585,6 +585,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         mPaused = false;
 
         if (!init(mSavedUri)) {
+            Log.w(TAG, "init failed: " + mSavedUri);
             finish();
             return;
         }
@@ -614,9 +615,13 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         super.onStop();
         mPaused = true;
 
-        mGetter.cancelCurrent();
-        mGetter.stop();
-        mGetter = null;
+        // mGetter could be null if we call finish() and leave early in
+        // onStart().
+        if (mGetter != null) {
+            mGetter.cancelCurrent();
+            mGetter.stop();
+            mGetter = null;
+        }
 
         // removing all callback in the message queue
         mHandler.removeAllGetterCallbacks();
@@ -722,6 +727,19 @@ public class ReviewImage extends Activity implements View.OnClickListener {
                     // The CropImage activity passes back the Uri of the
                     // cropped image as the Action rather than the Data.
                     mSavedUri = Uri.parse(data.getAction());
+
+                    // if onStart() runs before, then set the returned
+                    // image as currentImage.
+                    if (mAllImages != null) {
+                        IImage image = mAllImages.getImageForUri(mSavedUri);
+                        // image could be null if SD card is removed.
+                        if (image == null) {
+                            finish();
+                        } else {
+                            mCurrentPosition = mAllImages.getImageIndex(image);
+                            setImage(mCurrentPosition, false);
+                        }
+                    }
                 }
                 break;
         }
