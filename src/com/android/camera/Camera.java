@@ -1845,9 +1845,13 @@ public class Camera extends Activity implements View.OnClickListener,
                     getString(R.string.pref_camera_whitebalance_default));
             mParameters.setWhiteBalance(whiteBalance);
             mCameraDevice.setParameters(mParameters);
+        } else if (CameraSettings.KEY_SCENE_MODE.equals(key)) {
+            String sceneMode = preferences.getString(key,
+                    getString(R.string.pref_camera_scenemode_default));
+            mParameters.setSceneMode(sceneMode);
+            mCameraDevice.setParameters(mParameters);
         }
     }
-
 }
 
 class FocusRectangle extends View {
