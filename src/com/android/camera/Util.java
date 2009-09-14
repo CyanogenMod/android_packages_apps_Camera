@@ -539,7 +539,7 @@ public class Util {
                 .show();
     }
 
-    public static void slideOut(View view, int to) {
+    public static Animation slideOut(View view, int to) {
         view.setVisibility(View.INVISIBLE);
         Animation anim;
         switch (to) {
@@ -560,9 +560,10 @@ public class Util {
         }
         anim.setDuration(500);
         view.startAnimation(anim);
+        return anim;
     }
 
-    public static void slideIn(View view, int from) {
+    public static Animation slideIn(View view, int from) {
         view.setVisibility(View.VISIBLE);
         Animation anim;
         switch (from) {
@@ -583,6 +584,7 @@ public class Util {
         }
         anim.setDuration(500);
         view.startAnimation(anim);
+        return anim;
     }
 
     public static <T> T checkNotNull(T object) {

@@ -85,6 +85,7 @@ import java.util.List;
 public class Camera extends Activity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         Switcher.OnSwitchListener, FlashButton.ModeChangeListener,
+        OnScreenSettings.OnVisibilityChangedListener,
         OnSharedPreferenceChangeListener {
 
     private static final String TAG = "camera";
@@ -384,6 +385,13 @@ public class Camera extends Activity implements View.OnClickListener,
                 updateZoomButtonsEnabled();
             }
         });
+    }
+
+    public void onVisibilityChanged(boolean visible) {
+        // When the on-screen setting is not displayed, we show the gripper.
+        // When the on-screen setting is displayed, we hide the gripper.
+        findViewById(R.id.btn_gripper).setVisibility(
+                visible ? View.INVISIBLE : View.VISIBLE);
     }
 
     private void zoomToLevel(String type) {
@@ -895,6 +903,8 @@ public class Camera extends Activity implements View.OnClickListener,
             mSwitcher.setOnSwitchListener(this);
             mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         }
+        findViewById(R.id.btn_gripper)
+                .setOnTouchListener(new GripperTouchListener());
 
         // Make sure preview is started.
         try {
@@ -909,6 +919,19 @@ public class Camera extends Activity implements View.OnClickListener,
 
         // Resize mVideoPreview to the right aspect ratio.
         resizeForPreviewAspectRatio(mSurfaceView);
+    }
+
+    private class GripperTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    showOnScreenSettings();
+                    return true;
+            }
+            return false;
+        }
     }
 
     @Override
@@ -926,6 +949,18 @@ public class Camera extends Activity implements View.OnClickListener,
             calculatePicturesRemaining();
         }
         updateStorageHint(mPicturesRemaining);
+    }
+
+    private void showOnScreenSettings() {
+        if (mSettings == null) {
+            mSettings = new OnScreenSettings(
+                    findViewById(R.id.camera_preview));
+            CameraSettings helper = new CameraSettings(this, mParameters);
+            mSettings.setPreferenceScreen(helper
+                    .getPreferenceScreen(R.xml.camera_preferences));
+            mSettings.setOnVisibilityChangedListener(this);
+        }
+        mSettings.expandPanel();
     }
 
     public void onClick(View v) {
@@ -1043,7 +1078,7 @@ public class Camera extends Activity implements View.OnClickListener,
             }
 
             Intent cropIntent = new Intent();
-            cropIntent.setClass(Camera.this, CropImage.class);
+            cropIntent.setClass(this, CropImage.class);
             cropIntent.setData(tempUri);
             cropIntent.putExtras(newExtras);
 
@@ -1776,15 +1811,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 MenuHelper.POSITION_CAMERA_SETTING, R.string.settings)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                if (mSettings == null) {
-                    mSettings = new OnScreenSettings(
-                            findViewById(R.id.camera_preview));
-                    CameraSettings helper =
-                            new CameraSettings(Camera.this, mParameters);
-                    mSettings.setPreferenceScreen(helper
-                            .getPreferenceScreen(R.xml.camera_preferences));
-                }
-                mSettings.setVisible(true);
+                showOnScreenSettings();
                 return true;
             }
         });

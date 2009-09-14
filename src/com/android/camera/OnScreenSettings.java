@@ -10,9 +10,12 @@ import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -32,7 +35,8 @@ import java.util.ArrayList;
 // information about adding window to WindowManager.
 public class OnScreenSettings {
     private static final String TAG = "OnScreenSettings";
-    private static final int MSG_POST_SET_VISIBLE = 1;
+    private static final int MSG_POST_SET_HIDE = 1;
+    private static final int MSG_POST_SET_VISIBLE = 2;
 
     public interface OnVisibilityChangedListener {
         public void onVisibilityChanged(boolean visibility);
@@ -45,26 +49,19 @@ public class OnScreenSettings {
     private final View mOwnerView;
     private ListView mMainMenu;
     private ListView mSubMenu;
+    private View mMainPanel;
     private boolean mIsVisible = false;
     private OnVisibilityChangedListener mVisibilityListener;
     private MainMenuAdapter mMainAdapter;
 
-    /**
-     * When showing the on-screen settings, we add the view as a new window.
-     * However, there is logic that needs to know the size of the zoom which
-     * is determined after it's laid out. Therefore, we must post this logic
-     * onto the UI thread so it will be exceuted AFTER the layout. This is
-     * the logic.
-     */
-    private Runnable mPostedVisibleInitializer;
     private final LayoutInflater mInflater;
 
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_POST_SET_VISIBLE:
-                    setVisible(true);
+                case MSG_POST_SET_HIDE:
+                    setVisible(false);
                     break;
             }
         }
@@ -91,6 +88,7 @@ public class OnScreenSettings {
     }
 
     public void setVisible(boolean visible) {
+        mHandler.removeMessages(MSG_POST_SET_VISIBLE);
         if (visible) {
             if (mOwnerView.getWindowToken() == null) {
                 /*
@@ -98,9 +96,7 @@ public class OnScreenSettings {
                  * window hasn't been created yet but it will have been by the
                  * time the looper is idle, so post the setVisible(true) call.
                  */
-                if (!mHandler.hasMessages(MSG_POST_SET_VISIBLE)) {
-                    mHandler.sendEmptyMessage(MSG_POST_SET_VISIBLE);
-                }
+                mHandler.sendEmptyMessage(MSG_POST_SET_VISIBLE);
                 return;
             }
         }
@@ -116,15 +112,8 @@ public class OnScreenSettings {
             if (mContainerLayoutParams.token == null) {
                 mContainerLayoutParams.token = mOwnerView.getWindowToken();
             }
-            if (mPostedVisibleInitializer == null) {
-                mPostedVisibleInitializer = new Runnable() {
-                    public void run() {
-                        refreshPositioningVariables();
-                    }
-                };
-            }
             mWindowManager.addView(mContainer, mContainerLayoutParams);
-            mHandler.post(mPostedVisibleInitializer);
+            refreshPositioningVariables();
         } else {
             // Reset the two menus
             mSubMenu.setAdapter(null);
@@ -132,11 +121,32 @@ public class OnScreenSettings {
             mMainMenu.setVisibility(View.VISIBLE);
 
             mWindowManager.removeView(mContainer);
-            mHandler.removeCallbacks(mPostedVisibleInitializer);
         }
         if (mVisibilityListener != null) {
             mVisibilityListener.onVisibilityChanged(mIsVisible);
         }
+    }
+
+    public void expandPanel() {
+        setVisible(true);
+        Util.slideIn(mMainPanel, Util.DIRECTION_LEFT);
+    }
+
+    public void collapsePanel() {
+        Util.slideOut(mMainPanel, Util.DIRECTION_LEFT)
+                .setAnimationListener(new AnimationListener() {
+            public void onAnimationEnd(Animation animation) {
+                // Cannot setVisible(false) here, GC will recycle something
+                // still in use and result in SEGFAULT in skia
+                mHandler.sendEmptyMessage(MSG_POST_SET_HIDE);
+            }
+
+            public void onAnimationStart(Animation animation) {
+            }
+
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
     }
 
     private void refreshPositioningVariables() {
@@ -157,8 +167,8 @@ public class OnScreenSettings {
         mContainerLayoutParams.x = mOwnerViewRawLocation[0];
         mContainerLayoutParams.y = mOwnerViewRawLocation[1];
 
-        mContainerLayoutParams.width = ownerWidth * 4 / 5;
-        mContainerLayoutParams.height = ownerHeight - 10;
+        mContainerLayoutParams.width = ownerWidth * 2 / 3;
+        mContainerLayoutParams.height = ownerHeight;
 
         if (mIsVisible) {
             mWindowManager.updateViewLayout(mContainer, mContainerLayoutParams);
@@ -193,16 +203,43 @@ public class OnScreenSettings {
 
         mInflater.inflate(R.layout.on_screen_menu, container);
 
+        mMainPanel = container.findViewById(R.id.main_panel);
         mMainMenu = (ListView) container.findViewById(R.id.menu_view);
         mSubMenu = (ListView) container.findViewById(R.id.sub_menu);
+
+        container.findViewById(R.id.btn_gripper)
+                .setOnTouchListener(new GripperTouchListener());
+
         return container;
+    }
+
+    private class GripperTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    collapsePanel();
+                    return true;
+            }
+            return false;
+        }
     }
 
     private boolean onContainerKey(KeyEvent event) {
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_BACK:
                 if (event.getAction() == KeyEvent.ACTION_UP) {
-                    setVisible(false);
+                    if (mSubMenu.getVisibility() == View.VISIBLE) {
+                        closeSubMenu();
+                    } else {
+                        collapsePanel();
+                    }
+                    return true;
+                }
+            case KeyEvent.KEYCODE_MENU:
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    collapsePanel();
                     return true;
                 }
         }
