@@ -17,5 +17,10 @@
 package com.android.camera;
 
 public class CameraHardwareException extends Exception {
+    public CameraHardwareException() {
+    }
 
+    public CameraHardwareException(Throwable t) {
+        super(t);
+    }
 }
