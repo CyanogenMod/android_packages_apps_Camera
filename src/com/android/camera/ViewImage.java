@@ -885,8 +885,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private boolean init(Uri uri) {
         if (uri == null) return false;
-        Log.d(TAG, "init: uri = " + uri +
-                ", mParam = " + mParam);
         mAllImages = (mParam == null)
                 ? buildImageListFromUri(uri)
                 : ImageManager.makeImageList(getContentResolver(), mParam);
@@ -917,6 +915,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
         mPaused = false;
 
         if (!init(mSavedUri)) {
+            Log.w(TAG, "init failed: " + mSavedUri);
             finish();
             return;
         }
@@ -949,9 +948,13 @@ public class ViewImage extends Activity implements View.OnClickListener {
         super.onStop();
         mPaused = true;
 
-        mGetter.cancelCurrent();
-        mGetter.stop();
-        mGetter = null;
+        // mGetter could be null if we call finish() and leave early in
+        // onStart().
+        if (mGetter != null) {
+            mGetter.cancelCurrent();
+            mGetter.stop();
+            mGetter = null;
+        }
         setMode(MODE_NORMAL);
 
         // removing all callback in the message queue
@@ -1053,18 +1056,19 @@ public class ViewImage extends Activity implements View.OnClickListener {
                 if (resultCode == RESULT_OK) {
                     // The CropImage activity passes back the Uri of the
                     // cropped image as the Action rather than the Data.
-                    Log.d(TAG, "mSavedUri was " + mSavedUri);
                     mSavedUri = Uri.parse(data.getAction());
 
                     // if onStart() runs before, then set the returned
                     // image as currentImage.
                     if (mAllImages != null) {
                         IImage image = mAllImages.getImageForUri(mSavedUri);
-                        Log.d(TAG, "data.getAction() = " + data.getAction() +
-                                ", mSavedUri = " + mSavedUri +
-                                ", image = " + image);
-                        mCurrentPosition = mAllImages.getImageIndex(image);
-                        setImage(mCurrentPosition, false);
+                        // image could be null if SD card is removed.
+                        if (image == null) {
+                            finish();
+                        } else {
+                            mCurrentPosition = mAllImages.getImageIndex(image);
+                            setImage(mCurrentPosition, false);
+                        }
                     }
                 }
                 break;
