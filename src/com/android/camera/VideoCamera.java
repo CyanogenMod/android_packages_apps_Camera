@@ -135,7 +135,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     boolean mPausing = false;
     boolean mPreviewing = false; // True if preview is started.
-    boolean mRecorderInitialized = false;
 
     private ContentResolver mContentResolver;
 
@@ -190,7 +189,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 stopVideoRecording();
             } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 updateAndShowStorageHint(true);
-                mRecorderInitialized = false;
                 initializeRecorder();
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
@@ -386,10 +384,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                         stopVideoRecordingAndShowAlert();
                     } else {
                         stopVideoRecordingAndGetThumbnail();
-                        mRecorderInitialized = false;
                         initializeRecorder();
                     }
-                } else if (mRecorderInitialized) {
+                } else if (mMediaRecorder != null) {
                     // If the click comes before recorder initialization, it is
                     // ignored. If users click the button during initialization,
                     // the event is put in the queue and record will be started
@@ -535,7 +532,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }, 200);
 
         if (mSurfaceHolder != null) {
-            mRecorderInitialized = false;
             mHandler.sendEmptyMessage(INIT_RECORDER);
         }
     }
@@ -723,7 +719,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (holder.isCreating()) {
             setPreviewDisplay(holder);
             mCameraDevice.unlock();
-            mRecorderInitialized = false;
             mHandler.sendEmptyMessage(INIT_RECORDER);
         }
     }
@@ -810,7 +805,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     // initializeRecorder() prepares media recorder. Return false if fails.
     private boolean initializeRecorder() {
         Log.v(TAG, "initializeRecorder");
-        if (mRecorderInitialized) return true;
+        if (mMediaRecorder != null) return true;
 
         // We will call initializeRecorder() again when the alert is hidden.
         // If the mCameraDevice is null, then this activity is going to finish
@@ -837,8 +832,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
             requestedSizeLimit = myExtras.getLong(MediaStore.EXTRA_SIZE_LIMIT);
         }
-        releaseMediaRecorder();
-
         mMediaRecorder = new MediaRecorder();
 
         mMediaRecorder.setCamera(mCameraDevice);
@@ -914,7 +907,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
             mThumbController.updateDisplayIfNeeded();
         }
-        mRecorderInitialized = true;
         return true;
     }
 
@@ -925,7 +917,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
-            mRecorderInitialized = false;
         }
     }
 
@@ -1260,7 +1251,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private void hideAlertAndInitializeRecorder() {
         hideAlert();
-        mRecorderInitialized = false;
         mHandler.sendEmptyMessage(INIT_RECORDER);
     }
 
