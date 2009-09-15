@@ -29,6 +29,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.hardware.Camera.Size;
 import android.hardware.Camera.Parameters;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -1363,6 +1364,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     getString(R.string.pref_camera_coloreffect_default));
             mParameters.setColorEffect(colorEffect);
         }
+
         mCameraDevice.setParameters(mParameters);
     }
 
@@ -1388,12 +1390,26 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // startPreview().
         if (mCameraDevice == null) return;
 
-        // we need lock the camera device before writing parameters
-        if (mCameraDevice.lock() == 0) {
-            setCameraParameters();
-            mCameraDevice.unlock();
+        // We need to restart the preview if preview size is changed.
+        Size size = mParameters.getPreviewSize();
+        if (size.width != mProfile.mVideoWidth
+                || size.height != mProfile.mVideoHeight) {
+            // It is assumed media recorder is released before
+            // onSharedPreferenceChanged, so we can close the camera here.
+            closeCamera();
+            try {
+                startPreview(); // Parameters will be set in startPreview().
+            } catch (CameraHardwareException e) {
+                showCameraBusyAndFinish();
+            }
         } else {
-            Log.e(TAG, "unable to lock camera to set parameters");
+            // we need lock the camera device before writing parameters
+            if (mCameraDevice.lock() == 0) {
+                setCameraParameters();
+                mCameraDevice.unlock();
+            } else {
+                Log.e(TAG, "unable to lock camera to set parameters");
+            }
         }
     }
 }
