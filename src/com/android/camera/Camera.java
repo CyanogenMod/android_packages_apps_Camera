@@ -1262,6 +1262,18 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private void cancelAutoFocus() {
+        // User releases half-pressed focus key.
+        if (mFocusState == FOCUSING || mFocusState == FOCUS_SUCCESS
+                || mFocusState == FOCUS_FAIL) {
+            Log.v(TAG, "Cancel autofocus.");
+            mCameraDevice.cancelAutoFocus();
+        }
+        if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
+            clearFocusState();
+        }
+    }
+
     private void clearFocusState() {
         mFocusState = FOCUS_NOT_STARTED;
         updateFocusIndicator();
@@ -1363,10 +1375,7 @@ public class Camera extends Activity implements View.OnClickListener,
             if (pressed) {  // Focus key down.
                 autoFocus();
             } else {  // Focus key up.
-                if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
-                    // User releases half-pressed focus key.
-                    clearFocusState();
-                }
+                cancelAutoFocus();
             }
         }
     }
