@@ -371,6 +371,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        if (mPaused) return false;
 
         IImage image = mAllImages.getImageAt(mCurrentPosition);
         if (mImageMenuRunnable != null) {
