@@ -43,7 +43,7 @@ import java.util.HashMap;
 public class Image extends BaseImage implements IImage {
     private static final String TAG = "BaseImage";
 
-    private HashMap<String, String> mExifData;
+    private ExifInterface mExif;
 
     private int mRotation;
 
@@ -98,10 +98,10 @@ public class Image extends BaseImage implements IImage {
      * @param value
      */
     public void replaceExifTag(String tag, String value) {
-        if (mExifData == null) {
+        if (mExif == null) {
             loadExifData();
         }
-        mExifData.put(tag, value);
+        mExif.setAttribute(tag, value);
     }
 
     public void saveImageContents(Bitmap image, byte [] jpegData,
@@ -112,12 +112,16 @@ public class Image extends BaseImage implements IImage {
     }
 
     private void loadExifData() {
-        mExifData = ExifInterface.loadExifData(mDataPath);
+        try {
+            mExif = new ExifInterface(mDataPath);
+        } catch (IOException ex) {
+            Log.e(TAG, "cannot read exif", ex);
+        }
     }
 
-    private void saveExifData() {
-        if (mExifData != null) {
-            ExifInterface.saveExifData(mDataPath, mExifData);
+    private void saveExifData() throws IOException {
+        if (mExif != null) {
+            mExif.saveAttributes();
         }
     }
 
@@ -147,9 +151,9 @@ public class Image extends BaseImage implements IImage {
             replaceExifTag("UserComment",
                     "saveRotatedImage comment orientation: " + orientation);
             saveExifData();
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "unable to save exif data with new orientation "
-                    + fullSizeImageUri());
+                    + fullSizeImageUri(), ex);
         }
     }
 
