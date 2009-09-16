@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.android.camera.gallery.IImage;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -171,7 +172,9 @@ public class MenuHelper {
     }
 
     public static boolean hasLatLngData(IImage image) {
-        return ExifInterface.getLatLng(getExifData(image)) != null;
+        ExifInterface exif = getExif(image);
+        if (exif == null) return false;
+        return exif.getLatLong() != null;
     }
 
     public static void enableShowOnMapMenuItem(Menu menu, boolean enabled) {
@@ -213,8 +216,8 @@ public class MenuHelper {
     }
 
     private static void setLatLngDetails(final View d, Activity context,
-            HashMap<String, String> exifData) {
-        float[] latlng = ExifInterface.getLatLng(exifData);
+            ExifInterface exif) {
+        float[] latlng = exif.getLatLong();
         if (latlng != null) {
             setDetailsValue(d, String.valueOf(latlng[0]),
                     R.id.details_latitude_value);
@@ -239,12 +242,17 @@ public class MenuHelper {
         }
     }
 
-    private static HashMap<String, String> getExifData(IImage image) {
+    private static ExifInterface getExif(IImage image) {
         if (!JPEG_MIME_TYPE.equals(image.getMimeType())) {
             return null;
         }
 
-        return ExifInterface.loadExifData(image.getDataPath());
+        try {
+            return new ExifInterface(image.getDataPath());
+        } catch (IOException ex) {
+            Log.e(TAG, "cannot read exif", ex);
+            return null;
+        }
     }
     // Called when "Show on Maps" is clicked.
     // Displays image location on Google Maps for further operations.
@@ -256,7 +264,9 @@ public class MenuHelper {
                 if (image == null) {
                     return;
                 }
-                float[] latlng = ExifInterface.getLatLng(getExifData(image));
+                float[] latlng = null;
+                ExifInterface exif = getExif(image);
+                if (exif != null) latlng = exif.getLatLong();
                 if (latlng == null) {
                     handler.post(new Runnable() {
                         public void run() {
@@ -294,38 +304,34 @@ public class MenuHelper {
 
     private static void showExifInformation(IImage image, View d,
             Activity activity) {
-        HashMap<String, String> exifData = getExifData(image);
-        if (exifData == null) {
+        ExifInterface exif = getExif(image);
+        if (exif == null) {
             hideExifInformation(d);
             return;
         }
 
-        String value = exifData.get(ExifInterface.TAG_MAKE);
+        String value = exif.getAttribute(ExifInterface.TAG_MAKE);
         if (value != null) {
             setDetailsValue(d, value, R.id.details_make_value);
         } else {
             hideDetailsRow(d, R.id.details_make_row);
         }
 
-        value = exifData.get(ExifInterface.TAG_MODEL);
+        value = exif.getAttribute(ExifInterface.TAG_MODEL);
         if (value != null) {
             setDetailsValue(d, value, R.id.details_model_value);
         } else {
             hideDetailsRow(d, R.id.details_model_row);
         }
 
-        value = exifData.get(ExifInterface.TAG_WHITE_BALANCE);
-        if (value != null) {
-            value = ExifInterface.whiteBalanceToString(
-                    Integer.parseInt(value));
-        }
-        if (value != null && value != EMPTY_STRING) {
+        value = exif.getWhiteBalanceString();
+        if (value != null && !value.equals(EMPTY_STRING)) {
             setDetailsValue(d, value, R.id.details_whitebalance_value);
         } else {
             hideDetailsRow(d, R.id.details_whitebalance_row);
         }
 
-        setLatLngDetails(d, activity, exifData);
+        setLatLngDetails(d, activity, exif);
     }
 
     // Called when "Details" is clicked.

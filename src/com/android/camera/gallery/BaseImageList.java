@@ -178,7 +178,14 @@ public abstract class BaseImageList implements IImageList {
     private Bitmap createThumbnailFromEXIF(String filePath, long id) {
         if (filePath == null) return null;
 
-        byte [] thumbData = ExifInterface.getExifThumbnail(filePath);
+        ExifInterface exif;
+        try {
+            exif = new ExifInterface(filePath);
+        } catch (IOException ex) {
+            Log.e(TAG, "cannot read exif", ex);
+            return null;
+        }
+        byte [] thumbData = exif.getThumbnail();
         if (thumbData == null) return null;
 
         // Sniff the size of the EXIF thumbnail before decoding it. Photos
