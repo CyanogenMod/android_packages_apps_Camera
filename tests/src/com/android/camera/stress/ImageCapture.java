@@ -30,6 +30,7 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import android.content.Intent;
 /**
  * Junit / Instrumentation test case for camera test
  *
@@ -245,9 +246,9 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
             mOut.write("No of loops :" + TOTAL_NUMBER_OF_VIDEOCAPTURE + "\n");
             mOut.write("loop: ");
             // Switch to the video mode
-            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
-            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
-
+            Intent intent = new Intent();
+            intent.setClassName("com.android.camera",
+                    "com.android.camera.VideoCamera");
             for (int i = 0; i < TOTAL_NUMBER_OF_VIDEOCAPTURE; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 // record a video
