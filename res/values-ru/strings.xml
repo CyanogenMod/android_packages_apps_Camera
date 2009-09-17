@@ -15,15 +15,15 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for camera_error_title (1202232535191653443) -->
-    <skip />
-    <!-- no translation found for cannot_connect_camera (8029009101380114174) -->
-    <skip />
+    <string name="camera_error_title" msgid="1202232535191653443">"Ошибка камеры"</string>
+    <string name="cannot_connect_camera" msgid="8029009101380114174">"Не удается подключиться к камере."</string>
     <string name="all_images" msgid="1195501551939178807">"Все картинки"</string>
     <string name="all_videos" msgid="3380966619230896013">"Все видео"</string>
     <string name="camera_label" msgid="6346560772074764302">"Фотографии"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Видеокамера"</string>
     <string name="gallery_picker_label" msgid="3080425245006492787">"Фотоальбом"</string>
+    <!-- no translation found for gallery_label (7119609703856708011) -->
+    <skip />
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Снимки, сделанные камерой"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Видео"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Медиафайлы"</string>
@@ -72,12 +72,9 @@
     <string name="camera_attach" msgid="4048659554893435232">"Вложить"</string>
     <string name="camera_cancel" msgid="8203341746672085747">"Отмена"</string>
     <string name="camera_crop" msgid="5584000454518174632">"Обрезать"</string>
-    <!-- no translation found for no_way_to_share_image (5011985309980187927) -->
-    <skip />
-    <!-- no translation found for no_way_to_share_video (3684571102267072206) -->
-    <skip />
-    <!-- no translation found for no_way_to_share (863323712875014752) -->
-    <skip />
+    <string name="no_way_to_share_image" msgid="5011985309980187927">"Отсутствует приложение для открытия совместного доступа к фотографии."</string>
+    <string name="no_way_to_share_video" msgid="3684571102267072206">"Отсутствует приложение для открытия совместного доступа к видео."</string>
+    <string name="no_way_to_share" msgid="863323712875014752">"Отсутствует приложение для открытия совместного доступа к мультимедийным файлам."</string>
     <string name="video_play" msgid="5287787282508002895">"Воспроизвести"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Фотоальбом"</string>
     <string name="camera_pick_wallpaper" msgid="7026385960511811641">"Картинки"</string>
@@ -119,37 +116,125 @@
     <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Воспроизвести слайд-шоу более одного раза"</string>
     <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Перемешать слайды"</string>
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Показ фотографий в случайном порядке"</string>
-    <string name="pref_camera_recordlocation_title" msgid="273727672426306702">"Сохранять местоположение"</string>
+    <!-- no translation found for pref_camera_recordlocation_title (371208839215448917) -->
+    <skip />
     <string name="pref_camera_recordlocation_summary" msgid="3275371402016128548">"Записывать местоположение в данных фотографии"</string>
     <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Качество видео"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Низкое (для сообщений MMS)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Высокое (для SD-карты)"</string>
     <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Качество видео"</string>
-    <!-- no translation found for pref_camera_video_duration_title (8049279326917441484) -->
-    <skip />
-    <!-- no translation found for pref_camera_video_duration_entry_mms (9067623003661464481) -->
-    <skip />
+    <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"Длительность видео"</string>
+    <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> с. (для MMS)"</string>
     <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 минут"</string>
     <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 минут"</string>
     <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Длительность видео"</string>
-    <!-- no translation found for pref_camera_picturesize_title (4333724936665883006) -->
+    <!-- no translation found for pref_camera_settings_category (2576236450859613120) -->
     <skip />
+    <!-- no translation found for pref_camcorder_settings_category (460313486231965141) -->
+    <skip />
+    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Размер фотографии"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="2293389043895753549">"5M (2592 x 1936)"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="7304479270077279178">"3M (2048 x 1536)"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="6722733164421134734">"2M (1600 x 1200)"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6648351357102402892">"1M (1024 x 768)"</string>
     <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Размер фотографии"</string>
-    <!-- no translation found for pref_camera_jpegquality_title (6074540285403193970) -->
-    <skip />
+    <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Качество фотографий"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Отличное"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Хорошее"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Обычное"</string>
     <string name="pref_camera_jpegquality_dialogtitle" msgid="18195886066728203">"Качество фотографий"</string>
-    <!-- no translation found for pref_camera_focusmode_title (2877248921829329127) -->
-    <skip />
+    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Режим фокусировки"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Авто"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Бесконечность"</string>
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Режим фокусировки"</string>
+    <!-- no translation found for pref_camera_flashmode_title (2287362477238791017) -->
+    <skip />
+    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Авто"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Вкл."</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Выкл."</string>
+    <string name="pref_camera_flashmode_dialogtitle" msgid="2824978765695177188">"Режим вспышки"</string>
+    <!-- no translation found for pref_camera_whitebalance_dialogtitle (8978388629257577909) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_title (677420930596673340) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_auto (6580665476983469293) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_incandescent (8856667786449549938) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_daylight (2534757270149561027) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_fluorescent (2435332872847454032) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_cloudy (3531996716997959326) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_twilight (2257942426397244556) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_shade (4685730287406277702) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_warm_fluorescent (2827098617308870248) -->
+    <skip />
+    <!-- no translation found for pref_camera_whitebalance_entry_halogen (5473868018455084929) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_dialogtitle (7691751972871809763) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_title (4152827686267109207) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_none (4759462740660236565) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_mono (9068472385922288418) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_sepia (7558624061140022613) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_negative (1635477825533469324) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_solarize (7399297076108412329) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_posterize (8596847197608350695) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_whiteboard (8161550096887765100) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_blackboard (4149918495221278960) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_aqua (224075791902166343) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_pastel (1263931790863509482) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_mosaic (1756287704236443515) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_redtint (6646299498728138294) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_bluetint (918696074928692967) -->
+    <skip />
+    <!-- no translation found for pref_camera_coloreffect_entry_greentint (9080254097150221320) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_title (1420535844292504016) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_dialogtitle (299486172171669009) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_auto (7113995286836658648) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_action (616748587566110484) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_portrait (9140929538393384095) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_landscape (405417518823973264) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_night (7606898503102476329) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_night_portrait (5244280874913294746) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_theatre (3123861130799840901) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_beach (5163939340224174481) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_snow (2110494623725511788) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_sunset (181661154611507212) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_steadyphoto (2147958278893914895) -->
+    <skip />
+    <!-- no translation found for pref_camera_scenemode_entry_fireworks (3530608172188797432) -->
+    <skip />
     <string name="camerasettings" msgid="2433519618178453928">"Настройки"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Нет мультимедийных материалов."</string>
     <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Подтверждать удаление"</string>
@@ -170,18 +255,12 @@
     <string name="details_bit_rate" msgid="5632311789455402186">"Битрейт:"</string>
     <string name="details_codec" msgid="5580300450432398126">"Кодек:"</string>
     <string name="details_format" msgid="3700860266600796363">"Формат:"</string>
-    <!-- no translation found for details_dimension_x (4923037334136168978) -->
-    <skip />
-    <!-- no translation found for details_ms (7574063760642857397) -->
-    <skip />
-    <!-- no translation found for details_hms (772340067838331166) -->
-    <skip />
-    <!-- no translation found for details_fps (5450871169477340537) -->
-    <skip />
-    <!-- no translation found for details_kbps (1515369011744784592) -->
-    <skip />
-    <!-- no translation found for details_mbps (3291428849607323284) -->
-    <skip />
+    <string name="details_dimension_x" msgid="4923037334136168978">"<xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="details_ms" msgid="7574063760642857397">"<xliff:g id="MINUTES">%1$02d</xliff:g>:<xliff:g id="SECONDS">%2$02d</xliff:g>"</string>
+    <string name="details_hms" msgid="772340067838331166">"<xliff:g id="HOURS">%1$d</xliff:g>:<xliff:g id="MINUTES">%2$02d</xliff:g>:<xliff:g id="SECONDS">%3$02d</xliff:g>"</string>
+    <string name="details_fps" msgid="5450871169477340537">"<xliff:g id="FRAMES">%1$d</xliff:g> кадров/с"</string>
+    <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> Кбит/с"</string>
+    <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Мбит/с"</string>
     <string name="details_ok" msgid="6848594369924424312">"ОК"</string>
     <string name="context_menu_header" msgid="1185348426222302182">"Параметры картинки"</string>
     <string name="video_context_menu_header" msgid="7318971116949475029">"Параметры видео"</string>
@@ -194,14 +273,12 @@
     <string name="sendImage" msgid="7279510542799399570">"Отправить картинку через"</string>
     <string name="setImage" msgid="7246975856983303047">"Установить картинку как"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Отправить видео при помощи"</string>
-    <!-- no translation found for send_media_files (8201083279723850611) -->
-    <skip />
+    <string name="send_media_files" msgid="8201083279723850611">"Открыть совместный доступ к файлам через"</string>
     <string name="movieviewlabel" msgid="7363495772706775465">"Фильмы"</string>
     <string name="loading_video" msgid="4013492720121891585">"Загрузка видео…"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Место на вашей SD-карте заканчивается. Измените настройки качества или удалите содержимое из фотоальбома."</string>
     <string name="resume_playing_title" msgid="8996677350649355013">"Продолжение просмотра видео"</string>
-    <!-- no translation found for resume_playing_message (7293000708492271389) -->
-    <skip />
+    <string name="resume_playing_message" msgid="7293000708492271389">"Продолжить воспроизведение с <xliff:g id="DURATION">%s</xliff:g>?"</string>
     <string name="resume_playing_resume" msgid="3847915469173852416">"Продолжить воспроизведение"</string>
     <string name="resume_playing_restart" msgid="5471008499835769292">"Начать с начала"</string>
     <string name="gadget_title" msgid="259405922673466798">"Рамка фотографии"</string>
@@ -212,6 +289,5 @@
     <string name="multiselect_cancel" msgid="5969428692864002165">"Отмена"</string>
     <string name="delete_images_message" msgid="4504926868037899430">"Удаление изображений, подождите..."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Достигнут предельный размер видео."</string>
-    <!-- no translation found for on_screen_menu_back (1252087782192565742) -->
-    <skip />
+    <string name="on_screen_menu_back" msgid="1252087782192565742">"Назад"</string>
 </resources>
