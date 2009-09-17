@@ -94,6 +94,9 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
 
+    private static final String GPS_MODE_ON = "on";
+    private static final String GPS_MODE_OFF = "off";
+
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
@@ -134,7 +137,8 @@ public class Camera extends Activity implements View.OnClickListener,
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
     private FocusRectangle mFocusRectangle;
-    private ImageView mGpsIndicator;
+    private IconIndicator mGpsIndicator;
+    private IconIndicator mFlashIndicator;
     private ToneGenerator mFocusToneGenerator;
     private ZoomButtonsController mZoomButtons;
     private GestureDetector mGestureDetector;
@@ -287,8 +291,7 @@ public class Camera extends Activity implements View.OnClickListener,
         updateFocusIndicator();
 
         // Initialize GPS indicator.
-        mGpsIndicator = (ImageView) findViewById(R.id.gps_indicator);
-        mGpsIndicator.setImageResource(R.drawable.ic_camera_sym_gps);
+        mGpsIndicator = (IconIndicator) findViewById(R.id.gps_icon);
 
         ImageManager.ensureOSXCompatibleFolder();
 
@@ -512,7 +515,7 @@ public class Camera extends Activity implements View.OnClickListener,
             // update so update GPS indicator when we receive data.
             if (mRecordLocation
                     && LocationManager.GPS_PROVIDER.equals(mProvider)) {
-                mGpsIndicator.setVisibility(View.VISIBLE);
+                mGpsIndicator.setMode(GPS_MODE_ON);
             }
             mLastLocation.set(newLocation);
             mValid = true;
@@ -533,7 +536,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     mValid = false;
                     if (mRecordLocation &&
                             LocationManager.GPS_PROVIDER.equals(provider)) {
-                        mGpsIndicator.setVisibility(View.INVISIBLE);
+                        mGpsIndicator.setMode(GPS_MODE_OFF);
                     }
                     break;
                 }
@@ -895,6 +898,8 @@ public class Camera extends Activity implements View.OnClickListener,
         findViewById(R.id.btn_gripper)
                 .setOnTouchListener(new GripperTouchListener());
 
+        mFlashIndicator = (IconIndicator) findViewById(R.id.flash_icon);
+
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -1212,7 +1217,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
-            mGpsIndicator.setVisibility(View.INVISIBLE);
+            mGpsIndicator.setMode(GPS_MODE_OFF);
             if (!mIsImageCaptureIntent) {
                 mThumbController.storeData(
                         ImageManager.getLastImageThumbPath());
@@ -1630,9 +1635,23 @@ public class Camera extends Activity implements View.OnClickListener,
         String flashMode = mPreferences.getString(
                 CameraSettings.KEY_FLASH_MODE,
                 getString(R.string.pref_camera_flashmode_default));
-        if (isSupported(flashMode, mParameters.getSupportedFlashModes())) {
+        List<String> supportedFlash = mParameters.getSupportedFlashModes();
+        if (isSupported(flashMode, supportedFlash)) {
             mParameters.setFlashMode(flashMode);
+        } else {
+            // If the current flashMode is not support, show the
+            // FLASH_MODE_OFF icon.
+            flashMode = Parameters.FLASH_MODE_OFF;
         }
+
+        // We post the runner because this function can be called from
+        // non-UI thread (i.e., startPreviewThread).
+        final String finalFlashMode = flashMode;
+        mHandler.post(new Runnable() {
+            public void run() {
+                mFlashIndicator.setMode(finalFlashMode);
+            }
+        });
 
         // Set white balance parameter.
         String whiteBalance = mPreferences.getString(
