@@ -47,6 +47,7 @@ public class OnScreenSettings {
     private ListView mSubMenu;
     private boolean mIsVisible = false;
     private OnVisibilityChangedListener mVisibilityListener;
+    private MainMenuAdapter mMainAdapter;
 
     /**
      * When showing the on-screen settings, we add the view as a new window.
@@ -110,6 +111,8 @@ public class OnScreenSettings {
         mIsVisible = visible;
 
         if (visible) {
+            // Update main adapter before show up
+            if (mMainAdapter != null) mMainAdapter.notifyDataSetChanged();
             if (mContainerLayoutParams.token == null) {
                 mContainerLayoutParams.token = mOwnerView.getWindowToken();
             }
@@ -171,10 +174,6 @@ public class OnScreenSettings {
     private void closeSubMenu() {
         Util.slideOut(mSubMenu, Util.DIRECTION_RIGHT);
         Util.slideIn(mMainMenu, Util.DIRECTION_LEFT);
-
-        // The data could be changed in the sub menu, so we update the summary
-        // in the main menu here
-        ((MainMenuAdapter) mMainMenu.getAdapter()).notifyDataSetChanged();
     }
 
     private Container createContainer() {
@@ -232,9 +231,9 @@ public class OnScreenSettings {
         for (int  i = 0, n = screen.getPreferenceCount(); i < n; ++i) {
             addPreference(screen.getPreference(i), list);
         }
-        MainMenuAdapter mainAdapter = new MainMenuAdapter(mContext, list);
-        mMainMenu.setAdapter(mainAdapter);
-        mMainMenu.setOnItemClickListener(mainAdapter);
+        mMainAdapter = new MainMenuAdapter(mContext, list);
+        mMainMenu.setAdapter(mMainAdapter);
+        mMainMenu.setOnItemClickListener(mMainAdapter);
     }
 
     private View inflateIfNeed(
@@ -427,6 +426,7 @@ public class OnScreenSettings {
                 if (idx != position - 1) {
                     mPreference.setValueIndex(position - 1);
                     notifyDataSetChanged();
+                    mMainAdapter.notifyDataSetChanged();
                     return;
                 }
             }
