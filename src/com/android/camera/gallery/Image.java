@@ -25,7 +25,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
@@ -42,8 +41,6 @@ import java.util.HashMap;
  */
 public class Image extends BaseImage implements IImage {
     private static final String TAG = "BaseImage";
-
-    private ExifInterface mExif;
 
     private int mRotation;
 
@@ -92,18 +89,6 @@ public class Image extends BaseImage implements IImage {
         return false;
     }
 
-    /**
-     * Replaces the tag if already there. Otherwise, adds to the exif tags.
-     * @param tag
-     * @param value
-     */
-    public void replaceExifTag(String tag, String value) {
-        if (mExif == null) {
-            loadExifData();
-        }
-        mExif.setAttribute(tag, value);
-    }
-
     public void saveImageContents(Bitmap image, byte [] jpegData,
             int orientation, boolean newFile, String filePath) {
         Bitmap thumbnail = null;
@@ -111,59 +96,12 @@ public class Image extends BaseImage implements IImage {
         compressImageToFile(image, jpegData, uri);
     }
 
-    private void loadExifData() {
-        try {
-            mExif = new ExifInterface(mDataPath);
-        } catch (IOException ex) {
-            Log.e(TAG, "cannot read exif", ex);
-        }
-    }
-
-    private void saveExifData() throws IOException {
-        if (mExif != null) {
-            mExif.saveAttributes();
-        }
-    }
-
-    private void setExifRotation(int degrees) {
-        try {
-            degrees %= 360;
-            if (degrees < 0) degrees += 360;
-
-            int orientation = ExifInterface.ORIENTATION_NORMAL;
-            switch (degrees) {
-                case 0:
-                    orientation = ExifInterface.ORIENTATION_NORMAL;
-                    break;
-                case 90:
-                    orientation = ExifInterface.ORIENTATION_ROTATE_90;
-                    break;
-                case 180:
-                    orientation = ExifInterface.ORIENTATION_ROTATE_180;
-                    break;
-                case 270:
-                    orientation = ExifInterface.ORIENTATION_ROTATE_270;
-                    break;
-            }
-
-            replaceExifTag(ExifInterface.TAG_ORIENTATION,
-                    Integer.toString(orientation));
-            replaceExifTag("UserComment",
-                    "saveRotatedImage comment orientation: " + orientation);
-            saveExifData();
-        } catch (Exception ex) {
-            Log.e(TAG, "unable to save exif data with new orientation "
-                    + fullSizeImageUri(), ex);
-        }
-    }
-
     /**
-     * Save the rotated image by updating the Exif "Orientation" tag.
+     * Save the rotated image by updating the database.
      * @param degrees
      */
     public boolean rotateImageBy(int degrees) {
         int newDegrees = (getDegreesRotated() + degrees) % 360;
-        setExifRotation(newDegrees);
         setDegreesRotated(newDegrees);
 
         // setting this to zero will force the call to checkCursor to generate
