@@ -33,6 +33,7 @@ import android.hardware.Camera.Size;
 import android.hardware.Camera.Parameters;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -235,6 +236,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     mStartPreviewFail = false;
                     startPreview();
                 } catch (CameraHardwareException e) {
+                    // In eng build, we throw the exception so that test tool
+                    // can detect it and report it
+                    if ("eng".equals(Build.TYPE)) {
+                        throw new RuntimeException(e);
+                    }
                     mStartPreviewFail = true;
                 }
             }
@@ -296,7 +302,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // Make sure preview is started.
         try {
             startPreviewThread.join();
-            if (mStartPreviewFail) showCameraBusyAndFinish();
+            if (mStartPreviewFail) {
+                showCameraBusyAndFinish();
+                return;
+            }
         } catch (InterruptedException ex) {
             // ignore
         }

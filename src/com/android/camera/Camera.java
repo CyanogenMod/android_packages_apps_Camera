@@ -38,6 +38,7 @@ import android.location.LocationProvider;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
@@ -860,6 +861,11 @@ public class Camera extends Activity implements View.OnClickListener,
                     mStartPreviewFail = false;
                     startPreview();
                 } catch (CameraHardwareException e) {
+                    // In eng build, we throw the exception so that test tool
+                    // can detect it and report it
+                    if ("eng".equals(Build.TYPE)) {
+                        throw new RuntimeException(e);
+                    }
                     mStartPreviewFail = true;
                 }
             }
@@ -893,7 +899,10 @@ public class Camera extends Activity implements View.OnClickListener,
         // Make sure preview is started.
         try {
             startPreviewThread.join();
-            if (mStartPreviewFail) showCameraErrorAndFinish();
+            if (mStartPreviewFail) {
+                showCameraErrorAndFinish();
+                return;
+            }
         } catch (InterruptedException ex) {
             // ignore
         }
