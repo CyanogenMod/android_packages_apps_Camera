@@ -18,6 +18,7 @@ package com.android.camera;
 
 import static com.android.camera.Util.Assert;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -83,13 +84,14 @@ public class CameraHolder {
                 mCameraDevice = android.hardware.Camera.open();
             } catch (RuntimeException e) {
                 Log.e(TAG, "fail to connect Camera", e);
-                throw new CameraHardwareException();
+                throw new CameraHardwareException(e);
             }
         } else {
             try {
                 mCameraDevice.reconnect();
             } catch (IOException e) {
                 Log.e(TAG, "reconnect failed.");
+                throw new CameraHardwareException(e);
             }
         }
         ++mUsers;
@@ -106,6 +108,11 @@ public class CameraHolder {
         try {
             return mUsers == 0 ? open() : null;
         } catch (CameraHardwareException e) {
+            // In eng build, we throw the exception so that test tool
+            // can detect it and report it
+            if ("eng".equals(Build.TYPE)) {
+                throw new RuntimeException(e);
+            }
             return null;
         }
     }
