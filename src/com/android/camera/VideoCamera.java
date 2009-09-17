@@ -50,6 +50,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
@@ -298,6 +299,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mShutterButton.setImageResource(R.drawable.btn_ic_video_record);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
+        findViewById(R.id.btn_gripper)
+                .setOnTouchListener(new GripperTouchListener());
 
         // Make sure preview is started.
         try {
@@ -1018,25 +1021,40 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 MenuHelper.POSITION_CAMERA_SETTING, R.string.settings)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                if (mSettings == null) {
-                    mSettings = new OnScreenSettings(
-                            findViewById(R.id.camera_preview));
-                    if (mParameters == null) {
-                        mParameters = mCameraDevice.getParameters();
-                    }
-                    CameraSettings helper = new CameraSettings(
-                            VideoCamera.this, mParameters);
-                    mSettings.setOnVisibilityChangedListener(VideoCamera.this);
-                    mSettings.setPreferenceScreen(helper
-                            .getPreferenceScreen(R.xml.video_preferences));
-                }
-                mSettings.setVisible(true);
+                showOnScreenSettings();
                 return true;
             }});
         item.setIcon(android.R.drawable.ic_menu_preferences);
     }
 
+    private void showOnScreenSettings() {
+        if (mSettings == null) {
+            mSettings = new OnScreenSettings(
+                    findViewById(R.id.camera_preview));
+            CameraSettings helper = new CameraSettings(this, mParameters);
+            mSettings.setPreferenceScreen(helper
+                    .getPreferenceScreen(R.xml.camera_preferences));
+            mSettings.setOnVisibilityChangedListener(this);
+        }
+        mSettings.expandPanel();
+    }
+
+    private class GripperTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    showOnScreenSettings();
+                    return true;
+            }
+            return false;
+        }
+    }
+
     public void onVisibilityChanged(boolean visible) {
+        findViewById(R.id.btn_gripper).setVisibility(
+                visible ? View.INVISIBLE : View.VISIBLE);
         if (visible) {
             releaseMediaRecorder();
         } else {

@@ -316,7 +316,7 @@
     <string name="pref_gallery_slideshow_shuffle_summary">Show pictures in random order</string>
 
     <!-- Settings screen, setting title text -->
-    <string name="pref_camera_recordlocation_title">Store location in pictures</string>
+    <string name="pref_camera_recordlocation_title">Store location</string>
 
     <!-- Settings screen, setting summary text -->
     <string name="pref_camera_recordlocation_summary">Record location in picture data</string>

@@ -20,41 +20,53 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-
     <RelativeLayout android:layout_width="0px"
-        android:layout_height="fill_parent"
-        android:layout_weight="1">
-        <FrameLayout android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+        <LinearLayout android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="@drawable/border_view_finder">
-            <com.android.camera.VideoPreview
-                    android:id="@+id/camera_preview"
-                    android:layout_width="384dp"
-                    android:layout_height="288dp"/>
-            <com.android.camera.FocusRectangle
-                    android:id="@+id/focus_rectangle"
-                    android:layout_width="384dp"
-                    android:layout_height="288dp"/>
-            <ImageView
-                    android:id="@+id/gps_indicator"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+            <ImageView android:id="@+id/btn_gripper"
+                    android:layout_marginRight="1dp"
+                    android:background="@drawable/btn_gripper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"/>
-            <com.android.camera.FlashButton
-                    android:id="@+id/flash_button"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:layout_gravity="left|bottom"
-                    android:visibility="invisible"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:layout_marginBottom="5dp"/>
-        </FrameLayout>
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"/>
+            <FrameLayout android:id="@+id/frame"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/border_view_finder">
+                <com.android.camera.VideoPreview
+                        android:id="@+id/camera_preview"
+                        android:layout_width="384dp"
+                        android:layout_height="288dp"/>
+                <com.android.camera.FocusRectangle
+                        android:id="@+id/focus_rectangle"
+                        android:layout_width="384dp"
+                        android:layout_height="288dp"/>
+                <ImageView
+                        android:id="@+id/gps_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"/>
+                <com.android.camera.FlashButton
+                        android:id="@+id/flash_button"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="left|bottom"
+                        android:visibility="invisible"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:layout_marginBottom="5dp"/>
+            </FrameLayout>
+        </LinearLayout>
     </RelativeLayout>
-
 </LinearLayout>
