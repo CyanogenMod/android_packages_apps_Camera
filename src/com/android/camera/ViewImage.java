@@ -708,9 +708,6 @@ public class ViewImage extends Activity implements View.OnClickListener {
                     mPrefs, "pref_gallery_slideshow_transition_key", 0);
             mSlideShowInterval = getPreferencesInteger(
                     mPrefs, "pref_gallery_slideshow_interval_key", 3) * 1000;
-            if (mUseShuffleOrder) {
-                generateShuffleOrder();
-            }
         } else {
             slideshowPanel.setVisibility(View.GONE);
             normalPanel.setVisibility(View.VISIBLE);
