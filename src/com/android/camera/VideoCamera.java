@@ -1150,7 +1150,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void showAlert() {
-        mVideoPreview.setVisibility(View.INVISIBLE);
         fadeOut(findViewById(R.id.shutter_button));
         if (mCurrentVideoFilename != null) {
             mVideoFrame.setImageBitmap(
@@ -1165,7 +1164,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void hideAlert() {
-        mVideoPreview.setVisibility(View.VISIBLE);
         mVideoFrame.setVisibility(View.INVISIBLE);
         fadeIn(findViewById(R.id.shutter_button));
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
