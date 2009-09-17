@@ -160,7 +160,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             switch (msg.what) {
 
                 case CLEAR_SCREEN_DELAY: {
-                    clearScreenOnFlag();
+                    getWindow().clearFlags(
+                            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     break;
                 }
 
@@ -524,7 +525,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 return;
             }
         }
-        setScreenTimeoutLong();
+        keepScreenOnAwhile();
 
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter =
@@ -605,12 +606,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     @Override
-    public void onStop() {
-        setScreenTimeoutSystemDefault();
-        super.onStop();
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
 
@@ -638,7 +633,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             unregisterReceiver(mReceiver);
             mReceiver = null;
         }
-        setScreenTimeoutSystemDefault();
+        resetScreenOn();
 
         if (!mIsVideoCaptureIntent) {
             mThumbController.storeData(ImageManager.getLastVideoThumbPath());
@@ -653,13 +648,17 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        if (!mMediaRecorderRecording) keepScreenOnAwhile();
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Do not handle any key if the activity is paused.
         if (mPausing) {
             return true;
         }
-
-        setScreenTimeoutLong();
 
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
@@ -1128,7 +1127,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
-            setScreenTimeoutInfinite();
+            keepScreenOn();
         }
     }
 
@@ -1235,7 +1234,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             releaseMediaRecorder();
             updateRecordingIndicator(true);
             mRecordingTimeView.setVisibility(View.GONE);
-            setScreenTimeoutLong();
+            keepScreenOnAwhile();
         }
         if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {
             registerVideo();
@@ -1245,36 +1244,20 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mCameraVideoFileDescriptor = null;
     }
 
-    private void setScreenTimeoutSystemDefault() {
+    private void resetScreenOn() {
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
-        clearScreenOnFlag();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    private void setScreenTimeoutLong() {
+    private void keepScreenOnAwhile() {
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
-        setScreenOnFlag();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
     }
 
-    private void setScreenTimeoutInfinite() {
+    private void keepScreenOn() {
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
-        setScreenOnFlag();
-    }
-
-    private void clearScreenOnFlag() {
-        Window w = getWindow();
-        final int flag = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
-        if ((w.getAttributes().flags & flag) != 0) {
-            w.clearFlags(flag);
-        }
-    }
-
-    private void setScreenOnFlag() {
-        Window w = getWindow();
-        final int flag = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
-        if ((w.getAttributes().flags & flag) == 0) {
-            w.addFlags(flag);
-        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void hideAlertAndInitializeRecorder() {

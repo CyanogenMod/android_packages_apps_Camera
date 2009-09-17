@@ -1202,8 +1202,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 initializeSecondTime();
             }
         }
-
-        mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
+        keepScreenOnAwhile();
     }
 
     private static ImageManager.DataLocation dataLocation() {
@@ -1216,6 +1215,7 @@ public class Camera extends Activity implements View.OnClickListener,
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
+        resetScreenOn();
 
         if (mSettings != null && mSettings.isVisible()) {
             mSettings.setVisible(false);
@@ -1259,7 +1259,6 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         // Remove the messages in the event queue.
-        mHandler.removeMessages(CLEAR_SCREEN_DELAY);
         mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
 
@@ -1339,9 +1338,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 if (!isCameraIdle()) {
@@ -1896,6 +1892,23 @@ public class Camera extends Activity implements View.OnClickListener,
             mParameters.setSceneMode(sceneMode);
             mCameraDevice.setParameters(mParameters);
         }
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        keepScreenOnAwhile();
+    }
+
+    private void resetScreenOn() {
+        mHandler.removeMessages(CLEAR_SCREEN_DELAY);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    private void keepScreenOnAwhile() {
+        mHandler.removeMessages(CLEAR_SCREEN_DELAY);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
     }
 }
 
