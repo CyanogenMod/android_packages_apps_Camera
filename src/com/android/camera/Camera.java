@@ -84,8 +84,7 @@ import java.util.List;
  */
 public class Camera extends Activity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
-        Switcher.OnSwitchListener, FlashButton.ModeChangeListener,
-        OnScreenSettings.OnVisibilityChangedListener,
+        Switcher.OnSwitchListener, OnScreenSettings.OnVisibilityChangedListener,
         OnSharedPreferenceChangeListener {
 
     private static final String TAG = "camera";
@@ -136,7 +135,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
     private FocusRectangle mFocusRectangle;
-    private FlashButton mFlashButton;
     private ImageView mGpsIndicator;
     private ToneGenerator mFocusToneGenerator;
     private ZoomButtonsController mZoomButtons;
@@ -288,16 +286,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
         updateFocusIndicator();
-
-        // Initialize flash button
-        if (mParameters.getSupportedFlashModes() != null) {
-            mFlashButton = (FlashButton) findViewById(R.id.flash_button);
-            String flashMode = mPreferences.getString(
-                    CameraSettings.KEY_FLASH_MODE, "auto");
-            mFlashButton.setMode(flashMode);
-            mFlashButton.setVisibility(View.VISIBLE);
-            mFlashButton.setListener(this);
-        }
 
         // Initialize GPS indicator.
         mGpsIndicator = (ImageView) findViewById(R.id.gps_indicator);
@@ -1823,16 +1811,6 @@ public class Camera extends Activity implements View.OnClickListener,
         return true;
     }
 
-    public void onFlashModeChanged(String modeString) {
-        SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putString(CameraSettings.KEY_FLASH_MODE, modeString);
-        editor.commit();
-        if (!mPausing) {
-            mParameters.setFlashMode(modeString);
-            mCameraDevice.setParameters(mParameters);
-        }
-    }
-
     private void setCameraPictureSizeIfSupported(String sizeString) {
         List<Size> pictureSizes = mParameters.getSupportedPictureSizes();
         if (pictureSizes != null) {
@@ -1939,72 +1917,5 @@ class FocusRectangle extends View {
 
     public void clear() {
         setBackgroundDrawable(null);
-    }
-}
-
-// FlashButton changes state every time it is clicked.
-// The ModeChangeListener notifies that event.
-class FlashButton extends ImageView implements View.OnClickListener {
-    private static final String TAG = "FlashButton";
-
-    private static final int MODE_OFF = 0;
-    private static final int MODE_ON = 1;
-    private static final int MODE_AUTO = 2;
-
-    private static final String[] MODE_STRINGS = new String[] {
-        "off", "on", "auto"
-    };
-
-    private static final int[] FLASH_IMAGES = new int[] {
-        R.drawable.flash_off,
-        R.drawable.flash_on,
-        R.drawable.flash_auto
-    };
-
-    private int mCurrentMode;
-    private ModeChangeListener mListener;
-
-    public interface ModeChangeListener {
-        public void onFlashModeChanged(String modeString);
-    }
-    public FlashButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        updateMode(MODE_AUTO);
-        setOnClickListener(this);
-    }
-
-    public void setMode(String modeString) {
-        for (int i = 0; i < MODE_STRINGS.length; i++) {
-            if (MODE_STRINGS[i].equals(modeString)) {
-                updateModeIfNecessary(i);
-                return;
-            }
-        }
-        Log.w(TAG, "Unknown mode: " + modeString);
-    }
-
-    public void setListener(ModeChangeListener listener) {
-        mListener = listener;
-    }
-
-    public void onClick(View v) {
-        int nextMode = (mCurrentMode + 1) % FLASH_IMAGES.length;
-        updateMode(nextMode);
-    }
-
-    private void updateModeIfNecessary(int mode) {
-        if (mode == mCurrentMode) return;
-        if (mode < 0 || mode >= FLASH_IMAGES.length) {
-            return;
-        }
-        updateMode(mode);
-    }
-
-    private void updateMode(int mode) {
-        mCurrentMode = mode;
-        setImageResource(FLASH_IMAGES[mode]);
-        if (mListener != null) {
-            mListener.onFlashModeChanged(MODE_STRINGS[mode]);
-        }
     }
 }
