@@ -1032,7 +1032,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                     findViewById(R.id.camera_preview));
             CameraSettings helper = new CameraSettings(this, mParameters);
             mSettings.setPreferenceScreen(helper
-                    .getPreferenceScreen(R.xml.camera_preferences));
+                    .getPreferenceScreen(R.xml.video_preferences));
             mSettings.setOnVisibilityChangedListener(this);
         }
         mSettings.expandPanel();
