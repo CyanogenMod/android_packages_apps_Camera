@@ -249,6 +249,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
             Intent intent = new Intent();
             intent.setClassName("com.android.camera",
                     "com.android.camera.VideoCamera");
+            getActivity().startActivity(intent);
             for (int i = 0; i < TOTAL_NUMBER_OF_VIDEOCAPTURE; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 // record a video
