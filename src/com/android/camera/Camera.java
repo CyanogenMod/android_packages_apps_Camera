@@ -1382,8 +1382,7 @@ public class Camera extends Activity implements View.OnClickListener,
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
-        if (mFocusMode.equals(getString(
-                R.string.pref_camera_focusmode_value_infinity))
+        if (mFocusMode.equals(CameraSettings.VALUE_FOCUS_INFINITY)
                 || (mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL)) {
             if (mZoomButtons != null) mZoomButtons.setVisible(false);
@@ -1400,8 +1399,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void doFocus(boolean pressed) {
         // Do the focus if the mode is auto. No focus needed in infinity mode.
-        if (mFocusMode.equals(getString(
-                R.string.pref_camera_focusmode_value_auto))) {
+        if (mFocusMode.equals(CameraSettings.VALUE_FOCUS_AUTO)) {
             if (pressed) {  // Focus key down.
                 autoFocus();
             } else {  // Focus key up.
