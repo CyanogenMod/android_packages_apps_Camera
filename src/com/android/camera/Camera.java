@@ -1398,8 +1398,8 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void doFocus(boolean pressed) {
-        // Do the focus if the mode is auto. No focus needed in infinity mode.
-        if (mFocusMode.equals(CameraSettings.VALUE_FOCUS_AUTO)) {
+        // Do the focus if the mode is not infinity.
+        if (!mFocusMode.equals(CameraSettings.VALUE_FOCUS_INFINITY)) {
             if (pressed) {  // Focus key down.
                 autoFocus();
             } else {  // Focus key up.
@@ -1623,7 +1623,8 @@ public class Camera extends Activity implements View.OnClickListener,
         // Set flash mode.
         if (mParameters.getSupportedFlashModes() != null) {
             String flashMode = mPreferences.getString(
-                    CameraSettings.KEY_FLASH_MODE, "auto");
+                    CameraSettings.KEY_FLASH_MODE,
+                    getString(R.string.pref_camera_flashmode_default));
             mParameters.setFlashMode(flashMode);
         }
 
@@ -1649,6 +1650,15 @@ public class Camera extends Activity implements View.OnClickListener,
                     CameraSettings.KEY_SCENE_MODE,
                     getString(R.string.pref_camera_scenemode_default));
             mParameters.setSceneMode(sceneMode);
+        }
+
+        // Set focus mode.
+        // TODO: use camera parameters API after it is finished.
+        if (mParameters.get("focus-mode-values") != null) {
+            mFocusMode = mPreferences.getString(
+                    CameraSettings.KEY_FOCUS_MODE,
+                    getString(R.string.pref_camera_focusmode_default));
+            mParameters.set("focus-mode", mFocusMode);
         }
 
         mCameraDevice.setParameters(mParameters);
@@ -1839,44 +1849,17 @@ public class Camera extends Activity implements View.OnClickListener,
         // ignore the events after "onPause()"
         if (mPausing) return;
 
-        if (CameraSettings.KEY_FLASH_MODE.equals(key)) {
-            mParameters.setFlashMode(preferences.getString(key, "auto"));
-            mCameraDevice.setParameters(mParameters);
-        } else if (CameraSettings.KEY_FOCUS_MODE.equals(key)) {
-            mFocusMode = preferences.getString(key,
-                    getString(R.string.pref_camera_focusmode_default));
-        } else if (CameraSettings.KEY_PICTURE_SIZE.equals(key)) {
-            String pictureSize = preferences.getString(key,
-                    getString(R.string.pref_camera_picturesize_default));
-            setCameraPictureSizeIfSupported(pictureSize);
-            mCameraDevice.setParameters(mParameters);
-        } else if (CameraSettings.KEY_JPEG_QUALITY.equals(key)) {
-            String jpegQuality = preferences.getString(key,
-                    getString(R.string.pref_camera_jpegquality_default));
-            mParameters.setJpegQuality(Integer.parseInt(jpegQuality));
-            mCameraDevice.setParameters(mParameters);
-        } else if (CameraSettings.KEY_RECORD_LOCATION.equals(key)) {
+        if (CameraSettings.KEY_RECORD_LOCATION.equals(key)) {
             mRecordLocation = preferences.getBoolean(key, false);
             if (mRecordLocation) {
                 startReceivingLocationUpdates();
             } else {
                 stopReceivingLocationUpdates();
             }
-        } else if (CameraSettings.KEY_COLOR_EFFECT.equals(key)) {
-            String colorEffect = preferences.getString(key,
-                    getString(R.string.pref_camera_coloreffect_default));
-            mParameters.setColorEffect(colorEffect);
-            mCameraDevice.setParameters(mParameters);
-        } else if (CameraSettings.KEY_WHITE_BALANCE.equals(key)) {
-            String whiteBalance = preferences.getString(key,
-                    getString(R.string.pref_camera_whitebalance_default));
-            mParameters.setWhiteBalance(whiteBalance);
-            mCameraDevice.setParameters(mParameters);
-        } else if (CameraSettings.KEY_SCENE_MODE.equals(key)) {
-            String sceneMode = preferences.getString(key,
-                    getString(R.string.pref_camera_scenemode_default));
-            mParameters.setSceneMode(sceneMode);
-            mCameraDevice.setParameters(mParameters);
+        } else {
+            // All preferences except RECORD_LOCATION are camera parameters.
+            // Call setCameraParameters to take effect now.
+            setCameraParameters();
         }
     }
 
