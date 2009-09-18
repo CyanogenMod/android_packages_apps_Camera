@@ -260,7 +260,7 @@ public class Util {
         Matrix matrix = new Matrix();
         matrix.setScale(scale, scale);
         Bitmap miniThumbnail = transform(matrix, source, width, height,
-                false, recycle);
+                true, recycle);
         return miniThumbnail;
     }
 
