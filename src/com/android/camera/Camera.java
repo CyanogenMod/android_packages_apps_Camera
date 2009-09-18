@@ -1527,7 +1527,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         setPreviewDisplay(mSurfaceHolder);
 
-        setCameraParameter();
+        setCameraParameters();
 
         final long wallTimeStart = SystemClock.elapsedRealtime();
         final long threadTimeStart = Debug.threadCpuTimeNanos();
@@ -1590,7 +1590,7 @@ public class Camera extends Activity implements View.OnClickListener,
         return optimalSize;
     }
 
-    private void setCameraParameter() {
+    private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
         // Reset preview frame rate to the maximum because it may be lowered by
@@ -1627,7 +1627,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mParameters.setFlashMode(flashMode);
         }
 
-        // Set white balance parameter.
+        // Set white balance.
         if (mParameters.getSupportedWhiteBalance() != null) {
             String whiteBalance = mPreferences.getString(
                     CameraSettings.KEY_WHITE_BALANCE,
@@ -1635,12 +1635,20 @@ public class Camera extends Activity implements View.OnClickListener,
             mParameters.setWhiteBalance(whiteBalance);
         }
 
-        // Set color effect parameter.
+        // Set color effect.
         if (mParameters.getSupportedColorEffects() != null) {
             String colorEffect = mPreferences.getString(
                     CameraSettings.KEY_COLOR_EFFECT,
                     getString(R.string.pref_camera_coloreffect_default));
             mParameters.setColorEffect(colorEffect);
+        }
+
+        // Set scene mode.
+        if (mParameters.getSupportedSceneModes() != null) {
+            String sceneMode = mPreferences.getString(
+                    CameraSettings.KEY_SCENE_MODE,
+                    getString(R.string.pref_camera_scenemode_default));
+            mParameters.setSceneMode(sceneMode);
         }
 
         mCameraDevice.setParameters(mParameters);
