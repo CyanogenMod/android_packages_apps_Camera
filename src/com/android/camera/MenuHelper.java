@@ -174,7 +174,8 @@ public class MenuHelper {
     public static boolean hasLatLngData(IImage image) {
         ExifInterface exif = getExif(image);
         if (exif == null) return false;
-        return exif.getLatLong() != null;
+        float latlng[] = new float[2];
+        return exif.getLatLong(latlng);
     }
 
     public static void enableShowOnMapMenuItem(Menu menu, boolean enabled) {
@@ -217,8 +218,8 @@ public class MenuHelper {
 
     private static void setLatLngDetails(final View d, Activity context,
             ExifInterface exif) {
-        float[] latlng = exif.getLatLong();
-        if (latlng != null) {
+        float[] latlng = new float[2];
+        if (exif.getLatLong(latlng)) {
             setDetailsValue(d, String.valueOf(latlng[0]),
                     R.id.details_latitude_value);
             setDetailsValue(d, String.valueOf(latlng[1]),
@@ -264,10 +265,18 @@ public class MenuHelper {
                 if (image == null) {
                     return;
                 }
-                float[] latlng = null;
+
+                boolean ok = false;
                 ExifInterface exif = getExif(image);
-                if (exif != null) latlng = exif.getLatLong();
-                if (latlng == null) {
+                float latlng[] = null;
+                if (exif != null) {
+                    latlng = new float[2];
+                    if (exif.getLatLong(latlng)) {
+                        ok = true;
+                    }
+                }
+                
+                if (!ok) {    
                     handler.post(new Runnable() {
                         public void run() {
                             Toast.makeText(activity,
@@ -324,7 +333,7 @@ public class MenuHelper {
             hideDetailsRow(d, R.id.details_model_row);
         }
 
-        value = exif.getWhiteBalanceString();
+        value = getWhiteBalanceString(exif);
         if (value != null && !value.equals(EMPTY_STRING)) {
             setDetailsValue(d, value, R.id.details_whitebalance_value);
         } else {
@@ -332,6 +341,66 @@ public class MenuHelper {
         }
 
         setLatLngDetails(d, activity, exif);
+    }
+
+    /**
+     * Returns a human-readable string describing the white balance value. Returns empty
+     * string if there is no white balance value or it is not recognized.
+     */
+    private static String getWhiteBalanceString(ExifInterface exif) {
+        int whitebalance = exif.getAttributeInt(ExifInterface.TAG_WHITE_BALANCE, -1);
+        if (whitebalance == -1) return "";
+
+        switch (whitebalance) {
+            case ExifInterface.WHITEBALANCE_AUTO:
+                return "Auto";
+            case ExifInterface.WHITEBALANCE_MANUAL:
+                return "Manual";
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * Returns a human-readable string describing the orientation value. Returns empty
+     * string if there is no orientation value or it it not recognized.
+     */
+    private static String getOrientationString(ExifInterface exif) {
+        // TODO: this function needs to be localized.
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
+        if (orientation == -1) return "";
+
+        String orientationString;
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_NORMAL:
+                orientationString = "Normal";
+                break;
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                orientationString = "Flipped horizontal";
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                orientationString = "Rotated 180 degrees";
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                orientationString = "Upside down mirror";
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                orientationString = "Transposed";
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                orientationString = "Rotated 90 degrees";
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                orientationString = "Transversed";
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                orientationString = "Rotated 270 degrees";
+                break;
+            default:
+                orientationString = "Undefined";
+                break;
+        }
+        return orientationString;
     }
 
     // Called when "Details" is clicked.
