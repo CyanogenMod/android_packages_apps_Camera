@@ -35,6 +35,7 @@ public class CameraSettings {
             "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
 
+    // TODO: use camera parameters API after it is finished.
     public static final String VALUE_FOCUS_INFINITY = "infinity";
     public static final String VALUE_FOCUS_AUTO = "auto";
 
