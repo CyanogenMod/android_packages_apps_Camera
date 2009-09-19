@@ -387,6 +387,11 @@ public class Camera extends Activity implements View.OnClickListener,
         // When the on-screen setting is displayed, we hide the gripper.
         findViewById(R.id.btn_gripper).setVisibility(
                 visible ? View.INVISIBLE : View.VISIBLE);
+        if (visible) {
+            mPreferences.registerOnSharedPreferenceChangeListener(this);
+        } else {
+            mPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        }
     }
 
     private boolean isZooming() {
@@ -863,7 +868,6 @@ public class Camera extends Activity implements View.OnClickListener,
         mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
         mViewFinderHeight = mSurfaceView.getLayoutParams().height;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mPreferences.registerOnSharedPreferenceChangeListener(this);
 
         /*
          * To reduce startup time, we start the preview in another thread.
@@ -1533,7 +1537,6 @@ public class Camera extends Activity implements View.OnClickListener,
         if (mPreviewing) stopPreview();
 
         setPreviewDisplay(mSurfaceHolder);
-
         setCameraParameters();
 
         final long wallTimeStart = SystemClock.elapsedRealtime();
@@ -1621,9 +1624,14 @@ public class Camera extends Activity implements View.OnClickListener,
 
         // Set picture size.
         String pictureSize = mPreferences.getString(
-                CameraSettings.KEY_PICTURE_SIZE,
-                getString(R.string.pref_camera_picturesize_default));
-        setCameraPictureSizeIfSupported(pictureSize);
+                CameraSettings.KEY_PICTURE_SIZE, null);
+        if (pictureSize == null) {
+            CameraSettings.initialCameraPictureSize(this, mParameters);
+        } else {
+            List<Size> supported = mParameters.getSupportedPictureSizes();
+            CameraSettings.setCameraPictureSize(
+                    pictureSize, supported, mParameters);
+        }
 
         // Set JPEG quality.
         String jpegQuality = mPreferences.getString(
@@ -1862,21 +1870,6 @@ public class Camera extends Activity implements View.OnClickListener,
             finish();
         }
         return true;
-    }
-
-    private void setCameraPictureSizeIfSupported(String sizeString) {
-        List<Size> pictureSizes = mParameters.getSupportedPictureSizes();
-        if (pictureSizes != null) {
-            int index = sizeString.indexOf('x');
-            int width = Integer.parseInt(sizeString.substring(0, index));
-            int height = Integer.parseInt(sizeString.substring(index + 1));
-            for (Size size: pictureSizes) {
-                if (size.width == width && size.height == height) {
-                    mParameters.setPictureSize(width, height);
-                    break;
-                }
-            }
-        }
     }
 
     public void onSharedPreferenceChanged(
