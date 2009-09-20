@@ -23,6 +23,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.widget.RemoteViews;
 
 public class PhotoAppWidgetConfigure extends Activity {
@@ -47,15 +48,22 @@ public class PhotoAppWidgetConfigure extends Activity {
             finish();
         }
 
-        // TODO: get these values from constants somewhere
+        // Assume the widget will be 1/4 of the screen.
+        // This will be slightly too large, but there is not a good way to know the
+        // actual widget size from here. The image will be scaled to fit since the layout
+        // file specifies android:scaleType="centerCrop"
+        DisplayMetrics display = getResources().getDisplayMetrics();
+        int maxDimension = Math.max(display.heightPixels, display.widthPixels);
+        maxDimension /= 2;
+        
         // TODO: Adjust the PhotoFrame's image size to avoid on the fly scaling
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
         intent.setType("image/*");
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 192);
-        intent.putExtra("outputY", 192);
+        intent.putExtra("outputX", maxDimension);
+        intent.putExtra("outputY", maxDimension);
         intent.putExtra("noFaceDetection", true);
         intent.putExtra("return-data", true);
 
