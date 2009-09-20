@@ -143,6 +143,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
+    private View mGripper;
     private Switcher mSwitcher;
     private boolean mRecordingTimeCountsDown = false;
 
@@ -300,8 +301,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mShutterButton.setImageResource(R.drawable.btn_ic_video_record);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
-        findViewById(R.id.btn_gripper)
-                .setOnTouchListener(new GripperTouchListener());
+        mGripper = findViewById(R.id.btn_gripper);
+        mGripper.setOnTouchListener(new GripperTouchListener());
 
         // Make sure preview is started.
         try {
@@ -1052,8 +1053,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     public void onVisibilityChanged(boolean visible) {
-        findViewById(R.id.btn_gripper).setVisibility(
-                visible ? View.INVISIBLE : View.VISIBLE);
+        // At this point, we are not recording.
+        mGripper.setVisibility(visible ? View.INVISIBLE : View.VISIBLE);
         if (visible) {
             releaseMediaRecorder();
         } else {
@@ -1128,6 +1129,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mRecordingTimeView.setVisibility(View.VISIBLE);
             mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
             keepScreenOn();
+            mGripper.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -1233,6 +1235,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             updateRecordingIndicator(true);
             mRecordingTimeView.setVisibility(View.GONE);
             keepScreenOnAwhile();
+            mGripper.setVisibility(View.VISIBLE);
         }
         if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {
             registerVideo();
