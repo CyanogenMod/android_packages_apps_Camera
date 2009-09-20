@@ -1411,13 +1411,18 @@ public class VideoCamera extends Activity implements View.OnClickListener,
                 showCameraBusyAndFinish();
             }
         } else {
-            // we need lock the camera device before writing parameters
-            if (mCameraDevice.lock() == 0) {
-                setCameraParameters();
-                mCameraDevice.unlock();
-            } else {
-                Log.e(TAG, "unable to lock camera to set parameters");
+            try {
+                // We need to lock the camera before writing parameters.
+                mCameraDevice.lock();
+            } catch (RuntimeException e) {
+                // When preferences are added for the first time, this method
+                // will be called. But OnScreenSetting is not displayed yet and
+                // media recorder still owns the camera. Lock will fail and we
+                // just ignore it.
+                return;
             }
+            setCameraParameters();
+            mCameraDevice.unlock();
         }
     }
 }
