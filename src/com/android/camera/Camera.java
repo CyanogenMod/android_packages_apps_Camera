@@ -1590,6 +1590,10 @@ public class Camera extends Activity implements View.OnClickListener,
         return optimalSize;
     }
 
+    private static boolean isSupported(String value, List<String> supported) {
+        return supported == null ? false : supported.indexOf(value) >= 0;
+    }
+
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
@@ -1620,27 +1624,30 @@ public class Camera extends Activity implements View.OnClickListener,
                 getString(R.string.pref_camera_jpegquality_default));
         mParameters.setJpegQuality(Integer.parseInt(jpegQuality));
 
+        // For the following settings, we need to check if the settings are
+        // still supported by latest driver, if not, ignore the settings.
+
         // Set flash mode.
-        if (mParameters.getSupportedFlashModes() != null) {
-            String flashMode = mPreferences.getString(
-                    CameraSettings.KEY_FLASH_MODE,
-                    getString(R.string.pref_camera_flashmode_default));
+        String flashMode = mPreferences.getString(
+                CameraSettings.KEY_FLASH_MODE,
+                getString(R.string.pref_camera_flashmode_default));
+        if (isSupported(flashMode, mParameters.getSupportedFlashModes())) {
             mParameters.setFlashMode(flashMode);
         }
 
-        // Set white balance.
-        if (mParameters.getSupportedWhiteBalance() != null) {
-            String whiteBalance = mPreferences.getString(
-                    CameraSettings.KEY_WHITE_BALANCE,
-                    getString(R.string.pref_camera_whitebalance_default));
+        // Set white balance parameter.
+        String whiteBalance = mPreferences.getString(
+                CameraSettings.KEY_WHITE_BALANCE,
+                getString(R.string.pref_camera_whitebalance_default));
+        if (isSupported(whiteBalance, mParameters.getSupportedWhiteBalance())) {
             mParameters.setWhiteBalance(whiteBalance);
         }
 
-        // Set color effect.
-        if (mParameters.getSupportedColorEffects() != null) {
-            String colorEffect = mPreferences.getString(
-                    CameraSettings.KEY_COLOR_EFFECT,
-                    getString(R.string.pref_camera_coloreffect_default));
+        // Set color effect parameter.
+        String colorEffect = mPreferences.getString(
+                CameraSettings.KEY_COLOR_EFFECT,
+                getString(R.string.pref_camera_coloreffect_default));
+        if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
             mParameters.setColorEffect(colorEffect);
         }
 
