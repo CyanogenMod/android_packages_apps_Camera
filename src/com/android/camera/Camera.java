@@ -1382,7 +1382,7 @@ public class Camera extends Activity implements View.OnClickListener,
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
-        if (mFocusMode.equals(CameraSettings.VALUE_FOCUS_INFINITY)
+        if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || (mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL)) {
             if (mZoomButtons != null) mZoomButtons.setVisible(false);
@@ -1399,7 +1399,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void doFocus(boolean pressed) {
         // Do the focus if the mode is not infinity.
-        if (!mFocusMode.equals(CameraSettings.VALUE_FOCUS_INFINITY)) {
+        if (!mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)) {
             if (pressed) {  // Focus key down.
                 autoFocus();
             } else {  // Focus key up.
@@ -1652,20 +1652,19 @@ public class Camera extends Activity implements View.OnClickListener,
         }
 
         // Set scene mode.
-        if (mParameters.getSupportedSceneModes() != null) {
-            String sceneMode = mPreferences.getString(
-                    CameraSettings.KEY_SCENE_MODE,
-                    getString(R.string.pref_camera_scenemode_default));
+        String sceneMode = mPreferences.getString(
+                CameraSettings.KEY_SCENE_MODE,
+                getString(R.string.pref_camera_scenemode_default));
+        if (isSupported(sceneMode, mParameters.getSupportedSceneModes())) {
             mParameters.setSceneMode(sceneMode);
         }
 
         // Set focus mode.
-        // TODO: use camera parameters API after it is finished.
-        if (mParameters.get("focus-mode-values") != null) {
-            mFocusMode = mPreferences.getString(
-                    CameraSettings.KEY_FOCUS_MODE,
-                    getString(R.string.pref_camera_focusmode_default));
-            mParameters.set("focus-mode", mFocusMode);
+        mFocusMode = mPreferences.getString(
+                CameraSettings.KEY_FOCUS_MODE,
+                getString(R.string.pref_camera_focusmode_default));
+        if (isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
+            mParameters.setFocusMode(mFocusMode);
         }
 
         mCameraDevice.setParameters(mParameters);
