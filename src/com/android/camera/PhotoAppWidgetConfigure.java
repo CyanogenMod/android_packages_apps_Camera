@@ -55,7 +55,7 @@ public class PhotoAppWidgetConfigure extends Activity {
         DisplayMetrics display = getResources().getDisplayMetrics();
         int maxDimension = Math.max(display.heightPixels, display.widthPixels);
         maxDimension /= 2;
-        
+
         // TODO: Adjust the PhotoFrame's image size to avoid on the fly scaling
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
         intent.setType("image/*");
