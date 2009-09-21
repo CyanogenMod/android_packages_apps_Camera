@@ -80,6 +80,8 @@ public class CameraSettings {
                 (ListPreference) screen.findPreference(KEY_COLOR_EFFECT);
         ListPreference sceneMode =
                 (ListPreference) screen.findPreference(KEY_SCENE_MODE);
+        ListPreference flashMode =
+                (ListPreference) screen.findPreference(KEY_FLASH_MODE);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -108,6 +110,10 @@ public class CameraSettings {
         if (sceneMode != null) {
             filterUnsupportedOptions(screen,
                     sceneMode, mParameters.getSupportedSceneModes());
+        }
+        if (flashMode != null) {
+            filterUnsupportedOptions(screen,
+                    flashMode, mParameters.getSupportedFlashModes());
         }
     }
 
