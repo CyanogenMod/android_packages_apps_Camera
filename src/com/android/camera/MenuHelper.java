@@ -275,8 +275,8 @@ public class MenuHelper {
                         ok = true;
                     }
                 }
-                
-                if (!ok) {    
+
+                if (!ok) {
                     handler.post(new Runnable() {
                         public void run() {
                             Toast.makeText(activity,
