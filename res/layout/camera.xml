@@ -15,6 +15,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:background="@drawable/camera_background"
         android:id="@+id/camera"
         android:orientation="horizontal"
@@ -48,15 +49,30 @@
                         android:id="@+id/focus_rectangle"
                         android:layout_width="384dp"
                         android:layout_height="288dp"/>
-                <ImageView
-                        android:id="@+id/gps_indicator"
+                <com.android.camera.EvenlySpacedLayout
+                        camera:orientation="vertical"
+                        android:visibility="visible"
+                        android:layout_gravity="left|fill_vertical"
+                        android:id="@+id/action_icon_panel"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="invisible"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"/>
+                        android:layout_height="288dp">
+                    <com.android.camera.IconIndicator
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/gps_icon"
+                            camera:modes="@array/gps_modes"
+                            camera:icons="@array/gps_icons"
+                            android:visibility="visible"/>
+                    <com.android.camera.IconIndicator
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/flash_icon"
+                            camera:modes="@array/pref_camera_flashmode_entryvalues"
+                            camera:icons="@array/flash_icons"
+                            android:visibility="visible"/>
+                </com.android.camera.EvenlySpacedLayout>
             </FrameLayout>
         </LinearLayout>
     </RelativeLayout>
