@@ -90,7 +90,7 @@ public class Image extends BaseImage implements IImage {
     }
 
     public void saveImageContents(Bitmap image, byte [] jpegData,
-            int orientation, boolean newFile, String filePath) {
+            boolean newFile, String filePath) {
         Bitmap thumbnail = null;
         Uri uri = mContainer.contentUri(mId);
         compressImageToFile(image, jpegData, uri);
