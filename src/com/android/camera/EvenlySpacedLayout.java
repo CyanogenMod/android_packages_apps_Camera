@@ -17,19 +17,25 @@
 package com.android.camera;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
 //
 // This is a layout which makes the children even spaced.
-// Currently it only supports putting children horizontally, and it does not
-// consider the padding parameters.
+// Currently it does not consider the padding parameters.
 //
 public class EvenlySpacedLayout extends ViewGroup {
+    private boolean mHorizontal;
 
     public EvenlySpacedLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.obtainStyledAttributes(
+                attrs, R.styleable.EvenlySpacedLayout, 0, 0);
+        mHorizontal = (0 == a.getInt(
+                R.styleable.EvenlySpacedLayout_orientation, 0));
+        a.recycle();
     }
 
     @Override
@@ -41,15 +47,19 @@ public class EvenlySpacedLayout extends ViewGroup {
             View child = getChildAt(i);
             if (child.getVisibility() == GONE) continue;
             measureChild(child, widthMeasureSpec, heightMeasureSpec);
-            width += child.getMeasuredWidth();
-            height = Math.max(height, child.getMeasuredHeight());
+            if (mHorizontal) {
+                width += child.getMeasuredWidth();
+                height = Math.max(height, child.getMeasuredHeight());
+            } else {
+                height += child.getMeasuredHeight();
+                width = Math.max(width, child.getMeasuredWidth());
+            }
         }
         setMeasuredDimension(resolveSize(width, widthMeasureSpec),
                 resolveSize(height, heightMeasureSpec));
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    private void layoutHorizontal(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
 
         int usedWidth = 0;
@@ -58,7 +68,7 @@ public class EvenlySpacedLayout extends ViewGroup {
             View child = getChildAt(i);
             if (child.getVisibility() == GONE) continue;
             usedWidth += child.getMeasuredWidth();
-            usedChildren += 1;
+            ++usedChildren;
         }
 
         int spacing = (r - l - usedWidth) / (usedChildren + 1);
@@ -72,6 +82,41 @@ public class EvenlySpacedLayout extends ViewGroup {
             child.layout(left, top, left + w, top + h);
             left += w;
             left += spacing;
+        }
+    }
+
+    private void layoutVertical(boolean changed, int l, int t, int r, int b) {
+        int count = getChildCount();
+
+        int usedHeight = 0;
+        int usedChildren = 0;
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            if (child.getVisibility() == GONE) continue;
+            usedHeight += child.getMeasuredHeight();
+            ++usedChildren;
+        }
+
+        int spacing = (b - t - usedHeight) / (usedChildren + 1);
+        int top = spacing;
+        int left = 0;
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            if (child.getVisibility() == GONE) continue;
+            int w = child.getMeasuredWidth();
+            int h = child.getMeasuredHeight();
+            child.layout(left, top, left + w, top + h);
+            top += h;
+            top += spacing;
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (mHorizontal) {
+            layoutHorizontal(changed, l, t, r, b);
+        } else {
+            layoutVertical(changed, l, t, r, b);
         }
     }
 }
