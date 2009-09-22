@@ -248,8 +248,7 @@ public class ImageManager {
         return cr.insert(STORAGE_URI, values);
     }
 
-    public static void storeImage(
-            Uri uri, ContentResolver cr, int orientation,
+    public static void storeImage(Uri uri, ContentResolver cr,
             Bitmap source, byte [] jpegData) {
 
         if (source == null && jpegData == null || uri == null) {
@@ -278,8 +277,7 @@ public class ImageManager {
             } finally {
                 c.close();
             }
-            image.saveImageContents(
-                    source, jpegData, orientation, true, filepath);
+            image.saveImageContents(source, jpegData, true, filepath);
 
             ContentValues values = new ContentValues();
             values.put(ImageColumns.MINI_THUMB_MAGIC, 0);

@@ -694,9 +694,8 @@ public class Camera extends Activity implements View.OnClickListener,
                     mCancel = true;
                 }
                 if (!mCancel) {
-                    ImageManager.storeImage(
-                            mLastContentUri, mContentResolver,
-                            0, null, data);
+                    ImageManager.storeImage(mLastContentUri, mContentResolver,
+                            null, data);
                     ImageManager.setImageSize(mContentResolver, mLastContentUri,
                             new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
                             name).length());

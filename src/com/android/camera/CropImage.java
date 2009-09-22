@@ -380,7 +380,6 @@ public class CropImage extends MonitoredActivity {
                 ImageManager.storeImage(
                         newUri,
                         mContentResolver,
-                        0, // TODO fix this orientation
                         croppedImage,
                         null);
 
