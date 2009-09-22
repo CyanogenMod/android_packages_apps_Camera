@@ -33,6 +33,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Parcel;
@@ -281,6 +282,35 @@ public class ImageManager {
 
             ContentValues values = new ContentValues();
             values.put(ImageColumns.MINI_THUMB_MAGIC, 0);
+            int degree = 0;
+            if (jpegData != null) {
+                ExifInterface exif = null;
+                try {
+                    exif = new ExifInterface(filepath);
+                } catch (IOException ex) {
+                    Log.e(TAG, "cannot read exif", ex);
+                }
+                if (exif != null) {
+                    int orientation = exif.getAttributeInt(
+                        ExifInterface.TAG_ORIENTATION, -1);
+                    if (orientation != -1) {
+                        // We only recognize a subset of orientation tag values.
+                        switch(orientation) {
+                            case ExifInterface.ORIENTATION_ROTATE_90:
+                                degree = 90;
+                                break;
+                            case ExifInterface.ORIENTATION_ROTATE_180:
+                                degree = 180;
+                                break;
+                            case ExifInterface.ORIENTATION_ROTATE_270:
+                                degree = 270;
+                                break;
+                        }
+
+                    }
+                }
+            }
+            values.put(Images.Media.ORIENTATION, degree);
             cr.update(uri, values, null, null);
             complete = true;
         } finally {
