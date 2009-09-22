@@ -150,6 +150,12 @@ public class Camera extends Activity implements View.OnClickListener,
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
 
+    // mCropValue, mSaveUri, mMaxNumOfPixels are used only if
+    // isImageCaptureIntent() is true.
+    private String mCropValue;
+    private Uri mSaveUri;
+    private int mMaxNumOfPixels;
+
     private int mViewFinderWidth, mViewFinderHeight;
 
     private ImageCapture mImageCapture = null;
@@ -722,10 +728,16 @@ public class Camera extends Activity implements View.OnClickListener,
                         mImageCapture.getLastCaptureUri());
                 mThumbController.updateDisplayIfNeeded();
             } else {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 4;
-                mCaptureOnlyBitmap = BitmapFactory.decodeByteArray(
-                        data, 0, data.length, options);
+                mCaptureOnlyBitmap = Util.makeBitmap(data, mMaxNumOfPixels);
+
+                // This is really stupid...
+                String filepath = ImageManager.getTempJpegPath();
+                int degree = 0;
+                if (saveDataToFile(filepath, data)) {
+                    degree = ImageManager.getExifOrientation(filepath);
+                    new File(filepath).delete();
+                }
+                mCaptureOnlyBitmap = Util.rotate(mCaptureOnlyBitmap, degree);
                 showPostCaptureAlert();
             }
         }
@@ -831,6 +843,19 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    public boolean saveDataToFile(String filePath, byte[] data) {
+        FileOutputStream f = null;
+        try {
+            f = new FileOutputStream(filePath);
+            f.write(data);
+        } catch (IOException e) {
+            return false;
+        } finally {
+            MenuHelper.closeSilently(f);
+        }
+        return true;
+    }
+
     private void setLastPictureThumb(byte[] data, int degree, Uri uri) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 16;
@@ -886,6 +911,10 @@ public class Camera extends Activity implements View.OnClickListener,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mIsImageCaptureIntent = isImageCaptureIntent();
+        if (mIsImageCaptureIntent) {
+            setupCaptureParams();
+        }
+
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup rootView = (ViewGroup) findViewById(R.id.camera);
@@ -988,25 +1017,15 @@ public class Camera extends Activity implements View.OnClickListener,
         }
         Bitmap bitmap = mImageCapture.getLastBitmap();
 
-        String cropValue = null;
-        Uri saveUri = null;
-
-        Bundle myExtras = getIntent().getExtras();
-        if (myExtras != null) {
-            saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
-            cropValue = myExtras.getString("crop");
-        }
-
-
-        if (cropValue == null) {
+        if (mCropValue == null) {
             // First handle the no crop case -- just return the value.  If the
             // caller specifies a "save uri" then write the data to it's
             // stream. Otherwise, pass back a scaled down version of the bitmap
             // directly in the extras.
-            if (saveUri != null) {
+            if (mSaveUri != null) {
                 OutputStream outputStream = null;
                 try {
-                    outputStream = mContentResolver.openOutputStream(saveUri);
+                    outputStream = mContentResolver.openOutputStream(mSaveUri);
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 75,
                             outputStream);
                     outputStream.close();
@@ -1025,15 +1044,6 @@ public class Camera extends Activity implements View.OnClickListener,
                     }
                 }
             } else {
-                float scale = .5F;
-                Matrix m = new Matrix();
-                m.setScale(scale, scale);
-
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,
-                        bitmap.getWidth(),
-                        bitmap.getHeight(),
-                        m, true);
-
                 setResult(RESULT_OK,
                         new Intent("inline-data").putExtra("data", bitmap));
                 finish();
@@ -1068,11 +1078,11 @@ public class Camera extends Activity implements View.OnClickListener,
             }
 
             Bundle newExtras = new Bundle();
-            if (cropValue.equals("circle")) {
+            if (mCropValue.equals("circle")) {
                 newExtras.putString("circleCrop", "true");
             }
-            if (saveUri != null) {
-                newExtras.putParcelable(MediaStore.EXTRA_OUTPUT, saveUri);
+            if (mSaveUri != null) {
+                newExtras.putParcelable(MediaStore.EXTRA_OUTPUT, mSaveUri);
             } else {
                 newExtras.putBoolean("return-data", true);
             }
@@ -1773,6 +1783,26 @@ public class Camera extends Activity implements View.OnClickListener,
     private boolean isImageCaptureIntent() {
         String action = getIntent().getAction();
         return (MediaStore.ACTION_IMAGE_CAPTURE.equals(action));
+    }
+
+    private void setupCaptureParams() {
+        Bundle myExtras = getIntent().getExtras();
+        if (myExtras != null) {
+            mSaveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
+            mCropValue = myExtras.getString("crop");
+            mMaxNumOfPixels = myExtras.getInt("MaxNumOfPixels");
+        }
+
+        // If the caller specified a Uri, we can save a larger bitmap through
+        // the content provider. Otherwise return the bitmap in the intent and
+        // have to use a smaller bitmap.
+        if (mSaveUri == null) {
+            mMaxNumOfPixels = 50 * 1024;
+        } else if (mMaxNumOfPixels == 0) {
+            // mMaxNumOfPixels == 0 if we cannot get the extra bundle above or
+            // it does not contain the parameter.
+            mMaxNumOfPixels = 200 * 1024;
+        }
     }
 
     private void showPostCaptureAlert() {
