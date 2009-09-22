@@ -249,7 +249,8 @@ public class ImageManager {
         return cr.insert(STORAGE_URI, values);
     }
 
-    public static void storeImage(Uri uri, ContentResolver cr,
+    // Returns the rotation degree stored in the jpeg header.
+    public static int storeImage(Uri uri, ContentResolver cr,
             Bitmap source, byte [] jpegData) {
 
         if (source == null && jpegData == null || uri == null) {
@@ -313,6 +314,7 @@ public class ImageManager {
             values.put(Images.Media.ORIENTATION, degree);
             cr.update(uri, values, null, null);
             complete = true;
+            return degree;
         } finally {
             if (!complete) {
                 try {
