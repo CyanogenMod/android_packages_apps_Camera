@@ -431,6 +431,7 @@
     <string name="pref_camera_whitebalance_entry_twilight">Twilight</string>
     <string name="pref_camera_whitebalance_entry_shade">Shade</string>
     <string name="pref_camera_whitebalance_entry_warm_fluorescent">Warm Fluorescent</string>
+    <!-- Manual white-balance for very bright and yellowish light. -->
     <string name="pref_camera_whitebalance_entry_halogen">Halogen</string>
 
     <!-- Settings screen, color effect dialog title -->
@@ -447,6 +448,7 @@
     <string name="pref_camera_coloreffect_entry_mono">Mono</string>
     <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
     <string name="pref_camera_coloreffect_entry_negative">Negative</string>
+    <!-- Color effect that overexposes and reverses some of the tones. -->
     <string name="pref_camera_coloreffect_entry_solarize">Solarize</string>
     <string name="pref_camera_coloreffect_entry_posterize">Posterize</string>
     <string name="pref_camera_coloreffect_entry_whiteboard">Whiteboard</string>
@@ -469,16 +471,27 @@
 
     <!-- Settings menu, scene mode choices -->
     <string name="pref_camera_scenemode_entry_auto">Auto</string>
+    <!-- Scene mode that takes an image quickly with little motion blur. -->
     <string name="pref_camera_scenemode_entry_action">Action</string>
+    <!-- Scene mode that takes an image with as little noise as possible so details of the subject are maintained. -->
     <string name="pref_camera_scenemode_entry_portrait">Portrait</string>
+    <!-- Scene mode that takes an image of a landscape assuming all subjects are relatively far from the phone. -->
     <string name="pref_camera_scenemode_entry_landscape">Landscape</string>
+    <!-- Scene mode that takes long exposures to capture night scenes without flash. -->
     <string name="pref_camera_scenemode_entry_night">Night</string>
+    <!-- Scene mode that takes night shots with long exposure and flash to illuminate the subject while still capturing darker detail in the background. -->
     <string name="pref_camera_scenemode_entry_night_portrait">Night Portrait</string>
+    <!-- Scene mode to be used in a stage show. -->
     <string name="pref_camera_scenemode_entry_theatre">Theatre</string>
+    <!-- Scene mode optimized for taking images on the beach. -->
     <string name="pref_camera_scenemode_entry_beach">Beach</string>
+    <!-- Scene mode optimized for taking images in the snow. -->
     <string name="pref_camera_scenemode_entry_snow">Snow</string>
+    <!-- Scene mode optimized for taking images in the sunset. -->
     <string name="pref_camera_scenemode_entry_sunset">Sunset</string>
+    <!-- Scene mode for taking a photo as sharp as possible. -->
     <string name="pref_camera_scenemode_entry_steadyphoto">Steady Photo</string>
+    <!-- Scene mode optimized for taking images of fireworks. -->
     <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
 
     <!-- Menu item to go to the settings screen -->
