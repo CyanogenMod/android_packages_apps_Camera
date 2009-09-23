@@ -23,9 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:singleLine="true"
+            android:maxLines="2"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:ellipsize="marquee"
+            android:ellipsize="end"
             android:fadingEdge="horizontal" />
     <RadioButton android:id="@+id/radio_button"
             android:focusable="false"
