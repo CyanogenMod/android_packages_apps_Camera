@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -384,9 +385,13 @@ public class OnScreenSettings {
     private class SubMenuAdapter extends BaseAdapter
             implements OnItemClickListener {
         private final ListPreference mPreference;
+        private final IconListPreference mIconPreference;
 
         public SubMenuAdapter(Context context, ListPreference preference) {
             mPreference = preference;
+            mIconPreference = (preference instanceof IconListPreference)
+                    ? (IconListPreference) preference
+                    : null;
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -400,15 +405,24 @@ public class OnScreenSettings {
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_submenu_cancel, parent, false);
             } else {
+                int index = position - 1;
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_submenu_item, parent, false);
                 boolean checked = mPreference.getValue().equals(
-                        mPreference.getEntryValues()[position - 1]);
+                        mPreference.getEntryValues()[index]);
                 ((TextView) convertView.findViewById(
-                        R.id.title)).setText(entry[position - 1]);
-                RadioButton radio = ((RadioButton)
-                        convertView.findViewById(R.id.radio_button));
-                radio.setChecked(checked);
+                        R.id.title)).setText(entry[index]);
+                ((RadioButton) convertView.findViewById(
+                        R.id.radio_button)).setChecked(checked);
+                ImageView icon = (ImageView)
+                        convertView.findViewById(R.id.icon);
+                if (mIconPreference != null) {
+                    icon.setVisibility(View.VISIBLE);
+                    icon.setImageDrawable(
+                            mIconPreference.getIcons()[position-1]);
+                } else {
+                    icon.setVisibility(View.GONE);
+                }
             }
             return convertView;
         }
