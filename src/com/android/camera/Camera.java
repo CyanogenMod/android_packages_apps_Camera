@@ -679,7 +679,8 @@ public class Camera extends Activity implements View.OnClickListener,
 
         Bitmap mCaptureOnlyBitmap;
 
-        private void storeImage(byte[] data, Location loc) {
+        // Returns the rotation degree in the jpeg header.
+        private int storeImage(byte[] data, Location loc) {
             try {
                 long dateTaken = System.currentTimeMillis();
                 String name = createName(dateTaken) + ".jpg";
@@ -696,25 +697,29 @@ public class Camera extends Activity implements View.OnClickListener,
                     // this means we got an error
                     mCancel = true;
                 }
+                int degree = 0;
                 if (!mCancel) {
-                    ImageManager.storeImage(mLastContentUri, mContentResolver,
+                    degree = ImageManager.storeImage(mLastContentUri, mContentResolver,
                             null, data);
                     ImageManager.setImageSize(mContentResolver, mLastContentUri,
                             new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
                             name).length());
                 }
+                return degree;
             } catch (Exception ex) {
                 Log.e(TAG, "Exception while compressing image.", ex);
+                return 0;
             }
         }
 
         public void storeImage(final byte[] data,
                 android.hardware.Camera camera, Location loc) {
             if (!mIsImageCaptureIntent) {
-                storeImage(data, loc);
+                int degree = storeImage(data, loc);
                 sendBroadcast(new Intent(
                         "com.android.camera.NEW_PICTURE", mLastContentUri));
-                setLastPictureThumb(data, mImageCapture.getLastCaptureUri());
+                setLastPictureThumb(data, degree,
+                        mImageCapture.getLastCaptureUri());
                 mThumbController.updateDisplayIfNeeded();
             } else {
                 BitmapFactory.Options options = new BitmapFactory.Options();
@@ -826,11 +831,12 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
-    private void setLastPictureThumb(byte[] data, Uri uri) {
+    private void setLastPictureThumb(byte[] data, int degree, Uri uri) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 16;
         Bitmap lastPictureThumb =
                 BitmapFactory.decodeByteArray(data, 0, data.length, options);
+        lastPictureThumb = Util.rotate(lastPictureThumb, degree);
         mThumbController.setData(uri, lastPictureThumb);
     }
 
