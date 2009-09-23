@@ -16,24 +16,19 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.BitmapManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
+import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
-import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -162,14 +157,6 @@ public class Image extends BaseImage implements IImage {
         setExifRotation(newDegrees);
         setDegreesRotated(newDegrees);
 
-        // setting this to zero will force the call to checkCursor to generate
-        // fresh thumbs
-        mMiniThumbMagic = 0;
-        try {
-            mContainer.checkThumbnail(this, null);
-        } catch (IOException e) {
-            // Ignore inability to store mini thumbnail.
-        }
         return true;
     }
 
@@ -179,62 +166,16 @@ public class Image extends BaseImage implements IImage {
 
     public Bitmap thumbBitmap(boolean rotateAsNeeded) {
         Bitmap bitmap = null;
-        if (mContainer.mThumbUri != null) {
-            Cursor c = mContentResolver.query(
-                    mContainer.mThumbUri, THUMB_PROJECTION,
-                    Thumbnails.IMAGE_ID + "=?",
-                    new String[] { String.valueOf(fullSizeImageId()) },
-                    null);
-            try {
-                if (c.moveToFirst()) {
-                    bitmap = decodeCurrentImage(c.getLong(0));
-                }
-            } catch (RuntimeException ex) {
-                // sdcard removed?
-                return null;
-            } finally {
-                c.close();
-            }
-        }
-
-        if (bitmap == null) {
-            bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE,
-                    THUMBNAIL_MAX_NUM_PIXELS, NO_ROTATE, NO_NATIVE);
-            // No thumbnail found... storing the new one.
-            bitmap = mContainer.storeThumbnail(bitmap, mId);
-        }
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inDither = false;
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        bitmap = Images.Thumbnails.getThumbnail(
+                    mContentResolver, mId, Images.Thumbnails.MINI_KIND, options);
 
         if (bitmap != null && rotateAsNeeded) {
             bitmap = Util.rotate(bitmap, getDegreesRotated());
         }
 
-        return bitmap;
-    }
-
-    private Bitmap decodeCurrentImage(long id) {
-        Uri thumbUri = ContentUris.withAppendedId(
-                mContainer.mThumbUri, id);
-        ParcelFileDescriptor pfdInput;
-        Bitmap bitmap = null;
-        try {
-            BitmapFactory.Options options =  new BitmapFactory.Options();
-            options.inDither = false;
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            pfdInput = mContentResolver.openFileDescriptor(thumbUri, "r");
-            bitmap = BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), options);
-            pfdInput.close();
-        } catch (FileNotFoundException ex) {
-            Log.e(TAG, "couldn't open thumbnail " + thumbUri + "; " + ex);
-        } catch (IOException ex) {
-            Log.e(TAG, "couldn't open thumbnail " + thumbUri + "; " + ex);
-        } catch (NullPointerException ex) {
-            // we seem to get this if the file doesn't exist anymore
-            Log.e(TAG, "couldn't open thumbnail " + thumbUri + "; " + ex);
-        } catch (OutOfMemoryError ex) {
-            Log.e(TAG, "failed to allocate memory for thumbnail "
-                    + thumbUri + "; " + ex);
-        }
         return bitmap;
     }
 }

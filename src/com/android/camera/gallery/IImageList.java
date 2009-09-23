@@ -18,7 +18,6 @@ package com.android.camera.gallery;
 
 import android.net.Uri;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 //
@@ -89,12 +88,6 @@ public interface IImageList {
     public boolean removeImageAt(int i);
 
     public int getImageIndex(IImage image);
-
-    /**
-     * Generate thumbnail for the image (if it has not been generated.)
-     * @param index     the position of the image
-     */
-    public void checkThumbnail(int index) throws IOException;
 
     /**
      * Closes this list to release resources, no further operation is allowed.

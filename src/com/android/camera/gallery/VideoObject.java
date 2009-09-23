@@ -18,9 +18,10 @@ package com.android.camera.gallery;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
+import android.media.ThumbnailUtil;
 import android.net.Uri;
-
-import com.android.camera.Util;
+import android.provider.MediaStore.Video;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +32,7 @@ import java.io.InputStream;
  * path to the actual video data.
  */
 public class VideoObject extends BaseImage implements IImage {
-
+    private static final String TAG = "VideoObject";
     /**
      * Constructor.
      *
@@ -65,7 +66,7 @@ public class VideoObject extends BaseImage implements IImage {
     @Override
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
             boolean rotateAsNeeded, boolean useNative) {
-        return Util.createVideoThumbnail(mDataPath);
+        return ThumbnailUtil.createVideoThumbnail(mDataPath);
     }
 
     @Override
@@ -108,6 +109,18 @@ public class VideoObject extends BaseImage implements IImage {
 
     public Bitmap thumbBitmap(boolean rotateAsNeeded) {
         return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, THUMBNAIL_MAX_NUM_PIXELS);
+    }
+
+    @Override
+    public Bitmap miniThumbBitmap() {
+        try {
+            long id = mId;
+            return Video.Thumbnails.getThumbnail(mContentResolver, id,
+                    Video.Thumbnails.MICRO_KIND, null);
+        } catch (Throwable ex) {
+            Log.e(TAG, "miniThumbBitmap got exception", ex);
+            return null;
+        }
     }
 
     @Override

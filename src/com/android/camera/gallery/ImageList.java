@@ -65,10 +65,10 @@ public class ImageList extends BaseImageList implements IImageList {
     }
 
     private static final String WHERE_CLAUSE =
-            "(" + Media.MIME_TYPE + " in (?, ?, ?))";
+            "(" + Media.MIME_TYPE + " in (?, ?, ?)) AND " +
+            Media.MINI_THUMB_MAGIC + "<> 0";
     private static final String WHERE_CLAUSE_WITH_BUCKET_ID =
             WHERE_CLAUSE + " AND " + Media.BUCKET_ID + " = ?";
-
 
     protected String whereClause() {
         return mBucketId == null ? WHERE_CLAUSE : WHERE_CLAUSE_WITH_BUCKET_ID;

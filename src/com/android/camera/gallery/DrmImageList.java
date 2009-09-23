@@ -55,10 +55,6 @@ public class DrmImageList extends ImageList implements IImageList {
                 mBaseUri, DRM_IMAGE_PROJECTION, null, null, sortOrder());
     }
 
-    @Override
-    public void checkThumbnail(int index) {
-    }
-
     private static class DrmImage extends Image {
 
         protected DrmImage(BaseImageList container, ContentResolver cr,

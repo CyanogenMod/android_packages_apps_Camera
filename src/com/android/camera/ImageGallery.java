@@ -29,7 +29,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -40,7 +39,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -204,7 +202,6 @@ public class ImageGallery extends Activity implements
     private final Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             if (!canHandleEvent()) return;
-            stopCheckingThumbnails();
 
             IImage currentImage = getCurrentImage();
 
@@ -218,7 +215,6 @@ public class ImageGallery extends Activity implements
             mGvs.setImageList(mAllImages);
             mGvs.start();
 
-            checkThumbnails();
             mNoImagesView.setVisibility(mAllImages.isEmpty()
                     ? View.VISIBLE
                     : View.GONE);
@@ -377,7 +373,6 @@ public class ImageGallery extends Activity implements
     }
 
     private void rebake(boolean unmounted, boolean scanning) {
-        stopCheckingThumbnails();
         mGvs.stop();
         if (mAllImages != null) {
             mAllImages.close();
@@ -405,7 +400,6 @@ public class ImageGallery extends Activity implements
         mGvs.setDrawAdapter(this);
         mGvs.setLoader(mLoader);
         mGvs.start();
-        checkThumbnails();
         mNoImagesView.setVisibility(mAllImages.getCount() > 0
                 ? View.GONE
                 : View.VISIBLE);
@@ -474,15 +468,6 @@ public class ImageGallery extends Activity implements
         registerReceiver(mReceiver, intentFilter);
         rebake(false, ImageManager.isMediaScannerScanning(
                 getContentResolver()));
-    }
-
-    private void stopCheckingThumbnails() {
-        mLoader.stopCheckingThumbnails();
-    }
-
-    private void checkThumbnails() {
-       ImageLoader.ThumbCheckCallback cb = new MyThumbCheckCallback();
-       mLoader.startCheckingThumbnails(mAllImages, cb);
     }
 
     @Override
@@ -690,77 +675,6 @@ public class ImageGallery extends Activity implements
             toggleMultiSelected(mAllImages.getImageAt(index));
         } else {
             onImageClicked(index);
-        }
-    }
-
-    private final class MyThumbCheckCallback implements
-            ImageLoader.ThumbCheckCallback {
-        private final TextView mProgressTextView;
-        private final String mProgressTextFormatString;
-        boolean mDidSetProgress = false;
-        private long mLastUpdateTime;  // initialized to 0
-        private final PowerManager.WakeLock mWakeLock;
-
-        private MyThumbCheckCallback() {
-            Resources resources = getResources();
-            mProgressTextView = (TextView) findViewById(R.id.loading_text);
-            mProgressTextFormatString = resources.getString(
-                    R.string.loading_progress_format_string);
-            PowerManager pm = (PowerManager)
-                    getSystemService(Context.POWER_SERVICE);
-            mWakeLock = pm.newWakeLock(
-                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
-                    "ImageGallery.checkThumbnails");
-            mWakeLock.acquire();
-        }
-
-        public boolean checking(final int count, final int maxCount) {
-            if (!mLayoutComplete) {
-                return true;
-            }
-
-            if (!mDidSetProgress) {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        findViewById(R.id.loading_text).setVisibility(
-                                View.VISIBLE);
-                        findViewById(android.R.id.progress).setVisibility(
-                                View.VISIBLE);
-                    }
-                });
-                mDidSetProgress = true;
-            }
-            mGvs.postInvalidate();
-
-            // Update the progress text. (Only if it has been one
-            // second since last update, to avoid the UI thread
-            // being overwhelmed by the update).
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - mLastUpdateTime > 1000) {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        String s = String.format(mProgressTextFormatString,
-                                maxCount - count);
-                        mProgressTextView.setText(s);
-                    }
-                });
-                mLastUpdateTime = currentTime;
-            }
-            return !mPausing;
-        }
-
-        public void done() {
-            // done() should only be called once. Use mWakeLock to verify this.
-            assert mWakeLock.isHeld();
-
-            mWakeLock.release();
-            mHandler.post(new Runnable() {
-                public void run() {
-                    findViewById(R.id.loading_text).setVisibility(View.GONE);
-                    findViewById(android.R.id.progress).setVisibility(
-                            View.GONE);
-                }
-            });
         }
     }
 
