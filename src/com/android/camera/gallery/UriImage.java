@@ -53,7 +53,6 @@ class UriImage implements IImage {
     private InputStream getInputStream() {
         try {
             if (mUri.getScheme().equals("file")) {
-                String path = mUri.getPath();
                 return new java.io.FileInputStream(mUri.getPath());
             } else {
                 return mContentResolver.openInputStream(mUri);

@@ -28,7 +28,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
@@ -46,7 +45,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
@@ -156,7 +154,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private Uri mSaveUri;
     private int mMaxNumOfPixels;
 
-    private int mViewFinderWidth, mViewFinderHeight;
+    private int mViewFinderHeight;
 
     private ImageCapture mImageCapture = null;
 
@@ -449,7 +447,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     zoomToLevel(ZOOM_IMMEDIATE, mZoomValue + ZOOM_STEP_MIN);
                     // Wait for a while so we are not changing zoom too fast.
                     try {
-                        Thread.currentThread().sleep(5);
+                        Thread.sleep(5);
                     } catch (InterruptedException ex) {
                     }
                 }
@@ -459,7 +457,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     zoomToLevel(ZOOM_IMMEDIATE, mZoomValue - ZOOM_STEP_MIN);
                     // Wait for a while so we are not changing zoom too fast.
                     try {
-                        Thread.currentThread().sleep(5);
+                        Thread.sleep(5);
                     } catch (InterruptedException ex) {
                     }
                 }
@@ -877,7 +875,6 @@ public class Camera extends Activity implements View.OnClickListener,
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.camera);
         mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
-        mViewFinderWidth = mSurfaceView.getLayoutParams().width;
         mViewFinderHeight = mSurfaceView.getLayoutParams().height;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -1441,7 +1438,6 @@ public class Camera extends Activity implements View.OnClickListener,
         if (mCameraDevice == null) return;
 
         mSurfaceHolder = holder;
-        mViewFinderWidth = w;
         mViewFinderHeight = h;
 
         // Sometimes surfaceChanged is called after onPause. Ignore it.

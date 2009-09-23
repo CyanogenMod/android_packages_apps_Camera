@@ -1434,6 +1434,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 // DefaultHashMap is a HashMap which returns a default value if the specified
 // key is not found.
 //
+@SuppressWarnings("serial")
 class DefaultHashMap<K, V> extends HashMap<K, V> {
     private V mDefaultValue;
 
