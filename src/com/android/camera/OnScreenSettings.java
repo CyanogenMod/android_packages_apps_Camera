@@ -9,7 +9,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.Gravity;
@@ -34,6 +33,7 @@ import java.util.ArrayList;
 // Please reference to {@link android.widget.ZoomButtonsController} for detail
 // information about adding window to WindowManager.
 public class OnScreenSettings {
+    @SuppressWarnings("unused")
     private static final String TAG = "OnScreenSettings";
     private static final int MSG_POST_SET_HIDE = 1;
     private static final int MSG_POST_SET_VISIBLE = 2;
@@ -156,8 +156,6 @@ public class OnScreenSettings {
         // Position the zoom controls on the bottom of the owner view.
         int ownerHeight = mOwnerView.getHeight();
         int ownerWidth = mOwnerView.getWidth();
-        // The gap between the top of the owner and the top of the container
-        int containerOwnerYOffset = ownerHeight - mContainer.getHeight();
 
         // Calculate the owner view's bounds
         int[] mOwnerViewRawLocation = new int[2];

@@ -35,7 +35,6 @@ import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * The class for normal images in gallery.
@@ -106,7 +105,6 @@ public class Image extends BaseImage implements IImage {
 
     public void saveImageContents(Bitmap image, byte [] jpegData,
             boolean newFile, String filePath) {
-        Bitmap thumbnail = null;
         Uri uri = mContainer.contentUri(mId);
         compressImageToFile(image, jpegData, uri);
     }

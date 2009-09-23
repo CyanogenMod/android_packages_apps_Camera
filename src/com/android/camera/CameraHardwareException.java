@@ -17,6 +17,8 @@
 package com.android.camera;
 
 public class CameraHardwareException extends Exception {
+    private static final long serialVersionUID = -4453804913829319918L;
+
     public CameraHardwareException() {
     }
 

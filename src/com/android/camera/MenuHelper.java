@@ -39,7 +39,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +51,6 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -359,48 +357,6 @@ public class MenuHelper {
             default:
                 return "";
         }
-    }
-
-    /**
-     * Returns a human-readable string describing the orientation value. Returns empty
-     * string if there is no orientation value or it it not recognized.
-     */
-    private static String getOrientationString(ExifInterface exif) {
-        // TODO: this function needs to be localized.
-        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
-        if (orientation == -1) return "";
-
-        String orientationString;
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_NORMAL:
-                orientationString = "Normal";
-                break;
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                orientationString = "Flipped horizontal";
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                orientationString = "Rotated 180 degrees";
-                break;
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                orientationString = "Upside down mirror";
-                break;
-            case ExifInterface.ORIENTATION_TRANSPOSE:
-                orientationString = "Transposed";
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                orientationString = "Rotated 90 degrees";
-                break;
-            case ExifInterface.ORIENTATION_TRANSVERSE:
-                orientationString = "Transversed";
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                orientationString = "Rotated 270 degrees";
-                break;
-            default:
-                orientationString = "Undefined";
-                break;
-        }
-        return orientationString;
     }
 
     // Called when "Details" is clicked.
