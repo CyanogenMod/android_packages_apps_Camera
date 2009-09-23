@@ -19,11 +19,9 @@ package com.android.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -67,10 +65,6 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     private boolean mFullScreenInNormalMode;
 
     int mCurrentPosition = 0;
-
-    // represents which style animation to use
-
-    private SharedPreferences mPrefs;
 
     private View mRootView;
     private View mControlBar;
@@ -473,8 +467,6 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         Intent intent = getIntent();
         mFullScreenInNormalMode = intent.getBooleanExtra(
                 MediaStore.EXTRA_FULL_SCREEN, true);
-
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
