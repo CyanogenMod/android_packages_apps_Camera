@@ -386,14 +386,12 @@ public class Util {
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
             Uri uri, ContentResolver cr, ParcelFileDescriptor pfd,
             BitmapFactory.Options options) {
-        Bitmap b = null;
         try {
             if (pfd == null) pfd = makeInputStream(uri, cr);
             if (pfd == null) return null;
             if (options == null) options = new BitmapFactory.Options();
 
             FileDescriptor fd = pfd.getFileDescriptor();
-            options.inSampleSize = 1;
             options.inJustDecodeBounds = true;
             BitmapManager.instance().decodeFileDescriptor(fd, options);
             if (options.mCancel || options.outWidth == -1
@@ -406,14 +404,37 @@ public class Util {
 
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            b = BitmapManager.instance().decodeFileDescriptor(fd, options);
+            return BitmapManager.instance().decodeFileDescriptor(fd, options);
         } catch (OutOfMemoryError ex) {
             Log.e(TAG, "Got oom exception ", ex);
             return null;
         } finally {
             closeSilently(pfd);
         }
-        return b;
+    }
+
+    public static Bitmap makeBitmap(byte[] jpegData, int maxNumOfPixels) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length,
+                    options);
+            if (options.mCancel || options.outWidth == -1
+                    || options.outHeight == -1) {
+                return null;
+            }
+            options.inSampleSize = computeSampleSize(
+                    options, IImage.UNCONSTRAINED, maxNumOfPixels);
+            options.inJustDecodeBounds = false;
+
+            options.inDither = false;
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            return BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length,
+                    options);
+        } catch (OutOfMemoryError ex) {
+            Log.e(TAG, "Got oom exception ", ex);
+            return null;
+        }
     }
 
     private static ParcelFileDescriptor makeInputStream(
