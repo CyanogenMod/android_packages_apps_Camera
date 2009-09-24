@@ -1409,6 +1409,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             // It is assumed media recorder is released before
             // onSharedPreferenceChanged, so we can close the camera here.
             closeCamera();
+            resizeForPreviewAspectRatio(mVideoPreview);
+            resizeForPreviewAspectRatio(mVideoFrame);
             try {
                 startPreview(); // Parameters will be set in startPreview().
             } catch (CameraHardwareException e) {
