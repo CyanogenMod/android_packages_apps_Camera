@@ -94,6 +94,12 @@
         <item>off</item>
     </string-array>
 
+    <array name="pref_camera_flashmode_icons">
+        <item>@drawable/ic_dialog_flash_auto</item>
+        <item>@drawable/ic_dialog_flash_off</item>
+        <item>@drawable/ic_dialog_flash_on</item>
+    </array>
+
     <array name="flash_icons">
         <item>@drawable/ic_viewfinder_flash_auto</item>
         <item>@drawable/ic_viewfinder_flash_on</item>
