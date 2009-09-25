@@ -148,11 +148,9 @@ public class Camera extends Activity implements View.OnClickListener,
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
 
-    // mCropValue, mSaveUri, mMaxNumOfPixels are used only if
-    // isImageCaptureIntent() is true.
+    // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
     private Uri mSaveUri;
-    private int mMaxNumOfPixels;
 
     private int mViewFinderHeight;
 
@@ -681,7 +679,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         private Uri mLastContentUri;
 
-        Bitmap mCaptureOnlyBitmap;
+        byte[] mCaptureOnlyData;
 
         // Returns the rotation degree in the jpeg header.
         private int storeImage(byte[] data, Location loc) {
@@ -726,16 +724,7 @@ public class Camera extends Activity implements View.OnClickListener,
                         mImageCapture.getLastCaptureUri());
                 mThumbController.updateDisplayIfNeeded();
             } else {
-                mCaptureOnlyBitmap = Util.makeBitmap(data, mMaxNumOfPixels);
-
-                // This is really stupid...
-                String filepath = ImageManager.getTempJpegPath();
-                int degree = 0;
-                if (saveDataToFile(filepath, data)) {
-                    degree = ImageManager.getExifOrientation(filepath);
-                    new File(filepath).delete();
-                }
-                mCaptureOnlyBitmap = Util.rotate(mCaptureOnlyBitmap, degree);
+                mCaptureOnlyData = data;
                 showPostCaptureAlert();
             }
         }
@@ -757,12 +746,12 @@ public class Camera extends Activity implements View.OnClickListener,
             return mLastContentUri;
         }
 
-        public Bitmap getLastBitmap() {
-            return mCaptureOnlyBitmap;
+        public byte[] getLastCaptureData() {
+            return mCaptureOnlyData;
         }
 
         private void capture() {
-            mCaptureOnlyBitmap = null;
+            mCaptureOnlyData = null;
 
             // Set rotation.
             int orientation = mLastOrientation;
@@ -833,11 +822,8 @@ public class Camera extends Activity implements View.OnClickListener,
             mImageCapture.initiate();
         }
 
-        private void clearLastBitmap() {
-            if (mCaptureOnlyBitmap != null) {
-                mCaptureOnlyBitmap.recycle();
-                mCaptureOnlyBitmap = null;
-            }
+        private void clearLastData() {
+            mCaptureOnlyData = null;
         }
     }
 
@@ -1008,11 +994,28 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private Bitmap createCaptureBitmap(byte[] data) {
+        // This is really stupid...we just want to read the orientation in
+        // the jpeg header.
+        String filepath = ImageManager.getTempJpegPath();
+        int degree = 0;
+        if (saveDataToFile(filepath, data)) {
+            degree = ImageManager.getExifOrientation(filepath);
+            new File(filepath).delete();
+        }
+
+        // Limit to 50k pixels so we can return it in the intent.
+        Bitmap bitmap = Util.makeBitmap(data, 50*1024);
+        bitmap = Util.rotate(bitmap, degree);
+        return bitmap;
+    }
+
     private void doAttach() {
         if (mPausing) {
             return;
         }
-        Bitmap bitmap = mImageCapture.getLastBitmap();
+
+        byte[] data = mImageCapture.getLastCaptureData();
 
         if (mCropValue == null) {
             // First handle the no crop case -- just return the value.  If the
@@ -1023,8 +1026,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 OutputStream outputStream = null;
                 try {
                     outputStream = mContentResolver.openOutputStream(mSaveUri);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 75,
-                            outputStream);
+                    outputStream.write(data);
                     outputStream.close();
 
                     setResult(RESULT_OK);
@@ -1032,15 +1034,10 @@ public class Camera extends Activity implements View.OnClickListener,
                 } catch (IOException ex) {
                     // ignore exception
                 } finally {
-                    if (outputStream != null) {
-                        try {
-                            outputStream.close();
-                        } catch (IOException ex) {
-                            // ignore exception
-                        }
-                    }
+                    Util.closeSilently(outputStream);
                 }
             } else {
+                Bitmap bitmap = createCaptureBitmap(data);
                 setResult(RESULT_OK,
                         new Intent("inline-data").putExtra("data", bitmap));
                 finish();
@@ -1053,7 +1050,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 File path = getFileStreamPath(sTempCropFilename);
                 path.delete();
                 tempStream = openFileOutput(sTempCropFilename, 0);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, tempStream);
+                tempStream.write(data);
                 tempStream.close();
                 tempUri = Uri.fromFile(path);
             } catch (FileNotFoundException ex) {
@@ -1065,13 +1062,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 finish();
                 return;
             } finally {
-                if (tempStream != null) {
-                    try {
-                        tempStream.close();
-                    } catch (IOException ex) {
-                        // ignore exception
-                    }
-                }
+                Util.closeSilently(tempStream);
             }
 
             Bundle newExtras = new Bundle();
@@ -1256,7 +1247,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         // If we are in an image capture intent and has taken
         // a picture, we just clear it in onPause.
-        mImageCapture.clearLastBitmap();
+        mImageCapture.clearLastData();
         mImageCapture = null;
 
         // This is necessary to make the ZoomButtonsController unregister
@@ -1786,18 +1777,6 @@ public class Camera extends Activity implements View.OnClickListener,
         if (myExtras != null) {
             mSaveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
             mCropValue = myExtras.getString("crop");
-            mMaxNumOfPixels = myExtras.getInt("MaxNumOfPixels");
-        }
-
-        // If the caller specified a Uri, we can save a larger bitmap through
-        // the content provider. Otherwise return the bitmap in the intent and
-        // have to use a smaller bitmap.
-        if (mSaveUri == null) {
-            mMaxNumOfPixels = 50 * 1024;
-        } else if (mMaxNumOfPixels == 0) {
-            // mMaxNumOfPixels == 0 if we cannot get the extra bundle above or
-            // it does not contain the parameter.
-            mMaxNumOfPixels = 200 * 1024;
         }
     }
 
