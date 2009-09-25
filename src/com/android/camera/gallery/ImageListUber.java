@@ -192,7 +192,6 @@ public class ImageListUber implements IImageList {
         for (int i = 0, n = mSkipListSize; i < n; i++) {
             long v = mSkipList[i];
             int offset = (int) (v & 0xFFFFFFFF);
-            int which  = (int) (v >> 32);
             if (skipCount + offset > index) {
                 mSkipList[i] = v - 1;
                 break;

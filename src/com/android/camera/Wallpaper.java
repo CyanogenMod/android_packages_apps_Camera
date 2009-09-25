@@ -26,6 +26,7 @@ import android.os.Bundle;
  * standard pick action.
  */
 public class Wallpaper extends Activity {
+    @SuppressWarnings("unused")
     private static final String TAG = "Wallpaper";
     private static final int PHOTO_PICKED = 1;
     private static final int CROP_DONE = 2;

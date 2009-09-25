@@ -46,6 +46,7 @@ public class CameraSettings {
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
 
+    @SuppressWarnings("unused")
     private static final String TAG = "CameraSettings";
 
     private final Context mContext;

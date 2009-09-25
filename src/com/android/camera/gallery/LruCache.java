@@ -29,6 +29,7 @@ public class LruCache<K, V> {
             new HashMap<K, Entry<K, V>>();
     private ReferenceQueue<V> mQueue = new ReferenceQueue<V>();
 
+    @SuppressWarnings("serial")
     public LruCache(final int capacity) {
         mLruMap = new LinkedHashMap<K, V>(16, 0.75f, true) {
             @Override

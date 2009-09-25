@@ -16,18 +16,12 @@
 
 package com.android.camera;
 
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-
 
 public class IconIndicator extends ImageView {
 
