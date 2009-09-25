@@ -67,6 +67,40 @@ public class CameraSettings {
         return screen;
     }
 
+    public static void initialCameraPictureSize(
+            Context context, Parameters parameters) {
+        // When launching the camera app first time, we will set the picture
+        // size to the first one in the list defined in "arrays.xml" and is also
+        // supported by the driver.
+        List<Size> supported = parameters.getSupportedPictureSizes();
+        if (supported == null) return;
+        for (String candidate : context.getResources().getStringArray(
+                R.array.pref_camera_picturesize_entryvalues)) {
+            if (setCameraPictureSize(candidate, supported, parameters)) {
+                SharedPreferences.Editor editor = PreferenceManager
+                        .getDefaultSharedPreferences(context).edit();
+                editor.putString(KEY_PICTURE_SIZE, candidate);
+                editor.commit();
+                return;
+            }
+        }
+    }
+
+    public static boolean setCameraPictureSize(
+            String candidate, List<Size> supported, Parameters parameters) {
+        int index = candidate.indexOf('x');
+        if (index == NOT_FOUND) return false;
+        int width = Integer.parseInt(candidate.substring(0, index));
+        int height = Integer.parseInt(candidate.substring(index + 1));
+        for (Size size: supported) {
+            if (size.width == width && size.height == height) {
+                parameters.setPictureSize(width, height);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void initPreference(PreferenceScreen screen) {
         ListPreference videoDuration =
                 (ListPreference) screen.findPreference(KEY_VIDEO_DURATION);
