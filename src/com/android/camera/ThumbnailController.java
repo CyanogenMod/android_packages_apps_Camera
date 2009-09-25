@@ -65,8 +65,6 @@ public class ThumbnailController {
     private Drawable[] mThumbs;
     private TransitionDrawable mThumbTransition;
     private boolean mShouldAnimateThumb;
-    private final Animation mShowButtonAnimation = new AlphaAnimation(0F, 1F);
-    private boolean mShouldAnimateButton;
     private final Resources mResources;
 
     // The "frame" is a drawable we want to put on top of the thumbnail.
@@ -75,7 +73,6 @@ public class ThumbnailController {
         mResources = resources;
         mButton = button;
         mContentResolver = contentResolver;
-        mShowButtonAnimation.setDuration(500);
     }
 
     public void setData(Uri uri, Bitmap original) {
@@ -148,14 +145,8 @@ public class ThumbnailController {
 
     public void updateDisplayIfNeeded() {
         if (mUri == null) {
-            mButton.setVisibility(View.INVISIBLE);
+            mButton.setImageDrawable(null);
             return;
-        }
-
-        if (mShouldAnimateButton) {
-            mButton.setVisibility(View.VISIBLE);
-            mButton.startAnimation(mShowButtonAnimation);
-            mShouldAnimateButton = false;
         }
 
         if (mShouldAnimateThumb) {
@@ -196,10 +187,6 @@ public class ThumbnailController {
             mShouldAnimateThumb = true;
         }
         mButton.setImageDrawable(drawable);
-
-        if (mButton.getVisibility() != View.VISIBLE) {
-            mShouldAnimateButton = true;
-        }
     }
 
     public boolean isUriValid() {
