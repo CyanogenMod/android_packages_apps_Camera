@@ -27,7 +27,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
@@ -39,7 +38,6 @@ import android.view.animation.TranslateAnimation;
 
 import com.android.camera.gallery.IImage;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -240,83 +238,6 @@ public class Util {
         return b2;
     }
 
-    /**
-     * Creates a centered bitmap of the desired size.
-     * @param source
-     * @param recycle whether we want to recycle the input
-     */
-    public static Bitmap extractMiniThumb(
-            Bitmap source, int width, int height, boolean recycle) {
-        if (source == null) {
-            return null;
-        }
-
-        float scale;
-        if (source.getWidth() < source.getHeight()) {
-            scale = width / (float) source.getWidth();
-        } else {
-            scale = height / (float) source.getHeight();
-        }
-        Matrix matrix = new Matrix();
-        matrix.setScale(scale, scale);
-        Bitmap miniThumbnail = transform(matrix, source, width, height,
-                true, recycle);
-        return miniThumbnail;
-    }
-
-    /**
-     * Creates a byte[] for a given bitmap of the desired size. Recycles the
-     * input bitmap.
-     */
-    public static byte[] miniThumbData(Bitmap source) {
-        if (source == null) return null;
-
-        Bitmap miniThumbnail = extractMiniThumb(
-                source, IImage.MINI_THUMB_TARGET_SIZE,
-                IImage.MINI_THUMB_TARGET_SIZE,
-                Util.RECYCLE_INPUT);
-
-        ByteArrayOutputStream miniOutStream = new ByteArrayOutputStream();
-        miniThumbnail.compress(Bitmap.CompressFormat.JPEG, 75, miniOutStream);
-        miniThumbnail.recycle();
-
-        try {
-            miniOutStream.close();
-            byte [] data = miniOutStream.toByteArray();
-            return data;
-        } catch (java.io.IOException ex) {
-            Log.e(TAG, "got exception ex " + ex);
-        }
-        return null;
-    }
-
-    /**
-     * Create a video thumbnail for a video. May return null if the video is
-     * corrupt.
-     *
-     * @param filePath
-     */
-    public static Bitmap createVideoThumbnail(String filePath) {
-        Bitmap bitmap = null;
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setMode(MediaMetadataRetriever.MODE_CAPTURE_FRAME_ONLY);
-            retriever.setDataSource(filePath);
-            bitmap = retriever.captureFrame();
-        } catch (IllegalArgumentException ex) {
-            // Assume this is a corrupt video file
-        } catch (RuntimeException ex) {
-            // Assume this is a corrupt video file.
-        } finally {
-            try {
-                retriever.release();
-            } catch (RuntimeException ex) {
-                // Ignore failures while cleaning up.
-            }
-        }
-        return bitmap;
-    }
-
     public static <T>  int indexOf(T [] array, T s) {
         for (int i = 0; i < array.length; i++) {
             if (array[i].equals(s)) {
@@ -349,12 +270,6 @@ public class Util {
      *
      * @param uri
      */
-    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-            Uri uri, ContentResolver cr) {
-        return makeBitmap(minSideLength, maxNumOfPixels, uri, cr,
-                IImage.NO_NATIVE);
-    }
-
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
             Uri uri, ContentResolver cr, boolean useNative) {
         ParcelFileDescriptor input = null;

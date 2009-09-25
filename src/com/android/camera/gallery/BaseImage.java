@@ -22,8 +22,10 @@ import com.android.camera.Util;
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtil;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore.Images;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
@@ -39,12 +41,7 @@ import java.io.OutputStream;
 public abstract class BaseImage implements IImage {
     private static final String TAG = "BaseImage";
     private static final int UNKNOWN_LENGTH = -1;
-
-    private static final byte [] sMiniThumbData =
-            new byte[MiniThumbFile.BYTES_PER_MINTHUMB];
-
     protected ContentResolver mContentResolver;
-
 
     // Database field
     protected Uri mUri;
@@ -213,51 +210,19 @@ public abstract class BaseImage implements IImage {
     }
 
     public Bitmap miniThumbBitmap() {
+        Bitmap b = null;
         try {
             long id = mId;
-
-            synchronized (sMiniThumbData) {
-                byte [] data = null;
-
-                // Try to get it from the file.
-                if (mMiniThumbMagic != 0) {
-                    data = mContainer.getMiniThumbFromFile(id, sMiniThumbData,
-                            mMiniThumbMagic);
-                }
-
-                // If it does not exist, try to create the thumbnail
-                if (data == null) {
-                    byte[][] createdThumbData = new byte[1][];
-                    try {
-                        ((BaseImageList) getContainer())
-                                .checkThumbnail(this, createdThumbData);
-                    } catch (IOException ex) {
-                        // Typically IOException because the sd card is full.
-                        // But createdThumbData may have been filled in, so
-                        // continue on.
-                    }
-                    data = createdThumbData[0];
-                }
-
-                if (data == null) {
-                    // Unable to get mini-thumb.
-                }
-
-                if (data != null) {
-                    Bitmap b = BitmapFactory.decodeByteArray(data, 0,
-                            data.length);
-                    if (b == null) {
-                        Log.v(TAG, "couldn't decode byte array, "
-                                + "length was " + data.length);
-                    }
-                    return b;
-                }
-            }
-            return null;
+            b = Images.Thumbnails.getThumbnail(mContentResolver, id,
+                    Images.Thumbnails.MICRO_KIND, null);
         } catch (Throwable ex) {
             Log.e(TAG, "miniThumbBitmap got exception", ex);
             return null;
         }
+        if (b != null) {
+            b = Util.rotate(b, getDegreesRotated());
+        }
+        return b;
     }
 
     protected void onRemove() {

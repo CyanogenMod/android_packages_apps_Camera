@@ -21,7 +21,6 @@ import android.net.Uri;
 import com.android.camera.ImageManager;
 import com.android.camera.Util;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -75,20 +74,6 @@ public class ImageListUber implements IImageList {
             hashMap.putAll(list.getBucketIds());
         }
         return hashMap;
-    }
-
-    public void checkThumbnail(int index) throws IOException {
-        // The index is not refer to the index of the image but in another order
-        // sequence. Since this function is only used to check all thumbnails
-        // is created, it should be fine.
-        for (IImageList list : mSubList) {
-            int count = list.getCount();
-            if (count > index) {
-                list.checkThumbnail(index);
-                return;
-            }
-            index -= count;
-        }
     }
 
     public int getCount() {
