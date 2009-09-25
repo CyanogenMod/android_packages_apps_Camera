@@ -70,8 +70,16 @@
         <item name="android:orientation">vertical</item>
         <item name="android:gravity">top|center_horizontal</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">fill_parent</item>>
+        <item name="android:layout_width">fill_parent</item>
     </style>
     <style name="Theme.DeleteImageDialog" parent="android:style/Theme.Dialog.Alert">
+    </style>
+    <style name="NoEnterExitAnimation">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+    <style name="CustomTheme"
+           parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:windowAnimationStyle">@style/NoEnterExitAnimation</item>
     </style>
 </resources>
