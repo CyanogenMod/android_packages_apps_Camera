@@ -60,7 +60,7 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
     }
 
     @LargeTest
-    public void testImageCaptureDoNothing() {
+    public void testLaunchCamera() {
         // This test case capture the baseline for the image preview.
         try {
             Thread.sleep(WAIT_FOR_STABLE_STATE);
@@ -72,7 +72,7 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
     }
 
     @LargeTest
-    public void testImageCapture() {
+    public void testCapture5Image() {
         // This test case will use the default camera setting
         Instrumentation inst = getInstrumentation();
         try {
@@ -91,7 +91,7 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
     }
 
     @LargeTest
-    public void testVideoCapture() {
+    public void testCapture5Videos() {
         // This test case will use the default camera setting
         Instrumentation inst = getInstrumentation();
         try {
