@@ -65,7 +65,7 @@ public class ViewImage extends Activity implements View.OnClickListener {
 
     private ImageGetter mGetter;
     private Uri mSavedUri;
-    private boolean mPaused = true;
+    boolean mPaused = true;
     private boolean mShowControls = true;
 
     // Choices for what adjacents to load.
@@ -1103,6 +1103,8 @@ class ImageViewTouch extends ImageViewTouchBase {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mViewImage.mPaused) return false;
+
         // Don't respond to arrow keys if trackball scrolling is not enabled
         if (!mEnableTrackballScroll) {
             if ((keyCode >= KeyEvent.KEYCODE_DPAD_UP)
