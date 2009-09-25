@@ -63,7 +63,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
-import android.widget.ZoomButtonsController;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
@@ -98,24 +97,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
-    private double mZoomValue;  // The current zoom value.
-    private double mZoomStep;
-    private double mZoomMax;
-    public static final double ZOOM_STEP_MIN = 0.25;
-    public static final String ZOOM_STOP = "stop";
-    public static final String ZOOM_IMMEDIATE = "zoom-immediate";
-    public static final String ZOOM_CONTINUOUS = "zoom-continuous";
-    public static final double ZOOM_MIN = 1.0;
-    public static final String ZOOM_SPEED = "99";
-
     private Parameters mParameters;
-
-    // The parameter strings to communicate with camera driver.
-    public static final String PARM_ZOOM_STATE = "zoom-state";
-    public static final String PARM_ZOOM_STEP = "zoom-step";
-    public static final String PARM_ZOOM_TO_LEVEL = "zoom-to-level";
-    public static final String PARM_ZOOM_SPEED = "zoom-speed";
-    public static final String PARM_ZOOM_MAX = "max-picture-continuous-zoom";
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -138,7 +120,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private IconIndicator mGpsIndicator;
     private IconIndicator mFlashIndicator;
     private ToneGenerator mFocusToneGenerator;
-    private ZoomButtonsController mZoomButtons;
     private GestureDetector mGestureDetector;
     private Switcher mSwitcher;
     private boolean mStartPreviewFail = false;
@@ -185,7 +166,6 @@ public class Camera extends Activity implements View.OnClickListener,
             new RawPictureCallback();
     private final AutoFocusCallback mAutoFocusCallback =
             new AutoFocusCallback();
-    private final ZoomCallback mZoomCallback = new ZoomCallback();
     // Use the ErrorCallback to capture the crash count
     // on the mediaserver
     private final ErrorCallback mErrorCallback = new ErrorCallback();
@@ -301,8 +281,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
         initializeFocusTone();
 
-        initializeZoom();
-
         mFirstTimeInitialized = true;
     }
 
@@ -331,55 +309,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
         checkStorage();
 
-        if (mZoomButtons != null) {
-            mZoomValue = Double.parseDouble(
-                    mParameters.get(PARM_ZOOM_TO_LEVEL));
-            mCameraDevice.setZoomCallback(mZoomCallback);
-        }
-
         if (!mIsImageCaptureIntent) {
             updateThumbnailButton();
         }
-    }
-
-    private void initializeZoom() {
-        // Check if the phone has zoom capability.
-        String zoomState = mParameters.get(PARM_ZOOM_STATE);
-        if (zoomState == null) return;
-
-        mZoomValue = Double.parseDouble(mParameters.get(PARM_ZOOM_TO_LEVEL));
-        mZoomMax = Double.parseDouble(mParameters.get(PARM_ZOOM_MAX));
-        mZoomStep = Double.parseDouble(mParameters.get(PARM_ZOOM_STEP));
-        mParameters.set(PARM_ZOOM_SPEED, ZOOM_SPEED);
-        mCameraDevice.setParameters(mParameters);
-
-        mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
-        mCameraDevice.setZoomCallback(mZoomCallback);
-        mZoomButtons = new ZoomButtonsController(mSurfaceView);
-        mZoomButtons.setAutoDismissed(true);
-        mZoomButtons.setZoomSpeed(100);
-        mZoomButtons.setOnZoomListener(
-                new ZoomButtonsController.OnZoomListener() {
-            public void onVisibilityChanged(boolean visible) {
-                if (visible) {
-                    updateZoomButtonsEnabled();
-                }
-            }
-
-            public void onZoom(boolean zoomIn) {
-                if (isZooming()) return;
-
-                if (zoomIn) {
-                    if (mZoomValue < mZoomMax) {
-                        zoomToLevel(ZOOM_CONTINUOUS, mZoomValue + mZoomStep);
-                    }
-                } else {
-                    if (mZoomValue > ZOOM_MIN) {
-                        zoomToLevel(ZOOM_CONTINUOUS, mZoomValue - mZoomStep);
-                    }
-                }
-            }
-        });
     }
 
     public void onVisibilityChanged(boolean visible) {
@@ -391,82 +323,6 @@ public class Camera extends Activity implements View.OnClickListener,
             mPreferences.registerOnSharedPreferenceChangeListener(this);
         } else {
             mPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        }
-    }
-
-    private boolean isZooming() {
-        mParameters = mCameraDevice.getParameters();
-        return "continuous".equals(mParameters.get(PARM_ZOOM_STATE));
-    }
-
-    private void zoomToLevel(String type, double zoomValue) {
-        if (zoomValue > mZoomMax) zoomValue = mZoomMax;
-        if (zoomValue < ZOOM_MIN) zoomValue = ZOOM_MIN;
-
-        // If the application sets a unchanged zoom value, the driver will stuck
-        // at the zoom state. This is a work-around to ensure the state is at
-        // "stop".
-        mParameters.set(PARM_ZOOM_STATE, ZOOM_STOP);
-        mCameraDevice.setParameters(mParameters);
-
-        mParameters.set(PARM_ZOOM_TO_LEVEL, Double.toString(zoomValue));
-        mParameters.set(PARM_ZOOM_STATE, type);
-        mCameraDevice.setParameters(mParameters);
-
-        if (ZOOM_IMMEDIATE.equals(type)) mZoomValue = zoomValue;
-    }
-
-    private void updateZoomButtonsEnabled() {
-        mZoomButtons.setZoomInEnabled(mZoomValue < mZoomMax);
-        mZoomButtons.setZoomOutEnabled(mZoomValue > ZOOM_MIN);
-    }
-
-    private class ZoomGestureListener extends
-            GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onDown(MotionEvent e) {
-            // Show zoom buttons only when preview is started and snapshot
-            // is not in progress. mZoomButtons may be null if it is not
-            // initialized.
-            if (!mPausing && isCameraIdle() && mPreviewing
-                    && mZoomButtons != null) {
-                mZoomButtons.setVisible(true);
-            }
-            return true;
-        }
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            // Perform zoom only when preview is started and snapshot is not in
-            // progress.
-            if (mPausing || !isCameraIdle() || !mPreviewing
-                    || mZoomButtons == null || isZooming()) {
-                return false;
-            }
-
-            if (mZoomValue < mZoomMax) {
-                // Zoom in to the maximum.
-                while (mZoomValue < mZoomMax) {
-                    zoomToLevel(ZOOM_IMMEDIATE, mZoomValue + ZOOM_STEP_MIN);
-                    // Wait for a while so we are not changing zoom too fast.
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException ex) {
-                    }
-                }
-            } else {
-                // Zoom out to the minimum.
-                while (mZoomValue > ZOOM_MIN) {
-                    zoomToLevel(ZOOM_IMMEDIATE, mZoomValue - ZOOM_STEP_MIN);
-                    // Wait for a while so we are not changing zoom too fast.
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException ex) {
-                    }
-                }
-            }
-            updateZoomButtonsEnabled();
-            return true;
         }
     }
 
@@ -665,16 +521,6 @@ public class Camera extends Activity implements View.OnClickListener,
                  mMediaServerDied = true;
                  Log.v(TAG, "media server died");
             }
-        }
-    }
-
-    private final class ZoomCallback
-        implements android.hardware.Camera.ZoomCallback {
-        public void onZoomUpdate(int zoomLevel,
-                                 android.hardware.Camera camera) {
-            mZoomValue = (double) zoomLevel / 1000;
-            Log.v(TAG, "ZoomCallback: zoom level=" + zoomLevel);
-            updateZoomButtonsEnabled();
         }
     }
 
@@ -1254,12 +1100,6 @@ public class Camera extends Activity implements View.OnClickListener,
         mImageCapture.clearLastData();
         mImageCapture = null;
 
-        // This is necessary to make the ZoomButtonsController unregister
-        // its configuration change receiver.
-        if (mZoomButtons != null) {
-            mZoomButtons.setVisible(false);
-        }
-
         // Remove the messages in the event queue.
         mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
@@ -1299,7 +1139,6 @@ public class Camera extends Activity implements View.OnClickListener,
         // in progress.
         if (canTakePicture()) {
             Log.v(TAG, "Start autofocus.");
-            if (mZoomButtons != null) mZoomButtons.setVisible(false);
             mFocusStartTime = System.currentTimeMillis();
             mFocusState = FOCUSING;
             updateFocusIndicator();
@@ -1397,7 +1236,6 @@ public class Camera extends Activity implements View.OnClickListener,
         if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || (mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL)) {
-            if (mZoomButtons != null) mZoomButtons.setVisible(false);
             mImageCapture.onSnap();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
