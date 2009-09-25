@@ -50,6 +50,28 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:drawablePadding">3dip</item>
     </style>
+    <style name="ReviewControlText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="ReviewControlIcon">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/btn_camera_review</item>
+    </style>
+    <style name="ReviewControlGroup">
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">top|center_horizontal</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>>
+    </style>
     <style name="Theme.DeleteImageDialog" parent="android:style/Theme.Dialog.Alert">
     </style>
 </resources>

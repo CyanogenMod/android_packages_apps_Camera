@@ -29,12 +29,17 @@ import android.view.ViewGroup;
 public class EvenlySpacedLayout extends ViewGroup {
     private boolean mHorizontal;
 
+    // Wheather we keep the space in both ends of the layout
+    private boolean mKeepEndSpace;
+
     public EvenlySpacedLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.EvenlySpacedLayout, 0, 0);
         mHorizontal = (0 == a.getInt(
                 R.styleable.EvenlySpacedLayout_orientation, 0));
+        mKeepEndSpace = a.getBoolean(
+                R.styleable.EvenlySpacedLayout_keepEndSpace, true);
         a.recycle();
     }
 
@@ -71,8 +76,9 @@ public class EvenlySpacedLayout extends ViewGroup {
             ++usedChildren;
         }
 
-        int spacing = (r - l - usedWidth) / (usedChildren + 1);
-        int left = spacing;
+        int spacing = (r - l - usedWidth) /
+                (mKeepEndSpace ? (usedChildren + 1) : (usedChildren - 1));
+        int left = mKeepEndSpace ? spacing : 0;
         int top = 0;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
@@ -97,8 +103,9 @@ public class EvenlySpacedLayout extends ViewGroup {
             ++usedChildren;
         }
 
-        int spacing = (b - t - usedHeight) / (usedChildren + 1);
-        int top = spacing;
+        int spacing = (b - t - usedHeight) /
+                (mKeepEndSpace ? (usedChildren + 1) : (usedChildren - 1));
+        int top = mKeepEndSpace ? spacing : 0;
         int left = 0;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
