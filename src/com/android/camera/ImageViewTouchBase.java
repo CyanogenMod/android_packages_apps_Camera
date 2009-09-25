@@ -92,13 +92,26 @@ abstract class ImageViewTouchBase extends ImageView {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && getScale() > 1.0f) {
-            // If we're zoomed in, pressing Back jumps out to show the entire
-            // image, otherwise Back returns the user to the gallery.
-            zoomTo(1.0f);
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            event.startTracking();
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
+                && !event.isCanceled()) {
+            if (getScale() > 1.0f) {
+                // If we're zoomed in, pressing Back jumps out to show the
+                // entire image, otherwise Back returns the user to the gallery.
+                zoomTo(1.0f);
+                return true;
+            }
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     protected Handler mHandler = new Handler();
