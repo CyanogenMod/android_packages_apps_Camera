@@ -282,18 +282,11 @@ public class OnScreenSettings {
         public void onItemClick(
                 AdapterView<?> parent, View view, int position, long id) {
             Preference preference = mPreferences.get(position);
-            if (preference instanceof CheckBoxPreference) {
-                CheckBoxPreference ckPref = (CheckBoxPreference) preference;
-                ((CheckBox) view.findViewById(
-                        R.id.check_box)).setChecked(!ckPref.isChecked());
-                ckPref.setChecked(!ckPref.isChecked());
-            } else if (preference instanceof ListPreference) {
-                SubMenuAdapter adapter = new SubMenuAdapter(
-                        mContext, (ListPreference) preference);
-                mSubMenu.setAdapter(adapter);
-                mSubMenu.setOnItemClickListener(adapter);
-                showSubMenu();
-            }
+            SubMenuAdapter adapter = new SubMenuAdapter(
+                    mContext, (ListPreference) preference);
+            mSubMenu.setAdapter(adapter);
+            mSubMenu.setOnItemClickListener(adapter);
+            showSubMenu();
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -305,15 +298,6 @@ public class OnScreenSettings {
                 PreferenceGroup group = (PreferenceGroup) preference;
                 ((TextView) convertView.findViewById(
                         R.id.title)).setText(group.getTitle());
-            } else if (preference instanceof CheckBoxPreference) {
-                convertView = inflateIfNeed(convertView,
-                        R.layout.on_screen_menu_checkbox_item, parent, false);
-                ((TextView) convertView.findViewById(
-                        R.id.title)).setText(preference.getTitle());
-                CheckBox checkBox = ((CheckBox)
-                        convertView.findViewById(R.id.check_box));
-                checkBox.setChecked(
-                        ((CheckBoxPreference) preference).isChecked());
             } else if (preference instanceof ListPreference) {
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_menu_list_item, parent, false);
@@ -353,14 +337,13 @@ public class OnScreenSettings {
             Preference pref = mPreferences.get(position);
             if (pref instanceof PreferenceGroup) return 0;
             if (pref instanceof ListPreference) return 1;
-            if (pref instanceof CheckBoxPreference) return 2;
             throw new IllegalStateException();
         }
 
         @Override
         public int getViewTypeCount() {
-            // we have three type, see getItemViewType()
-            return 3;
+            // we have two types, see getItemViewType()
+            return 2;
         }
 
         @Override

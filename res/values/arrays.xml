@@ -103,6 +103,16 @@
         <item>@drawable/ic_dialog_flash_on</item>
     </array>
 
+    <string-array name="pref_camera_recordlocation_entryvalues" translatable="false">
+        <item>false</item>
+        <item>true</item>
+    </string-array>
+
+    <array name="pref_camera_recordlocation_entries" translatable="false">
+        <item>@string/pref_camera_recordlocation_entry_off</item>
+        <item>@string/pref_camera_recordlocation_entry_on</item>
+    </array>
+
     <array name="flash_icons">
         <item>@drawable/ic_viewfinder_flash_auto</item>
         <item>@drawable/ic_viewfinder_flash_on</item>

@@ -221,15 +221,16 @@ public class CameraSettings {
         } catch (Exception ex) {
             version = 0;
         }
+        if (version == CURRENT_VERSION) return;
 
+        SharedPreferences.Editor editor = pref.edit();
         if (version == 0) {
-            SharedPreferences.Editor editor = pref.edit();
             // For old version, change 1 to -1 for video duration preference.
             if (pref.getString(KEY_VIDEO_DURATION, "1").equals("1")) {
                 editor.putString(KEY_VIDEO_DURATION, "-1");
             }
-            editor.putInt(KEY_VERSION, CURRENT_VERSION);
-            editor.commit();
         }
+        editor.putInt(KEY_VERSION, CURRENT_VERSION);
+        editor.commit();
     }
 }

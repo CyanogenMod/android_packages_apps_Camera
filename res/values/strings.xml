@@ -318,8 +318,11 @@
     <!-- Settings screen, setting title text -->
     <string name="pref_camera_recordlocation_title">Store location</string>
 
-    <!-- Settings screen, setting summary text -->
-    <string name="pref_camera_recordlocation_summary">Record location in picture data</string>
+    <string name="pref_camera_recordlocation_default" translatable="false">false</string>
+
+    <!-- Settings screen, Record location dialog choices -->
+    <string name="pref_camera_recordlocation_entry_off">Off</string>
+    <string name="pref_camera_recordlocation_entry_on">On</string>
 
     <!-- Default video quality setting. A numerical value. -->
     <string name="pref_camera_videoquality_default" translatable="false">1</string>
