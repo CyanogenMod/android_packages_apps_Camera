@@ -374,14 +374,8 @@ public class CropImage extends MonitoredActivity {
                                  // the location (gps).
                         0,       // TODO this is going to cause the orientation
                                  // to reset.
-                        directory.toString(),
-                        fileName + "-" + x + ".jpg");
-
-                ImageManager.storeImage(
-                        newUri,
-                        mContentResolver,
-                        croppedImage,
-                        null);
+                        directory.toString(), fileName + "-" + x + ".jpg",
+                        croppedImage, null);
 
                 setResult(RESULT_OK, new Intent()
                         .setAction(newUri.toString())

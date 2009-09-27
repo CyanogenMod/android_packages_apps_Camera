@@ -544,16 +544,15 @@ public class Camera extends Activity implements View.OnClickListener,
                         loc, // location for the database goes here
                         0, // the dsp will use the right orientation so
                            // don't "double set it"
-                        ImageManager.CAMERA_IMAGE_BUCKET_NAME,
-                        name);
+                        ImageManager.CAMERA_IMAGE_BUCKET_NAME, name, null, data);
                 if (mLastContentUri == null) {
                     // this means we got an error
                     mCancel = true;
                 }
                 int degree = 0;
                 if (!mCancel) {
-                    degree = ImageManager.storeImage(mLastContentUri, mContentResolver,
-                            null, data);
+                    degree = ImageManager.getExifOrientation(
+                            ImageManager.CAMERA_IMAGE_BUCKET_NAME + "/" + name);
                     ImageManager.setImageSize(mContentResolver, mLastContentUri,
                             new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
                             name).length());
