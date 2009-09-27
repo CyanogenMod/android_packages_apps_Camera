@@ -188,7 +188,7 @@ public class OnScreenSettings {
     private Container createContainer() {
         LayoutParams lp = new LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp.flags = 0;
+        lp.flags = LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         lp.gravity = Gravity.TOP | Gravity.LEFT;
         lp.height = LayoutParams.WRAP_CONTENT;
         lp.width = LayoutParams.WRAP_CONTENT;
@@ -228,14 +228,6 @@ public class OnScreenSettings {
     private boolean onContainerKey(KeyEvent event) {
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_BACK:
-                if (event.getAction() == KeyEvent.ACTION_UP) {
-                    if (mSubMenu.getVisibility() == View.VISIBLE) {
-                        closeSubMenu();
-                    } else {
-                        collapsePanel();
-                    }
-                    return true;
-                }
             case KeyEvent.KEYCODE_MENU:
                 if (event.getAction() == KeyEvent.ACTION_UP) {
                     collapsePanel();
@@ -401,9 +393,6 @@ public class OnScreenSettings {
                         R.layout.on_screen_submenu_header, parent, false);
                 ((TextView) convertView.findViewById(
                         R.id.title)).setText(mPreference.getDialogTitle());
-            } else if (position == entry.length + 1) {
-                convertView = inflateIfNeed(convertView,
-                        R.layout.on_screen_submenu_cancel, parent, false);
             } else {
                 int index = position - 1;
                 convertView = inflateIfNeed(convertView,
@@ -438,8 +427,8 @@ public class OnScreenSettings {
         }
 
         public int getCount() {
-            // add one header and one cancel
-            return mPreference.getEntries().length + 2;
+            // add one for the header
+            return mPreference.getEntries().length + 1;
         }
 
         public Object getItem(int position) {
@@ -452,14 +441,12 @@ public class OnScreenSettings {
 
         @Override
         public int getItemViewType(int position) {
-            if (position == 0) return 0;
-            if (position == getCount() - 1) return 1;
-            return 2;
+            return position == 0 ? 0 : 1;
         }
 
         @Override
         public int getViewTypeCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -470,17 +457,15 @@ public class OnScreenSettings {
         public void onItemClick(
                 AdapterView<?> parent, View view, int position, long id) {
             CharSequence values[] = mPreference.getEntryValues();
-            if (position <= values.length) {
-                int idx = mPreference.findIndexOfValue(mPreference.getValue());
-                if (idx != position - 1) {
-                    mPreference.setValueIndex(position - 1);
-                    notifyDataSetChanged();
-                    mMainAdapter.notifyDataSetChanged();
-                    return;
-                }
+            int idx = mPreference.findIndexOfValue(mPreference.getValue());
+            if (idx != position - 1) {
+                mPreference.setValueIndex(position - 1);
+                notifyDataSetChanged();
+                mMainAdapter.notifyDataSetChanged();
+                return;
             }
-            // Close the sub menu when user presses on "back" or the original
-            // option.
+
+            // Close the sub menu when user presses the original option.
             closeSubMenu();
         }
     }
@@ -488,6 +473,16 @@ public class OnScreenSettings {
     private class Container extends FrameLayout {
         public Container(Context context) {
             super(context);
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            if (super.onTouchEvent(event)) return true;
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                collapsePanel();
+                return true;
+            }
+            return false;
         }
 
         /*
