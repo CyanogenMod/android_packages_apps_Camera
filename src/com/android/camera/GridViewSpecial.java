@@ -598,9 +598,11 @@ class GridViewSpecial extends View {
                     sel = Math.min(mCount - 1, sel + mColumns);
                     break;
                 case KeyEvent.KEYCODE_DPAD_CENTER:
-                    mCurrentPressState |= CLICKING_FLAG;
-                    mHandler.postDelayed(mLongPressCallback,
-                            ViewConfiguration.getLongPressTimeout());
+                    if (event.getRepeatCount() == 0) {
+                        mCurrentPressState |= CLICKING_FLAG;
+                        mHandler.postDelayed(mLongPressCallback,
+                                ViewConfiguration.getLongPressTimeout());
+                    }
                     break;
                 default:
                     return super.onKeyDown(keyCode, event);
