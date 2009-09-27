@@ -656,6 +656,16 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     @Override
+    public void onBackPressed() {
+        if (mPausing) return;
+        if (mMediaRecorderRecording) {
+            mShutterButton.performClick();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Do not handle any key if the activity is paused.
         if (mPausing) {
@@ -663,12 +673,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
 
         switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                if (mMediaRecorderRecording) {
-                    mShutterButton.performClick();
-                    return true;
-                }
-                break;
             case KeyEvent.KEYCODE_CAMERA:
                 if (event.getRepeatCount() == 0) {
                     mShutterButton.performClick();
