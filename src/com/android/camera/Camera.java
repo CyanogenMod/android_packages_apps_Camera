@@ -1227,6 +1227,12 @@ public class Camera extends Activity implements View.OnClickListener,
                     doFocus(false);
                 }
                 return true;
+            case KeyEvent.KEYCODE_MENU:
+                if (mIsImageCaptureIntent) {
+                    showOnScreenSettings();
+                    return true;
+                }
+                break;
         }
         return super.onKeyUp(keyCode, event);
     }
@@ -1419,7 +1425,7 @@ public class Camera extends Activity implements View.OnClickListener,
         ViewGroup.LayoutParams params;
         params = v.getLayoutParams();
         Size size = mParameters.getPreviewSize();
-        params.width = (int) (params.height * size.width / size.height);
+        params.width = (params.height * size.width / size.height);
         Log.v(TAG, "resize to " + params.width + "x" + params.height);
         v.setLayoutParams(params);
     }
