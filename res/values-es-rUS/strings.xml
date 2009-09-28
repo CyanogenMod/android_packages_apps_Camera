@@ -27,8 +27,6 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Imágenes de la cámara"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videos de la cámara"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Medios de cámara"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"Cambiar a video"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Cambiar a cámara"</string>
     <string name="crop_label" msgid="521114301871349328">"Cortar la imagen"</string>
     <string name="view_label" msgid="4450531507947335704">"Ver imagen"</string>
     <string name="preferences_label" msgid="5955678162525051163">"Configuración de cámara"</string>
@@ -65,7 +63,6 @@
     <string name="review_ok" msgid="5305096180300056529">"Aceptar"</string>
     <string name="review_retake" msgid="7804864054896088338">"VOLVER A TOMAR"</string>
     <string name="camera_toss" msgid="3781186798552460833">"Eliminar"</string>
-    <string name="camera_gallery" msgid="815753042966032398">"Galería"</string>
     <string name="camera_share" msgid="8207701858325694182">"Compartir"</string>
     <string name="camera_set" msgid="3422192914806971182">"Definir como"</string>
     <string name="camera_play" msgid="8248000517869959980">"Reproducir"</string>
@@ -268,7 +265,6 @@
     <string name="pick_photos_gallery_title" msgid="12912682424915943">"Seleccionar imagen"</string>
     <string name="videos_gallery_title" msgid="6150354029982749479">"Galería"</string>
     <string name="pick_videos_gallery_title" msgid="326727095201227333">"Seleccionar video"</string>
-    <string name="loading_progress_format_string" msgid="7401961873257843731">"Quedan <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage" msgid="7279510542799399570">"Compartir imagen mediante"</string>
     <string name="setImage" msgid="7246975856983303047">"Definir imagen como"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Compartir video mediante"</string>
@@ -288,5 +284,4 @@
     <string name="multiselect_cancel" msgid="5969428692864002165">"Cancelar"</string>
     <string name="delete_images_message" msgid="4504926868037899430">"Suprimiendo imágenes. Espera, por favor..."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Se alcanzó el límite del tamaño."</string>
-    <string name="on_screen_menu_back" msgid="1252087782192565742">"Atrás"</string>
 </resources>
