@@ -820,16 +820,14 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private android.hardware.Camera mCameraDevice;
 
-    // initializeRecorder() prepares media recorder. Return false if fails.
-    private boolean initializeRecorder() {
+    // Prepares media recorder.
+    private void initializeRecorder() {
         Log.v(TAG, "initializeRecorder");
-        if (mMediaRecorder != null) return true;
+        if (mMediaRecorder != null) return;
 
         // We will call initializeRecorder() again when the alert is hidden.
         // If the mCameraDevice is null, then this activity is going to finish
-        if (isAlertVisible() || mCameraDevice == null) {
-            return false;
-        }
+        if (isAlertVisible() || mCameraDevice == null) return;
 
         Intent intent = getIntent();
         Bundle myExtras = intent.getExtras();
@@ -858,10 +856,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mMediaRecorder.setOutputFormat(mProfile.mOutputFormat);
         mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
 
+        // Set output file.
         if (mStorageStatus != STORAGE_STATUS_OK) {
             mMediaRecorder.setOutputFile("/dev/null");
         } else {
-            // We try Uri in intent first. If it doesn't work, use our own
+            // Try Uri in the intent first. If it doesn't exist, use our own
             // instead.
             if (mCameraVideoFileDescriptor != null) {
                 mMediaRecorder.setOutputFile(mCameraVideoFileDescriptor);
@@ -910,11 +909,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         try {
             mMediaRecorder.prepare();
-        } catch (IOException exception) {
+        } catch (IOException e) {
             Log.e(TAG, "prepare failed for " + mCameraVideoFilename);
             releaseMediaRecorder();
-            // TODO: add more exception handling logic here
-            return false;
+            throw new RuntimeException(e);
         }
         mMediaRecorderRecording = false;
 
@@ -925,7 +923,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
             mThumbController.updateDisplayIfNeeded();
         }
-        return true;
     }
 
     private void releaseMediaRecorder() {
