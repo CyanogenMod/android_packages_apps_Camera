@@ -316,8 +316,10 @@ public class Camera extends Activity implements View.OnClickListener,
     public void onVisibilityChanged(boolean visible) {
         // When the on-screen setting is not displayed, we show the gripper.
         // When the on-screen setting is displayed, we hide the gripper.
-        findViewById(R.id.btn_gripper).setVisibility(
-                visible ? View.INVISIBLE : View.VISIBLE);
+        int reverseVisibility = visible ? View.INVISIBLE : View.VISIBLE;
+        findViewById(R.id.btn_gripper).setVisibility(reverseVisibility);
+        findViewById(R.id.indicator_bar).setVisibility(reverseVisibility);
+
         if (visible) {
             mPreferences.registerOnSharedPreferenceChangeListener(this);
         } else {
