@@ -231,9 +231,11 @@ public class ImageManager {
         // We should store image data earlier than insert it to ContentProvider, otherwise
         // we may not be able to generate thumbnail in time.
         OutputStream outputStream = null;
-        File file = new File(directory, filename);
+        String filePath = directory + "/" + filename;
         try {
-            file.mkdirs();
+            File dir = new File(directory);
+            if (!dir.exists()) dir.mkdirs();
+            File file = new File(directory, filename);
             outputStream = new FileOutputStream(file);
             if (source != null) {
                 source.compress(CompressFormat.JPEG, 75, outputStream);
@@ -260,7 +262,7 @@ public class ImageManager {
         values.put(Images.Media.DATE_TAKEN, dateTaken);
         values.put(Images.Media.MIME_TYPE, "image/jpeg");
         values.put(Images.Media.ORIENTATION, orientation);
-        values.put(Images.Media.DATA, directory + "/" + filename);
+        values.put(Images.Media.DATA, filePath);
 
         if (location != null) {
             values.put(Images.Media.LATITUDE, location.getLatitude());
