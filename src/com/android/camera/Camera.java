@@ -537,27 +537,25 @@ public class Camera extends Activity implements View.OnClickListener,
             try {
                 long dateTaken = System.currentTimeMillis();
                 String name = createName(dateTaken) + ".jpg";
+                int[] degree = new int[1];
                 mLastContentUri = ImageManager.addImage(
                         mContentResolver,
                         name,
                         dateTaken,
-                        loc, // location for the database goes here
-                        0, // the dsp will use the right orientation so
-                           // don't "double set it"
-                        ImageManager.CAMERA_IMAGE_BUCKET_NAME, name, null, data);
+                        loc, // location from gps/network
+                        ImageManager.CAMERA_IMAGE_BUCKET_NAME, name,
+                        null, data,
+                        degree);
                 if (mLastContentUri == null) {
                     // this means we got an error
                     mCancel = true;
                 }
-                int degree = 0;
                 if (!mCancel) {
-                    degree = ImageManager.getExifOrientation(
-                            ImageManager.CAMERA_IMAGE_BUCKET_NAME + "/" + name);
                     ImageManager.setImageSize(mContentResolver, mLastContentUri,
                             new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
                             name).length());
                 }
-                return degree;
+                return degree[0];
             } catch (Exception ex) {
                 Log.e(TAG, "Exception while compressing image.", ex);
                 return 0;
