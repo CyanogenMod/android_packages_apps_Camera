@@ -373,7 +373,7 @@ public class OnScreenSettings {
             CharSequence entry[] = mPreference.getEntries();
             if (position == 0) {
                 convertView = inflateIfNeed(convertView,
-                        R.layout.on_screen_submenu_header, parent, false);
+                        R.layout.on_screen_menu_header, parent, false);
                 ((TextView) convertView.findViewById(
                         R.id.title)).setText(mPreference.getDialogTitle());
             } else {
