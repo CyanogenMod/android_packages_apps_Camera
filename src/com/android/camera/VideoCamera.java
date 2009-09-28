@@ -702,6 +702,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             case KeyEvent.KEYCODE_CAMERA:
                 mShutterButton.setPressed(false);
                 return true;
+            case KeyEvent.KEYCODE_MENU:
+                if (this.mIsVideoCaptureIntent) {
+                    showOnScreenSettings();
+                    return true;
+                }
+                break;
         }
         return super.onKeyUp(keyCode, event);
     }
