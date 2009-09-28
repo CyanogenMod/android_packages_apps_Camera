@@ -27,8 +27,6 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Bilder fra kamera"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videoer fra kamera"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Kameramedier"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"Bytt til video"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Bytt til kamera"</string>
     <string name="crop_label" msgid="521114301871349328">"Beskjær bilde"</string>
     <string name="view_label" msgid="4450531507947335704">"Se på bilde"</string>
     <string name="preferences_label" msgid="5955678162525051163">"Kamerainnstillinger"</string>
@@ -65,7 +63,6 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"Ta på nytt"</string>
     <string name="camera_toss" msgid="3781186798552460833">"Slett"</string>
-    <string name="camera_gallery" msgid="815753042966032398">"Galleri"</string>
     <string name="camera_share" msgid="8207701858325694182">"Del"</string>
     <string name="camera_set" msgid="3422192914806971182">"Bruk som"</string>
     <string name="camera_play" msgid="8248000517869959980">"Spill"</string>
@@ -268,7 +265,6 @@
     <string name="pick_photos_gallery_title" msgid="12912682424915943">"Velg bilde"</string>
     <string name="videos_gallery_title" msgid="6150354029982749479">"Galleri"</string>
     <string name="pick_videos_gallery_title" msgid="326727095201227333">"Velg video"</string>
-    <string name="loading_progress_format_string" msgid="7401961873257843731">"<xliff:g id="COUNTER">%d</xliff:g> gjenstår"</string>
     <string name="sendImage" msgid="7279510542799399570">"Del bilde via"</string>
     <string name="setImage" msgid="7246975856983303047">"Bruk bilde som"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Del video via"</string>
@@ -288,5 +284,4 @@
     <string name="multiselect_cancel" msgid="5969428692864002165">"Avbryt"</string>
     <string name="delete_images_message" msgid="4504926868037899430">"Sletter bilder, vennligst vent …"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Videoen ble for stor."</string>
-    <string name="on_screen_menu_back" msgid="1252087782192565742">"Tilbake"</string>
 </resources>

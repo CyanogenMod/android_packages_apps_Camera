@@ -27,8 +27,6 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"用相机拍摄的照片"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"用相机拍摄的视频"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"相机媒体"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"切换到视频"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"切换到相机"</string>
     <string name="crop_label" msgid="521114301871349328">"修剪图片"</string>
     <string name="view_label" msgid="4450531507947335704">"查看图片"</string>
     <string name="preferences_label" msgid="5955678162525051163">"相机设置"</string>
@@ -65,7 +63,6 @@
     <string name="review_ok" msgid="5305096180300056529">"确定"</string>
     <string name="review_retake" msgid="7804864054896088338">"重拍"</string>
     <string name="camera_toss" msgid="3781186798552460833">"删除"</string>
-    <string name="camera_gallery" msgid="815753042966032398">"图库"</string>
     <string name="camera_share" msgid="8207701858325694182">"分享"</string>
     <string name="camera_set" msgid="3422192914806971182">"设置为"</string>
     <string name="camera_play" msgid="8248000517869959980">"播放"</string>
@@ -268,7 +265,6 @@
     <string name="pick_photos_gallery_title" msgid="12912682424915943">"选择图片"</string>
     <string name="videos_gallery_title" msgid="6150354029982749479">"图库"</string>
     <string name="pick_videos_gallery_title" msgid="326727095201227333">"选择视频"</string>
-    <string name="loading_progress_format_string" msgid="7401961873257843731">"还剩 <xliff:g id="COUNTER">%d</xliff:g> 个"</string>
     <string name="sendImage" msgid="7279510542799399570">"图片分享方式"</string>
     <string name="setImage" msgid="7246975856983303047">"将图片设置为"</string>
     <string name="sendVideo" msgid="3598567735831863073">"分享视频的方式"</string>
@@ -288,5 +284,4 @@
     <string name="multiselect_cancel" msgid="5969428692864002165">"取消"</string>
     <string name="delete_images_message" msgid="4504926868037899430">"正在删除图片，请稍候..."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"已达到大小上限。"</string>
-    <string name="on_screen_menu_back" msgid="1252087782192565742">"返回"</string>
 </resources>

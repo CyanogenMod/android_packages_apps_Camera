@@ -27,8 +27,6 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Zdjęcia z aparatu"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Filmy z aparatu"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Multimedia z aparatu"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"Przełącz na wideo"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Przełącz na aparat"</string>
     <string name="crop_label" msgid="521114301871349328">"Przytnij zdjęcie"</string>
     <string name="view_label" msgid="4450531507947335704">"Wyświetl zdjęcie"</string>
     <string name="preferences_label" msgid="5955678162525051163">"Ustawienia aparatu"</string>
@@ -65,7 +63,6 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"ZRÓB PONOWNIE"</string>
     <string name="camera_toss" msgid="3781186798552460833">"Usuń"</string>
-    <string name="camera_gallery" msgid="815753042966032398">"Galeria"</string>
     <string name="camera_share" msgid="8207701858325694182">"Prześlij"</string>
     <string name="camera_set" msgid="3422192914806971182">"Ustaw jako"</string>
     <string name="camera_play" msgid="8248000517869959980">"Odtwórz"</string>
@@ -272,7 +269,6 @@
     <string name="pick_photos_gallery_title" msgid="12912682424915943">"Wybierz zdjęcie"</string>
     <string name="videos_gallery_title" msgid="6150354029982749479">"Galeria"</string>
     <string name="pick_videos_gallery_title" msgid="326727095201227333">"Wybierz film wideo"</string>
-    <string name="loading_progress_format_string" msgid="7401961873257843731">"Pozostało <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage" msgid="7279510542799399570">"Prześlij zdjęcie następującą drogą:"</string>
     <string name="setImage" msgid="7246975856983303047">"Ustaw zdjęcie jako"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Prześlij film następującą drogą:"</string>
@@ -292,5 +288,4 @@
     <string name="multiselect_cancel" msgid="5969428692864002165">"Anuluj"</string>
     <string name="delete_images_message" msgid="4504926868037899430">"Trwa usuwanie zdjęć, czekaj…"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Osiągnięto limit rozmiaru."</string>
-    <string name="on_screen_menu_back" msgid="1252087782192565742">"Wstecz"</string>
 </resources>
