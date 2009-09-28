@@ -51,6 +51,7 @@ import com.android.camera.gallery.VideoObject;
 public class ReviewImage extends Activity implements View.OnClickListener {
     private static final String STATE_URI = "uri";
     private static final String TAG = "ReviewImage";
+    private static final double ASPECT_RATIO = 4.0 / 3.0;
 
     private ImageGetter mGetter;
     private Uri mSavedUri;
@@ -478,6 +479,9 @@ public class ReviewImage extends Activity implements View.OnClickListener {
         mImageView.setEnableTrackballScroll(true);
         mCache = new BitmapCache(3);
         mImageView.setRecycler(mCache);
+
+        ((PreviewFrameLayout) findViewById(
+                R.id.frame_layout)).setAspectRatio(ASPECT_RATIO);
 
 
         makeGetter();
