@@ -14,10 +14,11 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
         android:paddingRight="5dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:minHeight="?android:attr/listPreferredItemHeight"
         android:gravity="center_vertical" >
     <ImageView android:id="@+id/icon"
             android:visibility="gone"
