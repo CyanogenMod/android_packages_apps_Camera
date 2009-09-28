@@ -544,16 +544,15 @@ public class Camera extends Activity implements View.OnClickListener,
                         loc, // location for the database goes here
                         0, // the dsp will use the right orientation so
                            // don't "double set it"
-                        ImageManager.CAMERA_IMAGE_BUCKET_NAME,
-                        name);
+                        ImageManager.CAMERA_IMAGE_BUCKET_NAME, name, null, data);
                 if (mLastContentUri == null) {
                     // this means we got an error
                     mCancel = true;
                 }
                 int degree = 0;
                 if (!mCancel) {
-                    degree = ImageManager.storeImage(mLastContentUri, mContentResolver,
-                            null, data);
+                    degree = ImageManager.getExifOrientation(
+                            ImageManager.CAMERA_IMAGE_BUCKET_NAME + "/" + name);
                     ImageManager.setImageSize(mContentResolver, mLastContentUri,
                             new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
                             name).length());
@@ -1178,14 +1177,17 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     @Override
+    public void onBackPressed() {
+        if (!isCameraIdle()) {
+            // ignore backs while we're taking a picture
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                if (!isCameraIdle()) {
-                    // ignore backs while we're taking a picture
-                    return true;
-                }
-                break;
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
                     doFocus(true);
@@ -1225,6 +1227,12 @@ public class Camera extends Activity implements View.OnClickListener,
                     doFocus(false);
                 }
                 return true;
+            case KeyEvent.KEYCODE_MENU:
+                if (mIsImageCaptureIntent) {
+                    showOnScreenSettings();
+                    return true;
+                }
+                break;
         }
         return super.onKeyUp(keyCode, event);
     }
@@ -1417,7 +1425,7 @@ public class Camera extends Activity implements View.OnClickListener,
         ViewGroup.LayoutParams params;
         params = v.getLayoutParams();
         Size size = mParameters.getPreviewSize();
-        params.width = (int) (params.height * size.width / size.height);
+        params.width = (params.height * size.width / size.height);
         Log.v(TAG, "resize to " + params.width + "x" + params.height);
         v.setLayoutParams(params);
     }

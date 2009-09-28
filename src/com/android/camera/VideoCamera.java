@@ -29,8 +29,8 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.hardware.Camera.Size;
 import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtil;
 import android.net.Uri;
@@ -43,6 +43,7 @@ import android.os.StatFs;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.text.format.DateFormat;
@@ -148,7 +149,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private Switcher mSwitcher;
     private boolean mRecordingTimeCountsDown = false;
 
-    private ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
+    private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private final Handler mHandler = new MainHandler();
     private Parameters mParameters;
@@ -507,8 +508,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private void resizeForPreviewAspectRatio(View v) {
         ViewGroup.LayoutParams params;
         params = v.getLayoutParams();
-        params.width = (int)
-                (params.height * mProfile.mVideoWidth / mProfile.mVideoHeight);
+        params.width = (params.height * mProfile.mVideoWidth / mProfile.mVideoHeight);
         Log.v(TAG, "resize to " + params.width + "x" + params.height);
         v.setLayoutParams(params);
     }
@@ -656,6 +656,16 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     @Override
+    public void onBackPressed() {
+        if (mPausing) return;
+        if (mMediaRecorderRecording) {
+            mShutterButton.performClick();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Do not handle any key if the activity is paused.
         if (mPausing) {
@@ -663,12 +673,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
 
         switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                if (mMediaRecorderRecording) {
-                    mShutterButton.performClick();
-                    return true;
-                }
-                break;
             case KeyEvent.KEYCODE_CAMERA:
                 if (event.getRepeatCount() == 0) {
                     mShutterButton.performClick();
@@ -698,6 +702,12 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             case KeyEvent.KEYCODE_CAMERA:
                 mShutterButton.setPressed(false);
                 return true;
+            case KeyEvent.KEYCODE_MENU:
+                if (this.mIsVideoCaptureIntent) {
+                    showOnScreenSettings();
+                    return true;
+                }
+                break;
         }
         return super.onKeyUp(keyCode, event);
     }
@@ -816,16 +826,14 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private android.hardware.Camera mCameraDevice;
 
-    // initializeRecorder() prepares media recorder. Return false if fails.
-    private boolean initializeRecorder() {
+    // Prepares media recorder.
+    private void initializeRecorder() {
         Log.v(TAG, "initializeRecorder");
-        if (mMediaRecorder != null) return true;
+        if (mMediaRecorder != null) return;
 
         // We will call initializeRecorder() again when the alert is hidden.
         // If the mCameraDevice is null, then this activity is going to finish
-        if (isAlertVisible() || mCameraDevice == null) {
-            return false;
-        }
+        if (isAlertVisible() || mCameraDevice == null) return;
 
         Intent intent = getIntent();
         Bundle myExtras = intent.getExtras();
@@ -854,10 +862,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mMediaRecorder.setOutputFormat(mProfile.mOutputFormat);
         mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
 
+        // Set output file.
         if (mStorageStatus != STORAGE_STATUS_OK) {
             mMediaRecorder.setOutputFile("/dev/null");
         } else {
-            // We try Uri in intent first. If it doesn't work, use our own
+            // Try Uri in the intent first. If it doesn't exist, use our own
             // instead.
             if (mCameraVideoFileDescriptor != null) {
                 mMediaRecorder.setOutputFile(mCameraVideoFileDescriptor);
@@ -906,11 +915,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
         try {
             mMediaRecorder.prepare();
-        } catch (IOException exception) {
+        } catch (IOException e) {
             Log.e(TAG, "prepare failed for " + mCameraVideoFilename);
             releaseMediaRecorder();
-            // TODO: add more exception handling logic here
-            return false;
+            throw new RuntimeException(e);
         }
         mMediaRecorderRecording = false;
 
@@ -921,7 +929,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
             mThumbController.updateDisplayIfNeeded();
         }
-        return true;
     }
 
     private void releaseMediaRecorder() {
@@ -1033,11 +1040,31 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mSettings = new OnScreenSettings(
                     findViewById(R.id.camera_preview));
             CameraSettings helper = new CameraSettings(this, mParameters);
-            mSettings.setPreferenceScreen(helper
-                    .getPreferenceScreen(R.xml.video_preferences));
+            PreferenceScreen screen = helper
+                    .getPreferenceScreen(R.xml.video_preferences);
+            if (mIsVideoCaptureIntent) {
+                screen = filterPreferenceScreenByIntent(screen);
+            }
+
+            mSettings.setPreferenceScreen(screen);
             mSettings.setOnVisibilityChangedListener(this);
         }
         mSettings.expandPanel();
+    }
+
+    private PreferenceScreen filterPreferenceScreenByIntent(
+            PreferenceScreen screen) {
+        Intent intent = getIntent();
+        if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
+            CameraSettings.removePreferenceFromScreen(screen,
+                    CameraSettings.KEY_VIDEO_QUALITY);
+        }
+
+        if (intent.hasExtra(MediaStore.EXTRA_DURATION_LIMIT)) {
+            CameraSettings.removePreferenceFromScreen(screen,
+                    CameraSettings.KEY_VIDEO_DURATION);
+        }
+        return screen;
     }
 
     private class GripperTouchListener implements View.OnTouchListener {

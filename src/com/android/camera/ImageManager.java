@@ -32,6 +32,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -45,7 +46,10 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -223,7 +227,30 @@ public class ImageManager {
 
     public static Uri addImage(ContentResolver cr, String title,
             long dateTaken, Location location,
-            int orientation, String directory, String filename) {
+            int orientation, String directory, String filename, Bitmap source, byte[] jpegData) {
+        // We should store image data earlier than insert it to ContentProvider, otherwise
+        // we may not be able to generate thumbnail in time.
+        OutputStream outputStream = null;
+        String filePath = directory + "/" + filename;
+        try {
+            File dir = new File(directory);
+            if (!dir.exists()) dir.mkdirs();
+            File file = new File(directory, filename);
+            outputStream = new FileOutputStream(file);
+            if (source != null) {
+                source.compress(CompressFormat.JPEG, 75, outputStream);
+            } else {
+                outputStream.write(jpegData);
+            }
+        } catch (FileNotFoundException ex) {
+            Log.w(TAG, ex);
+            return null;
+        } catch (IOException ex) {
+            Log.w(TAG, ex);
+            return null;
+        } finally {
+            Util.closeSilently(outputStream);
+        }
 
         ContentValues values = new ContentValues(7);
         values.put(Images.Media.TITLE, title);
@@ -235,70 +262,14 @@ public class ImageManager {
         values.put(Images.Media.DATE_TAKEN, dateTaken);
         values.put(Images.Media.MIME_TYPE, "image/jpeg");
         values.put(Images.Media.ORIENTATION, orientation);
+        values.put(Images.Media.DATA, filePath);
 
         if (location != null) {
             values.put(Images.Media.LATITUDE, location.getLatitude());
             values.put(Images.Media.LONGITUDE, location.getLongitude());
         }
 
-        if (directory != null && filename != null) {
-            String value = directory + "/" + filename;
-            values.put(Images.Media.DATA, value);
-        }
-
         return cr.insert(STORAGE_URI, values);
-    }
-
-    // Returns the rotation degree stored in the jpeg header.
-    public static int storeImage(Uri uri, ContentResolver cr,
-            Bitmap source, byte [] jpegData) {
-
-        if (source == null && jpegData == null || uri == null) {
-            throw new IllegalArgumentException("source cannot be null");
-        }
-
-        boolean complete = false;
-        try {
-            long id = ContentUris.parseId(uri);
-            BaseImageList il = new ImageList(
-                    cr, STORAGE_URI, THUMB_URI, SORT_ASCENDING, null);
-
-            // TODO: Redesign the process of adding new images. We should
-            //     create an <code>IImage</code> in "ImageManager.addImage"
-            //     and pass the image object to here.
-            Image image = new Image(il, cr, id, 0, il.contentUri(id), null,
-                    0, null, 0, null, null, 0);
-            String[] projection = new String[] {
-                    ImageColumns._ID, ImageColumns.DATA};
-            Cursor c = cr.query(uri, projection, null, null, null);
-            String filepath;
-            try {
-                c.moveToPosition(0);
-                filepath = c.getString(1);
-            } finally {
-                c.close();
-            }
-            image.saveImageContents(source, jpegData, true, filepath);
-
-            ContentValues values = new ContentValues();
-            values.put(ImageColumns.MINI_THUMB_MAGIC, 0);
-            int degree = 0;
-            if (jpegData != null) {
-                degree = getExifOrientation(filepath);
-            }
-            values.put(Images.Media.ORIENTATION, degree);
-            cr.update(uri, values, null, null);
-            complete = true;
-            return degree;
-        } finally {
-            if (!complete) {
-                try {
-                    cr.delete(uri, null, null);
-                } catch (Throwable t) {
-                    // ignore it while clean up.
-                }
-            }
-        }
     }
 
     public static int getExifOrientation(String filepath) {

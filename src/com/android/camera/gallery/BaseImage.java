@@ -85,16 +85,11 @@ public abstract class BaseImage implements IImage {
      * @param uri       where to store the bitmap
      * @return          true if we succeeded
      */
-    protected boolean compressImageToFile(
-            Bitmap bitmap, byte [] jpegData, Uri uri) {
+    protected boolean compressImageToFile(Bitmap bitmap, Uri uri) {
         OutputStream outputStream = null;
         try {
             outputStream = mContentResolver.openOutputStream(uri);
-            if (bitmap != null) {
-                bitmap.compress(compressionType(), 75, outputStream);
-            } else {
-                outputStream.write(jpegData);
-            }
+            bitmap.compress(compressionType(), 75, outputStream);
             return true;
         } catch (FileNotFoundException ex) {
             return false;

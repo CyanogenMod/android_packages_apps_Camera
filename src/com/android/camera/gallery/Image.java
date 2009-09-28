@@ -98,10 +98,9 @@ public class Image extends BaseImage implements IImage {
         mExif.setAttribute(tag, value);
     }
 
-    public void saveImageContents(Bitmap image, byte [] jpegData,
-            boolean newFile, String filePath) {
+    public void saveImageContents(Bitmap image, String filePath) {
         Uri uri = mContainer.contentUri(mId);
-        compressImageToFile(image, jpegData, uri);
+        compressImageToFile(image, uri);
     }
 
     private void loadExifData() {

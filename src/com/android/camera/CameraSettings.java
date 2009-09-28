@@ -12,6 +12,7 @@ import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,17 @@ public class CameraSettings {
         }
     }
 
+    public static void removePreferenceFromScreen(
+            PreferenceScreen screen, String key) {
+        Preference pref = screen.findPreference(key);
+        if (pref == null) {
+            Log.i(TAG, "No preference found based the key : " + key);
+            throw new IllegalArgumentException();
+        } else {
+            removePreference(screen, pref);
+        }
+    }
+
     public static boolean setCameraPictureSize(
             String candidate, List<Size> supported, Parameters parameters) {
         int index = candidate.indexOf('x');
@@ -149,7 +161,8 @@ public class CameraSettings {
         }
     }
 
-    private boolean removePreference(PreferenceGroup group, Preference remove) {
+    private static boolean removePreference(PreferenceGroup group,
+            Preference remove) {
         if (group.removePreference(remove)) return true;
 
         for (int i = 0; i < group.getPreferenceCount(); i++) {
