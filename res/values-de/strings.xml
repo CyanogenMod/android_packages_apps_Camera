@@ -23,8 +23,6 @@
     <string name="gallery_camera_bucket_name">"Kamerabilder"</string>
     <string name="gallery_camera_videos_bucket_name">"Kameravideos"</string>
     <string name="gallery_camera_media_bucket_name">"Kameramedien"</string>
-    <string name="switch_to_video_lable">"Zu Video wechseln"</string>
-    <string name="switch_to_camera_lable">"Zu Kamera wechseln"</string>
     <string name="crop_label">"Bild zuschneiden"</string>
     <string name="view_label">"Bild anzeigen"</string>
     <string name="preferences_label">"Kameraeinstellungen"</string>
@@ -62,7 +60,6 @@
     <string name="review_ok">"OK"</string>
     <string name="review_retake">"ERNEUT AUFNEHMEN"</string>
     <string name="camera_toss">"Löschen"</string>
-    <string name="camera_gallery">"Galerie"</string>
     <string name="camera_share">"Senden"</string>
     <string name="camera_set">"Festlegen als"</string>
     <string name="camera_play">"Wiedergeben"</string>
@@ -169,7 +166,6 @@
     <string name="pick_photos_gallery_title">"Bild auswählen"</string>
     <string name="videos_gallery_title">"Galerie"</string>
     <string name="pick_videos_gallery_title">"Video auswählen"</string>
-    <string name="loading_progress_format_string">"noch <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage">"Bild senden via"</string>
     <string name="setImage">"Bild festlegen als"</string>
     <string name="sendVideo">"Video weiterleiten via"</string>

@@ -23,8 +23,6 @@
     <string name="gallery_camera_bucket_name">"Camerafoto\'s"</string>
     <string name="gallery_camera_videos_bucket_name">"Cameravideo\'s"</string>
     <string name="gallery_camera_media_bucket_name">"Cameramedia"</string>
-    <string name="switch_to_video_lable">"Overschakelen naar video"</string>
-    <string name="switch_to_camera_lable">"Overschakelen naar camera"</string>
     <string name="crop_label">"Foto bijsnijden"</string>
     <string name="view_label">"Foto weergeven"</string>
     <string name="preferences_label">"Camera-instellingen"</string>
@@ -62,7 +60,6 @@
     <string name="review_ok">"OK"</string>
     <string name="review_retake">"OPNIEUW OPNEMEN"</string>
     <string name="camera_toss">"Verwijderen"</string>
-    <string name="camera_gallery">"Galerij"</string>
     <string name="camera_share">"Delen"</string>
     <string name="camera_set">"Instellen als"</string>
     <string name="camera_play">"Afspelen"</string>
@@ -169,7 +166,6 @@
     <string name="pick_photos_gallery_title">"Foto selecteren"</string>
     <string name="videos_gallery_title">"Galerij"</string>
     <string name="pick_videos_gallery_title">"Video selecteren"</string>
-    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> resterend"</string>
     <string name="sendImage">"Foto delen via"</string>
     <string name="setImage">"Foto instellen als"</string>
     <string name="sendVideo">"Video delen via"</string>

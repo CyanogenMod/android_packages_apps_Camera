@@ -51,12 +51,6 @@
     <!-- label for the folder that contains Camera videos in the gallery -->
     <string name="gallery_camera_media_bucket_name">Camera media</string>
 
-    <!-- menu pick: switch to Video cam mode -->
-    <string name="switch_to_video_lable">Switch to video</string>
-
-    <!-- menu pick: switch to camera mode -->
-    <string name="switch_to_camera_lable">Switch to camera</string>
-
     <!-- menu pick: crop the currently selected image -->
     <string name="crop_label">Crop picture</string>
 
@@ -164,9 +158,6 @@
 
     <!-- button indicating that the picture just taken should be deleted -->
     <string name="camera_toss">Delete</string>
-
-    <!-- Lable for the button that takes the user to the camera pictures Gallery -->
-    <string name="camera_gallery">Gallery</string>
 
     <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
     <string name="camera_share">Share</string>
@@ -358,9 +349,6 @@
 
     <!-- Settings screen, Camcorder setting category title -->
     <string name="pref_camcorder_settings_category">Camcorder settings</string>
-
-    <!-- Default picture size setting. -->
-    <string name="pref_camera_picturesize_default" translatable="false">2048x1536</string>
 
     <!-- Settings screen, Picture size title -->
     <string name="pref_camera_picturesize_title">Picture size</string>
@@ -590,9 +578,6 @@
     <!-- Activity title when in the image gallery to select a video -->
     <string name="pick_videos_gallery_title">Select video</string>
 
-    <!-- onscreen text indicating the progress of generating thumbnails.  Basically some number followed by the word "remaining" -->
-    <string name="loading_progress_format_string"><xliff:g id="counter">%d</xliff:g> remaining</string>
-
     <!-- Displayed in the title of the dialog for things to do with a picture that
          is to be sent to another application: -->
     <string name="sendImage">Share picture via</string>
@@ -655,8 +640,5 @@
 
     <!-- The messsage shown when video record reaches size limit. -->
     <string name="video_reach_size_limit">Size limit reached.</string>
-
-    <!-- The title of the menu item for users to go back to the main menu from the sub menu -->
-    <string name="on_screen_menu_back">Back</string>
 
 </resources>

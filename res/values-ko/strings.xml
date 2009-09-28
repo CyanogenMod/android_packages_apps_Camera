@@ -24,8 +24,6 @@
     <string name="gallery_camera_videos_bucket_name">"카메라 동영상"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"동영상으로 전환"</string>
-    <string name="switch_to_camera_lable">"카메라로 전환"</string>
     <string name="crop_label">"사진 자르기"</string>
     <string name="view_label">"사진 보기"</string>
     <string name="preferences_label">"카메라 설정"</string>
@@ -73,7 +71,6 @@
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
     <string name="camera_toss">"삭제"</string>
-    <string name="camera_gallery">"갤러리"</string>
     <string name="camera_share">"공유"</string>
     <string name="camera_set">"다음으로 설정"</string>
     <string name="camera_play">"재생"</string>
@@ -207,7 +204,6 @@
     <string name="pick_photos_gallery_title">"사진 선택"</string>
     <string name="videos_gallery_title">"갤러리"</string>
     <string name="pick_videos_gallery_title">"동영상 선택"</string>
-    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g>개 남음"</string>
     <string name="sendImage">"사진 공유 응용프로그램"</string>
     <string name="setImage">"사진을 다음으로 설정"</string>
     <string name="sendVideo">"동영상 공유 응용프로그램"</string>

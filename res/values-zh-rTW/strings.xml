@@ -23,8 +23,6 @@
     <string name="gallery_camera_bucket_name">"相機圖片"</string>
     <string name="gallery_camera_videos_bucket_name">"相機影片"</string>
     <string name="gallery_camera_media_bucket_name">"相機媒體"</string>
-    <string name="switch_to_video_lable">"切換為影片"</string>
-    <string name="switch_to_camera_lable">"切換為相機"</string>
     <string name="crop_label">"裁剪相片"</string>
     <string name="view_label">"檢視相片"</string>
     <string name="preferences_label">"相機設定"</string>
@@ -62,7 +60,6 @@
     <string name="review_ok">"確定"</string>
     <string name="review_retake">"重拍"</string>
     <string name="camera_toss">"刪除"</string>
-    <string name="camera_gallery">"圖庫"</string>
     <string name="camera_share">"分享"</string>
     <string name="camera_set">"設為"</string>
     <string name="camera_play">"播放"</string>
@@ -169,7 +166,6 @@
     <string name="pick_photos_gallery_title">"選取相片"</string>
     <string name="videos_gallery_title">"圖庫"</string>
     <string name="pick_videos_gallery_title">"選取影片"</string>
-    <string name="loading_progress_format_string">"還有 <xliff:g id="COUNTER">%d</xliff:g> 張"</string>
     <string name="sendImage">"透過…分享圖片"</string>
     <string name="setImage">"設定相片為…"</string>
     <string name="sendVideo">"透過…分享影片"</string>

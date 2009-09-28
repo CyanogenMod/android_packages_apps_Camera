@@ -24,8 +24,6 @@
     <string name="gallery_camera_videos_bucket_name">"Kamera videoları"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"Videoya geç"</string>
-    <string name="switch_to_camera_lable">"Kameraya geç"</string>
     <string name="crop_label">"Resmi kırp"</string>
     <string name="view_label">"Resmi görüntüle"</string>
     <string name="preferences_label">"Kamera ayarları"</string>
@@ -73,7 +71,6 @@
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
     <string name="camera_toss">"Sil"</string>
-    <string name="camera_gallery">"Galeri"</string>
     <string name="camera_share">"Paylaş"</string>
     <string name="camera_set">"Şu şekilde ayarla:"</string>
     <string name="camera_play">"Yürüt"</string>
@@ -207,7 +204,6 @@
     <string name="pick_photos_gallery_title">"Resmi seç"</string>
     <string name="videos_gallery_title">"Galeri"</string>
     <string name="pick_videos_gallery_title">"Video seç"</string>
-    <string name="loading_progress_format_string">"Kalan: <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage">"Resmi şunun aracılığıyla paylaş:"</string>
     <string name="setImage">"Resmi şu şekilde ayarla:"</string>
     <string name="sendVideo">"Videoyu şunun aracılığıyla paylaş:"</string>

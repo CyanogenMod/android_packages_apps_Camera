@@ -23,8 +23,6 @@
     <string name="gallery_camera_bucket_name">"Photos de l\'appareil"</string>
     <string name="gallery_camera_videos_bucket_name">"Vidéos de la caméra"</string>
     <string name="gallery_camera_media_bucket_name">"Vidéos"</string>
-    <string name="switch_to_video_lable">"Passer en mode vidéo"</string>
-    <string name="switch_to_camera_lable">"Passer en mode appareil photo"</string>
     <string name="crop_label">"Rogner l\'image"</string>
     <string name="view_label">"Afficher l\'image"</string>
     <string name="preferences_label">"Paramètres de l\'appareil photo"</string>
@@ -62,7 +60,6 @@
     <string name="review_ok">"OK"</string>
     <string name="review_retake">"AUTRE PHOTO"</string>
     <string name="camera_toss">"Supprimer"</string>
-    <string name="camera_gallery">"Galerie"</string>
     <string name="camera_share">"Partager"</string>
     <string name="camera_set">"Définir comme"</string>
     <string name="camera_play">"Lire"</string>
@@ -169,7 +166,6 @@
     <string name="pick_photos_gallery_title">"Sélectionnez une image"</string>
     <string name="videos_gallery_title">"Galerie"</string>
     <string name="pick_videos_gallery_title">"Sélectionnez une vidéo"</string>
-    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> vignettes restantes"</string>
     <string name="sendImage">"Partager l\'image via"</string>
     <string name="setImage">"Définir l\'image comme"</string>
     <string name="sendVideo">"Partager la vidéo via"</string>

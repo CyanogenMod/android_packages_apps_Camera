@@ -24,8 +24,6 @@
     <string name="gallery_camera_videos_bucket_name">"Βίντεο φωτογραφικής μηχανής"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"Αλλαγή σε λειτουργία βίντεο"</string>
-    <string name="switch_to_camera_lable">"Αλλαγή σε λειτουργία φωτογραφικής μηχανής"</string>
     <string name="crop_label">"Περικοπή εικόνας"</string>
     <string name="view_label">"Προβολή εικόνας"</string>
     <string name="preferences_label">"Ρυθμίσεις φωτογραφικής μηχανής"</string>
@@ -73,7 +71,6 @@
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
     <string name="camera_toss">"Διαγραφή"</string>
-    <string name="camera_gallery">"Συλλογή"</string>
     <string name="camera_share">"Κοινή χρήση"</string>
     <string name="camera_set">"Ορισμός ως"</string>
     <string name="camera_play">"Αναπαραγωγή"</string>
@@ -207,7 +204,6 @@
     <string name="pick_photos_gallery_title">"Επιλογή εικόνας"</string>
     <string name="videos_gallery_title">"Συλλογή"</string>
     <string name="pick_videos_gallery_title">"Επιλογή βίντεο"</string>
-    <string name="loading_progress_format_string">"Απομένουν <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage">"Κοινή χρήση εικόνας μέσω"</string>
     <string name="setImage">"Ορισμός εικόνας ως"</string>
     <string name="sendVideo">"Κοινή χρήση βίντεο μέσω"</string>

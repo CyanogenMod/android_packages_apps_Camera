@@ -24,8 +24,6 @@
     <string name="gallery_camera_videos_bucket_name">"用相机拍摄的视频"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"切换到视频"</string>
-    <string name="switch_to_camera_lable">"切换到相机"</string>
     <string name="crop_label">"修剪图片"</string>
     <string name="view_label">"查看图片"</string>
     <string name="preferences_label">"相机设置"</string>
@@ -73,7 +71,6 @@
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
     <string name="camera_toss">"删除"</string>
-    <string name="camera_gallery">"图库"</string>
     <string name="camera_share">"分享"</string>
     <string name="camera_set">"设置为"</string>
     <string name="camera_play">"播放"</string>
@@ -207,7 +204,6 @@
     <string name="pick_photos_gallery_title">"选择图片"</string>
     <string name="videos_gallery_title">"图库"</string>
     <string name="pick_videos_gallery_title">"选择视频"</string>
-    <string name="loading_progress_format_string">"还剩 <xliff:g id="COUNTER">%d</xliff:g> 个"</string>
     <string name="sendImage">"图片分享方式"</string>
     <string name="setImage">"将图片设置为"</string>
     <string name="sendVideo">"分享视频的方式"</string>

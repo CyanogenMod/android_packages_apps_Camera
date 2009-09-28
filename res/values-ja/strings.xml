@@ -24,8 +24,6 @@
     <string name="gallery_camera_videos_bucket_name">"カメラ (動画)"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"ムービーに切替"</string>
-    <string name="switch_to_camera_lable">"写真に切替"</string>
     <string name="crop_label">"トリミング"</string>
     <string name="view_label">"画像を表示"</string>
     <string name="preferences_label">"カメラ設定"</string>
@@ -73,7 +71,6 @@
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
     <string name="camera_toss">"削除"</string>
-    <string name="camera_gallery">"ギャラリー"</string>
     <string name="camera_share">"共有"</string>
     <string name="camera_set">"登録"</string>
     <string name="camera_play">"再生"</string>
@@ -207,7 +204,6 @@
     <string name="pick_photos_gallery_title">"画像を選択"</string>
     <string name="videos_gallery_title">"ギャラリー"</string>
     <string name="pick_videos_gallery_title">"動画を選択"</string>
-    <string name="loading_progress_format_string">"残り<xliff:g id="COUNTER">%d</xliff:g>件"</string>
     <string name="sendImage">"画像を共有:"</string>
     <string name="setImage">"登録"</string>
     <string name="sendVideo">"動画を共有"</string>

@@ -23,8 +23,6 @@
     <string name="gallery_camera_bucket_name">"Pořízené fotografie"</string>
     <string name="gallery_camera_videos_bucket_name">"Pořízená videa"</string>
     <string name="gallery_camera_media_bucket_name">"Média zaznamenaná kamerou"</string>
-    <string name="switch_to_video_lable">"Přepnout do režimu video"</string>
-    <string name="switch_to_camera_lable">"Přepnout do režimu fotoaparát"</string>
     <string name="crop_label">"Oříznout fotografii"</string>
     <string name="view_label">"Zobrazit fotografii"</string>
     <string name="preferences_label">"Nastavení fotoaparátu"</string>
@@ -62,7 +60,6 @@
     <string name="review_ok">"OK"</string>
     <string name="review_retake">"Pořídit další"</string>
     <string name="camera_toss">"Smazat"</string>
-    <string name="camera_gallery">"Galerie"</string>
     <string name="camera_share">"Sdílet"</string>
     <string name="camera_set">"Použít jako"</string>
     <string name="camera_play">"Přehrát"</string>
@@ -169,7 +166,6 @@
     <string name="pick_photos_gallery_title">"Vyberte fotografii"</string>
     <string name="videos_gallery_title">"Galerie"</string>
     <string name="pick_videos_gallery_title">"Vybrat video"</string>
-    <string name="loading_progress_format_string">"Zbývá <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage">"Sdílet fotografii pomocí"</string>
     <string name="setImage">"Fotografie bude použita jako"</string>
     <string name="sendVideo">"Sdílet video pomocí"</string>

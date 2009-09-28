@@ -24,8 +24,6 @@
     <string name="gallery_camera_videos_bucket_name">"Videoer fra kamera"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"Bytt til video"</string>
-    <string name="switch_to_camera_lable">"Bytt til kamera"</string>
     <string name="crop_label">"Beskjær bilde"</string>
     <string name="view_label">"Se på bilde"</string>
     <string name="preferences_label">"Kamerainnstillinger"</string>
@@ -73,7 +71,6 @@
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
     <string name="camera_toss">"Slett"</string>
-    <string name="camera_gallery">"Galleri"</string>
     <string name="camera_share">"Del"</string>
     <string name="camera_set">"Bruk som"</string>
     <string name="camera_play">"Spill"</string>
@@ -207,7 +204,6 @@
     <string name="pick_photos_gallery_title">"Velg bilde"</string>
     <string name="videos_gallery_title">"Galleri"</string>
     <string name="pick_videos_gallery_title">"Velg video"</string>
-    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> gjenstår"</string>
     <string name="sendImage">"Del bilde via"</string>
     <string name="setImage">"Bruk bilde som"</string>
     <string name="sendVideo">"Del video via"</string>

@@ -24,8 +24,6 @@
     <string name="gallery_camera_videos_bucket_name">"Видео"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"Переключить на видео"</string>
-    <string name="switch_to_camera_lable">"Переключить на камеру"</string>
     <string name="crop_label">"Обрезать фотографию"</string>
     <string name="view_label">"Просмотр картинки"</string>
     <string name="preferences_label">"Настройки камеры"</string>
@@ -73,7 +71,6 @@
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
     <string name="camera_toss">"Удалить"</string>
-    <string name="camera_gallery">"Фотоальбом"</string>
     <string name="camera_share">"Отправить"</string>
     <string name="camera_set">"Установить как"</string>
     <string name="camera_play">"Воспроизвести"</string>
@@ -207,7 +204,6 @@
     <string name="pick_photos_gallery_title">"Выбор картинок"</string>
     <string name="videos_gallery_title">"Фотоальбом"</string>
     <string name="pick_videos_gallery_title">"Выбор видео"</string>
-    <string name="loading_progress_format_string">"Осталось: <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage">"Отправить картинку через"</string>
     <string name="setImage">"Установить картинку как"</string>
     <string name="sendVideo">"Отправить видео при помощи"</string>

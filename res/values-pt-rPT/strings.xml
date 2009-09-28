@@ -24,8 +24,6 @@
     <string name="gallery_camera_videos_bucket_name">"Vídeos da câmara"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"Mudar para vídeo"</string>
-    <string name="switch_to_camera_lable">"Mudar para câmara"</string>
     <string name="crop_label">"Recortar imagem"</string>
     <string name="view_label">"Ver imagem"</string>
     <string name="preferences_label">"Definições da câmara"</string>
@@ -73,7 +71,6 @@
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
     <string name="camera_toss">"Eliminar"</string>
-    <string name="camera_gallery">"Galeria"</string>
     <string name="camera_share">"Partilhar"</string>
     <string name="camera_set">"Definir como"</string>
     <string name="camera_play">"Reproduzir"</string>
@@ -207,7 +204,6 @@
     <string name="pick_photos_gallery_title">"Seleccionar imagem"</string>
     <string name="videos_gallery_title">"Galeria"</string>
     <string name="pick_videos_gallery_title">"Seleccionar vídeo"</string>
-    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> restantes"</string>
     <string name="sendImage">"Partilhar a imagem através de"</string>
     <string name="setImage">"Definir imagem como:"</string>
     <string name="sendVideo">"Partilhar vídeo através de"</string>

@@ -23,8 +23,6 @@
     <string name="gallery_camera_bucket_name">"Zdjęcia z aparatu"</string>
     <string name="gallery_camera_videos_bucket_name">"Filmy z aparatu"</string>
     <string name="gallery_camera_media_bucket_name">"Multimedia z aparatu"</string>
-    <string name="switch_to_video_lable">"Przełącz na wideo"</string>
-    <string name="switch_to_camera_lable">"Przełącz na aparat"</string>
     <string name="crop_label">"Przytnij zdjęcie"</string>
     <string name="view_label">"Wyświetl zdjęcie"</string>
     <string name="preferences_label">"Ustawienia aparatu"</string>
@@ -62,7 +60,6 @@
     <string name="review_ok">"OK"</string>
     <string name="review_retake">"ZRÓB PONOWNIE"</string>
     <string name="camera_toss">"Usuń"</string>
-    <string name="camera_gallery">"Galeria"</string>
     <string name="camera_share">"Prześlij"</string>
     <string name="camera_set">"Ustaw jako"</string>
     <string name="camera_play">"Odtwórz"</string>
@@ -169,7 +166,6 @@
     <string name="pick_photos_gallery_title">"Wybierz zdjęcie"</string>
     <string name="videos_gallery_title">"Galeria"</string>
     <string name="pick_videos_gallery_title">"Wybierz film wideo"</string>
-    <string name="loading_progress_format_string">"Pozostało <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage">"Prześlij zdjęcie następującą drogą:"</string>
     <string name="setImage">"Ustaw zdjęcie jako"</string>
     <string name="sendVideo">"Prześlij film następującą drogą:"</string>

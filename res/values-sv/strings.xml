@@ -24,8 +24,6 @@
     <string name="gallery_camera_videos_bucket_name">"Kameravideor"</string>
     <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
     <skip />
-    <string name="switch_to_video_lable">"Växla till video"</string>
-    <string name="switch_to_camera_lable">"Växla till kamera"</string>
     <string name="crop_label">"Beskär bild"</string>
     <string name="view_label">"Visa bild"</string>
     <string name="preferences_label">"Kamerainställningar"</string>
@@ -73,7 +71,6 @@
     <!-- no translation found for review_retake (7804864054896088338) -->
     <skip />
     <string name="camera_toss">"Ta bort"</string>
-    <string name="camera_gallery">"Galleri"</string>
     <string name="camera_share">"Dela"</string>
     <string name="camera_set">"Använd som"</string>
     <string name="camera_play">"Spela"</string>
@@ -207,7 +204,6 @@
     <string name="pick_photos_gallery_title">"Välj bild"</string>
     <string name="videos_gallery_title">"Galleri"</string>
     <string name="pick_videos_gallery_title">"Välj video"</string>
-    <string name="loading_progress_format_string">"<xliff:g id="COUNTER">%d</xliff:g> återstår"</string>
     <string name="sendImage">"Dela bild via"</string>
     <string name="setImage">"Använd bild som"</string>
     <string name="sendVideo">"Dela video via"</string>
