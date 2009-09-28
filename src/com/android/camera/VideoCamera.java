@@ -1386,6 +1386,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mParameters = mCameraDevice.getParameters();
 
         mParameters.setPreviewSize(mProfile.mVideoWidth, mProfile.mVideoHeight);
+        mParameters.setPreviewFrameRate(mProfile.mVideoFps);
 
         // Set white balance parameter.
         if (mParameters.getSupportedWhiteBalance() != null) {
