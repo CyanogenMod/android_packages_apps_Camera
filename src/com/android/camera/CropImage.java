@@ -366,16 +366,16 @@ public class CropImage extends MonitoredActivity {
             }
 
             try {
+                int[] degree = new int[1];
                 Uri newUri = ImageManager.addImage(
                         mContentResolver,
                         mImage.getTitle(),
                         mImage.getDateTaken(),
                         null,    // TODO this null is going to cause us to lose
                                  // the location (gps).
-                        0,       // TODO this is going to cause the orientation
-                                 // to reset.
                         directory.toString(), fileName + "-" + x + ".jpg",
-                        croppedImage, null);
+                        croppedImage, null,
+                        degree);
 
                 setResult(RESULT_OK, new Intent()
                         .setAction(newUri.toString())
