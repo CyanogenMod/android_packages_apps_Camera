@@ -1178,14 +1178,17 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     @Override
+    public void onBackPressed() {
+        if (!isCameraIdle()) {
+            // ignore backs while we're taking a picture
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                if (!isCameraIdle()) {
-                    // ignore backs while we're taking a picture
-                    return true;
-                }
-                break;
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
                     doFocus(true);
