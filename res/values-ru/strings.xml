@@ -124,7 +124,6 @@
     <string name="pref_gallery_slideshow_shuffle_title">"Перемешать слайды"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"Показ фотографий в случайном порядке"</string>
     <string name="pref_camera_recordlocation_title">"Сохранять местоположение в фотографиях"</string>
-    <string name="pref_camera_recordlocation_summary">"Записывать местоположение в данных фотографии"</string>
     <skip />
     <string name="pref_camera_videoquality_title">"Выбор качества видео"</string>
     <string name="pref_camera_videoquality_entry_0">"Низкое (для сообщений MMS)"</string>

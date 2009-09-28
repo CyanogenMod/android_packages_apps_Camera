@@ -124,7 +124,6 @@
     <string name="pref_gallery_slideshow_shuffle_title">"スライドのシャッフル"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"ランダムに表示する"</string>
     <string name="pref_camera_recordlocation_title">"位置情報を写真に記録する"</string>
-    <string name="pref_camera_recordlocation_summary">"位置情報を写真データに記録する"</string>
     <skip />
     <string name="pref_camera_videoquality_title">"画質を選択"</string>
     <string name="pref_camera_videoquality_entry_0">"低（メール添付向け）"</string>

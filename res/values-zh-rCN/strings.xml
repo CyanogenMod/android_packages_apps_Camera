@@ -124,7 +124,6 @@
     <string name="pref_gallery_slideshow_shuffle_title">"随机播放幻灯片"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"以随机顺序显示图片"</string>
     <string name="pref_camera_recordlocation_title">"在照片中存储位置"</string>
-    <string name="pref_camera_recordlocation_summary">"在照片数据中记录位置"</string>
     <skip />
     <string name="pref_camera_videoquality_title">"选择视频画质"</string>
     <string name="pref_camera_videoquality_entry_0">"低（对于彩信）"</string>

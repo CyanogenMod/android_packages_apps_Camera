@@ -124,7 +124,6 @@
     <string name="pref_gallery_slideshow_shuffle_title">"슬라이드 섞기"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"무작위로 사진 표시"</string>
     <string name="pref_camera_recordlocation_title">"사진에 위치 저장"</string>
-    <string name="pref_camera_recordlocation_summary">"사진 데이터에 위치 기록"</string>
     <skip />
     <string name="pref_camera_videoquality_title">"동영상 화질 선택"</string>
     <string name="pref_camera_videoquality_entry_0">"저화질(MMS 메시지용)"</string>

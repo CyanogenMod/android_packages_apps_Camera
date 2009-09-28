@@ -124,7 +124,6 @@
     <string name="pref_gallery_slideshow_shuffle_title">"Stokk lysbilder"</string>
     <string name="pref_gallery_slideshow_shuffle_summary">"Vis bilder i tilfeldig rekkefølge"</string>
     <string name="pref_camera_recordlocation_title">"Lagre sted i bilder"</string>
-    <string name="pref_camera_recordlocation_summary">"Lagre sted i bildedata"</string>
     <skip />
     <string name="pref_camera_videoquality_title">"Videokvalitet"</string>
     <string name="pref_camera_videoquality_entry_0">"Lav (for MMS-meldinger)"</string>
