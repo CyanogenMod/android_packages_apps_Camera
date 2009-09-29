@@ -112,7 +112,7 @@ public class OnScreenSettings {
                 mContainerLayoutParams.token = mOwnerView.getWindowToken();
             }
             mWindowManager.addView(mContainer, mContainerLayoutParams);
-            refreshPositioningVariables();
+            updateLayout();
         } else {
             // Reset the two menus
             mSubMenu.setAdapter(null);
@@ -148,7 +148,7 @@ public class OnScreenSettings {
         });
     }
 
-    private void refreshPositioningVariables() {
+    public void updateLayout() {
         // if the mOwnerView is detached from window then skip.
         if (mOwnerView.getWindowToken() == null) return;
 
