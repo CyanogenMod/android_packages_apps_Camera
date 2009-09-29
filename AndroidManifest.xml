@@ -200,7 +200,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="PhotoAppWidgetProvider" android:label="@string/gadget_title">
+        <receiver android:name="PhotoAppWidgetProvider" android:label="@string/gadget_title"
+            android:icon="@drawable/ic_launcher_gallery">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
