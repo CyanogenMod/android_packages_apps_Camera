@@ -22,7 +22,6 @@ import com.android.camera.Util;
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtil;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore.Images;
@@ -31,7 +30,6 @@ import android.util.Log;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Represents a particular image and provides access to the underlying bitmap
@@ -73,31 +71,6 @@ public abstract class BaseImage implements IImage {
         mDateTaken = dateTaken;
         mTitle = title;
         mDisplayName = displayName;
-    }
-
-    protected abstract Bitmap.CompressFormat compressionType();
-
-    /**
-     * Take a given bitmap and compress it to a file as described
-     * by the Uri parameter.
-     *
-     * @param bitmap    the bitmap to be compressed/stored
-     * @param uri       where to store the bitmap
-     * @return          true if we succeeded
-     */
-    protected boolean compressImageToFile(Bitmap bitmap, Uri uri) {
-        OutputStream outputStream = null;
-        try {
-            outputStream = mContentResolver.openOutputStream(uri);
-            bitmap.compress(compressionType(), 75, outputStream);
-            return true;
-        } catch (FileNotFoundException ex) {
-            return false;
-        } catch (IOException ex) {
-            return false;
-        } finally {
-            Util.closeSilently(outputStream);
-        }
     }
 
     public String getDataPath() {

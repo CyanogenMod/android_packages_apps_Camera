@@ -21,17 +21,10 @@ import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.BaseColumns;
-import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
