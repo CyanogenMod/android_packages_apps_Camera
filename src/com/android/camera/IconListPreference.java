@@ -16,14 +16,11 @@
 
 package com.android.camera;
 
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.preference.ListPreference;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 
 public class IconListPreference extends ListPreference {
