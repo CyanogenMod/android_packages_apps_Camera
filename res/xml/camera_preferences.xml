@@ -14,14 +14,12 @@
      limitations under the License.
 -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/pref_camera_settings_category">
-        <com.android.camera.IconListPreference
+        <ListPreference
                 android:key="pref_camera_flashmode_key"
                 android:defaultValue="@string/pref_camera_flashmode_default"
                 android:title="@string/pref_camera_flashmode_title"
-                camera:icons="@array/pref_camera_flashmode_icons"
                 android:entries="@array/pref_camera_flashmode_entries"
                 android:entryValues="@array/pref_camera_flashmode_entryvalues"
                 android:dialogTitle="@string/pref_camera_flashmode_dialogtitle" />

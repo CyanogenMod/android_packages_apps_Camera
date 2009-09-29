@@ -18,9 +18,6 @@
         <attr name="icons" format="reference" />
         <attr name="modes" format="reference" />
     </declare-styleable>
-    <declare-styleable name="IconListPreference">
-        <attr name="icons" />
-    </declare-styleable>
     <declare-styleable name="EvenlySpacedLayout">
         <attr name="orientation">
             <enum name="horizontal" value="0" />
