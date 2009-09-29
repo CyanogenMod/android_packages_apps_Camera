@@ -40,11 +40,10 @@
                     android:id="@+id/focus_rectangle"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"/>
-            <com.android.camera.EvenlySpacedLayout
+            <com.android.camera.EvenlySpacedLayout android:id="@+id/indicator_bar"
                     camera:orientation="vertical"
                     android:visibility="visible"
                     android:layout_gravity="left|fill_vertical"
-                    android:id="@+id/action_icon_panel"
                     android:layout_marginTop="20dp"
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
