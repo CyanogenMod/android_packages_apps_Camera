@@ -57,6 +57,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -113,7 +114,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final String sTempCropFilename = "crop-temp";
 
     private android.hardware.Camera mCameraDevice;
-    private VideoPreview mSurfaceView;
+    private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
     private FocusRectangle mFocusRectangle;
@@ -132,8 +133,6 @@ public class Camera extends Activity implements View.OnClickListener,
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
     private Uri mSaveUri;
-
-    private int mViewFinderHeight;
 
     private ImageCapture mImageCapture = null;
 
@@ -708,8 +707,8 @@ public class Camera extends Activity implements View.OnClickListener,
         Window win = getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.camera);
-        mSurfaceView = (VideoPreview) findViewById(R.id.camera_preview);
-        mViewFinderHeight = mSurfaceView.getLayoutParams().height;
+        mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
+
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         /*
@@ -775,9 +774,6 @@ public class Camera extends Activity implements View.OnClickListener,
         } catch (InterruptedException ex) {
             // ignore
         }
-
-        // Resize mVideoPreview to the right aspect ratio.
-        resizeForPreviewAspectRatio(mSurfaceView);
     }
 
     private class GripperTouchListener implements View.OnTouchListener {
@@ -1277,7 +1273,6 @@ public class Camera extends Activity implements View.OnClickListener,
         if (mCameraDevice == null) return;
 
         mSurfaceHolder = holder;
-        mViewFinderHeight = h;
 
         // Sometimes surfaceChanged is called after onPause. Ignore it.
         if (mPausing || isFinishing()) return;
@@ -1347,7 +1342,6 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private void restartPreview() {
         // make sure the surfaceview fills the whole screen when previewing
-        mSurfaceView.setAspectRatio(VideoPreview.DONT_CARE);
         try {
             startPreview();
         } catch (CameraHardwareException e) {
@@ -1419,28 +1413,45 @@ public class Camera extends Activity implements View.OnClickListener,
         clearFocusState();
     }
 
-    private void resizeForPreviewAspectRatio(View v) {
-        ViewGroup.LayoutParams params;
-        params = v.getLayoutParams();
-        Size size = mParameters.getPreviewSize();
-        params.width = (params.height * size.width / size.height);
-        Log.v(TAG, "resize to " + params.width + "x" + params.height);
-        v.setLayoutParams(params);
-    }
+    private Size getOptimalPreviewSize(List<Size> sizes, double targetRatio) {
+        final double ASPECT_TOLERANCE = 0.05;
+        if (sizes == null) return null;
 
-    private Size getOptimalPreviewSize(List<Size> sizes) {
         Size optimalSize = null;
-        if (sizes != null) {
-            optimalSize = sizes.get(0);
-            for (int i = 1; i < sizes.size(); i++) {
-                if (Math.abs(sizes.get(i).height - mViewFinderHeight) <
-                        Math.abs(optimalSize.height - mViewFinderHeight)) {
-                    optimalSize = sizes.get(i);
+        double minDiff = Double.MAX_VALUE;
+
+        int targetHeight = mSurfaceView.getHeight();
+        if (targetHeight <= 0) {
+            // We don't know the size of SurefaceView, use screen height
+            WindowManager windowManager = (WindowManager)
+                    getSystemService(Context.WINDOW_SERVICE);
+            targetHeight = windowManager.getDefaultDisplay().getHeight();
+        }
+
+        // Try to find an size match aspect ratio and size
+        for (Size size : sizes) {
+            double ratio = (double) size.width / size.height;
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
+            if (Math.abs(size.height - targetHeight) < minDiff) {
+                optimalSize = size;
+                minDiff = Math.abs(size.height - targetHeight);
+            }
+        }
+
+        // Cannot find the one match the aspect ratio, ignore the requirement
+        if (optimalSize == null) {
+            Log.v(TAG, "No preview size match the aspect ratio");
+            minDiff = Double.MAX_VALUE;
+            for (Size size : sizes) {
+                if (Math.abs(size.height - targetHeight) < minDiff) {
+                    optimalSize = size;
+                    minDiff = Math.abs(size.height - targetHeight);
                 }
             }
-            Log.v(TAG, "Optimal preview size is " + optimalSize.width + "x"
-                    + optimalSize.height);
         }
+        Log.v(TAG, String.format(
+                "Optimal preview size is %sx%s",
+                optimalSize.width, optimalSize.height));
         return optimalSize;
     }
 
@@ -1459,13 +1470,6 @@ public class Camera extends Activity implements View.OnClickListener,
             mParameters.setPreviewFrameRate(max);
         }
 
-        // Set a preview size that is closest to the viewfinder height.
-        List<Size> sizes = mParameters.getSupportedPreviewSizes();
-        Size optimalSize = getOptimalPreviewSize(sizes);
-        if (optimalSize != null) {
-            mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
-        }
-
         // Set picture size.
         String pictureSize = mPreferences.getString(
                 CameraSettings.KEY_PICTURE_SIZE, null);
@@ -1475,6 +1479,21 @@ public class Camera extends Activity implements View.OnClickListener,
             List<Size> supported = mParameters.getSupportedPictureSizes();
             CameraSettings.setCameraPictureSize(
                     pictureSize, supported, mParameters);
+        }
+
+        // Set the preview frame aspect ratio according to the picture size.
+        Size size = mParameters.getPictureSize();
+        PreviewFrameLayout frameLayout =
+                (PreviewFrameLayout) findViewById(R.id.frame_layout);
+        frameLayout.setAspectRatio((double) size.width / size.height);
+
+        // Set a preview size that is closest to the viewfinder height and has
+        // the right aspect ratio.
+        List<Size> sizes = mParameters.getSupportedPreviewSizes();
+        Size optimalSize = getOptimalPreviewSize(
+                sizes, (double) size.width / size.height);
+        if (optimalSize != null) {
+            mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
         }
 
         // Set JPEG quality.
