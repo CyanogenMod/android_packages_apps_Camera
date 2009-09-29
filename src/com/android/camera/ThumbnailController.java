@@ -28,10 +28,7 @@ import android.media.ThumbnailUtil;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import java.io.BufferedInputStream;

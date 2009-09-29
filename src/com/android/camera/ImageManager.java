@@ -20,7 +20,6 @@ import com.android.camera.gallery.BaseImageList;
 import com.android.camera.gallery.DrmImageList;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.Image;
 import com.android.camera.gallery.ImageList;
 import com.android.camera.gallery.ImageListUber;
 import com.android.camera.gallery.SingleImageList;
@@ -28,7 +27,6 @@ import com.android.camera.gallery.VideoList;
 import com.android.camera.gallery.VideoObject;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -42,7 +40,6 @@ import android.os.Parcelable;
 import android.provider.DrmStore;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 
 import java.io.File;
@@ -225,9 +222,16 @@ public class ImageManager {
         cr.update(uri, values, null, null);
     }
 
-    public static Uri addImage(ContentResolver cr, String title,
-            long dateTaken, Location location,
-            int orientation, String directory, String filename, Bitmap source, byte[] jpegData) {
+    //
+    // Stores a bitmap or a jpeg byte array to a file (using the specified
+    // directory and filename). Also add an entry to the media store for
+    // this picture. The title, dateTaken, location are attributes for the
+    // picture. The degree is a one element array which returns the orientation
+    // of the picture.
+    //
+    public static Uri addImage(ContentResolver cr, String title, long dateTaken,
+            Location location, String directory, String filename,
+            Bitmap source, byte[] jpegData, int[] degree) {
         // We should store image data earlier than insert it to ContentProvider, otherwise
         // we may not be able to generate thumbnail in time.
         OutputStream outputStream = null;
@@ -239,8 +243,10 @@ public class ImageManager {
             outputStream = new FileOutputStream(file);
             if (source != null) {
                 source.compress(CompressFormat.JPEG, 75, outputStream);
+                degree[0] = 0;
             } else {
                 outputStream.write(jpegData);
+                degree[0] = getExifOrientation(filePath);
             }
         } catch (FileNotFoundException ex) {
             Log.w(TAG, ex);
@@ -261,7 +267,7 @@ public class ImageManager {
         values.put(Images.Media.DISPLAY_NAME, filename);
         values.put(Images.Media.DATE_TAKEN, dateTaken);
         values.put(Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(Images.Media.ORIENTATION, orientation);
+        values.put(Images.Media.ORIENTATION, degree[0]);
         values.put(Images.Media.DATA, filePath);
 
         if (location != null) {

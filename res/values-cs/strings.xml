@@ -27,8 +27,6 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Pořízené fotografie"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Pořízená videa"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Média zaznamenaná kamerou"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"Přepnout do režimu video"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Přepnout do režimu fotoaparát"</string>
     <string name="crop_label" msgid="521114301871349328">"Oříznout fotografii"</string>
     <string name="view_label" msgid="4450531507947335704">"Zobrazit fotografii"</string>
     <string name="preferences_label" msgid="5955678162525051163">"Nastavení fotoaparátu"</string>
@@ -65,7 +63,6 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"Pořídit další"</string>
     <string name="camera_toss" msgid="3781186798552460833">"Smazat"</string>
-    <string name="camera_gallery" msgid="815753042966032398">"Galerie"</string>
     <string name="camera_share" msgid="8207701858325694182">"Sdílet"</string>
     <string name="camera_set" msgid="3422192914806971182">"Použít jako"</string>
     <string name="camera_play" msgid="8248000517869959980">"Přehrát"</string>
@@ -272,7 +269,6 @@
     <string name="pick_photos_gallery_title" msgid="12912682424915943">"Vyberte fotografii"</string>
     <string name="videos_gallery_title" msgid="6150354029982749479">"Galerie"</string>
     <string name="pick_videos_gallery_title" msgid="326727095201227333">"Vybrat video"</string>
-    <string name="loading_progress_format_string" msgid="7401961873257843731">"Zbývá <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage" msgid="7279510542799399570">"Sdílet fotografii pomocí"</string>
     <string name="setImage" msgid="7246975856983303047">"Fotografie bude použita jako"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Sdílet video pomocí"</string>
@@ -292,5 +288,4 @@
     <string name="multiselect_cancel" msgid="5969428692864002165">"Zrušit"</string>
     <string name="delete_images_message" msgid="4504926868037899430">"Probíhá mazání obrázků, počkejte prosím..."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Bylo dosaženo limitu velikosti."</string>
-    <string name="on_screen_menu_back" msgid="1252087782192565742">"Zpět"</string>
 </resources>

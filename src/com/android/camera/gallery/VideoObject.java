@@ -47,11 +47,6 @@ public class VideoObject extends BaseImage implements IImage {
     }
 
     @Override
-    protected Bitmap.CompressFormat compressionType() {
-        return Bitmap.CompressFormat.JPEG;
-    }
-
-    @Override
     public boolean equals(Object other) {
         if (other == null || !(other instanceof VideoObject)) return false;
         return fullSizeImageUri().equals(

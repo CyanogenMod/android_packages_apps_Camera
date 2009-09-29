@@ -54,6 +54,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -106,7 +107,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private SharedPreferences mPreferences;
 
-    private VideoPreview mVideoPreview;
+    private SurfaceView mVideoPreview;
     private SurfaceHolder mSurfaceHolder = null;
     private ImageView mVideoFrame;
 
@@ -257,11 +258,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         requestWindowFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.video_camera);
 
-        mVideoPreview = (VideoPreview) findViewById(R.id.camera_preview);
+        resizeForPreviewAspectRatio();
+        mVideoPreview = (SurfaceView) findViewById(R.id.camera_preview);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
-        // Resize mVideoPreview and mVideoFrame to the right aspect ratio.
-        resizeForPreviewAspectRatio(mVideoPreview);
-        resizeForPreviewAspectRatio(mVideoFrame);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
@@ -505,12 +504,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mProfile = new MediaRecorderProfile(videoQualityHigh);
     }
 
-    private void resizeForPreviewAspectRatio(View v) {
-        ViewGroup.LayoutParams params;
-        params = v.getLayoutParams();
-        params.width = (params.height * mProfile.mVideoWidth / mProfile.mVideoHeight);
-        Log.v(TAG, "resize to " + params.width + "x" + params.height);
-        v.setLayoutParams(params);
+    private void resizeForPreviewAspectRatio() {
+        PreviewFrameLayout frameLayout =
+                (PreviewFrameLayout) findViewById(R.id.frame_layout);
+        frameLayout.setAspectRatio(
+                (double) mProfile.mVideoWidth / mProfile.mVideoHeight);
     }
 
     @Override
@@ -519,6 +517,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mPausing = false;
 
         readVideoPreferences();
+        resizeForPreviewAspectRatio();
         if (!mPreviewing && !mStartPreviewFail) {
             try {
                 startPreview();
@@ -1387,6 +1386,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mParameters = mCameraDevice.getParameters();
 
         mParameters.setPreviewSize(mProfile.mVideoWidth, mProfile.mVideoHeight);
+        mParameters.setPreviewFrameRate(mProfile.mVideoFps);
 
         // Set white balance parameter.
         if (mParameters.getSupportedWhiteBalance() != null) {
@@ -1423,6 +1423,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (CameraSettings.KEY_VIDEO_DURATION.equals(key)
                 || CameraSettings.KEY_VIDEO_QUALITY.equals(key)) {
             readVideoPreferences();
+            resizeForPreviewAspectRatio();
         }
 
         // If mCameraDevice is not ready then we can set the parameter in
@@ -1436,8 +1437,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             // It is assumed media recorder is released before
             // onSharedPreferenceChanged, so we can close the camera here.
             closeCamera();
-            resizeForPreviewAspectRatio(mVideoPreview);
-            resizeForPreviewAspectRatio(mVideoFrame);
             try {
                 startPreview(); // Parameters will be set in startPreview().
             } catch (CameraHardwareException e) {
