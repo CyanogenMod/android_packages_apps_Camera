@@ -20,7 +20,6 @@ import com.android.camera.gallery.BaseImageList;
 import com.android.camera.gallery.DrmImageList;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.Image;
 import com.android.camera.gallery.ImageList;
 import com.android.camera.gallery.ImageListUber;
 import com.android.camera.gallery.SingleImageList;
@@ -28,7 +27,6 @@ import com.android.camera.gallery.VideoList;
 import com.android.camera.gallery.VideoObject;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -42,7 +40,6 @@ import android.os.Parcelable;
 import android.provider.DrmStore;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 
 import java.io.File;

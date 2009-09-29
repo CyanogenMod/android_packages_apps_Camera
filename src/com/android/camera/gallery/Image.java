@@ -66,17 +66,6 @@ public class Image extends BaseImage implements IImage {
         // ((BaseImageList) getContainer()).invalidateCursor();
     }
 
-    @Override
-    protected Bitmap.CompressFormat compressionType() {
-        String mimeType = getMimeType();
-        if ("image/png".equals(mimeType)) {
-            return Bitmap.CompressFormat.PNG;
-        } else if ("image/gif".equals(mimeType)) {
-            return Bitmap.CompressFormat.PNG;
-        }
-        return Bitmap.CompressFormat.JPEG;
-    }
-
     public boolean isReadonly() {
         String mimeType = getMimeType();
         return !"image/jpeg".equals(mimeType) && !"image/png".equals(mimeType);
@@ -96,11 +85,6 @@ public class Image extends BaseImage implements IImage {
             loadExifData();
         }
         mExif.setAttribute(tag, value);
-    }
-
-    public void saveImageContents(Bitmap image, String filePath) {
-        Uri uri = mContainer.contentUri(mId);
-        compressImageToFile(image, uri);
     }
 
     private void loadExifData() {
