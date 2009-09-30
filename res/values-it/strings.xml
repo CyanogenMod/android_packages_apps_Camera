@@ -21,8 +21,8 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Videocamera"</string>
     <string name="gallery_picker_label" msgid="3080425245006492787">"Galleria"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Foto"</string>
-    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Video fotocamera"</string>
-    <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Media fotocamera"</string>
+    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Video"</string>
+    <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"File fotocamera"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Passa a video"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Passa a fotocamera"</string>
     <string name="crop_label" msgid="521114301871349328">"Ritaglia foto"</string>
@@ -138,7 +138,6 @@
     <string name="pref_camera_focusmode_title" msgid="3829707410870789496">"Seleziona modalità messa a fuoco"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatico"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
-    <string name="pref_camera_focusmode_value_infinity" msgid="3629041045019224450">"infinito"</string>
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Modalità messa a fuoco"</string>
     <string name="camerasettings" msgid="2433519618178453928">"Impostazioni"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Nessun media trovato."</string>

@@ -22,8 +22,7 @@
     <string name="gallery_picker_label" msgid="3080425245006492787">"Galeri"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Kamera resimleri"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Kamera videoları"</string>
-    <!-- no translation found for gallery_camera_media_bucket_name (5560926838411387511) -->
-    <skip />
+    <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Kamera ortamı"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Videoya geç"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Kameraya geç"</string>
     <string name="crop_label" msgid="521114301871349328">"Resmi kırp"</string>
@@ -39,14 +38,12 @@
     <string name="settings" msgid="1534847740615665736">"Ayarlar"</string>
     <string name="view" msgid="6277795271119411881">"Görüntüle"</string>
     <string name="details" msgid="8415120088556445230">"Ayrıntılar"</string>
-    <!-- no translation found for show_on_map (441725587731006228) -->
-    <skip />
+    <string name="show_on_map" msgid="441725587731006228">"Google Haritalar\'da göster"</string>
     <string name="rotate" msgid="460017689320955494">"Döndür"</string>
     <string name="rotate_left" msgid="5888273317282539839">"Sola döndür"</string>
     <string name="rotate_right" msgid="6776325835923384839">"Sağa döndür"</string>
     <string name="slide_show" msgid="1965192737233824143">"Slayt gösterisi"</string>
-    <!-- no translation found for multiselect (4761682939945434146) -->
-    <skip />
+    <string name="multiselect" msgid="4761682939945434146">"Çoklu seçim"</string>
     <string name="capture_picture" msgid="4114265595549284643">"Fotoğraf çek"</string>
     <string name="capture_video" msgid="4047046282358697155">"Video çek"</string>
     <string name="crop_save_text" msgid="8140440041190264400">"Kaydet"</string>
@@ -54,24 +51,15 @@
     <string name="confirm_delete_title" msgid="263478358046514887">"Sil"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"Resim silinecek."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"Video silinecek."</string>
-    <!-- no translation found for confirm_delete_multiple_message (5962369828035778779) -->
-    <skip />
-    <!-- no translation found for review_toss (7255331999518617841) -->
-    <skip />
-    <!-- no translation found for review_share (7294755861072174509) -->
-    <skip />
-    <!-- no translation found for review_set (8304758352155378636) -->
-    <skip />
-    <!-- no translation found for review_play (6015456244323302817) -->
-    <skip />
-    <!-- no translation found for review_cancel (8188009385853399254) -->
-    <skip />
-    <!-- no translation found for review_done (5417465988786728114) -->
-    <skip />
-    <!-- no translation found for review_ok (5305096180300056529) -->
-    <skip />
-    <!-- no translation found for review_retake (7804864054896088338) -->
-    <skip />
+    <string name="confirm_delete_multiple_message" msgid="5962369828035778779">"Bu medya dosyaları silinecek."</string>
+    <string name="review_toss" msgid="7255331999518617841">"SİL"</string>
+    <string name="review_share" msgid="7294755861072174509">"PAYLAŞ"</string>
+    <string name="review_set" msgid="8304758352155378636">"ŞU ŞEKİLDE AYARLA:"</string>
+    <string name="review_play" msgid="6015456244323302817">"YÜRÜT"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"İPTAL"</string>
+    <string name="review_done" msgid="5417465988786728114">"BİTTİ"</string>
+    <string name="review_ok" msgid="5305096180300056529">"Tamam"</string>
+    <string name="review_retake" msgid="7804864054896088338">"YENİDEN ÇEK"</string>
     <string name="camera_toss" msgid="3781186798552460833">"Sil"</string>
     <string name="camera_gallery" msgid="815753042966032398">"Galeri"</string>
     <string name="camera_share" msgid="8207701858325694182">"Paylaş"</string>
@@ -126,75 +114,45 @@
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Resimleri rasgele sırada göster"</string>
     <string name="pref_camera_recordlocation_title" msgid="273727672426306702">"Resimlerde konumu depola"</string>
     <string name="pref_camera_recordlocation_summary" msgid="3275371402016128548">"Konumu resim verilerinde kaydet"</string>
-    <!-- no translation found for pref_camera_video_settings_category (5788821601203523037) -->
-    <skip />
+    <string name="pref_camera_video_settings_category" msgid="5788821601203523037">"Video ayarları"</string>
     <string name="pref_camera_videoquality_title" msgid="3836197291744160920">"Video kalitesini seç"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Düşük (MMS mesajları için)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Yüksek (SD kart için)"</string>
     <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Video kalitesi"</string>
-    <!-- no translation found for pref_camera_video_duration_title (3659987702892910722) -->
-    <skip />
-    <!-- no translation found for pref_camera_video_duration_entry_1 (886640327548814447) -->
-    <skip />
-    <!-- no translation found for pref_camera_video_duration_entry_10 (664455443394175885) -->
-    <skip />
-    <!-- no translation found for pref_camera_video_duration_entry_30 (1197298883102352735) -->
-    <skip />
-    <!-- no translation found for pref_camera_video_duration_dialogtitle (5762031980003877975) -->
-    <skip />
-    <!-- no translation found for pref_camera_picture_settings_category (1513001949820030759) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_title (8391466986280182397) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (7304479270077279178) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (6722733164421134734) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (6648351357102402892) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_dialogtitle (2741153309776113961) -->
-    <skip />
-    <!-- no translation found for pref_camera_jpegquality_title (3045390831339734843) -->
-    <skip />
-    <!-- no translation found for pref_camera_jpegquality_entry_superfine (4087830022547613205) -->
-    <skip />
-    <!-- no translation found for pref_camera_jpegquality_entry_fine (4474043704802385370) -->
-    <skip />
-    <!-- no translation found for pref_camera_jpegquality_entry_normal (1274801937207351293) -->
-    <skip />
-    <!-- no translation found for pref_camera_jpegquality_dialogtitle (18195886066728203) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_title (3829707410870789496) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_entry_auto (7374820710300362457) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_entry_infinity (3413922419264967552) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_value_infinity (3629041045019224450) -->
-    <skip />
-    <!-- no translation found for pref_camera_focusmode_dialogtitle (3464580667965511167) -->
-    <skip />
+    <string name="pref_camera_video_duration_title" msgid="3659987702892910722">"Video süresini seç"</string>
+    <string name="pref_camera_video_duration_entry_1" msgid="886640327548814447">"1 dakika (paylaşım için)"</string>
+    <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 dakika"</string>
+    <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 dakika"</string>
+    <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Video süresi"</string>
+    <string name="pref_camera_picture_settings_category" msgid="1513001949820030759">"Resim ayarları"</string>
+    <string name="pref_camera_picturesize_title" msgid="8391466986280182397">"Resim boyutunu seç"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="7304479270077279178">"3M (2048x1536)"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="6722733164421134734">"2M (1600x1200)"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6648351357102402892">"1M (1024x768)"</string>
+    <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Resim boyutu"</string>
+    <string name="pref_camera_jpegquality_title" msgid="3045390831339734843">"Resim kalitesini seç"</string>
+    <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Çok iyi"</string>
+    <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"İyi"</string>
+    <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normal"</string>
+    <string name="pref_camera_jpegquality_dialogtitle" msgid="18195886066728203">"Resim kalitesi"</string>
+    <string name="pref_camera_focusmode_title" msgid="3829707410870789496">"Odak modunu seç"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Otomatik"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Sonsuz"</string>
+    <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Odak modu"</string>
     <string name="camerasettings" msgid="2433519618178453928">"Ayarlar"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Medya bulunamadı."</string>
     <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Silme işlemlerini doğrula"</string>
     <string name="pref_gallery_confirm_delete_summary" msgid="5253456492765525245">"Bir resmi veya videoyu silmeden önce doğrulama göster"</string>
-    <!-- no translation found for no_location_image (6929172123058811834) -->
-    <skip />
+    <string name="no_location_image" msgid="6929172123058811834">"Bu görselde Konum bilgisi bulunmuyor."</string>
     <string name="details_panel_title" msgid="4753347516759338122">"Ayrıntılar"</string>
     <string name="details_file_size" msgid="2468878774843246797">"Dosya boyutu:"</string>
     <string name="details_image_resolution" msgid="8773315928100529437">"Çözünürlük:"</string>
-    <!-- no translation found for details_image_make (2888477930210903540) -->
-    <skip />
-    <!-- no translation found for details_image_model (3608007849933924336) -->
-    <skip />
-    <!-- no translation found for details_image_whitebalance (4412514247882436065) -->
-    <skip />
-    <!-- no translation found for details_image_latitude (6701704806314765468) -->
-    <skip />
-    <!-- no translation found for details_image_longitude (5583629669864057389) -->
-    <skip />
-    <!-- no translation found for details_image_location (6460201074393148978) -->
-    <skip />
+    <string name="details_image_make" msgid="2888477930210903540">"Üretici:"</string>
+    <string name="details_image_model" msgid="3608007849933924336">"Model:"</string>
+    <string name="details_image_whitebalance" msgid="4412514247882436065">"Beyaz Dengesi:"</string>
+    <string name="details_image_latitude" msgid="6701704806314765468">"GPS Enlemi:"</string>
+    <string name="details_image_longitude" msgid="5583629669864057389">"GPS Boylamı:"</string>
+    <string name="details_image_location" msgid="6460201074393148978">"Konum:"</string>
     <string name="details_duration" msgid="1028116471387901402">"Süre:"</string>
     <string name="details_date_taken" msgid="348356840586463178">"Çekim tarihi:"</string>
     <string name="details_frame_rate" msgid="122397836963498191">"Çerçeve oranı:"</string>
@@ -229,14 +187,9 @@
     <string name="gadget_title" msgid="259405922673466798">"Resim çerçevesi"</string>
     <string name="file_info_title" msgid="1628963357466012538">"Dosya bilgileri:"</string>
     <string name="video_exceed_mms_limit" msgid="3835075281230780010">"Kaydettiğiniz video MMS ile gönderilemeyecek kadar büyük. Daha kısa bir klip kaydetmeyi deneyin."</string>
-    <!-- no translation found for multiselect_share (5261644537749253581) -->
-    <skip />
-    <!-- no translation found for multiselect_delete (9113461994546744603) -->
-    <skip />
-    <!-- no translation found for multiselect_cancel (5969428692864002165) -->
-    <skip />
-    <!-- no translation found for delete_images_message (4504926868037899430) -->
-    <skip />
-    <!-- no translation found for video_reach_size_limit (6179877322015552390) -->
-    <skip />
+    <string name="multiselect_share" msgid="5261644537749253581">"Paylaş"</string>
+    <string name="multiselect_delete" msgid="9113461994546744603">"Sil"</string>
+    <string name="multiselect_cancel" msgid="5969428692864002165">"İptal"</string>
+    <string name="delete_images_message" msgid="4504926868037899430">"Görseller siliniyor, lütfen bekleyin..."</string>
+    <string name="video_reach_size_limit" msgid="6179877322015552390">"Boyut sınırına ulaşıldı."</string>
 </resources>

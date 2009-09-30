@@ -138,8 +138,6 @@
     <string name="pref_camera_focusmode_title" msgid="3829707410870789496">"Fokustype"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Autofokus"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Uendelig"</string>
-    <!-- no translation found for pref_camera_focusmode_value_infinity (3629041045019224450) -->
-    <skip />
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Fokustype"</string>
     <string name="camerasettings" msgid="2433519618178453928">"Innstillinger"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Fant ingen bilder."</string>
@@ -192,6 +190,6 @@
     <string name="multiselect_share" msgid="5261644537749253581">"Del"</string>
     <string name="multiselect_delete" msgid="9113461994546744603">"Slett"</string>
     <string name="multiselect_cancel" msgid="5969428692864002165">"Avbryt"</string>
-    <string name="delete_images_message" msgid="4504926868037899430">"Sletter bilder, vennligst vent…"</string>
+    <string name="delete_images_message" msgid="4504926868037899430">"Sletter bilder, vennligst vent …"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Videoen ble for stor."</string>
 </resources>
