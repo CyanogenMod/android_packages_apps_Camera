@@ -359,7 +359,10 @@ public class ImageManager {
         Iterator<BaseImageList> iter = l.iterator();
         while (iter.hasNext()) {
             BaseImageList sublist = iter.next();
-            if (sublist.isEmpty()) iter.remove();
+            if (sublist.isEmpty()) {
+                sublist.close();
+                iter.remove();
+            }
         }
 
         if (l.size() == 1) {
