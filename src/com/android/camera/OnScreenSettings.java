@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 // Please reference to {@link android.widget.ZoomButtonsController} for detail
 // information about adding window to WindowManager.
@@ -54,6 +55,16 @@ public class OnScreenSettings {
     private MainMenuAdapter mMainAdapter;
 
     private final LayoutInflater mInflater;
+
+    // We store the override values here. For a given preference,
+    // if the mapping value of the preference key is not null, we will
+    // use the value in this map instead of the value read from the preference
+    //
+    // This is design for the scene mode, for example, in the scene mode
+    // "Action", the focus mode will become "infinite" no matter what in the
+    // preference settings. So, we need to put a {pref_camera_focusmode_key,
+    // "infinite"} entry in this map.
+    private HashMap<String, String> mOverride = new HashMap<String, String>();
 
     private final Handler mHandler = new Handler() {
         @Override
@@ -122,6 +133,20 @@ public class OnScreenSettings {
         }
         if (mVisibilityListener != null) {
             mVisibilityListener.onVisibilityChanged(mIsVisible);
+        }
+    }
+
+    // Override the preference settings, if value == null, then disable the
+    // override.
+    public void overrideSettings(String key, String value) {
+        if (value == null) {
+            if (mOverride.remove(key) != null && mMainAdapter != null) {
+                mMainAdapter.notifyDataSetChanged();
+            }
+        } else {
+            if (mOverride.put(key, value) == null && mMainAdapter != null) {
+                mMainAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -268,13 +293,22 @@ public class OnScreenSettings {
                 PreferenceGroup group = (PreferenceGroup) preference;
                 ((TextView) convertView.findViewById(
                         R.id.title)).setText(group.getTitle());
-            } else if (preference instanceof ListPreference) {
+            } else {
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_menu_list_item, parent, false);
-                ((TextView) convertView.findViewById(
-                        R.id.title)).setText(preference.getTitle());
-                ((TextView) convertView.findViewById(R.id.summary))
-                        .setText(((ListPreference) preference).getEntry());
+
+                String override = mOverride.get(preference.getKey());
+                TextView title = (TextView)
+                        convertView.findViewById(R.id.title);
+                title.setText(preference.getTitle());
+                title.setEnabled(override == null);
+
+                TextView summary = (TextView)
+                        convertView.findViewById(R.id.summary);
+                summary.setText(override == null
+                        ? ((ListPreference) preference).getEntry()
+                        : override);
+                summary.setEnabled(override == null);
             }
             return convertView;
         }
@@ -287,7 +321,9 @@ public class OnScreenSettings {
         @Override
         public boolean isEnabled(int position) {
             Preference preference = mPreferences.get(position);
-            return !(preference instanceof PreferenceGroup);
+            if (preference instanceof PreferenceGroup) return false;
+
+            return mOverride.get(preference.getKey()) == null;
         }
 
         public int getCount() {
