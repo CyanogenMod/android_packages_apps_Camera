@@ -82,4 +82,8 @@
            parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         <item name="android:windowAnimationStyle">@style/NoEnterExitAnimation</item>
     </style>
+    <style name="Animation_OnScreenMenu">
+        <item name="android:windowEnterAnimation">@anim/on_screen_menu_appear</item>
+        <item name="android:windowExitAnimation">@anim/on_screen_menu_disappear</item>
+    </style>
 </resources>
