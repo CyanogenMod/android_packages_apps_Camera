@@ -18,8 +18,10 @@ package com.android.camera;
 
 import com.android.camera.gallery.IImage;
 
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class ImageLoader {
     // the worker thread and a done flag so we know when to exit
     private boolean mDone;
     private Thread mDecodeThread;
+    private ContentResolver mCr;
 
     public interface LoadedCallback {
         public void run(Bitmap result);
@@ -102,7 +105,8 @@ public class ImageLoader {
         }
     }
 
-    public ImageLoader(Handler handler) {
+    public ImageLoader(ContentResolver cr, Handler handler) {
+        mCr = cr;
         start();
     }
 
@@ -160,6 +164,7 @@ public class ImageLoader {
             try {
                 Thread t = mDecodeThread;
                 BitmapManager.instance().cancelThreadDecoding(t);
+                MediaStore.Images.Thumbnails.cancelThumbnailRequest(mCr, -1);
                 t.join();
                 mDecodeThread = null;
             } catch (InterruptedException ex) {

@@ -311,6 +311,7 @@ public class GalleryPicker extends Activity {
     private void abortWorker() {
         if (mWorkerThread != null) {
             BitmapManager.instance().cancelThreadDecoding(mWorkerThread);
+            MediaStore.Images.Thumbnails.cancelThumbnailRequest(getContentResolver(), -1);
             mAbort = true;
             try {
                 mWorkerThread.join();
