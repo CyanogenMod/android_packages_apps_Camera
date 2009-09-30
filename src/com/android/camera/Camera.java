@@ -1396,6 +1396,7 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void doSnap() {
+        Log.v(TAG, "doSnap: mFocusState=" + mFocusState);
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
