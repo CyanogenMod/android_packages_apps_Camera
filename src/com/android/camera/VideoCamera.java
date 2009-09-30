@@ -66,6 +66,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.camera.PreviewFrameLayout.OnSizeChangedListener;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 
@@ -84,7 +85,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
         Switcher.OnSwitchListener, OnSharedPreferenceChangeListener,
-        OnScreenSettings.OnVisibilityChangedListener {
+        OnScreenSettings.OnVisibilityChangedListener,
+        PreviewFrameLayout.OnSizeChangedListener  {
 
     private static final String TAG = "videocamera";
 
@@ -107,6 +109,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
 
     private SharedPreferences mPreferences;
 
+    private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceView mVideoPreview;
     private SurfaceHolder mSurfaceHolder = null;
     private ImageView mVideoFrame;
@@ -258,7 +261,11 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         requestWindowFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.video_camera);
 
+        mPreviewFrameLayout = (PreviewFrameLayout)
+                findViewById(R.id.frame_layout);
+        mPreviewFrameLayout.setOnSizeChangedListener(this);
         resizeForPreviewAspectRatio();
+
         mVideoPreview = (SurfaceView) findViewById(R.id.camera_preview);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
 
@@ -505,9 +512,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void resizeForPreviewAspectRatio() {
-        PreviewFrameLayout frameLayout =
-                (PreviewFrameLayout) findViewById(R.id.frame_layout);
-        frameLayout.setAspectRatio(
+        mPreviewFrameLayout.setAspectRatio(
                 (double) mProfile.mVideoWidth / mProfile.mVideoHeight);
     }
 
@@ -1154,7 +1159,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             updateRecordingIndicator(false);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
-            mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
+            updateRecordingTime();
             keepScreenOn();
             mGripper.setVisibility(View.INVISIBLE);
         }
@@ -1332,11 +1337,15 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         boolean countdownRemainingTime = (mMaxVideoDurationInMs != 0
                 && delta >= mMaxVideoDurationInMs - 60000);
 
+        long next_update_delay = 1000 - (delta % 1000);
+        long seconds;
         if (countdownRemainingTime) {
             delta = Math.max(0, mMaxVideoDurationInMs - delta);
+            seconds = (delta + 999) / 1000;
+        } else {
+            seconds = delta / 1000; // round to nearest
         }
 
-        long seconds = (delta + 500) / 1000; // round to nearest
         long minutes = seconds / 60;
         long hours = minutes / 60;
         long remainderMinutes = minutes - (hours * 60);
@@ -1379,7 +1388,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // manually refresh the entire surface view when changing any
         // overlapping view's contents.
         mVideoPreview.invalidate();
-        mHandler.sendEmptyMessageDelayed(UPDATE_RECORD_TIME, 1000);
+        if (delta > 0) {
+            mHandler.sendEmptyMessageDelayed(
+                    UPDATE_RECORD_TIME, next_update_delay);
+        }
     }
 
     private void setCameraParameters() {
@@ -1423,7 +1435,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         if (CameraSettings.KEY_VIDEO_DURATION.equals(key)
                 || CameraSettings.KEY_VIDEO_QUALITY.equals(key)) {
             readVideoPreferences();
-            resizeForPreviewAspectRatio();
         }
 
         // If mCameraDevice is not ready then we can set the parameter in
@@ -1438,6 +1449,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             // onSharedPreferenceChanged, so we can close the camera here.
             closeCamera();
             try {
+                resizeForPreviewAspectRatio();
                 startPreview(); // Parameters will be set in startPreview().
             } catch (CameraHardwareException e) {
                 showCameraBusyAndFinish();
@@ -1456,6 +1468,13 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             setCameraParameters();
             mCameraDevice.unlock();
         }
+    }
+
+    public void onSizeChanged() {
+        if (mSettings != null) {
+            mSettings.updateLayout();
+        }
+
     }
 }
 

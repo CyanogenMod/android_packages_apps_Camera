@@ -84,6 +84,12 @@
         <item>macro</item>
     </string-array>
 
+    <array name="focusmode_icons">
+        <item>0</item>
+        <item>@drawable/ic_viewfinder_focus_infinity</item>
+        <item>@drawable/ic_viewfinder_focus_macro</item>
+    </array>
+
     <!-- Camera Preferences flash mode dialog box entries -->
     <string-array name="pref_camera_flashmode_entries" translatable="false">
         <item>@string/pref_camera_flashmode_entry_auto</item>
@@ -96,12 +102,6 @@
         <item>on</item>
         <item>off</item>
     </string-array>
-
-    <array name="pref_camera_flashmode_icons">
-        <item>@drawable/ic_dialog_flash_auto</item>
-        <item>@drawable/ic_dialog_flash_off</item>
-        <item>@drawable/ic_dialog_flash_on</item>
-    </array>
 
     <string-array name="pref_camera_recordlocation_entryvalues" translatable="false">
         <item>false</item>
@@ -141,6 +141,16 @@
         <item>@string/pref_camera_whitebalance_entry_warm_fluorescent</item>
         <item>@string/pref_camera_whitebalance_entry_halogen</item>
     </string-array>
+
+    <string-array name="whitebalance_modes" translatable="false">
+        <item>off</item>
+        <item>on</item>
+    </string-array>
+
+    <array name="whitebalance_icons">
+        <item>0</item>
+        <item>@drawable/ic_viewfinder_whitebalance</item>
+    </array>
 
     <string-array name="pref_camera_whitebalance_entryvalues" translatable="false">
         <item>auto</item>

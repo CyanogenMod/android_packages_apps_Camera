@@ -24,12 +24,22 @@ import android.widget.ImageView;
 import android.widget.FrameLayout;
 
 public class PreviewFrameLayout extends ViewGroup {
+    public interface OnSizeChangedListener {
+        public void onSizeChanged();
+    }
+
     private double mAspectRatio = 4.0 / 3.0;
     private ImageView mGripper;
     private FrameLayout mFrame;
+    private OnSizeChangedListener mSizeListener;
+
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public void setOnSizeChangedListener(OnSizeChangedListener listener) {
+        mSizeListener = listener;
     }
 
     @Override
@@ -114,6 +124,9 @@ public class PreviewFrameLayout extends ViewGroup {
         }
         myLayoutChild(mFrame, Math.max(l + leftSpace, l + gripperWidth),
                 t + topSpace, frameWidth, frameHeight);
+        if (mSizeListener != null) {
+            mSizeListener.onSizeChanged();
+        }
     }
 
     private static void myLayoutChild(View child, int l, int t, int w, int h) {

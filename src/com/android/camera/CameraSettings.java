@@ -3,7 +3,6 @@ package com.android.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.SystemProperties;
@@ -188,29 +187,19 @@ public class CameraSettings {
         // Prepare setting entries and entry values.
         CharSequence[] allEntries = pref.getEntries();
         CharSequence[] allEntryValues = pref.getEntryValues();
-        Drawable[] allIcons = (pref instanceof IconListPreference)
-                ? ((IconListPreference) pref).getIcons()
-                : null;
         ArrayList<CharSequence> entries = new ArrayList<CharSequence>();
         ArrayList<CharSequence> entryValues = new ArrayList<CharSequence>();
-        ArrayList<Drawable> icons =
-                allIcons == null ? null : new ArrayList<Drawable>();
         for (int i = 0, len = allEntryValues.length; i < len; i++) {
             if (supported.indexOf(allEntryValues[i].toString()) != NOT_FOUND) {
                 entries.add(allEntries[i]);
                 entryValues.add(allEntryValues[i]);
-                if (allIcons != null) icons.add(allIcons[i]);
             }
         }
 
         // Set entries and entry values to list preference.
-        int size = entries.size();
-        pref.setEntries(entries.toArray(new CharSequence[size]));
-        pref.setEntryValues(entryValues.toArray(new CharSequence[size]));
-        if (allIcons != null) {
-            ((IconListPreference) pref)
-                    .setIcons(icons.toArray(new Drawable[size]));
-        }
+        pref.setEntries(entries.toArray(new CharSequence[entries.size()]));
+        pref.setEntryValues(entryValues.toArray(
+                new CharSequence[entryValues.size()]));
 
         // Set the value to the first entry if it is invalid.
         String value = pref.getValue();

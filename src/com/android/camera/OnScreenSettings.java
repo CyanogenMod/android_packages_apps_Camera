@@ -21,7 +21,6 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -112,7 +111,7 @@ public class OnScreenSettings {
                 mContainerLayoutParams.token = mOwnerView.getWindowToken();
             }
             mWindowManager.addView(mContainer, mContainerLayoutParams);
-            refreshPositioningVariables();
+            updateLayout();
         } else {
             // Reset the two menus
             mSubMenu.setAdapter(null);
@@ -148,7 +147,7 @@ public class OnScreenSettings {
         });
     }
 
-    private void refreshPositioningVariables() {
+    public void updateLayout() {
         // if the mOwnerView is detached from window then skip.
         if (mOwnerView.getWindowToken() == null) return;
 
@@ -358,13 +357,9 @@ public class OnScreenSettings {
     private class SubMenuAdapter extends BaseAdapter
             implements OnItemClickListener {
         private final ListPreference mPreference;
-        private final IconListPreference mIconPreference;
 
         public SubMenuAdapter(Context context, ListPreference preference) {
             mPreference = preference;
-            mIconPreference = (preference instanceof IconListPreference)
-                    ? (IconListPreference) preference
-                    : null;
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -375,24 +370,15 @@ public class OnScreenSettings {
                 ((TextView) convertView.findViewById(
                         R.id.title)).setText(mPreference.getDialogTitle());
             } else {
-                int index = position - 1;
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_submenu_item, parent, false);
                 boolean checked = mPreference.getValue().equals(
-                        mPreference.getEntryValues()[index]);
+                        mPreference.getEntryValues()[position - 1]);
                 ((TextView) convertView.findViewById(
-                        R.id.title)).setText(entry[index]);
-                ((RadioButton) convertView.findViewById(
-                        R.id.radio_button)).setChecked(checked);
-                ImageView icon = (ImageView)
-                        convertView.findViewById(R.id.icon);
-                if (mIconPreference != null) {
-                    icon.setVisibility(View.VISIBLE);
-                    icon.setImageDrawable(
-                            mIconPreference.getIcons()[position-1]);
-                } else {
-                    icon.setVisibility(View.GONE);
-                }
+                        R.id.title)).setText(entry[position - 1]);
+                RadioButton radio = ((RadioButton)
+                        convertView.findViewById(R.id.radio_button));
+                radio.setChecked(checked);
             }
             return convertView;
         }
