@@ -1159,7 +1159,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             updateRecordingIndicator(false);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
-            mHandler.sendEmptyMessage(UPDATE_RECORD_TIME);
+            updateRecordingTime();
             keepScreenOn();
             mGripper.setVisibility(View.INVISIBLE);
         }
@@ -1337,11 +1337,15 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         boolean countdownRemainingTime = (mMaxVideoDurationInMs != 0
                 && delta >= mMaxVideoDurationInMs - 60000);
 
+        long next_update_delay = 1000 - (delta % 1000);
+        long seconds;
         if (countdownRemainingTime) {
             delta = Math.max(0, mMaxVideoDurationInMs - delta);
+            seconds = (delta + 999) / 1000;
+        } else {
+            seconds = delta / 1000; // round to nearest
         }
 
-        long seconds = (delta + 500) / 1000; // round to nearest
         long minutes = seconds / 60;
         long hours = minutes / 60;
         long remainderMinutes = minutes - (hours * 60);
@@ -1384,7 +1388,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // manually refresh the entire surface view when changing any
         // overlapping view's contents.
         mVideoPreview.invalidate();
-        mHandler.sendEmptyMessageDelayed(UPDATE_RECORD_TIME, 1000);
+        if (delta > 0) {
+            mHandler.sendEmptyMessageDelayed(
+                    UPDATE_RECORD_TIME, next_update_delay);
+        }
     }
 
     private void setCameraParameters() {
