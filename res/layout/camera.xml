@@ -66,8 +66,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/whitebalance_icon"
-                        camera:modes="@array/whitebalance_modes"
+                        camera:modes="@array/pref_camera_whitebalance_entryvalues"
                         camera:icons="@array/whitebalance_icons"
+                        android:visibility="visible"/>
+                <com.android.camera.IconIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/scenemode_icon"
+                        camera:modes="@array/scenemode_modes"
+                        camera:icons="@array/scenemode_icons"
                         android:visibility="visible"/>
                 <com.android.camera.IconIndicator
                         android:layout_width="wrap_content"
