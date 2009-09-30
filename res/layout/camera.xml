@@ -58,6 +58,20 @@
                 <com.android.camera.IconIndicator
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/focus_icon"
+                        camera:modes="@array/pref_camera_focusmode_entryvalues"
+                        camera:icons="@array/focusmode_icons"
+                        android:visibility="visible"/>
+                <com.android.camera.IconIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/whitebalance_icon"
+                        camera:modes="@array/whitebalance_modes"
+                        camera:icons="@array/whitebalance_icons"
+                        android:visibility="visible"/>
+                <com.android.camera.IconIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:id="@+id/flash_icon"
                         camera:modes="@array/pref_camera_flashmode_entryvalues"
                         camera:icons="@array/flash_icons"
