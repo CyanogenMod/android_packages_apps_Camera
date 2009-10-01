@@ -976,8 +976,6 @@ public class Camera extends Activity implements View.OnClickListener,
     private boolean mScreenComplete = false;
 
     private void showOnScreenSettings() {
-        boolean autoSceneMode = Parameters
-                    .SCENE_MODE_AUTO.equals(mParameters.getSceneMode());
         if (mSettings == null) {
             mSettings = new OnScreenSettings(
                     findViewById(R.id.camera_preview));
@@ -990,13 +988,19 @@ public class Camera extends Activity implements View.OnClickListener,
             // options is not complete, we need to read it again later.
             // For example: in the scene mode "ACTION", the supported focus mode
             // will change from {infinite, macro, auto} to {infinite}.
+            String sceneMode = mParameters.getSceneMode();
+            boolean autoSceneMode = sceneMode == null
+                    || Parameters.SCENE_MODE_AUTO.equals(sceneMode);
             mScreenComplete = autoSceneMode;
+
             if (autoSceneMode) {
+                // If scene mode is auto, cancel override in settings
                 mSettings.overrideSettings(CameraSettings.KEY_FLASH_MODE, null);
                 mSettings.overrideSettings(CameraSettings.KEY_FOCUS_MODE, null);
                 mSettings.overrideSettings(
                         CameraSettings.KEY_WHITE_BALANCE, null);
             } else {
+                // If scene mode is not auto, override the value in settings
                 mSettings.overrideSettings(CameraSettings.KEY_FLASH_MODE,
                         mParameters.getFlashMode());
                 mSettings.overrideSettings(CameraSettings.KEY_FOCUS_MODE,
@@ -1719,6 +1723,11 @@ public class Camera extends Activity implements View.OnClickListener,
                 getString(R.string.pref_camera_scenemode_default));
         if (isSupported(sceneMode, mParameters.getSupportedSceneModes())) {
             mParameters.setSceneMode(sceneMode);
+        } else {
+            sceneMode = mParameters.getSceneMode();
+            if (sceneMode == null) {
+                sceneMode = Parameters.SCENE_MODE_AUTO;
+            }
         }
 
         // If scene mode is set, we cannot set flash mode, white balance, and
@@ -1760,9 +1769,10 @@ public class Camera extends Activity implements View.OnClickListener,
             if (isSupported(flashMode, supportedFlash)) {
                 mParameters.setFlashMode(flashMode);
             } else {
-                // If the current flashMode is not support, show the
-                // FLASH_MODE_OFF icon.
-                flashMode = Parameters.FLASH_MODE_OFF;
+                flashMode = mParameters.getFlashMode();
+                if (flashMode == null) {
+                    flashMode = Parameters.FLASH_MODE_OFF;
+                }
             }
 
             // Set white balance parameter.
@@ -1771,6 +1781,11 @@ public class Camera extends Activity implements View.OnClickListener,
                     getString(R.string.pref_camera_whitebalance_default));
             if (isSupported(whiteBalance, mParameters.getSupportedWhiteBalance())) {
                 mParameters.setWhiteBalance(whiteBalance);
+            } else {
+                whiteBalance = mParameters.getWhiteBalance();
+                if (whiteBalance == null) {
+                    whiteBalance = Parameters.WHITE_BALANCE_AUTO;
+                }
             }
 
             // Set focus mode.
@@ -1779,9 +1794,16 @@ public class Camera extends Activity implements View.OnClickListener,
                     getString(R.string.pref_camera_focusmode_default));
             if (isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
                 mParameters.setFocusMode(mFocusMode);
+            } else {
+                mFocusMode = mParameters.getFocusMode();
+                if (mFocusMode == null) {
+                    mFocusMode = Parameters.FOCUS_MODE_AUTO;
+                }
             }
+
             mCameraDevice.setParameters(mParameters);
 
+            // The complete preference has not been read, read it now
             if (!mScreenComplete && mSettings != null) {
                 // The current scene mode is auto and thus the supported values
                 // of the three settings (flash mode, white balance, and focus
@@ -1812,7 +1834,6 @@ public class Camera extends Activity implements View.OnClickListener,
                 mFlashIndicator.setMode(finalFlashMode);
             }
         });
-
     }
 
     private void gotoGallery() {
