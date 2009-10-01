@@ -13,20 +13,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
-    <declare-styleable name="IconIndicator">
-        <attr name="icons" format="reference" />
-        <attr name="modes" format="reference" />
-    </declare-styleable>
-    <declare-styleable name="IconListPreference">
-        <attr name="icons" />
-    </declare-styleable>
-    <declare-styleable name="EvenlySpacedLayout">
-        <attr name="orientation">
-            <enum name="horizontal" value="0" />
-            <enum name="vertical" value="1" />
-        </attr>
-        <!-- Weather we keep the space in both ends -->
-        <attr name="keepEndSpace" format="boolean"/>
-    </declare-styleable>
-</resources>
+
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+	android:fromXDelta="-100%"
+	android:toXDelta="0"
+	android:duration="500" />

@@ -10,6 +10,7 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,20 +22,21 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 // Please reference to {@link android.widget.ZoomButtonsController} for detail
 // information about adding window to WindowManager.
 public class OnScreenSettings {
     @SuppressWarnings("unused")
     private static final String TAG = "OnScreenSettings";
-    private static final int MSG_POST_SET_HIDE = 1;
-    private static final int MSG_POST_SET_VISIBLE = 2;
+    private static final int MSG_POST_SET_VISIBLE = 1;
 
     public interface OnVisibilityChangedListener {
         public void onVisibilityChanged(boolean visibility);
@@ -54,12 +56,22 @@ public class OnScreenSettings {
 
     private final LayoutInflater mInflater;
 
+    // We store the override values here. For a given preference,
+    // if the mapping value of the preference key is not null, we will
+    // use the value in this map instead of the value read from the preference
+    //
+    // This is design for the scene mode, for example, in the scene mode
+    // "Action", the focus mode will become "infinite" no matter what in the
+    // preference settings. So, we need to put a {pref_camera_focusmode_key,
+    // "infinite"} entry in this map.
+    private HashMap<String, String> mOverride = new HashMap<String, String>();
+
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_POST_SET_HIDE:
-                    setVisible(false);
+                case MSG_POST_SET_VISIBLE:
+                    setVisible(true);
                     break;
             }
         }
@@ -110,13 +122,12 @@ public class OnScreenSettings {
             if (mContainerLayoutParams.token == null) {
                 mContainerLayoutParams.token = mOwnerView.getWindowToken();
             }
+            mSubMenu.setVisibility(View.INVISIBLE);
+            mMainMenu.setVisibility(View.VISIBLE);
             mWindowManager.addView(mContainer, mContainerLayoutParams);
             updateLayout();
         } else {
             // Reset the two menus
-            mSubMenu.setAdapter(null);
-            mSubMenu.setVisibility(View.INVISIBLE);
-            mMainMenu.setVisibility(View.VISIBLE);
 
             mWindowManager.removeView(mContainer);
         }
@@ -125,46 +136,30 @@ public class OnScreenSettings {
         }
     }
 
-    public void expandPanel() {
-        setVisible(true);
-        Util.slideIn(mMainPanel, Util.DIRECTION_LEFT);
-    }
-
-    public void collapsePanel() {
-        Util.slideOut(mMainPanel, Util.DIRECTION_LEFT)
-                .setAnimationListener(new AnimationListener() {
-            public void onAnimationEnd(Animation animation) {
-                // Cannot setVisible(false) here, GC will recycle something
-                // still in use and result in SEGFAULT in skia
-                mHandler.sendEmptyMessage(MSG_POST_SET_HIDE);
+    // Override the preference settings, if value == null, then disable the
+    // override.
+    public void overrideSettings(String key, String value) {
+        if (value == null) {
+            if (mOverride.remove(key) != null && mMainAdapter != null) {
+                mMainAdapter.notifyDataSetChanged();
             }
-
-            public void onAnimationStart(Animation animation) {
+        } else {
+            if (mOverride.put(key, value) == null && mMainAdapter != null) {
+                mMainAdapter.notifyDataSetChanged();
             }
-
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
+        }
     }
 
     public void updateLayout() {
         // if the mOwnerView is detached from window then skip.
         if (mOwnerView.getWindowToken() == null) return;
+        Display display = mWindowManager.getDefaultDisplay();
 
-        // Position the zoom controls on the bottom of the owner view.
-        int ownerHeight = mOwnerView.getHeight();
-        int ownerWidth = mOwnerView.getWidth();
+        mContainerLayoutParams.x = 0;
+        mContainerLayoutParams.y = 0;
 
-        // Calculate the owner view's bounds
-        int[] mOwnerViewRawLocation = new int[2];
-        mOwnerView.getLocationOnScreen(mOwnerViewRawLocation);
-
-        // lp.x and lp.y should be relative to the owner's window top-left
-        mContainerLayoutParams.x = mOwnerViewRawLocation[0];
-        mContainerLayoutParams.y = mOwnerViewRawLocation[1];
-
-        mContainerLayoutParams.width = ownerWidth * 2 / 3;
-        mContainerLayoutParams.height = ownerHeight;
+        mContainerLayoutParams.width = display.getWidth() / 2;
+        mContainerLayoutParams.height = display.getHeight();
 
         if (mIsVisible) {
             mWindowManager.updateViewLayout(mContainer, mContainerLayoutParams);
@@ -190,7 +185,8 @@ public class OnScreenSettings {
         lp.height = LayoutParams.WRAP_CONTENT;
         lp.width = LayoutParams.WRAP_CONTENT;
         lp.type = LayoutParams.TYPE_APPLICATION_PANEL;
-        lp.format = PixelFormat.TRANSPARENT;
+        lp.format = PixelFormat.OPAQUE;
+        lp.windowAnimations = R.style.Animation_OnScreenMenu;
 
         mContainerLayoutParams = lp;
 
@@ -215,7 +211,7 @@ public class OnScreenSettings {
                 case MotionEvent.ACTION_DOWN:
                     return true;
                 case MotionEvent.ACTION_UP:
-                    collapsePanel();
+                    setVisible(false);
                     return true;
             }
             return false;
@@ -224,10 +220,12 @@ public class OnScreenSettings {
 
     private boolean onContainerKey(KeyEvent event) {
         switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_CAMERA:
+            case KeyEvent.KEYCODE_FOCUS:
             case KeyEvent.KEYCODE_BACK:
             case KeyEvent.KEYCODE_MENU:
                 if (event.getAction() == KeyEvent.ACTION_UP) {
-                    collapsePanel();
+                    setVisible(false);
                     return true;
                 }
         }
@@ -295,13 +293,27 @@ public class OnScreenSettings {
                 PreferenceGroup group = (PreferenceGroup) preference;
                 ((TextView) convertView.findViewById(
                         R.id.title)).setText(group.getTitle());
-            } else if (preference instanceof ListPreference) {
+            } else {
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_menu_list_item, parent, false);
-                ((TextView) convertView.findViewById(
-                        R.id.title)).setText(preference.getTitle());
-                ((TextView) convertView.findViewById(R.id.summary))
-                        .setText(((ListPreference) preference).getEntry());
+
+                String override = mOverride.get(preference.getKey());
+                TextView title = (TextView)
+                        convertView.findViewById(R.id.title);
+                title.setText(preference.getTitle());
+                title.setEnabled(override == null);
+
+                TextView summary = (TextView)
+                        convertView.findViewById(R.id.summary);
+                summary.setText(override == null
+                        ? ((ListPreference) preference).getEntry()
+                        : override);
+                summary.setEnabled(override == null);
+
+                // A little trick here, making the view focusable will eat
+                // both touch/key events on the view and thus make it looks
+                // like disabled.
+                convertView.setFocusable(override != null);
             }
             return convertView;
         }
@@ -357,9 +369,13 @@ public class OnScreenSettings {
     private class SubMenuAdapter extends BaseAdapter
             implements OnItemClickListener {
         private final ListPreference mPreference;
+        private final IconListPreference mIconPreference;
 
         public SubMenuAdapter(Context context, ListPreference preference) {
             mPreference = preference;
+            mIconPreference = (preference instanceof IconListPreference)
+                    ? (IconListPreference) preference
+                    : null;
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -370,15 +386,24 @@ public class OnScreenSettings {
                 ((TextView) convertView.findViewById(
                         R.id.title)).setText(mPreference.getDialogTitle());
             } else {
+                int index = position - 1;
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_submenu_item, parent, false);
                 boolean checked = mPreference.getValue().equals(
-                        mPreference.getEntryValues()[position - 1]);
+                        mPreference.getEntryValues()[index]);
                 ((TextView) convertView.findViewById(
-                        R.id.title)).setText(entry[position - 1]);
-                RadioButton radio = ((RadioButton)
-                        convertView.findViewById(R.id.radio_button));
-                radio.setChecked(checked);
+                        R.id.title)).setText(entry[index]);
+                ((RadioButton) convertView.findViewById(
+                        R.id.radio_button)).setChecked(checked);
+                ImageView icon = (ImageView)
+                        convertView.findViewById(R.id.icon);
+                if (mIconPreference != null) {
+                    icon.setVisibility(View.VISIBLE);
+                    icon.setImageDrawable(
+                            mIconPreference.getIcons()[position-1]);
+                } else {
+                    icon.setVisibility(View.GONE);
+                }
             }
             return convertView;
         }
@@ -446,7 +471,7 @@ public class OnScreenSettings {
         public boolean onTouchEvent(MotionEvent event) {
             if (super.onTouchEvent(event)) return true;
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                collapsePanel();
+                setVisible(false);
                 return true;
             }
             return false;

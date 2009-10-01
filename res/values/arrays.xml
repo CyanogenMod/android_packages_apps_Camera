@@ -84,8 +84,14 @@
         <item>macro</item>
     </string-array>
 
+    <array name="pref_camera_focusmode_icons" translatable="false">
+        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@drawable/ic_viewfinder_focus_infinity</item>
+        <item>@drawable/ic_viewfinder_focus_macro</item>
+    </array>
+
     <array name="focusmode_icons">
-        <item>0</item>
+        <item>@drawable/ic_viewfinder_empty</item>
         <item>@drawable/ic_viewfinder_focus_infinity</item>
         <item>@drawable/ic_viewfinder_focus_macro</item>
     </array>
@@ -103,6 +109,12 @@
         <item>off</item>
     </string-array>
 
+    <array name="pref_camera_flashmode_icons">
+        <item>@drawable/ic_viewfinder_flash_auto</item>
+        <item>@drawable/ic_viewfinder_flash_on</item>
+        <item>@drawable/ic_viewfinder_flash_off</item>
+    </array>
+
     <string-array name="pref_camera_recordlocation_entryvalues" translatable="false">
         <item>false</item>
         <item>true</item>
@@ -116,7 +128,7 @@
     <array name="flash_icons">
         <item>@drawable/ic_viewfinder_flash_auto</item>
         <item>@drawable/ic_viewfinder_flash_on</item>
-        <item>0</item>
+        <item>@drawable/ic_viewfinder_empty</item>
     </array>
 
     <string-array name="gps_modes" translatable="false">
@@ -136,21 +148,7 @@
         <item>@string/pref_camera_whitebalance_entry_daylight</item>
         <item>@string/pref_camera_whitebalance_entry_fluorescent</item>
         <item>@string/pref_camera_whitebalance_entry_cloudy</item>
-        <item>@string/pref_camera_whitebalance_entry_twilight</item>
-        <item>@string/pref_camera_whitebalance_entry_shade</item>
-        <item>@string/pref_camera_whitebalance_entry_warm_fluorescent</item>
-        <item>@string/pref_camera_whitebalance_entry_halogen</item>
     </string-array>
-
-    <string-array name="whitebalance_modes" translatable="false">
-        <item>off</item>
-        <item>on</item>
-    </string-array>
-
-    <array name="whitebalance_icons">
-        <item>0</item>
-        <item>@drawable/ic_viewfinder_whitebalance</item>
-    </array>
 
     <string-array name="pref_camera_whitebalance_entryvalues" translatable="false">
         <item>auto</item>
@@ -158,11 +156,23 @@
         <item>daylight</item>
         <item>fluorescent</item>
         <item>cloudy</item>
-        <item>twilight</item>
-        <item>shade</item>
-        <item>warm-fluorescent</item>
-        <item>halogen</item>
     </string-array>
+
+    <array name="pref_camera_whitebalance_icons">
+        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@drawable/ic_viewfinder_wb_incandescent</item>
+        <item>@drawable/ic_viewfinder_wb_daylight</item>
+        <item>@drawable/ic_viewfinder_wb_fluorescent</item>
+        <item>@drawable/ic_viewfinder_wb_cloudy</item>
+    </array>
+
+    <array name="whitebalance_icons">
+        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@drawable/ic_viewfinder_wb_incandescent</item>
+        <item>@drawable/ic_viewfinder_wb_daylight</item>
+        <item>@drawable/ic_viewfinder_wb_fluorescent</item>
+        <item>@drawable/ic_viewfinder_wb_cloudy</item>
+    </array>
 
     <!-- Camera Preferences Color effect dialog box entries -->
     <string-array name="pref_camera_coloreffect_entries" translatable="false">
@@ -229,4 +239,15 @@
         <item>steadyphoto</item>
         <item>fireworks</item>
     </string-array>
+
+    <string-array name="scenemode_modes" translatable="false">
+        <item>off</item>
+        <item>on</item>
+    </string-array>
+
+    <array name="scenemode_icons">
+        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@drawable/ic_viewfinder_scenemode</item>
+    </array>
+
 </resources>

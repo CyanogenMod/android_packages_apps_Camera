@@ -125,6 +125,7 @@
         </activity>
         <activity android:name="ReviewImage"
                 android:label="@string/view_label"
+                android:theme="@style/CustomTheme"
                 android:screenOrientation="behind"
                 android:configChanges="orientation|keyboardHidden">
             <intent-filter>

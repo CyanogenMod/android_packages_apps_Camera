@@ -99,8 +99,8 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
-    private static final String WHITE_BALANCE_ON = "on";
-    private static final String WHITE_BALANCE_OFF = "off";
+    private static final String SCENE_MODE_ON = "on";
+    private static final String SCENE_MODE_OFF = "off";
 
     private double mZoomValue;  // The current zoom value.
     private double mZoomStep;
@@ -144,6 +144,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private IconIndicator mFlashIndicator;
     private IconIndicator mFocusIndicator;
     private IconIndicator mWhitebalanceIndicator;
+    private IconIndicator mSceneModeIndicator;
     private ToneGenerator mFocusToneGenerator;
     private ZoomButtonsController mZoomButtons;
     private GestureDetector mGestureDetector;
@@ -926,6 +927,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         mFlashIndicator = (IconIndicator) findViewById(R.id.flash_icon);
         mFocusIndicator = (IconIndicator) findViewById(R.id.focus_icon);
+        mSceneModeIndicator = (IconIndicator) findViewById(R.id.scenemode_icon);
         mWhitebalanceIndicator =
                 (IconIndicator) findViewById(R.id.whitebalance_icon);
 
@@ -971,6 +973,8 @@ public class Camera extends Activity implements View.OnClickListener,
         updateStorageHint(mPicturesRemaining);
     }
 
+    private boolean mScreenComplete = false;
+
     private void showOnScreenSettings() {
         if (mSettings == null) {
             mSettings = new OnScreenSettings(
@@ -979,8 +983,34 @@ public class Camera extends Activity implements View.OnClickListener,
             mSettings.setPreferenceScreen(helper
                     .getPreferenceScreen(R.xml.camera_preferences));
             mSettings.setOnVisibilityChangedListener(this);
+
+            // If the current screne mode is not auto, then the supported
+            // options is not complete, we need to read it again later.
+            // For example: in the scene mode "ACTION", the supported focus mode
+            // will change from {infinite, macro, auto} to {infinite}.
+            String sceneMode = mParameters.getSceneMode();
+            boolean autoSceneMode = sceneMode == null
+                    || Parameters.SCENE_MODE_AUTO.equals(sceneMode);
+            mScreenComplete = autoSceneMode;
+
+            if (autoSceneMode) {
+                // If scene mode is auto, cancel override in settings
+                mSettings.overrideSettings(CameraSettings.KEY_FLASH_MODE, null);
+                mSettings.overrideSettings(CameraSettings.KEY_FOCUS_MODE, null);
+                mSettings.overrideSettings(
+                        CameraSettings.KEY_WHITE_BALANCE, null);
+            } else {
+                // If scene mode is not auto, override the value in settings
+                mSettings.overrideSettings(CameraSettings.KEY_FLASH_MODE,
+                        mParameters.getFlashMode());
+                mSettings.overrideSettings(CameraSettings.KEY_FOCUS_MODE,
+                        mParameters.getFocusMode());
+                mSettings.overrideSettings(CameraSettings.KEY_WHITE_BALANCE,
+                        mParameters.getWhiteBalance());
+            }
         }
-        mSettings.expandPanel();
+
+        mSettings.setVisible(true);
     }
 
     public void onClick(View v) {
@@ -1679,27 +1709,6 @@ public class Camera extends Activity implements View.OnClickListener,
         // For the following settings, we need to check if the settings are
         // still supported by latest driver, if not, ignore the settings.
 
-        // Set flash mode.
-        String flashMode = mPreferences.getString(
-                CameraSettings.KEY_FLASH_MODE,
-                getString(R.string.pref_camera_flashmode_default));
-        List<String> supportedFlash = mParameters.getSupportedFlashModes();
-        if (isSupported(flashMode, supportedFlash)) {
-            mParameters.setFlashMode(flashMode);
-        } else {
-            // If the current flashMode is not support, show the
-            // FLASH_MODE_OFF icon.
-            flashMode = Parameters.FLASH_MODE_OFF;
-        }
-
-        // Set white balance parameter.
-        String whiteBalance = mPreferences.getString(
-                CameraSettings.KEY_WHITE_BALANCE,
-                getString(R.string.pref_camera_whitebalance_default));
-        if (isSupported(whiteBalance, mParameters.getSupportedWhiteBalance())) {
-            mParameters.setWhiteBalance(whiteBalance);
-        }
-
         // Set color effect parameter.
         String colorEffect = mPreferences.getString(
                 CameraSettings.KEY_COLOR_EFFECT,
@@ -1714,33 +1723,117 @@ public class Camera extends Activity implements View.OnClickListener,
                 getString(R.string.pref_camera_scenemode_default));
         if (isSupported(sceneMode, mParameters.getSupportedSceneModes())) {
             mParameters.setSceneMode(sceneMode);
+        } else {
+            sceneMode = mParameters.getSceneMode();
+            if (sceneMode == null) {
+                sceneMode = Parameters.SCENE_MODE_AUTO;
+            }
         }
 
-        // Set focus mode.
-        mFocusMode = mPreferences.getString(
-                CameraSettings.KEY_FOCUS_MODE,
-                getString(R.string.pref_camera_focusmode_default));
-        if (isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
-            mParameters.setFocusMode(mFocusMode);
+        // If scene mode is set, we cannot set flash mode, white balance, and
+        // focus mode, instead, we read it from driver
+        String flashMode;
+        String whiteBalance;
+
+        if (!Parameters.SCENE_MODE_AUTO.equals(sceneMode)) {
+            mCameraDevice.setParameters(mParameters);
+
+            // Setting scene mode will change the settings of flash mode, white
+            // balance, and focus mode. So read back here, so that we know
+            // what's the settings
+            mParameters = mCameraDevice.getParameters();
+            flashMode = mParameters.getFlashMode();
+            whiteBalance = mParameters.getWhiteBalance();
+            mFocusMode = mParameters.getFocusMode();
+            if (mSettings != null) {
+                mSettings.overrideSettings(
+                        CameraSettings.KEY_FLASH_MODE, flashMode);
+                mSettings.overrideSettings(
+                        CameraSettings.KEY_WHITE_BALANCE, whiteBalance);
+                mSettings.overrideSettings(
+                        CameraSettings.KEY_FOCUS_MODE, mFocusMode);
+            }
+        } else {
+            if (mSettings != null) {
+                mSettings.overrideSettings(CameraSettings.KEY_FLASH_MODE, null);
+                mSettings.overrideSettings(CameraSettings.KEY_FOCUS_MODE, null);
+                mSettings.overrideSettings(
+                        CameraSettings.KEY_WHITE_BALANCE, null);
+            }
+
+            // Set flash mode.
+            flashMode = mPreferences.getString(
+                    CameraSettings.KEY_FLASH_MODE,
+                    getString(R.string.pref_camera_flashmode_default));
+            List<String> supportedFlash = mParameters.getSupportedFlashModes();
+            if (isSupported(flashMode, supportedFlash)) {
+                mParameters.setFlashMode(flashMode);
+            } else {
+                flashMode = mParameters.getFlashMode();
+                if (flashMode == null) {
+                    flashMode = Parameters.FLASH_MODE_OFF;
+                }
+            }
+
+            // Set white balance parameter.
+            whiteBalance = mPreferences.getString(
+                    CameraSettings.KEY_WHITE_BALANCE,
+                    getString(R.string.pref_camera_whitebalance_default));
+            if (isSupported(whiteBalance, mParameters.getSupportedWhiteBalance())) {
+                mParameters.setWhiteBalance(whiteBalance);
+            } else {
+                whiteBalance = mParameters.getWhiteBalance();
+                if (whiteBalance == null) {
+                    whiteBalance = Parameters.WHITE_BALANCE_AUTO;
+                }
+            }
+
+            // Set focus mode.
+            mFocusMode = mPreferences.getString(
+                    CameraSettings.KEY_FOCUS_MODE,
+                    getString(R.string.pref_camera_focusmode_default));
+            if (isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
+                mParameters.setFocusMode(mFocusMode);
+            } else {
+                mFocusMode = mParameters.getFocusMode();
+                if (mFocusMode == null) {
+                    mFocusMode = Parameters.FOCUS_MODE_AUTO;
+                }
+            }
+
+            mCameraDevice.setParameters(mParameters);
+
+            // The complete preference has not been read, read it now
+            if (!mScreenComplete && mSettings != null) {
+                // The current scene mode is auto and thus the supported values
+                // of the three settings (flash mode, white balance, and focus
+                // mode) are complete now. If we didn't have the complete
+                // preference screen, read it now.
+                mScreenComplete = true;
+                mParameters = mCameraDevice.getParameters();
+                CameraSettings helper = new CameraSettings(this, mParameters);
+                mSettings.setPreferenceScreen(helper
+                        .getPreferenceScreen(R.xml.camera_preferences));
+            }
         }
 
         // We post the runner because this function can be called from
         // non-UI thread (i.e., startPreviewThread).
-        final String finalWhiteBalance =
-                Parameters.WHITE_BALANCE_AUTO.equals(whiteBalance)
-                ? WHITE_BALANCE_OFF
-                : WHITE_BALANCE_ON;
+        final String finalWhiteBalance = whiteBalance;
         final String finalFlashMode = flashMode;
+        final String finalSceneMode =
+                Parameters.SCENE_MODE_AUTO.equals(sceneMode)
+                ? SCENE_MODE_OFF
+                : SCENE_MODE_ON;
 
         mHandler.post(new Runnable() {
             public void run() {
                 mFocusIndicator.setMode(mFocusMode);
                 mWhitebalanceIndicator.setMode(finalWhiteBalance);
+                mSceneModeIndicator.setMode(finalSceneMode);
                 mFlashIndicator.setMode(finalFlashMode);
             }
         });
-
-        mCameraDevice.setParameters(mParameters);
     }
 
     private void gotoGallery() {

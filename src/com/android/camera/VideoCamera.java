@@ -232,7 +232,6 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         CameraSettings.upgradePreferences(mPreferences);
 
-        mPreferences.registerOnSharedPreferenceChangeListener(this);
         readVideoPreferences();
 
         /*
@@ -1053,7 +1052,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mSettings.setPreferenceScreen(screen);
             mSettings.setOnVisibilityChangedListener(this);
         }
-        mSettings.expandPanel();
+        mSettings.setVisible(true);
     }
 
     private PreferenceScreen filterPreferenceScreenByIntent(
@@ -1089,8 +1088,10 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mGripper.setVisibility(visible ? View.INVISIBLE : View.VISIBLE);
         if (visible) {
             releaseMediaRecorder();
+            mPreferences.registerOnSharedPreferenceChangeListener(this);
         } else {
             initializeRecorder();
+            mPreferences.unregisterOnSharedPreferenceChangeListener(this);
         }
     }
 

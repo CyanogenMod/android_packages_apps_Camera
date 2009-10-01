@@ -14,12 +14,14 @@
      limitations under the License.
 -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera">
     <PreferenceCategory android:title="@string/pref_camera_settings_category">
-        <ListPreference
+        <com.android.camera.IconListPreference
                 android:key="pref_camera_flashmode_key"
                 android:defaultValue="@string/pref_camera_flashmode_default"
                 android:title="@string/pref_camera_flashmode_title"
+                camera:icons="@array/pref_camera_flashmode_icons"
                 android:entries="@array/pref_camera_flashmode_entries"
                 android:entryValues="@array/pref_camera_flashmode_entryvalues"
                 android:dialogTitle="@string/pref_camera_flashmode_dialogtitle" />
@@ -30,10 +32,11 @@
                 android:entries="@array/pref_camera_scenemode_entries"
                 android:entryValues="@array/pref_camera_scenemode_entryvalues"
                 android:dialogTitle="@string/pref_camera_scenemode_dialogtitle" />
-        <ListPreference
+        <com.android.camera.IconListPreference
                 android:key="pref_camera_whitebalance_key"
                 android:defaultValue="@string/pref_camera_whitebalance_default"
                 android:title="@string/pref_camera_whitebalance_title"
+                camera:icons="@array/pref_camera_whitebalance_icons"
                 android:entries="@array/pref_camera_whitebalance_entries"
                 android:entryValues="@array/pref_camera_whitebalance_entryvalues"
                 android:dialogTitle="@string/pref_camera_whitebalance_dialogtitle" />
@@ -63,10 +66,11 @@
                 android:entries="@array/pref_camera_jpegquality_entries"
                 android:entryValues="@array/pref_camera_jpegquality_entryvalues"
                 android:dialogTitle="@string/pref_camera_jpegquality_dialogtitle" />
-        <ListPreference
+        <com.android.camera.IconListPreference
                 android:key="pref_camera_focusmode_key"
                 android:defaultValue="@string/pref_camera_focusmode_default"
                 android:title="@string/pref_camera_focusmode_title"
+                camera:icons="@array/pref_camera_focusmode_icons"
                 android:entries="@array/pref_camera_focusmode_entries"
                 android:entryValues="@array/pref_camera_focusmode_entryvalues"
                 android:dialogTitle="@string/pref_camera_focusmode_dialogtitle" />

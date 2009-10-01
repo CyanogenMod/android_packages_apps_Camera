@@ -15,7 +15,7 @@
 -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/title"
-        android:background="#88111111"
+        android:background="#222"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:layout_width="fill_parent"

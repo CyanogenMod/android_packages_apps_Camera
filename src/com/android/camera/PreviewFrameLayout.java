@@ -16,14 +16,18 @@
 
 package com.android.camera;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.FrameLayout;
 
 public class PreviewFrameLayout extends ViewGroup {
+    private static final int MIN_HORIZONTAL_MARGIN = 10; // 10dp
+
     public interface OnSizeChangedListener {
         public void onSizeChanged();
     }
@@ -32,10 +36,12 @@ public class PreviewFrameLayout extends ViewGroup {
     private ImageView mGripper;
     private FrameLayout mFrame;
     private OnSizeChangedListener mSizeListener;
-
+    private DisplayMetrics mMetrics = new DisplayMetrics();
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        ((Activity) context).getWindowManager()
+                .getDefaultDisplay().getMetrics(mMetrics);
     }
 
     public void setOnSizeChangedListener(OnSizeChangedListener listener) {
@@ -74,7 +80,8 @@ public class PreviewFrameLayout extends ViewGroup {
             gripperHeight = mGripper.getMeasuredHeight();
         }
 
-        int frameWidth = getMeasuredWidth() - gripperWidth;
+        int frameWidth = getMeasuredWidth() - (int) Math.max(
+                gripperWidth, MIN_HORIZONTAL_MARGIN * mMetrics.density);
         int frameHeight = getMeasuredHeight();
 
         FrameLayout f = mFrame;
