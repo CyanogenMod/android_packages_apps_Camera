@@ -22,13 +22,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 
 /**
  * This activity plays a video from a specified URI.
  */
 public class MovieView extends Activity  {
-    @SuppressWarnings("unused")
     private static final String TAG = "MovieView";
 
     private MovieViewControl mControl;
@@ -69,6 +69,7 @@ public class MovieView extends Activity  {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus) {
+            Log.v(TAG, "hasFocus");
             mControl.onResume();
         }
     }
