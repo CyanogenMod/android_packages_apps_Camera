@@ -115,6 +115,10 @@
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Foto\'s in willekeurige volgorde weergeven"</string>
     <!-- no translation found for pref_camera_recordlocation_title (371208839215448917) -->
     <skip />
+    <!-- no translation found for pref_camera_recordlocation_entry_off (8888142742988946038) -->
+    <skip />
+    <!-- no translation found for pref_camera_recordlocation_entry_on (7954533529969575594) -->
+    <skip />
     <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Videokwaliteit"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Laag (voor MMS-berichten)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Hoog (voor SD-kaart)"</string>
@@ -129,10 +133,14 @@
     <!-- no translation found for pref_camcorder_settings_category (460313486231965141) -->
     <skip />
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Grootte van foto"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="2293389043895753549">"5M (2592x1936)"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="7304479270077279178">"3M (2048x1536)"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="6722733164421134734">"2M (1600x1200)"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6648351357102402892">"1M (1024x768)"</string>
+    <!-- no translation found for pref_camera_picturesize_entry_2592x1936 (1871154452633783418) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (8763841848102861602) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (3802531502504271124) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (6557686202570581693) -->
+    <skip />
     <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Grootte van foto"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Fotokwaliteit"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Zeer fijn"</string>
@@ -142,6 +150,8 @@
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Scherpstelmodus"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatisch"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Oneindig"</string>
+    <!-- no translation found for pref_camera_focusmode_entry_macro (4424489110551866161) -->
+    <skip />
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Scherpstelmodus"</string>
     <!-- no translation found for pref_camera_flashmode_title (2287362477238791017) -->
     <skip />
