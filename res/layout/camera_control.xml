@@ -18,8 +18,7 @@
         android:id="@+id/control_bar"
         android:orientation="vertical"
         android:layout_height="fill_parent"
-        android:layout_width="wrap_content"
-        android:layout_marginRight="0dp"
+        android:layout_width="76dp"
         android:layout_marginTop="13dp"
         android:layout_marginBottom="10dp"
         android:layout_alignParentRight="true">
