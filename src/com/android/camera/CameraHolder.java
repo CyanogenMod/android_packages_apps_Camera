@@ -18,6 +18,7 @@ package com.android.camera;
 
 import static com.android.camera.Util.Assert;
 
+import android.hardware.Camera.Parameters;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -44,6 +45,12 @@ public class CameraHolder {
     private long mKeepBeforeTime = 0;  // Keep the Camera before this time.
     private final Handler mHandler;
     private int mUsers = 0;  // number of open() - number of release()
+
+    // We store the camera parameters when we actually open the device,
+    // so we can restore them in the subsequent open() requests by the user.
+    // This prevents the parameters set by the Camera activity used by
+    // the VideoCamera activity inadvertently.
+    private Parameters mParameters;
 
     // Use a singleton.
     private static CameraHolder sHolder;
@@ -86,6 +93,7 @@ public class CameraHolder {
                 Log.e(TAG, "fail to connect Camera", e);
                 throw new CameraHardwareException(e);
             }
+            mParameters = mCameraDevice.getParameters();
         } else {
             try {
                 mCameraDevice.reconnect();
@@ -93,6 +101,7 @@ public class CameraHolder {
                 Log.e(TAG, "reconnect failed.");
                 throw new CameraHardwareException(e);
             }
+            mCameraDevice.setParameters(mParameters);
         }
         ++mUsers;
         mHandler.removeMessages(RELEASE_CAMERA);
