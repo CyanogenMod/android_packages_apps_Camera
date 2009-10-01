@@ -194,6 +194,8 @@ public class OnScreenSettings {
 
     private boolean onContainerKey(KeyEvent event) {
         switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_CAMERA:
+            case KeyEvent.KEYCODE_FOCUS:
             case KeyEvent.KEYCODE_BACK:
             case KeyEvent.KEYCODE_MENU:
                 if (event.getAction() == KeyEvent.ACTION_UP) {
