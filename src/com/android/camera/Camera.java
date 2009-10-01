@@ -99,8 +99,8 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
-    private static final String WHITE_BALANCE_ON = "on";
-    private static final String WHITE_BALANCE_OFF = "off";
+    private static final String SCENE_MODE_ON = "on";
+    private static final String SCENE_MODE_OFF = "off";
 
     private double mZoomValue;  // The current zoom value.
     private double mZoomStep;
@@ -144,6 +144,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private IconIndicator mFlashIndicator;
     private IconIndicator mFocusIndicator;
     private IconIndicator mWhitebalanceIndicator;
+    private IconIndicator mSceneModeIndicator;
     private ToneGenerator mFocusToneGenerator;
     private ZoomButtonsController mZoomButtons;
     private GestureDetector mGestureDetector;
@@ -926,6 +927,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         mFlashIndicator = (IconIndicator) findViewById(R.id.flash_icon);
         mFocusIndicator = (IconIndicator) findViewById(R.id.focus_icon);
+        mSceneModeIndicator = (IconIndicator) findViewById(R.id.scenemode_icon);
         mWhitebalanceIndicator =
                 (IconIndicator) findViewById(R.id.whitebalance_icon);
 
@@ -1726,16 +1728,18 @@ public class Camera extends Activity implements View.OnClickListener,
 
         // We post the runner because this function can be called from
         // non-UI thread (i.e., startPreviewThread).
-        final String finalWhiteBalance =
-                Parameters.WHITE_BALANCE_AUTO.equals(whiteBalance)
-                ? WHITE_BALANCE_OFF
-                : WHITE_BALANCE_ON;
+        final String finalWhiteBalance = whiteBalance;
         final String finalFlashMode = flashMode;
+        final String finalSceneMode =
+                Parameters.SCENE_MODE_AUTO.equals(whiteBalance)
+                ? SCENE_MODE_OFF
+                : SCENE_MODE_ON;
 
         mHandler.post(new Runnable() {
             public void run() {
                 mFocusIndicator.setMode(mFocusMode);
                 mWhitebalanceIndicator.setMode(finalWhiteBalance);
+                mSceneModeIndicator.setMode(finalSceneMode);
                 mFlashIndicator.setMode(finalFlashMode);
             }
         });
