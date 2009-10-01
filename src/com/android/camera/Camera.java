@@ -1822,7 +1822,7 @@ public class Camera extends Activity implements View.OnClickListener,
         final String finalWhiteBalance = whiteBalance;
         final String finalFlashMode = flashMode;
         final String finalSceneMode =
-                Parameters.SCENE_MODE_AUTO.equals(whiteBalance)
+                Parameters.SCENE_MODE_AUTO.equals(sceneMode)
                 ? SCENE_MODE_OFF
                 : SCENE_MODE_ON;
 

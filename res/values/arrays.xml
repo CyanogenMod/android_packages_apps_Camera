@@ -111,8 +111,8 @@
 
     <array name="pref_camera_flashmode_icons">
         <item>@drawable/ic_viewfinder_flash_auto</item>
-        <item>@drawable/ic_viewfinder_flash_off</item>
         <item>@drawable/ic_viewfinder_flash_on</item>
+        <item>@drawable/ic_viewfinder_flash_off</item>
     </array>
 
     <string-array name="pref_camera_recordlocation_entryvalues" translatable="false">
