@@ -10,6 +10,7 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -33,8 +34,7 @@ import java.util.ArrayList;
 public class OnScreenSettings {
     @SuppressWarnings("unused")
     private static final String TAG = "OnScreenSettings";
-    private static final int MSG_POST_SET_HIDE = 1;
-    private static final int MSG_POST_SET_VISIBLE = 2;
+    private static final int MSG_POST_SET_VISIBLE = 1;
 
     public interface OnVisibilityChangedListener {
         public void onVisibilityChanged(boolean visibility);
@@ -58,8 +58,8 @@ public class OnScreenSettings {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_POST_SET_HIDE:
-                    setVisible(false);
+                case MSG_POST_SET_VISIBLE:
+                    setVisible(true);
                     break;
             }
         }
@@ -110,13 +110,12 @@ public class OnScreenSettings {
             if (mContainerLayoutParams.token == null) {
                 mContainerLayoutParams.token = mOwnerView.getWindowToken();
             }
+            mSubMenu.setVisibility(View.INVISIBLE);
+            mMainMenu.setVisibility(View.VISIBLE);
             mWindowManager.addView(mContainer, mContainerLayoutParams);
             updateLayout();
         } else {
             // Reset the two menus
-            mSubMenu.setAdapter(null);
-            mSubMenu.setVisibility(View.INVISIBLE);
-            mMainMenu.setVisibility(View.VISIBLE);
 
             mWindowManager.removeView(mContainer);
         }
@@ -125,46 +124,16 @@ public class OnScreenSettings {
         }
     }
 
-    public void expandPanel() {
-        setVisible(true);
-        Util.slideIn(mMainPanel, Util.DIRECTION_LEFT);
-    }
-
-    public void collapsePanel() {
-        Util.slideOut(mMainPanel, Util.DIRECTION_LEFT)
-                .setAnimationListener(new AnimationListener() {
-            public void onAnimationEnd(Animation animation) {
-                // Cannot setVisible(false) here, GC will recycle something
-                // still in use and result in SEGFAULT in skia
-                mHandler.sendEmptyMessage(MSG_POST_SET_HIDE);
-            }
-
-            public void onAnimationStart(Animation animation) {
-            }
-
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-    }
-
     public void updateLayout() {
         // if the mOwnerView is detached from window then skip.
         if (mOwnerView.getWindowToken() == null) return;
+        Display display = mWindowManager.getDefaultDisplay();
 
-        // Position the zoom controls on the bottom of the owner view.
-        int ownerHeight = mOwnerView.getHeight();
-        int ownerWidth = mOwnerView.getWidth();
+        mContainerLayoutParams.x = 0;
+        mContainerLayoutParams.y = 0;
 
-        // Calculate the owner view's bounds
-        int[] mOwnerViewRawLocation = new int[2];
-        mOwnerView.getLocationOnScreen(mOwnerViewRawLocation);
-
-        // lp.x and lp.y should be relative to the owner's window top-left
-        mContainerLayoutParams.x = mOwnerViewRawLocation[0];
-        mContainerLayoutParams.y = mOwnerViewRawLocation[1];
-
-        mContainerLayoutParams.width = ownerWidth * 2 / 3;
-        mContainerLayoutParams.height = ownerHeight;
+        mContainerLayoutParams.width = display.getWidth() / 2;
+        mContainerLayoutParams.height = display.getHeight();
 
         if (mIsVisible) {
             mWindowManager.updateViewLayout(mContainer, mContainerLayoutParams);
@@ -190,7 +159,8 @@ public class OnScreenSettings {
         lp.height = LayoutParams.WRAP_CONTENT;
         lp.width = LayoutParams.WRAP_CONTENT;
         lp.type = LayoutParams.TYPE_APPLICATION_PANEL;
-        lp.format = PixelFormat.TRANSPARENT;
+        lp.format = PixelFormat.OPAQUE;
+        lp.windowAnimations = R.style.Animation_OnScreenMenu;
 
         mContainerLayoutParams = lp;
 
@@ -215,7 +185,7 @@ public class OnScreenSettings {
                 case MotionEvent.ACTION_DOWN:
                     return true;
                 case MotionEvent.ACTION_UP:
-                    collapsePanel();
+                    setVisible(false);
                     return true;
             }
             return false;
@@ -227,7 +197,7 @@ public class OnScreenSettings {
             case KeyEvent.KEYCODE_BACK:
             case KeyEvent.KEYCODE_MENU:
                 if (event.getAction() == KeyEvent.ACTION_UP) {
-                    collapsePanel();
+                    setVisible(false);
                     return true;
                 }
         }
@@ -446,7 +416,7 @@ public class OnScreenSettings {
         public boolean onTouchEvent(MotionEvent event) {
             if (super.onTouchEvent(event)) return true;
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                collapsePanel();
+                setVisible(false);
                 return true;
             }
             return false;

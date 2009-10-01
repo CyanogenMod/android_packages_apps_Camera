@@ -16,7 +16,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/main_panel"
-        android:background="#88333333"
+        android:background="@drawable/camera_background"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
     <FrameLayout android:layout_width="fill_parent"

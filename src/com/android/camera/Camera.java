@@ -980,7 +980,7 @@ public class Camera extends Activity implements View.OnClickListener,
                     .getPreferenceScreen(R.xml.camera_preferences));
             mSettings.setOnVisibilityChangedListener(this);
         }
-        mSettings.expandPanel();
+        mSettings.setVisible(true);
     }
 
     public void onClick(View v) {

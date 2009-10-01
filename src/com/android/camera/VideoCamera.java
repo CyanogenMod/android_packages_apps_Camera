@@ -1053,7 +1053,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             mSettings.setPreferenceScreen(screen);
             mSettings.setOnVisibilityChangedListener(this);
         }
-        mSettings.expandPanel();
+        mSettings.setVisible(true);
     }
 
     private PreferenceScreen filterPreferenceScreenByIntent(
