@@ -20,10 +20,12 @@ import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.gallery.VideoObject;
 
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
+import android.provider.MediaStore;
 
 /*
  * Here's the loading strategy.  For any given image, load the thumbnail
@@ -92,6 +94,8 @@ class ImageGetter {
 
     // True when the getter thread should exit.
     private boolean mDone = false;
+
+    private ContentResolver mCr;
 
     private class ImageGetterRunnable implements Runnable {
 
@@ -219,7 +223,8 @@ class ImageGetter {
         }
     }
 
-    public ImageGetter() {
+    public ImageGetter(ContentResolver cr) {
+        mCr = cr;
         mGetterThread = new Thread(new ImageGetterRunnable());
         mGetterThread.setName("ImageGettter");
         mGetterThread.start();
@@ -230,6 +235,7 @@ class ImageGetter {
         Util.Assert(mGetterThread != null);
         mCancel = true;
         BitmapManager.instance().cancelThreadDecoding(mGetterThread);
+        MediaStore.Images.Thumbnails.cancelThumbnailRequest(mCr, -1);
     }
 
     // Cancels current loading (with waiting).
