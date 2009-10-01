@@ -99,6 +99,9 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
+    private static final String WHITE_BALANCE_ON = "on";
+    private static final String WHITE_BALANCE_OFF = "off";
+
     private double mZoomValue;  // The current zoom value.
     private double mZoomStep;
     private double mZoomMax;
@@ -139,6 +142,8 @@ public class Camera extends Activity implements View.OnClickListener,
     private FocusRectangle mFocusRectangle;
     private IconIndicator mGpsIndicator;
     private IconIndicator mFlashIndicator;
+    private IconIndicator mFocusIndicator;
+    private IconIndicator mWhitebalanceIndicator;
     private ToneGenerator mFocusToneGenerator;
     private ZoomButtonsController mZoomButtons;
     private GestureDetector mGestureDetector;
@@ -920,6 +925,9 @@ public class Camera extends Activity implements View.OnClickListener,
                 .setOnTouchListener(new GripperTouchListener());
 
         mFlashIndicator = (IconIndicator) findViewById(R.id.flash_icon);
+        mFocusIndicator = (IconIndicator) findViewById(R.id.focus_icon);
+        mWhitebalanceIndicator =
+                (IconIndicator) findViewById(R.id.whitebalance_icon);
 
         // Make sure preview is started.
         try {
@@ -1684,15 +1692,6 @@ public class Camera extends Activity implements View.OnClickListener,
             flashMode = Parameters.FLASH_MODE_OFF;
         }
 
-        // We post the runner because this function can be called from
-        // non-UI thread (i.e., startPreviewThread).
-        final String finalFlashMode = flashMode;
-        mHandler.post(new Runnable() {
-            public void run() {
-                mFlashIndicator.setMode(finalFlashMode);
-            }
-        });
-
         // Set white balance parameter.
         String whiteBalance = mPreferences.getString(
                 CameraSettings.KEY_WHITE_BALANCE,
@@ -1724,6 +1723,22 @@ public class Camera extends Activity implements View.OnClickListener,
         if (isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
             mParameters.setFocusMode(mFocusMode);
         }
+
+        // We post the runner because this function can be called from
+        // non-UI thread (i.e., startPreviewThread).
+        final String finalWhiteBalance =
+                Parameters.WHITE_BALANCE_AUTO.equals(whiteBalance)
+                ? WHITE_BALANCE_OFF
+                : WHITE_BALANCE_ON;
+        final String finalFlashMode = flashMode;
+
+        mHandler.post(new Runnable() {
+            public void run() {
+                mFocusIndicator.setMode(mFocusMode);
+                mWhitebalanceIndicator.setMode(finalWhiteBalance);
+                mFlashIndicator.setMode(finalFlashMode);
+            }
+        });
 
         mCameraDevice.setParameters(mParameters);
     }
