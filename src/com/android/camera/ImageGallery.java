@@ -135,7 +135,7 @@ public class ImageGallery extends Activity implements
 
         setupInclusion();
 
-        mLoader = new ImageLoader(mHandler);
+        mLoader = new ImageLoader(getContentResolver(), mHandler);
     }
 
     private void initializeFooterButtons() {

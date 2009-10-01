@@ -542,7 +542,7 @@ public class ReviewImage extends Activity implements View.OnClickListener {
     }
 
     private void makeGetter() {
-        mGetter = new ImageGetter();
+        mGetter = new ImageGetter(getContentResolver());
     }
 
     private IImageList buildImageListFromUri(Uri uri) {
