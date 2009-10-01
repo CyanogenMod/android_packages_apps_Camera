@@ -309,6 +309,11 @@ public class OnScreenSettings {
                         ? ((ListPreference) preference).getEntry()
                         : override);
                 summary.setEnabled(override == null);
+
+                // A little trick here, making the view focusable will eat
+                // both touch/key events on the view and thus make it looks
+                // like disabled.
+                convertView.setFocusable(override != null);
             }
             return convertView;
         }
@@ -321,9 +326,7 @@ public class OnScreenSettings {
         @Override
         public boolean isEnabled(int position) {
             Preference preference = mPreferences.get(position);
-            if (preference instanceof PreferenceGroup) return false;
-
-            return mOverride.get(preference.getKey()) == null;
+            return !(preference instanceof PreferenceGroup);
         }
 
         public int getCount() {
