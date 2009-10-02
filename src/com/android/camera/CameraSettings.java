@@ -126,6 +126,8 @@ public class CameraSettings {
                 (ListPreference) screen.findPreference(KEY_SCENE_MODE);
         ListPreference flashMode =
                 (ListPreference) screen.findPreference(KEY_FLASH_MODE);
+        ListPreference focusMode =
+                (ListPreference) screen.findPreference(KEY_FOCUS_MODE);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -159,6 +161,10 @@ public class CameraSettings {
             filterUnsupportedOptions(screen,
                     flashMode, mParameters.getSupportedFlashModes());
         }
+        if (focusMode != null) {
+            filterUnsupportedOptions(screen,
+                    focusMode, mParameters.getSupportedFocusModes());
+        }
     }
 
     private static boolean removePreference(PreferenceGroup group,
@@ -179,14 +185,15 @@ public class CameraSettings {
     private void filterUnsupportedOptions(PreferenceScreen screen,
             ListPreference pref, List<String> supported) {
 
-        // Remove the preference if the parameter is not supported.
-        if (supported == null) {
+        CharSequence[] allEntries = pref.getEntries();
+
+        // Remove the preference if the parameter is not supported or there is
+        // only one options for the settings.
+        if (supported == null || allEntries.length <= 1) {
             removePreference(screen, pref);
             return;
         }
 
-        // Prepare setting entries and entry values.
-        CharSequence[] allEntries = pref.getEntries();
         CharSequence[] allEntryValues = pref.getEntryValues();
         Drawable[] allIcons = (pref instanceof IconListPreference)
                 ? ((IconListPreference) pref).getIcons()
