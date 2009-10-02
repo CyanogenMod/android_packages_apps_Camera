@@ -49,6 +49,7 @@ import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -1619,7 +1620,15 @@ public class Camera extends Activity implements View.OnClickListener,
         Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
 
-        int targetHeight = mSurfaceView.getHeight();
+        // Because of bugs of overlay and layout, we sometimes will try to
+        // layout the viewfinder in the portrait orientation and thus get the
+        // wrong size of mSurfaceView. When we change the preview size, the
+        // new overlay will be created before the old one closed, which causes
+        // an exception. For now, just get the screen size
+
+        Display display = getWindowManager().getDefaultDisplay();
+        int targetHeight = Math.min(display.getHeight(), display.getWidth());
+
         if (targetHeight <= 0) {
             // We don't know the size of SurefaceView, use screen height
             WindowManager windowManager = (WindowManager)
