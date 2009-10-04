@@ -127,10 +127,8 @@
                 android:label="@string/view_label"
                 android:theme="@style/CustomTheme"
                 android:screenOrientation="behind"
-                android:configChanges="orientation|keyboardHidden">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+                android:configChanges="orientation|keyboardHidden"
+                android:exported="true">
         </activity>
         <activity android:name="ViewImage"
                 android:label="@string/view_label"
