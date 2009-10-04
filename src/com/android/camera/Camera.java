@@ -113,6 +113,7 @@ public class Camera extends Activity implements View.OnClickListener,
     public static final String ZOOM_SPEED = "99";
 
     private Parameters mParameters;
+    private Parameters mInitialParameters;
 
     // The non-standard parameter strings to communicate with camera driver.
     // This will be removed in the future.
@@ -973,27 +974,20 @@ public class Camera extends Activity implements View.OnClickListener,
         updateStorageHint(mPicturesRemaining);
     }
 
-    private boolean mScreenComplete = false;
 
     private void showOnScreenSettings() {
         if (mSettings == null) {
             mSettings = new OnScreenSettings(
                     findViewById(R.id.camera_preview));
-            CameraSettings helper = new CameraSettings(this, mParameters);
+            CameraSettings helper =
+                    new CameraSettings(this, mInitialParameters);
             mSettings.setPreferenceScreen(helper
                     .getPreferenceScreen(R.xml.camera_preferences));
             mSettings.setOnVisibilityChangedListener(this);
 
-            // If the current screne mode is not auto, then the supported
-            // options is not complete, we need to read it again later.
-            // For example: in the scene mode "ACTION", the supported focus mode
-            // will change from {infinite, macro, auto} to {infinite}.
             String sceneMode = mParameters.getSceneMode();
-            boolean autoSceneMode = sceneMode == null
-                    || Parameters.SCENE_MODE_AUTO.equals(sceneMode);
-            mScreenComplete = autoSceneMode;
-
-            if (autoSceneMode) {
+            if (sceneMode == null
+                    || Parameters.SCENE_MODE_AUTO.equals(sceneMode)) {
                 // If scene mode is auto, cancel override in settings
                 mSettings.overrideSettings(CameraSettings.KEY_FLASH_MODE, null);
                 mSettings.overrideSettings(CameraSettings.KEY_FOCUS_MODE, null);
@@ -1516,6 +1510,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private void ensureCameraDevice() throws CameraHardwareException {
         if (mCameraDevice == null) {
             mCameraDevice = CameraHolder.instance().open();
+            mInitialParameters = mCameraDevice.getParameters();
         }
     }
 
@@ -1802,19 +1797,6 @@ public class Camera extends Activity implements View.OnClickListener,
             }
 
             mCameraDevice.setParameters(mParameters);
-
-            // The complete preference has not been read, read it now
-            if (!mScreenComplete && mSettings != null) {
-                // The current scene mode is auto and thus the supported values
-                // of the three settings (flash mode, white balance, and focus
-                // mode) are complete now. If we didn't have the complete
-                // preference screen, read it now.
-                mScreenComplete = true;
-                mParameters = mCameraDevice.getParameters();
-                CameraSettings helper = new CameraSettings(this, mParameters);
-                mSettings.setPreferenceScreen(helper
-                        .getPreferenceScreen(R.xml.camera_preferences));
-            }
         }
 
         // We post the runner because this function can be called from
