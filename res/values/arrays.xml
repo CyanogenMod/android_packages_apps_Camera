@@ -42,7 +42,13 @@
 
     <!-- Camera Preferences Picture size dialog box entries -->
     <string-array name="pref_camera_picturesize_entries" translatable="false">
-        <item>@string/pref_camera_picturesize_entry_2592x1944</item>
+        <!-- TODO: Change to a better name of the preference.
+                The first element of the array sould be
+                "pref_camera_picturesize_entry_2592x1944". However, we are too
+                late for the translation. Since we show the same label as the
+                second item, we just use the second one instead.
+        -->
+        <item>@string/pref_camera_picturesize_entry_2592x1936</item>
         <item>@string/pref_camera_picturesize_entry_2592x1936</item>
         <item>@string/pref_camera_picturesize_entry_2048x1536</item>
         <item>@string/pref_camera_picturesize_entry_1600x1200</item>
