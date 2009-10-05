@@ -234,8 +234,7 @@ class ImageGetter {
     public synchronized void cancelCurrent() {
         Util.Assert(mGetterThread != null);
         mCancel = true;
-        BitmapManager.instance().cancelThreadDecoding(mGetterThread);
-        MediaStore.Images.Thumbnails.cancelThumbnailRequest(mCr, -1);
+        BitmapManager.instance().cancelThreadDecoding(mGetterThread, mCr);
     }
 
     // Cancels current loading (with waiting).

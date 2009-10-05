@@ -16,6 +16,7 @@
 
 package com.android.camera.gallery;
 
+import com.android.camera.BitmapManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
@@ -152,8 +153,8 @@ public class Image extends BaseImage implements IImage {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inDither = false;
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        bitmap = Images.Thumbnails.getThumbnail(
-                    mContentResolver, mId, Images.Thumbnails.MINI_KIND, options);
+        bitmap = BitmapManager.instance().getThumbnail(mContentResolver, mId,
+                Images.Thumbnails.MINI_KIND, options, false);
 
         if (bitmap != null && rotateAsNeeded) {
             bitmap = Util.rotate(bitmap, getDegreesRotated());
