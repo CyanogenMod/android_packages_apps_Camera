@@ -679,11 +679,12 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private final class ZoomCallback
-        implements android.hardware.Camera.ZoomCallback {
-        public void onZoomUpdate(int zoomLevel,
-                                 android.hardware.Camera camera) {
+            implements android.hardware.Camera.ZoomCallback {
+        public void onZoomUpdate(int zoomLevel, boolean stopped,
+                android.hardware.Camera camera) {
             mZoomValue = (double) zoomLevel / 1000;
-            Log.v(TAG, "ZoomCallback: zoom level=" + zoomLevel);
+            Log.v(TAG, "ZoomCallback: zoom level=" + zoomLevel + ".stopped="
+                    + stopped);
             updateZoomButtonsEnabled();
         }
     }
