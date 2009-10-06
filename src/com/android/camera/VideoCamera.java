@@ -1390,10 +1390,8 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         // manually refresh the entire surface view when changing any
         // overlapping view's contents.
         mVideoPreview.invalidate();
-        if (delta > 0) {
-            mHandler.sendEmptyMessageDelayed(
-                    UPDATE_RECORD_TIME, next_update_delay);
-        }
+        mHandler.sendEmptyMessageDelayed(
+                UPDATE_RECORD_TIME, next_update_delay);
     }
 
     private void setCameraParameters() {
