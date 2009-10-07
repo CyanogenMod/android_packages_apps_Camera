@@ -134,9 +134,17 @@
         <item>@string/pref_camera_recordlocation_entry_on</item>
     </array>
 
+    <string-array name="flash_modes" translatable="false">
+        <item>auto</item>
+        <item>on</item>
+        <item>off</item>
+        <item>no_flash</item>
+    </string-array>
+
     <array name="flash_icons">
         <item>@drawable/ic_viewfinder_flash_auto</item>
         <item>@drawable/ic_viewfinder_flash_on</item>
+        <item>@drawable/ic_viewfinder_flash_off</item>
         <item>@drawable/ic_viewfinder_empty</item>
     </array>
 

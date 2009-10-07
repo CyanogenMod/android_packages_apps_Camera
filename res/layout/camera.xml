@@ -80,7 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/flash_icon"
-                        camera:modes="@array/pref_camera_flashmode_entryvalues"
+                        camera:modes="@array/flash_modes"
                         camera:icons="@array/flash_icons"
                         android:visibility="visible"/>
             </com.android.camera.EvenlySpacedLayout>

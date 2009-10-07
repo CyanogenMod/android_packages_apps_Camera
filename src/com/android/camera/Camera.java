@@ -89,6 +89,9 @@ public class Camera extends Activity implements View.OnClickListener,
 
     private static final String TAG = "camera";
 
+    // This value must be as same as the item value of the string array
+    // "flash_mode" in file "res/values/arrays.xml".
+    private static final String NO_FLASH_MODE = "no_flash";
     private static final int CROP_MSG = 1;
     private static final int FIRST_TIME_INIT = 2;
     private static final int RESTART_PREVIEW = 3;
@@ -1776,7 +1779,7 @@ public class Camera extends Activity implements View.OnClickListener,
             } else {
                 flashMode = mParameters.getFlashMode();
                 if (flashMode == null) {
-                    flashMode = Parameters.FLASH_MODE_OFF;
+                    flashMode = NO_FLASH_MODE;
                 }
             }
 
