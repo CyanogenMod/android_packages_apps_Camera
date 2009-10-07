@@ -329,7 +329,7 @@
     <string name="pref_camera_videoquality_dialogtitle">Video quality</string>
 
     <!-- Default video duration setting. A numerical value.-->
-    <string name="pref_camera_video_duration_default" translatable="false">-1</string>
+    <string name="pref_camera_video_duration_default" translatable="false">10</string>
 
     <!-- Settings screen, Video duration title -->
     <string name="pref_camera_video_duration_title">Video duration</string>
