@@ -939,6 +939,7 @@ public class ImageGallery extends Activity implements
     }
 
     private void onShareMultipleClicked() {
+        if (mMultiSelected == null) return;
         if (mMultiSelected.size() > 1) {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND_MULTIPLE);
