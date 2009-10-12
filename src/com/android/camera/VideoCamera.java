@@ -389,6 +389,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
             case R.id.review_thumbnail: {
                 stopVideoRecordingAndShowReview();
+                initializeRecorder();
                 break;
             }
         }
