@@ -75,7 +75,7 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
         assertTrue(mBitmapManager.canThreadDecoding(t));
 
         // Disallow thread t to decode.
-        mBitmapManager.cancelThreadDecoding(t);
+        mBitmapManager.cancelThreadDecoding(t, mContext.getContentResolver());
         assertFalse(mBitmapManager.canThreadDecoding(t));
 
         // Allow thread t to decode again.
@@ -96,7 +96,7 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
 
     public void testCancelDecoding() {
         DecodeThread t = new DecodeThread();
-        mBitmapManager.cancelThreadDecoding(t);
+        mBitmapManager.cancelThreadDecoding(t, mContext.getContentResolver());
         try {
             t.start();
             t.join();
@@ -108,7 +108,7 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
 
     public void testAllowDecoding() {
         DecodeThread t = new DecodeThread();
-        mBitmapManager.cancelThreadDecoding(t);
+        mBitmapManager.cancelThreadDecoding(t, mContext.getContentResolver());
         mBitmapManager.allowThreadDecoding(t);
         try {
             t.start();
@@ -123,7 +123,7 @@ public class BitmapManagerUnitTests extends AndroidTestCase {
         DecodeThread t1 = new DecodeThread();
         DecodeThread t2 = new DecodeThread();
         mBitmapManager.allowThreadDecoding(t1);
-        mBitmapManager.cancelThreadDecoding(t2);
+        mBitmapManager.cancelThreadDecoding(t2, mContext.getContentResolver());
         t1.start();
         t2.start();
 

@@ -16,10 +16,13 @@
 
 package com.android.camera.gallery;
 
+import com.android.camera.BitmapManager;
+
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtil;
 import android.net.Uri;
+import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Video;
 import android.util.Log;
 
@@ -110,8 +113,8 @@ public class VideoObject extends BaseImage implements IImage {
     public Bitmap miniThumbBitmap() {
         try {
             long id = mId;
-            return Video.Thumbnails.getThumbnail(mContentResolver, id,
-                    Video.Thumbnails.MICRO_KIND, null);
+            return BitmapManager.instance().getThumbnail(mContentResolver,
+                    id, Images.Thumbnails.MICRO_KIND, null, true);
         } catch (Throwable ex) {
             Log.e(TAG, "miniThumbBitmap got exception", ex);
             return null;

@@ -310,8 +310,7 @@ public class GalleryPicker extends Activity {
 
     private void abortWorker() {
         if (mWorkerThread != null) {
-            BitmapManager.instance().cancelThreadDecoding(mWorkerThread);
-            MediaStore.Images.Thumbnails.cancelThumbnailRequest(getContentResolver(), -1);
+            BitmapManager.instance().cancelThreadDecoding(mWorkerThread, getContentResolver());
             mAbort = true;
             try {
                 mWorkerThread.join();
@@ -331,7 +330,6 @@ public class GalleryPicker extends Activity {
 
     // This is run in the worker thread.
     private void workerRun() {
-
         // We collect items from checkImageList() and checkBucketIds() and
         // put them in allItems. Later we give allItems to checkThumbBitmap()
         // and generated thumbnail bitmaps for each item. We do this instead of

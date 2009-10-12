@@ -163,8 +163,7 @@ public class ImageLoader {
         if (mDecodeThread != null) {
             try {
                 Thread t = mDecodeThread;
-                BitmapManager.instance().cancelThreadDecoding(t);
-                MediaStore.Images.Thumbnails.cancelThumbnailRequest(mCr, -1);
+                BitmapManager.instance().cancelThreadDecoding(t, mCr);
                 t.join();
                 mDecodeThread = null;
             } catch (InterruptedException ex) {
