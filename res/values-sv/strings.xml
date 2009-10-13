@@ -106,7 +106,7 @@
   <string-array name="pref_gallery_slideshow_transition_choices">
     <item msgid="2825716730899894863">"Tonas fram och bort"</item>
     <item msgid="403116336404005687">"Skjuts åt vänster eller höger"</item>
-    <item msgid="4901733079450971731">"Skjuts upp och ner"</item>
+    <item msgid="4901733079450971731">"Skjuts upp och ned"</item>
     <item msgid="9006732482485375438">"Slumpmässigt urval"</item>
   </string-array>
     <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Upprepa bildspel"</string>

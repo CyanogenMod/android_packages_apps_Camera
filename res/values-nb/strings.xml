@@ -102,7 +102,7 @@
   </string-array>
     <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Lysbildeovergang"</string>
     <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Velg effekten som skal brukes mellom lysbilder"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Lysbildevergang"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Lysbildeovergang"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
     <item msgid="2825716730899894863">"Ton inn og ut"</item>
     <item msgid="403116336404005687">"Skli venstre - høyre"</item>
