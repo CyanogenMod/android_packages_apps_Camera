@@ -92,26 +92,26 @@
     <item msgid="5546009539334018063">"O mais recente primeiro"</item>
     <item msgid="7931283047572866748">"O mais recente por último"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Intervalo da apresentação de slides"</string>
-    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Selecione a duração de exibição de cada slide na apresentação."</string>
+    <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Intervalo dos slides"</string>
+    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Selecione a duração de exibição de cada slide na apresentação de slides."</string>
     <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Intervalo da apresentação de slides"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
     <item msgid="3089037742117543119">"2 segundos"</item>
     <item msgid="738579316565625730">"3 segundos"</item>
     <item msgid="5670078787463530498">"4 segundos"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transição da apresentação de slides"</string>
+    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transição dos slides"</string>
     <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Selecione o efeito usado ao passar de um slide para o próximo."</string>
     <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Transição da apresentação de slides"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
-    <item msgid="2825716730899894863">"Aparecimento/desaparecimento gradual (fade in/out)"</item>
+    <item msgid="2825716730899894863">"Aparecimento/desaparecimento"</item>
     <item msgid="403116336404005687">"Deslizar para a esquerda - direita"</item>
     <item msgid="4901733079450971731">"Deslizar para cima - para baixo"</item>
     <item msgid="9006732482485375438">"Seleção aleatória"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Repetir apresentação de slides"</string>
+    <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Repetir apresentação"</string>
     <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Reproduzir apresentação de slides mais de uma vez"</string>
-    <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Reproduzir slides aleatoriamente"</string>
+    <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Reproduzir aleatoriamente"</string>
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Mostrar imagens em ordem aleatória"</string>
     <!-- no translation found for pref_camera_recordlocation_title (371208839215448917) -->
     <skip />

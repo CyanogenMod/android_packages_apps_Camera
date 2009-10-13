@@ -51,7 +51,7 @@
     <string name="crop_save_text" msgid="8140440041190264400">"保存"</string>
     <string name="crop_discard_text" msgid="5303657888280340603">"舍弃"</string>
     <string name="confirm_delete_title" msgid="263478358046514887">"删除"</string>
-    <string name="confirm_delete_message" msgid="4161389939579284604">"将会删除此照片。"</string>
+    <string name="confirm_delete_message" msgid="4161389939579284604">"将会删除此图片。"</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"将会删除视频。"</string>
     <string name="confirm_delete_multiple_message" msgid="5962369828035778779">"此时将删除这些媒体文件。"</string>
     <string name="review_toss" msgid="7255331999518617841">"删除"</string>

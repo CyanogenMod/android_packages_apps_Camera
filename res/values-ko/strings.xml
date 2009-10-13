@@ -89,8 +89,8 @@
     <string name="pref_gallery_sort_summary" msgid="6644398051645595214">"사진 및 동영상 정렬 순서 선택"</string>
     <string name="pref_gallery_sort_dialogtitle" msgid="5787417105532562739">"사진 정렬"</string>
   <string-array name="pref_gallery_sort_choices">
-    <item msgid="5546009539334018063">"가장 최근 사진 먼저"</item>
-    <item msgid="7931283047572866748">"가장 오래된 사진 먼저"</item>
+    <item msgid="5546009539334018063">"최근 사진부터"</item>
+    <item msgid="7931283047572866748">"오래된 사진부터"</item>
   </string-array>
     <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"슬라이드쇼 간격"</string>
     <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"쇼에서 각 슬라이드를 표시할 시간 선택"</string>

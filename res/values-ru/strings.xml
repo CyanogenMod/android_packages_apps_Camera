@@ -19,7 +19,7 @@
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Не удается подключиться к камере."</string>
     <string name="all_images" msgid="1195501551939178807">"Все картинки"</string>
     <string name="all_videos" msgid="3380966619230896013">"Все видео"</string>
-    <string name="camera_label" msgid="6346560772074764302">"Фотографии"</string>
+    <string name="camera_label" msgid="6346560772074764302">"Фотокамера"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Видеокамера"</string>
     <string name="gallery_picker_label" msgid="3080425245006492787">"Фотоальбом"</string>
     <!-- no translation found for gallery_label (7119609703856708011) -->
