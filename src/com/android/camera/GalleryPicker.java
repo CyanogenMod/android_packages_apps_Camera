@@ -931,6 +931,11 @@ class GalleryPickerAdapter extends BaseAdapter {
             titleView.setText(item.mName);
         }
 
+        // An workaround due to a bug in TextView. If the length of text is
+        // different from the previous in convertView, the layout would be
+        // wrong.
+        titleView.requestLayout();
+
         return v;
     }
 }
