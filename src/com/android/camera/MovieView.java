@@ -28,7 +28,7 @@ import android.view.View;
 /**
  * This activity plays a video from a specified URI.
  */
-public class MovieView extends Activity  {
+public class MovieView extends NoSearchActivity  {
     private static final String TAG = "MovieView";
 
     private MovieViewControl mControl;

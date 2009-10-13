@@ -81,7 +81,7 @@ import java.util.HashMap;
 /**
  * The Camcorder activity.
  */
-public class VideoCamera extends Activity implements View.OnClickListener,
+public class VideoCamera extends NoSearchActivity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
         Switcher.OnSwitchListener, OnSharedPreferenceChangeListener,

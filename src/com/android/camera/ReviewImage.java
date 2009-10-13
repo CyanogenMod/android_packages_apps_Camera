@@ -48,7 +48,7 @@ import com.android.camera.gallery.VideoObject;
 // the user view one image at a time, and can click "previous" and "next"
 // button to see the previous or next image. In slide show mode it shows one
 // image after another, with some transition effect.
-public class ReviewImage extends Activity implements View.OnClickListener {
+public class ReviewImage extends NoSearchActivity implements View.OnClickListener {
     private static final String STATE_URI = "uri";
     private static final String TAG = "ReviewImage";
     private static final double ASPECT_RATIO = 4.0 / 3.0;
