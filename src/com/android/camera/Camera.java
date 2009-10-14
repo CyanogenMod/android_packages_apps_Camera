@@ -109,7 +109,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private int mZoomMax;
 
     private Parameters mParameters;
-    private Parameters mInitialParameters;
+    private Parameters mInitialParams;
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -980,7 +980,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mSettings = new OnScreenSettings(
                     findViewById(R.id.camera_preview));
             CameraSettings helper =
-                    new CameraSettings(this, mInitialParameters);
+                    new CameraSettings(this, mInitialParams);
             mSettings.setPreferenceScreen(helper
                     .getPreferenceScreen(R.xml.camera_preferences));
             mSettings.setOnVisibilityChangedListener(this);
@@ -1512,7 +1512,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private void ensureCameraDevice() throws CameraHardwareException {
         if (mCameraDevice == null) {
             mCameraDevice = CameraHolder.instance().open();
-            mInitialParameters = mCameraDevice.getParameters();
+            mInitialParams = mCameraDevice.getParameters();
         }
     }
 
@@ -1666,6 +1666,28 @@ public class Camera extends Activity implements View.OnClickListener,
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
+        // Since change scene mode may change supported values,
+        // Set scene mode first,
+        String sceneMode = mPreferences.getString(
+                CameraSettings.KEY_SCENE_MODE,
+                getString(R.string.pref_camera_scenemode_default));
+        if (isSupported(sceneMode, mParameters.getSupportedSceneModes())) {
+            if (!mParameters.getSceneMode().equals(sceneMode)) {
+                mParameters.setSceneMode(sceneMode);
+                mCameraDevice.setParameters(mParameters);
+
+                // Setting scene mode will change the settings of flash mode, white
+                // balance, and focus mode. So read back here, so that we know
+                // what're the settings
+                mParameters = mCameraDevice.getParameters();
+            }
+        } else {
+            sceneMode = mParameters.getSceneMode();
+            if (sceneMode == null) {
+                sceneMode = Parameters.SCENE_MODE_AUTO;
+            }
+        }
+
         // Reset preview frame rate to the maximum because it may be lowered by
         // video camera application.
         List<Integer> frameRates = mParameters.getSupportedPreviewFrameRates();
@@ -1722,31 +1744,11 @@ public class Camera extends Activity implements View.OnClickListener,
             mParameters.setColorEffect(colorEffect);
         }
 
-        // Set scene mode.
-        String sceneMode = mPreferences.getString(
-                CameraSettings.KEY_SCENE_MODE,
-                getString(R.string.pref_camera_scenemode_default));
-        if (isSupported(sceneMode, mParameters.getSupportedSceneModes())) {
-            mParameters.setSceneMode(sceneMode);
-        } else {
-            sceneMode = mParameters.getSceneMode();
-            if (sceneMode == null) {
-                sceneMode = Parameters.SCENE_MODE_AUTO;
-            }
-        }
-
         // If scene mode is set, we cannot set flash mode, white balance, and
         // focus mode, instead, we read it from driver
         String flashMode;
         String whiteBalance;
-
         if (!Parameters.SCENE_MODE_AUTO.equals(sceneMode)) {
-            mCameraDevice.setParameters(mParameters);
-
-            // Setting scene mode will change the settings of flash mode, white
-            // balance, and focus mode. So read back here, so that we know
-            // what's the settings
-            mParameters = mCameraDevice.getParameters();
             flashMode = mParameters.getFlashMode();
             whiteBalance = mParameters.getWhiteBalance();
             mFocusMode = mParameters.getFocusMode();
@@ -1784,7 +1786,8 @@ public class Camera extends Activity implements View.OnClickListener,
             whiteBalance = mPreferences.getString(
                     CameraSettings.KEY_WHITE_BALANCE,
                     getString(R.string.pref_camera_whitebalance_default));
-            if (isSupported(whiteBalance, mParameters.getSupportedWhiteBalance())) {
+            if (isSupported(whiteBalance,
+                    mParameters.getSupportedWhiteBalance())) {
                 mParameters.setWhiteBalance(whiteBalance);
             } else {
                 whiteBalance = mParameters.getWhiteBalance();
