@@ -67,7 +67,7 @@ import java.util.Map;
 /**
  * The GalleryPicker activity.
  */
-public class GalleryPicker extends Activity {
+public class GalleryPicker extends NoSearchActivity {
     private static final String TAG = "GalleryPicker";
 
     Handler mHandler = new Handler();  // handler for the main thread

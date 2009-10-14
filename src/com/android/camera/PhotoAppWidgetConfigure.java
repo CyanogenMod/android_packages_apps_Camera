@@ -26,7 +26,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.widget.RemoteViews;
 
-public class PhotoAppWidgetConfigure extends Activity {
+public class PhotoAppWidgetConfigure extends NoSearchActivity {
 
     @SuppressWarnings("unused")
     private static final String TAG = "PhotoAppWidgetConfigure";

@@ -53,7 +53,7 @@ import java.util.Random;
 // the user view one image at a time, and can click "previous" and "next"
 // button to see the previous or next image. In slide show mode it shows one
 // image after another, with some transition effect.
-public class ViewImage extends Activity implements View.OnClickListener {
+public class ViewImage extends NoSearchActivity implements View.OnClickListener {
     private static final String PREF_SLIDESHOW_REPEAT =
             "pref_gallery_slideshow_repeat_key";
     private static final String PREF_SHUFFLE_SLIDESHOW =

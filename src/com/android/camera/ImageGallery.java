@@ -62,7 +62,7 @@ import com.android.camera.gallery.VideoObject;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class ImageGallery extends Activity implements
+public class ImageGallery extends NoSearchActivity implements
         GridViewSpecial.Listener, GridViewSpecial.DrawAdapter {
     private static final String STATE_SCROLL_POSITION = "scroll_position";
     private static final String STATE_SELECTED_INDEX = "first_index";

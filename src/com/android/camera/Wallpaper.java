@@ -25,7 +25,7 @@ import android.os.Bundle;
  * Wallpaper picker for the camera application. This just redirects to the
  * standard pick action.
  */
-public class Wallpaper extends Activity {
+public class Wallpaper extends NoSearchActivity {
     @SuppressWarnings("unused")
     private static final String TAG = "Wallpaper";
     private static final int PHOTO_PICKED = 1;

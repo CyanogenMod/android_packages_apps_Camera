@@ -82,7 +82,7 @@ import java.util.List;
 /**
  * Activity of the Camera which used to see preview and take pictures.
  */
-public class Camera extends Activity implements View.OnClickListener,
+public class Camera extends NoSearchActivity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         Switcher.OnSwitchListener, OnScreenSettings.OnVisibilityChangedListener,
         OnSharedPreferenceChangeListener {
