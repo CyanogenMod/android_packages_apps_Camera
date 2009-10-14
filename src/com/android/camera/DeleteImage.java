@@ -26,7 +26,7 @@ import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
-public class DeleteImage extends Activity {
+public class DeleteImage extends NoSearchActivity {
 
     @SuppressWarnings("unused")
     private static final String TAG = "DeleteImage";
