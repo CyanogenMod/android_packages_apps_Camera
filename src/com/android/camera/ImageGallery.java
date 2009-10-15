@@ -979,6 +979,7 @@ public class ImageGallery extends NoSearchActivity implements
     }
 
     private void onDeleteMultipleClicked() {
+        if (mMultiSelected == null) return;
         Runnable action = new Runnable() {
             public void run() {
                 ArrayList<Uri> uriList = new ArrayList<Uri>();

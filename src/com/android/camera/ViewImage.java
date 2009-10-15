@@ -327,6 +327,7 @@ public class ViewImage extends NoSearchActivity implements View.OnClickListener 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                 float distanceX, float distanceY) {
+            if (mPaused) return false;
             ImageViewTouch imageView = mImageView;
             if (imageView.getScale() > 1F) {
                 imageView.postTranslateCenter(-distanceX, -distanceY);
@@ -336,12 +337,14 @@ public class ViewImage extends NoSearchActivity implements View.OnClickListener 
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
+            if (mPaused) return false;
             setMode(MODE_NORMAL);
             return true;
         }
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (mPaused) return false;
             showOnScreenControls();
             scheduleDismissOnScreenControls();
             return true;
@@ -349,6 +352,7 @@ public class ViewImage extends NoSearchActivity implements View.OnClickListener 
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
+            if (mPaused) return false;
             ImageViewTouch imageView = mImageView;
 
             // Switch between the original scale and 3x scale.
