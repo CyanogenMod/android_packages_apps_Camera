@@ -281,6 +281,7 @@ public class ReviewImage extends NoSearchActivity implements View.OnClickListene
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                 float distanceX, float distanceY) {
+            if (mPaused) return false;
             ImageViewTouch2 imageView = mImageView;
             if (imageView.getScale() > 1F) {
                 imageView.postTranslateCenter(-distanceX, -distanceY);
@@ -290,6 +291,7 @@ public class ReviewImage extends NoSearchActivity implements View.OnClickListene
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (mPaused) return false;
             showOnScreenControls();
             scheduleDismissOnScreenControls();
             return true;
@@ -297,6 +299,7 @@ public class ReviewImage extends NoSearchActivity implements View.OnClickListene
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
+            if (mPaused) return false;
             ImageViewTouch2 imageView = mImageView;
 
             // Switch between the original scale and 3x scale.
