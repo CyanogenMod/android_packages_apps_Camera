@@ -404,8 +404,12 @@ public class ViewImage extends NoSearchActivity implements View.OnClickListener 
                         Uri uri = image.fullSizeImageUri();
                         cb.run(uri, image);
 
-                        mImageView.clear();
-                        setImage(mCurrentPosition, false);
+                        // We might have deleted all images in the callback, so
+                        // call setImage() only if we still have some images.
+                        if (mAllImages.getCount() > 0) {
+                            mImageView.clear();
+                            setImage(mCurrentPosition, false);
+                        }
                     }
                 });
 
