@@ -41,6 +41,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
     private boolean mSwitch = false;
     private int mPosition = 0;
     private long mAnimationStartTime = 0;
+    private int mAnimationStartPosition;
     private OnSwitchListener mListener;
 
     public Switcher(Context context, AttributeSet attrs) {
@@ -108,6 +109,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
 
     private void startParkingAnimation() {
         mAnimationStartTime = AnimationUtils.currentAnimationTimeMillis();
+        mAnimationStartPosition = mPosition;
     }
 
     private void trackTouchEvent(MotionEvent event) {
@@ -138,14 +140,14 @@ public class Switcher extends ImageView implements View.OnTouchListener {
             final int available = getHeight() - mPaddingTop - mPaddingBottom
                     - drawableHeight;
             long time = AnimationUtils.currentAnimationTimeMillis();
-            long deltaTime = time - mAnimationStartTime;
-            mPosition += ANIMATION_SPEED
-                    * (mSwitch ? deltaTime : -deltaTime) / 1000;
-            mAnimationStartTime = time;
+            int deltaTime = (int)(time - mAnimationStartTime);
+            mPosition = mAnimationStartPosition +
+                    ANIMATION_SPEED * (mSwitch ? deltaTime : -deltaTime) / 1000;
             if (mPosition < 0) mPosition = 0;
             if (mPosition > available) mPosition = available;
-            if (mPosition != 0 && mPosition != available) {
-                postInvalidate();
+            boolean done = (mPosition == (mSwitch ? available : 0));
+            if (!done) {
+                invalidate();
             } else {
                 mAnimationStartTime = NO_ANIMATION;
             }
