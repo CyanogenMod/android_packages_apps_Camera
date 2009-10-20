@@ -189,7 +189,7 @@ public class CameraSettings {
 
         // Remove the preference if the parameter is not supported or there is
         // only one options for the settings.
-        if (supported == null || allEntries.length <= 1) {
+        if (supported == null || supported.size() <= 1) {
             removePreference(screen, pref);
             return;
         }
