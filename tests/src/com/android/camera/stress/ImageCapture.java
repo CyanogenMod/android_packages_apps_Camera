@@ -156,8 +156,10 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     }
 
     public boolean validateMemoryResult (int startPid, int startMemory, Writer output) throws Exception {
+        Thread.sleep(20000);
         mEndPid = getMediaserverPid();
         mEndMemory = getMediaserverVsize();
+        output.write("Start Memory = " + startMemory + "\n");
         Log.v(TAG, "End memory :" + mEndMemory);
         //Write the total memory different into the output file
         output.write("The total diff = " + (mEndMemory - startMemory));
