@@ -46,7 +46,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -213,8 +212,12 @@ public class VideoCamera extends NoSearchActivity implements View.OnClickListene
         }
     }
 
-    private static String createName(long dateTaken) {
-        return DateFormat.format("yyyy-MM-dd kk.mm.ss", dateTaken).toString();
+    private String createName(long dateTaken) {
+        Date date = new Date(dateTaken);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                getString(R.string.video_file_name_format));
+
+        return dateFormat.format(date);
     }
 
     private void showCameraBusyAndFinish() {
@@ -963,22 +966,18 @@ public class VideoCamera extends NoSearchActivity implements View.OnClickListene
     private void createVideoPath() {
         long dateTaken = System.currentTimeMillis();
         String title = createName(dateTaken);
-        String displayName = title + ".3gp"; // Used when emailing.
+        String filename = title + ".3gp"; // Used when emailing.
         String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
+        String filePath = cameraDirPath + "/" + filename;
         File cameraDir = new File(cameraDirPath);
         cameraDir.mkdirs();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                getString(R.string.video_file_name_format));
-        Date date = new Date(dateTaken);
-        String filepart = dateFormat.format(date);
-        String filename = cameraDirPath + "/" + filepart + ".3gp";
         ContentValues values = new ContentValues(7);
         values.put(Video.Media.TITLE, title);
-        values.put(Video.Media.DISPLAY_NAME, displayName);
+        values.put(Video.Media.DISPLAY_NAME, filename);
         values.put(Video.Media.DATE_TAKEN, dateTaken);
         values.put(Video.Media.MIME_TYPE, "video/3gpp");
-        values.put(Video.Media.DATA, filename);
-        mCameraVideoFilename = filename;
+        values.put(Video.Media.DATA, filePath);
+        mCameraVideoFilename = filePath;
         Log.v(TAG, "Current camera video filename: " + mCameraVideoFilename);
         mCurrentVideoValues = values;
     }
