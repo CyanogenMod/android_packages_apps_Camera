@@ -48,7 +48,6 @@ import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -77,8 +76,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
@@ -738,14 +739,15 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         private int storeImage(byte[] data, Location loc) {
             try {
                 long dateTaken = System.currentTimeMillis();
-                String name = createName(dateTaken) + ".jpg";
+                String title = createName(dateTaken);
+                String filename = title + ".jpg";
                 int[] degree = new int[1];
                 mLastContentUri = ImageManager.addImage(
                         mContentResolver,
-                        name,
+                        title,
                         dateTaken,
                         loc, // location from gps/network
-                        ImageManager.CAMERA_IMAGE_BUCKET_NAME, name,
+                        ImageManager.CAMERA_IMAGE_BUCKET_NAME, filename,
                         null, data,
                         degree);
                 if (mLastContentUri == null) {
@@ -755,7 +757,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 if (!mCancel) {
                     ImageManager.setImageSize(mContentResolver, mLastContentUri,
                             new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
-                            name).length());
+                            filename).length());
                 }
                 return degree[0];
             } catch (Exception ex) {
@@ -900,8 +902,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mThumbController.setData(uri, lastPictureThumb);
     }
 
-    private static String createName(long dateTaken) {
-        return DateFormat.format("yyyy-MM-dd kk.mm.ss", dateTaken).toString();
+    private String createName(long dateTaken) {
+        Date date = new Date(dateTaken);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                getString(R.string.image_file_name_format));
+
+        return dateFormat.format(date);
     }
 
     @Override

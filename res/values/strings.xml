@@ -367,8 +367,11 @@
     <!-- Low-memory dialog message -->
     <string name="spaceIsLow_content">Your SD card is running out of space. Change the quality setting or delete items from Gallery.</string>
 
+    <!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
+    <string name="image_file_name_format" translatable="false">"'IMG'_yyyyMMdd_HHmmss"</string>
+
     <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
-    <string name="video_file_name_format" translatable="false">"'video'-yyyy-MM-dd-HH-mm-ss"</string>
+    <string name="video_file_name_format" translatable="false">"'VID'_yyyyMMdd_HHmmss"</string>
 
     <!-- The messsage shown when video record reaches size limit. -->
     <string name="video_reach_size_limit">Size limit reached.</string>
