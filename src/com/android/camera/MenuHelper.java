@@ -591,11 +591,11 @@ public class MenuHelper {
                     return;
                 }
 
-                Intent cropIntent = new Intent();
-                cropIntent.setClass(activity, CropImage.class);
+                Intent cropIntent = new Intent(
+                        "com.android.camera.action.CROP");
                 cropIntent.setData(u);
-                activity.startActivityForResult(cropIntent,
-                        RESULT_COMMON_MENU_CROP);
+                activity.startActivityForResult(
+                        cropIntent, RESULT_COMMON_MENU_CROP);
             }
         });
         return true;
