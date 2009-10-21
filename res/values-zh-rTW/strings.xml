@@ -22,8 +22,7 @@
     <string name="camera_label" msgid="6346560772074764302">"相機"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"攝錄影機"</string>
     <string name="gallery_picker_label" msgid="3080425245006492787">"圖庫"</string>
-    <!-- no translation found for gallery_label (7119609703856708011) -->
-    <skip />
+    <string name="gallery_label" msgid="7119609703856708011">"圖片庫"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"相機圖片"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"相機影片"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"相機媒體"</string>
@@ -113,34 +112,25 @@
     <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"旋環播放投影片"</string>
     <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"隨機播放投影片"</string>
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"隨機顯示相片"</string>
-    <!-- no translation found for pref_camera_recordlocation_title (371208839215448917) -->
-    <skip />
-    <!-- no translation found for pref_camera_recordlocation_entry_off (8888142742988946038) -->
-    <skip />
-    <!-- no translation found for pref_camera_recordlocation_entry_on (7954533529969575594) -->
-    <skip />
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"儲存位置"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"關閉"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"開啟"</string>
     <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"影片品質"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"低 (適用於多媒體簡訊)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"高 (適用於 SD 卡)"</string>
     <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"影片品質"</string>
     <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"影片長度"</string>
-    <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> 秒 (適用於 MMS)"</string>
+    <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> 秒 (MMS)"</string>
     <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 分鐘"</string>
     <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 分鐘"</string>
     <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"影片長度"</string>
-    <!-- no translation found for pref_camera_settings_category (2576236450859613120) -->
-    <skip />
-    <!-- no translation found for pref_camcorder_settings_category (460313486231965141) -->
-    <skip />
+    <string name="pref_camera_settings_category" msgid="2576236450859613120">"相機設定"</string>
+    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"攝錄影機設定"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"相片大小"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_2592x1936 (1871154452633783418) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (8763841848102861602) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (3802531502504271124) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (6557686202570581693) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 百萬像素"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 百萬像素"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 百萬像素"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 百萬像素"</string>
     <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"相片大小"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"相片品質"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"超精細"</string>
@@ -150,101 +140,54 @@
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"對焦模式"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自動"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"無限遠"</string>
-    <!-- no translation found for pref_camera_focusmode_entry_macro (4424489110551866161) -->
-    <skip />
+    <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"對焦模式"</string>
-    <!-- no translation found for pref_camera_flashmode_title (2287362477238791017) -->
-    <skip />
-    <!-- no translation found for pref_camera_flashmode_entry_auto (7288383434237457709) -->
-    <skip />
-    <!-- no translation found for pref_camera_flashmode_entry_on (5330043918845197616) -->
-    <skip />
-    <!-- no translation found for pref_camera_flashmode_entry_off (867242186958805761) -->
-    <skip />
-    <!-- no translation found for pref_camera_flashmode_dialogtitle (2824978765695177188) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_dialogtitle (8978388629257577909) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_title (677420930596673340) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_auto (6580665476983469293) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_incandescent (8856667786449549938) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_daylight (2534757270149561027) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_fluorescent (2435332872847454032) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_cloudy (3531996716997959326) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_twilight (2257942426397244556) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_shade (4685730287406277702) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_warm_fluorescent (2827098617308870248) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_halogen (5473868018455084929) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_dialogtitle (7691751972871809763) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_title (4152827686267109207) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_none (4759462740660236565) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_mono (9068472385922288418) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_sepia (7558624061140022613) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_negative (1635477825533469324) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_solarize (7399297076108412329) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_posterize (8596847197608350695) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_whiteboard (8161550096887765100) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_blackboard (4149918495221278960) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_aqua (224075791902166343) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_pastel (1263931790863509482) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_mosaic (1756287704236443515) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_redtint (6646299498728138294) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_bluetint (918696074928692967) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_greentint (9080254097150221320) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_title (1420535844292504016) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_dialogtitle (299486172171669009) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_auto (7113995286836658648) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_action (616748587566110484) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_portrait (9140929538393384095) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_landscape (405417518823973264) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_night (7606898503102476329) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_night_portrait (5244280874913294746) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_theatre (3123861130799840901) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_beach (5163939340224174481) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_snow (2110494623725511788) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_sunset (181661154611507212) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_steadyphoto (2147958278893914895) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_fireworks (3530608172188797432) -->
-    <skip />
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"閃光模式"</string>
+    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"自動"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"開啟"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"關閉"</string>
+    <string name="pref_camera_flashmode_dialogtitle" msgid="2824978765695177188">"閃光模式"</string>
+    <string name="pref_camera_whitebalance_dialogtitle" msgid="8978388629257577909">"白平衡"</string>
+    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"白平衡"</string>
+    <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"自動"</string>
+    <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"鎢絲燈"</string>
+    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"日光"</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"螢光燈"</string>
+    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"陰天"</string>
+    <string name="pref_camera_whitebalance_entry_twilight" msgid="2257942426397244556">"微光"</string>
+    <string name="pref_camera_whitebalance_entry_shade" msgid="4685730287406277702">"陰影"</string>
+    <string name="pref_camera_whitebalance_entry_warm_fluorescent" msgid="2827098617308870248">"暖色螢光燈"</string>
+    <string name="pref_camera_whitebalance_entry_halogen" msgid="5473868018455084929">"鹵素燈"</string>
+    <string name="pref_camera_coloreffect_dialogtitle" msgid="7691751972871809763">"色彩效果"</string>
+    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"色彩效果"</string>
+    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"無"</string>
+    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"單色效果"</string>
+    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"懷舊色調"</string>
+    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"負片效果"</string>
+    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"曝光效果"</string>
+    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"色調分離"</string>
+    <string name="pref_camera_coloreffect_entry_whiteboard" msgid="8161550096887765100">"白板效果"</string>
+    <string name="pref_camera_coloreffect_entry_blackboard" msgid="4149918495221278960">"黑板效果"</string>
+    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"水底效果"</string>
+    <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"粉蠟筆效果"</string>
+    <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"馬賽克效果"</string>
+    <string name="pref_camera_coloreffect_entry_redtint" msgid="6646299498728138294">"紅色調"</string>
+    <string name="pref_camera_coloreffect_entry_bluetint" msgid="918696074928692967">"藍色調"</string>
+    <string name="pref_camera_coloreffect_entry_greentint" msgid="9080254097150221320">"綠色調"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"場景模式"</string>
+    <string name="pref_camera_scenemode_dialogtitle" msgid="299486172171669009">"場景模式"</string>
+    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"自動"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"動態"</string>
+    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"人像"</string>
+    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"風景"</string>
+    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"夜景"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="5244280874913294746">"夜間人像"</string>
+    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"劇院"</string>
+    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"海灘"</string>
+    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"雪景"</string>
+    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"黃昏"</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="2147958278893914895">"防手震"</string>
+    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"煙火"</string>
     <string name="camerasettings" msgid="2433519618178453928">"設定"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"找不到媒體。"</string>
     <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"刪除確認"</string>
