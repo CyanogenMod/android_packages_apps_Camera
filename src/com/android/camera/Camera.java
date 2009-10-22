@@ -1112,8 +1112,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 newExtras.putBoolean("return-data", true);
             }
 
-            Intent cropIntent = new Intent();
-            cropIntent.setClass(this, CropImage.class);
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+
             cropIntent.setData(tempUri);
             cropIntent.putExtras(newExtras);
 
