@@ -22,8 +22,7 @@
     <string name="camera_label" msgid="6346560772074764302">"Câmera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Filmadora"</string>
     <string name="gallery_picker_label" msgid="3080425245006492787">"Galeria"</string>
-    <!-- no translation found for gallery_label (7119609703856708011) -->
-    <skip />
+    <string name="gallery_label" msgid="7119609703856708011">"Galeria"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Imagens da câmera"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Vídeos de câmera"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Mídia da câmera"</string>
@@ -92,33 +91,30 @@
     <item msgid="5546009539334018063">"O mais recente primeiro"</item>
     <item msgid="7931283047572866748">"O mais recente por último"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Intervalo da apresentação de slides"</string>
-    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Selecione a duração de exibição de cada slide na apresentação."</string>
+    <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Intervalo dos slides"</string>
+    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Selecione a duração de exibição de cada slide na apresentação de slides."</string>
     <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Intervalo da apresentação de slides"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
     <item msgid="3089037742117543119">"2 segundos"</item>
     <item msgid="738579316565625730">"3 segundos"</item>
     <item msgid="5670078787463530498">"4 segundos"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transição da apresentação de slides"</string>
+    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transição dos slides"</string>
     <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Selecione o efeito usado ao passar de um slide para o próximo."</string>
     <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Transição da apresentação de slides"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
-    <item msgid="2825716730899894863">"Aparecimento/desaparecimento gradual (fade in/out)"</item>
+    <item msgid="2825716730899894863">"Aparecimento/desaparecimento"</item>
     <item msgid="403116336404005687">"Deslizar para a esquerda - direita"</item>
     <item msgid="4901733079450971731">"Deslizar para cima - para baixo"</item>
     <item msgid="9006732482485375438">"Seleção aleatória"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Repetir apresentação de slides"</string>
+    <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Repetir apresentação"</string>
     <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Reproduzir apresentação de slides mais de uma vez"</string>
-    <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Reproduzir slides aleatoriamente"</string>
+    <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Reproduzir aleatoriamente"</string>
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Mostrar imagens em ordem aleatória"</string>
-    <!-- no translation found for pref_camera_recordlocation_title (371208839215448917) -->
-    <skip />
-    <!-- no translation found for pref_camera_recordlocation_entry_off (8888142742988946038) -->
-    <skip />
-    <!-- no translation found for pref_camera_recordlocation_entry_on (7954533529969575594) -->
-    <skip />
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Local de armazenamento"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Desativado"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Ativado"</string>
     <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Qualidade do vídeo"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Baixa (para mensagens MMS)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Alta (para cartão SD)"</string>
@@ -128,19 +124,13 @@
     <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 minutos"</string>
     <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 minutos"</string>
     <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Duração do vídeo"</string>
-    <!-- no translation found for pref_camera_settings_category (2576236450859613120) -->
-    <skip />
-    <!-- no translation found for pref_camcorder_settings_category (460313486231965141) -->
-    <skip />
+    <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configurações da câmera"</string>
+    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configurações da filmadora"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamanho da imagem"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_2592x1936 (1871154452633783418) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (8763841848102861602) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (3802531502504271124) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (6557686202570581693) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5M Pixels"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M Pixels"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2M Pixels"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M Pixels"</string>
     <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Tamanho da imagem"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Qualidade da imagem"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Muito boa"</string>
@@ -150,97 +140,54 @@
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modo de foco"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automático"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
-    <!-- no translation found for pref_camera_focusmode_entry_macro (4424489110551866161) -->
-    <skip />
+    <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Modo de foco"</string>
-    <!-- no translation found for pref_camera_flashmode_title (2287362477238791017) -->
-    <skip />
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modo de flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automático"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Ativado"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Desativado"</string>
     <string name="pref_camera_flashmode_dialogtitle" msgid="2824978765695177188">"Modo de flash"</string>
-    <!-- no translation found for pref_camera_whitebalance_dialogtitle (8978388629257577909) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_title (677420930596673340) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_auto (6580665476983469293) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_incandescent (8856667786449549938) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_daylight (2534757270149561027) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_fluorescent (2435332872847454032) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_cloudy (3531996716997959326) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_twilight (2257942426397244556) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_shade (4685730287406277702) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_warm_fluorescent (2827098617308870248) -->
-    <skip />
-    <!-- no translation found for pref_camera_whitebalance_entry_halogen (5473868018455084929) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_dialogtitle (7691751972871809763) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_title (4152827686267109207) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_none (4759462740660236565) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_mono (9068472385922288418) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_sepia (7558624061140022613) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_negative (1635477825533469324) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_solarize (7399297076108412329) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_posterize (8596847197608350695) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_whiteboard (8161550096887765100) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_blackboard (4149918495221278960) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_aqua (224075791902166343) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_pastel (1263931790863509482) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_mosaic (1756287704236443515) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_redtint (6646299498728138294) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_bluetint (918696074928692967) -->
-    <skip />
-    <!-- no translation found for pref_camera_coloreffect_entry_greentint (9080254097150221320) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_title (1420535844292504016) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_dialogtitle (299486172171669009) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_auto (7113995286836658648) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_action (616748587566110484) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_portrait (9140929538393384095) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_landscape (405417518823973264) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_night (7606898503102476329) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_night_portrait (5244280874913294746) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_theatre (3123861130799840901) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_beach (5163939340224174481) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_snow (2110494623725511788) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_sunset (181661154611507212) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_steadyphoto (2147958278893914895) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_fireworks (3530608172188797432) -->
-    <skip />
+    <string name="pref_camera_whitebalance_dialogtitle" msgid="8978388629257577909">"Balanço de branco"</string>
+    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Balanço de branco"</string>
+    <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automático"</string>
+    <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Incandescente"</string>
+    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Luz do dia"</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescente"</string>
+    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Nublado"</string>
+    <string name="pref_camera_whitebalance_entry_twilight" msgid="2257942426397244556">"Crepúsculo"</string>
+    <string name="pref_camera_whitebalance_entry_shade" msgid="4685730287406277702">"Sombreado"</string>
+    <string name="pref_camera_whitebalance_entry_warm_fluorescent" msgid="2827098617308870248">"Fluorescente quente"</string>
+    <string name="pref_camera_whitebalance_entry_halogen" msgid="5473868018455084929">"Halogênico"</string>
+    <string name="pref_camera_coloreffect_dialogtitle" msgid="7691751972871809763">"Efeito de cor"</string>
+    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Efeito de cor"</string>
+    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Nenhum"</string>
+    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Mono"</string>
+    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"Sépia"</string>
+    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Negativo"</string>
+    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Solarizar"</string>
+    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Transformar em pôster"</string>
+    <string name="pref_camera_coloreffect_entry_whiteboard" msgid="8161550096887765100">"Quadro branco"</string>
+    <string name="pref_camera_coloreffect_entry_blackboard" msgid="4149918495221278960">"Quadro negro"</string>
+    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Aqua"</string>
+    <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"Tons pastéis"</string>
+    <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"Mosaico"</string>
+    <string name="pref_camera_coloreffect_entry_redtint" msgid="6646299498728138294">"Filtro vermelho"</string>
+    <string name="pref_camera_coloreffect_entry_bluetint" msgid="918696074928692967">"Filtro azul"</string>
+    <string name="pref_camera_coloreffect_entry_greentint" msgid="9080254097150221320">"Filtro verde"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modo de cena"</string>
+    <string name="pref_camera_scenemode_dialogtitle" msgid="299486172171669009">"Modo de cena"</string>
+    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automático"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Ação"</string>
+    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Retrato"</string>
+    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"Paisagem"</string>
+    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Cena noturna"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="5244280874913294746">"Retrato noturno"</string>
+    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"Teatro"</string>
+    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"Praia"</string>
+    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"Neve"</string>
+    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Pôr-do-sol"</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="2147958278893914895">"Foto nítida"</string>
+    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fogos de artifício"</string>
     <string name="camerasettings" msgid="2433519618178453928">"Configurações"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Nenhuma mídia encontrada."</string>
     <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Confirmar exclusões"</string>
