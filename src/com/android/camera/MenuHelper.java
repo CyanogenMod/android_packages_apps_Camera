@@ -887,20 +887,6 @@ public class MenuHelper {
         }
     }
 
-    public static void deleteMultiple(Context context, Runnable action) {
-        boolean needConfirm = PreferenceManager
-            .getDefaultSharedPreferences(context)
-            .getBoolean("pref_gallery_confirm_delete_key", true);
-        if (!needConfirm) {
-            if (action != null) action.run();
-        } else {
-            String title = context.getString(R.string.confirm_delete_title);
-            String message = context.getString(
-                    R.string.confirm_delete_multiple_message);
-            confirmAction(context, title, message, action);
-        }
-    }
-
     public static void confirmAction(Context context, String title,
             String message, final Runnable action) {
         OnClickListener listener = new OnClickListener() {
@@ -967,55 +953,6 @@ public class MenuHelper {
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "Could not start gallery activity", e);
         }
-    }
-
-    static void addCapturePictureMenuItems(Menu menu, final Activity activity) {
-        menu.add(Menu.NONE, Menu.NONE, POSITION_CAPTURE_PICTURE,
-                R.string.capture_picture)
-                .setOnMenuItemClickListener(
-                new MenuItem.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        return onCapturePictureClicked(activity);
-                    }
-                }).setIcon(android.R.drawable.ic_menu_camera);
-    }
-
-    private static boolean onCapturePictureClicked(Activity activity) {
-        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        try {
-            activity.startActivity(intent);
-        } catch (android.content.ActivityNotFoundException e) {
-            // Ignore exception
-        }
-        return true;
-    }
-
-    static void addCaptureVideoMenuItems(Menu menu, final Activity activity) {
-        menu.add(Menu.NONE, Menu.NONE, POSITION_CAPTURE_VIDEO,
-                R.string.capture_video)
-                .setOnMenuItemClickListener(
-                new MenuItem.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        return onCaptureVideoClicked(activity);
-                    }
-                }).setIcon(R.drawable.ic_menu_camera_video_view);
-    }
-
-    private static boolean onCaptureVideoClicked(Activity activity) {
-        Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        try {
-            activity.startActivity(intent);
-        } catch (android.content.ActivityNotFoundException e) {
-            // Ignore exception
-        }
-        return true;
-    }
-
-    public static void addCaptureMenuItems(Menu menu, final Activity activity) {
-        addCapturePictureMenuItems(menu, activity);
-        addCaptureVideoMenuItems(menu, activity);
     }
 
     public static String formatDuration(final Context context,

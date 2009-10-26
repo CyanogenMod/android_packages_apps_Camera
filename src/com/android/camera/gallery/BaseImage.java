@@ -117,10 +117,6 @@ public abstract class BaseImage implements IImage {
         }
     }
 
-    public long fullSizeImageId() {
-        return mId;
-    }
-
     public Uri fullSizeImageUri() {
         return mUri;
     }

@@ -361,16 +361,6 @@ public class Util {
         }
     }
 
-    public static synchronized OnClickListener getNullOnClickListener() {
-        if (sNullOnClickListener == null) {
-            sNullOnClickListener = new OnClickListener() {
-                public void onClick(View v) {
-                }
-            };
-        }
-        return sNullOnClickListener;
-    }
-
     public static void Assert(boolean cond) {
         if (!cond) {
             throw new AssertionError();

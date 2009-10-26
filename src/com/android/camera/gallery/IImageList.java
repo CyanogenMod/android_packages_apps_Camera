@@ -44,7 +44,6 @@ import java.util.HashMap;
  * The interface of all image collections used in gallery.
  */
 public interface IImageList {
-    public HashMap<String, String> getBucketIds();
 
     /**
      * Returns the count of image objects.
