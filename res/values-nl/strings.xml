@@ -128,9 +128,9 @@
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcorder-instellingen"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Grootte van foto"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5000 pixels"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3000 pixels"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2000 pixels"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1000 pixels"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 megapixels"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 megapixels"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 megapixels"</string>
     <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Grootte van foto"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Fotokwaliteit"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Zeer fijn"</string>
@@ -164,7 +164,7 @@
     <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Mono"</string>
     <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"Sepia"</string>
     <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Negatief"</string>
-    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Zonlicht"</string>
+    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Solariseren"</string>
     <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Postereffect"</string>
     <string name="pref_camera_coloreffect_entry_whiteboard" msgid="8161550096887765100">"Whiteboard"</string>
     <string name="pref_camera_coloreffect_entry_blackboard" msgid="4149918495221278960">"Schoolbord"</string>
