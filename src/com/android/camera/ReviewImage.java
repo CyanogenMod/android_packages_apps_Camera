@@ -312,12 +312,6 @@ public class ReviewImage extends NoSearchActivity implements View.OnClickListene
         }
     }
 
-    boolean isPickIntent() {
-        String action = getIntent().getAction();
-        return (Intent.ACTION_PICK.equals(action)
-                || Intent.ACTION_GET_CONTENT.equals(action));
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -507,11 +501,9 @@ public class ReviewImage extends NoSearchActivity implements View.OnClickListene
             mSavedUri = getIntent().getData();
         }
 
-        int[] pickIds = {R.id.attach, R.id.cancel};
         int[] reviewIds = {R.id.btn_delete, R.id.btn_share, R.id.btn_set_as,
                 R.id.btn_play, R.id.btn_done};
-        int[] connectIds = isPickIntent() ? pickIds : reviewIds;
-        for (int id : connectIds) {
+        for (int id : reviewIds) {
             View view = mControlBar.findViewById(id);
             view.setOnClickListener(this);
             // Set the LinearLayout of the given button to visible
@@ -532,7 +524,6 @@ public class ReviewImage extends NoSearchActivity implements View.OnClickListene
     }
 
     private void updateActionIcons() {
-        if (isPickIntent()) return;
 
         IImage image = mAllImages.getImageAt(mCurrentPosition);
         if (image instanceof VideoObject) {
@@ -790,16 +781,6 @@ class ImageViewTouch2 extends ImageViewTouchBase {
         int nextImagePos = -2; // default no next image
         try {
             switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_CENTER: {
-                    if (mViewImage.isPickIntent()) {
-                        IImage img = mViewImage.mAllImages
-                                .getImageAt(mViewImage.mCurrentPosition);
-                        mViewImage.setResult(ReviewImage.RESULT_OK,
-                                 new Intent().setData(img.fullSizeImageUri()));
-                        mViewImage.finish();
-                    }
-                    break;
-                }
                 case KeyEvent.KEYCODE_DPAD_LEFT: {
                     if (getScale() <= 1F && event.getEventTime()
                             >= mNextChangePositionTime) {

@@ -17,19 +17,13 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="1202232535191653443">"Kamera Hatası"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Kamera bağlantısı yapılamıyor."</string>
-    <string name="all_images" msgid="1195501551939178807">"Tüm resimler"</string>
-    <string name="all_videos" msgid="3380966619230896013">"Tüm videolar"</string>
     <string name="camera_label" msgid="6346560772074764302">"Kamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Video Kamera"</string>
-    <string name="gallery_picker_label" msgid="3080425245006492787">"Galeri"</string>
     <!-- no translation found for gallery_label (7119609703856708011) -->
     <skip />
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Kamera resimleri"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Kamera videoları"</string>
-    <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Kamera ortamı"</string>
-    <string name="crop_label" msgid="521114301871349328">"Resmi kırp"</string>
     <string name="view_label" msgid="4450531507947335704">"Resmi görüntüle"</string>
-    <string name="preferences_label" msgid="5955678162525051163">"Kamera ayarları"</string>
     <string name="wait" msgid="8600187532323801552">"Lütfen bekleyin..."</string>
     <string name="no_storage" msgid="820691042667338625">"Kamerayı kullanmadan önce lütfen bir SD kart takın."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"SD kartınız dolu."</string>
@@ -38,22 +32,16 @@
     <string name="savingImage" msgid="3051745378545909260">"Resim kaydediliyor..."</string>
     <string name="runningFaceDetection" msgid="2293932204708167704">"Lütfen bekleyin..."</string>
     <string name="settings" msgid="1534847740615665736">"Ayarlar"</string>
-    <string name="view" msgid="6277795271119411881">"Görüntüle"</string>
     <string name="details" msgid="8415120088556445230">"Ayrıntılar"</string>
     <string name="show_on_map" msgid="441725587731006228">"Google Haritalar\'da göster"</string>
     <string name="rotate" msgid="460017689320955494">"Döndür"</string>
     <string name="rotate_left" msgid="5888273317282539839">"Sola döndür"</string>
     <string name="rotate_right" msgid="6776325835923384839">"Sağa döndür"</string>
-    <string name="slide_show" msgid="1965192737233824143">"Slayt gösterisi"</string>
-    <string name="multiselect" msgid="4761682939945434146">"Çoklu seçim"</string>
-    <string name="capture_picture" msgid="4114265595549284643">"Fotoğraf çek"</string>
-    <string name="capture_video" msgid="4047046282358697155">"Video çek"</string>
     <string name="crop_save_text" msgid="8140440041190264400">"Kaydet"</string>
     <string name="crop_discard_text" msgid="5303657888280340603">"Sil"</string>
     <string name="confirm_delete_title" msgid="263478358046514887">"Sil"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"Resim silinecek."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"Video silinecek."</string>
-    <string name="confirm_delete_multiple_message" msgid="5962369828035778779">"Bu medya dosyaları silinecek."</string>
     <string name="review_toss" msgid="7255331999518617841">"SİL"</string>
     <string name="review_share" msgid="7294755861072174509">"PAYLAŞ"</string>
     <string name="review_set" msgid="8304758352155378636">"ŞU ŞEKİLDE AYARLA:"</string>
@@ -65,54 +53,11 @@
     <string name="camera_toss" msgid="3781186798552460833">"Sil"</string>
     <string name="camera_share" msgid="8207701858325694182">"Paylaş"</string>
     <string name="camera_set" msgid="3422192914806971182">"Şu şekilde ayarla:"</string>
-    <string name="camera_play" msgid="8248000517869959980">"Yürüt"</string>
-    <string name="camera_attach" msgid="4048659554893435232">"Ekle"</string>
-    <string name="camera_cancel" msgid="8203341746672085747">"İptal"</string>
     <string name="camera_crop" msgid="5584000454518174632">"Kırp"</string>
     <string name="no_way_to_share_image" msgid="5011985309980187927">"Resmi paylaşmak için kullanılacak uygulama yok."</string>
     <string name="no_way_to_share_video" msgid="3684571102267072206">"Videoyu paylaşmak için kullanılacak uygulama yok."</string>
-    <string name="no_way_to_share" msgid="863323712875014752">"Medya dosyasını/dosyalarını paylaşmak için kullanılacak uygulama yok."</string>
     <string name="video_play" msgid="5287787282508002895">"Yürüt"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeri"</string>
-    <string name="camera_pick_wallpaper" msgid="7026385960511811641">"Resimler"</string>
-    <string name="camera_setas_wallpaper" msgid="797463183863414289">"Duvar Kağıdı"</string>
-    <string name="pref_gallery_category" msgid="5826488887237959433">"Genel ayarlar"</string>
-    <string name="pref_slideshow_category" msgid="9097962086335681667">"Slayt gösterisi ayarları"</string>
-    <string name="pref_gallery_size_title" msgid="1363406603879434418">"Görüntü boyutu"</string>
-    <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Resimlerin ve videoların görüntülenme boyutunu seçin"</string>
-    <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Resim boyutu"</string>
-  <string-array name="pref_gallery_size_choices">
-    <item msgid="7157691836846678936">"Büyük"</item>
-    <item msgid="1033164600689216410">"Küçük"</item>
-  </string-array>
-    <string name="pref_gallery_sort_title" msgid="7447949250045443386">"Sıralama düzeni"</string>
-    <string name="pref_gallery_sort_summary" msgid="6644398051645595214">"Resimlerin ve videoların sıralama düzenini seçin"</string>
-    <string name="pref_gallery_sort_dialogtitle" msgid="5787417105532562739">"Resim sıralama"</string>
-  <string-array name="pref_gallery_sort_choices">
-    <item msgid="5546009539334018063">"Önce en yenisi"</item>
-    <item msgid="7931283047572866748">"En yenisi en sonra"</item>
-  </string-array>
-    <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Slayt gösterisi aralığı"</string>
-    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Her slaytın slayt gösterisinde ne kadar süreyle görüntüleneceğini seçin"</string>
-    <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Slayt gösterisi aralığı"</string>
-  <string-array name="pref_gallery_slideshow_interval_choices">
-    <item msgid="3089037742117543119">"2 saniye"</item>
-    <item msgid="738579316565625730">"3 saniye"</item>
-    <item msgid="5670078787463530498">"4 saniye"</item>
-  </string-array>
-    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Slayt gösterisi geçişi"</string>
-    <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Bir slayttan diğerine geçerken kullanılan efekti seçin"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Slayt gösterisi geçişi"</string>
-  <string-array name="pref_gallery_slideshow_transition_choices">
-    <item msgid="2825716730899894863">"Rengi açma ve karartma"</item>
-    <item msgid="403116336404005687">"Sağa - sola kaydır"</item>
-    <item msgid="4901733079450971731">"Sonraki - önceki slayta geç"</item>
-    <item msgid="9006732482485375438">"Rasgele seçim"</item>
-  </string-array>
-    <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Slayt gösterisini tekrar et"</string>
-    <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Slayt gösterisini birden fazla kez yürüt"</string>
-    <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Slaytları karıştır"</string>
-    <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Resimleri rasgele sırada göster"</string>
     <!-- no translation found for pref_camera_recordlocation_title (371208839215448917) -->
     <skip />
     <!-- no translation found for pref_camera_recordlocation_entry_off (8888142742988946038) -->
@@ -241,10 +186,6 @@
     <skip />
     <!-- no translation found for pref_camera_scenemode_entry_fireworks (3530608172188797432) -->
     <skip />
-    <string name="camerasettings" msgid="2433519618178453928">"Ayarlar"</string>
-    <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Medya bulunamadı."</string>
-    <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Silme işlemlerini doğrula"</string>
-    <string name="pref_gallery_confirm_delete_summary" msgid="5253456492765525245">"Bir resmi veya videoyu silmeden önce doğrulama göster"</string>
     <string name="no_location_image" msgid="6929172123058811834">"Bu görselde Konum bilgisi bulunmuyor."</string>
     <string name="details_panel_title" msgid="4753347516759338122">"Ayrıntılar"</string>
     <string name="details_file_size" msgid="2468878774843246797">"Dosya boyutu:"</string>
@@ -268,30 +209,10 @@
     <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> Kbps"</string>
     <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mbps"</string>
     <string name="details_ok" msgid="6848594369924424312">"Tamam"</string>
-    <string name="context_menu_header" msgid="1185348426222302182">"Resim seçenekleri"</string>
-    <string name="video_context_menu_header" msgid="7318971116949475029">"Video seçenekleri"</string>
     <string name="multiface_crop_help" msgid="3127018992717032779">"Başlamak için bir yüze hafifçe dokunun"</string>
-    <string name="photos_gallery_title" msgid="6914406246471015448">"Galeri"</string>
-    <string name="pick_photos_gallery_title" msgid="12912682424915943">"Resmi seç"</string>
-    <string name="videos_gallery_title" msgid="6150354029982749479">"Galeri"</string>
-    <string name="pick_videos_gallery_title" msgid="326727095201227333">"Video seç"</string>
     <string name="sendImage" msgid="7279510542799399570">"Resmi şunun aracılığıyla paylaş:"</string>
     <string name="setImage" msgid="7246975856983303047">"Resmi şu şekilde ayarla:"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Videoyu şunun aracılığıyla paylaş:"</string>
-    <string name="send_media_files" msgid="8201083279723850611">"Medya dosyalarını paylaşın"</string>
-    <string name="movieviewlabel" msgid="7363495772706775465">"Filmler"</string>
-    <string name="loading_video" msgid="4013492720121891585">"Video yükleniyor..."</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"SD kartınızda boş alan azalıyor. Kalite ayarlarını değiştirin veya Galeri\'den öğe silin."</string>
-    <string name="resume_playing_title" msgid="8996677350649355013">"Videoyu sürdür"</string>
-    <string name="resume_playing_message" msgid="7293000708492271389">"Yürütme şu noktadan devam ettirilsin mi?: <xliff:g id="DURATION">%s</xliff:g>"</string>
-    <string name="resume_playing_resume" msgid="3847915469173852416">"Yürütmeyi sürdür"</string>
-    <string name="resume_playing_restart" msgid="5471008499835769292">"Başlat"</string>
-    <string name="gadget_title" msgid="259405922673466798">"Resim çerçevesi"</string>
-    <string name="file_info_title" msgid="1628963357466012538">"Dosya bilgileri:"</string>
-    <string name="video_exceed_mms_limit" msgid="3835075281230780010">"Kaydettiğiniz video MMS ile gönderilemeyecek kadar büyük. Daha kısa bir klip kaydetmeyi deneyin."</string>
-    <string name="multiselect_share" msgid="5261644537749253581">"Paylaş"</string>
-    <string name="multiselect_delete" msgid="9113461994546744603">"Sil"</string>
-    <string name="multiselect_cancel" msgid="5969428692864002165">"İptal"</string>
-    <string name="delete_images_message" msgid="4504926868037899430">"Görseller siliniyor, lütfen bekleyin..."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Boyut sınırına ulaşıldı."</string>
 </resources>

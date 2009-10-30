@@ -17,19 +17,13 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="1202232535191653443">"Errore fotocamera"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Impossibile collegarsi alla fotocamera."</string>
-    <string name="all_images" msgid="1195501551939178807">"Tutte le foto"</string>
-    <string name="all_videos" msgid="3380966619230896013">"Tutti i video"</string>
     <string name="camera_label" msgid="6346560772074764302">"Fotocamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videocamera"</string>
-    <string name="gallery_picker_label" msgid="3080425245006492787">"Galleria"</string>
     <!-- no translation found for gallery_label (7119609703856708011) -->
     <skip />
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Foto"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Video"</string>
-    <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"File fotocamera"</string>
-    <string name="crop_label" msgid="521114301871349328">"Ritaglia foto"</string>
     <string name="view_label" msgid="4450531507947335704">"Visualizza foto"</string>
-    <string name="preferences_label" msgid="5955678162525051163">"Impostazioni fotocamera"</string>
     <string name="wait" msgid="8600187532323801552">"Attendere..."</string>
     <string name="no_storage" msgid="820691042667338625">"Per usare la fotocamera devi inserire una scheda SD."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"La scheda SD è piena."</string>
@@ -38,22 +32,16 @@
     <string name="savingImage" msgid="3051745378545909260">"Salvataggio foto..."</string>
     <string name="runningFaceDetection" msgid="2293932204708167704">"Attendere..."</string>
     <string name="settings" msgid="1534847740615665736">"Impostazioni"</string>
-    <string name="view" msgid="6277795271119411881">"Visualizza"</string>
     <string name="details" msgid="8415120088556445230">"Dettagli"</string>
     <string name="show_on_map" msgid="441725587731006228">"Mostra su Google Maps"</string>
     <string name="rotate" msgid="460017689320955494">"Ruota"</string>
     <string name="rotate_left" msgid="5888273317282539839">"Ruota a sinistra"</string>
     <string name="rotate_right" msgid="6776325835923384839">"Ruota a destra"</string>
-    <string name="slide_show" msgid="1965192737233824143">"Presentazione"</string>
-    <string name="multiselect" msgid="4761682939945434146">"Multiselezione"</string>
-    <string name="capture_picture" msgid="4114265595549284643">"Scatta foto"</string>
-    <string name="capture_video" msgid="4047046282358697155">"Registra video"</string>
     <string name="crop_save_text" msgid="8140440041190264400">"Salva"</string>
     <string name="crop_discard_text" msgid="5303657888280340603">"Annulla"</string>
     <string name="confirm_delete_title" msgid="263478358046514887">"Elimina"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"La foto verrà eliminata."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"Il video verrà eliminato."</string>
-    <string name="confirm_delete_multiple_message" msgid="5962369828035778779">"Questi file multimediali verranno eliminati."</string>
     <string name="review_toss" msgid="7255331999518617841">"ELIMINA"</string>
     <string name="review_share" msgid="7294755861072174509">"CONDIVIDI"</string>
     <string name="review_set" msgid="8304758352155378636">"IMPOSTA COME"</string>
@@ -65,54 +53,11 @@
     <string name="camera_toss" msgid="3781186798552460833">"Elimina"</string>
     <string name="camera_share" msgid="8207701858325694182">"Condividi"</string>
     <string name="camera_set" msgid="3422192914806971182">"Imposta come"</string>
-    <string name="camera_play" msgid="8248000517869959980">"Riproduci"</string>
-    <string name="camera_attach" msgid="4048659554893435232">"Allega"</string>
-    <string name="camera_cancel" msgid="8203341746672085747">"Annulla"</string>
     <string name="camera_crop" msgid="5584000454518174632">"Ritaglia"</string>
     <string name="no_way_to_share_image" msgid="5011985309980187927">"Nessuna applicazione disponibile per condividere la foto."</string>
     <string name="no_way_to_share_video" msgid="3684571102267072206">"Nessuna applicazione disponibile per condividere il video."</string>
-    <string name="no_way_to_share" msgid="863323712875014752">"Nessuna applicazione disponibile per condividere i file multimediali."</string>
     <string name="video_play" msgid="5287787282508002895">"Riproduci"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galleria"</string>
-    <string name="camera_pick_wallpaper" msgid="7026385960511811641">"Foto"</string>
-    <string name="camera_setas_wallpaper" msgid="797463183863414289">"Sfondo"</string>
-    <string name="pref_gallery_category" msgid="5826488887237959433">"Impostazioni generali"</string>
-    <string name="pref_slideshow_category" msgid="9097962086335681667">"Impostazioni presentazione"</string>
-    <string name="pref_gallery_size_title" msgid="1363406603879434418">"Dimensioni schermo"</string>
-    <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Seleziona dimensioni di visualizz. di foto e video"</string>
-    <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Dimensioni foto"</string>
-  <string-array name="pref_gallery_size_choices">
-    <item msgid="7157691836846678936">"Grandi"</item>
-    <item msgid="1033164600689216410">"Piccole"</item>
-  </string-array>
-    <string name="pref_gallery_sort_title" msgid="7447949250045443386">"Ordinamento"</string>
-    <string name="pref_gallery_sort_summary" msgid="6644398051645595214">"Seleziona l\'ordinamento di foto e video"</string>
-    <string name="pref_gallery_sort_dialogtitle" msgid="5787417105532562739">"Ordine foto"</string>
-  <string-array name="pref_gallery_sort_choices">
-    <item msgid="5546009539334018063">"Da più recente"</item>
-    <item msgid="7931283047572866748">"Da meno recente"</item>
-  </string-array>
-    <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Intervallo presentazione"</string>
-    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Seleziona la durata di ogni diapositiva"</string>
-    <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Intervallo presentazione"</string>
-  <string-array name="pref_gallery_slideshow_interval_choices">
-    <item msgid="3089037742117543119">"2 secondi"</item>
-    <item msgid="738579316565625730">"3 secondi"</item>
-    <item msgid="5670078787463530498">"4 secondi"</item>
-  </string-array>
-    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transizione presentazione"</string>
-    <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Seleziona l\'effetto da usare per passare da una diapositiva all\'altra"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Transizione diapositive"</string>
-  <string-array name="pref_gallery_slideshow_transition_choices">
-    <item msgid="2825716730899894863">"Dissolvenza"</item>
-    <item msgid="403116336404005687">"Da sinistra a destra"</item>
-    <item msgid="4901733079450971731">"Dall\'alto verso il basso"</item>
-    <item msgid="9006732482485375438">"Selezione casuale"</item>
-  </string-array>
-    <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"Ripeti presentazione"</string>
-    <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Riproduci più volte la presentazione"</string>
-    <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Riproduzione casuale"</string>
-    <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Mostra le foto in ordine casuale"</string>
     <!-- no translation found for pref_camera_recordlocation_title (371208839215448917) -->
     <skip />
     <!-- no translation found for pref_camera_recordlocation_entry_off (8888142742988946038) -->
@@ -245,10 +190,6 @@
     <skip />
     <!-- no translation found for pref_camera_scenemode_entry_fireworks (3530608172188797432) -->
     <skip />
-    <string name="camerasettings" msgid="2433519618178453928">"Impostazioni"</string>
-    <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Nessun media trovato."</string>
-    <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Conferma eliminazioni"</string>
-    <string name="pref_gallery_confirm_delete_summary" msgid="5253456492765525245">"Mostra conferma prima di eliminare una foto o un video"</string>
     <string name="no_location_image" msgid="6929172123058811834">"Nessuna informazione di posizione contenuta in questa immagine."</string>
     <string name="details_panel_title" msgid="4753347516759338122">"Dettagli"</string>
     <string name="details_file_size" msgid="2468878774843246797">"Dim. file:"</string>
@@ -272,30 +213,10 @@
     <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> kbps"</string>
     <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mbps"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="context_menu_header" msgid="1185348426222302182">"Opzioni foto"</string>
-    <string name="video_context_menu_header" msgid="7318971116949475029">"Opzioni video"</string>
     <string name="multiface_crop_help" msgid="3127018992717032779">"Tocca un viso per iniziare."</string>
-    <string name="photos_gallery_title" msgid="6914406246471015448">"Galleria"</string>
-    <string name="pick_photos_gallery_title" msgid="12912682424915943">"Seleziona foto"</string>
-    <string name="videos_gallery_title" msgid="6150354029982749479">"Galleria"</string>
-    <string name="pick_videos_gallery_title" msgid="326727095201227333">"Seleziona video"</string>
     <string name="sendImage" msgid="7279510542799399570">"Condividi foto via"</string>
     <string name="setImage" msgid="7246975856983303047">"Imposta foto come"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Condividi video tramite"</string>
-    <string name="send_media_files" msgid="8201083279723850611">"Condividi file multimediali tramite"</string>
-    <string name="movieviewlabel" msgid="7363495772706775465">"Film"</string>
-    <string name="loading_video" msgid="4013492720121891585">"Caricamento video..."</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina elementi nella galleria."</string>
-    <string name="resume_playing_title" msgid="8996677350649355013">"Riprendi video"</string>
-    <string name="resume_playing_message" msgid="7293000708492271389">"Riprendere la riproduzione da <xliff:g id="DURATION">%s</xliff:g>?"</string>
-    <string name="resume_playing_resume" msgid="3847915469173852416">"Riprendi riproduzione"</string>
-    <string name="resume_playing_restart" msgid="5471008499835769292">"Ricomincia"</string>
-    <string name="gadget_title" msgid="259405922673466798">"Cornice immagine"</string>
-    <string name="file_info_title" msgid="1628963357466012538">"Info file:"</string>
-    <string name="video_exceed_mms_limit" msgid="3835075281230780010">"Il video registrato è troppo grande per essere inviato tramite MMS. Prova a registrare un clip più corto."</string>
-    <string name="multiselect_share" msgid="5261644537749253581">"Condividi"</string>
-    <string name="multiselect_delete" msgid="9113461994546744603">"Elimina"</string>
-    <string name="multiselect_cancel" msgid="5969428692864002165">"Annulla"</string>
-    <string name="delete_images_message" msgid="4504926868037899430">"Eliminazione immagini, attendi..."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite di dimensione raggiunto."</string>
 </resources>
