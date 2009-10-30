@@ -79,27 +79,6 @@ public class VideoList extends BaseImageList {
         super(resolver, uri, sort, bucketId);
     }
 
-    public HashMap<String, String> getBucketIds() {
-        Uri uri = mBaseUri.buildUpon()
-                .appendQueryParameter("distinct", "true").build();
-        Cursor c = Images.Media.query(
-                mContentResolver, uri,
-                new String[] {
-                    Media.BUCKET_DISPLAY_NAME,
-                    Media.BUCKET_ID
-                },
-                whereClause(), whereClauseArgs(), sortOrder());
-        try {
-            HashMap<String, String> hash = new HashMap<String, String>();
-            while (c.moveToNext()) {
-                hash.put(c.getString(1), c.getString(0));
-            }
-            return hash;
-        } finally {
-            c.close();
-        }
-    }
-
     protected String whereClause() {
         return mBucketId != null
                 ? Images.Media.BUCKET_ID + " = '" + mBucketId + "'"

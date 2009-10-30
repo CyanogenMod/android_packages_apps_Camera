@@ -68,14 +68,6 @@ public class ImageListUber implements IImageList {
         }
     }
 
-    public HashMap<String, String> getBucketIds() {
-        HashMap<String, String> hashMap = new HashMap<String, String>();
-        for (IImageList list : mSubList) {
-            hashMap.putAll(list.getBucketIds());
-        }
-        return hashMap;
-    }
-
     public int getCount() {
         int count = 0;
         for (IImageList subList : mSubList) {

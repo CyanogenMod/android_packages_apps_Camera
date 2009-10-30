@@ -79,11 +79,6 @@ public class VideoObject extends BaseImage implements IImage {
     }
 
     @Override
-    public long fullSizeImageId() {
-        return mId;
-    }
-
-    @Override
     public int getHeight() {
          return 0;
     }

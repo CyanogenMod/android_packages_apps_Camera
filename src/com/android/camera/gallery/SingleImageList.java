@@ -38,10 +38,6 @@ public class SingleImageList implements IImageList {
         mSingleImage = new UriImage(this, resolver, uri);
     }
 
-    public HashMap<String, String> getBucketIds() {
-        throw new UnsupportedOperationException();
-    }
-
     public int getCount() {
         return 1;
     }

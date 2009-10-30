@@ -410,10 +410,6 @@ public class ImageManager {
         public void close() {
         }
 
-        public HashMap<String, String> getBucketIds() {
-            return new HashMap<String, String>();
-        }
-
         public int getCount() {
             return 0;
         }
@@ -459,21 +455,11 @@ public class ImageManager {
         return param;
     }
 
-    public static ImageListParam getEmptyImageListParam() {
-        ImageListParam param = new ImageListParam();
-        param.mIsEmptyImageList = true;
-        return param;
-    }
-
     public static IImageList makeImageList(ContentResolver cr,
             DataLocation location, int inclusion, int sort, String bucketId) {
         ImageListParam param = getImageListParam(location, inclusion, sort,
                 bucketId);
         return makeImageList(cr, param);
-    }
-
-    public static IImageList makeEmptyImageList() {
-        return makeImageList(null, getEmptyImageListParam());
     }
 
     public static IImageList  makeSingleImageList(ContentResolver cr, Uri uri) {
