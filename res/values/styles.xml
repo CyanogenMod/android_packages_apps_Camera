@@ -31,24 +31,9 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@android:color/secondary_text_dark</item>
     </style>
-    <style name="Animation" />
-    <style name="Animation.OnScreenHint">
+    <style name="Animation_OnScreenHint">
         <item name="android:windowEnterAnimation">@anim/on_screen_hint_enter</item>
         <item name="android:windowExitAnimation">@anim/on_screen_hint_exit</item>
-    </style>
-    <style name="OnscreenActionIcon">
-        <item name="android:focusable">false</item>
-        <item name="android:clickable">true</item>
-        <item name="android:textSize">13dip</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:shadowColor">#FF000000</item>
-        <item name="android:shadowRadius">2.0</item>
-        <item name="android:textColor">#FFF</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:drawablePadding">3dip</item>
     </style>
     <style name="ReviewControlText">
         <item name="android:textSize">12sp</item>

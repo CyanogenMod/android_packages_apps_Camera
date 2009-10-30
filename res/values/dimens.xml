@@ -19,6 +19,4 @@
 -->
 <resources>
     <dimen name="hint_y_offset">64dip</dimen>
-    <dimen name="appwidget_width">151dip</dimen>
-    <dimen name="appwidget_height">196dip</dimen>
 </resources>
