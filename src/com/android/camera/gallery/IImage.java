@@ -47,7 +47,6 @@ public interface IImage {
 
     /** Get the input stream associated with a given full size image. */
     public abstract InputStream fullSizeImageData();
-    public abstract long fullSizeImageId();
     public abstract Uri fullSizeImageUri();
 
     /** Get the path of the (full size) image data. */
