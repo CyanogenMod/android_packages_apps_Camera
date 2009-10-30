@@ -331,20 +331,6 @@ public class VideoCamera extends NoSearchActivity implements View.OnClickListene
         }
     }
 
-    private void startShareVideoActivity() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType("video/3gpp");
-        intent.putExtra(Intent.EXTRA_STREAM, mCurrentVideoUri);
-        try {
-            startActivity(Intent.createChooser(intent,
-                    getText(R.string.sendVideo)));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(VideoCamera.this, R.string.no_way_to_share_video,
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void startPlayVideoActivity() {
         Intent intent = new Intent(Intent.ACTION_VIEW, mCurrentVideoUri);
         try {
@@ -353,7 +339,6 @@ public class VideoCamera extends NoSearchActivity implements View.OnClickListene
             Log.e(TAG, "Couldn't view video " + mCurrentVideoUri, ex);
         }
     }
-
 
     public void onClick(View v) {
         switch (v.getId()) {
@@ -377,14 +362,6 @@ public class VideoCamera extends NoSearchActivity implements View.OnClickListene
                     }
                 };
                 MenuHelper.deleteVideo(this, deleteCallback);
-                break;
-            }
-            case R.id.share: {
-                startShareVideoActivity();
-                break;
-            }
-            case R.id.play: {
-                doPlayCurrentVideo();
                 break;
             }
             case R.id.review_thumbnail: {
@@ -417,16 +394,6 @@ public class VideoCamera extends NoSearchActivity implements View.OnClickListene
                     startVideoRecording();
                 }
                 break;
-        }
-    }
-
-    private void doPlayCurrentVideo() {
-        Log.v(TAG, "Playing current video: " + mCurrentVideoUri);
-        Intent intent = new Intent(Intent.ACTION_VIEW, mCurrentVideoUri);
-        try {
-            startActivity(intent);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Log.e(TAG, "Couldn't view video " + mCurrentVideoUri, ex);
         }
     }
 
