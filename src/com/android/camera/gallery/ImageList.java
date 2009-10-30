@@ -35,26 +35,6 @@ public class ImageList extends BaseImageList implements IImageList {
     private static final String[] ACCEPTABLE_IMAGE_TYPES =
             new String[] { "image/jpeg", "image/png", "image/gif" };
 
-    public HashMap<String, String> getBucketIds() {
-        Uri uri = mBaseUri.buildUpon()
-                .appendQueryParameter("distinct", "true").build();
-        Cursor cursor = Media.query(
-                mContentResolver, uri,
-                new String[] {
-                    Media.BUCKET_DISPLAY_NAME,
-                    Media.BUCKET_ID},
-                whereClause(), whereClauseArgs(), null);
-        try {
-            HashMap<String, String> hash = new HashMap<String, String>();
-            while (cursor.moveToNext()) {
-                hash.put(cursor.getString(1), cursor.getString(0));
-            }
-            return hash;
-        } finally {
-            cursor.close();
-        }
-    }
-
     /**
      * ImageList constructor.
      */
