@@ -666,6 +666,9 @@ public class Camera extends Activity implements View.OnClickListener,
             Log.v(TAG, "ZoomCallback: zoom value=" + zoomValue + ". stopped="
                     + stopped);
             mZoomValue = zoomValue;
+            // Keep mParameters up to date. We do not getParameter again in
+            // takePicture. If we do not do this, wrong zoom value will be set.
+            mParameters.setZoom(zoomValue);
             // We only care if the zoom is stopped. mZooming is set to true when
             // we start smooth zoom.
             if (stopped) mZooming = false;
