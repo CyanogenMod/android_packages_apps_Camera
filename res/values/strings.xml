@@ -23,24 +23,11 @@
     <!-- message for the dialog showing the error of camera hardware -->
     <string name="cannot_connect_camera">Cannot connect to camera.</string>
 
-    <!-- label for the icon meaning 'show me all the images' -->
-    <string name="all_images">All pictures</string>
-
-    <!-- label for the icon meaning 'show me all the videos' -->
-    <string name="all_videos">All videos</string>
-
     <!-- label for the icon meaning 'show me all the images that were taken with the camera' -->
     <string name="camera_label">Camera</string>
 
     <!-- label for the 'video recording application shown in the top level 'all applications' -->
     <string name="video_camera_label">Camcorder</string>
-
-    <!-- label for the 'pictures application shown in the top level 'all applications' -->
-    <string name="gallery_picker_label">Gallery</string>
-
-    <!-- label for the gallery application (displayed when the user needs to
-         choose an application to pick a picture or a video) -->
-    <string name="gallery_label">Gallery</string>
 
     <!-- label for the folder that contains Camera pictures in the gallery -->
     <string name="gallery_camera_bucket_name">Camera pictures</string>
@@ -48,17 +35,8 @@
     <!-- label for the folder that contains Camera videos in the gallery -->
     <string name="gallery_camera_videos_bucket_name">Camera videos</string>
 
-    <!-- label for the folder that contains Camera videos in the gallery -->
-    <string name="gallery_camera_media_bucket_name">Camera media</string>
-
-    <!-- menu pick: crop the currently selected image -->
-    <string name="crop_label">Crop picture</string>
-
     <!-- menu pick: view the currently selected image -->
     <string name="view_label">View picture</string>
-
-    <!-- menu pick: go to the preferences screen for the camera or image gallery -->
-    <string name="preferences_label">Camera settings</string>
 
     <!-- alert to the user to wait for some operation to complete -->
     <string name="wait">Please wait\u2026</string>
@@ -88,9 +66,6 @@
     <!-- menu pick to go to the settings screen -->
     <string name="settings">Settings</string>
 
-    <!-- menu pick to view the currently selected image -->
-    <string name="view">View</string>
-
     <!-- menu pick to view the details of the currently selected image -->
     <string name="details">Details</string>
 
@@ -106,17 +81,6 @@
     <!-- menu pick to rotate the currently selected image to the right -->
     <string name="rotate_right">Rotate right</string>
 
-    <!-- menu pick to start a slide show -->
-    <string name="slide_show">Slideshow</string>
-
-    <!-- menu pick to enter multiselect mode -->
-    <string name="multiselect">Multiselect</string>
-
-    <!-- menu pick to go to camera mode to capture a picture -->
-    <string name="capture_picture">Capture picture</string>
-    <!-- menu pick to go to video mode to capture a video -->
-    <string name="capture_video">Capture video</string>
-
     <!-- button indicating that the cropped image should be saved -->
     <string name="crop_save_text">Save</string>
     <!-- button indicating that the cropped image should be reverted back to the original -->
@@ -128,9 +92,6 @@
     <string name="confirm_delete_message">The picture will be deleted.</string>
     <!-- Confirmation dialog message after deleting a video -->
     <string name="confirm_delete_video_message">The video will be deleted.</string>
-
-    <!-- Confirmation dialog message after deleting a multiple media files -->
-    <string name="confirm_delete_multiple_message">These media files will be deleted.</string>
 
     <!-- button in review mode indicating that the picture just taken should be deleted -->
     <string name="review_toss">DELETE</string>
@@ -165,15 +126,6 @@
     <!-- button indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
     <string name="camera_set">Set as</string>
 
-    <!-- button indicating that the video just taken should be played -->
-    <string name="camera_play">Play</string>
-
-    <!-- button indicating that the video just taken should be accepted as an attachment -->
-    <string name="camera_attach">Attach</string>
-
-    <!-- button indicating that the video recording session should be canceled -->
-    <string name="camera_cancel">Cancel</string>
-
     <!-- button indicating that the picture just taken should be cropped -->
     <string name="camera_crop">Crop</string>
 
@@ -183,128 +135,11 @@
     <!-- Toast after trying to share a video indicating that there are no applications which are capable of so doing. -->
     <string name="no_way_to_share_video">No application available to share the video.</string>
 
-    <!-- Toast after trying to share multiple media files indicating that there are no applications which are capable of so doing. -->
-    <string name="no_way_to_share">No application available to share the media file(s).</string>
-
     <!-- Menu item for playing the video. -->
     <string name="video_play">Play</string>
 
     <!-- Button indicating to go to the image gallery -->
     <string name="camera_gallery_photos_text">Gallery</string>
-
-    <!-- String indicating an action of picking a picture to use as wallpaper (e.g. set wallpaper from "Pictures") -->
-    <string name="camera_pick_wallpaper">Pictures</string>
-    <string name="camera_setas_wallpaper">Wallpaper</string>
-
-    <!-- Settings screen, section heading  -->
-    <string name="pref_gallery_category">General settings</string>
-
-    <!-- Settings screen, section heading  -->
-    <string name="pref_slideshow_category">Slideshow settings</string>
-
-    <!-- Settings screen, setting summary text -->
-    <string name="pref_gallery_size_title">Display size</string>
-
-    <!-- Settings screen, title for preference for image size to be used in the im -->
-    <string name="pref_gallery_size_summary">Select the display size of pictures and videos</string>
-    <!-- Title of dialog that appears after selecting Picture size setting option -->
-    <string name="pref_gallery_size_dialogtitle">Picture size</string>
-    <!-- Options in dialog that appears after selecting Picture size setting option -->
-    <string-array name="pref_gallery_size_choices">
-        <!-- size choice of "large" -->
-        <item>Large</item>
-        <!-- size choice of "small" -->
-        <item>Small</item>
-    </string-array>
-    <!-- Option values in dialog that appears after selecting Picture size setting option -->
-    <string-array name="pref_gallery_size_values" translatable="false">
-        <item>1</item>
-        <item>0</item>
-    </string-array>
-    <!-- Default option value in dialog that appears after selecting Picture size setting option -->
-    <string name="default_value_pref_gallery_size" translatable="false">1</string>
-    <!-- Settings screen, setting option name -->
-    <string name="pref_gallery_sort_title">Sort order</string>
-    <!-- Settings screen, setting summary text -->
-    <string name="pref_gallery_sort_summary">Select the sort order of pictures and videos</string>
-    <!-- Title of dialog that appears after selecting Picture sort setting option -->
-    <string name="pref_gallery_sort_dialogtitle">Picture sort</string>
-    <!-- Options in dialog that appears after selecting Picture sort setting option -->
-    <string-array name="pref_gallery_sort_choices">
-        <!-- Preference choice to show "newest first" -->
-        <item>Newest first</item>
-        <!-- Preference choice to show "newest last" -->
-        <item>Newest last</item>
-    </string-array>
-    <!-- Option values in dialog that appears after selecting Picture sort setting option -->
-    <string-array name="pref_gallery_sort_values" translatable="false">
-        <item>descending</item>
-        <item>ascending</item>
-    </string-array>
-    <!-- Default option value in dialog that appears after selecting Picture sort setting option -->
-    <string name="default_value_pref_gallery_sort" translatable="false">descending</string>
-    <!-- Settings screen, setting option name -->
-    <string name="pref_gallery_slideshow_interval_title">Slideshow interval</string>
-    <!-- Settings screen, setting summary text -->
-    <string name="pref_gallery_slideshow_interval_summary">Select how long each slide displays in the show</string>
-    <!-- Title of dialog that appears after selecting Slideshow interval setting option -->
-    <string name="pref_gallery_slideshow_interval_dialogtitle">Slideshow interval</string>
-    <!-- Options in dialog that appears after selecting Slideshow interval setting option -->
-    <string-array name="pref_gallery_slideshow_interval_choices">
-        <!-- slide show interval "N seconds" where N is 2 -->
-        <item>2 seconds</item>
-        <!-- slide show interval "N seconds" where N is 3 -->
-        <item>3 seconds</item>
-        <!-- slide show interval "N seconds" where N is 4 -->
-        <item>4 seconds</item>
-    </string-array>
-    <!-- Option values in dialog that appears after selecting Slideshow interval setting option -->
-    <string-array name="pref_gallery_slideshow_interval_values" translatable="false">
-        <item>"2"</item>
-        <item>"3"</item>
-        <item>"4"</item>
-    </string-array>
-    <!-- Default option value in dialog that appears after selecting Slideshow interval setting option -->
-    <string name="default_value_pref_gallery_slideshow_interval" translatable="false">"2"</string>
-    <!-- Settings screen, setting option name -->
-    <string name="pref_gallery_slideshow_transition_title">Slideshow transition</string>
-    <!-- Settings screen, setting summary text -->
-    <string name="pref_gallery_slideshow_transition_summary">Select the effect used when moving from one slide to the next</string>
-    <!-- Title of dialog that appears after selecting Slideshow transition setting option -->
-    <string name="pref_gallery_slideshow_transition_dialogtitle">Slideshow transition</string>
-    <!-- Options in dialog that appears after selecting Slideshow transition
-     setting option -->
-    <string-array name="pref_gallery_slideshow_transition_choices">
-        <!-- Slide show transition to fade in and fade out -->
-        <item>Fade in &amp; out</item>
-        <!-- Slide show transition to slide in and out from the left and right -->
-        <item>Slide left - right</item>
-        <!-- Slide show transition to slide in and out from the top and bottom -->
-        <item>Slide up - down</item>
-        <!-- Slide show transition to be chosen randomly -->
-        <item>Random selection</item>
-    </string-array>
-    <!-- Option values in dialog that appears after selecting Slideshow transition setting option -->
-    <string-array name="pref_gallery_slideshow_transition_values" translatable="false">
-        <item>"0"</item>
-        <item>"1"</item>
-        <item>"2"</item>
-        <item>"-1"</item>
-    </string-array>
-    <!-- Default option value in dialog that appears after selecting Slideshow transition setting option -->
-    <string name="default_value_pref_gallery_slideshow_transition" translatable="false">"0"</string>
-
-    <!-- Settings screen, setting check box name -->
-    <string name="pref_gallery_slideshow_repeat_title">Repeat slideshow</string>
-
-    <!-- Settings screen, setting summary text -->
-    <string name="pref_gallery_slideshow_repeat_summary">Play slideshow more than once</string>
-
-    <!-- Settings screen, setting check box name -->
-    <string name="pref_gallery_slideshow_shuffle_title">Shuffle slides</string>
-
-    <!-- Settings screen, setting summary text -->
-    <string name="pref_gallery_slideshow_shuffle_summary">Show pictures in random order</string>
 
     <!-- Settings screen, setting title text -->
     <string name="pref_camera_recordlocation_title">Store location</string>
@@ -419,11 +254,6 @@
     <string name="pref_camera_whitebalance_entry_daylight">Daylight</string>
     <string name="pref_camera_whitebalance_entry_fluorescent">Fluorescent</string>
     <string name="pref_camera_whitebalance_entry_cloudy">Cloudy</string>
-    <string name="pref_camera_whitebalance_entry_twilight">Twilight</string>
-    <string name="pref_camera_whitebalance_entry_shade">Shade</string>
-    <string name="pref_camera_whitebalance_entry_warm_fluorescent">Warm Fluorescent</string>
-    <!-- Manual white-balance for very bright and yellowish light. -->
-    <string name="pref_camera_whitebalance_entry_halogen">Halogen</string>
 
     <!-- Settings screen, color effect dialog title -->
     <string name="pref_camera_coloreffect_dialogtitle">Color effect</string>
@@ -485,32 +315,6 @@
     <!-- Scene mode optimized for taking images of fireworks. -->
     <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
 
-    <!-- Menu item to go to the settings screen -->
-    <string name="camerasettings">Settings</string>
-
-    <!-- Text message indicating that there are no pictures or videos in a particular
-         bucket on the SD card -->
-    <string name="image_gallery_NoImageView_text">No media found.</string>
-
-    <!-- Preference title for whether the user should be prompted form confirmation when deleting images  -->
-    <string name="pref_gallery_confirm_delete_title">Confirm deletions</string>
-
-    <!-- Preference summary for whether the user should be prompted form confirmation when deleting images  -->
-    <string name="pref_gallery_confirm_delete_summary">Show confirmation before deleting a picture or video</string>
-
-    <!-- Details stuff -->
-    <string name="details_title_text" translatable="false">myvideo</string>
-    <string name="details_tags_text" translatable="false">monster</string>
-    <string name="details_category_label" translatable="false">Category:</string>
-    <string name="details_description_label" translatable="false">Description:</string>
-    <string name="details_publicView_text" translatable="false">Public</string>
-    <string name="details_tags_label" translatable="false">Tags:</string>
-    <string name="details_description_text" translatable="false">testdescription</string>
-    <string name="details_title_label" translatable="false">Title:</string>
-    <string name="details_save_text" translatable="false">Save</string>
-    <string name="details_language_label" translatable="false">Language:</string>
-    <string name="details_privateView_text" translatable="false">Private</string>
-
     <!-- Message to show when there's no lat/lng information in the image -->
     <string name="no_location_image">No Location information contained in this image.</string>
     <!-- Title of Details dialog  -->
@@ -559,24 +363,8 @@
     <!-- Details dialog "OK" button. Dismisses dialog. -->
     <string name="details_ok">OK</string>
 
-    <!-- Text of context menu when an image is selected -->
-    <string name="context_menu_header">Picture options</string>
-    <!-- Text of context menu when a video is selected -->
-    <string name="video_context_menu_header">Video options</string>
     <!-- Hint that appears when cropping an image with more than one face -->
     <string name="multiface_crop_help">Tap a face to begin.</string>
-
-    <!-- Activity title when in the image gallery to see pictures -->
-    <string name="photos_gallery_title">Gallery</string>
-
-    <!-- Activity title when in the image gallery to select a picture -->
-    <string name="pick_photos_gallery_title">Select picture</string>
-
-    <!-- Activity title when in the image gallery to see videos -->
-    <string name="videos_gallery_title">Gallery</string>
-
-    <!-- Activity title when in the image gallery to select a video -->
-    <string name="pick_videos_gallery_title">Select video</string>
 
     <!-- Displayed in the title of the dialog for things to do with a picture that
          is to be sent to another application: -->
@@ -590,56 +378,14 @@
          is to be sent to another application. -->
     <string name="sendVideo">Share video via</string>
 
-    <!-- Displayed in the title of the dialog for things to do with media files that
-         are to be sent to another application: -->
-    <string name="send_media_files">Share media files via</string>
-
-    <!-- Activity label. This might show up in the activity-picker -->
-    <string name="movieviewlabel">Movies</string>
-    <!-- shown in the video player view while the video is being loaded, before it starts playing -->
-    <string name="loading_video">Loading video\u2026</string>
-
     <!-- Low-memory dialog message -->
     <string name="spaceIsLow_content">Your SD card is running out of space. Change the quality setting or delete items from Gallery.</string>
-
-    <!-- Movie View Resume Playing dialog title -->
-    <string name="resume_playing_title">Resume video</string>
-
-    <!-- Movie View Start Playing dialog title -->
-    <string name="resume_playing_message">Resume playing from <xliff:g id="duration" example="5:30">%s</xliff:g> ?</string>
-
-    <!-- Movie View Start Playing button "Resume from bookmark" -->
-    <string name="resume_playing_resume">Resume playing</string>
-
-    <!-- Movie View Start Playing button "Beginning" -->
-    <string name="resume_playing_restart">Start over</string>
-
-    <!-- Title for picture frame gadget to show in list of all available gadgets -->
-    <string name="gadget_title">Picture frame</string>
 
     <!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
     <string name="image_file_name_format" translatable="false">"'IMG'_yyyyMMdd_HHmmss"</string>
 
     <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
     <string name="video_file_name_format" translatable="false">"'VID'_yyyyMMdd_HHmmss"</string>
-
-    <!-- Title for the file information dialog -->
-    <string name="file_info_title">File info:</string>
-
-    <!-- The video is execeed the size limit of a MMS, and suggest user to record a shorter length clip -->
-    <string name="video_exceed_mms_limit">The video you recorded is too large to send via MMS. Try recording a shorter length clip.</string>
-
-    <!-- The title shown on the button which share the selected images by gmail, mms, and etc. -->
-    <string name="multiselect_share">Share</string>
-
-    <!-- The title shown on the button which will delete all the selected images -->
-    <string name="multiselect_delete">Delete</string>
-
-    <!-- Title shown on the button which will close the multiselction mode -->
-    <string name="multiselect_cancel">Cancel</string>
-
-    <!-- The messsage shown on progress dialog when deleting images -->
-    <string name="delete_images_message">Deleting images, please wait\u2026</string>
 
     <!-- The messsage shown when video record reaches size limit. -->
     <string name="video_reach_size_limit">Size limit reached.</string>
