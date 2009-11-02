@@ -116,9 +116,6 @@ abstract class ImageViewTouchBase extends ImageView {
 
     protected Handler mHandler = new Handler();
 
-    protected int mLastXTouchPos;
-    protected int mLastYTouchPos;
-
     @Override
     public void setImageBitmap(Bitmap bitmap) {
         setImageBitmap(bitmap, 0);

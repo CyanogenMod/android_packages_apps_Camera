@@ -32,7 +32,6 @@ import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
@@ -51,8 +50,6 @@ public class Util {
     public static final int DIRECTION_RIGHT = 1;
     public static final int DIRECTION_UP = 2;
     public static final int DIRECTION_DOWN = 3;
-
-    private static OnClickListener sNullOnClickListener;
 
     private Util() {
     }

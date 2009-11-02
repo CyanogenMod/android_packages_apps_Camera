@@ -25,7 +25,6 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
-import android.provider.MediaStore;
 
 /*
  * Here's the loading strategy.  For any given image, load the thumbnail

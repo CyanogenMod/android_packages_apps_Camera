@@ -8,8 +8,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
