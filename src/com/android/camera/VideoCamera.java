@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -66,7 +65,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.camera.PreviewFrameLayout.OnSizeChangedListener;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 

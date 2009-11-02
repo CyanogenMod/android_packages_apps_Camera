@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import java.util.ArrayList;

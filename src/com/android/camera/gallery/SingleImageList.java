@@ -19,8 +19,6 @@ package com.android.camera.gallery;
 import android.content.ContentResolver;
 import android.net.Uri;
 
-import java.util.HashMap;
-
 /**
  * An implementation of interface <code>IImageList</code> which contains only
  * one image.
