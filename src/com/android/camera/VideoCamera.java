@@ -78,7 +78,8 @@ import java.util.HashMap;
 /**
  * The Camcorder activity.
  */
-public class VideoCamera extends NoSearchActivity implements View.OnClickListener,
+public class VideoCamera extends NoSearchActivity
+        implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
         Switcher.OnSwitchListener, OnSharedPreferenceChangeListener,
@@ -1265,7 +1266,8 @@ public class VideoCamera extends NoSearchActivity implements View.OnClickListene
     }
 
     private void acquireVideoThumb() {
-        Bitmap videoFrame = ThumbnailUtil.createVideoThumbnail(mCurrentVideoFilename);
+        Bitmap videoFrame = ThumbnailUtil.createVideoThumbnail(
+                mCurrentVideoFilename);
         mThumbController.setData(mCurrentVideoUri, videoFrame);
     }
 

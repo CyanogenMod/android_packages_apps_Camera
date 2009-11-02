@@ -231,8 +231,8 @@ public class ImageManager {
     public static Uri addImage(ContentResolver cr, String title, long dateTaken,
             Location location, String directory, String filename,
             Bitmap source, byte[] jpegData, int[] degree) {
-        // We should store image data earlier than insert it to ContentProvider, otherwise
-        // we may not be able to generate thumbnail in time.
+        // We should store image data earlier than insert it to ContentProvider,
+        // otherwise we may not be able to generate thumbnail in time.
         OutputStream outputStream = null;
         String filePath = directory + "/" + filename;
         try {

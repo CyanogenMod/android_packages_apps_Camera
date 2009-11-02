@@ -25,6 +25,10 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+/**
+ * This is the switcher widget which switchs between the Camera and
+ * the VideoCamera activities.
+ */
 public class Switcher extends ImageView implements View.OnTouchListener {
 
     @SuppressWarnings("unused")

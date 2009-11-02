@@ -1680,9 +1680,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 mParameters.setSceneMode(sceneMode);
                 mCameraDevice.setParameters(mParameters);
 
-                // Setting scene mode will change the settings of flash mode, white
-                // balance, and focus mode. So read back here, so that we know
-                // what're the settings
+                // Setting scene mode will change the settings of flash mode,
+                // white balance, and focus mode. Here we read back the
+                // parameters, so we can know those settings.
                 mParameters = mCameraDevice.getParameters();
             }
         } else {
