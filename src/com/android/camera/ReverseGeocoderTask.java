@@ -24,7 +24,13 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
-// Reverse geocoding may take a long time to return so we put it in AsyncTask.
+/**
+ * This class does reverse geocoding. The input is latitude and longitude,
+ * and the output is a descriptive string for the specified location.
+ *
+ * Because it may take a long time to return, we put it in an AsyncTask. The
+ * result is passed to a callback.
+ */
 public class ReverseGeocoderTask extends AsyncTask<Void, Void, String> {
     private static final String TAG = "ReverseGeocoder";
 
@@ -49,8 +55,7 @@ public class ReverseGeocoderTask extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... params) {
         String value = MenuHelper.EMPTY_STRING;
         try {
-            List<Address> address =
-                    mGeocoder.getFromLocation(mLat, mLng, 1);
+            List<Address> address = mGeocoder.getFromLocation(mLat, mLng, 1);
             StringBuilder sb = new StringBuilder();
             for (Address addr : address) {
                 int index = addr.getMaxAddressLineIndex();
@@ -72,4 +77,3 @@ public class ReverseGeocoderTask extends AsyncTask<Void, Void, String> {
         mCallback.onComplete(location);
     }
 }
-
