@@ -21,8 +21,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore.Images.Media;
 
-import java.util.HashMap;
-
 /**
  * Represents an ordered collection of Image objects. Provides an API to add
  * and remove an image.

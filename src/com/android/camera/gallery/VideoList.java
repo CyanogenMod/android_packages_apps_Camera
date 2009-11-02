@@ -22,8 +22,6 @@ import android.net.Uri;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Video.Media;
 
-import java.util.HashMap;
-
 /**
  * A collection of all the <code>VideoObject</code> in gallery.
  */

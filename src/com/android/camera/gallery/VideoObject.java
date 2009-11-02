@@ -23,7 +23,6 @@ import android.graphics.Bitmap;
 import android.media.ThumbnailUtil;
 import android.net.Uri;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Video;
 import android.util.Log;
 
 import java.io.IOException;
