@@ -20,6 +20,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+/**
+ * This class is used when the camera button is long-pressed.
+ *
+ * It is declared in AndroidManifest.xml to receive the
+ * {@code android.intent.action.CAMERA_BUTTON} intent.
+ *
+ * After making sure we can use the camera hardware, it starts the Camera
+ * activity.
+ */
 public class CameraButtonIntentReceiver extends BroadcastReceiver {
 
     @Override

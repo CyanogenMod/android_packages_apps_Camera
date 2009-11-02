@@ -20,7 +20,16 @@ import android.os.Bundle;
 
 import java.util.ArrayList;
 
-public class MonitoredActivity extends NoSearchActivity {
+/**
+ * This class monitors the life cycle events for an activity.
+ *
+ * To use it, make the activity inherit from MonitoredActivity. You also need
+ * to register a LifeCycleListener using addLifeCycleListener().
+ *
+ * There is a convenience class LifeCycleAdapter which lets you implement only
+ * methods for the events you are interested.
+ */
+class MonitoredActivity extends NoSearchActivity {
 
     private final ArrayList<LifeCycleListener> mListeners =
             new ArrayList<LifeCycleListener>();

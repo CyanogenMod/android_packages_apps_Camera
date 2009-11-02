@@ -342,11 +342,13 @@ public class MenuHelper {
     }
 
     /**
-     * Returns a human-readable string describing the white balance value. Returns empty
-     * string if there is no white balance value or it is not recognized.
+     * Returns a human-readable string describing the white balance value.
+     * Returns empty string if there is no white balance value or it is not
+     * recognized.
      */
     private static String getWhiteBalanceString(ExifInterface exif) {
-        int whitebalance = exif.getAttributeInt(ExifInterface.TAG_WHITE_BALANCE, -1);
+        int whitebalance = exif.getAttributeInt(
+                ExifInterface.TAG_WHITE_BALANCE, -1);
         if (whitebalance == -1) return "";
 
         switch (whitebalance) {

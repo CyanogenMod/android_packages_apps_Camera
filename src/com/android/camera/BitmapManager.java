@@ -110,7 +110,8 @@ public class BitmapManager {
         getOrCreateThreadStatus(t).mState = State.ALLOW;
     }
 
-    public synchronized void cancelThreadDecoding(Thread t, ContentResolver cr) {
+    public synchronized void cancelThreadDecoding(Thread t,
+            ContentResolver cr) {
         ThreadStatus status = getOrCreateThreadStatus(t);
         status.mState = State.CANCEL;
         if (status.mOptions != null) {
@@ -120,8 +121,9 @@ public class BitmapManager {
         // Wake up threads in waiting list
         notifyAll();
 
-        // Since our cancel request can arrive MediaProvider earlier than getThumbnail request,
-        // we use mThumbRequesting flag to make sure our request does cancel the request.
+        // Since our cancel request can arrive MediaProvider earlier than
+        // getThumbnail request, we use mThumbRequesting flag to make sure our
+        // request does cancel the request.
         try {
             synchronized (status) {
                 while (status.mThumbRequesting) {

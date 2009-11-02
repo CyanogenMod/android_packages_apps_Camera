@@ -23,6 +23,11 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+/**
+ * This class draws an icon which changes according to the mode. For example,
+ * The flash icon can have on, off, and auto mode. The user calls
+ * {@code setMode} to change the mode (and the icon).
+ */
 public class IconIndicator extends ImageView {
 
     private Drawable[] mIcons;
