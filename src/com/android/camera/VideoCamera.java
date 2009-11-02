@@ -223,7 +223,6 @@ public class VideoCamera extends NoSearchActivity
                 ress.getString(R.string.cannot_connect_camera));
     }
 
-    /** Called with the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);

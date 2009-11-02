@@ -19,8 +19,10 @@ package com.android.camera;
 import android.app.Activity;
 
 /**
- * This class disables the search key function. To use it, just inherit from
- * {@code NoSearchActivity} instead of {@code Activity}.
+ * An activity which disables the search key function.
+ *
+ * <p> To use it, just inherit from {@code NoSearchActivity} instead of
+ * {@code Activity}.
  */
 public class NoSearchActivity extends Activity {
     @Override

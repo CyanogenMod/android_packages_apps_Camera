@@ -26,14 +26,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 /**
- * This is the switcher widget which switchs between the Camera and
- * the VideoCamera activities.
+ * A widget which switchs between the {@code Camera} and the {@code VideoCamera}
+ * activities.
  */
 public class Switcher extends ImageView implements View.OnTouchListener {
 
     @SuppressWarnings("unused")
     private static final String TAG = "Switcher";
 
+    /** A callback to be called when the user wants to switch activity. */
     public interface OnSwitchListener {
         // Returns true if the listener agrees that the switch can be changed.
         public boolean onSwitchChanged(Switcher source, boolean onOff);
@@ -144,7 +145,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
             final int available = getHeight() - mPaddingTop - mPaddingBottom
                     - drawableHeight;
             long time = AnimationUtils.currentAnimationTimeMillis();
-            int deltaTime = (int)(time - mAnimationStartTime);
+            int deltaTime = (int) (time - mAnimationStartTime);
             mPosition = mAnimationStartPosition +
                     ANIMATION_SPEED * (mSwitch ? deltaTime : -deltaTime) / 1000;
             if (mPosition < 0) mPosition = 0;

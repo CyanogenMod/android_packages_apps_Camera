@@ -25,9 +25,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.FrameLayout;
 
+/**
+ * A layout which handles the preview aspect ratio and the position of
+ * the gripper.
+ */
 public class PreviewFrameLayout extends ViewGroup {
     private static final int MIN_HORIZONTAL_MARGIN = 10; // 10dp
 
+    /** A callback to be invoked when the preview frame's size changes. */
     public interface OnSizeChangedListener {
         public void onSizeChanged();
     }

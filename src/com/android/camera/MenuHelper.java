@@ -109,6 +109,7 @@ public class MenuHelper {
         public void run(MenuCallback r);
     }
 
+    /** A callback to be invoked when a menu item is clicked. */
     public interface MenuCallback {
         public void run(Uri uri, IImage image);
     }

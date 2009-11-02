@@ -22,10 +22,11 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-//
-// This is a layout which makes the children even spaced.
-// Currently it does not consider the padding parameters.
-//
+/**
+ * A layout which makes the children evenly spaced (horizontally or vertically).
+ *
+ * <p>Currently it does not consider the padding parameters.
+ */
 public class EvenlySpacedLayout extends ViewGroup {
     private boolean mHorizontal;
 
