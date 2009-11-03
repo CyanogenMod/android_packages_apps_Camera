@@ -80,9 +80,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Activity of the Camera which used to see preview and take pictures.
- */
+/** The Camera activity which can preview and take pictures. */
 public class Camera extends NoSearchActivity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         Switcher.OnSwitchListener, OnScreenSettings.OnVisibilityChangedListener,
@@ -832,7 +830,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    public boolean saveDataToFile(String filePath, byte[] data) {
+    private boolean saveDataToFile(String filePath, byte[] data) {
         FileOutputStream f = null;
         try {
             f = new FileOutputStream(filePath);
@@ -1035,7 +1033,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
 
         // Limit to 50k pixels so we can return it in the intent.
-        Bitmap bitmap = Util.makeBitmap(data, 50*1024);
+        Bitmap bitmap = Util.makeBitmap(data, 50 * 1024);
         bitmap = Util.rotate(bitmap, degree);
         return bitmap;
     }

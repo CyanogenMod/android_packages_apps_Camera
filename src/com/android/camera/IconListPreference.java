@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
 
+/** A {@code ListPreference} where each entry has a corresponding icon. */
 public class IconListPreference extends ListPreference {
     private Drawable mIcons[];
     private Resources mResources;

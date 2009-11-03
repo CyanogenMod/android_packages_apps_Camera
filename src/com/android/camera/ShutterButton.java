@@ -22,13 +22,12 @@ import android.widget.ImageView;
 
 /**
  * A button designed to be used for the on-screen shutter button.
- * It's currently an ImageView that can call a delegate when the pressed state
- * changes.
+ * It's currently an {@code ImageView} that can call a delegate when the
+ * pressed state changes.
  */
 public class ShutterButton extends ImageView {
     /**
-     * Interface definition for a callback to be invoked when a ModeButton's
-     * pressed state changes.
+     * A callback to be invoked when a ShutterButton's pressed state changes.
      */
     public interface OnShutterButtonListener {
         /**

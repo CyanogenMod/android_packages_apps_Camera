@@ -42,11 +42,13 @@ import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.gallery.VideoObject;
 
-// This activity can display a whole picture and navigate them in a specific
-// gallery. It has two modes: normal mode and slide show mode. In normal mode
-// the user view one image at a time, and can click "previous" and "next"
-// button to see the previous or next image. In slide show mode it shows one
-// image after another, with some transition effect.
+/**
+ * An activity displays a full picture and can navigate in a specific image
+ * list.
+ *
+ * <p>The user view one image at a time, and can click "previous" and "next"
+ * button to see the previous or next image.
+ */
 public class ReviewImage extends NoSearchActivity
         implements View.OnClickListener {
     private static final String STATE_URI = "uri";
