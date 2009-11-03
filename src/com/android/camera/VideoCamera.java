@@ -366,8 +366,10 @@ public class VideoCamera extends NoSearchActivity
                 break;
             }
             case R.id.review_thumbnail: {
-                stopVideoRecordingAndShowReview();
-                initializeRecorder();
+                if (!mMediaRecorderRecording) {
+                    stopVideoRecordingAndShowReview();
+                    initializeRecorder();
+                }
                 break;
             }
         }
@@ -1379,6 +1381,7 @@ public class VideoCamera extends NoSearchActivity
 
     public boolean onSwitchChanged(Switcher source, boolean onOff) {
         if (onOff == SWITCH_CAMERA) {
+            if (mMediaRecorderRecording) return false;
             MenuHelper.gotoCameraMode(this);
             finish();
         }
