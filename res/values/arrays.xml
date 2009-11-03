@@ -172,7 +172,7 @@
         <item>incandescent</item>
         <item>daylight</item>
         <item>fluorescent</item>
-        <item>cloudy</item>
+        <item>cloudy-daylight</item>
     </string-array>
 
     <array name="pref_camera_whitebalance_icons">
