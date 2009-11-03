@@ -27,13 +27,16 @@ import java.io.FileDescriptor;
 import java.util.WeakHashMap;
 
 /**
- * This class provides several utilities to cancel bitmap decoding.
+ * Provides utilities to decode bitmap, get thumbnail, and cancel the
+ * operations.
  *
- * The function decodeFileDescriptor() is used to decode a bitmap. During
- * decoding if another thread wants to cancel it, it calls the function
- * cancelThreadDecoding() specifying the Thread which is in decoding.
+ * <p>The function {@link #decodeFileDescriptor(FileDescriptor,
+ * BitmapFactory.Options)} is used to decode a bitmap. During decoding another
+ * thread can cancel it using the function {@link #cancelThreadDecoding(Thread,
+ * ContentResolver)} specifying the {@code Thread} which is in decoding.
  *
- * cancelThreadDecoding() is sticky until allowThreadDecoding() is called.
+ * <p>{@code cancelThreadDecoding(Thread,ContentResolver)} is sticky until
+ * {@code allowThreadDecoding(Thread) } is called.
  */
 public class BitmapManager {
     private static final String TAG = "BitmapManager";
@@ -77,10 +80,10 @@ public class BitmapManager {
         return status;
     }
 
-    /**
-     * The following three methods are used to keep track of
-     * BitmapFaction.Options used for decoding and cancelling.
-     */
+    //
+    // The following two methods are used to keep track of
+    // BitmapFaction.Options used for decoding and cancelling.
+    //
     private synchronized void setDecodingOptions(Thread t,
             BitmapFactory.Options options) {
         getOrCreateThreadStatus(t).mOptions = options;
@@ -91,10 +94,6 @@ public class BitmapManager {
         status.mOptions = null;
     }
 
-    /**
-     * The following three methods are used to keep track of which thread
-     * is being disabled for bitmap decoding.
-     */
     public synchronized boolean canThreadDecoding(Thread t) {
         ThreadStatus status = mThreadStatus.get(t);
         if (status == null) {
@@ -137,6 +136,12 @@ public class BitmapManager {
         }
     }
 
+    /**
+     * Gets the thumbnail of the given ID of the original image.
+     *
+     * <p> This method wraps around @{code getThumbnail} in {@code
+     * android.provider.MediaStore}. It provides the ability to cancel it.
+     */
     public Bitmap getThumbnail(ContentResolver cr, long origId, int kind,
             BitmapFactory.Options options, boolean isVideo) {
         Thread t = Thread.currentThread();

@@ -39,17 +39,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/** A controller shows thumbnail picture on a button. The thumbnail picture
+/**
+ * A controller shows thumbnail picture on a button. The thumbnail picture
  * corresponds to a URI of the original picture/video. The thumbnail bitmap
  * and the URI can be saved to a file (and later loaded from it).
- * <pre>
- *    public ThumbnailController(ImageView button)
- *    public void setData(Uri uri, Bitmap original)
- *    public void updateDisplayIfNeeded()
- *    public Uri getUri()
- *    public boolean storeData(String filePath)
- *    public boolean loadData(String filePath)
- * </pre>
  */
 public class ThumbnailController {
 

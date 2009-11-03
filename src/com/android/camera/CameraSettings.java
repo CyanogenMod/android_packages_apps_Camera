@@ -33,6 +33,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  Provides utilities and keys for Camera settings.
+ */
 public class CameraSettings {
     private static final int FIRST_REQUEST_CODE = 100;
     private static final int NOT_FOUND = -1;

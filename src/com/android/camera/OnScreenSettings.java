@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2009 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.android.camera;
 
 import android.content.Context;
@@ -29,13 +45,20 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// Please reference to {@link android.widget.ZoomButtonsController} for detail
-// information about adding window to WindowManager.
+/**
+ * The on-screen setting menu.
+ *
+ * <p>Please reference to {@code android.widget.ZoomButtonsController} for
+ * detail information about adding window to WindowManager.
+ */
 public class OnScreenSettings {
     @SuppressWarnings("unused")
     private static final String TAG = "OnScreenSettings";
     private static final int MSG_POST_SET_VISIBLE = 1;
 
+    /**
+     * A callback to be invoked when the on-screen menu's visibility changes.
+     */
     public interface OnVisibilityChangedListener {
         public void onVisibilityChanged(boolean visibility);
     }
@@ -398,7 +421,7 @@ public class OnScreenSettings {
                 if (mIconPreference != null) {
                     icon.setVisibility(View.VISIBLE);
                     icon.setImageDrawable(
-                            mIconPreference.getIcons()[position-1]);
+                            mIconPreference.getIcons()[position - 1]);
                 } else {
                     icon.setVisibility(View.GONE);
                 }

@@ -35,7 +35,7 @@ import android.widget.TextView;
  * application.
  * <p>
  * The easiest way to use this class is to call one of the static methods that
- * constructs everything you need and returns a new OnScreenHint object.
+ * constructs everything you need and returns a new {@code OnScreenHint} object.
  */
 public class OnScreenHint {
     static final String TAG = "OnScreenHint";

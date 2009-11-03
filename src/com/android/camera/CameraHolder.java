@@ -28,17 +28,19 @@ import android.util.Log;
 
 import java.io.IOException;
 
-//
-// CameraHolder is used to hold an android.hardware.Camera instance.
-//
-// The open() and release() calls are similar to the ones in
-// android.hardware.Camera. The difference is if keep() is called before
-// release(), CameraHolder will try to hold the android.hardware.Camera
-// instance for a while, so if open() call called soon after, we can avoid
-// the cost of open() in android.hardware.Camera.
-//
-// This is used in switching between Camera and VideoCamera activities.
-//
+/**
+ * The class is used to hold an {@code android.hardware.Camera} instance.
+ *
+ * <p>The {@code open()} and {@code release()} calls are similar to the ones
+ * in {@code android.hardware.Camera}. The difference is if {@code keep()} is
+ * called before {@code release()}, CameraHolder will try to hold the {@code
+ * android.hardware.Camera} instance for a while, so if {@code open()} is
+ * called soon after, we can avoid the cost of {@code open()} in {@code
+ * android.hardware.Camera}.
+ *
+ * <p>This is used in switching between {@code Camera} and {@code VideoCamera}
+ * activities.
+ */
 public class CameraHolder {
     private static final String TAG = "CameraHolder";
     private android.hardware.Camera mCameraDevice;

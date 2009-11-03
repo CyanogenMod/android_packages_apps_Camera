@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * ImageManager is used to retrieve and store images
+ * {@code ImageManager} is used to retrieve and store images
  * in the media content provider.
  */
 public class ImageManager {
@@ -64,8 +64,10 @@ public class ImageManager {
     private static final Uri VIDEO_STORAGE_URI =
             Uri.parse("content://media/external/video/media");
 
-    // ImageListParam specifies all the parameters we need to create an image
-    // list (we also need a ContentResolver).
+    /**
+     * {@code ImageListParam} specifies all the parameters we need to create an
+     * image list (we also need a ContentResolver).
+     */
     public static class ImageListParam implements Parcelable {
         public DataLocation mLocation;
         public int mInclusion;

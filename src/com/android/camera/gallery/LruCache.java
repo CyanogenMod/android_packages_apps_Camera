@@ -22,6 +22,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * An LRU cache which stores recently inserted entries and all entries ever
+ * inserted which still has a strong reference elsewhere.
+ */
 public class LruCache<K, V> {
 
     private final HashMap<K, V> mLruMap;

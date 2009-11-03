@@ -25,15 +25,18 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * This class does reverse geocoding. The input is latitude and longitude,
- * and the output is a descriptive string for the specified location.
+ * A asynchronous task which does reverse geocoding.
  *
- * Because it may take a long time to return, we put it in an AsyncTask. The
- * result is passed to a callback.
+ * <p>Because it may take a long time to return, we put it in an AsyncTask.
+ * The input is latitude and longitude, and the output is a descriptive string
+ * for the specified location. The result is passed to a callback.
  */
 public class ReverseGeocoderTask extends AsyncTask<Void, Void, String> {
     private static final String TAG = "ReverseGeocoder";
 
+    /**
+     * A callback to be invoked when the reverse geocoding task is done.
+     */
     public static interface Callback {
         public void onComplete(String location);
     }

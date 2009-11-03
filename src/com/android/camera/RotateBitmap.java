@@ -20,16 +20,16 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
 /**
- * This class represents a bitmap with a rotation. (The rotation can only be
- * 0, 90, 180, 270 degrees)
+ * This class represents a bitmap with a rotation (The rotation can only be
+ * 0, 90, 180, 270 degrees).
  *
  * Because it takes twice the memory to do the rotation (the original bitmap
- * and the new bitmap). We do not actually rotate the bitmap. We pass the
+ * and the new bitmap), we do not actually rotate the bitmap. We pass the
  * rotation along with the bitmap in the program and only apply the rotation
  * when we are actually drawing the bitmap.
  */
 public class RotateBitmap {
-    public static final String TAG = "RotateBitmap";
+    private static final String TAG = "RotateBitmap";
     private Bitmap mBitmap;
     private int mRotation;
 
