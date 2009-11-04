@@ -865,10 +865,6 @@ public class MenuHelper {
         deleteImpl(activity, onDelete, true);
     }
 
-    static void deleteVideo(Activity activity, Runnable onDelete) {
-        deleteImpl(activity, onDelete, false);
-    }
-
     static void deleteImage(
             Activity activity, Runnable onDelete, IImage image) {
         deleteImpl(activity, onDelete, ImageManager.isImage(image));
@@ -973,29 +969,6 @@ public class MenuHelper {
                     context.getString(R.string.details_hms), h, m, s);
         }
         return durationValue;
-    }
-
-    public static void showStorageToast(Activity activity) {
-        showStorageToast(activity, calculatePicturesRemaining());
-    }
-
-    public static void showStorageToast(Activity activity, int remaining) {
-        String noStorageText = null;
-
-        if (remaining == MenuHelper.NO_STORAGE_ERROR) {
-            String state = Environment.getExternalStorageState();
-            if (state == Environment.MEDIA_CHECKING) {
-                noStorageText = activity.getString(R.string.preparing_sd);
-            } else {
-                noStorageText = activity.getString(R.string.no_storage);
-            }
-        } else if (remaining < 1) {
-            noStorageText = activity.getString(R.string.not_enough_space);
-        }
-
-        if (noStorageText != null) {
-            Toast.makeText(activity, noStorageText, 5000).show();
-        }
     }
 
     public static int calculatePicturesRemaining() {
