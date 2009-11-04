@@ -28,17 +28,12 @@
     <string name="no_storage" msgid="820691042667338625">"Inserta o activa la tarjeta SD para poder utilizar la cámara."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"La tarjeta SD está llena."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"Preparando tarjeta SD…"</string>
-    <string name="wallpaper" msgid="9222901738515471972">"Estableciendo fondo de pantalla..."</string>
-    <string name="savingImage" msgid="3051745378545909260">"Guardando imagen..."</string>
-    <string name="runningFaceDetection" msgid="2293932204708167704">"Por favor, espera..."</string>
     <string name="settings" msgid="1534847740615665736">"Ajustes"</string>
     <string name="details" msgid="8415120088556445230">"Detalles"</string>
     <string name="show_on_map" msgid="441725587731006228">"Mostrar en mapas"</string>
     <string name="rotate" msgid="460017689320955494">"Girar"</string>
     <string name="rotate_left" msgid="5888273317282539839">"Girar a la izquierda"</string>
     <string name="rotate_right" msgid="6776325835923384839">"Girar a la derecha"</string>
-    <string name="crop_save_text" msgid="8140440041190264400">"Guardar"</string>
-    <string name="crop_discard_text" msgid="5303657888280340603">"Descartar"</string>
     <string name="confirm_delete_title" msgid="263478358046514887">"Suprimir"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"Se eliminará la imagen."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"Se eliminará el vídeo."</string>
@@ -213,7 +208,6 @@
     <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> Kbps"</string>
     <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mbps"</string>
     <string name="details_ok" msgid="6848594369924424312">"Aceptar"</string>
-    <string name="multiface_crop_help" msgid="3127018992717032779">"Toca una cara para empezar."</string>
     <string name="sendImage" msgid="7279510542799399570">"Compartir imagen por"</string>
     <string name="setImage" msgid="7246975856983303047">"Establecer imagen como"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Compartir vídeo a través de"</string>

@@ -162,7 +162,7 @@ public class ThumbnailController {
         final int miniThumbHeight = param.height - 2 * PADDING_HEIGHT;
         mThumb = ThumbnailUtil.extractMiniThumb(
                 original, miniThumbWidth, miniThumbHeight,
-                Util.NO_RECYCLE_INPUT);
+                ThumbnailUtil.NO_RECYCLE_INPUT);
         Drawable drawable;
         if (mThumbs == null) {
             mThumbs = new Drawable[2];

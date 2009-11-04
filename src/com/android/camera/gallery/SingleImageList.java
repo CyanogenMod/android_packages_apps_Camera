@@ -40,10 +40,6 @@ public class SingleImageList implements IImageList {
         return 1;
     }
 
-    public boolean isEmpty() {
-        return false;
-    }
-
     public int getImageIndex(IImage image) {
         return image == mSingleImage ? 0 : -1;
     }

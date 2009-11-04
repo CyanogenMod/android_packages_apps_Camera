@@ -28,17 +28,12 @@
     <string name="no_storage" msgid="820691042667338625">"Plaats een SD-kaart voordat u de camera gebruikt."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"De SD-kaart is vol."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"SD-kaart voorbereiden…"</string>
-    <string name="wallpaper" msgid="9222901738515471972">"Achtergrond wordt ingesteld. Een ogenblik geduld..."</string>
-    <string name="savingImage" msgid="3051745378545909260">"Foto opslaan..."</string>
-    <string name="runningFaceDetection" msgid="2293932204708167704">"Een ogenblik geduld..."</string>
     <string name="settings" msgid="1534847740615665736">"Instellingen"</string>
     <string name="details" msgid="8415120088556445230">"Details"</string>
     <string name="show_on_map" msgid="441725587731006228">"Weergeven op Maps"</string>
     <string name="rotate" msgid="460017689320955494">"Draaien"</string>
     <string name="rotate_left" msgid="5888273317282539839">"Linksom draaien"</string>
     <string name="rotate_right" msgid="6776325835923384839">"Rechtsom draaien"</string>
-    <string name="crop_save_text" msgid="8140440041190264400">"Opslaan"</string>
-    <string name="crop_discard_text" msgid="5303657888280340603">"Ongedaan maken"</string>
     <string name="confirm_delete_title" msgid="263478358046514887">"Verwijderen"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"De foto wordt verwijderd."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"De video wordt verwijderd."</string>
@@ -213,7 +208,6 @@
     <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> kbps"</string>
     <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mbps"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="multiface_crop_help" msgid="3127018992717032779">"Tik op een gezicht om te beginnen."</string>
     <string name="sendImage" msgid="7279510542799399570">"Foto delen via"</string>
     <string name="setImage" msgid="7246975856983303047">"Foto instellen als"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Video delen via"</string>

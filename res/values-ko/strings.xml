@@ -28,17 +28,12 @@
     <string name="no_storage" msgid="820691042667338625">"카메라를 사용하려면 SD 카드를 넣으세요."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"SD 카드가 꽉 찼습니다."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"SD 카드 준비중..."</string>
-    <string name="wallpaper" msgid="9222901738515471972">"배경화면을 설정하는 중입니다. 잠시 기다려 주세요..."</string>
-    <string name="savingImage" msgid="3051745378545909260">"사진 저장 중..."</string>
-    <string name="runningFaceDetection" msgid="2293932204708167704">"잠시 기다려 주세요..."</string>
     <string name="settings" msgid="1534847740615665736">"설정"</string>
     <string name="details" msgid="8415120088556445230">"세부정보"</string>
     <string name="show_on_map" msgid="441725587731006228">"지도에 표시"</string>
     <string name="rotate" msgid="460017689320955494">"회전"</string>
     <string name="rotate_left" msgid="5888273317282539839">"왼쪽으로 회전"</string>
     <string name="rotate_right" msgid="6776325835923384839">"오른쪽으로 회전"</string>
-    <string name="crop_save_text" msgid="8140440041190264400">"저장"</string>
-    <string name="crop_discard_text" msgid="5303657888280340603">"취소"</string>
     <string name="confirm_delete_title" msgid="263478358046514887">"삭제"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"사진이 삭제됩니다."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"동영상이 삭제됩니다."</string>
@@ -209,7 +204,6 @@
     <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g>Kbps"</string>
     <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g>Mbps"</string>
     <string name="details_ok" msgid="6848594369924424312">"확인"</string>
-    <string name="multiface_crop_help" msgid="3127018992717032779">"시작하려면 얼굴을 탭하세요."</string>
     <string name="sendImage" msgid="7279510542799399570">"사진 공유 응용프로그램"</string>
     <string name="setImage" msgid="7246975856983303047">"사진을 다음으로 설정"</string>
     <string name="sendVideo" msgid="3598567735831863073">"동영상 공유 응용프로그램"</string>

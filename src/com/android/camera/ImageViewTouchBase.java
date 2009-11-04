@@ -317,26 +317,6 @@ abstract class ImageViewTouchBase extends ImageView {
         center(true, true);
     }
 
-    protected void zoomTo(final float scale, final float centerX,
-                          final float centerY, final float durationMs) {
-        final float incrementPerMs = (scale - getScale()) / durationMs;
-        final float oldScale = getScale();
-        final long startTime = System.currentTimeMillis();
-
-        mHandler.post(new Runnable() {
-            public void run() {
-                long now = System.currentTimeMillis();
-                float currentMs = Math.min(durationMs, now - startTime);
-                float target = oldScale + (incrementPerMs * currentMs);
-                zoomTo(target, centerX, centerY);
-
-                if (currentMs < durationMs) {
-                    mHandler.post(this);
-                }
-            }
-        });
-    }
-
     protected void zoomTo(float scale) {
         float cx = getWidth() / 2F;
         float cy = getHeight() / 2F;

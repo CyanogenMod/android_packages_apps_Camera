@@ -75,18 +75,10 @@ public class ImageListUber implements IImageList {
         return count;
     }
 
-    public boolean isEmpty() {
-        for (IImageList subList : mSubList) {
-            if (!subList.isEmpty()) return false;
-        }
-        return true;
-    }
-
     // mSkipCounts is used to tally the counts as we traverse
     // the mSkipList.  It's a member variable only so that
     // we don't have to allocate each time through.  Otherwise
     // it could just as easily be a local.
-
     public IImage getImageAt(int index) {
         if (index < 0 || index > getCount()) {
             throw new IndexOutOfBoundsException(

@@ -353,15 +353,6 @@ public class VideoCamera extends NoSearchActivity
                 stopVideoRecording();
                 doReturnToCaller(false);
                 break;
-            case R.id.discard: {
-                Runnable deleteCallback = new Runnable() {
-                    public void run() {
-                        discardCurrentVideoAndInitRecorder();
-                    }
-                };
-                MenuHelper.deleteVideo(this, deleteCallback);
-                break;
-            }
             case R.id.review_thumbnail: {
                 if (!mMediaRecorderRecording) {
                     stopVideoRecordingAndShowReview();

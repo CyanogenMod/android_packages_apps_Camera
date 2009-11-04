@@ -64,6 +64,9 @@ public class ImageManager {
     private static final Uri VIDEO_STORAGE_URI =
             Uri.parse("content://media/external/video/media");
 
+    private ImageManager() {
+    }
+
     /**
      * {@code ImageListParam} specifies all the parameters we need to create an
      * image list (we also need a ContentResolver).
@@ -80,7 +83,8 @@ public class ImageManager {
         // This is only used if we are creating an empty image list.
         public boolean mIsEmptyImageList;
 
-        public ImageListParam() {}
+        public ImageListParam() {
+        }
 
         public void writeToParcel(Parcel out, int flags) {
             out.writeInt(mLocation.ordinal());
@@ -413,10 +417,6 @@ public class ImageManager {
 
         public int getCount() {
             return 0;
-        }
-
-        public boolean isEmpty() {
-            return true;
         }
 
         public IImage getImageAt(int i) {
