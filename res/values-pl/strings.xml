@@ -28,17 +28,12 @@
     <string name="no_storage" msgid="820691042667338625">"Zanim zaczniesz korzystać z aparatu fotograficznego, włóż kartę SD."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"Karta SD jest pełna."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"Przygotowywanie karty SD..."</string>
-    <string name="wallpaper" msgid="9222901738515471972">"Ustawianie tapety, proszę czekać…"</string>
-    <string name="savingImage" msgid="3051745378545909260">"Trwa zapisywanie zdjęcia…"</string>
-    <string name="runningFaceDetection" msgid="2293932204708167704">"Proszę czekać…"</string>
     <string name="settings" msgid="1534847740615665736">"Ustawienia"</string>
     <string name="details" msgid="8415120088556445230">"Szczegóły"</string>
     <string name="show_on_map" msgid="441725587731006228">"Pokaż w Mapach Google"</string>
     <string name="rotate" msgid="460017689320955494">"Obróć"</string>
     <string name="rotate_left" msgid="5888273317282539839">"Obróć w lewo"</string>
     <string name="rotate_right" msgid="6776325835923384839">"Obróć w prawo"</string>
-    <string name="crop_save_text" msgid="8140440041190264400">"Zapisz"</string>
-    <string name="crop_discard_text" msgid="5303657888280340603">"Odrzuć"</string>
     <string name="confirm_delete_title" msgid="263478358046514887">"Usuń"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"Zdjęcie zostanie usunięte."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"Film wideo zostanie usunięty."</string>
@@ -213,7 +208,6 @@
     <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> kb/s"</string>
     <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mb/s"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="multiface_crop_help" msgid="3127018992717032779">"Dotknij twarzy, aby rozpocząć"</string>
     <string name="sendImage" msgid="7279510542799399570">"Prześlij zdjęcie następującą drogą:"</string>
     <string name="setImage" msgid="7246975856983303047">"Ustaw zdjęcie jako"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Prześlij film następującą drogą:"</string>

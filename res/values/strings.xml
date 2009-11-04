@@ -50,17 +50,7 @@
     <!-- alert to the user to that the SD card is being disk-checked -->
     <string name="preparing_sd">Preparing SD card\u2026</string>
 
-    <!-- Toast/alert after saving wallpaper -->
-    <string name="wallpaper">Setting wallpaper, please wait\u2026</string>
-
     <!-- Settings stuff -->
-
-    <!-- Toast/alert that the image is being saved to the SD card -->
-    <string name="savingImage">Saving picture\u2026</string>
-
-    <!-- Toast/alert that the face detection is being run -->
-    <string name="runningFaceDetection">Please wait\u2026</string>
-
 
     <!-- Menu items: -->
     <!-- menu pick to go to the settings screen -->
@@ -80,11 +70,6 @@
 
     <!-- menu pick to rotate the currently selected image to the right -->
     <string name="rotate_right">Rotate right</string>
-
-    <!-- button indicating that the cropped image should be saved -->
-    <string name="crop_save_text">Save</string>
-    <!-- button indicating that the cropped image should be reverted back to the original -->
-    <string name="crop_discard_text">Discard</string>
 
     <!-- Confirmation dialog title after deleting a picture -->
     <string name="confirm_delete_title">Delete</string>
@@ -362,9 +347,6 @@
     <string name="details_mbps"><xliff:g id="speed" example="2.3">%1$g</xliff:g> Mbps</string>
     <!-- Details dialog "OK" button. Dismisses dialog. -->
     <string name="details_ok">OK</string>
-
-    <!-- Hint that appears when cropping an image with more than one face -->
-    <string name="multiface_crop_help">Tap a face to begin.</string>
 
     <!-- Displayed in the title of the dialog for things to do with a picture that
          is to be sent to another application: -->

@@ -51,11 +51,6 @@ public interface IImageList {
     public int getCount();
 
     /**
-     * @return true if the count of image objects is zero.
-     */
-    public boolean isEmpty();
-
-    /**
      * Returns the image at the ith position.
      *
      * @param i     the position
