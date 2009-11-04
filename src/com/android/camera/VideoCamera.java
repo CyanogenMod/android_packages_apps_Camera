@@ -955,9 +955,17 @@ public class VideoCamera extends NoSearchActivity
             Uri videoTable = Uri.parse("content://media/external/video/media");
             mCurrentVideoValues.put(Video.Media.SIZE,
                     new File(mCurrentVideoFilename).length());
-            mCurrentVideoUri = mContentResolver.insert(videoTable,
-                    mCurrentVideoValues);
-            Log.v(TAG, "Current video URI: " + mCurrentVideoUri);
+            try {
+                mCurrentVideoUri = mContentResolver.insert(videoTable,
+                        mCurrentVideoValues);
+            } catch (Exception e) {
+                // We failed to insert into the database. This can happen if
+                // the SD card is unmounted.
+                mCurrentVideoUri = null;
+                mCurrentVideoFilename = null;
+            } finally {
+                Log.v(TAG, "Current video URI: " + mCurrentVideoUri);
+            }
         }
         mCurrentVideoValues = null;
     }
