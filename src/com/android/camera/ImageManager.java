@@ -339,8 +339,7 @@ public class ImageManager {
 
         if (haveSdCard && location != DataLocation.INTERNAL) {
             if ((inclusion & INCLUDE_IMAGES) != 0) {
-                l.add(new ImageList(
-                        cr, STORAGE_URI, THUMB_URI, sort, bucketId));
+                l.add(new ImageList(cr, STORAGE_URI, sort, bucketId));
             }
             if ((inclusion & INCLUDE_VIDEOS) != 0) {
                 l.add(new VideoList(cr, VIDEO_STORAGE_URI, sort, bucketId));
@@ -349,9 +348,7 @@ public class ImageManager {
         if (location == DataLocation.INTERNAL || location == DataLocation.ALL) {
             if ((inclusion & INCLUDE_IMAGES) != 0) {
                 l.add(new ImageList(cr,
-                        Images.Media.INTERNAL_CONTENT_URI,
-                        Images.Thumbnails.INTERNAL_CONTENT_URI,
-                        sort, bucketId));
+                        Images.Media.INTERNAL_CONTENT_URI, sort, bucketId));
             }
             if ((inclusion & INCLUDE_DRM_IMAGES) != 0) {
                 l.add(new DrmImageList(

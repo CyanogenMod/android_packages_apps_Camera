@@ -36,10 +36,9 @@ public class ImageList extends BaseImageList implements IImageList {
     /**
      * ImageList constructor.
      */
-    public ImageList(ContentResolver resolver, Uri imageUri, Uri thumbUri,
+    public ImageList(ContentResolver resolver, Uri imageUri,
             int sort, String bucketId) {
         super(resolver, imageUri, sort, bucketId);
-        mThumbUri = thumbUri;
     }
 
     private static final String WHERE_CLAUSE =
