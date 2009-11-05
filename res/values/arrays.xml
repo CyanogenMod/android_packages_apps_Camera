@@ -199,8 +199,6 @@
         <item>@string/pref_camera_coloreffect_entry_negative</item>
         <item>@string/pref_camera_coloreffect_entry_solarize</item>
         <item>@string/pref_camera_coloreffect_entry_posterize</item>
-        <item>@string/pref_camera_coloreffect_entry_whiteboard</item>
-        <item>@string/pref_camera_coloreffect_entry_blackboard</item>
         <item>@string/pref_camera_coloreffect_entry_aqua</item>
         <item>@string/pref_camera_coloreffect_entry_pastel</item>
         <item>@string/pref_camera_coloreffect_entry_mosaic</item>
@@ -216,8 +214,6 @@
         <item>negative</item>
         <item>solarize</item>
         <item>posterize</item>
-        <item>whiteboard</item>
-        <item>blackboard</item>
         <item>aqua</item>
         <item>pastel</item>
         <item>mosaic</item>
