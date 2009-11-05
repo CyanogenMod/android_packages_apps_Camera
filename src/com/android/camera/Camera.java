@@ -602,14 +602,25 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 mJpegPictureCallbackTime - mRawPictureCallbackTime;
             Log.v(TAG, "mRawPictureAndJpegPictureCallbackTime = "
                     + mRawPictureAndJpegPictureCallbackTime + "ms");
-            mImageCapture.storeImage(jpegData, camera, mLocation);
 
             if (!mIsImageCaptureIntent) {
+                // We want to show the taken picture for a while, so we wait
+                // for at least 1.2 second before restarting the preview.
                 long delay = 1200 - (
                         System.currentTimeMillis() - mRawPictureCallbackTime);
-                mHandler.sendEmptyMessageDelayed(
-                        RESTART_PREVIEW, Math.max(delay, 0));
+                if (delay < 0) {
+                    restartPreview();
+                } else {
+                    mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, delay);
+                }
             }
+            mImageCapture.storeImage(jpegData, camera, mLocation);
+
+            // Calculate this in advance of each shot so we don't add to shutter
+            // latency. It's true that someone else could write to the SD card in
+            // the mean time and fill it, but that could have happened between the
+            // shutter press and saving the JPEG too.
+            calculatePicturesRemaining();
         }
     }
 
@@ -1539,12 +1550,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             showCameraErrorAndFinish();
             return;
         }
-
-        // Calculate this in advance of each shot so we don't add to shutter
-        // latency. It's true that someone else could write to the SD card in
-        // the mean time and fill it, but that could have happened between the
-        // shutter press and saving the JPEG too.
-        calculatePicturesRemaining();
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
