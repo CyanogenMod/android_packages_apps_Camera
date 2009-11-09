@@ -37,7 +37,7 @@ public class CameraSettings {
             "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
 
-    public static final int CURRENT_VERSION = 1;
+    public static final int CURRENT_VERSION = 2;
 
     // max mms video duration in seconds.
     public static final int MMS_VIDEO_DURATION =
@@ -249,6 +249,20 @@ public class CameraSettings {
             if (pref.getString(KEY_VIDEO_DURATION, "1").equals("1")) {
                 editor.putString(KEY_VIDEO_DURATION, "10");
             }
+            version = 1;
+        }
+        if (version == 1) {
+            // Change jpeg quality {65,75,85} to {normal,fine,superfine}
+            String quality = pref.getString(KEY_JPEG_QUALITY, "85");
+            if (quality.equals("65")) {
+                quality = "normal";
+            } else if (quality.equals("75")) {
+                quality = "fine";
+            } else {
+                quality = "superfine";
+            }
+            editor.putString(KEY_JPEG_QUALITY, quality);
+            version = 2;
         }
         editor.putInt(KEY_VERSION, CURRENT_VERSION);
         editor.commit();
