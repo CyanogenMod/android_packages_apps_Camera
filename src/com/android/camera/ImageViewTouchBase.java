@@ -114,8 +114,6 @@ abstract class ImageViewTouchBase extends ImageView {
         return super.onKeyUp(keyCode, event);
     }
 
-    protected Handler mHandler = new Handler();
-
     @Override
     public void setImageBitmap(Bitmap bitmap) {
         setImageBitmap(bitmap, 0);
