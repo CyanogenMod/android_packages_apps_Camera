@@ -24,6 +24,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -142,8 +143,9 @@ public class OnScreenSettings {
         mIsVisible = visible;
 
         if (visible) {
-            // Update main adapter before show up
-            if (mMainAdapter != null) mMainAdapter.notifyDataSetChanged();
+            // Invalid the main adapter before show up, so it would be like
+            // a new created list
+            if (mMainAdapter != null) mMainAdapter.notifyDataSetInvalidated();
             if (mContainerLayoutParams.token == null) {
                 mContainerLayoutParams.token = mOwnerView.getWindowToken();
             }
