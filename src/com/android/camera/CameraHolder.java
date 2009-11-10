@@ -73,7 +73,14 @@ public class CameraHolder {
         public void handleMessage(Message msg) {
             switch(msg.what) {
                 case RELEASE_CAMERA:
-                    releaseCamera();
+                    synchronized (CameraHolder.this) {
+                        // In 'CameraHolder.open', the 'RELEASE_CAMERA' message
+                        // will be removed if it is found in the queue. However,
+                        // there is a chance that this message has been handled
+                        // before being removed. So, we need to add a check
+                        // here:
+                        if (CameraHolder.this.mUsers == 0) releaseCamera();
+                    }
                     break;
             }
         }
