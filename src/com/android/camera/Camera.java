@@ -44,6 +44,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
@@ -875,6 +876,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        CameraSettings.upgradePreferences(mPreferences);
 
         /*
          * To reduce startup time, we start the preview in another thread.
@@ -1727,7 +1729,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         String jpegQuality = mPreferences.getString(
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
-        mParameters.setJpegQuality(Integer.parseInt(jpegQuality));
+        mParameters.setJpegQuality(getQualityNumber(jpegQuality));
 
         // Set zoom.
         if (mParameters.isZoomSupported()) {
@@ -2039,6 +2041,28 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
+    }
+
+    private static String[] mQualityStrings = {"superfine", "fine", "normal"};
+    private static String[] mQualityNumbers = SystemProperties.get(
+            "ro.media.enc.jpeg.quality", "85,75,65").split(",");
+    private static int DEFAULT_QUALITY = 85;
+
+    // Translate from a quality string to a quality number using the system
+    // properties.
+    private static int getQualityNumber(String jpegQuality) {
+        // Find the index of the input string
+        int index = Util.indexOf(mQualityStrings, jpegQuality);
+
+        if (index == -1 || index > mQualityNumbers.length - 1) {
+            return DEFAULT_QUALITY;
+        }
+
+        try {
+            return Integer.parseInt(mQualityNumbers[index]);
+        } catch (NumberFormatException ex) {
+            return DEFAULT_QUALITY;
+        }
     }
 }
 
