@@ -45,7 +45,6 @@ public abstract class BaseImage implements IImage {
     protected Uri mUri;
     protected long mId;
     protected String mDataPath;
-    protected long mMiniThumbMagic;
     protected final int mIndex;
     protected String mMimeType;
     private final long mDateTaken;
@@ -66,7 +65,6 @@ public abstract class BaseImage implements IImage {
         mIndex = index;
         mUri = uri;
         mDataPath = dataPath;
-        mMiniThumbMagic = miniThumbMagic;
         mMimeType = mimeType;
         mDateTaken = dateTaken;
         mTitle = title;

@@ -70,7 +70,6 @@ public class OnScreenSettings {
     private final View mOwnerView;
     private ListView mMainMenu;
     private ListView mSubMenu;
-    private View mMainPanel;
     private boolean mIsVisible = false;
     private OnVisibilityChangedListener mVisibilityListener;
     private MainMenuAdapter mMainAdapter;
@@ -216,7 +215,6 @@ public class OnScreenSettings {
 
         mInflater.inflate(R.layout.on_screen_menu, container);
 
-        mMainPanel = container.findViewById(R.id.main_panel);
         mMainMenu = (ListView) container.findViewById(R.id.menu_view);
         mSubMenu = (ListView) container.findViewById(R.id.sub_menu);
 

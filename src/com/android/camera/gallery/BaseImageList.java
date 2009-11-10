@@ -43,7 +43,6 @@ public abstract class BaseImageList implements IImageList {
     protected Uri mBaseUri;
     protected Cursor mCursor;
     protected String mBucketId;
-    protected Uri mThumbUri;
     protected boolean mCursorDeactivated = false;
 
     public BaseImageList(ContentResolver resolver, Uri uri, int sort,

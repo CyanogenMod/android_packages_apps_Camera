@@ -41,7 +41,6 @@ public class OnScreenHint {
     static final String TAG = "OnScreenHint";
     static final boolean LOCAL_LOGV = false;
 
-    final Context mContext;
     int mGravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
     int mX, mY;
     float mHorizontalMargin;
@@ -63,7 +62,6 @@ public class OnScreenHint {
      *                 {@link android.app.Activity} object.
      */
     public OnScreenHint(Context context) {
-        mContext = context;
         mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mY = context.getResources().getDimensionPixelSize(
                 R.dimen.hint_y_offset);

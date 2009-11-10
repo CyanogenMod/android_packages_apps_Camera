@@ -203,8 +203,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     public long mJpegPictureCallbackTimeLag;
     public long mRawPictureAndJpegPictureCallbackTime;
 
-    // Add the media server tag
+    // Add for test
     public static boolean mMediaServerDied = false;
+
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
 
@@ -663,7 +664,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private final class ErrorCallback
+    private static final class ErrorCallback
         implements android.hardware.Camera.ErrorCallback {
         public void onError(int error, android.hardware.Camera camera) {
             if (error == android.hardware.Camera.CAMERA_ERROR_SERVER_DIED) {
