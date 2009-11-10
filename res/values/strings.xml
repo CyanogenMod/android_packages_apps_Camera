@@ -182,8 +182,9 @@
     <!-- Settings screen, picture size dialog title -->
     <string name="pref_camera_picturesize_dialogtitle">Picture size</string>
 
-    <!-- Default picture quality setting.-->
-    <string name="pref_camera_jpegquality_default" translatable="false">85</string>
+    <!-- Default picture quality setting. See
+         pref_camera_jpegquality_entryvalues for possible values -->
+    <string name="pref_camera_jpegquality_default" translatable="false">superfine</string>
 
     <!-- Settings screen, Picture quality title -->
     <string name="pref_camera_jpegquality_title">Picture quality</string>
