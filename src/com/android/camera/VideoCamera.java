@@ -136,6 +136,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     private String mCurrentVideoFilename;
     private Uri mCurrentVideoUri;
     private ContentValues mCurrentVideoValues;
+    private IconIndicator mWhitebalanceIndicator;
 
     private MediaRecorderProfile mProfile;
 
@@ -310,6 +311,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mShutterButton.requestFocus();
         mGripper = findViewById(R.id.btn_gripper);
         mGripper.setOnTouchListener(new GripperTouchListener());
+
+        mWhitebalanceIndicator =
+                (IconIndicator) findViewById(R.id.whitebalance_icon);
 
         // Make sure preview is started.
         try {
@@ -1400,8 +1404,9 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         mParameters.setPreviewFrameRate(mProfile.mVideoFps);
 
         // Set white balance parameter.
+        String whiteBalance = Parameters.WHITE_BALANCE_AUTO;
         if (mParameters.getSupportedWhiteBalance() != null) {
-            String whiteBalance = mPreferences.getString(
+            whiteBalance = mPreferences.getString(
                     CameraSettings.KEY_WHITE_BALANCE,
                     getString(R.string.pref_camera_whitebalance_default));
             mParameters.setWhiteBalance(whiteBalance);
@@ -1416,6 +1421,16 @@ public class VideoCamera extends Activity implements View.OnClickListener,
         }
 
         mCameraDevice.setParameters(mParameters);
+
+        final String finalWhiteBalance = whiteBalance;
+
+        // It can be execute from the startPreview thread, so we post it
+        // to the main UI thread
+        mHandler.post(new Runnable() {
+            public void run() {
+                mWhitebalanceIndicator.setMode(finalWhiteBalance);
+            }
+        });
     }
 
     public boolean onSwitchChanged(Switcher source, boolean onOff) {
