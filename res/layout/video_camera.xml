@@ -71,8 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <com.android.camera.IconIndicator
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/IconIndicator"
                         android:id="@+id/whitebalance_icon"
                         camera:modes="@array/pref_camera_whitebalance_entryvalues"
                         camera:icons="@array/whitebalance_icons"/>
