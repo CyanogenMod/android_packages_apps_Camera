@@ -179,6 +179,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private final OneShotPreviewCallback mOneShotPreviewCallback =
             new OneShotPreviewCallback();
     private final ShutterCallback mShutterCallback = new ShutterCallback();
+    private final PostViewPictureCallback mPostViewPictureCallback =
+            new PostViewPictureCallback();
     private final RawPictureCallback mRawPictureCallback =
             new RawPictureCallback();
     private final AutoFocusCallback mAutoFocusCallback =
@@ -192,6 +194,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private long mFocusCallbackTime;
     private long mCaptureStartTime;
     private long mShutterCallbackTime;
+    private long mPostViewPictureCallbackTime;
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
     private int mPicturesRemaining;
@@ -199,9 +202,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // These latency time are for the CameraLatency test.
     public long mAutoFocusTime;
     public long mShutterLag;
-    public long mShutterAndRawPictureCallbackTime;
-    public long mJpegPictureCallbackTimeLag;
-    public long mRawPictureAndJpegPictureCallbackTime;
+    public long mShutterToPictureDisplayedTime;
+    public long mPictureDisplayedToJpegCallbackTime;
+    public long mJpegCallbackToFirstFrameTime;
 
     // Add for test
     public static boolean mMediaServerDied = false;
@@ -556,9 +559,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                                    android.hardware.Camera camera) {
             long now = System.currentTimeMillis();
             if (mJpegPictureCallbackTime != 0) {
-                mJpegPictureCallbackTimeLag = now - mJpegPictureCallbackTime;
-                Log.v(TAG, "mJpegPictureCallbackTimeLag = "
-                        + mJpegPictureCallbackTimeLag + "ms");
+                mJpegCallbackToFirstFrameTime = now - mJpegPictureCallbackTime;
+                Log.v(TAG, "mJpegCallbackToFirstFrameTime = "
+                        + mJpegCallbackToFirstFrameTime + "ms");
                 mJpegPictureCallbackTime = 0;
             } else {
                 Log.v(TAG, "Got first frame");
@@ -576,14 +579,22 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
+    private final class PostViewPictureCallback implements PictureCallback {
+        public void onPictureTaken(
+                byte [] data, android.hardware.Camera camera) {
+            mPostViewPictureCallbackTime = System.currentTimeMillis();
+            Log.v(TAG, "mShutterToPostViewCallbackTime = "
+                    + (mPostViewPictureCallbackTime - mShutterCallbackTime)
+                    + "ms");
+        }
+    }
+
     private final class RawPictureCallback implements PictureCallback {
         public void onPictureTaken(
                 byte [] rawData, android.hardware.Camera camera) {
             mRawPictureCallbackTime = System.currentTimeMillis();
-            mShutterAndRawPictureCallbackTime =
-                mRawPictureCallbackTime - mShutterCallbackTime;
-            Log.v(TAG, "mShutterAndRawPictureCallbackTime = "
-                    + mShutterAndRawPictureCallbackTime + "ms");
+            Log.v(TAG, "mShutterToRawCallbackTime = "
+                    + (mRawPictureCallbackTime - mShutterCallbackTime) + "ms");
         }
     }
 
@@ -601,16 +612,27 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
-            mRawPictureAndJpegPictureCallbackTime =
-                mJpegPictureCallbackTime - mRawPictureCallbackTime;
-            Log.v(TAG, "mRawPictureAndJpegPictureCallbackTime = "
-                    + mRawPictureAndJpegPictureCallbackTime + "ms");
+            // If postview callback has arrived, the captured image is displayed
+            // in postview callback. If not, the captured image is displayed in
+            // raw picture callback.
+            if (mPostViewPictureCallbackTime != 0) {
+                mShutterToPictureDisplayedTime =
+                        mPostViewPictureCallbackTime - mShutterCallbackTime;
+                mPictureDisplayedToJpegCallbackTime =
+                        mJpegPictureCallbackTime - mPostViewPictureCallbackTime;
+            } else {
+                mShutterToPictureDisplayedTime =
+                        mRawPictureCallbackTime - mShutterCallbackTime;
+                mPictureDisplayedToJpegCallbackTime =
+                        mJpegPictureCallbackTime - mRawPictureCallbackTime;
+            }
+            Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
+                    + mPictureDisplayedToJpegCallbackTime + "ms");
 
             if (!mIsImageCaptureIntent) {
                 // We want to show the taken picture for a while, so we wait
                 // for at least 1.2 second before restarting the preview.
-                long delay = 1200 - (
-                        System.currentTimeMillis() - mRawPictureCallbackTime);
+                long delay = 1200 - mPictureDisplayedToJpegCallbackTime;
                 if (delay < 0) {
                     restartPreview();
                 } else {
@@ -814,7 +836,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mCameraDevice.setParameters(mParameters);
 
             mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
-                    new JpegPictureCallback(loc));
+                    mPostViewPictureCallback, new JpegPictureCallback(loc));
             mPreviewing = false;
         }
 
@@ -824,6 +846,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 return;
             }
             mCaptureStartTime = System.currentTimeMillis();
+            mPostViewPictureCallbackTime = 0;
 
             // Don't check the filesystem here, we can't afford the latency.
             // Instead, check the cached value which was calculated when the
