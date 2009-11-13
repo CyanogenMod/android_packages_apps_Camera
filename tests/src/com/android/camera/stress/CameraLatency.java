@@ -115,7 +115,8 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
                     + mAvgShutterToPictureDisplayedTime + "\n");
             out.write("Avg mPictureDisplayedToJpegCallbackTime = "
                     + mAvgPictureDisplayedToJpegCallbackTime + "\n");
-            out.write("Avg mJpegCallbackToFirstFrameTime = " + mAvgJpegCallbackToFirstFrameTime + "\n");
+            out.write("Avg mJpegCallbackToFirstFrameTime = " +
+                    mAvgJpegCallbackToFirstFrameTime + "\n");
             out.close();
             fstream.close();
         } catch (Exception e) {
