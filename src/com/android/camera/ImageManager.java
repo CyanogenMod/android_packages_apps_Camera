@@ -16,13 +16,10 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.BaseCancelable;
 import com.android.camera.gallery.BaseImageList;
-import com.android.camera.gallery.Cancelable;
 import com.android.camera.gallery.DrmImageList;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.Image;
 import com.android.camera.gallery.ImageList;
 import com.android.camera.gallery.ImageListUber;
 import com.android.camera.gallery.SingleImageList;
@@ -30,26 +27,29 @@ import com.android.camera.gallery.VideoList;
 import com.android.camera.gallery.VideoObject;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.location.Location;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.DrmStore;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
 
 /**
  * ImageManager is used to retrieve and store images
@@ -65,22 +65,73 @@ public class ImageManager {
     private static final Uri VIDEO_STORAGE_URI =
             Uri.parse("content://media/external/video/media");
 
-    /**
-     * Enumerate type for the location of the images in gallery.
-     */
+    // ImageListParam specifies all the parameters we need to create an image
+    // list (we also need a ContentResolver).
+    public static class ImageListParam implements Parcelable {
+        public DataLocation mLocation;
+        public int mInclusion;
+        public int mSort;
+        public String mBucketId;
+
+        // This is only used if we are creating a single image list.
+        public Uri mSingleImageUri;
+
+        // This is only used if we are creating an empty image list.
+        public boolean mIsEmptyImageList;
+
+        public ImageListParam() {}
+
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeInt(mLocation.ordinal());
+            out.writeInt(mInclusion);
+            out.writeInt(mSort);
+            out.writeString(mBucketId);
+            out.writeParcelable(mSingleImageUri, flags);
+            out.writeInt(mIsEmptyImageList ? 1 : 0);
+        }
+
+        private ImageListParam(Parcel in) {
+            mLocation = DataLocation.values()[in.readInt()];
+            mInclusion = in.readInt();
+            mSort = in.readInt();
+            mBucketId = in.readString();
+            mSingleImageUri = in.readParcelable(null);
+            mIsEmptyImageList = (in.readInt() != 0);
+        }
+
+        public String toString() {
+            return String.format("ImageListParam{loc=%s,inc=%d,sort=%d," +
+                "bucket=%s,empty=%b,single=%s}", mLocation, mInclusion,
+                mSort, mBucketId, mIsEmptyImageList, mSingleImageUri);
+        }
+
+        public static final Parcelable.Creator CREATOR
+                = new Parcelable.Creator() {
+            public ImageListParam createFromParcel(Parcel in) {
+                return new ImageListParam(in);
+            }
+
+            public ImageListParam[] newArray(int size) {
+                return new ImageListParam[size];
+            }
+        };
+
+        public int describeContents() {
+            return 0;
+        }
+    }
+
+    // Location
     public static enum DataLocation { NONE, INTERNAL, EXTERNAL, ALL }
 
-    public static final Bitmap DEFAULT_THUMBNAIL =
-            Bitmap.createBitmap(32, 32, Bitmap.Config.RGB_565);
-    public static final Bitmap NO_IMAGE_BITMAP =
-            Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
-
-    public static final int SORT_ASCENDING = 1;
-    public static final int SORT_DESCENDING = 2;
-
+    // Inclusion
     public static final int INCLUDE_IMAGES = (1 << 0);
     public static final int INCLUDE_DRM_IMAGES = (1 << 1);
     public static final int INCLUDE_VIDEOS = (1 << 2);
+
+    // Sort
+    public static final int SORT_ASCENDING = 1;
+    public static final int SORT_DESCENDING = 2;
 
     public static final String CAMERA_IMAGE_BUCKET_NAME =
             Environment.getExternalStorageDirectory().toString()
@@ -143,9 +194,11 @@ public class ImageManager {
     /**
      * @return true if the mimetype is a video mimetype.
      */
+    /* This is commented out because isVideo is not calling this now.
     public static boolean isVideoMimeType(String mimeType) {
         return mimeType.startsWith("video/");
     }
+    */
 
     /**
      * @return true if the image is an image.
@@ -169,9 +222,41 @@ public class ImageManager {
         cr.update(uri, values, null, null);
     }
 
-    public static Uri addImage(ContentResolver cr, String title,
-            long dateTaken, Location location,
-            int orientation, String directory, String filename) {
+    //
+    // Stores a bitmap or a jpeg byte array to a file (using the specified
+    // directory and filename). Also add an entry to the media store for
+    // this picture. The title, dateTaken, location are attributes for the
+    // picture. The degree is a one element array which returns the orientation
+    // of the picture.
+    //
+    public static Uri addImage(ContentResolver cr, String title, long dateTaken,
+            Location location, String directory, String filename,
+            Bitmap source, byte[] jpegData, int[] degree) {
+        // We should store image data earlier than insert it to ContentProvider, otherwise
+        // we may not be able to generate thumbnail in time.
+        OutputStream outputStream = null;
+        String filePath = directory + "/" + filename;
+        try {
+            File dir = new File(directory);
+            if (!dir.exists()) dir.mkdirs();
+            File file = new File(directory, filename);
+            outputStream = new FileOutputStream(file);
+            if (source != null) {
+                source.compress(CompressFormat.JPEG, 75, outputStream);
+                degree[0] = 0;
+            } else {
+                outputStream.write(jpegData);
+                degree[0] = getExifOrientation(filePath);
+            }
+        } catch (FileNotFoundException ex) {
+            Log.w(TAG, ex);
+            return null;
+        } catch (IOException ex) {
+            Log.w(TAG, ex);
+            return null;
+        } finally {
+            Util.closeSilently(outputStream);
+        }
 
         ContentValues values = new ContentValues(7);
         values.put(Images.Media.TITLE, title);
@@ -182,120 +267,136 @@ public class ImageManager {
         values.put(Images.Media.DISPLAY_NAME, filename);
         values.put(Images.Media.DATE_TAKEN, dateTaken);
         values.put(Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(Images.Media.ORIENTATION, orientation);
+        values.put(Images.Media.ORIENTATION, degree[0]);
+        values.put(Images.Media.DATA, filePath);
 
         if (location != null) {
             values.put(Images.Media.LATITUDE, location.getLatitude());
             values.put(Images.Media.LONGITUDE, location.getLongitude());
         }
 
-        if (directory != null && filename != null) {
-            String value = directory + "/" + filename;
-            values.put(Images.Media.DATA, value);
-        }
-
         return cr.insert(STORAGE_URI, values);
     }
 
-    private static class AddImageCancelable extends BaseCancelable<Void> {
-        private final Uri mUri;
-        private final ContentResolver mCr;
-        private final int mOrientation;
-        private final Bitmap mSource;
-        private final byte [] mJpegData;
-
-        public AddImageCancelable(Uri uri, ContentResolver cr,
-                int orientation, Bitmap source, byte[] jpegData) {
-            if (source == null && jpegData == null || uri == null) {
-                throw new IllegalArgumentException("source cannot be null");
-            }
-            mUri = uri;
-            mCr = cr;
-            mOrientation = orientation;
-            mSource = source;
-            mJpegData = jpegData;
+    public static int getExifOrientation(String filepath) {
+        int degree = 0;
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(filepath);
+        } catch (IOException ex) {
+            Log.e(TAG, "cannot read exif", ex);
         }
-
-        @Override
-        protected Void execute() throws InterruptedException,
-                ExecutionException {
-            boolean complete = false;
-            try {
-                long id = ContentUris.parseId(mUri);
-                BaseImageList il = new ImageList(
-                        STORAGE_URI, THUMB_URI, SORT_ASCENDING, null);
-                il.open(mCr);
-
-                // TODO: Redesign the process of adding new images. We should
-                //     create an <code>IImage</code> in "ImageManager.addImage"
-                //     and pass the image object to here.
-                Image image = new Image(il, mCr, id, 0, il.contentUri(id), null,
-                        0, null, 0, null, null, 0);
-                String[] projection = new String[] {
-                        ImageColumns._ID,
-                        ImageColumns.MINI_THUMB_MAGIC, ImageColumns.DATA};
-                Cursor c = mCr.query(mUri, projection, null, null, null);
-                String filepath;
-                try {
-                    c.moveToPosition(0);
-                    filepath = c.getString(2);
-                } finally {
-                    c.close();
+        if (exif != null) {
+            int orientation = exif.getAttributeInt(
+                ExifInterface.TAG_ORIENTATION, -1);
+            if (orientation != -1) {
+                // We only recognize a subset of orientation tag values.
+                switch(orientation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        degree = 90;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        degree = 180;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        degree = 270;
+                        break;
                 }
-                runSubTask(image.saveImageContents(
-                        mSource, mJpegData, mOrientation, true, filepath));
 
-                ContentValues values = new ContentValues();
-                values.put(ImageColumns.MINI_THUMB_MAGIC, 0);
-                mCr.update(mUri, values, null, null);
-                complete = true;
-                return null;
-            } finally {
-                if (!complete) {
-                    try {
-                        mCr.delete(mUri, null, null);
-                    } catch (Throwable t) {
-                        // ignore it while clean up.
-                    }
-                }
             }
         }
+        return degree;
     }
 
-    public static Cancelable<Void> storeImage(
-            Uri uri, ContentResolver cr, int orientation,
-            Bitmap source, byte [] jpegData) {
-        return new AddImageCancelable(
-                uri, cr, orientation, source, jpegData);
+    // This is the factory function to create an image list.
+    public static IImageList makeImageList(ContentResolver cr,
+            ImageListParam param) {
+        DataLocation location = param.mLocation;
+        int inclusion = param.mInclusion;
+        int sort = param.mSort;
+        String bucketId = param.mBucketId;
+        Uri singleImageUri = param.mSingleImageUri;
+        boolean isEmptyImageList = param.mIsEmptyImageList;
+
+        if (isEmptyImageList || cr == null) {
+            return new EmptyImageList();
+        }
+
+        if (singleImageUri != null) {
+            return new SingleImageList(cr, singleImageUri);
+        }
+
+        // false ==> don't require write access
+        boolean haveSdCard = hasStorage(false);
+
+        // use this code to merge videos and stills into the same list
+        ArrayList<BaseImageList> l = new ArrayList<BaseImageList>();
+
+        if (haveSdCard && location != DataLocation.INTERNAL) {
+            if ((inclusion & INCLUDE_IMAGES) != 0) {
+                l.add(new ImageList(
+                        cr, STORAGE_URI, THUMB_URI, sort, bucketId));
+            }
+            if ((inclusion & INCLUDE_VIDEOS) != 0) {
+                l.add(new VideoList(cr, VIDEO_STORAGE_URI, sort, bucketId));
+            }
+        }
+        if (location == DataLocation.INTERNAL || location == DataLocation.ALL) {
+            if ((inclusion & INCLUDE_IMAGES) != 0) {
+                l.add(new ImageList(cr,
+                        Images.Media.INTERNAL_CONTENT_URI,
+                        Images.Thumbnails.INTERNAL_CONTENT_URI,
+                        sort, bucketId));
+            }
+            if ((inclusion & INCLUDE_DRM_IMAGES) != 0) {
+                l.add(new DrmImageList(
+                        cr, DrmStore.Images.CONTENT_URI, sort, bucketId));
+            }
+        }
+
+        // Optimization: If some of the lists are empty, remove them.
+        // If there is only one remaining list, return it directly.
+        Iterator<BaseImageList> iter = l.iterator();
+        while (iter.hasNext()) {
+            BaseImageList sublist = iter.next();
+            if (sublist.isEmpty()) {
+                sublist.close();
+                iter.remove();
+            }
+        }
+
+        if (l.size() == 1) {
+            BaseImageList list = l.get(0);
+            return list;
+        }
+
+        ImageListUber uber = new ImageListUber(
+                l.toArray(new IImageList[l.size()]), sort);
+        return uber;
     }
 
-    public static IImageList makeImageList(Uri uri, ContentResolver cr,
+    // This is a convenience function to create an image list from a Uri.
+    public static IImageList makeImageList(ContentResolver cr, Uri uri,
             int sort) {
         String uriString = (uri != null) ? uri.toString() : "";
 
         // TODO: we need to figure out whether we're viewing
         // DRM images in a better way.  Is there a constant
         // for content://drm somewhere??
-        IImageList imageList;
 
         if (uriString.startsWith("content://drm")) {
-            imageList = ImageManager.allImages(
-                    cr, ImageManager.DataLocation.ALL,
-                    ImageManager.INCLUDE_DRM_IMAGES, sort);
+            return makeImageList(cr, DataLocation.ALL, INCLUDE_DRM_IMAGES, sort,
+                    null);
         } else if (uriString.startsWith("content://media/external/video")) {
-            imageList = ImageManager.allImages(
-                cr, ImageManager.DataLocation.EXTERNAL,
-                ImageManager.INCLUDE_VIDEOS, sort);
+            return makeImageList(cr, DataLocation.EXTERNAL, INCLUDE_VIDEOS,
+                    sort, null);
         } else if (isSingleImageMode(uriString)) {
-            imageList = new SingleImageList(uri);
-            ((SingleImageList) imageList).open(cr);
+            return makeSingleImageList(cr, uri);
         } else {
             String bucketId = uri.getQueryParameter("bucketId");
-            imageList = ImageManager.allImages(
-                cr, ImageManager.DataLocation.ALL,
-                ImageManager.INCLUDE_IMAGES, sort, bucketId);
+            return makeImageList(cr, DataLocation.ALL, INCLUDE_IMAGES, sort,
+                    bucketId);
         }
-        return imageList;
     }
 
     static boolean isSingleImageMode(String uriString) {
@@ -306,27 +407,7 @@ public class ImageManager {
     }
 
     private static class EmptyImageList implements IImageList {
-        public static final Creator<EmptyImageList> CREATOR =
-                new Creator<EmptyImageList>() {
-            public EmptyImageList createFromParcel(Parcel in) {
-                return new EmptyImageList();
-            }
-
-            public EmptyImageList[] newArray(int size) {
-                return new EmptyImageList[size];
-            }
-        };
-
-        public void open(ContentResolver resolver) {
-        }
-
         public void close() {
-        }
-
-        public void checkThumbnail(int index) {
-        }
-
-        public void deactivate() {
         }
 
         public HashMap<String, String> getBucketIds() {
@@ -360,78 +441,43 @@ public class ImageManager {
         public int getImageIndex(IImage image) {
             throw new UnsupportedOperationException();
         }
-
-        public int describeContents() {
-            return 0;
-        }
-
-        public void writeToParcel(Parcel dest, int flags) {
-        }
     }
 
-    public static IImageList emptyImageList() {
-        return new EmptyImageList();
+    public static ImageListParam getImageListParam(DataLocation location,
+         int inclusion, int sort, String bucketId) {
+         ImageListParam param = new ImageListParam();
+         param.mLocation = location;
+         param.mInclusion = inclusion;
+         param.mSort = sort;
+         param.mBucketId = bucketId;
+         return param;
     }
 
-    public static IImageList allImages(ContentResolver cr,
-            DataLocation location, int inclusion, int sort) {
-        return allImages(cr, location, inclusion, sort, null);
+    public static ImageListParam getSingleImageListParam(Uri uri) {
+        ImageListParam param = new ImageListParam();
+        param.mSingleImageUri = uri;
+        return param;
     }
 
-    public static IImageList allImages(ContentResolver cr,
+    public static ImageListParam getEmptyImageListParam() {
+        ImageListParam param = new ImageListParam();
+        param.mIsEmptyImageList = true;
+        return param;
+    }
+
+    public static IImageList makeImageList(ContentResolver cr,
             DataLocation location, int inclusion, int sort, String bucketId) {
-        if (cr == null) {
-            return null;
-        }
+        ImageListParam param = getImageListParam(location, inclusion, sort,
+                bucketId);
+        return makeImageList(cr, param);
+    }
 
-        // false ==> don't require write access
-        boolean haveSdCard = hasStorage(false);
+    public static IImageList makeEmptyImageList() {
+        return makeImageList(null, getEmptyImageListParam());
+    }
 
-        // use this code to merge videos and stills into the same list
-        ArrayList<BaseImageList> l = new ArrayList<BaseImageList>();
-
-        if (haveSdCard && location != DataLocation.INTERNAL) {
-            if ((inclusion & INCLUDE_IMAGES) != 0) {
-                l.add(new ImageList(
-                        STORAGE_URI, THUMB_URI, sort, bucketId));
-            }
-            if ((inclusion & INCLUDE_VIDEOS) != 0) {
-                l.add(new VideoList(VIDEO_STORAGE_URI, sort, bucketId));
-            }
-        }
-        if (location == DataLocation.INTERNAL || location == DataLocation.ALL) {
-            if ((inclusion & INCLUDE_IMAGES) != 0) {
-                l.add(new ImageList(
-                        Images.Media.INTERNAL_CONTENT_URI,
-                        Images.Thumbnails.INTERNAL_CONTENT_URI,
-                        sort, bucketId));
-            }
-            if ((inclusion & INCLUDE_DRM_IMAGES) != 0) {
-                l.add(new DrmImageList(
-                        DrmStore.Images.CONTENT_URI, sort, bucketId));
-            }
-        }
-
-        // Optimization: If some of the lists are empty, remove them.
-        // If there is only one remaining list, return it directly.
-        Iterator<BaseImageList> iter = l.iterator();
-        while (iter.hasNext()) {
-            BaseImageList sublist = iter.next();
-            sublist.open(cr);
-            if (sublist.isEmpty()) iter.remove();
-            sublist.close();
-        }
-
-        if (l.size() == 1) {
-            BaseImageList list = l.get(0);
-            list.open(cr);
-            return list;
-        }
-
-        ImageListUber uber = new ImageListUber(
-                l.toArray(new IImageList[l.size()]), sort);
-        uber.open(cr);
-        return uber;
+    public static IImageList  makeSingleImageList(ContentResolver cr, Uri uri) {
+        return makeImageList(cr, getSingleImageListParam(uri));
     }
 
     private static boolean checkFsWritable() {
@@ -522,5 +568,10 @@ public class ImageManager {
     public static String getLastVideoThumbPath() {
         return Environment.getExternalStorageDirectory().toString() +
                "/DCIM/.thumbnails/video_last_thumb";
+    }
+
+    public static String getTempJpegPath() {
+        return Environment.getExternalStorageDirectory().toString() +
+               "/DCIM/.tempjpeg";
     }
 }

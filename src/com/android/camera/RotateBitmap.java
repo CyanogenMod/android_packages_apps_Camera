@@ -18,7 +18,6 @@ package com.android.camera;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.util.Log;
 
 public class RotateBitmap {
     public static final String TAG = "RotateBitmap";

@@ -17,7 +17,6 @@
 package com.android.camera;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.view.Gravity;
@@ -97,22 +96,6 @@ public class OnScreenHint {
     }
 
     /**
-     * Set the view to show.
-     * @see #getView
-     */
-    public void setView(View view) {
-        mNextView = view;
-    }
-
-    /**
-     * Return the view.
-     * @see #setView
-     */
-    public View getView() {
-        return mNextView;
-    }
-
-    /**
      * Make a standard hint that just contains a text view.
      *
      * @param context  The context to use.  Usually your
@@ -134,32 +117,6 @@ public class OnScreenHint {
         result.mNextView = v;
 
         return result;
-    }
-
-    /**
-     * Make a standard hint that just contains a text view with the text from a
-     * resource.
-     *
-     * @param context  The context to use.  Usually your
-     *                 {@link android.app.Application} or
-     *                 {@link android.app.Activity} object.
-     * @param resId    The resource id of the string resource to use.  Can be
-     *                 formatted text.
-     *
-     * @throws Resources.NotFoundException if the resource can't be found.
-     */
-    public static OnScreenHint makeText(Context context, int resId)
-                                throws Resources.NotFoundException {
-        return makeText(context, context.getResources().getText(resId));
-    }
-
-    /**
-     * Update the text in a OnScreenHint that was previously created using one
-     * of the makeText() methods.
-     * @param resId The new text for the OnScreenHint.
-     */
-    public void setText(int resId) {
-        setText(mContext.getText(resId));
     }
 
     /**

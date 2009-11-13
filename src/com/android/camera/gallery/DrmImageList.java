@@ -16,13 +16,10 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.ImageManager;
-
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Parcel;
 import android.provider.DrmStore;
 
 /**
@@ -41,34 +38,21 @@ public class DrmImageList extends ImageList implements IImageList {
     private static final int INDEX_DATA_PATH = 1;
     private static final int INDEX_MIME_TYPE = 2;
 
-    public DrmImageList(Uri imageUri, int sort, String bucketId) {
-        super(imageUri, null, sort, bucketId);
+    public DrmImageList(ContentResolver resolver, Uri imageUri, int sort,
+            String bucketId) {
+        super(resolver, imageUri, null, sort, bucketId);
+    }
+
+    @Override
+    protected String sortOrder() {
+        // We have no date information in DrmStore, so we just sort by _id.
+        return "_id ASC";
     }
 
     @Override
     protected Cursor createCursor() {
         return mContentResolver.query(
                 mBaseUri, DRM_IMAGE_PROJECTION, null, null, sortOrder());
-    }
-
-    @SuppressWarnings("hiding")
-    public static final Creator<DrmImageList> CREATOR =
-            new Creator<DrmImageList>() {
-        public DrmImageList createFromParcel(Parcel in) {
-            return new DrmImageList(in);
-        }
-
-        public DrmImageList[] newArray(int size) {
-            return new DrmImageList[size];
-        }
-    };
-
-    protected DrmImageList(Parcel in) {
-        super(in);
-    }
-
-    @Override
-    public void checkThumbnail(int index) {
     }
 
     private static class DrmImage extends Image {
@@ -122,13 +106,5 @@ public class DrmImageList extends ImageList implements IImageList {
         return new DrmImage(this, mContentResolver, id, cursor.getPosition(),
                 contentUri(id), dataPath, 0, mimeType, 0, "DrmImage-" + id,
                 "DrmImage-" + id, 0);
-    }
-
-    // TODO: Review this probably should be based on DATE_TAKEN same as images
-    @Override
-    protected String sortOrder() {
-        String ascending =
-                mSort == ImageManager.SORT_ASCENDING ? " ASC" : " DESC";
-        return DrmStore.Images.TITLE  + ascending + "," + DrmStore.Images._ID;
     }
 }

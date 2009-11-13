@@ -18,18 +18,17 @@ package com.android.camera;
 
 
 import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.media.ThumbnailUtil;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
@@ -48,7 +47,6 @@ import java.io.IOException;
  *    public void setData(Uri uri, Bitmap original)
  *    public void updateDisplayIfNeeded()
  *    public Uri getUri()
- *    public Bitmap getThumb()
  *    public boolean storeData(String filePath)
  *    public boolean loadData(String filePath)
  * </pre>
@@ -64,15 +62,14 @@ public class ThumbnailController {
     private Drawable[] mThumbs;
     private TransitionDrawable mThumbTransition;
     private boolean mShouldAnimateThumb;
-    private final Animation mShowButtonAnimation = new AlphaAnimation(0F, 1F);
-    private boolean mShouldAnimateButton;
+    private final Resources mResources;
 
     // The "frame" is a drawable we want to put on top of the thumbnail.
-    public ThumbnailController(
+    public ThumbnailController(Resources resources,
             ImageView button, ContentResolver contentResolver) {
+        mResources = resources;
         mButton = button;
         mContentResolver = contentResolver;
-        mShowButtonAnimation.setDuration(500);
     }
 
     public void setData(Uri uri, Bitmap original) {
@@ -88,10 +85,6 @@ public class ThumbnailController {
 
     public Uri getUri() {
         return mUri;
-    }
-
-    public Bitmap getThumb() {
-        return mThumb;
     }
 
     private static final int BUFSIZE = 4096;
@@ -149,14 +142,8 @@ public class ThumbnailController {
 
     public void updateDisplayIfNeeded() {
         if (mUri == null) {
-            mButton.setVisibility(View.INVISIBLE);
+            mButton.setImageDrawable(null);
             return;
-        }
-
-        if (mShouldAnimateButton) {
-            mButton.setVisibility(View.VISIBLE);
-            mButton.startAnimation(mShowButtonAnimation);
-            mShouldAnimateButton = false;
         }
 
         if (mShouldAnimateThumb) {
@@ -180,26 +167,23 @@ public class ThumbnailController {
         LayoutParams param = mButton.getLayoutParams();
         final int miniThumbWidth = param.width - 2 * PADDING_WIDTH;
         final int miniThumbHeight = param.height - 2 * PADDING_HEIGHT;
-        mThumb = Util.extractMiniThumb(
-                original, miniThumbWidth, miniThumbHeight, false);
+        mThumb = ThumbnailUtil.extractMiniThumb(
+                original, miniThumbWidth, miniThumbHeight,
+                Util.NO_RECYCLE_INPUT);
         Drawable drawable;
         if (mThumbs == null) {
             mThumbs = new Drawable[2];
-            mThumbs[1] = new BitmapDrawable(mThumb);
+            mThumbs[1] = new BitmapDrawable(mResources, mThumb);
             drawable = mThumbs[1];
             mShouldAnimateThumb = false;
         } else {
             mThumbs[0] = mThumbs[1];
-            mThumbs[1] = new BitmapDrawable(mThumb);
+            mThumbs[1] = new BitmapDrawable(mResources, mThumb);
             mThumbTransition = new TransitionDrawable(mThumbs);
             drawable = mThumbTransition;
             mShouldAnimateThumb = true;
         }
         mButton.setImageDrawable(drawable);
-
-        if (mButton.getVisibility() != View.VISIBLE) {
-            mShouldAnimateButton = true;
-        }
     }
 
     public boolean isUriValid() {

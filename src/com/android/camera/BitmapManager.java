@@ -21,7 +21,6 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.io.FileDescriptor;
-import java.util.Iterator;
 import java.util.WeakHashMap;
 
 /**
@@ -32,11 +31,6 @@ import java.util.WeakHashMap;
  * cancelThreadDecoding() specifying the Thread which is in decoding.
  *
  * cancelThreadDecoding() is sticky until allowThreadDecoding() is called.
- *
- * You can also cancel decoding for a set of threads using ThreadSet as
- * the parameter for cancelThreadDecoding. To put a thread into a ThreadSet,
- * use the add() method. A ThreadSet holds (weak) references to the threads,
- * so you don't need to remove Thread from it if some thread dies.
  */
 public class BitmapManager {
     private static final String TAG = "BitmapManager";
@@ -57,21 +51,6 @@ public class BitmapManager {
             }
             s = "thread state = " + s + ", options = " + mOptions;
             return s;
-        }
-    }
-
-    public static class ThreadSet implements Iterable<Thread> {
-        private final WeakHashMap<Thread, Object> mWeakCollection =
-                new WeakHashMap<Thread, Object>();
-
-        public void add(Thread t) {
-            mWeakCollection.put(t, null);
-        }
-        public void remove(Thread t) {
-            mWeakCollection.remove(t);
-        }
-        public Iterator<Thread> iterator() {
-            return mWeakCollection.keySet().iterator();
         }
     }
 
@@ -107,22 +86,6 @@ public class BitmapManager {
     synchronized void removeDecodingOptions(Thread t) {
         ThreadStatus status = mThreadStatus.get(t);
         status.mOptions = null;
-    }
-
-    /**
-     * The following two methods are used to allow/cancel a set of threads
-     * for bitmap decoding.
-     */
-    public synchronized void allowThreadDecoding(ThreadSet threads) {
-        for (Thread t : threads) {
-            allowThreadDecoding(t);
-        }
-    }
-
-    public synchronized void cancelThreadDecoding(ThreadSet threads) {
-        for (Thread t : threads) {
-            cancelThreadDecoding(t);
-        }
     }
 
     /**

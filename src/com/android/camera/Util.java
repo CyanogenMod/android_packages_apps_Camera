@@ -16,28 +16,28 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 
-import java.io.ByteArrayOutputStream;
+import com.android.camera.gallery.IImage;
+
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -46,11 +46,11 @@ import java.io.IOException;
  * Collection of utility functions used in this package.
  */
 public class Util {
-    private static final String TAG = "db.Util";
-    private static final String MAPS_PACKAGE_NAME =
-            "com.google.android.apps.maps";
-    private static final String MAPS_CLASS_NAME =
-            "com.google.android.maps.MapsActivity";
+    private static final String TAG = "Util";
+    public static final int DIRECTION_LEFT = 0;
+    public static final int DIRECTION_RIGHT = 1;
+    public static final int DIRECTION_UP = 2;
+    public static final int DIRECTION_DOWN = 3;
 
     private static OnClickListener sNullOnClickListener;
 
@@ -103,7 +103,7 @@ public class Util {
                 maxNumOfPixels);
 
         int roundedSize;
-        if (initialSize <= 8 ) {
+        if (initialSize <= 8) {
             roundedSize = 1;
             while (roundedSize < initialSize) {
                 roundedSize <<= 1;
@@ -141,11 +141,16 @@ public class Util {
         }
     }
 
+    // Whether we should recycle the input (unless the output is the input).
+    public static final boolean RECYCLE_INPUT = true;
+    public static final boolean NO_RECYCLE_INPUT = false;
+
     public static Bitmap transform(Matrix scaler,
                                    Bitmap source,
                                    int targetWidth,
                                    int targetHeight,
-                                   boolean scaleUp) {
+                                   boolean scaleUp,
+                                   boolean recycle) {
         int deltaX = source.getWidth() - targetWidth;
         int deltaY = source.getHeight() - targetHeight;
         if (!scaleUp && (deltaX < 0 || deltaY < 0)) {
@@ -174,6 +179,9 @@ public class Util {
                     targetWidth - dstX,
                     targetHeight - dstY);
             c.drawBitmap(source, src, dst, null);
+            if (recycle) {
+                source.recycle();
+            }
             return b2;
         }
         float bitmapWidthF = source.getWidth();
@@ -207,6 +215,10 @@ public class Util {
             b1 = source;
         }
 
+        if (recycle && b1 != source) {
+            source.recycle();
+        }
+
         int dx1 = Math.max(0, b1.getWidth() - targetWidth);
         int dy1 = Math.max(0, b1.getHeight() - targetHeight);
 
@@ -217,94 +229,13 @@ public class Util {
                 targetWidth,
                 targetHeight);
 
-        if (b1 != source) {
-            b1.recycle();
+        if (b2 != b1) {
+            if (recycle || b1 != source) {
+                b1.recycle();
+            }
         }
 
         return b2;
-    }
-
-    /**
-     * Creates a centered bitmap of the desired size. Recycles the input.
-     * @param source
-     */
-    public static Bitmap extractMiniThumb(
-            Bitmap source, int width, int height) {
-        return Util.extractMiniThumb(source, width, height, true);
-    }
-
-    public static Bitmap extractMiniThumb(
-            Bitmap source, int width, int height, boolean recycle) {
-        if (source == null) {
-            return null;
-        }
-
-        float scale;
-        if (source.getWidth() < source.getHeight()) {
-            scale = width / (float) source.getWidth();
-        } else {
-            scale = height / (float) source.getHeight();
-        }
-        Matrix matrix = new Matrix();
-        matrix.setScale(scale, scale);
-        Bitmap miniThumbnail = transform(matrix, source, width, height, false);
-
-        if (recycle && miniThumbnail != source) {
-            source.recycle();
-        }
-        return miniThumbnail;
-    }
-
-    /**
-     * Creates a byte[] for a given bitmap of the desired size. Recycles the
-     * input bitmap.
-     */
-    public static byte[] miniThumbData(Bitmap source) {
-        if (source == null) return null;
-
-        Bitmap miniThumbnail = extractMiniThumb(
-                source, IImage.MINI_THUMB_TARGET_SIZE,
-                IImage.MINI_THUMB_TARGET_SIZE);
-
-        ByteArrayOutputStream miniOutStream = new ByteArrayOutputStream();
-        miniThumbnail.compress(Bitmap.CompressFormat.JPEG, 75, miniOutStream);
-        miniThumbnail.recycle();
-
-        try {
-            miniOutStream.close();
-            byte [] data = miniOutStream.toByteArray();
-            return data;
-        } catch (java.io.IOException ex) {
-            Log.e(TAG, "got exception ex " + ex);
-        }
-        return null;
-    }
-
-    /**
-     * Create a video thumbnail for a video. May return null if the video is
-     * corrupt.
-     *
-     * @param filePath
-     */
-    public static Bitmap createVideoThumbnail(String filePath) {
-        Bitmap bitmap = null;
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setMode(MediaMetadataRetriever.MODE_CAPTURE_FRAME_ONLY);
-            retriever.setDataSource(filePath);
-            bitmap = retriever.captureFrame();
-        } catch (IllegalArgumentException ex) {
-            // Assume this is a corrupt video file
-        } catch (RuntimeException ex) {
-            // Assume this is a corrupt video file.
-        } finally {
-            try {
-                retriever.release();
-            } catch (RuntimeException ex) {
-                // Ignore failures while cleaning up.
-            }
-        }
-        return bitmap;
     }
 
     public static <T>  int indexOf(T [] array, T s) {
@@ -340,12 +271,6 @@ public class Util {
      * @param uri
      */
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-            Uri uri, ContentResolver cr) {
-        return makeBitmap(minSideLength, maxNumOfPixels, uri, cr,
-                IImage.NO_NATIVE);
-    }
-
-    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
             Uri uri, ContentResolver cr, boolean useNative) {
         ParcelFileDescriptor input = null;
         try {
@@ -376,14 +301,12 @@ public class Util {
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
             Uri uri, ContentResolver cr, ParcelFileDescriptor pfd,
             BitmapFactory.Options options) {
-        Bitmap b = null;
         try {
             if (pfd == null) pfd = makeInputStream(uri, cr);
             if (pfd == null) return null;
             if (options == null) options = new BitmapFactory.Options();
 
             FileDescriptor fd = pfd.getFileDescriptor();
-            options.inSampleSize = 1;
             options.inJustDecodeBounds = true;
             BitmapManager.instance().decodeFileDescriptor(fd, options);
             if (options.mCancel || options.outWidth == -1
@@ -396,14 +319,37 @@ public class Util {
 
             options.inDither = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            b = BitmapManager.instance().decodeFileDescriptor(fd, options);
+            return BitmapManager.instance().decodeFileDescriptor(fd, options);
         } catch (OutOfMemoryError ex) {
             Log.e(TAG, "Got oom exception ", ex);
             return null;
         } finally {
             closeSilently(pfd);
         }
-        return b;
+    }
+
+    public static Bitmap makeBitmap(byte[] jpegData, int maxNumOfPixels) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length,
+                    options);
+            if (options.mCancel || options.outWidth == -1
+                    || options.outHeight == -1) {
+                return null;
+            }
+            options.inSampleSize = computeSampleSize(
+                    options, IImage.UNCONSTRAINED, maxNumOfPixels);
+            options.inJustDecodeBounds = false;
+
+            options.inDither = false;
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            return BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length,
+                    options);
+        } catch (OutOfMemoryError ex) {
+            Log.e(TAG, "Got oom exception ", ex);
+            return null;
+        }
     }
 
     private static ParcelFileDescriptor makeInputStream(
@@ -512,35 +458,68 @@ public class Util {
         return options;
     }
 
-    // Opens Maps application for a map with given latlong. There is a bug
-    // which crashes the Browser when opening this kind of URL. So, we open
-    // it in GMM instead. For those platforms which have no GMM installed,
-    // the default Maps application will be chosen.
-    //
-    // TODO: Once the bug in browser has been fixed, this workaround should be
-    // removed.
-    public static void openMaps(Context context, float lat, float lng) {
+    public static void showFatalErrorAndFinish(
+            final Activity activity, String title, String message) {
+        DialogInterface.OnClickListener buttonListener =
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                activity.finish();
+            }
+        };
+        new AlertDialog.Builder(activity)
+                .setCancelable(false)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(title)
+                .setMessage(message)
+                .setNeutralButton(R.string.details_ok, buttonListener)
+                .show();
+    }
 
-        try {
-            // Try to open the GMM first
-
-            // We don't use "geo:latitude,longitude" because it only centers
-            // the MapView to the specified location, but we need a marker
-            // for further operations (routing to/from).
-            // The q=(lat, lng) syntax is suggested by geo-team.
-            String url = String.format(
-                    "http://maps.google.com/maps?f=q&q=(%s,%s)", lat, lng);
-            ComponentName compName =
-                    new ComponentName(MAPS_PACKAGE_NAME, MAPS_CLASS_NAME);
-            Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    .setComponent(compName);
-            context.startActivity(mapsIntent);
-        } catch (ActivityNotFoundException e) {
-            // Use the "geo intent" if no GMM is installed
-            Log.e(TAG, "GMM activity not found!", e);
-            String url = String.format("geo:%s,%s", lat, lng);
-            Intent mapsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            context.startActivity(mapsIntent);
+    public static Animation slideOut(View view, int to) {
+        view.setVisibility(View.INVISIBLE);
+        Animation anim;
+        switch (to) {
+            case DIRECTION_LEFT:
+                anim = new TranslateAnimation(0, -view.getWidth(), 0, 0);
+                break;
+            case DIRECTION_RIGHT:
+                anim = new TranslateAnimation(0, view.getWidth(), 0, 0);
+                break;
+            case DIRECTION_UP:
+                anim = new TranslateAnimation(0, 0, 0, -view.getHeight());
+                break;
+            case DIRECTION_DOWN:
+                anim = new TranslateAnimation(0, 0, 0, view.getHeight());
+                break;
+            default:
+                throw new IllegalArgumentException(Integer.toString(to));
         }
+        anim.setDuration(500);
+        view.startAnimation(anim);
+        return anim;
+    }
+
+    public static Animation slideIn(View view, int from) {
+        view.setVisibility(View.VISIBLE);
+        Animation anim;
+        switch (from) {
+            case DIRECTION_LEFT:
+                anim = new TranslateAnimation(-view.getWidth(), 0, 0, 0);
+                break;
+            case DIRECTION_RIGHT:
+                anim = new TranslateAnimation(view.getWidth(), 0, 0, 0);
+                break;
+            case DIRECTION_UP:
+                anim = new TranslateAnimation(0, 0, -view.getHeight(), 0);
+                break;
+            case DIRECTION_DOWN:
+                anim = new TranslateAnimation(0, 0, view.getHeight(), 0);
+                break;
+            default:
+                throw new IllegalArgumentException(Integer.toString(from));
+        }
+        anim.setDuration(500);
+        view.startAnimation(anim);
+        return anim;
     }
 }

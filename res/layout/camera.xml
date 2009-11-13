@@ -14,38 +14,76 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:background="@drawable/camera_background"
         android:id="@+id/camera"
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-
-    <FrameLayout android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="13dp"
-            android:background="@drawable/border_view_finder">
-        <com.android.camera.VideoPreview
-                android:id="@+id/camera_preview"
-                android:layout_width="384dp"
-                android:layout_height="288dp"/>
-        <com.android.camera.FocusRectangle
-                android:id="@+id/focus_rectangle"
-                android:layout_width="384dp"
-                android:layout_height="288dp"/>
-    </FrameLayout>
-
-    <ImageView
-            android:id="@+id/gps_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:clickable="false"
-            android:focusable="false"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="18dp"
-            android:layout_marginTop="18dp"/>
-
-</RelativeLayout>
+    <com.android.camera.PreviewFrameLayout android:id="@+id/frame_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+        <ImageView android:id="@+id/btn_gripper"
+                android:background="@drawable/btn_gripper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <FrameLayout android:id="@+id/frame"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/border_view_finder">
+            <SurfaceView android:id="@+id/camera_preview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"/>
+            <com.android.camera.FocusRectangle
+                    android:id="@+id/focus_rectangle"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"/>
+            <com.android.camera.EvenlySpacedLayout android:id="@+id/indicator_bar"
+                    camera:orientation="vertical"
+                    android:visibility="visible"
+                    android:layout_gravity="left|fill_vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent">
+                <com.android.camera.IconIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/gps_icon"
+                        camera:modes="@array/gps_modes"
+                        camera:icons="@array/gps_icons"
+                        android:visibility="visible"/>
+                <com.android.camera.IconIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/focus_icon"
+                        camera:modes="@array/pref_camera_focusmode_entryvalues"
+                        camera:icons="@array/focusmode_icons"
+                        android:visibility="visible"/>
+                <com.android.camera.IconIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/whitebalance_icon"
+                        camera:modes="@array/pref_camera_whitebalance_entryvalues"
+                        camera:icons="@array/whitebalance_icons"
+                        android:visibility="visible"/>
+                <com.android.camera.IconIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/scenemode_icon"
+                        camera:modes="@array/scenemode_modes"
+                        camera:icons="@array/scenemode_icons"
+                        android:visibility="visible"/>
+                <com.android.camera.IconIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/flash_icon"
+                        camera:modes="@array/pref_camera_flashmode_entryvalues"
+                        camera:icons="@array/flash_icons"
+                        android:visibility="visible"/>
+            </com.android.camera.EvenlySpacedLayout>
+        </FrameLayout>
+    </com.android.camera.PreviewFrameLayout>
+</LinearLayout>

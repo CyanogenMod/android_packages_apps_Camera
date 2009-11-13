@@ -19,7 +19,6 @@ package com.android.camera.gallery;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -30,6 +29,7 @@ public class LruCache<K, V> {
             new HashMap<K, Entry<K, V>>();
     private ReferenceQueue<V> mQueue = new ReferenceQueue<V>();
 
+    @SuppressWarnings("serial")
     public LruCache(final int capacity) {
         mLruMap = new LinkedHashMap<K, V>(16, 0.75f, true) {
             @Override
@@ -42,12 +42,13 @@ public class LruCache<K, V> {
     private static class Entry<K, V> extends WeakReference<V> {
         K mKey;
 
-        public Entry(K key, V value, ReferenceQueue queue) {
+        public Entry(K key, V value, ReferenceQueue<V> queue) {
             super(value, queue);
             mKey = key;
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void cleanUpWeakMap() {
         Entry<K, V> entry = (Entry<K, V>) mQueue.poll();
         while (entry != null) {

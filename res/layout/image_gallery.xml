@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/root"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+    <LinearLayout android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+        <view class="com.android.camera.GridViewSpecial"
+                android:id="@+id/grid"
+                android:focusable="true"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:listSelector="@drawable/grid_background"
+        />
+
+        <LinearLayout android:id="@+id/footer_organize"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:clickable="false"
+                android:paddingTop="5dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingBottom="1dp"
+                android:background="@android:drawable/bottom_bar">
+
+            <Button android:id="@+id/button_share"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="@string/multiselect_share" />
+
+            <Button android:id="@+id/button_delete"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:text="@string/multiselect_delete" />
+
+            <Button android:id="@+id/button_close"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:text="@string/multiselect_cancel" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout android:id="@+id/no_images"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        <ImageView
+                android:id="@+id/no_pictures_image"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_gallery_empty2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+        />
+
+        <TextView
+                android:layout_below="@id/no_pictures_image"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/image_gallery_NoImageView_text"
+                android:textColor="#FFBEBEBE"
+                android:textSize="18dp"
+        />
+    </RelativeLayout>
+</RelativeLayout>
+

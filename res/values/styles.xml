@@ -48,9 +48,42 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:drawablePadding">3dip</item>
     </style>
+    <style name="ReviewControlText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="ReviewControlIcon">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/btn_camera_review</item>
+    </style>
+    <style name="ReviewControlGroup">
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">top|center_horizontal</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>
+    </style>
     <style name="Theme.DeleteImageDialog" parent="android:style/Theme.Dialog.Alert">
+    </style>
+    <style name="NoEnterExitAnimation">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+    <style name="CustomTheme"
+           parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:windowAnimationStyle">@style/NoEnterExitAnimation</item>
+    </style>
+    <style name="Animation_OnScreenMenu">
+        <item name="android:windowEnterAnimation">@anim/on_screen_menu_appear</item>
+        <item name="android:windowExitAnimation">@anim/on_screen_menu_disappear</item>
     </style>
 </resources>

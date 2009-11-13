@@ -15,16 +15,17 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="camera_error_title" msgid="1202232535191653443">"Kamerafeil"</string>
+    <string name="cannot_connect_camera" msgid="8029009101380114174">"Kan ikke koble til kameraet."</string>
     <string name="all_images" msgid="1195501551939178807">"Alle bilder"</string>
     <string name="all_videos" msgid="3380966619230896013">"Alle videoer"</string>
     <string name="camera_label" msgid="6346560772074764302">"Kamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Video"</string>
     <string name="gallery_picker_label" msgid="3080425245006492787">"Galleri"</string>
+    <string name="gallery_label" msgid="7119609703856708011">"Galleri"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Bilder fra kamera"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videoer fra kamera"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Kameramedier"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"Bytt til video"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Bytt til kamera"</string>
     <string name="crop_label" msgid="521114301871349328">"Beskjær bilde"</string>
     <string name="view_label" msgid="4450531507947335704">"Se på bilde"</string>
     <string name="preferences_label" msgid="5955678162525051163">"Kamerainnstillinger"</string>
@@ -61,22 +62,21 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"Ta på nytt"</string>
     <string name="camera_toss" msgid="3781186798552460833">"Slett"</string>
-    <string name="camera_gallery" msgid="815753042966032398">"Galleri"</string>
     <string name="camera_share" msgid="8207701858325694182">"Del"</string>
     <string name="camera_set" msgid="3422192914806971182">"Bruk som"</string>
     <string name="camera_play" msgid="8248000517869959980">"Spill"</string>
     <string name="camera_attach" msgid="4048659554893435232">"Legg ved"</string>
     <string name="camera_cancel" msgid="8203341746672085747">"Avbryt"</string>
     <string name="camera_crop" msgid="5584000454518174632">"Beskjær"</string>
-    <string name="no_way_to_share_image" msgid="8193970133742126201">"Bildet kan ikke deles."</string>
-    <string name="no_way_to_share_video" msgid="7822400095945256426">"Videoen kan ikke deles."</string>
+    <string name="no_way_to_share_image" msgid="5011985309980187927">"Ingen applikasjoner kan dele bildet."</string>
+    <string name="no_way_to_share_video" msgid="3684571102267072206">"Ingen applikasjoner kan dele videoen."</string>
+    <string name="no_way_to_share" msgid="863323712875014752">"Ingen applikasjoner kan dele mediefilen(ene)."</string>
     <string name="video_play" msgid="5287787282508002895">"Spill"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galleri"</string>
     <string name="camera_pick_wallpaper" msgid="7026385960511811641">"Bilder"</string>
     <string name="camera_setas_wallpaper" msgid="797463183863414289">"Bakgrunnsbilde"</string>
     <string name="pref_gallery_category" msgid="5826488887237959433">"Generelle innstillinger"</string>
     <string name="pref_slideshow_category" msgid="9097962086335681667">"Innstillinger for lysbildevisning"</string>
-    <string name="pref_camera_general_settings_category" msgid="2135384248699549300">"Generelle innstillinger"</string>
     <string name="pref_gallery_size_title" msgid="1363406603879434418">"Bildestørrelse"</string>
     <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Velg hvor stort bilder skal vises"</string>
     <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Bildestørrelse"</string>
@@ -112,35 +112,82 @@
     <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Vis lydbildeserie mer enn én gang"</string>
     <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Stokk lysbilder"</string>
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Vis bilder i tilfeldig rekkefølge"</string>
-    <string name="pref_camera_recordlocation_title" msgid="273727672426306702">"Lagre sted i bilder"</string>
-    <string name="pref_camera_recordlocation_summary" msgid="3275371402016128548">"Lagre sted i bildedata"</string>
-    <string name="pref_camera_video_settings_category" msgid="5788821601203523037">"Videoinnstillinger"</string>
-    <string name="pref_camera_videoquality_title" msgid="3836197291744160920">"Videokvalitet"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Lagre sted i bilder"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Av"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"På"</string>
+    <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Videokvalitet"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Lav (for MMS-meldinger)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Høy (for minnekort)"</string>
     <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Videokvalitet"</string>
-    <string name="pref_camera_video_duration_title" msgid="3659987702892910722">"Videolengde"</string>
-    <string name="pref_camera_video_duration_entry_1" msgid="886640327548814447">"Ett minutt (for deling)"</string>
+    <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"Videolengde"</string>
+    <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> sekunder (for MMS)"</string>
     <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 minutter"</string>
     <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 minutter"</string>
     <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Videolengde"</string>
-    <string name="pref_camera_picture_settings_category" msgid="1513001949820030759">"Bildeinnstillinger"</string>
-    <string name="pref_camera_picturesize_title" msgid="8391466986280182397">"Bildestørrelse"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="7304479270077279178">"3M (2048x1536)"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="6722733164421134734">"2M (1600x1200)"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6648351357102402892">"1M (1024x768)"</string>
+    <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kamerainnstillinger"</string>
+    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videoinnstillinger"</string>
+    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Bildestørrelse"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5M (2592x1936)"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M (2048x1536)"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2M (1600x1200)"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M (1024x768)"</string>
     <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Bildestørrelse"</string>
-    <string name="pref_camera_jpegquality_title" msgid="3045390831339734843">"Bildekvalitet"</string>
+    <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Bildekvalitet"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Ekstra fin"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fin"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normal"</string>
     <string name="pref_camera_jpegquality_dialogtitle" msgid="18195886066728203">"Bildekvalitet"</string>
-    <string name="pref_camera_focusmode_title" msgid="3829707410870789496">"Fokustype"</string>
+    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fokusmodus"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Autofokus"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Uendelig"</string>
-    <!-- no translation found for pref_camera_focusmode_value_infinity (3629041045019224450) -->
-    <skip />
+    <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Fokustype"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Blitzmodus"</string>
+    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatisk"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"På"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Av"</string>
+    <string name="pref_camera_flashmode_dialogtitle" msgid="2824978765695177188">"Blitzmodus"</string>
+    <string name="pref_camera_whitebalance_dialogtitle" msgid="8978388629257577909">"Hvitbalanse"</string>
+    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Hvitbalanse"</string>
+    <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automatisk"</string>
+    <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Flamme"</string>
+    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Dagslys"</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Lysstoffrør"</string>
+    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Overskyet"</string>
+    <string name="pref_camera_whitebalance_entry_twilight" msgid="2257942426397244556">"Grålysning"</string>
+    <string name="pref_camera_whitebalance_entry_shade" msgid="4685730287406277702">"Skygge"</string>
+    <string name="pref_camera_whitebalance_entry_warm_fluorescent" msgid="2827098617308870248">"Varmt lysstoffrør"</string>
+    <string name="pref_camera_whitebalance_entry_halogen" msgid="5473868018455084929">"Halogen"</string>
+    <string name="pref_camera_coloreffect_dialogtitle" msgid="7691751972871809763">"Fargeeffekt"</string>
+    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Fargeeffekt"</string>
+    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Ingen"</string>
+    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Monokrom"</string>
+    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"Sepia"</string>
+    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Negativ"</string>
+    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Overeksponer"</string>
+    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Posteriser"</string>
+    <string name="pref_camera_coloreffect_entry_whiteboard" msgid="8161550096887765100">"Whiteboard"</string>
+    <string name="pref_camera_coloreffect_entry_blackboard" msgid="4149918495221278960">"Tavle"</string>
+    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Vann"</string>
+    <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"Pastell"</string>
+    <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"Mosaikk"</string>
+    <string name="pref_camera_coloreffect_entry_redtint" msgid="6646299498728138294">"Rødskjær"</string>
+    <string name="pref_camera_coloreffect_entry_bluetint" msgid="918696074928692967">"Blåskjær"</string>
+    <string name="pref_camera_coloreffect_entry_greentint" msgid="9080254097150221320">"Grønnskjær"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Velg scenemodus"</string>
+    <string name="pref_camera_scenemode_dialogtitle" msgid="299486172171669009">"Velg scenemodus"</string>
+    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatisk"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Action"</string>
+    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Portrett"</string>
+    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"Landskap"</string>
+    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Natt"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="5244280874913294746">"Nattportrett"</string>
+    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"Teater"</string>
+    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"Strand"</string>
+    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"Snø"</string>
+    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Solnedgang"</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="2147958278893914895">"Stødig foto"</string>
+    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fyrverkeri"</string>
     <string name="camerasettings" msgid="2433519618178453928">"Innstillinger"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Fant ingen bilder."</string>
     <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Bekreft sletting"</string>
@@ -161,12 +208,12 @@
     <string name="details_bit_rate" msgid="5632311789455402186">"Bitrate:"</string>
     <string name="details_codec" msgid="5580300450432398126">"Kodek:"</string>
     <string name="details_format" msgid="3700860266600796363">"Format:"</string>
-    <string name="details_dimension_x" msgid="4479200210424701240">"%1$d x %2$d"</string>
-    <string name="details_ms" msgid="940634969189855292">"%1$02d:%2$02d"</string>
-    <string name="details_hms" msgid="3215779248094151255">"%1$d:%2$02d:%3$02d"</string>
-    <string name="details_fps" msgid="2707670327505979317">"%1$d fps"</string>
-    <string name="details_kbps" msgid="59196416864960850">"%1$d kbps"</string>
-    <string name="details_mbps" msgid="3978720645766601106">"%1$g Mbps"</string>
+    <string name="details_dimension_x" msgid="4923037334136168978">"<xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="details_ms" msgid="7574063760642857397">"<xliff:g id="MINUTES">%1$02d</xliff:g>:<xliff:g id="SECONDS">%2$02d</xliff:g>"</string>
+    <string name="details_hms" msgid="772340067838331166">"<xliff:g id="HOURS">%1$d</xliff:g>:<xliff:g id="MINUTES">%2$02d</xliff:g>:<xliff:g id="SECONDS">%3$02d</xliff:g>"</string>
+    <string name="details_fps" msgid="5450871169477340537">"<xliff:g id="FRAMES">%1$d</xliff:g> bilder/sek"</string>
+    <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> kbit/s"</string>
+    <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mbit/sek"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="context_menu_header" msgid="1185348426222302182">"Bildeinnstillinger"</string>
     <string name="video_context_menu_header" msgid="7318971116949475029">"Videoinnstillinger"</string>
@@ -175,15 +222,15 @@
     <string name="pick_photos_gallery_title" msgid="12912682424915943">"Velg bilde"</string>
     <string name="videos_gallery_title" msgid="6150354029982749479">"Galleri"</string>
     <string name="pick_videos_gallery_title" msgid="326727095201227333">"Velg video"</string>
-    <string name="loading_progress_format_string" msgid="7401961873257843731">"<xliff:g id="COUNTER">%d</xliff:g> gjenstår"</string>
     <string name="sendImage" msgid="7279510542799399570">"Del bilde via"</string>
     <string name="setImage" msgid="7246975856983303047">"Bruk bilde som"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Del video via"</string>
+    <string name="send_media_files" msgid="8201083279723850611">"Del mediefiler via"</string>
     <string name="movieviewlabel" msgid="7363495772706775465">"Filmer"</string>
     <string name="loading_video" msgid="4013492720121891585">"Laster video…"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Minnekortet begynner å gå tom for plass. Endre kvalitetsinnstillingen eller slett bilder fra galleriet."</string>
     <string name="resume_playing_title" msgid="8996677350649355013">"Fortsett avspilling"</string>
-    <string name="resume_playing_message" msgid="5184414518126703481">"Fortsett avspilling fra %s?"</string>
+    <string name="resume_playing_message" msgid="7293000708492271389">"Fortsett avspilling fra <xliff:g id="DURATION">%s</xliff:g>?"</string>
     <string name="resume_playing_resume" msgid="3847915469173852416">"Fortsett avspilling"</string>
     <string name="resume_playing_restart" msgid="5471008499835769292">"Begynn på nytt"</string>
     <string name="gadget_title" msgid="259405922673466798">"Bilderamme"</string>
@@ -192,6 +239,6 @@
     <string name="multiselect_share" msgid="5261644537749253581">"Del"</string>
     <string name="multiselect_delete" msgid="9113461994546744603">"Slett"</string>
     <string name="multiselect_cancel" msgid="5969428692864002165">"Avbryt"</string>
-    <string name="delete_images_message" msgid="4504926868037899430">"Sletter bilder, vennligst vent…"</string>
+    <string name="delete_images_message" msgid="4504926868037899430">"Sletter bilder, vennligst vent …"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Videoen ble for stor."</string>
 </resources>

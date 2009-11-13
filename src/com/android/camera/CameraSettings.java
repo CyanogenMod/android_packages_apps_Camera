@@ -1,36 +1,29 @@
-/*
- * Copyright (C) 2007 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.android.camera;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Parameters;
-import android.os.Bundle;
+import android.hardware.Camera.Size;
+import android.os.SystemProperties;
 import android.preference.ListPreference;
-import android.preference.PreferenceActivity;
+import android.preference.Preference;
+import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
+import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.List;
 
-/**
- *  CameraSettings
- */
-public class CameraSettings extends PreferenceActivity implements
-        OnSharedPreferenceChangeListener {
+public class CameraSettings {
+    private static final int FIRST_REQUEST_CODE = 100;
+    private static final int NOT_FOUND = -1;
+
+    public static final String KEY_VERSION = "pref_version_key";
+    public static final String KEY_RECORD_LOCATION =
+            "pref_camera_recordlocation_key";
     public static final String KEY_VIDEO_QUALITY =
             "pref_camera_videoquality_key";
     public static final String KEY_VIDEO_DURATION =
@@ -38,144 +31,240 @@ public class CameraSettings extends PreferenceActivity implements
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
+    public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
+    public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
+    public static final String KEY_WHITE_BALANCE =
+            "pref_camera_whitebalance_key";
+    public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
+
+    public static final int CURRENT_VERSION = 2;
+
+    // max mms video duration in seconds.
+    public static final int MMS_VIDEO_DURATION =
+            SystemProperties.getInt("ro.media.enc.lprof.duration", 60);
+
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
-    public static final int DEFAULT_VIDEO_DURATION_VALUE = 1;  // 1 minute
 
-    private ListPreference mVideoQuality;
-    private ListPreference mVideoDuration;
-    private ListPreference mPictureSize;
-    private ListPreference mJpegQuality;
-    private ListPreference mFocusMode;
-    private Parameters mParameters;
+    // MMS video length
+    public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
 
-    @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        addPreferencesFromResource(R.xml.camera_preferences);
+    @SuppressWarnings("unused")
+    private static final String TAG = "CameraSettings";
 
-        initUI();
+    private final Context mContext;
+    private final Parameters mParameters;
+    private final PreferenceManager mManager;
+
+    public CameraSettings(Activity activity, Parameters parameters) {
+        mContext = activity;
+        mParameters = parameters;
+        mManager = new PreferenceManager(activity, FIRST_REQUEST_CODE);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        updateVideoQualitySummary();
-        updateVideoDurationSummary();
-        updatePictureSizeSummary();
-        updateJpegQualitySummary();
-        updateFocusModeSummary();
+    public PreferenceScreen getPreferenceScreen(int preferenceRes) {
+        PreferenceScreen screen = mManager.createPreferenceScreen(mContext);
+        mManager.inflateFromResource(mContext, preferenceRes, screen);
+        initPreference(screen);
+        return screen;
     }
 
-    private void initUI() {
-        mVideoQuality = (ListPreference) findPreference(KEY_VIDEO_QUALITY);
-        mVideoDuration = (ListPreference) findPreference(KEY_VIDEO_DURATION);
-
-        mPictureSize = (ListPreference) findPreference(KEY_PICTURE_SIZE);
-        mJpegQuality = (ListPreference) findPreference(KEY_JPEG_QUALITY);
-        mFocusMode = (ListPreference) findPreference(KEY_FOCUS_MODE);
-        getPreferenceScreen().getSharedPreferences().
-                registerOnSharedPreferenceChangeListener(this);
-
-        // Get parameters.
-        android.hardware.Camera device = CameraHolder.instance().open();
-        mParameters = device.getParameters();
-        CameraHolder.instance().release();
-
-        // Create picture size settings.
-        createSettings(mPictureSize, Camera.SUPPORTED_PICTURE_SIZE,
-                       R.array.pref_camera_picturesize_entries,
-                       R.array.pref_camera_picturesize_entryvalues);
-
-        // Set default JPEG quality value if it is empty.
-        if (mJpegQuality.getValue() == null) {
-            mJpegQuality.setValue(getString(
-                R.string.pref_camera_jpegquality_default));
-        }
-
-        // Set default focus mode value if it is empty.
-        if (mFocusMode.getValue() == null) {
-            mFocusMode.setValue(getString(
-                R.string.pref_camera_focusmode_default));
+    public static void initialCameraPictureSize(
+            Context context, Parameters parameters) {
+        // When launching the camera app first time, we will set the picture
+        // size to the first one in the list defined in "arrays.xml" and is also
+        // supported by the driver.
+        List<Size> supported = parameters.getSupportedPictureSizes();
+        if (supported == null) return;
+        for (String candidate : context.getResources().getStringArray(
+                R.array.pref_camera_picturesize_entryvalues)) {
+            if (setCameraPictureSize(candidate, supported, parameters)) {
+                SharedPreferences.Editor editor = PreferenceManager
+                        .getDefaultSharedPreferences(context).edit();
+                editor.putString(KEY_PICTURE_SIZE, candidate);
+                editor.commit();
+                return;
+            }
         }
     }
 
-    private void createSettings(
-            ListPreference pref, String paramName, int prefEntriesResId,
-            int prefEntryValuesResId) {
-        // Disable the preference if the parameter is not supported.
-        String supportedParamStr = mParameters.get(paramName);
-        if (supportedParamStr == null) {
-            pref.setEnabled(false);
+    public static void removePreferenceFromScreen(
+            PreferenceScreen screen, String key) {
+        Preference pref = screen.findPreference(key);
+        if (pref == null) {
+            Log.i(TAG, "No preference found based the key : " + key);
+            throw new IllegalArgumentException();
+        } else {
+            removePreference(screen, pref);
+        }
+    }
+
+    public static boolean setCameraPictureSize(
+            String candidate, List<Size> supported, Parameters parameters) {
+        int index = candidate.indexOf('x');
+        if (index == NOT_FOUND) return false;
+        int width = Integer.parseInt(candidate.substring(0, index));
+        int height = Integer.parseInt(candidate.substring(index + 1));
+        for (Size size: supported) {
+            if (size.width == width && size.height == height) {
+                parameters.setPictureSize(width, height);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void initPreference(PreferenceScreen screen) {
+        ListPreference videoDuration =
+                (ListPreference) screen.findPreference(KEY_VIDEO_DURATION);
+        ListPreference pictureSize =
+                (ListPreference) screen.findPreference(KEY_PICTURE_SIZE);
+        ListPreference whiteBalance =
+                (ListPreference) screen.findPreference(KEY_WHITE_BALANCE);
+        ListPreference colorEffect =
+                (ListPreference) screen.findPreference(KEY_COLOR_EFFECT);
+        ListPreference sceneMode =
+                (ListPreference) screen.findPreference(KEY_SCENE_MODE);
+        ListPreference flashMode =
+                (ListPreference) screen.findPreference(KEY_FLASH_MODE);
+        ListPreference focusMode =
+                (ListPreference) screen.findPreference(KEY_FOCUS_MODE);
+
+        // Since the screen could be loaded from different resources, we need
+        // to check if the preference is available here
+        if (videoDuration != null) {
+            // Modify video duration settings.
+            // The first entry is for MMS video duration, and we need to fill
+            // in the device-dependent value (in seconds).
+            CharSequence[] entries = videoDuration.getEntries();
+            entries[0] = String.format(
+                    entries[0].toString(), MMS_VIDEO_DURATION);
+        }
+
+        // Filter out unsupported settings / options
+        if (pictureSize != null) {
+            filterUnsupportedOptions(screen, pictureSize, sizeListToStringList(
+                    mParameters.getSupportedPictureSizes()));
+        }
+        if (whiteBalance != null) {
+            filterUnsupportedOptions(screen,
+                    whiteBalance, mParameters.getSupportedWhiteBalance());
+        }
+        if (colorEffect != null) {
+            filterUnsupportedOptions(screen,
+                    colorEffect, mParameters.getSupportedColorEffects());
+        }
+        if (sceneMode != null) {
+            filterUnsupportedOptions(screen,
+                    sceneMode, mParameters.getSupportedSceneModes());
+        }
+        if (flashMode != null) {
+            filterUnsupportedOptions(screen,
+                    flashMode, mParameters.getSupportedFlashModes());
+        }
+        if (focusMode != null) {
+            filterUnsupportedOptions(screen,
+                    focusMode, mParameters.getSupportedFocusModes());
+        }
+    }
+
+    private static boolean removePreference(PreferenceGroup group,
+            Preference remove) {
+        if (group.removePreference(remove)) return true;
+
+        for (int i = 0; i < group.getPreferenceCount(); i++) {
+            final Preference child = group.getPreference(i);
+            if (child instanceof PreferenceGroup) {
+                if (removePreference((PreferenceGroup) child, remove)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void filterUnsupportedOptions(PreferenceScreen screen,
+            ListPreference pref, List<String> supported) {
+
+        CharSequence[] allEntries = pref.getEntries();
+
+        // Remove the preference if the parameter is not supported or there is
+        // only one options for the settings.
+        if (supported == null || supported.size() <= 1) {
+            removePreference(screen, pref);
             return;
         }
 
-        // Get the supported parameter settings.
-        StringTokenizer tokenizer = new StringTokenizer(supportedParamStr, ",");
-        ArrayList<CharSequence> supportedParam = new ArrayList<CharSequence>();
-        while (tokenizer.hasMoreElements()) {
-            supportedParam.add(tokenizer.nextToken());
-        }
-
-        // Prepare setting entries and entry values.
-        String[] allEntries = getResources().getStringArray(prefEntriesResId);
-        String[] allEntryValues = getResources().getStringArray(
-                prefEntryValuesResId);
+        CharSequence[] allEntryValues = pref.getEntryValues();
+        Drawable[] allIcons = (pref instanceof IconListPreference)
+                ? ((IconListPreference) pref).getIcons()
+                : null;
         ArrayList<CharSequence> entries = new ArrayList<CharSequence>();
         ArrayList<CharSequence> entryValues = new ArrayList<CharSequence>();
+        ArrayList<Drawable> icons =
+                allIcons == null ? null : new ArrayList<Drawable>();
         for (int i = 0, len = allEntryValues.length; i < len; i++) {
-            int found = supportedParam.indexOf(allEntryValues[i]);
-            if (found != -1) {
+            if (supported.indexOf(allEntryValues[i].toString()) != NOT_FOUND) {
                 entries.add(allEntries[i]);
                 entryValues.add(allEntryValues[i]);
+                if (allIcons != null) icons.add(allIcons[i]);
             }
         }
 
         // Set entries and entry values to list preference.
-        pref.setEntries(entries.toArray(new CharSequence[entries.size()]));
-        pref.setEntryValues(entryValues.toArray(
-                new CharSequence[entryValues.size()]));
+        int size = entries.size();
+        pref.setEntries(entries.toArray(new CharSequence[size]));
+        pref.setEntryValues(entryValues.toArray(new CharSequence[size]));
+        if (allIcons != null) {
+            ((IconListPreference) pref)
+                    .setIcons(icons.toArray(new Drawable[size]));
+        }
 
         // Set the value to the first entry if it is invalid.
         String value = pref.getValue();
-        int index = pref.findIndexOfValue(value);
-        if (index == -1) {
+        if (pref.findIndexOfValue(value) == NOT_FOUND) {
             pref.setValueIndex(0);
         }
     }
 
-    private void updateVideoQualitySummary() {
-        mVideoQuality.setSummary(mVideoQuality.getEntry());
-    }
-
-    private void updateVideoDurationSummary() {
-        mVideoDuration.setSummary(mVideoDuration.getEntry());
-    }
-
-    private void updatePictureSizeSummary() {
-        mPictureSize.setSummary(mPictureSize.getEntry());
-    }
-
-    private void updateJpegQualitySummary() {
-        mJpegQuality.setSummary(mJpegQuality.getEntry());
-    }
-
-    private void updateFocusModeSummary() {
-        mFocusMode.setSummary(mFocusMode.getEntry());
-    }
-
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-            String key) {
-        if (key.equals(KEY_VIDEO_QUALITY)) {
-            updateVideoQualitySummary();
-        } else if (key.equals(KEY_VIDEO_DURATION)) {
-            updateVideoDurationSummary();
-        } else if (key.equals(KEY_PICTURE_SIZE)) {
-            updatePictureSizeSummary();
-        } else if (key.equals(KEY_JPEG_QUALITY)) {
-            updateJpegQualitySummary();
-        } else if (key.equals(KEY_FOCUS_MODE)) {
-            updateFocusModeSummary();
+    private static List<String> sizeListToStringList(List<Size> sizes) {
+        ArrayList<String> list = new ArrayList<String>();
+        for (Size size : sizes) {
+            list.add(String.format("%dx%d", size.width, size.height));
         }
+        return list;
+    }
+
+    public static void upgradePreferences(SharedPreferences pref) {
+        int version;
+        try {
+            version = pref.getInt(KEY_VERSION, 0);
+        } catch (Exception ex) {
+            version = 0;
+        }
+        if (version == CURRENT_VERSION) return;
+
+        SharedPreferences.Editor editor = pref.edit();
+        if (version == 0) {
+            // For old version, change 1 to 10 for video duration preference.
+            if (pref.getString(KEY_VIDEO_DURATION, "1").equals("1")) {
+                editor.putString(KEY_VIDEO_DURATION, "10");
+            }
+            version = 1;
+        }
+        if (version == 1) {
+            // Change jpeg quality {65,75,85} to {normal,fine,superfine}
+            String quality = pref.getString(KEY_JPEG_QUALITY, "85");
+            if (quality.equals("65")) {
+                quality = "normal";
+            } else if (quality.equals("75")) {
+                quality = "fine";
+            } else {
+                quality = "superfine";
+            }
+            editor.putString(KEY_JPEG_QUALITY, quality);
+            version = 2;
+        }
+        editor.putInt(KEY_VERSION, CURRENT_VERSION);
+        editor.commit();
     }
 }

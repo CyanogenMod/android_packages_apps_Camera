@@ -23,7 +23,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 
@@ -56,7 +55,7 @@ abstract class ImageViewTouchBase extends ImageView {
     private final float[] mMatrixValues = new float[9];
 
     // The current bitmap being displayed.
-    final protected RotateBitmap mBitmapDisplayed = new RotateBitmap(null);
+    protected final RotateBitmap mBitmapDisplayed = new RotateBitmap(null);
 
     int mThisWidth = -1, mThisHeight = -1;
 
@@ -93,13 +92,26 @@ abstract class ImageViewTouchBase extends ImageView {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && getScale() > 1.0f) {
-            // If we're zoomed in, pressing Back jumps out to show the entire
-            // image, otherwise Back returns the user to the gallery.
-            zoomTo(1.0f);
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            event.startTracking();
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
+                && !event.isCanceled()) {
+            if (getScale() > 1.0f) {
+                // If we're zoomed in, pressing Back jumps out to show the
+                // entire image, otherwise Back returns the user to the gallery.
+                zoomTo(1.0f);
+                return true;
+            }
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     protected Handler mHandler = new Handler();
@@ -253,13 +265,12 @@ abstract class ImageViewTouchBase extends ImageView {
 
         float w = bitmap.getWidth();
         float h = bitmap.getHeight();
-        int rotation = bitmap.getRotation();
         matrix.reset();
 
-        // We limit up-scaling to 2x otherwise the result may look bad if it's
+        // We limit up-scaling to 3x otherwise the result may look bad if it's
         // a small icon.
-        float widthScale = Math.min(viewWidth / w, 2.0f);
-        float heightScale = Math.min(viewHeight / h, 2.0f);
+        float widthScale = Math.min(viewWidth / w, 3.0f);
+        float heightScale = Math.min(viewHeight / h, 3.0f);
         float scale = Math.min(widthScale, heightScale);
 
         matrix.postConcat(bitmap.getRotateMatrix());
@@ -333,6 +344,14 @@ abstract class ImageViewTouchBase extends ImageView {
         float cx = getWidth() / 2F;
         float cy = getHeight() / 2F;
 
+        zoomTo(scale, cx, cy);
+    }
+
+    protected void zoomToPoint(float scale, float pointX, float pointY) {
+        float cx = getWidth() / 2F;
+        float cy = getHeight() / 2F;
+
+        panBy(cx - pointX, cy - pointY);
         zoomTo(scale, cx, cy);
     }
 

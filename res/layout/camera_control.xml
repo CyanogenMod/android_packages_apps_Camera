@@ -18,8 +18,7 @@
         android:id="@+id/control_bar"
         android:orientation="vertical"
         android:layout_height="fill_parent"
-        android:layout_width="wrap_content"
-        android:layout_marginRight="4dp"
+        android:layout_width="76dp"
         android:layout_marginTop="13dp"
         android:layout_marginBottom="10dp"
         android:layout_alignParentRight="true">
@@ -29,7 +28,6 @@
             android:layout_centerHorizontal="true"
             android:layout_height="52dp"
             android:layout_width="52dp"
-            android:scaleType="center"
             android:clickable="true"
             android:focusable="false"
             android:background="@drawable/border_last_picture"/>
@@ -52,7 +50,7 @@
                 android:layout_marginBottom="3dp"
                 android:src="@drawable/btn_ic_mode_switch_camera"/>
     </LinearLayout>
-    
+
     <com.android.camera.ShutterButton android:id="@+id/shutter_button"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"

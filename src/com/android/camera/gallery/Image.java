@@ -16,27 +16,20 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.BitmapManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.provider.BaseColumns;
+import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
-import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 /**
  * The class for normal images in gallery.
@@ -44,7 +37,7 @@ import java.util.concurrent.ExecutionException;
 public class Image extends BaseImage implements IImage {
     private static final String TAG = "BaseImage";
 
-    private HashMap<String, String> mExifData;
+    private ExifInterface mExif;
 
     private int mRotation;
 
@@ -73,17 +66,6 @@ public class Image extends BaseImage implements IImage {
         // ((BaseImageList) getContainer()).invalidateCursor();
     }
 
-    @Override
-    protected Bitmap.CompressFormat compressionType() {
-        String mimeType = getMimeType();
-        if ("image/png".equals(mimeType)) {
-            return Bitmap.CompressFormat.PNG;
-        } else if ("image/gif".equals(mimeType)) {
-            return Bitmap.CompressFormat.PNG;
-        }
-        return Bitmap.CompressFormat.JPEG;
-    }
-
     public boolean isReadonly() {
         String mimeType = getMimeType();
         return !"image/jpeg".equals(mimeType) && !"image/png".equals(mimeType);
@@ -99,44 +81,23 @@ public class Image extends BaseImage implements IImage {
      * @param value
      */
     public void replaceExifTag(String tag, String value) {
-        if (mExifData == null) {
+        if (mExif == null) {
             loadExifData();
         }
-        mExifData.put(tag, value);
-    }
-
-    private class SaveImageContentsCancelable extends BaseCancelable<Void> {
-        private final Bitmap mImage;
-        private final byte [] mJpegData;
-
-        SaveImageContentsCancelable(Bitmap image, byte[] jpegData,
-                int orientation, String filePath) {
-            mImage = image;
-            mJpegData = jpegData;
-        }
-
-        @Override
-        public Void execute() throws InterruptedException, ExecutionException {
-            Bitmap thumbnail = null;
-            Uri uri = mContainer.contentUri(mId);
-            runSubTask(compressImageToFile(mImage, mJpegData, uri));
-            return null;
-        }
-    }
-
-    public Cancelable<Void> saveImageContents(Bitmap image, byte [] jpegData,
-            int orientation, boolean newFile, String filePath) {
-        return new SaveImageContentsCancelable(
-                image, jpegData, orientation, filePath);
+        mExif.setAttribute(tag, value);
     }
 
     private void loadExifData() {
-        mExifData = ExifInterface.loadExifData(mDataPath);
+        try {
+            mExif = new ExifInterface(mDataPath);
+        } catch (IOException ex) {
+            Log.e(TAG, "cannot read exif", ex);
+        }
     }
 
-    private void saveExifData() {
-        if (mExifData != null) {
-            ExifInterface.saveExifData(mDataPath, mExifData);
+    private void saveExifData() throws IOException {
+        if (mExif != null) {
+            mExif.saveAttributes();
         }
     }
 
@@ -163,12 +124,10 @@ public class Image extends BaseImage implements IImage {
 
             replaceExifTag(ExifInterface.TAG_ORIENTATION,
                     Integer.toString(orientation));
-            replaceExifTag("UserComment",
-                    "saveRotatedImage comment orientation: " + orientation);
             saveExifData();
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "unable to save exif data with new orientation "
-                    + fullSizeImageUri());
+                    + fullSizeImageUri(), ex);
         }
     }
 
@@ -181,14 +140,6 @@ public class Image extends BaseImage implements IImage {
         setExifRotation(newDegrees);
         setDegreesRotated(newDegrees);
 
-        // setting this to zero will force the call to checkCursor to generate
-        // fresh thumbs
-        mMiniThumbMagic = 0;
-        try {
-            mContainer.checkThumbnail(this, null);
-        } catch (IOException e) {
-            // Ignore inability to store mini thumbnail.
-        }
         return true;
     }
 
@@ -198,62 +149,16 @@ public class Image extends BaseImage implements IImage {
 
     public Bitmap thumbBitmap(boolean rotateAsNeeded) {
         Bitmap bitmap = null;
-        if (mContainer.mThumbUri != null) {
-            Cursor c = mContentResolver.query(
-                    mContainer.mThumbUri, THUMB_PROJECTION,
-                    Thumbnails.IMAGE_ID + "=?",
-                    new String[] { String.valueOf(fullSizeImageId()) },
-                    null);
-            try {
-                if (c.moveToFirst()) {
-                    bitmap = decodeCurrentImage(c.getLong(0));
-                }
-            } catch (RuntimeException ex) {
-                // sdcard removed?
-                return null;
-            } finally {
-                c.close();
-            }
-        }
-
-        if (bitmap == null) {
-            bitmap = fullSizeBitmap(THUMBNAIL_TARGET_SIZE,
-                    THUMBNAIL_MAX_NUM_PIXELS, NO_ROTATE, NO_NATIVE);
-            // No thumbnail found... storing the new one.
-            bitmap = mContainer.storeThumbnail(bitmap, mId);
-        }
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inDither = false;
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        bitmap = Images.Thumbnails.getThumbnail(
+                    mContentResolver, mId, Images.Thumbnails.MINI_KIND, options);
 
         if (bitmap != null && rotateAsNeeded) {
             bitmap = Util.rotate(bitmap, getDegreesRotated());
         }
 
-        return bitmap;
-    }
-
-    private Bitmap decodeCurrentImage(long id) {
-        Uri thumbUri = ContentUris.withAppendedId(
-                mContainer.mThumbUri, id);
-        ParcelFileDescriptor pfdInput;
-        Bitmap bitmap = null;
-        try {
-            BitmapFactory.Options options =  new BitmapFactory.Options();
-            options.inDither = false;
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            pfdInput = mContentResolver.openFileDescriptor(thumbUri, "r");
-            bitmap = BitmapManager.instance().decodeFileDescriptor(
-                    pfdInput.getFileDescriptor(), options);
-            pfdInput.close();
-        } catch (FileNotFoundException ex) {
-            Log.e(TAG, "couldn't open thumbnail " + thumbUri + "; " + ex);
-        } catch (IOException ex) {
-            Log.e(TAG, "couldn't open thumbnail " + thumbUri + "; " + ex);
-        } catch (NullPointerException ex) {
-            // we seem to get this if the file doesn't exist anymore
-            Log.e(TAG, "couldn't open thumbnail " + thumbUri + "; " + ex);
-        } catch (OutOfMemoryError ex) {
-            Log.e(TAG, "failed to allocate memory for thumbnail "
-                    + thumbUri + "; " + ex);
-        }
         return bitmap;
     }
 }

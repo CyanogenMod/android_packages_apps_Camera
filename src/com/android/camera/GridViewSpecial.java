@@ -18,17 +18,17 @@ package com.android.camera;
 
 import static com.android.camera.Util.Assert;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -36,6 +36,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.Scroller;
+
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
 
 import java.util.HashMap;
 
@@ -72,21 +75,34 @@ class GridViewSpecial extends View {
     // The mLeftEdgePadding fields is filled in onLayout(). See the comments
     // in onLayout() for details.
     static class LayoutSpec {
-        LayoutSpec(int w, int h, int intercellSpacing, int leftEdgePadding) {
-            mCellWidth = w;
-            mCellHeight = h;
-            mCellSpacing = intercellSpacing;
-            mLeftEdgePadding = leftEdgePadding;
+        LayoutSpec(int w, int h, int intercellSpacing, int leftEdgePadding,
+                DisplayMetrics metrics) {
+            mCellWidth = dpToPx(w, metrics);
+            mCellHeight = dpToPx(h, metrics);
+            mCellSpacing = dpToPx(intercellSpacing, metrics);
+            mLeftEdgePadding = dpToPx(leftEdgePadding, metrics);
         }
         int mCellWidth, mCellHeight;
         int mCellSpacing;
         int mLeftEdgePadding;
     }
 
-    private final LayoutSpec [] mCellSizeChoices = new LayoutSpec[] {
-            new LayoutSpec(67, 67, 8, 0),
-            new LayoutSpec(92, 92, 8, 0),
-    };
+    private LayoutSpec [] mCellSizeChoices;
+
+    private void initCellSize() {
+        Activity a = (Activity) getContext();
+        DisplayMetrics metrics = new DisplayMetrics();
+        a.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        mCellSizeChoices = new LayoutSpec[] {
+            new LayoutSpec(67, 67, 8, 0, metrics),
+            new LayoutSpec(92, 92, 8, 0, metrics),
+        };
+    }
+
+    // Converts dp to pixel.
+    private static int dpToPx(int dp, DisplayMetrics metrics) {
+        return (int) (metrics.density * dp);
+    }
 
     // These are set in init().
     private final Handler mHandler = new Handler();
@@ -97,7 +113,7 @@ class GridViewSpecial extends View {
     private ImageLoader mLoader;
     private Listener mListener = null;
     private DrawAdapter mDrawAdapter = null;
-    private IImageList mAllImages = ImageManager.emptyImageList();
+    private IImageList mAllImages = ImageManager.makeEmptyImageList();
     private int mSizeChoice = 1;  // default is big cell size
 
     // These are set in onLayout().
@@ -134,6 +150,7 @@ class GridViewSpecial extends View {
         mGestureDetector = new GestureDetector(context,
                 new MyGestureDetector());
         setFocusableInTouchMode(true);
+        initCellSize();
     }
 
     private final Runnable mRedrawCallback = new Runnable() {
@@ -284,6 +301,8 @@ class GridViewSpecial extends View {
     // GestureDetector could queue events and fire them later. At that time
     // stop() may have already been called and we can't handle the events.
     private class MyGestureDetector extends SimpleOnGestureListener {
+        private AudioManager mAudioManager;
+
         @Override
         public boolean onDown(MotionEvent e) {
             if (!canHandleEvent()) return false;
@@ -340,6 +359,13 @@ class GridViewSpecial extends View {
             if (!canHandleEvent()) return false;
             int index = computeSelectedIndex(e.getX(), e.getY());
             if (index >= 0 && index < mCount) {
+                // Play click sound.
+                if (mAudioManager == null) {
+                    mAudioManager = (AudioManager) getContext()
+                            .getSystemService(Context.AUDIO_SERVICE);
+                }
+                mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
+
                 mListener.onImageTapped(index);
                 return true;
             }
@@ -365,10 +391,10 @@ class GridViewSpecial extends View {
         // A selection box will be shown for the image that being selected,
         // (by finger or by the dpad center key). The selection box can be drawn
         // in two colors. One color (yellow) is used when the the image is
-        // still being tapped or clicked (the finger is still on the touch screen
-        // or the dpad center key is not released). Another color (orange) is
-        // used after the finger leaves touch screen or the dpad center
-        // key is released.
+        // still being tapped or clicked (the finger is still on the touch
+        // screen or the dpad center key is not released). Another color
+        // (orange) is used after the finger leaves touch screen or the dpad
+        // center key is released.
 
         if (mCurrentSelection == index) {
             return;
@@ -572,9 +598,11 @@ class GridViewSpecial extends View {
                     sel = Math.min(mCount - 1, sel + mColumns);
                     break;
                 case KeyEvent.KEYCODE_DPAD_CENTER:
-                    mCurrentPressState |= CLICKING_FLAG;
-                    mHandler.postDelayed(mLongPressCallback,
-                            ViewConfiguration.getLongPressTimeout());
+                    if (event.getRepeatCount() == 0) {
+                        mCurrentPressState |= CLICKING_FLAG;
+                        mHandler.postDelayed(mLongPressCallback,
+                                ViewConfiguration.getLongPressTimeout());
+                    }
                     break;
                 default:
                     return super.onKeyDown(keyCode, event);

@@ -15,16 +15,17 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="camera_error_title" msgid="1202232535191653443">"Chyba fotoaparátu"</string>
+    <string name="cannot_connect_camera" msgid="8029009101380114174">"Nelze se připojit k fotoaparátu."</string>
     <string name="all_images" msgid="1195501551939178807">"Všechny fotky"</string>
     <string name="all_videos" msgid="3380966619230896013">"Všechna videa"</string>
     <string name="camera_label" msgid="6346560772074764302">"Fotoaparát"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videokamera"</string>
     <string name="gallery_picker_label" msgid="3080425245006492787">"Galerie"</string>
+    <string name="gallery_label" msgid="7119609703856708011">"Galerie"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Pořízené fotografie"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Pořízená videa"</string>
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Média zaznamenaná kamerou"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"Přepnout do režimu video"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Přepnout do režimu fotoaparát"</string>
     <string name="crop_label" msgid="521114301871349328">"Oříznout fotografii"</string>
     <string name="view_label" msgid="4450531507947335704">"Zobrazit fotografii"</string>
     <string name="preferences_label" msgid="5955678162525051163">"Nastavení fotoaparátu"</string>
@@ -61,22 +62,21 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"Pořídit další"</string>
     <string name="camera_toss" msgid="3781186798552460833">"Smazat"</string>
-    <string name="camera_gallery" msgid="815753042966032398">"Galerie"</string>
     <string name="camera_share" msgid="8207701858325694182">"Sdílet"</string>
     <string name="camera_set" msgid="3422192914806971182">"Použít jako"</string>
     <string name="camera_play" msgid="8248000517869959980">"Přehrát"</string>
     <string name="camera_attach" msgid="4048659554893435232">"Připojit přílohu"</string>
     <string name="camera_cancel" msgid="8203341746672085747">"Zrušit"</string>
     <string name="camera_crop" msgid="5584000454518174632">"Oříznout"</string>
-    <string name="no_way_to_share_image" msgid="8193970133742126201">"Tuto fotografii nelze sdílet."</string>
-    <string name="no_way_to_share_video" msgid="7822400095945256426">"Toto video nelze sdílet."</string>
+    <string name="no_way_to_share_image" msgid="5011985309980187927">"Není k dispozici aplikace potřebná ke sdílení fotografie."</string>
+    <string name="no_way_to_share_video" msgid="3684571102267072206">"Není k dispozici aplikace potřebná ke sdílení videa."</string>
+    <string name="no_way_to_share" msgid="863323712875014752">"Není k dispozici aplikace potřebná ke sdílení souborů médií."</string>
     <string name="video_play" msgid="5287787282508002895">"Přehrát"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
     <string name="camera_pick_wallpaper" msgid="7026385960511811641">"Fotografie"</string>
     <string name="camera_setas_wallpaper" msgid="797463183863414289">"Tapeta"</string>
     <string name="pref_gallery_category" msgid="5826488887237959433">"Obecné nastavení"</string>
     <string name="pref_slideshow_category" msgid="9097962086335681667">"Nastavení prezentace"</string>
-    <string name="pref_camera_general_settings_category" msgid="2135384248699549300">"Obecné nastavení"</string>
     <string name="pref_gallery_size_title" msgid="1363406603879434418">"Zobrazovaná velikost"</string>
     <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Vyberte zobrazovanou velikost obrázků a videí"</string>
     <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Velikost fotografií"</string>
@@ -112,34 +112,82 @@
     <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"Přehrát prezentaci více než jednou"</string>
     <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"Náhodné pořadí snímků"</string>
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"Zobrazit fotografie v náhodném pořadí"</string>
-    <string name="pref_camera_recordlocation_title" msgid="273727672426306702">"K fotografiím ukládat místo pořízení"</string>
-    <string name="pref_camera_recordlocation_summary" msgid="3275371402016128548">"V údajích o fotografii zaznamenat místo pořízení"</string>
-    <string name="pref_camera_video_settings_category" msgid="5788821601203523037">"Nastavení videa"</string>
-    <string name="pref_camera_videoquality_title" msgid="3836197291744160920">"Vybrat kvalitu videa"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Úložiště"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Vypnuto"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Zapnout"</string>
+    <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Kvalita videa"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Nízká (pro zprávy MMS)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Vysoká (pro kartu SD)"</string>
     <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Kvalita videa"</string>
-    <string name="pref_camera_video_duration_title" msgid="3659987702892910722">"Výběr délky videa"</string>
-    <string name="pref_camera_video_duration_entry_1" msgid="886640327548814447">"1 minuta (pro sdílení)"</string>
+    <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"Délka videa"</string>
+    <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> s (pro MMS)"</string>
     <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 min"</string>
     <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 min"</string>
     <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Délka videa"</string>
-    <string name="pref_camera_picture_settings_category" msgid="1513001949820030759">"Nastavení fotografií"</string>
-    <string name="pref_camera_picturesize_title" msgid="8391466986280182397">"Výběr velikosti fotografie"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="7304479270077279178">"3M (2048×1536)"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="6722733164421134734">"2M (1600×1200)"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6648351357102402892">"1M (1024×768)"</string>
+    <string name="pref_camera_settings_category" msgid="2576236450859613120">"Nastavení fotoaparátu"</string>
+    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Nastavení videokamery"</string>
+    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Velikost fotografií"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 megapixelů"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 megapixely"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 megapixely"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 megapixel"</string>
     <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Velikost fotografií"</string>
-    <string name="pref_camera_jpegquality_title" msgid="3045390831339734843">"Výběr kvality fotografie"</string>
+    <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Kvalita fotografií"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Velmi jemná"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Jemná"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Běžná"</string>
     <string name="pref_camera_jpegquality_dialogtitle" msgid="18195886066728203">"Kvalita fotografií"</string>
-    <string name="pref_camera_focusmode_title" msgid="3829707410870789496">"Výběr režimu zaostření"</string>
+    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Režim zaostření"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automaticky"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Nekonečno"</string>
-    <string name="pref_camera_focusmode_value_infinity" msgid="3629041045019224450">"nekonečno"</string>
+    <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Režim zaostření"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Režim blesku"</string>
+    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automaticky"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Zapnout"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Vypnuto"</string>
+    <string name="pref_camera_flashmode_dialogtitle" msgid="2824978765695177188">"Režim blesku"</string>
+    <string name="pref_camera_whitebalance_dialogtitle" msgid="8978388629257577909">"Vyvážení bílé"</string>
+    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Vyvážení bílé"</string>
+    <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automaticky"</string>
+    <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Zářící"</string>
+    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Denní světlo"</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Světélkující"</string>
+    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Zataženo"</string>
+    <string name="pref_camera_whitebalance_entry_twilight" msgid="2257942426397244556">"Šero"</string>
+    <string name="pref_camera_whitebalance_entry_shade" msgid="4685730287406277702">"Stín"</string>
+    <string name="pref_camera_whitebalance_entry_warm_fluorescent" msgid="2827098617308870248">"Hřejivě světélkující"</string>
+    <string name="pref_camera_whitebalance_entry_halogen" msgid="5473868018455084929">"Halogenová žárovka"</string>
+    <string name="pref_camera_coloreffect_dialogtitle" msgid="7691751972871809763">"Barevný efekt"</string>
+    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Barevný efekt"</string>
+    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Žádný"</string>
+    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Černobíle"</string>
+    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"Sépiové barvy"</string>
+    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Negativ"</string>
+    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Solarizace"</string>
+    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Posterizace"</string>
+    <string name="pref_camera_coloreffect_entry_whiteboard" msgid="8161550096887765100">"Bílá tabule"</string>
+    <string name="pref_camera_coloreffect_entry_blackboard" msgid="4149918495221278960">"Černá tabule"</string>
+    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Voda"</string>
+    <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"Pastelové barvy"</string>
+    <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"Mozaika"</string>
+    <string name="pref_camera_coloreffect_entry_redtint" msgid="6646299498728138294">"Červený nádech"</string>
+    <string name="pref_camera_coloreffect_entry_bluetint" msgid="918696074928692967">"Modrý nádech"</string>
+    <string name="pref_camera_coloreffect_entry_greentint" msgid="9080254097150221320">"Zelený nádech"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Scénický režim"</string>
+    <string name="pref_camera_scenemode_dialogtitle" msgid="299486172171669009">"Scénický režim"</string>
+    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automaticky"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Akce"</string>
+    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Portrét"</string>
+    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"Na šířku"</string>
+    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Noc"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="5244280874913294746">"Portrét v noci"</string>
+    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"Divadlo"</string>
+    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"Pláž"</string>
+    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"Sníh"</string>
+    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Západ slunce"</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="2147958278893914895">"Stabilní fotografie"</string>
+    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Ohňostroj"</string>
     <string name="camerasettings" msgid="2433519618178453928">"Nastavení"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Žádná média nebyla nalezena."</string>
     <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Potvrdit smazání"</string>
@@ -160,12 +208,12 @@
     <string name="details_bit_rate" msgid="5632311789455402186">"Bitová rychlost:"</string>
     <string name="details_codec" msgid="5580300450432398126">"Kodek:"</string>
     <string name="details_format" msgid="3700860266600796363">"Formát:"</string>
-    <string name="details_dimension_x" msgid="4479200210424701240">"%1$d x %2$d"</string>
-    <string name="details_ms" msgid="940634969189855292">"%1$02d:%2$02d"</string>
-    <string name="details_hms" msgid="3215779248094151255">"%1$d:%2$02d:%3$02d"</string>
-    <string name="details_fps" msgid="2707670327505979317">"%1$d snímků/s"</string>
-    <string name="details_kbps" msgid="59196416864960850">"%1$d Kb/s"</string>
-    <string name="details_mbps" msgid="3978720645766601106">"%1$g Mb/s"</string>
+    <string name="details_dimension_x" msgid="4923037334136168978">"<xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="details_ms" msgid="7574063760642857397">"<xliff:g id="MINUTES">%1$02d</xliff:g>:<xliff:g id="SECONDS">%2$02d</xliff:g>"</string>
+    <string name="details_hms" msgid="772340067838331166">"<xliff:g id="HOURS">%1$d</xliff:g>:<xliff:g id="MINUTES">%2$02d</xliff:g>:<xliff:g id="SECONDS">%3$02d</xliff:g>"</string>
+    <string name="details_fps" msgid="5450871169477340537">"<xliff:g id="FRAMES">%1$d</xliff:g> fps"</string>
+    <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> Kb/s"</string>
+    <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mb/s"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="context_menu_header" msgid="1185348426222302182">"Možnosti fotografií"</string>
     <string name="video_context_menu_header" msgid="7318971116949475029">"Možnosti videa"</string>
@@ -174,15 +222,15 @@
     <string name="pick_photos_gallery_title" msgid="12912682424915943">"Vyberte fotografii"</string>
     <string name="videos_gallery_title" msgid="6150354029982749479">"Galerie"</string>
     <string name="pick_videos_gallery_title" msgid="326727095201227333">"Vybrat video"</string>
-    <string name="loading_progress_format_string" msgid="7401961873257843731">"Zbývá <xliff:g id="COUNTER">%d</xliff:g>"</string>
     <string name="sendImage" msgid="7279510542799399570">"Sdílet fotografii pomocí"</string>
     <string name="setImage" msgid="7246975856983303047">"Fotografie bude použita jako"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Sdílet video pomocí"</string>
+    <string name="send_media_files" msgid="8201083279723850611">"Sdílení souborů médií pomocí"</string>
     <string name="movieviewlabel" msgid="7363495772706775465">"Filmy"</string>
     <string name="loading_video" msgid="4013492720121891585">"Načítání videa..."</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Na vaší kartě SD je málo místa. Změňte nastavení kvality nebo smažte položky z Galerie."</string>
     <string name="resume_playing_title" msgid="8996677350649355013">"Pokračovat v přehrávání videa"</string>
-    <string name="resume_playing_message" msgid="5184414518126703481">"Pokračovat v přehrávání od %s?"</string>
+    <string name="resume_playing_message" msgid="7293000708492271389">"Pokračovat v přehrávání od <xliff:g id="DURATION">%s</xliff:g>?"</string>
     <string name="resume_playing_resume" msgid="3847915469173852416">"Pokračovat v přehrávání"</string>
     <string name="resume_playing_restart" msgid="5471008499835769292">"Začít znovu"</string>
     <string name="gadget_title" msgid="259405922673466798">"Rámeček fotografie"</string>
