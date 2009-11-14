@@ -78,7 +78,7 @@
     <string name="pref_gallery_category" msgid="5826488887237959433">"일반 설정"</string>
     <string name="pref_slideshow_category" msgid="9097962086335681667">"슬라이드쇼 설정"</string>
     <string name="pref_gallery_size_title" msgid="1363406603879434418">"디스플레이 크기"</string>
-    <string name="pref_gallery_size_summary" msgid="8179967445295243638">"사진 및 동영상 표시 크기 선택"</string>
+    <string name="pref_gallery_size_summary" msgid="8179967445295243638">"사진 및 동영상 디스플레이 크기 선택"</string>
     <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"사진 크기"</string>
   <string-array name="pref_gallery_size_choices">
     <item msgid="7157691836846678936">"크게"</item>
