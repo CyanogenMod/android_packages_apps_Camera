@@ -117,7 +117,7 @@
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"开"</string>
     <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"视频画质"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"低（对于彩信）"</string>
-    <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"高（对于 SD 卡）"</string>
+    <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"高（适用于 SD 卡）"</string>
     <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"视频画质"</string>
     <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"视频时长"</string>
     <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> 秒（对于彩信）"</string>
@@ -228,7 +228,7 @@
     <string name="send_media_files" msgid="8201083279723850611">"媒体文件分享方式："</string>
     <string name="movieviewlabel" msgid="7363495772706775465">"电影"</string>
     <string name="loading_video" msgid="4013492720121891585">"正在载入视频..."</string>
-    <string name="spaceIsLow_content" msgid="2848517537672543641">"SD 卡空间不足。请更改画质设置或从图库中删除部分项。"</string>
+    <string name="spaceIsLow_content" msgid="2848517537672543641">"SD 卡空间已快用完。请更改画质设置或删除图库中的项目。"</string>
     <string name="resume_playing_title" msgid="8996677350649355013">"重新播放视频"</string>
     <string name="resume_playing_message" msgid="7293000708492271389">"从 <xliff:g id="DURATION">%s</xliff:g> 开始继续播放吗？"</string>
     <string name="resume_playing_resume" msgid="3847915469173852416">"重新播放"</string>

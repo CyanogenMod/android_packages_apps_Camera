@@ -16,7 +16,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="1202232535191653443">"相機發生錯誤"</string>
-    <string name="cannot_connect_camera" msgid="8029009101380114174">"無法連線至相機。"</string>
+    <string name="cannot_connect_camera" msgid="8029009101380114174">"無法連接相機。"</string>
     <string name="all_images" msgid="1195501551939178807">"所有相片"</string>
     <string name="all_videos" msgid="3380966619230896013">"所有影片"</string>
     <string name="camera_label" msgid="6346560772074764302">"相機"</string>
@@ -109,7 +109,7 @@
     <item msgid="9006732482485375438">"隨機選取"</item>
   </string-array>
     <string name="pref_gallery_slideshow_repeat_title" msgid="6512135022461429738">"重複播放投影片"</string>
-    <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"旋環播放投影片"</string>
+    <string name="pref_gallery_slideshow_repeat_summary" msgid="8289230397431855268">"循環播放投影片"</string>
     <string name="pref_gallery_slideshow_shuffle_title" msgid="3677508579783015598">"隨機播放投影片"</string>
     <string name="pref_gallery_slideshow_shuffle_summary" msgid="8566948749149325715">"隨機顯示相片"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"儲存位置"</string>
