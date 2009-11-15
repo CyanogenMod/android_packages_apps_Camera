@@ -16,6 +16,10 @@
 
 package com.android.camera;
 
+import static com.android.camera.Util.Assert;
+
+import android.hardware.Camera.Parameters;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -23,8 +27,6 @@ import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
-
-import static com.android.camera.Util.Assert;
 
 //
 // CameraHolder is used to hold an android.hardware.Camera instance.
@@ -41,8 +43,14 @@ public class CameraHolder {
     private static final String TAG = "CameraHolder";
     private android.hardware.Camera mCameraDevice;
     private long mKeepBeforeTime = 0;  // Keep the Camera before this time.
-    private Handler mHandler;
+    private final Handler mHandler;
     private int mUsers = 0;  // number of open() - number of release()
+
+    // We store the camera parameters when we actually open the device,
+    // so we can restore them in the subsequent open() requests by the user.
+    // This prevents the parameters set by the Camera activity used by
+    // the VideoCamera activity inadvertently.
+    private Parameters mParameters;
 
     // Use a singleton.
     private static CameraHolder sHolder;
@@ -75,21 +83,47 @@ public class CameraHolder {
         mHandler = new MyHandler(ht.getLooper());
     }
 
-    public synchronized android.hardware.Camera open() {
+    public synchronized android.hardware.Camera open()
+            throws CameraHardwareException {
         Assert(mUsers == 0);
         if (mCameraDevice == null) {
-            mCameraDevice = android.hardware.Camera.open();
+            try {
+                mCameraDevice = android.hardware.Camera.open();
+            } catch (RuntimeException e) {
+                Log.e(TAG, "fail to connect Camera", e);
+                throw new CameraHardwareException(e);
+            }
+            mParameters = mCameraDevice.getParameters();
         } else {
             try {
                 mCameraDevice.reconnect();
             } catch (IOException e) {
                 Log.e(TAG, "reconnect failed.");
+                throw new CameraHardwareException(e);
             }
+            mCameraDevice.setParameters(mParameters);
         }
         ++mUsers;
         mHandler.removeMessages(RELEASE_CAMERA);
         mKeepBeforeTime = 0;
         return mCameraDevice;
+    }
+
+    /**
+     * Tries to open the hardware camera. If the camera is being used or
+     * unavailable then return {@code null}.
+     */
+    public synchronized android.hardware.Camera tryOpen() {
+        try {
+            return mUsers == 0 ? open() : null;
+        } catch (CameraHardwareException e) {
+            // In eng build, we throw the exception so that test tool
+            // can detect it and report it
+            if ("eng".equals(Build.TYPE)) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        }
     }
 
     public synchronized void release() {

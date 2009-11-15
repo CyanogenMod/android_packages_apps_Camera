@@ -20,13 +20,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 public class Switcher extends ImageView implements View.OnTouchListener {
+
+    @SuppressWarnings("unused")
     private static final String TAG = "Switcher";
 
     public interface OnSwitchListener {
@@ -106,10 +107,6 @@ public class Switcher extends ImageView implements View.OnTouchListener {
     }
 
     private void startParkingAnimation() {
-        int drawableHeight = getDrawable().getIntrinsicHeight();
-        int target = mSwitch
-                ? getHeight() - drawableHeight - mPaddingBottom
-                : mPaddingTop;
         mAnimationStartTime = AnimationUtils.currentAnimationTimeMillis();
     }
 
@@ -132,10 +129,6 @@ public class Switcher extends ImageView implements View.OnTouchListener {
         Drawable drawable = getDrawable();
         int drawableHeight = drawable.getIntrinsicHeight();
         int drawableWidth = drawable.getIntrinsicWidth();
-
-        if (drawable == null) {
-            return; // couldn't resolve the URI
-        }
 
         if (drawableWidth == 0 || drawableHeight == 0) {
             return;     // nothing to draw (empty bounds)

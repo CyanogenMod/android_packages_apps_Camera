@@ -17,16 +17,14 @@
 package com.android.camera;
 
 import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
 
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import static com.android.camera.Util.Assert;
 
 /**
  * A dedicated decoding thread used by ImageGallery.
@@ -41,18 +39,7 @@ public class ImageLoader {
     // the worker thread and a done flag so we know when to exit
     private boolean mDone;
     private Thread mDecodeThread;
-
-    // Thumbnail checking will be done when there is no getBitmap requests
-    // need to be processed.
-    private ThumbnailChecker mThumbnailChecker;
-
-    /**
-     * Notify interface of how many thumbnails are processed.
-     */
-    public interface ThumbCheckCallback {
-        public boolean checking(int current, int count);
-        public void done();
-    }
+    private ContentResolver mCr;
 
     public interface LoadedCallback {
         public void run(Bitmap result);
@@ -118,19 +105,12 @@ public class ImageLoader {
         }
     }
 
-    public ImageLoader(Handler handler) {
-        mThumbnailChecker = new ThumbnailChecker();
+    public ImageLoader(ContentResolver cr, Handler handler) {
+        mCr = cr;
         start();
     }
 
     private class WorkerThread implements Runnable {
-
-        // IDLE_TIME is the time we wait before we start checking thumbnail.
-        // This gives the thumbnail generation work priority because there
-        // may be a short period of time when the queue is empty while
-        // ImageBlockManager is calculating what to load next.
-        private static final long IDLE_TIME = 1000000000;  // in nanoseconds.
-        private long mLastWorkTime = System.nanoTime();
 
         // Pick off items on the queue, one by one, and compute their bitmap.
         // Place the resulting bitmap in the cache, then call back by executing
@@ -145,37 +125,13 @@ public class ImageLoader {
                     if (!mQueue.isEmpty()) {
                         workItem = mQueue.remove(0);
                     } else {
-                        if (!mThumbnailChecker.hasMoreThumbnailsToCheck()) {
-                            try {
-                                mQueue.wait();
-                            } catch (InterruptedException ex) {
-                                // ignore the exception
-                            }
-                            continue;
-                        } else {
-                            // Calculate the time we need to be idle before we
-                            // start checking thumbnail.
-                            long t = IDLE_TIME -
-                                    (System.nanoTime() - mLastWorkTime);
-                            t = t / 1000000;  // convert to milliseconds.
-                            if (t > 0) {
-                                try {
-                                    mQueue.wait(t);
-                                } catch (InterruptedException ex) {
-                                    // ignore the exception
-                                }
-                                continue;
-                            }
+                        try {
+                            mQueue.wait();
+                        } catch (InterruptedException ex) {
+                            // ignore the exception
                         }
+                        continue;
                     }
-                }
-
-                // This holds if and only if the above
-                // hasMoreThumbnailsToCheck() returns true. (We put the call
-                // here because we want to release the lock on mQueue.
-                if (workItem == null) {
-                    mThumbnailChecker.checkNextThumbnail();
-                    continue;
                 }
 
                 final Bitmap b = workItem.mImage.miniThumbBitmap();
@@ -183,8 +139,6 @@ public class ImageLoader {
                 if (workItem.mOnLoadedRunnable != null) {
                     workItem.mOnLoadedRunnable.run(b);
                 }
-
-                mLastWorkTime = System.nanoTime();
             }
         }
     }
@@ -210,101 +164,12 @@ public class ImageLoader {
             try {
                 Thread t = mDecodeThread;
                 BitmapManager.instance().cancelThreadDecoding(t);
+                MediaStore.Images.Thumbnails.cancelThumbnailRequest(mCr, -1);
                 t.join();
                 mDecodeThread = null;
             } catch (InterruptedException ex) {
                 // so now what?
             }
         }
-        stopCheckingThumbnails();
-    }
-
-    // Passthrough to ThumbnailChecker.
-    public void startCheckingThumbnails(IImageList imageList,
-            ThumbCheckCallback cb) {
-        mThumbnailChecker.startCheckingThumbnails(imageList, cb);
-        // Kick WorkerThread to start working.
-        synchronized (mQueue) {
-            mQueue.notifyAll();
-        }
-    }
-
-    public void stopCheckingThumbnails() {
-        mThumbnailChecker.stopCheckingThumbnails();
-    }
-}
-
-// This is part of ImageLoader which is responsible for checking thumbnails.
-//
-// The methods of ThumbnailChecker need to be synchronized because the data
-// will also be accessed by the WorkerThread. The methods of ThumbnailChecker
-// is only called by ImageLoader.
-class ThumbnailChecker {
-    private static final String TAG = "ThumbnailChecker";
-
-    private IImageList mImageListToCheck;  // The image list we will check.
-    private int mTotalToCheck;  // total number of thumbnails to check.
-    private int mNextToCheck;  // next thumbnail to check,
-                               // -1 if no further checking is needed.
-    private ImageLoader.ThumbCheckCallback mThumbCheckCallback;
-
-    ThumbnailChecker() {
-        mNextToCheck = -1;
-    }
-
-    // Both imageList and cb must be non-null.
-    synchronized void startCheckingThumbnails(IImageList imageList,
-            ImageLoader.ThumbCheckCallback cb) {
-        Assert(imageList != null);
-        Assert(cb != null);
-        mImageListToCheck = imageList;
-        mTotalToCheck = imageList.getCount();
-        mNextToCheck = 0;
-        mThumbCheckCallback = cb;
-
-        if (!ImageManager.hasStorage()) {
-            Log.v(TAG, "bailing from the image checker -- no storage");
-            stopCheckingThumbnails();
-        }
-    }
-
-    synchronized void stopCheckingThumbnails() {
-        if (mThumbCheckCallback == null) return;  // already stopped.
-        mThumbCheckCallback.done();
-        mImageListToCheck = null;
-        mTotalToCheck = 0;
-        mNextToCheck = -1;
-        mThumbCheckCallback = null;
-    }
-
-    synchronized boolean hasMoreThumbnailsToCheck() {
-        return mNextToCheck != -1;
-    }
-
-    synchronized void checkNextThumbnail() {
-        if (mNextToCheck == -1) {
-            return;
-        }
-
-        if (mNextToCheck >= mTotalToCheck) {
-            stopCheckingThumbnails();
-            return;
-        }
-
-        try {
-            mImageListToCheck.checkThumbnail(mNextToCheck);
-        } catch (IOException ex) {
-            Log.e(TAG, "Failed to check thumbnail..."
-                    + " was the sd card removed? - " + ex.getMessage());
-            stopCheckingThumbnails();
-            return;
-        }
-
-        if (!mThumbCheckCallback.checking(mNextToCheck, mTotalToCheck)) {
-            stopCheckingThumbnails();
-            return;
-        }
-
-        mNextToCheck++;
     }
 }

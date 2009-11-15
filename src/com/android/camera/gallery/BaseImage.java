@@ -20,18 +20,16 @@ import com.android.camera.BitmapManager;
 import com.android.camera.Util;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore.Images.ImageColumns;
+import android.provider.MediaStore.Images;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Represents a particular image and provides access to the underlying bitmap
@@ -41,12 +39,7 @@ import java.io.OutputStream;
 public abstract class BaseImage implements IImage {
     private static final String TAG = "BaseImage";
     private static final int UNKNOWN_LENGTH = -1;
-
-    private static final byte [] sMiniThumbData =
-            new byte[MiniThumbFile.BYTES_PER_MINTHUMB];
-
     protected ContentResolver mContentResolver;
-
 
     // Database field
     protected Uri mUri;
@@ -80,69 +73,6 @@ public abstract class BaseImage implements IImage {
         mDisplayName = displayName;
     }
 
-    protected abstract Bitmap.CompressFormat compressionType();
-
-    private class CompressImageToFile extends BaseCancelable<Boolean> {
-        private ThreadSafeOutputStream mOutputStream = null;
-
-        private final Bitmap mBitmap;
-        private final Uri mDestinationUri;
-        private final byte[] mJpegData;
-
-        public CompressImageToFile(Bitmap bitmap, byte[] jpegData, Uri uri) {
-            mBitmap = bitmap;
-            mDestinationUri = uri;
-            mJpegData = jpegData;
-        }
-
-        @Override
-        public boolean requestCancel() {
-            if (super.requestCancel()) {
-                if (mOutputStream != null) {
-                    mOutputStream.close();
-                }
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public Boolean execute() {
-            try {
-                OutputStream delegate =
-                        mContentResolver.openOutputStream(mDestinationUri);
-                synchronized (this) {
-                    mOutputStream = new ThreadSafeOutputStream(delegate);
-                }
-                if (mBitmap != null) {
-                    mBitmap.compress(compressionType(), 75, mOutputStream);
-                } else {
-                    mOutputStream.write(mJpegData);
-                }
-                return true;
-            } catch (FileNotFoundException ex) {
-                return false;
-            } catch (IOException ex) {
-                return false;
-            } finally {
-                Util.closeSilently(mOutputStream);
-            }
-        }
-    }
-
-    /**
-     * Take a given bitmap and compress it to a file as described
-     * by the Uri parameter.
-     *
-     * @param bitmap    the bitmap to be compressed/stored
-     * @param uri       where to store the bitmap
-     * @return          true if we succeeded
-     */
-    protected Cancelable<Boolean> compressImageToFile(
-            Bitmap bitmap, byte [] jpegData, Uri uri) {
-        return new CompressImageToFile(bitmap, jpegData, uri);
-    }
-
     public String getDataPath() {
         return mDataPath;
     }
@@ -161,12 +91,6 @@ public abstract class BaseImage implements IImage {
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels) {
         return fullSizeBitmap(minSideLength, maxNumberOfPixels,
                 IImage.ROTATE_AS_NEEDED, IImage.NO_NATIVE);
-    }
-
-    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
-            boolean rotateAsNeeded) {
-        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
-                rotateAsNeeded, IImage.NO_NATIVE);
     }
 
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
@@ -254,72 +178,22 @@ public abstract class BaseImage implements IImage {
     }
 
     public Bitmap miniThumbBitmap() {
+        Bitmap b = null;
         try {
             long id = mId;
-
-            synchronized (sMiniThumbData) {
-                byte [] data = null;
-
-                // Try to get it from the file.
-                if (mMiniThumbMagic != 0) {
-                    data = mContainer.getMiniThumbFromFile(id, sMiniThumbData,
-                            mMiniThumbMagic);
-                }
-
-                // If it does not exist, try to create the thumbnail
-                if (data == null) {
-                    byte[][] createdThumbData = new byte[1][];
-                    try {
-                        ((BaseImageList) getContainer())
-                                .checkThumbnail(this, createdThumbData);
-                    } catch (IOException ex) {
-                        // Typically IOException because the sd card is full.
-                        // But createdThumbData may have been filled in, so
-                        // continue on.
-                    }
-                    data = createdThumbData[0];
-                }
-
-                if (data == null) {
-                    // Unable to get mini-thumb.
-                }
-
-                if (data != null) {
-                    Bitmap b = BitmapFactory.decodeByteArray(data, 0,
-                            data.length);
-                    if (b == null) {
-                        Log.v(TAG, "couldn't decode byte array, "
-                                + "length was " + data.length);
-                    }
-                    return b;
-                }
-            }
-            return null;
+            b = Images.Thumbnails.getThumbnail(mContentResolver, id,
+                    Images.Thumbnails.MICRO_KIND, null);
         } catch (Throwable ex) {
             Log.e(TAG, "miniThumbBitmap got exception", ex);
             return null;
         }
+        if (b != null) {
+            b = Util.rotate(b, getDegreesRotated());
+        }
+        return b;
     }
 
     protected void onRemove() {
-    }
-
-    protected void saveMiniThumb(Bitmap source) throws IOException {
-        mContainer.saveMiniThumbToFile(source, fullSizeImageId(), 0);
-    }
-
-    public void setTitle(String name) {
-        if (mTitle.equals(name)) return;
-        mTitle = name;
-        ContentValues values = new ContentValues();
-        values.put(ImageColumns.TITLE, name);
-        mContentResolver.update(mUri, values, null, null);
-    }
-
-    public Uri thumbUri() {
-        // The value for the query parameter cannot be null :-(,
-        // so using a dummy "1"
-        return mUri.buildUpon().appendQueryParameter("thumb", "1").build();
     }
 
     @Override

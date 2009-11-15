@@ -16,8 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -41,17 +39,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.camera.gallery.IImage;
+
 import java.io.Closeable;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -59,13 +58,6 @@ import java.util.List;
  */
 public class MenuHelper {
     private static final String TAG = "MenuHelper";
-
-    public static final int GENERIC_ITEM      = 1;
-    public static final int IMAGE_SAVING_ITEM = 2;
-    public static final int VIDEO_SAVING_ITEM = 3;
-    public static final int IMAGE_MODE_ITEM   = 4;
-    public static final int VIDEO_MODE_ITEM   = 5;
-    public static final int MENU_ITEM_MAX     = 5;
 
     public static final int INCLUDE_ALL           = 0xFFFFFFFF;
     public static final int INCLUDE_VIEWPLAY_MENU = (1 << 0);
@@ -77,19 +69,25 @@ public class MenuHelper {
     public static final int INCLUDE_DETAILS_MENU  = (1 << 6);
     public static final int INCLUDE_SHOWMAP_MENU  = (1 << 7);
 
-    public static final int MENU_SWITCH_CAMERA_MODE = 0;
-    public static final int MENU_CAPTURE_PICTURE = 1;
-    public static final int MENU_CAPTURE_VIDEO = 2;
-    public static final int MENU_IMAGE_SHARE = 10;
-    public static final int MENU_IMAGE_SET = 14;
-    public static final int MENU_IMAGE_SET_WALLPAPER = 15;
-    public static final int MENU_IMAGE_CROP = 18;
-    public static final int MENU_IMAGE_ROTATE = 19;
-    public static final int MENU_IMAGE_ROTATE_LEFT = 20;
-    public static final int MENU_IMAGE_ROTATE_RIGHT = 21;
-    public static final int MENU_IMAGE_TOSS = 22;
-    public static final int MENU_VIDEO_PLAY = 23;
-    public static final int MENU_VIDEO_SHARE = 24;
+    public static final int MENU_IMAGE_SHARE = 1;
+    public static final int MENU_IMAGE_SHOWMAP = 2;
+
+    public static final int POSITION_SWITCH_CAMERA_MODE = 1;
+    public static final int POSITION_GOTO_GALLERY = 2;
+    public static final int POSITION_VIEWPLAY = 3;
+    public static final int POSITION_CAPTURE_PICTURE = 4;
+    public static final int POSITION_CAPTURE_VIDEO = 5;
+    public static final int POSITION_IMAGE_SHARE = 6;
+    public static final int POSITION_IMAGE_ROTATE = 7;
+    public static final int POSITION_IMAGE_TOSS = 8;
+    public static final int POSITION_IMAGE_CROP = 9;
+    public static final int POSITION_IMAGE_SET = 10;
+    public static final int POSITION_DETAILS = 11;
+    public static final int POSITION_SHOWMAP = 12;
+    public static final int POSITION_SLIDESHOW = 13;
+    public static final int POSITION_MULTISELECT = 14;
+    public static final int POSITION_CAMERA_SETTING = 15;
+    public static final int POSITION_GALLERY_SETTING = 16;
 
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
@@ -171,6 +169,20 @@ public class MenuHelper {
         }
     }
 
+    public static boolean hasLatLngData(IImage image) {
+        ExifInterface exif = getExif(image);
+        if (exif == null) return false;
+        float latlng[] = new float[2];
+        return exif.getLatLong(latlng);
+    }
+
+    public static void enableShowOnMapMenuItem(Menu menu, boolean enabled) {
+        MenuItem item = menu.findItem(MENU_IMAGE_SHOWMAP);
+        if (item != null) {
+            item.setEnabled(enabled);
+        }
+    }
+
     private static void setDetailsValue(View d, String text, int valueId) {
         ((TextView) d.findViewById(valueId)).setText(text);
     }
@@ -193,7 +205,7 @@ public class MenuHelper {
             // details dialog is dismissed or not.
             View view = mView.get();
             if (view == null) return;
-            if (location != MenuHelper.EMPTY_STRING) {
+            if (!location.equals(MenuHelper.EMPTY_STRING)) {
                 MenuHelper.setDetailsValue(view, location,
                         R.id.details_location_value);
             } else {
@@ -203,9 +215,9 @@ public class MenuHelper {
     }
 
     private static void setLatLngDetails(final View d, Activity context,
-            HashMap<String, String> exifData) {
-        float[] latlng = ExifInterface.getLatLng(exifData);
-        if (latlng != null) {
+            ExifInterface exif) {
+        float[] latlng = new float[2];
+        if (exif.getLatLong(latlng)) {
             setDetailsValue(d, String.valueOf(latlng[0]),
                     R.id.details_latitude_value);
             setDetailsValue(d, String.valueOf(latlng[1]),
@@ -229,12 +241,17 @@ public class MenuHelper {
         }
     }
 
-    private static HashMap<String, String> getExifData(IImage image) {
+    private static ExifInterface getExif(IImage image) {
         if (!JPEG_MIME_TYPE.equals(image.getMimeType())) {
             return null;
         }
 
-        return ExifInterface.loadExifData(image.getDataPath());
+        try {
+            return new ExifInterface(image.getDataPath());
+        } catch (IOException ex) {
+            Log.e(TAG, "cannot read exif", ex);
+            return null;
+        }
     }
     // Called when "Show on Maps" is clicked.
     // Displays image location on Google Maps for further operations.
@@ -246,8 +263,18 @@ public class MenuHelper {
                 if (image == null) {
                     return;
                 }
-                float[] latlng = ExifInterface.getLatLng(getExifData(image));
-                if (latlng == null) {
+
+                boolean ok = false;
+                ExifInterface exif = getExif(image);
+                float latlng[] = null;
+                if (exif != null) {
+                    latlng = new float[2];
+                    if (exif.getLatLong(latlng)) {
+                        ok = true;
+                    }
+                }
+
+                if (!ok) {
                     handler.post(new Runnable() {
                         public void run() {
                             Toast.makeText(activity,
@@ -258,7 +285,15 @@ public class MenuHelper {
                     return;
                 }
 
-                Util.openMaps(activity, latlng[0], latlng[1]);
+                // Can't use geo:latitude,longitude because it only centers
+                // the MapView to specified location, but we need a bubble
+                // for further operations (routing to/from).
+                // The q=(lat, lng) syntax is suggested by geo-team.
+                String uri = "http://maps.google.com/maps?f=q&" +
+                        "q=(" + latlng[0] + "," + latlng[1] + ")";
+                activity.startActivity(new Intent(
+                        android.content.Intent.ACTION_VIEW,
+                        Uri.parse(uri)));
             }
         });
         return true;
@@ -276,38 +311,52 @@ public class MenuHelper {
 
     private static void showExifInformation(IImage image, View d,
             Activity activity) {
-        HashMap<String, String> exifData = getExifData(image);
-        if (exifData == null) {
+        ExifInterface exif = getExif(image);
+        if (exif == null) {
             hideExifInformation(d);
             return;
         }
 
-        String value = exifData.get(ExifInterface.TAG_MAKE);
+        String value = exif.getAttribute(ExifInterface.TAG_MAKE);
         if (value != null) {
             setDetailsValue(d, value, R.id.details_make_value);
         } else {
             hideDetailsRow(d, R.id.details_make_row);
         }
 
-        value = exifData.get(ExifInterface.TAG_MODEL);
+        value = exif.getAttribute(ExifInterface.TAG_MODEL);
         if (value != null) {
             setDetailsValue(d, value, R.id.details_model_value);
         } else {
             hideDetailsRow(d, R.id.details_model_row);
         }
 
-        value = exifData.get(ExifInterface.TAG_WHITE_BALANCE);
-        if (value != null) {
-            value = ExifInterface.whiteBalanceToString(
-                    Integer.parseInt(value));
-        }
-        if (value != null && value != EMPTY_STRING) {
+        value = getWhiteBalanceString(exif);
+        if (value != null && !value.equals(EMPTY_STRING)) {
             setDetailsValue(d, value, R.id.details_whitebalance_value);
         } else {
             hideDetailsRow(d, R.id.details_whitebalance_row);
         }
 
-        setLatLngDetails(d, activity, exifData);
+        setLatLngDetails(d, activity, exif);
+    }
+
+    /**
+     * Returns a human-readable string describing the white balance value. Returns empty
+     * string if there is no white balance value or it is not recognized.
+     */
+    private static String getWhiteBalanceString(ExifInterface exif) {
+        int whitebalance = exif.getAttributeInt(ExifInterface.TAG_WHITE_BALANCE, -1);
+        if (whitebalance == -1) return "";
+
+        switch (whitebalance) {
+            case ExifInterface.WHITEBALANCE_AUTO:
+                return "Auto";
+            case ExifInterface.WHITEBALANCE_MANUAL:
+                return "Manual";
+            default:
+                return "";
+        }
     }
 
     // Called when "Details" is clicked.
@@ -542,11 +591,11 @@ public class MenuHelper {
                     return;
                 }
 
-                Intent cropIntent = new Intent();
-                cropIntent.setClass(activity, CropImage.class);
+                Intent cropIntent = new Intent(
+                        "com.android.camera.action.CROP");
                 cropIntent.setData(u);
-                activity.startActivityForResult(cropIntent,
-                        RESULT_COMMON_MENU_CROP);
+                activity.startActivityForResult(
+                        cropIntent, RESULT_COMMON_MENU_CROP);
             }
         });
         return true;
@@ -641,15 +690,14 @@ public class MenuHelper {
                 new ArrayList<MenuItem>();
 
         if ((inclusions & INCLUDE_ROTATE_MENU) != 0) {
-            SubMenu rotateSubmenu = menu.addSubMenu(IMAGE_SAVING_ITEM,
-                    MENU_IMAGE_ROTATE, 40, R.string.rotate)
+            SubMenu rotateSubmenu = menu.addSubMenu(Menu.NONE, Menu.NONE,
+                    POSITION_IMAGE_ROTATE, R.string.rotate)
                     .setIcon(android.R.drawable.ic_menu_rotate);
             // Don't show the rotate submenu if the item at hand is read only
             // since the items within the submenu won't be shown anyway. This
             // is really a framework bug in that it shouldn't show the submenu
             // if the submenu has no visible items.
-            MenuItem rotateLeft = rotateSubmenu.add(0, MENU_IMAGE_ROTATE_LEFT,
-                    50, R.string.rotate_left)
+            MenuItem rotateLeft = rotateSubmenu.add(R.string.rotate_left)
                     .setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
@@ -657,8 +705,7 @@ public class MenuHelper {
                         }
                     }).setAlphabeticShortcut('l');
 
-            MenuItem rotateRight = rotateSubmenu.add(0, MENU_IMAGE_ROTATE_RIGHT,
-                    60, R.string.rotate_right)
+            MenuItem rotateRight = rotateSubmenu.add(R.string.rotate_right)
                     .setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
@@ -676,8 +723,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_CROP_MENU) != 0) {
-            MenuItem autoCrop = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_CROP, 73,
-                    R.string.camera_crop);
+            MenuItem autoCrop = menu.add(Menu.NONE, Menu.NONE,
+                    POSITION_IMAGE_CROP, R.string.camera_crop);
             autoCrop.setIcon(android.R.drawable.ic_menu_crop);
             autoCrop.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
@@ -690,8 +737,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_SET_MENU) != 0) {
-            MenuItem setMenu = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_SET, 75,
-                    R.string.camera_set);
+            MenuItem setMenu = menu.add(Menu.NONE, Menu.NONE,
+                    POSITION_IMAGE_SET, R.string.camera_set);
             setMenu.setIcon(android.R.drawable.ic_menu_set_as);
             setMenu.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
@@ -703,8 +750,9 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_SHARE_MENU) != 0) {
-            MenuItem item1 = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_SHARE, 10,
-                    R.string.camera_share).setOnMenuItemClickListener(
+            MenuItem item1 = menu.add(Menu.NONE, MENU_IMAGE_SHARE,
+                    POSITION_IMAGE_SHARE, R.string.camera_share)
+                    .setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             return onImageShareClicked(onInvoke, activity);
@@ -716,8 +764,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_DELETE_MENU) != 0) {
-            MenuItem deleteItem = menu.add(IMAGE_SAVING_ITEM, MENU_IMAGE_TOSS,
-                    70, R.string.camera_toss);
+            MenuItem deleteItem = menu.add(Menu.NONE, Menu.NONE,
+                    POSITION_IMAGE_TOSS, R.string.camera_toss);
             requiresWriteAccessItems.add(deleteItem);
             deleteItem.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
@@ -731,7 +779,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_DETAILS_MENU) != 0) {
-            MenuItem detailsMenu = menu.add(0, 0, 80, R.string.details)
+            MenuItem detailsMenu = menu.add(Menu.NONE, Menu.NONE,
+                POSITION_DETAILS, R.string.details)
             .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     return onDetailsClicked(onInvoke, handler, activity);
@@ -741,8 +790,9 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_SHOWMAP_MENU) != 0) {
-            MenuItem showOnMapItem = menu.add(0, 0, 80, R.string.show_on_map)
-                .setOnMenuItemClickListener(
+            MenuItem showOnMapItem = menu.add(Menu.NONE, MENU_IMAGE_SHOWMAP,
+                    POSITION_SHOWMAP, R.string.show_on_map);
+            showOnMapItem.setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
                                 return onShowMapClicked(onInvoke,
@@ -753,8 +803,8 @@ public class MenuHelper {
         }
 
         if ((inclusions & INCLUDE_VIEWPLAY_MENU) != 0) {
-            MenuItem videoPlayItem = menu.add(VIDEO_SAVING_ITEM,
-                MENU_VIDEO_PLAY, 0, R.string.video_play)
+            MenuItem videoPlayItem = menu.add(Menu.NONE, Menu.NONE,
+                POSITION_VIEWPLAY, R.string.video_play)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -871,30 +921,6 @@ public class MenuHelper {
             .show();
     }
 
-    static void addSwitchModeMenuItem(
-            Menu menu, final Activity activity, boolean switchToVideo) {
-        int group = switchToVideo
-                ? MenuHelper.IMAGE_MODE_ITEM
-                : MenuHelper.VIDEO_MODE_ITEM;
-        int labelId = switchToVideo
-                ? R.string.switch_to_video_lable
-                : R.string.switch_to_camera_lable;
-        int iconId = switchToVideo
-                ? R.drawable.ic_menu_camera_video_view
-                : android.R.drawable.ic_menu_camera;
-        final String action = switchToVideo
-                ? MediaStore.INTENT_ACTION_VIDEO_CAMERA
-                : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
-        MenuItem item = menu.add(group, MENU_SWITCH_CAMERA_MODE, 0, labelId)
-                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                startCameraActivity(activity, action);
-                return true;
-            }
-        });
-        item.setIcon(iconId);
-    }
-
     private static void startCameraActivity(Activity activity, String action) {
         Intent intent = new Intent(action);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -944,7 +970,8 @@ public class MenuHelper {
     }
 
     static void addCapturePictureMenuItems(Menu menu, final Activity activity) {
-        menu.add(0, MENU_CAPTURE_PICTURE, 1, R.string.capture_picture)
+        menu.add(Menu.NONE, Menu.NONE, POSITION_CAPTURE_PICTURE,
+                R.string.capture_picture)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
@@ -965,7 +992,8 @@ public class MenuHelper {
     }
 
     static void addCaptureVideoMenuItems(Menu menu, final Activity activity) {
-        menu.add(0, MENU_CAPTURE_VIDEO, 2, R.string.capture_video)
+        menu.add(Menu.NONE, Menu.NONE, POSITION_CAPTURE_VIDEO,
+                R.string.capture_video)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
@@ -1038,8 +1066,9 @@ public class MenuHelper {
                 String storageDirectory =
                         Environment.getExternalStorageDirectory().toString();
                 StatFs stat = new StatFs(storageDirectory);
+                final int PICTURE_BYTES = 1500000;
                 float remaining = ((float) stat.getAvailableBlocks()
-                        * (float) stat.getBlockSize()) / 400000F;
+                        * (float) stat.getBlockSize()) / PICTURE_BYTES;
                 return (int) remaining;
             }
         } catch (Exception ex) {

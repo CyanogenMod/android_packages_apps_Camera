@@ -16,10 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-import com.android.camera.gallery.VideoObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,7 +29,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -43,7 +38,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PowerManager;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -58,6 +53,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.gallery.VideoObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -69,6 +69,7 @@ public class ImageGallery extends Activity implements
 
     private static final String TAG = "ImageGallery";
     private static final float INVALID_POSITION = -1f;
+    private ImageManager.ImageListParam mParam;
     private IImageList mAllImages;
     private int mInclusion;
     boolean mSortAscending = false;
@@ -107,7 +108,7 @@ public class ImageGallery extends Activity implements
         // Must be called before setContentView().
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
-        setContentView(R.layout.image_gallery_2);
+        setContentView(R.layout.image_gallery);
 
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
                 R.layout.custom_gallery_title);
@@ -134,7 +135,7 @@ public class ImageGallery extends Activity implements
 
         setupInclusion();
 
-        mLoader = new ImageLoader(mHandler);
+        mLoader = new ImageLoader(getContentResolver(), mHandler);
     }
 
     private void initializeFooterButtons() {
@@ -142,6 +143,13 @@ public class ImageGallery extends Activity implements
         deleteButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 onDeleteMultipleClicked();
+            }
+        });
+
+        Button shareButton = (Button) findViewById(R.id.button_share);
+        shareButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                onShareMultipleClicked();
             }
         });
 
@@ -153,8 +161,9 @@ public class ImageGallery extends Activity implements
         });
     }
 
-    private MenuItem addSlideShowMenu(Menu menu, int position) {
-        return menu.add(0, 207, position, R.string.slide_show)
+    private MenuItem addSlideShowMenu(Menu menu) {
+        return menu.add(Menu.NONE, Menu.NONE, MenuHelper.POSITION_SLIDESHOW,
+                R.string.slide_show)
                 .setOnMenuItemClickListener(
                 new MenuItem.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
@@ -193,7 +202,6 @@ public class ImageGallery extends Activity implements
     private final Runnable mDeletePhotoRunnable = new Runnable() {
         public void run() {
             if (!canHandleEvent()) return;
-            stopCheckingThumbnails();
 
             IImage currentImage = getCurrentImage();
 
@@ -207,7 +215,6 @@ public class ImageGallery extends Activity implements
             mGvs.setImageList(mAllImages);
             mGvs.start();
 
-            checkThumbnails();
             mNoImagesView.setVisibility(mAllImages.isEmpty()
                     ? View.VISIBLE
                     : View.GONE);
@@ -360,16 +367,15 @@ public class ImageGallery extends Activity implements
         }
 
         // Now that we've paused the threads that are using the cursor it is
-        // safe to deactivate it.
-        mAllImages.deactivate();
+        // safe to close it.
+        mAllImages.close();
         mAllImages = null;
     }
 
     private void rebake(boolean unmounted, boolean scanning) {
-        stopCheckingThumbnails();
         mGvs.stop();
         if (mAllImages != null) {
-            mAllImages.deactivate();
+            mAllImages.close();
             mAllImages = null;
         }
 
@@ -387,13 +393,13 @@ public class ImageGallery extends Activity implements
                     true);
         }
 
-        mAllImages = allImages(!unmounted && !scanning);
+        mParam = allImages(!unmounted && !scanning);
+        mAllImages = ImageManager.makeImageList(getContentResolver(), mParam);
 
         mGvs.setImageList(mAllImages);
         mGvs.setDrawAdapter(this);
         mGvs.setLoader(mLoader);
         mGvs.start();
-        checkThumbnails();
         mNoImagesView.setVisibility(mAllImages.getCount() > 0
                 ? View.GONE
                 : View.VISIBLE);
@@ -464,15 +470,6 @@ public class ImageGallery extends Activity implements
                 getContentResolver()));
     }
 
-    private void stopCheckingThumbnails() {
-        mLoader.stopCheckingThumbnails();
-    }
-
-    private void checkThumbnails() {
-       ImageLoader.ThumbCheckCallback cb = new MyThumbCheckCallback();
-       mLoader.startCheckingThumbnails(mAllImages, cb);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (isPickIntent()) {
@@ -487,10 +484,12 @@ public class ImageGallery extends Activity implements
         } else {
             MenuHelper.addCaptureMenuItems(menu, this);
             if ((mInclusion & ImageManager.INCLUDE_IMAGES) != 0) {
-                mSlideShowItem = addSlideShowMenu(menu, 5);
+                mSlideShowItem = addSlideShowMenu(menu);
             }
 
-            MenuItem item = menu.add(0, 0, 1000, R.string.camerasettings);
+            MenuItem item = menu.add(Menu.NONE, Menu.NONE,
+                    MenuHelper.POSITION_GALLERY_SETTING,
+                    R.string.camerasettings);
             item.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -504,7 +503,9 @@ public class ImageGallery extends Activity implements
             item.setAlphabeticShortcut('p');
             item.setIcon(android.R.drawable.ic_menu_preferences);
 
-            item = menu.add(0, 0, 900, R.string.multiselect);
+            item = menu.add(Menu.NONE, Menu.NONE,
+                    MenuHelper.POSITION_MULTISELECT,
+                    R.string.multiselect);
             item.setOnMenuItemClickListener(
                     new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
@@ -599,15 +600,14 @@ public class ImageGallery extends Activity implements
         }
     }
 
-    // Returns the image list which contains the subset of image/video we want.
-    private IImageList allImages(boolean storageAvailable) {
-        Uri uri = getIntent().getData();
-        IImageList imageList;
+    // Returns the image list parameter which contains the subset of image/video
+    // we want.
+    private ImageManager.ImageListParam allImages(boolean storageAvailable) {
         if (!storageAvailable) {
-            imageList = ImageManager.emptyImageList();
+            return ImageManager.getEmptyImageListParam();
         } else {
-            imageList = ImageManager.allImages(
-                    getContentResolver(),
+            Uri uri = getIntent().getData();
+            return ImageManager.getImageListParam(
                     ImageManager.DataLocation.EXTERNAL,
                     mInclusion,
                     mSortAscending
@@ -617,7 +617,6 @@ public class ImageGallery extends Activity implements
                     ? uri.getQueryParameter("bucketId")
                     : null);
         }
-        return imageList;
     }
 
     private void toggleMultiSelected(IImage image) {
@@ -655,7 +654,7 @@ public class ImageGallery extends Activity implements
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             } else {
                 intent = new Intent(this, ViewImage.class);
-                intent.putExtra(ViewImage.KEY_IMAGE_LIST, mAllImages);
+                intent.putExtra(ViewImage.KEY_IMAGE_LIST, mParam);
                 intent.setData(image.fullSizeImageUri());
             }
             startActivity(intent);
@@ -667,9 +666,9 @@ public class ImageGallery extends Activity implements
         // the selection box by setting the selected index to none. However, if
         // we use the dpad center key, we will keep the selected index in order
         // to show the the selection box. We do this because we have the
-        // multiselect marker on the images to indicate which of them are selected,
-        // so we don't need the selection box, but in the dpad case we still
-        // need the selection box to show as a "cursor".
+        // multiselect marker on the images to indicate which of them are
+        // selected, so we don't need the selection box, but in the dpad case
+        // we still need the selection box to show as a "cursor".
 
         if (isInMultiSelectMode()) {
             mGvs.setSelectedIndex(GridViewSpecial.INDEX_NONE);
@@ -679,90 +678,22 @@ public class ImageGallery extends Activity implements
         }
     }
 
-    private final class MyThumbCheckCallback implements
-            ImageLoader.ThumbCheckCallback {
-        private final TextView mProgressTextView;
-        private final String mProgressTextFormatString;
-        boolean mDidSetProgress = false;
-        private long mLastUpdateTime;  // initialized to 0
-        private final PowerManager.WakeLock mWakeLock;
-
-        private MyThumbCheckCallback() {
-            Resources resources = getResources();
-            mProgressTextView = (TextView) findViewById(R.id.loading_text);
-            mProgressTextFormatString = resources.getString(
-                    R.string.loading_progress_format_string);
-            PowerManager pm = (PowerManager)
-                    getSystemService(Context.POWER_SERVICE);
-            mWakeLock = pm.newWakeLock(
-                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
-                    "ImageGallery.checkThumbnails");
-            mWakeLock.acquire();
-        }
-
-        public boolean checking(final int count, final int maxCount) {
-            if (!mLayoutComplete) {
-                return true;
-            }
-
-            if (!mDidSetProgress) {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        findViewById(R.id.loading_text).setVisibility(
-                                View.VISIBLE);
-                        findViewById(android.R.id.progress).setVisibility(
-                                View.VISIBLE);
-                    }
-                });
-                mDidSetProgress = true;
-            }
-            mGvs.postInvalidate();
-
-            // Update the progress text. (Only if it has been one
-            // second since last update, to avoid the UI thread
-            // being overwhelmed by the update).
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - mLastUpdateTime > 1000) {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        String s = String.format(mProgressTextFormatString,
-                                maxCount - count);
-                        mProgressTextView.setText(s);
-                    }
-                });
-                mLastUpdateTime = currentTime;
-            }
-            return !mPausing;
-        }
-
-        public void done() {
-            // done() should only be called once. Use mWakeLock to verify this.
-            assert mWakeLock.isHeld();
-
-            mWakeLock.release();
-            mHandler.post(new Runnable() {
-                public void run() {
-                    findViewById(R.id.loading_text).setVisibility(View.GONE);
-                    findViewById(android.R.id.progress).setVisibility(
-                            View.GONE);
-                }
-            });
-        }
-    }
-
     private class CreateContextMenuListener implements
             View.OnCreateContextMenuListener {
         public void onCreateContextMenu(ContextMenu menu, View v,
                 ContextMenu.ContextMenuInfo menuInfo) {
             if (!canHandleEvent()) return;
 
-            if (getCurrentImage() == null) {
+            IImage image = getCurrentImage();
+
+            if (image == null) {
                 return;
             }
 
-            boolean isImage = ImageManager.isImage(getCurrentImage());
+            boolean isImage = ImageManager.isImage(image);
             if (isImage) {
-                menu.add(0, 0, 0, R.string.view).setOnMenuItemClickListener(
+                menu.add(R.string.view)
+                        .setOnMenuItemClickListener(
                         new MenuItem.OnMenuItemClickListener() {
                             public boolean onMenuItemClick(MenuItem item) {
                                 if (!canHandleEvent()) return false;
@@ -792,12 +723,15 @@ public class ImageGallery extends Activity implements
                                 mGvs.invalidateImage(mGvs.getCurrentSelection());
                             }
                         });
+
                 if (r != null) {
-                    r.gettingReadyToOpen(menu, getCurrentImage());
+                    r.gettingReadyToOpen(menu, image);
                 }
 
                 if (isImage) {
-                    addSlideShowMenu(menu, 1000);
+                    MenuHelper.enableShowOnMapMenuItem(
+                            menu, MenuHelper.hasLatLngData(image));
+                    addSlideShowMenu(menu);
                 }
             }
         }
@@ -845,6 +779,8 @@ public class ImageGallery extends Activity implements
     private final Rect mSrcRect = new Rect();
     private final Rect mDstRect = new Rect();
 
+    private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+
     public void drawImage(Canvas canvas, IImage image,
             Bitmap b, int xPos, int yPos, int w, int h) {
         if (b != null) {
@@ -858,7 +794,8 @@ public class ImageGallery extends Activity implements
             int deltaW = bw - w;
             int deltaH = bh - h;
 
-            if (deltaW < 10 && deltaH < 10) {
+            if (deltaW >= 0 && deltaW < 10 &&
+                deltaH >= 0 && deltaH < 10) {
                 int halfDeltaW = deltaW / 2;
                 int halfDeltaH = deltaH / 2;
                 mSrcRect.set(0 + halfDeltaW, 0 + halfDeltaH,
@@ -868,7 +805,7 @@ public class ImageGallery extends Activity implements
             } else {
                 mSrcRect.set(0, 0, bw, bh);
                 mDstRect.set(xPos, yPos, xPos + w, yPos + h);
-                canvas.drawBitmap(b, mSrcRect, mDstRect, null);
+                canvas.drawBitmap(b, mSrcRect, mDstRect, mPaint);
             }
         } else {
             // If the thumbnail cannot be drawn, put up an error icon
@@ -987,6 +924,56 @@ public class ImageGallery extends Activity implements
                         this, R.anim.footer_disappear);
             }
             mFooterOrganizeView.startAnimation(mFooterDisappear);
+        }
+    }
+
+    private String getShareMultipleMimeType() {
+        final int FLAG_IMAGE = 1, FLAG_VIDEO = 2;
+        int flag = 0;
+        for (IImage image : mMultiSelected) {
+            flag |= ImageManager.isImage(image) ? FLAG_IMAGE : FLAG_VIDEO;
+        }
+        return flag == FLAG_IMAGE
+                ? "image/*"
+                : flag == FLAG_VIDEO ? "video/*" : "*/*";
+    }
+
+    private void onShareMultipleClicked() {
+        if (mMultiSelected.size() > 1) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+
+            String mimeType = getShareMultipleMimeType();
+            intent.setType(mimeType);
+            ArrayList<Parcelable> list = new ArrayList<Parcelable>();
+            for (IImage image : mMultiSelected) {
+                list.add(image.fullSizeImageUri());
+            }
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, list);
+            try {
+                startActivity(Intent.createChooser(
+                        intent, getText(R.string.send_media_files)));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, R.string.no_way_to_share,
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else if (mMultiSelected.size() == 1) {
+            IImage image = mMultiSelected.iterator().next();
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            String mimeType = image.getMimeType();
+            intent.setType(mimeType);
+            intent.putExtra(Intent.EXTRA_STREAM, image.fullSizeImageUri());
+            boolean isImage = ImageManager.isImage(image);
+            try {
+                startActivity(Intent.createChooser(intent, getText(
+                        isImage ? R.string.sendImage : R.string.sendVideo)));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, isImage
+                        ? R.string.no_way_to_share_image
+                        : R.string.no_way_to_share_video,
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

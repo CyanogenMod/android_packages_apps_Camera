@@ -16,12 +16,9 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.ImageManager;
-
+import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Parcel;
-import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
 
 import java.util.HashMap;
@@ -61,37 +58,16 @@ public class ImageList extends BaseImageList implements IImageList {
     /**
      * ImageList constructor.
      */
-    public ImageList(Uri imageUri, Uri thumbUri, int sort, String bucketId) {
-        super(imageUri, sort, bucketId);
+    public ImageList(ContentResolver resolver, Uri imageUri, Uri thumbUri,
+            int sort, String bucketId) {
+        super(resolver, imageUri, sort, bucketId);
         mThumbUri = thumbUri;
-    }
-
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        super.writeToParcel(out, flags);
-        out.writeParcelable(mThumbUri, flags);
-    }
-
-    public static final Creator<ImageList> CREATOR = new Creator<ImageList>() {
-        public ImageList createFromParcel(Parcel in) {
-            return new ImageList(in);
-        }
-
-        public ImageList[] newArray(int size) {
-            return new ImageList[size];
-        }
-    };
-
-    protected ImageList(Parcel in) {
-        super(in);
-        mThumbUri = (Uri) in.readParcelable(null);
     }
 
     private static final String WHERE_CLAUSE =
             "(" + Media.MIME_TYPE + " in (?, ?, ?))";
     private static final String WHERE_CLAUSE_WITH_BUCKET_ID =
             WHERE_CLAUSE + " AND " + Media.BUCKET_ID + " = ?";
-
 
     protected String whereClause() {
         return mBucketId == null ? WHERE_CLAUSE : WHERE_CLAUSE_WITH_BUCKET_ID;
@@ -124,7 +100,8 @@ public class ImageList extends BaseImageList implements IImageList {
             Media.MINI_THUMB_MAGIC,
             Media.ORIENTATION,
             Media.TITLE,
-            Media.MIME_TYPE};
+            Media.MIME_TYPE,
+            Media.DATE_MODIFIED};
 
     private static final int INDEX_ID = 0;
     private static final int INDEX_DATA_PATH = 1;
@@ -133,6 +110,7 @@ public class ImageList extends BaseImageList implements IImageList {
     private static final int INDEX_ORIENTATION = 4;
     private static final int INDEX_TITLE = 5;
     private static final int INDEX_MIME_TYPE = 6;
+    private static final int INDEX_DATE_MODIFIED = 7;
 
     @Override
     protected long getImageId(Cursor cursor) {
@@ -144,6 +122,9 @@ public class ImageList extends BaseImageList implements IImageList {
         long id = cursor.getLong(INDEX_ID);
         String dataPath = cursor.getString(INDEX_DATA_PATH);
         long dateTaken = cursor.getLong(INDEX_DATE_TAKEN);
+        if (dateTaken == 0) {
+            dateTaken = cursor.getLong(INDEX_DATE_MODIFIED) * 1000;
+        }
         long miniThumbMagic = cursor.getLong(INDEX_MINI_THUMB_MAGIC);
         int orientation = cursor.getInt(INDEX_ORIENTATION);
         String title = cursor.getString(INDEX_TITLE);
@@ -155,15 +136,5 @@ public class ImageList extends BaseImageList implements IImageList {
         return new Image(this, mContentResolver, id, cursor.getPosition(),
                 contentUri(id), dataPath, miniThumbMagic, mimeType, dateTaken,
                 title, displayName, orientation);
-    }
-
-    protected String sortOrder() {
-        // add id to the end so that we don't ever get random sorting
-        // which could happen, I suppose, if the first two values were
-        // duplicated
-        String ascending =
-                mSort == ImageManager.SORT_ASCENDING ? " ASC" : " DESC";
-        return Images.Media.DATE_TAKEN + ascending + "," + Images.Media._ID
-                + ascending;
     }
 }

@@ -16,15 +16,11 @@
 
 package com.android.camera.gallery;
 
-import android.content.ContentResolver;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.android.camera.ImageManager;
 import com.android.camera.Util;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -60,38 +56,17 @@ public class ImageListUber implements IImageList {
                 sort == ImageManager.SORT_ASCENDING
                 ? new AscendingComparator()
                 : new DescendingComparator());
-    }
-
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeParcelableArray(mSubList, flags);
-        out.writeInt(mQueue.comparator() instanceof AscendingComparator
-                ? ImageManager.SORT_ASCENDING
-                : ImageManager.SORT_DESCENDING);
-    }
-
-    protected ImageListUber(Parcel in) {
-        Parcelable array[] =
-                in.readParcelableArray(ImageListUber.class.getClassLoader());
-        mSubList = new IImageList[array.length];
-        System.arraycopy(array, 0, mSubList, 0, array.length);
-        int sort = in.readInt();
+        mSkipList = new long[16];
+        mSkipListSize = 0;
         mSkipCounts = new int[mSubList.length];
-        mQueue = new PriorityQueue<MergeSlot>(4,
-                sort == ImageManager.SORT_ASCENDING
-                ? new AscendingComparator()
-                : new DescendingComparator());
+        mLastListIndex = -1;
+        mQueue.clear();
+        for (int i = 0, n = mSubList.length; i < n; ++i) {
+            IImageList list = mSubList[i];
+            MergeSlot slot = new MergeSlot(list, i);
+            if (slot.next()) mQueue.add(slot);
+        }
     }
-
-    public static final Creator<ImageListUber> CREATOR =
-            new Creator<ImageListUber>() {
-        public ImageListUber createFromParcel(Parcel in) {
-            return new ImageListUber(in);
-        }
-
-        public ImageListUber[] newArray(int size) {
-            return new ImageListUber[size];
-        }
-    };
 
     public HashMap<String, String> getBucketIds() {
         HashMap<String, String> hashMap = new HashMap<String, String>();
@@ -99,26 +74,6 @@ public class ImageListUber implements IImageList {
             hashMap.putAll(list.getBucketIds());
         }
         return hashMap;
-    }
-
-    public void checkThumbnail(int index) throws IOException {
-        // The index is not refer to the index of the image but in another order
-        // sequence. Since this function is only used to check all thumbnails
-        // is created, it should be fine.
-        for (IImageList list : mSubList) {
-            int count = list.getCount();
-            if (count > index) {
-                list.checkThumbnail(index);
-                return;
-            }
-            index -= count;
-        }
-    }
-
-    public void deactivate() {
-        for (IImageList subList : mSubList) {
-            subList.deactivate();
-        }
     }
 
     public int getCount() {
@@ -222,7 +177,6 @@ public class ImageListUber implements IImageList {
         for (int i = 0, n = mSkipListSize; i < n; i++) {
             long v = mSkipList[i];
             int offset = (int) (v & 0xFFFFFFFF);
-            int which  = (int) (v >> 32);
             if (skipCount + offset > index) {
                 mSkipList[i] = v - 1;
                 break;
@@ -333,32 +287,9 @@ public class ImageListUber implements IImageList {
         }
     }
 
-    public int describeContents() {
-        return 0;
-    }
-
-    public void open(ContentResolver cr) {
-        mSkipList = new long[16];
-        mSkipListSize = 0;
-        mSkipCounts = new int[mSubList.length];
-        mLastListIndex = -1;
-        mQueue.clear();
-        for (int i = 0, n = mSubList.length; i < n; ++i) {
-            IImageList list = mSubList[i];
-            if (list instanceof BaseImageList) {
-                ((BaseImageList) list).open(cr);
-            }
-            MergeSlot slot = new MergeSlot(list, i);
-            if (slot.next()) mQueue.add(slot);
-        }
-    }
-
     public void close() {
         for (int i = 0, n = mSubList.length; i < n; ++i) {
-            IImageList list = mSubList[i];
-            if (list instanceof BaseImageList) {
-                ((BaseImageList) list).close();
-            }
+            mSubList[i].close();
         }
     }
 }

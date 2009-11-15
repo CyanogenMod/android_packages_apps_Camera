@@ -17,6 +17,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
 
+    <!-- title for the dialog showing the error of camera hardware -->
+    <string name="camera_error_title">Camera Error</string>
+
+    <!-- message for the dialog showing the error of camera hardware -->
+    <string name="cannot_connect_camera">Cannot connect to camera.</string>
+
     <!-- label for the icon meaning 'show me all the images' -->
     <string name="all_images">All pictures</string>
 
@@ -32,8 +38,9 @@
     <!-- label for the 'pictures application shown in the top level 'all applications' -->
     <string name="gallery_picker_label">Gallery</string>
 
-    <!-- temporary label for the image gallery before the real label is set in the activity (do not translate) -->
-    <string name="gallery_label"> </string>
+    <!-- label for the gallery application (displayed when the user needs to
+         choose an application to pick a picture or a video) -->
+    <string name="gallery_label">Gallery</string>
 
     <!-- label for the folder that contains Camera pictures in the gallery -->
     <string name="gallery_camera_bucket_name">Camera pictures</string>
@@ -43,12 +50,6 @@
 
     <!-- label for the folder that contains Camera videos in the gallery -->
     <string name="gallery_camera_media_bucket_name">Camera media</string>
-
-    <!-- menu pick: switch to Video cam mode -->
-    <string name="switch_to_video_lable">Switch to video</string>
-
-    <!-- menu pick: switch to camera mode -->
-    <string name="switch_to_camera_lable">Switch to camera</string>
 
     <!-- menu pick: crop the currently selected image -->
     <string name="crop_label">Crop picture</string>
@@ -127,7 +128,7 @@
     <string name="confirm_delete_message">The picture will be deleted.</string>
     <!-- Confirmation dialog message after deleting a video -->
     <string name="confirm_delete_video_message">The video will be deleted.</string>
-    
+
     <!-- Confirmation dialog message after deleting a multiple media files -->
     <string name="confirm_delete_multiple_message">These media files will be deleted.</string>
 
@@ -158,9 +159,6 @@
     <!-- button indicating that the picture just taken should be deleted -->
     <string name="camera_toss">Delete</string>
 
-    <!-- Lable for the button that takes the user to the camera pictures Gallery -->
-    <string name="camera_gallery">Gallery</string>
-
     <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
     <string name="camera_share">Share</string>
 
@@ -180,10 +178,13 @@
     <string name="camera_crop">Crop</string>
 
     <!-- Toast after trying to share a picture indicating that there are no applications which are capable of so doing. -->
-    <string name="no_way_to_share_image">This picture cannot be shared.</string>
+    <string name="no_way_to_share_image">No application available to share the picture.</string>
 
     <!-- Toast after trying to share a video indicating that there are no applications which are capable of so doing. -->
-    <string name="no_way_to_share_video">This video cannot be shared.</string>
+    <string name="no_way_to_share_video">No application available to share the video.</string>
+
+    <!-- Toast after trying to share multiple media files indicating that there are no applications which are capable of so doing. -->
+    <string name="no_way_to_share">No application available to share the media file(s).</string>
 
     <!-- Menu item for playing the video. -->
     <string name="video_play">Play</string>
@@ -200,7 +201,6 @@
 
     <!-- Settings screen, section heading  -->
     <string name="pref_slideshow_category">Slideshow settings</string>
-    <string name="pref_camera_general_settings_category">General settings</string>
 
     <!-- Settings screen, setting summary text -->
     <string name="pref_gallery_size_title">Display size</string>
@@ -216,15 +216,13 @@
         <!-- size choice of "small" -->
         <item>Small</item>
     </string-array>
-    <!-- Do not translate. Option values in dialog that appears after selecting Picture size setting option -->
-    <string-array name="pref_gallery_size_values">
-        <!-- do not translate -->
+    <!-- Option values in dialog that appears after selecting Picture size setting option -->
+    <string-array name="pref_gallery_size_values" translatable="false">
         <item>1</item>
-        <!-- do not translate -->
         <item>0</item>
     </string-array>
-    <!-- Do not translate. Default option value in dialog that appears after selecting Picture size setting option -->
-    <string name="default_value_pref_gallery_size">1</string>
+    <!-- Default option value in dialog that appears after selecting Picture size setting option -->
+    <string name="default_value_pref_gallery_size" translatable="false">1</string>
     <!-- Settings screen, setting option name -->
     <string name="pref_gallery_sort_title">Sort order</string>
     <!-- Settings screen, setting summary text -->
@@ -238,23 +236,20 @@
         <!-- Preference choice to show "newest last" -->
         <item>Newest last</item>
     </string-array>
-    <!-- Do not translate. Option values in dialog that appears after selecting Picture sort setting option -->
-    <string-array name="pref_gallery_sort_values">
-        <!-- do not translate -->
+    <!-- Option values in dialog that appears after selecting Picture sort setting option -->
+    <string-array name="pref_gallery_sort_values" translatable="false">
         <item>descending</item>
-        <!-- do not translate -->
         <item>ascending</item>
     </string-array>
-    <!-- Do not translate. Default option value in dialog that appears after selecting Picture sort setting option -->
-    <string name="default_value_pref_gallery_sort">descending</string>
+    <!-- Default option value in dialog that appears after selecting Picture sort setting option -->
+    <string name="default_value_pref_gallery_sort" translatable="false">descending</string>
     <!-- Settings screen, setting option name -->
     <string name="pref_gallery_slideshow_interval_title">Slideshow interval</string>
     <!-- Settings screen, setting summary text -->
     <string name="pref_gallery_slideshow_interval_summary">Select how long each slide displays in the show</string>
     <!-- Title of dialog that appears after selecting Slideshow interval setting option -->
     <string name="pref_gallery_slideshow_interval_dialogtitle">Slideshow interval</string>
-    <!-- Options in dialog that appears after selecting Slideshow interval
-     setting option -->
+    <!-- Options in dialog that appears after selecting Slideshow interval setting option -->
     <string-array name="pref_gallery_slideshow_interval_choices">
         <!-- slide show interval "N seconds" where N is 2 -->
         <item>2 seconds</item>
@@ -263,17 +258,14 @@
         <!-- slide show interval "N seconds" where N is 4 -->
         <item>4 seconds</item>
     </string-array>
-    <!-- Do not translate. Option values in dialog that appears after selecting Slideshow interval setting option -->
-    <string-array name="pref_gallery_slideshow_interval_values">
-        <!-- do not translate -->
+    <!-- Option values in dialog that appears after selecting Slideshow interval setting option -->
+    <string-array name="pref_gallery_slideshow_interval_values" translatable="false">
         <item>"2"</item>
-        <!-- do not translate -->
         <item>"3"</item>
-        <!-- do not translate -->
         <item>"4"</item>
     </string-array>
-    <!-- Do not translate. Default option value in dialog that appears after selecting Slideshow interval setting option -->
-    <string name="default_value_pref_gallery_slideshow_interval">"2"</string>
+    <!-- Default option value in dialog that appears after selecting Slideshow interval setting option -->
+    <string name="default_value_pref_gallery_slideshow_interval" translatable="false">"2"</string>
     <!-- Settings screen, setting option name -->
     <string name="pref_gallery_slideshow_transition_title">Slideshow transition</string>
     <!-- Settings screen, setting summary text -->
@@ -292,19 +284,15 @@
         <!-- Slide show transition to be chosen randomly -->
         <item>Random selection</item>
     </string-array>
-    <!-- Do not translate. Option values in dialog that appears after selecting Slideshow transition setting option -->
-    <string-array name="pref_gallery_slideshow_transition_values">
-        <!-- do not translate -->
+    <!-- Option values in dialog that appears after selecting Slideshow transition setting option -->
+    <string-array name="pref_gallery_slideshow_transition_values" translatable="false">
         <item>"0"</item>
-        <!-- do not translate -->
         <item>"1"</item>
-        <!-- do not translate -->
         <item>"2"</item>
-        <!-- do not translate -->
         <item>"-1"</item>
     </string-array>
-    <!-- Do not translate. Default option value in dialog that appears after selecting Slideshow transition setting option -->
-    <string name="default_value_pref_gallery_slideshow_transition">"0"</string>
+    <!-- Default option value in dialog that appears after selecting Slideshow transition setting option -->
+    <string name="default_value_pref_gallery_slideshow_transition" translatable="false">"0"</string>
 
     <!-- Settings screen, setting check box name -->
     <string name="pref_gallery_slideshow_repeat_title">Repeat slideshow</string>
@@ -319,19 +307,19 @@
     <string name="pref_gallery_slideshow_shuffle_summary">Show pictures in random order</string>
 
     <!-- Settings screen, setting title text -->
-    <string name="pref_camera_recordlocation_title">Store location in pictures</string>
+    <string name="pref_camera_recordlocation_title">Store location</string>
 
-    <!-- Settings screen, setting summary text -->
-    <string name="pref_camera_recordlocation_summary">Record location in picture data</string>
+    <string name="pref_camera_recordlocation_default" translatable="false">false</string>
 
-    <!-- Settings screen, Video setting category title -->
-    <string name="pref_camera_video_settings_category">Video settings</string>
+    <!-- Settings screen, Record location dialog choices -->
+    <string name="pref_camera_recordlocation_entry_off">Off</string>
+    <string name="pref_camera_recordlocation_entry_on">On</string>
 
-    <!-- Default video quality setting. A numerical value. Do not translate. -->
-    <string name="pref_camera_videoquality_default">1</string>
+    <!-- Default video quality setting. A numerical value. -->
+    <string name="pref_camera_videoquality_default" translatable="false">1</string>
 
-    <!-- Settings screen, Select Video quality title -->
-    <string name="pref_camera_videoquality_title">Select video quality</string>
+    <!-- Settings screen, Video quality title -->
+    <string name="pref_camera_videoquality_title">Video quality</string>
 
     <!-- Settings screen, Video quality dialog radio button choices -->
     <string name="pref_camera_videoquality_entry_0">Low (for MMS messages)</string>
@@ -340,42 +328,46 @@
     <!-- Settings screen, Video codec dialog title -->
     <string name="pref_camera_videoquality_dialogtitle">Video quality</string>
 
-    <!-- Default video duration setting. A numerical value. Do not translate. -->
-    <string name="pref_camera_video_duration_default">1</string>
+    <!-- Default video duration setting. A numerical value.-->
+    <string name="pref_camera_video_duration_default" translatable="false">10</string>
 
-    <!-- Settings screen, Select Video duration title -->
-    <string name="pref_camera_video_duration_title">Select video duration</string>
+    <!-- Settings screen, Video duration title -->
+    <string name="pref_camera_video_duration_title">Video duration</string>
 
     <!-- Settings screen, Video duration dialog radio button choices -->
-    <string name="pref_camera_video_duration_entry_1">1 minute (for sharing)</string>
+    <string name="pref_camera_video_duration_entry_mms">
+        <xliff:g id="duration" example="60">%1$d</xliff:g> seconds (for MMS)
+    </string>
     <string name="pref_camera_video_duration_entry_10">10 minutes</string>
     <string name="pref_camera_video_duration_entry_30">30 minutes</string>
 
     <!-- Settings screen, Video duration dialog title -->
     <string name="pref_camera_video_duration_dialogtitle">Video duration</string>
 
-    <!-- Settings screen, Picture setting category title -->
-    <string name="pref_camera_picture_settings_category">Picture settings</string>
+    <!-- Settings screen, Camera setting category title -->
+    <string name="pref_camera_settings_category">Camera settings</string>
 
-    <!-- Default picture size setting. Do not translate. -->
-    <string name="pref_camera_picturesize_default">2048x1536</string>
+    <!-- Settings screen, Camcorder setting category title -->
+    <string name="pref_camcorder_settings_category">Camcorder settings</string>
 
-    <!-- Settings screen, Select Picture size title -->
-    <string name="pref_camera_picturesize_title">Select picture size</string>
+    <!-- Settings screen, Picture size title -->
+    <string name="pref_camera_picturesize_title">Picture size</string>
 
     <!-- Settings screen, Picture size dialog radio button choices -->
-    <string name="pref_camera_picturesize_entry_2048x1536">3M (2048x1536)</string>
-    <string name="pref_camera_picturesize_entry_1600x1200">2M (1600x1200)</string>
-    <string name="pref_camera_picturesize_entry_1024x768">1M (1024x768)</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5M Pixels</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3M Pixels</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">2M Pixels</string>
+    <string name="pref_camera_picturesize_entry_1024x768">1M Pixels</string>
 
     <!-- Settings screen, picture size dialog title -->
     <string name="pref_camera_picturesize_dialogtitle">Picture size</string>
 
-    <!-- Default picture quality setting. Do not translate. -->
-    <string name="pref_camera_jpegquality_default">85</string>
+    <!-- Default picture quality setting. See
+         pref_camera_jpegquality_entryvalues for possible values -->
+    <string name="pref_camera_jpegquality_default" translatable="false">superfine</string>
 
-    <!-- Settings screen, Select Picture quality title -->
-    <string name="pref_camera_jpegquality_title">Select picture quality</string>
+    <!-- Settings screen, Picture quality title -->
+    <string name="pref_camera_jpegquality_title">Picture quality</string>
 
     <!-- Settings screen, Picture quality dialog radio button choices -->
     <string name="pref_camera_jpegquality_entry_superfine">Super fine</string>
@@ -385,22 +377,114 @@
     <!-- Settings screen, picture quality dialog title -->
     <string name="pref_camera_jpegquality_dialogtitle">Picture quality</string>
 
-    <!-- Default focus mode setting. Do not translate. -->
-    <string name="pref_camera_focusmode_default">auto</string>
+    <!-- Default focus mode setting.-->
+    <string name="pref_camera_focusmode_default" translatable="false">auto</string>
 
-    <!-- Settings screen, Select Focus mode title -->
-    <string name="pref_camera_focusmode_title">Select focus mode</string>
+    <!-- Settings screen, Focus mode title -->
+    <string name="pref_camera_focusmode_title">Focus mode</string>
 
     <!-- Settings screen, Focue mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_auto">Auto</string>
     <string name="pref_camera_focusmode_entry_infinity">Infinity</string>
-
-    <!-- Focus mode entry values. Do not translate. -->
-    <string name="pref_camera_focusmode_value_auto">auto</string>
-    <string name="pref_camera_focusmode_value_infinity">infinity</string>
+    <string name="pref_camera_focusmode_entry_macro">Macro</string>
 
     <!-- Settings screen, focus mode dialog title -->
     <string name="pref_camera_focusmode_dialogtitle">Focus mode</string>
+
+    <!-- Default flash mode setting.-->
+    <string name="pref_camera_flashmode_default" translatable="false">auto</string>
+
+    <!-- Settings screen, Flash mode title -->
+    <string name="pref_camera_flashmode_title">Flash mode</string>
+
+    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <string name="pref_camera_flashmode_entry_auto">Auto</string>
+    <string name="pref_camera_flashmode_entry_on">On</string>
+    <string name="pref_camera_flashmode_entry_off">Off</string>
+
+    <!-- Settings screen, flash mode dialog title -->
+    <string name="pref_camera_flashmode_dialogtitle">Flash mode</string>
+
+    <!-- Default white balance setting. -->
+    <string name="pref_camera_whitebalance_default" translatable="false">auto</string>
+
+    <!-- Settings screen, white balance dialog title -->
+    <string name="pref_camera_whitebalance_dialogtitle">White balance</string>
+
+    <!-- Settings screen, white balance title -->
+    <string name="pref_camera_whitebalance_title">White balance</string>
+
+    <!-- Settings screen, White balance dialog radio button choices -->
+    <string name="pref_camera_whitebalance_entry_auto">Auto</string>
+    <string name="pref_camera_whitebalance_entry_incandescent">Incandescent</string>
+    <string name="pref_camera_whitebalance_entry_daylight">Daylight</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent">Fluorescent</string>
+    <string name="pref_camera_whitebalance_entry_cloudy">Cloudy</string>
+    <string name="pref_camera_whitebalance_entry_twilight">Twilight</string>
+    <string name="pref_camera_whitebalance_entry_shade">Shade</string>
+    <string name="pref_camera_whitebalance_entry_warm_fluorescent">Warm Fluorescent</string>
+    <!-- Manual white-balance for very bright and yellowish light. -->
+    <string name="pref_camera_whitebalance_entry_halogen">Halogen</string>
+
+    <!-- Settings screen, color effect dialog title -->
+    <string name="pref_camera_coloreffect_dialogtitle">Color effect</string>
+
+    <!-- Default color effect setting. -->
+    <string name="pref_camera_coloreffect_default" translatable="false">none</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Color effect</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">None</string>
+    <string name="pref_camera_coloreffect_entry_mono">Mono</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negative</string>
+    <!-- Color effect that overexposes and reverses some of the tones. -->
+    <string name="pref_camera_coloreffect_entry_solarize">Solarize</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterize</string>
+    <string name="pref_camera_coloreffect_entry_whiteboard">Whiteboard</string>
+    <string name="pref_camera_coloreffect_entry_blackboard">Blackboard</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaic</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Red Tint</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blue Tint</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Green Tint</string>
+
+    <!-- Default scene mode setting. -->
+    <string name="pref_camera_scenemode_default" translatable="false">auto</string>
+
+    <!-- Settings screen, Select Scene mode -->
+    <string name="pref_camera_scenemode_title">Scene mode</string>
+
+    <!-- Settings screen, Select Scene mode -->
+    <string name="pref_camera_scenemode_dialogtitle">Scene mode</string>
+
+    <!-- Settings menu, scene mode choices -->
+    <string name="pref_camera_scenemode_entry_auto">Auto</string>
+    <!-- Scene mode that takes an image quickly with little motion blur. -->
+    <string name="pref_camera_scenemode_entry_action">Action</string>
+    <!-- Scene mode that takes an image with as little noise as possible so details of the subject are maintained. -->
+    <string name="pref_camera_scenemode_entry_portrait">Portrait</string>
+    <!-- Scene mode that takes an image of a landscape assuming all subjects are relatively far from the phone. -->
+    <string name="pref_camera_scenemode_entry_landscape">Landscape</string>
+    <!-- Scene mode that takes long exposures to capture night scenes without flash. -->
+    <string name="pref_camera_scenemode_entry_night">Night</string>
+    <!-- Scene mode that takes night shots with long exposure and flash to illuminate the subject while still capturing darker detail in the background. -->
+    <string name="pref_camera_scenemode_entry_night_portrait">Night Portrait</string>
+    <!-- Scene mode to be used in a stage show. -->
+    <string name="pref_camera_scenemode_entry_theatre">Theatre</string>
+    <!-- Scene mode optimized for taking images on the beach. -->
+    <string name="pref_camera_scenemode_entry_beach">Beach</string>
+    <!-- Scene mode optimized for taking images in the snow. -->
+    <string name="pref_camera_scenemode_entry_snow">Snow</string>
+    <!-- Scene mode optimized for taking images in the sunset. -->
+    <string name="pref_camera_scenemode_entry_sunset">Sunset</string>
+    <!-- Scene mode for taking a photo as sharp as possible. -->
+    <string name="pref_camera_scenemode_entry_steadyphoto">Steady Photo</string>
+    <!-- Scene mode optimized for taking images of fireworks. -->
+    <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
 
     <!-- Menu item to go to the settings screen -->
     <string name="camerasettings">Settings</string>
@@ -415,29 +499,18 @@
     <!-- Preference summary for whether the user should be prompted form confirmation when deleting images  -->
     <string name="pref_gallery_confirm_delete_summary">Show confirmation before deleting a picture or video</string>
 
-   <!-- Details stuff -->
-    <!-- Do not translate -->
-    <string name="details_title_text">myvideo</string>
-    <!-- Do not translate -->
-    <string name="details_tags_text">monster</string>
-    <!-- Do not translate -->
-    <string name="details_category_label">Category:</string>
-    <!-- Do not translate -->
-    <string name="details_description_label">Description:</string>
-    <!-- Do not translate -->
-    <string name="details_publicView_text">Public</string>
-    <!-- Do not translate -->
-    <string name="details_tags_label">Tags:</string>
-    <!-- Do not translate -->
-    <string name="details_description_text">testdescription</string>
-    <!-- Do not translate -->
-    <string name="details_title_label">Title:</string>
-    <!-- Do not translate -->
-    <string name="details_save_text">Save</string>
-    <!-- Do not translate -->
-    <string name="details_language_label">Language:</string>
-    <!-- Do not translate -->
-    <string name="details_privateView_text">Private</string>
+    <!-- Details stuff -->
+    <string name="details_title_text" translatable="false">myvideo</string>
+    <string name="details_tags_text" translatable="false">monster</string>
+    <string name="details_category_label" translatable="false">Category:</string>
+    <string name="details_description_label" translatable="false">Description:</string>
+    <string name="details_publicView_text" translatable="false">Public</string>
+    <string name="details_tags_label" translatable="false">Tags:</string>
+    <string name="details_description_text" translatable="false">testdescription</string>
+    <string name="details_title_label" translatable="false">Title:</string>
+    <string name="details_save_text" translatable="false">Save</string>
+    <string name="details_language_label" translatable="false">Language:</string>
+    <string name="details_privateView_text" translatable="false">Private</string>
 
     <!-- Message to show when there's no lat/lng information in the image -->
     <string name="no_location_image">No Location information contained in this image.</string>
@@ -473,17 +546,17 @@
     <string name="details_format">Format:</string>
 
     <!-- Used to format image dimensions in Details dialog. e.g. 64 x 64 -->
-    <string name="details_dimension_x">%1$d x %2$d</string>
+    <string name="details_dimension_x"><xliff:g id="width" example="640">%1$d</xliff:g> x <xliff:g id="height" example="480">%2$d</xliff:g></string>
     <!-- Used to format short video duration in Details dialog. minutes:seconds e.g. 00:30 -->
-    <string name="details_ms">%1$02d:%2$02d</string>
+    <string name="details_ms"><xliff:g id="minutes">%1$02d</xliff:g>:<xliff:g id="seconds">%2$02d</xliff:g></string>
     <!-- Used to format video duration in Details dialog. hours:minutes:seconds e.g. 0:21:30 -->
-    <string name="details_hms">%1$d:%2$02d:%3$02d</string>
+    <string name="details_hms"><xliff:g id="hours">%1$d</xliff:g>:<xliff:g id="minutes">%2$02d</xliff:g>:<xliff:g id="seconds">%3$02d</xliff:g></string>
     <!-- Unit of measure in the Details dialog frames per second. e.g. 20 fps -->
-    <string name="details_fps">%1$d fps</string>
+        <string name="details_fps"><xliff:g id="frames" example="30">%1$d</xliff:g> fps</string>
     <!-- Unit of measure in the Details dialog K bits per second. e.g. 192 Kbps -->
-    <string name="details_kbps">%1$d Kbps</string>
+    <string name="details_kbps"><xliff:g id="speed" example="192">%1$d</xliff:g> Kbps</string>
     <!-- Unit of measure in the Details dialog M bits per second. e.g. 2.3 Mbps -->
-    <string name="details_mbps">%1$g Mbps</string>
+    <string name="details_mbps"><xliff:g id="speed" example="2.3">%1$g</xliff:g> Mbps</string>
     <!-- Details dialog "OK" button. Dismisses dialog. -->
     <string name="details_ok">OK</string>
 
@@ -506,9 +579,6 @@
     <!-- Activity title when in the image gallery to select a video -->
     <string name="pick_videos_gallery_title">Select video</string>
 
-    <!-- onscreen text indicating the progress of generating thumbnails.  Basically some number followed by the word "remaining" -->
-    <string name="loading_progress_format_string"><xliff:g id="counter">%d</xliff:g> remaining</string>
-
     <!-- Displayed in the title of the dialog for things to do with a picture that
          is to be sent to another application: -->
     <string name="sendImage">Share picture via</string>
@@ -520,6 +590,10 @@
     <!-- Displayed in the title of the dialog for things to do with a video that
          is to be sent to another application. -->
     <string name="sendVideo">Share video via</string>
+
+    <!-- Displayed in the title of the dialog for things to do with media files that
+         are to be sent to another application: -->
+    <string name="send_media_files">Share media files via</string>
 
     <!-- Activity label. This might show up in the activity-picker -->
     <string name="movieviewlabel">Movies</string>
@@ -533,7 +607,7 @@
     <string name="resume_playing_title">Resume video</string>
 
     <!-- Movie View Start Playing dialog title -->
-    <string name="resume_playing_message">Resume playing from %s ?</string>
+    <string name="resume_playing_message">Resume playing from <xliff:g id="duration" example="5:30">%s</xliff:g> ?</string>
 
     <!-- Movie View Start Playing button "Resume from bookmark" -->
     <string name="resume_playing_resume">Resume playing</string>
@@ -544,8 +618,7 @@
     <!-- Title for picture frame gadget to show in list of all available gadgets -->
     <string name="gadget_title">Picture frame</string>
 
-    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat.
-         Do not localize -->
+    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
     <string name="video_file_name_format" translatable="false">"'video'-yyyy-MM-dd-HH-mm-ss"</string>
 
     <!-- Title for the file information dialog -->

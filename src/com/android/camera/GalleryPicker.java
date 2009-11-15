@@ -203,7 +203,7 @@ public class GalleryPicker extends Activity {
         // "Slide Show"
         if ((mAdapter.getIncludeMediaTypes(position)
                 & ImageManager.INCLUDE_IMAGES) != 0) {
-            menu.add(0, 207, 0, R.string.slide_show)
+            menu.add(R.string.slide_show)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             return onSlideShowClicked(menuInfo);
@@ -211,7 +211,7 @@ public class GalleryPicker extends Activity {
                     });
         }
         // "View"
-        menu.add(0, 208, 0, R.string.view)
+        menu.add(R.string.view)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                             return onViewClicked(menuInfo);
@@ -311,6 +311,7 @@ public class GalleryPicker extends Activity {
     private void abortWorker() {
         if (mWorkerThread != null) {
             BitmapManager.instance().cancelThreadDecoding(mWorkerThread);
+            MediaStore.Images.Thumbnails.cancelThumbnailRequest(getContentResolver(), -1);
             mAbort = true;
             try {
                 mWorkerThread.join();
@@ -425,22 +426,23 @@ public class GalleryPicker extends Activity {
     private void checkBucketIds(ArrayList<Item> allItems) {
         final IImageList allImages;
         if (!mScanning && !mUnmounted) {
-            allImages = ImageManager.allImages(
+            allImages = ImageManager.makeImageList(
                     getContentResolver(),
                     ImageManager.DataLocation.ALL,
                     ImageManager.INCLUDE_IMAGES | ImageManager.INCLUDE_VIDEOS,
-                    ImageManager.SORT_DESCENDING);
+                    ImageManager.SORT_DESCENDING,
+                    null);
         } else {
-            allImages = ImageManager.emptyImageList();
+            allImages = ImageManager.makeEmptyImageList();
         }
 
         if (mAbort) {
-            allImages.deactivate();
+            allImages.close();
             return;
         }
 
         HashMap<String, String> hashMap = allImages.getBucketIds();
-        allImages.deactivate();
+        allImages.close();
         if (mAbort) return;
 
         for (Map.Entry<String, String> entry : hashMap.entrySet()) {
@@ -699,12 +701,8 @@ public class GalleryPicker extends Activity {
                     temp = newMap;
                 }
 
-                Bitmap temp2 = Util.transform(m, temp, imageWidth,
-                                              imageHeight, true);
-                if (temp2 != temp) {
-                    temp.recycle();
-                }
-                temp = temp2;
+                temp = Util.transform(m, temp, imageWidth,
+                        imageHeight, true, Util.RECYCLE_INPUT);
             }
 
             Bitmap thumb = Bitmap.createBitmap(imageWidth, imageHeight,
@@ -735,7 +733,8 @@ public class GalleryPicker extends Activity {
 
         MenuHelper.addCaptureMenuItems(menu, this);
 
-        menu.add(0, 0, 5, R.string.camerasettings)
+        menu.add(Menu.NONE, Menu.NONE, MenuHelper.POSITION_GALLERY_SETTING,
+                R.string.camerasettings)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         Intent preferences = new Intent();
@@ -752,14 +751,14 @@ public class GalleryPicker extends Activity {
     }
 
     // image lists created by createImageList() are collected in mAllLists.
-    // They will be deactivated in clearImageList, so they don't hold open files
+    // They will be closed in clearImageList, so they don't hold open files
     // on SD card. We will be killed if we don't close files when the SD card
     // is unmounted.
     ArrayList<IImageList> mAllLists = new ArrayList<IImageList>();
 
     private IImageList createImageList(int mediaTypes, String bucketId,
             ContentResolver cr) {
-        IImageList list = ImageManager.allImages(
+        IImageList list = ImageManager.makeImageList(
                 cr,
                 ImageManager.DataLocation.ALL,
                 mediaTypes,
@@ -771,7 +770,7 @@ public class GalleryPicker extends Activity {
 
     private void clearImageLists() {
         for (IImageList list : mAllLists) {
-            list.deactivate();
+            list.close();
         }
         mAllLists.clear();
     }
@@ -933,6 +932,11 @@ class GalleryPickerAdapter extends BaseAdapter {
             iv.setImageResource(android.R.color.transparent);
             titleView.setText(item.mName);
         }
+
+        // An workaround due to a bug in TextView. If the length of text is
+        // different from the previous in convertView, the layout would be
+        // wrong.
+        titleView.requestLayout();
 
         return v;
     }

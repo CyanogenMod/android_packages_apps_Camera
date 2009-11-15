@@ -33,10 +33,10 @@ import java.io.InputStream;
 class UriImage implements IImage {
     private static final String TAG = "UriImage";
     private final Uri mUri;
-    private final BaseImageList mContainer;
+    private final IImageList mContainer;
     private final ContentResolver mContentResolver;
 
-    UriImage(BaseImageList container, ContentResolver cr, Uri uri) {
+    UriImage(IImageList container, ContentResolver cr, Uri uri) {
         mContainer = container;
         mContentResolver = cr;
         mUri = uri;
@@ -53,7 +53,6 @@ class UriImage implements IImage {
     private InputStream getInputStream() {
         try {
             if (mUri.getScheme().equals("file")) {
-                String path = mUri.getPath();
                 return new java.io.FileInputStream(mUri.getPath());
             } else {
                 return mContentResolver.openInputStream(mUri);
@@ -179,13 +178,5 @@ class UriImage implements IImage {
 
     public boolean rotateImageBy(int degrees) {
         return false;
-    }
-
-    public void setTitle(String name) {
-        throw new UnsupportedOperationException();
-    }
-
-    public Uri thumbUri() {
-        throw new UnsupportedOperationException();
     }
 }
