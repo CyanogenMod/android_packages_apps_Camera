@@ -100,7 +100,7 @@
     </array>
 
     <array name="focusmode_icons">
-        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@null</item>
         <item>@drawable/ic_viewfinder_focus_infinity</item>
         <item>@drawable/ic_viewfinder_focus_macro</item>
     </array>
@@ -145,7 +145,7 @@
         <item>@drawable/ic_viewfinder_flash_auto</item>
         <item>@drawable/ic_viewfinder_flash_on</item>
         <item>@drawable/ic_viewfinder_flash_off</item>
-        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@null</item>
     </array>
 
     <string-array name="gps_modes" translatable="false">
@@ -154,7 +154,7 @@
     </string-array>
 
     <array name="gps_icons">
-        <item>0</item>
+        <item>@null</item>
         <item>@drawable/ic_camera_sym_gps</item>
     </array>
 
@@ -184,7 +184,7 @@
     </array>
 
     <array name="whitebalance_icons">
-        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@null</item>
         <item>@drawable/ic_viewfinder_wb_incandescent</item>
         <item>@drawable/ic_viewfinder_wb_daylight</item>
         <item>@drawable/ic_viewfinder_wb_fluorescent</item>
@@ -259,7 +259,7 @@
     </string-array>
 
     <array name="scenemode_icons">
-        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@null</item>
         <item>@drawable/ic_viewfinder_scenemode</item>
     </array>
 
