@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 
 public class IconIndicator extends ImageView {
@@ -69,7 +70,12 @@ public class IconIndicator extends ImageView {
     public void setMode(String mode) {
         for (int i = 0, n = mModes.length; i < n; ++i) {
             if (mModes[i].equals(mode)) {
-                setImageDrawable(mIcons[i]);
+                if (mIcons[i] != null) {
+                    setVisibility(View.VISIBLE);
+                    setImageDrawable(mIcons[i]);
+                } else {
+                    setVisibility(View.GONE);
+                }
                 return;
             }
         }
