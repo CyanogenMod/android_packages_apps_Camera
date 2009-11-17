@@ -23,7 +23,7 @@ public class CameraSettings {
 
     public static final String KEY_VERSION = "pref_version_key";
     public static final String KEY_RECORD_LOCATION =
-            "pref_camera_recordlocation_key";
+            RecordLocationPreference.KEY;
     public static final String KEY_VIDEO_QUALITY =
             "pref_camera_videoquality_key";
     public static final String KEY_VIDEO_DURATION =
@@ -37,7 +37,7 @@ public class CameraSettings {
             "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
 
-    public static final int CURRENT_VERSION = 2;
+    public static final int CURRENT_VERSION = 3;
 
     // max mms video duration in seconds.
     public static final int MMS_VIDEO_DURATION =
@@ -263,6 +263,13 @@ public class CameraSettings {
             }
             editor.putString(KEY_JPEG_QUALITY, quality);
             version = 2;
+        }
+        if (version == 2) {
+            editor.putString(KEY_RECORD_LOCATION,
+                    pref.getBoolean(KEY_RECORD_LOCATION, false)
+                    ? RecordLocationPreference.VALUE_ON
+                    : RecordLocationPreference.VALUE_NONE);
+            version = 3;
         }
         editor.putInt(KEY_VERSION, CURRENT_VERSION);
         editor.commit();
