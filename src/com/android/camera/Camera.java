@@ -19,6 +19,7 @@ package com.android.camera;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -126,6 +127,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final String sTempCropFilename = "crop-temp";
 
     private android.hardware.Camera mCameraDevice;
+    private ContentProviderClient mMediaProviderClient;
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
@@ -239,6 +241,16 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private void keepMediaProviderInstance() {
+        // We want to keep a reference to MediaProvider in camera's lifecycle.
+        // TODO: Utilize mMediaProviderClient instance to replace
+        // ContentResolver calls.
+        if (mMediaProviderClient == null) {
+            mMediaProviderClient = getContentResolver()
+                    .acquireContentProviderClient(MediaStore.AUTHORITY);
+        }
+    }
+
     // Snapshots can only be taken after this is called. It should be called
     // once only. We could have done these things in onCreate() but we want to
     // make preview screen appear as soon as possible.
@@ -267,6 +279,7 @@ public class Camera extends Activity implements View.OnClickListener,
         readPreference();
         if (mRecordLocation) startReceivingLocationUpdates();
 
+        keepMediaProviderInstance();
         checkStorage();
 
         // Initialize last picture button.
@@ -328,6 +341,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         initializeFocusTone();
 
+        keepMediaProviderInstance();
         checkStorage();
 
         if (mZoomButtons != null) {
@@ -987,6 +1001,15 @@ public class Camera extends Activity implements View.OnClickListener,
         super.onStart();
         if (!mIsImageCaptureIntent) {
             mSwitcher.setSwitch(SWITCH_CAMERA);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mMediaProviderClient != null) {
+            mMediaProviderClient.release();
+            mMediaProviderClient = null;
         }
     }
 
