@@ -35,7 +35,7 @@ import android.view.KeyEvent;
 public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
     private String TAG = "CameraLatency";
     private static final int TOTAL_NUMBER_OF_IMAGECAPTURE = 20;
-    private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 3000;
+    private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 4000;
     private static final String CAMERA_TEST_OUTPUT_FILE = "/sdcard/mediaStressOut.txt";
 
     private long mTotalAutoFocusTime;
@@ -122,7 +122,8 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
         } catch (Exception e) {
             fail("Camera Latency write output to file");
         }
-
+        Log.v(TAG, "The Image capture wait time = " +
+            WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
         Log.v(TAG, "Avg AutoFocus = " + mAvgAutoFocusTime);
         Log.v(TAG, "Avg mShutterLag = " + mAvgShutterLag);
         Log.v(TAG, "Avg mShutterToPictureDisplayedTime = "
