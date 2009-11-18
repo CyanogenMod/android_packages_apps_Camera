@@ -954,7 +954,7 @@ public class MenuHelper {
 
     private static void gotoGallery(Activity activity, int windowTitleId,
             int mediaTypes) {
-        Uri target = Images.Media.INTERNAL_CONTENT_URI.buildUpon()
+        Uri target = Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
                 .appendQueryParameter("bucketId",
                 ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
         Intent intent = new Intent(Intent.ACTION_VIEW, target);
