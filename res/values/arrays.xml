@@ -125,8 +125,8 @@
     </array>
 
     <string-array name="pref_camera_recordlocation_entryvalues" translatable="false">
-        <item>false</item>
-        <item>true</item>
+        <item>off</item>
+        <item>on</item>
     </string-array>
 
     <array name="pref_camera_recordlocation_entries" translatable="false">
