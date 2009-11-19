@@ -394,6 +394,9 @@
     <!-- Default flash mode setting.-->
     <string name="pref_camera_flashmode_default" translatable="false">auto</string>
 
+    <!-- Value for flash off setting-->
+    <string name="pref_camera_flashmode_no_flash" translatable="false">no_flash</string>
+
     <!-- Settings screen, Flash mode title -->
     <string name="pref_camera_flashmode_title">Flash mode</string>
 
