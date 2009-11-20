@@ -989,6 +989,25 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         } catch (InterruptedException ex) {
             // ignore
         }
+        removeUnsupportedIndicators();
+    }
+
+    private void removeUnsupportedIndicators() {
+        if (mParameters.getSupportedFocusModes() == null) {
+            mFocusIndicator.setVisibility(View.GONE);
+        }
+
+        if (mParameters.getSupportedWhiteBalance() == null) {
+            mWhitebalanceIndicator.setVisibility(View.GONE);
+        }
+
+        if (mParameters.getSupportedFlashModes() == null) {
+            mFlashIndicator.setVisibility(View.GONE);
+        }
+
+        if (mParameters.getSupportedSceneModes() == null) {
+            mSceneModeIndicator.setVisibility(View.GONE);
+        }
     }
 
     private class GripperTouchListener implements View.OnTouchListener {
@@ -1833,7 +1852,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             } else {
                 flashMode = mParameters.getFlashMode();
                 if (flashMode == null) {
-                    flashMode = NO_FLASH_MODE;
+                    flashMode = getString(
+                            R.string.pref_camera_flashmode_no_flash);
                 }
             }
 
