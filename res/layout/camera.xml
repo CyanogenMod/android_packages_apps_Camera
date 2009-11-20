@@ -49,6 +49,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+                <!-- Thsee icons should be in the same order as the
+                        on-screen menu items -->
                 <com.android.camera.IconIndicator
                         style="@style/IconIndicator"
                         android:id="@+id/gps_icon"
@@ -56,14 +58,14 @@
                         camera:icons="@array/gps_icons"/>
                 <com.android.camera.IconIndicator
                         style="@style/IconIndicator"
+                        android:id="@+id/flash_icon"
+                        camera:modes="@array/flash_modes"
+                        camera:icons="@array/flash_icons"/>
+                <com.android.camera.IconIndicator
+                        style="@style/IconIndicator"
                         android:id="@+id/scenemode_icon"
                         camera:modes="@array/scenemode_modes"
                         camera:icons="@array/scenemode_icons"/>
-                <com.android.camera.IconIndicator
-                        style="@style/IconIndicator"
-                        android:id="@+id/focus_icon"
-                        camera:modes="@array/pref_camera_focusmode_entryvalues"
-                        camera:icons="@array/focusmode_icons"/>
                 <com.android.camera.IconIndicator
                         style="@style/IconIndicator"
                         android:id="@+id/whitebalance_icon"
@@ -71,9 +73,9 @@
                         camera:icons="@array/whitebalance_icons"/>
                 <com.android.camera.IconIndicator
                         style="@style/IconIndicator"
-                        android:id="@+id/flash_icon"
-                        camera:modes="@array/pref_camera_flashmode_entryvalues"
-                        camera:icons="@array/flash_icons"/>
+                        android:id="@+id/focus_icon"
+                        camera:modes="@array/pref_camera_focusmode_entryvalues"
+                        camera:icons="@array/focusmode_icons"/>
             </LinearLayout>
         </FrameLayout>
     </com.android.camera.PreviewFrameLayout>

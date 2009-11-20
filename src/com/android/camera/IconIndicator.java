@@ -40,7 +40,7 @@ public class IconIndicator extends ImageView {
         a.recycle();
 
         setModesAndIcons(modes, icons);
-        setImageDrawable(mIcons.length > 0 ? mIcons[0]: null);
+        setImageDrawable(mIcons.length > 0 ? mIcons[0] : null);
     }
 
     public IconIndicator(Context context, AttributeSet attrs) {
@@ -70,12 +70,7 @@ public class IconIndicator extends ImageView {
     public void setMode(String mode) {
         for (int i = 0, n = mModes.length; i < n; ++i) {
             if (mModes[i].equals(mode)) {
-                if (mIcons[i] != null) {
-                    setVisibility(View.VISIBLE);
-                    setImageDrawable(mIcons[i]);
-                } else {
-                    setVisibility(View.GONE);
-                }
+                setImageDrawable(mIcons[i]);
                 return;
             }
         }
