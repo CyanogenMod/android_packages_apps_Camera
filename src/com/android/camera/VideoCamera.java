@@ -323,6 +323,13 @@ public class VideoCamera extends NoSearchActivity
         } catch (InterruptedException ex) {
             // ignore
         }
+        removeUnsupportedIndicators();
+    }
+
+    private void removeUnsupportedIndicators() {
+        if (mParameters.getSupportedWhiteBalance() == null) {
+            mWhitebalanceIndicator.setVisibility(View.GONE);
+        }
     }
 
     @Override
