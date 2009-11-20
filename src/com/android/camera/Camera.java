@@ -1059,7 +1059,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         mParameters.getWhiteBalance());
             }
         }
-
         mSettings.setVisible(true);
     }
 
@@ -1254,8 +1253,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void readPreference() {
-        mRecordLocation = mPreferences.getBoolean(
-                "pref_camera_recordlocation_key", false);
+        mRecordLocation = RecordLocationPreference.get(
+                mPreferences, getContentResolver());
         mFocusMode = mPreferences.getString(
                 CameraSettings.KEY_FOCUS_MODE,
                 getString(R.string.pref_camera_focusmode_default));
@@ -2066,7 +2065,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mPausing) return;
 
         if (CameraSettings.KEY_RECORD_LOCATION.equals(key)) {
-            mRecordLocation = preferences.getBoolean(key, false);
+            mRecordLocation = RecordLocationPreference.get(
+                    preferences, getContentResolver());
             if (mRecordLocation) {
                 startReceivingLocationUpdates();
             } else {
