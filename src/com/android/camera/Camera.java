@@ -1532,20 +1532,31 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
 
+        // We need to save the holder for later use, even when the mCameraDevice
+        // is null. This could happen if onResume() is invoked after this
+        // function.
+        mSurfaceHolder = holder;
+
         // The mCameraDevice will be null if it fails to connect to the camera
         // hardware. In this case we will show a dialog and then finish the
         // activity, so it's OK to ignore it.
         if (mCameraDevice == null) return;
 
-        mSurfaceHolder = holder;
-
-        // Sometimes surfaceChanged is called after onPause. Ignore it.
+        // Sometimes surfaceChanged is called after onPause or before onResume.
+        // Ignore it.
         if (mPausing || isFinishing()) return;
 
-        // Set preview display if the surface is being created. Preview was
-        // already started.
-        if (holder.isCreating()) {
+        if (mPreviewing && holder.isCreating()) {
+            // Set preview display if the surface is being created and preview
+            // was already started. That means preview display was set to null
+            // and we need to set it now.
             setPreviewDisplay(holder);
+        } else {
+            // 1. Restart the preview if the size of surface was changed. The
+            // framework may not support changing preview display on the fly.
+            // 2. Start the preview now if surface was destroyed and preview
+            // stopped.
+            restartPreview();
         }
 
         // If first time initialization is not finished, send a message to do
@@ -1608,7 +1619,6 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void restartPreview() {
-        // make sure the surfaceview fills the whole screen when previewing
         try {
             startPreview();
         } catch (CameraHardwareException e) {
