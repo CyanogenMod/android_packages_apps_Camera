@@ -104,6 +104,7 @@ public class CameraSettings {
                 return;
             }
         }
+        Log.e(TAG, "No supported picture size found");
     }
 
     public static void removePreferenceFromScreen(
