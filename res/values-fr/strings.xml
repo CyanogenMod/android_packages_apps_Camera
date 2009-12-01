@@ -92,7 +92,7 @@
     <item msgid="7931283047572866748">"La plus récente en dernier"</item>
   </string-array>
     <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Intervalle entre photos"</string>
-    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Sélect. durée d\'affichage de chaque diapositive dans diaporama"</string>
+    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Choisir la durée d\'affichage de chaque diapositive"</string>
     <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Intervalle du diaporama"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
     <item msgid="3089037742117543119">"2 secondes"</item>
