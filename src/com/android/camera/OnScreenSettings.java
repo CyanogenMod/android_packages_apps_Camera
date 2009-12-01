@@ -44,6 +44,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * The on-screen setting menu.
@@ -55,6 +57,9 @@ public class OnScreenSettings {
     @SuppressWarnings("unused")
     private static final String TAG = "OnScreenSettings";
     private static final int MSG_POST_SET_VISIBLE = 1;
+
+    private static final Pattern TITLE_PATTERN =
+            Pattern.compile("(.*)\\s*\\((.+)\\)");
 
     /**
      * A callback to be invoked when the on-screen menu's visibility changes.
@@ -410,8 +415,29 @@ public class OnScreenSettings {
                         R.layout.on_screen_submenu_item, parent, false);
                 boolean checked = mPreference.getValue().equals(
                         mPreference.getEntryValues()[index]);
-                ((TextView) convertView.findViewById(
-                        R.id.title)).setText(entry[index]);
+                String title = entry[index].toString();
+                String detail = null;
+
+                // Handle the title of format "Title (details)". We extract the
+                // details from the title message for better UI layout. The
+                // detail will be shown in second line with a smaller font.
+                Matcher matcher = TITLE_PATTERN.matcher(title);
+                if (matcher.matches()) {
+                    title = matcher.group(1);
+                    detail = matcher.group(2);
+                }
+
+                ((TextView) convertView
+                        .findViewById(R.id.title)).setText(title);
+                TextView detailView = (TextView)
+                        convertView.findViewById(R.id.summary);
+                if (detail == null) {
+                    detailView.setVisibility(View.GONE);
+                } else {
+                    detailView.setVisibility(View.VISIBLE);
+                    detailView.setText(detail);
+                }
+
                 ((RadioButton) convertView.findViewById(
                         R.id.radio_button)).setChecked(checked);
                 ImageView icon = (ImageView)
