@@ -65,7 +65,7 @@
     <string name="camera_share" msgid="8207701858325694182">"Отправить"</string>
     <string name="camera_set" msgid="3422192914806971182">"Установить как"</string>
     <string name="camera_play" msgid="8248000517869959980">"Воспроизвести"</string>
-    <string name="camera_attach" msgid="4048659554893435232">"Вложить"</string>
+    <string name="camera_attach" msgid="4048659554893435232">"Прикрепить файл"</string>
     <string name="camera_cancel" msgid="8203341746672085747">"Отмена"</string>
     <string name="camera_crop" msgid="5584000454518174632">"Обрезать"</string>
     <string name="no_way_to_share_image" msgid="5011985309980187927">"Отсутствует приложение для открытия совместного доступа к фотографии."</string>
