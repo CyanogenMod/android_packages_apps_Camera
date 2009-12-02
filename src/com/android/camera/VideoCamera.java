@@ -91,6 +91,7 @@ public class VideoCamera extends NoSearchActivity
     private static final int INIT_RECORDER = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
+    private static final int ENABLE_SHUTTER_BUTTON = 6;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
@@ -104,6 +105,8 @@ public class VideoCamera extends NoSearchActivity
 
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
+
+    private static final long SHUTTER_BUTTON_TIMEOUT = 500L; // 500ms
 
     private SharedPreferences mPreferences;
 
@@ -164,6 +167,10 @@ public class VideoCamera extends NoSearchActivity
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+
+                case ENABLE_SHUTTER_BUTTON:
+                    mShutterButton.setEnabled(true);
+                    break;
 
                 case CLEAR_SCREEN_DELAY: {
                     getWindow().clearFlags(
@@ -381,16 +388,20 @@ public class VideoCamera extends NoSearchActivity
         // Do nothing (everything happens in onShutterButtonClick).
     }
 
+    private void onStopVideoRecording() {
+        if (mIsVideoCaptureIntent) {
+            stopVideoRecordingAndShowAlert();
+        } else {
+            stopVideoRecordingAndGetThumbnail();
+            initializeRecorder();
+        }
+    }
+
     public void onShutterButtonClick(ShutterButton button) {
         switch (button.getId()) {
             case R.id.shutter_button:
                 if (mMediaRecorderRecording) {
-                    if (mIsVideoCaptureIntent) {
-                        stopVideoRecordingAndShowAlert();
-                    } else {
-                        stopVideoRecordingAndGetThumbnail();
-                        initializeRecorder();
-                    }
+                    onStopVideoRecording();
                 } else if (mMediaRecorder != null) {
                     // If the click comes before recorder initialization, it is
                     // ignored. If users click the button during initialization,
@@ -398,6 +409,9 @@ public class VideoCamera extends NoSearchActivity
                     // eventually.
                     startVideoRecording();
                 }
+                mShutterButton.setEnabled(false);
+                mHandler.sendEmptyMessageDelayed(
+                        ENABLE_SHUTTER_BUTTON, SHUTTER_BUTTON_TIMEOUT);
                 break;
         }
     }
@@ -635,7 +649,7 @@ public class VideoCamera extends NoSearchActivity
     public void onBackPressed() {
         if (mPausing) return;
         if (mMediaRecorderRecording) {
-            mShutterButton.performClick();
+            onStopVideoRecording();
             return;
         }
         super.onBackPressed();
@@ -663,7 +677,7 @@ public class VideoCamera extends NoSearchActivity
                 break;
             case KeyEvent.KEYCODE_MENU:
                 if (mMediaRecorderRecording) {
-                    mShutterButton.performClick();
+                    onStopVideoRecording();
                     return true;
                 }
                 break;
@@ -1084,10 +1098,11 @@ public class VideoCamera extends NoSearchActivity
     // from MediaRecorder.OnInfoListener
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-            mShutterButton.performClick();
+            onStopVideoRecording();
         } else if (what
                 == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
-            mShutterButton.performClick();
+            onStopVideoRecording();
+
             // Show the toast.
             Toast.makeText(VideoCamera.this, R.string.video_reach_size_limit,
                            Toast.LENGTH_LONG).show();
