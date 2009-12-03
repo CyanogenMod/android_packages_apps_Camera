@@ -1098,10 +1098,10 @@ public class VideoCamera extends NoSearchActivity
     // from MediaRecorder.OnInfoListener
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-            onStopVideoRecording();
+            if (mMediaRecorderRecording) onStopVideoRecording();
         } else if (what
                 == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
-            onStopVideoRecording();
+            if (mMediaRecorderRecording) onStopVideoRecording();
 
             // Show the toast.
             Toast.makeText(VideoCamera.this, R.string.video_reach_size_limit,
