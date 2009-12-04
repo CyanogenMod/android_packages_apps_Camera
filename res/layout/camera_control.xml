@@ -23,7 +23,8 @@
         android:layout_marginBottom="10dp"
         android:layout_alignParentRight="true">
 
-    <ImageView android:id="@+id/review_thumbnail"
+    <com.android.camera.RotateImageView
+            android:id="@+id/review_thumbnail"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_height="52dp"
@@ -34,10 +35,12 @@
 
     <LinearLayout android:id="@+id/camera_switch_set"
             android:orientation="vertical"
+            android:gravity="center"
             android:layout_centerInParent="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content">
-        <ImageView android:layout_height="wrap_content"
+        <com.android.camera.RotateImageView android:id="@+id/video_switch_icon"
+                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:src="@drawable/btn_ic_mode_switch_video"/>
         <com.android.camera.Switcher android:id="@+id/camera_switch"
@@ -45,7 +48,9 @@
                 android:layout_height="70dp"
                 android:src="@drawable/btn_mode_switch_knob"
                 android:background="@drawable/btn_mode_switch_bg" />
-        <ImageView android:layout_height="wrap_content"
+        <com.android.camera.RotateImageView
+                android:id="@+id/camera_switch_icon"
+                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginBottom="3dp"
                 android:src="@drawable/btn_ic_mode_switch_camera"/>
