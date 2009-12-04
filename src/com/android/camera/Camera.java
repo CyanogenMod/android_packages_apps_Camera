@@ -262,15 +262,18 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // Create orientation listenter. This should be done first because it
         // takes some time to get first orientation.
-        mOrientationListener =
-                new OrientationEventListener(Camera.this) {
+        mOrientationListener = new OrientationEventListener(Camera.this) {
             @Override
             public void onOrientationChanged(int orientation) {
                 // We keep the last known orientation. So if the user
                 // first orient the camera then point the camera to
-                // floor/sky, we still have the correct orientation.
                 if (orientation != ORIENTATION_UNKNOWN) {
+                    orientation += 90;
+                }
+                orientation = ImageManager.roundOrientation(orientation);
+                if (orientation != mLastOrientation) {
                     mLastOrientation = orientation;
+                    setOrientationIndicator(mLastOrientation);
                 }
             }
         };
@@ -806,14 +809,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mCaptureOnlyData = null;
 
             // Set rotation.
-            int orientation = mLastOrientation;
-            if (orientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
-                orientation += 90;
-            }
-            orientation = ImageManager.roundOrientation(orientation);
-            Log.v(TAG, "mLastOrientation = " + mLastOrientation
-                    + ", orientation = " + orientation);
-            mParameters.setRotation(orientation);
+            mParameters.setRotation(mLastOrientation);
 
             // Clear previous GPS location from the parameters.
             mParameters.removeGpsData();
@@ -990,6 +986,15 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             // ignore
         }
         removeUnsupportedIndicators();
+    }
+
+    private void setOrientationIndicator(int degree) {
+        ((RotateImageView) findViewById(
+                R.id.review_thumbnail)).setDegree(degree);
+        ((RotateImageView) findViewById(
+                R.id.camera_switch_icon)).setDegree(degree);
+        ((RotateImageView) findViewById(
+                R.id.video_switch_icon)).setDegree(degree);
     }
 
     private void removeUnsupportedIndicators() {
