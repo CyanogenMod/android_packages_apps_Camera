@@ -41,6 +41,7 @@ import android.provider.DrmStore;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
+import android.view.OrientationEventListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -168,7 +169,8 @@ public class ImageManager {
 
     public static int roundOrientation(int orientationInput) {
         int orientation = orientationInput;
-        if (orientation == -1) {
+
+        if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
             orientation = 0;
         }
 
