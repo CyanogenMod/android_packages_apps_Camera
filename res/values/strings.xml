@@ -130,9 +130,17 @@
     <string name="pref_camera_picturesize_entry_2592x1936">5M Pixels</string>
     <string name="pref_camera_picturesize_entry_2304x1728">4M Pixels</string>
     <string name="pref_camera_picturesize_entry_2048x1536">3M Pixels</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
     <string name="pref_camera_picturesize_entry_1600x1200">2M Pixels</string>
+    <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
     <string name="pref_camera_picturesize_entry_1024x768">1M Pixels</string>
+    <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
+    <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
+    <string name="pref_camera_picturesize_entry_640x480">VGA</string>
+    <string name="pref_camera_picturesize_entry_352x288">CIF</string>
     <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
+    <string name="pref_camera_picturesize_entry_176x144">QCIF</string>
 
     <!-- Default picture quality setting. See
          pref_camera_jpegquality_entryvalues for possible values -->

@@ -114,6 +114,9 @@ public class CameraSettings {
 
     public static boolean setCameraPictureSize(
             String candidate, List<Size> supported, Parameters parameters) {
+        if(supported == null)
+            return false;
+
         int index = candidate.indexOf('x');
         if (index == NOT_FOUND) return false;
         int width = Integer.parseInt(candidate.substring(0, index));
