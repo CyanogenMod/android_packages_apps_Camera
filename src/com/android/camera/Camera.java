@@ -116,7 +116,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private Parameters mInitialParams;
 
     private OrientationEventListener mOrientationListener;
-    private int mLastOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
+    private int mLastOrientation = 0;  // No rotation (landscape) by default.
     private SharedPreferences mPreferences;
 
     private static final int IDLE = 1;
