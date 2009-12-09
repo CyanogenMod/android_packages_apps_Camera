@@ -273,7 +273,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 orientation = ImageManager.roundOrientation(orientation);
                 if (orientation != mLastOrientation) {
                     mLastOrientation = orientation;
-                    setOrientationIndicator(mLastOrientation);
+                    if (!mIsImageCaptureIntent)  {
+                        setOrientationIndicator(mLastOrientation);
+                    }
                 }
             }
         };
