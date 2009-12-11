@@ -1087,7 +1087,9 @@ public class VideoCamera extends NoSearchActivity
             releaseMediaRecorder();
             mPreferences.registerOnSharedPreferenceChangeListener(this);
         } else {
-            initializeRecorder();
+            // When mSetting is set to invisible in onPause, we should not
+            // initialize recorder.
+            if (!mPausing) initializeRecorder();
             mPreferences.unregisterOnSharedPreferenceChangeListener(this);
         }
     }
