@@ -72,6 +72,11 @@
                     android:layout_height="wrap_content">
                 <com.android.camera.IconIndicator
                         style="@style/IconIndicator"
+                        android:id="@+id/flash_icon"
+                        camera:modes="@array/flash_modes"
+                        camera:icons="@array/flash_icons"/>
+                <com.android.camera.IconIndicator
+                        style="@style/IconIndicator"
                         android:id="@+id/whitebalance_icon"
                         camera:modes="@array/pref_camera_whitebalance_entryvalues"
                         camera:icons="@array/whitebalance_icons"/>

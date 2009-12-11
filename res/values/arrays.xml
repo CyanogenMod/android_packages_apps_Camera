@@ -126,6 +126,22 @@
         <item>@drawable/ic_viewfinder_flash_off</item>
     </array>
 
+    <!-- Videocamera Preferences flash mode dialog box entries -->
+    <string-array name="pref_camera_video_flashmode_entries" translatable="false">
+        <item>@string/pref_camera_flashmode_entry_on</item>
+        <item>@string/pref_camera_flashmode_entry_off</item>
+    </string-array>
+
+    <string-array name="pref_camera_video_flashmode_entryvalues" translatable="false">
+        <item>torch</item>
+        <item>off</item>
+    </string-array>
+
+    <array name="pref_camera_video_flashmode_icons">
+        <item>@drawable/ic_viewfinder_flash_on</item>
+        <item>@drawable/ic_viewfinder_flash_off</item>
+    </array>
+
     <string-array name="pref_camera_recordlocation_entryvalues" translatable="false">
         <item>off</item>
         <item>on</item>
@@ -139,12 +155,14 @@
     <string-array name="flash_modes" translatable="false">
         <item>auto</item>
         <item>on</item>
+        <item>torch</item>
         <item>off</item>
         <item>@string/pref_camera_flashmode_no_flash</item>
     </string-array>
 
     <array name="flash_icons">
         <item>@drawable/ic_viewfinder_flash_auto</item>
+        <item>@drawable/ic_viewfinder_flash_on</item>
         <item>@drawable/ic_viewfinder_flash_on</item>
         <item>@drawable/ic_viewfinder_flash_off</item>
         <item>@drawable/ic_viewfinder_empty</item>

@@ -229,6 +229,9 @@
     <!-- Settings screen, flash mode dialog title -->
     <string name="pref_camera_flashmode_dialogtitle">Flash mode</string>
 
+    <!-- Default videocamera flash mode setting.-->
+    <string name="pref_camera_video_flashmode_default" translatable="false">off</string>
+
     <!-- Default white balance setting. -->
     <string name="pref_camera_whitebalance_default" translatable="false">auto</string>
 

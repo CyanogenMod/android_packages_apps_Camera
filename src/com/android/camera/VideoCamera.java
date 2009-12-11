@@ -74,6 +74,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * The Camcorder activity.
@@ -138,6 +139,7 @@ public class VideoCamera extends NoSearchActivity
     private Uri mCurrentVideoUri;
     private ContentValues mCurrentVideoValues;
     private IconIndicator mWhitebalanceIndicator;
+    private IconIndicator mFlashIndicator;
 
     private MediaRecorderProfile mProfile;
 
@@ -322,6 +324,7 @@ public class VideoCamera extends NoSearchActivity
 
         mWhitebalanceIndicator =
                 (IconIndicator) findViewById(R.id.whitebalance_icon);
+        mFlashIndicator = (IconIndicator) findViewById(R.id.flash_icon);
 
         // Make sure preview is started.
         try {
@@ -339,6 +342,9 @@ public class VideoCamera extends NoSearchActivity
     private void removeUnsupportedIndicators() {
         if (mParameters.getSupportedWhiteBalance() == null) {
             mWhitebalanceIndicator.setVisibility(View.GONE);
+        }
+        if (mParameters.getSupportedFlashModes() == null) {
+            mFlashIndicator.setVisibility(View.GONE);
         }
     }
 
@@ -1379,11 +1385,30 @@ public class VideoCamera extends NoSearchActivity
                 UPDATE_RECORD_TIME, next_update_delay);
     }
 
+    private static boolean isSupported(String value, List<String> supported) {
+        return supported == null ? false : supported.indexOf(value) >= 0;
+    }
+
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
         mParameters.setPreviewSize(mProfile.mVideoWidth, mProfile.mVideoHeight);
         mParameters.setPreviewFrameRate(mProfile.mVideoFps);
+
+        // Set flash mode.
+        String flashMode = mPreferences.getString(
+                CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
+                getString(R.string.pref_camera_video_flashmode_default));
+        List<String> supportedFlash = mParameters.getSupportedFlashModes();
+        if (isSupported(flashMode, supportedFlash)) {
+            mParameters.setFlashMode(flashMode);
+        } else {
+            flashMode = mParameters.getFlashMode();
+            if (flashMode == null) {
+                flashMode = getString(
+                        R.string.pref_camera_flashmode_no_flash);
+            }
+        }
 
         // Set white balance parameter.
         String whiteBalance = Parameters.WHITE_BALANCE_AUTO;
@@ -1405,12 +1430,14 @@ public class VideoCamera extends NoSearchActivity
         mCameraDevice.setParameters(mParameters);
 
         final String finalWhiteBalance = whiteBalance;
+        final String finalFlashMode = flashMode;
 
         // It can be execute from the startPreview thread, so we post it
         // to the main UI thread
         mHandler.post(new Runnable() {
             public void run() {
                 mWhitebalanceIndicator.setMode(finalWhiteBalance);
+                mFlashIndicator.setMode(finalFlashMode);
             }
         });
     }
