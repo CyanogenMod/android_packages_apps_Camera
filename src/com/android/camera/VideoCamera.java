@@ -78,6 +78,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+
 
 /**
  * The Camcorder activity.
@@ -156,6 +159,77 @@ public class VideoCamera extends NoSearchActivity
     private ContentValues mCurrentVideoValues;
 
     private CamcorderProfile mProfile;
+    private int mVideoEncoder;
+    private int mAudioEncoder;
+    private int mVideoWidth;
+    private int mVideoHeight;
+    private int mVideoBitrate;
+    private String mOutputFormat = "3gp";
+    private int mVideoFps = 30;
+
+
+    //
+    // DefaultHashMap is a HashMap which returns a default value if the specified
+    // key is not found.
+    //
+    @SuppressWarnings("serial")
+
+    static class DefaultHashMap<K, V> extends HashMap<K, V> {
+        private V mDefaultValue;
+
+        public void putDefault(V defaultValue) {
+            mDefaultValue = defaultValue;
+        }
+
+        @Override
+        public V get(Object key) {
+            V value = super.get(key);
+            return (value == null) ? mDefaultValue : value;
+        }
+    }
+
+
+    private static final DefaultHashMap<String, Integer>
+            OUTPUT_FORMAT_TABLE = new DefaultHashMap<String, Integer>();
+    private static final DefaultHashMap<String, Integer>
+            VIDEO_ENCODER_TABLE = new DefaultHashMap<String, Integer>();
+    private static final DefaultHashMap<String, Integer>
+            AUDIO_ENCODER_TABLE = new DefaultHashMap<String, Integer>();
+    private static final DefaultHashMap<String, Integer>
+            VIDEOQUALITY_BITRATE_TABLE = new DefaultHashMap<String, Integer>();
+
+    static {
+        OUTPUT_FORMAT_TABLE.put("3gp", MediaRecorder.OutputFormat.THREE_GPP);
+        OUTPUT_FORMAT_TABLE.put("mp4", MediaRecorder.OutputFormat.MPEG_4);
+        OUTPUT_FORMAT_TABLE.putDefault(MediaRecorder.OutputFormat.DEFAULT);
+
+        VIDEO_ENCODER_TABLE.put("h263", MediaRecorder.VideoEncoder.H263);
+        VIDEO_ENCODER_TABLE.put("h264", MediaRecorder.VideoEncoder.H264);
+        VIDEO_ENCODER_TABLE.put("m4v", MediaRecorder.VideoEncoder.MPEG_4_SP);
+        VIDEO_ENCODER_TABLE.putDefault(MediaRecorder.VideoEncoder.DEFAULT);
+
+        AUDIO_ENCODER_TABLE.put("amrnb", MediaRecorder.AudioEncoder.AMR_NB);
+
+	/*
+        AUDIO_ENCODER_TABLE.put("amrwb", MediaRecorder.AudioEncoder.AMR_WB);
+        AUDIO_ENCODER_TABLE.put("qcelp", MediaRecorder.AudioEncoder.QCELP);
+        AUDIO_ENCODER_TABLE.put("evrc", MediaRecorder.AudioEncoder.EVRC);
+        AUDIO_ENCODER_TABLE.put("aac", MediaRecorder.AudioEncoder.AAC);
+        AUDIO_ENCODER_TABLE.put("aacplus", MediaRecorder.AudioEncoder.AAC_PLUS);
+        AUDIO_ENCODER_TABLE.put("eaacplus",
+                MediaRecorder.AudioEncoder.EAAC_PLUS);
+	*/
+        AUDIO_ENCODER_TABLE.putDefault(MediaRecorder.AudioEncoder.DEFAULT);
+
+        VIDEOQUALITY_BITRATE_TABLE.put("1280x720", 6000000);
+        VIDEOQUALITY_BITRATE_TABLE.put("720x480",  2000000);
+        VIDEOQUALITY_BITRATE_TABLE.put("800x480",  2000000);
+        VIDEOQUALITY_BITRATE_TABLE.put("640x480",  2000000);
+        VIDEOQUALITY_BITRATE_TABLE.put("352x288",  360000);
+        VIDEOQUALITY_BITRATE_TABLE.put("320x240",  320000);
+        VIDEOQUALITY_BITRATE_TABLE.put("176x144",  192000);
+        VIDEOQUALITY_BITRATE_TABLE.putDefault(320000);
+    }
 
     // The video duration limit. 0 menas no limit.
     private int mMaxVideoDurationInMs;
@@ -526,34 +600,98 @@ public class VideoCamera extends NoSearchActivity
                 CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.getDefaultVideoQualityValue());
 
-        boolean videoQualityHigh = CameraSettings.getVideoQuality(quality);
+        if(!"custom".equalsIgnoreCase(quality)){
 
-        // Set video quality.
-        Intent intent = getIntent();
-        if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
-            int extraVideoQuality =
-                    intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-            videoQualityHigh = (extraVideoQuality > 0);
-        }
+            boolean videoQualityHigh = CameraSettings.getVideoQuality(quality);
 
-        // Set video duration limit. The limit is read from the preference,
-        // unless it is specified in the intent.
-        if (intent.hasExtra(MediaStore.EXTRA_DURATION_LIMIT)) {
-            int seconds =
-                    intent.getIntExtra(MediaStore.EXTRA_DURATION_LIMIT, 0);
-            mMaxVideoDurationInMs = 1000 * seconds;
+            // Set video quality.
+            Intent intent = getIntent();
+            if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
+                int extraVideoQuality =
+                        intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+                videoQualityHigh = (extraVideoQuality > 0);
+            }
+
+            // Set video duration limit. The limit is read from the preference,
+            // unless it is specified in the intent.
+            if (intent.hasExtra(MediaStore.EXTRA_DURATION_LIMIT)) {
+                int seconds =
+                        intent.getIntExtra(MediaStore.EXTRA_DURATION_LIMIT, 0);
+                mMaxVideoDurationInMs = 1000 * seconds;
+            } else {
+                mMaxVideoDurationInMs =
+                        CameraSettings.getVidoeDurationInMillis(quality);
+            }
+            mProfile = CamcorderProfile.get(videoQualityHigh
+                    ? CamcorderProfile.QUALITY_HIGH
+                    : CamcorderProfile.QUALITY_LOW);
+
+
         } else {
-            mMaxVideoDurationInMs =
-                    CameraSettings.getVidoeDurationInMillis(quality);
+            mProfile = null;
+
+            String videoEncoder = mPreferences.getString(
+                        CameraSettings.KEY_VIDEO_ENCODER,
+                        getString(R.string.pref_camera_videoencoder_default));
+
+            String audioEncoder = mPreferences.getString(
+                        CameraSettings.KEY_AUDIO_ENCODER,
+                        getString(R.string.pref_camera_audioencoder_default));
+
+            String videoQuality = mPreferences.getString(
+                     CameraSettings.KEY_VIDEO_SIZE,
+                        getString(R.string.pref_camera_videosize_default));
+
+            StringTokenizer tokenizer = null;
+            if(videoQuality != null &&
+                        ( tokenizer = new StringTokenizer(
+                              videoQuality ,"x")).countTokens() == 2){
+                mVideoWidth = Integer.parseInt(tokenizer.nextToken());
+                mVideoHeight = Integer.parseInt(tokenizer.nextToken());
+                mVideoBitrate = VIDEOQUALITY_BITRATE_TABLE.get(videoQuality);
+            } else {
+                mVideoWidth = 320;
+                mVideoHeight = 240;
+                mVideoBitrate = 320000;
+            }
+
+            mVideoEncoder = VIDEO_ENCODER_TABLE.get(videoEncoder);
+            mAudioEncoder = AUDIO_ENCODER_TABLE.get(audioEncoder);
+
+            String minutesStr = mPreferences.getString(CameraSettings.KEY_VIDEO_DURATION,
+                              CameraSettings.DEFAULT_VIDEO_DURATION_VALUE+"");
+
+            int minutes = -1;
+            try{
+	        minutes = Integer.parseInt(minutesStr);
+	    }catch(NumberFormatException npe){
+	        // use default value continue
+	        minutes = CameraSettings.DEFAULT_VIDEO_DURATION_VALUE;
+	    }
+
+            if (minutes == -1) {
+                // This is a special case: the value -1 means we want to use the
+                // device-dependent duration for MMS messages. The value is
+                // represented in seconds.
+
+                mMaxVideoDurationInMs =
+                       CameraSettings.getVidoeDurationInMillis("mms");
+
+            } else {
+                // 1 minute = 60000ms
+                mMaxVideoDurationInMs = 60000 * minutes;
+            }
         }
-        mProfile = CamcorderProfile.get(videoQualityHigh
-                ? CamcorderProfile.QUALITY_HIGH
-                : CamcorderProfile.QUALITY_LOW);
+
     }
 
     private void resizeForPreviewAspectRatio() {
-        mPreviewFrameLayout.setAspectRatio(
-                (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
+        if(mProfile != null){
+             mPreviewFrameLayout.setAspectRatio(
+                     (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
+        } else {
+            mPreviewFrameLayout.setAspectRatio( ((double) mVideoWidth) / mVideoHeight);
+        }
     }
 
     @Override
@@ -902,8 +1040,28 @@ public class VideoCamera extends NoSearchActivity
         mMediaRecorder.setCamera(mCameraDevice);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-        mMediaRecorder.setProfile(mProfile);
-        mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
+        if(mProfile != null){
+            mMediaRecorder.setProfile(mProfile);
+            mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
+        }
+        else {
+
+            mMediaRecorder.setOutputFormat(OUTPUT_FORMAT_TABLE.get(mOutputFormat));
+            mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
+            mMediaRecorder.setVideoFrameRate(mVideoFps);
+            mMediaRecorder.setVideoSize(mVideoWidth, mVideoHeight);
+            mMediaRecorder.setVideoEncodingBitRate(mVideoBitrate);
+            mMediaRecorder.setVideoEncoder(mVideoEncoder);
+            mMediaRecorder.setAudioEncoder(mAudioEncoder);
+            Log.v(TAG, "Custom format " +
+                       " output format " + OUTPUT_FORMAT_TABLE.get(mOutputFormat) +
+                       " Video Fps " +  mVideoFps +
+                       " Video Bitrate " + mVideoBitrate +
+                       " Max Video Duration "  + mMaxVideoDurationInMs+
+                       " Video Encoder "  + mVideoEncoder +
+                       " Audio Encoder "  + mAudioEncoder);
+        }
+
 
         // Set output file.
         if (mStorageStatus != STORAGE_STATUS_OK) {
@@ -970,8 +1128,13 @@ public class VideoCamera extends NoSearchActivity
     private void createVideoPath() {
         long dateTaken = System.currentTimeMillis();
         String title = createName(dateTaken);
-        String filename = title + 
-            (MediaRecorder.OutputFormat.MPEG_4 == mProfile.fileFormat ? ".m4v" : ".3gp"); // Used when emailing.
+        String filename;
+        if (mProfile == null) { 
+            filename = title + "." + mOutputFormat;
+        } else {
+            filename = title + (MediaRecorder.OutputFormat.MPEG_4 == mProfile.fileFormat ? ".mp4" : ".3gp"); // Used when emailing.
+        }
+        
         String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
         String filePath = cameraDirPath + "/" + filename;
         File cameraDir = new File(cameraDirPath);
@@ -980,8 +1143,12 @@ public class VideoCamera extends NoSearchActivity
         values.put(Video.Media.TITLE, title);
         values.put(Video.Media.DISPLAY_NAME, filename);
         values.put(Video.Media.DATE_TAKEN, dateTaken);
-        values.put(Video.Media.MIME_TYPE, "video/" +
-                (MediaRecorder.OutputFormat.MPEG_4 == mProfile.fileFormat ? "mp4" : "3gpp"));
+        if (mProfile == null) {
+            values.put(Video.Media.MIME_TYPE, "video/" + ("3gp".equals(mOutputFormat) ? "3gpp" : "mp4"));
+        } else {
+            values.put(Video.Media.MIME_TYPE, "video/" +
+                    (MediaRecorder.OutputFormat.MPEG_4 == mProfile.fileFormat ? "mp4" : "3gpp"));
+        } 
         values.put(Video.Media.DATA, filePath);
         mCameraVideoFilename = filePath;
         Log.v(TAG, "Current camera video filename: " + mCameraVideoFilename);
@@ -1385,9 +1552,14 @@ public class VideoCamera extends NoSearchActivity
 
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
-                    
-        mParameters.setPreviewSize(mProfile.videoFrameWidth, mProfile.videoFrameHeight);
-        mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
+
+        if(mProfile != null) {
+            mParameters.setPreviewSize(mProfile.videoFrameWidth, mProfile.videoFrameHeight);
+            mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
+        } else {
+            mParameters.setPreviewSize(mVideoWidth, mVideoHeight);
+            mParameters.setPreviewFrameRate(mVideoFps);
+        }
 
         // Set flash mode.
         String flashMode = mPreferences.getString(
@@ -1491,10 +1663,17 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void resetCameraParameters() {
+
         // We need to restart the preview if preview size is changed.
         Size size = mParameters.getPreviewSize();
-        if (size.width != mProfile.videoFrameWidth
-                || size.height != mProfile.videoFrameHeight) {
+        boolean sizeChanged = true;
+        if(mProfile != null){
+            sizeChanged = size.width != mProfile.videoFrameWidth
+                            || size.height != mProfile.videoFrameHeight;
+        } else {
+            sizeChanged = size.width != mVideoWidth || size.height != mVideoHeight;
+        }
+        if (sizeChanged) {
             // It is assumed media recorder is released before
             // onSharedPreferenceChanged, so we can close the camera here.
             closeCamera();
