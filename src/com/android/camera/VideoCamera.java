@@ -1413,19 +1413,24 @@ public class VideoCamera extends NoSearchActivity
         }
 
         // Set white balance parameter.
-        String whiteBalance = Parameters.WHITE_BALANCE_AUTO;
-        if (mParameters.getSupportedWhiteBalance() != null) {
-            whiteBalance = mPreferences.getString(
-                    CameraSettings.KEY_WHITE_BALANCE,
-                    getString(R.string.pref_camera_whitebalance_default));
+        String whiteBalance = mPreferences.getString(
+                CameraSettings.KEY_WHITE_BALANCE,
+                getString(R.string.pref_camera_whitebalance_default));
+        if (isSupported(whiteBalance,
+                mParameters.getSupportedWhiteBalance())) {
             mParameters.setWhiteBalance(whiteBalance);
+        } else {
+            whiteBalance = mParameters.getWhiteBalance();
+            if (whiteBalance == null) {
+                whiteBalance = Parameters.WHITE_BALANCE_AUTO;
+            }
         }
 
         // Set color effect parameter.
-        if (mParameters.getSupportedColorEffects() != null) {
-            String colorEffect = mPreferences.getString(
-                    CameraSettings.KEY_COLOR_EFFECT,
-                    getString(R.string.pref_camera_coloreffect_default));
+        String colorEffect = mPreferences.getString(
+                CameraSettings.KEY_COLOR_EFFECT,
+                getString(R.string.pref_camera_coloreffect_default));
+        if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
             mParameters.setColorEffect(colorEffect);
         }
 
