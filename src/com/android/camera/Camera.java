@@ -48,6 +48,7 @@ import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -97,6 +98,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int FIRST_TIME_INIT = 2;
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
+
+    // The brightness settings used when it is set to automatic in the system.
+    // The reason why it is set to 0.7 is just because 1.0 is too bright.
+    private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
     private static final String GPS_MODE_ON = "on";
     private static final String GPS_MODE_OFF = "off";
@@ -913,6 +918,18 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         super.onCreate(icicle);
 
         Window win = getWindow();
+
+        // Overright the brightness settings if it is automatic
+        int mode = Settings.System.getInt(
+                getContentResolver(),
+                Settings.System.SCREEN_BRIGHTNESS_MODE,
+                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+        if (mode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+            WindowManager.LayoutParams winParams = win.getAttributes();
+            winParams.screenBrightness = DEFAULT_CAMERA_BRIGHTNESS;
+            win.setAttributes(winParams);
+        }
+
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.camera);
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);

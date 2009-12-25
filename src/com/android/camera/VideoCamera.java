@@ -45,6 +45,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -95,6 +96,10 @@ public class VideoCamera extends NoSearchActivity
     private static final int ENABLE_SHUTTER_BUTTON = 6;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
+
+    // The brightness settings used when it is set to automatic in the system.
+    // The reason why it is set to 0.7 is just because 1.0 is too bright.
+    private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
     private static final long NO_STORAGE_ERROR = -1L;
     private static final long CANNOT_STAT_ERROR = -2L;
@@ -239,6 +244,19 @@ public class VideoCamera extends NoSearchActivity
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        Window win = getWindow();
+
+        // Overright the brightness settings if it is automatic
+        int mode = Settings.System.getInt(
+                getContentResolver(),
+                Settings.System.SCREEN_BRIGHTNESS_MODE,
+                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+        if (mode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+            WindowManager.LayoutParams winParams = win.getAttributes();
+            winParams.screenBrightness = DEFAULT_CAMERA_BRIGHTNESS;
+            win.setAttributes(winParams);
+        }
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         CameraSettings.upgradePreferences(mPreferences);
