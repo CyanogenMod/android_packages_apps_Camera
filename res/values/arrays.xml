@@ -246,6 +246,26 @@
         <item>green-tint</item>
     </string-array>
 
+    <!-- Camera Preferences MultiLevel dialog box entries -->
+    <string-array name="pref_camera_multilevel_entries">
+        <item>@string/pref_camera_multilevel_entry_level0</item>
+        <item>@string/pref_camera_multilevel_entry_level1</item>
+        <item>@string/pref_camera_multilevel_entry_level2</item>
+        <item>@string/pref_camera_multilevel_entry_level3</item>
+        <item>@string/pref_camera_multilevel_entry_level4</item>
+        <item>@string/pref_camera_multilevel_entry_level5</item>
+    </string-array>
+
+    <string-array name="pref_camera_multilevel_entryvalues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+
     <!-- Camera Preferences Scene Mode dialog box entries -->
     <string-array name="pref_camera_scenemode_entries" translatable="false">
         <item>@string/pref_camera_scenemode_entry_auto</item>
