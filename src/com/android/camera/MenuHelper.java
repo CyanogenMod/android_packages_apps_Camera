@@ -48,6 +48,7 @@ import com.android.camera.gallery.IImage;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -532,8 +533,10 @@ public class MenuHelper {
                 long dateTaken = image.getDateTaken();
                 if (dateTaken != 0) {
                     Date date = new Date(image.getDateTaken());
-                    SimpleDateFormat dateFormat = new SimpleDateFormat();
-                    value = dateFormat.format(date);
+                    // Date/Time preferences are stored differently so we query them separately.
+                    DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(activity);
+                    DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(activity);
+                    value = dateFormat.format(date) + ' ' + timeFormat.format(date);
                 }
                 if (value != EMPTY_STRING) {
                     setDetailsValue(d, value, R.id.details_date_taken_value);
