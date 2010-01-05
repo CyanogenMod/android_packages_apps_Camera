@@ -49,7 +49,6 @@ public abstract class BaseImage implements IImage {
     protected String mMimeType;
     private final long mDateTaken;
     private String mTitle;
-    private final String mDisplayName;
 
     protected BaseImageList mContainer;
 
@@ -58,7 +57,7 @@ public abstract class BaseImage implements IImage {
 
     protected BaseImage(BaseImageList container, ContentResolver cr,
             long id, int index, Uri uri, String dataPath, long miniThumbMagic,
-            String mimeType, long dateTaken, String title, String displayName) {
+            String mimeType, long dateTaken, String title) {
         mContainer = container;
         mContentResolver = cr;
         mId = id;
@@ -68,7 +67,6 @@ public abstract class BaseImage implements IImage {
         mMimeType = mimeType;
         mDateTaken = dateTaken;
         mTitle = title;
-        mDisplayName = displayName;
     }
 
     public String getDataPath() {
@@ -137,10 +135,6 @@ public abstract class BaseImage implements IImage {
 
     public String getTitle() {
         return mTitle;
-    }
-
-    public String getDisplayName() {
-        return mDisplayName;
     }
 
     private void setupDimension() {

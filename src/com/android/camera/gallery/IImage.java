@@ -64,8 +64,6 @@ public interface IImage {
 
     public abstract int getHeight();
 
-    public abstract String getDisplayName();
-
     // Get property of the image
     public abstract boolean isReadonly();
     public abstract boolean isDrm();

@@ -116,10 +116,6 @@ class UriImage implements IImage {
         return mUri.toString();
     }
 
-    public String getDisplayName() {
-        return getTitle();
-    }
-
     public Bitmap thumbBitmap(boolean rotateAsNeeded) {
         return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, THUMBNAIL_MAX_NUM_PIXELS,
                 rotateAsNeeded);
