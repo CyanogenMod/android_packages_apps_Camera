@@ -35,7 +35,6 @@ public class VideoList extends BaseImageList {
             Media.DATA,
             Media.DATE_TAKEN,
             Media.TITLE,
-            Media.DISPLAY_NAME,
             Media.MINI_THUMB_MAGIC,
             Media.MIME_TYPE,
             Media.DATE_MODIFIED};
@@ -44,10 +43,9 @@ public class VideoList extends BaseImageList {
     private static final int INDEX_DATA_PATH = 1;
     private static final int INDEX_DATE_TAKEN = 2;
     private static final int INDEX_TITLE = 3;
-    private static final int INDEX_DISPLAY_NAME = 4;
-    private static final int INDEX_MIMI_THUMB_MAGIC = 5;
-    private static final int INDEX_MIME_TYPE = 6;
-    private static final int INDEX_DATE_MODIFIED = 7;
+    private static final int INDEX_MIMI_THUMB_MAGIC = 4;
+    private static final int INDEX_MIME_TYPE = 5;
+    private static final int INDEX_DATE_MODIFIED = 6;
 
     @Override
     protected long getImageId(Cursor cursor) {
@@ -62,14 +60,15 @@ public class VideoList extends BaseImageList {
         if (dateTaken == 0) {
             dateTaken = cursor.getLong(INDEX_DATE_MODIFIED) * 1000;
         }
-        String title = cursor.getString(INDEX_TITLE);
-        String displayName = cursor.getString(INDEX_DISPLAY_NAME);
         long miniThumbMagic = cursor.getLong(INDEX_MIMI_THUMB_MAGIC);
+        String title = cursor.getString(INDEX_TITLE);
         String mimeType = cursor.getString(INDEX_MIME_TYPE);
-
+        if (title == null || title.length() == 0) {
+            title = dataPath;
+        }
         return new VideoObject(this, mContentResolver,
                 id, cursor.getPosition(), contentUri(id), dataPath,
-                miniThumbMagic, mimeType, dateTaken, title, displayName);
+                miniThumbMagic, mimeType, dateTaken, title);
     }
 
     public VideoList(ContentResolver resolver, Uri uri, int sort,

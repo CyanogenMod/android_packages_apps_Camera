@@ -60,9 +60,9 @@ public class DrmImageList extends ImageList implements IImageList {
         protected DrmImage(BaseImageList container, ContentResolver cr,
                 long id, int index, Uri uri, String dataPath,
                 long miniThumbMagic, String mimeType, long dateTaken,
-                String title, String displayName, int rotation) {
+                String title, int rotation) {
             super(container, cr, id, index, uri, dataPath, miniThumbMagic,
-                    mimeType, dateTaken, title, displayName, rotation);
+                    mimeType, dateTaken, title, rotation);
         }
 
         @Override
@@ -91,11 +91,6 @@ public class DrmImageList extends ImageList implements IImageList {
             return fullSizeBitmap(IImage.THUMBNAIL_TARGET_SIZE,
                     IImage.THUMBNAIL_MAX_NUM_PIXELS);
         }
-
-        @Override
-        public String getDisplayName() {
-            return getTitle();
-        }
     }
 
     @Override
@@ -105,6 +100,6 @@ public class DrmImageList extends ImageList implements IImageList {
         String mimeType = cursor.getString(INDEX_MIME_TYPE);
         return new DrmImage(this, mContentResolver, id, cursor.getPosition(),
                 contentUri(id), dataPath, 0, mimeType, 0, "DrmImage-" + id,
-                "DrmImage-" + id, 0);
+                0);
     }
 }

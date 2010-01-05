@@ -385,7 +385,7 @@ public class MenuHelper {
 
                 TextView textView = (TextView) d.findViewById(
                         R.id.details_image_title);
-                textView.setText(image.getDisplayName());
+                textView.setText(image.getTitle());
 
                 long length = getImageFileSize(image);
                 String lengthString = length < 0
