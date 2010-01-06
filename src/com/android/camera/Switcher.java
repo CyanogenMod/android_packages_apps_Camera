@@ -84,7 +84,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) return false;
 
-        final int available = getHeight() - mPaddingTop - mPaddingBottom
+        final int available = getHeight() - getPaddingTop() - getPaddingBottom()
                 - getDrawable().getIntrinsicHeight();
 
         switch (event.getAction()) {
@@ -121,10 +121,10 @@ public class Switcher extends ImageView implements View.OnTouchListener {
         Drawable drawable = getDrawable();
         int drawableHeight = drawable.getIntrinsicHeight();
         final int height = getHeight();
-        final int available = height - mPaddingTop - mPaddingBottom
+        final int available = height - getPaddingTop() - getPaddingBottom()
                 - drawableHeight;
         int x = (int) event.getY();
-        mPosition = x - mPaddingTop - drawableHeight / 2;
+        mPosition = x - getPaddingTop() - drawableHeight / 2;
         if (mPosition < 0) mPosition = 0;
         if (mPosition > available) mPosition = available;
         invalidate();
@@ -142,7 +142,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
         }
 
         if (mAnimationStartTime != NO_ANIMATION) {
-            final int available = getHeight() - mPaddingTop - mPaddingBottom
+            final int available = getHeight() - getPaddingTop() - getPaddingBottom()
                     - drawableHeight;
             long time = AnimationUtils.currentAnimationTimeMillis();
             int deltaTime = (int) (time - mAnimationStartTime);
@@ -158,7 +158,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
             }
         }
 
-        int offsetTop = mPaddingTop + mPosition;
+        int offsetTop = getPaddingTop() + mPosition;
         int offsetLeft = (getWidth()
                 - drawableWidth - mPaddingLeft - mPaddingRight) / 2;
         int saveCount = canvas.getSaveCount();
