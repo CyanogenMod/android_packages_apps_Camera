@@ -17,10 +17,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/scroll_view"
     android:orientation="vertical"
     android:layout_width="300dip"
-    android:layout_height="fill_parent">
+    android:layout_height="match_parent">
 
     <LinearLayout android:orientation="vertical"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="5dip"
             android:paddingRight="5dip"
@@ -28,7 +28,7 @@
 
         <LinearLayout android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
             <LinearLayout android:orientation="horizontal"
@@ -48,7 +48,7 @@
                     android:layout_weight="1"/>
 
         </LinearLayout>
-        <TableLayout android:layout_width="fill_parent"
+        <TableLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dip"
                 android:layout_marginTop="10dip">
@@ -69,7 +69,7 @@
                         android:text="@string/details_image_resolution"/>
                 <TextView android:id="@+id/details_resolution_value"
                         android:layout_height="wrap_content"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:paddingLeft="5dip"
                         android:textColor="?android:attr/textColorPrimary"/>
@@ -80,7 +80,7 @@
                         android:text="@string/details_image_make"/>
                 <TextView android:id="@+id/details_make_value"
                         android:layout_height="wrap_content"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:paddingLeft="5dip"
                         android:textColor="?android:attr/textColorPrimary"/>
@@ -91,7 +91,7 @@
                         android:text="@string/details_image_model"/>
                 <TextView android:id="@+id/details_model_value"
                         android:layout_height="wrap_content"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:paddingLeft="5dip"
                         android:textColor="?android:attr/textColorPrimary"/>
@@ -102,7 +102,7 @@
                         android:text="@string/details_image_whitebalance"/>
                 <TextView android:id="@+id/details_whitebalance_value"
                         android:layout_height="wrap_content"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:paddingLeft="5dip"
                         android:textColor="?android:attr/textColorPrimary"/>
@@ -113,7 +113,7 @@
                         android:text="@string/details_image_latitude"/>
                 <TextView android:id="@+id/details_latitude_value"
                         android:layout_height="wrap_content"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:paddingLeft="5dip"
                         android:textColor="?android:attr/textColorPrimary"/>
@@ -124,7 +124,7 @@
                         android:text="@string/details_image_longitude"/>
                 <TextView android:id="@+id/details_longitude_value"
                         android:layout_height="wrap_content"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:paddingLeft="5dip"
                         android:textColor="?android:attr/textColorPrimary"/>
@@ -135,7 +135,7 @@
                         android:text="@string/details_image_location"/>
                 <TextView android:id="@+id/details_location_value"
                         android:layout_height="wrap_content"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:paddingLeft="5dip"
                         android:textColor="?android:attr/textColorPrimary"/>

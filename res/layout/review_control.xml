@@ -18,7 +18,7 @@
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/button_bar"
         android:gravity="center_horizontal"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_width="76dp"
         android:layout_marginTop="13dp"
         android:layout_marginBottom="10dp"
@@ -26,8 +26,8 @@
     <com.android.camera.EvenlySpacedLayout
             camera:orientation="vertical"
             camera:keepEndSpace="false"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent">
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
         <LinearLayout style="@style/ReviewControlGroup">
             <ImageView style="@style/ReviewControlIcon"
                     android:id="@+id/btn_delete"
