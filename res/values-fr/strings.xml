@@ -92,7 +92,7 @@
     <item msgid="7931283047572866748">"La plus récente en dernier"</item>
   </string-array>
     <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Intervalle entre photos"</string>
-    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Sélectionner la durée d\'affichage de chaque diapositive dans le diaporama"</string>
+    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Choisir la durée d\'affichage de chaque diapositive"</string>
     <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Intervalle du diaporama"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
     <item msgid="3089037742117543119">"2 secondes"</item>
@@ -100,7 +100,7 @@
     <item msgid="5670078787463530498">"4 secondes"</item>
   </string-array>
     <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transition du diaporama"</string>
-    <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Sélectionner l\'effet utilisé lors de la transition d\'une diapositive à une autre"</string>
+    <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Sélect. l\'effet utilisé lors de la transition d\'une diapositive à une autre"</string>
     <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Transition du diaporama"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
     <item msgid="2825716730899894863">"Ouverture et fermeture en fondu"</item>

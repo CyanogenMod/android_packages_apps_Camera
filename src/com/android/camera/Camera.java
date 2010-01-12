@@ -19,6 +19,7 @@ package com.android.camera;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -126,6 +127,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private static final String sTempCropFilename = "crop-temp";
 
     private android.hardware.Camera mCameraDevice;
+    private ContentProviderClient mMediaProviderClient;
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
@@ -177,6 +179,8 @@ public class Camera extends Activity implements View.OnClickListener,
     private final OneShotPreviewCallback mOneShotPreviewCallback =
             new OneShotPreviewCallback();
     private final ShutterCallback mShutterCallback = new ShutterCallback();
+    private final PostViewPictureCallback mPostViewPictureCallback =
+            new PostViewPictureCallback();
     private final RawPictureCallback mRawPictureCallback =
             new RawPictureCallback();
     private final AutoFocusCallback mAutoFocusCallback =
@@ -190,6 +194,7 @@ public class Camera extends Activity implements View.OnClickListener,
     private long mFocusCallbackTime;
     private long mCaptureStartTime;
     private long mShutterCallbackTime;
+    private long mPostViewPictureCallbackTime;
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
     private int mPicturesRemaining;
@@ -197,9 +202,9 @@ public class Camera extends Activity implements View.OnClickListener,
     // These latency time are for the CameraLatency test.
     public long mAutoFocusTime;
     public long mShutterLag;
-    public long mShutterAndRawPictureCallbackTime;
-    public long mJpegPictureCallbackTimeLag;
-    public long mRawPictureAndJpegPictureCallbackTime;
+    public long mShutterToPictureDisplayedTime;
+    public long mPictureDisplayedToJpegCallbackTime;
+    public long mJpegCallbackToFirstFrameTime;
 
     // Add the media server tag
     public static boolean mMediaServerDied = false;
@@ -236,6 +241,16 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private void keepMediaProviderInstance() {
+        // We want to keep a reference to MediaProvider in camera's lifecycle.
+        // TODO: Utilize mMediaProviderClient instance to replace
+        // ContentResolver calls.
+        if (mMediaProviderClient == null) {
+            mMediaProviderClient = getContentResolver()
+                    .acquireContentProviderClient(MediaStore.AUTHORITY);
+        }
+    }
+
     // Snapshots can only be taken after this is called. It should be called
     // once only. We could have done these things in onCreate() but we want to
     // make preview screen appear as soon as possible.
@@ -264,6 +279,7 @@ public class Camera extends Activity implements View.OnClickListener,
         readPreference();
         if (mRecordLocation) startReceivingLocationUpdates();
 
+        keepMediaProviderInstance();
         checkStorage();
 
         // Initialize last picture button.
@@ -325,6 +341,7 @@ public class Camera extends Activity implements View.OnClickListener,
 
         initializeFocusTone();
 
+        keepMediaProviderInstance();
         checkStorage();
 
         if (mZoomButtons != null) {
@@ -553,9 +570,9 @@ public class Camera extends Activity implements View.OnClickListener,
                                    android.hardware.Camera camera) {
             long now = System.currentTimeMillis();
             if (mJpegPictureCallbackTime != 0) {
-                mJpegPictureCallbackTimeLag = now - mJpegPictureCallbackTime;
-                Log.v(TAG, "mJpegPictureCallbackTimeLag = "
-                        + mJpegPictureCallbackTimeLag + "ms");
+                mJpegCallbackToFirstFrameTime = now - mJpegPictureCallbackTime;
+                Log.v(TAG, "mJpegCallbackToFirstFrameTime = "
+                        + mJpegCallbackToFirstFrameTime + "ms");
                 mJpegPictureCallbackTime = 0;
             } else {
                 Log.v(TAG, "Got first frame");
@@ -573,14 +590,22 @@ public class Camera extends Activity implements View.OnClickListener,
         }
     }
 
+    private final class PostViewPictureCallback implements PictureCallback {
+        public void onPictureTaken(
+                byte [] data, android.hardware.Camera camera) {
+            mPostViewPictureCallbackTime = System.currentTimeMillis();
+            Log.v(TAG, "mShutterToPostViewCallbackTime = "
+                    + (mPostViewPictureCallbackTime - mShutterCallbackTime)
+                    + "ms");
+        }
+    }
+
     private final class RawPictureCallback implements PictureCallback {
         public void onPictureTaken(
                 byte [] rawData, android.hardware.Camera camera) {
             mRawPictureCallbackTime = System.currentTimeMillis();
-            mShutterAndRawPictureCallbackTime =
-                mRawPictureCallbackTime - mShutterCallbackTime;
-            Log.v(TAG, "mShutterAndRawPictureCallbackTime = "
-                    + mShutterAndRawPictureCallbackTime + "ms");
+            Log.v(TAG, "mShutterToRawCallbackTime = "
+                    + (mRawPictureCallbackTime - mShutterCallbackTime) + "ms");
         }
     }
 
@@ -598,16 +623,27 @@ public class Camera extends Activity implements View.OnClickListener,
             }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
-            mRawPictureAndJpegPictureCallbackTime =
-                mJpegPictureCallbackTime - mRawPictureCallbackTime;
-            Log.v(TAG, "mRawPictureAndJpegPictureCallbackTime = "
-                    + mRawPictureAndJpegPictureCallbackTime + "ms");
+            // If postview callback has arrived, the captured image is displayed
+            // in postview callback. If not, the captured image is displayed in
+            // raw picture callback.
+            if (mPostViewPictureCallbackTime != 0) {
+                mShutterToPictureDisplayedTime =
+                        mPostViewPictureCallbackTime - mShutterCallbackTime;
+                mPictureDisplayedToJpegCallbackTime =
+                        mJpegPictureCallbackTime - mPostViewPictureCallbackTime;
+            } else {
+                mShutterToPictureDisplayedTime =
+                        mRawPictureCallbackTime - mShutterCallbackTime;
+                mPictureDisplayedToJpegCallbackTime =
+                        mJpegPictureCallbackTime - mRawPictureCallbackTime;
+            }
+            Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
+                    + mPictureDisplayedToJpegCallbackTime + "ms");
 
             if (!mIsImageCaptureIntent) {
                 // We want to show the taken picture for a while, so we wait
                 // for at least 1.2 second before restarting the preview.
-                long delay = 1200 - (
-                        System.currentTimeMillis() - mRawPictureCallbackTime);
+                long delay = 1200 - mPictureDisplayedToJpegCallbackTime;
                 if (delay < 0) {
                     restartPreview();
                 } else {
@@ -810,7 +846,7 @@ public class Camera extends Activity implements View.OnClickListener,
             mCameraDevice.setParameters(mParameters);
 
             mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
-                    new JpegPictureCallback(loc));
+                    mPostViewPictureCallback, new JpegPictureCallback(loc));
             mPreviewing = false;
         }
 
@@ -820,6 +856,7 @@ public class Camera extends Activity implements View.OnClickListener,
                 return;
             }
             mCaptureStartTime = System.currentTimeMillis();
+            mPostViewPictureCallbackTime = 0;
 
             // Don't check the filesystem here, we can't afford the latency.
             // Instead, check the cached value which was calculated when the
@@ -944,6 +981,25 @@ public class Camera extends Activity implements View.OnClickListener,
         } catch (InterruptedException ex) {
             // ignore
         }
+        removeUnsupportedIndicators();
+    }
+
+    private void removeUnsupportedIndicators() {
+        if (mParameters.getSupportedFocusModes() == null) {
+            mFocusIndicator.setVisibility(View.GONE);
+        }
+
+        if (mParameters.getSupportedWhiteBalance() == null) {
+            mWhitebalanceIndicator.setVisibility(View.GONE);
+        }
+
+        if (mParameters.getSupportedFlashModes() == null) {
+            mFlashIndicator.setVisibility(View.GONE);
+        }
+
+        if (mParameters.getSupportedSceneModes() == null) {
+            mSceneModeIndicator.setVisibility(View.GONE);
+        }
     }
 
     private class GripperTouchListener implements View.OnTouchListener {
@@ -964,6 +1020,15 @@ public class Camera extends Activity implements View.OnClickListener,
         super.onStart();
         if (!mIsImageCaptureIntent) {
             mSwitcher.setSwitch(SWITCH_CAMERA);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mMediaProviderClient != null) {
+            mMediaProviderClient.release();
+            mMediaProviderClient = null;
         }
     }
 
@@ -1005,7 +1070,6 @@ public class Camera extends Activity implements View.OnClickListener,
                         mParameters.getWhiteBalance());
             }
         }
-
         mSettings.setVisible(true);
     }
 
@@ -1200,8 +1264,8 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void readPreference() {
-        mRecordLocation = mPreferences.getBoolean(
-                "pref_camera_recordlocation_key", false);
+        mRecordLocation = RecordLocationPreference.get(
+                mPreferences, getContentResolver());
         mFocusMode = mPreferences.getString(
                 CameraSettings.KEY_FOCUS_MODE,
                 getString(R.string.pref_camera_focusmode_default));
@@ -1468,20 +1532,31 @@ public class Camera extends Activity implements View.OnClickListener,
             return;
         }
 
+        // We need to save the holder for later use, even when the mCameraDevice
+        // is null. This could happen if onResume() is invoked after this
+        // function.
+        mSurfaceHolder = holder;
+
         // The mCameraDevice will be null if it fails to connect to the camera
         // hardware. In this case we will show a dialog and then finish the
         // activity, so it's OK to ignore it.
         if (mCameraDevice == null) return;
 
-        mSurfaceHolder = holder;
-
-        // Sometimes surfaceChanged is called after onPause. Ignore it.
+        // Sometimes surfaceChanged is called after onPause or before onResume.
+        // Ignore it.
         if (mPausing || isFinishing()) return;
 
-        // Set preview display if the surface is being created. Preview was
-        // already started.
-        if (holder.isCreating()) {
+        if (mPreviewing && holder.isCreating()) {
+            // Set preview display if the surface is being created and preview
+            // was already started. That means preview display was set to null
+            // and we need to set it now.
             setPreviewDisplay(holder);
+        } else {
+            // 1. Restart the preview if the size of surface was changed. The
+            // framework may not support changing preview display on the fly.
+            // 2. Start the preview now if surface was destroyed and preview
+            // stopped.
+            restartPreview();
         }
 
         // If first time initialization is not finished, send a message to do
@@ -1544,7 +1619,6 @@ public class Camera extends Activity implements View.OnClickListener,
     }
 
     private void restartPreview() {
-        // make sure the surfaceview fills the whole screen when previewing
         try {
             startPreview();
         } catch (CameraHardwareException e) {
@@ -1780,7 +1854,8 @@ public class Camera extends Activity implements View.OnClickListener,
             } else {
                 flashMode = mParameters.getFlashMode();
                 if (flashMode == null) {
-                    flashMode = Parameters.FLASH_MODE_OFF;
+                    flashMode = getString(
+                            R.string.pref_camera_flashmode_no_flash);
                 }
             }
 
@@ -2012,7 +2087,8 @@ public class Camera extends Activity implements View.OnClickListener,
         if (mPausing) return;
 
         if (CameraSettings.KEY_RECORD_LOCATION.equals(key)) {
-            mRecordLocation = preferences.getBoolean(key, false);
+            mRecordLocation = RecordLocationPreference.get(
+                    preferences, getContentResolver());
             if (mRecordLocation) {
                 startReceivingLocationUpdates();
             } else {

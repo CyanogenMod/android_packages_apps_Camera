@@ -309,7 +309,7 @@
     <!-- Settings screen, setting title text -->
     <string name="pref_camera_recordlocation_title">Store location</string>
 
-    <string name="pref_camera_recordlocation_default" translatable="false">false</string>
+    <string name="pref_camera_recordlocation_default" translatable="false">none</string>
 
     <!-- Settings screen, Record location dialog choices -->
     <string name="pref_camera_recordlocation_entry_off">Off</string>
@@ -393,6 +393,9 @@
 
     <!-- Default flash mode setting.-->
     <string name="pref_camera_flashmode_default" translatable="false">auto</string>
+
+    <!-- Value for flash off setting-->
+    <string name="pref_camera_flashmode_no_flash" translatable="false">no_flash</string>
 
     <!-- Settings screen, Flash mode title -->
     <string name="pref_camera_flashmode_title">Flash mode</string>

@@ -92,16 +92,16 @@
     <item msgid="7931283047572866748">"Lo más nuevo al final"</item>
   </string-array>
     <string name="pref_gallery_slideshow_interval_title" msgid="6534904787962619832">"Intervalo de la presentación"</string>
-    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Seleccionar cuánto tiempo se visualizará cada diapositiva en la presentación"</string>
+    <string name="pref_gallery_slideshow_interval_summary" msgid="329876327077905033">"Sel. cuánto tiempo se visualizará cada diapositiva en la present."</string>
     <string name="pref_gallery_slideshow_interval_dialogtitle" msgid="6775543119826248900">"Intervalo de la presentación"</string>
   <string-array name="pref_gallery_slideshow_interval_choices">
     <item msgid="3089037742117543119">"2 segundos"</item>
     <item msgid="738579316565625730">"3 segundos"</item>
     <item msgid="5670078787463530498">"4 segundos"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transic. de la present. de diapos."</string>
+    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transic. de la present."</string>
     <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Seleccionar el efecto utilizado al pasar de una diapositiva a otra"</string>
-    <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Transición de la presentación de diapositivas"</string>
+    <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Transición de la present. .de diapositivas"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
     <item msgid="2825716730899894863">"Fundido de entrada/salida"</item>
     <item msgid="403116336404005687">"Deslizar hacia la izquierda/derecha"</item>

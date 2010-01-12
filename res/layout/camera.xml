@@ -40,50 +40,43 @@
                     android:id="@+id/focus_rectangle"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"/>
-            <com.android.camera.EvenlySpacedLayout android:id="@+id/indicator_bar"
-                    camera:orientation="vertical"
+            <LinearLayout android:id="@+id/indicator_bar"
+                    android:orientation="vertical"
                     android:visibility="visible"
-                    android:layout_gravity="left|fill_vertical"
-                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:layout_gravity="left|top"
+                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="fill_parent">
+                    android:layout_height="wrap_content">
+                <!-- Thsee icons should be in the same order as the
+                        on-screen menu items -->
                 <com.android.camera.IconIndicator
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/IconIndicator"
                         android:id="@+id/gps_icon"
                         camera:modes="@array/gps_modes"
-                        camera:icons="@array/gps_icons"
-                        android:visibility="visible"/>
+                        camera:icons="@array/gps_icons"/>
                 <com.android.camera.IconIndicator
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/focus_icon"
-                        camera:modes="@array/pref_camera_focusmode_entryvalues"
-                        camera:icons="@array/focusmode_icons"
-                        android:visibility="visible"/>
+                        style="@style/IconIndicator"
+                        android:id="@+id/flash_icon"
+                        camera:modes="@array/flash_modes"
+                        camera:icons="@array/flash_icons"/>
                 <com.android.camera.IconIndicator
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/whitebalance_icon"
-                        camera:modes="@array/pref_camera_whitebalance_entryvalues"
-                        camera:icons="@array/whitebalance_icons"
-                        android:visibility="visible"/>
-                <com.android.camera.IconIndicator
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/IconIndicator"
                         android:id="@+id/scenemode_icon"
                         camera:modes="@array/scenemode_modes"
-                        camera:icons="@array/scenemode_icons"
-                        android:visibility="visible"/>
+                        camera:icons="@array/scenemode_icons"/>
                 <com.android.camera.IconIndicator
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/flash_icon"
-                        camera:modes="@array/pref_camera_flashmode_entryvalues"
-                        camera:icons="@array/flash_icons"
-                        android:visibility="visible"/>
-            </com.android.camera.EvenlySpacedLayout>
+                        style="@style/IconIndicator"
+                        android:id="@+id/whitebalance_icon"
+                        camera:modes="@array/pref_camera_whitebalance_entryvalues"
+                        camera:icons="@array/whitebalance_icons"/>
+                <com.android.camera.IconIndicator
+                        style="@style/IconIndicator"
+                        android:id="@+id/focus_icon"
+                        camera:modes="@array/pref_camera_focusmode_entryvalues"
+                        camera:icons="@array/focusmode_icons"/>
+            </LinearLayout>
         </FrameLayout>
     </com.android.camera.PreviewFrameLayout>
 </LinearLayout>

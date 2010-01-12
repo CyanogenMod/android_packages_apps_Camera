@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 
 public class IconIndicator extends ImageView {
@@ -39,7 +40,7 @@ public class IconIndicator extends ImageView {
         a.recycle();
 
         setModesAndIcons(modes, icons);
-        setImageDrawable(mIcons.length > 0 ? mIcons[0]: null);
+        setImageDrawable(mIcons.length > 0 ? mIcons[0] : null);
     }
 
     public IconIndicator(Context context, AttributeSet attrs) {

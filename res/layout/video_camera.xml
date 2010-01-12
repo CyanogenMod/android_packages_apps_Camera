@@ -15,6 +15,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/video_camera"
         android:background="@drawable/camera_background"
         android:orientation="horizontal"
@@ -35,8 +36,7 @@
             <SurfaceView android:id="@+id/camera_preview"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"/>
-            <ImageView
-                    android:id="@+id/video_frame"
+            <ImageView android:id="@+id/video_frame"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:visibility="gone" />
@@ -61,6 +61,21 @@
                     android:textSize="23dp"
                     android:textStyle="bold"
                     android:visibility="gone"/>
+            <LinearLayout android:id="@+id/indicator_bar"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    android:gravity="center"
+                    android:layout_gravity="left|bottom"
+                    android:layout_marginBottom="60dp"
+                    android:layout_marginLeft="13dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <com.android.camera.IconIndicator
+                        style="@style/IconIndicator"
+                        android:id="@+id/whitebalance_icon"
+                        camera:modes="@array/pref_camera_whitebalance_entryvalues"
+                        camera:icons="@array/whitebalance_icons"/>
+            </LinearLayout>
         </FrameLayout>
     </com.android.camera.PreviewFrameLayout>
 </LinearLayout>

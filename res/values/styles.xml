@@ -78,6 +78,12 @@
         <item name="android:windowEnterAnimation">@null</item>
         <item name="android:windowExitAnimation">@null</item>
     </style>
+    <style name="IconIndicator">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
     <style name="CustomTheme"
            parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         <item name="android:windowAnimationStyle">@style/NoEnterExitAnimation</item>

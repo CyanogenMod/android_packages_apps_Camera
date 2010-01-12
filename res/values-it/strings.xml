@@ -99,7 +99,7 @@
     <item msgid="738579316565625730">"3 secondi"</item>
     <item msgid="5670078787463530498">"4 secondi"</item>
   </string-array>
-    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transizione presentazione"</string>
+    <string name="pref_gallery_slideshow_transition_title" msgid="3235158556228218846">"Transizione presentaz."</string>
     <string name="pref_gallery_slideshow_transition_summary" msgid="2390320265891546846">"Seleziona l\'effetto da usare per passare da una diapositiva all\'altra"</string>
     <string name="pref_gallery_slideshow_transition_dialogtitle" msgid="5483406447721500371">"Transizione diapositive"</string>
   <string-array name="pref_gallery_slideshow_transition_choices">
@@ -138,7 +138,7 @@
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normale"</string>
     <string name="pref_camera_jpegquality_dialogtitle" msgid="18195886066728203">"Qualità immagine"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modalità messa a fuoco"</string>
-    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatico"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatica"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Modalità messa a fuoco"</string>

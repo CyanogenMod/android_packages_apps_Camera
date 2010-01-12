@@ -28,12 +28,12 @@
     <string name="gallery_camera_media_bucket_name" msgid="5560926838411387511">"Kameramedier"</string>
     <string name="crop_label" msgid="521114301871349328">"Beskær billede"</string>
     <string name="view_label" msgid="4450531507947335704">"Vis billede"</string>
-    <string name="preferences_label" msgid="5955678162525051163">"Kameraindstillinger"</string>
+    <string name="preferences_label" msgid="5955678162525051163">"Indstillinger for kamera"</string>
     <string name="wait" msgid="8600187532323801552">"Vent ..."</string>
     <string name="no_storage" msgid="820691042667338625">"Indsæt et SD-kort, inden du bruger kameraet."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"Dit SD-kort er fuldt."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"Forbereder SD-kort ..."</string>
-    <string name="wallpaper" msgid="9222901738515471972">"Indstiller tapet. Vent et øjeblik ..."</string>
+    <string name="wallpaper" msgid="9222901738515471972">"Angiver tapet. Vent et øjeblik ..."</string>
     <string name="savingImage" msgid="3051745378545909260">"Gemmer billede ..."</string>
     <string name="runningFaceDetection" msgid="2293932204708167704">"Vent ..."</string>
     <string name="settings" msgid="1534847740615665736">"Indstillinger"</string>
@@ -55,7 +55,7 @@
     <string name="confirm_delete_multiple_message" msgid="5962369828035778779">"Disse mediefiler slettes."</string>
     <string name="review_toss" msgid="7255331999518617841">"SLET"</string>
     <string name="review_share" msgid="7294755861072174509">"DEL"</string>
-    <string name="review_set" msgid="8304758352155378636">"INDSTIL SOM"</string>
+    <string name="review_set" msgid="8304758352155378636">"Angiv som"</string>
     <string name="review_play" msgid="6015456244323302817">"AFSPIL"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULLER"</string>
     <string name="review_done" msgid="5417465988786728114">"FÆRDIG"</string>
@@ -63,7 +63,7 @@
     <string name="review_retake" msgid="7804864054896088338">"TAG IGEN"</string>
     <string name="camera_toss" msgid="3781186798552460833">"Slet"</string>
     <string name="camera_share" msgid="8207701858325694182">"Del"</string>
-    <string name="camera_set" msgid="3422192914806971182">"Indstil som"</string>
+    <string name="camera_set" msgid="3422192914806971182">"Angiv som"</string>
     <string name="camera_play" msgid="8248000517869959980">"Afspil"</string>
     <string name="camera_attach" msgid="4048659554893435232">"Vedhæft"</string>
     <string name="camera_cancel" msgid="8203341746672085747">"Annuller"</string>
@@ -76,7 +76,7 @@
     <string name="camera_pick_wallpaper" msgid="7026385960511811641">"Billeder"</string>
     <string name="camera_setas_wallpaper" msgid="797463183863414289">"Tapet"</string>
     <string name="pref_gallery_category" msgid="5826488887237959433">"Generelle indstillinger"</string>
-    <string name="pref_slideshow_category" msgid="9097962086335681667">"Diasshowindstillinger"</string>
+    <string name="pref_slideshow_category" msgid="9097962086335681667">"Indstillinger for diasshow"</string>
     <string name="pref_gallery_size_title" msgid="1363406603879434418">"Visningsstørrelse"</string>
     <string name="pref_gallery_size_summary" msgid="8179967445295243638">"Vælg, hvilken størrelse billeder og videoer skal vises i"</string>
     <string name="pref_gallery_size_dialogtitle" msgid="757380558320647503">"Billedstørrelse"</string>
@@ -116,16 +116,16 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Fra"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Til"</string>
     <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Videokvalitet"</string>
-    <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Lav (til MMS-beskeder)"</string>
+    <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Lav (til mms-beskeder)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Høj (til SD-kort)"</string>
     <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Videokvalitet"</string>
     <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"Varighed på video"</string>
-    <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> sekunder (til MMS)"</string>
+    <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> sekunder (til mms)"</string>
     <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 minutter"</string>
     <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 minutter"</string>
     <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Varighed på video"</string>
-    <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameraindstillinger"</string>
-    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videokameraindstillinger"</string>
+    <string name="pref_camera_settings_category" msgid="2576236450859613120">"Indstillinger for kamera"</string>
+    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Indstillinger for videokamera"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Billedstørrelse"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 M pixels"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 M pixels"</string>
@@ -191,7 +191,7 @@
     <string name="camerasettings" msgid="2433519618178453928">"Indstillinger"</string>
     <string name="image_gallery_NoImageView_text" msgid="409595259802877447">"Der blev ikke fundet nogen medier."</string>
     <string name="pref_gallery_confirm_delete_title" msgid="642429032687845907">"Bekræft sletninger"</string>
-    <string name="pref_gallery_confirm_delete_summary" msgid="5253456492765525245">"Vis bekræftelse, inden der slettes et billede eller en video"</string>
+    <string name="pref_gallery_confirm_delete_summary" msgid="5253456492765525245">"Vis en bekræftelse, inden der slettes et billede eller en video"</string>
     <string name="no_location_image" msgid="6929172123058811834">"Der findes ingen placeringsoplysninger i dette billede."</string>
     <string name="details_panel_title" msgid="4753347516759338122">"Detaljer"</string>
     <string name="details_file_size" msgid="2468878774843246797">"Filstørrelse:"</string>
@@ -215,27 +215,27 @@
     <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> Kbps"</string>
     <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mbps"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="context_menu_header" msgid="1185348426222302182">"Billedvalgmuligheder"</string>
-    <string name="video_context_menu_header" msgid="7318971116949475029">"Videovalgmuligheder"</string>
+    <string name="context_menu_header" msgid="1185348426222302182">"Indstillinger for billede"</string>
+    <string name="video_context_menu_header" msgid="7318971116949475029">"Indstillinger for video"</string>
     <string name="multiface_crop_help" msgid="3127018992717032779">"Tryk på et ansigt for at begynde."</string>
     <string name="photos_gallery_title" msgid="6914406246471015448">"Galleri"</string>
     <string name="pick_photos_gallery_title" msgid="12912682424915943">"Vælg billede"</string>
     <string name="videos_gallery_title" msgid="6150354029982749479">"Galleri"</string>
     <string name="pick_videos_gallery_title" msgid="326727095201227333">"Vælg video"</string>
     <string name="sendImage" msgid="7279510542799399570">"Del billede via"</string>
-    <string name="setImage" msgid="7246975856983303047">"Indstil billedet som"</string>
+    <string name="setImage" msgid="7246975856983303047">"Angiv billedet som"</string>
     <string name="sendVideo" msgid="3598567735831863073">"Del video via"</string>
     <string name="send_media_files" msgid="8201083279723850611">"Del mediefiler via"</string>
     <string name="movieviewlabel" msgid="7363495772706775465">"Film"</string>
     <string name="loading_video" msgid="4013492720121891585">"Indlæser video ..."</string>
-    <string name="spaceIsLow_content" msgid="2848517537672543641">"Dit SD-kort er ved at løbe tør for plads. Skift kvalitetsindstillingerne, eller slet elementer fra Galleriet."</string>
+    <string name="spaceIsLow_content" msgid="2848517537672543641">"Der er snart ikke mere plads på diit SD-kort. Rediger indstillingerne for kvaliteten, eller slet elementer fra Galleriet."</string>
     <string name="resume_playing_title" msgid="8996677350649355013">"Genoptag video"</string>
     <string name="resume_playing_message" msgid="7293000708492271389">"Genoptag afspilning fra <xliff:g id="DURATION">%s</xliff:g>?"</string>
     <string name="resume_playing_resume" msgid="3847915469173852416">"Genoptag afspilning"</string>
     <string name="resume_playing_restart" msgid="5471008499835769292">"Start igen"</string>
     <string name="gadget_title" msgid="259405922673466798">"Billedramme"</string>
     <string name="file_info_title" msgid="1628963357466012538">"Filoplysninger:"</string>
-    <string name="video_exceed_mms_limit" msgid="3835075281230780010">"Den video, du optog, er for stor til at sende via MMS. Prøv at optage et klip af kortere varighed."</string>
+    <string name="video_exceed_mms_limit" msgid="3835075281230780010">"Den video, du optog, er for stor til at sende via mms. Prøv at optage et klip af kortere varighed."</string>
     <string name="multiselect_share" msgid="5261644537749253581">"Del"</string>
     <string name="multiselect_delete" msgid="9113461994546744603">"Slet"</string>
     <string name="multiselect_cancel" msgid="5969428692864002165">"Annuller"</string>
