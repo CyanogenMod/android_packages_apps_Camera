@@ -1069,10 +1069,41 @@ public class VideoCamera extends NoSearchActivity
         item.setIcon(android.R.drawable.ic_menu_preferences);
     }
 
+    private void restorePreferences() {
+        // Unregister the listener since "upgrade preference" will change
+        // a bunch of preferences. We can handle them with one
+        // setCameraParameters().
+        mPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        mSettings.clearSettings();
+        CameraSettings.upgradePreferences(mPreferences);
+        readVideoPreferences();
+        resetCameraParameters();
+
+        // If we start preview and reload the settings UI in a row. The
+        // preview will become a white screen. So, we reload the settings UI
+        // later.
+        mHandler.post(new Runnable() {
+            public void run() {
+                // We reload the preference again to reload the new data
+                mSettings.setPreferenceScreen(
+                        new CameraSettings(VideoCamera.this, mParameters)
+                        .getPreferenceScreen(R.xml.video_preferences));
+            }
+        });
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
     private void showOnScreenSettings() {
         if (mSettings == null) {
             mSettings = new OnScreenSettings(
                     findViewById(R.id.camera_preview));
+            final Runnable resetPreferences = new Runnable() {
+                public void run() {
+                    restorePreferences();
+                }
+            };
+            mSettings.setRestoreRunner(resetPreferences);
+
             CameraSettings helper = new CameraSettings(this, mParameters);
             PreferenceScreen screen = helper
                     .getPreferenceScreen(R.xml.video_preferences);
@@ -1510,7 +1541,10 @@ public class VideoCamera extends NoSearchActivity
         // If mCameraDevice is not ready then we can set the parameter in
         // startPreview().
         if (mCameraDevice == null) return;
+        resetCameraParameters();
+    }
 
+    private void resetCameraParameters() {
         // We need to restart the preview if preview size is changed.
         Size size = mParameters.getPreviewSize();
         if (size.width != mProfile.mVideoWidth

@@ -78,6 +78,10 @@
     <!-- Confirmation dialog message after deleting a video -->
     <string name="confirm_delete_video_message">The video will be deleted.</string>
 
+    <!-- Confirmation dialog when restoring settings -->
+    <string name="confirm_restore_title">Restore Settings</string>
+    <string name="confirm_restore_message">Camera settings will be restored to default.</string>
+
     <!-- button in review mode indicating that the picture just taken should be deleted -->
     <string name="review_toss">DELETE</string>
 
@@ -307,6 +311,10 @@
     <string name="pref_camera_scenemode_entry_steadyphoto">Steady Photo</string>
     <!-- Scene mode optimized for taking images of fireworks. -->
     <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
+
+    <!-- Restore settings item in preference -->
+    <string name="pref_restore_title">Restore settings</string>
+    <string name="pref_restore_detail">Restore camera settings to default</string>
 
     <!-- Message to show when there's no lat/lng information in the image -->
     <string name="no_location_image">No Location information contained in this image.</string>

@@ -17,12 +17,14 @@
 package com.android.camera;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.Display;
@@ -81,6 +83,7 @@ public class OnScreenSettings {
     private MainMenuAdapter mMainAdapter;
 
     private final LayoutInflater mInflater;
+    private Runnable mRestoreRunner;
 
     // We store the override values here. For a given preference,
     // if the mapping value of the preference key is not null, we will
@@ -112,6 +115,18 @@ public class OnScreenSettings {
                 mContext.getSystemService(Context.WINDOW_SERVICE);
         mOwnerView = ownerView;
         mContainer = createContainer();
+    }
+
+    public void clearSettings() {
+        SharedPreferences.Editor editor = PreferenceManager
+                .getDefaultSharedPreferences(mContext).edit();
+        editor.clear();
+        editor.commit();
+        mOverride.clear();
+    }
+
+    public void setRestoreRunner(Runnable restorer) {
+        mRestoreRunner = restorer;
     }
 
     public boolean isVisible() {
@@ -302,15 +317,40 @@ public class OnScreenSettings {
 
         public void onItemClick(
                 AdapterView<?> parent, View view, int position, long id) {
-            Preference preference = mPreferences.get(position);
-            SubMenuAdapter adapter = new SubMenuAdapter(
-                    mContext, (ListPreference) preference);
-            mSubMenu.setAdapter(adapter);
-            mSubMenu.setOnItemClickListener(adapter);
-            showSubMenu();
+            // If not the last item (restore settings)
+            if (position < mPreferences.size()) {
+                Preference preference = mPreferences.get(position);
+                SubMenuAdapter adapter = new SubMenuAdapter(
+                        mContext, (ListPreference) preference);
+                mSubMenu.setAdapter(adapter);
+                mSubMenu.setOnItemClickListener(adapter);
+                showSubMenu();
+            } else {
+                MenuHelper.confirmAction(mContext,
+                        mContext.getString(R.string.confirm_restore_title),
+                        mContext.getString(R.string.confirm_restore_message),
+                        mRestoreRunner);
+            }
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
+            // The last item in the view (i.e., restore settings)
+            if (position == mPreferences.size()) {
+                convertView = inflateIfNeed(convertView,
+                        R.layout.on_screen_menu_list_item, parent, false);
+
+                ((TextView) convertView.findViewById(R.id.title)).setText(
+                        mContext.getString(R.string.pref_restore_title));
+                ((TextView) convertView.findViewById(R.id.summary)).setText(
+                        mContext.getString(R.string.pref_restore_detail));
+
+                // Make sure we didn't set focusable. Otherwise, it will
+                // consume all the events. See more detail in the comments
+                // below.
+                convertView.setFocusable(false);
+                return convertView;
+            }
+
             Preference preference = mPreferences.get(position);
 
             if (preference instanceof PreferenceGroup) {
@@ -351,12 +391,16 @@ public class OnScreenSettings {
 
         @Override
         public boolean isEnabled(int position) {
+            // The last item (restore default)
+            if (position == mPreferences.size()) return true;
+
             Preference preference = mPreferences.get(position);
             return !(preference instanceof PreferenceGroup);
         }
 
         public int getCount() {
-            return mPreferences.size();
+            // The last one is "restore default"
+            return mPreferences.size() + 1;
         }
 
         public Object getItem(int position) {
@@ -369,6 +413,7 @@ public class OnScreenSettings {
 
         @Override
         public int getItemViewType(int position) {
+            if (position == mPreferences.size()) return 1;
             Preference pref = mPreferences.get(position);
             if (pref instanceof PreferenceGroup) return 0;
             if (pref instanceof ListPreference) return 1;

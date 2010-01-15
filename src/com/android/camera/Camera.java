@@ -1073,11 +1073,35 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         updateStorageHint(mPicturesRemaining);
     }
 
+    private void restorePreferences() {
+        // Unregister the listener since "upgrade preference" will change
+        // a bunch of preferences. We can handle them with one
+        // setCameraParameters().
+        mPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        mSettings.clearSettings();
+        CameraSettings.upgradePreferences(mPreferences);
+        setCameraParameters();
+
+        // We reload the preference again to reload the new data
+        mSettings.setPreferenceScreen(
+                new CameraSettings(this, mParameters)
+                .getPreferenceScreen(R.xml.camera_preferences));
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
 
     private void showOnScreenSettings() {
         if (mSettings == null) {
             mSettings = new OnScreenSettings(
                     findViewById(R.id.camera_preview));
+
+            Runnable resetPreferences = new Runnable() {
+                public void run() {
+                    restorePreferences();
+                }
+            };
+
+            mSettings.setRestoreRunner(resetPreferences);
+
             CameraSettings helper =
                     new CameraSettings(this, mInitialParams);
             mSettings.setPreferenceScreen(helper
