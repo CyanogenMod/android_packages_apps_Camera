@@ -701,7 +701,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         + mJpegCallbackFinishTime + "ms");
                 mJpegPictureCallbackTime = 0;
             }
-            mStatus = IDLE;
+
             decrementkeypress();
         }
         }
