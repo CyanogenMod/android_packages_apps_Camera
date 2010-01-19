@@ -14,6 +14,15 @@
      limitations under the License.
 -->
 <resources>
+    <declare-styleable name="CameraPreference">
+        <attr name="title" format="string" />
+    </declare-styleable>
+    <declare-styleable name="ListPreference">
+        <attr name="key" format="string" />
+        <attr name="defaultValue" format="string" />
+        <attr name="entryValues" format="reference" />
+        <attr name="entries" format="reference" />
+    </declare-styleable>
     <declare-styleable name="IconIndicator">
         <attr name="icons" format="reference" />
         <attr name="modes" format="reference" />

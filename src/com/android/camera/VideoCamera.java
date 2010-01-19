@@ -42,7 +42,6 @@ import android.os.StatFs;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.provider.Settings;
@@ -1085,9 +1084,9 @@ public class VideoCamera extends NoSearchActivity
         mHandler.post(new Runnable() {
             public void run() {
                 // We reload the preference again to reload the new data
-                mSettings.setPreferenceScreen(
+                mSettings.setPreferenceGroup(
                         new CameraSettings(VideoCamera.this, mParameters)
-                        .getPreferenceScreen(R.xml.video_preferences));
+                        .getPreferenceGroup(R.xml.video_preferences));
             }
         });
         mPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -1105,20 +1104,20 @@ public class VideoCamera extends NoSearchActivity
             mSettings.setRestoreRunner(resetPreferences);
 
             CameraSettings helper = new CameraSettings(this, mParameters);
-            PreferenceScreen screen = helper
-                    .getPreferenceScreen(R.xml.video_preferences);
+            PreferenceGroup group = helper
+                    .getPreferenceGroup(R.xml.video_preferences);
             if (mIsVideoCaptureIntent) {
-                screen = filterPreferenceScreenByIntent(screen);
+                group = filterPreferenceScreenByIntent(group);
             }
 
-            mSettings.setPreferenceScreen(screen);
+            mSettings.setPreferenceGroup(group);
             mSettings.setOnVisibilityChangedListener(this);
         }
         mSettings.setVisible(true);
     }
 
-    private PreferenceScreen filterPreferenceScreenByIntent(
-            PreferenceScreen screen) {
+    private PreferenceGroup filterPreferenceScreenByIntent(
+            PreferenceGroup screen) {
         Intent intent = getIntent();
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
             CameraSettings.removePreferenceFromScreen(screen,

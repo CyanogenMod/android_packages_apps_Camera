@@ -19,7 +19,6 @@ package com.android.camera;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
-import android.preference.ListPreference;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -46,11 +45,6 @@ public class RecordLocationPreference extends ListPreference {
     @Override
     public String getValue() {
         return get(getSharedPreferences(), mResolver) ? VALUE_ON : VALUE_OFF;
-    }
-
-    @Override
-    public CharSequence getEntry() {
-        return getEntries()[findIndexOfValue(getValue())];
     }
 
     public static boolean get(

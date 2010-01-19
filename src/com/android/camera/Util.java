@@ -352,4 +352,13 @@ public class Util {
         view.startAnimation(anim);
         return anim;
     }
+
+    public static <T> T checkNotNull(T object) {
+        if (object == null) throw new NullPointerException();
+        return object;
+    }
+
+    public static boolean equals(Object a, Object b) {
+        return (a == b) || (a == null ? false : a.equals(b));
+    }
 }

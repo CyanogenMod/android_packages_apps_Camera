@@ -23,11 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.SystemProperties;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -37,7 +33,6 @@ import java.util.List;
  *  Provides utilities and keys for Camera settings.
  */
 public class CameraSettings {
-    private static final int FIRST_REQUEST_CODE = 100;
     private static final int NOT_FOUND = -1;
 
     public static final String KEY_VERSION = "pref_version_key";
@@ -73,19 +68,18 @@ public class CameraSettings {
 
     private final Context mContext;
     private final Parameters mParameters;
-    private final PreferenceManager mManager;
 
     public CameraSettings(Activity activity, Parameters parameters) {
         mContext = activity;
         mParameters = parameters;
-        mManager = new PreferenceManager(activity, FIRST_REQUEST_CODE);
     }
 
-    public PreferenceScreen getPreferenceScreen(int preferenceRes) {
-        PreferenceScreen screen = mManager.createPreferenceScreen(mContext);
-        mManager.inflateFromResource(mContext, preferenceRes, screen);
-        initPreference(screen);
-        return screen;
+    public PreferenceGroup getPreferenceGroup(int preferenceRes) {
+        PreferenceInflater inflater = new PreferenceInflater(mContext);
+        PreferenceGroup group =
+                (PreferenceGroup) inflater.inflate(preferenceRes);
+        initPreference(group);
+        return group;
     }
 
     public static void initialCameraPictureSize(
@@ -109,14 +103,8 @@ public class CameraSettings {
     }
 
     public static void removePreferenceFromScreen(
-            PreferenceScreen screen, String key) {
-        Preference pref = screen.findPreference(key);
-        if (pref == null) {
-            Log.i(TAG, "No preference found based the key : " + key);
-            throw new IllegalArgumentException();
-        } else {
-            removePreference(screen, pref);
-        }
+            PreferenceGroup group, String key) {
+        removePreference(group, key);
     }
 
     public static boolean setCameraPictureSize(
@@ -134,21 +122,14 @@ public class CameraSettings {
         return false;
     }
 
-    private void initPreference(PreferenceScreen screen) {
-        ListPreference videoDuration =
-                (ListPreference) screen.findPreference(KEY_VIDEO_DURATION);
-        ListPreference pictureSize =
-                (ListPreference) screen.findPreference(KEY_PICTURE_SIZE);
-        ListPreference whiteBalance =
-                (ListPreference) screen.findPreference(KEY_WHITE_BALANCE);
-        ListPreference colorEffect =
-                (ListPreference) screen.findPreference(KEY_COLOR_EFFECT);
-        ListPreference sceneMode =
-                (ListPreference) screen.findPreference(KEY_SCENE_MODE);
-        ListPreference flashMode =
-                (ListPreference) screen.findPreference(KEY_FLASH_MODE);
-        ListPreference focusMode =
-                (ListPreference) screen.findPreference(KEY_FOCUS_MODE);
+    private void initPreference(PreferenceGroup group) {
+        ListPreference videoDuration = group.findPreference(KEY_VIDEO_DURATION);
+        ListPreference pictureSize = group.findPreference(KEY_PICTURE_SIZE);
+        ListPreference whiteBalance =  group.findPreference(KEY_WHITE_BALANCE);
+        ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
+        ListPreference sceneMode = group.findPreference(KEY_SCENE_MODE);
+        ListPreference flashMode = group.findPreference(KEY_FLASH_MODE);
+        ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -163,47 +144,49 @@ public class CameraSettings {
 
         // Filter out unsupported settings / options
         if (pictureSize != null) {
-            filterUnsupportedOptions(screen, pictureSize, sizeListToStringList(
+            filterUnsupportedOptions(group, pictureSize, sizeListToStringList(
                     mParameters.getSupportedPictureSizes()));
         }
         if (whiteBalance != null) {
-            filterUnsupportedOptions(screen,
+            filterUnsupportedOptions(group,
                     whiteBalance, mParameters.getSupportedWhiteBalance());
         }
         if (colorEffect != null) {
-            filterUnsupportedOptions(screen,
+            filterUnsupportedOptions(group,
                     colorEffect, mParameters.getSupportedColorEffects());
         }
         if (sceneMode != null) {
-            filterUnsupportedOptions(screen,
+            filterUnsupportedOptions(group,
                     sceneMode, mParameters.getSupportedSceneModes());
         }
         if (flashMode != null) {
-            filterUnsupportedOptions(screen,
+            filterUnsupportedOptions(group,
                     flashMode, mParameters.getSupportedFlashModes());
         }
         if (focusMode != null) {
-            filterUnsupportedOptions(screen,
+            filterUnsupportedOptions(group,
                     focusMode, mParameters.getSupportedFocusModes());
         }
     }
 
-    private static boolean removePreference(PreferenceGroup group,
-            Preference remove) {
-        if (group.removePreference(remove)) return true;
-
-        for (int i = 0; i < group.getPreferenceCount(); i++) {
-            final Preference child = group.getPreference(i);
+    private static boolean removePreference(PreferenceGroup group, String key) {
+        for (int i = 0, n = group.size(); i < n; i++) {
+            CameraPreference child = group.get(i);
             if (child instanceof PreferenceGroup) {
-                if (removePreference((PreferenceGroup) child, remove)) {
+                if (removePreference((PreferenceGroup) child, key)) {
                     return true;
                 }
+            }
+            if (child instanceof ListPreference &&
+                    ((ListPreference) child).getKey().equals(key)) {
+                group.removePreference(i);
+                return true;
             }
         }
         return false;
     }
 
-    private void filterUnsupportedOptions(PreferenceScreen screen,
+    private void filterUnsupportedOptions(PreferenceGroup group,
             ListPreference pref, List<String> supported) {
 
         CharSequence[] allEntries = pref.getEntries();
@@ -211,7 +194,7 @@ public class CameraSettings {
         // Remove the preference if the parameter is not supported or there is
         // only one options for the settings.
         if (supported == null || supported.size() <= 1) {
-            removePreference(screen, pref);
+            removePreference(group, pref.getKey());
             return;
         }
 

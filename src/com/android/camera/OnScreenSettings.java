@@ -21,11 +21,7 @@ import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -276,24 +272,24 @@ public class OnScreenSettings {
     // Add the preference and it's children recursively to the given list. So
     // that we can show the preference (and it's children) in the list view.
     private static void addPreference(
-            Preference preference, ArrayList<Preference> list) {
+            CameraPreference preference, ArrayList<CameraPreference> list) {
         list.add(preference);
         if (preference instanceof PreferenceGroup) {
             PreferenceGroup group = (PreferenceGroup) preference;
-            for (int i = 0, n = group.getPreferenceCount(); i < n; ++i) {
-                Preference child = group.getPreference(i);
+            for (int i = 0, n = group.size(); i < n; ++i) {
+                CameraPreference child = group.get(i);
                 addPreference(child, list);
             }
         }
     }
 
-    public void setPreferenceScreen(PreferenceScreen screen) {
-        ArrayList<Preference> list = new ArrayList<Preference>();
+    public void setPreferenceGroup(PreferenceGroup group) {
+        ArrayList<CameraPreference> list = new ArrayList<CameraPreference>();
 
-        // We don't want the screen add to the list, we add the first level
-        // preference here.
-        for (int  i = 0, n = screen.getPreferenceCount(); i < n; ++i) {
-            addPreference(screen.getPreference(i), list);
+        // We don't want the root group added to the list. So, we add the
+        // children of the root here
+        for (int  i = 0, n = group.size(); i < n; ++i) {
+            addPreference(group.get(i), list);
         }
         mMainAdapter = new MainMenuAdapter(mContext, list);
         mMainMenu.setAdapter(mMainAdapter);
@@ -308,10 +304,10 @@ public class OnScreenSettings {
 
     private class MainMenuAdapter extends BaseAdapter
             implements OnItemClickListener {
-        private final ArrayList<Preference> mPreferences;
+        private final ArrayList<CameraPreference> mPreferences;
 
         public MainMenuAdapter(
-                Context context, ArrayList<Preference> preferences) {
+                Context context, ArrayList<CameraPreference> preferences) {
             mPreferences = preferences;
         }
 
@@ -319,7 +315,7 @@ public class OnScreenSettings {
                 AdapterView<?> parent, View view, int position, long id) {
             // If not the last item (restore settings)
             if (position < mPreferences.size()) {
-                Preference preference = mPreferences.get(position);
+                CameraPreference preference = mPreferences.get(position);
                 SubMenuAdapter adapter = new SubMenuAdapter(
                         mContext, (ListPreference) preference);
                 mSubMenu.setAdapter(adapter);
@@ -351,8 +347,7 @@ public class OnScreenSettings {
                 return convertView;
             }
 
-            Preference preference = mPreferences.get(position);
-
+            CameraPreference preference = mPreferences.get(position);
             if (preference instanceof PreferenceGroup) {
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_menu_header, parent, false);
@@ -363,7 +358,8 @@ public class OnScreenSettings {
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_menu_list_item, parent, false);
 
-                String override = mOverride.get(preference.getKey());
+                String override = mOverride.get(
+                        ((ListPreference) preference).getKey());
                 TextView title = (TextView)
                         convertView.findViewById(R.id.title);
                 title.setText(preference.getTitle());
@@ -394,7 +390,7 @@ public class OnScreenSettings {
             // The last item (restore default)
             if (position == mPreferences.size()) return true;
 
-            Preference preference = mPreferences.get(position);
+            CameraPreference preference = mPreferences.get(position);
             return !(preference instanceof PreferenceGroup);
         }
 
@@ -414,7 +410,7 @@ public class OnScreenSettings {
         @Override
         public int getItemViewType(int position) {
             if (position == mPreferences.size()) return 1;
-            Preference pref = mPreferences.get(position);
+            CameraPreference pref = mPreferences.get(position);
             if (pref instanceof PreferenceGroup) return 0;
             if (pref instanceof ListPreference) return 1;
             throw new IllegalStateException();
@@ -455,7 +451,7 @@ public class OnScreenSettings {
                 convertView = inflateIfNeed(convertView,
                         R.layout.on_screen_menu_header, parent, false);
                 ((TextView) convertView.findViewById(
-                        R.id.title)).setText(mPreference.getDialogTitle());
+                        R.id.title)).setText(mPreference.getTitle());
             } else {
                 int index = position - 1;
                 convertView = inflateIfNeed(convertView,

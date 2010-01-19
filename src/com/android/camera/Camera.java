@@ -1085,9 +1085,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         setCameraParameters();
 
         // We reload the preference again to reload the new data
-        mSettings.setPreferenceScreen(
+        mSettings.setPreferenceGroup(
                 new CameraSettings(this, mParameters)
-                .getPreferenceScreen(R.xml.camera_preferences));
+                .getPreferenceGroup(R.xml.camera_preferences));
         mPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -1106,8 +1106,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
             CameraSettings helper =
                     new CameraSettings(this, mInitialParams);
-            mSettings.setPreferenceScreen(helper
-                    .getPreferenceScreen(R.xml.camera_preferences));
+            mSettings.setPreferenceGroup(helper
+                    .getPreferenceGroup(R.xml.camera_preferences));
             mSettings.setOnVisibilityChangedListener(this);
 
             String sceneMode = mParameters.getSceneMode();
