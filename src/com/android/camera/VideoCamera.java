@@ -114,6 +114,14 @@ public class VideoCamera extends NoSearchActivity
 
     private static final long SHUTTER_BUTTON_TIMEOUT = 500L; // 500ms
 
+    /**
+     * An unpublished intent flag requesting to start recording straight away
+     * and return as soon as recording is stopped.
+     * TODO: consider publishing by moving into MediaStore.
+     */
+    private final static String EXTRA_QUICK_CAPTURE =
+            "android.intent.extra.quickCapture";
+
     private SharedPreferences mPreferences;
 
     private PreviewFrameLayout mPreviewFrameLayout;
@@ -122,6 +130,7 @@ public class VideoCamera extends NoSearchActivity
     private ImageView mVideoFrame;
 
     private boolean mIsVideoCaptureIntent;
+    private boolean mQuickCapture;
     // mLastPictureButton and mThumbController
     // are non-null only if mIsVideoCaptureIntent is true.
     private ImageView mLastPictureButton;
@@ -192,6 +201,9 @@ public class VideoCamera extends NoSearchActivity
 
                 case INIT_RECORDER: {
                     initializeRecorder();
+                    if (mQuickCapture) {
+                        startVideoRecording();
+                    }
                     break;
                 }
 
@@ -305,6 +317,7 @@ public class VideoCamera extends NoSearchActivity
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mIsVideoCaptureIntent = isVideoCaptureIntent();
+        mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
 
         ViewGroup rootView = (ViewGroup) findViewById(R.id.video_camera);
@@ -395,8 +408,7 @@ public class VideoCamera extends NoSearchActivity
                 doReturnToCaller(true);
                 break;
             case R.id.btn_cancel:
-                stopVideoRecording();
-                doReturnToCaller(false);
+                stopVideoRecordingAndReturn(false);
                 break;
             case R.id.review_thumbnail: {
                 if (!mMediaRecorderRecording) {
@@ -412,9 +424,13 @@ public class VideoCamera extends NoSearchActivity
         // Do nothing (everything happens in onShutterButtonClick).
     }
 
-    private void onStopVideoRecording() {
+    private void onStopVideoRecording(boolean valid) {
         if (mIsVideoCaptureIntent) {
-            stopVideoRecordingAndShowAlert();
+            if (mQuickCapture) {
+                stopVideoRecordingAndReturn(valid);
+            } else {
+                stopVideoRecordingAndShowAlert();
+            }
         } else {
             stopVideoRecordingAndGetThumbnail();
             initializeRecorder();
@@ -425,7 +441,7 @@ public class VideoCamera extends NoSearchActivity
         switch (button.getId()) {
             case R.id.shutter_button:
                 if (mMediaRecorderRecording) {
-                    onStopVideoRecording();
+                    onStopVideoRecording(true);
                 } else if (mMediaRecorder != null) {
                     // If the click comes before recorder initialization, it is
                     // ignored. If users click the button during initialization,
@@ -673,7 +689,7 @@ public class VideoCamera extends NoSearchActivity
     public void onBackPressed() {
         if (mPausing) return;
         if (mMediaRecorderRecording) {
-            onStopVideoRecording();
+            onStopVideoRecording(false);
             return;
         }
         super.onBackPressed();
@@ -701,7 +717,7 @@ public class VideoCamera extends NoSearchActivity
                 break;
             case KeyEvent.KEYCODE_MENU:
                 if (mMediaRecorderRecording) {
-                    onStopVideoRecording();
+                    onStopVideoRecording(true);
                     return true;
                 }
                 break;
@@ -791,10 +807,10 @@ public class VideoCamera extends NoSearchActivity
         return (MediaStore.ACTION_VIDEO_CAPTURE.equals(action));
     }
 
-    private void doReturnToCaller(boolean success) {
+    private void doReturnToCaller(boolean valid) {
         Intent resultIntent = new Intent();
         int resultCode;
-        if (success) {
+        if (valid) {
             resultCode = RESULT_OK;
             resultIntent.setData(mCurrentVideoUri);
         } else {
@@ -1124,10 +1140,10 @@ public class VideoCamera extends NoSearchActivity
     // from MediaRecorder.OnInfoListener
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-            if (mMediaRecorderRecording) onStopVideoRecording();
+            if (mMediaRecorderRecording) onStopVideoRecording(true);
         } else if (what
                 == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
-            if (mMediaRecorderRecording) onStopVideoRecording();
+            if (mMediaRecorderRecording) onStopVideoRecording(true);
 
             // Show the toast.
             Toast.makeText(VideoCamera.this, R.string.video_reach_size_limit,
@@ -1195,6 +1211,11 @@ public class VideoCamera extends NoSearchActivity
     private void stopVideoRecordingAndGetThumbnail() {
         stopVideoRecording();
         acquireVideoThumb();
+    }
+
+    private void stopVideoRecordingAndReturn(boolean valid) {
+        stopVideoRecording();
+        doReturnToCaller(valid);
     }
 
     private void stopVideoRecordingAndShowAlert() {
