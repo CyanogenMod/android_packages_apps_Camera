@@ -289,7 +289,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Initialize location sevice.
         mLocationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
-        readPreference();
+        mRecordLocation = RecordLocationPreference.get(
+                mPreferences, getContentResolver());
         if (mRecordLocation) startReceivingLocationUpdates();
 
         keepMediaProviderInstance();
@@ -347,7 +348,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mOrientationListener.enable();
 
         // Start location update if needed.
-        readPreference();
+        mRecordLocation = RecordLocationPreference.get(
+                mPreferences, getContentResolver());
         if (mRecordLocation) startReceivingLocationUpdates();
 
         installIntentFilter();
@@ -1317,14 +1319,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             Log.w(TAG, "Exception caught while creating tone generator: ", ex);
             mFocusToneGenerator = null;
         }
-    }
-
-    private void readPreference() {
-        mRecordLocation = RecordLocationPreference.get(
-                mPreferences, getContentResolver());
-        mFocusMode = mPreferences.getString(
-                CameraSettings.KEY_FOCUS_MODE,
-                getString(R.string.pref_camera_focusmode_default));
     }
 
     @Override
