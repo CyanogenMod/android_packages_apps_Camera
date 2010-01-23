@@ -51,6 +51,11 @@ public class CameraSettings {
     public static final String KEY_WHITE_BALANCE =
             "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
+    public static final String KEY_QUICK_CAPTURE =
+            "pref_camera_quickcapture_key";
+
+    public static final String QUICK_CAPTURE_ON = "on";
+    public static final String QUICK_CAPTURE_OFF = "off";
 
     public static final int CURRENT_VERSION = 3;
 

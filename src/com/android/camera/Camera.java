@@ -221,6 +221,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private final Handler mHandler = new MainHandler();
     private OnScreenSettings mSettings;
+    private boolean mQuickCapture;
 
     /**
      * This Handler is used to post message back onto the main thread of the
@@ -659,7 +660,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 // We want to show the taken picture for a while, so we wait
                 // for at least 1.2 second before restarting the preview.
                 long delay = 1200 - mPictureDisplayedToJpegCallbackTime;
-                if (delay < 0) {
+                if (delay < 0 || mQuickCapture) {
                     restartPreview();
                 } else {
                     mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, delay);
@@ -938,6 +939,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         CameraSettings.upgradePreferences(mPreferences);
+        mQuickCapture = getQuickCaptureSettings();
 
         /*
          * To reduce startup time, we start the preview in another thread.
@@ -2144,11 +2146,20 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             } else {
                 stopReceivingLocationUpdates();
             }
+        } else if (CameraSettings.KEY_QUICK_CAPTURE.equals(key)) {
+            mQuickCapture = getQuickCaptureSettings();
         } else {
             // All preferences except RECORD_LOCATION are camera parameters.
             // Call setCameraParameters to take effect now.
             setCameraParameters();
         }
+    }
+
+    private boolean getQuickCaptureSettings() {
+        String value = mPreferences.getString(
+                CameraSettings.KEY_QUICK_CAPTURE,
+                getString(R.string.pref_camera_quickcapture_default));
+        return CameraSettings.QUICK_CAPTURE_ON.equals(value);
     }
 
     @Override
