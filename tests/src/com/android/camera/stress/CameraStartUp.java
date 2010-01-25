@@ -69,8 +69,8 @@ public class CameraStartUp extends InstrumentationTestCase {
         return startupTime;
     }
 
-    private void writeToOutputFile(String startupTag, long totalStartupTime,
-            String individualStartupTime, boolean firstStartUp) throws Exception {
+    private void writeToOutputFile(long totalStartupTime,
+            String individualStartupTime, boolean firstStartUp, String Type) throws Exception {
         // TODO (yslau) : Need to integrate the output data with central
         // dashboard
         try {
@@ -78,13 +78,13 @@ public class CameraStartUp extends InstrumentationTestCase {
             fstream = new FileWriter(CAMERA_TEST_OUTPUT_FILE, true);
             BufferedWriter out = new BufferedWriter(fstream);
             if (firstStartUp) {
-                out.write(startupTag + ": " + totalStartupTime + "\n");
+                out.write("First " + Type + " Startup: " + totalStartupTime + "\n");
             } else {
                 long averageStartupTime = totalStartupTime / (TOTAL_NUMBER_OF_STARTUP -1);
-                out.write(startupTag + "\n");
+                out.write(Type + "startup time: " + "\n");
                 out.write("Number of loop: " + (TOTAL_NUMBER_OF_STARTUP -1)  + "\n");
                 out.write(individualStartupTime + "\n\n");
-                out.write("Average startup time :" + averageStartupTime + " ms\n\n");
+                out.write(Type + " average startup time: " + averageStartupTime + " ms\n\n");
             }
             out.close();
             fstream.close();
@@ -103,7 +103,7 @@ public class CameraStartUp extends InstrumentationTestCase {
             if (i == 0) {
                 // Capture the first startup time individually
                 long firstStartUpTime = launchVideo();
-                writeToOutputFile("First Video Startup: ", firstStartUpTime, "na", true);
+                writeToOutputFile(firstStartUpTime, "na", true, "Video");
             } else {
                 startupTime = launchVideo();
                 totalStartupTime += startupTime;
@@ -111,8 +111,7 @@ public class CameraStartUp extends InstrumentationTestCase {
             }
         }
         Log.v(TAG, "totalStartupTime =" + totalStartupTime);
-        writeToOutputFile("Video Recorder Startup Time: ", totalStartupTime,
-                individualStartupTime, false);
+        writeToOutputFile(totalStartupTime, individualStartupTime, false, "Video");
     }
 
     @LargeTest
@@ -125,7 +124,7 @@ public class CameraStartUp extends InstrumentationTestCase {
             if (i == 0) {
                 // Capture the first startup time individually
                 long firstStartUpTime = launchCamera();
-                writeToOutputFile("First Camera Startup: ", firstStartUpTime, "na", true);
+                writeToOutputFile(firstStartUpTime, "na", true, "Camera");
             } else {
                 startupTime = launchCamera();
                 totalStartupTime += startupTime;
@@ -133,7 +132,7 @@ public class CameraStartUp extends InstrumentationTestCase {
             }
         }
         Log.v(TAG, "totalStartupTime =" + totalStartupTime);
-        writeToOutputFile("Camera Startup Time: ", totalStartupTime,
-                individualStartupTime, false);
+        writeToOutputFile(totalStartupTime,
+                individualStartupTime, false, "Camera");
     }
 }
