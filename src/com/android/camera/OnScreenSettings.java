@@ -80,6 +80,7 @@ public class OnScreenSettings {
 
     private final LayoutInflater mInflater;
     private Runnable mRestoreRunner;
+    private PreferenceGroup mPreferenceGroup;
 
     // We store the override values here. For a given preference,
     // if the mapping value of the preference key is not null, we will
@@ -118,6 +119,11 @@ public class OnScreenSettings {
                 .getDefaultSharedPreferences(mContext).edit();
         editor.clear();
         editor.commit();
+
+        mPreferenceGroup.reloadValue();
+        if (mMainAdapter != null) {
+            mMainAdapter.notifyDataSetChanged();
+        }
         mOverride.clear();
     }
 
@@ -284,6 +290,8 @@ public class OnScreenSettings {
     }
 
     public void setPreferenceGroup(PreferenceGroup group) {
+        this.mPreferenceGroup = group;
+
         ArrayList<CameraPreference> list = new ArrayList<CameraPreference>();
 
         // We don't want the root group added to the list. So, we add the

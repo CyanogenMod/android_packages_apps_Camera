@@ -49,6 +49,13 @@ public class PreferenceGroup extends CameraPreference {
         return list.size();
     }
 
+    @Override
+    public void reloadValue() {
+        for (CameraPreference pref : list) {
+            pref.reloadValue();
+        }
+    }
+
     /**
      * Finds the preference with the given key recursively. Returns
      * <code>null</code> if cannot find.

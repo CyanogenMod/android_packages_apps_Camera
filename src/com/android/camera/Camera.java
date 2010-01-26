@@ -1085,11 +1085,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mSettings.clearSettings();
         CameraSettings.upgradePreferences(mPreferences);
         setCameraParameters();
-
-        // We reload the preference again to reload the new data
-        mSettings.setPreferenceGroup(
-                new CameraSettings(this, mParameters)
-                .getPreferenceGroup(R.xml.camera_preferences));
         mPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 

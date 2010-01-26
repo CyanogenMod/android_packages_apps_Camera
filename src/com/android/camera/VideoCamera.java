@@ -1078,17 +1078,6 @@ public class VideoCamera extends NoSearchActivity
         readVideoPreferences();
         resetCameraParameters();
 
-        // If we start preview and reload the settings UI in a row. The
-        // preview will become a white screen. So, we reload the settings UI
-        // later.
-        mHandler.post(new Runnable() {
-            public void run() {
-                // We reload the preference again to reload the new data
-                mSettings.setPreferenceGroup(
-                        new CameraSettings(VideoCamera.this, mParameters)
-                        .getPreferenceGroup(R.xml.video_preferences));
-            }
-        });
         mPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 

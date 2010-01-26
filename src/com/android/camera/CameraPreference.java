@@ -51,4 +51,6 @@ public abstract class CameraPreference {
         }
         return mSharedPreferences;
     }
+
+    public abstract void reloadValue();
 }

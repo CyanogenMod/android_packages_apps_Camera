@@ -105,4 +105,9 @@ public class ListPreference extends CameraPreference {
         editor.putString(mKey, value);
         editor.commit();
     }
+
+    @Override
+    public void reloadValue() {
+        this.mLoaded = false;
+    }
 }
