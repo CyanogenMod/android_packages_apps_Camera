@@ -152,14 +152,11 @@ public class ThumbnailController {
             return;
         }
 
-        // Make the mini-thumb size smaller than the button size so that the
-        // image corners don't peek out from the rounded corners of the
-        // frame_thumb graphic:
-        final int PADDING_WIDTH = 2;
-        final int PADDING_HEIGHT = 2;
         LayoutParams param = mButton.getLayoutParams();
-        final int miniThumbWidth = param.width - 2 * PADDING_WIDTH;
-        final int miniThumbHeight = param.height - 2 * PADDING_HEIGHT;
+        final int miniThumbWidth = param.width
+                - mButton.getPaddingLeft() - mButton.getPaddingRight();
+        final int miniThumbHeight = param.height
+                - mButton.getPaddingTop() - mButton.getPaddingBottom();
         mThumb = ThumbnailUtil.extractMiniThumb(
                 original, miniThumbWidth, miniThumbHeight,
                 ThumbnailUtil.NO_RECYCLE_INPUT);

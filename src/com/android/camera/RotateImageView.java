@@ -97,6 +97,7 @@ public class RotateImageView extends ImageView {
         }
 
         int saveCount = canvas.getSaveCount();
+        canvas.translate(getPaddingLeft(), getPaddingTop());
         canvas.rotate(-mCurrentDegree, w / 2, h / 2);
         drawable.draw(canvas);
         canvas.restoreToCount(saveCount);
