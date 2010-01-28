@@ -24,7 +24,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.media.ThumbnailUtil;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -157,9 +157,9 @@ public class ThumbnailController {
                 - mButton.getPaddingLeft() - mButton.getPaddingRight();
         final int miniThumbHeight = param.height
                 - mButton.getPaddingTop() - mButton.getPaddingBottom();
-        mThumb = ThumbnailUtil.extractMiniThumb(
+        mThumb = ThumbnailUtils.extractMiniThumb(
                 original, miniThumbWidth, miniThumbHeight,
-                ThumbnailUtil.NO_RECYCLE_INPUT);
+                ThumbnailUtils.NO_RECYCLE_INPUT);
         Drawable drawable;
         if (mThumbs == null) {
             mThumbs = new Drawable[2];

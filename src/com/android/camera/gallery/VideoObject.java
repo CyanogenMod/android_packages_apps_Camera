@@ -20,7 +20,7 @@ import com.android.camera.BitmapManager;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
-import android.media.ThumbnailUtil;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore.Images;
 import android.util.Log;
@@ -63,7 +63,7 @@ public class VideoObject extends BaseImage implements IImage {
     @Override
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
             boolean rotateAsNeeded, boolean useNative) {
-        return ThumbnailUtil.createVideoThumbnail(mDataPath);
+        return ThumbnailUtils.createVideoThumbnail(mDataPath);
     }
 
     @Override
