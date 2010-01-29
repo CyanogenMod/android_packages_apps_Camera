@@ -72,6 +72,8 @@ import android.widget.ZoomButtonsController;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
+import com.android.camera.ui.GLRootView;
+import com.android.camera.ui.HeadUpDisplay;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -92,9 +94,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private static final String TAG = "camera";
 
-    // This value must be as same as the item value of the string array
-    // "flash_mode" in file "res/values/arrays.xml".
-    private static final String NO_FLASH_MODE = "no_flash";
     private static final int CROP_MSG = 1;
     private static final int FIRST_TIME_INIT = 2;
     private static final int RESTART_PREVIEW = 3;
@@ -104,14 +103,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // The reason why it is set to 0.7 is just because 1.0 is too bright.
     private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
-    private static final String GPS_MODE_ON = "on";
-    private static final String GPS_MODE_OFF = "off";
-
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
-
-    private static final String SCENE_MODE_ON = "on";
-    private static final String SCENE_MODE_OFF = "off";
 
     private boolean mZooming = false;
     private boolean mSmoothZoomSupported = false;
@@ -140,16 +133,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
     private FocusRectangle mFocusRectangle;
-    private IconIndicator mGpsIndicator;
-    private IconIndicator mFlashIndicator;
-    private IconIndicator mFocusIndicator;
-    private IconIndicator mWhitebalanceIndicator;
-    private IconIndicator mSceneModeIndicator;
     private ToneGenerator mFocusToneGenerator;
     private ZoomButtonsController mZoomButtons;
     private GestureDetector mGestureDetector;
     private Switcher mSwitcher;
     private boolean mStartPreviewFail = false;
+
+    private GLRootView mRootView;
 
     // mPostCaptureAlert, mLastPictureButton, mThumbController
     // are non-null only if isImageCaptureIntent() is true.
@@ -223,6 +213,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private final Handler mHandler = new MainHandler();
     private OnScreenSettings mSettings;
     private boolean mQuickCapture;
+    private HeadUpDisplay mHeadUpDisplay;
 
     /**
      * This Handler is used to post message back onto the main thread of the
@@ -283,6 +274,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     if (!mIsImageCaptureIntent)  {
                         setOrientationIndicator(mLastOrientation);
                     }
+                    mRootView.queueEvent(new Runnable() {
+                        public void run() {
+                            mHeadUpDisplay.setOrientation(mLastOrientation);
+                        }
+                    });
                 }
             }
         };
@@ -320,9 +316,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
         updateFocusIndicator();
 
-        // Initialize GPS indicator.
-        mGpsIndicator = (IconIndicator) findViewById(R.id.gps_icon);
-
         ImageManager.ensureOSXCompatibleFolder();
 
         initializeScreenBrightness();
@@ -334,6 +327,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         initializeZoom();
 
         mFirstTimeInitialized = true;
+
+        mRootView = (GLRootView) findViewById(R.id.settings_ui);
+        mHeadUpDisplay = new HeadUpDisplay();
+        CameraSettings settings = new CameraSettings(this, mInitialParams);
+        mHeadUpDisplay.initialize(this,
+                settings.getPreferenceGroup(R.xml.camera_preferences));
+        mRootView.setContentPane(mHeadUpDisplay);
     }
 
     private void updateThumbnailButton() {
@@ -548,7 +548,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             // update so update GPS indicator when we receive data.
             if (mRecordLocation
                     && LocationManager.GPS_PROVIDER.equals(mProvider)) {
-                mGpsIndicator.setMode(GPS_MODE_ON);
+                if (mHeadUpDisplay != null) {
+                    mHeadUpDisplay.setGpsHasSignal(true);
+                }
             }
             mLastLocation.set(newLocation);
             mValid = true;
@@ -569,7 +571,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     mValid = false;
                     if (mRecordLocation &&
                             LocationManager.GPS_PROVIDER.equals(provider)) {
-                        mGpsIndicator.setMode(GPS_MODE_OFF);
+                        if (mHeadUpDisplay != null) {
+                            mHeadUpDisplay.setGpsHasSignal(false);
+                        }
                     }
                     break;
                 }
@@ -972,14 +976,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mSwitcher.setOnSwitchListener(this);
             mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         }
-        findViewById(R.id.btn_gripper)
-                .setOnTouchListener(new GripperTouchListener());
-
-        mFlashIndicator = (IconIndicator) findViewById(R.id.flash_icon);
-        mFocusIndicator = (IconIndicator) findViewById(R.id.focus_icon);
-        mSceneModeIndicator = (IconIndicator) findViewById(R.id.scenemode_icon);
-        mWhitebalanceIndicator =
-                (IconIndicator) findViewById(R.id.whitebalance_icon);
 
         // Make sure preview is started.
         try {
@@ -991,7 +987,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         } catch (InterruptedException ex) {
             // ignore
         }
-        removeUnsupportedIndicators();
     }
 
     private void setOrientationIndicator(int degree) {
@@ -1001,37 +996,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 R.id.camera_switch_icon)).setDegree(degree);
         ((RotateImageView) findViewById(
                 R.id.video_switch_icon)).setDegree(degree);
-    }
-
-    private void removeUnsupportedIndicators() {
-        if (mParameters.getSupportedFocusModes() == null) {
-            mFocusIndicator.setVisibility(View.GONE);
-        }
-
-        if (mParameters.getSupportedWhiteBalance() == null) {
-            mWhitebalanceIndicator.setVisibility(View.GONE);
-        }
-
-        if (mParameters.getSupportedFlashModes() == null) {
-            mFlashIndicator.setVisibility(View.GONE);
-        }
-
-        if (mParameters.getSupportedSceneModes() == null) {
-            mSceneModeIndicator.setVisibility(View.GONE);
-        }
-    }
-
-    private class GripperTouchListener implements View.OnTouchListener {
-        public boolean onTouch(View view, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    return true;
-                case MotionEvent.ACTION_UP:
-                    showOnScreenSettings();
-                    return true;
-            }
-            return false;
-        }
     }
 
     @Override
@@ -1069,46 +1033,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         CameraSettings.upgradePreferences(mPreferences);
         setCameraParameters();
         mPreferences.registerOnSharedPreferenceChangeListener(this);
-    }
-
-    private void showOnScreenSettings() {
-        if (mSettings == null) {
-            mSettings = new OnScreenSettings(
-                    findViewById(R.id.camera_preview));
-
-            Runnable resetPreferences = new Runnable() {
-                public void run() {
-                    restorePreferences();
-                }
-            };
-
-            mSettings.setRestoreRunner(resetPreferences);
-
-            CameraSettings helper =
-                    new CameraSettings(this, mInitialParams);
-            mSettings.setPreferenceGroup(helper
-                    .getPreferenceGroup(R.xml.camera_preferences));
-            mSettings.setOnVisibilityChangedListener(this);
-
-            String sceneMode = mParameters.getSceneMode();
-            if (sceneMode == null
-                    || Parameters.SCENE_MODE_AUTO.equals(sceneMode)) {
-                // If scene mode is auto, cancel override in settings
-                mSettings.overrideSettings(CameraSettings.KEY_FLASH_MODE, null);
-                mSettings.overrideSettings(CameraSettings.KEY_FOCUS_MODE, null);
-                mSettings.overrideSettings(
-                        CameraSettings.KEY_WHITE_BALANCE, null);
-            } else {
-                // If scene mode is not auto, override the value in settings
-                mSettings.overrideSettings(CameraSettings.KEY_FLASH_MODE,
-                        mParameters.getFlashMode());
-                mSettings.overrideSettings(CameraSettings.KEY_FOCUS_MODE,
-                        mParameters.getFocusMode());
-                mSettings.overrideSettings(CameraSettings.KEY_WHITE_BALANCE,
-                        mParameters.getWhiteBalance());
-            }
-        }
-        mSettings.setVisible(true);
     }
 
     public void onClick(View v) {
@@ -1316,8 +1240,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
 
         mPausing = false;
         mJpegPictureCallbackTime = 0;
@@ -1357,6 +1282,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Close the camera now because other activities may need to use it.
         closeCamera();
         resetScreenOn();
+        mPreferences.unregisterOnSharedPreferenceChangeListener(this);
 
         if (mSettings != null && mSettings.isVisible()) {
             mSettings.setVisible(false);
@@ -1364,7 +1290,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
-            mGpsIndicator.setMode(GPS_MODE_OFF);
+            mHeadUpDisplay.setGpsHasSignal(false);
             if (!mIsImageCaptureIntent) {
                 mThumbController.storeData(
                         ImageManager.getLastImageThumbPath());
@@ -1528,12 +1454,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     doFocus(false);
                 }
                 return true;
-            case KeyEvent.KEYCODE_MENU:
-                if (mIsImageCaptureIntent) {
-                    showOnScreenSettings();
-                    return true;
-                }
-                break;
         }
         return super.onKeyUp(keyCode, event);
     }
@@ -1863,30 +1783,38 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // If scene mode is set, we cannot set flash mode, white balance, and
         // focus mode, instead, we read it from driver
-        String flashMode;
-        String whiteBalance;
         if (!Parameters.SCENE_MODE_AUTO.equals(sceneMode)) {
-            flashMode = mParameters.getFlashMode();
-            whiteBalance = mParameters.getWhiteBalance();
+            final String flashMode = mParameters.getFlashMode();
+            final String whiteBalance = mParameters.getWhiteBalance();
             mFocusMode = mParameters.getFocusMode();
-            if (mSettings != null) {
-                mSettings.overrideSettings(
-                        CameraSettings.KEY_FLASH_MODE, flashMode);
-                mSettings.overrideSettings(
-                        CameraSettings.KEY_WHITE_BALANCE, whiteBalance);
-                mSettings.overrideSettings(
-                        CameraSettings.KEY_FOCUS_MODE, mFocusMode);
+
+            if (mRootView != null) {
+                final String finalFlashMode = flashMode;
+                mRootView.queueEvent(new Runnable() {
+                    public void run() {
+                        mHeadUpDisplay.overrideSettings(
+                                CameraSettings.KEY_FLASH_MODE, flashMode);
+                        mHeadUpDisplay.overrideSettings(
+                                CameraSettings.KEY_WHITE_BALANCE, whiteBalance);
+                        mHeadUpDisplay.overrideSettings(
+                                CameraSettings.KEY_FOCUS_MODE, mFocusMode);
+                    }});
             }
         } else {
-            if (mSettings != null) {
-                mSettings.overrideSettings(CameraSettings.KEY_FLASH_MODE, null);
-                mSettings.overrideSettings(CameraSettings.KEY_FOCUS_MODE, null);
-                mSettings.overrideSettings(
-                        CameraSettings.KEY_WHITE_BALANCE, null);
+            if (mRootView != null) {
+                mRootView.queueEvent(new Runnable() {
+                    public void run() {
+                        mHeadUpDisplay.overrideSettings(
+                                CameraSettings.KEY_FLASH_MODE, null);
+                        mHeadUpDisplay.overrideSettings(
+                                CameraSettings.KEY_FOCUS_MODE, null);
+                        mHeadUpDisplay.overrideSettings(
+                                CameraSettings.KEY_WHITE_BALANCE, null);
+                    }});
             }
 
             // Set flash mode.
-            flashMode = mPreferences.getString(
+            String flashMode = mPreferences.getString(
                     CameraSettings.KEY_FLASH_MODE,
                     getString(R.string.pref_camera_flashmode_default));
             List<String> supportedFlash = mParameters.getSupportedFlashModes();
@@ -1901,7 +1829,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
 
             // Set white balance parameter.
-            whiteBalance = mPreferences.getString(
+            String whiteBalance = mPreferences.getString(
                     CameraSettings.KEY_WHITE_BALANCE,
                     getString(R.string.pref_camera_whitebalance_default));
             if (isSupported(whiteBalance,
@@ -1929,24 +1857,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
             mCameraDevice.setParameters(mParameters);
         }
-
-        // We post the runner because this function can be called from
-        // non-UI thread (i.e., startPreviewThread).
-        final String finalWhiteBalance = whiteBalance;
-        final String finalFlashMode = flashMode;
-        final String finalSceneMode =
-                Parameters.SCENE_MODE_AUTO.equals(sceneMode)
-                ? SCENE_MODE_OFF
-                : SCENE_MODE_ON;
-
-        mHandler.post(new Runnable() {
-            public void run() {
-                mFocusIndicator.setMode(mFocusMode);
-                mWhitebalanceIndicator.setMode(finalWhiteBalance);
-                mSceneModeIndicator.setMode(finalSceneMode);
-                mFlashIndicator.setMode(finalFlashMode);
-            }
-        });
     }
 
     private void gotoGallery() {
@@ -2094,16 +2004,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         });
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
         mGalleryItems.add(gallery);
-
-        MenuItem item = menu.add(Menu.NONE, Menu.NONE,
-                MenuHelper.POSITION_CAMERA_SETTING, R.string.settings)
-                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                showOnScreenSettings();
-                return true;
-            }
-        });
-        item.setIcon(android.R.drawable.ic_menu_preferences);
     }
 
     public boolean onSwitchChanged(Switcher source, boolean onOff) {
@@ -2116,25 +2016,32 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     public void onSharedPreferenceChanged(
-            SharedPreferences preferences, String key) {
-        // ignore the events after "onPause()"
-        if (mPausing) return;
+            final SharedPreferences preferences, final String key) {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                // ignore the events after "onPause()"
+                if (mPausing) return;
+                Log.v(TAG, "call()");
 
-        if (CameraSettings.KEY_RECORD_LOCATION.equals(key)) {
-            mRecordLocation = RecordLocationPreference.get(
-                    preferences, getContentResolver());
-            if (mRecordLocation) {
-                startReceivingLocationUpdates();
-            } else {
-                stopReceivingLocationUpdates();
+                if (CameraSettings.KEY_RECORD_LOCATION.equals(key)) {
+                    mRecordLocation = RecordLocationPreference.get(
+                            preferences, getContentResolver());
+                    if (mRecordLocation) {
+                        startReceivingLocationUpdates();
+                    } else {
+                        stopReceivingLocationUpdates();
+                    }
+                } else if (CameraSettings.KEY_QUICK_CAPTURE.equals(key)) {
+                    mQuickCapture = getQuickCaptureSettings();
+                } else {
+                    // All preferences except RECORD_LOCATION are camera
+                    // parameters. Call setCameraParameters to take effect now.
+                    setCameraParameters();
+                }
+                Log.v(TAG, "call() end");
             }
-        } else if (CameraSettings.KEY_QUICK_CAPTURE.equals(key)) {
-            mQuickCapture = getQuickCaptureSettings();
-        } else {
-            // All preferences except RECORD_LOCATION are camera parameters.
-            // Call setCameraParameters to take effect now.
-            setCameraParameters();
-        }
+        };
+        runOnUiThread(runnable);
     }
 
     private boolean getQuickCaptureSettings() {

@@ -96,13 +96,13 @@
     </string-array>
 
     <array name="pref_camera_focusmode_icons" translatable="false">
-        <item>@drawable/ic_viewfinder_empty</item>
-        <item>@drawable/ic_viewfinder_focus_infinity</item>
-        <item>@drawable/ic_viewfinder_focus_macro</item>
+        <item>@drawable/ic_menuselect_focus_auto</item>
+        <item>@drawable/ic_menuselect_focus_infinity</item>
+        <item>@drawable/ic_menuselect_focus_macro</item>
     </array>
 
     <array name="focusmode_icons">
-        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@drawable/ic_viewfinder_focus_auto</item>
         <item>@drawable/ic_viewfinder_focus_infinity</item>
         <item>@drawable/ic_viewfinder_focus_macro</item>
     </array>
@@ -121,6 +121,12 @@
     </string-array>
 
     <array name="pref_camera_flashmode_icons">
+        <item>@drawable/ic_menuselect_flash_auto</item>
+        <item>@drawable/ic_menuselect_flash_on</item>
+        <item>@drawable/ic_menuselect_flash_off</item>
+    </array>
+
+    <array name="flashmode_icons">
         <item>@drawable/ic_viewfinder_flash_auto</item>
         <item>@drawable/ic_viewfinder_flash_on</item>
         <item>@drawable/ic_viewfinder_flash_off</item>
@@ -138,8 +144,8 @@
     </string-array>
 
     <array name="pref_camera_video_flashmode_icons">
-        <item>@drawable/ic_viewfinder_flash_on</item>
-        <item>@drawable/ic_viewfinder_flash_off</item>
+        <item>@drawable/ic_menuselect_flash_on</item>
+        <item>@drawable/ic_menuselect_flash_off</item>
     </array>
 
     <string-array name="pref_camera_recordlocation_entryvalues" translatable="false">
@@ -150,6 +156,16 @@
     <array name="pref_camera_recordlocation_entries" translatable="false">
         <item>@string/pref_camera_recordlocation_entry_off</item>
         <item>@string/pref_camera_recordlocation_entry_on</item>
+    </array>
+
+    <array name="pref_camera_recordlocation_icons" translatable="false">
+        <item>@drawable/ic_menuselect_gps_off</item>
+        <item>@drawable/ic_menuselect_gps_on</item>
+    </array>
+
+    <array name="recordlocation_icons">
+        <item>@drawable/ic_viewfinder_gps_off</item>
+        <item>@drawable/ic_viewfinder_gps_on</item>
     </array>
 
     <string-array name="flash_modes" translatable="false">
@@ -173,11 +189,6 @@
         <item>on</item>
     </string-array>
 
-    <array name="gps_icons">
-        <item>@drawable/ic_viewfinder_empty</item>
-        <item>@drawable/ic_camera_sym_gps</item>
-    </array>
-
     <!-- Camera Preferences White Balance dialog box entries -->
     <string-array name="pref_camera_whitebalance_entries" translatable="false">
         <item>@string/pref_camera_whitebalance_entry_auto</item>
@@ -196,15 +207,15 @@
     </string-array>
 
     <array name="pref_camera_whitebalance_icons">
-        <item>@drawable/ic_viewfinder_empty</item>
-        <item>@drawable/ic_viewfinder_wb_incandescent</item>
-        <item>@drawable/ic_viewfinder_wb_daylight</item>
-        <item>@drawable/ic_viewfinder_wb_fluorescent</item>
-        <item>@drawable/ic_viewfinder_wb_cloudy</item>
+        <item>@drawable/ic_menuselect_wb_auto</item>
+        <item>@drawable/ic_menuselect_wb_incandescent</item>
+        <item>@drawable/ic_menuselect_wb_daylight</item>
+        <item>@drawable/ic_menuselect_wb_fluorescent</item>
+        <item>@drawable/ic_menuselect_wb_cloudy</item>
     </array>
 
     <array name="whitebalance_icons">
-        <item>@drawable/ic_viewfinder_empty</item>
+        <item>@drawable/ic_viewfinder_wb_auto</item>
         <item>@drawable/ic_viewfinder_wb_incandescent</item>
         <item>@drawable/ic_viewfinder_wb_daylight</item>
         <item>@drawable/ic_viewfinder_wb_fluorescent</item>

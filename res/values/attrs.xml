@@ -29,6 +29,7 @@
     </declare-styleable>
     <declare-styleable name="IconListPreference">
         <attr name="icons" />
+        <attr name="largeIcons" format="reference" />
     </declare-styleable>
     <declare-styleable name="EvenlySpacedLayout">
         <attr name="orientation">

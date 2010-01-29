@@ -18,17 +18,13 @@ package com.android.camera;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
@@ -259,11 +255,6 @@ public class Util {
         }
     }
 
-    public static boolean equals(String a, String b) {
-        // return true if both string are null or the content equals
-        return a == b || a.equals(b);
-    }
-
     // Returns an intent which is used for "set as" menu items.
     public static Intent createSetAsIntent(IImage image) {
         Uri u = image.fullSizeImageUri();
@@ -345,5 +336,19 @@ public class Util {
 
     public static boolean equals(Object a, Object b) {
         return (a == b) || (a == null ? false : a.equals(b));
+    }
+
+    public static boolean isPowerOf2(int n) {
+        return (n & -n) == n;
+    }
+
+    public static int nextPowerOf2(int n) {
+        n -= 1;
+        n |= n >>> 16;
+        n |= n >>> 8;
+        n |= n >>> 4;
+        n |= n >>> 2;
+        n |= n >>> 1;
+        return n + 1;
     }
 }
