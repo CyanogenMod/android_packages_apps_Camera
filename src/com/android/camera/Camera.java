@@ -673,6 +673,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             // the mean time and fill it, but that could have happened between the
             // shutter press and saving the JPEG too.
             calculatePicturesRemaining();
+
+            if (mPicturesRemaining < 1) {
+                updateStorageHint(mPicturesRemaining);
+            }
         }
     }
 
@@ -867,14 +871,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             mCaptureStartTime = System.currentTimeMillis();
             mPostViewPictureCallbackTime = 0;
-
-            // Don't check the filesystem here, we can't afford the latency.
-            // Instead, check the cached value which was calculated when the
-            // preview was restarted.
-            if (mPicturesRemaining < 1) {
-                updateStorageHint(mPicturesRemaining);
-                return;
-            }
 
             mStatus = SNAPSHOT_IN_PROGRESS;
 
