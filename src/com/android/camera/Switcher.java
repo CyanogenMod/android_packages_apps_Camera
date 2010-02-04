@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -45,7 +46,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
 
     private boolean mSwitch = false;
     private int mPosition = 0;
-    private long mAnimationStartTime = 0;
+    private long mAnimationStartTime = NO_ANIMATION;
     private int mAnimationStartPosition;
     private OnSwitchListener mListener;
 
@@ -141,9 +142,9 @@ public class Switcher extends ImageView implements View.OnTouchListener {
             return;     // nothing to draw (empty bounds)
         }
 
+        final int available = getHeight() - getPaddingTop()
+                - getPaddingBottom() - drawableHeight;
         if (mAnimationStartTime != NO_ANIMATION) {
-            final int available = getHeight() - getPaddingTop() - getPaddingBottom()
-                    - drawableHeight;
             long time = AnimationUtils.currentAnimationTimeMillis();
             int deltaTime = (int) (time - mAnimationStartTime);
             mPosition = mAnimationStartPosition +
@@ -156,9 +157,13 @@ public class Switcher extends ImageView implements View.OnTouchListener {
             } else {
                 mAnimationStartTime = NO_ANIMATION;
             }
+        } else {
+            mPosition = mSwitch ? available : 0;
         }
-
         int offsetTop = getPaddingTop() + mPosition;
+        Log.v(TAG, "mPosition = " + mPosition
+                + ", mAnimationStartTime = " + mAnimationStartTime
+                + ", mSwitch = " + mSwitch);
         int offsetLeft = (getWidth()
                 - drawableWidth - getPaddingLeft() - getPaddingRight()) / 2;
         int saveCount = canvas.getSaveCount();
