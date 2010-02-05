@@ -1961,14 +1961,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void viewLastImage() {
         if (mThumbController.isUriValid()) {
-            Uri targetUri = mThumbController.getUri();
-            targetUri = targetUri.buildUpon().appendQueryParameter(
-                    "bucketId", ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
-            Intent intent = new Intent(this, ReviewImage.class);
-            intent.setData(targetUri);
-            intent.putExtra(MediaStore.EXTRA_FULL_SCREEN, true);
-            intent.putExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS, true);
-            intent.putExtra("com.android.camera.ReviewMode", true);
+            Intent intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {

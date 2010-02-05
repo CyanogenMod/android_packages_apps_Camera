@@ -1287,12 +1287,7 @@ public class VideoCamera extends NoSearchActivity
     private void stopVideoRecordingAndShowReview() {
         stopVideoRecording();
         if (mThumbController.isUriValid()) {
-            Uri targetUri = mThumbController.getUri();
-            Intent intent = new Intent(this, ReviewImage.class);
-            intent.setData(targetUri);
-            intent.putExtra(MediaStore.EXTRA_FULL_SCREEN, true);
-            intent.putExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS, true);
-            intent.putExtra("com.android.camera.ReviewMode", true);
+            Intent intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {
