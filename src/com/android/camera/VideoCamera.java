@@ -32,6 +32,8 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
+import android.media.CamcorderProfile;
+import android.media.CamcorderProfile.Quality;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -154,7 +156,7 @@ public class VideoCamera extends NoSearchActivity
     private IconIndicator mWhitebalanceIndicator;
     private IconIndicator mFlashIndicator;
 
-    private MediaRecorderProfile mProfile;
+    private CamcorderProfile mProfile;
 
     // The video duration limit. 0 menas no limit.
     private int mMaxVideoDurationInMs;
@@ -533,12 +535,12 @@ public class VideoCamera extends NoSearchActivity
             }
         }
 
-        mProfile = new MediaRecorderProfile(videoQualityHigh);
+        mProfile = CamcorderProfile.get(videoQualityHigh? CamcorderProfile.Quality.HIGH: CamcorderProfile.Quality.LOW);
     }
 
     private void resizeForPreviewAspectRatio() {
         mPreviewFrameLayout.setAspectRatio(
-                (double) mProfile.mVideoWidth / mProfile.mVideoHeight);
+                (double) mProfile.mVideoFrameWidth / mProfile.mVideoFrameHeight);
     }
 
     @Override
@@ -888,7 +890,7 @@ public class VideoCamera extends NoSearchActivity
         mMediaRecorder.setCamera(mCameraDevice);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-        mMediaRecorder.setOutputFormat(mProfile.mOutputFormat);
+        mMediaRecorder.setOutputFormat(mProfile.mFileFormat);
         mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
 
         // Set output file.
@@ -909,19 +911,19 @@ public class VideoCamera extends NoSearchActivity
         // if the frame rate is too large, it can cause camera to become
         // unstable. We need to fix the MediaRecorder to disable the support
         // of setting frame rate for now.
-        mMediaRecorder.setVideoFrameRate(mProfile.mVideoFps);
+        mMediaRecorder.setVideoFrameRate(mProfile.mVideoFrameRate);
         mMediaRecorder.setVideoSize(
-                mProfile.mVideoWidth, mProfile.mVideoHeight);
+                mProfile.mVideoFrameWidth, mProfile.mVideoFrameHeight);
         mMediaRecorder.setParameters(String.format(
-                "video-param-encoding-bitrate=%d", mProfile.mVideoBitrate));
+                "video-param-encoding-bitrate=%d", mProfile.mVideoBitRate));
         mMediaRecorder.setParameters(String.format(
-                "audio-param-encoding-bitrate=%d", mProfile.mAudioBitrate));
+                "audio-param-encoding-bitrate=%d", mProfile.mAudioBitRate));
         mMediaRecorder.setParameters(String.format(
                 "audio-param-number-of-channels=%d", mProfile.mAudioChannels));
         mMediaRecorder.setParameters(String.format(
-                "audio-param-sampling-rate=%d", mProfile.mAudioSamplingRate));
-        mMediaRecorder.setVideoEncoder(mProfile.mVideoEncoder);
-        mMediaRecorder.setAudioEncoder(mProfile.mAudioEncoder);
+                "audio-param-sampling-rate=%d", mProfile.mAudioSampleRate));
+        mMediaRecorder.setVideoEncoder(mProfile.mVideoCodec);
+        mMediaRecorder.setAudioEncoder(mProfile.mAudioCodec);
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
 
         // Set maximum file size.
@@ -1447,8 +1449,8 @@ public class VideoCamera extends NoSearchActivity
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
-        mParameters.setPreviewSize(mProfile.mVideoWidth, mProfile.mVideoHeight);
-        mParameters.setPreviewFrameRate(mProfile.mVideoFps);
+        mParameters.setPreviewSize(mProfile.mVideoFrameWidth, mProfile.mVideoFrameHeight);
+        mParameters.setPreviewFrameRate(mProfile.mVideoFrameRate);
 
         // Set flash mode.
         String flashMode = mPreferences.getString(
@@ -1530,8 +1532,8 @@ public class VideoCamera extends NoSearchActivity
     private void resetCameraParameters() {
         // We need to restart the preview if preview size is changed.
         Size size = mParameters.getPreviewSize();
-        if (size.width != mProfile.mVideoWidth
-                || size.height != mProfile.mVideoHeight) {
+        if (size.width != mProfile.mVideoFrameWidth
+                || size.height != mProfile.mVideoFrameHeight) {
             // It is assumed media recorder is released before
             // onSharedPreferenceChanged, so we can close the camera here.
             closeCamera();
@@ -1581,110 +1583,5 @@ class DefaultHashMap<K, V> extends HashMap<K, V> {
     public V get(Object key) {
         V value = super.get(key);
         return (value == null) ? mDefaultValue : value;
-    }
-}
-
-//
-// MediaRecorderProfile reads from system properties to determine the proper
-// values for various parameters for MediaRecorder.
-//
-class MediaRecorderProfile {
-
-    @SuppressWarnings("unused")
-    private static final String TAG = "MediaRecorderProfile";
-    public final boolean mHiQuality;
-    public final int mOutputFormat;
-    public final int mVideoEncoder;
-    public final int mAudioEncoder;
-    public final int mVideoWidth;
-    public final int mVideoHeight;
-    public final int mVideoFps;
-    public final int mVideoBitrate;
-    public final int mAudioBitrate;
-    public final int mAudioChannels;
-    public final int mAudioSamplingRate;
-
-    MediaRecorderProfile(boolean hiQuality) {
-        mHiQuality = hiQuality;
-
-        mOutputFormat = getFromTable("ro.media.enc.hprof.file.format",
-                                     "ro.media.enc.lprof.file.format",
-                                     OUTPUT_FORMAT_TABLE);
-
-        mVideoEncoder = getFromTable("ro.media.enc.hprof.codec.vid",
-                                     "ro.media.enc.lprof.codec.vid",
-                                     VIDEO_ENCODER_TABLE);
-
-        mAudioEncoder = getFromTable("ro.media.enc.hprof.codec.aud",
-                                     "ro.media.enc.lprof.codec.aud",
-                                     AUDIO_ENCODER_TABLE);
-
-        mVideoWidth = getInt("ro.media.enc.hprof.vid.width",
-                             "ro.media.enc.lprof.vid.width",
-                             352, 176);
-
-        mVideoHeight = getInt("ro.media.enc.hprof.vid.height",
-                              "ro.media.enc.lprof.vid.height",
-                              288, 144);
-
-        mVideoFps = getInt("ro.media.enc.hprof.vid.fps",
-                           "ro.media.enc.lprof.vid.fps",
-                           20, 20);
-
-        mVideoBitrate = getInt("ro.media.enc.hprof.vid.bps",
-                               "ro.media.enc.lprof.vid.bps",
-                               360000, 192000);
-
-        mAudioBitrate = getInt("ro.media.enc.hprof.aud.bps",
-                               "ro.media.enc.lprof.aud.bps",
-                               23450, 23450);
-
-        mAudioChannels = getInt("ro.media.enc.hprof.aud.ch",
-                                "ro.media.enc.lprof.aud.ch",
-                                1, 1);
-
-        mAudioSamplingRate = getInt("ro.media.enc.hprof.aud.hz",
-                                    "ro.media.enc.lprof.aud.hz",
-                                    8000, 8000);
-    }
-
-    private int getFromTable(String highKey, String lowKey,
-                DefaultHashMap<String, Integer> table) {
-        String s;
-        s = SystemProperties.get(mHiQuality ? highKey : lowKey);
-        return table.get(s);
-    }
-
-    private int getInt(String highKey, String lowKey, int highDefault,
-                int lowDefault) {
-        String key = mHiQuality ? highKey : lowKey;
-        int defaultValue = mHiQuality ? highDefault : lowDefault;
-        return SystemProperties.getInt(key, defaultValue);
-    }
-
-    private static final DefaultHashMap<String, Integer>
-            OUTPUT_FORMAT_TABLE = new DefaultHashMap<String, Integer>();
-    private static final DefaultHashMap<String, Integer>
-            VIDEO_ENCODER_TABLE = new DefaultHashMap<String, Integer>();
-    private static final DefaultHashMap<String, Integer>
-            AUDIO_ENCODER_TABLE = new DefaultHashMap<String, Integer>();
-
-    static {
-        OUTPUT_FORMAT_TABLE.put("3gp", MediaRecorder.OutputFormat.THREE_GPP);
-        OUTPUT_FORMAT_TABLE.put("mp4", MediaRecorder.OutputFormat.MPEG_4);
-        OUTPUT_FORMAT_TABLE.putDefault(MediaRecorder.OutputFormat.DEFAULT);
-
-        VIDEO_ENCODER_TABLE.put("h263", MediaRecorder.VideoEncoder.H263);
-        VIDEO_ENCODER_TABLE.put("h264", MediaRecorder.VideoEncoder.H264);
-        VIDEO_ENCODER_TABLE.put("m4v", MediaRecorder.VideoEncoder.MPEG_4_SP);
-        VIDEO_ENCODER_TABLE.putDefault(MediaRecorder.VideoEncoder.DEFAULT);
-
-        AUDIO_ENCODER_TABLE.put("amrnb", MediaRecorder.AudioEncoder.AMR_NB);
-        AUDIO_ENCODER_TABLE.put("amrwb", MediaRecorder.AudioEncoder.AMR_WB);
-        AUDIO_ENCODER_TABLE.put("aac", MediaRecorder.AudioEncoder.AAC);
-        AUDIO_ENCODER_TABLE.put("aacplus", MediaRecorder.AudioEncoder.AAC_PLUS);
-        AUDIO_ENCODER_TABLE.put("eaacplus",
-                MediaRecorder.AudioEncoder.EAAC_PLUS);
-        AUDIO_ENCODER_TABLE.putDefault(MediaRecorder.AudioEncoder.DEFAULT);
     }
 }
