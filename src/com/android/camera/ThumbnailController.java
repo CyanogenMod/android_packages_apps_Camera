@@ -157,9 +157,8 @@ public class ThumbnailController {
                 - mButton.getPaddingLeft() - mButton.getPaddingRight();
         final int miniThumbHeight = param.height
                 - mButton.getPaddingTop() - mButton.getPaddingBottom();
-        mThumb = ThumbnailUtils.extractMiniThumb(
-                original, miniThumbWidth, miniThumbHeight,
-                ThumbnailUtils.NO_RECYCLE_INPUT);
+        mThumb = ThumbnailUtils.extractThumbnail(
+                original, miniThumbWidth, miniThumbHeight);
         Drawable drawable;
         if (mThumbs == null) {
             mThumbs = new Drawable[2];
