@@ -161,9 +161,6 @@ public class Switcher extends ImageView implements View.OnTouchListener {
             mPosition = mSwitch ? available : 0;
         }
         int offsetTop = getPaddingTop() + mPosition;
-        Log.v(TAG, "mPosition = " + mPosition
-                + ", mAnimationStartTime = " + mAnimationStartTime
-                + ", mSwitch = " + mSwitch);
         int offsetLeft = (getWidth()
                 - drawableWidth - getPaddingLeft() - getPaddingRight()) / 2;
         int saveCount = canvas.getSaveCount();

@@ -373,9 +373,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (!mParameters.isZoomSupported()) return;
 
         mZoomMax = mParameters.getMaxZoom();
-        Log.v(TAG, "Max zoom=" + mZoomMax);
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
-        Log.v(TAG, "Smooth zoom supported=" + mSmoothZoomSupported);
 
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
         mCameraDevice.setZoomCallback(mZoomCallback);
@@ -1776,9 +1774,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
             }
         }
-        Log.v(TAG, String.format(
-                "Optimal preview size is %sx%s",
-                optimalSize.width, optimalSize.height));
         return optimalSize;
     }
 
