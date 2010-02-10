@@ -50,10 +50,6 @@ public class RecordLocationPreference extends ListPreference {
     public static boolean get(
             SharedPreferences pref, ContentResolver resolver) {
         String value = pref.getString(KEY, VALUE_NONE);
-        if (VALUE_NONE.equals(value)) {
-            return Settings.Secure.getInt(resolver,
-                    Settings.Secure.USE_LOCATION_FOR_SERVICES, 0) != 0;
-        }
         return VALUE_ON.equals(value);
     }
 }
