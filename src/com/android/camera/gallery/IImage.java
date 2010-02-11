@@ -38,12 +38,10 @@ public interface IImage {
     public abstract Bitmap fullSizeBitmap(int minSideLength,
             int maxNumberOfPixels);
     public abstract Bitmap fullSizeBitmap(int minSideLength,
-            int maxNumberOfPixels, boolean rotateAsNeeded, boolean useNative);
+            int maxNumberOfPixels, boolean rotateAsNeeded);
     public abstract int getDegreesRotated();
     public static final boolean ROTATE_AS_NEEDED = true;
     public static final boolean NO_ROTATE = false;
-    public static final boolean USE_NATIVE = true;
-    public static final boolean NO_NATIVE = false;
 
     /** Get the input stream associated with a given full size image. */
     public abstract InputStream fullSizeImageData();

@@ -171,16 +171,12 @@ public class Util {
      * @param uri
      */
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-            Uri uri, ContentResolver cr, boolean useNative) {
+            Uri uri, ContentResolver cr) {
         ParcelFileDescriptor input = null;
         try {
             input = cr.openFileDescriptor(uri, "r");
-            BitmapFactory.Options options = null;
-            if (useNative) {
-                options = createNativeAllocOptions();
-            }
             return makeBitmap(minSideLength, maxNumOfPixels, uri, cr, input,
-                    options);
+                    null);
         } catch (IOException ex) {
             return null;
         } finally {
@@ -189,13 +185,9 @@ public class Util {
     }
 
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-            ParcelFileDescriptor pfd, boolean useNative) {
-        BitmapFactory.Options options = null;
-        if (useNative) {
-            options = createNativeAllocOptions();
-        }
+            ParcelFileDescriptor pfd) {
         return makeBitmap(minSideLength, maxNumOfPixels, null, null, pfd,
-                options);
+                null);
     }
 
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
@@ -279,13 +271,6 @@ public class Util {
         intent.setDataAndType(u, image.getMimeType());
         intent.putExtra("mimeType", image.getMimeType());
         return intent;
-    }
-
-    // Returns Options that set the puregeable flag for Bitmap decode.
-    public static BitmapFactory.Options createNativeAllocOptions() {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inNativeAlloc = true;
-        return options;
     }
 
     public static void showFatalErrorAndFinish(

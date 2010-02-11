@@ -86,16 +86,16 @@ public abstract class BaseImage implements IImage {
 
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels) {
         return fullSizeBitmap(minSideLength, maxNumberOfPixels,
-                IImage.ROTATE_AS_NEEDED, IImage.NO_NATIVE);
+                IImage.ROTATE_AS_NEEDED);
     }
 
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
-            boolean rotateAsNeeded, boolean useNative) {
+            boolean rotateAsNeeded) {
         Uri url = mContainer.contentUri(mId);
         if (url == null) return null;
 
         Bitmap b = Util.makeBitmap(minSideLength, maxNumberOfPixels,
-                url, mContentResolver, useNative);
+                url, mContentResolver);
 
         if (b != null && rotateAsNeeded) {
             b = Util.rotate(b, getDegreesRotated());

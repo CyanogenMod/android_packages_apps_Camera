@@ -78,21 +78,15 @@ class UriImage implements IImage {
 
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels) {
         return fullSizeBitmap(minSideLength, maxNumberOfPixels,
-                IImage.ROTATE_AS_NEEDED, IImage.NO_NATIVE);
+                IImage.ROTATE_AS_NEEDED);
     }
 
     public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
             boolean rotateAsNeeded) {
-        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
-                rotateAsNeeded, IImage.NO_NATIVE);
-    }
-
-    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
-            boolean rotateAsNeeded, boolean useNative) {
         try {
             ParcelFileDescriptor pfdInput = getPFD();
             Bitmap b = Util.makeBitmap(minSideLength, maxNumberOfPixels,
-                    pfdInput, useNative);
+                    pfdInput);
             return b;
         } catch (Exception ex) {
             Log.e(TAG, "got exception decoding bitmap ", ex);
