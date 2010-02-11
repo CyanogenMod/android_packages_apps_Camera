@@ -17,7 +17,6 @@
 package com.android.camera;
 
 import com.android.camera.gallery.BaseImageList;
-import com.android.camera.gallery.DrmImageList;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.gallery.ImageList;
@@ -37,7 +36,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.DrmStore;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
@@ -132,7 +130,6 @@ public class ImageManager {
 
     // Inclusion
     public static final int INCLUDE_IMAGES = (1 << 0);
-    public static final int INCLUDE_DRM_IMAGES = (1 << 1);
     public static final int INCLUDE_VIDEOS = (1 << 2);
 
     // Sort
@@ -352,10 +349,6 @@ public class ImageManager {
                 l.add(new ImageList(cr,
                         Images.Media.INTERNAL_CONTENT_URI, sort, bucketId));
             }
-            if ((inclusion & INCLUDE_DRM_IMAGES) != 0) {
-                l.add(new DrmImageList(
-                        cr, DrmStore.Images.CONTENT_URI, sort, bucketId));
-            }
         }
 
         // Optimization: If some of the lists are empty, remove them.
@@ -384,14 +377,7 @@ public class ImageManager {
             int sort) {
         String uriString = (uri != null) ? uri.toString() : "";
 
-        // TODO: we need to figure out whether we're viewing
-        // DRM images in a better way.  Is there a constant
-        // for content://drm somewhere??
-
-        if (uriString.startsWith("content://drm")) {
-            return makeImageList(cr, DataLocation.ALL, INCLUDE_DRM_IMAGES, sort,
-                    null);
-        } else if (uriString.startsWith("content://media/external/video")) {
+        if (uriString.startsWith("content://media/external/video")) {
             return makeImageList(cr, DataLocation.EXTERNAL, INCLUDE_VIDEOS,
                     sort, null);
         } else if (isSingleImageMode(uriString)) {
