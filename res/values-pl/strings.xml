@@ -21,7 +21,6 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Kamera"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Zdjęcia z aparatu"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Filmy z aparatu"</string>
-    <string name="view_label" msgid="4450531507947335704">"Wyświetl zdjęcie"</string>
     <string name="wait" msgid="8600187532323801552">"Proszę czekać…"</string>
     <string name="no_storage" msgid="820691042667338625">"Zanim zaczniesz korzystać z aparatu fotograficznego, włóż kartę SD."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"Karta SD jest pełna."</string>
@@ -57,12 +56,10 @@
     <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Jakość filmu wideo"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Niska (dla wiadomości MMS)"</string>
     <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Wysoka (dla karty SD)"</string>
-    <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Jakość wideo"</string>
     <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"Czas trwania filmu wideo"</string>
     <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> s (dla wiadomości MMS)"</string>
     <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 minut"</string>
     <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 minut"</string>
-    <string name="pref_camera_video_duration_dialogtitle" msgid="5762031980003877975">"Czas trwania filmu wideo"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Ustawienia aparatu"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Ustawienia kamery"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Rozmiar zdjęcia"</string>
@@ -72,30 +69,24 @@
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 megapiksel"</string>
     <!-- no translation found for pref_camera_picturesize_entry_320x240 (5729711026478753025) -->
     <skip />
-    <string name="pref_camera_picturesize_dialogtitle" msgid="2741153309776113961">"Rozmiar zdjęcia"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Jakość zdjęcia"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Bardzo wysoka"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Wysoka"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normalna"</string>
-    <string name="pref_camera_jpegquality_dialogtitle" msgid="18195886066728203">"Jakość zdjęcia"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Tryb ostrości"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatyczna"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Nieskończoność"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
-    <string name="pref_camera_focusmode_dialogtitle" msgid="3464580667965511167">"Tryb ostrości"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Tryb lampy błyskowej"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatyczna"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Włączony"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Wyłączona"</string>
-    <string name="pref_camera_flashmode_dialogtitle" msgid="2824978765695177188">"Tryb lampy błyskowej"</string>
-    <string name="pref_camera_whitebalance_dialogtitle" msgid="8978388629257577909">"Balans bieli"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Balans bieli"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automatyczny"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Światło żarowe"</string>
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Światło dzienne"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescencja"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Zachmurzenie"</string>
-    <string name="pref_camera_coloreffect_dialogtitle" msgid="7691751972871809763">"Efekt koloru"</string>
     <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Efekt koloru"</string>
     <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Brak"</string>
     <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Monochromatyczny"</string>
@@ -103,8 +94,6 @@
     <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Negatyw"</string>
     <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Solaryzacja"</string>
     <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Posteryzacja"</string>
-    <string name="pref_camera_coloreffect_entry_whiteboard" msgid="8161550096887765100">"Biała tablica"</string>
-    <string name="pref_camera_coloreffect_entry_blackboard" msgid="4149918495221278960">"Czarna tablica"</string>
     <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Akwarela"</string>
     <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"Pastel"</string>
     <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"Mozaika"</string>
@@ -112,7 +101,6 @@
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="918696074928692967">"Odcień niebieski"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="9080254097150221320">"Odcień zielony"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Tryb sceny"</string>
-    <string name="pref_camera_scenemode_dialogtitle" msgid="299486172171669009">"Tryb sceny"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatyczny"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Akcja"</string>
     <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Pionowy"</string>

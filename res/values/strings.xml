@@ -35,9 +35,6 @@
     <!-- label for the folder that contains Camera videos in the gallery -->
     <string name="gallery_camera_videos_bucket_name">Camera videos</string>
 
-    <!-- menu pick: view the currently selected image -->
-    <string name="view_label">View picture</string>
-
     <!-- alert to the user to wait for some operation to complete -->
     <string name="wait">Please wait\u2026</string>
 
@@ -149,9 +146,6 @@
     <string name="pref_camera_videoquality_entry_0">Low (for MMS messages)</string>
     <string name="pref_camera_videoquality_entry_1">High (for SD card)</string>
 
-    <!-- Settings screen, Video codec dialog title -->
-    <string name="pref_camera_videoquality_dialogtitle">Video quality</string>
-
     <!-- Default video duration setting. A numerical value.-->
     <string name="pref_camera_video_duration_default" translatable="false">10</string>
 
@@ -164,9 +158,6 @@
     </string>
     <string name="pref_camera_video_duration_entry_10">10 minutes</string>
     <string name="pref_camera_video_duration_entry_30">30 minutes</string>
-
-    <!-- Settings screen, Video duration dialog title -->
-    <string name="pref_camera_video_duration_dialogtitle">Video duration</string>
 
     <!-- Settings screen, Camera setting category title -->
     <string name="pref_camera_settings_category">Camera settings</string>
@@ -184,9 +175,6 @@
     <string name="pref_camera_picturesize_entry_1024x768">1M Pixels</string>
     <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
 
-    <!-- Settings screen, picture size dialog title -->
-    <string name="pref_camera_picturesize_dialogtitle">Picture size</string>
-
     <!-- Default picture quality setting. See
          pref_camera_jpegquality_entryvalues for possible values -->
     <string name="pref_camera_jpegquality_default" translatable="false">superfine</string>
@@ -199,9 +187,6 @@
     <string name="pref_camera_jpegquality_entry_fine">Fine</string>
     <string name="pref_camera_jpegquality_entry_normal">Normal</string>
 
-    <!-- Settings screen, picture quality dialog title -->
-    <string name="pref_camera_jpegquality_dialogtitle">Picture quality</string>
-
     <!-- Default focus mode setting.-->
     <string name="pref_camera_focusmode_default" translatable="false">auto</string>
 
@@ -212,9 +197,6 @@
     <string name="pref_camera_focusmode_entry_auto">Auto</string>
     <string name="pref_camera_focusmode_entry_infinity">Infinity</string>
     <string name="pref_camera_focusmode_entry_macro">Macro</string>
-
-    <!-- Settings screen, focus mode dialog title -->
-    <string name="pref_camera_focusmode_dialogtitle">Focus mode</string>
 
     <!-- Default flash mode setting.-->
     <string name="pref_camera_flashmode_default" translatable="false">auto</string>
@@ -230,17 +212,11 @@
     <string name="pref_camera_flashmode_entry_on">On</string>
     <string name="pref_camera_flashmode_entry_off">Off</string>
 
-    <!-- Settings screen, flash mode dialog title -->
-    <string name="pref_camera_flashmode_dialogtitle">Flash mode</string>
-
     <!-- Default videocamera flash mode setting.-->
     <string name="pref_camera_video_flashmode_default" translatable="false">off</string>
 
     <!-- Default white balance setting. -->
     <string name="pref_camera_whitebalance_default" translatable="false">auto</string>
-
-    <!-- Settings screen, white balance dialog title -->
-    <string name="pref_camera_whitebalance_dialogtitle">White balance</string>
 
     <!-- Settings screen, white balance title -->
     <string name="pref_camera_whitebalance_title">White balance</string>
@@ -251,9 +227,6 @@
     <string name="pref_camera_whitebalance_entry_daylight">Daylight</string>
     <string name="pref_camera_whitebalance_entry_fluorescent">Fluorescent</string>
     <string name="pref_camera_whitebalance_entry_cloudy">Cloudy</string>
-
-    <!-- Settings screen, color effect dialog title -->
-    <string name="pref_camera_coloreffect_dialogtitle">Color effect</string>
 
     <!-- Default color effect setting. -->
     <string name="pref_camera_coloreffect_default" translatable="false">none</string>
@@ -269,8 +242,6 @@
     <!-- Color effect that overexposes and reverses some of the tones. -->
     <string name="pref_camera_coloreffect_entry_solarize">Solarize</string>
     <string name="pref_camera_coloreffect_entry_posterize">Posterize</string>
-    <string name="pref_camera_coloreffect_entry_whiteboard">Whiteboard</string>
-    <string name="pref_camera_coloreffect_entry_blackboard">Blackboard</string>
     <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
     <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
     <string name="pref_camera_coloreffect_entry_mosaic">Mosaic</string>
@@ -283,9 +254,6 @@
 
     <!-- Settings screen, Select Scene mode -->
     <string name="pref_camera_scenemode_title">Scene mode</string>
-
-    <!-- Settings screen, Select Scene mode -->
-    <string name="pref_camera_scenemode_dialogtitle">Scene mode</string>
 
     <!-- Settings menu, scene mode choices -->
     <string name="pref_camera_scenemode_entry_auto">Auto</string>
