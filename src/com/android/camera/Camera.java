@@ -324,6 +324,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         ImageManager.ensureOSXCompatibleFolder();
 
+        initializeScreenBrightness();
+
         installIntentFilter();
 
         initializeFocusTone();
@@ -918,20 +920,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        Window win = getWindow();
-
-        // Overright the brightness settings if it is automatic
-        int mode = Settings.System.getInt(
-                getContentResolver(),
-                Settings.System.SCREEN_BRIGHTNESS_MODE,
-                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-        if (mode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
-            WindowManager.LayoutParams winParams = win.getAttributes();
-            winParams.screenBrightness = DEFAULT_CAMERA_BRIGHTNESS;
-            win.setAttributes(winParams);
-        }
-
-        win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.camera);
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 
@@ -1313,6 +1301,20 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         } catch (Throwable ex) {
             Log.w(TAG, "Exception caught while creating tone generator: ", ex);
             mFocusToneGenerator = null;
+        }
+    }
+
+    private void initializeScreenBrightness() {
+        Window win = getWindow();
+        // Overright the brightness settings if it is automatic
+        int mode = Settings.System.getInt(
+                getContentResolver(),
+                Settings.System.SCREEN_BRIGHTNESS_MODE,
+                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+        if (mode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+            WindowManager.LayoutParams winParams = win.getAttributes();
+            winParams.screenBrightness = DEFAULT_CAMERA_BRIGHTNESS;
+            win.setAttributes(winParams);
         }
     }
 
