@@ -34,12 +34,8 @@
     <string name="confirm_delete_title" msgid="263478358046514887">"삭제"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"사진이 삭제됩니다."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"동영상이 삭제됩니다."</string>
-    <string name="review_toss" msgid="7255331999518617841">"삭제"</string>
-    <string name="review_share" msgid="7294755861072174509">"공유"</string>
-    <string name="review_set" msgid="8304758352155378636">"다음으로 설정"</string>
     <string name="review_play" msgid="6015456244323302817">"재생"</string>
     <string name="review_cancel" msgid="8188009385853399254">"취소"</string>
-    <string name="review_done" msgid="5417465988786728114">"완료"</string>
     <string name="review_ok" msgid="5305096180300056529">"확인"</string>
     <string name="review_retake" msgid="7804864054896088338">"다시 촬영"</string>
     <string name="camera_toss" msgid="3781186798552460833">"삭제"</string>

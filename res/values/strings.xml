@@ -79,23 +79,11 @@
     <string name="confirm_restore_title">Restore Settings</string>
     <string name="confirm_restore_message">Camera settings will be restored to default.</string>
 
-    <!-- button in review mode indicating that the picture just taken should be deleted -->
-    <string name="review_toss">DELETE</string>
-
-    <!-- button in review mode indicating that the picture just taken are going to shared by email, mms, etc -->
-    <string name="review_share">SHARE</string>
-
-    <!-- button in review mode indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
-    <string name="review_set">SET AS</string>
-
     <!-- button in review mode indicating that the video just taken should be played -->
     <string name="review_play">PLAY</string>
 
     <!-- button in review mode indicating that the video recording session should be canceled -->
     <string name="review_cancel">CANCEL</string>
-
-    <!-- button in review mode indicating that the the review activity should be finished -->
-    <string name="review_done">DONE</string>
 
     <!-- button in review mode indicating that the taken video is OK to be attached/uploaded -->
     <string name="review_ok">OK</string>
