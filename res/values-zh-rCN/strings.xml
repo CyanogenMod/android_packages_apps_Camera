@@ -34,12 +34,8 @@
     <string name="confirm_delete_title" msgid="263478358046514887">"删除"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"将会删除此照片。"</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"将会删除此视频。"</string>
-    <string name="review_toss" msgid="7255331999518617841">"删除"</string>
-    <string name="review_share" msgid="7294755861072174509">"分享"</string>
-    <string name="review_set" msgid="8304758352155378636">"设置为"</string>
     <string name="review_play" msgid="6015456244323302817">"播放"</string>
     <string name="review_cancel" msgid="8188009385853399254">"取消"</string>
-    <string name="review_done" msgid="5417465988786728114">"完成"</string>
     <string name="review_ok" msgid="5305096180300056529">"确定"</string>
     <string name="review_retake" msgid="7804864054896088338">"重拍"</string>
     <string name="camera_toss" msgid="3781186798552460833">"删除"</string>

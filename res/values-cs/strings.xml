@@ -34,12 +34,8 @@
     <string name="confirm_delete_title" msgid="263478358046514887">"Smazat"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"Fotografie bude smazána."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"Video bude smazáno."</string>
-    <string name="review_toss" msgid="7255331999518617841">"SMAZAT"</string>
-    <string name="review_share" msgid="7294755861072174509">"SDÍLET"</string>
-    <string name="review_set" msgid="8304758352155378636">"POUŽÍT JAKO"</string>
     <string name="review_play" msgid="6015456244323302817">"PŘEHRÁT"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ZRUŠIT"</string>
-    <string name="review_done" msgid="5417465988786728114">"Hotovo"</string>
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"Pořídit další"</string>
     <string name="camera_toss" msgid="3781186798552460833">"Smazat"</string>
