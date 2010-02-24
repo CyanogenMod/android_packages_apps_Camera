@@ -37,6 +37,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.media.CameraProfile;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -2161,8 +2162,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private static String[] mQualityStrings = {"superfine", "fine", "normal"};
-    private static String[] mQualityNumbers = SystemProperties.get(
-            "ro.media.enc.jpeg.quality", "85,75,65").split(",");
+    private static int[] mQualityNumbers = CameraProfile.getImageEncodingQualityLevels();
     private static int DEFAULT_QUALITY = 85;
 
     // Translate from a quality string to a quality number using the system
@@ -2174,12 +2174,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (index == -1 || index > mQualityNumbers.length - 1) {
             return DEFAULT_QUALITY;
         }
-
-        try {
-            return Integer.parseInt(mQualityNumbers[index]);
-        } catch (NumberFormatException ex) {
-            return DEFAULT_QUALITY;
-        }
+        return mQualityNumbers[index];
     }
 }
 

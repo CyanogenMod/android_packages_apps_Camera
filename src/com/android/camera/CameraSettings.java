@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.media.CamcorderProfile;
+import android.media.CamcorderProfile.Quality;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.SystemProperties;
@@ -60,8 +62,7 @@ public class CameraSettings {
     public static final int CURRENT_VERSION = 3;
 
     // max mms video duration in seconds.
-    public static final int MMS_VIDEO_DURATION =
-            SystemProperties.getInt("ro.media.enc.lprof.duration", 60);
+    public static final int MMS_VIDEO_DURATION = CamcorderProfile.getMmsRecordingDurationInSeconds();
 
     public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
 
