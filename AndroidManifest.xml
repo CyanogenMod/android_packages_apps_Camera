@@ -26,7 +26,7 @@
         </receiver>
         <activity android:name="Camera"
                 android:configChanges="orientation|keyboardHidden"
-                android:theme="@style/CustomTheme"
+                android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
                 android:screenOrientation="landscape"
                 android:clearTaskOnLaunch="true"
                 android:taskAffinity="android.task.camera">
@@ -48,7 +48,7 @@
                 android:label="@string/video_camera_label"
                 android:configChanges="orientation|keyboardHidden"
                 android:icon="@drawable/ic_launcher_video_camera"
-                android:theme="@style/CustomTheme"
+                android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
                 android:screenOrientation="landscape"
                 android:clearTaskOnLaunch="true"
                 android:taskAffinity="android.task.camcorder">

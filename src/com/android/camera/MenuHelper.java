@@ -101,6 +101,8 @@ public class MenuHelper {
      */
     public static final int RESULT_COMMON_MENU_CROP = 490;
 
+    private static final int NO_ANIMATION = 0;
+
     public interface MenuItemsResult {
         public void gettingReadyToOpen(Menu menu, IImage image);
         public void aboutToCall(MenuItem item, IImage image);
@@ -918,6 +920,7 @@ public class MenuHelper {
         CameraHolder.instance().keep();
 
         activity.startActivity(intent);
+        activity.overridePendingTransition(NO_ANIMATION, NO_ANIMATION);
     }
 
     public static void gotoVideoMode(Activity activity) {
