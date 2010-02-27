@@ -34,6 +34,8 @@
     <string name="confirm_delete_title" msgid="263478358046514887">"Sil"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"Resim silinecek."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"Video silinecek."</string>
+    <string name="confirm_restore_title" msgid="4786740665995153202">"Ayarları Geri Yükle"</string>
+    <string name="confirm_restore_message" msgid="7273245528031237204">"Kamera ayarları varsayılan değerlerine geri yüklenecek."</string>
     <string name="review_play" msgid="6015456244323302817">"YÜRÜT"</string>
     <string name="review_cancel" msgid="8188009385853399254">"İPTAL"</string>
     <string name="review_ok" msgid="5305096180300056529">"Tamam"</string>
@@ -63,8 +65,7 @@
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M Piksel"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2M Piksel"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M Piksel"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_320x240 (5729711026478753025) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Resim kalitesi"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Çok iyi"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"İyi"</string>
@@ -109,6 +110,11 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Gün batımı"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="2147958278893914895">"Sabit Fotoğraf"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Havai fişekler"</string>
+    <string name="pref_camera_quickcapture_title" msgid="5934534901465097886">"Hızlı Yakala"</string>
+    <string name="pref_camera_quickcapture_entry_on" msgid="1940258136944434407">"Açık"</string>
+    <string name="pref_camera_quickcapture_entry_off" msgid="5000775068226508567">"Kapalı"</string>
+    <string name="pref_restore_title" msgid="5685941409089844371">"Ayarları geri yükle"</string>
+    <string name="pref_restore_detail" msgid="2399950455369977703">"Kamera ayarlarını varsayılan değerlerine geri yükle"</string>
     <string name="no_location_image" msgid="6929172123058811834">"Bu görselde Konum bilgisi bulunmuyor."</string>
     <string name="details_panel_title" msgid="4753347516759338122">"Ayrıntılar"</string>
     <string name="details_file_size" msgid="2468878774843246797">"Dosya boyutu:"</string>

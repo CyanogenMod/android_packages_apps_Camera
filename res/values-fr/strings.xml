@@ -34,6 +34,8 @@
     <string name="confirm_delete_title" msgid="263478358046514887">"Supprimer"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"L\'image sera supprimée."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"La vidéo va être supprimée."</string>
+    <string name="confirm_restore_title" msgid="4786740665995153202">"Rétablir les paramètres"</string>
+    <string name="confirm_restore_message" msgid="7273245528031237204">"Les paramètres par défaut de l\'appareil photo seront rétablis."</string>
     <string name="review_play" msgid="6015456244323302817">"LIRE"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULER"</string>
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
@@ -63,8 +65,7 @@
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 M pixels"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 M pixels"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 M pixels"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_320x240 (5729711026478753025) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Qualité d\'image"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Très haute qualité"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Haute qualité"</string>
@@ -109,6 +110,11 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Coucher de soleil"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="2147958278893914895">"Anti-flou"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Feux d\'artifice"</string>
+    <string name="pref_camera_quickcapture_title" msgid="5934534901465097886">"Capture rapide"</string>
+    <string name="pref_camera_quickcapture_entry_on" msgid="1940258136944434407">"Activée"</string>
+    <string name="pref_camera_quickcapture_entry_off" msgid="5000775068226508567">"Désactivée"</string>
+    <string name="pref_restore_title" msgid="5685941409089844371">"Rétablir les paramètres"</string>
+    <string name="pref_restore_detail" msgid="2399950455369977703">"Rétablissez les paramètres par défaut de l\'appareil photo."</string>
     <string name="no_location_image" msgid="6929172123058811834">"Cette image ne contient pas d\'informations de localisation."</string>
     <string name="details_panel_title" msgid="4753347516759338122">"Détails"</string>
     <string name="details_file_size" msgid="2468878774843246797">"Taille du fichier :"</string>
