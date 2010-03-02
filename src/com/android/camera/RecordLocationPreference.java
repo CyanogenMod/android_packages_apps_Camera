@@ -16,18 +16,16 @@
 
 package com.android.camera;
 
-import android.content.Context;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.Log;
 
 /**
  * {@code RecordLocationPreference} is used to keep the "store locaiton"
  * option in {@code SharedPreference}.
  */
-public class RecordLocationPreference extends ListPreference {
+public class RecordLocationPreference extends IconListPreference {
 
     public static final String KEY = "pref_camera_recordlocation_key";
 
@@ -35,7 +33,7 @@ public class RecordLocationPreference extends ListPreference {
     public static final String VALUE_ON = "on";
     public static final String VALUE_OFF = "off";
 
-    private ContentResolver mResolver;
+    private final ContentResolver mResolver;
 
     public RecordLocationPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
