@@ -911,14 +911,10 @@ public class VideoCamera extends NoSearchActivity
         mMediaRecorder.setVideoFrameRate(mProfile.mVideoFrameRate);
         mMediaRecorder.setVideoSize(
                 mProfile.mVideoFrameWidth, mProfile.mVideoFrameHeight);
-        mMediaRecorder.setParameters(String.format(
-                "video-param-encoding-bitrate=%d", mProfile.mVideoBitRate));
-        mMediaRecorder.setParameters(String.format(
-                "audio-param-encoding-bitrate=%d", mProfile.mAudioBitRate));
-        mMediaRecorder.setParameters(String.format(
-                "audio-param-number-of-channels=%d", mProfile.mAudioChannels));
-        mMediaRecorder.setParameters(String.format(
-                "audio-param-sampling-rate=%d", mProfile.mAudioSampleRate));
+        mMediaRecorder.setVideoEncodingBitRate(mProfile.mVideoBitRate);
+        mMediaRecorder.setAudioEncodingBitRate(mProfile.mAudioBitRate);
+        mMediaRecorder.setAudioChannels(mProfile.mAudioChannels);
+        mMediaRecorder.setAudioSamplingRate(mProfile.mAudioSampleRate);
         mMediaRecorder.setVideoEncoder(mProfile.mVideoCodec);
         mMediaRecorder.setAudioEncoder(mProfile.mAudioCodec);
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
