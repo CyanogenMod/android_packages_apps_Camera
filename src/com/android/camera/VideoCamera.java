@@ -202,9 +202,6 @@ public class VideoCamera extends NoSearchActivity
 
                 case INIT_RECORDER: {
                     initializeRecorder();
-                    if (mQuickCapture) {
-                        startVideoRecording();
-                    }
                     break;
                 }
 
