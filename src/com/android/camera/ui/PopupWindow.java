@@ -17,14 +17,15 @@ public class PopupWindow extends GLView {
 
     protected int mAnchorPosition;
     private final RotatePane mRotatePane = new RotatePane();
+    private RawTexture mBackupTexture;
 
-    protected NinePatchTexture mBackground;
+    protected FrameTexture mBackground;
 
     public PopupWindow() {
         super.addComponent(mRotatePane);
     }
 
-    public void setBackground(NinePatchTexture background) {
+    public void setBackground(FrameTexture background) {
         if (background == mBackground) return;
         mBackground = background;
         if (background != null) {
@@ -89,7 +90,7 @@ public class PopupWindow extends GLView {
     }
 
     @Override
-    protected void renderBackground(GLRootView rootView, GL11 gl) {
+    protected void renderBackground(GLRootView root, GL11 gl) {
         int width = getWidth();
         int height = getHeight();
         int aWidth = mAnchor.getWidth();
@@ -101,30 +102,32 @@ public class PopupWindow extends GLView {
         aYoffset = Math.min(aYoffset, height - p.bottom - aHeight);
 
         if (mAnchor != null) {
-            if (mAnchor.bind(rootView, gl)) {
-                rootView.draw2D(aXoffset, aYoffset, aWidth, aHeight);
+            if (mAnchor.bind(root, gl)) {
+                mAnchor.draw(root, aXoffset, aYoffset);
             }
         }
 
-        Texture backup = null;
+        if (mBackupTexture == null || mBackupTexture.getBoundGL() != gl) {
+            mBackupTexture = RawTexture.newInstance(gl);
+        }
+
+        RawTexture backup = mBackupTexture;
         try {
-            backup = rootView.copyTexture2D(
-                    aXoffset, aYoffset, aWidth, aHeight);
+            root.copyTexture2D(backup, aXoffset, aYoffset, aWidth, aHeight);
         } catch (GLOutOfMemoryException e) {
             e.printStackTrace();
         }
 
         if (mBackground != null) {
             mBackground.setSize(width - aWidth + mAnchorOffset, height);
-            if (mBackground.bind(rootView, gl)) {
-                rootView.draw2D(
-                        0, 0, mBackground.getWidth(), mBackground.getHeight());
+            if (mBackground.bind(root, gl)) {
+                mBackground.draw(root, 0, 0);
             }
         }
 
-        if (backup.bind(rootView, gl)) {
+        if (backup.bind(root, gl)) {
             gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
-            rootView.draw2D(aXoffset, aYoffset, aWidth, aHeight, 1);
+            backup.draw(root, aXoffset, aYoffset, aWidth, aHeight, 1);
             gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
     }
@@ -148,8 +151,8 @@ public class PopupWindow extends GLView {
 
         set.addAnimation(scale);
         set.addAnimation(alpha);
-        scale.setDuration(200);
-        alpha.setDuration(200);
+        scale.setDuration(150);
+        alpha.setDuration(100);
         scale.setInterpolator(new OvershootInterpolator());
         startAnimation(set);
     }

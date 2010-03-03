@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.android.camera.IconListPreference;
 import com.android.camera.R;
+import com.android.camera.Util;
 import com.android.camera.ui.GLListView.OnItemSelectedListener;
 
 public class BasicIndicator extends AbstractIndicator {
@@ -15,7 +16,8 @@ public class BasicIndicator extends AbstractIndicator {
     private PreferenceAdapter mModel;
     private String mOverride;
 
-    public BasicIndicator(IconListPreference preference) {
+    public BasicIndicator(Context context, IconListPreference preference) {
+        super(context);
         mPreference = preference;
         mIcon = new ResourceTexture[preference.getIconIds().length];
         mIndex = preference.findIndexOfValue(preference.getValue());
@@ -24,12 +26,16 @@ public class BasicIndicator extends AbstractIndicator {
     @Override
     public void overrideSettings(String key, String settings) {
         IconListPreference pref = mPreference;
-
         if (!pref.getKey().equals(key)) return;
+        if (Util.equals(mOverride, settings)) return;
+
         mOverride = settings;
-        mIndex = pref.findIndexOfValue(
+        int index = pref.findIndexOfValue(
                 settings == null ? pref.getValue() : settings);
-        invalidate();
+        if (mIndex != index) {
+            mIndex = index;
+            invalidate();
+        }
     }
 
     @Override

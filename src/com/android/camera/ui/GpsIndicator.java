@@ -12,8 +12,8 @@ public class GpsIndicator extends BasicIndicator {
     private ResourceTexture mNoSignalIcon;
     private boolean mHasSignal = false;
 
-    public GpsIndicator(IconListPreference preference) {
-        super(preference);
+    public GpsIndicator(Context context, IconListPreference preference) {
+        super(context, preference);
     }
 
     @Override

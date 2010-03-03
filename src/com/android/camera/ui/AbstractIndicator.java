@@ -1,17 +1,19 @@
 
 package com.android.camera.ui;
 
+import android.content.Context;
 import android.graphics.Rect;
 
 import javax.microedition.khronos.opengles.GL11;
 
 public abstract class AbstractIndicator extends GLView {
-    private static final int DEFAULT_PADDING = 5;
+    private static final int DEFAULT_PADDING = 3;
 
     abstract protected ResourceTexture getIcon();
 
-    public AbstractIndicator() {
-        setPaddings(DEFAULT_PADDING, 0, DEFAULT_PADDING, 0);
+    public AbstractIndicator(Context context) {
+        int padding = GLRootView.dpToPixel(context, DEFAULT_PADDING);
+        setPaddings(padding, 0, padding, 0);
     }
 
     @Override

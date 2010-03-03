@@ -15,8 +15,10 @@ public class OtherSettingsIndicator extends AbstractIndicator {
     private GLListView mPopupContent;
     private final HashMap<String, String> mOverrides = new HashMap<String, String>();
 
-    public OtherSettingsIndicator(ListPreference preference[]) {
-        mPreference = preference.clone();
+    public OtherSettingsIndicator(
+            Context context, ListPreference preference[]) {
+        super(context);
+        mPreference = preference;
         mAdapters = new PreferenceAdapter[preference.length];
     }
 
@@ -56,7 +58,7 @@ public class OtherSettingsIndicator extends AbstractIndicator {
             String override = mOverrides.get(prefs[i].getKey());
             if (override != null) adapters[i].overrideSettings(override);
         }
-        return new UberAdapter(adapters);
+        return new UberAdapter();
     }
 
     @Override
@@ -77,12 +79,6 @@ public class OtherSettingsIndicator extends AbstractIndicator {
 
     private class UberAdapter implements
             GLListView.Model, GLListView.OnItemSelectedListener {
-
-        private final PreferenceAdapter mAdapters[];
-
-        public UberAdapter(PreferenceAdapter[] adapters) {
-            mAdapters = adapters;
-        }
 
         public GLView getView(int index) {
             for (PreferenceAdapter adapter : mAdapters) {

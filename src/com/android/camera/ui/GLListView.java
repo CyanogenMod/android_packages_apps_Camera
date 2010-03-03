@@ -66,8 +66,8 @@ public class GLListView extends GLView {
                 int height = bounds.height();
                 mHighLight.setSize(width, height);
                 if (mHighLight.bind(root, gl)) {
-                    root.draw2D(bounds.left - mScrollX,
-                            bounds.top - mScrollY, width, height);
+                    mHighLight.draw(root,
+                            bounds.left - mScrollX, bounds.top - mScrollY);
                 }
             }
         }
@@ -80,7 +80,7 @@ public class GLListView extends GLView {
             mScrollbar.setSize(width, height);
             if (mScrollbar.bind(root, gl)) {
                 int yoffset = mScrollY * getHeight() / mScrollHeight;
-                root.draw2D(getWidth() - width, yoffset, width, height);
+                mScrollbar.draw(root, getWidth() - width, yoffset);
             }
         }
     }

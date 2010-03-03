@@ -6,11 +6,22 @@ import javax.microedition.khronos.opengles.GL11;
 
 public class RawTexture extends Texture {
 
-    protected RawTexture(GL11 gl, int id,
-            int width, int height, float widthf, float heightf) {
+    private RawTexture(GL11 gl, int id) {
         super(gl, id, STATE_LOADED);
-        super.setSize(width, height);
-        super.setTexCoordSize(widthf, heightf);
+    }
+
+    public GL11 getBoundGL() {
+        return mGL;
+    }
+
+    public static RawTexture newInstance(GL11 gl) {
+        int[] textureId = new int[1];
+        gl.glGenTextures(1, textureId, 0);
+        int glError = gl.glGetError();
+        if (glError != GL11.GL_NO_ERROR) {
+            throw new RuntimeException("GL_ERROR: " + glError);
+        }
+        return new RawTexture(gl, textureId[0]);
     }
 
     @Override
@@ -23,4 +34,12 @@ public class RawTexture extends Texture {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    protected boolean bind(GLRootView glRootView, GL11 gl) {
+        if (mGL == gl) {
+            gl.glBindTexture(GL11.GL_TEXTURE_2D, getId());
+            return true;
+        }
+        return false;
+    }
 }

@@ -36,8 +36,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.media.CameraProfile;
+import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -138,7 +138,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private Switcher mSwitcher;
     private boolean mStartPreviewFail = false;
 
-    private GLRootView mRootView;
+    private GLRootView mGLRootView;
 
     // mPostCaptureAlert, mLastPictureButton, mThumbController
     // are non-null only if isImageCaptureIntent() is true.
@@ -273,7 +273,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     if (!mIsImageCaptureIntent)  {
                         setOrientationIndicator(mLastOrientation);
                     }
-                    mRootView.queueEvent(new Runnable() {
+                    mGLRootView.queueEvent(new Runnable() {
                         public void run() {
                             mHeadUpDisplay.setOrientation(mLastOrientation);
                         }
@@ -327,12 +327,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         mFirstTimeInitialized = true;
 
-        mRootView = (GLRootView) findViewById(R.id.settings_ui);
-        mHeadUpDisplay = new HeadUpDisplay();
+        mHeadUpDisplay = new HeadUpDisplay(this);
         CameraSettings settings = new CameraSettings(this, mInitialParams);
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences));
-        mRootView.setContentPane(mHeadUpDisplay);
+        mGLRootView.setContentPane(mHeadUpDisplay);
     }
 
     private void updateThumbnailButton() {
@@ -964,6 +963,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup rootView = (ViewGroup) findViewById(R.id.camera);
+        mGLRootView = (GLRootView) findViewById(R.id.settings_ui);
+
         if (mIsImageCaptureIntent) {
             View controlBar = inflater.inflate(
                     R.layout.attach_camera_control, rootView);
@@ -1242,6 +1243,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     @Override
     protected void onResume() {
         super.onResume();
+        mGLRootView.onResume();
+
         mPreferences.registerOnSharedPreferenceChangeListener(this);
 
         mPausing = false;
@@ -1278,6 +1281,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     @Override
     protected void onPause() {
         mPausing = true;
+        mGLRootView.onPause();
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
@@ -1788,9 +1792,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             final String whiteBalance = mParameters.getWhiteBalance();
             mFocusMode = mParameters.getFocusMode();
 
-            if (mRootView != null) {
+            if (mHeadUpDisplay != null) {
                 final String finalFlashMode = flashMode;
-                mRootView.queueEvent(new Runnable() {
+                mGLRootView.queueEvent(new Runnable() {
                     public void run() {
                         mHeadUpDisplay.overrideSettings(
                                 CameraSettings.KEY_FLASH_MODE, flashMode);
@@ -1801,8 +1805,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     }});
             }
         } else {
-            if (mRootView != null) {
-                mRootView.queueEvent(new Runnable() {
+            if (mHeadUpDisplay != null) {
+                mGLRootView.queueEvent(new Runnable() {
                     public void run() {
                         mHeadUpDisplay.overrideSettings(
                                 CameraSettings.KEY_FLASH_MODE, null);

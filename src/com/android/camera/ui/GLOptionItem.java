@@ -1,5 +1,6 @@
 package com.android.camera.ui;
 
+import static com.android.camera.ui.GLRootView.dpToPixel;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -11,16 +12,27 @@ import javax.microedition.khronos.opengles.GL11;
 
 public class GLOptionItem extends GLView {
     private static final int FONT_COLOR = Color.WHITE;
-    private static final int MINIMAL_WIDTH = 180;
-    private static final int MINIMAL_HEIGHT = 48;
-    private static final int NO_ICON_LEADING_SPACE = 15;
-    private static final int TEXT_LEFT_PADDING = 9;
-    private static final int TEXT_RIGHT_PADDING = 15;
+    private static final float FONT_SIZE = 18;
+
+    private static final int MINIMAL_WIDTH = 120;
+    private static final int MINIMAL_HEIGHT = 32;
+
+    private static final int NO_ICON_LEADING_SPACE = 10;
+    private static final int TEXT_LEFT_PADDING = 6;
+    private static final int TEXT_RIGHT_PADDING = 10;
+
     private static final float ENABLED_ALPHA = 1f;
     private static final float DISABLED_ALPHA = 0.3f;
 
     private static ResourceTexture sCheckOn;
     private static ResourceTexture sCheckOff;
+
+    private static int sNoIconLeadingSpace;
+    private static int sTextLeftPadding;
+    private static int sTextRightPadding;
+    private static int sMinimalWidth;
+    private static int sMinimalHeight;
+    private static float sFontSize;
 
     private final ResourceTexture mIcon;
     private final StringTexture mText;
@@ -28,29 +40,40 @@ public class GLOptionItem extends GLView {
 
     private ResourceTexture mCheckBox;
 
-    private static void initCheckIcons(Context context) {
+
+    private static void initializeStaticVariables(Context context) {
         if (sCheckOn != null) return;
+
         sCheckOn = new ResourceTexture(context, R.drawable.ic_menuselect_on);
         sCheckOff = new ResourceTexture(context, R.drawable.ic_menuselect_off);
+
+        sNoIconLeadingSpace = dpToPixel(context, NO_ICON_LEADING_SPACE);
+        sTextLeftPadding = dpToPixel(context, TEXT_LEFT_PADDING);
+        sTextRightPadding = dpToPixel(context, TEXT_RIGHT_PADDING);
+        sMinimalWidth = dpToPixel(context, MINIMAL_WIDTH);
+        sMinimalHeight = dpToPixel(context, MINIMAL_HEIGHT);
+
+        sFontSize = dpToPixel(context, FONT_SIZE);
     }
 
     public GLOptionItem(Context context, int iconId, String title) {
-        initCheckIcons(context);
+        initializeStaticVariables(context);
         mIcon = iconId == 0 ? null : new ResourceTexture(context, iconId);
-        mText = StringTexture.newInstance(title, 26, FONT_COLOR);
+        mText = StringTexture.newInstance(title, sFontSize, FONT_COLOR);
         mCheckBox = sCheckOff;
     }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        int width = (mIcon == null ? NO_ICON_LEADING_SPACE : mIcon.getWidth())
-                + mText.getWidth() + mCheckBox.getWidth()
-                + TEXT_RIGHT_PADDING + TEXT_LEFT_PADDING;
+        int width = mIcon == null ? sNoIconLeadingSpace : mIcon.getWidth();
+        width += mText.getWidth() + mCheckBox.getWidth();
+        width += sTextRightPadding + sTextLeftPadding;
+
         int height = Math.max(Math.max(mIcon == null ? 0 : mIcon.getHeight(),
                 mText.getHeight()), mCheckBox.getHeight());
 
-        width = Math.max(MINIMAL_WIDTH, width);
-        height = Math.max(MINIMAL_HEIGHT, height);
+        width = Math.max(sMinimalWidth, width);
+        height = Math.max(sMinimalHeight, height);
 
         new MeasureHelper(this)
                 .setPreferedContentSize(width, height)
@@ -78,11 +101,11 @@ public class GLOptionItem extends GLView {
             }
             xoffset += icon.getWidth();
         } else {
-            xoffset += NO_ICON_LEADING_SPACE;
+            xoffset += sNoIconLeadingSpace;
         }
 
         StringTexture title = mText;
-        xoffset += TEXT_LEFT_PADDING;
+        xoffset += sTextLeftPadding;
         if (title.bind(root, gl)) {
             int yoffset = p.top + (height - title.getHeight()) / 2;
             //TODO: cut the text if it is too long

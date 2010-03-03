@@ -1,5 +1,6 @@
 package com.android.camera.ui;
 
+import static com.android.camera.ui.GLRootView.dpToPixel;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -23,13 +24,20 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 public class HeadUpDisplay extends GLView {
-    private static final int INDICATOR_BAR_RIGHT_MARGIN = 15;
-    private static final int POPUP_WINDOW_OVERLAP = 30;
+    private static final int INDICATOR_BAR_RIGHT_MARGIN = 10;
+    private static final int POPUP_WINDOW_OVERLAP = 20;
+    private static final int POPUP_TRIANGLE_OFFSET = 16;
+
     private static final float MAX_HEIGHT_RATIO = 0.8f;
     private static final float MAX_WIDTH_RATIO = 0.8f;
 
     private static final int HIDE_POPUP_WINDOW = 0;
     private static final int DEACTIVATE_INDICATOR_BAR = 1;
+
+    private static int sIndicatorBarRightMargin = -1;
+    private static int sPopupWindowOverlap;
+    private static int sPopupTriangleOffset;
+
     protected static final String TAG = "HeadUpDisplay";
 
     private IndicatorBar mIndicatorBar;
@@ -48,7 +56,9 @@ public class HeadUpDisplay extends GLView {
 
     private final Handler mHandler;
 
-    public HeadUpDisplay() {
+    public HeadUpDisplay(Context context) {
+        initializeStaticVariables(context);
+        mTimerThread.setDaemon(true);
         mTimerThread.start();
         mHandler = new Handler(mTimerThread.getLooper()) {
 
@@ -74,6 +84,14 @@ public class HeadUpDisplay extends GLView {
                 }
             }
         };
+    }
+
+    private static void initializeStaticVariables(Context context) {
+        if (sIndicatorBarRightMargin >= 0) return;
+
+        sIndicatorBarRightMargin = dpToPixel(context, INDICATOR_BAR_RIGHT_MARGIN);
+        sPopupWindowOverlap = dpToPixel(context, POPUP_WINDOW_OVERLAP);
+        sPopupTriangleOffset = dpToPixel(context, POPUP_TRIANGLE_OFFSET);
     }
 
     private final Callable<Void> mHidePopupWindow = new Callable<Void> () {
@@ -206,7 +224,7 @@ public class HeadUpDisplay extends GLView {
         mPopupWindow.setBackground(
                 new NinePatchTexture(context, R.drawable.menu_popup));
         mPopupWindow.setAnchor(new ResourceTexture(
-                context, R.drawable.menu_popup_triangle), 23);
+                context, R.drawable.menu_popup_triangle), sPopupTriangleOffset);
         mPopupWindow.setVisibility(GLView.INVISIBLE);
         mPopupWindow.setOrientation(mOrientation);
         addComponent(mPopupWindow);
@@ -253,12 +271,12 @@ public class HeadUpDisplay extends GLView {
         return list.toArray(new ListPreference[list.size()]);
     }
 
-    private static BasicIndicator addIndicator(
+    private static BasicIndicator addIndicator(Context context,
             IndicatorBar indicatorBar, PreferenceGroup group, String key) {
         IconListPreference iconPref =
                 (IconListPreference) group.findPreference(key);
         if (iconPref == null) return null;
-        BasicIndicator indicator = new BasicIndicator(iconPref);
+        BasicIndicator indicator = new BasicIndicator(context, iconPref);
         indicatorBar.addComponent(indicator);
         return indicator;
     }
@@ -274,6 +292,7 @@ public class HeadUpDisplay extends GLView {
                 context, R.drawable.ic_viewfinder_iconbar_highlight));
 
         OtherSettingsIndicator otherSettings = new OtherSettingsIndicator(
+                context,
                 getListPreferences(group,
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_SCENE_MODE,
@@ -282,13 +301,17 @@ public class HeadUpDisplay extends GLView {
                 CameraSettings.KEY_COLOR_EFFECT));
         mIndicatorBar.addComponent(otherSettings);
 
-        GpsIndicator gpsIndicator = new GpsIndicator((IconListPreference)
+        GpsIndicator gpsIndicator = new GpsIndicator(
+                context, (IconListPreference)
                 group.findPreference(CameraSettings.KEY_RECORD_LOCATION));
+
         mGpsIndicator = gpsIndicator;
         mIndicatorBar.addComponent(gpsIndicator);
 
-        addIndicator(mIndicatorBar, group, CameraSettings.KEY_WHITE_BALANCE);
-        addIndicator(mIndicatorBar, group, CameraSettings.KEY_FLASH_MODE);
+        addIndicator(context, mIndicatorBar, group,
+                CameraSettings.KEY_WHITE_BALANCE);
+        addIndicator(context, mIndicatorBar, group,
+                CameraSettings.KEY_FLASH_MODE);
 
         addComponent(mIndicatorBar);
         mIndicatorBar.setOnItemSelectedListener(new IndicatorBarListener());
@@ -313,7 +336,7 @@ public class HeadUpDisplay extends GLView {
         public void onItemSelected(GLView view, int position) {
             Rect rect = new Rect();
             getBoundsOf(view, rect);
-            int anchorX = rect.left + POPUP_WINDOW_OVERLAP;
+            int anchorX = rect.left + sPopupWindowOverlap;
             int anchorY = (rect.top + rect.bottom) / 2;
 
             AbstractIndicator indicator = (AbstractIndicator) view;

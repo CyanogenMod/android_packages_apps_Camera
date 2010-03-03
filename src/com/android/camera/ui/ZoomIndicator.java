@@ -1,16 +1,20 @@
 package com.android.camera.ui;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class GLZoomIndicator extends GLView {
+public class ZoomIndicator extends GLView {
+
+    private static final int FONT_SIZE = 16;
 
     private final StringTexture mTitle;
 
-    public GLZoomIndicator(String title) {
-        mTitle = StringTexture.newInstance(title, 24, Color.WHITE);
+    public ZoomIndicator(Context context, String title) {
+        float fontSize = GLRootView.dpToPixel(context, FONT_SIZE);
+        mTitle = StringTexture.newInstance(title, fontSize, Color.WHITE);
     }
 
     @Override

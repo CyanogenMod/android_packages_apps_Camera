@@ -1,5 +1,6 @@
 package com.android.camera.ui;
 
+import static com.android.camera.ui.GLRootView.dpToPixel;
 import android.content.Context;
 
 import com.android.camera.IconListPreference;
@@ -13,16 +14,26 @@ public class PreferenceAdapter
         implements GLListView.Model, GLListView.OnItemSelectedListener {
 
     private static final int ICON_NONE = 0;
+    private static final int HORIZONTAL_PADDINGS = 4;
+    private static final int VERTICAL_PADDINGS = 2;
 
-    private final Context mContext;
+    private static int sHorizontalPaddings = -1;
+    private static int sVerticalPaddings;
+
     private final ArrayList<GLView> mContent = new ArrayList<GLView>();
     private final ListPreference mPreference;
     private String mOverride;
 
+    private static void initializeStaticVariable(Context context) {
+        if (sHorizontalPaddings >= 0) return;
+        sHorizontalPaddings = dpToPixel(context, HORIZONTAL_PADDINGS);
+        sVerticalPaddings = dpToPixel(context, VERTICAL_PADDINGS);
+    }
+
     public PreferenceAdapter(Context context, ListPreference preference) {
-        mContext = context;
+        initializeStaticVariable(context);
         mPreference = preference;
-        generateContent(preference);
+        generateContent(context, preference);
     }
 
     public void overrideSettings(String settings) {
@@ -47,13 +58,12 @@ public class PreferenceAdapter
         }
     }
 
-    private void generateContent(ListPreference preference) {
-        Context context = mContext;
-
-        GLOptionHeader header = new GLOptionHeader(preference);
+    private void generateContent(Context context, ListPreference preference) {
+        GLOptionHeader header = new GLOptionHeader(context, preference);
         header.setBackground(new NinePatchTexture(
                 context, R.drawable.optionheader_background));
-        header.setPaddings(5, 2, 5, 2);
+        header.setPaddings(sHorizontalPaddings,
+                sVerticalPaddings, sHorizontalPaddings, sVerticalPaddings);
         mContent.add(header);
         CharSequence[] entries = preference.getEntries();
         CharSequence[] values = preference.getEntryValues();
@@ -67,7 +77,8 @@ public class PreferenceAdapter
             GLOptionItem item = new GLOptionItem(
                     context, icons == null ? ICON_NONE : icons[i],
                     entries[i].toString());
-            item.setPaddings(5, 2, 5, 2);
+            item.setPaddings(sHorizontalPaddings,
+                    sVerticalPaddings, sHorizontalPaddings, sVerticalPaddings);
             item.setChecked(values[i].equals(value));
             mContent.add(item);
         }

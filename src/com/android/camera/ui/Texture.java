@@ -19,10 +19,10 @@ public abstract class Texture {
     public static final int STATE_LOADED = 1;
     public static final int STATE_ERROR = -1;
 
-    private GL11 mGL;
+    protected GL11 mGL;
 
-    private int mId;
-    private int mState;
+    protected int mId;
+    protected int mState;
 
     protected int mWidth = UNSPECIFIED;
     protected int mHeight = UNSPECIFIED;
@@ -119,31 +119,40 @@ public abstract class Texture {
     }
 
     public void draw(GLRootView root, int x, int y) {
-        draw(root, x, y, getWidth(), getHeight());
+        root.drawTexture(this, x, y, mWidth, mHeight);
     }
 
-    public void draw(GLRootView root,
-            int x, int y, int width, int height) {
-        root.draw2D(x, y, width, height);
+    public void draw(GLRootView root, int x, int y, int w, int h, float alpha) {
+        root.drawTexture(this, x, y, w, h, alpha);
     }
 
-    protected boolean bind(GLRootView glRootView, GL11 gl) {
+    protected boolean bind(GLRootView root, GL11 gl) {
         if (mState == Texture.STATE_UNLOADED || mGL != gl) {
             mState = Texture.STATE_UNLOADED;
             try {
                 uploadToGL(gl);
             } catch (GLOutOfMemoryException e) {
-                glRootView.handleLowMemory();
+                root.handleLowMemory();
                 return false;
             }
         } else {
             gl.glBindTexture(GL11.GL_TEXTURE_2D, getId());
         }
+        return true;
+    }
 
+    public void getTextureCoords(float coord[], int offset) {
         float w = mTexCoordWidth;
         float h = mTexCoordHeight;
-        glRootView.setTexCoords(0, 0, w, 0, 0, h, w, h);
-        return true;
+
+        coord[offset++] = 0;
+        coord[offset++] = 0;
+        coord[offset++] = w;
+        coord[offset++] = 0;
+        coord[offset++] = 0;
+        coord[offset++] = h;
+        coord[offset++] = w;
+        coord[offset] = h;
     }
 
     protected Bitmap generateGLCompatibleBitmap(int width, int height) {

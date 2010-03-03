@@ -23,7 +23,7 @@ public class PopupWindowStencilImpl extends PopupWindow {
             gl.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
             gl.glStencilFunc(GL11.GL_ALWAYS, 1, 1);
             if (mAnchor.bind(rootView, gl)) {
-                rootView.draw2D(aXoffset, aYoffset, aWidth, aHeight);
+                mAnchor.draw(rootView, aXoffset, aYoffset);
             }
             gl.glStencilFunc(GL11.GL_NOTEQUAL, 1, 1);
             gl.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
@@ -32,8 +32,7 @@ public class PopupWindowStencilImpl extends PopupWindow {
         if (mBackground != null) {
             mBackground.setSize(width - aWidth + mAnchorOffset, height);
             if (mBackground.bind(rootView, gl)) {
-                rootView.draw2D(
-                        0, 0, mBackground.getWidth(), mBackground.getHeight());
+                mBackground.draw(rootView, 0, 0);
             }
         }
     }

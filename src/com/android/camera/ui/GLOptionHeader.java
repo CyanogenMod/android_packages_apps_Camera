@@ -1,5 +1,6 @@
 package com.android.camera.ui;
 
+import android.content.Context;
 import android.graphics.Rect;
 
 import com.android.camera.ListPreference;
@@ -8,15 +9,17 @@ import javax.microedition.khronos.opengles.GL11;
 
 public class GLOptionHeader extends GLView {
     private static final int FONT_COLOR = 0xFF979797;
+    private static final float FONT_SIZE = 12;
 
     private final ListPreference mPreference;
     private final StringTexture mTitle;
     private NinePatchTexture mBackground;
 
-    public GLOptionHeader(ListPreference preference) {
+    public GLOptionHeader(Context context, ListPreference preference) {
+        float fontSize = GLRootView.dpToPixel(context, FONT_SIZE);
         mPreference = preference;
         mTitle = StringTexture.newInstance(
-                preference.getTitle(), 16, FONT_COLOR);
+                preference.getTitle(), fontSize, FONT_COLOR);
     }
 
     public ListPreference getPreference() {

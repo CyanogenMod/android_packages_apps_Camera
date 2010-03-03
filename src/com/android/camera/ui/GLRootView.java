@@ -7,21 +7,22 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.os.Process;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 import com.android.camera.Util;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -36,17 +37,18 @@ public class GLRootView extends GLSurfaceView
     private int mFrameCount = 0;
     private long mFrameCountingStart = 0;
 
-    // The event processing timeout for GL events, 1.5 seconds
-    private static final long EVENT_TIMEOUT = 1500;
     private static final int VERTEX_BUFFER_SIZE = 8;
 
     private static final int FLAG_INITIALIZED = 1;
     private static final int FLAG_NEED_LAYOUT = 2;
-    private static final int FLAG_TEXTURE_MODE = 4;
+
+    private static float sPixelDensity = -1f;
 
     private GL11 mGL;
     private GLView mContentView;
     private DisplayMetrics mDisplayMetrics;
+
+    private final ArrayList<Animation> mAnimations = new ArrayList<Animation>();
 
     private final Stack<Transformation> mFreeTransform =
             new Stack<Transformation>();
@@ -59,14 +61,44 @@ public class GLRootView extends GLSurfaceView
 
     private final float mMatrixValues[] = new float[16];
 
+    private final float mCoordBuffer[] = new float[8];
+    private final float mPointBuffer[] = new float[4];
+
     private ByteBuffer mVertexBuffer;
     private ByteBuffer mTexCoordBuffer;
 
     private int mFlags = FLAG_NEED_LAYOUT;
+    private long mAnimationTime;
 
     public GLRootView(Context context) {
         super(context);
         initialize();
+    }
+
+    void registerLaunchedAnimation(Animation animation) {
+        // Register the newly launched animation so that we can set the start
+        // time more precisely. (Usually, it takes much longer for the first
+        // rendering, so we set the animation start time as the time we
+        // complete rendering)
+        mAnimations.add(animation);
+    }
+
+    public long currentAnimationTimeMillis() {
+        return mAnimationTime;
+    }
+
+    public synchronized static float dpToPixel(Context context, float dp) {
+        if (sPixelDensity < 0) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            ((Activity) context).getWindowManager()
+                    .getDefaultDisplay().getMetrics(metrics);
+            sPixelDensity =  metrics.density;
+        }
+        return sPixelDensity * dp;
+    }
+
+    public static int dpToPixel(Context context, int dp) {
+        return (int)(dpToPixel(context, (float) dp) + .5f);
     }
 
     public Transformation obtainTransformation() {
@@ -103,7 +135,7 @@ public class GLRootView extends GLSurfaceView
         setEGLConfigChooser(8, 8, 8, 8, 0, 0);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         setZOrderOnTop(true);
-        super.setDebugFlags(DEBUG_CHECK_GL_ERROR);
+        setDebugFlags(DEBUG_CHECK_GL_ERROR);
 
         setRenderer(this);
 
@@ -196,7 +228,6 @@ public class GLRootView extends GLSurfaceView
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glEnable(GL11.GL_TEXTURE_2D);
-        gl.glEnable(GL11.GL_STENCIL_TEST);
 
         gl.glTexEnvf(GL11.GL_TEXTURE_ENV,
                 GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE);
@@ -210,10 +241,6 @@ public class GLRootView extends GLSurfaceView
         gl.glTexCoordPointer(2, GL11.GL_FLOAT, 0, mTexCoordBuffer);
     }
 
-    protected void setTexCoords(float ... point) {
-        mTexCoordBuffer.asFloatBuffer().put(point).position(0);
-    }
-
     /**
      * Called when the OpenGL surface is recreated without destroying the
      * context.
@@ -223,6 +250,7 @@ public class GLRootView extends GLSurfaceView
         Log.v(TAG, "onSurfaceChanged: " + width + "x" + height
                 + ", gl10: " + gl1.toString());
         GL11 gl = (GL11) gl1;
+        mGL = gl;
 
         gl.glMatrixMode(GL11.GL_PROJECTION);
         gl.glLoadIdentity();
@@ -250,26 +278,39 @@ public class GLRootView extends GLSurfaceView
     }
 
     public void drawRect(int x, int y, int width, int height) {
-        drawRect(x, y, width, height, mTransformation.getAlpha());
+        float matrix[] = mMatrixValues;
+        mTransformation.getMatrix().getValues(matrix);
+        drawRect(x, y, width, height, matrix, mTransformation.getAlpha());
     }
 
-    public void drawRect(int x, int y, int width, int height, float alpha) {
+    private void drawRect(
+            int x, int y, int width, int height, float matrix[], float alpha) {
         GL11 gl = mGL;
         gl.glPushMatrix();
-        mTransformation.getMatrix().getValues(mMatrixValues);
-
         setAlphaValue(alpha);
-        gl.glMultMatrixf(toGLMatrix(mMatrixValues), 0);
+        gl.glMultMatrixf(toGLMatrix(matrix), 0);
         gl.glTranslatef(x, y, 0);
         gl.glScalef(width, height, 1);
         gl.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
         gl.glPopMatrix();
     }
 
-    public void clipRect(int x, int y, int width, int height) {
-        float point[] = new float[]{x, y + height, x + width, y};
+    public void drawRect(int x, int y, int width, int height, float alpha) {
+        float matrix[] = mMatrixValues;
+        mTransformation.getMatrix().getValues(matrix);
+        drawRect(x, y, width, height, matrix, alpha);
+    }
 
-        mTransformation.getMatrix().mapPoints(point);
+    private float[] mapPoints(Matrix matrix, int x1, int y1, int x2, int y2) {
+        float[] point = mPointBuffer;
+        point[0] = x1; point[1] = y1; point[2] = x2; point[3] = y2;
+        matrix.mapPoints(point);
+        return point;
+    }
+
+    public void clipRect(int x, int y, int width, int height) {
+        float point[] = mapPoints(
+                mTransformation.getMatrix(), x, y + height, x + width, y);
 
         // mMatrix could be a rotation matrix. In this case, we need to find
         // the boundaries after rotation. (only handle 90 * n degrees)
@@ -302,20 +343,23 @@ public class GLRootView extends GLSurfaceView
         return v;
     }
 
-    public void draw2D(int x, int y, int width, int height, float alpha) {
+    public void drawTexture(
+            Texture texture, int x, int y, int width, int height, float alpha) {
+
         if (width <= 0 || height <= 0) return ;
 
         Matrix matrix = mTransformation.getMatrix();
         matrix.getValues(mMatrixValues);
 
-        // Test if it has been rotated, if it is, glDrawTexiOES won't work
-        if (mMatrixValues[1] != 0
-                || mMatrixValues[3] != 0 || mMatrixValues[0] < 0) {
-            drawRect(x, y, width, height, alpha);
+        // Test whether it has been rotated or flipped, if so, glDrawTexiOES
+        // won't work
+        if (isMatrixRotatedOrFlipped(mMatrixValues)) {
+            texture.getTextureCoords(mCoordBuffer, 0);
+            mTexCoordBuffer.asFloatBuffer().put(mCoordBuffer).position(0);
+            drawRect(x, y, width, height, mMatrixValues, alpha);
         } else {
             // draw the rect from bottom-left to top-right
-            float points[] = new float[]{x, y + height, x + width, y};
-            matrix.mapPoints(points);
+            float points[] = mapPoints(matrix, x, y + height, x + width, y);
             x = (int) points[0];
             y = (int) points[1];
             width = (int) points[2] - x;
@@ -327,8 +371,14 @@ public class GLRootView extends GLSurfaceView
         }
     }
 
-    public void draw2D(int x, int y, int width, int height) {
-        draw2D(x, y, width, height, mTransformation.getAlpha());
+    private static boolean isMatrixRotatedOrFlipped(float matrix[]) {
+        return matrix[Matrix.MSKEW_X] != 0 || matrix[Matrix.MSKEW_Y] != 0
+                || matrix[Matrix.MSCALE_X] < 0 || matrix[Matrix.MSCALE_Y] > 0;
+    }
+
+    public void drawTexture(
+            Texture texture, int x, int y, int width, int height) {
+        drawTexture(texture, x, y, width, height, mTransformation.getAlpha());
     }
 
     // This is a GLSurfaceView.Renderer callback
@@ -345,34 +395,36 @@ public class GLRootView extends GLSurfaceView
             }
             ++mFrameCount;
         }
+
         if ((mFlags & FLAG_NEED_LAYOUT) != 0) layoutContentPane();
 
-        // gl.glScissor(0, 0, getWidth(), getHeight());
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         gl.glEnable(GL11.GL_BLEND);
         gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        /*gl.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        /*gl.glDisable(GL11.GL_TEXTURE_2D);
         gl.glColor4f(0, 0, 0.5f, 0.4f);
-        drawRect(30, 30, 30, 30);*/
+        drawRect(30, 30, 30, 30);
+        gl.glEnable(GL11.GL_TEXTURE_2D);*/
 
+        mAnimationTime = SystemClock.uptimeMillis();
         if (mContentView != null) {
             mContentView.render(GLRootView.this, (GL11) gl);
         }
+        long now = SystemClock.uptimeMillis();
+        for (Animation animation : mAnimations) {
+            animation.setStartTime(now);
+        }
+        mAnimations.clear();
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-
-        // Allocate a new event to prevent concurrency access
         FutureTask<Boolean> task = new FutureTask<Boolean>(
-                new TouchEventHandler(MotionEvent.obtain(event)));
+                new TouchEventHandler(event));
         queueEvent(task);
         try {
-            return task.get(EVENT_TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e) {
-            Log.w(TAG, "event timeout, assume the event is handled");
-            return true;
+            return task.get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -387,6 +439,7 @@ public class GLRootView extends GLSurfaceView
         }
 
         public Boolean call() throws Exception {
+            if (mContentView == null) return false;
             return mContentView.dispatchTouchEvent(mEvent);
         }
     }
@@ -400,19 +453,16 @@ public class GLRootView extends GLSurfaceView
         return mDisplayMetrics;
     }
 
-    public Texture copyTexture2D(int x, int y, int width, int height)
+    public void copyTexture2D(
+            RawTexture texture, int x, int y, int width, int height)
             throws GLOutOfMemoryException {
-
         Matrix matrix = mTransformation.getMatrix();
         matrix.getValues(mMatrixValues);
 
-        // Test if it has been rotated, if it is, glDrawTexiOES won't work
-        if (mMatrixValues[1] != 0 || mMatrixValues[3] != 0) {
+        if (isMatrixRotatedOrFlipped(mMatrixValues)) {
             throw new IllegalArgumentException("cannot support rotated matrix");
         }
-
-        float points[] = new float[]{x, y + height, x + width, y};
-        matrix.mapPoints(points);
+        float points[] = mapPoints(matrix, x, y + height, x + width, y);
         x = (int) points[0];
         y = (int) points[1];
         width = (int) points[2] - x;
@@ -423,9 +473,8 @@ public class GLRootView extends GLSurfaceView
         int newHeight = Util.nextPowerOf2(height);
         int glError = GL11.GL_NO_ERROR;
 
-        int[] textureId = new int[1];
-        gl.glGenTextures(1, textureId, 0);
-        gl.glBindTexture(GL11.GL_TEXTURE_2D, textureId[0]);
+        gl.glBindTexture(GL11.GL_TEXTURE_2D, texture.getId());
+
         int[] cropRect = {0,  0, width, height};
         gl.glTexParameteriv(GL11.GL_TEXTURE_2D,
                 GL11Ext.GL_TEXTURE_CROP_RECT_OES, cropRect, 0);
@@ -445,12 +494,13 @@ public class GLRootView extends GLSurfaceView
             throw new GLOutOfMemoryException();
         }
 
-        if (glError == GL11.GL_NO_ERROR) {
-            return new RawTexture(gl, textureId[0], width, height,
-                    (float) width / newWidth, (float) height / newHeight);
+        if (glError != GL11.GL_NO_ERROR) {
+            throw new RuntimeException(
+                    "Texture copy fail, glError " + glError);
         }
-        throw new RuntimeException(
-                "Texture copy fail, glError " + glError);
-    }
 
+        texture.setSize(width, height);
+        texture.setTexCoordSize(
+                (float) width / newWidth, (float) height / newHeight);
+    }
 }

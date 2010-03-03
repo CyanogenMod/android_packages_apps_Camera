@@ -3,6 +3,7 @@ package com.android.camera;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.OrientationEventListener;
+import android.widget.FrameLayout;
 
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
@@ -21,7 +22,7 @@ public class Menu3DTest extends Activity {
 
         // set background as 18% gray :D
         mRootView.setBackgroundColor(0xffb7b7b7);
-        final HeadUpDisplay hud = new HeadUpDisplay();
+        final HeadUpDisplay hud = new HeadUpDisplay(this);
         mRootView.setContentPane(hud);
 
         PreferenceInflater inflater = new PreferenceInflater(this);
@@ -67,5 +68,12 @@ public class Menu3DTest extends Activity {
         super.onPause();
         mRootView.onPause();
         mOrientationListener.disable();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mRootView = null;
+        setContentView(new FrameLayout(this));
+        super.onDestroy();
     }
 }

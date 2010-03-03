@@ -4,7 +4,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
 
 import java.util.ArrayList;
@@ -69,10 +68,14 @@ public class GLView {
     }
 
     public void startAnimation(Animation animation) {
+        GLRootView root = getGLRootView();
+        if (root == null) throw new IllegalStateException();
+
         mAnimation = animation;
         animation.initialize(getWidth(),
                 getHeight(), mParent.getWidth(), mParent.getHeight());
         mAnimation.start();
+        root.registerLaunchedAnimation(animation);
         invalidate();
     }
 
@@ -183,15 +186,16 @@ public class GLView {
     }
 
     protected void renderChild(GLRootView root, GL11 gl, GLView component) {
-        Animation anim = component.mAnimation;
         int xoffset = component.mBounds.left - mScrollX;
         int yoffset = component.mBounds.top - mScrollY;
 
         Transformation transform = root.getTransformation();
         Matrix matrix = transform.getMatrix();
         matrix.preTranslate(xoffset, yoffset);
+
+        Animation anim = component.mAnimation;
         if (anim != null) {
-            long now = AnimationUtils.currentAnimationTimeMillis();
+            long now = root.currentAnimationTimeMillis();
             Transformation temp = root.obtainTransformation();
             temp.clear();
             if (!anim.getTransformation(now, temp)) {
