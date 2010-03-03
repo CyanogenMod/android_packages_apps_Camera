@@ -1,0 +1,4 @@
+# ctors of subclasses of CameraPreference are called with Java reflection.
+-keep class * extends com.android.camera.CameraPreference {
+  <init>(...);
+}

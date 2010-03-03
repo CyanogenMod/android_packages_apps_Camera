@@ -8,7 +8,7 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_PACKAGE_NAME := Camera
 LOCAL_CERTIFICATE := media
 
-LOCAL_PROGUARD_ENABLED := disabled
+LOCAL_PROGUARD_FLAGS := -include $(LOCAL_PATH)/proguard.flags
 
 include $(BUILD_PACKAGE)
 
