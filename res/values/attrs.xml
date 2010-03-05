@@ -31,12 +31,4 @@
         <attr name="icons" />
         <attr name="largeIcons" format="reference" />
     </declare-styleable>
-    <declare-styleable name="EvenlySpacedLayout">
-        <attr name="orientation">
-            <enum name="horizontal" value="0" />
-            <enum name="vertical" value="1" />
-        </attr>
-        <!-- Weather we keep the space in both ends -->
-        <attr name="keepEndSpace" format="boolean"/>
-    </declare-styleable>
 </resources>

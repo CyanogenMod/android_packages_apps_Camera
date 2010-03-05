@@ -44,33 +44,15 @@ public abstract class BaseImage implements IImage {
     // Database field
     protected Uri mUri;
     protected long mId;
-    protected String mDataPath;
-    protected final int mIndex;
-    protected String mMimeType;
     private final long mDateTaken;
-    private String mTitle;
 
-    protected BaseImageList mContainer;
-
-    private int mWidth = UNKNOWN_LENGTH;
-    private int mHeight = UNKNOWN_LENGTH;
-
-    protected BaseImage(BaseImageList container, ContentResolver cr,
-            long id, int index, Uri uri, String dataPath, long miniThumbMagic,
-            String mimeType, long dateTaken, String title) {
-        mContainer = container;
+    protected BaseImage(ContentResolver cr,
+            long id, Uri uri, long miniThumbMagic,
+            long dateTaken) {
         mContentResolver = cr;
         mId = id;
-        mIndex = index;
         mUri = uri;
-        mDataPath = dataPath;
-        mMimeType = mimeType;
         mDateTaken = dateTaken;
-        mTitle = title;
-    }
-
-    public String getDataPath() {
-        return mDataPath;
     }
 
     @Override
@@ -84,41 +66,8 @@ public abstract class BaseImage implements IImage {
         return mUri.hashCode();
     }
 
-    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels) {
-        return fullSizeBitmap(minSideLength, maxNumberOfPixels,
-                IImage.ROTATE_AS_NEEDED);
-    }
-
-    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
-            boolean rotateAsNeeded) {
-        Uri url = mContainer.contentUri(mId);
-        if (url == null) return null;
-
-        Bitmap b = Util.makeBitmap(minSideLength, maxNumberOfPixels,
-                url, mContentResolver);
-
-        if (b != null && rotateAsNeeded) {
-            b = Util.rotate(b, getDegreesRotated());
-        }
-
-        return b;
-    }
-
-    public InputStream fullSizeImageData() {
-        try {
-            InputStream input = mContentResolver.openInputStream(mUri);
-            return input;
-        } catch (IOException ex) {
-            return null;
-        }
-    }
-
     public Uri fullSizeImageUri() {
         return mUri;
-    }
-
-    public IImageList getContainer() {
-        return mContainer;
     }
 
     public long getDateTaken() {
@@ -127,42 +76,6 @@ public abstract class BaseImage implements IImage {
 
     public int getDegreesRotated() {
         return 0;
-    }
-
-    public String getMimeType() {
-        return mMimeType;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    private void setupDimension() {
-        ParcelFileDescriptor input = null;
-        try {
-            input = mContentResolver.openFileDescriptor(mUri, "r");
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapManager.instance().decodeFileDescriptor(
-                    input.getFileDescriptor(), options);
-            mWidth = options.outWidth;
-            mHeight = options.outHeight;
-        } catch (FileNotFoundException ex) {
-            mWidth = 0;
-            mHeight = 0;
-        } finally {
-            Util.closeSilently(input);
-        }
-    }
-
-    public int getWidth() {
-        if (mWidth == UNKNOWN_LENGTH) setupDimension();
-        return mWidth;
-    }
-
-    public int getHeight() {
-        if (mHeight == UNKNOWN_LENGTH) setupDimension();
-        return mHeight;
     }
 
     public Bitmap miniThumbBitmap() {
@@ -179,9 +92,6 @@ public abstract class BaseImage implements IImage {
             b = Util.rotate(b, getDegreesRotated());
         }
         return b;
-    }
-
-    protected void onRemove() {
     }
 
     @Override

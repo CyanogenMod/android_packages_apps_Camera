@@ -18,7 +18,6 @@
     <application android:icon="@drawable/ic_launcher_camera"
             android:label="@string/camera_label"
             android:taskAffinity="">
-        <service android:name="UploadService" android:process="android.process.media" />
         <receiver android:name="CameraButtonIntentReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.CAMERA_BUTTON"/>

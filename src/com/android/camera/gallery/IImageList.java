@@ -59,29 +59,6 @@ public interface IImageList {
     public IImage getImageAt(int i);
 
     /**
-     * Returns the image with a particular Uri.
-     *
-     * @param uri
-     * @return      the image with a particular Uri. null if not found.
-     */
-    public IImage getImageForUri(Uri uri);
-
-    /**
-     *
-     * @param image
-     * @return true if the image was removed.
-     */
-    public boolean removeImage(IImage image);
-
-    /**
-     * Removes the image at the ith position.
-     * @param i     the position
-     */
-    public boolean removeImageAt(int i);
-
-    public int getImageIndex(IImage image);
-
-    /**
      * Closes this list to release resources, no further operation is allowed.
      */
     public void close();

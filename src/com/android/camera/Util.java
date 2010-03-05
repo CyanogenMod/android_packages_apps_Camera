@@ -18,14 +18,10 @@ package com.android.camera;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -34,8 +30,6 @@ import android.view.animation.TranslateAnimation;
 import com.android.camera.gallery.IImage;
 
 import java.io.Closeable;
-import java.io.FileDescriptor;
-import java.io.IOException;
 
 /**
  * Collection of utility functions used in this package.
@@ -152,70 +146,6 @@ public class Util {
         }
     }
 
-    public static void closeSilently(ParcelFileDescriptor c) {
-        if (c == null) return;
-        try {
-            c.close();
-        } catch (Throwable t) {
-            // do nothing
-        }
-    }
-
-    /**
-     * Make a bitmap from a given Uri.
-     *
-     * @param uri
-     */
-    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-            Uri uri, ContentResolver cr) {
-        ParcelFileDescriptor input = null;
-        try {
-            input = cr.openFileDescriptor(uri, "r");
-            return makeBitmap(minSideLength, maxNumOfPixels, uri, cr, input,
-                    null);
-        } catch (IOException ex) {
-            return null;
-        } finally {
-            closeSilently(input);
-        }
-    }
-
-    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-            ParcelFileDescriptor pfd) {
-        return makeBitmap(minSideLength, maxNumOfPixels, null, null, pfd,
-                null);
-    }
-
-    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-            Uri uri, ContentResolver cr, ParcelFileDescriptor pfd,
-            BitmapFactory.Options options) {
-        try {
-            if (pfd == null) pfd = makeInputStream(uri, cr);
-            if (pfd == null) return null;
-            if (options == null) options = new BitmapFactory.Options();
-
-            FileDescriptor fd = pfd.getFileDescriptor();
-            options.inJustDecodeBounds = true;
-            BitmapManager.instance().decodeFileDescriptor(fd, options);
-            if (options.mCancel || options.outWidth == -1
-                    || options.outHeight == -1) {
-                return null;
-            }
-            options.inSampleSize = computeSampleSize(
-                    options, minSideLength, maxNumOfPixels);
-            options.inJustDecodeBounds = false;
-
-            options.inDither = false;
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            return BitmapManager.instance().decodeFileDescriptor(fd, options);
-        } catch (OutOfMemoryError ex) {
-            Log.e(TAG, "Got oom exception ", ex);
-            return null;
-        } finally {
-            closeSilently(pfd);
-        }
-    }
-
     public static Bitmap makeBitmap(byte[] jpegData, int maxNumOfPixels) {
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -240,28 +170,10 @@ public class Util {
         }
     }
 
-    private static ParcelFileDescriptor makeInputStream(
-            Uri uri, ContentResolver cr) {
-        try {
-            return cr.openFileDescriptor(uri, "r");
-        } catch (IOException ex) {
-            return null;
-        }
-    }
-
     public static void Assert(boolean cond) {
         if (!cond) {
             throw new AssertionError();
         }
-    }
-
-    // Returns an intent which is used for "set as" menu items.
-    public static Intent createSetAsIntent(IImage image) {
-        Uri u = image.fullSizeImageUri();
-        Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
-        intent.setDataAndType(u, image.getMimeType());
-        intent.putExtra("mimeType", image.getMimeType());
-        return intent;
     }
 
     public static void showFatalErrorAndFinish(

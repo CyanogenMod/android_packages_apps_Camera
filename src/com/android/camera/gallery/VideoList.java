@@ -32,43 +32,26 @@ public class VideoList extends BaseImageList {
 
     private static final String[] VIDEO_PROJECTION = new String[] {
             Media._ID,
-            Media.DATA,
             Media.DATE_TAKEN,
-            Media.TITLE,
             Media.MINI_THUMB_MAGIC,
-            Media.MIME_TYPE,
             Media.DATE_MODIFIED};
 
     private static final int INDEX_ID = 0;
-    private static final int INDEX_DATA_PATH = 1;
-    private static final int INDEX_DATE_TAKEN = 2;
-    private static final int INDEX_TITLE = 3;
-    private static final int INDEX_MIMI_THUMB_MAGIC = 4;
-    private static final int INDEX_MIME_TYPE = 5;
-    private static final int INDEX_DATE_MODIFIED = 6;
-
-    @Override
-    protected long getImageId(Cursor cursor) {
-        return cursor.getLong(INDEX_ID);
-    }
+    private static final int INDEX_DATE_TAKEN = 1;
+    private static final int INDEX_MIMI_THUMB_MAGIC = 2;
+    private static final int INDEX_DATE_MODIFIED = 3;
 
     @Override
     protected BaseImage loadImageFromCursor(Cursor cursor) {
         long id = cursor.getLong(INDEX_ID);
-        String dataPath = cursor.getString(INDEX_DATA_PATH);
         long dateTaken = cursor.getLong(INDEX_DATE_TAKEN);
         if (dateTaken == 0) {
             dateTaken = cursor.getLong(INDEX_DATE_MODIFIED) * 1000;
         }
         long miniThumbMagic = cursor.getLong(INDEX_MIMI_THUMB_MAGIC);
-        String title = cursor.getString(INDEX_TITLE);
-        String mimeType = cursor.getString(INDEX_MIME_TYPE);
-        if (title == null || title.length() == 0) {
-            title = dataPath;
-        }
-        return new VideoObject(this, mContentResolver,
-                id, cursor.getPosition(), contentUri(id), dataPath,
-                miniThumbMagic, mimeType, dateTaken, title);
+        return new VideoObject(mContentResolver,
+                id, contentUri(id),
+                miniThumbMagic, dateTaken);
     }
 
     public VideoList(ContentResolver resolver, Uri uri, int sort,

@@ -130,28 +130,9 @@ public abstract class BaseImageList implements IImageList {
         return result;
     }
 
-    public boolean removeImage(IImage image) {
-        // TODO: need to delete the thumbnails as well
-        if (mContentResolver.delete(image.fullSizeImageUri(), null, null) > 0) {
-            ((BaseImage) image).onRemove();
-            invalidateCursor();
-            invalidateCache();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean removeImageAt(int i) {
-        // TODO: need to delete the thumbnails as well
-        return removeImage(getImageAt(i));
-    }
-
     protected abstract Cursor createCursor();
 
     protected abstract BaseImage loadImageFromCursor(Cursor cursor);
-
-    protected abstract long getImageId(Cursor cursor);
 
     protected void invalidateCursor() {
         if (mCursor == null) return;
@@ -159,62 +140,7 @@ public abstract class BaseImageList implements IImageList {
         mCursorDeactivated = true;
     }
 
-    protected void invalidateCache() {
-        mCache.clear();
-    }
-
     private static final Pattern sPathWithId = Pattern.compile("(.*)/\\d+");
-
-    private static String getPathWithoutId(Uri uri) {
-        String path = uri.getPath();
-        Matcher matcher = sPathWithId.matcher(path);
-        return matcher.matches() ? matcher.group(1) : path;
-    }
-
-    private boolean isChildImageUri(Uri uri) {
-        // Sometimes, the URI of an image contains a query string with key
-        // "bucketId" inorder to restore the image list. However, the query
-        // string is not part of the mBaseUri. So, we check only other parts
-        // of the two Uri to see if they are the same.
-        Uri base = mBaseUri;
-        return Util.equals(base.getScheme(), uri.getScheme())
-                && Util.equals(base.getHost(), uri.getHost())
-                && Util.equals(base.getAuthority(), uri.getAuthority())
-                && Util.equals(base.getPath(), getPathWithoutId(uri));
-    }
-
-    public IImage getImageForUri(Uri uri) {
-        if (!isChildImageUri(uri)) return null;
-        // Find the id of the input URI.
-        long matchId;
-        try {
-            matchId = ContentUris.parseId(uri);
-        } catch (NumberFormatException ex) {
-            Log.i(TAG, "fail to get id in: " + uri, ex);
-            return null;
-        }
-        // TODO: design a better method to get URI of specified ID
-        Cursor cursor = getCursor();
-        if (cursor == null) return null;
-        synchronized (this) {
-            cursor.moveToPosition(-1); // before first
-            for (int i = 0; cursor.moveToNext(); ++i) {
-                if (getImageId(cursor) == matchId) {
-                    BaseImage image = mCache.get(i);
-                    if (image == null) {
-                        image = loadImageFromCursor(cursor);
-                        mCache.put(i, image);
-                    }
-                    return image;
-                }
-            }
-            return null;
-        }
-    }
-
-    public int getImageIndex(IImage image) {
-        return ((BaseImage) image).mIndex;
-    }
 
     // This provides a default sorting order string for subclasses.
     // The list is first sorted by date, then by id. The order can be ascending

@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.media.CamcorderProfile;
-import android.media.CamcorderProfile.Quality;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.preference.PreferenceManager;

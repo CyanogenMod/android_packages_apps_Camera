@@ -41,11 +41,11 @@ public class VideoObject extends BaseImage implements IImage {
      * @param id        the image id of the image
      * @param cr        the content resolver
      */
-    protected VideoObject(BaseImageList container, ContentResolver cr,
-            long id, int index, Uri uri, String dataPath, long miniThumbMagic,
-            String mimeType, long dateTaken, String title) {
-        super(container, cr, id, index, uri, dataPath, miniThumbMagic,
-                mimeType, dateTaken, title);
+    protected VideoObject(ContentResolver cr,
+            long id, Uri uri, long miniThumbMagic,
+            long dateTaken) {
+        super(cr, id, uri, miniThumbMagic,
+                dateTaken);
     }
 
     @Override
@@ -58,49 +58,6 @@ public class VideoObject extends BaseImage implements IImage {
     @Override
     public int hashCode() {
         return fullSizeImageUri().toString().hashCode();
-    }
-
-    @Override
-    public Bitmap fullSizeBitmap(int minSideLength, int maxNumberOfPixels,
-            boolean rotateAsNeeded) {
-        return ThumbnailUtils.createVideoThumbnail(mDataPath);
-    }
-
-    @Override
-    public InputStream fullSizeImageData() {
-        try {
-            InputStream input = mContentResolver.openInputStream(
-                    fullSizeImageUri());
-            return input;
-        } catch (IOException ex) {
-            return null;
-        }
-    }
-
-    @Override
-    public int getHeight() {
-         return 0;
-    }
-
-    @Override
-    public int getWidth() {
-        return 0;
-    }
-
-    public boolean isReadonly() {
-        return false;
-    }
-
-    public boolean isDrm() {
-        return false;
-    }
-
-    public boolean rotateImageBy(int degrees) {
-       return false;
-    }
-
-    public Bitmap thumbBitmap(boolean rotateAsNeeded) {
-        return fullSizeBitmap(THUMBNAIL_TARGET_SIZE, THUMBNAIL_MAX_NUM_PIXELS);
     }
 
     @Override

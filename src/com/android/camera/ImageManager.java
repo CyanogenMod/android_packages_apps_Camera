@@ -21,9 +21,7 @@ import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.gallery.ImageList;
 import com.android.camera.gallery.ImageListUber;
-import com.android.camera.gallery.SingleImageList;
 import com.android.camera.gallery.VideoList;
-import com.android.camera.gallery.VideoObject;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -76,9 +74,6 @@ public class ImageManager {
         public int mSort;
         public String mBucketId;
 
-        // This is only used if we are creating a single image list.
-        public Uri mSingleImageUri;
-
         // This is only used if we are creating an empty image list.
         public boolean mIsEmptyImageList;
 
@@ -90,7 +85,6 @@ public class ImageManager {
             out.writeInt(mInclusion);
             out.writeInt(mSort);
             out.writeString(mBucketId);
-            out.writeParcelable(mSingleImageUri, flags);
             out.writeInt(mIsEmptyImageList ? 1 : 0);
         }
 
@@ -99,14 +93,13 @@ public class ImageManager {
             mInclusion = in.readInt();
             mSort = in.readInt();
             mBucketId = in.readString();
-            mSingleImageUri = in.readParcelable(null);
             mIsEmptyImageList = (in.readInt() != 0);
         }
 
         public String toString() {
             return String.format("ImageListParam{loc=%s,inc=%d,sort=%d," +
-                "bucket=%s,empty=%b,single=%s}", mLocation, mInclusion,
-                mSort, mBucketId, mIsEmptyImageList, mSingleImageUri);
+                "bucket=%s,empty=%b}", mLocation, mInclusion,
+                mSort, mBucketId, mIsEmptyImageList);
         }
 
         public static final Parcelable.Creator CREATOR
@@ -186,38 +179,6 @@ public class ImageManager {
         }
 
         return retVal;
-    }
-
-    /**
-     * @return true if the mimetype is an image mimetype.
-     */
-    public static boolean isImageMimeType(String mimeType) {
-        return mimeType.startsWith("image/");
-    }
-
-    /**
-     * @return true if the mimetype is a video mimetype.
-     */
-    /* This is commented out because isVideo is not calling this now.
-    public static boolean isVideoMimeType(String mimeType) {
-        return mimeType.startsWith("video/");
-    }
-    */
-
-    /**
-     * @return true if the image is an image.
-     */
-    public static boolean isImage(IImage image) {
-        return isImageMimeType(image.getMimeType());
-    }
-
-    /**
-     * @return true if the image is a video.
-     */
-    public static boolean isVideo(IImage image) {
-        // This is the right implementation, but we use instanceof for speed.
-        //return isVideoMimeType(image.getMimeType());
-        return (image instanceof VideoObject);
     }
 
     public static void setImageSize(ContentResolver cr, Uri uri, long size) {
@@ -319,15 +280,10 @@ public class ImageManager {
         int inclusion = param.mInclusion;
         int sort = param.mSort;
         String bucketId = param.mBucketId;
-        Uri singleImageUri = param.mSingleImageUri;
         boolean isEmptyImageList = param.mIsEmptyImageList;
 
         if (isEmptyImageList || cr == null) {
             return new EmptyImageList();
-        }
-
-        if (singleImageUri != null) {
-            return new SingleImageList(cr, singleImageUri);
         }
 
         // false ==> don't require write access
@@ -372,30 +328,6 @@ public class ImageManager {
         return uber;
     }
 
-    // This is a convenience function to create an image list from a Uri.
-    public static IImageList makeImageList(ContentResolver cr, Uri uri,
-            int sort) {
-        String uriString = (uri != null) ? uri.toString() : "";
-
-        if (uriString.startsWith("content://media/external/video")) {
-            return makeImageList(cr, DataLocation.EXTERNAL, INCLUDE_VIDEOS,
-                    sort, null);
-        } else if (isSingleImageMode(uriString)) {
-            return makeSingleImageList(cr, uri);
-        } else {
-            String bucketId = uri.getQueryParameter("bucketId");
-            return makeImageList(cr, DataLocation.ALL, INCLUDE_IMAGES, sort,
-                    bucketId);
-        }
-    }
-
-    static boolean isSingleImageMode(String uriString) {
-        return !uriString.startsWith(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString())
-                && !uriString.startsWith(
-                MediaStore.Images.Media.INTERNAL_CONTENT_URI.toString());
-    }
-
     private static class EmptyImageList implements IImageList {
         public void close() {
         }
@@ -406,22 +338,6 @@ public class ImageManager {
 
         public IImage getImageAt(int i) {
             return null;
-        }
-
-        public IImage getImageForUri(Uri uri) {
-            return null;
-        }
-
-        public boolean removeImage(IImage image) {
-            return false;
-        }
-
-        public boolean removeImageAt(int i) {
-            return false;
-        }
-
-        public int getImageIndex(IImage image) {
-            throw new UnsupportedOperationException();
         }
     }
 
@@ -435,21 +351,11 @@ public class ImageManager {
          return param;
     }
 
-    public static ImageListParam getSingleImageListParam(Uri uri) {
-        ImageListParam param = new ImageListParam();
-        param.mSingleImageUri = uri;
-        return param;
-    }
-
     public static IImageList makeImageList(ContentResolver cr,
             DataLocation location, int inclusion, int sort, String bucketId) {
         ImageListParam param = getImageListParam(location, inclusion, sort,
                 bucketId);
         return makeImageList(cr, param);
-    }
-
-    public static IImageList  makeSingleImageList(ContentResolver cr, Uri uri) {
-        return makeImageList(cr, getSingleImageListParam(uri));
     }
 
     private static boolean checkFsWritable() {

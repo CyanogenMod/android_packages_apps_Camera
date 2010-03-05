@@ -33,7 +33,6 @@ import android.hardware.Camera.Size;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
 import android.media.CamcorderProfile;
-import android.media.CamcorderProfile.Quality;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -74,7 +73,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -1556,24 +1554,5 @@ public class VideoCamera extends NoSearchActivity
             mSettings.updateLayout();
         }
 
-    }
-}
-
-//
-// DefaultHashMap is a HashMap which returns a default value if the specified
-// key is not found.
-//
-@SuppressWarnings("serial")
-class DefaultHashMap<K, V> extends HashMap<K, V> {
-    private V mDefaultValue;
-
-    public void putDefault(V defaultValue) {
-        mDefaultValue = defaultValue;
-    }
-
-    @Override
-    public V get(Object key) {
-        V value = super.get(key);
-        return (value == null) ? mDefaultValue : value;
     }
 }
