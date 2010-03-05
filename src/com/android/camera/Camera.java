@@ -843,6 +843,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 if (hasLatLon) {
                     mParameters.setGpsLatitude(lat);
                     mParameters.setGpsLongitude(lon);
+                    mParameters.setGpsProcessingMethod(loc.getProvider().toUpperCase());
                     if (loc.hasAltitude()) {
                         mParameters.setGpsAltitude(loc.getAltitude());
                     } else {
