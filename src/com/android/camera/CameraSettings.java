@@ -24,7 +24,6 @@ import android.media.CamcorderProfile;
 import android.media.CamcorderProfile.Quality;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
-import android.os.SystemProperties;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
