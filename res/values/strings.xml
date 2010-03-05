@@ -18,7 +18,7 @@
     <!-- General strings -->
 
     <!-- title for the dialog showing the error of camera hardware -->
-    <string name="camera_error_title">Camera Error</string>
+    <string name="camera_error_title">Camera error</string>
 
     <!-- message for the dialog showing the error of camera hardware -->
     <string name="cannot_connect_camera">Cannot connect to camera.</string>
@@ -76,8 +76,8 @@
     <string name="confirm_delete_video_message">The video will be deleted.</string>
 
     <!-- Confirmation dialog when restoring settings -->
-    <string name="confirm_restore_title">Restore Settings</string>
-    <string name="confirm_restore_message">Camera settings will be restored to default.</string>
+    <string name="confirm_restore_title">Restore defaults</string>
+    <string name="confirm_restore_message">Camera settings will be restored to defaults.</string>
 
     <!-- button in review mode indicating that the video just taken should be played -->
     <string name="review_play">PLAY</string>
@@ -146,6 +146,13 @@
     </string>
     <string name="pref_camera_video_duration_entry_10">10 minutes</string>
     <string name="pref_camera_video_duration_entry_30">30 minutes</string>
+
+    <!-- The Video length settings in preference -->
+    <string name="pref_video_quality_title">Video quality</string>
+    <string name="pref_video_quality_entry_high">High (30m)</string>
+    <string name="pref_video_quality_entry_low">Low (30m)</string>
+    <string name="pref_video_quality_entry_mms">MMS (Low, 30s)</string>
+    <string name="pref_video_quality_entry_youtube">YouTube (High, 10m)</string>
 
     <!-- Settings screen, Camera setting category title -->
     <string name="pref_camera_settings_category">Camera settings</string>
@@ -233,9 +240,9 @@
     <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
     <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
     <string name="pref_camera_coloreffect_entry_mosaic">Mosaic</string>
-    <string name="pref_camera_coloreffect_entry_redtint">Red Tint</string>
-    <string name="pref_camera_coloreffect_entry_bluetint">Blue Tint</string>
-    <string name="pref_camera_coloreffect_entry_greentint">Green Tint</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Red tint</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blue tint</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Green tint</string>
 
     <!-- Default scene mode setting. -->
     <string name="pref_camera_scenemode_default" translatable="false">auto</string>
@@ -254,7 +261,7 @@
     <!-- Scene mode that takes long exposures to capture night scenes without flash. -->
     <string name="pref_camera_scenemode_entry_night">Night</string>
     <!-- Scene mode that takes night shots with long exposure and flash to illuminate the subject while still capturing darker detail in the background. -->
-    <string name="pref_camera_scenemode_entry_night_portrait">Night Portrait</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">Night portrait</string>
     <!-- Scene mode to be used in a stage show. -->
     <string name="pref_camera_scenemode_entry_theatre">Theatre</string>
     <!-- Scene mode optimized for taking images on the beach. -->
@@ -264,19 +271,27 @@
     <!-- Scene mode optimized for taking images in the sunset. -->
     <string name="pref_camera_scenemode_entry_sunset">Sunset</string>
     <!-- Scene mode for taking a photo as sharp as possible. -->
-    <string name="pref_camera_scenemode_entry_steadyphoto">Steady Photo</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Steady photo</string>
     <!-- Scene mode optimized for taking images of fireworks. -->
     <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
 
     <!-- Settings menu, enable quick capture mode or not -->
-    <string name="pref_camera_quickcapture_title">Quick Capture</string>
+    <string name="pref_camera_quickcapture_title">Quick capture</string>
     <string name="pref_camera_quickcapture_default" translatable="false">off</string>
     <string name="pref_camera_quickcapture_entry_on">On</string>
     <string name="pref_camera_quickcapture_entry_off">Off</string>
 
     <!-- Restore settings item in preference -->
-    <string name="pref_restore_title">Restore settings</string>
-    <string name="pref_restore_detail">Restore camera settings to default</string>
+    <string name="pref_restore_title">Camera settings</string>
+    <string name="pref_restore_detail">Restore to defaults</string>
+
+    <!-- Exposure settings in preference -->
+    <string name="pref_exposure_title">Exposure</string>
+
+    <!-- Framing grid settings in preference -->
+    <string name="pref_framing_grid">Framing grid</string>
+    <string name="pref_framing_grid_entry_on">On</string>
+    <string name="pref_framing_grid_entry_off">Off</string>
 
     <!-- Message to show when there's no lat/lng information in the image -->
     <string name="no_location_image">No Location information contained in this image.</string>
@@ -291,7 +306,7 @@
     <!-- Label in message of Details dialog  -->
     <string name="details_image_model">Model:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_image_whitebalance">WhiteBalance:</string>
+    <string name="details_image_whitebalance">White Balance:</string>
     <!-- Label in message of Details dialog  -->
     <string name="details_image_latitude">GPS Latitude:</string>
     <!-- Label in message of Details dialog  -->
@@ -349,5 +364,8 @@
 
     <!-- The messsage shown when video record reaches size limit. -->
     <string name="video_reach_size_limit">Size limit reached.</string>
+
+    <!-- The title show on the zoom controller -->
+    <string name="zoom_control_title">Zoom</string>
 
 </resources>
