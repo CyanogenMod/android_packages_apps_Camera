@@ -122,7 +122,7 @@ public class GLListView extends GLView {
         mHasMeasured = true;
 
         new MeasureHelper(this)
-                .setPreferedContentSize(maxWidth, height)
+                .setPreferredContentSize(maxWidth, height)
                 .measure(widthSpec, heightSpec);
     }
 

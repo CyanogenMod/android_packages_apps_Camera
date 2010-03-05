@@ -20,7 +20,7 @@ public abstract class AbstractIndicator extends GLView {
     protected void onMeasure(int widthSpec, int heightSpec) {
         ResourceTexture icon = getIcon();
         new MeasureHelper(this)
-               .setPreferedContentSize(icon.getWidth(), icon.getHeight())
+               .setPreferredContentSize(icon.getWidth(), icon.getHeight())
                .measure(widthSpec, heightSpec);
     }
 

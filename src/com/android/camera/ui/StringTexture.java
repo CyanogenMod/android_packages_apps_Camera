@@ -8,14 +8,14 @@ import android.graphics.Paint.FontMetricsInt;
 public class StringTexture extends CanvasTexture {
     private static int DEFAULT_PADDING = 1;
 
-    private final String mTitle;
+    private final String mText;
     private final Paint mPaint;
     private final FontMetricsInt mMetrics;
 
     public StringTexture(String text, Paint paint,
             FontMetricsInt metrics, int width, int height) {
         super(width, height);
-        mTitle = text;
+        mText = text;
         mPaint = paint;
         mMetrics = metrics;
     }
@@ -41,6 +41,6 @@ public class StringTexture extends CanvasTexture {
     @Override
     protected void onDraw(Canvas canvas, Bitmap backing) {
         canvas.translate(DEFAULT_PADDING, DEFAULT_PADDING - mMetrics.ascent);
-        canvas.drawText(mTitle, 0, 0, mPaint);
+        canvas.drawText(mText, 0, 0, mPaint);
     }
 }

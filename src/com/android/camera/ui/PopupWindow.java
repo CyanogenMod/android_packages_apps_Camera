@@ -113,6 +113,9 @@ public class PopupWindow extends GLView {
 
         RawTexture backup = mBackupTexture;
         try {
+            // Copy the current drawing results of the triangle area into
+            // "backup", so that we can restore the content after it is
+            // overlaid by the background.
             root.copyTexture2D(backup, aXoffset, aYoffset, aWidth, aHeight);
         } catch (GLOutOfMemoryException e) {
             e.printStackTrace();

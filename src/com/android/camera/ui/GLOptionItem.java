@@ -76,7 +76,7 @@ public class GLOptionItem extends GLView {
         height = Math.max(sMinimalHeight, height);
 
         new MeasureHelper(this)
-                .setPreferedContentSize(width, height)
+                .setPreferredContentSize(width, height)
                 .measure(widthSpec, heightSpec);
     }
 

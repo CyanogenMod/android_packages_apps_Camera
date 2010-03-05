@@ -20,7 +20,7 @@ public class ZoomIndicator extends GLView {
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         new MeasureHelper(this)
-                .setPreferedContentSize(mTitle.getWidth(), mTitle.getHeight())
+                .setPreferredContentSize(mTitle.getWidth(), mTitle.getHeight())
                 .measure(widthSpec, heightSpec);
     }
 

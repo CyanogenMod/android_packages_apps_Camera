@@ -6,24 +6,24 @@ import android.view.View.MeasureSpec;
 public class MeasureHelper {
 
     private final GLView mComponent;
-    private int mPreferedWidth;
-    private int mPreferedHeight;
+    private int mPreferredWidth;
+    private int mPreferredHeight;
 
     public MeasureHelper(GLView component) {
         mComponent = component;
     }
 
-    public MeasureHelper setPreferedContentSize(int width, int height) {
-        mPreferedWidth = width;
-        mPreferedHeight = height;
+    public MeasureHelper setPreferredContentSize(int width, int height) {
+        mPreferredWidth = width;
+        mPreferredHeight = height;
         return this;
     }
 
     public void measure(int widthSpec, int heightSpec) {
         Rect p = mComponent.getPaddings();
         setMeasuredSize(
-                getLength(widthSpec, mPreferedWidth + p.left + p.right),
-                getLength(heightSpec, mPreferedHeight + p.top + p.bottom));
+                getLength(widthSpec, mPreferredWidth + p.left + p.right),
+                getLength(heightSpec, mPreferredHeight + p.top + p.bottom));
     }
 
     private static int getLength(int measureSpec, int prefered) {

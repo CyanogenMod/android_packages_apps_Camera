@@ -88,7 +88,7 @@ public class IndicatorBar extends GLView {
             height += component.getMeasuredHeight();
         }
         new MeasureHelper(this)
-                .setPreferedContentSize(width, height)
+                .setPreferredContentSize(width, height)
                 .measure(widthSpec, heightSpec);
     }
 
@@ -131,21 +131,21 @@ public class IndicatorBar extends GLView {
     }
 
     public void setActivated(boolean activated) {
-    	if (activated == mActivated) return;
-    	mActivated = activated;
-    	if (activated) {
-    	    GLView background = getComponent(0);
+        if (activated == mActivated) return;
+        mActivated = activated;
+        if (activated) {
+            GLView background = getComponent(0);
             background.setVisibility(GLView.VISIBLE);
             AlphaAnimation anim = new AlphaAnimation(0, 1);
             anim.setDuration(200);
             background.startAnimation(anim);
-    	} else {
+        } else {
             GLView background = getComponent(0);
             background.setVisibility(GLView.INVISIBLE);
             AlphaAnimation anim = new AlphaAnimation(1, 0);
             anim.setDuration(200);
             background.startAnimation(anim);
-    	}
+        }
     }
 
     @Override

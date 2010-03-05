@@ -97,7 +97,7 @@ public class GLView {
         public boolean onTouch(GLView view, MotionEvent event);
     }
 
-    public boolean setBounds(int left, int top, int right, int bottom) {
+    private boolean setBounds(int left, int top, int right, int bottom) {
         boolean sizeChanged = (right - left) != (mBounds.right - mBounds.left)
                 || (bottom - top) != (mBounds.bottom - mBounds.top);
         mBounds.set(left, top, right, bottom);
@@ -225,11 +225,13 @@ public class GLView {
             for (int i = 0, n = getComponentCount(); i < n; ++i) {
                 GLView component = getComponent(i);
                 if (component.getVisibility() != GLView.VISIBLE) continue;
-                Rect rect = new Rect(component.mBounds);
+                Rect rect = component.mBounds;
+                int left = rect.left;
+                int top = rect.top;
                 if (rect.contains(eventX, eventY)) {
-                    event.offsetLocation(-rect.left, -rect.top);
+                    event.offsetLocation(-left, -top);
                     if (component.dispatchTouchEvent(event)) return true;
-                    event.offsetLocation(rect.left, rect.top);
+                    event.offsetLocation(left, top);
                 }
             }
         }
@@ -297,10 +299,13 @@ public class GLView {
             boolean changeSize, int left, int top, int right, int bottom) {
     }
 
-    public boolean getBoundsOf(GLView child, Rect out) {
+    /**
+     * Gets the bounds of the given descendant that relative to this view.
+     */
+    public boolean getBoundsOf(GLView descendant, Rect out) {
         int xoffset = 0;
         int yoffset = 0;
-        GLView view = child;
+        GLView view = descendant;
         while (view != this) {
             if (view == null) return false;
             Rect bounds = view.mBounds;
@@ -308,8 +313,8 @@ public class GLView {
             yoffset += bounds.top;
             view = view.mParent;
         }
-        out.set(xoffset, yoffset,
-                xoffset + child.getWidth(), yoffset + child.getHeight());
+        out.set(xoffset, yoffset, xoffset + descendant.getWidth(),
+                yoffset + descendant.getHeight());
         return true;
     }
 
