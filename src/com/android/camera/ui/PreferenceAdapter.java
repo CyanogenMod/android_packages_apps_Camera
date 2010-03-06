@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
-import com.android.camera.R;
+import com.google.android.camera.R;
 import com.android.camera.Util;
 
 import java.util.ArrayList;

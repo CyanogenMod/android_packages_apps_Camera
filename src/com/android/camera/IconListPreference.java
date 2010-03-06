@@ -22,6 +22,8 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
+import com.google.android.camera.R;
+
 /** A {@code ListPreference} where each entry has a corresponding icon. */
 public class IconListPreference extends ListPreference {
 

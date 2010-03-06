@@ -17,7 +17,7 @@ import com.android.camera.CameraSettings;
 import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
-import com.android.camera.R;
+import com.google.android.camera.R;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;

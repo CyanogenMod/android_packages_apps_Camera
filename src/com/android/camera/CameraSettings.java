@@ -26,6 +26,8 @@ import android.hardware.Camera.Size;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.google.android.camera.R;
+
 import java.util.ArrayList;
 import java.util.List;
 

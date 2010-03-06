@@ -6,7 +6,7 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
 LOCAL_PACKAGE_NAME := Camera
-LOCAL_CERTIFICATE := media
+LOCAL_SDK_VERSION := current
 
 LOCAL_PROGUARD_FLAGS := -include $(LOCAL_PATH)/proguard.flags
 

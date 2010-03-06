@@ -73,6 +73,7 @@ import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
+import com.google.android.camera.R;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -41,6 +41,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.google.android.camera.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;

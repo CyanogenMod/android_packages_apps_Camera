@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
+import com.google.android.camera.R;
 
 public class Menu3DTest extends Activity {
 

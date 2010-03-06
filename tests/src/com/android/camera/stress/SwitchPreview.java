@@ -33,7 +33,7 @@ import android.util.Log;
  *
  * adb shell am instrument \
  *    -e class com.android.camera.stress.SwitchPreview \
- *    -w com.android.camera.tests/com.android.camera.CameraStressTestRunner
+ *    -w com.google.android.camera.tests/com.android.camera.CameraStressTestRunner
  *
  */
 public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera>{
@@ -46,7 +46,7 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
     private FileWriter mfstream;
 
     public SwitchPreview() {
-        super("com.android.camera", VideoCamera.class);
+        super("com.google.android.camera", VideoCamera.class);
     }
 
     @Override
@@ -93,11 +93,11 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
             for (int i=0; i< TOTAL_NUMBER_OF_SWITCHING; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 Intent intent = new Intent();
-                intent.setClassName("com.android.camera",
+                intent.setClassName("com.google.android.camera",
                         "com.android.camera.VideoCamera");
                 getActivity().startActivity(intent);
                 Thread.sleep(WAIT_FOR_PREVIEW);
-                intent.setClassName("com.android.camera",
+                intent.setClassName("com.google.android.camera",
                 "com.android.camera.Camera");
                 getActivity().startActivity(intent);
                 mOut.write(" ," + i);

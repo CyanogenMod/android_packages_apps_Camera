@@ -23,6 +23,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.google.android.camera.R;
+
 /**
  * This class draws an icon which changes according to the mode. For example,
  * The flash icon can have on, off, and auto modes. The user can use
