@@ -9,7 +9,7 @@ import javax.microedition.khronos.opengles.GL11;
 public abstract class AbstractIndicator extends GLView {
     private static final int DEFAULT_PADDING = 3;
 
-    abstract protected ResourceTexture getIcon();
+    abstract protected Texture getIcon();
 
     public AbstractIndicator(Context context) {
         int padding = GLRootView.dpToPixel(context, DEFAULT_PADDING);
@@ -18,7 +18,7 @@ public abstract class AbstractIndicator extends GLView {
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        ResourceTexture icon = getIcon();
+        Texture icon = getIcon();
         new MeasureHelper(this)
                .setPreferredContentSize(icon.getWidth(), icon.getHeight())
                .measure(widthSpec, heightSpec);
@@ -26,13 +26,13 @@ public abstract class AbstractIndicator extends GLView {
 
     @Override
     protected void render(GLRootView root, GL11 gl) {
-        ResourceTexture icon = getIcon();
+        Texture icon = getIcon();
 
         Rect p = mPaddings;
         int width = getWidth() - p.left - p.right;
         int height = getHeight() - p.top - p.bottom;
 
-        if (icon != null && icon.bind(root, gl)) {
+        if (icon != null) {
             icon.draw(root,
                     p.left + (width - icon.getWidth()) / 2,
                     p.top + (height - icon.getHeight()) / 2);

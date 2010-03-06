@@ -102,9 +102,7 @@ public class PopupWindow extends GLView {
         aYoffset = Math.min(aYoffset, height - p.bottom - aHeight);
 
         if (mAnchor != null) {
-            if (mAnchor.bind(root, gl)) {
-                mAnchor.draw(root, aXoffset, aYoffset);
-            }
+            mAnchor.draw(root, aXoffset, aYoffset);
         }
 
         if (mBackupTexture == null || mBackupTexture.getBoundGL() != gl) {
@@ -123,16 +121,12 @@ public class PopupWindow extends GLView {
 
         if (mBackground != null) {
             mBackground.setSize(width - aWidth + mAnchorOffset, height);
-            if (mBackground.bind(root, gl)) {
-                mBackground.draw(root, 0, 0);
-            }
+            mBackground.draw(root, 0, 0);
         }
 
-        if (backup.bind(root, gl)) {
-            gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
-            backup.draw(root, aXoffset, aYoffset, aWidth, aHeight, 1);
-            gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        }
+        gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
+        backup.draw(root, aXoffset, aYoffset, aWidth, aHeight, 1);
+        gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void setContent(GLView content) {

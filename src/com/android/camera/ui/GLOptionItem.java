@@ -24,6 +24,9 @@ public class GLOptionItem extends GLView {
     private static final float ENABLED_ALPHA = 1f;
     private static final float DISABLED_ALPHA = 0.3f;
 
+    private static final int HORIZONTAL_PADDINGS = 4;
+    private static final int VERTICAL_PADDINGS = 2;
+
     private static ResourceTexture sCheckOn;
     private static ResourceTexture sCheckOff;
 
@@ -33,6 +36,8 @@ public class GLOptionItem extends GLView {
     private static int sMinimalWidth;
     private static int sMinimalHeight;
     private static float sFontSize;
+    private static int sHorizontalPaddings = -1;
+    private static int sVerticalPaddings;
 
     private final ResourceTexture mIcon;
     private final StringTexture mText;
@@ -52,6 +57,8 @@ public class GLOptionItem extends GLView {
         sTextRightPadding = dpToPixel(context, TEXT_RIGHT_PADDING);
         sMinimalWidth = dpToPixel(context, MINIMAL_WIDTH);
         sMinimalHeight = dpToPixel(context, MINIMAL_HEIGHT);
+        sHorizontalPaddings = dpToPixel(context, HORIZONTAL_PADDINGS);
+        sVerticalPaddings = dpToPixel(context, VERTICAL_PADDINGS);
 
         sFontSize = dpToPixel(context, FONT_SIZE);
     }
@@ -61,6 +68,8 @@ public class GLOptionItem extends GLView {
         mIcon = iconId == 0 ? null : new ResourceTexture(context, iconId);
         mText = StringTexture.newInstance(title, sFontSize, FONT_COLOR);
         mCheckBox = sCheckOff;
+        setPaddings(sHorizontalPaddings,
+                sVerticalPaddings, sHorizontalPaddings, sVerticalPaddings);
     }
 
     @Override
@@ -95,10 +104,8 @@ public class GLOptionItem extends GLView {
 
         ResourceTexture icon = mIcon;
         if (icon != null) {
-            if (icon.bind(root, gl)) {
-                icon.draw(root, xoffset,
-                        p.top + (height - icon.getHeight()) / 2);
-            }
+            icon.draw(root, xoffset,
+                    p.top + (height - icon.getHeight()) / 2);
             xoffset += icon.getWidth();
         } else {
             xoffset += sNoIconLeadingSpace;
@@ -106,17 +113,13 @@ public class GLOptionItem extends GLView {
 
         StringTexture title = mText;
         xoffset += sTextLeftPadding;
-        if (title.bind(root, gl)) {
-            int yoffset = p.top + (height - title.getHeight()) / 2;
-            //TODO: cut the text if it is too long
-            title.draw(root, xoffset, yoffset);
-        }
+        int yoffset = p.top + (height - title.getHeight()) / 2;
+        //TODO: cut the text if it is too long
+        title.draw(root, xoffset, yoffset);
 
         ResourceTexture checkbox = mCheckBox;
-        if (checkbox.bind(root, gl)) {
-            int yoffset = p.top + (height - checkbox.getHeight()) / 2;
-            checkbox.draw(root, width - checkbox.getWidth(), yoffset);
-        }
+        yoffset = p.top + (height - checkbox.getHeight()) / 2;
+        checkbox.draw(root, width - checkbox.getWidth(), yoffset);
         trans.setAlpha(oldAlpha);
     }
 

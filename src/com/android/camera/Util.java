@@ -264,4 +264,16 @@ public class Util {
         n |= n >>> 1;
         return n + 1;
     }
+
+    public static float distance(float x, float y, float sx, float sy) {
+        float dx = x - sx;
+        float dy = y - sy;
+        return (float) Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public static int clamp(int x, int min, int max) {
+        if (x > max) return max;
+        if (x < min) return min;
+        return x;
+    }
 }

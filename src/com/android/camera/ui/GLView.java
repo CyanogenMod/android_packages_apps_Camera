@@ -2,6 +2,7 @@ package com.android.camera.ui;
 
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -11,10 +12,7 @@ import java.util.ArrayList;
 import javax.microedition.khronos.opengles.GL11;
 
 public class GLView {
-    GLRootView mRootView;
-
-    public static final int STATE_EMPTY = 0;
-    public static final int STATE_PRESSED = 1;
+    private static final String TAG = "GLView";
 
     public static final int VISIBLE = 0;
     public static final int INVISIBLE = 1;
@@ -23,18 +21,17 @@ public class GLView {
     public static final int FLAG_SET_MEASURED_SIZE = 2;
     public static final int FLAG_LAYOUT_REQUESTED = 4;
 
-    private static final String TAG = "GLView";
-
     protected final Rect mBounds = new Rect();
     protected final Rect mPaddings = new Rect();
 
+    private GLRootView mRootView;
     private GLView mParent;
     private ArrayList<GLView> mComponents;
+    private GLView mMotionTarget;
 
     private OnTouchListener mOnTouchListener;
     private Animation mAnimation;
 
-    protected int mViewState = STATE_EMPTY;
     protected int mViewFlags = 0;
 
     protected int mMeasuredWidth = 0;
@@ -47,25 +44,6 @@ public class GLView {
     protected int mScrollX = 0;
     protected int mScrollHeight = 0;
     protected int mScrollWidth = 0;
-
-    protected void onStateChanged(int oldState, int newState) {
-    }
-
-    protected void addStates(int states) {
-        int newState = (mViewState | states);
-        if (newState != mViewState) {
-            onStateChanged(mViewState, newState);
-            mViewState = newState;
-        }
-    }
-
-    protected void removeStates(int states) {
-        int newState = (mViewState & ~states);
-        if (newState != mViewState) {
-            onStateChanged(mViewState, newState);
-            mViewState = newState;
-        }
-    }
 
     public void startAnimation(Animation animation) {
         GLRootView root = getGLRootView();
@@ -105,7 +83,23 @@ public class GLView {
     }
 
     protected void onAddToParent(GLView parent) {
+        // TODO: enable the check
+        // if (mParent != null) throw new IllegalStateException();
         mParent = parent;
+        if (parent != null && parent.mRootView != null) {
+            onAttachToRoot(parent.mRootView);
+        }
+    }
+
+    protected void onRemoveFromParent(GLView parent) {
+        if (parent != null && parent.mMotionTarget == this) {
+            long now = SystemClock.uptimeMillis();
+            dispatchTouchEvent(MotionEvent.obtain(
+                    now, now, MotionEvent.ACTION_CANCEL, 0, 0, 0));
+            parent.mMotionTarget = null;
+        }
+        onDetachFromRoot();
+        mParent = null;
     }
 
     public void clearComponents() {
@@ -131,6 +125,15 @@ public class GLView {
         component.onAddToParent(this);
     }
 
+    public boolean removeComponent(GLView component) {
+        if (mComponents == null) return false;
+        if (mComponents.remove(component)) {
+            component.onRemoveFromParent(this);
+            return true;
+        }
+        return false;
+    }
+
     public Rect bounds() {
         return mBounds;
     }
@@ -144,9 +147,6 @@ public class GLView {
     }
 
     public GLRootView getGLRootView() {
-        if (mRootView == null && mParent != null) {
-            mRootView = mParent.getGLRootView();
-        }
         return mRootView;
     }
 
@@ -218,20 +218,49 @@ public class GLView {
         return false;
     }
 
+    private boolean dispatchTouchEvent(
+            MotionEvent event, int x, int y, GLView component) {
+        Rect rect = component.mBounds;
+        int left = rect.left;
+        int top = rect.top;
+        if (rect.contains(x, y)) {
+            event.offsetLocation(-left, -top);
+            if (component.dispatchTouchEvent(event)) {
+                event.offsetLocation(left, top);
+                return true;
+            }
+            event.offsetLocation(left, top);
+        }
+        return false;
+    }
+
     protected boolean dispatchTouchEvent(MotionEvent event) {
         if (mComponents != null) {
-            int eventX = (int) event.getX();
-            int eventY = (int) event.getY();
-            for (int i = 0, n = getComponentCount(); i < n; ++i) {
-                GLView component = getComponent(i);
-                if (component.getVisibility() != GLView.VISIBLE) continue;
-                Rect rect = component.mBounds;
-                int left = rect.left;
-                int top = rect.top;
-                if (rect.contains(eventX, eventY)) {
-                    event.offsetLocation(-left, -top);
-                    if (component.dispatchTouchEvent(event)) return true;
-                    event.offsetLocation(left, top);
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+            int action = event.getAction();
+            if (mMotionTarget != null) {
+                if (action == MotionEvent.ACTION_DOWN) {
+                    MotionEvent cancel = MotionEvent.obtain(event);
+                    cancel.setAction(MotionEvent.ACTION_CANCEL);
+                    mMotionTarget = null;
+                } else {
+                    dispatchTouchEvent(event, x, y, mMotionTarget);
+                    if (action == MotionEvent.ACTION_CANCEL
+                            || action == MotionEvent.ACTION_UP) {
+                        mMotionTarget = null;
+                    }
+                    return true;
+                }
+            }
+            if (action == MotionEvent.ACTION_DOWN) {
+                for (int i = 0, n = getComponentCount(); i < n; ++i) {
+                    GLView component = getComponent(i);
+                    if (component.getVisibility() != GLView.VISIBLE) continue;
+                    if (dispatchTouchEvent(event, x, y, component)) {
+                        mMotionTarget = component;
+                        return true;
+                    }
                 }
             }
         }
@@ -318,4 +347,21 @@ public class GLView {
         return true;
     }
 
+    protected void onAttachToRoot(GLRootView root) {
+        mRootView = root;
+        if (mComponents != null) {
+            for (GLView view : mComponents) {
+                view.onAttachToRoot(root);
+            }
+        }
+    }
+
+    protected void onDetachFromRoot() {
+        if (mComponents != null) {
+            for (GLView view : mComponents) {
+                view.onDetachFromRoot();
+            }
+        }
+        mRootView = null;
+    }
 }

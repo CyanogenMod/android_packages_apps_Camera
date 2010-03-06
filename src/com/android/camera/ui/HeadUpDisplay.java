@@ -13,11 +13,12 @@ import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
+import com.google.android.camera.R;
+
 import com.android.camera.CameraSettings;
 import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
-import com.google.android.camera.R;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -41,7 +42,11 @@ public class HeadUpDisplay extends GLView {
     protected static final String TAG = "HeadUpDisplay";
 
     private IndicatorBar mIndicatorBar;
+    private OtherSettingsIndicator mOtherSettings;
     private GpsIndicator mGpsIndicator;
+    private ZoomIndicator mZoomIndicator;
+
+    private PreferenceGroup mPreferenceGroup;
 
     private PopupWindow mPopupWindow;
 
@@ -155,6 +160,7 @@ public class HeadUpDisplay extends GLView {
     }
 
     public void initialize(Context context, PreferenceGroup preferenceGroup) {
+        mPreferenceGroup = preferenceGroup;
         initializeIndicatorBar(context, preferenceGroup);
     }
 
@@ -193,9 +199,9 @@ public class HeadUpDisplay extends GLView {
 
     private void scheduleDeactiviateIndicatorBar() {
         mHandler.removeMessages(HIDE_POPUP_WINDOW);
-        mHandler.sendEmptyMessageDelayed(HIDE_POPUP_WINDOW, 2000);
+        mHandler.sendEmptyMessageDelayed(HIDE_POPUP_WINDOW, 3000);
         mHandler.removeMessages(DEACTIVATE_INDICATOR_BAR);
-        mHandler.sendEmptyMessageDelayed(DEACTIVATE_INDICATOR_BAR, 3000);
+        mHandler.sendEmptyMessageDelayed(DEACTIVATE_INDICATOR_BAR, 4000);
     }
 
     public void hidePopupWindow() {
@@ -217,6 +223,10 @@ public class HeadUpDisplay extends GLView {
             scheduleDeactiviateIndicatorBar();
         }
         mPopupWindow.setOrientation(orientation);
+    }
+
+    public void reloadPreferences() {
+
     }
 
     private void initializePopupWindow(Context context) {
@@ -291,15 +301,16 @@ public class HeadUpDisplay extends GLView {
         mIndicatorBar.setHighlight(new NinePatchTexture(
                 context, R.drawable.ic_viewfinder_iconbar_highlight));
 
-        OtherSettingsIndicator otherSettings = new OtherSettingsIndicator(
+        mOtherSettings = new OtherSettingsIndicator(
                 context,
                 getListPreferences(group,
                 CameraSettings.KEY_FOCUS_MODE,
+                CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_JPEG_QUALITY,
                 CameraSettings.KEY_COLOR_EFFECT));
-        mIndicatorBar.addComponent(otherSettings);
+        mIndicatorBar.addComponent(mOtherSettings);
 
         GpsIndicator gpsIndicator = new GpsIndicator(
                 context, (IconListPreference)
@@ -313,8 +324,19 @@ public class HeadUpDisplay extends GLView {
         addIndicator(context, mIndicatorBar, group,
                 CameraSettings.KEY_FLASH_MODE);
 
+        mZoomIndicator = new ZoomIndicator(context);
+        mIndicatorBar.addComponent(mZoomIndicator);
+
         addComponent(mIndicatorBar);
         mIndicatorBar.setOnItemSelectedListener(new IndicatorBarListener());
+    }
+
+    public void setZoomListener(ZoomController.ZoomListener listener) {
+        mZoomIndicator.setZoomListener(listener);
+    }
+
+    public void setZoomIndex(int index) {
+        mZoomIndicator.setZoomIndex(index);
     }
 
     public void setGpsHasSignal(final boolean hasSignal) {
@@ -355,5 +377,14 @@ public class HeadUpDisplay extends GLView {
         public void onNothingSelected() {
             mPopupWindow.popoff();
         }
+    }
+
+    public void setZoomRatios(float[] zoomRatios) {
+        mZoomIndicator.setZoomRatios(zoomRatios);
+    }
+
+    public void collapse() {
+        mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
+        mIndicatorBar.setActivated(false);
     }
 }

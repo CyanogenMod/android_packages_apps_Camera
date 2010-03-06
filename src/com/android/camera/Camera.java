@@ -67,13 +67,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
-import android.widget.ZoomButtonsController;
+
+import com.google.android.camera.R;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
-import com.google.android.camera.R;
+import com.android.camera.ui.ZoomController;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -106,10 +107,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
-    private boolean mZooming = false;
+
+    private static final int ZOOM_STOPPED = 0;
+    private static final int ZOOM_START = 1;
+    private static final int ZOOM_STOPPING = 2;
+
+    private int mZoomState = ZOOM_STOPPED;
     private boolean mSmoothZoomSupported = false;
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
+    private int mTargetZoomValue;
 
     private Parameters mParameters;
     private Parameters mInitialParams;
@@ -134,7 +141,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private ShutterButton mShutterButton;
     private FocusRectangle mFocusRectangle;
     private ToneGenerator mFocusToneGenerator;
-    private ZoomButtonsController mZoomButtons;
     private GestureDetector mGestureDetector;
     private Switcher mSwitcher;
     private boolean mStartPreviewFail = false;
@@ -324,15 +330,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         initializeFocusTone();
 
-        initializeZoom();
-
-        mFirstTimeInitialized = true;
-
         mHeadUpDisplay = new HeadUpDisplay(this);
         CameraSettings settings = new CameraSettings(this, mInitialParams);
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences));
         mGLRootView.setContentPane(mHeadUpDisplay);
+
+        initializeZoom();
+        mFirstTimeInitialized = true;
     }
 
     private void updateThumbnailButton() {
@@ -362,9 +367,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         keepMediaProviderInstance();
         checkStorage();
 
-        if (mZoomButtons != null) {
-            mCameraDevice.setZoomCallback(mZoomCallback);
-        }
+        mCameraDevice.setZoomCallback(mZoomCallback);
 
         if (!mIsImageCaptureIntent) {
             updateThumbnailButton();
@@ -376,48 +379,59 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
-
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
+
         mCameraDevice.setZoomCallback(mZoomCallback);
-        mZoomButtons = new ZoomButtonsController(mSurfaceView);
-        mZoomButtons.setAutoDismissed(true);
-        mZoomButtons.setZoomSpeed(100);
-        mZoomButtons.setOnZoomListener(
-                new ZoomButtonsController.OnZoomListener() {
-            public void onVisibilityChanged(boolean visible) {
-                if (visible) {
-                    updateZoomButtonsEnabled();
-                }
-            }
 
-            public void onZoom(boolean zoomIn) {
-                if (isZooming()) return;
+        mHeadUpDisplay.setZoomRatios(getZoomRatios());
 
-                if (zoomIn) {
-                    if (mZoomValue < mZoomMax) {
-                        if (mSmoothZoomSupported) {
-                            mCameraDevice.startSmoothZoom(mZoomValue + 1);
-                            mZooming = true;
-                        } else {
-                            mParameters.setZoom(++mZoomValue);
-                            mCameraDevice.setParameters(mParameters);
-                            updateZoomButtonsEnabled();
-                        }
+        mHeadUpDisplay.setZoomListener(new ZoomController.ZoomListener() {
+            public void onZoomChanged(
+                    final int index, float ratio, boolean isMoving) {
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        onZoomValueChanged(index);
                     }
-                } else {
-                    if (mZoomValue > 0) {
-                        if (mSmoothZoomSupported) {
-                            mCameraDevice.startSmoothZoom(mZoomValue - 1);
-                            mZooming = true;
-                        } else {
-                            mParameters.setZoom(--mZoomValue);
-                            mCameraDevice.setParameters(mParameters);
-                            updateZoomButtonsEnabled();
-                        }
-                    }
-                }
+                });
             }
         });
+    }
+
+    private void onZoomValueChanged(int index) {
+        if (mSmoothZoomSupported) {
+            if (mTargetZoomValue != index && mZoomState != ZOOM_STOPPED) {
+                mTargetZoomValue = index;
+                if (mZoomState == ZOOM_START) {
+                    mZoomState = ZOOM_STOPPING;
+                    mCameraDevice.stopSmoothZoom();
+                }
+            } else if (mZoomState == ZOOM_STOPPED && mZoomValue != index) {
+                mTargetZoomValue = index;
+                mCameraDevice.startSmoothZoom(index);
+                mZoomState = ZOOM_START;
+            }
+        } else {
+            mParameters.setZoom(index);
+            mCameraDevice.setParameters(mParameters);
+        }
+    }
+
+    private float[] getZoomRatios() {
+        List<Integer> zoomRatios = mParameters.getZoomRatios();
+        if (zoomRatios != null) {
+            float result[] = new float[zoomRatios.size()];
+            for (int i = 0, n = result.length; i < n; ++i) {
+                result[i] = (float) zoomRatios.get(i) / 100f;
+            }
+            return result;
+        } else {
+            //1.0, 1.2, 1.44, 1.6, 1.8, 2.0
+            float result[] = new float[mZoomMax + 1];
+            for (int i = 0, n = result.length; i < n; ++i) {
+                result[i] = 1 + i * 0.2f;
+            }
+            return result;
+        }
     }
 
     public void onVisibilityChanged(boolean visible) {
@@ -434,36 +448,15 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private boolean isZooming() {
-        Log.v(TAG, "mZooming=" + mZooming);
-        return mZooming;
-    }
-
-    private void updateZoomButtonsEnabled() {
-        mZoomButtons.setZoomInEnabled(mZoomValue < mZoomMax);
-        mZoomButtons.setZoomOutEnabled(mZoomValue > 0);
-    }
-
     private class ZoomGestureListener extends
             GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onDown(MotionEvent e) {
-            // Show zoom buttons only when preview is started and snapshot
-            // is not in progress. mZoomButtons may be null if it is not
-            // initialized.
-            if (!mPausing && isCameraIdle() && mPreviewing
-                    && mZoomButtons != null) {
-                mZoomButtons.setVisible(true);
-            }
-            return true;
-        }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             // Perform zoom only when preview is started and snapshot is not in
             // progress.
             if (mPausing || !isCameraIdle() || !mPreviewing
-                    || mZoomButtons == null || isZooming()) {
+                    || mHeadUpDisplay == null || mZoomState != ZOOM_STOPPED) {
                 return false;
             }
 
@@ -490,7 +483,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     }
                 }
             }
-            updateZoomButtonsEnabled();
+            mHeadUpDisplay.setZoomIndex(mZoomValue);
             return true;
         }
     }
@@ -733,8 +726,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private final class ZoomCallback
             implements android.hardware.Camera.ZoomCallback {
-        public void onZoomUpdate(int zoomValue, boolean stopped,
-                                 android.hardware.Camera camera) {
+        public void onZoomUpdate(
+                int zoomValue, boolean stopped, android.hardware.Camera camera) {
             Log.v(TAG, "ZoomCallback: zoom value=" + zoomValue + ". stopped="
                     + stopped);
             mZoomValue = zoomValue;
@@ -743,8 +736,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mParameters.setZoom(zoomValue);
             // We only care if the zoom is stopped. mZooming is set to true when
             // we start smooth zoom.
-            if (stopped) mZooming = false;
-            updateZoomButtonsEnabled();
+            if (stopped && mZoomState != ZOOM_STOPPED) {
+                if (zoomValue != mTargetZoomValue) {
+                    mCameraDevice.startSmoothZoom(mTargetZoomValue);
+                    mZoomState = ZOOM_START;
+                } else {
+                    mZoomState = ZOOM_STOPPED;
+                }
+            }
         }
     }
 
@@ -1324,12 +1323,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mImageCapture.clearLastData();
         mImageCapture = null;
 
-        // This is necessary to make the ZoomButtonsController unregister
-        // its configuration change receiver.
-        if (mZoomButtons != null) {
-            mZoomButtons.setVisible(false);
-        }
-
         // Remove the messages in the event queue.
         mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
@@ -1369,7 +1362,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // in progress.
         if (canTakePicture()) {
             Log.v(TAG, "Start autofocus.");
-            if (mZoomButtons != null) mZoomButtons.setVisible(false);
+            if (mHeadUpDisplay != null) mHeadUpDisplay.collapse();
             mFocusStartTime = System.currentTimeMillis();
             mFocusState = FOCUSING;
             updateFocusIndicator();
@@ -1471,7 +1464,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || (mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL)) {
-            if (mZoomButtons != null) mZoomButtons.setVisible(false);
+            if (mHeadUpDisplay != null) mHeadUpDisplay.collapse();
             mImageCapture.onSnap();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
@@ -1549,7 +1542,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void closeCamera() {
         if (mCameraDevice != null) {
             CameraHolder.instance().release();
-            if (mZoomButtons != null) mCameraDevice.setZoomCallback(null);
+            mCameraDevice.setZoomCallback(null);
             mCameraDevice = null;
             mPreviewing = false;
         }
@@ -1632,7 +1625,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             throw new RuntimeException("startPreview failed", ex);
         }
         mPreviewing = true;
-        mZooming = false;
+        mZoomState = ZOOM_STOPPED;
         mStatus = IDLE;
 
         long threadTimeEnd = Debug.threadCpuTimeNanos();
@@ -1786,6 +1779,23 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mParameters.setColorEffect(colorEffect);
         }
 
+        // Set exposure compensation
+        String exposure = mPreferences.getString(
+                CameraSettings.KEY_EXPOSURE,
+                getString(R.string.pref_exposure_default));
+        try {
+            int value = Integer.parseInt(exposure);
+            int max = mParameters.getMaxExposureCompensation();
+            int min = mParameters.getMinExposureCompensation();
+            if (value >= min && value <= max) {
+                mParameters.setExposureCompensation(value);
+            } else {
+                Log.w(TAG, "invalid exposure range: " + exposure);
+            }
+        } catch (NumberFormatException e) {
+            Log.w(TAG, "invalid exposure: " + exposure);
+        }
+
         // If scene mode is set, we cannot set flash mode, white balance, and
         // focus mode, instead, we read it from driver
         if (!Parameters.SCENE_MODE_AUTO.equals(sceneMode)) {
@@ -1859,7 +1869,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     mFocusMode = Parameters.FOCUS_MODE_AUTO;
                 }
             }
-
             mCameraDevice.setParameters(mParameters);
         }
     }

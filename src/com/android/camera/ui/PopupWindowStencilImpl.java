@@ -6,7 +6,6 @@ import javax.microedition.khronos.opengles.GL11;
 
 public class PopupWindowStencilImpl extends PopupWindow {
 
-
     @Override
     protected void renderBackground(GLRootView rootView, GL11 gl) {
         int width = getWidth();
@@ -22,19 +21,14 @@ public class PopupWindowStencilImpl extends PopupWindow {
         if (mAnchor != null) {
             gl.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
             gl.glStencilFunc(GL11.GL_ALWAYS, 1, 1);
-            if (mAnchor.bind(rootView, gl)) {
-                mAnchor.draw(rootView, aXoffset, aYoffset);
-            }
+            mAnchor.draw(rootView, aXoffset, aYoffset);
             gl.glStencilFunc(GL11.GL_NOTEQUAL, 1, 1);
             gl.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
         }
 
         if (mBackground != null) {
             mBackground.setSize(width - aWidth + mAnchorOffset, height);
-            if (mBackground.bind(rootView, gl)) {
-                mBackground.draw(rootView, 0, 0);
-            }
+            mBackground.draw(rootView, 0, 0);
         }
     }
-
 }

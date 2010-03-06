@@ -20,9 +20,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.media.CamcorderProfile;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.media.CamcorderProfile;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -38,23 +38,19 @@ public class CameraSettings {
     private static final int NOT_FOUND = -1;
 
     public static final String KEY_VERSION = "pref_version_key";
-    public static final String KEY_RECORD_LOCATION =
-            RecordLocationPreference.KEY;
-    public static final String KEY_VIDEO_QUALITY =
-            "pref_camera_videoquality_key";
-    public static final String KEY_VIDEO_DURATION =
-            "pref_camera_video_duration_key";
+    public static final String KEY_RECORD_LOCATION = RecordLocationPreference.KEY;
+    public static final String KEY_VIDEO_QUALITY = "pref_camera_videoquality_key";
+    public static final String KEY_VIDEO_DURATION = "pref_camera_video_duration_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
     public static final String KEY_VIDEOCAMERA_FLASH_MODE = "pref_camera_video_flashmode_key";
     public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
-    public static final String KEY_WHITE_BALANCE =
-            "pref_camera_whitebalance_key";
+    public static final String KEY_WHITE_BALANCE = "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
-    public static final String KEY_QUICK_CAPTURE =
-            "pref_camera_quickcapture_key";
+    public static final String KEY_QUICK_CAPTURE = "pref_camera_quickcapture_key";
+    public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
 
     public static final String QUICK_CAPTURE_ON = "on";
     public static final String QUICK_CAPTURE_OFF = "off";
@@ -136,6 +132,7 @@ public class CameraSettings {
         ListPreference sceneMode = group.findPreference(KEY_SCENE_MODE);
         ListPreference flashMode = group.findPreference(KEY_FLASH_MODE);
         ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
+        ListPreference exposure = group.findPreference(KEY_EXPOSURE);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -173,6 +170,35 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     focusMode, mParameters.getSupportedFocusModes());
         }
+
+        if (exposure != null) {
+            buildExposureCompensation(group, exposure);
+        }
+    }
+
+    private void buildExposureCompensation(
+            PreferenceGroup group, ListPreference exposure) {
+        int max = mParameters.getMaxExposureCompensation();
+        int min = mParameters.getMinExposureCompensation();
+        if (max == 0 && min == 0) {
+            removePreference(group, exposure.getKey());
+            return;
+        }
+        float step = mParameters.getExposureCompensationStep();
+
+        // show only integer values for exposure compensation
+        int maxValue = (int) Math.floor(max * step);
+        int minValue = (int) Math.ceil(min * step);
+        CharSequence entries[] = new CharSequence[maxValue - minValue + 1];
+        CharSequence entryValues[] = new CharSequence[maxValue - minValue + 1];
+        for (int i = minValue; i <= maxValue; ++i) {
+            entryValues[maxValue - i] = Integer.toString(Math.round(i / step));
+            StringBuilder builder = new StringBuilder();
+            if (i > 0) builder.append('+');
+            entries[maxValue - i] = builder.append(i).toString();
+        }
+        exposure.setEntries(entries);
+        exposure.setEntryValues(entryValues);
     }
 
     private static boolean removePreference(PreferenceGroup group, String key) {

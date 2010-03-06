@@ -29,9 +29,9 @@ import com.google.android.camera.R;
  */
 public class ListPreference extends CameraPreference {
 
-    private String mKey;
+    private final String mKey;
     private String mValue;
-    private String mDefaultValue;
+    private final String mDefaultValue;
 
     private CharSequence[] mEntries;
     private CharSequence[] mEntryValues;
@@ -66,11 +66,11 @@ public class ListPreference extends CameraPreference {
     }
 
     public void setEntries(CharSequence entries[]) {
-        mEntries = Util.checkNotNull(entries);
+        mEntries = entries == null ? new CharSequence[0] : entries;
     }
 
     public void setEntryValues(CharSequence values[]) {
-        mEntryValues = Util.checkNotNull(values);
+        mEntryValues = values == null ? new CharSequence[0] : values;
     }
 
     public String getValue() {

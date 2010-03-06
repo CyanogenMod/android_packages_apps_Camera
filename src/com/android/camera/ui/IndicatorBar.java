@@ -22,17 +22,14 @@ public class IndicatorBar extends GLView {
         @Override
         protected void render(GLRootView root, GL11 gl) {
             mBackground.setSize(getWidth(), getHeight());
-            if (mBackground.bind(root, gl)) {
-                mBackground.draw(root, 0, 0);
-            }
+            mBackground.draw(root, 0, 0);
+
             if (mActivated && mSelectedIndex != INDEX_NONE
                     && mHighlight != null) {
                 Rect bounds = IndicatorBar.this.getComponent(
                         mSelectedIndex + 1).mBounds;
                 mHighlight.setSize(bounds.width(), bounds.height());
-                if (mHighlight.bind(root, gl)) {
-                    mHighlight.draw(root, bounds.left, bounds.top);
-                }
+                mHighlight.draw(root, bounds.left, bounds.top);
             }
         }
     }

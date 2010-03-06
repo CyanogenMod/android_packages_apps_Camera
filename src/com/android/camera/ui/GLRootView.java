@@ -152,7 +152,7 @@ public class GLRootView extends GLSurfaceView
 
     public void setContentPane(GLView content) {
         mContentView = content;
-        content.mRootView = this;
+        content.onAttachToRoot(this);
 
         // no parent for the content pane
         content.onAddToParent(null);
@@ -346,6 +346,9 @@ public class GLRootView extends GLSurfaceView
     public void drawTexture(
             Texture texture, int x, int y, int width, int height, float alpha) {
 
+        if (!texture.bind(this, mGL)) {
+            throw new RuntimeException("cannot bind" + texture.toString());
+        }
         if (width <= 0 || height <= 0) return ;
 
         Matrix matrix = mTransformation.getMatrix();

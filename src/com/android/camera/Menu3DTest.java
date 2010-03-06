@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.view.OrientationEventListener;
 import android.widget.FrameLayout;
 
+import com.google.android.camera.R;
+
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
-import com.google.android.camera.R;
 
 public class Menu3DTest extends Activity {
 
@@ -31,6 +32,7 @@ public class Menu3DTest extends Activity {
                 (PreferenceGroup) inflater.inflate(R.xml.camera_preferences);
         hud.initialize(this, preferenceGroup);
         hud.overrideSettings(CameraSettings.KEY_FOCUS_MODE, "macro");
+        hud.setZoomRatios(new float[]{1, 2, 3, 4, 5});
 
         setContentView(mRootView);
 

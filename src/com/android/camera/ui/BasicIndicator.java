@@ -2,8 +2,9 @@ package com.android.camera.ui;
 
 import android.content.Context;
 
-import com.android.camera.IconListPreference;
 import com.google.android.camera.R;
+
+import com.android.camera.IconListPreference;
 import com.android.camera.Util;
 import com.android.camera.ui.GLListView.OnItemSelectedListener;
 
@@ -56,6 +57,7 @@ public class BasicIndicator extends AbstractIndicator {
     }
 
     protected void onPreferenceChanged(int newIndex) {
+        if (newIndex == mIndex) return;
         mIndex = newIndex;
         invalidate();
     }

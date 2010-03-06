@@ -33,7 +33,7 @@ public class NinePatchTexture extends FrameTexture {
     }
 
     @Override
-    public boolean bind(GLRootView root, GL11 gl) {
+    protected boolean bind(GLRootView root, GL11 gl) {
         if (mLastWidth != mWidth || mLastHeight != mHeight) {
             if (mDelegate != null) mDelegate.deleteFromGL(gl);
             mDelegate = new MyTexture(mWidth, mHeight);
@@ -41,6 +41,11 @@ public class NinePatchTexture extends FrameTexture {
             mLastHeight = mHeight;
         }
         return mDelegate.bind(root, gl);
+    }
+
+    @Override
+    public void getTextureCoords(float coord[], int offset) {
+        mDelegate.getTextureCoords(coord, offset);
     }
 
     protected NinePatchDrawable getNinePatch() {
