@@ -31,7 +31,7 @@ import android.content.Intent;
  *
  * adb shell am instrument \
  *    -e com.android.camera.power.ImageAndVideoCapture \
- *    -w com.android.camera.tests/android.test.InstrumentationTestRunner
+ *    -w com.google.android.camera.tests/android.test.InstrumentationTestRunner
  *
  */
 
@@ -45,7 +45,7 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
     private static final long WAIT_FOR_STABLE_STATE = 2000; //2 seconds
 
     public ImageAndVideoCapture() {
-        super("com.android.camera", Camera.class);
+        super("com.google.android.camera", Camera.class);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
         try {
             // Switch to the video mode
             Intent intent = new Intent();
-            intent.setClassName("com.android.camera",
+            intent.setClassName("com.google.android.camera",
                     "com.android.camera.VideoCamera");
             getActivity().startActivity(intent);
             for (int i = 0; i < TOTAL_NUMBER_OF_VIDEOCAPTURE; i++) {

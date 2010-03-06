@@ -38,7 +38,7 @@ import android.content.Intent;
  *
  * adb shell am instrument \
  *    -e class com.android.camera.stress.ImageCapture \
- *    -w com.android.camera.tests/com.android.camera.CameraStressTestRunner
+ *    -w com.google.android.camera.tests/com.android.camera.CameraStressTestRunner
  *
  */
 
@@ -66,7 +66,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     private FileWriter mfstream;
 
     public ImageCapture() {
-        super("com.android.camera", Camera.class);
+        super("com.google.android.camera", Camera.class);
     }
 
     @Override
@@ -250,7 +250,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
             mOut.write("loop: ");
             // Switch to the video mode
             Intent intent = new Intent();
-            intent.setClassName("com.android.camera",
+            intent.setClassName("com.google.android.camera",
                     "com.android.camera.VideoCamera");
             getActivity().startActivity(intent);
             for (int i = 0; i < TOTAL_NUMBER_OF_VIDEOCAPTURE; i++) {
