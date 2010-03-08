@@ -15,7 +15,7 @@
 -->
 
 <PreferenceGroup
-        xmlns:camera="http://schemas.android.com/apk/res/com.google.android.camera" >
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera" >
     <PreferenceGroup
             camera:title="@string/pref_camera_settings_category">
         <IconListPreference

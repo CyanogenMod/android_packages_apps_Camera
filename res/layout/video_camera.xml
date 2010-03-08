@@ -15,7 +15,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:camera="http://schemas.android.com/apk/res/com.google.android.camera"
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/video_camera"
         android:background="@drawable/camera_background"
         android:orientation="horizontal"

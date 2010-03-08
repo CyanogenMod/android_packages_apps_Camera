@@ -15,18 +15,18 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.android.camera.tests">
+    package="com.android.camera.tests">
 
     <application>
         <uses-library android:name="android.test.runner" />
     </application>
 
-    <instrumentation android:name="com.android.camera.CameraLaunchPerformance"
-            android:targetPackage="com.google.android.camera"
+    <instrumentation android:name="CameraLaunchPerformance"
+            android:targetPackage="com.android.camera"
             android:label="Camera Launch Performance">
     </instrumentation>
 
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-             android:targetPackage="com.google.android.camera"
+             android:targetPackage="com.android.camera"
              android:label="Tests for Camera application."/>
 </manifest>
