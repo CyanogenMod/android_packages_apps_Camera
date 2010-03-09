@@ -543,6 +543,7 @@ public class VideoCamera extends NoSearchActivity
         super.onResume();
         mPausing = false;
 
+        mVideoPreview.setVisibility(View.VISIBLE);
         readVideoPreferences();
         resizeForPreviewAspectRatio();
         if (!mPreviewing && !mStartPreviewFail) {
@@ -638,6 +639,10 @@ public class VideoCamera extends NoSearchActivity
         super.onPause();
 
         mPausing = true;
+
+        // Hide the preview now. Otherwise, the preview may be rotated during
+        // onPause and it is annoying to users.
+        mVideoPreview.setVisibility(View.INVISIBLE);
 
         if (mSettings != null && mSettings.isVisible()) {
             mSettings.setVisible(false);
