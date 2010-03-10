@@ -51,13 +51,6 @@
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"儲存位置"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"關閉"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"開啟"</string>
-    <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"影片品質"</string>
-    <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"低 (適用於多媒體簡訊)"</string>
-    <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"高 (適用於 SD 卡)"</string>
-    <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"影片長度"</string>
-    <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> 秒 (MMS)"</string>
-    <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 分鐘"</string>
-    <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 分鐘"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"相機設定"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"攝錄影機設定"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"相片大小"</string>

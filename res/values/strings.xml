@@ -124,31 +124,9 @@
     <string name="pref_camera_recordlocation_entry_off">Off</string>
     <string name="pref_camera_recordlocation_entry_on">On</string>
 
-    <!-- Default video quality setting. A numerical value. -->
-    <string name="pref_camera_videoquality_default" translatable="false">1</string>
-
-    <!-- Settings screen, Video quality title -->
-    <string name="pref_camera_videoquality_title">Video quality</string>
-
-    <!-- Settings screen, Video quality dialog radio button choices -->
-    <string name="pref_camera_videoquality_entry_0">Low (for MMS messages)</string>
-    <string name="pref_camera_videoquality_entry_1">High (for SD card)</string>
-
-    <!-- Default video duration setting. A numerical value.-->
-    <string name="pref_camera_video_duration_default" translatable="false">10</string>
-
-    <!-- Settings screen, Video duration title -->
-    <string name="pref_camera_video_duration_title">Video duration</string>
-
-    <!-- Settings screen, Video duration dialog radio button choices -->
-    <string name="pref_camera_video_duration_entry_mms">
-        <xliff:g id="duration" example="60">%1$d</xliff:g> seconds (for MMS)
-    </string>
-    <string name="pref_camera_video_duration_entry_10">10 minutes</string>
-    <string name="pref_camera_video_duration_entry_30">30 minutes</string>
-
     <!-- The Video length settings in preference -->
     <string name="pref_video_quality_title">Video quality</string>
+    <string name="pref_video_quality_default" translatable="false">high</string>
     <string name="pref_video_quality_entry_high">High (30m)</string>
     <string name="pref_video_quality_entry_low">Low (30m)</string>
     <string name="pref_video_quality_entry_mms">MMS (Low, 30s)</string>

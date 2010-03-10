@@ -67,10 +67,9 @@ import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 
-import com.android.camera.R;
-
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
+import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.ZoomController;
@@ -216,9 +215,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private String mFocusMode;
 
     private final Handler mHandler = new MainHandler();
-    private OnScreenSettings mSettings;
     private boolean mQuickCapture;
-    private HeadUpDisplay mHeadUpDisplay;
+    private CameraHeadUpDisplay mHeadUpDisplay;
 
     /**
      * This Handler is used to post message back onto the main thread of the
@@ -334,7 +332,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         initializeFocusTone();
 
-        mHeadUpDisplay = new HeadUpDisplay(this);
+        mHeadUpDisplay = new CameraHeadUpDisplay(this);
         CameraSettings settings = new CameraSettings(this, mInitialParams);
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences));
@@ -1266,10 +1264,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         closeCamera();
         resetScreenOn();
 
-        if (mSettings != null && mSettings.isVisible()) {
-            mSettings.setVisible(false);
-        }
-
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
             mHeadUpDisplay.setGpsHasSignal(false);
@@ -1859,7 +1853,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             return;
         } else if (isCameraIdle()) {
             mHandler.removeMessages(SET_CAMERA_PARAMETERS_WHEN_IDLE);
-            setCameraParameters();
+            synchronized (mPreferences) {
+                setCameraParameters();
+            }
         } else {
             mHandler.sendEmptyMessageDelayed(
                 SET_CAMERA_PARAMETERS_WHEN_IDLE, 1000);
@@ -2017,6 +2013,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (onOff == SWITCH_VIDEO) {
             if (!isCameraIdle()) return false;
             MenuHelper.gotoVideoMode(this);
+            ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
             finish();
         }
         return true;

@@ -2,10 +2,9 @@ package com.android.camera.ui;
 
 import android.content.Context;
 
-import com.android.camera.R;
-
 import com.android.camera.IconListPreference;
 import com.android.camera.PreferenceGroup;
+import com.android.camera.R;
 import com.android.camera.Util;
 import com.android.camera.ui.GLListView.OnItemSelectedListener;
 
@@ -22,7 +21,7 @@ public class BasicIndicator extends AbstractIndicator {
             PreferenceGroup group, IconListPreference preference) {
         super(context);
         mPreference = preference;
-        mIcon = new ResourceTexture[preference.getIconIds().length];
+        mIcon = new ResourceTexture[preference.getLargeIconIds().length];
         mIndex = preference.findIndexOfValue(preference.getValue());
     }
 

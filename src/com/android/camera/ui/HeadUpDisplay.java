@@ -51,13 +51,10 @@ public class HeadUpDisplay extends GLView {
 
     protected static final String TAG = "HeadUpDisplay";
 
-    private IndicatorBar mIndicatorBar;
-    private OtherSettingsIndicator mOtherSettings;
-    private GpsIndicator mGpsIndicator;
-    private ZoomIndicator mZoomIndicator;
+    protected IndicatorBar mIndicatorBar;
 
-    private PreferenceGroup mPreferenceGroup;
     private SharedPreferences mSharedPrefs;
+    private PreferenceGroup mPreferenceGroup;
 
     private PopupWindow mPopupWindow;
 
@@ -65,7 +62,7 @@ public class HeadUpDisplay extends GLView {
     private int mAnchorY;
     private int mOrientation = 0;
 
-    private Listener mListener;
+    protected Listener mListener;
 
     // TODO: move this part (handler) into GLSurfaceView
     private final HandlerThread mTimerThread = new HandlerThread("UI Timer");
@@ -298,7 +295,7 @@ public class HeadUpDisplay extends GLView {
         return true;
     }
 
-    private static ListPreference[] getListPreferences(
+    protected static ListPreference[] getListPreferences(
             PreferenceGroup group, String ... prefKeys) {
         ArrayList<ListPreference> list = new ArrayList<ListPreference>();
         for (String key : prefKeys) {
@@ -310,82 +307,26 @@ public class HeadUpDisplay extends GLView {
         return list.toArray(new ListPreference[list.size()]);
     }
 
-    private static BasicIndicator addIndicator(Context context,
-            IndicatorBar indicatorBar, PreferenceGroup group, String key) {
+    protected BasicIndicator addIndicator(
+            Context context, PreferenceGroup group, String key) {
         IconListPreference iconPref =
                 (IconListPreference) group.findPreference(key);
         if (iconPref == null) return null;
         BasicIndicator indicator = new BasicIndicator(context, group, iconPref);
-        indicatorBar.addComponent(indicator);
+        mIndicatorBar.addComponent(indicator);
         return indicator;
     }
 
-    private void initializeIndicatorBar(
+    protected void initializeIndicatorBar(
             Context context, PreferenceGroup group) {
-
         mIndicatorBar = new IndicatorBar();
 
         mIndicatorBar.setBackground(new NinePatchTexture(
                 context, R.drawable.ic_viewfinder_iconbar));
         mIndicatorBar.setHighlight(new NinePatchTexture(
                 context, R.drawable.ic_viewfinder_iconbar_highlight));
-
-        mOtherSettings = new OtherSettingsIndicator(
-                context,
-                getListPreferences(group,
-                CameraSettings.KEY_FOCUS_MODE,
-                CameraSettings.KEY_EXPOSURE,
-                CameraSettings.KEY_SCENE_MODE,
-                CameraSettings.KEY_PICTURE_SIZE,
-                CameraSettings.KEY_JPEG_QUALITY,
-                CameraSettings.KEY_COLOR_EFFECT));
-        mOtherSettings.setOnRestorePreferencesClickedRunner(new Runnable() {
-            public void run() {
-                if (mListener != null) {
-                    mListener.onRestorePreferencesClicked();
-                }
-            }
-        });
-        mIndicatorBar.addComponent(mOtherSettings);
-
-        GpsIndicator gpsIndicator = new GpsIndicator(
-                context, group, (IconListPreference)
-                group.findPreference(CameraSettings.KEY_RECORD_LOCATION));
-
-        mGpsIndicator = gpsIndicator;
-        mIndicatorBar.addComponent(gpsIndicator);
-
-        addIndicator(context, mIndicatorBar, group,
-                CameraSettings.KEY_WHITE_BALANCE);
-        addIndicator(context, mIndicatorBar, group,
-                CameraSettings.KEY_FLASH_MODE);
-
-        mZoomIndicator = new ZoomIndicator(context);
-        mIndicatorBar.addComponent(mZoomIndicator);
-
         addComponent(mIndicatorBar);
         mIndicatorBar.setOnItemSelectedListener(new IndicatorBarListener());
-    }
-
-    public void setZoomListener(ZoomController.ZoomListener listener) {
-        mZoomIndicator.setZoomListener(listener);
-    }
-
-    public void setZoomIndex(int index) {
-        mZoomIndicator.setZoomIndex(index);
-    }
-
-    public void setGpsHasSignal(final boolean hasSignal) {
-        GLRootView root = getGLRootView();
-        if (root != null) {
-            root.queueEvent(new Runnable() {
-                public void run() {
-                    mGpsIndicator.setHasSignal(hasSignal);
-                }
-            });
-        } else {
-            mGpsIndicator.setHasSignal(hasSignal);
-        }
     }
 
     private class IndicatorBarListener
@@ -413,10 +354,6 @@ public class HeadUpDisplay extends GLView {
         public void onNothingSelected() {
             hidePopupWindow();
         }
-    }
-
-    public void setZoomRatios(float[] zoomRatios) {
-        mZoomIndicator.setZoomRatios(zoomRatios);
     }
 
     public void collapse() {

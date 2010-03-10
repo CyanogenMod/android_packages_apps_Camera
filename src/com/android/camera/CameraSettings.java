@@ -39,8 +39,7 @@ public class CameraSettings {
 
     public static final String KEY_VERSION = "pref_version_key";
     public static final String KEY_RECORD_LOCATION = RecordLocationPreference.KEY;
-    public static final String KEY_VIDEO_QUALITY = "pref_camera_videoquality_key";
-    public static final String KEY_VIDEO_DURATION = "pref_camera_video_duration_key";
+    public static final String KEY_VIDEO_QUALITY = "pref_video_quality_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
@@ -55,12 +54,18 @@ public class CameraSettings {
     public static final String QUICK_CAPTURE_ON = "on";
     public static final String QUICK_CAPTURE_OFF = "off";
 
-    public static final int CURRENT_VERSION = 3;
+    private static final String VIDEO_QUALITY_HIGH = "high";
+    private static final String VIDEO_QUALITY_MMS = "mms";
+    private static final String VIDEO_QUALITY_YOUTUBE = "youtube";
 
-    // max mms video duration in seconds.
-    public static final int MMS_VIDEO_DURATION = CamcorderProfile.getMmsRecordingDurationInSeconds();
+    public static final int CURRENT_VERSION = 4;
 
-    public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
+    // max video duration in seconds for mms and youtube.
+    private static final int MMS_VIDEO_DURATION = CamcorderProfile.getMmsRecordingDurationInSeconds();
+    private static final int YOUTUBE_VIDEO_DURATION = 10 * 60; // 10 mins
+    private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 10 mins
+
+    public static final String DEFAULT_VIDEO_QUALITY_VALUE = "high";
 
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
@@ -125,7 +130,7 @@ public class CameraSettings {
     }
 
     private void initPreference(PreferenceGroup group) {
-        ListPreference videoDuration = group.findPreference(KEY_VIDEO_DURATION);
+        ListPreference videoQuality = group.findPreference(KEY_VIDEO_QUALITY);
         ListPreference pictureSize = group.findPreference(KEY_PICTURE_SIZE);
         ListPreference whiteBalance =  group.findPreference(KEY_WHITE_BALANCE);
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
@@ -136,13 +141,19 @@ public class CameraSettings {
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
-        if (videoDuration != null) {
+        if (videoQuality != null) {
             // Modify video duration settings.
             // The first entry is for MMS video duration, and we need to fill
             // in the device-dependent value (in seconds).
-            CharSequence[] entries = videoDuration.getEntries();
-            entries[0] = String.format(
-                    entries[0].toString(), MMS_VIDEO_DURATION);
+            CharSequence[] entries = videoQuality.getEntries();
+            CharSequence[] values = videoQuality.getEntryValues();
+            for (int i = 0; i < entries.length; ++i) {
+                if (VIDEO_QUALITY_MMS.equals(values[i])) {
+                    entries[i] = entries[i].toString().replace(
+                            "30", Integer.toString(MMS_VIDEO_DURATION));
+                    break;
+                }
+            }
         }
 
         // Filter out unsupported settings / options
@@ -281,10 +292,8 @@ public class CameraSettings {
 
         SharedPreferences.Editor editor = pref.edit();
         if (version == 0) {
-            // For old version, change 1 to 10 for video duration preference.
-            if (pref.getString(KEY_VIDEO_DURATION, "1").equals("1")) {
-                editor.putString(KEY_VIDEO_DURATION, "10");
-            }
+            // We won't use the preference which change in version 1.
+            // So, just upgrade to version 1 directly
             version = 1;
         }
         if (version == 1) {
@@ -307,7 +316,27 @@ public class CameraSettings {
                     : RecordLocationPreference.VALUE_NONE);
             version = 3;
         }
+        if (version == 3) {
+            // Just use video quality to replace it and
+            // ignore the current settings.
+            editor.remove("pref_camera_videoquality_key");
+            editor.remove("pref_camera_video_duration_key");
+        }
         editor.putInt(KEY_VERSION, CURRENT_VERSION);
         editor.commit();
+    }
+
+    public static boolean getVideoQuality(String quality) {
+        return VIDEO_QUALITY_YOUTUBE.equals(
+                quality) || VIDEO_QUALITY_HIGH.equals(quality);
+    }
+
+    public static int getVidoeDurationInMillis(String quality) {
+        if (VIDEO_QUALITY_MMS.equals(quality)) {
+            return MMS_VIDEO_DURATION * 1000;
+        } else if (VIDEO_QUALITY_YOUTUBE.equals(quality)) {
+            return YOUTUBE_VIDEO_DURATION * 1000;
+        }
+        return DEFAULT_VIDEO_DURATION * 1000;
     }
 }

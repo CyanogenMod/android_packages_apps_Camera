@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 import com.android.camera.R;
 
 import com.android.camera.ui.GLRootView;
-import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.CameraHeadUpDisplay;
 
 public class Menu3DTest extends Activity {
 
@@ -24,7 +24,7 @@ public class Menu3DTest extends Activity {
 
         // set background as 18% gray :D
         mRootView.setBackgroundColor(0xffb7b7b7);
-        final HeadUpDisplay hud = new HeadUpDisplay(this);
+        final CameraHeadUpDisplay hud = new CameraHeadUpDisplay(this);
         mRootView.setContentPane(hud);
 
         PreferenceInflater inflater = new PreferenceInflater(this);

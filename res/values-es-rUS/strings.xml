@@ -51,13 +51,6 @@
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Ubicación de tienda"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Apagado"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Encendido"</string>
-    <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Calidad del video"</string>
-    <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Bajo (para mensajes MMS)"</string>
-    <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Alta (para tarjeta SD)"</string>
-    <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"Duración del video"</string>
-    <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> segundos (por MMS)"</string>
-    <string name="pref_camera_video_duration_entry_10" msgid="664455443394175885">"10 minutos"</string>
-    <string name="pref_camera_video_duration_entry_30" msgid="1197298883102352735">"30 minutos"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuración de cámara"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuración de videocámara"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamaño de imagen"</string>
