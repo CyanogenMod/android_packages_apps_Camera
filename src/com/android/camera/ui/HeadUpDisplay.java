@@ -13,7 +13,7 @@ import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import com.android.camera.CameraSettings;
 import com.android.camera.IconListPreference;

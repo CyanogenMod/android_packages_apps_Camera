@@ -3,7 +3,7 @@ package com.android.camera.ui;
 import android.content.Context;
 import android.graphics.Color;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import com.android.camera.ui.ZoomController.ZoomListener;
 

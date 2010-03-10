@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.OrientationEventListener;
 import android.widget.FrameLayout;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;

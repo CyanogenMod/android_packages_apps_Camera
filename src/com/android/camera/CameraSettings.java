@@ -26,7 +26,7 @@ import android.media.CamcorderProfile;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import java.util.ArrayList;
 import java.util.List;

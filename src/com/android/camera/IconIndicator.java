@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 /**
  * This class draws an icon which changes according to the mode. For example,

@@ -22,7 +22,7 @@ import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 /**
  * The base class of all Preferences used in Camera. The preferences can be

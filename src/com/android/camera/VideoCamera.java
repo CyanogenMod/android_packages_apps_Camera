@@ -66,7 +66,7 @@ import android.widget.Toast;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import java.io.File;
 import java.io.FileDescriptor;

@@ -68,7 +68,7 @@ import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.ImageView;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;

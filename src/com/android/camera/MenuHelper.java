@@ -30,7 +30,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import java.io.Closeable;
 

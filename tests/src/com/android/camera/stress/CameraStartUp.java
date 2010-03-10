@@ -19,7 +19,7 @@ public class CameraStartUp extends InstrumentationTestCase {
 
     private String TAG = "CameraStartUp";
     private static final String CAMERA_TEST_OUTPUT_FILE = "/sdcard/mediaStressOut.txt";
-    private static final String CAMERA_PACKAGE_NAME = "com.google.android.camera";
+    private static final String CAMERA_PACKAGE_NAME = "com.android.camera";
     private static final String CAMERA_ACTIVITY_NAME = "com.android.camera.Camera";
     private static final String VIDEORECORDER_ACTIVITY_NAME = "com.android.camera.VideoCamera";
     private static int WAIT_TIME_FOR_PREVIEW = 1500; //1.5 second

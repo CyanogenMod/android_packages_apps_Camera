@@ -3,7 +3,7 @@ package com.android.camera.ui;
 import android.content.Context;
 
 import com.android.camera.ListPreference;
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import java.util.HashMap;
 

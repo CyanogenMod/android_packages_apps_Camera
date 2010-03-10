@@ -4,7 +4,7 @@ import static com.android.camera.ui.GLRootView.dpToPixel;
 import android.content.Context;
 import android.graphics.Rect;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import javax.microedition.khronos.opengles.GL11;
 

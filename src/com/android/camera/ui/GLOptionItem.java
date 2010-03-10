@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.animation.Transformation;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import javax.microedition.khronos.opengles.GL11;
 

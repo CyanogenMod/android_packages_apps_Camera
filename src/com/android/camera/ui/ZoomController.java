@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import com.android.camera.Util;
 

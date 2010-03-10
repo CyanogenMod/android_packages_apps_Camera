@@ -21,7 +21,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 /**
  * A type of <code>CameraPreference</code> whose number of possible values

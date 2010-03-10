@@ -28,7 +28,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
 import com.android.camera.gallery.IImage;
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 import java.io.Closeable;
 

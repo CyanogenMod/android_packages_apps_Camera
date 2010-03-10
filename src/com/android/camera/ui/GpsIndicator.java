@@ -3,7 +3,7 @@ package com.android.camera.ui;
 import android.content.Context;
 
 import com.android.camera.IconListPreference;
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 public class GpsIndicator extends BasicIndicator {
 

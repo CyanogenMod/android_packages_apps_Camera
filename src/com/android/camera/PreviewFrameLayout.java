@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.FrameLayout;
 
-import com.google.android.camera.R;
+import com.android.camera.R;
 
 /**
  * A layout which handles the preview aspect ratio and the position of
