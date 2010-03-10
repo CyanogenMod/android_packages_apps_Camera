@@ -94,6 +94,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.lang.InterruptedException;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends NoSearchActivity implements View.OnClickListener,
@@ -162,6 +164,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private GestureDetector mGestureDetector;
     private Switcher mSwitcher;
     private boolean mStartPreviewFail = false;
+    private CountDownLatch devlatch;
 
     private GLRootView mGLRootView;
 
@@ -979,6 +982,39 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        devlatch = new CountDownLatch(1);
+
+        /*
+         * To reduce startup time, we start the preview in another thread.
+         * We make sure the preview is started at the end of onCreate.
+         */
+        Thread startPreviewThread = new Thread(new Runnable() {
+            CountDownLatch tlatch = devlatch;
+            public void run() {
+                try {
+                    mStartPreviewFail = false;
+                    ensureCameraDevice();
+
+                    // Wait for framework initialization to be complete before
+                    // starting preview
+                    try {
+                        tlatch.await();
+                    } catch (InterruptedException ie) {
+                        mStartPreviewFail = true;
+                    }
+                    startPreview();
+                } catch (CameraHardwareException e) {
+                    // In eng build, we throw the exception so that test tool
+                    // can detect it and report it
+                    if ("eng".equals(Build.TYPE)) {
+                        throw new RuntimeException(e);
+                    }
+                    mStartPreviewFail = true;
+                }
+            }
+        });
+        startPreviewThread.start();
+
         setContentView(R.layout.camera);
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 
@@ -994,26 +1030,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // we need to reset exposure for the preview
         resetExposureCompensation();
-        /*
-         * To reduce startup time, we start the preview in another thread.
-         * We make sure the preview is started at the end of onCreate.
-         */
-        Thread startPreviewThread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    mStartPreviewFail = false;
-                    startPreview();
-                } catch (CameraHardwareException e) {
-                    // In eng build, we throw the exception so that test tool
-                    // can detect it and report it
-                    if ("eng".equals(Build.TYPE)) {
-                        throw new RuntimeException(e);
-                    }
-                    mStartPreviewFail = true;
-                }
-            }
-        });
-        startPreviewThread.start();
+
+        // Let thread know it's ok to continue
+        devlatch.countDown();
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceChanged / surfaceDestroyed, other parts of the code
@@ -1067,6 +1086,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         } catch (InterruptedException ex) {
             // ignore
         }
+        devlatch = null;
     }
 
     private void changeHeadUpDisplayState() {
