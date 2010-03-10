@@ -2,10 +2,14 @@ package com.android.camera.ui;
 
 import static com.android.camera.ui.GLRootView.dpToPixel;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -24,6 +28,12 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
+// This is the UI for the on-screen settings. It mainly run in the GLThread. It
+// will modify the shared-preferences. The concurrency rule is: The shared-
+// preference will be updated in the GLThread. And an event will be trigger in
+// the main UI thread so that the camera settings can be updated by reading the
+// updated preferences. The two threads synchronize on the monitor of the
+// default SharedPrefernce instance.
 public class HeadUpDisplay extends GLView {
     private static final int INDICATOR_BAR_RIGHT_MARGIN = 10;
     private static final int POPUP_WINDOW_OVERLAP = 20;
@@ -32,7 +42,7 @@ public class HeadUpDisplay extends GLView {
     private static final float MAX_HEIGHT_RATIO = 0.8f;
     private static final float MAX_WIDTH_RATIO = 0.8f;
 
-    private static final int HIDE_POPUP_WINDOW = 0;
+    private static final int DESELECT_INDICATOR = 0;
     private static final int DEACTIVATE_INDICATOR_BAR = 1;
 
     private static int sIndicatorBarRightMargin = -1;
@@ -47,6 +57,7 @@ public class HeadUpDisplay extends GLView {
     private ZoomIndicator mZoomIndicator;
 
     private PreferenceGroup mPreferenceGroup;
+    private SharedPreferences mSharedPrefs;
 
     private PopupWindow mPopupWindow;
 
@@ -58,8 +69,17 @@ public class HeadUpDisplay extends GLView {
 
     // TODO: move this part (handler) into GLSurfaceView
     private final HandlerThread mTimerThread = new HandlerThread("UI Timer");
-
     private final Handler mHandler;
+
+    private final OnSharedPreferenceChangeListener mSharedPreferenceChangeListener =
+            new OnSharedPreferenceChangeListener() {
+        public void onSharedPreferenceChanged(
+                SharedPreferences sharedPreferences, String key) {
+            if (mListener != null) {
+                mListener.onSharedPreferencesChanged();
+            }
+        }
+    };
 
     public HeadUpDisplay(Context context) {
         initializeStaticVariables(context);
@@ -72,8 +92,8 @@ public class HeadUpDisplay extends GLView {
                 GLRootView root = getGLRootView();
                 FutureTask<Void> task = null;
                 switch(msg.what) {
-                    case HIDE_POPUP_WINDOW:
-                        task = new FutureTask<Void>(mHidePopupWindow);
+                    case DESELECT_INDICATOR:
+                        task = new FutureTask<Void>(mDeselectIndicator);
                         break;
                     case DEACTIVATE_INDICATOR_BAR:
                         task = new FutureTask<Void>(mDeactivateIndicatorBar);
@@ -99,9 +119,9 @@ public class HeadUpDisplay extends GLView {
         sPopupTriangleOffset = dpToPixel(context, POPUP_TRIANGLE_OFFSET);
     }
 
-    private final Callable<Void> mHidePopupWindow = new Callable<Void> () {
+    private final Callable<Void> mDeselectIndicator = new Callable<Void> () {
         public Void call() throws Exception {
-            hidePopupWindow();
+            mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
             return null;
         }
     };
@@ -113,8 +133,14 @@ public class HeadUpDisplay extends GLView {
         }
     };
 
+    /**
+     * The callback interface. All the callbacks will be called from the
+     * GLThread.
+     */
     static public interface Listener {
         public void onPopupWindowVisibilityChanged(int visibility);
+        public void onRestorePreferencesClicked();
+        public void onSharedPreferencesChanged();
     }
 
     public void overrideSettings(final String ... keyvalues) {
@@ -161,6 +187,9 @@ public class HeadUpDisplay extends GLView {
 
     public void initialize(Context context, PreferenceGroup preferenceGroup) {
         mPreferenceGroup = preferenceGroup;
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mSharedPrefs.registerOnSharedPreferenceChangeListener(
+                mSharedPreferenceChangeListener);
         initializeIndicatorBar(context, preferenceGroup);
     }
 
@@ -189,23 +218,30 @@ public class HeadUpDisplay extends GLView {
                 xoffset, yoffset, xoffset + width, yoffset + height);
     }
 
-    public void showPopupWindow(int anchorX, int anchorY) {
+    private void showPopupWindow(int anchorX, int anchorY) {
         layoutPopupWindow(anchorX, anchorY);
         mPopupWindow.popup();
+        mSharedPrefs.registerOnSharedPreferenceChangeListener(
+                mSharedPreferenceChangeListener);
         if (mListener != null) {
             mListener.onPopupWindowVisibilityChanged(GLView.VISIBLE);
         }
     }
 
-    private void scheduleDeactiviateIndicatorBar() {
-        mHandler.removeMessages(HIDE_POPUP_WINDOW);
-        mHandler.sendEmptyMessageDelayed(HIDE_POPUP_WINDOW, 3000);
-        mHandler.removeMessages(DEACTIVATE_INDICATOR_BAR);
-        mHandler.sendEmptyMessageDelayed(DEACTIVATE_INDICATOR_BAR, 4000);
+    private void hidePopupWindow() {
+        mPopupWindow.popoff();
+        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(
+                mSharedPreferenceChangeListener);
+        if (mListener != null) {
+            mListener.onPopupWindowVisibilityChanged(GLView.INVISIBLE);
+        }
     }
 
-    public void hidePopupWindow() {
-        mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
+    private void scheduleDeactiviateIndicatorBar() {
+        mHandler.removeMessages(DESELECT_INDICATOR);
+        mHandler.sendEmptyMessageDelayed(DESELECT_INDICATOR, 3000);
+        mHandler.removeMessages(DEACTIVATE_INDICATOR_BAR);
+        mHandler.sendEmptyMessageDelayed(DEACTIVATE_INDICATOR_BAR, 4000);
     }
 
     public void deactivateIndicatorBar() {
@@ -223,10 +259,6 @@ public class HeadUpDisplay extends GLView {
             scheduleDeactiviateIndicatorBar();
         }
         mPopupWindow.setOrientation(orientation);
-    }
-
-    public void reloadPreferences() {
-
     }
 
     private void initializePopupWindow(Context context) {
@@ -258,10 +290,7 @@ public class HeadUpDisplay extends GLView {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                mPopupWindow.popoff();
-                if (mListener != null) {
-                    mListener.onPopupWindowVisibilityChanged(GLView.INVISIBLE);
-                }
+                hidePopupWindow();
                 mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
                 mIndicatorBar.setActivated(false);
                 break;
@@ -269,7 +298,7 @@ public class HeadUpDisplay extends GLView {
         return true;
     }
 
-    static private ListPreference[] getListPreferences(
+    private static ListPreference[] getListPreferences(
             PreferenceGroup group, String ... prefKeys) {
         ArrayList<ListPreference> list = new ArrayList<ListPreference>();
         for (String key : prefKeys) {
@@ -286,7 +315,7 @@ public class HeadUpDisplay extends GLView {
         IconListPreference iconPref =
                 (IconListPreference) group.findPreference(key);
         if (iconPref == null) return null;
-        BasicIndicator indicator = new BasicIndicator(context, iconPref);
+        BasicIndicator indicator = new BasicIndicator(context, group, iconPref);
         indicatorBar.addComponent(indicator);
         return indicator;
     }
@@ -310,10 +339,17 @@ public class HeadUpDisplay extends GLView {
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_JPEG_QUALITY,
                 CameraSettings.KEY_COLOR_EFFECT));
+        mOtherSettings.setOnRestorePreferencesClickedRunner(new Runnable() {
+            public void run() {
+                if (mListener != null) {
+                    mListener.onRestorePreferencesClicked();
+                }
+            }
+        });
         mIndicatorBar.addComponent(mOtherSettings);
 
         GpsIndicator gpsIndicator = new GpsIndicator(
-                context, (IconListPreference)
+                context, group, (IconListPreference)
                 group.findPreference(CameraSettings.KEY_RECORD_LOCATION));
 
         mGpsIndicator = gpsIndicator;
@@ -375,7 +411,7 @@ public class HeadUpDisplay extends GLView {
         }
 
         public void onNothingSelected() {
-            mPopupWindow.popoff();
+            hidePopupWindow();
         }
     }
 
@@ -384,7 +420,40 @@ public class HeadUpDisplay extends GLView {
     }
 
     public void collapse() {
-        mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
-        mIndicatorBar.setActivated(false);
+        getGLRootView().queueEvent(new Runnable() {
+            public void run() {
+                mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
+                mIndicatorBar.setActivated(false);
+            }
+        });
+    }
+
+    public void setListener(Listener listener) {
+        mListener = listener;
+    }
+
+    public void restorePreferences() {
+        getGLRootView().queueEvent(new Runnable() {
+            public void run() {
+                OnSharedPreferenceChangeListener l =
+                        mSharedPreferenceChangeListener;
+                // Unregister the listener since "upgrade preference" will
+                // change bunch of preferences. We can handle them with one
+                // onSharedPreferencesChanged();
+                mSharedPrefs.unregisterOnSharedPreferenceChangeListener(l);
+                synchronized (mSharedPrefs) {
+                    Editor editor = mSharedPrefs.edit();
+                    editor.clear();
+                    editor.commit();
+                }
+                CameraSettings.upgradePreferences(mSharedPrefs);
+                mPreferenceGroup.reloadValue();
+                mIndicatorBar.reloadPreferences();
+                if (mListener != null) {
+                    mListener.onSharedPreferencesChanged();
+                }
+                mSharedPrefs.registerOnSharedPreferenceChangeListener(l);
+            }
+        });
     }
 }

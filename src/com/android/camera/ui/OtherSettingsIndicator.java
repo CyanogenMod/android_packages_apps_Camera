@@ -2,24 +2,26 @@ package com.android.camera.ui;
 
 import android.content.Context;
 
-import com.android.camera.ListPreference;
 import com.android.camera.R;
+import com.android.camera.ListPreference;
 
 import java.util.HashMap;
 
 public class OtherSettingsIndicator extends AbstractIndicator {
 
     private final ListPreference mPreference[];
-    private final PreferenceAdapter mAdapters[];
+    private final GLListView.Model mAdapters[];
     private ResourceTexture mIcon;
     private GLListView mPopupContent;
+    private Runnable mOnRestorePrefsClickedRunner;
     private final HashMap<String, String> mOverrides = new HashMap<String, String>();
 
     public OtherSettingsIndicator(
             Context context, ListPreference preference[]) {
         super(context);
         mPreference = preference;
-        mAdapters = new PreferenceAdapter[preference.length];
+        // One extra for the restore settings
+        mAdapters = new GLListView.Model[preference.length + 1];
     }
 
     @Override
@@ -33,6 +35,16 @@ public class OtherSettingsIndicator extends AbstractIndicator {
     }
 
     @Override
+    public void reloadPreferences() {
+        if (mPopupContent != null) {
+            ListPreference prefs[] = mPreference;
+            for (int i = 0, n = prefs.length; i < n; ++i) {
+                ((PreferenceAdapter) mAdapters[i]).reload();
+            }
+        }
+    }
+
+    @Override
     public void overrideSettings(String key, String value) {
         if (value == null) {
             mOverrides.remove(key);
@@ -43,7 +55,7 @@ public class OtherSettingsIndicator extends AbstractIndicator {
             ListPreference prefs[] = mPreference;
             for (int i = 0, n = prefs.length; i < n; ++i) {
                 if (!prefs[i].getKey().equals(key)) continue;
-                mAdapters[i].overrideSettings(value);
+                ((PreferenceAdapter) mAdapters[i]).overrideSettings(value);
                 break;
             }
         }
@@ -51,13 +63,16 @@ public class OtherSettingsIndicator extends AbstractIndicator {
 
     private UberAdapter buildUberAdapter() {
         ListPreference prefs[] = mPreference;
-        PreferenceAdapter adapters[] = mAdapters;
+        GLListView.Model adapters[] = mAdapters;
         Context context = getGLRootView().getContext();
         for (int i = 0, n = prefs.length; i < n; ++i) {
             adapters[i] = new PreferenceAdapter(context, prefs[i]);
             String override = mOverrides.get(prefs[i].getKey());
-            if (override != null) adapters[i].overrideSettings(override);
+            if (override != null) {
+                ((PreferenceAdapter) adapters[i]).overrideSettings(override);
+            }
         }
+        adapters[prefs.length] = new RestoreSettingsModel(context);
         return new UberAdapter();
     }
 
@@ -81,7 +96,7 @@ public class OtherSettingsIndicator extends AbstractIndicator {
             GLListView.Model, GLListView.OnItemSelectedListener {
 
         public GLView getView(int index) {
-            for (PreferenceAdapter adapter : mAdapters) {
+            for (GLListView.Model adapter : mAdapters) {
                 if (index < adapter.size()) {
                     return adapter.getView(index);
                 }
@@ -91,7 +106,7 @@ public class OtherSettingsIndicator extends AbstractIndicator {
         }
 
         public boolean isSelectable(int index) {
-            for (PreferenceAdapter adapter : mAdapters) {
+            for (GLListView.Model adapter : mAdapters) {
                 if (index < adapter.size()) {
                     return adapter.isSelectable(index);
                 }
@@ -102,20 +117,56 @@ public class OtherSettingsIndicator extends AbstractIndicator {
 
         public int size() {
             int size = 0;
-            for (PreferenceAdapter adapter : mAdapters) {
+            for (GLListView.Model adapter : mAdapters) {
                 size += adapter.size();
             }
             return size;
         }
 
         public void onItemSelected(GLView view, int position) {
-            for (PreferenceAdapter adapter : mAdapters) {
+            for (GLListView.Model adapter : mAdapters) {
                 if (position < adapter.size()) {
-                    adapter.onItemSelected(view, position);
+                    ((GLListView.OnItemSelectedListener)
+                            adapter).onItemSelected(view, position);
                     return;
                 }
                 position -= adapter.size();
             }
         }
+    }
+
+    private class RestoreSettingsModel
+            implements GLListView.Model, GLListView.OnItemSelectedListener {
+        private final GLView mHeader;
+        private final GLView mItem;
+
+        public RestoreSettingsModel(Context context) {
+            mHeader = new GLOptionHeader(context,
+                    context.getString(R.string.pref_restore_title));
+            mItem = new RestoreSettingsItem(
+                    context, context.getString(R.string.pref_restore_detail));
+        }
+
+        public GLView getView(int index) {
+            return index == 0 ? mHeader : mItem;
+        }
+
+        public boolean isSelectable(int index) {
+            return index != 0;
+        }
+
+        public int size() {
+            return 2;
+        }
+
+        public void onItemSelected(GLView view, int position) {
+            if (mOnRestorePrefsClickedRunner != null) {
+                mOnRestorePrefsClickedRunner.run();
+            }
+        }
+    }
+
+    public void setOnRestorePreferencesClickedRunner(Runnable l) {
+        mOnRestorePrefsClickedRunner = l;
     }
 }

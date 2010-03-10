@@ -42,4 +42,6 @@ public abstract class AbstractIndicator extends GLView {
     abstract public GLView getPopupContent();
 
     abstract public void overrideSettings(String key, String settings);
+
+    abstract public void reloadPreferences();
 }

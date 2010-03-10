@@ -22,8 +22,16 @@ public class PreferenceAdapter
         generateContent(context, preference);
     }
 
+    public void reload() {
+        updateContent(null, true);
+    }
+
     public void overrideSettings(String settings) {
-        if (Util.equals(settings, mOverride)) return;
+        updateContent(settings, false);
+    }
+
+    private void updateContent(String settings, boolean reloadValues) {
+        if (!reloadValues && Util.equals(settings, mOverride)) return;
         mOverride = settings;
 
         CharSequence[] values = mPreference.getEntryValues();
@@ -73,7 +81,9 @@ public class PreferenceAdapter
             int index = position - 1;
             int oldIndex = pref.findIndexOfValue(pref.getValue());
             if (oldIndex != index) {
-                pref.setValueIndex(index);
+                synchronized (pref.getSharedPreferences()) {
+                    pref.setValueIndex(index);
+                }
                 ((GLOptionItem) mContent.get(1 + oldIndex)).setChecked(false);
                 ((GLOptionItem) view).setChecked(true);
             }

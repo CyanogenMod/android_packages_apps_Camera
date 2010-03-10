@@ -169,4 +169,10 @@ public class IndicatorBar extends GLView {
         }
         return true;
     }
+
+    public void reloadPreferences() {
+        for (int i = 1, n = getComponentCount(); i < n; ++i) {
+            ((AbstractIndicator) getComponent(i)).reloadPreferences();
+        }
+    }
 }

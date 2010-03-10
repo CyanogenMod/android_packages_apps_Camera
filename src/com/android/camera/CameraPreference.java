@@ -30,9 +30,9 @@ import com.android.camera.R;
  */
 public abstract class CameraPreference {
 
-    private String mTitle;
+    private final String mTitle;
     private SharedPreferences mSharedPreferences;
-    private Context mContext;
+    private final Context mContext;
 
     public CameraPreference(Context context, AttributeSet attrs) {
         mContext = context;
@@ -46,7 +46,7 @@ public abstract class CameraPreference {
         return mTitle;
     }
 
-    protected SharedPreferences getSharedPreferences() {
+    public SharedPreferences getSharedPreferences() {
         if (mSharedPreferences == null) {
             mSharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(mContext);

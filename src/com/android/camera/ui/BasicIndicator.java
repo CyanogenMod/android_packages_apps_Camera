@@ -5,6 +5,7 @@ import android.content.Context;
 import com.android.camera.R;
 
 import com.android.camera.IconListPreference;
+import com.android.camera.PreferenceGroup;
 import com.android.camera.Util;
 import com.android.camera.ui.GLListView.OnItemSelectedListener;
 
@@ -17,26 +18,38 @@ public class BasicIndicator extends AbstractIndicator {
     private PreferenceAdapter mModel;
     private String mOverride;
 
-    public BasicIndicator(Context context, IconListPreference preference) {
+    public BasicIndicator(Context context,
+            PreferenceGroup group, IconListPreference preference) {
         super(context);
         mPreference = preference;
         mIcon = new ResourceTexture[preference.getIconIds().length];
         mIndex = preference.findIndexOfValue(preference.getValue());
     }
 
-    @Override
-    public void overrideSettings(String key, String settings) {
+    // Set the override and/or reload the value from preferences.
+    private void updateContent(String override, boolean reloadValue) {
+        if (!reloadValue && Util.equals(mOverride, override)) return;
         IconListPreference pref = mPreference;
-        if (!pref.getKey().equals(key)) return;
-        if (Util.equals(mOverride, settings)) return;
-
-        mOverride = settings;
+        mOverride = override;
         int index = pref.findIndexOfValue(
-                settings == null ? pref.getValue() : settings);
+                override == null ? pref.getValue() : override);
         if (mIndex != index) {
             mIndex = index;
             invalidate();
         }
+    }
+
+    @Override
+    public void overrideSettings(String key, String settings) {
+        IconListPreference pref = mPreference;
+        if (!pref.getKey().equals(key)) return;
+        updateContent(settings, false);
+    }
+
+    @Override
+    public void reloadPreferences() {
+        if (mModel != null) mModel.reload();
+        updateContent(null, true);
     }
 
     @Override

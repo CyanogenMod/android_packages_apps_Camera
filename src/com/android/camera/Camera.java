@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -90,8 +89,7 @@ import java.util.List;
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends NoSearchActivity implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
-        Switcher.OnSwitchListener, OnScreenSettings.OnVisibilityChangedListener,
-        OnSharedPreferenceChangeListener {
+        Switcher.OnSwitchListener {
 
     private static final String TAG = "camera";
 
@@ -340,8 +338,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         CameraSettings settings = new CameraSettings(this, mInitialParams);
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences));
+        mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         mGLRootView.setContentPane(mHeadUpDisplay);
-
         initializeZoom();
         mFirstTimeInitialized = true;
     }
@@ -362,8 +360,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mOrientationListener.enable();
 
         // Start location update if needed.
-        mRecordLocation = RecordLocationPreference.get(
-                mPreferences, getContentResolver());
+        synchronized (mPreferences) {
+            mRecordLocation = RecordLocationPreference.get(
+                    mPreferences, getContentResolver());
+        }
         if (mRecordLocation) startReceivingLocationUpdates();
 
         installIntentFilter();
@@ -437,20 +437,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 result[i] = 1 + i * 0.2f;
             }
             return result;
-        }
-    }
-
-    public void onVisibilityChanged(boolean visible) {
-        // When the on-screen setting is not displayed, we show the gripper.
-        // When the on-screen setting is displayed, we hide the gripper.
-        int reverseVisibility = visible ? View.INVISIBLE : View.VISIBLE;
-        findViewById(R.id.btn_gripper).setVisibility(reverseVisibility);
-        findViewById(R.id.indicator_bar).setVisibility(reverseVisibility);
-
-        if (visible) {
-            mPreferences.registerOnSharedPreferenceChangeListener(this);
-        } else {
-            mPreferences.unregisterOnSharedPreferenceChangeListener(this);
         }
     }
 
@@ -1031,17 +1017,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         updateStorageHint(mPicturesRemaining);
     }
 
-    private void restorePreferences() {
-        // Unregister the listener since "upgrade preference" will change
-        // a bunch of preferences. We can handle them with one
-        // setCameraParameters().
-        mPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        mSettings.clearSettings();
-        CameraSettings.upgradePreferences(mPreferences);
-        setCameraParameters();
-        mPreferences.registerOnSharedPreferenceChangeListener(this);
-    }
-
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_retake:
@@ -1251,8 +1226,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         super.onResume();
         mGLRootView.onResume();
 
-        mPreferences.registerOnSharedPreferenceChangeListener(this);
-
         mPausing = false;
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
@@ -1292,7 +1265,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Close the camera now because other activities may need to use it.
         closeCamera();
         resetScreenOn();
-        mPreferences.unregisterOnSharedPreferenceChangeListener(this);
 
         if (mSettings != null && mSettings.isVisible()) {
             mSettings.setVisible(false);
@@ -1301,6 +1273,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
             mHeadUpDisplay.setGpsHasSignal(false);
+            mHeadUpDisplay.collapse();
             if (!mIsImageCaptureIntent) {
                 mThumbController.storeData(
                         ImageManager.getLastImageThumbPath());
@@ -1614,7 +1587,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mPreviewing) stopPreview();
 
         setPreviewDisplay(mSurfaceHolder);
-        setCameraParameters();
+        synchronized (mPreferences) {
+            setCameraParameters();
+        }
 
         final long wallTimeStart = SystemClock.elapsedRealtime();
         final long threadTimeStart = Debug.threadCpuTimeNanos();
@@ -2047,32 +2022,22 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         return true;
     }
 
-    public void onSharedPreferenceChanged(
-            final SharedPreferences preferences, final String key) {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                // ignore the events after "onPause()"
-                if (mPausing) return;
-
-                if (CameraSettings.KEY_RECORD_LOCATION.equals(key)) {
-                    mRecordLocation = RecordLocationPreference.get(
-                            preferences, getContentResolver());
-                    if (mRecordLocation) {
-                        startReceivingLocationUpdates();
-                    } else {
-                        stopReceivingLocationUpdates();
-                    }
-                } else if (CameraSettings.KEY_QUICK_CAPTURE.equals(key)) {
-                    mQuickCapture = getQuickCaptureSettings();
+    private void onSharedPreferenceChanged() {
+        // ignore the events after "onPause()"
+        if (mPausing) return;
+        synchronized (mPreferences) {
+            boolean recordLocation = RecordLocationPreference.get(
+                    mPreferences, getContentResolver());
+            if (mRecordLocation != recordLocation) {
+                if (mRecordLocation) {
+                    startReceivingLocationUpdates();
                 } else {
-                    // All preferences except RECORD_LOCATION are camera
-                    // parameters. Call setCameraParametersWhenIdle() to
-                    // take effect when the camera is idle.
-                    setCameraParametersWhenIdle();
+                    stopReceivingLocationUpdates();
                 }
             }
-        };
-        runOnUiThread(runnable);
+            mQuickCapture = getQuickCaptureSettings();
+            setCameraParametersWhenIdle();
+        }
     }
 
     private boolean getQuickCaptureSettings() {
@@ -2113,6 +2078,43 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             return DEFAULT_QUALITY;
         }
         return mQualityNumbers[index];
+    }
+
+    private class MyHeadUpDisplayListener implements HeadUpDisplay.Listener {
+
+        // The callback functions here will be called from the GLThread. So,
+        // we need to post these runnables to the main thread
+        public void onSharedPreferencesChanged() {
+            mHandler.post(new Runnable() {
+                public void run() {
+                    Camera.this.onSharedPreferenceChanged();
+                }
+            });
+        }
+
+        public void onRestorePreferencesClicked() {
+            mHandler.post(new Runnable() {
+                public void run() {
+                    Camera.this.onRestorePreferencesClicked();
+                }
+            });
+        }
+
+        public void onPopupWindowVisibilityChanged(int visibility) {
+        }
+    }
+
+    protected void onRestorePreferencesClicked() {
+        if (mPausing) return;
+        Runnable runnable = new Runnable() {
+            public void run() {
+                mHeadUpDisplay.restorePreferences();
+            }
+        };
+        MenuHelper.confirmAction(this,
+                getString(R.string.confirm_restore_title),
+                getString(R.string.confirm_restore_message),
+                runnable);
     }
 }
 

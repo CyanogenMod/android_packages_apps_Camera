@@ -157,6 +157,7 @@ public class GLListView extends GLView {
 
         for (int i = 0, n = mModel.size(); i < n; ++i) {
             GLView item = mModel.getView(i);
+            item.onAddToParent(this);
             int nextOffset = yoffset + item.getMeasuredHeight();
             item.layout(0, yoffset, width, nextOffset);
             yoffset = nextOffset;

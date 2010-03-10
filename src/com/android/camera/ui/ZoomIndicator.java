@@ -74,6 +74,11 @@ public class ZoomIndicator extends AbstractIndicator {
         // do nothing
     }
 
+    @Override
+    public void reloadPreferences() {
+        // do nothing
+    }
+
     public void setZoomRatios(float[] ratios) {
         mZoomRatios = ratios;
     }
