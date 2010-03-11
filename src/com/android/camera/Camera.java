@@ -99,6 +99,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int FIRST_TIME_INIT = 2;
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
+    private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
 
     // The brightness settings used when it is set to automatic in the system.
     // The reason why it is set to 0.7 is just because 1.0 is too bright.
@@ -242,6 +243,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
                 case FIRST_TIME_INIT: {
                     initializeFirstTime();
+                    break;
+                }
+
+                case SET_CAMERA_PARAMETERS_WHEN_IDLE: {
+                    setCameraParametersWhenIdle();
                     break;
                 }
             }
@@ -1873,6 +1879,18 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
+    private void setCameraParametersWhenIdle() {
+        if (mCameraDevice == null) {
+            return;
+        } else if (isCameraIdle()) {
+            mHandler.removeMessages(SET_CAMERA_PARAMETERS_WHEN_IDLE);
+            setCameraParameters();
+        } else {
+            mHandler.sendEmptyMessageDelayed(
+                SET_CAMERA_PARAMETERS_WHEN_IDLE, 1000);
+        }
+    }
+
     private void gotoGallery() {
         MenuHelper.gotoCameraImageGallery(this);
     }
@@ -2035,7 +2053,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             public void run() {
                 // ignore the events after "onPause()"
                 if (mPausing) return;
-                Log.v(TAG, "call()");
 
                 if (CameraSettings.KEY_RECORD_LOCATION.equals(key)) {
                     mRecordLocation = RecordLocationPreference.get(
@@ -2049,10 +2066,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     mQuickCapture = getQuickCaptureSettings();
                 } else {
                     // All preferences except RECORD_LOCATION are camera
-                    // parameters. Call setCameraParameters to take effect now.
-                    setCameraParameters();
+                    // parameters. Call setCameraParametersWhenIdle() to
+                    // take effect when the camera is idle.
+                    setCameraParametersWhenIdle();
                 }
-                Log.v(TAG, "call() end");
             }
         };
         runOnUiThread(runnable);
