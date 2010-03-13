@@ -406,13 +406,9 @@ public class VideoCamera extends NoSearchActivity
             case R.id.btn_cancel:
                 stopVideoRecordingAndReturn(false);
                 break;
-            case R.id.review_thumbnail: {
-                if (!mMediaRecorderRecording) {
-                    stopVideoRecordingAndShowReview();
-                    initializeRecorder();
-                }
+            case R.id.review_thumbnail:
+                if (!mMediaRecorderRecording) viewLastVideo();
                 break;
-            }
         }
     }
 
@@ -1282,8 +1278,7 @@ public class VideoCamera extends NoSearchActivity
         return this.mVideoFrame.getVisibility() == View.VISIBLE;
     }
 
-    private void stopVideoRecordingAndShowReview() {
-        stopVideoRecording();
+    private void viewLastVideo() {
         if (mThumbController.isUriValid()) {
             Intent intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
             try {
