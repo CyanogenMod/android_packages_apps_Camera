@@ -136,4 +136,6 @@
     <string name="sendVideo" msgid="3598567735831863073">"Отправить видео при помощи"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Место на вашей SD-карте заканчивается. Измените настройки качества или удалите содержимое из фотоальбома."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Достигнут предельный размер видео."</string>
+    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Переключить на фото"</string>
+    <string name="switch_to_video_lable" msgid="4525451949497982385">"Переключить на видео"</string>
 </resources>

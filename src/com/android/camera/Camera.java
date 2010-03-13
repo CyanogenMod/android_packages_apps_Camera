@@ -2021,6 +2021,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void addBaseMenuItems(Menu menu) {
+        MenuHelper.addSwitchModeMenuItem(menu, true, new Runnable() {
+            public void run() {
+                switchToVideoMode();
+            }
+        });
         MenuItem gallery = menu.add(Menu.NONE, Menu.NONE,
                 MenuHelper.POSITION_GOTO_GALLERY,
                 R.string.camera_gallery_photos_text)
@@ -2034,14 +2039,20 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mGalleryItems.add(gallery);
     }
 
+    private boolean switchToVideoMode() {
+        if (!isCameraIdle()) return false;
+        MenuHelper.gotoVideoMode(this);
+        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
+        finish();
+        return true;
+    }
+
     public boolean onSwitchChanged(Switcher source, boolean onOff) {
         if (onOff == SWITCH_VIDEO) {
-            if (!isCameraIdle()) return false;
-            MenuHelper.gotoVideoMode(this);
-            ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
-            finish();
+            return switchToVideoMode();
+        } else {
+            return true;
         }
-        return true;
     }
 
     private void onSharedPreferenceChanged() {

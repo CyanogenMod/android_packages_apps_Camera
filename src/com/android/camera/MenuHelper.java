@@ -29,6 +29,9 @@ import android.os.StatFs;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 
 import com.android.camera.R;
 
@@ -111,6 +114,25 @@ public class MenuHelper {
             .setNegativeButton(android.R.string.cancel, listener)
             .create()
             .show();
+    }
+
+    static void addSwitchModeMenuItem(Menu menu, boolean switchToVideo,
+            final Runnable r) {
+        int labelId = switchToVideo
+                ? R.string.switch_to_video_lable
+                : R.string.switch_to_camera_lable;
+        int iconId = switchToVideo
+                ? R.drawable.ic_menu_camera_video_view
+                : android.R.drawable.ic_menu_camera;
+        MenuItem item = menu.add(Menu.NONE, Menu.NONE,
+                POSITION_SWITCH_CAMERA_MODE, labelId)
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                r.run();
+                return true;
+            }
+        });
+        item.setIcon(iconId);
     }
 
     private static void startCameraActivity(Activity activity, String action) {

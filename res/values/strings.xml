@@ -347,4 +347,6 @@
     <!-- The title show on the zoom controller -->
     <string name="zoom_control_title">Zoom</string>
 
+    <string name="switch_to_camera_lable">Switch to camera</string>
+    <string name="switch_to_video_lable">Switch to video</string>
 </resources>

@@ -1009,6 +1009,11 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void addBaseMenuItems(Menu menu) {
+        MenuHelper.addSwitchModeMenuItem(menu, false, new Runnable() {
+            public void run() {
+                switchToCameraMode();
+            }
+        });
         MenuItem gallery = menu.add(Menu.NONE, Menu.NONE,
                 MenuHelper.POSITION_GOTO_GALLERY,
                 R.string.camera_gallery_photos_text)
@@ -1378,14 +1383,20 @@ public class VideoCamera extends NoSearchActivity
         mCameraDevice.setParameters(mParameters);
     }
 
+    private boolean switchToCameraMode() {
+        if (mMediaRecorderRecording) return false;
+        MenuHelper.gotoCameraMode(this);
+        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
+        finish();
+        return true;
+    }
+
     public boolean onSwitchChanged(Switcher source, boolean onOff) {
         if (onOff == SWITCH_CAMERA) {
-            if (mMediaRecorderRecording) return false;
-            MenuHelper.gotoCameraMode(this);
-            ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
-            finish();
+            return switchToCameraMode();
+        } else {
+            return true;
         }
-        return true;
     }
 
     private void resetCameraParameters() {

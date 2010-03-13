@@ -136,4 +136,6 @@
     <string name="sendVideo" msgid="3598567735831863073">"Dela video via"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Ditt SD-kort börjar bli fullt. Ändra inställningen för kvalitet eller ta bort objekt från Galleri."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Storleksgränsen nådd."</string>
+    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Växla till kamera"</string>
+    <string name="switch_to_video_lable" msgid="4525451949497982385">"Växla till video"</string>
 </resources>

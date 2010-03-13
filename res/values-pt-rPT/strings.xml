@@ -136,4 +136,6 @@
     <string name="sendVideo" msgid="3598567735831863073">"Partilhar vídeo através de"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Está a ficar sem espaço no cartão SD. Altere as definições de qualidade ou elimine itens da Galeria."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite de tamanho atingido."</string>
+    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Mudar para câmara"</string>
+    <string name="switch_to_video_lable" msgid="4525451949497982385">"Mudar para vídeo"</string>
 </resources>
