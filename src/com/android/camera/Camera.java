@@ -98,6 +98,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
 
+    // The subset of parameters we need to update in setCameraParameters().
+    private static final int UPDATE_PARAM_INITIALIZE = 1;
+    private static final int UPDATE_PARAM_ZOOM = 2;
+    private static final int UPDATE_PARAM_PREFERENCE = 4;
+    private static final int UPDATE_PARAM_ALL = -1;
+
+    // When setCameraParametersWhenIdle() is called, we accumulate the subsets
+    // needed to be updated in mUpdateSet.
+    private int mUpdateSet;
+
     // The brightness settings used when it is set to automatic in the system.
     // The reason why it is set to 0.7 is just because 1.0 is too bright.
     private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
@@ -243,7 +253,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
 
                 case SET_CAMERA_PARAMETERS_WHEN_IDLE: {
-                    setCameraParametersWhenIdle();
+                    setCameraParametersWhenIdle(0);
                     break;
                 }
             }
@@ -415,8 +425,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 mZoomState = ZOOM_START;
             }
         } else {
-            mParameters.setZoom(index);
-            mCameraDevice.setParameters(mParameters);
+            mZoomValue = index;
+            setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
         }
     }
 
@@ -452,27 +462,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
             if (mZoomValue < mZoomMax) {
                 // Zoom in to the maximum.
-                while (mZoomValue < mZoomMax) {
-                    mParameters.setZoom(++mZoomValue);
-                    mCameraDevice.setParameters(mParameters);
-                    // Wait for a while so we are not changing zoom too fast.
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException ex) {
-                    }
-                }
+                mZoomValue = mZoomMax;
             } else {
-                // Zoom out to the minimum.
-                while (mZoomValue > 0) {
-                    mParameters.setZoom(--mZoomValue);
-                    mCameraDevice.setParameters(mParameters);
-                    // Wait for a while so we are not changing zoom too fast.
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException ex) {
-                    }
-                }
+                mZoomValue = 0;
             }
+
+            setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
+
             mHeadUpDisplay.setZoomIndex(mZoomValue);
             return true;
         }
@@ -1581,9 +1577,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mPreviewing) stopPreview();
 
         setPreviewDisplay(mSurfaceHolder);
-        synchronized (mPreferences) {
-            setCameraParameters();
-        }
+        setCameraParameters(UPDATE_PARAM_ALL);
 
         final long wallTimeStart = SystemClock.elapsedRealtime();
         final long threadTimeStart = Debug.threadCpuTimeNanos();
@@ -1673,31 +1667,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         return supported == null ? false : supported.indexOf(value) >= 0;
     }
 
-    private void setCameraParameters() {
-        mParameters = mCameraDevice.getParameters();
-
-        // Since change scene mode may change supported values,
-        // Set scene mode first,
-        String sceneMode = mPreferences.getString(
-                CameraSettings.KEY_SCENE_MODE,
-                getString(R.string.pref_camera_scenemode_default));
-        if (isSupported(sceneMode, mParameters.getSupportedSceneModes())) {
-            if (!mParameters.getSceneMode().equals(sceneMode)) {
-                mParameters.setSceneMode(sceneMode);
-                mCameraDevice.setParameters(mParameters);
-
-                // Setting scene mode will change the settings of flash mode,
-                // white balance, and focus mode. Here we read back the
-                // parameters, so we can know those settings.
-                mParameters = mCameraDevice.getParameters();
-            }
-        } else {
-            sceneMode = mParameters.getSceneMode();
-            if (sceneMode == null) {
-                sceneMode = Parameters.SCENE_MODE_AUTO;
-            }
-        }
-
+    private void updateCameraParametersInitialize() {
         // Reset preview frame rate to the maximum because it may be lowered by
         // video camera application.
         List<Integer> frameRates = mParameters.getSupportedPreviewFrameRates();
@@ -1706,6 +1676,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mParameters.setPreviewFrameRate(max);
         }
 
+    }
+
+    private void updateCameraParametersZoom() {
+        // Set zoom.
+        if (mParameters.isZoomSupported()) {
+            mParameters.setZoom(mZoomValue);
+        }
+    }
+
+    private void updateCameraParametersPreference() {
         // Set picture size.
         String pictureSize = mPreferences.getString(
                 CameraSettings.KEY_PICTURE_SIZE, null);
@@ -1732,16 +1712,33 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
         }
 
+        // Since change scene mode may change supported values,
+        // Set scene mode first,
+        String sceneMode = mPreferences.getString(
+                CameraSettings.KEY_SCENE_MODE,
+                getString(R.string.pref_camera_scenemode_default));
+        if (isSupported(sceneMode, mParameters.getSupportedSceneModes())) {
+            if (!mParameters.getSceneMode().equals(sceneMode)) {
+                mParameters.setSceneMode(sceneMode);
+                mCameraDevice.setParameters(mParameters);
+
+                // Setting scene mode will change the settings of flash mode,
+                // white balance, and focus mode. Here we read back the
+                // parameters, so we can know those settings.
+                mParameters = mCameraDevice.getParameters();
+            }
+        } else {
+            sceneMode = mParameters.getSceneMode();
+            if (sceneMode == null) {
+                sceneMode = Parameters.SCENE_MODE_AUTO;
+            }
+        }
+
         // Set JPEG quality.
         String jpegQuality = mPreferences.getString(
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
         mParameters.setJpegQuality(getQualityNumber(jpegQuality));
-
-        // Set zoom.
-        if (mParameters.isZoomSupported()) {
-            mParameters.setZoom(mZoomValue);
-        }
 
         // For the following settings, we need to check if the settings are
         // still supported by latest driver, if not, ignore the settings.
@@ -1844,21 +1841,49 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     mFocusMode = Parameters.FOCUS_MODE_AUTO;
                 }
             }
-            mCameraDevice.setParameters(mParameters);
         }
     }
 
-    private void setCameraParametersWhenIdle() {
+    // We separate the parameters into several subsets, so we can update only
+    // the subsets actually need updating. The PREFERENCE set needs extra
+    // locking because the preference can be changed from GLThread as well.
+    private void setCameraParameters(int updateSet) {
+        mParameters = mCameraDevice.getParameters();
+
+        if ((updateSet & UPDATE_PARAM_INITIALIZE) != 0) {
+            updateCameraParametersInitialize();
+        }
+
+        if ((updateSet & UPDATE_PARAM_ZOOM) != 0) {
+            updateCameraParametersZoom();
+        }
+
+        if ((updateSet & UPDATE_PARAM_PREFERENCE) != 0) {
+            synchronized (mPreferences) {
+                updateCameraParametersPreference();
+            }
+        }
+
+        mCameraDevice.setParameters(mParameters);
+    }
+
+    // If the Camera is idle, update the parameters immediately, otherwise
+    // accumulate them in mUpdateSet and update later.
+    private void setCameraParametersWhenIdle(int additionalUpdateSet) {
+        mUpdateSet |= additionalUpdateSet;
         if (mCameraDevice == null) {
+            // We will update all the parameters when we open the device, so
+            // we don't need to do anything now.
+            mUpdateSet = 0;
             return;
         } else if (isCameraIdle()) {
-            mHandler.removeMessages(SET_CAMERA_PARAMETERS_WHEN_IDLE);
-            synchronized (mPreferences) {
-                setCameraParameters();
-            }
+            setCameraParameters(mUpdateSet);
+            mUpdateSet = 0;
         } else {
-            mHandler.sendEmptyMessageDelayed(
-                SET_CAMERA_PARAMETERS_WHEN_IDLE, 1000);
+            if (!mHandler.hasMessages(SET_CAMERA_PARAMETERS_WHEN_IDLE)) {
+                mHandler.sendEmptyMessageDelayed(
+                        SET_CAMERA_PARAMETERS_WHEN_IDLE, 1000);
+            }
         }
     }
 
@@ -2022,19 +2047,24 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void onSharedPreferenceChanged() {
         // ignore the events after "onPause()"
         if (mPausing) return;
+
+        boolean recordLocation;
+
         synchronized (mPreferences) {
-            boolean recordLocation = RecordLocationPreference.get(
+            recordLocation = RecordLocationPreference.get(
                     mPreferences, getContentResolver());
-            if (mRecordLocation != recordLocation) {
-                if (mRecordLocation) {
-                    startReceivingLocationUpdates();
-                } else {
-                    stopReceivingLocationUpdates();
-                }
-            }
             mQuickCapture = getQuickCaptureSettings();
-            setCameraParametersWhenIdle();
         }
+
+        if (mRecordLocation != recordLocation) {
+            if (mRecordLocation) {
+                startReceivingLocationUpdates();
+            } else {
+                stopReceivingLocationUpdates();
+            }
+        }
+
+        setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
     }
 
     private boolean getQuickCaptureSettings() {
