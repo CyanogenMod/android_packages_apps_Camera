@@ -17,12 +17,11 @@ import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
-import com.android.camera.R;
-
 import com.android.camera.CameraSettings;
 import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
+import com.android.camera.R;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -58,8 +57,7 @@ public class HeadUpDisplay extends GLView {
 
     private PopupWindow mPopupWindow;
 
-    private int mAnchorX;
-    private int mAnchorY;
+    private GLView mAnchorView;
     private int mOrientation = 0;
 
     protected Listener mListener;
@@ -178,7 +176,7 @@ public class HeadUpDisplay extends GLView {
 
         if(mPopupWindow != null
                 && mPopupWindow.getVisibility() == GLView.VISIBLE) {
-            layoutPopupWindow(mAnchorX, mAnchorY);
+            layoutPopupWindow(mAnchorView);
         }
     }
 
@@ -190,9 +188,14 @@ public class HeadUpDisplay extends GLView {
         initializeIndicatorBar(context, preferenceGroup);
     }
 
-    private void layoutPopupWindow(int anchorX, int anchorY) {
-        mAnchorX = anchorX;
-        mAnchorY = anchorY;
+    private void layoutPopupWindow(GLView anchorView) {
+
+        mAnchorView = anchorView;
+        Rect rect = new Rect();
+        getBoundsOf(anchorView, rect);
+
+        int anchorX = rect.left + sPopupWindowOverlap;
+        int anchorY = (rect.top + rect.bottom) / 2;
 
         int width = (int) (getWidth() * MAX_WIDTH_RATIO + .5);
         int height = (int) (getHeight() * MAX_HEIGHT_RATIO + .5);
@@ -215,8 +218,8 @@ public class HeadUpDisplay extends GLView {
                 xoffset, yoffset, xoffset + width, yoffset + height);
     }
 
-    private void showPopupWindow(int anchorX, int anchorY) {
-        layoutPopupWindow(anchorX, anchorY);
+    private void showPopupWindow(GLView anchorView) {
+        layoutPopupWindow(anchorView);
         mPopupWindow.popup();
         mSharedPrefs.registerOnSharedPreferenceChangeListener(
                 mSharedPreferenceChangeListener);
@@ -248,9 +251,10 @@ public class HeadUpDisplay extends GLView {
 
     public void setOrientation(int orientation) {
         mOrientation = orientation;
+        mIndicatorBar.setOrientation(orientation);
         if (mPopupWindow == null) return;
         if (mPopupWindow.getVisibility() == GLView.VISIBLE) {
-            Animation alpha = new AlphaAnimation(0, 1);
+            Animation alpha = new AlphaAnimation(0.2f, 1);
             alpha.setDuration(250);
             mPopupWindow.startAnimation(alpha);
             scheduleDeactiviateIndicatorBar();
@@ -333,10 +337,6 @@ public class HeadUpDisplay extends GLView {
             implements IndicatorBar.OnItemSelectedListener {
 
         public void onItemSelected(GLView view, int position) {
-            Rect rect = new Rect();
-            getBoundsOf(view, rect);
-            int anchorX = rect.left + sPopupWindowOverlap;
-            int anchorY = (rect.top + rect.bottom) / 2;
 
             AbstractIndicator indicator = (AbstractIndicator) view;
             if (mPopupWindow == null) {
@@ -345,9 +345,9 @@ public class HeadUpDisplay extends GLView {
             mPopupWindow.setContent(indicator.getPopupContent());
 
             if (mPopupWindow.getVisibility() == GLView.VISIBLE) {
-                layoutPopupWindow(anchorX, anchorY);
+                layoutPopupWindow(indicator);
             } else {
-                showPopupWindow(anchorX, anchorY);
+                showPopupWindow(indicator);
             }
         }
 

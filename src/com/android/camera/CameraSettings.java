@@ -26,8 +26,6 @@ import android.media.CamcorderProfile;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.android.camera.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,6 +136,8 @@ public class CameraSettings {
         ListPreference flashMode = group.findPreference(KEY_FLASH_MODE);
         ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
         ListPreference exposure = group.findPreference(KEY_EXPOSURE);
+        ListPreference videoFlashMode =
+                group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -180,6 +180,10 @@ public class CameraSettings {
         if (focusMode != null) {
             filterUnsupportedOptions(group,
                     focusMode, mParameters.getSupportedFocusModes());
+        }
+        if (videoFlashMode != null) {
+            filterUnsupportedOptions(group,
+                    videoFlashMode, mParameters.getSupportedFlashModes());
         }
 
         if (exposure != null) {

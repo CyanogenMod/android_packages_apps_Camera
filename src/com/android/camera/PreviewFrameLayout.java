@@ -20,12 +20,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.FrameLayout;
-
-import com.android.camera.R;
 
 /**
  * A layout which handles the preview aspect ratio and the position of
@@ -40,10 +36,12 @@ public class PreviewFrameLayout extends ViewGroup {
     }
 
     private double mAspectRatio = 4.0 / 3.0;
-    private ImageView mGripper;
     private FrameLayout mFrame;
     private OnSizeChangedListener mSizeListener;
-    private DisplayMetrics mMetrics = new DisplayMetrics();
+    private final DisplayMetrics mMetrics = new DisplayMetrics();
+
+    private int mPreviewWidth;
+    private int mPreviewHeight;
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -57,7 +55,6 @@ public class PreviewFrameLayout extends ViewGroup {
 
     @Override
     protected void onFinishInflate() {
-        mGripper = (ImageView) findViewById(R.id.btn_gripper);
         mFrame = (FrameLayout) findViewById(R.id.frame);
         if (mFrame == null) {
             throw new IllegalStateException(
@@ -75,29 +72,26 @@ public class PreviewFrameLayout extends ViewGroup {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        // Try to layout the "frame" in the center of the area, and put
+        // "gripper" just to the left of it. If there is no enough space for
+        // the gripper, the "frame" will be moved a little right so that
+        // they won't overlap with each other.
 
-        int gripperWidth = 0;
-        int gripperHeight = 0;
-
-        if (mGripper != null) {
-            measureChild(mGripper, widthMeasureSpec, heightMeasureSpec);
-            gripperWidth = mGripper.getMeasuredWidth();
-            gripperHeight = mGripper.getMeasuredHeight();
-        }
-
-        int frameWidth = getMeasuredWidth() - (int) Math.max(
-                gripperWidth, MIN_HORIZONTAL_MARGIN * mMetrics.density);
-        int frameHeight = getMeasuredHeight();
+        int frameWidth = getWidth();
+        int frameHeight = getHeight();
 
         FrameLayout f = mFrame;
 
-        int horizontalPadding = f.getPaddingLeft() + f.getPaddingRight();
+        int horizontalPadding = Math.max(
+                f.getPaddingLeft() + f.getPaddingRight(),
+                (int) (MIN_HORIZONTAL_MARGIN * mMetrics.density));
         int verticalPadding = f.getPaddingBottom() + f.getPaddingTop();
 
+        // Ignore the vertical paddings, so that we won't draw the frame on the
+        // top and bottom sides
+        int previewHeight = frameHeight;
         int previewWidth = frameWidth - horizontalPadding;
-        int previewHeight = frameHeight - verticalPadding;
 
         // resize frame and preview for aspect ratio
         if (previewWidth > previewHeight * mAspectRatio) {
@@ -105,46 +99,19 @@ public class PreviewFrameLayout extends ViewGroup {
         } else {
             previewHeight = (int) (previewWidth / mAspectRatio + .5);
         }
+
         frameWidth = previewWidth + horizontalPadding;
         frameHeight = previewHeight + verticalPadding;
 
-        measureChild(mFrame,
-                MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY, frameWidth),
-                MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY, frameHeight));
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        // Try to layout the "frame" in the center of the area, and put
-        // "gripper" just to the left of it. If there is no enough space for
-        // the gripper, the "frame" will be moved a little right so that
-        // they won't overlap with each other.
-
-        int frameWidth = mFrame.getMeasuredWidth();
-        int frameHeight = mFrame.getMeasuredHeight();
-
-        int leftSpace = ((r - l) - frameWidth) / 2;
-        int topSpace = ((b - t) - frameHeight) / 2;
-
-        int gripperWidth = 0;
-        int gripperHeight = 0;
-        if (mGripper != null) {
-            gripperWidth = mGripper.getMeasuredWidth();
-            gripperHeight = mGripper.getMeasuredHeight();
-            myLayoutChild(mGripper,
-                    Math.max(l, l + (leftSpace - gripperWidth)),
-                    t + ((b - t) - gripperHeight) / 2,
-                    gripperWidth, gripperHeight);
-        }
-        myLayoutChild(mFrame, Math.max(l + leftSpace, l + gripperWidth),
-                t + topSpace, frameWidth, frameHeight);
+        int hSpace = ((r - l) - frameWidth) / 2;
+        int vSpace = ((b - t) - frameHeight) / 2;
+        mFrame.measure(
+                MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
+        mFrame.layout(l + hSpace, t + vSpace, r - hSpace, b - vSpace);
         if (mSizeListener != null) {
             mSizeListener.onSizeChanged();
         }
-    }
-
-    private static void myLayoutChild(View child, int l, int t, int w, int h) {
-        child.layout(l, t, l + w, t + h);
     }
 }
 

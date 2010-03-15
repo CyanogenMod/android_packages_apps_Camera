@@ -118,10 +118,11 @@ public class GLRootView extends GLSurfaceView
         return mTransformation;
     }
 
-    public void pushTransform() {
+    public Transformation pushTransform() {
         Transformation trans = obtainTransformation();
         trans.set(mTransformation);
         mTransformStack.push(trans);
+        return mTransformation;
     }
 
     public void popTransform() {
@@ -400,14 +401,14 @@ public class GLRootView extends GLSurfaceView
         }
 
         if ((mFlags & FLAG_NEED_LAYOUT) != 0) layoutContentPane();
-
+        clearClip();
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         gl.glEnable(GL11.GL_BLEND);
         gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         /*gl.glDisable(GL11.GL_TEXTURE_2D);
         gl.glColor4f(0, 0, 0.5f, 0.4f);
-        drawRect(30, 30, 30, 30);
+        drawRect(0, 0, 725, 480);
         gl.glEnable(GL11.GL_TEXTURE_2D);*/
 
         mAnimationTime = SystemClock.uptimeMillis();

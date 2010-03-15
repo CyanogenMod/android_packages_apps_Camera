@@ -175,4 +175,10 @@ public class IndicatorBar extends GLView {
             ((AbstractIndicator) getComponent(i)).reloadPreferences();
         }
     }
+
+    public void setOrientation(int orientation) {
+        for (int i = 1, n = getComponentCount(); i < n; ++i) {
+            ((AbstractIndicator) getComponent(i)).setOrientation(orientation);
+        }
+    }
 }
