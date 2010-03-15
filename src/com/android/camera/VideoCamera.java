@@ -221,6 +221,10 @@ public class VideoCamera extends NoSearchActivity
                 stopVideoRecording();
             } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 updateAndShowStorageHint(true);
+		if(mMediaRecorder != null)
+			releaseMediaRecorder();
+		if(mCameraVideoFilename != null)
+			cleanupEmptyFile();
                 initializeRecorder();
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
@@ -1253,8 +1257,11 @@ public class VideoCamera extends NoSearchActivity
             registerVideo();
         }
 
-        mCameraVideoFilename = null;
-        mCameraVideoFileDescriptor = null;
+	/*Make the videoCameraFilename null only if the respective file does not exist*/
+	File f = new File(mCameraVideoFilename);
+	if(!f.exists())
+		mCameraVideoFilename = null;
+	mCameraVideoFileDescriptor = null;
     }
 
     private void resetScreenOn() {
