@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 
 import com.android.camera.R;
-
 import com.android.camera.ui.ZoomController.ZoomListener;
 
 import java.text.DecimalFormat;
@@ -12,7 +11,7 @@ import java.text.DecimalFormat;
 public class ZoomIndicator extends AbstractIndicator {
     private static final DecimalFormat sZoomFormat = new DecimalFormat("#.#x");
     private static final float FONT_SIZE = 18;
-    private static final int FONT_COLOR = Color.WHITE;
+    private static final int FONT_COLOR = 0xA8FFFFFF;
 
     protected static final String TAG = "ZoomIndicator";
 

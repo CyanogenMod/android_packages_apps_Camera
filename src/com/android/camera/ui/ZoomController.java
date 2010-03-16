@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.android.camera.R;
-
 import com.android.camera.Util;
 
 import java.text.DecimalFormat;
@@ -64,9 +63,11 @@ public class ZoomController extends GLView {
     }
 
     private void onSliderMoved(int position, boolean isMoving) {
-        mSliderPosition = Util.clamp(position,
+        position = Util.clamp(position,
                 mSliderTop, mSliderBottom - sSlider.getHeight());
+        mSliderPosition = position;
         invalidate();
+
         int index = mRatios.length - 1 - (int)
                 ((position - mSliderTop) /  mValueGap + .5f);
         if (index != mIndex || !isMoving) {

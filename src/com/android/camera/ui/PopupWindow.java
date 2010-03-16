@@ -143,7 +143,7 @@ public class PopupWindow extends GLView {
 
         AnimationSet set = new AnimationSet(false);
         Animation scale = new ScaleAnimation(
-                0.7f, 1f, 0.7f, 1f, getWidth(), getHeight() / 2);
+                0.7f, 1f, 0.7f, 1f, getWidth(), mAnchorPosition);
         Animation alpha = new AlphaAnimation(0.5f, 1.0f);
 
         set.addAnimation(scale);

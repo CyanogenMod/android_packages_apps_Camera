@@ -133,7 +133,7 @@ public class GLRootView extends GLSurfaceView
 
     private void initialize() {
         mFlags |= FLAG_INITIALIZED;
-        setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+        setEGLConfigChooser(8, 8, 8, 8, 0, 4);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         setZOrderOnTop(true);
         setDebugFlags(DEBUG_CHECK_GL_ERROR);
@@ -226,6 +226,7 @@ public class GLRootView extends GLSurfaceView
         // Enable used features
         gl.glEnable(GL11.GL_BLEND);
         gl.glEnable(GL11.GL_SCISSOR_TEST);
+        gl.glEnable(GL11.GL_STENCIL_TEST);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glEnable(GL11.GL_TEXTURE_2D);
@@ -233,11 +234,9 @@ public class GLRootView extends GLSurfaceView
         gl.glTexEnvf(GL11.GL_TEXTURE_ENV,
                 GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE);
 
-        // Set the blend function for premultiplied alpha.
-        gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
         // Set the background color
         gl.glClearColor(0f, 0f, 0f, 0f);
+        gl.glClearStencil(0);
         gl.glVertexPointer(2, GL11.GL_FLOAT, 0, mVertexBuffer);
         gl.glTexCoordPointer(2, GL11.GL_FLOAT, 0, mTexCoordBuffer);
     }
@@ -402,14 +401,9 @@ public class GLRootView extends GLSurfaceView
 
         if ((mFlags & FLAG_NEED_LAYOUT) != 0) layoutContentPane();
         clearClip();
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
         gl.glEnable(GL11.GL_BLEND);
         gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        /*gl.glDisable(GL11.GL_TEXTURE_2D);
-        gl.glColor4f(0, 0, 0.5f, 0.4f);
-        drawRect(0, 0, 725, 480);
-        gl.glEnable(GL11.GL_TEXTURE_2D);*/
 
         mAnimationTime = SystemClock.uptimeMillis();
         if (mContentView != null) {

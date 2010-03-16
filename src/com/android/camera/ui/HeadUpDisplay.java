@@ -263,7 +263,7 @@ public class HeadUpDisplay extends GLView {
     }
 
     private void initializePopupWindow(Context context) {
-        mPopupWindow = new PopupWindow();
+        mPopupWindow = new PopupWindowStencilImpl();
         mPopupWindow.setBackground(
                 new NinePatchTexture(context, R.drawable.menu_popup));
         mPopupWindow.setAnchor(new ResourceTexture(

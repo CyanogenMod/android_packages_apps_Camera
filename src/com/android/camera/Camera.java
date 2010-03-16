@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -258,6 +259,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
             }
         }
+    }
+
+    private void resetExposureCompensation() {
+        Editor editor = mPreferences.edit();
+        editor.putString(CameraSettings.KEY_EXPOSURE, "0");
+        editor.commit();
     }
 
     private void keepMediaProviderInstance() {
@@ -911,6 +918,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         CameraSettings.upgradePreferences(mPreferences);
+        resetExposureCompensation();
+
         mQuickCapture = getQuickCaptureSettings();
 
         /*

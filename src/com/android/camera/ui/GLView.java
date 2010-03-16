@@ -218,12 +218,12 @@ public class GLView {
         return false;
     }
 
-    private boolean dispatchTouchEvent(
-            MotionEvent event, int x, int y, GLView component) {
+    private boolean dispatchTouchEvent(MotionEvent event,
+            int x, int y, GLView component, boolean checkBounds) {
         Rect rect = component.mBounds;
         int left = rect.left;
         int top = rect.top;
-        if (rect.contains(x, y)) {
+        if (!checkBounds || rect.contains(x, y)) {
             event.offsetLocation(-left, -top);
             if (component.dispatchTouchEvent(event)) {
                 event.offsetLocation(left, top);
@@ -245,7 +245,7 @@ public class GLView {
                     cancel.setAction(MotionEvent.ACTION_CANCEL);
                     mMotionTarget = null;
                 } else {
-                    dispatchTouchEvent(event, x, y, mMotionTarget);
+                    dispatchTouchEvent(event, x, y, mMotionTarget, false);
                     if (action == MotionEvent.ACTION_CANCEL
                             || action == MotionEvent.ACTION_UP) {
                         mMotionTarget = null;
@@ -257,7 +257,7 @@ public class GLView {
                 for (int i = 0, n = getComponentCount(); i < n; ++i) {
                     GLView component = getComponent(i);
                     if (component.getVisibility() != GLView.VISIBLE) continue;
-                    if (dispatchTouchEvent(event, x, y, component)) {
+                    if (dispatchTouchEvent(event, x, y, component, true)) {
                         mMotionTarget = component;
                         return true;
                     }
