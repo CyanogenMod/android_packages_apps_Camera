@@ -1253,7 +1253,7 @@ public class VideoCamera extends NoSearchActivity
             mRecordingTimeView.setVisibility(View.GONE);
             keepScreenOnAwhile();
         }
-        if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {
+        if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK && mCameraVideoFilename != null) {
             registerVideo();
         }
 
