@@ -1257,11 +1257,15 @@ public class VideoCamera extends NoSearchActivity
             registerVideo();
         }
 
-	/*Make the videoCameraFilename null only if the respective file does not exist*/
-	File f = new File(mCameraVideoFilename);
-	if(!f.exists())
-		mCameraVideoFilename = null;
-	mCameraVideoFileDescriptor = null;
+        /*Make the videoCameraFilename null only if the respective file does not exist*/
+        try {
+            File f = new File(mCameraVideoFilename);
+            if(!f.exists())
+                mCameraVideoFilename = null;
+        } catch(NullPointerException e) {
+            Log.e(TAG, "StopVideoRecording: mCameraVideoFilename is null");
+        }
+        mCameraVideoFileDescriptor = null;
     }
 
     private void resetScreenOn() {
