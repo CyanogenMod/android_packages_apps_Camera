@@ -1472,7 +1472,7 @@ public class VideoCamera extends NoSearchActivity
         if (visibility == GLView.VISIBLE) {
             releaseMediaRecorder();
         } else {
-            if (!mPausing) initializeRecorder();
+            if (!mPausing && mSurfaceHolder != null) initializeRecorder();
         }
     }
 
