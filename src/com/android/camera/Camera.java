@@ -415,6 +415,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mCameraDevice.setZoomCallback(mZoomCallback);
 
         mHeadUpDisplay.setZoomRatios(getZoomRatios());
+        mHeadUpDisplay.setZoomIndex(mZoomValue);
 
         mHeadUpDisplay.setZoomListener(new ZoomController.ZoomListener() {
             public void onZoomChanged(
@@ -1244,6 +1245,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPausing = false;
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
+        if (mHeadUpDisplay != null) {
+            mHeadUpDisplay.setZoomIndex(mZoomValue);
+        }
         mImageCapture = new ImageCapture();
 
         resetExposureCompensation();

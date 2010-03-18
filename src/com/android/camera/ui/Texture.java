@@ -66,8 +66,10 @@ public abstract class Texture {
 
     protected abstract void freeBitmap(Bitmap bitmap);
 
-    public void deleteFromGL(GL11 gl) {
-        gl.glDeleteTextures(1, new int[]{mId}, 0);
+    public void deleteFromGL() {
+        if (mState == STATE_LOADED) {
+            mGL.glDeleteTextures(1, new int[]{mId}, 0);
+        }
         mState = STATE_UNLOADED;
     }
 

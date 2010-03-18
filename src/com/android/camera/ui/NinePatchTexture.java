@@ -35,7 +35,7 @@ public class NinePatchTexture extends FrameTexture {
     @Override
     protected boolean bind(GLRootView root, GL11 gl) {
         if (mLastWidth != mWidth || mLastHeight != mHeight) {
-            if (mDelegate != null) mDelegate.deleteFromGL(gl);
+            if (mDelegate != null) mDelegate.deleteFromGL();
             mDelegate = new MyTexture(mWidth, mHeight);
             mLastWidth = mWidth;
             mLastHeight = mHeight;

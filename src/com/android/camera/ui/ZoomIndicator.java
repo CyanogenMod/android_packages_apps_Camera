@@ -1,7 +1,6 @@
 package com.android.camera.ui;
 
 import android.content.Context;
-import android.graphics.Color;
 
 import com.android.camera.R;
 import com.android.camera.ui.ZoomController.ZoomListener;
@@ -21,27 +20,41 @@ public class ZoomIndicator extends AbstractIndicator {
     private LinearLayout mPopupContent;
     private ZoomListener mZoomListener;
     private int mZoomIndex = 0;
+    private int mDrawIndex = -1;
     private float mZoomRatios[];
 
     private StringTexture mTitle;
-    private float mZoom = 1.0f;
 
     public ZoomIndicator(Context context) {
         super(context);
         mFontSize = GLRootView.dpToPixel(context, FONT_SIZE);
-        mTitle = StringTexture.newInstance(
-                sZoomFormat.format(mZoom), mFontSize, FONT_COLOR);
     }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
+        int maxWidth = 0;
+        int maxHeight = 0;
+        for (int i = 0, n = mZoomRatios.length; i < n; ++i) {
+            float value = mZoomRatios[i];
+            Texture tex = StringTexture.newInstance(
+                    sZoomFormat.format(value), mFontSize, FONT_COLOR);
+            if (maxWidth < tex.getWidth()) maxWidth = tex.getWidth();
+            if (maxHeight < tex.getHeight()) maxHeight = tex.getHeight();
+        }
         new MeasureHelper(this)
-                .setPreferredContentSize(mTitle.getWidth(), mTitle.getHeight())
+                .setPreferredContentSize(maxWidth, maxHeight)
                 .measure(widthSpec, heightSpec);
     }
 
     @Override
     protected Texture getIcon() {
+        if (mDrawIndex != mZoomIndex) {
+            mDrawIndex = mZoomIndex;
+            if (mTitle != null) mTitle.deleteFromGL();
+            float value = mZoomRatios == null ? 0 : mZoomRatios[mZoomIndex];
+            mTitle = StringTexture.newInstance(
+                    sZoomFormat.format(value), mFontSize, FONT_COLOR);
+        }
         return mTitle;
     }
 
@@ -80,6 +93,7 @@ public class ZoomIndicator extends AbstractIndicator {
 
     public void setZoomRatios(float[] ratios) {
         mZoomRatios = ratios;
+        requestLayout();
     }
 
     private class MyZoomListener implements ZoomController.ZoomListener {
@@ -87,13 +101,14 @@ public class ZoomIndicator extends AbstractIndicator {
             if (mZoomListener != null) {
                 mZoomListener.onZoomChanged(index, value, isMoving);
             }
-            if (mZoom != value) {
-                mZoom = value;
-                mTitle = StringTexture.newInstance(
-                        sZoomFormat.format(value), mFontSize, Color.WHITE);
-                invalidate();
-            }
+            if (mZoomIndex != index) onZoomIndexChanged(index);
         }
+    }
+
+    private void onZoomIndexChanged(int index) {
+        if (mZoomIndex == index) return;
+        mZoomIndex = index;
+        invalidate();
     }
 
     public void setZoomListener(ZoomListener listener) {
@@ -101,9 +116,11 @@ public class ZoomIndicator extends AbstractIndicator {
     }
 
     public void setZoomIndex(int index) {
+        if (mZoomIndex == index) return;
         if (mZoomController != null) {
             mZoomController.setZoomIndex(index);
+        } else {
+            onZoomIndexChanged(index);
         }
-        mZoomIndex = index;
     }
 }
