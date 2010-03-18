@@ -6,6 +6,9 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Process;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -69,11 +72,20 @@ public class GLRootView extends GLSurfaceView
 
     private int mFlags = FLAG_NEED_LAYOUT;
     private long mAnimationTime;
+
     private Thread mGLThread;
 
+    // TODO: move this part (handler) into GLSurfaceView
+    private final Looper mLooper;
+
     public GLRootView(Context context) {
-        super(context);
+    	this(context, null);
+    }
+
+    public GLRootView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         initialize();
+        mLooper = Looper.getMainLooper();
     }
 
     void registerLaunchedAnimation(Animation animation) {
@@ -113,11 +125,6 @@ public class GLRootView extends GLSurfaceView
 
     public void freeTransformation(Transformation freeTransformation) {
         mFreeTransform.push(freeTransformation);
-    }
-
-    public GLRootView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initialize();
     }
 
     public Transformation getTransformation() {
@@ -516,5 +523,9 @@ public class GLRootView extends GLSurfaceView
         texture.setSize(width, height);
         texture.setTexCoordSize(
                 (float) width / newWidth, (float) height / newHeight);
+    }
+
+    protected Looper getTimerLooper() {
+        return mLooper;
     }
 }

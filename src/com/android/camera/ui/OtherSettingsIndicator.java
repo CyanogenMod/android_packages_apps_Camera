@@ -2,8 +2,8 @@ package com.android.camera.ui;
 
 import android.content.Context;
 
-import com.android.camera.R;
 import com.android.camera.ListPreference;
+import com.android.camera.R;
 
 import java.util.HashMap;
 
@@ -80,7 +80,7 @@ public class OtherSettingsIndicator extends AbstractIndicator {
     public GLView getPopupContent() {
         if (mPopupContent == null) {
             Context context = getGLRootView().getContext();
-            mPopupContent = new GLListView();
+            mPopupContent = new GLListView(context);
             mPopupContent.setHighLight(new NinePatchTexture(
                     context, R.drawable.optionitem_highlight));
             mPopupContent.setScroller(new NinePatchTexture(

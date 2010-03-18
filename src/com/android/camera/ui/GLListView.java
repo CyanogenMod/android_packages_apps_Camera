@@ -1,20 +1,31 @@
 package com.android.camera.ui;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
+import android.content.Context;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Message;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View.MeasureSpec;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.widget.Scroller;
+
+import com.android.camera.Util;
 
 import javax.microedition.khronos.opengles.GL11;
 
 public class GLListView extends GLView {
     private static final String TAG = "GLListView";
-
-    private static final int MOTION_THRESHOLD = 15;
     private static final int INDEX_NONE = -1;
-    private static final int MOTION_NONE = -1;
+    private static final int SCROLL_BAR_TIMEOUT = 2500;
+
+    private static final int HIDE_SCROLL_BAR = 1;
 
     private Model mModel;
+    private Handler mHandler;
 
     private int mHighlightIndex = INDEX_NONE;
     private GLView mHighlightView;
@@ -25,11 +36,16 @@ public class GLListView extends GLView {
     private int mVisibleStart = 0; // inclusive
     private int mVisibleEnd = 0; // exclusive
 
-    private int mMotionStartY = MOTION_NONE;
     private boolean mHasMeasured = false;
-    private boolean mHasMoved = false;
 
+    private boolean mScrollBarVisible = false;
+    private Animation mScrollBarAnimation;
     private OnItemSelectedListener mOnItemSelectedListener;
+
+    private GestureDetector mGestureDetector;
+    private final Scroller mScroller;
+    private boolean mScrollable;
+    private boolean mIsPressed = false;
 
     static public interface Model {
         public int size();
@@ -39,6 +55,59 @@ public class GLListView extends GLView {
 
     static public interface OnItemSelectedListener {
         public void onItemSelected(GLView view, int position);
+    }
+
+    public GLListView(Context context) {
+        mScroller = new Scroller(context);
+    }
+
+    private final Runnable mHideScrollBar = new Runnable() {
+        public void run() {
+            setScrollBarVisible(false);
+        }
+    };
+
+    @Override
+    protected void onVisibilityChanged(int visibility) {
+        super.onVisibilityChanged(visibility);
+        if (visibility == GLView.VISIBLE && mScrollHeight > getHeight()) {
+            setScrollBarVisible(true);
+            mHandler.sendEmptyMessageDelayed(
+                    HIDE_SCROLL_BAR, SCROLL_BAR_TIMEOUT);
+        }
+    }
+
+    @Override
+    protected void onAttachToRoot(GLRootView root) {
+        super.onAttachToRoot(root);
+        mHandler = new Handler(root.getTimerLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                GLRootView root = getGLRootView();
+                switch(msg.what) {
+                    case HIDE_SCROLL_BAR:
+                        root.queueEvent(mHideScrollBar);
+                        break;
+                }
+            }
+        };
+        mGestureDetector =
+            new GestureDetector(root.getContext(),
+            new MyGestureListener(), mHandler);
+    }
+
+
+    private void setScrollBarVisible(boolean visible) {
+        if (mScrollBarVisible == visible || mScrollbar == null) return;
+        mScrollBarVisible = visible;
+        if (!visible) {
+            mScrollBarAnimation = new AlphaAnimation(1, 0);
+            mScrollBarAnimation.setDuration(300);
+            mScrollBarAnimation.start();
+        } else {
+            mScrollBarAnimation = null;
+        }
+        invalidate();
     }
 
     public void setHighLight(NinePatchTexture highLight) {
@@ -53,6 +122,19 @@ public class GLListView extends GLView {
 
     public void setOnItemSelectedListener(OnItemSelectedListener l) {
         mOnItemSelectedListener = l;
+    }
+
+    private boolean drawWithAnimation(GLRootView root,
+            Texture texture, int x, int y, Animation anim) {
+        long now = root.currentAnimationTimeMillis();
+        Transformation temp = root.obtainTransformation();
+        boolean more = anim.getTransformation(now, temp);
+        Transformation transformation = root.pushTransform();
+        transformation.compose(temp);
+        texture.draw(root, x, y);
+        invalidate();
+        root.popTransform();
+        return more;
     }
 
     @Override
@@ -72,12 +154,22 @@ public class GLListView extends GLView {
         super.render(root, gl);
         root.clearClip();
 
-        if (mScrollbar != null && mScrollHeight > getHeight()) {
-            int width = this.mScrollbar.getIntrinsicWidth();
+        if (mScrollBarAnimation != null || mScrollBarVisible) {
+            int width = mScrollbar.getIntrinsicWidth();
             int height = getHeight() * getHeight() / mScrollHeight;
             int yoffset = mScrollY * getHeight() / mScrollHeight;
             mScrollbar.setSize(width, height);
-            mScrollbar.draw(root, getWidth() - width, yoffset);
+            if (mScrollBarAnimation != null) {
+                if (!drawWithAnimation(root, mScrollbar,
+                        getWidth() - width, yoffset, mScrollBarAnimation)) {
+                    mScrollBarAnimation = null;
+                }
+            } else {
+                mScrollbar.draw(root, getWidth() - width, yoffset);
+            }
+        }
+        if (mScroller.computeScrollOffset()) {
+            setScrollPosition(mScroller.getCurrY(), false);
         }
     }
 
@@ -96,27 +188,8 @@ public class GLListView extends GLView {
             height += view.getMeasuredHeight();
             maxWidth = Math.max(maxWidth, view.getMeasuredWidth());
         }
-
-        // if we need to show the scroll bar ...
-        if ((mScrollbar != null && (heightMode == MeasureSpec.AT_MOST
-                || heightMode == MeasureSpec.EXACTLY))
-                && height > MeasureSpec.getSize(heightSpec)) {
-            if (widthMode != MeasureSpec.UNSPECIFIED) {
-                int cWidthSpec = widthSpec - mScrollbar.getIntrinsicWidth();
-                height = 0;
-                for (int i = 0, n = mModel.size(); i < n; ++i) {
-                    GLView view = mModel.getView(i);
-                    view.measure(cWidthSpec, MeasureSpec.UNSPECIFIED);
-                    height += view.getMeasuredHeight();
-                    maxWidth = Math.max(maxWidth, view.getMeasuredWidth());
-                }
-            }
-            maxWidth += mScrollbar.getIntrinsicWidth();
-        }
-
         mScrollHeight = height;
         mHasMeasured = true;
-
         new MeasureHelper(this)
                 .setPreferredContentSize(maxWidth, height)
                 .measure(widthSpec, heightSpec);
@@ -150,9 +223,8 @@ public class GLListView extends GLView {
                     makeMeasureSpec(bottom - top, MeasureSpec.EXACTLY));
         }
 
-        int width = mScrollHeight > (bottom - top) && mScrollbar != null
-                ? right - left - mScrollbar.getIntrinsicWidth()
-                : right - left;
+        mScrollable = mScrollHeight > (bottom - top);
+        int width = right - left;
         int yoffset = 0;
 
         for (int i = 0, n = mModel.size(); i < n; ++i) {
@@ -168,8 +240,7 @@ public class GLListView extends GLView {
     private void setScrollPosition(int position, boolean force) {
         int height = getHeight();
 
-        position = Math.max(0, position);
-        position = Math.min(mScrollHeight - height, position);
+        position = Util.clamp(position, 0, mScrollHeight - height);
 
         if (!force && position == mScrollY) return;
         mScrollY = position;
@@ -182,9 +253,9 @@ public class GLListView extends GLView {
             if (position < mModel.getView(start).mBounds.bottom) break;
         }
 
-        position += height;
+        int bottom = position + height;
         for (end = start; end < n; ++ end) {
-            if (position <= mModel.getView(end).mBounds.top) break;
+            if (bottom <= mModel.getView(end).mBounds.top) break;
         }
         setVisibleRange(start , end);
         invalidate();
@@ -203,30 +274,31 @@ public class GLListView extends GLView {
 
     @Override @SuppressWarnings("fallthrough")
     protected boolean onTouch(MotionEvent event) {
-        int y = (int) event.getY();
+
+        mGestureDetector.onTouchEvent(event);
+
         switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mHandler.removeMessages(HIDE_SCROLL_BAR);
+                setScrollBarVisible(mScrollHeight > getHeight());
+                break;
             case MotionEvent.ACTION_MOVE:
-                if ((mMotionStartY != MOTION_NONE) && (mHasMoved
-                        || Math.abs(y - mMotionStartY) > MOTION_THRESHOLD)) {
-                    setHighlightItem(null, INDEX_NONE);
-                    setScrollPosition(mScrollY + mMotionStartY - y, false);
-                    mMotionStartY = y;
-                    mHasMoved = true;
-                } else {
-                    findAndSetHighlightItem(y);
+                mIsPressed = true;
+                if (!mScrollable) {
+                    findAndSetHighlightItem((int) event.getY());
                 }
                 break;
-            case MotionEvent.ACTION_DOWN:
-                mHasMoved = false;
-                mMotionStartY = mScrollHeight > getHeight() ? y : MOTION_NONE;
-                break;
             case MotionEvent.ACTION_UP:
-                if (!mHasMoved) {
-                    if (mOnItemSelectedListener != null && mHighlightView != null) {
-                        mOnItemSelectedListener
-                                .onItemSelected(mHighlightView, mHighlightIndex);
-                    }
-                    mHasMoved = false;
+                mIsPressed = false;
+                if (mScrollBarVisible) {
+                    mHandler.removeMessages(HIDE_SCROLL_BAR);
+                    mHandler.sendEmptyMessageDelayed(
+                            HIDE_SCROLL_BAR, SCROLL_BAR_TIMEOUT);
+                }
+                if (!mScrollable && mOnItemSelectedListener != null
+                        && mHighlightView != null) {
+                    mOnItemSelectedListener
+                            .onItemSelected(mHighlightView, mHighlightIndex);
                 }
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_OUTSIDE:
@@ -260,5 +332,51 @@ public class GLListView extends GLView {
     public void setScroller(NinePatchTexture scrollbar) {
         this.mScrollbar = scrollbar;
         requestLayout();
+    }
+
+    private class MyGestureListener
+            extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onFling(MotionEvent e1,
+                MotionEvent e2, float velocityX, float velocityY) {
+            if (!mScrollable) return false;
+            mScroller.fling(0, mScrollY,
+                    0, -(int) velocityY, 0, 0, 0, mScrollHeight - getHeight());
+            invalidate();
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1,
+                MotionEvent e2, float distanceX, float distanceY) {
+            if (!mScrollable) return false;
+            setHighlightItem(null, INDEX_NONE);
+            setScrollPosition(mScrollY + (int) distanceY, false);
+            return true;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+            if (!mScrollable) return;
+            final int y = (int) e.getY();
+            getGLRootView().queueEvent(new Runnable() {
+                public void run() {
+                    if (mIsPressed) findAndSetHighlightItem(y);
+                }
+            });
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if (!mScrollable) return false;
+            findAndSetHighlightItem((int) e.getY());
+            if (mOnItemSelectedListener != null && mHighlightView != null) {
+                mOnItemSelectedListener
+                        .onItemSelected(mHighlightView, mHighlightIndex);
+            }
+            setHighlightItem(null, INDEX_NONE);
+            return true;
+        }
     }
 }
