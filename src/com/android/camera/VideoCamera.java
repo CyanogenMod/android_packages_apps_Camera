@@ -1479,7 +1479,7 @@ public class VideoCamera extends NoSearchActivity
     private void onRestorePreferencesClicked() {
         Runnable runnable = new Runnable() {
             public void run() {
-                mHeadUpDisplay.restorePreferences();
+                mHeadUpDisplay.restorePreferences(mParameters);
             }
         };
         MenuHelper.confirmAction(this,

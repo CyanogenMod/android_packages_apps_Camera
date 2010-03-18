@@ -2175,7 +2175,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mPausing) return;
         Runnable runnable = new Runnable() {
             public void run() {
-                mHeadUpDisplay.restorePreferences();
+                mHeadUpDisplay.restorePreferences(mParameters);
             }
         };
         MenuHelper.confirmAction(this,

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Rect;
+import android.hardware.Camera.Parameters;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -391,7 +392,7 @@ public class HeadUpDisplay extends GLView {
         mListener = listener;
     }
 
-    public void restorePreferences() {
+    public void restorePreferences(final Parameters param) {
         getGLRootView().runInGLThread(new Runnable() {
             public void run() {
                 OnSharedPreferenceChangeListener l =
@@ -400,12 +401,14 @@ public class HeadUpDisplay extends GLView {
                 // change bunch of preferences. We can handle them with one
                 // onSharedPreferencesChanged();
                 mSharedPrefs.unregisterOnSharedPreferenceChangeListener(l);
+                Context context = getGLRootView().getContext();
                 synchronized (mSharedPrefs) {
                     Editor editor = mSharedPrefs.edit();
                     editor.clear();
                     editor.commit();
                 }
                 CameraSettings.upgradePreferences(mSharedPrefs);
+                CameraSettings.initialCameraPictureSize(context, param);
                 reloadPreferences();
                 if (mListener != null) {
                     mListener.onSharedPreferencesChanged();
