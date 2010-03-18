@@ -69,6 +69,7 @@ public class GLRootView extends GLSurfaceView
 
     private int mFlags = FLAG_NEED_LAYOUT;
     private long mAnimationTime;
+    private Thread mGLThread;
 
     public GLRootView(Context context) {
         super(context);
@@ -102,7 +103,12 @@ public class GLRootView extends GLSurfaceView
     }
 
     public Transformation obtainTransformation() {
-        return mFreeTransform.isEmpty() ? new Transformation() : mFreeTransform.pop();
+        if (!mFreeTransform.isEmpty()) {
+            Transformation t = mFreeTransform.pop();
+            t.clear();
+            return t;
+        }
+        return new Transformation();
     }
 
     public void freeTransformation(Transformation freeTransformation) {
@@ -129,6 +135,14 @@ public class GLRootView extends GLSurfaceView
         Transformation trans = mTransformStack.pop();
         mTransformation.set(trans);
         freeTransformation(trans);
+    }
+
+    public void runInGLThread(Runnable runnable) {
+        if (Thread.currentThread() == mGLThread) {
+            runnable.run();
+        } else {
+            queueEvent(runnable);
+        }
     }
 
     private void initialize() {
@@ -219,6 +233,7 @@ public class GLRootView extends GLSurfaceView
 
         // Increase the priority of the render thread
         Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
+        mGLThread = Thread.currentThread();
 
         // Disable unused state
         gl.glDisable(GL11.GL_LIGHTING);

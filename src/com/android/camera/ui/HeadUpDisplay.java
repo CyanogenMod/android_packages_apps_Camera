@@ -34,6 +34,8 @@ import java.util.concurrent.FutureTask;
 // updated preferences. The two threads synchronize on the monitor of the
 // default SharedPrefernce instance.
 public class HeadUpDisplay extends GLView {
+    private static final int INDICATOR_BAR_TIMEOUT = 4000;
+    private static final int POPUP_WINDOW_TIMEOUT = 3000;
     private static final int INDICATOR_BAR_RIGHT_MARGIN = 10;
     private static final int POPUP_WINDOW_OVERLAP = 20;
     private static final int POPUP_TRIANGLE_OFFSET = 16;
@@ -59,6 +61,7 @@ public class HeadUpDisplay extends GLView {
 
     private GLView mAnchorView;
     private int mOrientation = 0;
+    private boolean mEnabled = true;
 
     protected Listener mListener;
 
@@ -239,9 +242,11 @@ public class HeadUpDisplay extends GLView {
 
     private void scheduleDeactiviateIndicatorBar() {
         mHandler.removeMessages(DESELECT_INDICATOR);
-        mHandler.sendEmptyMessageDelayed(DESELECT_INDICATOR, 3000);
+        mHandler.sendEmptyMessageDelayed(
+                DESELECT_INDICATOR, POPUP_WINDOW_TIMEOUT);
         mHandler.removeMessages(DEACTIVATE_INDICATOR_BAR);
-        mHandler.sendEmptyMessageDelayed(DEACTIVATE_INDICATOR_BAR, 4000);
+        mHandler.sendEmptyMessageDelayed(
+                DEACTIVATE_INDICATOR_BAR, INDICATOR_BAR_TIMEOUT);
     }
 
     public void deactivateIndicatorBar() {
@@ -275,11 +280,16 @@ public class HeadUpDisplay extends GLView {
 
     @Override
     protected boolean dispatchTouchEvent(MotionEvent event) {
-        if (super.dispatchTouchEvent(event)) {
+        if (mEnabled && super.dispatchTouchEvent(event)) {
             scheduleDeactiviateIndicatorBar();
             return true;
         }
         return false;
+    }
+
+    public void setEnabled(boolean enabled) {
+        if (mEnabled == enabled) return;
+        mEnabled = enabled;
     }
 
     @Override
@@ -356,13 +366,25 @@ public class HeadUpDisplay extends GLView {
         }
     }
 
-    public void collapse() {
-        getGLRootView().queueEvent(new Runnable() {
-            public void run() {
-                mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
-                mIndicatorBar.setActivated(false);
+    private final Callable<Boolean> mCollapse = new Callable<Boolean>() {
+        public Boolean call() {
+            if (mIndicatorBar.getSelectedIndex() == IndicatorBar.INDEX_NONE) {
+                return false;
             }
-        });
+            mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
+            mIndicatorBar.setActivated(false);
+            return true;
+        }
+    };
+
+    public boolean collapse() {
+        FutureTask<Boolean> task = new FutureTask<Boolean>(mCollapse);
+        getGLRootView().runInGLThread(task);
+        try {
+            return task.get().booleanValue();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setListener(Listener listener) {
@@ -370,7 +392,7 @@ public class HeadUpDisplay extends GLView {
     }
 
     public void restorePreferences() {
-        getGLRootView().queueEvent(new Runnable() {
+        getGLRootView().runInGLThread(new Runnable() {
             public void run() {
                 OnSharedPreferenceChangeListener l =
                         mSharedPreferenceChangeListener;
@@ -384,13 +406,17 @@ public class HeadUpDisplay extends GLView {
                     editor.commit();
                 }
                 CameraSettings.upgradePreferences(mSharedPrefs);
-                mPreferenceGroup.reloadValue();
-                mIndicatorBar.reloadPreferences();
+                reloadPreferences();
                 if (mListener != null) {
                     mListener.onSharedPreferencesChanged();
                 }
                 mSharedPrefs.registerOnSharedPreferenceChangeListener(l);
             }
         });
+    }
+
+    public void reloadPreferences() {
+        mPreferenceGroup.reloadValue();
+        mIndicatorBar.reloadPreferences();
     }
 }

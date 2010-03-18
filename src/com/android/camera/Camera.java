@@ -262,9 +262,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void resetExposureCompensation() {
-        Editor editor = mPreferences.edit();
-        editor.putString(CameraSettings.KEY_EXPOSURE, "0");
-        editor.commit();
+        String value = mPreferences.getString(CameraSettings.KEY_EXPOSURE,
+                CameraSettings.EXPOSURE_DEFAULT_VALUE);
+        if (!CameraSettings.EXPOSURE_DEFAULT_VALUE.equals(value)) {
+            Editor editor = mPreferences.edit();
+            editor.putString(CameraSettings.KEY_EXPOSURE, "0");
+            editor.commit();
+            if (mHeadUpDisplay != null) {
+                mHeadUpDisplay.reloadPreferences();
+            }
+        }
     }
 
     private void keepMediaProviderInstance() {
@@ -645,6 +652,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
                     + mPictureDisplayedToJpegCallbackTime + "ms");
+            mHeadUpDisplay.setEnabled(true);
 
             if (!mIsImageCaptureIntent) {
                 // We want to show the taken picture for a while, so we wait
@@ -868,7 +876,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             mCaptureStartTime = System.currentTimeMillis();
             mPostViewPictureCallbackTime = 0;
-
+            mHeadUpDisplay.setEnabled(false);
             mStatus = SNAPSHOT_IN_PROGRESS;
 
             mImageCapture.initiate();
@@ -918,10 +926,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         CameraSettings.upgradePreferences(mPreferences);
-        resetExposureCompensation();
 
         mQuickCapture = getQuickCaptureSettings();
 
+        // we need to reset exposure for the preview
+        resetExposureCompensation();
         /*
          * To reduce startup time, we start the preview in another thread.
          * We make sure the preview is started at the end of onCreate.
@@ -1234,6 +1243,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mZoomValue = 0;
         mImageCapture = new ImageCapture();
 
+        resetExposureCompensation();
+
         // Start the preview if it is not started.
         if (!mPreviewing && !mStartPreviewFail) {
             try {
@@ -1263,16 +1274,20 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     @Override
     protected void onPause() {
         mPausing = true;
-        mGLRootView.onPause();
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
         resetScreenOn();
 
+        if (mGLRootView != null) {
+            mGLRootView.onPause();
+            if (mHeadUpDisplay != null) {
+                mHeadUpDisplay.setGpsHasSignal(false);
+                mHeadUpDisplay.collapse();
+            }
+        }
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
-            mHeadUpDisplay.setGpsHasSignal(false);
-            mHeadUpDisplay.collapse();
             if (!mIsImageCaptureIntent) {
                 mThumbController.storeData(
                         ImageManager.getLastImageThumbPath());
@@ -1339,8 +1354,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Initiate autofocus only when preview is started and snapshot is not
         // in progress.
         if (canTakePicture()) {
+            mHeadUpDisplay.setEnabled(false);
             Log.v(TAG, "Start autofocus.");
-            if (mHeadUpDisplay != null) mHeadUpDisplay.collapse();
             mFocusStartTime = System.currentTimeMillis();
             mFocusState = FOCUSING;
             updateFocusIndicator();
@@ -1353,6 +1368,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mFocusState == FOCUSING || mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL) {
             Log.v(TAG, "Cancel autofocus.");
+            mHeadUpDisplay.setEnabled(true);
             mCameraDevice.cancelAutoFocus();
         }
         if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
@@ -1408,6 +1424,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     // Start auto-focus immediately to reduce shutter lag. After
                     // the shutter button gets the focus, doFocus() will be
                     // called again but it is fine.
+                    if (mHeadUpDisplay.collapse()) return true;
                     doFocus(true);
                     if (mShutterButton.isInTouchMode()) {
                         mShutterButton.requestFocusFromTouch();
@@ -1435,6 +1452,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void doSnap() {
+        if (mHeadUpDisplay.collapse()) return;
+
         Log.v(TAG, "doSnap: mFocusState=" + mFocusState);
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
@@ -1442,7 +1461,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || (mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL)) {
-            if (mHeadUpDisplay != null) mHeadUpDisplay.collapse();
             mImageCapture.onSnap();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
@@ -1456,6 +1474,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void doFocus(boolean pressed) {
         // Do the focus if the mode is not infinity.
+        if (mHeadUpDisplay.collapse()) return;
         if (!mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)) {
             if (pressed) {  // Focus key down.
                 autoFocus();
@@ -2052,6 +2071,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (!isCameraIdle()) return false;
         MenuHelper.gotoVideoMode(this);
         ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
+        mGLRootView = null;
         finish();
         return true;
     }

@@ -56,6 +56,8 @@ public class CameraSettings {
     private static final String VIDEO_QUALITY_MMS = "mms";
     private static final String VIDEO_QUALITY_YOUTUBE = "youtube";
 
+    public static final String EXPOSURE_DEFAULT_VALUE = "0";
+
     public static final int CURRENT_VERSION = 4;
 
     // max video duration in seconds for mms and youtube.

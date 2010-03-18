@@ -181,4 +181,8 @@ public class IndicatorBar extends GLView {
             ((AbstractIndicator) getComponent(i)).setOrientation(orientation);
         }
     }
+
+    public int getSelectedIndex() {
+        return mSelectedIndex;
+    }
 }

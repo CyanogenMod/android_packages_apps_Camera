@@ -433,6 +433,8 @@ public class VideoCamera extends NoSearchActivity
     public void onShutterButtonClick(ShutterButton button) {
         switch (button.getId()) {
             case R.id.shutter_button:
+                if (mHeadUpDisplay.collapse()) return;
+
                 if (mMediaRecorderRecording) {
                     onStopVideoRecording(true);
                 } else if (mMediaRecorder != null) {
@@ -628,8 +630,12 @@ public class VideoCamera extends NoSearchActivity
     @Override
     protected void onPause() {
         super.onPause();
-        mGLRootView.onPause();
         mPausing = true;
+
+        if (mGLRootView != null) {
+            mGLRootView.onPause();
+            if (mHeadUpDisplay != null) mHeadUpDisplay.collapse();
+        }
 
         // Hide the preview now. Otherwise, the preview may be rotated during
         // onPause and it is annoying to users.
@@ -1082,6 +1088,7 @@ public class VideoCamera extends NoSearchActivity
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
         if (!mMediaRecorderRecording) {
+            mHeadUpDisplay.setEnabled(false);
 
             if (mStorageStatus != STORAGE_STATUS_OK) {
                 Log.v(TAG, "Storage issue, ignore the start request");
@@ -1195,6 +1202,7 @@ public class VideoCamera extends NoSearchActivity
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
         boolean needToRegisterRecording = false;
+        mHeadUpDisplay.setEnabled(true);
         if (mMediaRecorderRecording || mMediaRecorder != null) {
             if (mMediaRecorderRecording && mMediaRecorder != null) {
                 try {
@@ -1204,7 +1212,7 @@ public class VideoCamera extends NoSearchActivity
                 } catch (RuntimeException e) {
                     Log.e(TAG, "stop fail: " + e.getMessage());
                 }
-
+                mHeadUpDisplay.setEnabled(true);
                 mCurrentVideoFilename = mCameraVideoFilename;
                 Log.v(TAG, "Setting current video filename: "
                         + mCurrentVideoFilename);
@@ -1387,6 +1395,7 @@ public class VideoCamera extends NoSearchActivity
         if (mMediaRecorderRecording) return false;
         MenuHelper.gotoCameraMode(this);
         ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
+        mGLRootView = null;
         finish();
         return true;
     }

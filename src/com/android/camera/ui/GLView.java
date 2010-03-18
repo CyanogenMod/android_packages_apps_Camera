@@ -197,7 +197,6 @@ public class GLView {
         if (anim != null) {
             long now = root.currentAnimationTimeMillis();
             Transformation temp = root.obtainTransformation();
-            temp.clear();
             if (!anim.getTransformation(now, temp)) {
                 component.mAnimation = null;
             }
