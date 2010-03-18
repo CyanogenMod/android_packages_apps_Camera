@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2009 The Android Open Source Project
+<!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -12,10 +12,11 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
--->
+ -->
+
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="camera_error_title" msgid="1202232535191653443">"Ошибка камеры"</string>
+    <string name="camera_error_title" msgid="6484667504938477337">"Ошибка камеры"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Не удается подключиться к камере."</string>
     <string name="camera_label" msgid="6346560772074764302">"Фотокамера"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Видеокамера"</string>
@@ -34,8 +35,8 @@
     <string name="confirm_delete_title" msgid="263478358046514887">"Удалить"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"Картинка будет удалена."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"Видео будет удалено."</string>
-    <string name="confirm_restore_title" msgid="4786740665995153202">"Восстановить настройки"</string>
-    <string name="confirm_restore_message" msgid="7273245528031237204">"Для камеры будут восстановлены настройки по умолчанию."</string>
+    <string name="confirm_restore_title" msgid="1229914538263792180">"Восстановить настройки по умолчанию"</string>
+    <string name="confirm_restore_message" msgid="5239464943578877295">"Для камеры будут восстановлены настройки по умолчанию."</string>
     <string name="review_play" msgid="6015456244323302817">"ВОСПРОИЗВЕСТИ"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ОТМЕНА"</string>
     <string name="review_ok" msgid="5305096180300056529">"ОК"</string>
@@ -51,6 +52,11 @@
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Записывать местоположение"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Выкл."</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Вкл."</string>
+    <string name="pref_video_quality_title" msgid="8245379279801096922">"Качество видео"</string>
+    <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Высокое (30 мин.)"</string>
+    <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Низкое (30 мин.)"</string>
+    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (низкое, 30 с.)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (высокое, 10 мин.)"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Настройки камеры"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Настройки видеокамеры"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Размер фотографии"</string>
@@ -87,34 +93,38 @@
     <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Под водой"</string>
     <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"Пастель"</string>
     <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"Мозаика"</string>
-    <string name="pref_camera_coloreffect_entry_redtint" msgid="6646299498728138294">"Красный оттенок"</string>
-    <string name="pref_camera_coloreffect_entry_bluetint" msgid="918696074928692967">"Синий оттенок"</string>
-    <string name="pref_camera_coloreffect_entry_greentint" msgid="9080254097150221320">"Зеленый оттенок"</string>
+    <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Красный оттенок"</string>
+    <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Синий оттенок"</string>
+    <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Зеленый оттенок"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Режим съемки"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Авто"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Действие"</string>
     <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Портрет"</string>
     <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"Пейзаж"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Ночь"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="5244280874913294746">"Ночной портрет"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"Ночной портрет"</string>
     <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"На сцене"</string>
     <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"Пляж"</string>
     <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"Снег"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Закат"</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="2147958278893914895">"Четкость"</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Четкость"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Фейерверк"</string>
-    <string name="pref_camera_quickcapture_title" msgid="5934534901465097886">"Запись с камеры"</string>
+    <string name="pref_camera_quickcapture_title" msgid="1839831697232292196">"Запись с камеры"</string>
     <string name="pref_camera_quickcapture_entry_on" msgid="1940258136944434407">"Вкл."</string>
     <string name="pref_camera_quickcapture_entry_off" msgid="5000775068226508567">"Выкл."</string>
-    <string name="pref_restore_title" msgid="5685941409089844371">"Восстановить настройки"</string>
-    <string name="pref_restore_detail" msgid="2399950455369977703">"Восстановить настройки камеры по умолчанию"</string>
+    <string name="pref_restore_title" msgid="6479274979730178961">"Настройки камеры"</string>
+    <string name="pref_restore_detail" msgid="5326039608800383369">"Восстановить значения по умолчанию"</string>
+    <string name="pref_exposure_title" msgid="1229093066434614811">"Экспозиция"</string>
+    <string name="pref_framing_grid" msgid="7470436096834322280">"Сетка кадрирования"</string>
+    <string name="pref_framing_grid_entry_on" msgid="387670222002432408">"Вкл."</string>
+    <string name="pref_framing_grid_entry_off" msgid="1363434523358481365">"Выкл."</string>
     <string name="no_location_image" msgid="6929172123058811834">"Это изображение не содержит данных о местоположении."</string>
     <string name="details_panel_title" msgid="4753347516759338122">"Сведения"</string>
     <string name="details_file_size" msgid="2468878774843246797">"Размер файла:"</string>
     <string name="details_image_resolution" msgid="8773315928100529437">"Разрешение:"</string>
     <string name="details_image_make" msgid="2888477930210903540">"Производитель:"</string>
     <string name="details_image_model" msgid="3608007849933924336">"Модель:"</string>
-    <string name="details_image_whitebalance" msgid="4412514247882436065">"Баланс белого:"</string>
+    <string name="details_image_whitebalance" msgid="8297984317708373822">"Баланс белого:"</string>
     <string name="details_image_latitude" msgid="6701704806314765468">"Широта GPS:"</string>
     <string name="details_image_longitude" msgid="5583629669864057389">"Долгота GPS:"</string>
     <string name="details_image_location" msgid="6460201074393148978">"Местоположение:"</string>
@@ -136,6 +146,7 @@
     <string name="sendVideo" msgid="3598567735831863073">"Отправить видео при помощи"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Место на вашей SD-карте заканчивается. Измените настройки качества или удалите содержимое из фотоальбома."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Достигнут предельный размер видео."</string>
+    <string name="zoom_control_title" msgid="6532562653386981815">"Масштаб"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Переключить на фото"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Переключить на видео"</string>
 </resources>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2009 The Android Open Source Project
+<!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -12,10 +12,11 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
--->
+ -->
+
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="camera_error_title" msgid="1202232535191653443">"Errore fotocamera"</string>
+    <string name="camera_error_title" msgid="6484667504938477337">"Errore fotocamera"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Impossibile collegarsi alla fotocamera."</string>
     <string name="camera_label" msgid="6346560772074764302">"Fotocamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videocamera"</string>
@@ -34,8 +35,8 @@
     <string name="confirm_delete_title" msgid="263478358046514887">"Elimina"</string>
     <string name="confirm_delete_message" msgid="4161389939579284604">"La foto verrà eliminata."</string>
     <string name="confirm_delete_video_message" msgid="5796154324948010221">"Il video verrà eliminato."</string>
-    <string name="confirm_restore_title" msgid="4786740665995153202">"Ripristina impostazioni"</string>
-    <string name="confirm_restore_message" msgid="7273245528031237204">"Verranno ripristinate le impostazioni predefinite della fotocamera."</string>
+    <string name="confirm_restore_title" msgid="1229914538263792180">"Ripristina predefinite"</string>
+    <string name="confirm_restore_message" msgid="5239464943578877295">"Verranno ripristinate le impostazioni predefinite della fotocamera."</string>
     <string name="review_play" msgid="6015456244323302817">"RIPRODUCI"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULLA"</string>
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
@@ -51,6 +52,11 @@
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Registra località"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Non attiva"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Attiva"</string>
+    <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualità video"</string>
+    <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Alta (30 m)"</string>
+    <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Bassa (30 m)"</string>
+    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (bassa, 30 s)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (alta, 10 m)"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Impostazioni fotocamera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Impostazioni videocamera"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Dimensioni foto"</string>
@@ -87,34 +93,38 @@
     <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Acqua"</string>
     <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"Pastello"</string>
     <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"Mosaico"</string>
-    <string name="pref_camera_coloreffect_entry_redtint" msgid="6646299498728138294">"Tinta rossa"</string>
-    <string name="pref_camera_coloreffect_entry_bluetint" msgid="918696074928692967">"Tinta blu"</string>
-    <string name="pref_camera_coloreffect_entry_greentint" msgid="9080254097150221320">"Tinta verde"</string>
+    <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Tinta rossa"</string>
+    <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Tinta blu"</string>
+    <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Tinta verde"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modalità scena"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatica"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Movimento"</string>
     <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Ritratto"</string>
     <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"Paesaggio"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Notturna"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="5244280874913294746">"Ritratto notturno"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"Ritratto notturno"</string>
     <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"Teatro"</string>
     <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"Spiaggia"</string>
     <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"Neve"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Tramonto"</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="2147958278893914895">"Stabilizzazione foto"</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Stabilizzazione foto"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fuochi d\'artificio"</string>
-    <string name="pref_camera_quickcapture_title" msgid="5934534901465097886">"Quick Capture"</string>
+    <string name="pref_camera_quickcapture_title" msgid="1839831697232292196">"Quick Capture"</string>
     <string name="pref_camera_quickcapture_entry_on" msgid="1940258136944434407">"Attivo"</string>
     <string name="pref_camera_quickcapture_entry_off" msgid="5000775068226508567">"Non attivo"</string>
-    <string name="pref_restore_title" msgid="5685941409089844371">"Ripristina impostazioni"</string>
-    <string name="pref_restore_detail" msgid="2399950455369977703">"Ripristina le impostazioni predefinite della fotocamera"</string>
+    <string name="pref_restore_title" msgid="6479274979730178961">"Impostazioni fotocamera"</string>
+    <string name="pref_restore_detail" msgid="5326039608800383369">"Ripristina predefinite"</string>
+    <string name="pref_exposure_title" msgid="1229093066434614811">"Esposizione"</string>
+    <string name="pref_framing_grid" msgid="7470436096834322280">"Griglia di inquadratura"</string>
+    <string name="pref_framing_grid_entry_on" msgid="387670222002432408">"Attiva"</string>
+    <string name="pref_framing_grid_entry_off" msgid="1363434523358481365">"Non attiva"</string>
     <string name="no_location_image" msgid="6929172123058811834">"Nessuna informazione di posizione contenuta in questa immagine."</string>
     <string name="details_panel_title" msgid="4753347516759338122">"Dettagli"</string>
     <string name="details_file_size" msgid="2468878774843246797">"Dim. file:"</string>
     <string name="details_image_resolution" msgid="8773315928100529437">"Risoluzione:"</string>
     <string name="details_image_make" msgid="2888477930210903540">"Produttore:"</string>
     <string name="details_image_model" msgid="3608007849933924336">"Modello:"</string>
-    <string name="details_image_whitebalance" msgid="4412514247882436065">"Bilanciamento bianco:"</string>
+    <string name="details_image_whitebalance" msgid="8297984317708373822">"Bilanciamento del bianco:"</string>
     <string name="details_image_latitude" msgid="6701704806314765468">"Latitudine GPS:"</string>
     <string name="details_image_longitude" msgid="5583629669864057389">"Longitudine GPS:"</string>
     <string name="details_image_location" msgid="6460201074393148978">"Posizione:"</string>
@@ -136,6 +146,7 @@
     <string name="sendVideo" msgid="3598567735831863073">"Condividi video tramite"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina elementi nella galleria."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite di dimensione raggiunto."</string>
+    <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Passa a fotocamera"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Passa a video"</string>
 </resources>
