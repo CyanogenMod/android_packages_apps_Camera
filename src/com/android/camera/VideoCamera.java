@@ -112,6 +112,10 @@ public class VideoCamera extends NoSearchActivity
 
     private static final long SHUTTER_BUTTON_TIMEOUT = 500L; // 500ms
 
+    private static final String GALLERY_PACKAGE_NAME = "com.cooliris.app";
+    private static final String GALLERY_CLASS_NAME = "com.cooliris.media.Gallery";
+    private static final String REVIEW_EXTRA_IN_GALLERY = "review";
+
     /**
      * An unpublished intent flag requesting to start recording straight away
      * and return as soon as recording is stopped.
@@ -1187,12 +1191,19 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void viewLastVideo() {
+        Intent intent = null;
         if (mThumbController.isUriValid()) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
+            intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
+            intent.setClassName(GALLERY_PACKAGE_NAME, GALLERY_CLASS_NAME);
+            intent.putExtra(REVIEW_EXTRA_IN_GALLERY, true);
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {
-                Log.e(TAG, "review video fail", ex);
+                try {
+                    intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
+                } catch (ActivityNotFoundException e) {
+                    Log.e(TAG, "review video fail", e);
+                }
             }
         } else {
             Log.e(TAG, "Can't view last video.");

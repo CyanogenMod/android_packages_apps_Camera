@@ -121,6 +121,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int ZOOM_START = 1;
     private static final int ZOOM_STOPPING = 2;
 
+    private static final String REVIEW_EXTRA_IN_GALLERY = "review";
+
     private int mZoomState = ZOOM_STOPPED;
     private boolean mSmoothZoomSupported = false;
     private int mZoomValue;  // The current zoom value.
@@ -1929,6 +1931,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void viewLastImage() {
         if (mThumbController.isUriValid()) {
             Intent intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
+            intent.putExtra(REVIEW_EXTRA_IN_GALLERY, true);
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {
