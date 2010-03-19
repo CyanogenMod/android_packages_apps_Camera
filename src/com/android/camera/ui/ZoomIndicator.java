@@ -34,7 +34,8 @@ public class ZoomIndicator extends AbstractIndicator {
     protected void onMeasure(int widthSpec, int heightSpec) {
         int maxWidth = 0;
         int maxHeight = 0;
-        for (int i = 0, n = mZoomRatios.length; i < n; ++i) {
+        int n = mZoomRatios == null ? 0: mZoomRatios.length;
+        for (int i = 0; i < n; ++i) {
             float value = mZoomRatios[i];
             Texture tex = StringTexture.newInstance(
                     sZoomFormat.format(value), mFontSize, FONT_COLOR);

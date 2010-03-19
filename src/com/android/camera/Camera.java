@@ -361,8 +361,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences));
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
-        mGLRootView.setContentPane(mHeadUpDisplay);
         initializeZoom();
+        mGLRootView.setContentPane(mHeadUpDisplay);
         mFirstTimeInitialized = true;
     }
 
