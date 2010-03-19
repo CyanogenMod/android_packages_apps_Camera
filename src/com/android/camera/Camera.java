@@ -405,6 +405,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;
 
+        // Maximum zoom value may change after preview size is set. Get the
+        // latest parameters here.
+        mParameters = mCameraDevice.getParameters();
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
