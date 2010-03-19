@@ -266,6 +266,7 @@ public class GLRootView extends GLSurfaceView
                 + ", gl10: " + gl1.toString());
         GL11 gl = (GL11) gl1;
         mGL = gl;
+        gl.glViewport(0, 0, width, height);
 
         gl.glMatrixMode(GL11.GL_PROJECTION);
         gl.glLoadIdentity();
