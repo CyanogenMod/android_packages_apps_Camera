@@ -308,11 +308,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     if (!mIsImageCaptureIntent)  {
                         setOrientationIndicator(mLastOrientation);
                     }
-                    mGLRootView.queueEvent(new Runnable() {
-                        public void run() {
-                            mHeadUpDisplay.setOrientation(mLastOrientation);
-                        }
-                    });
+                    if (mGLRootView != null) {
+                        mGLRootView.queueEvent(new Runnable() {
+                            public void run() {
+                                mHeadUpDisplay.setOrientation(mLastOrientation);
+                            }
+                        });
+                    }
                 }
             }
         };
@@ -2078,10 +2080,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private boolean switchToVideoMode() {
-        if (!isCameraIdle()) return false;
+        if (isFinishing() || !isCameraIdle()) return false;
         MenuHelper.gotoVideoMode(this);
-        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
-        mGLRootView = null;
+        if (mGLRootView != null) {
+            ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
+            mGLRootView = null;
+        }
         finish();
         return true;
     }

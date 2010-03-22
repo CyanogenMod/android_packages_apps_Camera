@@ -1092,7 +1092,6 @@ public class VideoCamera extends NoSearchActivity
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
         if (!mMediaRecorderRecording) {
-            mHeadUpDisplay.setEnabled(false);
 
             if (mStorageStatus != STORAGE_STATUS_OK) {
                 Log.v(TAG, "Storage issue, ignore the start request");
@@ -1115,6 +1114,8 @@ public class VideoCamera extends NoSearchActivity
                 Log.e(TAG, "Could not start media recorder. ", e);
                 return;
             }
+            mHeadUpDisplay.setEnabled(false);
+
             mMediaRecorderRecording = true;
             mRecordingStartTime = SystemClock.uptimeMillis();
             updateRecordingIndicator(false);
@@ -1213,7 +1214,6 @@ public class VideoCamera extends NoSearchActivity
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
         boolean needToRegisterRecording = false;
-        mHeadUpDisplay.setEnabled(true);
         if (mMediaRecorderRecording || mMediaRecorder != null) {
             if (mMediaRecorderRecording && mMediaRecorder != null) {
                 try {
@@ -1403,10 +1403,12 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private boolean switchToCameraMode() {
-        if (mMediaRecorderRecording) return false;
+        if (isFinishing() || mMediaRecorderRecording) return false;
         MenuHelper.gotoCameraMode(this);
-        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
-        mGLRootView = null;
+        if (mGLRootView != null) {
+            ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
+            mGLRootView = null;
+        }
         finish();
         return true;
     }
