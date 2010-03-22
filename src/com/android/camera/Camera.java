@@ -1932,8 +1932,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void viewLastImage() {
         if (mThumbController.isUriValid()) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
-            intent.putExtra(REVIEW_EXTRA_IN_GALLERY, true);
+            Intent intent = new Intent(Util.REVIEW_ACTION, mThumbController.getUri());
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {
