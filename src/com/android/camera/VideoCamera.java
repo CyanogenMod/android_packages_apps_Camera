@@ -632,10 +632,8 @@ public class VideoCamera extends NoSearchActivity
         super.onPause();
         mPausing = true;
 
-        if (mGLRootView != null) {
-            mGLRootView.onPause();
-            if (mHeadUpDisplay != null) mHeadUpDisplay.collapse();
-        }
+        mGLRootView.onPause();
+        if (mHeadUpDisplay != null) mHeadUpDisplay.collapse();
 
         // Hide the preview now. Otherwise, the preview may be rotated during
         // onPause and it is annoying to users.
@@ -1399,10 +1397,7 @@ public class VideoCamera extends NoSearchActivity
     private boolean switchToCameraMode() {
         if (isFinishing() || mMediaRecorderRecording) return false;
         MenuHelper.gotoCameraMode(this);
-        if (mGLRootView != null) {
-            ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
-            mGLRootView = null;
-        }
+        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         finish();
         return true;
     }

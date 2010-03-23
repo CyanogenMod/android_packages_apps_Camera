@@ -290,7 +290,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // once only. We could have done these things in onCreate() but we want to
     // make preview screen appear as soon as possible.
     private void initializeFirstTime() {
-        if (mFirstTimeInitialized) return;
+        if (mFirstTimeInitialized || mPausing || isFinishing()) return;
 
         // Create orientation listenter. This should be done first because it
         // takes some time to get first orientation.
@@ -308,13 +308,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     if (!mIsImageCaptureIntent)  {
                         setOrientationIndicator(mLastOrientation);
                     }
-                    if (mGLRootView != null) {
-                        mGLRootView.queueEvent(new Runnable() {
-                            public void run() {
-                                mHeadUpDisplay.setOrientation(mLastOrientation);
-                            }
-                        });
-                    }
+                    mGLRootView.queueEvent(new Runnable() {
+                        public void run() {
+                            mHeadUpDisplay.setOrientation(mLastOrientation);
+                        }
+                    });
                 }
             }
         };
@@ -1277,12 +1275,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         closeCamera();
         resetScreenOn();
 
-        if (mGLRootView != null) {
-            mGLRootView.onPause();
-            if (mHeadUpDisplay != null) {
-                mHeadUpDisplay.setGpsHasSignal(false);
-                mHeadUpDisplay.collapse();
-            }
+        mGLRootView.onPause();
+        if (mHeadUpDisplay != null) {
+            mHeadUpDisplay.setGpsHasSignal(false);
+            mHeadUpDisplay.collapse();
         }
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -2068,10 +2064,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private boolean switchToVideoMode() {
         if (isFinishing() || !isCameraIdle()) return false;
         MenuHelper.gotoVideoMode(this);
-        if (mGLRootView != null) {
-            ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
-            mGLRootView = null;
-        }
+        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         finish();
         return true;
     }
