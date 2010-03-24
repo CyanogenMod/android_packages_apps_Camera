@@ -758,8 +758,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private class ImageCapture {
 
-        private boolean mCancel = false;
-
         private Uri mLastContentUri;
 
         byte[] mCaptureOnlyData;
@@ -779,15 +777,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         ImageManager.CAMERA_IMAGE_BUCKET_NAME, filename,
                         null, data,
                         degree);
-                if (mLastContentUri == null) {
-                    // this means we got an error
-                    mCancel = true;
-                }
-                if (!mCancel) {
-                    ImageManager.setImageSize(mContentResolver, mLastContentUri,
-                            new File(ImageManager.CAMERA_IMAGE_BUCKET_NAME,
-                            filename).length());
-                }
                 return degree[0];
             } catch (Exception ex) {
                 Log.e(TAG, "Exception while compressing image.", ex);
@@ -817,8 +806,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             if (mCameraDevice == null) {
                 return;
             }
-
-            mCancel = false;
 
             capture();
         }

@@ -181,12 +181,6 @@ public class ImageManager {
         return retVal;
     }
 
-    public static void setImageSize(ContentResolver cr, Uri uri, long size) {
-        ContentValues values = new ContentValues();
-        values.put(Images.Media.SIZE, size);
-        cr.update(uri, values, null, null);
-    }
-
     //
     // Stores a bitmap or a jpeg byte array to a file (using the specified
     // directory and filename). Also add an entry to the media store for
@@ -223,7 +217,10 @@ public class ImageManager {
             Util.closeSilently(outputStream);
         }
 
-        ContentValues values = new ContentValues(7);
+        // Read back the compressed file size.
+        long size = new File(directory, filename).length();
+
+        ContentValues values = new ContentValues(9);
         values.put(Images.Media.TITLE, title);
 
         // That filename is what will be handed to Gmail when a user shares a
@@ -234,6 +231,7 @@ public class ImageManager {
         values.put(Images.Media.MIME_TYPE, "image/jpeg");
         values.put(Images.Media.ORIENTATION, degree[0]);
         values.put(Images.Media.DATA, filePath);
+        values.put(Images.Media.SIZE, size);
 
         if (location != null) {
             values.put(Images.Media.LATITUDE, location.getLatitude());
