@@ -1398,8 +1398,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (!isCameraIdle()) {
             // ignore backs while we're taking a picture
             return;
+        } else if (mHeadUpDisplay == null || !mHeadUpDisplay.collapse()) {
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
     @Override

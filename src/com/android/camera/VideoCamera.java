@@ -684,9 +684,9 @@ public class VideoCamera extends NoSearchActivity
         if (mPausing) return;
         if (mMediaRecorderRecording) {
             onStopVideoRecording(false);
-            return;
+        } else if (mHeadUpDisplay == null || !mHeadUpDisplay.collapse()) {
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
     @Override
