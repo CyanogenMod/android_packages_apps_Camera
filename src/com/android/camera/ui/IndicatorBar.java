@@ -18,6 +18,8 @@ public class IndicatorBar extends GLView {
     private OnItemSelectedListener mSelectedListener;
     private boolean mActivated = false;
 
+    private boolean mSelectionChanged = false;
+
     private class Background extends GLView {
         @Override
         protected void render(GLRootView root, GL11 gl) {
@@ -111,6 +113,7 @@ public class IndicatorBar extends GLView {
 
     private void setSelectedItem(GLView view, int index) {
         if (index == mSelectedIndex) return;
+        mSelectionChanged = true;
         mSelectedIndex = index;
         if (mSelectedListener != null) {
             if (index == INDEX_NONE) {
@@ -156,6 +159,7 @@ public class IndicatorBar extends GLView {
         int y = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mSelectionChanged = false;
                 setActivated(true);
             case MotionEvent.ACTION_MOVE:
                 for (int i = 1, n = getComponentCount(); i < n; ++i) {
@@ -166,6 +170,11 @@ public class IndicatorBar extends GLView {
                     }
                 }
                 setSelectedItem(null, INDEX_NONE);
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mSelectionChanged == false) {
+                    setSelectedItem(null, INDEX_NONE);
+                }
         }
         return true;
     }
