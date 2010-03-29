@@ -18,15 +18,16 @@ package com.android.camera;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
-import android.content.ContentResolver;
-import android.net.Uri;
+import java.util.ArrayList;
 
 /**
  * A class that performs one-time initialization after installation.
@@ -39,7 +40,7 @@ import android.net.Uri;
  */
 public class OneTimeInitializer extends BroadcastReceiver {
 
-    static final String TAG = "camera";
+    private static final String TAG = "camera";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -57,7 +58,7 @@ public class OneTimeInitializer extends BroadcastReceiver {
         setComponentEnabled(context, getClass(), false);
         // If in the future we have more than one thing to do, we may also
         // store the progress in a preference like the Email app does.
-        updateCameraShortcut(context);
+        updateShortcut(context);
     }
 
     private void setComponentEnabled(Context context, Class<?> clazz, boolean enabled) {
@@ -68,23 +69,55 @@ public class OneTimeInitializer extends BroadcastReceiver {
                 PackageManager.DONT_KILL_APP);
     }
 
-    // This is the content uri for Launcher content provider, see
+    // This is the content uri for Launcher content provider. See
     // LauncherSettings and LauncherProvider in the Launcher app for details.
-    static final Uri LAUNCHER_CONTENT_URI =
+    private static final Uri LAUNCHER_CONTENT_URI =
             Uri.parse("content://com.android.launcher2.settings/favorites" +
             "?notify=true");
 
-    // We have two names for the old component.
-    static final ComponentName oldComp = new ComponentName(
-            "com.android.camera", "com.android.camera.Camera");
-    static final ComponentName oldCompShort = new ComponentName(
-            "com.android.camera", ".Camera");
 
-    void updateCameraShortcut(Context context) {
-        ComponentName newComp = new ComponentName(
-                context, "com.android.camera.Camera");
+    private static class Entry {
+        ComponentName mOldComp, mNewComp;
+        Entry(ComponentName oldComp, ComponentName newComp) {
+            mOldComp = oldComp;
+            mNewComp = newComp;
+        }
+    }
 
-        Log.v(TAG, "newComp = " + newComp);
+    private ArrayList<Entry> mappingTable;
+
+    private void prepareTable(Context context) {
+        mappingTable = new ArrayList<Entry>();
+        // We have two names for each of the old component.
+        String oldPkg = "com.android.camera";
+        String newPkg = context.getPackageName();
+
+        Log.v(TAG, "oldPkg = " + oldPkg + ", newPkg = " + newPkg);
+
+        ComponentName oldCamera = new ComponentName(
+                oldPkg, "com.android.camera.Camera");
+        ComponentName oldCameraShort = new ComponentName(
+                oldPkg, ".Camera");
+        ComponentName oldVideoCamera = new ComponentName(
+                oldPkg, "com.android.camera.VideoCamera");
+        ComponentName oldVideoCameraShort = new ComponentName(
+                oldPkg, ".VideoCamera");
+
+        // The new names.
+        ComponentName newCamera = new ComponentName(
+                newPkg, "com.android.camera.Camera");
+        ComponentName newVideoCamera = new ComponentName(
+                newPkg, "com.android.camera.VideoCamera");
+
+        mappingTable.add(new Entry(oldCamera, newCamera));
+        mappingTable.add(new Entry(oldCameraShort, newCamera));
+        mappingTable.add(new Entry(oldVideoCamera, newVideoCamera));
+        mappingTable.add(new Entry(oldVideoCameraShort, newVideoCamera));
+    }
+
+    private void updateShortcut(Context context) {
+
+        prepareTable(context);
 
         ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(LAUNCHER_CONTENT_URI,
@@ -101,16 +134,20 @@ public class OneTimeInitializer extends BroadcastReceiver {
                     if (intentUri == null) continue;
                     Intent shortcut = Intent.parseUri(intentUri, 0);
                     ComponentName comp = shortcut.getComponent();
-                    if (comp.equals(oldComp) || comp.equals(oldCompShort)) {
-                        Log.v(TAG, "fix shortcut id " + id + " from " + comp +
-                                " to " + newComp);
-                        shortcut.setComponent(newComp);
-                        values.put("intent", shortcut.toUri(0));
-                        cr.update(LAUNCHER_CONTENT_URI, values, "_id = ?",
-                                new String[] { String.valueOf(id) });
+                    for (Entry e : mappingTable) {
+                        if (comp.equals(e.mOldComp)) {
+                            Log.v(TAG, "fix shortcut id " + id + " from " +
+                                    comp + " to " + e.mNewComp);
+                            shortcut.setComponent(e.mNewComp);
+                            values.put("intent", shortcut.toUri(0));
+                            cr.update(LAUNCHER_CONTENT_URI, values, "_id = ?",
+                                    new String[] { String.valueOf(id) });
+                            break;
+                        }
                     }
                 } catch (Throwable t) {
                     // Move to the next one if there is any problem.
+                    Log.w(TAG, "can't parse a shortcut entry", t);
                     continue;
                 }
             }
