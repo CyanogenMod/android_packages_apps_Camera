@@ -308,13 +308,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     if (!mIsImageCaptureIntent)  {
                         setOrientationIndicator(mLastOrientation);
                     }
-                    if (mGLRootView != null) {
-                        mGLRootView.queueEvent(new Runnable() {
-                            public void run() {
-                                mHeadUpDisplay.setOrientation(mLastOrientation);
-                            }
-                        });
-                    }
+                    mGLRootView.queueEvent(new Runnable() {
+                        public void run() {
+                            mHeadUpDisplay.setOrientation(mLastOrientation);
+                        }
+                    });
                 }
             }
         };
@@ -1277,13 +1275,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         closeCamera();
         resetScreenOn();
 
-        if (mGLRootView != null) {
+        if (!isFinishing()) {
             mGLRootView.onPause();
             if (mHeadUpDisplay != null) {
                 mHeadUpDisplay.setGpsHasSignal(false);
                 mHeadUpDisplay.collapse();
             }
         }
+
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
             if (!mIsImageCaptureIntent) {
@@ -2069,10 +2068,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private boolean switchToVideoMode() {
         if (isFinishing() || !isCameraIdle()) return false;
         MenuHelper.gotoVideoMode(this);
-        if (mGLRootView != null) {
-            ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
-            mGLRootView = null;
-        }
+        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
+        mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
         return true;
     }
