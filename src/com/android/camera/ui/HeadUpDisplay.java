@@ -8,7 +8,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
@@ -35,8 +34,8 @@ import java.util.concurrent.FutureTask;
 // updated preferences. The two threads synchronize on the monitor of the
 // default SharedPrefernce instance.
 public class HeadUpDisplay extends GLView {
-    private static final int INDICATOR_BAR_TIMEOUT = 4000;
-    private static final int POPUP_WINDOW_TIMEOUT = 3000;
+    private static final int INDICATOR_BAR_TIMEOUT = 5500;
+    private static final int POPUP_WINDOW_TIMEOUT = 5000;
     private static final int INDICATOR_BAR_RIGHT_MARGIN = 10;
     private static final int POPUP_WINDOW_OVERLAP = 20;
     private static final int POPUP_TRIANGLE_OFFSET = 16;
@@ -66,9 +65,7 @@ public class HeadUpDisplay extends GLView {
 
     protected Listener mListener;
 
-    // TODO: move this part (handler) into GLSurfaceView
-    private final HandlerThread mTimerThread = new HandlerThread("UI Timer");
-    private final Handler mHandler;
+    private Handler mHandler;
 
     private final OnSharedPreferenceChangeListener mSharedPreferenceChangeListener =
             new OnSharedPreferenceChangeListener() {
@@ -82,10 +79,12 @@ public class HeadUpDisplay extends GLView {
 
     public HeadUpDisplay(Context context) {
         initializeStaticVariables(context);
-        mTimerThread.setDaemon(true);
-        mTimerThread.start();
-        mHandler = new Handler(mTimerThread.getLooper()) {
+    }
 
+    @Override
+    protected void onAttachToRoot(GLRootView root) {
+        super.onAttachToRoot(root);
+        mHandler = new Handler(root.getTimerLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 GLRootView root = getGLRootView();
@@ -98,7 +97,6 @@ public class HeadUpDisplay extends GLView {
                         task = new FutureTask<Void>(mDeactivateIndicatorBar);
                         break;
                 }
-
                 if (task == null) return;
                 try {
                     root.queueEvent(task);

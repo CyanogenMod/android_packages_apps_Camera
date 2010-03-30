@@ -55,7 +55,7 @@ public class BasicIndicator extends AbstractIndicator {
     public GLView getPopupContent() {
         if (mPopupContent == null) {
             Context context = getGLRootView().getContext();
-            mPopupContent = new GLListView();
+            mPopupContent = new GLListView(context);
             mPopupContent.setHighLight(new NinePatchTexture(
                     context, R.drawable.optionitem_highlight));
             mPopupContent.setScroller(new NinePatchTexture(

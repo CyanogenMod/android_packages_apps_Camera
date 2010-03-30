@@ -64,6 +64,7 @@ public class GLView {
         } else {
             mViewFlags |= FLAG_INVISIBLE;
         }
+        onVisibilityChanged(visibility);
         invalidate();
     }
 
@@ -103,7 +104,7 @@ public class GLView {
     }
 
     public void clearComponents() {
-        if (mComponents != null) mComponents.clear();
+        mComponents = null;
     }
 
     public int getComponentCount() {
@@ -172,9 +173,7 @@ public class GLView {
 
     protected void render(GLRootView view, GL11 gl) {
         renderBackground(view, gl);
-        int n = getComponentCount();
-        if (n == 0) return;
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0, n = getComponentCount(); i < n; ++i) {
             GLView component = getComponent(i);
             if (component.getVisibility() != GLView.VISIBLE
                     && component.mAnimation == null) continue;
@@ -234,32 +233,30 @@ public class GLView {
     }
 
     protected boolean dispatchTouchEvent(MotionEvent event) {
-        if (mComponents != null) {
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-            int action = event.getAction();
-            if (mMotionTarget != null) {
-                if (action == MotionEvent.ACTION_DOWN) {
-                    MotionEvent cancel = MotionEvent.obtain(event);
-                    cancel.setAction(MotionEvent.ACTION_CANCEL);
-                    mMotionTarget = null;
-                } else {
-                    dispatchTouchEvent(event, x, y, mMotionTarget, false);
-                    if (action == MotionEvent.ACTION_CANCEL
-                            || action == MotionEvent.ACTION_UP) {
-                        mMotionTarget = null;
-                    }
-                    return true;
-                }
-            }
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        int action = event.getAction();
+        if (mMotionTarget != null) {
             if (action == MotionEvent.ACTION_DOWN) {
-                for (int i = 0, n = getComponentCount(); i < n; ++i) {
-                    GLView component = getComponent(i);
-                    if (component.getVisibility() != GLView.VISIBLE) continue;
-                    if (dispatchTouchEvent(event, x, y, component, true)) {
-                        mMotionTarget = component;
-                        return true;
-                    }
+                MotionEvent cancel = MotionEvent.obtain(event);
+                cancel.setAction(MotionEvent.ACTION_CANCEL);
+                mMotionTarget = null;
+            } else {
+                dispatchTouchEvent(event, x, y, mMotionTarget, false);
+                if (action == MotionEvent.ACTION_CANCEL
+                        || action == MotionEvent.ACTION_UP) {
+                    mMotionTarget = null;
+                }
+                return true;
+            }
+        }
+        if (action == MotionEvent.ACTION_DOWN) {
+            for (int i = 0, n = getComponentCount(); i < n; ++i) {
+                GLView component = getComponent(i);
+                if (component.getVisibility() != GLView.VISIBLE) continue;
+                if (dispatchTouchEvent(event, x, y, component, true)) {
+                    mMotionTarget = component;
+                    return true;
                 }
             }
         }
@@ -346,20 +343,25 @@ public class GLView {
         return true;
     }
 
-    protected void onAttachToRoot(GLRootView root) {
-        mRootView = root;
-        if (mComponents != null) {
-            for (GLView view : mComponents) {
-                view.onAttachToRoot(root);
+    protected void onVisibilityChanged(int visibility) {
+        for (int i = 0, n = getComponentCount(); i < n; ++i) {
+            GLView child = getComponent(i);
+            if (child.getVisibility() == GLView.VISIBLE) {
+                child.onVisibilityChanged(visibility);
             }
         }
     }
 
+    protected void onAttachToRoot(GLRootView root) {
+        mRootView = root;
+        for (int i = 0, n = getComponentCount(); i < n; ++i) {
+            getComponent(i).onAttachToRoot(root);
+        }
+    }
+
     protected void onDetachFromRoot() {
-        if (mComponents != null) {
-            for (GLView view : mComponents) {
-                view.onDetachFromRoot();
-            }
+        for (int i = 0, n = getComponentCount(); i < n; ++i) {
+            getComponent(i).onDetachFromRoot();
         }
         mRootView = null;
     }
