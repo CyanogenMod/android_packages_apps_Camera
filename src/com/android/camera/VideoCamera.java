@@ -521,13 +521,13 @@ public class VideoCamera extends NoSearchActivity
                     CameraSettings.getVidoeDurationInMillis(quality);
         }
         mProfile = CamcorderProfile.get(videoQualityHigh
-                ? CamcorderProfile.Quality.HIGH
-                : CamcorderProfile.Quality.LOW);
+                ? CamcorderProfile.QUALITY_HIGH
+                : CamcorderProfile.QUALITY_LOW);
     }
 
     private void resizeForPreviewAspectRatio() {
         mPreviewFrameLayout.setAspectRatio(
-                (double) mProfile.mVideoFrameWidth / mProfile.mVideoFrameHeight);
+                (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
     }
 
     @Override
@@ -877,7 +877,7 @@ public class VideoCamera extends NoSearchActivity
         mMediaRecorder.setCamera(mCameraDevice);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-        mMediaRecorder.setOutputFormat(mProfile.mFileFormat);
+        mMediaRecorder.setProfile(mProfile);
         mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
 
         // Set output file.
@@ -894,19 +894,6 @@ public class VideoCamera extends NoSearchActivity
             }
         }
 
-        // Use the same frame rate for both, since internally
-        // if the frame rate is too large, it can cause camera to become
-        // unstable. We need to fix the MediaRecorder to disable the support
-        // of setting frame rate for now.
-        mMediaRecorder.setVideoFrameRate(mProfile.mVideoFrameRate);
-        mMediaRecorder.setVideoSize(
-                mProfile.mVideoFrameWidth, mProfile.mVideoFrameHeight);
-        mMediaRecorder.setVideoEncodingBitRate(mProfile.mVideoBitRate);
-        mMediaRecorder.setAudioEncodingBitRate(mProfile.mAudioBitRate);
-        mMediaRecorder.setAudioChannels(mProfile.mAudioChannels);
-        mMediaRecorder.setAudioSamplingRate(mProfile.mAudioSampleRate);
-        mMediaRecorder.setVideoEncoder(mProfile.mVideoCodec);
-        mMediaRecorder.setAudioEncoder(mProfile.mAudioCodec);
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
 
         // Set maximum file size.
@@ -1353,8 +1340,8 @@ public class VideoCamera extends NoSearchActivity
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
-        mParameters.setPreviewSize(mProfile.mVideoFrameWidth, mProfile.mVideoFrameHeight);
-        mParameters.setPreviewFrameRate(mProfile.mVideoFrameRate);
+        mParameters.setPreviewSize(mProfile.videoFrameWidth, mProfile.videoFrameHeight);
+        mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
 
         // Set flash mode.
         String flashMode = mPreferences.getString(
@@ -1415,8 +1402,8 @@ public class VideoCamera extends NoSearchActivity
     private void resetCameraParameters() {
         // We need to restart the preview if preview size is changed.
         Size size = mParameters.getPreviewSize();
-        if (size.width != mProfile.mVideoFrameWidth
-                || size.height != mProfile.mVideoFrameHeight) {
+        if (size.width != mProfile.videoFrameWidth
+                || size.height != mProfile.videoFrameHeight) {
             // It is assumed media recorder is released before
             // onSharedPreferenceChanged, so we can close the camera here.
             closeCamera();

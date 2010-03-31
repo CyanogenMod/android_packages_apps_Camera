@@ -85,6 +85,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.HashMap;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends NoSearchActivity implements View.OnClickListener,
@@ -1764,7 +1765,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         String jpegQuality = mPreferences.getString(
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
-        mParameters.setJpegQuality(getQualityNumber(jpegQuality));
+        mParameters.setJpegQuality(JpegEncodingQualityMappings.getQualityNumber(jpegQuality));
 
         // For the following settings, we need to check if the settings are
         // still supported by latest driver, if not, ignore the settings.
@@ -2129,22 +2130,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
     }
 
-    private static String[] mQualityStrings = {"superfine", "fine", "normal"};
-    private static int[] mQualityNumbers = CameraProfile.getImageEncodingQualityLevels();
-    private static int DEFAULT_QUALITY = 85;
-
-    // Translate from a quality string to a quality number using the system
-    // properties.
-    private static int getQualityNumber(String jpegQuality) {
-        // Find the index of the input string
-        int index = Util.indexOf(mQualityStrings, jpegQuality);
-
-        if (index == -1 || index > mQualityNumbers.length - 1) {
-            return DEFAULT_QUALITY;
-        }
-        return mQualityNumbers[index];
-    }
-
     private class MyHeadUpDisplayListener implements HeadUpDisplay.Listener {
 
         // The callback functions here will be called from the GLThread. So,
@@ -2210,5 +2195,33 @@ class FocusRectangle extends View {
 
     public void clear() {
         setBackgroundDrawable(null);
+    }
+}
+
+/*
+ * Provide a mapping for Jpeg encoding quality levels
+ * from String representation to numeric representation.
+ */
+class JpegEncodingQualityMappings {
+    private static final String TAG = "JpegEncodingQualityMappings";
+    private static final int DEFAULT_QUALITY = 85;
+    private static HashMap<String, Integer> mHashMap =
+            new HashMap<String, Integer>();
+
+    static {
+        mHashMap.put("normal",    CameraProfile.QUALITY_LOW);
+        mHashMap.put("fine",      CameraProfile.QUALITY_MEDIUM);
+        mHashMap.put("superfine", CameraProfile.QUALITY_HIGH);
+    };
+
+    // Retrieve and return the Jpeg encoding quality number
+    // for the given quality level.
+    public static int getQualityNumber(String jpegQuality) {
+        Integer quality = mHashMap.get(jpegQuality);
+        if (quality == null) {
+            Log.w(TAG, "Unknown Jpeg quality: " + jpegQuality);
+            return DEFAULT_QUALITY;
+        }
+        return CameraProfile.getJpegEncodingQualityParameter(quality.intValue());
     }
 }
