@@ -1,6 +1,7 @@
 package com.android.camera.ui;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import com.android.camera.Util;
 import javax.microedition.khronos.opengles.GL11;
 
 public class GLListView extends GLView {
+    @SuppressWarnings("unused")
     private static final String TAG = "GLListView";
     private static final int INDEX_NONE = -1;
     private static final int SCROLL_BAR_TIMEOUT = 2500;
@@ -175,10 +177,6 @@ public class GLListView extends GLView {
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-
-        int heightMode = MeasureSpec.getMode(heightSpec);
-        int widthMode = MeasureSpec.getMode(widthSpec);
-
         // first get the total height
         int height = 0;
         int maxWidth = 0;

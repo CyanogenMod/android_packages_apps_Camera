@@ -17,16 +17,12 @@
 package com.android.camera.gallery;
 
 import com.android.camera.ImageManager;
-import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A collection of <code>BaseImage</code>s.
@@ -139,8 +135,6 @@ public abstract class BaseImageList implements IImageList {
         mCursor.deactivate();
         mCursorDeactivated = true;
     }
-
-    private static final Pattern sPathWithId = Pattern.compile("(.*)/\\d+");
 
     // This provides a default sorting order string for subclasses.
     // The list is first sorted by date, then by id. The order can be ascending

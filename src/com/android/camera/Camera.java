@@ -84,8 +84,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends NoSearchActivity implements View.OnClickListener,
@@ -121,8 +121,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int ZOOM_STOPPED = 0;
     private static final int ZOOM_START = 1;
     private static final int ZOOM_STOPPING = 2;
-
-    private static final String REVIEW_EXTRA_IN_GALLERY = "review";
 
     private int mZoomState = ZOOM_STOPPED;
     private boolean mSmoothZoomSupported = false;
@@ -1803,7 +1801,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mFocusMode = mParameters.getFocusMode();
 
             if (mHeadUpDisplay != null) {
-                final String finalFlashMode = flashMode;
                 mGLRootView.queueEvent(new Runnable() {
                     public void run() {
                         mHeadUpDisplay.overrideSettings(

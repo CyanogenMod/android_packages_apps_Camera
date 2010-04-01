@@ -26,28 +26,12 @@
     <string name="no_storage" msgid="820691042667338625">"Veuillez insérer une carte SD avant d\'utiliser l\'appareil photo."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"Votre carte SD est pleine."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"Préparation de la carte SD..."</string>
-    <string name="settings" msgid="1534847740615665736">"Paramètres"</string>
-    <string name="details" msgid="8415120088556445230">"Détails"</string>
-    <string name="show_on_map" msgid="441725587731006228">"Afficher sur une carte"</string>
-    <string name="rotate" msgid="460017689320955494">"Faire pivoter"</string>
-    <string name="rotate_left" msgid="5888273317282539839">"Faire pivoter à gauche"</string>
-    <string name="rotate_right" msgid="6776325835923384839">"Faire pivoter à droite"</string>
-    <string name="confirm_delete_title" msgid="263478358046514887">"Supprimer"</string>
-    <string name="confirm_delete_message" msgid="4161389939579284604">"L\'image sera supprimée."</string>
-    <string name="confirm_delete_video_message" msgid="5796154324948010221">"La vidéo va être supprimée."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Rétablir les paramètres par défaut"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Les paramètres par défaut de l\'appareil photo seront rétablis."</string>
     <string name="review_play" msgid="6015456244323302817">"LIRE"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULER"</string>
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"AUTRE PHOTO"</string>
-    <string name="camera_toss" msgid="3781186798552460833">"Supprimer"</string>
-    <string name="camera_share" msgid="8207701858325694182">"Partager"</string>
-    <string name="camera_set" msgid="3422192914806971182">"Définir comme"</string>
-    <string name="camera_crop" msgid="5584000454518174632">"Rogner"</string>
-    <string name="no_way_to_share_image" msgid="5011985309980187927">"Aucune application disponible pour partager l\'image"</string>
-    <string name="no_way_to_share_video" msgid="3684571102267072206">"Aucune application disponible pour partager la vidéo"</string>
-    <string name="video_play" msgid="5287787282508002895">"Lire"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Enregistrer la position"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Désactivé"</string>
@@ -115,35 +99,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Paramètres de l\'appareil photo"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"Rétablir les paramètres par défaut"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposition"</string>
-    <string name="pref_framing_grid" msgid="7470436096834322280">"Grille de cadrage"</string>
-    <string name="pref_framing_grid_entry_on" msgid="387670222002432408">"Activée"</string>
-    <string name="pref_framing_grid_entry_off" msgid="1363434523358481365">"Désactivée"</string>
-    <string name="no_location_image" msgid="6929172123058811834">"Cette image ne contient pas d\'informations de localisation."</string>
-    <string name="details_panel_title" msgid="4753347516759338122">"Détails"</string>
-    <string name="details_file_size" msgid="2468878774843246797">"Taille du fichier :"</string>
-    <string name="details_image_resolution" msgid="8773315928100529437">"Résolution :"</string>
-    <string name="details_image_make" msgid="2888477930210903540">"Fabricant :"</string>
-    <string name="details_image_model" msgid="3608007849933924336">"Modèle :"</string>
-    <string name="details_image_whitebalance" msgid="8297984317708373822">"Balance des blancs :"</string>
-    <string name="details_image_latitude" msgid="6701704806314765468">"Latitude GPS :"</string>
-    <string name="details_image_longitude" msgid="5583629669864057389">"Longitude GPS :"</string>
-    <string name="details_image_location" msgid="6460201074393148978">"Lieu :"</string>
-    <string name="details_duration" msgid="1028116471387901402">"Durée :"</string>
-    <string name="details_date_taken" msgid="348356840586463178">"Date de création :"</string>
-    <string name="details_frame_rate" msgid="122397836963498191">"Fréquence d\'images :"</string>
-    <string name="details_bit_rate" msgid="5632311789455402186">"Débit :"</string>
-    <string name="details_codec" msgid="5580300450432398126">"Codec :"</string>
-    <string name="details_format" msgid="3700860266600796363">"Format :"</string>
-    <string name="details_dimension_x" msgid="4923037334136168978">"<xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="details_ms" msgid="7574063760642857397">"<xliff:g id="MINUTES">%1$02d</xliff:g>:<xliff:g id="SECONDS">%2$02d</xliff:g>"</string>
-    <string name="details_hms" msgid="772340067838331166">"<xliff:g id="HOURS">%1$d</xliff:g>:<xliff:g id="MINUTES">%2$02d</xliff:g>:<xliff:g id="SECONDS">%3$02d</xliff:g>"</string>
-    <string name="details_fps" msgid="5450871169477340537">"<xliff:g id="FRAMES">%1$d</xliff:g> fps"</string>
-    <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> Kbits/s"</string>
-    <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mbits/s"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="sendImage" msgid="7279510542799399570">"Partager l\'image via"</string>
-    <string name="setImage" msgid="7246975856983303047">"Définir l\'image comme"</string>
-    <string name="sendVideo" msgid="3598567735831863073">"Partager la vidéo via"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Votre carte SD est pleine. Modifiez le paramètre de qualité ou supprimez des éléments de la galerie."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Taille maximale atteinte."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>

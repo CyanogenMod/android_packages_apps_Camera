@@ -26,28 +26,12 @@
     <string name="no_storage" msgid="820691042667338625">"Πριν χρησιμοποιήσετε τη φωτογραφική μηχανή, εισάγετε μία κάρτα SD."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"Η κάρτα SD είναι πλήρης."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"Προετοιμασία κάρτας SD…"</string>
-    <string name="settings" msgid="1534847740615665736">"Ρυθμίσεις"</string>
-    <string name="details" msgid="8415120088556445230">"Λεπτομέρειες"</string>
-    <string name="show_on_map" msgid="441725587731006228">"Προβολή στους Χάρτες"</string>
-    <string name="rotate" msgid="460017689320955494">"Περιστροφή"</string>
-    <string name="rotate_left" msgid="5888273317282539839">"Αριστερή περιστροφή"</string>
-    <string name="rotate_right" msgid="6776325835923384839">"Δεξιά περιστροφή"</string>
-    <string name="confirm_delete_title" msgid="263478358046514887">"Διαγραφή"</string>
-    <string name="confirm_delete_message" msgid="4161389939579284604">"Η εικόνα θα διαγραφεί."</string>
-    <string name="confirm_delete_video_message" msgid="5796154324948010221">"Το βίντεο θα διαγραφεί."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Επαναφορά προεπιλογών"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Οι ρυθμίσεις της φωτογραφικής μηχανής θα επανέλθουν στις προεπιλογές."</string>
     <string name="review_play" msgid="6015456244323302817">"ΑΝΑΠΑΡΑΓΩΓΗ"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ΑΚΥΡΩΣΗ"</string>
     <string name="review_ok" msgid="5305096180300056529">"ΟΚ"</string>
     <string name="review_retake" msgid="7804864054896088338">"ΝΕΑ ΛΗΨΗ"</string>
-    <string name="camera_toss" msgid="3781186798552460833">"Διαγραφή"</string>
-    <string name="camera_share" msgid="8207701858325694182">"Κοινή χρήση"</string>
-    <string name="camera_set" msgid="3422192914806971182">"Ορισμός ως"</string>
-    <string name="camera_crop" msgid="5584000454518174632">"Περικοπή"</string>
-    <string name="no_way_to_share_image" msgid="5011985309980187927">"Δεν υπάρχει διαθέσιμη εφαρμογή για την κοινή χρήση της φωτογραφίας."</string>
-    <string name="no_way_to_share_video" msgid="3684571102267072206">"Δεν υπάρχει διαθέσιμη εφαρμογή για την κοινή χρήση του βίντεο."</string>
-    <string name="video_play" msgid="5287787282508002895">"Αναπαραγωγή"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Συλλογή"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Αποθήκευση τοποθεσίας"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟ"</string>
@@ -115,35 +99,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Ρυθμίσεις φωτογραφικής μηχανής"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"Επαναφορά στις προεπιλογές"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Έκθεση"</string>
-    <string name="pref_framing_grid" msgid="7470436096834322280">"Πλέγμα γραμμών"</string>
-    <string name="pref_framing_grid_entry_on" msgid="387670222002432408">"Ενεργοποίηση"</string>
-    <string name="pref_framing_grid_entry_off" msgid="1363434523358481365">"Απενεργοποίηση"</string>
-    <string name="no_location_image" msgid="6929172123058811834">"Δεν περιλαμβάνονται πληροφορίες τοποθεσίας σε αυτήν την εικόνα."</string>
-    <string name="details_panel_title" msgid="4753347516759338122">"Λεπτομέρειες"</string>
-    <string name="details_file_size" msgid="2468878774843246797">"Μέγεθος αρχείου:"</string>
-    <string name="details_image_resolution" msgid="8773315928100529437">"Ανάλυση:"</string>
-    <string name="details_image_make" msgid="2888477930210903540">"Κατασκευαστής:"</string>
-    <string name="details_image_model" msgid="3608007849933924336">"Μοντέλο:"</string>
-    <string name="details_image_whitebalance" msgid="8297984317708373822">"Ισορροπία λευκού:"</string>
-    <string name="details_image_latitude" msgid="6701704806314765468">"Γεωγραφικό πλάτος GPS:"</string>
-    <string name="details_image_longitude" msgid="5583629669864057389">"Γεωγραφικό μήκος GPS:"</string>
-    <string name="details_image_location" msgid="6460201074393148978">"Τοποθεσία:"</string>
-    <string name="details_duration" msgid="1028116471387901402">"Διάρκεια:"</string>
-    <string name="details_date_taken" msgid="348356840586463178">"Ημερομηνία λήψης:"</string>
-    <string name="details_frame_rate" msgid="122397836963498191">"Ρυθμός καρέ:"</string>
-    <string name="details_bit_rate" msgid="5632311789455402186">"Ρυθμός δεδομένων:"</string>
-    <string name="details_codec" msgid="5580300450432398126">"Κωδικοποιητής:"</string>
-    <string name="details_format" msgid="3700860266600796363">"Μορφή:"</string>
-    <string name="details_dimension_x" msgid="4923037334136168978">"<xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="details_ms" msgid="7574063760642857397">"<xliff:g id="MINUTES">%1$02d</xliff:g>:<xliff:g id="SECONDS">%2$02d</xliff:g>"</string>
-    <string name="details_hms" msgid="772340067838331166">"<xliff:g id="HOURS">%1$d</xliff:g>:<xliff:g id="MINUTES">%2$02d</xliff:g>:<xliff:g id="SECONDS">%3$02d</xliff:g>"</string>
-    <string name="details_fps" msgid="5450871169477340537">"<xliff:g id="FRAMES">%1$d</xliff:g> fps"</string>
-    <string name="details_kbps" msgid="1515369011744784592">"<xliff:g id="SPEED">%1$d</xliff:g> Kbps"</string>
-    <string name="details_mbps" msgid="3291428849607323284">"<xliff:g id="SPEED">%1$g</xliff:g> Mbps"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="sendImage" msgid="7279510542799399570">"Κοινή χρήση εικόνας μέσω"</string>
-    <string name="setImage" msgid="7246975856983303047">"Ορισμός εικόνας ως"</string>
-    <string name="sendVideo" msgid="3598567735831863073">"Κοινή χρήση βίντεο μέσω"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Ο διαθέσιμος χώρος στην κάρτα SD είναι ελάχιστος. Αλλάξτε τη ρύθμιση ποιότητας ή διαγράψτε στοιχεία από τη συλλογή."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Συμπληρώθηκε το όριο μεγέθους."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Εστίαση"</string>

@@ -64,9 +64,6 @@ public class PopupWindow extends GLView {
                     0, height - mPaddings.top - mPaddings.bottom), heightMode);
         }
 
-        int cWidth = 0;
-        int cHeight = 0;
-
         Rect p = mPaddings;
         GLView child = mRotatePane;
         child.measure(widthSpec, heightSpec);

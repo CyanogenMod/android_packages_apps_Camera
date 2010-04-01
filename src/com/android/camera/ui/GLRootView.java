@@ -185,10 +185,6 @@ public class GLRootView extends GLSurfaceView
         return mContentView;
     }
 
-    public GLRootView getGLRootView() {
-        return this;
-    }
-
     void handleLowMemory() {
         //TODO: delete texture from GL
     }

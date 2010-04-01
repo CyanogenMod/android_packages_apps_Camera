@@ -55,9 +55,6 @@ public class ImageManager {
     private static final String TAG = "ImageManager";
 
     private static final Uri STORAGE_URI = Images.Media.EXTERNAL_CONTENT_URI;
-    private static final Uri THUMB_URI
-            = Images.Thumbnails.EXTERNAL_CONTENT_URI;
-
     private static final Uri VIDEO_STORAGE_URI =
             Uri.parse("content://media/external/video/media");
 
@@ -96,14 +93,15 @@ public class ImageManager {
             mIsEmptyImageList = (in.readInt() != 0);
         }
 
+        @Override
         public String toString() {
             return String.format("ImageListParam{loc=%s,inc=%d,sort=%d," +
                 "bucket=%s,empty=%b}", mLocation, mInclusion,
                 mSort, mBucketId, mIsEmptyImageList);
         }
 
-        public static final Parcelable.Creator CREATOR
-                = new Parcelable.Creator() {
+        public static final Parcelable.Creator<ImageListParam> CREATOR
+                = new Parcelable.Creator<ImageListParam>() {
             public ImageListParam createFromParcel(Parcel in) {
                 return new ImageListParam(in);
             }

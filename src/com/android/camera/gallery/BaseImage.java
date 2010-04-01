@@ -21,15 +21,9 @@ import com.android.camera.Util;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore.Images;
 import android.util.Log;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Represents a particular image and provides access to the underlying bitmap
@@ -38,7 +32,6 @@ import java.io.InputStream;
  */
 public abstract class BaseImage implements IImage {
     private static final String TAG = "BaseImage";
-    private static final int UNKNOWN_LENGTH = -1;
     protected ContentResolver mContentResolver;
 
     // Database field

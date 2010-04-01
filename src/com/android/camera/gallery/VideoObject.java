@@ -20,13 +20,9 @@ import com.android.camera.BitmapManager;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore.Images;
 import android.util.Log;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Represents a particular video and provides access to the underlying data and

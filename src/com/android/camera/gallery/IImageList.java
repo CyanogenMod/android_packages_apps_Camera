@@ -16,8 +16,6 @@
 
 package com.android.camera.gallery;
 
-import android.net.Uri;
-
 //
 // ImageList and Image classes have one-to-one correspondence.
 // The class hierarchy (* = abstract class):

@@ -40,9 +40,6 @@ public class PreviewFrameLayout extends ViewGroup {
     private OnSizeChangedListener mSizeListener;
     private final DisplayMetrics mMetrics = new DisplayMetrics();
 
-    private int mPreviewWidth;
-    private int mPreviewHeight;
-
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         ((Activity) context).getWindowManager()
