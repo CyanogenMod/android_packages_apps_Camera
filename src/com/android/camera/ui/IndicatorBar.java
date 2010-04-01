@@ -1,11 +1,11 @@
 package com.android.camera.ui;
 
+import javax.microedition.khronos.opengles.GL11;
+
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
-
-import javax.microedition.khronos.opengles.GL11;
 
 public class IndicatorBar extends GLView {
 
@@ -146,6 +146,10 @@ public class IndicatorBar extends GLView {
             anim.setDuration(200);
             background.startAnimation(anim);
         }
+    }
+
+    public boolean isActivated() {
+        return mActivated;
     }
 
     @Override
