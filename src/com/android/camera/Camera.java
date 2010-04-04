@@ -199,7 +199,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             new RawPictureCallback();
     private final AutoFocusCallback mAutoFocusCallback =
             new AutoFocusCallback();
-    private final ZoomCallback mZoomCallback = new ZoomCallback();
+    private final ZoomListener mZoomListener = new ZoomListener();
     // Use the ErrorCallback to capture the crash count
     // on the mediaserver
     private final ErrorCallback mErrorCallback = new ErrorCallback();
@@ -396,7 +396,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         keepMediaProviderInstance();
         checkStorage();
 
-        mCameraDevice.setZoomCallback(mZoomCallback);
+        mCameraDevice.setZoomChangeListener(mZoomListener);
 
         if (!mIsImageCaptureIntent) {
             updateThumbnailButton();
@@ -413,7 +413,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
 
-        mCameraDevice.setZoomCallback(mZoomCallback);
+        mCameraDevice.setZoomChangeListener(mZoomListener);
 
         mHeadUpDisplay.setZoomRatios(getZoomRatios());
         mHeadUpDisplay.setZoomIndex(mZoomValue);
@@ -730,20 +730,19 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private final class ZoomCallback
-            implements android.hardware.Camera.ZoomCallback {
-        public void onZoomUpdate(
-                int zoomValue, boolean stopped, android.hardware.Camera camera) {
-            Log.v(TAG, "ZoomCallback: zoom value=" + zoomValue + ". stopped="
-                    + stopped);
-            mZoomValue = zoomValue;
+    private final class ZoomListener
+            implements android.hardware.Camera.OnZoomChangeListener {
+        public void onZoomChange(
+                int value, boolean stopped, android.hardware.Camera camera) {
+            Log.v(TAG, "Zoom changed: value=" + value + ". stopped="+ stopped);
+            mZoomValue = value;
             // Keep mParameters up to date. We do not getParameter again in
             // takePicture. If we do not do this, wrong zoom value will be set.
-            mParameters.setZoom(zoomValue);
+            mParameters.setZoom(value);
             // We only care if the zoom is stopped. mZooming is set to true when
             // we start smooth zoom.
             if (stopped && mZoomState != ZOOM_STOPPED) {
-                if (zoomValue != mTargetZoomValue) {
+                if (value != mTargetZoomValue) {
                     mCameraDevice.startSmoothZoom(mTargetZoomValue);
                     mZoomState = ZOOM_START;
                 } else {
@@ -1536,7 +1535,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void closeCamera() {
         if (mCameraDevice != null) {
             CameraHolder.instance().release();
-            mCameraDevice.setZoomCallback(null);
+            mCameraDevice.setZoomChangeListener(null);
             mCameraDevice = null;
             mPreviewing = false;
         }
