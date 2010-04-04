@@ -42,12 +42,12 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
     private long mTotalShutterLag;
     private long mTotalShutterToPictureDisplayedTime;
     private long mTotalPictureDisplayedToJpegCallbackTime;
-    private long mTotalJpegCallbackToFirstFrameTime;
+    private long mTotalJpegCallbackFinishTime;
     private long mAvgAutoFocusTime;
     private long mAvgShutterLag = mTotalShutterLag;
     private long mAvgShutterToPictureDisplayedTime;
     private long mAvgPictureDisplayedToJpegCallbackTime;
-    private long mAvgJpegCallbackToFirstFrameTime;
+    private long mAvgJpegCallbackFinishTime;
 
     public CameraLatency() {
         super("com.google.android.camera", Camera.class);
@@ -83,7 +83,7 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
                             c.mShutterToPictureDisplayedTime;
                     mTotalPictureDisplayedToJpegCallbackTime +=
                             c.mPictureDisplayedToJpegCallbackTime;
-                    mTotalJpegCallbackToFirstFrameTime += c.mJpegCallbackToFirstFrameTime;
+                    mTotalJpegCallbackFinishTime += c.mJpegCallbackFinishTime;
                 }
             }
         } catch (Exception e) {
@@ -101,8 +101,8 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
                 mTotalShutterToPictureDisplayedTime / numberofRun;
         mAvgPictureDisplayedToJpegCallbackTime =
                 mTotalPictureDisplayedToJpegCallbackTime / numberofRun;
-        mAvgJpegCallbackToFirstFrameTime =
-                mTotalJpegCallbackToFirstFrameTime / numberofRun;
+        mAvgJpegCallbackFinishTime =
+                mTotalJpegCallbackFinishTime / numberofRun;
 
         try {
             FileWriter fstream = null;
@@ -116,8 +116,8 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
                     + mAvgShutterToPictureDisplayedTime + "\n");
             out.write("Avg mPictureDisplayedToJpegCallbackTime = "
                     + mAvgPictureDisplayedToJpegCallbackTime + "\n");
-            out.write("Avg mJpegCallbackToFirstFrameTime = " +
-                    mAvgJpegCallbackToFirstFrameTime + "\n");
+            out.write("Avg mJpegCallbackFinishTime = " +
+                    mAvgJpegCallbackFinishTime + "\n");
             out.close();
             fstream.close();
         } catch (Exception e) {
@@ -131,7 +131,7 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
                 + mAvgShutterToPictureDisplayedTime);
         Log.v(TAG, "Avg mPictureDisplayedToJpegCallbackTime = "
                 + mAvgPictureDisplayedToJpegCallbackTime);
-        Log.v(TAG, "Avg mJpegCallbackToFirstFrameTime = " + mAvgJpegCallbackToFirstFrameTime);
+        Log.v(TAG, "Avg mJpegCallbackFinishTime = " + mAvgJpegCallbackFinishTime);
         assertTrue("testImageCapture", true);
     }
 }
