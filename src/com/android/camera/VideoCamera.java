@@ -1136,7 +1136,8 @@ public class VideoCamera extends NoSearchActivity
         fadeOut(findViewById(R.id.shutter_button));
         if (mCurrentVideoFilename != null) {
             mVideoFrame.setImageBitmap(
-                    ThumbnailUtils.createVideoThumbnail(mCurrentVideoFilename));
+                    ThumbnailUtils.createVideoThumbnail(mCurrentVideoFilename,
+                             Video.Thumbnails.MINI_KIND));
             mVideoFrame.setVisibility(View.VISIBLE);
         }
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
@@ -1247,7 +1248,7 @@ public class VideoCamera extends NoSearchActivity
 
     private void acquireVideoThumb() {
         Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
-                mCurrentVideoFilename);
+                mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
         mThumbController.setData(mCurrentVideoUri, videoFrame);
     }
 
