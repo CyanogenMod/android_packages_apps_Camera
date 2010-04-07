@@ -16,10 +16,7 @@
 
 package com.android.camera.gallery;
 
-import android.net.Uri;
-
 import com.android.camera.ImageManager;
-import com.android.camera.Util;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -46,7 +43,7 @@ public class ImageListUber implements IImageList {
     //     to.
     private long[] mSkipList;
     private int mSkipListSize;
-    private int [] mSkipCounts;
+    private final int [] mSkipCounts;
     private int mLastListIndex;
 
     public ImageListUber(IImageList [] sublist, int sort) {

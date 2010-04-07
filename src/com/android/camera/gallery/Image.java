@@ -16,21 +16,8 @@
 
 package com.android.camera.gallery;
 
-import com.android.camera.BitmapManager;
-import com.android.camera.Util;
-
 import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.provider.BaseColumns;
-import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Images.ImageColumns;
-import android.util.Log;
-
-import java.io.IOException;
 
 /**
  * The class for normal images in gallery.
@@ -38,7 +25,7 @@ import java.io.IOException;
 public class Image extends BaseImage implements IImage {
     private static final String TAG = "BaseImage";
 
-    private int mRotation;
+    private final int mRotation;
 
     public Image(ContentResolver cr,
             long id, Uri uri, long miniThumbMagic,

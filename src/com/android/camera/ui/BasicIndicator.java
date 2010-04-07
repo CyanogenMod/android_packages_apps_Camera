@@ -92,7 +92,6 @@ public class BasicIndicator extends AbstractIndicator {
     protected ResourceTexture getIcon() {
         int index = mIndex;
         if (mIcon[index] == null) {
-            IconListPreference pref = mPreference;
             Context context = getGLRootView().getContext();
             mIcon[index] = new ResourceTexture(
                     context, mPreference.getLargeIconIds()[index]);

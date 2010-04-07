@@ -51,29 +51,20 @@
 
     <!-- Menu items: -->
     <!-- menu pick to go to the settings screen -->
-    <string name="settings">Settings</string>
 
     <!-- menu pick to view the details of the currently selected image -->
-    <string name="details">Details</string>
 
     <!-- menu pick to show the location of the currently selected image on maps-->
-    <string name="show_on_map">Show on Maps</string>
 
     <!-- menu pick to rotate the currently selected image (brings up submenu) -->
-    <string name="rotate">Rotate</string>
 
     <!-- menu pick to rotate the currently selected image to the left -->
-    <string name="rotate_left">Rotate left</string>
 
     <!-- menu pick to rotate the currently selected image to the right -->
-    <string name="rotate_right">Rotate right</string>
 
     <!-- Confirmation dialog title after deleting a picture -->
-    <string name="confirm_delete_title">Delete</string>
     <!-- Confirmation dialog message after deleting a picture -->
-    <string name="confirm_delete_message">The picture will be deleted.</string>
     <!-- Confirmation dialog message after deleting a video -->
-    <string name="confirm_delete_video_message">The video will be deleted.</string>
 
     <!-- Confirmation dialog when restoring settings -->
     <string name="confirm_restore_title">Restore defaults</string>
@@ -92,25 +83,18 @@
     <string name="review_retake">RETAKE</string>
 
     <!-- button indicating that the picture just taken should be deleted -->
-    <string name="camera_toss">Delete</string>
 
     <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
-    <string name="camera_share">Share</string>
 
     <!-- button indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
-    <string name="camera_set">Set as</string>
 
     <!-- button indicating that the picture just taken should be cropped -->
-    <string name="camera_crop">Crop</string>
 
     <!-- Toast after trying to share a picture indicating that there are no applications which are capable of so doing. -->
-    <string name="no_way_to_share_image">No application available to share the picture.</string>
 
     <!-- Toast after trying to share a video indicating that there are no applications which are capable of so doing. -->
-    <string name="no_way_to_share_video">No application available to share the video.</string>
 
     <!-- Menu item for playing the video. -->
-    <string name="video_play">Play</string>
 
     <!-- Button indicating to go to the image gallery -->
     <string name="camera_gallery_photos_text">Gallery</string>
@@ -268,69 +252,41 @@
     <string name="pref_exposure_default" translatable="false">0</string>
 
     <!-- Framing grid settings in preference -->
-    <string name="pref_framing_grid">Framing grid</string>
-    <string name="pref_framing_grid_entry_on">On</string>
-    <string name="pref_framing_grid_entry_off">Off</string>
 
     <!-- Message to show when there's no lat/lng information in the image -->
-    <string name="no_location_image">No Location information contained in this image.</string>
     <!-- Title of Details dialog  -->
-    <string name="details_panel_title">Details</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_file_size">File size:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_image_resolution">Resolution:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_image_make">Manufacturer:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_image_model">Model:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_image_whitebalance">White Balance:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_image_latitude">GPS Latitude:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_image_longitude">GPS Longitude:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_image_location">Location:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_duration">Duration:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_date_taken">Date taken:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_frame_rate">Frame rate:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_bit_rate">Bit rate:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_codec">Codec:</string>
     <!-- Label in message of Details dialog  -->
-    <string name="details_format">Format:</string>
 
     <!-- Used to format image dimensions in Details dialog. e.g. 64 x 64 -->
-    <string name="details_dimension_x"><xliff:g id="width" example="640">%1$d</xliff:g> x <xliff:g id="height" example="480">%2$d</xliff:g></string>
     <!-- Used to format short video duration in Details dialog. minutes:seconds e.g. 00:30 -->
-    <string name="details_ms"><xliff:g id="minutes">%1$02d</xliff:g>:<xliff:g id="seconds">%2$02d</xliff:g></string>
     <!-- Used to format video duration in Details dialog. hours:minutes:seconds e.g. 0:21:30 -->
-    <string name="details_hms"><xliff:g id="hours">%1$d</xliff:g>:<xliff:g id="minutes">%2$02d</xliff:g>:<xliff:g id="seconds">%3$02d</xliff:g></string>
     <!-- Unit of measure in the Details dialog frames per second. e.g. 20 fps -->
-        <string name="details_fps"><xliff:g id="frames" example="30">%1$d</xliff:g> fps</string>
     <!-- Unit of measure in the Details dialog K bits per second. e.g. 192 Kbps -->
-    <string name="details_kbps"><xliff:g id="speed" example="192">%1$d</xliff:g> Kbps</string>
     <!-- Unit of measure in the Details dialog M bits per second. e.g. 2.3 Mbps -->
-    <string name="details_mbps"><xliff:g id="speed" example="2.3">%1$g</xliff:g> Mbps</string>
     <!-- Details dialog "OK" button. Dismisses dialog. -->
     <string name="details_ok">OK</string>
 
     <!-- Displayed in the title of the dialog for things to do with a picture that
          is to be sent to another application: -->
-    <string name="sendImage">Share picture via</string>
 
     <!-- Displayed in the title of the dialog for things to do with a picture that
          is to be "set as" (e.g. set as contact photo or set as wallpaper) -->
-    <string name="setImage">Set picture as</string>
 
     <!-- Displayed in the title of the dialog for things to do with a video that
          is to be sent to another application. -->
-    <string name="sendVideo">Share video via</string>
 
     <!-- Low-memory dialog message -->
     <string name="spaceIsLow_content">Your SD card is running out of space. Change the quality setting or delete items from Gallery.</string>

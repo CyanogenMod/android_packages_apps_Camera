@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import javax.microedition.khronos.opengles.GL11;
 
 public class GLView {
+    @SuppressWarnings("unused")
     private static final String TAG = "GLView";
 
     public static final int VISIBLE = 0;
