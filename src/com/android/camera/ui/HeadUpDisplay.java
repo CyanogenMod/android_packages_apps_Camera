@@ -1,6 +1,11 @@
 package com.android.camera.ui;
 
 import static com.android.camera.ui.GLRootView.dpToPixel;
+
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -11,7 +16,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
@@ -22,10 +26,6 @@ import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
-
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 
 // This is the UI for the on-screen settings. It mainly run in the GLThread. It
 // will modify the shared-preferences. The concurrency rule is: The shared-
@@ -88,22 +88,16 @@ public class HeadUpDisplay extends GLView {
             @Override
             public void handleMessage(Message msg) {
                 GLRootView root = getGLRootView();
-                FutureTask<Void> task = null;
+                Runnable runnable = null;
                 switch(msg.what) {
                     case DESELECT_INDICATOR:
-                        task = new FutureTask<Void>(mDeselectIndicator);
+                        runnable = mDeselectIndicator;
                         break;
                     case DEACTIVATE_INDICATOR_BAR:
-                        task = new FutureTask<Void>(mDeactivateIndicatorBar);
+                        runnable = mDeactivateIndicatorBar;
                         break;
                 }
-                if (task == null) return;
-                try {
-                    root.queueEvent(task);
-                    task.get();
-                } catch (Exception e) {
-                    Log.e(TAG, "error in concurrent code", e);
-                }
+                if (runnable != null) root.queueEvent(runnable);
             }
         };
     }
@@ -116,17 +110,15 @@ public class HeadUpDisplay extends GLView {
         sPopupTriangleOffset = dpToPixel(context, POPUP_TRIANGLE_OFFSET);
     }
 
-    private final Callable<Void> mDeselectIndicator = new Callable<Void> () {
-        public Void call() throws Exception {
+    private final Runnable mDeselectIndicator = new Runnable () {
+        public void run() {
             mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
-            return null;
-        }
+       }
     };
 
-    private final Callable<Void> mDeactivateIndicatorBar = new Callable<Void> () {
-        public Void call() throws Exception {
+    private final Runnable mDeactivateIndicatorBar = new Runnable () {
+        public void run() {
             if (mIndicatorBar != null) mIndicatorBar.setActivated(false);
-            return null;
         }
     };
 
@@ -367,9 +359,9 @@ public class HeadUpDisplay extends GLView {
 
     private final Callable<Boolean> mCollapse = new Callable<Boolean>() {
         public Boolean call() {
-            if (mIndicatorBar.getSelectedIndex() == IndicatorBar.INDEX_NONE) {
-                return false;
-            }
+            if (!mIndicatorBar.isActivated()) return false;
+            mHandler.removeMessages(DESELECT_INDICATOR);
+            mHandler.removeMessages(DEACTIVATE_INDICATOR_BAR);
             mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
             mIndicatorBar.setActivated(false);
             return true;

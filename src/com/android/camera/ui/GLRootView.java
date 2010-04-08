@@ -1,13 +1,14 @@
 package com.android.camera.ui;
 
+import com.android.camera.Util;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.os.Handler;
-import android.os.HandlerThread;
+import android.os.ConditionVariable;
 import android.os.Looper;
 import android.os.Process;
 import android.os.SystemClock;
@@ -17,8 +18,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-
-import com.android.camera.Util;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -75,11 +74,13 @@ public class GLRootView extends GLSurfaceView
 
     private Thread mGLThread;
 
+    private boolean mIsQueueActive = true;
+
     // TODO: move this part (handler) into GLSurfaceView
     private final Looper mLooper;
 
     public GLRootView(Context context) {
-    	this(context, null);
+        this(context, null);
     }
 
     public GLRootView(Context context, AttributeSet attrs) {
@@ -437,9 +438,11 @@ public class GLRootView extends GLSurfaceView
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        // If this has been detached from root, we don't need to handle event
+        if (mIsQueueActive) return false;
         FutureTask<Boolean> task = new FutureTask<Boolean>(
                 new TouchEventHandler(event));
-        queueEvent(task);
+        queueEventOrThrowException(task);
         try {
             return task.get();
         } catch (Exception e) {
@@ -519,6 +522,30 @@ public class GLRootView extends GLSurfaceView
         texture.setSize(width, height);
         texture.setTexCoordSize(
                 (float) width / newWidth, (float) height / newHeight);
+    }
+
+    public synchronized void queueEventOrThrowException(Runnable runnable) {
+        if (!mIsQueueActive) {
+            throw new IllegalStateException("GLThread has exit");
+        }
+        super.queueEvent(runnable);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        final ConditionVariable var = new ConditionVariable();
+        synchronized (this) {
+            mIsQueueActive = false;
+            queueEvent(new Runnable() {
+                public void run() {
+                    var.open();
+                }
+            });
+        }
+
+        // Make sure all the runnables in the event queue is executed.
+        var.block();
+        super.onDetachedFromWindow();
     }
 
     protected Looper getTimerLooper() {
