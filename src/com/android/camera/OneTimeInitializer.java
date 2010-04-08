@@ -41,6 +41,7 @@ import java.util.ArrayList;
 public class OneTimeInitializer extends BroadcastReceiver {
 
     private static final String TAG = "camera";
+    private ArrayList<Entry> mMappingTable;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -54,11 +55,12 @@ public class OneTimeInitializer extends BroadcastReceiver {
      * Perform the one-time initialization.
      */
     private void initialize(Context context) {
-        // Disable itself.
-        setComponentEnabled(context, getClass(), false);
         // If in the future we have more than one thing to do, we may also
         // store the progress in a preference like the Email app does.
         updateShortcut(context);
+
+        // Disable itself.
+        setComponentEnabled(context, getClass(), false);
     }
 
     private void setComponentEnabled(Context context, Class<?> clazz, boolean enabled) {
@@ -84,10 +86,8 @@ public class OneTimeInitializer extends BroadcastReceiver {
         }
     }
 
-    private ArrayList<Entry> mappingTable;
-
     private void prepareTable(Context context) {
-        mappingTable = new ArrayList<Entry>();
+        mMappingTable = new ArrayList<Entry>();
         // We have two names for each of the old component.
         String oldPkg = "com.android.camera";
         String newPkg = context.getPackageName();
@@ -109,10 +109,10 @@ public class OneTimeInitializer extends BroadcastReceiver {
         ComponentName newVideoCamera = new ComponentName(
                 newPkg, "com.android.camera.VideoCamera");
 
-        mappingTable.add(new Entry(oldCamera, newCamera));
-        mappingTable.add(new Entry(oldCameraShort, newCamera));
-        mappingTable.add(new Entry(oldVideoCamera, newVideoCamera));
-        mappingTable.add(new Entry(oldVideoCameraShort, newVideoCamera));
+        mMappingTable.add(new Entry(oldCamera, newCamera));
+        mMappingTable.add(new Entry(oldCameraShort, newCamera));
+        mMappingTable.add(new Entry(oldVideoCamera, newVideoCamera));
+        mMappingTable.add(new Entry(oldVideoCameraShort, newVideoCamera));
     }
 
     private void updateShortcut(Context context) {
@@ -134,7 +134,7 @@ public class OneTimeInitializer extends BroadcastReceiver {
                     if (intentUri == null) continue;
                     Intent shortcut = Intent.parseUri(intentUri, 0);
                     ComponentName comp = shortcut.getComponent();
-                    for (Entry e : mappingTable) {
+                    for (Entry e : mMappingTable) {
                         if (comp.equals(e.mOldComp)) {
                             Log.v(TAG, "fix shortcut id " + id + " from " +
                                     comp + " to " + e.mNewComp);
