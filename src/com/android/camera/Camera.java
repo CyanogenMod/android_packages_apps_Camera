@@ -188,10 +188,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private LocationManager mLocationManager = null;
 
-    // Use OneShotPreviewCallback to measure the time between
-    // JpegPictureCallback and preview.
-    private final OneShotPreviewCallback mOneShotPreviewCallback =
-            new OneShotPreviewCallback();
     private final ShutterCallback mShutterCallback = new ShutterCallback();
     private final PostViewPictureCallback mPostViewPictureCallback =
             new PostViewPictureCallback();
@@ -218,7 +214,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     public long mShutterLag;
     public long mShutterToPictureDisplayedTime;
     public long mPictureDisplayedToJpegCallbackTime;
-    public long mJpegCallbackToFirstFrameTime;
+    public long mJpegCallbackFinishTime;
 
     // Add for test
     public static boolean mMediaServerDied = false;
@@ -240,6 +236,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             switch (msg.what) {
                 case RESTART_PREVIEW: {
                     restartPreview();
+                    if (mJpegPictureCallbackTime != 0) {
+                        long now = System.currentTimeMillis();
+                        mJpegCallbackFinishTime = now - mJpegPictureCallbackTime;
+                        Log.v(TAG, "mJpegCallbackFinishTime = "
+                                + mJpegCallbackFinishTime + "ms");
+                        mJpegPictureCallbackTime = 0;
+                    }
                     break;
                 }
 
@@ -582,22 +585,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private final class OneShotPreviewCallback
-            implements android.hardware.Camera.PreviewCallback {
-        public void onPreviewFrame(byte[] data,
-                                   android.hardware.Camera camera) {
-            long now = System.currentTimeMillis();
-            if (mJpegPictureCallbackTime != 0) {
-                mJpegCallbackToFirstFrameTime = now - mJpegPictureCallbackTime;
-                Log.v(TAG, "mJpegCallbackToFirstFrameTime = "
-                        + mJpegCallbackToFirstFrameTime + "ms");
-                mJpegPictureCallbackTime = 0;
-            } else {
-                Log.v(TAG, "Got first frame");
-            }
-        }
-    }
-
     private final class ShutterCallback
             implements android.hardware.Camera.ShutterCallback {
         public void onShutter() {
@@ -679,6 +666,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
             if (mPicturesRemaining < 1) {
                 updateStorageHint(mPicturesRemaining);
+            }
+
+            if (!mHandler.hasMessages(RESTART_PREVIEW)) {
+                long now = System.currentTimeMillis();
+                mJpegCallbackFinishTime = now - mJpegPictureCallbackTime;
+                Log.v(TAG, "mJpegCallbackFinishTime = "
+                        + mJpegCallbackFinishTime + "ms");
+                mJpegPictureCallbackTime = 0;
             }
         }
     }
@@ -1606,8 +1601,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         final long wallTimeStart = SystemClock.elapsedRealtime();
         final long threadTimeStart = Debug.threadCpuTimeNanos();
 
-        // Set one shot preview callback for latency measurement.
-        mCameraDevice.setOneShotPreviewCallback(mOneShotPreviewCallback);
         mCameraDevice.setErrorCallback(mErrorCallback);
 
         try {
@@ -1620,14 +1613,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPreviewing = true;
         mZoomState = ZOOM_STOPPED;
         mStatus = IDLE;
-
-        long threadTimeEnd = Debug.threadCpuTimeNanos();
-        long wallTimeEnd = SystemClock.elapsedRealtime();
-        if ((wallTimeEnd - wallTimeStart) > 3000) {
-            Log.w(TAG, "startPreview() to " + (wallTimeEnd - wallTimeStart)
-                    + " ms. Thread time was"
-                    + (threadTimeEnd - threadTimeStart) / 1000000 + " ms.");
-        }
     }
 
     private void stopPreview() {
