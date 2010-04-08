@@ -439,7 +439,7 @@ public class GLRootView extends GLSurfaceView
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         // If this has been detached from root, we don't need to handle event
-        if (mIsQueueActive) return false;
+        if (!mIsQueueActive) return false;
         FutureTask<Boolean> task = new FutureTask<Boolean>(
                 new TouchEventHandler(event));
         queueEventOrThrowException(task);
