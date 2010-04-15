@@ -555,6 +555,13 @@ public class GLRootView extends GLSurfaceView
         return mLooper;
     }
 
+    // We expect the size will change soon. Please reference onSizeChanged for
+    // more details.
+    public void aboutToChangeSize() {
+        mFirstWidth = 0;
+        mFirstHeight = 0;
+    }
+
     // After the device goes to sleep and back, the lock screen may cause the
     // orientation to become portrait. So we will allocate a surface with a
     // different size. This causes problem when we try to allocate the surface

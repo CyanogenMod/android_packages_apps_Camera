@@ -16,6 +16,13 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.ui.CamcorderHeadUpDisplay;
+import com.android.camera.ui.GLRootView;
+import com.android.camera.ui.GLView;
+import com.android.camera.ui.HeadUpDisplay;
+
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -61,13 +68,6 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-import com.android.camera.ui.CamcorderHeadUpDisplay;
-import com.android.camera.ui.GLRootView;
-import com.android.camera.ui.GLView;
-import com.android.camera.ui.HeadUpDisplay;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -526,6 +526,7 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void resizeForPreviewAspectRatio() {
+        if (mGLRootView != null) mGLRootView.aboutToChangeSize();
         mPreviewFrameLayout.setAspectRatio(
                 (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
     }
