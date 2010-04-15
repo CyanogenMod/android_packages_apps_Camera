@@ -76,6 +76,9 @@ public class GLRootView extends GLSurfaceView
 
     private boolean mIsQueueActive = true;
 
+    private int mFirstWidth;
+    private int mFirstHeight;
+
     // TODO: move this part (handler) into GLSurfaceView
     private final Looper mLooper;
 
@@ -550,5 +553,36 @@ public class GLRootView extends GLSurfaceView
 
     protected Looper getTimerLooper() {
         return mLooper;
+    }
+
+    // After the device goes to sleep and back, the lock screen may cause the
+    // orientation to become portrait. So we will allocate a surface with a
+    // different size. This causes problem when we try to allocate the surface
+    // again with the original size because the graphics memory is fragmented.
+    // The hack is to hide the surface when we are in different size than the
+    // first landscape size we get. This hack can fail is the first landscape
+    // size is not the final size for this view (say, press power key right
+    // after starting the app).
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        Log.v(TAG, "onSizeChanged: first = " + mFirstWidth + "x" +
+                mFirstHeight + ", new = " + w + "x" + h);
+
+        // Record the first landscape size
+        if (mFirstWidth == 0 && w > h) {
+            mFirstWidth = w;
+            mFirstHeight = h;
+        }
+
+        // Hide if the size doesn't match the first landscape size
+        if (mFirstWidth == w && mFirstHeight == h) {
+            Log.v(TAG, "show");
+            setVisibility(VISIBLE);
+        } else {
+            Log.v(TAG, "hide");
+            setVisibility(INVISIBLE);
+        }
+
+        super.onSizeChanged(w, h, oldw, oldh);
     }
 }
