@@ -818,6 +818,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             // Clear previous GPS location from the parameters.
             mParameters.removeGpsData();
 
+            // We always encode GpsTimeStamp
+            mParameters.setGpsTimestamp(System.currentTimeMillis() / 1000);
+
             // Set GPS location.
             Location loc = mRecordLocation ? getCurrentLocation() : null;
             if (loc != null) {
