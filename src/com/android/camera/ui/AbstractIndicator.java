@@ -57,9 +57,12 @@ public abstract class AbstractIndicator extends GLView {
 
         if (mOrientation == orientation) return;
         mOrientation = orientation;
-        AlphaAnimation anim = new AlphaAnimation(0.2f, 1);
-        anim.setDuration(200);
-        startAnimation(anim);
+
+        if (getGLRootView() != null) {
+            AlphaAnimation anim = new AlphaAnimation(0.2f, 1);
+            anim.setDuration(200);
+            startAnimation(anim);
+        }
     }
 
     abstract public GLView getPopupContent();

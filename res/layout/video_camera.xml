@@ -57,10 +57,6 @@
                     android:textSize="23dp"
                     android:textStyle="bold"
                     android:visibility="gone"/>
-            <com.android.camera.ui.GLRootView
-                    android:id="@+id/settings_ui"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
         </FrameLayout>
     </com.android.camera.PreviewFrameLayout>
 </LinearLayout>
