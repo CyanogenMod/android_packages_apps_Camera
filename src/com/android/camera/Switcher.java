@@ -157,7 +157,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
             } else {
                 mAnimationStartTime = NO_ANIMATION;
             }
-        } else {
+        } else if (!isPressed()){
             mPosition = mSwitch ? available : 0;
         }
         int offsetTop = getPaddingTop() + mPosition;
