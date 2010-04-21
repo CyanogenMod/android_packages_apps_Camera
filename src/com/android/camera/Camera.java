@@ -515,8 +515,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_MEDIA_MOUNTED)
                     || action.equals(Intent.ACTION_MEDIA_UNMOUNTED)
-                    || action.equals(Intent.ACTION_MEDIA_CHECKING)
-                    || action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
+                    || action.equals(Intent.ACTION_MEDIA_CHECKING)) {
                 checkStorage();
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
                 checkStorage();
@@ -1010,11 +1009,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void checkStorage() {
-        if (ImageManager.isMediaScannerScanning(getContentResolver())) {
-            mPicturesRemaining = MenuHelper.NO_STORAGE_ERROR;
-        } else {
-            calculatePicturesRemaining();
-        }
+        calculatePicturesRemaining();
         updateStorageHint(mPicturesRemaining);
     }
 
@@ -1161,8 +1156,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         if (remaining == MenuHelper.NO_STORAGE_ERROR) {
             String state = Environment.getExternalStorageState();
-            if (state == Environment.MEDIA_CHECKING ||
-                    ImageManager.isMediaScannerScanning(getContentResolver())) {
+            if (state == Environment.MEDIA_CHECKING) {
                 noStorageText = getString(R.string.preparing_sd);
             } else {
                 noStorageText = getString(R.string.no_storage);
@@ -1189,7 +1183,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         IntentFilter intentFilter =
                 new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
         intentFilter.addAction(Intent.ACTION_MEDIA_CHECKING);
         intentFilter.addDataScheme("file");
