@@ -223,6 +223,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
+    private String mSceneMode;
 
     private final Handler mHandler = new MainHandler();
     private boolean mQuickCapture;
@@ -980,6 +981,30 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             finalizeHeadUpDisplay();
         }
     }
+    
+    private void overrideHudSettings(final String flashMode, 
+            final String whiteBalance, final String focusMode) {
+        mGLRootView.queueEvent(new Runnable() {
+            public void run() {
+                mHeadUpDisplay.overrideSettings(
+                        CameraSettings.KEY_FLASH_MODE, flashMode);
+                mHeadUpDisplay.overrideSettings(
+                        CameraSettings.KEY_WHITE_BALANCE, whiteBalance);
+                mHeadUpDisplay.overrideSettings(
+                        CameraSettings.KEY_FOCUS_MODE, focusMode);
+            }});        
+    }
+
+    private void updateSceneModeInHud() {        
+        // If scene mode is set, we cannot set flash mode, white balance, and
+        // focus mode, instead, we read it from driver        
+        if (!Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
+            overrideHudSettings(mParameters.getFlashMode(), 
+                    mParameters.getWhiteBalance(), mParameters.getFocusMode());
+        } else {
+            overrideHudSettings(null, null, null);
+        }
+    }
 
     private void initializeHeadUpDisplay() {
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
@@ -1007,6 +1032,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
             });
         }
+
+        updateSceneModeInHud();
 
         mGLRootView.setContentPane(mHeadUpDisplay);
     }
@@ -1750,12 +1777,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // Since change scene mode may change supported values,
         // Set scene mode first,
-        String sceneMode = mPreferences.getString(
+        mSceneMode = mPreferences.getString(
                 CameraSettings.KEY_SCENE_MODE,
                 getString(R.string.pref_camera_scenemode_default));
-        if (isSupported(sceneMode, mParameters.getSupportedSceneModes())) {
-            if (!mParameters.getSceneMode().equals(sceneMode)) {
-                mParameters.setSceneMode(sceneMode);
+        if (isSupported(mSceneMode, mParameters.getSupportedSceneModes())) {
+            if (!mParameters.getSceneMode().equals(mSceneMode)) {
+                mParameters.setSceneMode(mSceneMode);
                 mCameraDevice.setParameters(mParameters);
 
                 // Setting scene mode will change the settings of flash mode,
@@ -1764,9 +1791,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 mParameters = mCameraDevice.getParameters();
             }
         } else {
-            sceneMode = mParameters.getSceneMode();
-            if (sceneMode == null) {
-                sceneMode = Parameters.SCENE_MODE_AUTO;
+            mSceneMode = mParameters.getSceneMode();
+            if (mSceneMode == null) {
+                mSceneMode = Parameters.SCENE_MODE_AUTO;
             }
         }
 
@@ -1804,37 +1831,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             Log.w(TAG, "invalid exposure: " + exposure);
         }
 
-        // If scene mode is set, we cannot set flash mode, white balance, and
-        // focus mode, instead, we read it from driver
-        if (!Parameters.SCENE_MODE_AUTO.equals(sceneMode)) {
-            final String flashMode = mParameters.getFlashMode();
-            final String whiteBalance = mParameters.getWhiteBalance();
-            mFocusMode = mParameters.getFocusMode();
+        if (mGLRootView != null) updateSceneModeInHud();
 
-            if (mGLRootView != null) {
-                mGLRootView.queueEvent(new Runnable() {
-                    public void run() {
-                        mHeadUpDisplay.overrideSettings(
-                                CameraSettings.KEY_FLASH_MODE, flashMode);
-                        mHeadUpDisplay.overrideSettings(
-                                CameraSettings.KEY_WHITE_BALANCE, whiteBalance);
-                        mHeadUpDisplay.overrideSettings(
-                                CameraSettings.KEY_FOCUS_MODE, mFocusMode);
-                    }});
-            }
-        } else {
-            if (mGLRootView != null) {
-                mGLRootView.queueEvent(new Runnable() {
-                    public void run() {
-                        mHeadUpDisplay.overrideSettings(
-                                CameraSettings.KEY_FLASH_MODE, null);
-                        mHeadUpDisplay.overrideSettings(
-                                CameraSettings.KEY_FOCUS_MODE, null);
-                        mHeadUpDisplay.overrideSettings(
-                                CameraSettings.KEY_WHITE_BALANCE, null);
-                    }});
-            }
-
+        if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
             // Set flash mode.
             String flashMode = mPreferences.getString(
                     CameraSettings.KEY_FLASH_MODE,
@@ -1876,6 +1875,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     mFocusMode = Parameters.FOCUS_MODE_AUTO;
                 }
             }
+        } else {
+            mFocusMode = mParameters.getFocusMode();
         }
     }
 
