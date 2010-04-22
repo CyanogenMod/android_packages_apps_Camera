@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -66,6 +67,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.camera.gallery.IImage;
@@ -310,11 +312,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     if (!mIsImageCaptureIntent)  {
                         setOrientationIndicator(mLastOrientation);
                     }
-                    mGLRootView.queueEvent(new Runnable() {
-                        public void run() {
-                            mHeadUpDisplay.setOrientation(mLastOrientation);
-                        }
-                    });
+                    if (mGLRootView != null) {
+                        mGLRootView.queueEvent(new Runnable() {
+                            public void run() {
+                                mHeadUpDisplay.setOrientation(mLastOrientation);
+                            }
+                        });
+                    }
                 }
             }
         };
@@ -355,19 +359,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         ImageManager.ensureOSXCompatibleFolder();
 
         initializeScreenBrightness();
-
         installIntentFilter();
-
         initializeFocusTone();
-
-        mHeadUpDisplay = new CameraHeadUpDisplay(this);
-        CameraSettings settings = new CameraSettings(this, mInitialParams);
-        mHeadUpDisplay.initialize(this,
-                settings.getPreferenceGroup(R.xml.camera_preferences));
-        mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeZoom();
-        mGLRootView.setContentPane(mHeadUpDisplay);
+
         mFirstTimeInitialized = true;
+
+        changeHeadUpDisplayState();
     }
 
     private void updateThumbnailButton() {
@@ -404,6 +402,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (!mIsImageCaptureIntent) {
             updateThumbnailButton();
         }
+
+        changeHeadUpDisplayState();
     }
 
     private void initializeZoom() {
@@ -417,20 +417,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
 
         mCameraDevice.setZoomChangeListener(mZoomListener);
-
-        mHeadUpDisplay.setZoomRatios(getZoomRatios());
-        mHeadUpDisplay.setZoomIndex(mZoomValue);
-
-        mHeadUpDisplay.setZoomListener(new ZoomController.ZoomListener() {
-            public void onZoomChanged(
-                    final int index, float ratio, boolean isMoving) {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        onZoomValueChanged(index);
-                    }
-                });
-            }
-        });
     }
 
     private void onZoomValueChanged(int index) {
@@ -955,8 +941,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup rootView = (ViewGroup) findViewById(R.id.camera);
-        mGLRootView = (GLRootView) findViewById(R.id.settings_ui);
-
         if (mIsImageCaptureIntent) {
             View controlBar = inflater.inflate(
                     R.layout.attach_camera_control, rootView);
@@ -980,6 +964,58 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         } catch (InterruptedException ex) {
             // ignore
         }
+    }
+
+    private void changeHeadUpDisplayState() {
+        // If the camera resumes behind the lock screen, the orientation
+        // will be portrait. That causes OOM when we try to allocation GPU
+        // memory for the GLSurfaceView again when the orientation changes. So,
+        // we delayed initialization of HeadUpDisplay until the orientation
+        // becomes landscape.
+        Configuration config = getResources().getConfiguration();
+        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
+                && !mPausing && mFirstTimeInitialized) {
+            if (mGLRootView == null) initializeHeadUpDisplay();
+        } else if (mGLRootView != null) {
+            finalizeHeadUpDisplay();
+        }
+    }
+
+    private void initializeHeadUpDisplay() {
+        FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
+        mGLRootView = new GLRootView(this);
+        frame.addView(mGLRootView);
+
+        mHeadUpDisplay = new CameraHeadUpDisplay(this);
+        CameraSettings settings = new CameraSettings(this, mInitialParams);
+        mHeadUpDisplay.initialize(this,
+                settings.getPreferenceGroup(R.xml.camera_preferences));
+        mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
+        mHeadUpDisplay.setOrientation(mLastOrientation);
+
+        if (mParameters.isZoomSupported()) {
+            mHeadUpDisplay.setZoomRatios(getZoomRatios());
+            mHeadUpDisplay.setZoomIndex(mZoomValue);
+            mHeadUpDisplay.setZoomListener(new ZoomController.ZoomListener() {
+                public void onZoomChanged(
+                        final int index, float ratio, boolean isMoving) {
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            onZoomValueChanged(index);
+                        }
+                    });
+                }
+            });
+        }
+
+        mGLRootView.setContentPane(mHeadUpDisplay);
+    }
+
+    private void finalizeHeadUpDisplay() {
+        mHeadUpDisplay.setGpsHasSignal(false);
+        mHeadUpDisplay.collapse();
+        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
+        mGLRootView = null;
     }
 
     private void setOrientationIndicator(int degree) {
@@ -1218,14 +1254,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     @Override
     protected void onResume() {
         super.onResume();
-        mGLRootView.onResume();
 
         mPausing = false;
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
-        if (mHeadUpDisplay != null) {
-            mHeadUpDisplay.setZoomIndex(mZoomValue);
-        }
         mImageCapture = new ImageCapture();
 
         resetExposureCompensation();
@@ -1252,6 +1284,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         keepScreenOnAwhile();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+        changeHeadUpDisplayState();
+    }
+
     private static ImageManager.DataLocation dataLocation() {
         return ImageManager.DataLocation.EXTERNAL;
     }
@@ -1263,14 +1301,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Close the camera now because other activities may need to use it.
         closeCamera();
         resetScreenOn();
-
-        if (!isFinishing()) {
-            mGLRootView.onPause();
-            if (mHeadUpDisplay != null) {
-                mHeadUpDisplay.setGpsHasSignal(false);
-                mHeadUpDisplay.collapse();
-            }
-        }
+        changeHeadUpDisplayState();
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -1780,7 +1811,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             final String whiteBalance = mParameters.getWhiteBalance();
             mFocusMode = mParameters.getFocusMode();
 
-            if (mHeadUpDisplay != null) {
+            if (mGLRootView != null) {
                 mGLRootView.queueEvent(new Runnable() {
                     public void run() {
                         mHeadUpDisplay.overrideSettings(
@@ -1792,7 +1823,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     }});
             }
         } else {
-            if (mHeadUpDisplay != null) {
+            if (mGLRootView != null) {
                 mGLRootView.queueEvent(new Runnable() {
                     public void run() {
                         mHeadUpDisplay.overrideSettings(
@@ -2046,7 +2077,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private boolean switchToVideoMode() {
         if (isFinishing() || !isCameraIdle()) return false;
         MenuHelper.gotoVideoMode(this);
-        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
         return true;
@@ -2189,7 +2219,7 @@ class JpegEncodingQualityMappings {
         mHashMap.put("normal",    CameraProfile.QUALITY_LOW);
         mHashMap.put("fine",      CameraProfile.QUALITY_MEDIUM);
         mHashMap.put("superfine", CameraProfile.QUALITY_HIGH);
-    };
+    }
 
     // Retrieve and return the Jpeg encoding quality number
     // for the given quality level.

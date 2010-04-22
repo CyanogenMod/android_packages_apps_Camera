@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -65,6 +66,7 @@ import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -301,7 +303,6 @@ public class VideoCamera extends NoSearchActivity
 
         mVideoPreview = (SurfaceView) findViewById(R.id.camera_preview);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
-        mGLRootView = (GLRootView) findViewById(R.id.settings_ui);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
@@ -355,14 +356,28 @@ public class VideoCamera extends NoSearchActivity
         } catch (InterruptedException ex) {
             // ignore
         }
-        mHandler.post(new Runnable() {
-            public void run() {
-                initializeHeadUpDisplay();
-            }
-        });
+    }
+
+    private void changeHeadUpDisplayState() {
+        // If the camera resumes behind the lock screen, the orientation
+        // will be portrait. That causes OOM when we try to allocation GPU
+        // memory for the GLSurfaceView again when the orientation changes. So,
+        // we delayed initialization of HeadUpDisplay until the orientation
+        // becomes landscape.
+        Configuration config = getResources().getConfiguration();
+        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
+                && !mPausing && mGLRootView == null) {
+            initializeHeadUpDisplay();
+        } else if (mGLRootView != null) {
+            finalizeHeadUpDisplay();
+        }
     }
 
     private void initializeHeadUpDisplay() {
+        FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
+        mGLRootView = new GLRootView(this);
+        frame.addView(mGLRootView);
+
         mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
         CameraSettings settings = new CameraSettings(this, mParameters);
 
@@ -374,6 +389,12 @@ public class VideoCamera extends NoSearchActivity
         mHeadUpDisplay.initialize(this, group);
         mGLRootView.setContentPane(mHeadUpDisplay);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
+    }
+
+    private void finalizeHeadUpDisplay() {
+        mHeadUpDisplay.collapse();
+        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
+        mGLRootView = null;
     }
 
     @Override
@@ -526,16 +547,14 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void resizeForPreviewAspectRatio() {
-        if (mGLRootView != null) mGLRootView.aboutToChangeSize();
         mPreviewFrameLayout.setAspectRatio(
                 (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         mPausing = false;
-        mGLRootView.onResume();
 
         mVideoPreview.setVisibility(View.VISIBLE);
         readVideoPreferences();
@@ -571,6 +590,8 @@ public class VideoCamera extends NoSearchActivity
         if (mSurfaceHolder != null) {
             mHandler.sendEmptyMessage(INIT_RECORDER);
         }
+
+        changeHeadUpDisplayState();
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
@@ -633,10 +654,7 @@ public class VideoCamera extends NoSearchActivity
         super.onPause();
         mPausing = true;
 
-        if (!isFinishing()) {
-            mGLRootView.onPause();
-            if (mHeadUpDisplay != null) mHeadUpDisplay.collapse();
-        }
+        changeHeadUpDisplayState();
 
         // Hide the preview now. Otherwise, the preview may be rotated during
         // onPause and it is annoying to users.
@@ -672,6 +690,7 @@ public class VideoCamera extends NoSearchActivity
         }
 
         mHandler.removeMessages(INIT_RECORDER);
+
     }
 
     @Override
@@ -1388,7 +1407,6 @@ public class VideoCamera extends NoSearchActivity
     private boolean switchToCameraMode() {
         if (isFinishing() || mMediaRecorderRecording) return false;
         MenuHelper.gotoCameraMode(this);
-        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         finish();
         return true;
     }
@@ -1399,6 +1417,18 @@ public class VideoCamera extends NoSearchActivity
         } else {
             return true;
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+
+        // If the camera resumes behind the lock screen, the orientation
+        // will be portrait. That causes OOM when we try to allocation GPU
+        // memory for the GLSurfaceView again when the orientation changes. So,
+        // we delayed initialization of HeadUpDisplay until the orientation
+        // becomes landscape.
+        changeHeadUpDisplayState();
     }
 
     private void resetCameraParameters() {
