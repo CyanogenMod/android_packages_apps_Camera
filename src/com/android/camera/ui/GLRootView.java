@@ -161,7 +161,6 @@ public class GLRootView extends GLSurfaceView
         setEGLConfigChooser(8, 8, 8, 8, 0, 4);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         setZOrderOnTop(true);
-        setDebugFlags(DEBUG_CHECK_GL_ERROR);
 
         setRenderer(this);
 

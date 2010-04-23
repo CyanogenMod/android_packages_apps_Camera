@@ -46,6 +46,7 @@ import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -357,8 +358,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
         updateFocusIndicator();
 
-        ImageManager.ensureOSXCompatibleFolder();
-
         initializeScreenBrightness();
         installIntentFilter();
         initializeFocusTone();
@@ -367,6 +366,17 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mFirstTimeInitialized = true;
 
         changeHeadUpDisplayState();
+        addIdleHandler();
+    }
+
+    private void addIdleHandler() {
+        MessageQueue queue = getMainLooper().myQueue();
+        queue.addIdleHandler(new MessageQueue.IdleHandler() {
+            public boolean queueIdle() {
+                ImageManager.ensureOSXCompatibleFolder();
+                return false;
+            }
+        });
     }
 
     private void updateThumbnailButton() {
@@ -904,6 +914,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         mQuickCapture = getQuickCaptureSettings();
 
+        // comment out -- unused now.
+        //mQuickCapture = getQuickCaptureSettings();
+
         // we need to reset exposure for the preview
         resetExposureCompensation();
         /*
@@ -981,8 +994,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             finalizeHeadUpDisplay();
         }
     }
-    
-    private void overrideHudSettings(final String flashMode, 
+
+    private void overrideHudSettings(final String flashMode,
             final String whiteBalance, final String focusMode) {
         mGLRootView.queueEvent(new Runnable() {
             public void run() {
@@ -1287,10 +1300,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mZoomValue = 0;
         mImageCapture = new ImageCapture();
 
-        resetExposureCompensation();
-
         // Start the preview if it is not started.
         if (!mPreviewing && !mStartPreviewFail) {
+            resetExposureCompensation();
             try {
                 startPreview();
             } catch (CameraHardwareException e) {
