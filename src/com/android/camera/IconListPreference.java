@@ -19,43 +19,28 @@ package com.android.camera;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
 import com.android.camera.R;
 
+import java.util.List;
+
 /** A {@code ListPreference} where each entry has a corresponding icon. */
 public class IconListPreference extends ListPreference {
 
-    private final int mIconIds[];
-    private final int mLargeIconIds[];
-
-    private Drawable mIcons[];
-    private final Resources mResources;
+    private int mIconIds[];
+    private int mLargeIconIds[];
 
     public IconListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.IconListPreference, 0, 0);
-        mResources = context.getResources();
-        mIconIds = getIconIds(a.getResourceId(
+        Resources res = context.getResources();
+        mIconIds = getIconIds(res, a.getResourceId(
                 R.styleable.IconListPreference_icons, 0));
-        mLargeIconIds = getIconIds(a.getResourceId(
+        mLargeIconIds = getIconIds(res, a.getResourceId(
                 R.styleable.IconListPreference_largeIcons, 0));
         a.recycle();
-    }
-
-    public Drawable[] getIcons() {
-        if (mIcons == null) {
-            int n = mIconIds.length;
-            Drawable[] drawable = new Drawable[n];
-            int[] id = mIconIds;
-            for (int i = 0; i < n; ++i) {
-                drawable[i] = id[i] == 0 ? null : mResources.getDrawable(id[i]);
-            }
-            mIcons = drawable;
-        }
-        return mIcons;
     }
 
     public int[] getLargeIconIds() {
@@ -66,9 +51,9 @@ public class IconListPreference extends ListPreference {
         return mIconIds;
     }
 
-    private int[] getIconIds(int iconsRes) {
+    private int[] getIconIds(Resources res, int iconsRes) {
         if (iconsRes == 0) return null;
-        TypedArray array = mResources.obtainTypedArray(iconsRes);
+        TypedArray array = res.obtainTypedArray(iconsRes);
         int n = array.length();
         int ids[] = new int[n];
         for (int i = 0; i < n; ++i) {
@@ -78,7 +63,21 @@ public class IconListPreference extends ListPreference {
         return ids;
     }
 
-    public void setIcons(Drawable[] icons) {
-        mIcons = icons;
+    @Override
+    public void filterUnsupported(List<String> supported) {
+        CharSequence entryValues[] = getEntryValues();
+        IntArray iconIds = new IntArray();
+        IntArray largeIconIds = new IntArray();
+
+        for (int i = 0, len = entryValues.length; i < len; i++) {
+            if (supported.indexOf(entryValues[i].toString()) >= 0) {
+                iconIds.add(mIconIds[i]);
+                largeIconIds.add(mLargeIconIds[i]);
+            }
+        }
+        int size = iconIds.size();
+        mIconIds = iconIds.toArray(new int[size]);
+        mLargeIconIds = iconIds.toArray(new int[size]);
+        super.filterUnsupported(supported);
     }
 }
