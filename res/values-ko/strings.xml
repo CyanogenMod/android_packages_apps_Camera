@@ -33,7 +33,7 @@
     <string name="review_ok" msgid="5305096180300056529">"확인"</string>
     <string name="review_retake" msgid="7804864054896088338">"다시 촬영"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"갤러리"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"저장 위치"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"위치 저장"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"사용 안함"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"사용"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"동영상 화질"</string>
@@ -55,7 +55,7 @@
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"보통"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"초점 모드"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"자동"</string>
-    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"무한 거리"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"무한"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"매크로"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"플래시 모드"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"자동"</string>
@@ -84,9 +84,9 @@
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"자동"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"동작"</string>
     <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"인물"</string>
-    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"가로"</string>
+    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"풍경"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"밤"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"야경 인물"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"야간 인물"</string>
     <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"극장"</string>
     <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"해변"</string>
     <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"눈"</string>
