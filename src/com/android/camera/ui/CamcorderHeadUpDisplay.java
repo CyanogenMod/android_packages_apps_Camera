@@ -8,7 +8,7 @@ import com.android.camera.PreferenceGroup;
 
 public class CamcorderHeadUpDisplay extends HeadUpDisplay {
 
-    protected static final String TAG = "CamcorderHeadUpDisplay";
+    private static final String TAG = "CamcorderHeadUpDisplay";
 
     private OtherSettingsIndicator mOtherSettings;
 

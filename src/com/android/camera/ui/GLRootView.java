@@ -75,9 +75,8 @@ public class GLRootView extends GLSurfaceView
     private Thread mGLThread;
 
     private boolean mIsQueueActive = true;
+    private CameraEGLConfigChooser mEglConfigChooser = new CameraEGLConfigChooser();
 
-    private int mFirstWidth;
-    private int mFirstHeight;
 
     // TODO: move this part (handler) into GLSurfaceView
     private final Looper mLooper;
@@ -156,9 +155,13 @@ public class GLRootView extends GLSurfaceView
         }
     }
 
+    public CameraEGLConfigChooser getEGLConfigChooser() {
+        return mEglConfigChooser;
+    }
+
     private void initialize() {
         mFlags |= FLAG_INITIALIZED;
-        setEGLConfigChooser(8, 8, 8, 8, 0, 4);
+        setEGLConfigChooser(mEglConfigChooser);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         setZOrderOnTop(true);
 

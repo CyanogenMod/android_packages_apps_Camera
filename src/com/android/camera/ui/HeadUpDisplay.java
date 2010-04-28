@@ -50,7 +50,7 @@ public class HeadUpDisplay extends GLView {
     private static int sPopupWindowOverlap;
     private static int sPopupTriangleOffset;
 
-    protected static final String TAG = "HeadUpDisplay";
+    private static final String TAG = "HeadUpDisplay";
 
     protected IndicatorBar mIndicatorBar;
 
@@ -259,7 +259,7 @@ public class HeadUpDisplay extends GLView {
     }
 
     private void initializePopupWindow(Context context) {
-        mPopupWindow = new PopupWindowStencilImpl();
+        mPopupWindow = new PopupWindow();
         mPopupWindow.setBackground(
                 new NinePatchTexture(context, R.drawable.menu_popup));
         mPopupWindow.setAnchor(new ResourceTexture(
