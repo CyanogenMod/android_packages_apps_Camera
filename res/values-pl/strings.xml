@@ -33,13 +33,13 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"ZRÓB PONOWNIE"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeria"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Lokalizacja przechowywania"</string>
-    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Wyłączona"</string>
-    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Włączona"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Zapis lokalizacji"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Wyłączony"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Włączony"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Jakość filmu wideo"</string>
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Wysoka (30 min)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Niska (30 min)"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (Niska, 30 s)"</string>
+    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (niska, 30 s)"</string>
     <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (wysoka, 10 min)"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Ustawienia aparatu"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Ustawienia kamery"</string>
@@ -54,12 +54,12 @@
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Wysoka"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normalna"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Tryb ostrości"</string>
-    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatyczna"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatyczny"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Nieskończoność"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Tryb lampy błyskowej"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Lampa błyskowa"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatyczna"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Włączony"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Włączona"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Wyłączona"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Balans bieli"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automatyczny"</string>
