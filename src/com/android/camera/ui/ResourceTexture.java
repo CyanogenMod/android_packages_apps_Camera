@@ -1,12 +1,10 @@
 package com.android.camera.ui;
 
+import com.android.camera.Util;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-
-import com.android.camera.Util;
 
 public class ResourceTexture extends Texture {
 
@@ -22,17 +20,11 @@ public class ResourceTexture extends Texture {
     @Override
     protected Bitmap getBitmap() {
         if (mBitmap != null) return mBitmap;
-        mBitmap = BitmapFactory.decodeResource(mContext.getResources(), mResId);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        mBitmap = BitmapFactory.decodeResource(
+                mContext.getResources(), mResId, options);
         setSize(mBitmap.getWidth(), mBitmap.getHeight());
-
-        if (Util.isPowerOf2(mWidth) && Util.isPowerOf2(mHeight)) return mBitmap;
-
-        Bitmap oldBitmap = mBitmap;
-        mBitmap = generateGLCompatibleBitmap(mWidth, mHeight);
-        Canvas canvas = new Canvas(mBitmap);
-        canvas.drawBitmap(oldBitmap, new Matrix(), null);
-        oldBitmap.recycle();
-
         return mBitmap;
     }
 

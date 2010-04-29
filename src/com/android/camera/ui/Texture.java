@@ -1,10 +1,9 @@
 package com.android.camera.ui;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.opengl.GLUtils;
-
 import com.android.camera.Util;
+
+import android.graphics.Bitmap;
+import android.opengl.GLUtils;
 
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
@@ -96,7 +95,19 @@ public abstract class Texture {
                         GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
                 gl.glTexParameterf(GL11.GL_TEXTURE_2D,
                         GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-                GLUtils.texImage2D(GL11.GL_TEXTURE_2D, 0, bitmap, 0);
+
+                int width = bitmap.getWidth();
+                int height = bitmap.getHeight();
+                int widthExt = Util.nextPowerOf2(width);
+                int heightExt = Util.nextPowerOf2(height);
+                int format = GLUtils.getInternalFormat(bitmap);
+                int type = GLUtils.getType(bitmap);
+                mTexCoordWidth = (float) width / widthExt;
+                mTexCoordHeight = (float) height / heightExt;
+                gl.glTexImage2D(GL11.GL_TEXTURE_2D, 0, format,
+                        widthExt, heightExt, 0, format, type, null);
+                GLUtils.texSubImage2D(
+                        GL11.GL_TEXTURE_2D, 0, 0, 0, bitmap, format, type);
             } finally {
                 freeBitmap(bitmap);
             }
@@ -155,13 +166,5 @@ public abstract class Texture {
         coord[offset++] = h;
         coord[offset++] = w;
         coord[offset] = h;
-    }
-
-    protected Bitmap generateGLCompatibleBitmap(int width, int height) {
-        int newWidth = Util.nextPowerOf2(width);
-        int newHeight = Util.nextPowerOf2(height);
-        mTexCoordWidth = (float) width / newWidth;
-        mTexCoordHeight = (float) height / newHeight;
-        return Bitmap.createBitmap(newWidth, newHeight, Config.ARGB_8888);
     }
 }
