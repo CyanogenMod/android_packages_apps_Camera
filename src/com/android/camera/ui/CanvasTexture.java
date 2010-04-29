@@ -2,6 +2,7 @@ package com.android.camera.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Bitmap.Config;
 
 /** Using a canvas to draw the texture */
 public abstract class CanvasTexture extends Texture {
@@ -13,7 +14,7 @@ public abstract class CanvasTexture extends Texture {
 
     @Override
     protected Bitmap getBitmap() {
-        Bitmap bitmap = generateGLCompatibleBitmap(mWidth, mHeight);
+        Bitmap bitmap = Bitmap.createBitmap(mWidth, mHeight, Config.ARGB_8888);
         mCanvas = new Canvas(bitmap);
         onDraw(mCanvas, bitmap);
         return bitmap;
