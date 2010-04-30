@@ -17,8 +17,11 @@
 package com.android.camera.ui;
 
 import static com.android.camera.ui.GLRootView.dpToPixel;
-
-import java.util.ArrayList;
+import com.android.camera.CameraSettings;
+import com.android.camera.ComboPreferences;
+import com.android.camera.ListPreference;
+import com.android.camera.PreferenceGroup;
+import com.android.camera.R;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -34,12 +37,7 @@ import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
-import com.android.camera.CameraSettings;
-import com.android.camera.ComboPreferences;
-import com.android.camera.IconListPreference;
-import com.android.camera.ListPreference;
-import com.android.camera.PreferenceGroup;
-import com.android.camera.R;
+import java.util.ArrayList;
 
 // This is the UI for the on-screen settings. Since the rendering is run in the
 // GL thread. If any values will be changed in the main thread, it needs to

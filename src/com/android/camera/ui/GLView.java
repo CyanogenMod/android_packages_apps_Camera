@@ -20,11 +20,11 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 import java.util.ArrayList;
-
 import javax.microedition.khronos.opengles.GL11;
 
 public class GLView {
@@ -81,8 +81,22 @@ public class GLView {
         } else {
             mViewFlags |= FLAG_INVISIBLE;
         }
-        onVisibilityChanged(visibility);
         invalidate();
+
+        // Trigger the onVisibilityChanged() if it is visible on the screen.
+        if (isVisible()) onVisibilityChanged(visibility);
+    }
+
+    public boolean isVisible() {
+        if (mRootView == null || mRootView.getVisibility() != View.VISIBLE) {
+            return false;
+        }
+        GLView parent = mParent;
+        while (parent != null) {
+            if (parent.getVisibility() == GLView.INVISIBLE) return false;
+            parent = parent.mParent;
+        }
+        return true;
     }
 
     public int getVisibility() {
@@ -141,6 +155,7 @@ public class GLView {
         }
         mComponents.add(component);
         component.onAddToParent(this);
+        if (isVisible()) component.onVisibilityChanged(VISIBLE);
     }
 
     public boolean removeComponent(GLView component) {
@@ -362,10 +377,7 @@ public class GLView {
 
     protected void onVisibilityChanged(int visibility) {
         for (int i = 0, n = getComponentCount(); i < n; ++i) {
-            GLView child = getComponent(i);
-            if (child.getVisibility() == GLView.VISIBLE) {
-                child.onVisibilityChanged(visibility);
-            }
+            getComponent(i).onVisibilityChanged(visibility);
         }
     }
 

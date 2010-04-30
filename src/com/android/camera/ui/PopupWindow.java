@@ -186,11 +186,6 @@ class PopupWindow extends GLView {
         mRotatePane.setContent(content);
     }
 
-    @Override
-    public void clearComponents() {
-        throw new UnsupportedOperationException();
-    }
-
     public void popup() {
         setVisibility(GLView.VISIBLE);
 

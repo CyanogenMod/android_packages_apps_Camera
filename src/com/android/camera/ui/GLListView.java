@@ -17,10 +17,12 @@
 package com.android.camera.ui;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
+import com.android.camera.Util;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -30,15 +32,13 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.Scroller;
 
-import com.android.camera.Util;
-
 import javax.microedition.khronos.opengles.GL11;
 
 class GLListView extends GLView {
     @SuppressWarnings("unused")
     private static final String TAG = "GLListView";
     private static final int INDEX_NONE = -1;
-    private static final int SCROLL_BAR_TIMEOUT = 2500;
+    private static final int SCROLL_BAR_TIMEOUT = 1000;
 
     private static final int HIDE_SCROLL_BAR = 1;
 
@@ -77,7 +77,7 @@ class GLListView extends GLView {
 
     public GLListView(Context context) {
         mScroller = new Scroller(context);
-        mHandler = new Handler() {
+        mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 GLRootView root = getGLRootView();
@@ -102,13 +102,25 @@ class GLListView extends GLView {
                 context, new MyGestureListener(), mHandler);
     }
 
+    private final Runnable mHideScrollBar = new Runnable() {
+        public void run() {
+            setScrollBarVisible(false);
+        }
+    };
+
     @Override
     protected void onVisibilityChanged(int visibility) {
         super.onVisibilityChanged(visibility);
-        if (visibility == GLView.VISIBLE && mScrollHeight > getHeight()) {
+        if (mScrollHeight > getHeight()) updateScrollBar(visibility);
+    }
+
+    private void updateScrollBar(int visibility) {
+        if (isVisible()) {
             setScrollBarVisible(true);
             mHandler.sendEmptyMessageDelayed(
                     HIDE_SCROLL_BAR, SCROLL_BAR_TIMEOUT);
+        } else {
+            mHandler.removeMessages(HIDE_SCROLL_BAR);
         }
     }
 
@@ -294,7 +306,10 @@ class GLListView extends GLView {
                 mIsPressed = true;
                 mHandler.removeMessages(HIDE_SCROLL_BAR);
                 setScrollBarVisible(mScrollHeight > getHeight());
-
+                if (!mScroller.isFinished()) {
+                    mScroller.forceFinished(true);
+                    break;
+                }
                 // fallthrough: we need to highlight the item which is pressed
             case MotionEvent.ACTION_MOVE:
                 if (!mScrollable) {

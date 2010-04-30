@@ -30,6 +30,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
@@ -37,7 +38,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Stack;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
@@ -728,4 +728,12 @@ public class GLRootView extends GLSurfaceView
         texture.setTextureSize(newWidth, newHeight);
     }
 
+    @Override
+    protected void onVisibilityChanged(View changedView, int v) {
+        super.onVisibilityChanged(changedView, v);
+        if (mContentView != null) {
+            mContentView.onVisibilityChanged(
+                    v == View.VISIBLE ? GLView.VISIBLE : GLView.INVISIBLE);
+        }
+    }
 }

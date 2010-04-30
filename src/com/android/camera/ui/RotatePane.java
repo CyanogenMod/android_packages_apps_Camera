@@ -117,8 +117,7 @@ class RotatePane extends GLView {
 
     public void setContent(GLView view) {
         if (mChild == view) return;
-
-        if (mChild != null) super.clearComponents();
+        if (mChild != null) super.removeComponent(mChild);
         mChild = view;
         if (view != null) super.addComponent(view);
         requestLayout();
@@ -127,10 +126,5 @@ class RotatePane extends GLView {
     @Override
     public void addComponent(GLView view) {
         throw new UnsupportedOperationException("use setContent(GLView)");
-    }
-
-    @Override
-    public void clearComponents() {
-        throw new UnsupportedOperationException("use setContent(null)");
     }
 }
