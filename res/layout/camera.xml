@@ -24,6 +24,7 @@
     <com.android.camera.PreviewFrameLayout android:id="@+id/frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
             android:layout_weight="1">
         <FrameLayout android:id="@+id/frame"
                 android:layout_width="match_parent"
