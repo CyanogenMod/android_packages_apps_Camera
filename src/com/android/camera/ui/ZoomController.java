@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class ZoomController extends GLView {
+class ZoomController extends GLView {
     private static final int LABEL_COLOR = Color.WHITE;
 
     private static final DecimalFormat sZoomFormat = new DecimalFormat("#.#x");
@@ -52,11 +52,7 @@ public class ZoomController extends GLView {
     private int mSliderLeft;
     private int mSliderPosition = INVALID_POSITION;
     private float mValueGap;
-    private ZoomListener mZoomListener;
-
-    public interface ZoomListener {
-        public void onZoomChanged(int index, float ratio, boolean isMoving);
-    }
+    private ZoomControllerListener mZoomListener;
 
     public ZoomController(Context context) {
         initializeStaticVariable(context);
@@ -255,7 +251,7 @@ public class ZoomController extends GLView {
         }
     }
 
-    public void setZoomListener(ZoomListener listener) {
+    public void setZoomListener(ZoomControllerListener listener) {
         mZoomListener = listener;
     }
 

@@ -3,7 +3,7 @@ package com.android.camera.ui;
 import android.graphics.Rect;
 import android.view.View.MeasureSpec;
 
-public class LinearLayout extends GLView {
+class LinearLayout extends GLView {
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {

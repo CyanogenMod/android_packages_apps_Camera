@@ -7,7 +7,7 @@ import com.android.camera.R;
 
 import java.util.HashMap;
 
-public class OtherSettingsIndicator extends AbstractIndicator {
+class OtherSettingsIndicator extends AbstractIndicator {
 
     private final ListPreference mPreference[];
     private final GLListView.Model mAdapters[];

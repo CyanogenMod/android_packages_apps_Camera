@@ -18,7 +18,7 @@ import com.android.camera.Util;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class GLListView extends GLView {
+class GLListView extends GLView {
     @SuppressWarnings("unused")
     private static final String TAG = "GLListView";
     private static final int INDEX_NONE = -1;
@@ -61,13 +61,30 @@ public class GLListView extends GLView {
 
     public GLListView(Context context) {
         mScroller = new Scroller(context);
-    }
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                GLRootView root = getGLRootView();
+                if (root != null) {
+                    synchronized (root) {
+                        handleMessageLocked(msg);
+                    }
+                } else {
+                    handleMessageLocked(msg);
+                }
+            }
 
-    private final Runnable mHideScrollBar = new Runnable() {
-        public void run() {
-            setScrollBarVisible(false);
-        }
-    };
+            private void handleMessageLocked(Message msg) {
+                switch(msg.what) {
+                    case HIDE_SCROLL_BAR:
+                        setScrollBarVisible(false);
+                        break;
+                }
+            }
+        };
+        mGestureDetector = new GestureDetector(
+                context, new MyGestureListener(), mHandler);
+    }
 
     @Override
     protected void onVisibilityChanged(int visibility) {
@@ -78,26 +95,6 @@ public class GLListView extends GLView {
                     HIDE_SCROLL_BAR, SCROLL_BAR_TIMEOUT);
         }
     }
-
-    @Override
-    protected void onAttachToRoot(GLRootView root) {
-        super.onAttachToRoot(root);
-        mHandler = new Handler(root.getTimerLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                GLRootView root = getGLRootView();
-                switch(msg.what) {
-                    case HIDE_SCROLL_BAR:
-                        root.queueEvent(mHideScrollBar);
-                        break;
-                }
-            }
-        };
-        mGestureDetector =
-            new GestureDetector(root.getContext(),
-            new MyGestureListener(), mHandler);
-    }
-
 
     private void setScrollBarVisible(boolean visible) {
         if (mScrollBarVisible == visible || mScrollbar == null) return;
@@ -357,13 +354,8 @@ public class GLListView extends GLView {
 
         @Override
         public void onShowPress(MotionEvent e) {
-            if (!mScrollable) return;
-            final int y = (int) e.getY();
-            getGLRootView().queueEvent(new Runnable() {
-                public void run() {
-                    if (mIsPressed) findAndSetHighlightItem(y);
-                }
-            });
+            if (!mScrollable || !mIsPressed) return;
+            findAndSetHighlightItem((int) e.getY());
         }
 
         @Override

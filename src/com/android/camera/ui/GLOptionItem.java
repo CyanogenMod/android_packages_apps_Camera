@@ -10,7 +10,7 @@ import com.android.camera.R;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class GLOptionItem extends GLView {
+class GLOptionItem extends GLView {
     private static final int FONT_COLOR = Color.WHITE;
     private static final float FONT_SIZE = 18;
 

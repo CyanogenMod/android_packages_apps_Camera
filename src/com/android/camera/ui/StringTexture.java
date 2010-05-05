@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.FontMetricsInt;
 
-public class StringTexture extends CanvasTexture {
+class StringTexture extends CanvasTexture {
     private static int DEFAULT_PADDING = 1;
 
     private final String mText;

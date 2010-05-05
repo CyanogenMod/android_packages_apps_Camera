@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Bitmap.Config;
 
 /** Using a canvas to draw the texture */
-public abstract class CanvasTexture extends Texture {
+abstract class CanvasTexture extends Texture {
     protected Canvas mCanvas;
 
     public CanvasTexture(int width, int height) {

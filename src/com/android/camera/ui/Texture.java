@@ -8,7 +8,7 @@ import android.opengl.GLUtils;
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
 
-public abstract class Texture {
+abstract class Texture {
 
     @SuppressWarnings("unused")
     private static final String TAG = "Texture";

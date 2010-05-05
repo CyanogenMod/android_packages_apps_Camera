@@ -8,7 +8,7 @@ import com.android.camera.R;
 import com.android.camera.Util;
 import com.android.camera.ui.GLListView.OnItemSelectedListener;
 
-public class BasicIndicator extends AbstractIndicator {
+class BasicIndicator extends AbstractIndicator {
 
     private final ResourceTexture mIcon[];
     private final IconListPreference mPreference;

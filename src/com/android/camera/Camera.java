@@ -77,7 +77,7 @@ import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
-import com.android.camera.ui.ZoomController;
+import com.android.camera.ui.ZoomControllerListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -316,11 +316,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         setOrientationIndicator(mLastOrientation);
                     }
                     if (mGLRootView != null) {
-                        mGLRootView.queueEvent(new Runnable() {
-                            public void run() {
-                                mHeadUpDisplay.setOrientation(mLastOrientation);
-                            }
-                        });
+                        mHeadUpDisplay.setOrientation(mLastOrientation);
                     }
                 }
             }
@@ -396,10 +392,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mOrientationListener.enable();
 
         // Start location update if needed.
-        synchronized (mPreferences) {
-            mRecordLocation = RecordLocationPreference.get(
-                    mPreferences, getContentResolver());
-        }
+        mRecordLocation = RecordLocationPreference.get(
+                mPreferences, getContentResolver());
         if (mRecordLocation) startReceivingLocationUpdates();
 
         installIntentFilter();
@@ -998,22 +992,17 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void overrideHudSettings(final String flashMode,
             final String whiteBalance, final String focusMode) {
-        mGLRootView.queueEvent(new Runnable() {
-            public void run() {
-                mHeadUpDisplay.overrideSettings(
-                        CameraSettings.KEY_FLASH_MODE, flashMode);
-                mHeadUpDisplay.overrideSettings(
-                        CameraSettings.KEY_WHITE_BALANCE, whiteBalance);
-                mHeadUpDisplay.overrideSettings(
-                        CameraSettings.KEY_FOCUS_MODE, focusMode);
-            }});        
+        mHeadUpDisplay.overrideSettings(
+                CameraSettings.KEY_FLASH_MODE, flashMode,
+                CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
+                CameraSettings.KEY_FOCUS_MODE, focusMode);
     }
 
-    private void updateSceneModeInHud() {        
+    private void updateSceneModeInHud() {
         // If scene mode is set, we cannot set flash mode, white balance, and
-        // focus mode, instead, we read it from driver        
+        // focus mode, instead, we read it from driver
         if (!Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
-            overrideHudSettings(mParameters.getFlashMode(), 
+            overrideHudSettings(mParameters.getFlashMode(),
                     mParameters.getWhiteBalance(), mParameters.getFocusMode());
         } else {
             overrideHudSettings(null, null, null);
@@ -1035,14 +1024,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomRatios(getZoomRatios());
             mHeadUpDisplay.setZoomIndex(mZoomValue);
-            mHeadUpDisplay.setZoomListener(new ZoomController.ZoomListener() {
+            mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
                 public void onZoomChanged(
-                        final int index, float ratio, boolean isMoving) {
-                    mHandler.post(new Runnable() {
-                        public void run() {
-                            onZoomValueChanged(index);
-                        }
-                    });
+                        int index, float ratio, boolean isMoving) {
+                    onZoomValueChanged(index);
                 }
             });
         }
@@ -1908,9 +1893,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
 
         if ((updateSet & UPDATE_PARAM_PREFERENCE) != 0) {
-            synchronized (mPreferences) {
-                updateCameraParametersPreference();
-            }
+            updateCameraParametersPreference();
         }
 
         mCameraDevice.setParameters(mParameters);
@@ -2110,11 +2093,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         boolean recordLocation;
 
-        synchronized (mPreferences) {
-            recordLocation = RecordLocationPreference.get(
-                    mPreferences, getContentResolver());
-            mQuickCapture = getQuickCaptureSettings();
-        }
+        recordLocation = RecordLocationPreference.get(
+                mPreferences, getContentResolver());
+        mQuickCapture = getQuickCaptureSettings();
 
         if (mRecordLocation != recordLocation) {
             if (mRecordLocation) {
@@ -2153,22 +2134,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private class MyHeadUpDisplayListener implements HeadUpDisplay.Listener {
 
-        // The callback functions here will be called from the GLThread. So,
-        // we need to post these runnables to the main thread
         public void onSharedPreferencesChanged() {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    Camera.this.onSharedPreferenceChanged();
-                }
-            });
+            Camera.this.onSharedPreferenceChanged();
         }
 
         public void onRestorePreferencesClicked() {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    Camera.this.onRestorePreferencesClicked();
-                }
-            });
+            Camera.this.onRestorePreferencesClicked();
         }
 
         public void onPopupWindowVisibilityChanged(int visibility) {

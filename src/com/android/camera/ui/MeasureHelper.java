@@ -3,7 +3,7 @@ package com.android.camera.ui;
 import android.graphics.Rect;
 import android.view.View.MeasureSpec;
 
-public class MeasureHelper {
+class MeasureHelper {
 
     private final GLView mComponent;
     private int mPreferredWidth;

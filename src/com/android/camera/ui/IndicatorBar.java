@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
 
-public class IndicatorBar extends GLView {
+class IndicatorBar extends GLView {
 
     public static final int INDEX_NONE = -1;
 

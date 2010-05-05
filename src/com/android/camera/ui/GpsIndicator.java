@@ -6,7 +6,7 @@ import com.android.camera.R;
 import com.android.camera.IconListPreference;
 import com.android.camera.PreferenceGroup;
 
-public class GpsIndicator extends BasicIndicator {
+class GpsIndicator extends BasicIndicator {
 
     private static final int GPS_ON_INDEX = 1;
 
