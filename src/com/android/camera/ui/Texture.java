@@ -26,8 +26,8 @@ public abstract class Texture {
     protected int mWidth = UNSPECIFIED;
     protected int mHeight = UNSPECIFIED;
 
-    private float mTexCoordWidth = 1.0f;
-    private float mTexCoordHeight = 1.0f;
+    private int mTextureWidth;
+    private int mTextureHeight;
 
     protected Texture(GL11 gl, int id, int state) {
         mGL = gl;
@@ -44,9 +44,14 @@ public abstract class Texture {
         mHeight = height;
     }
 
-    protected void setTexCoordSize(float width, float height) {
-        mTexCoordWidth = width;
-        mTexCoordHeight = height;
+    /**
+     * Sets the size of the texture. Due to the limit of OpenGL, the texture
+     * size must be of power of 2, the size of the content may not be the size
+     * of the texture.
+     */
+    protected void setTextureSize(int width, int height) {
+        mTextureWidth = width;
+        mTextureHeight = height;
     }
 
     public int getId() {
@@ -102,8 +107,9 @@ public abstract class Texture {
                 int heightExt = Util.nextPowerOf2(height);
                 int format = GLUtils.getInternalFormat(bitmap);
                 int type = GLUtils.getType(bitmap);
-                mTexCoordWidth = (float) width / widthExt;
-                mTexCoordHeight = (float) height / heightExt;
+
+                mTextureWidth = widthExt;
+                mTextureHeight = heightExt;
                 gl.glTexImage2D(GL11.GL_TEXTURE_2D, 0, format,
                         widthExt, heightExt, 0, format, type, null);
                 GLUtils.texSubImage2D(
@@ -155,16 +161,20 @@ public abstract class Texture {
     }
 
     public void getTextureCoords(float coord[], int offset) {
-        float w = mTexCoordWidth;
-        float h = mTexCoordHeight;
+        // Shrinks the texture coordinates inner by 0.5 pixel so that GL won't
+        // sample on garbage data.
+        float left = 0.5f / mTextureWidth;
+        float right = (mWidth - 0.5f) / mTextureWidth;
+        float top = 0.5f / mTextureHeight;
+        float bottom = (mHeight - 0.5f) / mTextureHeight;
 
-        coord[offset++] = 0;
-        coord[offset++] = 0;
-        coord[offset++] = w;
-        coord[offset++] = 0;
-        coord[offset++] = 0;
-        coord[offset++] = h;
-        coord[offset++] = w;
-        coord[offset] = h;
+        coord[offset++] = left;
+        coord[offset++] = top;
+        coord[offset++] = right;
+        coord[offset++] = top;
+        coord[offset++] = left;
+        coord[offset++] = bottom;
+        coord[offset++] = right;
+        coord[offset] = bottom;
     }
 }

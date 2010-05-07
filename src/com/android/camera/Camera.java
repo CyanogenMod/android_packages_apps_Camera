@@ -45,6 +45,7 @@ import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
 import android.os.SystemClock;
@@ -370,7 +371,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void addIdleHandler() {
-        MessageQueue queue = getMainLooper().myQueue();
+        MessageQueue queue = Looper.myQueue();
         queue.addIdleHandler(new MessageQueue.IdleHandler() {
             public boolean queueIdle() {
                 ImageManager.ensureOSXCompatibleFolder();

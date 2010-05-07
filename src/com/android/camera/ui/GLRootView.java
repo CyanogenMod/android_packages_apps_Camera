@@ -525,8 +525,7 @@ public class GLRootView extends GLSurfaceView
         }
 
         texture.setSize(width, height);
-        texture.setTexCoordSize(
-                (float) width / newWidth, (float) height / newHeight);
+        texture.setTextureSize(newWidth, newHeight);
     }
 
     public synchronized void queueEventOrThrowException(Runnable runnable) {
