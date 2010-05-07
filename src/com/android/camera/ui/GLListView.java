@@ -277,11 +277,12 @@ public class GLListView extends GLView {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mIsPressed = true;
                 mHandler.removeMessages(HIDE_SCROLL_BAR);
                 setScrollBarVisible(mScrollHeight > getHeight());
-                break;
+
+                // fallthrough: we need to highlight the item which is pressed
             case MotionEvent.ACTION_MOVE:
-                mIsPressed = true;
                 if (!mScrollable) {
                     findAndSetHighlightItem((int) event.getY());
                 }

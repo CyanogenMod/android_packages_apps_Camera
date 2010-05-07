@@ -9,14 +9,16 @@ import com.android.camera.PreferenceGroup;
 
 public class CameraHeadUpDisplay extends HeadUpDisplay {
 
-    protected static final String TAG = "CamcoderHeadUpDisplay";
+    private static final String TAG = "CamcoderHeadUpDisplay";
 
     private OtherSettingsIndicator mOtherSettings;
     private GpsIndicator mGpsIndicator;
     private ZoomIndicator mZoomIndicator;
+    private Context mContext;
 
     public CameraHeadUpDisplay(Context context) {
         super(context);
+        mContext = context;
     }
 
     @Override
@@ -49,9 +51,6 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
 
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_FLASH_MODE);
-
-        mZoomIndicator = new ZoomIndicator(context);
-        mIndicatorBar.addComponent(mZoomIndicator);
     }
 
     public void setZoomListener(ZoomController.ZoomListener listener) {
@@ -75,7 +74,16 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         }
     }
 
+    /**
+     * Sets the zoom rations the camera driver provides. This methods must be
+     * called before <code>setZoomListener()</code> and
+     * <code>setZoomIndex()</code>
+     */
     public void setZoomRatios(float[] zoomRatios) {
+        if (mZoomIndicator == null) {
+            mZoomIndicator = new ZoomIndicator(mContext);
+            mIndicatorBar.addComponent(mZoomIndicator);
+        }
         mZoomIndicator.setZoomRatios(zoomRatios);
     }
 }
