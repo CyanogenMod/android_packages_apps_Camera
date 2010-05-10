@@ -2116,6 +2116,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
 
         if (mRecordLocation != recordLocation) {
+            mRecordLocation = recordLocation;
             if (mRecordLocation) {
                 startReceivingLocationUpdates();
             } else {
