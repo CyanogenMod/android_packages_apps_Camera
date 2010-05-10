@@ -10,7 +10,7 @@ import android.view.animation.ScaleAnimation;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class PopupWindow extends GLView {
+class PopupWindow extends GLView {
 
     protected Texture mAnchor;
     protected int mAnchorOffset;

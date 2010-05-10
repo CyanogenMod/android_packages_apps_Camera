@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class RawTexture extends Texture {
+class RawTexture extends Texture {
 
     private RawTexture(GL11 gl, int id) {
         super(gl, id, STATE_LOADED);

@@ -8,7 +8,7 @@ import android.graphics.drawable.NinePatchDrawable;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class NinePatchTexture extends FrameTexture {
+class NinePatchTexture extends FrameTexture {
 
     private MyTexture mDelegate;
 

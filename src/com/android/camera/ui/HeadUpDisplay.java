@@ -3,8 +3,6 @@ package com.android.camera.ui;
 import static com.android.camera.ui.GLRootView.dpToPixel;
 
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -27,12 +25,9 @@ import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
-// This is the UI for the on-screen settings. It mainly run in the GLThread. It
-// will modify the shared-preferences. The concurrency rule is: The shared-
-// preference will be updated in the GLThread. And an event will be trigger in
-// the main UI thread so that the camera settings can be updated by reading the
-// updated preferences. The two threads synchronize on the monitor of the
-// default SharedPrefernce instance.
+// This is the UI for the on-screen settings. Since the rendering is run in the
+// GL thread. If any values will be changed in the main thread, it needs to
+// synchronize on the <code>GLRootView</code> instance.
 public class HeadUpDisplay extends GLView {
     private static final int INDICATOR_BAR_TIMEOUT = 5500;
     private static final int POPUP_WINDOW_TIMEOUT = 5000;
@@ -65,7 +60,32 @@ public class HeadUpDisplay extends GLView {
 
     protected Listener mListener;
 
-    private Handler mHandler;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            GLRootView root = getGLRootView();
+            if (root != null) {
+                synchronized (root) {
+                    handleMessageLocked(msg);
+                }
+            } else {
+                handleMessageLocked(msg);
+            }
+        }
+
+        private void handleMessageLocked(Message msg) {
+            switch(msg.what) {
+                case DESELECT_INDICATOR:
+                    mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
+                    break;
+                case DEACTIVATE_INDICATOR_BAR:
+                    if (mIndicatorBar != null) {
+                        mIndicatorBar.setActivated(false);
+                    }
+                    break;
+            }
+        }
+    };
 
     private final OnSharedPreferenceChangeListener mSharedPreferenceChangeListener =
             new OnSharedPreferenceChangeListener() {
@@ -81,27 +101,6 @@ public class HeadUpDisplay extends GLView {
         initializeStaticVariables(context);
     }
 
-    @Override
-    protected void onAttachToRoot(GLRootView root) {
-        super.onAttachToRoot(root);
-        mHandler = new Handler(root.getTimerLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                GLRootView root = getGLRootView();
-                Runnable runnable = null;
-                switch(msg.what) {
-                    case DESELECT_INDICATOR:
-                        runnable = mDeselectIndicator;
-                        break;
-                    case DEACTIVATE_INDICATOR_BAR:
-                        runnable = mDeactivateIndicatorBar;
-                        break;
-                }
-                if (runnable != null) root.queueEvent(runnable);
-            }
-        };
-    }
-
     private static void initializeStaticVariables(Context context) {
         if (sIndicatorBarRightMargin >= 0) return;
 
@@ -109,18 +108,6 @@ public class HeadUpDisplay extends GLView {
         sPopupWindowOverlap = dpToPixel(context, POPUP_WINDOW_OVERLAP);
         sPopupTriangleOffset = dpToPixel(context, POPUP_TRIANGLE_OFFSET);
     }
-
-    private final Runnable mDeselectIndicator = new Runnable () {
-        public void run() {
-            mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
-       }
-    };
-
-    private final Runnable mDeactivateIndicatorBar = new Runnable () {
-        public void run() {
-            if (mIndicatorBar != null) mIndicatorBar.setActivated(false);
-        }
-    };
 
     /**
      * The callback interface. All the callbacks will be called from the
@@ -133,23 +120,22 @@ public class HeadUpDisplay extends GLView {
     }
 
     public void overrideSettings(final String ... keyvalues) {
+        GLRootView root = getGLRootView();
+        if (root != null) {
+            synchronized (root) {
+                overrideSettingsLocked(keyvalues);
+            }
+        } else {
+            overrideSettingsLocked(keyvalues);
+        }
+    }
+
+    public void overrideSettingsLocked(final String ... keyvalues) {
         if (keyvalues.length % 2 != 0) {
             throw new IllegalArgumentException();
         }
-        GLRootView root = getGLRootView();
-        if (root != null) {
-            root.queueEvent(new Runnable() {
-                public void run() {
-                    for (int i = 0, n = keyvalues.length; i < n; i += 2) {
-                        mIndicatorBar.overrideSettings(
-                                keyvalues[i], keyvalues[i + 1]);
-                    }
-                }
-            });
-        } else {
-            for (int i = 0, n = keyvalues.length; i < n; i += 2) {
-                mIndicatorBar.overrideSettings(keyvalues[i], keyvalues[i + 1]);
-            }
+        for (int i = 0, n = keyvalues.length; i < n; i += 2) {
+            mIndicatorBar.overrideSettings(keyvalues[i], keyvalues[i + 1]);
         }
     }
 
@@ -240,12 +226,18 @@ public class HeadUpDisplay extends GLView {
                 DEACTIVATE_INDICATOR_BAR, INDICATOR_BAR_TIMEOUT);
     }
 
-    public void deactivateIndicatorBar() {
-        if (mIndicatorBar == null) return;
-        mIndicatorBar.setActivated(false);
+    public void setOrientation(int orientation) {
+        GLRootView root = getGLRootView();
+        if (root != null) {
+            synchronized (root) {
+                setOrientationLocked(orientation);
+            }
+        } else {
+            setOrientationLocked(orientation);
+        }
     }
 
-    public void setOrientation(int orientation) {
+    private void setOrientationLocked(int orientation) {
         mOrientation = orientation;
         mIndicatorBar.setOrientation(orientation);
         if (mPopupWindow == null) return;
@@ -279,6 +271,8 @@ public class HeadUpDisplay extends GLView {
     }
 
     public void setEnabled(boolean enabled) {
+        // The mEnabled variable is not related to the rendering thread, so we
+        // don't need to synchronize on the GLRootView.
         if (mEnabled == enabled) return;
         mEnabled = enabled;
     }
@@ -357,59 +351,63 @@ public class HeadUpDisplay extends GLView {
         }
     }
 
-    private final Callable<Boolean> mCollapse = new Callable<Boolean>() {
-        public Boolean call() {
-            if (!mIndicatorBar.isActivated()) return false;
-            mHandler.removeMessages(DESELECT_INDICATOR);
-            mHandler.removeMessages(DEACTIVATE_INDICATOR_BAR);
+    public boolean collapse() {
+        // We don't need to synchronize on GLRootView, since both the
+        // <code>isActivated()</code> and rendering thread are read-only to
+        // the variables inside.
+        if (!mIndicatorBar.isActivated()) return false;
+        mHandler.removeMessages(DESELECT_INDICATOR);
+        mHandler.removeMessages(DEACTIVATE_INDICATOR_BAR);
+        GLRootView root = getGLRootView();
+        if (root != null) {
+            synchronized (root) {
+                mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
+                mIndicatorBar.setActivated(false);
+            }
+        } else {
             mIndicatorBar.setSelectedIndex(IndicatorBar.INDEX_NONE);
             mIndicatorBar.setActivated(false);
-            return true;
         }
-    };
-
-    public boolean collapse() {
-        FutureTask<Boolean> task = new FutureTask<Boolean>(mCollapse);
-        getGLRootView().runInGLThread(task);
-        try {
-            return task.get().booleanValue();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return true;
     }
 
     public void setListener(Listener listener) {
+        // No synchronization: mListener won't be accessed in rendering thread
         mListener = listener;
     }
 
     public void restorePreferences(final Parameters param) {
-        getGLRootView().runInGLThread(new Runnable() {
-            public void run() {
-                OnSharedPreferenceChangeListener l =
-                        mSharedPreferenceChangeListener;
-                // Unregister the listener since "upgrade preference" will
-                // change bunch of preferences. We can handle them with one
-                // onSharedPreferencesChanged();
-                mSharedPrefs.unregisterOnSharedPreferenceChangeListener(l);
-                Context context = getGLRootView().getContext();
-                synchronized (mSharedPrefs) {
-                    Editor editor = mSharedPrefs.edit();
-                    editor.clear();
-                    editor.commit();
-                }
-                CameraSettings.upgradePreferences(mSharedPrefs);
-                CameraSettings.initialCameraPictureSize(context, param);
-                reloadPreferences();
-                if (mListener != null) {
-                    mListener.onSharedPreferencesChanged();
-                }
-                mSharedPrefs.registerOnSharedPreferenceChangeListener(l);
-            }
-        });
+        // Do synchronization in "reloadPreferences()"
+
+        OnSharedPreferenceChangeListener l =
+                mSharedPreferenceChangeListener;
+        // Unregister the listener since "upgrade preference" will
+        // change bunch of preferences. We can handle them with one
+        // onSharedPreferencesChanged();
+        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(l);
+        Context context = getGLRootView().getContext();
+        Editor editor = mSharedPrefs.edit();
+        editor.clear();
+        editor.commit();
+        CameraSettings.upgradePreferences(mSharedPrefs);
+        CameraSettings.initialCameraPictureSize(context, param);
+        reloadPreferences();
+        if (mListener != null) {
+            mListener.onSharedPreferencesChanged();
+        }
+        mSharedPrefs.registerOnSharedPreferenceChangeListener(l);
     }
 
     public void reloadPreferences() {
-        mPreferenceGroup.reloadValue();
-        mIndicatorBar.reloadPreferences();
+        GLRootView root = getGLRootView();
+        if (root != null) {
+            synchronized (root) {
+                mPreferenceGroup.reloadValue();
+                mIndicatorBar.reloadPreferences();
+            }
+        } else {
+            mPreferenceGroup.reloadValue();
+            mIndicatorBar.reloadPreferences();
+        }
     }
 }

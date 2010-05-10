@@ -4,7 +4,7 @@ import android.graphics.Rect;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public abstract class FrameTexture extends Texture {
+abstract class FrameTexture extends Texture {
 
     public FrameTexture() {
     }

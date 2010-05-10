@@ -6,7 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-public class ResourceTexture extends Texture {
+class ResourceTexture extends Texture {
 
     private final Context mContext;
     private final int mResId;

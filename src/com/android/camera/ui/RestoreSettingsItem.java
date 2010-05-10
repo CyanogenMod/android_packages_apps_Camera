@@ -7,7 +7,7 @@ import android.graphics.Rect;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class RestoreSettingsItem extends GLView {
+class RestoreSettingsItem extends GLView {
     private static final int FONT_COLOR = Color.WHITE;
     private static final float FONT_SIZE = 18;
 

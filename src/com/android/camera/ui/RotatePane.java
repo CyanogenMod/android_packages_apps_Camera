@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 import javax.microedition.khronos.opengles.GL11;
 
 
-public class RotatePane extends GLView {
+class RotatePane extends GLView {
 
     public static final int UP = 0;
     public static final int RIGHT = 1;

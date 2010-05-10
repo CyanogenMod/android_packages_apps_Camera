@@ -26,7 +26,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
  * choose a configuration that support RGBA_8888 format and if possible,
  * with stencil buffer, but is not required.
  */
-public class CameraEGLConfigChooser implements EGLConfigChooser {
+class CameraEGLConfigChooser implements EGLConfigChooser {
 
     private static final int COLOR_BITS = 8;
 

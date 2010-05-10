@@ -3,11 +3,11 @@ package com.android.camera.ui;
 import android.content.Context;
 
 import com.android.camera.R;
-import com.android.camera.ui.ZoomController.ZoomListener;
+import com.android.camera.ui.ZoomControllerListener;
 
 import java.text.DecimalFormat;
 
-public class ZoomIndicator extends AbstractIndicator {
+class ZoomIndicator extends AbstractIndicator {
     private static final DecimalFormat sZoomFormat = new DecimalFormat("#.#x");
     private static final float FONT_SIZE = 18;
     private static final int FONT_COLOR = 0xA8FFFFFF;
@@ -18,7 +18,7 @@ public class ZoomIndicator extends AbstractIndicator {
 
     private ZoomController mZoomController;
     private LinearLayout mPopupContent;
-    private ZoomListener mZoomListener;
+    private ZoomControllerListener mZoomListener;
     private int mZoomIndex = 0;
     private int mDrawIndex = -1;
     private float mZoomRatios[];
@@ -97,7 +97,7 @@ public class ZoomIndicator extends AbstractIndicator {
         requestLayout();
     }
 
-    private class MyZoomListener implements ZoomController.ZoomListener {
+    private class MyZoomListener implements ZoomControllerListener {
         public void onZoomChanged(int index, float value, boolean isMoving) {
             if (mZoomListener != null) {
                 mZoomListener.onZoomChanged(index, value, isMoving);
@@ -112,7 +112,7 @@ public class ZoomIndicator extends AbstractIndicator {
         invalidate();
     }
 
-    public void setZoomListener(ZoomListener listener) {
+    public void setZoomListener(ZoomControllerListener listener) {
         mZoomListener = listener;
     }
 

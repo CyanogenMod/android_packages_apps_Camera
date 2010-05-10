@@ -8,7 +8,7 @@ import com.android.camera.R;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class GLOptionHeader extends GLView {
+class GLOptionHeader extends GLView {
     private static final int FONT_COLOR = 0xFF979797;
     private static final float FONT_SIZE = 12;
     private static final int HORIZONTAL_PADDINGS = 4;

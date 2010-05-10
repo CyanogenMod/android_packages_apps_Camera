@@ -53,22 +53,29 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         addIndicator(context, group, CameraSettings.KEY_FLASH_MODE);
     }
 
-    public void setZoomListener(ZoomController.ZoomListener listener) {
+    public void setZoomListener(ZoomControllerListener listener) {
+        // The rendering thread won't access listener variable, so we don't
+        // need to do concurrency protection here
         mZoomIndicator.setZoomListener(listener);
     }
 
     public void setZoomIndex(int index) {
-        mZoomIndicator.setZoomIndex(index);
+        GLRootView root = getGLRootView();
+        if (root != null) {
+            synchronized (root) {
+                mZoomIndicator.setZoomIndex(index);
+            }
+        } else {
+            mZoomIndicator.setZoomIndex(index);
+        }
     }
 
     public void setGpsHasSignal(final boolean hasSignal) {
         GLRootView root = getGLRootView();
         if (root != null) {
-            root.queueEvent(new Runnable() {
-                public void run() {
-                    mGpsIndicator.setHasSignal(hasSignal);
-                }
-            });
+            synchronized (root) {
+                mGpsIndicator.setHasSignal(hasSignal);
+            }
         } else {
             mGpsIndicator.setHasSignal(hasSignal);
         }
@@ -80,6 +87,17 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
      * <code>setZoomIndex()</code>
      */
     public void setZoomRatios(float[] zoomRatios) {
+        GLRootView root = getGLRootView();
+        if (root != null) {
+            synchronized(root) {
+                setZoomRatiosLocked(zoomRatios);
+            }
+        } else {
+            setZoomRatiosLocked(zoomRatios);
+        }
+    }
+
+    private void setZoomRatiosLocked(float[] zoomRatios) {
         if (mZoomIndicator == null) {
             mZoomIndicator = new ZoomIndicator(mContext);
             mIndicatorBar.addComponent(mZoomIndicator);

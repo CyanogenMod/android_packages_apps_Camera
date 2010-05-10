@@ -8,9 +8,6 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.os.ConditionVariable;
-import android.os.Looper;
-import android.os.Process;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -23,14 +20,20 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
 
+// The root component of all <code>GLView</code>s. The rendering is done in GL
+// thread while the event handling is done in the main thread.  To synchronize
+// the two threads, the entry points of this package need to synchronize on the
+// <code>GLRootView</code> instance unless it can be proved that the rendering
+// thread won't access the same thing as the method. The entry points include:
+// (1) The public methods of HeadUpDisplay
+// (2) The public methods of CameraHeadUpDisplay
+// (3) The overridden methods in GLRootView.
 public class GLRootView extends GLSurfaceView
         implements GLSurfaceView.Renderer {
     private static final String TAG = "GLRootView";
@@ -72,14 +75,7 @@ public class GLRootView extends GLSurfaceView
     private int mFlags = FLAG_NEED_LAYOUT;
     private long mAnimationTime;
 
-    private Thread mGLThread;
-
-    private boolean mIsQueueActive = true;
     private CameraEGLConfigChooser mEglConfigChooser = new CameraEGLConfigChooser();
-
-
-    // TODO: move this part (handler) into GLSurfaceView
-    private final Looper mLooper;
 
     public GLRootView(Context context) {
         this(context, null);
@@ -88,7 +84,6 @@ public class GLRootView extends GLSurfaceView
     public GLRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
-        mLooper = Looper.getMainLooper();
     }
 
     void registerLaunchedAnimation(Animation animation) {
@@ -145,14 +140,6 @@ public class GLRootView extends GLSurfaceView
         Transformation trans = mTransformStack.pop();
         mTransformation.set(trans);
         freeTransformation(trans);
-    }
-
-    public void runInGLThread(Runnable runnable) {
-        if (Thread.currentThread() == mGLThread) {
-            runnable.run();
-        } else {
-            queueEvent(runnable);
-        }
     }
 
     public CameraEGLConfigChooser getEGLConfigChooser() {
@@ -239,10 +226,6 @@ public class GLRootView extends GLSurfaceView
         } else {
             setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         }
-
-        // Increase the priority of the render thread
-        Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
-        mGLThread = Thread.currentThread();
 
         // Disable unused state
         gl.glDisable(GL11.GL_LIGHTING);
@@ -409,8 +392,7 @@ public class GLRootView extends GLSurfaceView
         drawTexture(texture, x, y, width, height, mTransformation.getAlpha());
     }
 
-    // This is a GLSurfaceView.Renderer callback
-    public void onDrawFrame(GL10 gl) {
+    public synchronized void onDrawFrame(GL10 gl) {
         if (ENABLE_FPS_TEST) {
             long now = System.nanoTime();
             if (mFrameCountingStart == 0) {
@@ -442,31 +424,11 @@ public class GLRootView extends GLSurfaceView
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
+    public synchronized boolean dispatchTouchEvent(MotionEvent event) {
         // If this has been detached from root, we don't need to handle event
-        if (!mIsQueueActive) return false;
-        FutureTask<Boolean> task = new FutureTask<Boolean>(
-                new TouchEventHandler(event));
-        queueEventOrThrowException(task);
-        try {
-            return task.get();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private class TouchEventHandler implements Callable<Boolean> {
-
-        private final MotionEvent mEvent;
-
-        public TouchEventHandler(MotionEvent event) {
-            mEvent = event;
-        }
-
-        public Boolean call() throws Exception {
-            if (mContentView == null) return false;
-            return mContentView.dispatchTouchEvent(mEvent);
-        }
+        return mContentView != null
+                ? mContentView.dispatchTouchEvent(event)
+                : false;
     }
 
     public DisplayMetrics getDisplayMetrics() {
@@ -528,31 +490,4 @@ public class GLRootView extends GLSurfaceView
         texture.setTextureSize(newWidth, newHeight);
     }
 
-    public synchronized void queueEventOrThrowException(Runnable runnable) {
-        if (!mIsQueueActive) {
-            throw new IllegalStateException("GLThread has exit");
-        }
-        super.queueEvent(runnable);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        final ConditionVariable var = new ConditionVariable();
-        synchronized (this) {
-            mIsQueueActive = false;
-            queueEvent(new Runnable() {
-                public void run() {
-                    var.open();
-                }
-            });
-        }
-
-        // Make sure all the runnables in the event queue is executed.
-        var.block();
-        super.onDetachedFromWindow();
-    }
-
-    protected Looper getTimerLooper() {
-        return mLooper;
-    }
 }

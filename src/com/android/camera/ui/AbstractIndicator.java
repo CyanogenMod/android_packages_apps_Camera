@@ -9,7 +9,7 @@ import android.view.animation.Transformation;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public abstract class AbstractIndicator extends GLView {
+abstract class AbstractIndicator extends GLView {
     private static final int DEFAULT_PADDING = 3;
     private int mOrientation = 0;
 
