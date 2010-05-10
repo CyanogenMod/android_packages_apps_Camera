@@ -4,6 +4,7 @@ import com.android.camera.Util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
@@ -46,6 +47,8 @@ public class GLRootView extends GLSurfaceView
 
     private static final int FLAG_INITIALIZED = 1;
     private static final int FLAG_NEED_LAYOUT = 2;
+
+    private static boolean mTexture2DEnabled;
 
     private static float sPixelDensity = -1f;
 
@@ -237,6 +240,7 @@ public class GLRootView extends GLSurfaceView
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glEnable(GL11.GL_TEXTURE_2D);
+        mTexture2DEnabled = true;
 
         gl.glTexEnvf(GL11.GL_TEXTURE_ENV,
                 GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE);
@@ -288,25 +292,18 @@ public class GLRootView extends GLSurfaceView
     public void drawRect(int x, int y, int width, int height) {
         float matrix[] = mMatrixValues;
         mTransformation.getMatrix().getValues(matrix);
-        drawRect(x, y, width, height, matrix, mTransformation.getAlpha());
+        drawRect(x, y, width, height, matrix);
     }
 
     private void drawRect(
-            int x, int y, int width, int height, float matrix[], float alpha) {
+            int x, int y, int width, int height, float matrix[]) {
         GL11 gl = mGL;
         gl.glPushMatrix();
-        setAlphaValue(alpha);
         gl.glMultMatrixf(toGLMatrix(matrix), 0);
         gl.glTranslatef(x, y, 0);
         gl.glScalef(width, height, 1);
         gl.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
         gl.glPopMatrix();
-    }
-
-    public void drawRect(int x, int y, int width, int height, float alpha) {
-        float matrix[] = mMatrixValues;
-        mTransformation.getMatrix().getValues(matrix);
-        drawRect(x, y, width, height, matrix, alpha);
     }
 
     private float[] mapPoints(Matrix matrix, int x1, int y1, int x2, int y2) {
@@ -351,8 +348,33 @@ public class GLRootView extends GLSurfaceView
         return v;
     }
 
+    public void drawColor(int x, int y, int width, int height, int color) {
+        drawColor(x, y, width, height, color, mTransformation.getAlpha());
+    }
+
+    public void drawColor(int x, int y,
+            int width, int height, int color, float alpha) {
+        GL11 gl = mGL;
+        if (mTexture2DEnabled) {
+            // Set mLastAlpha to an invalid value, so that it will reset again
+            // in setAlphaValue(float) later.
+            mLastAlpha = -1.0f;
+            mGL.glDisable(GL11.GL_TEXTURE_2D);
+            mTexture2DEnabled = false;
+        }
+        alpha /= 256.0f;
+        gl.glColor4f(Color.red(color) * alpha, Color.green(color) * alpha,
+                Color.blue(color) * alpha, Color.alpha(color) * alpha);
+        drawRect(x, y, width, height);
+    }
+
     public void drawTexture(
             Texture texture, int x, int y, int width, int height, float alpha) {
+
+        if (!mTexture2DEnabled) {
+            mGL.glEnable(GL11.GL_TEXTURE_2D);
+            mTexture2DEnabled = true;
+        }
 
         if (!texture.bind(this, mGL)) {
             throw new RuntimeException("cannot bind" + texture.toString());
@@ -367,7 +389,8 @@ public class GLRootView extends GLSurfaceView
         if (isMatrixRotatedOrFlipped(mMatrixValues)) {
             texture.getTextureCoords(mCoordBuffer, 0);
             mTexCoordBuffer.asFloatBuffer().put(mCoordBuffer).position(0);
-            drawRect(x, y, width, height, mMatrixValues, alpha);
+            setAlphaValue(alpha);
+            drawRect(x, y, width, height, mMatrixValues);
         } else {
             // draw the rect from bottom-left to top-right
             float points[] = mapPoints(matrix, x, y + height, x + width, y);

@@ -12,7 +12,7 @@ class IndicatorBar extends GLView {
     public static final int INDEX_NONE = -1;
 
     private NinePatchTexture mBackground;
-    private NinePatchTexture mHighlight;
+    private FrameTexture mHighlight;
     private int mSelectedIndex = INDEX_NONE;
 
     private OnItemSelectedListener mSelectedListener;
@@ -69,7 +69,7 @@ class IndicatorBar extends GLView {
         invalidate();
     }
 
-    public void setHighlight(NinePatchTexture highlight) {
+    public void setHighlight(FrameTexture highlight) {
         if (mHighlight == highlight) return;
         mHighlight = highlight;
         invalidate();

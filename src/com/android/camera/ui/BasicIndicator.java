@@ -9,6 +9,7 @@ import com.android.camera.Util;
 import com.android.camera.ui.GLListView.OnItemSelectedListener;
 
 class BasicIndicator extends AbstractIndicator {
+    private static final int COLOR_OPTION_ITEM_HIGHLIGHT = 0xFF181818;
 
     private final ResourceTexture mIcon[];
     private final IconListPreference mPreference;
@@ -56,8 +57,8 @@ class BasicIndicator extends AbstractIndicator {
         if (mPopupContent == null) {
             Context context = getGLRootView().getContext();
             mPopupContent = new GLListView(context);
-            mPopupContent.setHighLight(new NinePatchTexture(
-                    context, R.drawable.optionitem_highlight));
+            mPopupContent.setHighLight(
+                    new ColorTexture(COLOR_OPTION_ITEM_HIGHLIGHT));
             mPopupContent.setScroller(new NinePatchTexture(
                     context, R.drawable.scrollbar_handle_vertical));
             mModel = new PreferenceAdapter(context, mPreference);

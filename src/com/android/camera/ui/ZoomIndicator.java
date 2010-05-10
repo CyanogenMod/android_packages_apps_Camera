@@ -11,6 +11,7 @@ class ZoomIndicator extends AbstractIndicator {
     private static final DecimalFormat sZoomFormat = new DecimalFormat("#.#x");
     private static final float FONT_SIZE = 18;
     private static final int FONT_COLOR = 0xA8FFFFFF;
+    private static final int COLOR_OPTION_HEADER = 0xFF2B2B2B;
 
     protected static final String TAG = "ZoomIndicator";
 
@@ -70,8 +71,7 @@ class ZoomIndicator extends AbstractIndicator {
             mPopupContent = new LinearLayout();
             GLOptionHeader header = new GLOptionHeader(context,
                     context.getString(R.string.zoom_control_title));
-            header.setBackground(new NinePatchTexture(
-                    context, R.drawable.optionheader_background));
+            header.setBackground(new ColorTexture(COLOR_OPTION_HEADER));
             header.setPaddings(6, 3, 6, 3);
             mPopupContent.addComponent(header);
             mPopupContent.addComponent(mZoomController);
