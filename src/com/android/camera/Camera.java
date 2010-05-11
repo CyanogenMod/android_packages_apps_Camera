@@ -121,7 +121,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
-
     private static final int ZOOM_STOPPED = 0;
     private static final int ZOOM_START = 1;
     private static final int ZOOM_STOPPING = 2;
@@ -359,9 +358,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-
         mFirstTimeInitialized = true;
-
         changeHeadUpDisplayState();
         addIdleHandler();
     }
@@ -397,27 +394,21 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mRecordLocation) startReceivingLocationUpdates();
 
         installIntentFilter();
-
         initializeFocusTone();
+        initializeZoom();
+        changeHeadUpDisplayState();
 
         keepMediaProviderInstance();
         checkStorage();
 
-        mCameraDevice.setZoomChangeListener(mZoomListener);
-
         if (!mIsImageCaptureIntent) {
             updateThumbnailButton();
         }
-
-        changeHeadUpDisplayState();
     }
 
     private void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;
 
-        // Maximum zoom value may change after preview size is set. Get the
-        // latest parameters here.
-        mParameters = mCameraDevice.getParameters();
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
@@ -453,12 +444,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             return result;
         } else {
-            //1.0, 1.2, 1.44, 1.6, 1.8, 2.0
-            float result[] = new float[mZoomMax + 1];
-            for (int i = 0, n = result.length; i < n; ++i) {
-                result[i] = 1 + i * 0.2f;
-            }
-            return result;
+            throw new IllegalStateException("cannot get zoom ratios");
         }
     }
 
@@ -1770,7 +1756,15 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         Size optimalSize = getOptimalPreviewSize(
                 sizes, (double) size.width / size.height);
         if (optimalSize != null) {
-            mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
+            Size original = mParameters.getPreviewSize();
+            if (!original.equals(optimalSize)) {
+                mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
+
+                // Zoom related settings will be changed for different preview
+                // sizes, so set and read the parameters to get lastest values
+                mCameraDevice.setParameters(mParameters);
+                mParameters = mCameraDevice.getParameters();
+            }
         }
 
         // Since change scene mode may change supported values,
