@@ -2092,6 +2092,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mQuickCapture = getQuickCaptureSettings();
 
         if (mRecordLocation != recordLocation) {
+            mRecordLocation = recordLocation;
             if (mRecordLocation) {
                 startReceivingLocationUpdates();
             } else {
