@@ -59,7 +59,11 @@ public class GLRootView extends GLSurfaceView
     private int mFrameCount = 0;
     private long mFrameCountingStart = 0;
 
-    private static final int VERTEX_BUFFER_SIZE = 8;
+    // We need 16 vertices for a normal nine-patch image (the 4x4 vertices)
+    private static final int VERTEX_BUFFER_SIZE = 16 * 2;
+
+    // We need 22 indices for a normal nine-patch image
+    private static final int INDEX_BUFFER_SIZE = 22;
 
     private static final int FLAG_INITIALIZED = 1;
     private static final int FLAG_NEED_LAYOUT = 2;
@@ -85,11 +89,18 @@ public class GLRootView extends GLSurfaceView
 
     private final float mMatrixValues[] = new float[16];
 
-    private final float mCoordBuffer[] = new float[8];
-    private final float mPointBuffer[] = new float[4];
+    private final float mUvBuffer[] = new float[VERTEX_BUFFER_SIZE];
+    private final float mXyBuffer[] = new float[VERTEX_BUFFER_SIZE];
+    private final byte mIndexBuffer[] = new byte[INDEX_BUFFER_SIZE];
 
-    private ByteBuffer mVertexBuffer;
-    private ByteBuffer mTexCoordBuffer;
+    private int mNinePatchX[] = new int[4];
+    private int mNinePatchY[] = new int[4];
+    private float mNinePatchU[] = new float[4];
+    private float mNinePatchV[] = new float[4];
+
+    private ByteBuffer mXyPointer;
+    private ByteBuffer mUvPointer;
+    private ByteBuffer mIndexPointer;
 
     private int mFlags = FLAG_NEED_LAYOUT;
     private long mAnimationTime;
@@ -165,6 +176,10 @@ public class GLRootView extends GLSurfaceView
         return mEglConfigChooser;
     }
 
+    private static ByteBuffer allocateDirectNativeOrderBuffer(int size) {
+        return ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
+    }
+
     private void initialize() {
         mFlags |= FLAG_INITIALIZED;
         setEGLConfigChooser(mEglConfigChooser);
@@ -173,15 +188,10 @@ public class GLRootView extends GLSurfaceView
 
         setRenderer(this);
 
-        mVertexBuffer = ByteBuffer
-                .allocateDirect(VERTEX_BUFFER_SIZE * Float.SIZE / Byte.SIZE)
-                .order(ByteOrder.nativeOrder());
-        mVertexBuffer.asFloatBuffer()
-                .put(new float[] {0, 0, 1, 0, 0, 1, 1, 1})
-                .position(0);
-        mTexCoordBuffer = ByteBuffer
-                .allocateDirect(VERTEX_BUFFER_SIZE * Float.SIZE / Byte.SIZE)
-                .order(ByteOrder.nativeOrder());
+        int size = VERTEX_BUFFER_SIZE * Float.SIZE / Byte.SIZE;
+        mXyPointer = allocateDirectNativeOrderBuffer(size);
+        mUvPointer = allocateDirectNativeOrderBuffer(size);
+        mIndexPointer = allocateDirectNativeOrderBuffer(INDEX_BUFFER_SIZE);
     }
 
     public void setContentPane(GLView content) {
@@ -264,8 +274,10 @@ public class GLRootView extends GLSurfaceView
         // Set the background color
         gl.glClearColor(0f, 0f, 0f, 0f);
         gl.glClearStencil(0);
-        gl.glVertexPointer(2, GL11.GL_FLOAT, 0, mVertexBuffer);
-        gl.glTexCoordPointer(2, GL11.GL_FLOAT, 0, mTexCoordBuffer);
+
+        gl.glVertexPointer(2, GL11.GL_FLOAT, 0, mXyPointer);
+        gl.glTexCoordPointer(2, GL11.GL_FLOAT, 0, mUvPointer);
+
     }
 
     /**
@@ -311,21 +323,210 @@ public class GLRootView extends GLSurfaceView
         drawRect(x, y, width, height, matrix);
     }
 
+    private static void putRectengle(float x, float y,
+            float width, float height, float[] buffer, ByteBuffer pointer) {
+        buffer[0] = x;
+        buffer[1] = y;
+        buffer[2] = x + width;
+        buffer[3] = y;
+        buffer[4] = x;
+        buffer[5] = y + height;
+        buffer[6] = x + width;
+        buffer[7] = y + height;
+        pointer.asFloatBuffer().put(buffer, 0, 8).position(0);
+    }
+
     private void drawRect(
             int x, int y, int width, int height, float matrix[]) {
         GL11 gl = mGL;
         gl.glPushMatrix();
         gl.glMultMatrixf(toGLMatrix(matrix), 0);
-        gl.glTranslatef(x, y, 0);
-        gl.glScalef(width, height, 1);
+        putRectengle(x, y, width, height, mXyBuffer, mXyPointer);
         gl.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
         gl.glPopMatrix();
     }
 
+    public void drawNinePatch(
+            NinePatchTexture tex, int x, int y, int width, int height) {
+
+        NinePatchChunk chunk = tex.getNinePatchChunk();
+
+        // The code should be easily extended to handle the general cases by
+        // allocating more space for buffers. But let's just handle the only
+        // use case.
+        if (chunk.mDivX.length != 2 || chunk.mDivY.length != 2) {
+            throw new RuntimeException("unsupported nine patch");
+        }
+        if (!tex.bind(this, mGL)) {
+            throw new RuntimeException("cannot bind" + tex.toString());
+        }
+        if (width <= 0 || height <= 0) return ;
+
+        int divX[] = mNinePatchX;
+        int divY[] = mNinePatchY;
+        float divU[] = mNinePatchU;
+        float divV[] = mNinePatchV;
+
+        int nx = stretch(divX, divU, chunk.mDivX, tex.getIntrinsicWidth(), width);
+        int ny = stretch(divY, divV, chunk.mDivY, tex.getIntrinsicHeight(), height);
+
+        setAlphaValue(mTransformation.getAlpha());
+        Matrix matrix = mTransformation.getMatrix();
+        matrix.getValues(mMatrixValues);
+        GL11 gl = mGL;
+        gl.glPushMatrix();
+        gl.glMultMatrixf(toGLMatrix(mMatrixValues), 0);
+        gl.glTranslatef(x, y, 0);
+        drawMesh(divX, divY, divU, divV, nx, ny);
+        gl.glPopMatrix();
+    }
+
+    /**
+     * Stretches the texture according to the nine-patch rules. It will
+     * linearly distribute the strechy parts defined in the nine-patch chunk to
+     * the target area.
+     *
+     * <pre>
+     *                      source
+     *          /--------------^---------------\
+     *         u0    u1       u2  u3     u4   u5
+     * div ---> |fffff|ssssssss|fff|ssssss|ffff| ---> u
+     *          |    div0    div1 div2   div3  |
+     *          |     |       /   /      /    /
+     *          |     |      /   /     /    /
+     *          |     |     /   /    /    /
+     *          |fffff|ssss|fff|sss|ffff| ---> x
+     *         x0    x1   x2  x3  x4   x5
+     *          \----------v------------/
+     *                  target
+     *
+     * f: fixed segment
+     * s: stretchy segment
+     * </pre>
+     *
+     * @param div the stretch parts defined in nine-patch chunk
+     * @param source the length of the texture
+     * @param target the length on the drawing plan
+     * @param u output, the positions of these dividers in the texture
+     *        coordinate
+     * @param x output, the corresponding position of these dividers on the
+     *        drawing plan
+     * @return the number of these dividers.
+     */
+    private int stretch(
+            int x[], float u[], int div[], int source, int target) {
+        int textureSize = Util.nextPowerOf2(source);
+        float textureBound = (source - 0.5f) / textureSize;
+
+        int stretch = 0;
+        for (int i = 0, n = div.length; i < n; i += 2) {
+            stretch += div[i + 1] - div[i];
+        }
+
+        float remaining = target - source + stretch;
+
+        int lastX = 0;
+        int lastU = 0;
+
+        x[0] = 0;
+        u[0] = 0;
+        for (int i = 0, n = div.length; i < n; i += 2) {
+            // fixed segment
+            x[i + 1] = lastX + (div[i] - lastU);
+            u[i + 1] = Math.min((float) div[i] / textureSize, textureBound);
+
+            // stretchy segment
+            float partU = div[i + 1] - div[i];
+            int partX = (int)(remaining * partU / stretch + 0.5f);
+            remaining -= partX;
+            stretch -= partU;
+
+            lastX = x[i + 1] + partX;
+            lastU = div[i + 1];
+            x[i + 2] = lastX;
+            u[i + 2] = Math.min((float) lastU / textureSize, textureBound);
+        }
+        // the last fixed segment
+        x[div.length + 1] = target;
+        u[div.length + 1] = textureBound;
+
+        // remove segments with length 0.
+        int last = 0;
+        for (int i = 1, n = div.length + 2; i < n; ++i) {
+            if (x[last] == x[i]) continue;
+            x[++last] = x[i];
+            u[last] = u[i];
+        }
+        return last + 1;
+    }
+
+    private void drawMesh(
+            int x[], int y[], float u[], float v[], int nx, int ny) {
+        /*
+         * Given a 3x3 nine-patch image, the vertex order is defined as the
+         * following graph:
+         *
+         * (0) (1) (2) (3)
+         *  |  /|  /|  /|
+         *  | / | / | / |
+         * (4) (5) (6) (7)
+         *  | \ | \ | \ |
+         *  |  \|  \|  \|
+         * (8) (9) (A) (B)
+         *  |  /|  /|  /|
+         *  | / | / | / |
+         * (C) (D) (E) (F)
+         *
+         * And we draw the triangle strip in the following index order:
+         *
+         * index: 04152637B6A5948C9DAEBF
+         */
+        int pntCount = 0;
+        float xy[] = mXyBuffer;
+        float uv[] = mUvBuffer;
+        for (int j = 0; j < ny; ++j) {
+            for (int i = 0; i < nx; ++i) {
+                int xIndex = (pntCount++) << 1;
+                int yIndex = xIndex + 1;
+                xy[xIndex] = x[i];
+                xy[yIndex] = y[j];
+                uv[xIndex] = u[i];
+                uv[yIndex] = v[j];
+            }
+        }
+        mUvPointer.asFloatBuffer().put(uv, 0, pntCount << 1).position(0);
+        mXyPointer.asFloatBuffer().put(xy, 0, pntCount << 1).position(0);
+
+        int idxCount = 1;
+        byte index[] = mIndexBuffer;
+        for (int i = 0, bound = nx * (ny - 1); true;) {
+            // normal direction
+            --idxCount;
+            for (int j = 0; j < nx; ++j, ++i) {
+                index[idxCount++] = (byte) i;
+                index[idxCount++] = (byte) (i + nx);
+            }
+            if (i >= bound) break;
+
+            // reverse direction
+            int sum = i + i + nx - 1;
+            --idxCount;
+            for (int j = 0; j < nx; ++j, ++i) {
+                index[idxCount++] = (byte) (sum - i);
+                index[idxCount++] = (byte) (sum - i + nx);
+            }
+            if (i >= bound) break;
+        }
+        mIndexPointer.put(index, 0, idxCount).position(0);
+
+        mGL.glDrawElements(GL11.GL_TRIANGLE_STRIP,
+                idxCount, GL11.GL_UNSIGNED_BYTE, mIndexPointer);
+    }
+
     private float[] mapPoints(Matrix matrix, int x1, int y1, int x2, int y2) {
-        float[] point = mPointBuffer;
+        float[] point = mXyBuffer;
         point[0] = x1; point[1] = y1; point[2] = x2; point[3] = y2;
-        matrix.mapPoints(point);
+        matrix.mapPoints(point, 0, point, 0, 4);
         return point;
     }
 
@@ -403,8 +604,8 @@ public class GLRootView extends GLSurfaceView
         // Test whether it has been rotated or flipped, if so, glDrawTexiOES
         // won't work
         if (isMatrixRotatedOrFlipped(mMatrixValues)) {
-            texture.getTextureCoords(mCoordBuffer, 0);
-            mTexCoordBuffer.asFloatBuffer().put(mCoordBuffer).position(0);
+            texture.getTextureCoords(mUvBuffer, 0);
+            mUvPointer.asFloatBuffer().put(mUvBuffer, 0, 8).position(0);
             setAlphaValue(alpha);
             drawRect(x, y, width, height, mMatrixValues);
         } else {
