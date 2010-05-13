@@ -346,6 +346,8 @@ public class VideoCamera extends NoSearchActivity
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
+        initializeHeadUpDisplay();
+
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -367,17 +369,13 @@ public class VideoCamera extends NoSearchActivity
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
                 && !mPausing && mGLRootView == null) {
-            initializeHeadUpDisplay();
+            attachHeadUpDisplay();
         } else if (mGLRootView != null) {
-            finalizeHeadUpDisplay();
+            detachHeadUpDisplay();
         }
     }
 
     private void initializeHeadUpDisplay() {
-        FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
-        mGLRootView = new GLRootView(this);
-        frame.addView(mGLRootView);
-
         mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
         CameraSettings settings = new CameraSettings(this, mParameters);
 
@@ -387,11 +385,17 @@ public class VideoCamera extends NoSearchActivity
             group = filterPreferenceScreenByIntent(group);
         }
         mHeadUpDisplay.initialize(this, group);
-        mGLRootView.setContentPane(mHeadUpDisplay);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
     }
 
-    private void finalizeHeadUpDisplay() {
+    private void attachHeadUpDisplay() {
+        FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
+        mGLRootView = new GLRootView(this);
+        frame.addView(mGLRootView);
+        mGLRootView.setContentPane(mHeadUpDisplay);
+    }
+
+    private void detachHeadUpDisplay() {
         mHeadUpDisplay.collapse();
         ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         mGLRootView = null;
