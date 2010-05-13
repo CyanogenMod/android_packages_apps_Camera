@@ -32,7 +32,7 @@ class GLListView extends GLView {
     private int mHighlightIndex = INDEX_NONE;
     private GLView mHighlightView;
 
-    private NinePatchTexture mHighLight;
+    private FrameTexture mHighLight;
     private NinePatchTexture mScrollbar;
 
     private int mVisibleStart = 0; // inclusive
@@ -109,7 +109,7 @@ class GLListView extends GLView {
         invalidate();
     }
 
-    public void setHighLight(NinePatchTexture highLight) {
+    public void setHighLight(FrameTexture highLight) {
         mHighLight = highLight;
     }
 

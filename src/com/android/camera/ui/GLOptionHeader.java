@@ -4,8 +4,6 @@ import static com.android.camera.ui.GLRootView.dpToPixel;
 import android.content.Context;
 import android.graphics.Rect;
 
-import com.android.camera.R;
-
 import javax.microedition.khronos.opengles.GL11;
 
 class GLOptionHeader extends GLView {
@@ -13,12 +11,13 @@ class GLOptionHeader extends GLView {
     private static final float FONT_SIZE = 12;
     private static final int HORIZONTAL_PADDINGS = 4;
     private static final int VERTICAL_PADDINGS = 2;
+    private static final int COLOR_OPTION_HEADER = 0xFF2B2B2B;
 
     private static int sHorizontalPaddings = -1;
     private static int sVerticalPaddings;
 
     private final StringTexture mTitle;
-    private NinePatchTexture mBackground;
+    private FrameTexture mBackground;
 
     private static void initializeStaticVariables(Context context) {
         if (sHorizontalPaddings >= 0) return;
@@ -31,13 +30,12 @@ class GLOptionHeader extends GLView {
 
         float fontSize = GLRootView.dpToPixel(context, FONT_SIZE);
         mTitle = StringTexture.newInstance(title, fontSize, FONT_COLOR);
-        setBackground(new NinePatchTexture(
-                context, R.drawable.optionheader_background));
+        setBackground(new ColorTexture(COLOR_OPTION_HEADER));
         setPaddings(sHorizontalPaddings,
                 sVerticalPaddings, sHorizontalPaddings, sVerticalPaddings);
     }
 
-    public void setBackground(NinePatchTexture background) {
+    public void setBackground(FrameTexture background) {
         if (mBackground == background) return;
         mBackground = background;
         invalidate();

@@ -35,6 +35,8 @@ public class HeadUpDisplay extends GLView {
     private static final int POPUP_WINDOW_OVERLAP = 20;
     private static final int POPUP_TRIANGLE_OFFSET = 16;
 
+    private static final int COLOR_ICONBAR_HIGHLIGHT = 0x9A2B2B2B;
+
     private static final float MAX_HEIGHT_RATIO = 0.8f;
     private static final float MAX_WIDTH_RATIO = 0.8f;
 
@@ -322,8 +324,7 @@ public class HeadUpDisplay extends GLView {
 
         mIndicatorBar.setBackground(new NinePatchTexture(
                 context, R.drawable.ic_viewfinder_iconbar));
-        mIndicatorBar.setHighlight(new NinePatchTexture(
-                context, R.drawable.ic_viewfinder_iconbar_highlight));
+        mIndicatorBar.setHighlight(new ColorTexture(COLOR_ICONBAR_HIGHLIGHT));
         addComponent(mIndicatorBar);
         mIndicatorBar.setOnItemSelectedListener(new IndicatorBarListener());
     }
