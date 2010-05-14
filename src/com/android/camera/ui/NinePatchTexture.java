@@ -16,30 +16,16 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.Util;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
-class NinePatchTexture extends FrameTexture {
-    private final Context mContext;
-    private final int mResId;
-
-    private Bitmap mBitmap;
+class NinePatchTexture extends ResourceTexture {
     private NinePatchChunk mChunk;
-    private int mIntrinsicWidth = -1;
-    private int mIntrinsicHeight = -1;
 
     public NinePatchTexture(Context context, int resId) {
-        this.mContext = context;
-        this.mResId = resId;
-    }
-
-    @Override
-    public void getTextureCoords(float coord[], int offset) {
-        throw new UnsupportedOperationException();
+        super(context, resId);
     }
 
     @Override
@@ -51,8 +37,7 @@ class NinePatchTexture extends FrameTexture {
         Bitmap bitmap = BitmapFactory.decodeResource(
                 mContext.getResources(), mResId, options);
         mBitmap = bitmap;
-        mIntrinsicWidth = bitmap.getWidth();
-        mIntrinsicHeight = bitmap.getHeight();
+        setSize(bitmap.getWidth(), bitmap.getHeight());
         mChunk = NinePatchChunk.deserialize(bitmap.getNinePatchChunk());
         if (mChunk == null) {
             throw new RuntimeException("invalid nine-patch image: " + mResId);
@@ -60,24 +45,6 @@ class NinePatchTexture extends FrameTexture {
         return bitmap;
     }
 
-    @Override
-    protected void freeBitmap(Bitmap bitmap) {
-        Util.Assert(bitmap == mBitmap);
-        mBitmap.recycle();
-        mBitmap = null;
-    }
-
-    public int getIntrinsicWidth() {
-        if (mIntrinsicWidth < 0) getBitmap();
-        return mIntrinsicWidth;
-    }
-
-    public int getIntrinsicHeight() {
-        if (mIntrinsicHeight < 0) getBitmap();
-        return mIntrinsicHeight;
-    }
-
-    @Override
     public Rect getPaddings() {
         // get the paddings from nine patch
         if (mChunk == null) getBitmap();
@@ -90,7 +57,7 @@ class NinePatchTexture extends FrameTexture {
     }
 
     @Override
-    public void draw(GLRootView root, int x, int y) {
-        root.drawNinePatch(this, x, y, mWidth, mHeight);
+    public void draw(GLRootView root, int x, int y, int w, int h) {
+        root.drawNinePatch(this, x, y, w, h);
     }
 }
