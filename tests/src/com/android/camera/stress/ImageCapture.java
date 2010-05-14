@@ -19,10 +19,13 @@ package com.android.camera.stress;
 import com.android.camera.Camera;
 
 import android.app.Instrumentation;
+import android.content.Intent;
+import android.os.Environment;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 import android.view.KeyEvent;
+
 import java.io.FileWriter;
 import java.io.Writer;
 import java.io.File;
@@ -30,7 +33,6 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import android.content.Intent;
 /**
  * Junit / Instrumentation test case for camera test
  *
@@ -51,7 +53,8 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     private static final long WAIT_FOR_PREVIEW = 1500; //1.5 seconds
     private static final long WAIT_FOR_STABLE_STATE = 2000; //2 seconds
     private static final int NO_OF_LOOPS_TAKE_MEMORY_SNAPSHOT = 10;
-    private static final String CAMERA_MEM_OUTPUTFILE = "/sdcard/ImageCaptureMemOut.txt";
+    private static final String CAMERA_MEM_OUTPUTFILE =
+            Environment.getExternalStorageDirectory().toString() + "/ImageCaptureMemOut.txt";
 
     //the tolerant memory leak
     private static final int MAX_ACCEPTED_MEMORY_LEAK_KB = 150;
