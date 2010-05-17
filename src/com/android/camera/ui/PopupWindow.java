@@ -28,14 +28,14 @@ import javax.microedition.khronos.opengles.GL11;
 
 class PopupWindow extends GLView {
 
-    protected Texture mAnchor;
+    protected BitmapTexture mAnchor;
     protected int mAnchorOffset;
 
     protected int mAnchorPosition;
     private final RotatePane mRotatePane = new RotatePane();
     private RawTexture mBackupTexture;
 
-    protected FrameTexture mBackground;
+    protected Texture mBackground;
     private boolean mUsingStencil;
 
     public PopupWindow() {
@@ -48,18 +48,18 @@ class PopupWindow extends GLView {
         mUsingStencil = root.getEGLConfigChooser().getStencilBits() > 0;
     }
 
-    public void setBackground(FrameTexture background) {
+    public void setBackground(Texture background) {
         if (background == mBackground) return;
         mBackground = background;
-        if (background != null) {
-            setPaddings(mBackground.getPaddings());
+        if (background != null && background instanceof NinePatchTexture) {
+            setPaddings(((NinePatchTexture) mBackground).getPaddings());
         } else {
             setPaddings(0, 0, 0, 0);
         }
         invalidate();
     }
 
-    public void setAnchor(Texture anchor, int offset) {
+    public void setAnchor(BitmapTexture anchor, int offset) {
         mAnchor = anchor;
         mAnchorOffset = offset;
     }
@@ -129,8 +129,8 @@ class PopupWindow extends GLView {
         }
 
         if (mBackground != null) {
-            mBackground.setSize(width - aWidth + mAnchorOffset, height);
-            mBackground.draw(root, 0, 0);
+            mBackground.draw(root, 0, 0,
+                    width - aWidth + mAnchorOffset, height);
         }
     }
 
@@ -164,12 +164,12 @@ class PopupWindow extends GLView {
         }
 
         if (mBackground != null) {
-            mBackground.setSize(width - aWidth + mAnchorOffset, height);
-            mBackground.draw(root, 0, 0);
+            mBackground.draw(root, 0, 0,
+                    width - aWidth + mAnchorOffset, height);
         }
 
         gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
-        backup.draw(root, aXoffset, aYoffset, aWidth, aHeight, 1);
+        backup.drawBack(root, aXoffset, aYoffset, aWidth, aHeight);
         gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 

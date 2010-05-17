@@ -33,7 +33,7 @@ class GLOptionHeader extends GLView {
     private static int sVerticalPaddings;
 
     private final StringTexture mTitle;
-    private FrameTexture mBackground;
+    private Texture mBackground;
 
     private static void initializeStaticVariables(Context context) {
         if (sHorizontalPaddings >= 0) return;
@@ -51,7 +51,7 @@ class GLOptionHeader extends GLView {
                 sVerticalPaddings, sHorizontalPaddings, sVerticalPaddings);
     }
 
-    public void setBackground(FrameTexture background) {
+    public void setBackground(Texture background) {
         if (mBackground == background) return;
         mBackground = background;
         invalidate();
@@ -67,8 +67,7 @@ class GLOptionHeader extends GLView {
     @Override
     protected void render(GLRootView root, GL11 gl) {
         if (mBackground != null) {
-            mBackground.setSize(getWidth(), getHeight());
-            mBackground.draw(root, 0, 0);
+            mBackground.draw(root, 0, 0, getWidth(), getHeight());
         }
         Rect p = mPaddings;
         mTitle.draw(root, p.left, p.top);

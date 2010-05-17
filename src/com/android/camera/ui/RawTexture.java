@@ -16,11 +16,10 @@
 
 package com.android.camera.ui;
 
-import android.graphics.Bitmap;
 
 import javax.microedition.khronos.opengles.GL11;
 
-class RawTexture extends Texture {
+class RawTexture extends BasicTexture {
 
     private RawTexture(GL11 gl, int id) {
         super(gl, id, STATE_LOADED);
@@ -41,21 +40,15 @@ class RawTexture extends Texture {
     }
 
     @Override
-    protected void freeBitmap(Bitmap bitmap) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected Bitmap getBitmap() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     protected boolean bind(GLRootView glRootView, GL11 gl) {
         if (mGL == gl) {
             gl.glBindTexture(GL11.GL_TEXTURE_2D, getId());
             return true;
         }
         return false;
+    }
+
+    public void drawBack(GLRootView root, int x, int y, int w, int h) {
+        root.drawTexture(this, x, y, w, h, 1f);
     }
 }

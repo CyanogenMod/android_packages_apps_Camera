@@ -28,7 +28,7 @@ abstract class AbstractIndicator extends GLView {
     private static final int DEFAULT_PADDING = 3;
     private int mOrientation = 0;
 
-    abstract protected Texture getIcon();
+    abstract protected BitmapTexture getIcon();
 
     public AbstractIndicator(Context context) {
         int padding = GLRootView.dpToPixel(context, DEFAULT_PADDING);
@@ -37,7 +37,7 @@ abstract class AbstractIndicator extends GLView {
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        Texture icon = getIcon();
+        BitmapTexture icon = getIcon();
         new MeasureHelper(this)
                .setPreferredContentSize(icon.getWidth(), icon.getHeight())
                .measure(widthSpec, heightSpec);
@@ -45,7 +45,7 @@ abstract class AbstractIndicator extends GLView {
 
     @Override
     protected void render(GLRootView root, GL11 gl) {
-        Texture icon = getIcon();
+        BitmapTexture icon = getIcon();
         if (icon != null) {
             Rect p = mPaddings;
             int width = getWidth() - p.left - p.right;

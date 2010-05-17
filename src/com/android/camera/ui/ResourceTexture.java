@@ -22,11 +22,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-class ResourceTexture extends Texture {
+class ResourceTexture extends BitmapTexture {
 
-    private final Context mContext;
-    private final int mResId;
-    private Bitmap mBitmap;
+    protected final Context mContext;
+    protected final int mResId;
+    protected Bitmap mBitmap;
 
     public ResourceTexture(Context context, int resId) {
         mContext = Util.checkNotNull(context);
@@ -45,26 +45,9 @@ class ResourceTexture extends Texture {
     }
 
     @Override
-    public int getHeight() {
-        if (mHeight == UNSPECIFIED) {
-            getBitmap();
-        }
-        return mHeight;
-    }
-
-    @Override
-    public int getWidth() {
-        if (mHeight == UNSPECIFIED) {
-            getBitmap();
-        }
-        return mWidth;
-    }
-
-    @Override
     protected void freeBitmap(Bitmap bitmap) {
         Util.Assert(bitmap == mBitmap);
         bitmap.recycle();
         mBitmap = null;
     }
-
 }

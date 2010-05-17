@@ -54,7 +54,7 @@ class ZoomIndicator extends AbstractIndicator {
         int n = mZoomRatios == null ? 0: mZoomRatios.length;
         for (int i = 0; i < n; ++i) {
             float value = mZoomRatios[i];
-            Texture tex = StringTexture.newInstance(
+            BitmapTexture tex = StringTexture.newInstance(
                     sZoomFormat.format(value), mFontSize, FONT_COLOR);
             if (maxWidth < tex.getWidth()) maxWidth = tex.getWidth();
             if (maxHeight < tex.getHeight()) maxHeight = tex.getHeight();
@@ -65,7 +65,7 @@ class ZoomIndicator extends AbstractIndicator {
     }
 
     @Override
-    protected Texture getIcon() {
+    protected BitmapTexture getIcon() {
         if (mDrawIndex != mZoomIndex) {
             mDrawIndex = mZoomIndex;
             if (mTitle != null) mTitle.deleteFromGL();

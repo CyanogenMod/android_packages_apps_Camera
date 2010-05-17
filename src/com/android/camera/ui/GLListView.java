@@ -48,7 +48,7 @@ class GLListView extends GLView {
     private int mHighlightIndex = INDEX_NONE;
     private GLView mHighlightView;
 
-    private FrameTexture mHighLight;
+    private Texture mHighLight;
     private NinePatchTexture mScrollbar;
 
     private int mVisibleStart = 0; // inclusive
@@ -125,7 +125,7 @@ class GLListView extends GLView {
         invalidate();
     }
 
-    public void setHighLight(FrameTexture highLight) {
+    public void setHighLight(Texture highLight) {
         mHighLight = highLight;
     }
 
@@ -140,13 +140,13 @@ class GLListView extends GLView {
     }
 
     private boolean drawWithAnimation(GLRootView root,
-            Texture texture, int x, int y, Animation anim) {
+            Texture texture, int x, int y, int w, int h, Animation anim) {
         long now = root.currentAnimationTimeMillis();
         Transformation temp = root.obtainTransformation();
         boolean more = anim.getTransformation(now, temp);
         Transformation transformation = root.pushTransform();
         transformation.compose(temp);
-        texture.draw(root, x, y);
+        texture.draw(root, x, y, w, h);
         invalidate();
         root.popTransform();
         return more;
@@ -161,26 +161,27 @@ class GLListView extends GLView {
             if (mHighLight != null) {
                 int width = bounds.width();
                 int height = bounds.height();
-                mHighLight.setSize(width, height);
                 mHighLight.draw(root,
-                        bounds.left - mScrollX, bounds.top - mScrollY);
+                        bounds.left - mScrollX, bounds.top - mScrollY,
+                        width, height);
             }
         }
         super.render(root, gl);
         root.clearClip();
 
         if (mScrollBarAnimation != null || mScrollBarVisible) {
-            int width = mScrollbar.getIntrinsicWidth();
+            int width = mScrollbar.getWidth();
             int height = getHeight() * getHeight() / mScrollHeight;
             int yoffset = mScrollY * getHeight() / mScrollHeight;
-            mScrollbar.setSize(width, height);
             if (mScrollBarAnimation != null) {
-                if (!drawWithAnimation(root, mScrollbar,
-                        getWidth() - width, yoffset, mScrollBarAnimation)) {
+                if (!drawWithAnimation(
+                        root, mScrollbar, getWidth() - width, yoffset,
+                        width, height, mScrollBarAnimation)) {
                     mScrollBarAnimation = null;
                 }
             } else {
-                mScrollbar.draw(root, getWidth() - width, yoffset);
+                mScrollbar.draw(
+                        root, getWidth() - width, yoffset, width, height);
             }
         }
         if (mScroller.computeScrollOffset()) {

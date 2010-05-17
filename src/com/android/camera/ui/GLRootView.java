@@ -323,7 +323,7 @@ public class GLRootView extends GLSurfaceView
         drawRect(x, y, width, height, matrix);
     }
 
-    private static void putRectengle(float x, float y,
+    private static void putRectangle(float x, float y,
             float width, float height, float[] buffer, ByteBuffer pointer) {
         buffer[0] = x;
         buffer[1] = y;
@@ -341,7 +341,7 @@ public class GLRootView extends GLSurfaceView
         GL11 gl = mGL;
         gl.glPushMatrix();
         gl.glMultMatrixf(toGLMatrix(matrix), 0);
-        putRectengle(x, y, width, height, mXyBuffer, mXyPointer);
+        putRectangle(x, y, width, height, mXyBuffer, mXyPointer);
         gl.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
         gl.glPopMatrix();
     }
@@ -367,8 +367,8 @@ public class GLRootView extends GLSurfaceView
         float divU[] = mNinePatchU;
         float divV[] = mNinePatchV;
 
-        int nx = stretch(divX, divU, chunk.mDivX, tex.getIntrinsicWidth(), width);
-        int ny = stretch(divY, divV, chunk.mDivY, tex.getIntrinsicHeight(), height);
+        int nx = stretch(divX, divU, chunk.mDivX, tex.getWidth(), width);
+        int ny = stretch(divY, divV, chunk.mDivY, tex.getHeight(), height);
 
         setAlphaValue(mTransformation.getAlpha());
         Matrix matrix = mTransformation.getMatrix();
@@ -566,17 +566,13 @@ public class GLRootView extends GLSurfaceView
     }
 
     public void drawColor(int x, int y, int width, int height, int color) {
-        drawColor(x, y, width, height, color, mTransformation.getAlpha());
-    }
-
-    public void drawColor(int x, int y,
-            int width, int height, int color, float alpha) {
+        float alpha = mTransformation.getAlpha();
         GL11 gl = mGL;
         if (mTexture2DEnabled) {
             // Set mLastAlpha to an invalid value, so that it will reset again
             // in setAlphaValue(float) later.
             mLastAlpha = -1.0f;
-            mGL.glDisable(GL11.GL_TEXTURE_2D);
+            gl.glDisable(GL11.GL_TEXTURE_2D);
             mTexture2DEnabled = false;
         }
         alpha /= 256.0f;
@@ -586,7 +582,12 @@ public class GLRootView extends GLSurfaceView
     }
 
     public void drawTexture(
-            Texture texture, int x, int y, int width, int height, float alpha) {
+            BasicTexture texture, int x, int y, int width, int height) {
+        drawTexture(texture, x, y, width, height, mTransformation.getAlpha());
+    }
+
+    public void drawTexture(BasicTexture texture,
+            int x, int y, int width, int height, float alpha) {
 
         if (!mTexture2DEnabled) {
             mGL.glEnable(GL11.GL_TEXTURE_2D);
@@ -604,8 +605,10 @@ public class GLRootView extends GLSurfaceView
         // Test whether it has been rotated or flipped, if so, glDrawTexiOES
         // won't work
         if (isMatrixRotatedOrFlipped(mMatrixValues)) {
-            texture.getTextureCoords(mUvBuffer, 0);
-            mUvPointer.asFloatBuffer().put(mUvBuffer, 0, 8).position(0);
+            putRectangle(0, 0,
+                    (texture.mWidth - 0.5f) / texture.mTextureWidth,
+                    (texture.mHeight - 0.5f) / texture.mTextureHeight,
+                    mUvBuffer, mUvPointer);
             setAlphaValue(alpha);
             drawRect(x, y, width, height, mMatrixValues);
         } else {
@@ -625,11 +628,6 @@ public class GLRootView extends GLSurfaceView
     private static boolean isMatrixRotatedOrFlipped(float matrix[]) {
         return matrix[Matrix.MSKEW_X] != 0 || matrix[Matrix.MSKEW_Y] != 0
                 || matrix[Matrix.MSCALE_X] < 0 || matrix[Matrix.MSCALE_Y] > 0;
-    }
-
-    public void drawTexture(
-            Texture texture, int x, int y, int width, int height) {
-        drawTexture(texture, x, y, width, height, mTransformation.getAlpha());
     }
 
     public synchronized void onDrawFrame(GL10 gl) {
