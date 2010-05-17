@@ -42,8 +42,8 @@ abstract class Texture {
     protected int mWidth = UNSPECIFIED;
     protected int mHeight = UNSPECIFIED;
 
-    private int mTextureWidth;
-    private int mTextureHeight;
+    protected int mTextureWidth;
+    protected int mTextureHeight;
 
     protected Texture(GL11 gl, int id, int state) {
         mGL = gl;
@@ -101,7 +101,9 @@ abstract class Texture {
             try {
                 // Define a vertically flipped crop rectangle for
                 // OES_draw_texture.
-                int[] cropRect = {0,  mHeight, mWidth, - mHeight};
+                int width = bitmap.getWidth();
+                int height = bitmap.getHeight();
+                int[] cropRect = {0,  height, width, -height};
 
                 // Upload the bitmap to a new texture.
                 gl.glGenTextures(1, textureId, 0);
@@ -117,8 +119,6 @@ abstract class Texture {
                 gl.glTexParameterf(GL11.GL_TEXTURE_2D,
                         GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 
-                int width = bitmap.getWidth();
-                int height = bitmap.getHeight();
                 int widthExt = Util.nextPowerOf2(width);
                 int heightExt = Util.nextPowerOf2(height);
                 int format = GLUtils.getInternalFormat(bitmap);
