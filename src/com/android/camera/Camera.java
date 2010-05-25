@@ -252,6 +252,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private CameraHeadUpDisplay mHeadUpDisplay;
     private Menu mOptionsMenu;
     
+    private int mImageWidth = 0;
+    private int mImageHeight = 0;
+
     /**
      * This Handler is used to post message back onto the main thread of the
      * application
@@ -924,6 +927,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mCameraDevice.setParameters(mParameters);
 
             incrementkeypress();
+            Size pictureSize = mParameters.getPictureSize();
+            mImageWidth = pictureSize.width;
+            mImageHeight = pictureSize.height;
             mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                     mPostViewPictureCallback, new JpegPictureCallback(loc));
             mPreviewing = false;
@@ -963,6 +969,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void setLastPictureThumb(byte[] data, int degree, Uri uri) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 16;
+        if(mThumbController != null && mImageWidth > 0 && mImageHeight > 0){
+            int miniThumbHeight = mThumbController.getThumbnailHeight();
+            if(miniThumbHeight > 0){
+                options.inSampleSize = mImageHeight/miniThumbHeight;
+            }
+        }
         Bitmap lastPictureThumb =
                 BitmapFactory.decodeByteArray(data, 0, data.length, options);
         lastPictureThumb = Util.rotate(lastPictureThumb, degree);
@@ -1844,7 +1856,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPreviewing = true;
         mZoomState = ZOOM_STOPPED;
         mStatus = IDLE;
-  
+
         /* Get the correct max zoom value, as this varies with
         * preview size/picture resolution
         */

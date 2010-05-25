@@ -145,6 +145,20 @@ public class ThumbnailController {
         }
     }
 
+    public int getThumbnailWidth(){
+        LayoutParams param = mButton.getLayoutParams();
+        int miniThumbWidth = param.width - mButton.getPaddingLeft()
+                - mButton.getPaddingRight();
+        return miniThumbWidth;
+    }
+
+    public int getThumbnailHeight(){
+        LayoutParams param = mButton.getLayoutParams();
+        int miniThumbHeight = param.height - mButton.getPaddingTop()
+                - mButton.getPaddingBottom();
+        return miniThumbHeight;
+    }
+
     private void updateThumb(Bitmap original) {
         if (original == null) {
             mThumb = null;
@@ -152,11 +166,8 @@ public class ThumbnailController {
             return;
         }
 
-        LayoutParams param = mButton.getLayoutParams();
-        final int miniThumbWidth = param.width
-                - mButton.getPaddingLeft() - mButton.getPaddingRight();
-        final int miniThumbHeight = param.height
-                - mButton.getPaddingTop() - mButton.getPaddingBottom();
+        final int miniThumbWidth = getThumbnailWidth();
+        final int miniThumbHeight = getThumbnailHeight();
         mThumb = ThumbnailUtils.extractThumbnail(
                 original, miniThumbWidth, miniThumbHeight);
         Drawable drawable;
