@@ -60,7 +60,9 @@ public class CameraSettings {
     public static final String KEY_CONTRAST = "pref_camera_contrast_key";
     public static final String KEY_SATURATION = "pref_camera_saturation_key";
 
+    public static final String KEY_CONTINUOUS_AF = "pref_camera_continuousaf_key";
     private static final String VIDEO_QUALITY_HD = "hd";
+
     private static final String VIDEO_QUALITY_HIGH = "high";
     private static final String VIDEO_QUALITY_MMS = "mms";
     private static final String VIDEO_QUALITY_YOUTUBE_HD = "youtubehd";
@@ -159,7 +161,7 @@ public class CameraSettings {
         ListPreference lensShade = group.findPreference(KEY_LENSSHADING);
         ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
         ListPreference autoExposure = group.findPreference(KEY_AUTOEXPOSURE);
-
+        ListPreference continuousAf = group.findPreference(KEY_CONTINUOUS_AF);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -239,14 +241,18 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     lensShade, mParameters.getSupportedLensShadeModes());
         }
-         if (antiBanding != null) {
-             filterUnsupportedOptions(group,
+        if (antiBanding != null) {
+            filterUnsupportedOptions(group,
                      antiBanding, mParameters.getSupportedAntibanding());
-         }
-         if (autoExposure != null) {
-             filterUnsupportedOptions(group,
+        }
+        if (autoExposure != null) {
+            filterUnsupportedOptions(group,
                      autoExposure, mParameters.getSupportedAutoexposure());
-         }
+        }
+        if (continuousAf != null) {
+            filterUnsupportedOptions(group,
+                    continuousAf, mParameters.getSupportedContinuousAfModes());
+        }
     }
 
     private void buildExposureCompensation(

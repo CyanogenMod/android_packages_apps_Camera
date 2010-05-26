@@ -409,4 +409,14 @@
          <item>@string/pref_camera_autoexposure_value_spotmetering</item>
      </string-array>
 
+    <string-array name="pref_camera_continuousaf_entryvalues" translatable="false">
+        <item>caf-off</item>
+        <item>caf-on</item>
+    </string-array>
+
+    <string-array name="pref_camera_continuousaf_entries" translatable="false">
+        <item>@string/pref_camera_continuousaf_entry_off</item>
+        <item>@string/pref_camera_continuousaf_entry_on</item>
+    </string-array>
+
 </resources>

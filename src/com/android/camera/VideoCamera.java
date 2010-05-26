@@ -1542,6 +1542,14 @@ public class VideoCamera extends NoSearchActivity
 
         CameraSettings.dumpParameters(mParameters);
 
+        // Set continuous AF parameter.
+        if (mParameters.getSupportedContinuousAfModes() != null) {
+            String continuousAf = mPreferences.getString(
+                    CameraSettings.KEY_CONTINUOUS_AF,
+                    getString(R.string.pref_camera_continuousaf_default));
+            mParameters.setContinuousAf(continuousAf);
+        }
+
         try {
             mCameraDevice.setParameters(mParameters);
         } catch (Exception e) {

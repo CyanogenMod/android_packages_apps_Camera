@@ -46,6 +46,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
 
         ListPreference[] prefs = getListPreferences(group,
                 CameraSettings.KEY_FOCUS_MODE,
+                CameraSettings.KEY_CONTINUOUS_AF,
                 CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_PICTURE_SIZE,
