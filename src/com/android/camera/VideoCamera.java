@@ -108,6 +108,7 @@ public class VideoCamera extends NoSearchActivity
     private static final int STORAGE_STATUS_OK = 0;
     private static final int STORAGE_STATUS_LOW = 1;
     private static final int STORAGE_STATUS_NONE = 2;
+    private static final int STORAGE_STATUS_FAIL = 3;
 
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
@@ -496,6 +497,10 @@ public class VideoCamera extends NoSearchActivity
                 break;
             case STORAGE_STATUS_LOW:
                 errorMessage = getString(R.string.spaceIsLow_content);
+                break;
+            case STORAGE_STATUS_FAIL:
+                errorMessage = getString(R.string.access_sd_fail);
+                break;
         }
         if (errorMessage != null) {
             if (mStorageHint == null) {
@@ -514,6 +519,8 @@ public class VideoCamera extends NoSearchActivity
         long remaining = mayHaveSd ? getAvailableStorage() : NO_STORAGE_ERROR;
         if (remaining == NO_STORAGE_ERROR) {
             return STORAGE_STATUS_NONE;
+        } else if (remaining == CANNOT_STAT_ERROR) {
+            return STORAGE_STATUS_FAIL;
         }
         return remaining < LOW_STORAGE_THRESHOLD
                 ? STORAGE_STATUS_LOW
@@ -848,10 +855,11 @@ public class VideoCamera extends NoSearchActivity
                 return (long) stat.getAvailableBlocks()
                         * (long) stat.getBlockSize();
             }
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             // if we can't stat the filesystem then we don't know how many
             // free bytes exist. It might be zero but just leave it
             // blank since we really don't know.
+            Log.e(TAG, "Fail to access sdcard", ex);
             return CANNOT_STAT_ERROR;
         }
     }
