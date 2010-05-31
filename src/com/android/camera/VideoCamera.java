@@ -347,8 +347,6 @@ public class VideoCamera extends NoSearchActivity
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
-        initializeHeadUpDisplay();
-
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -359,6 +357,10 @@ public class VideoCamera extends NoSearchActivity
         } catch (InterruptedException ex) {
             // ignore
         }
+
+        // Initialize the HeadUpDiplay after startPreview(). We need mParameters
+        // for HeadUpDisplay and it is initialized in that function.
+        initializeHeadUpDisplay();
     }
 
     private void changeHeadUpDisplayState() {
