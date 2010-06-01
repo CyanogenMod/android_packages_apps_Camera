@@ -38,14 +38,17 @@
     <!-- alert to the user to wait for some operation to complete -->
     <string name="wait">Please wait\u2026</string>
 
-    <!-- alert to the user to that an SD card must be installed before using the camera -->
+    <!-- alert to the user that an SD card must be installed before using the camera -->
     <string name="no_storage">Please insert an SD card before using the camera.</string>
 
-    <!-- alert to the user to that the SD card is too full to complete the operation -->
+    <!-- alert to the user that the SD card is too full to complete the operation -->
     <string name="not_enough_space">Your SD card is full.</string>
 
-    <!-- alert to the user to that the SD card is being disk-checked -->
+    <!-- alert to the user that the SD card is being disk-checked -->
     <string name="preparing_sd">Preparing SD card\u2026</string>
+
+    <!-- alert to the user that the camera fails to read or write the SD card. -->
+    <string name="access_sd_fail">Fail to access SD card.</string>
 
     <!-- Settings stuff -->
 

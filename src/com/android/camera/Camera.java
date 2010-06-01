@@ -1208,6 +1208,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             } else {
                 noStorageText = getString(R.string.no_storage);
             }
+        } else if (remaining == MenuHelper.CANNOT_STAT_ERROR) {
+            noStorageText = getString(R.string.access_sd_fail);
         } else if (remaining < 1) {
             noStorageText = getString(R.string.not_enough_space);
         }

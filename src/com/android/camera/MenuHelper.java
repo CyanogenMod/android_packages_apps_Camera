@@ -201,6 +201,7 @@ public class MenuHelper {
             // if we can't stat the filesystem then we don't know how many
             // pictures are remaining.  it might be zero but just leave it
             // blank since we really don't know.
+            Log.e(TAG, "Fail to access sdcard", ex);
             return CANNOT_STAT_ERROR;
         }
     }
