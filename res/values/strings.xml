@@ -167,7 +167,7 @@
     <!-- Settings screen, Flash mode title -->
     <string name="pref_camera_flashmode_title">Flash mode</string>
 
-    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <!-- Settings screen, Flash mode dialog radio button choices -->
     <string name="pref_camera_flashmode_entry_auto">Auto</string>
     <string name="pref_camera_flashmode_entry_on">On</string>
     <string name="pref_camera_flashmode_entry_off">Off</string>
@@ -253,6 +253,17 @@
     <!-- Exposure settings in preference -->
     <string name="pref_exposure_title">Exposure</string>
     <string name="pref_exposure_default" translatable="false">0</string>
+
+    <!-- Default metering mode setting.-->
+    <string name="pref_camera_meteringmode_default" translatable="false">center-weighted</string>
+
+    <!-- Settings screen, Metering mode title -->
+    <string name="pref_camera_meteringmode_title">Metering mode</string>
+
+    <!-- Settings screen, Metering mode dialog radio button choices -->
+    <string name="pref_camera_meteringmode_entry_center_weighted">Center Weighted</string>
+    <string name="pref_camera_meteringmode_entry_frame_average">Frame Average</string>
+    <string name="pref_camera_meteringmode_entry_spot">Spot</string>
 
     <!-- Framing grid settings in preference -->
 
