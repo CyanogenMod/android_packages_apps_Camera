@@ -117,7 +117,8 @@
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Attiva"</string>
     <string name="pref_camera_videoquality_title" msgid="4127153321803677407">"Qualità video"</string>
     <string name="pref_camera_videoquality_entry_0" msgid="6300182041472826848">"Bassa (per MMS)"</string>
-    <string name="pref_camera_videoquality_entry_1" msgid="6742349839919099735">"Alta (per scheda SD)"</string>
+    <string name="pref_camera_videoquality_entry_1">Med (per scheda SD)</string>
+    <string name="pref_camera_videoquality_entry_2">Alta (720p)</string>
     <string name="pref_camera_videoquality_dialogtitle" msgid="9154437474111181737">"Qualità video"</string>
     <string name="pref_camera_video_duration_title" msgid="8049279326917441484">"Durata video"</string>
     <string name="pref_camera_video_duration_entry_mms" msgid="9067623003661464481">"<xliff:g id="DURATION">%1$d</xliff:g> secondi (per MMS)"</string>
