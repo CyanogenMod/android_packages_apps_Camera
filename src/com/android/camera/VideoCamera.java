@@ -485,17 +485,23 @@ public class VideoCamera extends Activity implements View.OnClickListener,
     }
 
     private void readVideoPreferences() {
+        /* Wysie: Commented out for now
         boolean videoQualityHigh =
                 getBooleanPreference(CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+        */
 
+        int videoQuality = getIntPreference(CameraSettings.KEY_VIDEO_QUALITY, CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+        
         // Set video quality.
         Intent intent = getIntent();
+        /* Wysie: Commented out for now
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
             int extraVideoQuality =
                     intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
             videoQualityHigh = (extraVideoQuality > 0);
         }
+        */
 
         // Set video duration limit. The limit is read from the preference,
         // unless it is specified in the intent.
@@ -518,7 +524,7 @@ public class VideoCamera extends Activity implements View.OnClickListener,
             }
         }
 
-        mProfile = new MediaRecorderProfile(videoQualityHigh);
+        mProfile = new MediaRecorderProfile(videoQuality);
     }
 
     private void resizeForPreviewAspectRatio() {
@@ -1526,7 +1532,8 @@ class MediaRecorderProfile {
 
     @SuppressWarnings("unused")
     private static final String TAG = "MediaRecorderProfile";
-    public final boolean mHiQuality;
+    //public final boolean mHiQuality;
+    public final int mQuality;
     public final int mOutputFormat;
     public final int mVideoEncoder;
     public final int mAudioEncoder;
@@ -1538,61 +1545,102 @@ class MediaRecorderProfile {
     public final int mAudioChannels;
     public final int mAudioSamplingRate;
 
-    MediaRecorderProfile(boolean hiQuality) {
-        mHiQuality = hiQuality;
+    MediaRecorderProfile(int quality) {
+        //mHiQuality = hiQuality;
+        mQuality = quality;
 
-        mOutputFormat = getFromTable("ro.media.enc.hprof.file.format",
-                                     "ro.media.enc.lprof.file.format",
+        mOutputFormat = getFromTable("ro.media.enc.hprof.file.format", //HIGH
+                                     "ro.media.enc.mprof.file.format", //SD
+                                     "ro.media.enc.lprof.file.format", //MMS
                                      OUTPUT_FORMAT_TABLE);
 
         mVideoEncoder = getFromTable("ro.media.enc.hprof.codec.vid",
+                                     "ro.media.enc.mprof.codec.vid",
                                      "ro.media.enc.lprof.codec.vid",
                                      VIDEO_ENCODER_TABLE);
 
         mAudioEncoder = getFromTable("ro.media.enc.hprof.codec.aud",
+                                     "ro.media.enc.mprof.codec.aud",
                                      "ro.media.enc.lprof.codec.aud",
                                      AUDIO_ENCODER_TABLE);
 
         mVideoWidth = getInt("ro.media.enc.hprof.vid.width",
+                             "ro.media.enc.mprof.vid.width",
                              "ro.media.enc.lprof.vid.width",
-                             352, 176);
+                             1280, 352, 176);
 
         mVideoHeight = getInt("ro.media.enc.hprof.vid.height",
+                              "ro.media.enc.mprof.vid.height",
                               "ro.media.enc.lprof.vid.height",
-                              288, 144);
+                              720, 288, 144);
 
         mVideoFps = getInt("ro.media.enc.hprof.vid.fps",
+                           "ro.media.enc.mprof.vid.fps",
                            "ro.media.enc.lprof.vid.fps",
-                           20, 20);
+                           30, 20, 20);
 
         mVideoBitrate = getInt("ro.media.enc.hprof.vid.bps",
+                               "ro.media.enc.mprof.vid.bps",
                                "ro.media.enc.lprof.vid.bps",
-                               360000, 192000);
+                               500000, 360000, 192000);
 
         mAudioBitrate = getInt("ro.media.enc.hprof.aud.bps",
+                               "ro.media.enc.mprof.aud.bps",
                                "ro.media.enc.lprof.aud.bps",
-                               23450, 23450);
+                               23450, 23450, 23450);
 
         mAudioChannels = getInt("ro.media.enc.hprof.aud.ch",
+                                "ro.media.enc.mprof.aud.ch",
                                 "ro.media.enc.lprof.aud.ch",
-                                1, 1);
+                                1, 1, 1);
 
         mAudioSamplingRate = getInt("ro.media.enc.hprof.aud.hz",
+                                    "ro.media.enc.mprof.aud.hz",
                                     "ro.media.enc.lprof.aud.hz",
-                                    8000, 8000);
+                                    8000, 8000, 8000);
     }
 
-    private int getFromTable(String highKey, String lowKey,
+    private int getFromTable(String highKey, String medKey, String lowKey,
                 DefaultHashMap<String, Integer> table) {
-        String s;
-        s = SystemProperties.get(mHiQuality ? highKey : lowKey);
+                
+        String s = SystemProperties.get(medKey); // Default to medium
+        
+        switch (mQuality) {
+            case CameraSettings.VIDEO_QUAL_LOW:
+                s = SystemProperties.get(lowKey);
+                break;
+            case CameraSettings.VIDEO_QUAL_MEDIUM:
+                s = SystemProperties.get(medKey);
+                break;
+            case CameraSettings.VIDEO_QUAL_HIGH:
+                s = SystemProperties.get(highKey);
+                break;
+        }
+        
         return table.get(s);
     }
 
-    private int getInt(String highKey, String lowKey, int highDefault,
-                int lowDefault) {
-        String key = mHiQuality ? highKey : lowKey;
-        int defaultValue = mHiQuality ? highDefault : lowDefault;
+    private int getInt(String highKey, String medKey, String lowKey,
+                        int highDefault, int medDefault, int lowDefault) {
+        
+        String key = medKey; // Default to medium
+        int defaultValue = medDefault; // Default to medium
+        
+        switch (mQuality) {
+            case CameraSettings.VIDEO_QUAL_LOW:
+                key = lowKey;
+                defaultValue = lowDefault;
+                break;
+            case CameraSettings.VIDEO_QUAL_MEDIUM:
+                key = medKey;
+                defaultValue = medDefault;
+                break;
+            case CameraSettings.VIDEO_QUAL_HIGH:
+                key = highKey;
+                defaultValue = highDefault;
+                break;        
+        }
+        
         return SystemProperties.getInt(key, defaultValue);
     }
 

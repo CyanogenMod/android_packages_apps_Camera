@@ -43,7 +43,13 @@ public class CameraSettings {
     public static final int MMS_VIDEO_DURATION =
             SystemProperties.getInt("ro.media.enc.lprof.duration", 60);
 
-    public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
+    //public static final boolean DEFAULT_VIDEO_QUALITY_VALUE = true;
+    
+    //Wysie
+    public static final int VIDEO_QUAL_LOW = 0;
+    public static final int VIDEO_QUAL_MEDIUM = 1;
+    public static final int VIDEO_QUAL_HIGH = 2;
+    public static final int DEFAULT_VIDEO_QUALITY_VALUE = VIDEO_QUAL_MEDIUM;
 
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
