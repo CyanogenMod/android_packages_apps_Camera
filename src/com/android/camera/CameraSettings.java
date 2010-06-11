@@ -47,6 +47,7 @@ public class CameraSettings {
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
     public static final String KEY_QUICK_CAPTURE = "pref_camera_quickcapture_key";
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
+    public static final String KEY_METERING_MODE = "pref_camera_meteringmode_key";
 
     public static final String QUICK_CAPTURE_ON = "on";
     public static final String QUICK_CAPTURE_OFF = "off";
@@ -139,6 +140,8 @@ public class CameraSettings {
         ListPreference exposure = group.findPreference(KEY_EXPOSURE);
         ListPreference videoFlashMode =
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
+        ListPreference meteringMode =
+                group.findPreference(KEY_METERING_MODE);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -185,6 +188,10 @@ public class CameraSettings {
         if (videoFlashMode != null) {
             filterUnsupportedOptions(group,
                     videoFlashMode, mParameters.getSupportedFlashModes());
+        }
+        if (meteringMode != null) {
+            filterUnsupportedOptions(group,
+                    meteringMode, mParameters.getSupportedMeteringModes());
         }
 
         if (exposure != null) {
