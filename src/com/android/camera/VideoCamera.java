@@ -162,6 +162,7 @@ public class VideoCamera extends NoSearchActivity
     private int mMaxVideoDurationInMs;
 
     boolean mPausing = false;
+    boolean mSwitching;
     boolean mPreviewing = false; // True if preview is started.
 
     private ContentResolver mContentResolver;
@@ -175,6 +176,10 @@ public class VideoCamera extends NoSearchActivity
 
     private final Handler mHandler = new MainHandler();
     private Parameters mParameters;
+
+    // multiple cameras support
+    private int mNumberOfCameras;
+    private int mCameraId;
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -268,6 +273,9 @@ public class VideoCamera extends NoSearchActivity
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         CameraSettings.upgradePreferences(mPreferences);
+
+        mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
+        mCameraId = CameraSettings.readPreferredCameraId(this);
 
         readVideoPreferences();
 
@@ -371,7 +379,7 @@ public class VideoCamera extends NoSearchActivity
         // becomes landscape.
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
-                && !mPausing && mGLRootView == null) {
+                && !mPausing && !mSwitching && mGLRootView == null) {
             attachHeadUpDisplay();
         } else if (mGLRootView != null) {
             detachHeadUpDisplay();
@@ -626,7 +634,8 @@ public class VideoCamera extends NoSearchActivity
         if (mCameraDevice == null) {
             // If the activity is paused and resumed, camera device has been
             // released and we need to open the camera.
-            mCameraDevice = CameraHolder.instance().open();
+            mCameraDevice = CameraHolder.instance().open(mCameraId);
+            Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
         }
 
         mCameraDevice.lock();
@@ -1053,6 +1062,57 @@ public class VideoCamera extends NoSearchActivity
                     });
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
         mGalleryItems.add(gallery);
+
+        if (mNumberOfCameras > 1) {
+            menu.add(Menu.NONE, Menu.NONE,
+                    MenuHelper.POSITION_SWITCH_CAMERA_ID,
+                    R.string.switch_camera_id)
+                    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switchCameraId();
+                    return true;
+                }
+            }).setIcon(android.R.drawable.ic_menu_camera);
+        }
+    }
+
+    private void switchCameraId() {
+        mSwitching = true;
+
+        int nextId = (mCameraId + 1) % mNumberOfCameras;
+        CameraSettings.writePreferredCameraId(this, nextId);
+
+        changeHeadUpDisplayState();
+
+        // This is similar to what mShutterButton.performClick() does,
+        // but not quite the same.
+        if (mMediaRecorderRecording) {
+            if (mIsVideoCaptureIntent) {
+                stopVideoRecording();
+                showAlert();
+            } else {
+                stopVideoRecordingAndGetThumbnail();
+            }
+        } else {
+            stopVideoRecording();
+        }
+        closeCamera();
+        mHandler.removeMessages(INIT_RECORDER);
+
+        // Restart preview
+        try {
+            startPreview();
+        } catch (CameraHardwareException e) {
+            showCameraBusyAndFinish();
+            return;
+        }
+
+        if (mSurfaceHolder != null) {
+            mHandler.sendEmptyMessage(INIT_RECORDER);
+        }
+
+        mSwitching = false;
+        changeHeadUpDisplayState();
     }
 
     private PreferenceGroup filterPreferenceScreenByIntent(

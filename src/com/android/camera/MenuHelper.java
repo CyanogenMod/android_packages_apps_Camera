@@ -58,20 +58,7 @@ public class MenuHelper {
 
     public static final int POSITION_SWITCH_CAMERA_MODE = 1;
     public static final int POSITION_GOTO_GALLERY = 2;
-    public static final int POSITION_VIEWPLAY = 3;
-    public static final int POSITION_CAPTURE_PICTURE = 4;
-    public static final int POSITION_CAPTURE_VIDEO = 5;
-    public static final int POSITION_IMAGE_SHARE = 6;
-    public static final int POSITION_IMAGE_ROTATE = 7;
-    public static final int POSITION_IMAGE_TOSS = 8;
-    public static final int POSITION_IMAGE_CROP = 9;
-    public static final int POSITION_IMAGE_SET = 10;
-    public static final int POSITION_DETAILS = 11;
-    public static final int POSITION_SHOWMAP = 12;
-    public static final int POSITION_SLIDESHOW = 13;
-    public static final int POSITION_MULTISELECT = 14;
-    public static final int POSITION_CAMERA_SETTING = 15;
-    public static final int POSITION_GALLERY_SETTING = 16;
+    public static final int POSITION_SWITCH_CAMERA_ID = 3;
 
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;

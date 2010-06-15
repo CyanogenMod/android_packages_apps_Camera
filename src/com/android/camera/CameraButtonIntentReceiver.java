@@ -36,7 +36,8 @@ public class CameraButtonIntentReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // Try to get the camera hardware
         CameraHolder holder = CameraHolder.instance();
-        if (holder.tryOpen() == null) return;
+        int cameraId = CameraSettings.readPreferredCameraId(context);
+        if (holder.tryOpen(cameraId) == null) return;
 
         // We are going to launch the camera, so hold the camera for later use
         holder.keep();

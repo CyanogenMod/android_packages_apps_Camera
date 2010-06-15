@@ -47,6 +47,7 @@ public class CameraHolder {
     private long mKeepBeforeTime = 0;  // Keep the Camera before this time.
     private final Handler mHandler;
     private int mUsers = 0;  // number of open() - number of release()
+    private int mNumberOfCameras;
 
     // We store the camera parameters when we actually open the device,
     // so we can restore them in the subsequent open() requests by the user.
@@ -90,14 +91,30 @@ public class CameraHolder {
         HandlerThread ht = new HandlerThread("CameraHolder");
         ht.start();
         mHandler = new MyHandler(ht.getLooper());
+        mNumberOfCameras = android.hardware.Camera.getNumberOfCameras();
+
+        android.hardware.Camera.CameraInfo info =
+                new android.hardware.Camera.CameraInfo();
+        Log.v(TAG, "# of cameras:" + mNumberOfCameras);
+        for (int i = 0; i < mNumberOfCameras; i++) {
+            Log.v(TAG, "camera info #" + i);
+            android.hardware.Camera.getCameraInfo(i, info);
+            Log.v(TAG, "facing: " + info.mFacing);
+            Log.v(TAG, "orientation: " + info.mOrientation);
+        }
     }
 
-    public synchronized android.hardware.Camera open()
+    public int getNumberOfCameras() {
+        return mNumberOfCameras;
+    }
+
+    public synchronized android.hardware.Camera open(int cameraId)
             throws CameraHardwareException {
         Assert(mUsers == 0);
         if (mCameraDevice == null) {
             try {
-                mCameraDevice = android.hardware.Camera.open();
+                Log.v(TAG, "open camera " + cameraId);
+                mCameraDevice = android.hardware.Camera.open(cameraId);
             } catch (RuntimeException e) {
                 Log.e(TAG, "fail to connect Camera", e);
                 throw new CameraHardwareException(e);
@@ -122,9 +139,9 @@ public class CameraHolder {
      * Tries to open the hardware camera. If the camera is being used or
      * unavailable then return {@code null}.
      */
-    public synchronized android.hardware.Camera tryOpen() {
+    public synchronized android.hardware.Camera tryOpen(int cameraId) {
         try {
-            return mUsers == 0 ? open() : null;
+            return mUsers == 0 ? open(cameraId) : null;
         } catch (CameraHardwareException e) {
             // In eng build, we throw the exception so that test tool
             // can detect it and report it
