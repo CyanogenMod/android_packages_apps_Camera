@@ -19,7 +19,6 @@ package com.android.camera;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
 import com.android.camera.R;
@@ -48,8 +47,7 @@ public abstract class CameraPreference {
 
     public SharedPreferences getSharedPreferences() {
         if (mSharedPreferences == null) {
-            mSharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(mContext);
+            mSharedPreferences = ComboPreferences.get(mContext);
         }
         return mSharedPreferences;
     }

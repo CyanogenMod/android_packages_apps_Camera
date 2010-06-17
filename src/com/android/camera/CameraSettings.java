@@ -19,10 +19,10 @@ package com.android.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ public class CameraSettings {
     private static final int NOT_FOUND = -1;
 
     public static final String KEY_VERSION = "pref_version_key";
+    public static final String KEY_LOCAL_VERSION = "pref_local_version_key";
     public static final String KEY_RECORD_LOCATION = RecordLocationPreference.KEY;
     public static final String KEY_VIDEO_QUALITY = "pref_video_quality_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
@@ -60,6 +61,7 @@ public class CameraSettings {
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
     public static final int CURRENT_VERSION = 4;
+    public static final int CURRENT_LOCAL_VERSION = 1;
 
     // max video duration in seconds for mms and youtube.
     private static final int MMS_VIDEO_DURATION = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW).duration;
@@ -100,8 +102,8 @@ public class CameraSettings {
         for (String candidate : context.getResources().getStringArray(
                 R.array.pref_camera_picturesize_entryvalues)) {
             if (setCameraPictureSize(candidate, supported, parameters)) {
-                SharedPreferences.Editor editor = PreferenceManager
-                        .getDefaultSharedPreferences(context).edit();
+                SharedPreferences.Editor editor = ComboPreferences
+                        .get(context).edit();
                 editor.putString(KEY_PICTURE_SIZE, candidate);
                 editor.commit();
                 return;
@@ -271,7 +273,20 @@ public class CameraSettings {
         return list;
     }
 
-    public static void upgradePreferences(SharedPreferences pref) {
+    public static void upgradeLocalPreferences(SharedPreferences pref) {
+        int version;
+        try {
+            version = pref.getInt(KEY_LOCAL_VERSION, 0);
+        } catch (Exception ex) {
+            version = 0;
+        }
+        if (version == CURRENT_LOCAL_VERSION) return;
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt(KEY_LOCAL_VERSION, CURRENT_LOCAL_VERSION);
+        editor.commit();
+    }
+
+    public static void upgradeGlobalPreferences(SharedPreferences pref) {
         int version;
         try {
             version = pref.getInt(KEY_VERSION, 0);
@@ -316,6 +331,11 @@ public class CameraSettings {
         editor.commit();
     }
 
+    public static void upgradeAllPreferences(ComboPreferences pref) {
+        upgradeGlobalPreferences(pref.getGlobal());
+        upgradeLocalPreferences(pref.getLocal());
+    }
+
     public static boolean getVideoQuality(String quality) {
         return VIDEO_QUALITY_YOUTUBE.equals(
                 quality) || VIDEO_QUALITY_HIGH.equals(quality);
@@ -330,15 +350,13 @@ public class CameraSettings {
         return DEFAULT_VIDEO_DURATION * 1000;
     }
 
-    public static int readPreferredCameraId(Context context) {
-        SharedPreferences pref =
-                PreferenceManager.getDefaultSharedPreferences(context);
+    public static int readPreferredCameraId(SharedPreferences pref) {
         return pref.getInt(KEY_CAMERA_ID, 0);
     }
 
-    public static void writePreferredCameraId(Context context, int cameraId) {
-        SharedPreferences.Editor editor = PreferenceManager
-                .getDefaultSharedPreferences(context).edit();
+    public static void writePreferredCameraId(SharedPreferences pref,
+            int cameraId) {
+        Editor editor = pref.edit();
         editor.putInt(KEY_CAMERA_ID, cameraId);
         editor.commit();
     }
