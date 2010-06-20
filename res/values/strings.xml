@@ -356,4 +356,32 @@
      <string name="pref_camera_lensshading_value_enable">enable</string>
      <string name="pref_camera_lensshading_value_disable">disable</string>
 
+     <!-- Settings screen, Anti Banding title -->
+     <string name="pref_camera_antibanding_title">Anti Banding</string>
+
+     <!-- Default Anti Banding setting. -->
+     <string name="pref_camera_antibanding_default">Off</string>
+
+     <!-- Settings screen, Anti Banding entries -->
+     <string name="pref_camera_antibanding_entry_0">Off</string>
+     <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+     <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+     <string name="pref_camera_antibanding_entry_3">Auto</string>
+
+     <!-- Default auto exposure setting. Do not translate. -->
+     <string name="pref_camera_autoexposure_default">frame-average</string>
+
+     <!-- Settings screen, Select auto exposure title -->
+     <string name="pref_camera_autoexposure_title">Select Auto Exposure Mode</string>
+
+     <!-- Settings screen, auto exposure dialog radio button choices -->
+     <string name="pref_camera_autoexposure_entry_frameaverage">Frame Average</string>
+     <string name="pref_camera_autoexposure_entry_centerweighted">Center Weighted</string>
+     <string name="pref_camera_autoexposure_entry_spotmetering">Spot Metering</string>
+
+     <!-- Auto exposure entry values. Do not translate. -->
+     <string name="pref_camera_autoexposure_value_frameaverage">frame-average</string>
+     <string name="pref_camera_autoexposure_value_centerweighted">center-weighted</string>
+     <string name="pref_camera_autoexposure_value_spotmetering">spot-metering</string>
+
 </resources>
