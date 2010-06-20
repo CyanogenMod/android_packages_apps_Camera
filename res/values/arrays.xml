@@ -284,4 +284,36 @@
         <item>off</item>
         <item>on</item>
     </string-array>
+
+    <!-- Camera Preferences ISO dialog box entries -->
+     <string-array name="pref_camera_iso_entries">
+         <item>@string/pref_camera_iso_entry_auto</item>
+         <item>@string/pref_camera_iso_entry_isodeblur</item>
+         <item>@string/pref_camera_iso_entry_iso100</item>
+         <item>@string/pref_camera_iso_entry_iso200</item>
+         <item>@string/pref_camera_iso_entry_iso400</item>
+         <item>@string/pref_camera_iso_entry_iso800</item>
+    </string-array>
+
+    <!-- Do not localize entryvalues -->
+    <string-array name="pref_camera_iso_entryvalues">
+         <item>@string/pref_camera_iso_value_auto</item>
+         <item>@string/pref_camera_iso_value_isodeblur</item>
+         <item>@string/pref_camera_iso_value_iso100</item>
+         <item>@string/pref_camera_iso_value_iso200</item>
+         <item>@string/pref_camera_iso_value_iso400</item>
+         <item>@string/pref_camera_iso_value_iso800</item>
+     </string-array>
+
+     <!-- Camera Preferences Lens shading dialog box entries -->
+     <string-array name="pref_camera_lensshading_entries">
+          <item>@string/pref_camera_lensshading_entry_enable</item>
+          <item>@string/pref_camera_lensshading_entry_disable</item>
+     </string-array>
+
+     <!-- Do not localize entryvalues -->
+     <string-array name="pref_camera_lensshading_entryvalues">
+          <item>@string/pref_camera_lensshading_value_enable</item>
+          <item>@string/pref_camera_lensshading_value_disable</item>
+     </string-array>
 </resources>
