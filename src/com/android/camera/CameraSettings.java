@@ -153,6 +153,7 @@ public class CameraSettings {
 
     private void initPreference(PreferenceGroup group) {
         ListPreference videoQuality = group.findPreference(KEY_VIDEO_QUALITY);
+        ListPreference videoSize = group.findPreference(KEY_VIDEO_SIZE);
         ListPreference pictureSize = group.findPreference(KEY_PICTURE_SIZE);
         ListPreference whiteBalance =  group.findPreference(KEY_WHITE_BALANCE);
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
@@ -198,6 +199,10 @@ public class CameraSettings {
         }
 
         // Filter out unsupported settings / options
+        if (videoSize != null) {
+            filterUnsupportedOptions(group, videoSize, sizeListToStringList(
+                    mParameters.getSupportedPreviewSizes()));
+        }
         if (pictureSize != null) {
             filterUnsupportedOptions(group, pictureSize, sizeListToStringList(
                     mParameters.getSupportedPictureSizes()));
