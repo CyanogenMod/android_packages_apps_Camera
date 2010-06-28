@@ -125,11 +125,12 @@
 
     <!-- Settings screen, Video quality dialog radio button choices -->
     <string name="pref_camera_videosize_entry_0">720P</string>
-    <string name="pref_camera_videosize_entry_1">WVGA</string>
-    <string name="pref_camera_videosize_entry_2">VGA</string>
-    <string name="pref_camera_videosize_entry_3">CIF</string>
-    <string name="pref_camera_videosize_entry_4">QVGA</string>
-    <string name="pref_camera_videosize_entry_5">QCIF</string>
+    <string name="pref_camera_videosize_entry_1">D1</string>
+    <string name="pref_camera_videosize_entry_2">WVGA</string>
+    <string name="pref_camera_videosize_entry_3">VGA</string>
+    <string name="pref_camera_videosize_entry_4">CIF</string>
+    <string name="pref_camera_videosize_entry_5">QVGA</string>
+    <string name="pref_camera_videosize_entry_6">QCIF</string>
 
 
 
