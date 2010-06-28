@@ -173,6 +173,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private boolean mPreviewing;
     private boolean mPausing;
+    private boolean mSwitching;
     private boolean mFirstTimeInitialized;
     private boolean mIsImageCaptureIntent;
     private boolean mRecordLocation;
@@ -229,6 +230,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private final Handler mHandler = new MainHandler();
     private boolean mQuickCapture;
     private CameraHeadUpDisplay mHeadUpDisplay;
+
+    // multiple cameras support
+    private int mNumberOfCameras;
+    private int mCameraId;
 
     /**
      * This Handler is used to post message back onto the main thread of the
@@ -892,7 +897,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         CameraSettings.upgradePreferences(mPreferences);
 
-        mQuickCapture = getQuickCaptureSettings();
+        mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
+        mCameraId = CameraSettings.readPreferredCameraId(this);
 
         // comment out -- unused now.
         //mQuickCapture = getQuickCaptureSettings();
@@ -968,7 +974,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // becomes landscape.
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
-                && !mPausing && mFirstTimeInitialized) {
+                && !mPausing && !mSwitching && mFirstTimeInitialized) {
             if (mGLRootView == null) attachHeadUpDisplay();
         } else if (mGLRootView != null) {
             detachHeadUpDisplay();
@@ -1577,7 +1583,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void ensureCameraDevice() throws CameraHardwareException {
         if (mCameraDevice == null) {
-            mCameraDevice = CameraHolder.instance().open();
+            mCameraDevice = CameraHolder.instance().open(mCameraId);
+            Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
             mInitialParams = mCameraDevice.getParameters();
         }
     }
@@ -2072,6 +2079,50 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         });
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
         mGalleryItems.add(gallery);
+
+        if (mNumberOfCameras > 1) {
+            menu.add(Menu.NONE, Menu.NONE,
+                    MenuHelper.POSITION_SWITCH_CAMERA_ID,
+                    R.string.switch_camera_id)
+                    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switchCameraId();
+                    return true;
+                }
+            }).setIcon(android.R.drawable.ic_menu_camera);
+        }
+    }
+
+    private void switchCameraId() {
+        mSwitching = true;
+
+        mCameraId = (mCameraId + 1) % mNumberOfCameras;
+        CameraSettings.writePreferredCameraId(this, mCameraId);
+
+        stopPreview();
+        closeCamera();
+        changeHeadUpDisplayState();
+
+        // Remove the messages in the event queue.
+        mHandler.removeMessages(RESTART_PREVIEW);
+
+        // Reset variables
+        mJpegPictureCallbackTime = 0;
+        mZoomValue = 0;
+
+        // Restart the preview.
+        resetExposureCompensation();
+        try {
+            startPreview();
+        } catch (CameraHardwareException e) {
+            showCameraErrorAndFinish();
+            return;
+        }
+
+        initializeZoom();
+
+        mSwitching = false;
+        changeHeadUpDisplayState();
     }
 
     private boolean switchToVideoMode() {

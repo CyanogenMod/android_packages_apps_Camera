@@ -102,6 +102,9 @@
     <!-- Button indicating to go to the image gallery -->
     <string name="camera_gallery_photos_text">Gallery</string>
 
+    <!-- Button indicating to switch to another camera -->
+    <string name="switch_camera_id">Switch Camera</string>
+
     <!-- Settings screen, setting title text -->
     <string name="pref_camera_recordlocation_title">Store location</string>
 

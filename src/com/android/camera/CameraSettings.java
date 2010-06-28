@@ -48,6 +48,7 @@ public class CameraSettings {
     public static final String KEY_QUICK_CAPTURE = "pref_camera_quickcapture_key";
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
     public static final String KEY_METERING_MODE = "pref_camera_meteringmode_key";
+    public static final String KEY_CAMERA_ID = "pref_camera_id";
 
     public static final String QUICK_CAPTURE_ON = "on";
     public static final String QUICK_CAPTURE_OFF = "off";
@@ -327,5 +328,18 @@ public class CameraSettings {
             return YOUTUBE_VIDEO_DURATION * 1000;
         }
         return DEFAULT_VIDEO_DURATION * 1000;
+    }
+
+    public static int readPreferredCameraId(Context context) {
+        SharedPreferences pref =
+                PreferenceManager.getDefaultSharedPreferences(context);
+        return pref.getInt(KEY_CAMERA_ID, 0);
+    }
+
+    public static void writePreferredCameraId(Context context, int cameraId) {
+        SharedPreferences.Editor editor = PreferenceManager
+                .getDefaultSharedPreferences(context).edit();
+        editor.putInt(KEY_CAMERA_ID, cameraId);
+        editor.commit();
     }
 }
