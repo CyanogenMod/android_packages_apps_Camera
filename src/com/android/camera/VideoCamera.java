@@ -48,7 +48,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.MediaStore.Video;
@@ -123,7 +122,7 @@ public class VideoCamera extends NoSearchActivity
     private final static String EXTRA_QUICK_CAPTURE =
             "android.intent.extra.quickCapture";
 
-    private SharedPreferences mPreferences;
+    private ComboPreferences mPreferences;
 
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceView mVideoPreview;
@@ -271,11 +270,13 @@ public class VideoCamera extends NoSearchActivity
             win.setAttributes(winParams);
         }
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        CameraSettings.upgradePreferences(mPreferences);
+        mPreferences = new ComboPreferences(this);
+        CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
+        mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
+        mPreferences.setLocalId(this, mCameraId);
+        CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
         mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
-        mCameraId = CameraSettings.readPreferredCameraId(this);
 
         readVideoPreferences();
 
@@ -1079,8 +1080,8 @@ public class VideoCamera extends NoSearchActivity
     private void switchCameraId() {
         mSwitching = true;
 
-        int nextId = (mCameraId + 1) % mNumberOfCameras;
-        CameraSettings.writePreferredCameraId(this, nextId);
+        mCameraId = (mCameraId + 1) % mNumberOfCameras;
+        CameraSettings.writePreferredCameraId(mPreferences, mCameraId);
 
         changeHeadUpDisplayState();
 
@@ -1099,6 +1100,10 @@ public class VideoCamera extends NoSearchActivity
         closeCamera();
         mHandler.removeMessages(INIT_RECORDER);
 
+        // Reload the preferences.
+        mPreferences.setLocalId(this, mCameraId);
+        CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
+
         // Restart preview
         try {
             startPreview();
@@ -1106,6 +1111,9 @@ public class VideoCamera extends NoSearchActivity
             showCameraBusyAndFinish();
             return;
         }
+
+        // Reload the UI.
+        initializeHeadUpDisplay();
 
         if (mSurfaceHolder != null) {
             mHandler.sendEmptyMessage(INIT_RECORDER);

@@ -49,7 +49,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -136,7 +135,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = 0;  // No rotation (landscape) by default.
-    private SharedPreferences mPreferences;
+    private ComboPreferences mPreferences;
 
     private static final int IDLE = 1;
     private static final int SNAPSHOT_IN_PROGRESS = 2;
@@ -894,11 +893,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         setContentView(R.layout.camera);
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        CameraSettings.upgradePreferences(mPreferences);
+        mPreferences = new ComboPreferences(this);
+        CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
+        mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
+        mPreferences.setLocalId(this, mCameraId);
+        CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
         mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
-        mCameraId = CameraSettings.readPreferredCameraId(this);
 
         // comment out -- unused now.
         //mQuickCapture = getQuickCaptureSettings();
@@ -2097,7 +2098,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mSwitching = true;
 
         mCameraId = (mCameraId + 1) % mNumberOfCameras;
-        CameraSettings.writePreferredCameraId(this, mCameraId);
+        CameraSettings.writePreferredCameraId(mPreferences, mCameraId);
 
         stopPreview();
         closeCamera();
@@ -2110,6 +2111,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
 
+        // Reload the preferences.
+        mPreferences.setLocalId(this, mCameraId);
+        CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
+
+
         // Restart the preview.
         resetExposureCompensation();
         try {
@@ -2120,6 +2126,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
 
         initializeZoom();
+
+        // Reload the UI.
+        if (mFirstTimeInitialized) {
+            initializeHeadUpDisplay();
+        }
 
         mSwitching = false;
         changeHeadUpDisplayState();
