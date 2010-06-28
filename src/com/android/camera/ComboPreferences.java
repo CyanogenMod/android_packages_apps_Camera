@@ -116,11 +116,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
     }
 
-    // The following two methods are not used.
-    public Editor putStringSet(String key, Set<String> values) {
-        throw new UnsupportedOperationException();
-    }
-
+    // This method is not used.
     public Set<String> getStringSet(String key, Set<String> defValues) {
         throw new UnsupportedOperationException();
     }
@@ -202,6 +198,11 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
                 mEditorLocal.putBoolean(key, value);
             }
             return this;
+        }
+
+        // This method is not used.
+        public Editor putStringSet(String key, Set<String> values) {
+            throw new UnsupportedOperationException();
         }
     }
 
