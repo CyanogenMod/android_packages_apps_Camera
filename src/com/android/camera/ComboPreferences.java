@@ -117,11 +117,11 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
     }
 
     // The following two methods are not used.
-    Editor putStringSet(String key, Set<String> values) {
+    public Editor putStringSet(String key, Set<String> values) {
         throw new UnsupportedOperationException();
     }
 
-    Set<String> getStringSet(String key, Set<String> defValues) {
+    public Set<String> getStringSet(String key, Set<String> defValues) {
         throw new UnsupportedOperationException();
     }
 
