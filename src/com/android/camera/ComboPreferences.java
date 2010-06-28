@@ -23,6 +23,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -113,6 +114,15 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         } else {
             return mPrefLocal.getBoolean(key, defValue);
         }
+    }
+
+    // The following two methods are not used.
+    Editor putStringSet(String key, Set<String> values) {
+        throw new UnsupportedOperationException();
+    }
+
+    Set<String> getStringSet(String key, Set<String> defValues) {
+        throw new UnsupportedOperationException();
     }
 
     public boolean contains(String key) {
