@@ -448,7 +448,7 @@ public class VideoCamera extends NoSearchActivity
             }
         } else {
             stopVideoRecordingAndGetThumbnail();
-            initializeRecorder();
+            mHandler.sendEmptyMessage(INIT_RECORDER);
         }
     }
 
