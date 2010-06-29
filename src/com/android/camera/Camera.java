@@ -1731,6 +1731,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPreviewing = true;
         mZoomState = ZOOM_STOPPED;
         mStatus = IDLE;
+  
+        /* Get the correct max zoom value, as this varies with
+        * preview size/picture resolution
+        */
+        mParameters = mCameraDevice.getParameters();
+        mZoomMax = mParameters.getMaxZoom();
     }
 
     private void stopPreview() {
