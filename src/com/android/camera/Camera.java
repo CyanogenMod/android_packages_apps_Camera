@@ -444,7 +444,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // Maximum zoom value may change after preview size is set. Get the
         // latest parameters here.
-        mParameters = mCameraDevice.getParameters();
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
@@ -1845,6 +1844,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPreviewing = true;
         mZoomState = ZOOM_STOPPED;
         mStatus = IDLE;
+  
+        /* Get the correct max zoom value, as this varies with
+        * preview size/picture resolution
+        */
+        mParameters = mCameraDevice.getParameters();
+        mZoomMax = mParameters.getMaxZoom();
     }
 
     private void stopPreview() {
