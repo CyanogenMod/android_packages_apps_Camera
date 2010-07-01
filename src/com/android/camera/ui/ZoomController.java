@@ -85,7 +85,7 @@ public class ZoomController extends GLView {
         invalidate();
 
         int index = mRatios.length - 1 - (int)
-                ((position - mSliderTop) /  mValueGap + .5f);
+                ((float)(position - mSliderTop) /  mValueGap + .5f);
         if (index != mIndex || !isMoving) {
             mIndex = index;
             if (mZoomListener != null) {
