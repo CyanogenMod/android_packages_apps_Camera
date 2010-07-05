@@ -183,6 +183,15 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private ImageCapture mImageCapture = null;
 
+    /**
+     * An unpublished intent flag requesting to return as soon as capturing
+     * is completed.
+     *
+     * TODO: consider publishing by moving into MediaStore.
+     */
+    private final static String EXTRA_QUICK_CAPTURE =
+            "android.intent.extra.quickCapture";
+
     private boolean mPreviewing;
     private boolean mPausing;
     private boolean mFirstTimeInitialized;
@@ -247,6 +256,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // multiple cameras support
     private int mNumberOfCameras;
     private int mCameraId;
+
+    private boolean mQuickCapture;
 
     /**
      * This Handler is used to post message back onto the main thread of the
@@ -850,7 +861,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 updateThumbnailList();
             } else {
                 mCaptureOnlyData = data;
-                showPostCaptureAlert();
+                if (!mQuickCapture) {
+                    showPostCaptureAlert();
+                } else {
+                    doAttach();
+                }
             }
         }
 
@@ -985,6 +1000,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
         mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
+        mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
 
         // we need to reset exposure for the preview
         resetExposureCompensation();
