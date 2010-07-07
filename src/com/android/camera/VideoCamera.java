@@ -79,6 +79,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 
@@ -185,6 +186,20 @@ public class VideoCamera extends NoSearchActivity
         public V get(Object key) {
             V value = super.get(key);
             return (value == null) ? mDefaultValue : value;
+        }
+
+        public K getKey(V toCheck) {
+            Iterator<K> it = this.keySet().iterator();
+            V val;
+            K key;
+            while(it.hasNext()) {
+                key = it.next();
+                val = this.get(key);
+                if (val.equals(toCheck)) {
+                    return key;
+                }
+            }
+        return null;
         }
     }
 
@@ -437,6 +452,42 @@ public class VideoCamera extends NoSearchActivity
         }
     }
 
+    private void overrideHudSettings(final String videoEncoder,
+            final String audioEncoder, final String videoDuration, final String videoSize) {
+            if (mHeadUpDisplay != null && mGLRootView != null) {
+            mGLRootView.queueEvent(new Runnable() {
+            public void run() {
+                mHeadUpDisplay.overrideSettings(
+                       CameraSettings.KEY_VIDEO_ENCODER, videoEncoder);
+                mHeadUpDisplay.overrideSettings(
+                        CameraSettings.KEY_AUDIO_ENCODER, audioEncoder);
+                mHeadUpDisplay.overrideSettings(
+                        CameraSettings.KEY_VIDEO_DURATION, videoDuration);
+                mHeadUpDisplay.overrideSettings(
+                        CameraSettings.KEY_VIDEO_SIZE, videoSize);
+            }});
+          }
+    }
+
+    private void updateProfileInHud() {
+        String quality = mPreferences.getString(
+                CameraSettings.KEY_VIDEO_QUALITY,
+                CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+        if(!"custom".equalsIgnoreCase(quality)){
+            String videoEncoder = VIDEO_ENCODER_TABLE.getKey(mProfile.videoCodec);
+            String audioEncoder = AUDIO_ENCODER_TABLE.getKey(mProfile.audioCodec);
+            String videoSize = mProfile.videoFrameWidth + "x" + mProfile.videoFrameHeight;
+            int videoDuration = mMaxVideoDurationInMs / 1000;
+            if(videoDuration >= 60)
+                videoDuration = videoDuration / 60;
+            else
+                videoDuration = -1;
+            overrideHudSettings(videoEncoder, audioEncoder, String.valueOf(videoDuration), videoSize);
+       } else {
+            overrideHudSettings(null, null, null, null);
+       }
+    }
+
     private void changeHeadUpDisplayState() {
         // If the camera resumes behind the lock screen, the orientation
         // will be portrait. That causes OOM when we try to allocation GPU
@@ -468,6 +519,7 @@ public class VideoCamera extends NoSearchActivity
         mHeadUpDisplay.initialize(this, group);
         mGLRootView.setContentPane(mHeadUpDisplay);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
+        updateProfileInHud();
     }
 
     private void finalizeHeadUpDisplay() {
@@ -625,8 +677,6 @@ public class VideoCamera extends NoSearchActivity
             mProfile = CamcorderProfile.get(videoQualityHigh
                     ? CamcorderProfile.QUALITY_HIGH
                     : CamcorderProfile.QUALITY_LOW);
-
-
         } else {
             mProfile = null;
 
@@ -667,7 +717,7 @@ public class VideoCamera extends NoSearchActivity
 	    }catch(NumberFormatException npe){
 	        // use default value continue
 	        minutes = CameraSettings.DEFAULT_VIDEO_DURATION_VALUE;
-	    }
+        }
 
             if (minutes == -1) {
                 // This is a special case: the value -1 means we want to use the
@@ -682,12 +732,12 @@ public class VideoCamera extends NoSearchActivity
                 mMaxVideoDurationInMs = 60000 * minutes;
             }
         }
-
+        updateProfileInHud();
     }
 
     private void resizeForPreviewAspectRatio() {
         if(mProfile != null){
-             mPreviewFrameLayout.setAspectRatio(
+            mPreviewFrameLayout.setAspectRatio(
                      (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
         } else {
             mPreviewFrameLayout.setAspectRatio( ((double) mVideoWidth) / mVideoHeight);
@@ -1560,6 +1610,7 @@ public class VideoCamera extends NoSearchActivity
             mParameters.setPreviewSize(mVideoWidth, mVideoHeight);
             mParameters.setPreviewFrameRate(mVideoFps);
         }
+        updateProfileInHud();
 
         // Set flash mode.
         String flashMode = mPreferences.getString(
