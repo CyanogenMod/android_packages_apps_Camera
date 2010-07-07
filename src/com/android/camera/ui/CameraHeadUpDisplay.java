@@ -30,9 +30,11 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     private OtherSettingsIndicator mOtherSettings;
     private GpsIndicator mGpsIndicator;
     private ZoomIndicator mZoomIndicator;
-
-    public CameraHeadUpDisplay(Context context) {
+    private boolean mZoomSupported;
+    
+    public CameraHeadUpDisplay(Context context, boolean zoomSupported) {
         super(context);
+        mZoomSupported = zoomSupported;
     }
 
     @Override
@@ -65,9 +67,11 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
 
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_FLASH_MODE);
-
-        mZoomIndicator = new ZoomIndicator(context);
-        mIndicatorBar.addComponent(mZoomIndicator);
+        
+        if (mZoomSupported) {
+            mZoomIndicator = new ZoomIndicator(context);
+            mIndicatorBar.addComponent(mZoomIndicator);
+        }
     }
 
     public void setZoomListener(ZoomController.ZoomListener listener) {
