@@ -266,6 +266,18 @@
         <item>green-tint</item>
     </string-array>
 
+    <!-- Camera Preferences Touch AF/AEC dialog box entries -->
+    <string-array name="pref_camera_touchafaec_entries">
+        <item>@string/pref_camera_touchafaec_entry_off</item>
+        <item>@string/pref_camera_touchafaec_entry_on</item>
+    </string-array>
+
+    <!-- Do not localize entryvalues -->
+    <string-array name="pref_camera_touchafaec_entryvalues">
+        <item>touch-off</item>
+        <item>touch-on</item>
+   </string-array>
+
     <!-- Camera Preferences MultiLevel dialog box entries -->
     <string-array name="pref_camera_sharpness_entries">
         <item>@string/pref_camera_sharpness_entry_level0</item>

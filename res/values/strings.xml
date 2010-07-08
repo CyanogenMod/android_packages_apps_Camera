@@ -249,6 +249,16 @@
     <string name="pref_camera_coloreffect_entry_bluetint">Blue tint</string>
     <string name="pref_camera_coloreffect_entry_greentint">Green tint</string>
 
+    <!-- Default Touch AF/AEC setting. Do not translate. -->
+    <string name="pref_camera_touchafaec_default">touch-off</string>
+
+    <!-- Settings screen, Select Touch AF/AEC title -->
+    <string name="pref_camera_touchafaec_title">Touch AF/AEC</string>
+
+    <!-- Settings screen, Touch AF/AEC dialog radio button choices -->
+    <string name="pref_camera_touchafaec_entry_off">Off</string>
+    <string name="pref_camera_touchafaec_entry_on">On</string>
+
     <!-- Settings screen, Multiple levels entries -->
     <string name="pref_camera_sharpness_entry_level0">Level 0</string>
     <string name="pref_camera_sharpness_entry_level1">Level 1</string>
@@ -448,7 +458,7 @@
      <string name="pref_camera_antibanding_title">Anti Banding</string>
 
      <!-- Default Anti Banding setting. -->
-     <string name="pref_camera_antibanding_default">Off</string>
+     <string name="pref_camera_antibanding_default">off</string>
 
      <!-- Settings screen, Anti Banding entries -->
      <string name="pref_camera_antibanding_entry_0">Off</string>

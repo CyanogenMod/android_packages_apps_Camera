@@ -1,4 +1,5 @@
 /*
+
  * Copyright (C) 2007 The Android Open Source Project
  * Copyright (c) 2009, Code Aurora Forum. All rights reserved.
  *
@@ -32,9 +33,11 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera.CameraInfo;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
+import android.hardware.Camera.Coordinate;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
@@ -102,6 +105,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
+    private static final int CLEAR_FOCUS_INDICATOR = 6;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -118,6 +122,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
+    private static final int CLEAR_DELAY = 2000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
     private static final int ZOOM_STOPPED = 0;
@@ -125,6 +130,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int ZOOM_STOPPING = 2;
 
     private int mZoomState = ZOOM_STOPPED;
+
+    // Constant from android.hardware.Camera.Parameters
+    private static final String KEY_PICTURE_FORMAT = "picture-format";
+
+    private static final String PIXEL_FORMAT_JPEG = "jpeg";
+    private static final String PIXEL_FORMAT_RAW = "raw";
+
     private boolean mSmoothZoomSupported = false;
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
@@ -157,6 +169,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private FocusRectangle mFocusRectangle;
     private ToneGenerator mFocusToneGenerator;
     private GestureDetector mGestureDetector;
+    private GestureDetector mFocusGestureDetector;
     private Switcher mSwitcher;
     private boolean mStartPreviewFail = false;
 
@@ -190,6 +203,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int FOCUSING_SNAP_ON_FINISH = 2;
     private static final int FOCUS_SUCCESS = 3;
     private static final int FOCUS_FAIL = 4;
+    private static final int FOCUS_SNAP_IMPENDING = 5;
     private int mFocusState = FOCUS_NOT_STARTED;
 
     private ContentResolver mContentResolver;
@@ -235,7 +249,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
     private String mSceneMode;
-
     private final Handler mHandler = new MainHandler();
     private CameraHeadUpDisplay mHeadUpDisplay;
 
@@ -279,6 +292,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
                 case SET_CAMERA_PARAMETERS_WHEN_IDLE: {
                     setCameraParametersWhenIdle(0);
+                    break;
+                }
+                case CLEAR_FOCUS_INDICATOR: {
+                    if (mFocusState == FOCUS_SNAP_IMPENDING) {
+                        clearFocusIndicator();
+                    }
                     break;
                 }
             }
@@ -450,8 +469,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
+
             // Perform zoom only when preview is started and snapshot is not in
             // progress.
+
             if (mPausing || !isCameraIdle() || !mPreviewing
                     || mZoomState != ZOOM_STOPPED) {
                 return false;
@@ -467,15 +488,24 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
 
             mHeadUpDisplay.setZoomIndex(mZoomValue);
+
             return true;
         }
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        if (!super.dispatchTouchEvent(m) && mGestureDetector != null) {
-            return mGestureDetector.onTouchEvent(m);
+        if (!super.dispatchTouchEvent(m)) {
+        if (mGestureDetector != null) {
+             mGestureDetector.onTouchEvent(m);
         }
+
+        if (mFocusGestureDetector != null) {
+            mFocusGestureDetector.onTouchEvent(m);
+        }
+        return true;
+        }
+
         return true;
     }
 
@@ -671,6 +701,18 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 boolean focused, android.hardware.Camera camera) {
             mFocusCallbackTime = System.currentTimeMillis();
             mAutoFocusTime = mFocusCallbackTime - mFocusStartTime;
+
+            Coordinate touchIndex = mParameters.getTouchIndexAec();
+            if (touchIndex == null) {
+                    mParameters.setTouchIndexAec(-1, -1);
+                    mParameters.setTouchIndexAf(-1, -1);
+                    touchIndex = mParameters.getTouchIndexAec();
+            }
+            int x = touchIndex.xCoordinate;
+            int y = touchIndex.yCoordinate;
+
+            String touchAfAec = currentTouchAfAecMode();
+
             Log.e(TAG, "<PROFILE> mAutoFocusTime = " + mAutoFocusTime + "ms");
             if (mFocusState == FOCUSING_SNAP_ON_FINISH) {
                 // Take the picture no matter focus succeeds or fails. No need
@@ -681,10 +723,26 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 } else {
                     mFocusState = FOCUS_FAIL;
                 }
-                mImageCapture.onSnap();
+                if (touchAfAec != null) {
+                    if (touchAfAec.equals(Parameters.TOUCH_AF_AEC_OFF)) {
+                        mImageCapture.onSnap();
+                    } else {
+                        if ((x < 0) && (y < 0)) {
+                            mImageCapture.onSnap();
+                        }
+                        else {
+                            mFocusState = FOCUS_SNAP_IMPENDING;
+                            mHeadUpDisplay.setEnabled(true);
+                        }
+                    }
+                }
+                else {
+                    mImageCapture.onSnap();
+                }
             } else if (mFocusState == FOCUSING) {
                 // User is half-pressing the focus key. Play the focus tone.
                 // Do not take the picture now.
+
                 ToneGenerator tg = mFocusToneGenerator;
                 if (tg != null) {
                     tg.startTone(ToneGenerator.TONE_PROP_BEEP2);
@@ -694,11 +752,20 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 } else {
                     mFocusState = FOCUS_FAIL;
                 }
+
+                if (touchAfAec != null) {
+                    if(touchAfAec.equals(Parameters.TOUCH_AF_AEC_ON)
+                            && (x >=0 && y >= 0))  {
+                        mFocusState = FOCUS_SNAP_IMPENDING;
+                        mHeadUpDisplay.setEnabled(true);
+                    }
+                }
             } else if (mFocusState == FOCUS_NOT_STARTED) {
                 // User has released the focus key before focus completes.
                 // Do nothing.
             }
             updateFocusIndicator();
+            mHandler.sendEmptyMessageDelayed(CLEAR_FOCUS_INDICATOR, CLEAR_DELAY);
         }
     }
 
@@ -1093,6 +1160,19 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
                 mHeadUpDisplay.setOrientation(mOrientationCompensation);
             }
+
+            /* This is WAY too aggressive
+             *
+            String touchAfAec = currentTouchAfAecMode();
+            if (touchAfAec != null) {
+                if (touchAfAec.equals(Parameters.TOUCH_AF_AEC_ON)) {
+                    resetFocusIndicator();
+                    doFocus(true);
+                    mFocusState = FOCUS_SNAP_IMPENDING;
+                    mHandler.sendEmptyMessageDelayed(CLEAR_FOCUS_INDICATOR, CLEAR_DELAY); 
+                }
+            }
+             */
         }
     }
 
@@ -1273,7 +1353,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
          }
         switch (button.getId()) {
             case R.id.shutter_button:
-                doFocus(pressed);
+
+                if (mFocusState != FOCUS_SNAP_IMPENDING) {
+                    resetFocusIndicator();
+                    doFocus(pressed);
+                }
                 break;
         }
     }
@@ -1437,7 +1521,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Remove the messages in the event queue.
         mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
-
+        mHandler.removeMessages(CLEAR_FOCUS_INDICATOR);
         super.onPause();
     }
 
@@ -1484,7 +1568,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void cancelAutoFocus() {
         // User releases half-pressed focus key.
         if (mStatus != SNAPSHOT_IN_PROGRESS && (mFocusState == FOCUSING
-                || mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)) {
+                || mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL
+                || mFocusState == FOCUS_SNAP_IMPENDING)) {
             Log.v(TAG, "Cancel autofocus.");
             mHeadUpDisplay.setEnabled(true);
             mCameraDevice.cancelAutoFocus();
@@ -1499,17 +1584,62 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         updateFocusIndicator();
     }
 
+    private void clearFocusIndicator() {
+        if(mFocusRectangle != null) {
+            mFocusRectangle.clear();
+        }
+    }
+
+    private String currentTouchAfAecMode() {
+        mParameters = mCameraDevice.getParameters();
+        String touchAfAec = mPreferences.getString(
+                CameraSettings.KEY_TOUCH_AF_AEC,
+                getString(R.string.pref_camera_touchafaec_default));
+        if (isSupported(touchAfAec, mParameters.getSupportedTouchAfAec()))
+            return touchAfAec;
+        else
+            return null;
+    }
+
+    private void resetFocusIndicator() {
+        if (mFocusRectangle == null) return;
+
+        if(mFirstTimeInitialized) {
+            PreviewFrameLayout frameLayout =
+                     (PreviewFrameLayout) findViewById(R.id.frame_layout);
+            int frameWidth = frameLayout.getActualWidth();
+            int frameHeight = frameLayout.getActualHeight();
+            String touchAfAec = currentTouchAfAecMode();
+
+            if (touchAfAec!= null) {
+                if (touchAfAec.equals(Parameters.TOUCH_AF_AEC_ON)) {
+                    mFocusRectangle.setPosition(frameWidth/2, frameHeight/2);
+                    mParameters.setTouchIndexAec(-1, -1);
+                    mParameters.setTouchIndexAf(-1, -1);
+                    mParameters.setTouchAfAec(touchAfAec);
+                    mCameraDevice.setParameters(mParameters);
+                }
+                else {
+                    mFocusRectangle.setPosition(frameWidth/2, frameHeight/2);
+                }
+            }
+            else {
+                    mFocusRectangle.setPosition(frameWidth/2, frameHeight/2);
+            }
+        }
+    }
+
     private void updateFocusIndicator() {
         if (mFocusRectangle == null) return;
 
         if (mFocusState == FOCUSING || mFocusState == FOCUSING_SNAP_ON_FINISH) {
             mFocusRectangle.showStart();
-        } else if (mFocusState == FOCUS_SUCCESS) {
+        } else if (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_SNAP_IMPENDING) {
             mFocusRectangle.showSuccess();
-        } else if (mFocusState == FOCUS_FAIL) {
+        } else if (mFocusState == FOCUS_FAIL || mFocusState == FOCUS_SNAP_IMPENDING) {
             mFocusRectangle.showFail();
         } else {
-            mFocusRectangle.clear();
+           mFocusRectangle.clear();
         }
     }
 
@@ -1528,7 +1658,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                    doFocus(true);
+
+                    if (mFocusState != FOCUS_SNAP_IMPENDING) {
+                        resetFocusIndicator();
+                        doFocus(true);
+                    }
                 }
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
@@ -1544,7 +1678,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     // the shutter button gets the focus, doFocus() will be
                     // called again but it is fine.
                     if (mHeadUpDisplay.collapse()) return true;
-                    doFocus(true);
+
+                    if (mFocusState != FOCUS_SNAP_IMPENDING) {
+                        resetFocusIndicator();
+                        doFocus(true);
+                    }
                     if (mShutterButton.isInTouchMode()) {
                         mShutterButton.requestFocusFromTouch();
                     } else {
@@ -1554,7 +1692,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
                 return true;
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -1581,7 +1718,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
                 || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF)
                 || (mFocusState == FOCUS_SUCCESS
-                || mFocusState == FOCUS_FAIL)) {
+                || mFocusState == FOCUS_FAIL || mFocusState == FOCUS_SNAP_IMPENDING)) {
             mImageCapture.onSnap();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
@@ -1848,7 +1985,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         PreviewFrameLayout frameLayout =
                 (PreviewFrameLayout) findViewById(R.id.frame_layout);
         frameLayout.setAspectRatio((double) size.width / size.height);
-
         // Set a preview size that is closest to the viewfinder height and has
         // the right aspect ratio.
         List<Size> sizes = mParameters.getSupportedPreviewSizes();
@@ -1947,54 +2083,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             mParameters.setTouchAfAec(touchAfAec);
         }
-
-        // Set sharpness parameter.
-        String sharpnessStr = mPreferences.getString(
-                CameraSettings.KEY_SHARPNESS,
-                getString(R.string.pref_camera_sharpness_default));
-        int sharpness = Integer.parseInt(sharpnessStr) *
-                (mParameters.getMaxSharpness()/MAX_SHARPNESS_LEVEL);
-        if((0 <= sharpness) &&
-                (sharpness <= mParameters.getMaxSharpness()))
-            mParameters.setSharpness(sharpness);
-
-
-        // Set contrast parameter.
-        String contrastStr = mPreferences.getString(
-                CameraSettings.KEY_CONTRAST,
-                getString(R.string.pref_camera_contrast_default));
-        int contrast = Integer.parseInt(contrastStr) *
-                (mParameters.getMaxContrast()/MAX_CONTRAST_LEVEL);
-        if((0 <= contrast) &&
-                (contrast <= mParameters.getMaxContrast()))
-            mParameters.setContrast(contrast);
-
-
-        // Set saturation parameter.
-        String saturationStr = mPreferences.getString(
-                CameraSettings.KEY_SATURATION,
-                getString(R.string.pref_camera_saturation_default));
-        int saturation = Integer.parseInt(saturationStr) *
-            (mParameters.getMaxSaturation()/MAX_SATURATION_LEVEL);
-        if((0 <= saturation) &&
-                (saturation <= mParameters.getMaxSaturation()))
-            mParameters.setSaturation(saturation);
-
-         // Set anti banding parameter.
-         String antiBanding = mPreferences.getString(
-                 CameraSettings.KEY_ANTIBANDING,
-                 getString(R.string.pref_camera_antibanding_default));
-         if (isSupported(antiBanding, mParameters.getSupportedAntibanding())) {
-             mParameters.setAntibanding(antiBanding);
-         }
-
-         // Set auto exposure parameter.
-         String autoExposure = mPreferences.getString(
-                 CameraSettings.KEY_AUTOEXPOSURE,
-                 getString(R.string.pref_camera_autoexposure_default));
-         if (isSupported(autoExposure, mParameters.getSupportedAutoexposure())) {
-             mParameters.setAutoExposure(autoExposure);
-         }
 
         // Set sharpness parameter.
         String sharpnessStr = mPreferences.getString(
@@ -2193,6 +2281,58 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
+    void transformCoordinate(float []Coordinate, int []SurfaceViewLocation) {
+        float x = Coordinate[0] - SurfaceViewLocation[0];
+        float y = Coordinate[1] - SurfaceViewLocation[1];
+
+        int SurfaceViewWidth = mSurfaceView.getWidth();
+        int SurfaceViewHeight = mSurfaceView.getHeight();
+        Size s = mParameters.getPreviewSize();
+
+        Coordinate[0] = (s.width * x) / SurfaceViewWidth;
+        Coordinate[1] = (s.height * y) / SurfaceViewHeight;
+    }
+
+    private class FocusGestureListener extends
+            GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            if (!mPausing && isCameraIdle() && mPreviewing
+                    && mFocusRectangle != null) {
+                 float [] Coordinate = new float[2];
+                 Coordinate[0] = e.getX();
+                 Coordinate[1] = e.getY();
+
+                 int [] SurfaceViewLocation = new int[2];
+                 mSurfaceView.getLocationOnScreen(SurfaceViewLocation);
+
+                 if (Coordinate[0] <= SurfaceViewLocation[0]
+                     || Coordinate[1] <= SurfaceViewLocation[1]
+                     || Coordinate[0] >= mSurfaceView.getWidth()
+                     || Coordinate[1] >= mSurfaceView.getHeight()) {
+                     return true;
+                 }
+
+                 //Scale the touch co-ordinates to match the current preview size
+                 transformCoordinate(Coordinate, SurfaceViewLocation);
+
+                 //Pass the actual touch co-ordinated to display focus rectangle
+                 mFocusRectangle.setPosition((int)e.getX() - SurfaceViewLocation[0],
+                                             (int)e.getY() - SurfaceViewLocation[1]);
+                 mFocusRectangle.showStart();
+
+                 mParameters = mCameraDevice.getParameters();
+                 mParameters.setTouchIndexAec((int)Coordinate[0], (int)Coordinate[1]);
+                 mParameters.setTouchIndexAf((int)Coordinate[0], (int)Coordinate[1]);
+                 mCameraDevice.setParameters(mParameters);
+
+                 mFocusRectangle.showSuccess();
+                 doFocus(true);
+           }
+           return true;
+        }
+    }
+
     private void startReceivingLocationUpdates() {
         if (mLocationManager != null) {
             try {
@@ -2242,7 +2382,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private boolean isCameraIdle() {
-        return mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED;
+        return (mStatus == IDLE)
+               && (mFocusState == FOCUS_NOT_STARTED
+                   || mFocusState == FOCUS_SNAP_IMPENDING);
     }
 
     private boolean isImageCaptureIntent() {
@@ -2416,6 +2558,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     public void onUserInteraction() {
         super.onUserInteraction();
         keepScreenOnAwhile();
+        mHandler.sendEmptyMessageDelayed(CLEAR_FOCUS_INDICATOR, CLEAR_DELAY);
     }
 
     private void resetScreenOn() {
@@ -2461,6 +2604,8 @@ class FocusRectangle extends View {
 
     @SuppressWarnings("unused")
     private static final String TAG = "FocusRectangle";
+    private static final int SIZE = 50;
+    private int xActual, yActual;
 
     public FocusRectangle(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -2484,6 +2629,21 @@ class FocusRectangle extends View {
 
     public void clear() {
         setBackgroundDrawable(null);
+    }
+
+    public void setPosition(int x, int y) {
+       if (x >= 0 && y >= 0) {
+           xActual = x;
+           yActual = y;
+           this.layout(x - SIZE, y - SIZE, x + SIZE, y + SIZE);
+       }
+    }
+    public int getTouchIndexX() {
+        return xActual;
+    }
+
+    public int getTouchIndexY() {
+        return yActual;
     }
 }
 

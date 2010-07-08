@@ -22,6 +22,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.util.Log;
 
 /**
  * A layout which handles the preview aspect ratio and the position of
@@ -34,11 +35,15 @@ public class PreviewFrameLayout extends ViewGroup {
     public interface OnSizeChangedListener {
         public void onSizeChanged();
     }
-
+    private static final String TAG = "PreviewFrameLayout";
+    private static final int SIZE = 50;
     private double mAspectRatio = 4.0 / 3.0;
     private FrameLayout mFrame;
+    private FocusRectangle mFocus;
     private OnSizeChangedListener mSizeListener;
     private final DisplayMetrics mMetrics = new DisplayMetrics();
+    private int actualWidth;
+    private int actualHeight;
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -57,6 +62,10 @@ public class PreviewFrameLayout extends ViewGroup {
             throw new IllegalStateException(
                     "must provide child with id as \"frame\"");
         }
+        mFocus = (FocusRectangle) findViewById(R.id.focus_rectangle);
+        if (mFocus == null) {
+             Log.v(TAG,"Cannot find resource");
+        }
     }
 
     public void setAspectRatio(double ratio) {
@@ -66,6 +75,14 @@ public class PreviewFrameLayout extends ViewGroup {
             mAspectRatio = ratio;
             requestLayout();
         }
+    }
+
+    public int getActualWidth() {
+        return actualWidth;
+    }
+
+    public int getActualHeight() {
+        return actualHeight;
     }
 
     @Override
@@ -89,12 +106,23 @@ public class PreviewFrameLayout extends ViewGroup {
         frameWidth = previewWidth + horizontalPadding;
         frameHeight = previewHeight + verticalPadding;
 
+        actualWidth = frameWidth;
+        actualHeight = frameHeight;
+
         int hSpace = ((r - l) - frameWidth) / 2;
         int vSpace = ((b - t) - frameHeight) / 2;
         mFrame.measure(
                 MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
         mFrame.layout(l + hSpace, t + vSpace, r - hSpace, b - vSpace);
+
+        if (mFocus != null) {
+            FocusRectangle mFocusRectangle = mFocus;
+            int x = mFocusRectangle.getTouchIndexX();
+            int y = mFocusRectangle.getTouchIndexY();
+            mFocus.layout(x - SIZE, y - SIZE,x + SIZE,y + SIZE);
+        }
+
         if (mSizeListener != null) {
             mSizeListener.onSizeChanged();
         }

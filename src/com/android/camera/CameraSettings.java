@@ -48,6 +48,7 @@ public class CameraSettings {
     public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
     public static final String KEY_VIDEOCAMERA_FLASH_MODE = "pref_camera_video_flashmode_key";
     public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
+    public static final String KEY_TOUCH_AF_AEC = "pref_camera_touchafaec_key";
     public static final String KEY_WHITE_BALANCE = "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
@@ -149,6 +150,7 @@ public class CameraSettings {
         ListPreference pictureSize = group.findPreference(KEY_PICTURE_SIZE);
         ListPreference whiteBalance =  group.findPreference(KEY_WHITE_BALANCE);
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
+        ListPreference touchAfAec = group.findPreference(KEY_TOUCH_AF_AEC);
         ListPreference sceneMode = group.findPreference(KEY_SCENE_MODE);
         ListPreference flashMode = group.findPreference(KEY_FLASH_MODE);
         ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
@@ -252,6 +254,10 @@ public class CameraSettings {
         if (continuousAf != null) {
             filterUnsupportedOptions(group,
                     continuousAf, mParameters.getSupportedContinuousAfModes());
+        }
+        if (touchAfAec != null) {
+            filterUnsupportedOptions(group,
+                    touchAfAec, mParameters.getSupportedTouchAfAec());
         }
     }
 
