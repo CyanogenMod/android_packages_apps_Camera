@@ -321,8 +321,11 @@
         <item>@string/pref_camera_scenemode_entry_sunset</item>
         <item>@string/pref_camera_scenemode_entry_steadyphoto</item>
         <item>@string/pref_camera_scenemode_entry_fireworks</item>
+        <item>@string/pref_camera_scenemode_entry_sports</item>
         <item>@string/pref_camera_scenemode_entry_party</item>
         <item>@string/pref_camera_scenemode_entry_candlelight</item>
+        <item>@string/pref_camera_scenemode_entry_backlight</item>
+        <item>@string/pref_camera_scenemode_entry_flowers</item>
     </string-array>
 
     <string-array name="pref_camera_scenemode_entryvalues" translatable="false">
@@ -338,8 +341,11 @@
         <item>sunset</item>
         <item>steadyphoto</item>
         <item>fireworks</item>
+        <item>sports</item>
         <item>party</item>
         <item>candlelight</item>
+        <item>backlight</item>
+        <item>flowers</item>
     </string-array>
 
     <!-- Camera Preferences ISO dialog box entries -->

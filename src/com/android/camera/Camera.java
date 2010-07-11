@@ -1021,8 +1021,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // If scene mode is set, we cannot set flash mode, white balance, and
         // focus mode, instead, we read it from driver
         if (!Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
-            overrideHudSettings(mParameters.getFlashMode(),
-                    mParameters.getWhiteBalance(), mParameters.getFocusMode());
+            overrideHudSettings(getString(R.string.pref_camera_flashmode_default),
+                                getString(R.string.pref_camera_whitebalance_default),
+                                getString(R.string.pref_camera_focusmode_default));
         } else {
             overrideHudSettings(null, null, null);
         }
@@ -2061,6 +2062,15 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
         } catch (NumberFormatException e) {
             Log.w(TAG, "invalid exposure: " + exposure);
+        }
+
+        //Clearing previous GPS data if any
+        if(mRecordLocation) {
+            //Reset the values when store location is selected
+            mParameters.setGpsLatitude(0);
+            mParameters.setGpsLongitude(0);
+            mParameters.setGpsAltitude(0);
+            mParameters.setGpsTimestamp(0);
         }
 
         if (mHeadUpDisplay != null) updateSceneModeInHud();

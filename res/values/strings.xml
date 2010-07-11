@@ -309,7 +309,7 @@
     <!-- Scene mode that takes long exposures to capture night scenes without flash. -->
     <string name="pref_camera_scenemode_entry_night">Night</string>
     <!-- Scene mode that takes night shots with long exposure and flash to illuminate the subject while still capturing darker detail in the background. -->
-    <string name="pref_camera_scenemode_entry_night_portrait">Night portrait</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">Night Portrait</string>
     <!-- Scene mode to be used in a stage show. -->
     <string name="pref_camera_scenemode_entry_theatre">Theatre</string>
     <!-- Scene mode optimized for taking images on the beach. -->
@@ -319,13 +319,19 @@
     <!-- Scene mode optimized for taking images in the sunset. -->
     <string name="pref_camera_scenemode_entry_sunset">Sunset</string>
     <!-- Scene mode for taking a photo as sharp as possible. -->
-    <string name="pref_camera_scenemode_entry_steadyphoto">Steady photo</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Steady Photo</string>
     <!-- Scene mode optimized for taking images of fireworks. -->
     <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
+    <!-- Scene mode optimized for taking images during sports . -->
+    <string name="pref_camera_scenemode_entry_sports">Sports</string>
     <!-- Scene mode optimized for taking indoor low-lights pictures. [CHAR LIMIT=16] -->
     <string name="pref_camera_scenemode_entry_party">Party</string>
     <!-- Scene mode optimized for capturing the naturally warm color of scenes lit by candles. [CHAR LIMIT=16] -->
     <string name="pref_camera_scenemode_entry_candlelight">Candlelight</string>
+    <!-- Scene mode for taking a photo with backlight. -->
+    <string name="pref_camera_scenemode_entry_backlight">Backlight</string>
+    <!-- Scene mode optimized for taking images of flowers. -->
+    <string name="pref_camera_scenemode_entry_flowers">Flowers</string>
 
     <!-- Restore settings item in preference -->
     <string name="pref_restore_title">Camera settings</string>
