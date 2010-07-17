@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -98,8 +97,8 @@ public class CameraSettings {
         for (String candidate : context.getResources().getStringArray(
                 R.array.pref_camera_picturesize_entryvalues)) {
             if (setCameraPictureSize(candidate, supported, parameters)) {
-                SharedPreferences.Editor editor = PreferenceManager
-                        .getDefaultSharedPreferences(context).edit();
+                SharedPreferences.Editor editor = context.getSharedPreferences(
+                        CameraHolder.instance().getCameraNode(), Context.MODE_PRIVATE).edit();
                 editor.putString(KEY_PICTURE_SIZE, candidate);
                 editor.commit();
                 return;

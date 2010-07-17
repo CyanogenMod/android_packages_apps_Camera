@@ -30,13 +30,13 @@ import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
+import com.android.camera.CameraHolder;
 import com.android.camera.CameraSettings;
 import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
@@ -192,7 +192,7 @@ public class HeadUpDisplay extends GLView {
 
     public void initialize(Context context, PreferenceGroup preferenceGroup) {
         mPreferenceGroup = preferenceGroup;
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mSharedPrefs = context.getSharedPreferences(CameraHolder.instance().getCameraNode(), Context.MODE_PRIVATE);
         mSharedPrefs.registerOnSharedPreferenceChangeListener(
                 mSharedPreferenceChangeListener);
         initializeIndicatorBar(context, preferenceGroup);

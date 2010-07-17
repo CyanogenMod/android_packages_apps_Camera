@@ -19,6 +19,7 @@ package com.android.camera;
 import static com.android.camera.Util.Assert;
 
 import android.hardware.Camera.Parameters;
+import android.hardware.CameraSwitch;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -47,7 +48,8 @@ public class CameraHolder {
     private long mKeepBeforeTime = 0;  // Keep the Camera before this time.
     private final Handler mHandler;
     private int mUsers = 0;  // number of open() - number of release()
-
+    private String mCameraNode = CameraSwitch.SWITCH_CAMERA_MAIN;
+    
     // We store the camera parameters when we actually open the device,
     // so we can restore them in the subsequent open() requests by the user.
     // This prevents the parameters set by the Camera activity used by
@@ -97,7 +99,7 @@ public class CameraHolder {
         Assert(mUsers == 0);
         if (mCameraDevice == null) {
             try {
-                mCameraDevice = android.hardware.Camera.open();
+                mCameraDevice = android.hardware.Camera.open(mCameraNode);
             } catch (RuntimeException e) {
                 Log.e(TAG, "fail to connect Camera", e);
                 throw new CameraHardwareException(e);
@@ -163,4 +165,13 @@ public class CameraHolder {
         // Keep the camera instance for 3 seconds.
         mKeepBeforeTime = System.currentTimeMillis() + 3000;
     }
+    
+    public synchronized void setCameraNode(String name) {
+        mCameraNode = name == null ? CameraSwitch.SWITCH_CAMERA_MAIN : name;
+    }
+    
+    public synchronized String getCameraNode() {
+        return mCameraNode;
+    }
+    
 }

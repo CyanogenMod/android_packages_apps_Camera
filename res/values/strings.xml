@@ -307,4 +307,8 @@
 
     <string name="switch_to_camera_lable">Switch to camera</string>
     <string name="switch_to_video_lable">Switch to video</string>
+
+    <string name="switch_to_main_label">Switch to rear</string>
+    <string name="switch_to_secondary_label">Switch to front</string>
+
 </resources>

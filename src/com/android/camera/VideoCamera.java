@@ -35,6 +35,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.hardware.CameraSwitch;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
@@ -48,7 +49,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.MediaStore.Video;
@@ -94,7 +94,7 @@ public class VideoCamera extends NoSearchActivity
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
     private static final int ENABLE_SHUTTER_BUTTON = 6;
-
+    
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
     // The brightness settings used when it is set to automatic in the system.
@@ -174,7 +174,8 @@ public class VideoCamera extends NoSearchActivity
 
     private final Handler mHandler = new MainHandler();
     private Parameters mParameters;
-
+    private Menu mOptionsMenu;
+    
     // This Handler is used to post message back onto the main thread of the
     // application
     private class MainHandler extends Handler {
@@ -265,7 +266,7 @@ public class VideoCamera extends NoSearchActivity
             win.setAttributes(winParams);
         }
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mPreferences = getSharedPreferences(CameraHolder.instance().getCameraNode(), Context.MODE_PRIVATE);
         CameraSettings.upgradePreferences(mPreferences);
 
         readVideoPreferences();
@@ -1021,12 +1022,22 @@ public class VideoCamera extends NoSearchActivity
         }
     }
 
-    private void addBaseMenuItems(Menu menu) {
+    private void addBaseMenuItems(final Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, false, new Runnable() {
             public void run() {
                 switchToCameraMode();
             }
         });
+        
+        if (getResources().getBoolean(R.bool.has_dual_cameras)) {
+            MenuHelper.addSwitchDeviceMenuItem(menu, new Runnable() {
+                public void run() {
+                    final boolean switchToSecondary = CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode());
+                    switchCameraDevice(switchToSecondary);
+                }
+            });
+        }
+        
         MenuItem gallery = menu.add(Menu.NONE, Menu.NONE,
                 MenuHelper.POSITION_GOTO_GALLERY,
                 R.string.camera_gallery_photos_text)
@@ -1039,8 +1050,9 @@ public class VideoCamera extends NoSearchActivity
                     });
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
         mGalleryItems.add(gallery);
+        mOptionsMenu = menu;
     }
-
+   
     private PreferenceGroup filterPreferenceScreenByIntent(
             PreferenceGroup screen) {
         Intent intent = getIntent();
@@ -1360,7 +1372,6 @@ public class VideoCamera extends NoSearchActivity
 
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
-
         mParameters.setPreviewSize(mProfile.videoFrameWidth, mProfile.videoFrameHeight);
         mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
 
@@ -1460,7 +1471,30 @@ public class VideoCamera extends NoSearchActivity
             mCameraDevice.unlock();
         }
     }
+    
+    private boolean switchCameraDevice(boolean switchToSecondary) {
+        if (isFinishing() || mMediaRecorderRecording) return false;
+        
+        releaseMediaRecorder();
+        closeCamera();
+        finalizeHeadUpDisplay();
 
+        CameraHolder holder = CameraHolder.instance();
+        holder.setCameraNode(switchToSecondary ? 
+                CameraSwitch.SWITCH_CAMERA_SECONDARY : CameraSwitch.SWITCH_CAMERA_MAIN);
+        mPreferences = getSharedPreferences(holder.getCameraNode(), Context.MODE_PRIVATE);
+        readVideoPreferences();
+        try {
+            startPreview(); // Parameters will be set in startPreview().
+        } catch (CameraHardwareException e) {
+            showCameraBusyAndFinish();
+        }
+        mHandler.sendEmptyMessage(INIT_RECORDER);
+        initializeHeadUpDisplay();
+        MenuHelper.updateSwitchDeviceMenuItem(mOptionsMenu, !switchToSecondary);
+        return true;
+    }
+    
     public void onSizeChanged() {
         // TODO: update the content on GLRootView
     }

@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.hardware.CameraSwitch;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StatFs;
@@ -72,7 +73,8 @@ public class MenuHelper {
     public static final int POSITION_MULTISELECT = 14;
     public static final int POSITION_CAMERA_SETTING = 15;
     public static final int POSITION_GALLERY_SETTING = 16;
-
+    public static final int POSITION_SWITCH_CAMERA_DEVICE = 17;
+    
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;
     public static final String EMPTY_STRING = "";
@@ -135,6 +137,26 @@ public class MenuHelper {
         item.setIcon(iconId);
     }
 
+    static void addSwitchDeviceMenuItem(Menu menu, final Runnable r) {
+        int id = CameraSwitch.SWITCH_CAMERA_SECONDARY.equals(CameraHolder.instance().getCameraNode()) ?
+                R.string.switch_to_main_label :
+                R.string.switch_to_secondary_label;
+        MenuItem item = menu.add(Menu.NONE, POSITION_SWITCH_CAMERA_DEVICE,
+                POSITION_SWITCH_CAMERA_DEVICE, id)
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                r.run();
+                return true;
+            }
+        });
+        item.setIcon(android.R.drawable.ic_menu_rotate);
+    }
+    
+    static void updateSwitchDeviceMenuItem(Menu menu, boolean switchToSecondary) {
+        MenuItem item = menu.findItem(POSITION_SWITCH_CAMERA_DEVICE);
+        item.setTitle(switchToSecondary ? R.string.switch_to_secondary_label : R.string.switch_to_main_label);
+    }
+    
     private static void startCameraActivity(Activity activity, String action) {
         Intent intent = new Intent(action);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

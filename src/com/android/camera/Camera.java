@@ -33,6 +33,7 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
+import android.hardware.CameraSwitch;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
@@ -48,7 +49,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.MessageQueue;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -102,7 +102,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
-
+    
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
     private static final int UPDATE_PARAM_ZOOM = 2;
@@ -229,7 +229,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private final Handler mHandler = new MainHandler();
     private boolean mQuickCapture;
     private CameraHeadUpDisplay mHeadUpDisplay;
-
+    private Menu mOptionsMenu;
+    
     /**
      * This Handler is used to post message back onto the main thread of the
      * application
@@ -909,7 +910,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         setContentView(R.layout.camera);
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mPreferences = getSharedPreferences(CameraHolder.instance().getCameraNode(), Context.MODE_PRIVATE);
         CameraSettings.upgradePreferences(mPreferences);
 
         mQuickCapture = getQuickCaptureSettings();
@@ -2068,12 +2069,22 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         return true;
     }
 
-    private void addBaseMenuItems(Menu menu) {
+    private void addBaseMenuItems(final Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, true, new Runnable() {
             public void run() {
                 switchToVideoMode();
             }
         });
+        
+        if (getResources().getBoolean(R.bool.has_dual_cameras)) {
+            MenuHelper.addSwitchDeviceMenuItem(menu, new Runnable() {
+                public void run() {
+                    final boolean switchToSecondary = CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode());
+                    switchCameraDevice(switchToSecondary);
+                }
+            });
+        }
+        
         MenuItem gallery = menu.add(Menu.NONE, Menu.NONE,
                 MenuHelper.POSITION_GOTO_GALLERY,
                 R.string.camera_gallery_photos_text)
@@ -2085,8 +2096,24 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         });
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
         mGalleryItems.add(gallery);
+        mOptionsMenu = menu;
     }
 
+    private boolean switchCameraDevice(boolean switchToSecondary) {
+        if (isFinishing() || !isCameraIdle()) return false;
+        stopPreview();
+        finalizeHeadUpDisplay();
+        closeCamera();
+        CameraHolder holder = CameraHolder.instance();
+        holder.setCameraNode(switchToSecondary ? 
+                CameraSwitch.SWITCH_CAMERA_SECONDARY : CameraSwitch.SWITCH_CAMERA_MAIN);
+        mPreferences = getSharedPreferences(holder.getCameraNode(), Context.MODE_PRIVATE);
+        restartPreview();
+        initializeHeadUpDisplay();
+        MenuHelper.updateSwitchDeviceMenuItem(mOptionsMenu, !switchToSecondary);
+        return true;
+    }
+    
     private boolean switchToVideoMode() {
         if (isFinishing() || !isCameraIdle()) return false;
         MenuHelper.gotoVideoMode(this);
