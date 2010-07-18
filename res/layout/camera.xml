@@ -37,16 +37,6 @@
                     android:id="@+id/focus_rectangle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
-            <ProgressBar
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:id="@+id/progress"
-                    android:orientation="vertical"
-                    android:layout_width="200dip"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dip"
-                    android:layout_marginBottom="14dip"
-                    android:layout_marginLeft="30dip"
-                    android:layout_marginRight="30dip" />
         </FrameLayout>
     </com.android.camera.PreviewFrameLayout>
 </LinearLayout>

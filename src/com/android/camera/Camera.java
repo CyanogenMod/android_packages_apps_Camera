@@ -1037,6 +1037,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mSwitcher.setOnSwitchListener(this);
             mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         }
+        
+        /*
+         * DISABLED- Brightness UI is bad and the code itself needs reworked to use
+         * the correct parameters for the camera (we use "brightness" and not
+         * "luma-adaptation" on HTC cameras)
+         
         brightnessProgressBar = (ProgressBar) findViewById(R.id.progress);
         if (brightnessProgressBar instanceof SeekBar) {
             SeekBar seeker = (SeekBar) brightnessProgressBar;
@@ -1044,7 +1050,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
         brightnessProgressBar.setMax(MAXIMUM_BRIGHTNESS);
         brightnessProgressBar.setProgress(mbrightness);
-
+        */
 
         // Make sure preview is started.
         try {
