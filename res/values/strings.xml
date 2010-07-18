@@ -354,20 +354,21 @@
 
      <!-- Settings screen, ISO dialog radio button choices -->
      <string name="pref_camera_iso_entry_auto">Auto</string>
-     <string name="pref_camera_iso_entry_isodeblur">ISO Auto(HJR)</string>
+     <string name="pref_camera_iso_entry_isodeblur">Deblur</string>
      <string name="pref_camera_iso_entry_iso100">ISO100</string>
      <string name="pref_camera_iso_entry_iso200">ISO200</string>
      <string name="pref_camera_iso_entry_iso400">ISO400</string>
      <string name="pref_camera_iso_entry_iso800">ISO800</string>
-
+     <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
+	
      <!-- ISO entry values. Do not translate. -->
      <string name="pref_camera_iso_value_auto">auto</string>
-     <string name="pref_camera_iso_value_isodeblur">ISO_HJR</string>
-     <string name="pref_camera_iso_value_iso100">ISO100</string>
-     <string name="pref_camera_iso_value_iso200">ISO200</string>
-     <string name="pref_camera_iso_value_iso400">ISO400</string>
-     <string name="pref_camera_iso_value_iso800">ISO800</string>
-
+     <string name="pref_camera_iso_value_isodeblur">deblur</string>
+     <string name="pref_camera_iso_value_iso100">100</string>
+     <string name="pref_camera_iso_value_iso200">200</string>
+     <string name="pref_camera_iso_value_iso400">400</string>
+     <string name="pref_camera_iso_value_iso800">800</string>
+     <string name="pref_camera_iso_value_iso1250">1250</string>
 
      <!-- Default auto lens shading setting. Do not translate. -->
      <string name="pref_camera_lensshading_default">enable</string>
