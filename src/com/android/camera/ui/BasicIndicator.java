@@ -23,6 +23,7 @@ import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 import com.android.camera.Util;
 import com.android.camera.ui.GLListView.OnItemSelectedListener;
+import android.util.Log;
 
 public class BasicIndicator extends AbstractIndicator {
 
@@ -106,7 +107,7 @@ public class BasicIndicator extends AbstractIndicator {
 
     @Override
     protected ResourceTexture getIcon() {
-        int index = mIndex;
+        int index = mIndex < 0 ? 0 : mIndex;
         if (mIcon[index] == null) {
             Context context = getGLRootView().getContext();
             mIcon[index] = new ResourceTexture(
