@@ -1029,7 +1029,7 @@ public class VideoCamera extends NoSearchActivity
             }
         });
         
-        if (getResources().getBoolean(R.bool.has_dual_cameras)) {
+        if (CameraSwitch.hasCameraSwitch()) {
             MenuHelper.addSwitchDeviceMenuItem(menu, new Runnable() {
                 public void run() {
                     final boolean switchToSecondary = CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode());
