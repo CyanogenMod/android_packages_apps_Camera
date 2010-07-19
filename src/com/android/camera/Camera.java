@@ -1806,6 +1806,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // If we're previewing already, stop the preview first (this will blank
         // the screen).
         if (mPreviewing) stopPreview();
+        clearFocusState();
 
         setPreviewDisplay(mSurfaceHolder);
         setCameraParameters(UPDATE_PARAM_ALL);
