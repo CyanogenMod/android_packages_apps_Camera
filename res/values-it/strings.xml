@@ -55,7 +55,8 @@
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normale"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modalità messa a fuoco"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatica"</string>
-    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
+    <string name="pref_camera_focusmode_entry_normal">Normale</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Off"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modalità flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatica"</string>
@@ -80,6 +81,41 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Tinta rossa"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Tinta blu"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Tinta verde"</string>
+
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_sharpness_entry_level0">Livello 0</string>
+    <string name="pref_camera_sharpness_entry_level1">Livello 1</string>
+    <string name="pref_camera_sharpness_entry_level2">Livello 2(Default)</string>
+    <string name="pref_camera_sharpness_entry_level3">Livello 3</string>
+    <string name="pref_camera_sharpness_entry_level4">Livello 4</string>
+    <string name="pref_camera_sharpness_entry_level5">Livello 5</string>
+
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_contrast_entry_level0">Livello 0</string>
+    <string name="pref_camera_contrast_entry_level1">Livello 1</string>
+    <string name="pref_camera_contrast_entry_level2">Livello 2</string>
+    <string name="pref_camera_contrast_entry_level3">Livello 3(Default)</string>
+    <string name="pref_camera_contrast_entry_level4">Livello 4</string>
+    <string name="pref_camera_contrast_entry_level5">Livello 5</string>
+
+
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_saturation_entry_level0">Livello 0</string>
+    <string name="pref_camera_saturation_entry_level1">Livello 1</string>
+    <string name="pref_camera_saturation_entry_level2">Livello 2</string>
+    <string name="pref_camera_saturation_entry_level3">Livello 3(Default)</string>
+    <string name="pref_camera_saturation_entry_level4">Livello 4</string>
+    <string name="pref_camera_saturation_entry_level5">Livello 5</string>
+
+    <!-- Settings screen, Select sharpness title -->
+    <string name="pref_camera_sharpness_title">Nitidezza</string>
+
+    <!-- Settings screen, Select contrast title -->
+    <string name="pref_camera_contrast_title">Contrasto</string>
+
+    <!-- Settings screen, Select saturation title -->
+    <string name="pref_camera_saturation_title">Saturazione</string>
+
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modalità scena"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatica"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Movimento"</string>
