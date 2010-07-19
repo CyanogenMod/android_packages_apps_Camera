@@ -520,7 +520,7 @@ public class VideoCamera extends NoSearchActivity
     private void readVideoPreferences() {
         String quality = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_QUALITY,
-                CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+                CameraSettings.getDefaultVideoQualityValue());
 
         boolean videoQualityHigh = CameraSettings.getVideoQuality(quality);
 

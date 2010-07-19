@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.hardware.CameraSwitch;
 import android.media.CamcorderProfile;
 import android.util.Log;
 
@@ -57,6 +58,7 @@ public class CameraSettings {
     public static final String QUICK_CAPTURE_ON = "on";
     public static final String QUICK_CAPTURE_OFF = "off";
 
+    private static final String VIDEO_QUALITY_LOW = "low";
     private static final String VIDEO_QUALITY_HIGH = "high";
     private static final String VIDEO_QUALITY_MMS = "mms";
     private static final String VIDEO_QUALITY_YOUTUBE = "youtube";
@@ -70,12 +72,9 @@ public class CameraSettings {
     private static final int YOUTUBE_VIDEO_DURATION = 10 * 60; // 10 mins
     private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 10 mins
 
-    public static final String DEFAULT_VIDEO_QUALITY_VALUE = "high";
-
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
 
-    @SuppressWarnings("unused")
     private static final String TAG = "CameraSettings";
 
     private final Context mContext;
@@ -85,8 +84,12 @@ public class CameraSettings {
         mContext = activity;
         mParameters = parameters;
     }
-
-    public PreferenceGroup getPreferenceGroup(int preferenceRes) {
+    
+    public static String getDefaultVideoQualityValue() {
+        return CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode()) ? VIDEO_QUALITY_HIGH : VIDEO_QUALITY_LOW;
+    }
+    
+    public synchronized PreferenceGroup getPreferenceGroup(int preferenceRes) {
         PreferenceInflater inflater = new PreferenceInflater(mContext);
         PreferenceGroup group =
                 (PreferenceGroup) inflater.inflate(preferenceRes);
@@ -157,6 +160,15 @@ public class CameraSettings {
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
         if (videoQuality != null) {
+            
+            // If we're using the front sensor on a dual-sensor device,
+            // disable high-quality mode. This should be determined in some
+            // other way in the future- the current supported device (HTC EVO)
+            // does not report the resolutions on the front sensor correctly.
+            if (!CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode())) {
+                removePreference(group, KEY_VIDEO_QUALITY);
+            }
+            
             // Modify video duration settings.
             // The first entry is for MMS video duration, and we need to fill
             // in the device-dependent value (in seconds).
@@ -168,7 +180,7 @@ public class CameraSettings {
                             "30", Integer.toString(MMS_VIDEO_DURATION));
                     break;
                 }
-            }
+            }         
         }
 
         // Filter out unsupported settings / options
@@ -266,8 +278,6 @@ public class CameraSettings {
     private void filterUnsupportedOptions(PreferenceGroup group,
             ListPreference pref, List<String> supported) {
 
-        CharSequence[] allEntries = pref.getEntries();
-
         // Remove the preference if the parameter is not supported or there is
         // only one options for the settings.
         if (supported == null || supported.size() <= 1) {
@@ -338,8 +348,9 @@ public class CameraSettings {
     }
 
     public static boolean getVideoQuality(String quality) {
-        return VIDEO_QUALITY_YOUTUBE.equals(
-                quality) || VIDEO_QUALITY_HIGH.equals(quality);
+        return (CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode())
+                    && VIDEO_QUALITY_YOUTUBE.equals(quality))
+                || VIDEO_QUALITY_HIGH.equals(quality);
     }
 
     public static int getVidoeDurationInMillis(String quality) {
