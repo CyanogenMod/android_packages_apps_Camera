@@ -53,8 +53,8 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     private static final long WAIT_FOR_PREVIEW = 1500; //1.5 seconds
     private static final long WAIT_FOR_STABLE_STATE = 2000; //2 seconds
     private static final int NO_OF_LOOPS_TAKE_MEMORY_SNAPSHOT = 10;
-    private static final String CAMERA_MEM_OUTPUTFILE =
-            Environment.getExternalStorageDirectory().toString() + "/ImageCaptureMemOut.txt";
+    private static final String CAMERA_MEM_OUTPUTFILE = 
+        Environment.getExternalStorageDirectory().toString() + "/ImageCaptureMemOut.txt";
 
     //the tolerant memory leak
     private static final int MAX_ACCEPTED_MEMORY_LEAK_KB = 150;
@@ -64,7 +64,8 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     private static int mStartPid = 0;
     private static int mEndPid = 0;
 
-    private static final String CAMERA_TEST_OUTPUT_FILE = "/sdcard/mediaStressOut.txt";
+    private static final String CAMERA_TEST_OUTPUT_FILE =
+        Environment.getExternalStorageDirectory().toString() + "/mediaStressOut.txt";
     private BufferedWriter mOut;
     private FileWriter mfstream;
 
@@ -181,6 +182,8 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
 
     @LargeTest
     public void testImageCapture() {
+        int total_num_of_images = CameraStressTestRunner.mImageIterations;
+
         //TODO(yslau): Need to integrate the outoput with the central dashboard,
         //write to a txt file as a temp solution
         boolean memoryResult = false;
@@ -193,14 +196,14 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
         try {
             Writer output = new BufferedWriter(new FileWriter(imageCaptureMemFile, true));
             output.write("Camera Image capture\n");
-            output.write("No of loops : " + TOTAL_NUMBER_OF_VIDEOCAPTURE + "\n");
+            output.write("No of loops : " + total_num_of_images + "\n");
             getMemoryWriteToLog(output);
 
             mOut.write("Camera Image Capture\n");
-            mOut.write("No of loops :" + TOTAL_NUMBER_OF_VIDEOCAPTURE + "\n");
+            mOut.write("No of loops :" + total_num_of_images + "\n");
             mOut.write("loop: ");
 
-            for (int i = 0; i < TOTAL_NUMBER_OF_IMAGECAPTURE; i++) {
+            for (int i = 0; i < total_num_of_images; i++) {
                 Thread.sleep(WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
@@ -237,6 +240,9 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
         //TODO(yslau): Need to integrate the output with the central dashboard,
         //write to a txt file as a temp solution
         boolean memoryResult = false;
+        int total_num_of_videos = CameraStressTestRunner.mVideoIterations;
+        int video_duration = CameraStressTestRunner.mVideoDuration;
+
         Instrumentation inst = getInstrumentation();
         File imageCaptureMemFile = new File(CAMERA_MEM_OUTPUTFILE);
         mStartPid = getMediaserverPid();
@@ -246,21 +252,21 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
         try {
             Writer output = new BufferedWriter(new FileWriter(imageCaptureMemFile, true));
             output.write("Camera Video capture\n");
-            output.write("No of loops : " + TOTAL_NUMBER_OF_VIDEOCAPTURE + "\n");
+            output.write("No of loops : " + total_num_of_videos + "\n");
             getMemoryWriteToLog(output);
             mOut.write("Camera Video Capture\n");
-            mOut.write("No of loops :" + TOTAL_NUMBER_OF_VIDEOCAPTURE + "\n");
+            mOut.write("No of loops :" + total_num_of_videos + "\n");
             mOut.write("loop: ");
             // Switch to the video mode
             Intent intent = new Intent();
             intent.setClassName("com.google.android.camera",
                     "com.android.camera.VideoCamera");
             getActivity().startActivity(intent);
-            for (int i = 0; i < TOTAL_NUMBER_OF_VIDEOCAPTURE; i++) {
+            for (int i = 0; i < total_num_of_videos; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 // record a video
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
-                Thread.sleep(WAIT_FOR_VIDEO_CAPTURE_TO_BE_TAKEN);
+                Thread.sleep(video_duration);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 mOut.write(" ," + i);
