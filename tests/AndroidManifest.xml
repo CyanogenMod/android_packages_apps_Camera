@@ -26,6 +26,11 @@
             android:label="Camera Launch Performance">
     </instrumentation>
 
+    <instrumentation android:name="com.android.camera.stress.CameraStressTestRunner"
+            android:targetPackage="com.android.camera"
+            android:label="Camera stress test runner">
+    </instrumentation>
+
     <instrumentation android:name="android.test.InstrumentationTestRunner"
              android:targetPackage="com.android.camera"
              android:label="Tests for Camera application."/>
