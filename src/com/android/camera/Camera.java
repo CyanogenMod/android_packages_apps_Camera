@@ -1602,10 +1602,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     mParameters.set("luma-adaptation", String.valueOf(mbrightness));
                     mCameraDevice.setParameters(mParameters);
                 }
-
-                brightnessProgressBar.setProgress(mbrightness);
-                brightnessProgressBar.setVisibility(View.VISIBLE);
-
             }
             break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
@@ -1620,8 +1616,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         mParameters.set("luma-adaptation", String.valueOf(mbrightness));
                         mCameraDevice.setParameters(mParameters);
                 }
-                    brightnessProgressBar.setProgress(mbrightness);
-                    brightnessProgressBar.setVisibility(View.VISIBLE);
 
                 }
                 break;
