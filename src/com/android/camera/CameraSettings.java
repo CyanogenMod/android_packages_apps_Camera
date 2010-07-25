@@ -81,6 +81,15 @@ public class CameraSettings {
     private final Context mContext;
     private final Parameters mParameters;
 
+    public static final int CAMERA_MODE = 0;
+    public static final int VIDEO_MODE = 1;
+    public static final String HTC_CAM_MODE = "cam-mode";
+    
+    public static final String SHARPNESS = "sharpness";
+    public static final String SATURATION = "saturation";
+    public static final String BRIGHTNESS = "brightness";
+    public static final String CONTRAST = "contrast";
+    
     public CameraSettings(Activity activity, Parameters parameters) {
         mContext = activity;
         mParameters = parameters;
@@ -235,16 +244,16 @@ public class CameraSettings {
         if (exposure != null) {
             buildExposureCompensation(group, exposure);
         }
-        if (brightness != null && mParameters.get("brightness-def") == null) {
+        if (brightness != null && mParameters.get(BRIGHTNESS + "-def") == null) {
             removePreference(group, brightness.getKey());
         }
-        if (sharpness != null && mParameters.get("sharpness-def") == null) {
+        if (sharpness != null && mParameters.get(SHARPNESS + "-def") == null) {
             removePreference(group, sharpness.getKey());
         }
-        if (contrast != null && mParameters.get("contrast-def") == null) {
+        if (contrast != null && mParameters.get(CONTRAST + "-def") == null) {
             removePreference(group, contrast.getKey());
         }
-        if (saturation != null && mParameters.get("saturation-def") == null) {
+        if (saturation != null && mParameters.get(SATURATION + "-def") == null) {
             removePreference(group, saturation.getKey());
         }
     }
@@ -376,5 +385,12 @@ public class CameraSettings {
             return YOUTUBE_VIDEO_DURATION * 1000;
         }
         return DEFAULT_VIDEO_DURATION * 1000;
+    }
+    
+    public static void setCamMode(Parameters params, int mode) {
+        if (params.get(HTC_CAM_MODE) != null) {
+            Log.d(TAG, "Set cam-mode: " + mode);
+            params.set(HTC_CAM_MODE, mode);
+        }
     }
 }

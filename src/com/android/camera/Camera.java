@@ -182,8 +182,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private boolean mPreviewing;
     private boolean mPausing;
     private boolean mFirstTimeInitialized;
-    private static  int keypresscount = 0;
-    private static  int keyup = 0;
     private boolean mIsImageCaptureIntent;
     private boolean mRecordLocation;
 
@@ -220,8 +218,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private long mPostViewPictureCallbackTime;
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
-    private long mShutterdownTime;
-    private long mShutterupTime;
     private int mPicturesRemaining;
 
     // These latency time are for the CameraLatency test.
@@ -623,11 +619,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             Log.v(TAG, "mShutterToRawCallbackTime = "
                     + (mRawPictureCallbackTime - mShutterCallbackTime) + "ms");
 
-            if (mShutterdownTime != 0)
-                Log.e(TAG,"<PROFILE> Snapshot to Thumb Latency = "
-                        + (mRawPictureCallbackTime - mShutterdownTime) + " ms");
-
-
         }
     }
 
@@ -663,11 +654,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     + mPictureDisplayedToJpegCallbackTime + "ms");
             mHeadUpDisplay.setEnabled(true);
 
-            if (mShutterdownTime != 0)
-                Log.e(TAG,"<PROFILE> Snapshot to Snapshot Latency = "
-                        + (mJpegPictureCallbackTime - mShutterdownTime) + " ms");
-
-
             if (!mIsImageCaptureIntent) {
                 // We want to show the taken picture for a while, so we wait
                 // for at least 1.2 second before restarting the preview.
@@ -698,18 +684,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 mJpegPictureCallbackTime = 0;
             }
 
-            decrementkeypress();
         }
-        }
-     private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
-        public void onStartTrackingTouch(SeekBar bar) {
-		// no support
     }
-        public void onProgressChanged(SeekBar bar, int progress, boolean fromtouch) {
-        }
-        public void onStopTrackingTouch(SeekBar bar) {
-        }
-    };
 
     private final class AutoFocusCallback
             implements android.hardware.Camera.AutoFocusCallback {
@@ -917,7 +893,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             mCameraDevice.setParameters(mParameters);
 
-            incrementkeypress();
             Size pictureSize = mParameters.getPictureSize();
             mImageWidth = pictureSize.width;
             mImageHeight = pictureSize.height;
@@ -1023,8 +998,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPreferences = getSharedPreferences(CameraHolder.instance().getCameraNode(), Context.MODE_PRIVATE);
         CameraSettings.upgradePreferences(mPreferences);
 
-        mShutterdownTime = 0;
-        mShutterupTime = 0;
         mQuickCapture = getQuickCaptureSettings();
 
         // comment out -- unused now.
@@ -1299,37 +1272,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         setResult(RESULT_CANCELED, new Intent());
         finish();
     }
-
-    private synchronized void incrementkeypress() {
-        if(keypresscount == 0)
-            keypresscount++;
-    }
-
-    private synchronized void decrementkeypress() {
-        if(keypresscount > 0)
-            keypresscount--;
-    }
-    private synchronized int keypressvalue() {
-        return keypresscount;
-    }
-
-
+    
     public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
         if (mPausing) {
             return;
         }
-       int keydown =  keypressvalue();
-        if(keydown==0 && pressed)
-         {
-            keyup = 1;
-            Log.v(TAG, "the keydown is  pressed first time");
-            mShutterdownTime = System.currentTimeMillis();
-         }
-         else if(keyup==1 && !pressed)
-         {
-          Log.v(TAG, "the keyup is pressed first time ");
-          keyup = 0;
-         }
+     
         switch (button.getId()) {
             case R.id.shutter_button:
                 doFocus(pressed);
@@ -1338,7 +1286,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     public void onShutterButtonClick(ShutterButton button) {
-        mShutterupTime = System.currentTimeMillis();
         if (mPausing) {
             return;
         }
@@ -1474,7 +1421,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             hidePostCaptureAlert();
         }
-        keypresscount = 0;
+
         if (mDidRegister) {
             unregisterReceiver(mReceiver);
             mDidRegister = false;
@@ -1809,6 +1756,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         * preview size/picture resolution
         */
         mParameters = mCameraDevice.getParameters();
+        
         mZoomMax = mParameters.getMaxZoom();
     }
 
@@ -1981,32 +1929,32 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         String sharpness = mPreferences.getString(
                 CameraSettings.KEY_SHARPNESS,
                 getString(R.string.pref_camera_sharpness_default));
-        if (mParameters.get(CameraSettings.KEY_SHARPNESS + "-max") != null) {
-            mParameters.set(CameraSettings.KEY_SHARPNESS, sharpness);
+        if (mParameters.get(CameraSettings.SHARPNESS + "-max") != null) {
+            mParameters.set(CameraSettings.SHARPNESS, sharpness);
         }
 
         // Set contrast parameter.
         String contrast = mPreferences.getString(
                 CameraSettings.KEY_CONTRAST,
                 getString(R.string.pref_camera_contrast_default));
-        if (mParameters.get(CameraSettings.KEY_CONTRAST + "-max") != null) {
-            mParameters.set(CameraSettings.KEY_CONTRAST, contrast);
+        if (mParameters.get(CameraSettings.CONTRAST + "-max") != null) {
+            mParameters.set(CameraSettings.CONTRAST, contrast);
         }
 
         // Set saturation parameter.
         String saturation = mPreferences.getString(
                 CameraSettings.KEY_SATURATION,
                 getString(R.string.pref_camera_saturation_default));
-        if (mParameters.get(CameraSettings.KEY_SATURATION + "-max") != null) {
-            mParameters.set(CameraSettings.KEY_SATURATION, saturation);
+        if (mParameters.get(CameraSettings.SATURATION + "-max") != null) {
+            mParameters.set(CameraSettings.SATURATION, saturation);
         }
         
         // Set brightness parameter.
         String brightness = mPreferences.getString(
                 CameraSettings.KEY_BRIGHTNESS,
                 getString(R.string.pref_camera_brightness_default));
-        if (mParameters.get(CameraSettings.KEY_BRIGHTNESS + "-max") != null) {
-            mParameters.set(CameraSettings.KEY_BRIGHTNESS, brightness);
+        if (mParameters.get(CameraSettings.BRIGHTNESS + "-max") != null) {
+            mParameters.set(CameraSettings.BRIGHTNESS, brightness);
         }
         
          // Set anti banding parameter.
@@ -2108,7 +2056,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // locking because the preference can be changed from GLThread as well.
     private void setCameraParameters(int updateSet) {
         mParameters = mCameraDevice.getParameters();
-
+        
         if ((updateSet & UPDATE_PARAM_INITIALIZE) != 0) {
             updateCameraParametersInitialize();
         }
@@ -2122,7 +2070,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 updateCameraParametersPreference();
             }
         }
-
+        
+        CameraSettings.setCamMode(mParameters, CameraSettings.CAMERA_MODE);
+        Log.d(TAG, mParameters.flatten());
         mCameraDevice.setParameters(mParameters);
     }
 

@@ -49,6 +49,7 @@ public class CameraHolder {
     private final Handler mHandler;
     private int mUsers = 0;  // number of open() - number of release()
     private String mCameraNode = CameraSwitch.SWITCH_CAMERA_MAIN;
+    private boolean mSwitchingMode = false;
     
     // We store the camera parameters when we actually open the device,
     // so we can restore them in the subsequent open() requests by the user.
@@ -97,9 +98,13 @@ public class CameraHolder {
     public synchronized android.hardware.Camera open()
             throws CameraHardwareException {
         Assert(mUsers == 0);
-        if (mCameraDevice == null) {
+        if (mCameraDevice == null || mSwitchingMode) {
             try {
+                if (mCameraDevice != null) {
+                    mCameraDevice.release();
+                }
                 mCameraDevice = android.hardware.Camera.open(mCameraNode);
+                mSwitchingMode = false;
             } catch (RuntimeException e) {
                 Log.e(TAG, "fail to connect Camera", e);
                 throw new CameraHardwareException(e);
@@ -167,6 +172,9 @@ public class CameraHolder {
     }
     
     public synchronized void setCameraNode(String name) {
+        if (!mCameraNode.equals(name)) {
+            mSwitchingMode = true;
+        }
         mCameraNode = name == null ? CameraSwitch.SWITCH_CAMERA_MAIN : name;
     }
     

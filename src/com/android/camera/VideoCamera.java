@@ -1385,8 +1385,7 @@ public class VideoCamera extends NoSearchActivity
 
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
-        Log.i("CAMERA", mParameters.flatten());
-        
+                    
         mParameters.setPreviewSize(mProfile.videoFrameWidth, mProfile.videoFrameHeight);
         mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
 
@@ -1426,7 +1425,9 @@ public class VideoCamera extends NoSearchActivity
         if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
             mParameters.setColorEffect(colorEffect);
         }
-
+       
+        CameraSettings.setCamMode(mParameters, CameraSettings.VIDEO_MODE);
+        Log.d(TAG, mParameters.flatten());
         mCameraDevice.setParameters(mParameters);
     }
 
