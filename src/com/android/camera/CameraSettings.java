@@ -193,6 +193,8 @@ public class CameraSettings {
 
         // Filter out unsupported settings / options
         if (videoSize != null && videoEncoder != null) {
+            filterUnsupportedOptions(group, videoEncoder, new ArrayList<String>(VideoCamera.VIDEO_ENCODER_TABLE.keySet()));
+            
             final int selectedEncoder = VideoCamera.VIDEO_ENCODER_TABLE.get(videoEncoder.getValue());
             VideoEncoderCap cap = null;
             for (VideoEncoderCap vc : EncoderCapabilities.getVideoEncoders()) {
