@@ -71,5 +71,30 @@
                 camera:title="@string/pref_camera_saturation_title"
                 camera:entries="@array/pref_camera_multi_entries"
                 camera:entryValues="@array/pref_camera_saturation_entryvalues" />
+        <ListPreference
+                camera:key="pref_camera_videosize_key"
+                camera:defaultValue="@string/pref_camera_videosize_default"
+                camera:title="@string/pref_camera_videosize_title"
+                camera:entries="@array/pref_camera_videosize_entries"
+                camera:entryValues="@array/pref_camera_videosize_entryvalues" />
+        <ListPreference
+                camera:key="pref_camera_videoencoder_key"
+                camera:defaultValue="@string/pref_camera_videoencoder_default"
+                camera:title="@string/pref_camera_videoencoder_title"
+                camera:entries="@array/pref_camera_videoencoder_entries"
+                camera:entryValues="@array/pref_camera_videoencoder_entryvalues" />
+        <ListPreference
+                camera:key="pref_camera_audioencoder_key"
+                camera:defaultValue="@string/pref_camera_audioencoder_default"
+                camera:title="@string/pref_camera_audioencoder_title"
+                camera:entries="@array/pref_camera_audioencoder_entries"
+                camera:entryValues="@array/pref_camera_audioencoder_entryvalues" />
+        <ListPreference
+                camera:key="pref_camera_video_duration_key"
+                camera:defaultValue="@string/pref_camera_video_duration_default"
+                camera:title="@string/pref_camera_video_duration_title"
+                camera:entries="@array/pref_camera_video_duration_entries"
+                camera:entryValues="@array/pref_camera_video_duration_entryvalues" />
     </PreferenceGroup>
 </PreferenceGroup>
+

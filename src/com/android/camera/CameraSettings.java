@@ -23,9 +23,12 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.hardware.CameraSwitch;
 import android.media.CamcorderProfile;
+import android.media.EncoderCapabilities;
+import android.media.EncoderCapabilities.VideoEncoderCap;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -72,6 +75,12 @@ public class CameraSettings {
     private static final int MMS_VIDEO_DURATION = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW).duration;
     private static final int YOUTUBE_VIDEO_DURATION = 10 * 60; // 10 mins
     private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 10 mins
+
+    public static final String DEFAULT_VIDEO_QUALITY_VALUE = "high";
+    public static final String KEY_VIDEO_SIZE = "pref_camera_videosize_key";
+    public static final String KEY_VIDEO_ENCODER = "pref_camera_videoencoder_key";
+    public static final String KEY_AUDIO_ENCODER = "pref_camera_audioencoder_key";
+    public static final String KEY_VIDEO_DURATION = "pref_camera_video_duration_key";
 
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
@@ -147,6 +156,7 @@ public class CameraSettings {
 
     private void initPreference(PreferenceGroup group) {
         ListPreference videoQuality = group.findPreference(KEY_VIDEO_QUALITY);
+        ListPreference videoSize = group.findPreference(KEY_VIDEO_SIZE);
         ListPreference pictureSize = group.findPreference(KEY_PICTURE_SIZE);
         ListPreference whiteBalance =  group.findPreference(KEY_WHITE_BALANCE);
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
@@ -164,19 +174,14 @@ public class CameraSettings {
         ListPreference contrast = group.findPreference(KEY_CONTRAST);
         ListPreference saturation = group.findPreference(KEY_SATURATION);
         ListPreference brightness = group.findPreference(KEY_BRIGHTNESS);
+        ListPreference videoEncoder = group.findPreference(KEY_VIDEO_ENCODER);
         
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
         if (videoQuality != null) {
-            
-            // If we're using the front sensor on a dual-sensor device,
-            // disable high-quality mode. This should be determined in some
-            // other way in the future- the current supported device (HTC EVO)
-            // does not report the resolutions on the front sensor correctly.
             if (!CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode())) {
-                removePreference(group, KEY_VIDEO_QUALITY);
+        //        videoQuality.filterUnsupported(Arrays.asList(VIDEO_QUALITY_LOW, VIDEO_QUALITY_MMS, VIDEO_QUALITY_YOUTUBE));
             }
-            
             // Modify video duration settings.
             // The first entry is for MMS video duration, and we need to fill
             // in the device-dependent value (in seconds).
@@ -192,6 +197,34 @@ public class CameraSettings {
         }
 
         // Filter out unsupported settings / options
+        if (videoSize != null && videoEncoder != null) {
+            final int selectedEncoder = VideoCamera.VIDEO_ENCODER_TABLE.get(videoEncoder.getValue());
+            VideoEncoderCap cap = null;
+            for (VideoEncoderCap vc : EncoderCapabilities.getVideoEncoders()) {
+                if (vc.mCodec == selectedEncoder) {
+                    cap = vc;
+                    break;
+                }
+            }
+            if (cap == null) {
+                Log.wtf(TAG, "Unknown encoder! " + selectedEncoder);
+            }
+            
+            final List<Size> validSizesForEncoder = new ArrayList<Size>();
+            for (Size size : mParameters.getSupportedPreviewSizes()) {
+                if (!CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode())) {
+                    // Terrible hack, this should be done another way.
+                    if (size.width > 640 || size.height > 480) {
+                        continue;
+                    }
+                }
+                if (size.width <= cap.mMaxFrameWidth && size.height <= cap.mMaxFrameHeight) {
+                    validSizesForEncoder.add(size);
+                }
+            }
+            filterUnsupportedOptions(group, videoSize, sizeListToStringList(validSizesForEncoder));
+        }
+
         if (pictureSize != null) {
             filterUnsupportedOptions(group, pictureSize, sizeListToStringList(
                     mParameters.getSupportedPictureSizes()));
@@ -314,6 +347,11 @@ public class CameraSettings {
         }
     }
 
+    private static Size stringToSize(String sizeStr) {
+        String[] dim = sizeStr.split("x");
+        return CameraHolder.instance().getCameraDevice().new Size(Integer.parseInt(dim[0]), Integer.parseInt(dim[1]));
+    }
+    
     private static List<String> sizeListToStringList(List<Size> sizes) {
         ArrayList<String> list = new ArrayList<String>();
         for (Size size : sizes) {
