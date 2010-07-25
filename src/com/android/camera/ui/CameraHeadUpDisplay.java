@@ -25,7 +25,7 @@ import com.android.camera.PreferenceGroup;
 
 public class CameraHeadUpDisplay extends HeadUpDisplay {
 
-    protected static final String TAG = "CamcoderHeadUpDisplay";
+    protected static final String TAG = "CameraHeadUpDisplay";
 
     private OtherSettingsIndicator mOtherSettings;
     private GpsIndicator mGpsIndicator;

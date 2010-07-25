@@ -43,7 +43,12 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_JPEG_QUALITY,
-                CameraSettings.KEY_COLOR_EFFECT);
+                CameraSettings.KEY_COLOR_EFFECT,
+                CameraSettings.KEY_AUTOEXPOSURE,
+                CameraSettings.KEY_BRIGHTNESS,
+                CameraSettings.KEY_SATURATION,
+                CameraSettings.KEY_CONTRAST,
+                CameraSettings.KEY_SHARPNESS);
 
         mOtherSettings = new OtherSettingsIndicator(context, prefs);
         mOtherSettings.setOnRestorePreferencesClickedRunner(new Runnable() {

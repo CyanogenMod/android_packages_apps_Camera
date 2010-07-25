@@ -1426,6 +1426,38 @@ public class VideoCamera extends NoSearchActivity
             mParameters.setColorEffect(colorEffect);
         }
        
+        // Set sharpness parameter.
+        String sharpness = mPreferences.getString(
+                CameraSettings.KEY_SHARPNESS,
+                getString(R.string.pref_camera_sharpness_default));
+        if (mParameters.getMaxSharpness() > 0) {
+            mParameters.setSharpness(Float.parseFloat(sharpness));
+        }
+
+        // Set contrast parameter.
+        String contrast = mPreferences.getString(
+                CameraSettings.KEY_CONTRAST,
+                getString(R.string.pref_camera_contrast_default));
+        if (mParameters.getMaxContrast() > 0) {
+            mParameters.setContrast(Float.parseFloat(contrast));
+        }
+
+        // Set saturation parameter.
+        String saturation = mPreferences.getString(
+                CameraSettings.KEY_SATURATION,
+                getString(R.string.pref_camera_saturation_default));
+        if (mParameters.getMaxSaturation() > 0) {
+            mParameters.setSaturation(Float.parseFloat(saturation));
+        }
+        
+        // Set brightness parameter.
+        String brightness = mPreferences.getString(
+                CameraSettings.KEY_BRIGHTNESS,
+                getString(R.string.pref_camera_brightness_default));
+        if (mParameters.getMaxBrightness() > 0) {
+            mParameters.setBrightness(Float.parseFloat(brightness));
+        }
+         
         CameraSettings.setCamMode(mParameters, CameraSettings.VIDEO_MODE);
         Log.d(TAG, mParameters.flatten());
         mCameraDevice.setParameters(mParameters);

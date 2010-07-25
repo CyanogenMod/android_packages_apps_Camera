@@ -85,11 +85,6 @@ public class CameraSettings {
     public static final int VIDEO_MODE = 1;
     public static final String HTC_CAM_MODE = "cam-mode";
     
-    public static final String SHARPNESS = "sharpness";
-    public static final String SATURATION = "saturation";
-    public static final String BRIGHTNESS = "brightness";
-    public static final String CONTRAST = "contrast";
-    
     public CameraSettings(Activity activity, Parameters parameters) {
         mContext = activity;
         mParameters = parameters;
@@ -244,16 +239,16 @@ public class CameraSettings {
         if (exposure != null) {
             buildExposureCompensation(group, exposure);
         }
-        if (brightness != null && mParameters.get(BRIGHTNESS + "-def") == null) {
+        if (brightness != null && mParameters.getMaxBrightness() == 0.0f) {
             removePreference(group, brightness.getKey());
         }
-        if (sharpness != null && mParameters.get(SHARPNESS + "-def") == null) {
+        if (sharpness != null && mParameters.getMaxSharpness() == 0.0f) {
             removePreference(group, sharpness.getKey());
         }
-        if (contrast != null && mParameters.get(CONTRAST + "-def") == null) {
+        if (contrast != null && mParameters.getMaxContrast() == 0.0f) {
             removePreference(group, contrast.getKey());
         }
-        if (saturation != null && mParameters.get(SATURATION + "-def") == null) {
+        if (saturation != null && mParameters.getMaxSaturation() == 0.0f) {
             removePreference(group, saturation.getKey());
         }
     }

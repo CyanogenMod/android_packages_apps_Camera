@@ -1929,41 +1929,41 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         String sharpness = mPreferences.getString(
                 CameraSettings.KEY_SHARPNESS,
                 getString(R.string.pref_camera_sharpness_default));
-        if (mParameters.get(CameraSettings.SHARPNESS + "-max") != null) {
-            mParameters.set(CameraSettings.SHARPNESS, sharpness);
+        if (mParameters.getMaxSharpness() > 0) {
+            mParameters.setSharpness(Float.parseFloat(sharpness));
         }
 
         // Set contrast parameter.
         String contrast = mPreferences.getString(
                 CameraSettings.KEY_CONTRAST,
                 getString(R.string.pref_camera_contrast_default));
-        if (mParameters.get(CameraSettings.CONTRAST + "-max") != null) {
-            mParameters.set(CameraSettings.CONTRAST, contrast);
+        if (mParameters.getMaxContrast() > 0) {
+            mParameters.setContrast(Float.parseFloat(contrast));
         }
 
         // Set saturation parameter.
         String saturation = mPreferences.getString(
                 CameraSettings.KEY_SATURATION,
                 getString(R.string.pref_camera_saturation_default));
-        if (mParameters.get(CameraSettings.SATURATION + "-max") != null) {
-            mParameters.set(CameraSettings.SATURATION, saturation);
+        if (mParameters.getMaxSaturation() > 0) {
+            mParameters.setSaturation(Float.parseFloat(saturation));
         }
         
         // Set brightness parameter.
         String brightness = mPreferences.getString(
                 CameraSettings.KEY_BRIGHTNESS,
                 getString(R.string.pref_camera_brightness_default));
-        if (mParameters.get(CameraSettings.BRIGHTNESS + "-max") != null) {
-            mParameters.set(CameraSettings.BRIGHTNESS, brightness);
+        if (mParameters.getMaxBrightness() > 0) {
+            mParameters.setBrightness(Float.parseFloat(brightness));
         }
         
-         // Set anti banding parameter.
-         String antiBanding = mPreferences.getString(
-                 CameraSettings.KEY_ANTIBANDING,
-                 getString(R.string.pref_camera_antibanding_default));
-         if (isSupported(antiBanding, mParameters.getSupportedAntibanding())) {
-             mParameters.setAntibanding(antiBanding);
-         }
+        // Set anti banding parameter.
+        String antiBanding = mPreferences.getString(
+                CameraSettings.KEY_ANTIBANDING,
+                getString(R.string.pref_camera_antibanding_default));
+        if (isSupported(antiBanding, mParameters.getSupportedAntibanding())) {
+            mParameters.setAntibanding(antiBanding);
+        }
 
         // For the following settings, we need to check if the settings are
         // still supported by latest driver, if not, ignore the settings.
