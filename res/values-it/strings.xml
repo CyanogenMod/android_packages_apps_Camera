@@ -41,6 +41,30 @@
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Bassa (30 m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (bassa, 30 s)"</string>
     <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (alta, 10 m)"</string>
+    <string name="pref_video_quality_entry_custom">Personalizzata</string>
+     
+     <!-- Settings screen, Video quality title -->
+    <string name="pref_camera_videosize_title">Qualità Video</string>
+
+     <!-- Settings screen, Video encoder title -->
+    <string name="pref_camera_videoencoder_title">Encoder Video</string>
+
+     <!-- Settings screen, Video encoder dialog title -->
+    <string name="pref_camera_videoencoder_dialogtitle">Encoder Video</string>
+
+     <!-- Settings screen, Audio encoder title -->
+    <string name="pref_camera_audioencoder_title">Encoder Audio</string>
+ 
+     <!-- Settings screen, Video duration title -->
+    <string name="pref_camera_video_duration_title">Durata Video</string>
+
+     <!-- Settings screen, Video duration dialog radio button choices -->
+    <string name="pref_camera_video_duration_entry_mms">
+        30 secondi(MMS)
+    </string>
+    <string name="pref_camera_video_duration_entry_10">10 minuti</string>
+    <string name="pref_camera_video_duration_entry_30">30 minuti</string>
+
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Impostazioni fotocamera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Impostazioni videocamera"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Dimensioni foto"</string>
