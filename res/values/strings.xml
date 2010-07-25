@@ -127,14 +127,17 @@
 
     <!-- Settings screen, Picture size dialog radio button choices -->
     <string name="pref_camera_picturesize_entry_3264x2448">8M Pixels</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">8M Pixels (wide)</string>
     <string name="pref_camera_picturesize_entry_2592x1936">5M Pixels</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">5M Pixels (wide)</string>
     <string name="pref_camera_picturesize_entry_2560x1712">5M Pixels</string>
     <string name="pref_camera_picturesize_entry_2304x1728">4M Pixels</string>
     <string name="pref_camera_picturesize_entry_2048x1536">3M Pixels</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">3M Pixels (wide)</string>
     <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
     <string name="pref_camera_picturesize_entry_1600x1200">2M Pixels</string>
     <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
-    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
+    <string name="pref_camera_picturesize_entry_1280x720">1M Pixels (wide)</string>
     <string name="pref_camera_picturesize_entry_1024x768">1M Pixels</string>
     <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
     <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
