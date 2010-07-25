@@ -970,7 +970,8 @@ public class VideoCamera extends NoSearchActivity
     private void createVideoPath() {
         long dateTaken = System.currentTimeMillis();
         String title = createName(dateTaken);
-        String filename = title + ".3gp"; // Used when emailing.
+        String filename = title + 
+            (MediaRecorder.OutputFormat.MPEG_4 == mProfile.fileFormat ? ".m4v" : ".3gp"); // Used when emailing.
         String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
         String filePath = cameraDirPath + "/" + filename;
         File cameraDir = new File(cameraDirPath);
@@ -979,7 +980,8 @@ public class VideoCamera extends NoSearchActivity
         values.put(Video.Media.TITLE, title);
         values.put(Video.Media.DISPLAY_NAME, filename);
         values.put(Video.Media.DATE_TAKEN, dateTaken);
-        values.put(Video.Media.MIME_TYPE, "video/3gpp");
+        values.put(Video.Media.MIME_TYPE, "video/" +
+                (MediaRecorder.OutputFormat.MPEG_4 == mProfile.fileFormat ? "mp4" : "3gpp"));
         values.put(Video.Media.DATA, filePath);
         mCameraVideoFilename = filePath;
         Log.v(TAG, "Current camera video filename: " + mCameraVideoFilename);
@@ -1383,6 +1385,8 @@ public class VideoCamera extends NoSearchActivity
 
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
+        Log.i("CAMERA", mParameters.flatten());
+        
         mParameters.setPreviewSize(mProfile.videoFrameWidth, mProfile.videoFrameHeight);
         mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
 
