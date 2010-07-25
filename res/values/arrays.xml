@@ -43,6 +43,7 @@
         <item>@string/pref_camera_videosize_entry_4</item>
         <item>@string/pref_camera_videosize_entry_5</item>
         <item>@string/pref_camera_videosize_entry_6</item>
+        <item>@string/pref_camera_videosize_entry_7</item>
     </string-array>
 
     <string-array name="pref_camera_videosize_entryvalues" translatable="false">
@@ -50,6 +51,7 @@
         <item>720x480</item>
         <item>800x480</item>
         <item>640x480</item>
+        <item>480x320</item>
         <item>352x288</item>
         <item>320x240</item>
         <item>176x144</item>
