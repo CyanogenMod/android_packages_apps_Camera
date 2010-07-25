@@ -135,10 +135,12 @@
     <string name="pref_camera_picturesize_entry_2048x1536">3M Pixels</string>
     <string name="pref_camera_picturesize_entry_2048x1216">3M Pixels (wide)</string>
     <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
-    <string name="pref_camera_picturesize_entry_1600x1200">2M Pixels</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
     <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
-    <string name="pref_camera_picturesize_entry_1280x720">1M Pixels (wide)</string>
-    <string name="pref_camera_picturesize_entry_1024x768">1M Pixels</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
+    <string name="pref_camera_picturesize_entry_1024x768">XGA</string>
     <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
     <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
     <string name="pref_camera_picturesize_entry_640x480">VGA</string>
@@ -406,10 +408,10 @@
      <string name="pref_camera_antibanding_entry_3">Auto</string>
 
      <!-- Default auto exposure setting. Do not translate. -->
-     <string name="pref_camera_autoexposure_default">frame-average</string>
+     <string name="pref_camera_autoexposure_default">meter-average</string>
 
      <!-- Settings screen, Select auto exposure title -->
-     <string name="pref_camera_autoexposure_title">Select Auto Exposure Mode</string>
+     <string name="pref_camera_autoexposure_title">Metering Mode</string>
 
      <!-- Settings screen, auto exposure dialog radio button choices -->
      <string name="pref_camera_autoexposure_entry_frameaverage">Frame Average</string>
@@ -417,8 +419,8 @@
      <string name="pref_camera_autoexposure_entry_spotmetering">Spot Metering</string>
 
      <!-- Auto exposure entry values. Do not translate. -->
-     <string name="pref_camera_autoexposure_value_frameaverage">frame-average</string>
-     <string name="pref_camera_autoexposure_value_centerweighted">center-weighted</string>
-     <string name="pref_camera_autoexposure_value_spotmetering">spot-metering</string>
+     <string name="pref_camera_autoexposure_value_frameaverage">meter-average</string>
+     <string name="pref_camera_autoexposure_value_centerweighted">meter-center</string>
+     <string name="pref_camera_autoexposure_value_spotmetering">meter-spot</string>
 
 </resources>
