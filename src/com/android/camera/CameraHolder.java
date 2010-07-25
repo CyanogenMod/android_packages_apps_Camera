@@ -149,6 +149,11 @@ public class CameraHolder {
         releaseCamera();
     }
 
+    public synchronized android.hardware.Camera getCameraDevice() {
+        Assert(mCameraDevice != null);
+        return mCameraDevice;
+    }
+    
     private synchronized void releaseCamera() {
         Assert(mUsers == 0);
         Assert(mCameraDevice != null);

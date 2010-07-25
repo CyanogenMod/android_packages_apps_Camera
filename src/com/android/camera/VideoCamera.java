@@ -35,10 +35,12 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.hardware.CameraSwitch;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.hardware.CameraSwitch;
 import android.media.CamcorderProfile;
+import android.media.EncoderCapabilities;
+import android.media.EncoderCapabilities.VideoEncoderCap;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -50,20 +52,20 @@ import android.os.Message;
 import android.os.StatFs;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.provider.MediaStore.Video;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
@@ -77,9 +79,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 
 
@@ -98,7 +100,8 @@ public class VideoCamera extends NoSearchActivity
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
     private static final int ENABLE_SHUTTER_BUTTON = 6;
-
+    private static final int RELOAD_HUD = 7;
+    
     private static final int SCREEN_DELAY = 1000;
 
     // The brightness settings used when it is set to automatic in the system.
@@ -204,27 +207,37 @@ public class VideoCamera extends NoSearchActivity
     }
 
 
-    private static final DefaultHashMap<String, Integer>
+    static final DefaultHashMap<String, Integer>
             OUTPUT_FORMAT_TABLE = new DefaultHashMap<String, Integer>();
-    private static final DefaultHashMap<String, Integer>
+    static final DefaultHashMap<String, Integer>
             VIDEO_ENCODER_TABLE = new DefaultHashMap<String, Integer>();
-    private static final DefaultHashMap<String, Integer>
+    static final DefaultHashMap<String, Integer>
             AUDIO_ENCODER_TABLE = new DefaultHashMap<String, Integer>();
-    private static final DefaultHashMap<String, Integer>
+    static final DefaultHashMap<String, Integer>
             VIDEOQUALITY_BITRATE_TABLE = new DefaultHashMap<String, Integer>();
 
     static {
         OUTPUT_FORMAT_TABLE.put("3gp", MediaRecorder.OutputFormat.THREE_GPP);
         OUTPUT_FORMAT_TABLE.put("mp4", MediaRecorder.OutputFormat.MPEG_4);
         OUTPUT_FORMAT_TABLE.putDefault(MediaRecorder.OutputFormat.DEFAULT);
-
-        VIDEO_ENCODER_TABLE.put("h263", MediaRecorder.VideoEncoder.H263);
-        VIDEO_ENCODER_TABLE.put("h264", MediaRecorder.VideoEncoder.H264);
-        VIDEO_ENCODER_TABLE.put("m4v", MediaRecorder.VideoEncoder.MPEG_4_SP);
+        
+        for (VideoEncoderCap encoder : EncoderCapabilities.getVideoEncoders()) {
+            switch (encoder.mCodec) {
+                case MediaRecorder.VideoEncoder.H263:
+                    VIDEO_ENCODER_TABLE.put("h263", MediaRecorder.VideoEncoder.H263);
+                    break;
+                case MediaRecorder.VideoEncoder.H264:
+                    VIDEO_ENCODER_TABLE.put("h264", MediaRecorder.VideoEncoder.H264);
+                    break;
+                case MediaRecorder.VideoEncoder.MPEG_4_SP:
+                    VIDEO_ENCODER_TABLE.put("m4v", MediaRecorder.VideoEncoder.MPEG_4_SP);
+                    break;
+            }
+        }
         VIDEO_ENCODER_TABLE.putDefault(MediaRecorder.VideoEncoder.DEFAULT);
 
         AUDIO_ENCODER_TABLE.put("amrnb", MediaRecorder.AudioEncoder.AMR_NB);
-
+        AUDIO_ENCODER_TABLE.putDefault(MediaRecorder.AudioEncoder.DEFAULT);
 	/*
         AUDIO_ENCODER_TABLE.put("amrwb", MediaRecorder.AudioEncoder.AMR_WB);
         AUDIO_ENCODER_TABLE.put("qcelp", MediaRecorder.AudioEncoder.QCELP);
@@ -234,7 +247,6 @@ public class VideoCamera extends NoSearchActivity
         AUDIO_ENCODER_TABLE.put("eaacplus",
                 MediaRecorder.AudioEncoder.EAAC_PLUS);
 	*/
-        AUDIO_ENCODER_TABLE.putDefault(MediaRecorder.AudioEncoder.DEFAULT);
 
         VIDEOQUALITY_BITRATE_TABLE.put("1280x720", 6000000);
         VIDEOQUALITY_BITRATE_TABLE.put("720x480",  2000000);
@@ -292,6 +304,12 @@ public class VideoCamera extends NoSearchActivity
                     break;
                 }
 
+                case RELOAD_HUD: {
+                    if (mHeadUpDisplay != null) {
+                        finalizeHeadUpDisplay();
+                        initializeHeadUpDisplay();
+                    }
+                }
                 default:
                     Log.v(TAG, "Unhandled message: " + msg.what);
                     break;
@@ -679,11 +697,16 @@ public class VideoCamera extends NoSearchActivity
                     : CamcorderProfile.QUALITY_LOW);
         } else {
             mProfile = null;
-
+        
             String videoEncoder = mPreferences.getString(
                         CameraSettings.KEY_VIDEO_ENCODER,
                         getString(R.string.pref_camera_videoencoder_default));
-
+            int encoderId = VIDEO_ENCODER_TABLE.get(videoEncoder);
+            if (encoderId != mVideoEncoder) {
+                mHandler.sendEmptyMessage(RELOAD_HUD);
+            }
+            mVideoEncoder = encoderId;
+            
             String audioEncoder = mPreferences.getString(
                         CameraSettings.KEY_AUDIO_ENCODER,
                         getString(R.string.pref_camera_audioencoder_default));
