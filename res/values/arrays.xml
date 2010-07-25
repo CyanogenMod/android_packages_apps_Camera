@@ -249,45 +249,45 @@
     </string-array>
 
     <!-- Camera Preferences MultiLevel dialog box entries -->
-    <string-array name="pref_camera_sharpness_entries">
-        <item>@string/pref_camera_sharpness_entry_level0</item>
-        <item>@string/pref_camera_sharpness_entry_level1</item>
-        <item>@string/pref_camera_sharpness_entry_level2</item>
-        <item>@string/pref_camera_sharpness_entry_level3</item>
-        <item>@string/pref_camera_sharpness_entry_level4</item>
-        <item>@string/pref_camera_sharpness_entry_level5</item>
+    <string-array name="pref_camera_multi_entries">
+        <item>@string/pref_camera_multi_entry_level0</item>
+        <item>@string/pref_camera_multi_entry_level1</item>
+        <item>@string/pref_camera_multi_entry_level2</item>
+        <item>@string/pref_camera_multi_entry_level3</item>
+        <item>@string/pref_camera_multi_entry_level4</item>
     </string-array>
 
-    <!-- Camera Preferences MultiLevel dialog box entries -->
-    <string-array name="pref_camera_contrast_entries">
-        <item>@string/pref_camera_contrast_entry_level0</item>
-        <item>@string/pref_camera_contrast_entry_level1</item>
-        <item>@string/pref_camera_contrast_entry_level2</item>
-        <item>@string/pref_camera_contrast_entry_level3</item>
-        <item>@string/pref_camera_contrast_entry_level4</item>
-        <item>@string/pref_camera_contrast_entry_level5</item>
-    </string-array>
-
-    <!-- Camera Preferences Saturation dialog box entries -->
-    <string-array name="pref_camera_saturation_entries">
-        <item>@string/pref_camera_saturation_entry_level0</item>
-        <item>@string/pref_camera_saturation_entry_level1</item>
-        <item>@string/pref_camera_saturation_entry_level2</item>
-        <item>@string/pref_camera_saturation_entry_level3</item>
-        <item>@string/pref_camera_saturation_entry_level4</item>
-        <item>@string/pref_camera_saturation_entry_level5</item>
-    </string-array>
-
-    <!-- Entry values array is shared between Saturation, Sharpness & Contrast -->
-    <string-array name="pref_camera_multilevel_entryvalues">
+    <string-array name="pref_camera_sharpness_entryvalues">
         <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
         <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
     </string-array>
 
+    <string-array name="pref_camera_contrast_entryvalues">
+        <item>0</item>
+        <item>2.5</item>
+        <item>5</item>
+        <item>7.5</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="pref_camera_saturation_entryvalues">
+        <item>0</item>
+        <item>2.5</item>
+        <item>5</item>
+        <item>7.5</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="pref_camera_brightness_entryvalues">
+        <item>0</item>
+        <item>1.5</item>
+        <item>3</item>
+        <item>4.5</item>
+        <item>6</item>
+    </string-array>
 
     <!-- Camera Preferences Scene Mode dialog box entries -->
     <string-array name="pref_camera_scenemode_entries" translatable="false">
@@ -338,6 +338,7 @@
          <item>@string/pref_camera_iso_entry_iso200</item>
          <item>@string/pref_camera_iso_entry_iso400</item>
          <item>@string/pref_camera_iso_entry_iso800</item>
+         <item>@string/pref_camera_iso_entry_iso1250</item>
     </string-array>
 
     <!-- Do not localize entryvalues -->
@@ -348,6 +349,7 @@
          <item>@string/pref_camera_iso_value_iso200</item>
          <item>@string/pref_camera_iso_value_iso400</item>
          <item>@string/pref_camera_iso_value_iso800</item>
+         <item>@string/pref_camera_iso_value_iso1250</item>
      </string-array>
 
      <!-- Camera Preferences Lens shading dialog box entries -->

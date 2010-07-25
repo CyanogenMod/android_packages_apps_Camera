@@ -54,7 +54,8 @@ public class CameraSettings {
     public static final String KEY_SHARPNESS = "pref_camera_sharpness_key";
     public static final String KEY_CONTRAST = "pref_camera_contrast_key";
     public static final String KEY_SATURATION = "pref_camera_saturation_key";
-
+    public static final String KEY_BRIGHTNESS = "pref_camera_brightness_key";
+    
     public static final String QUICK_CAPTURE_ON = "on";
     public static final String QUICK_CAPTURE_OFF = "off";
 
@@ -155,8 +156,11 @@ public class CameraSettings {
         ListPreference lensShade = group.findPreference(KEY_LENSSHADING);
         ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
         ListPreference autoExposure = group.findPreference(KEY_AUTOEXPOSURE);
-
-
+        ListPreference sharpness = group.findPreference(KEY_SHARPNESS);
+        ListPreference contrast = group.findPreference(KEY_CONTRAST);
+        ListPreference saturation = group.findPreference(KEY_SATURATION);
+        ListPreference brightness = group.findPreference(KEY_BRIGHTNESS);
+        
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
         if (videoQuality != null) {
@@ -220,16 +224,28 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     lensShade, mParameters.getSupportedLensShadeModes());
         }
-         if (antiBanding != null) {
-             filterUnsupportedOptions(group,
-                     antiBanding, mParameters.getSupportedAntibanding());
-         }
-         if (autoExposure != null) {
-             filterUnsupportedOptions(group,
-                     autoExposure, mParameters.getSupportedAutoexposure());
-         }
+        if (antiBanding != null) {
+            filterUnsupportedOptions(group,
+                    antiBanding, mParameters.getSupportedAntibanding());
+        }
+        if (autoExposure != null) {
+            filterUnsupportedOptions(group,
+                    autoExposure, mParameters.getSupportedAutoexposure());
+        }
         if (exposure != null) {
             buildExposureCompensation(group, exposure);
+        }
+        if (brightness != null && mParameters.get("brightness-def") == null) {
+            removePreference(group, brightness.getKey());
+        }
+        if (sharpness != null && mParameters.get("sharpness-def") == null) {
+            removePreference(group, sharpness.getKey());
+        }
+        if (contrast != null && mParameters.get("contrast-def") == null) {
+            removePreference(group, contrast.getKey());
+        }
+        if (saturation != null && mParameters.get("saturation-def") == null) {
+            removePreference(group, saturation.getKey());
         }
     }
 

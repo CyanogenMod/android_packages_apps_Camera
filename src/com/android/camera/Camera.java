@@ -172,15 +172,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // are non-null only if isImageCaptureIntent() is true.
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
-    private static final int MINIMUM_BRIGHTNESS = 0;
-    private static final int MAXIMUM_BRIGHTNESS = 6;
-    private int mbrightness = 3;
-    private int mbrightness_step = 1;
-    private ProgressBar brightnessProgressBar;
-
-    private static final int MAX_SHARPNESS_LEVEL = 5;
-    private static final int MAX_CONTRAST_LEVEL = 5;
-    private static final int MAX_SATURATION_LEVEL = 5;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -1073,20 +1064,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         }
         
-        /*
-         * DISABLED- Brightness UI is bad and the code itself needs reworked to use
-         * the correct parameters for the camera (we use "brightness" and not
-         * "luma-adaptation" on HTC cameras)
-         
-        brightnessProgressBar = (ProgressBar) findViewById(R.id.progress);
-        if (brightnessProgressBar instanceof SeekBar) {
-            SeekBar seeker = (SeekBar) brightnessProgressBar;
-            seeker.setOnSeekBarChangeListener(mSeekListener);
-        }
-        brightnessProgressBar.setMax(MAXIMUM_BRIGHTNESS);
-        brightnessProgressBar.setProgress(mbrightness);
-        */
-
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -1621,35 +1598,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     doSnap();
                 }
                 return true;
-        case KeyEvent.KEYCODE_DPAD_LEFT:
-            if ( (mPreviewing) &&
-                 (mFocusState != FOCUSING) &&
-                 (mFocusState != FOCUSING_SNAP_ON_FINISH) ) {
-                if (mbrightness > MINIMUM_BRIGHTNESS) {
-                    mbrightness-=mbrightness_step;
-
-                    /* Set the "luma-adaptation" parameter */
-                    mParameters = mCameraDevice.getParameters();
-                    mParameters.set("luma-adaptation", String.valueOf(mbrightness));
-                    mCameraDevice.setParameters(mParameters);
-                }
-            }
-            break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if ( (mPreviewing) &&
-                     (mFocusState != FOCUSING) &&
-                     (mFocusState != FOCUSING_SNAP_ON_FINISH) ) {
-                    if (mbrightness < MAXIMUM_BRIGHTNESS) {
-                        mbrightness+=mbrightness_step;
-
-                        /* Set the "luma-adaptation" parameter */
-                        mParameters = mCameraDevice.getParameters();
-                        mParameters.set("luma-adaptation", String.valueOf(mbrightness));
-                        mCameraDevice.setParameters(mParameters);
-                }
-
-                }
-                break;
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 // If we get a dpad center event without any focused view, move
                 // the focus to the shutter button and press it.
@@ -2021,9 +1969,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 mParameters.setLensShade(lensshade);
         }
 
-        //Set Brightness.
-        mParameters.set("luma-adaptation", String.valueOf(mbrightness));
-
          // Set auto exposure parameter.
          String autoExposure = mPreferences.getString(
                  CameraSettings.KEY_AUTOEXPOSURE,
@@ -2033,37 +1978,37 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
          }
 
         // Set sharpness parameter.
-        String sharpnessStr = mPreferences.getString(
+        String sharpness = mPreferences.getString(
                 CameraSettings.KEY_SHARPNESS,
                 getString(R.string.pref_camera_sharpness_default));
-        int sharpness = Integer.parseInt(sharpnessStr) *
-                (mParameters.getMaxSharpness()/MAX_SHARPNESS_LEVEL);
-        if((0 <= sharpness) &&
-                (sharpness <= mParameters.getMaxSharpness()))
-            mParameters.setSharpness(sharpness);
-
+        if (mParameters.get("sharpness-max") != null) {
+            mParameters.set("sharpness", sharpness);
+        }
 
         // Set contrast parameter.
-        String contrastStr = mPreferences.getString(
+        String contrast = mPreferences.getString(
                 CameraSettings.KEY_CONTRAST,
                 getString(R.string.pref_camera_contrast_default));
-        int contrast = Integer.parseInt(contrastStr) *
-                (mParameters.getMaxContrast()/MAX_CONTRAST_LEVEL);
-        if((0 <= contrast) &&
-                (contrast <= mParameters.getMaxContrast()))
-            mParameters.setContrast(contrast);
-
+        if (mParameters.get("contrast-max") != null) {
+            mParameters.set("contrast", contrast);
+        }
 
         // Set saturation parameter.
-        String saturationStr = mPreferences.getString(
+        String saturation = mPreferences.getString(
                 CameraSettings.KEY_SATURATION,
                 getString(R.string.pref_camera_saturation_default));
-        int saturation = Integer.parseInt(saturationStr) *
-            (mParameters.getMaxSaturation()/MAX_SATURATION_LEVEL);
-        if((0 <= saturation) &&
-                (saturation <= mParameters.getMaxSaturation()))
-            mParameters.setSaturation(saturation);
-
+        if (mParameters.get("saturation-max") != null) {
+            mParameters.set("saturation", saturation);
+        }
+        
+        // Set brightness parameter.
+        String brightness = mPreferences.getString(
+                CameraSettings.KEY_BRIGHTNESS,
+                getString(R.string.pref_camera_brightness_default));
+        if (mParameters.get("brightness-max") != null) {
+            mParameters.set("brightness", brightness);
+        }
+        
          // Set anti banding parameter.
          String antiBanding = mPreferences.getString(
                  CameraSettings.KEY_ANTIBANDING,
