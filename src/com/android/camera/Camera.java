@@ -1981,32 +1981,32 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         String sharpness = mPreferences.getString(
                 CameraSettings.KEY_SHARPNESS,
                 getString(R.string.pref_camera_sharpness_default));
-        if (mParameters.get("sharpness-max") != null) {
-            mParameters.set("sharpness", sharpness);
+        if (mParameters.get(CameraSettings.KEY_SHARPNESS + "-max") != null) {
+            mParameters.set(CameraSettings.KEY_SHARPNESS, sharpness);
         }
 
         // Set contrast parameter.
         String contrast = mPreferences.getString(
                 CameraSettings.KEY_CONTRAST,
                 getString(R.string.pref_camera_contrast_default));
-        if (mParameters.get("contrast-max") != null) {
-            mParameters.set("contrast", contrast);
+        if (mParameters.get(CameraSettings.KEY_CONTRAST + "-max") != null) {
+            mParameters.set(CameraSettings.KEY_CONTRAST, contrast);
         }
 
         // Set saturation parameter.
         String saturation = mPreferences.getString(
                 CameraSettings.KEY_SATURATION,
                 getString(R.string.pref_camera_saturation_default));
-        if (mParameters.get("saturation-max") != null) {
-            mParameters.set("saturation", saturation);
+        if (mParameters.get(CameraSettings.KEY_SATURATION + "-max") != null) {
+            mParameters.set(CameraSettings.KEY_SATURATION, saturation);
         }
         
         // Set brightness parameter.
         String brightness = mPreferences.getString(
                 CameraSettings.KEY_BRIGHTNESS,
                 getString(R.string.pref_camera_brightness_default));
-        if (mParameters.get("brightness-max") != null) {
-            mParameters.set("brightness", brightness);
+        if (mParameters.get(CameraSettings.KEY_BRIGHTNESS + "-max") != null) {
+            mParameters.set(CameraSettings.KEY_BRIGHTNESS, brightness);
         }
         
          // Set anti banding parameter.
