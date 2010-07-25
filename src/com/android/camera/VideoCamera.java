@@ -692,9 +692,7 @@ public class VideoCamera extends NoSearchActivity
                 mMaxVideoDurationInMs =
                         CameraSettings.getVidoeDurationInMillis(quality);
             }
-            mProfile = CamcorderProfile.get(videoQualityHigh
-                    ? CamcorderProfile.QUALITY_HIGH
-                    : CamcorderProfile.QUALITY_LOW);
+            mProfile = CameraSettings.getCamcorderProfile(videoQualityHigh);
         } else {
             mProfile = null;
         
@@ -1278,8 +1276,7 @@ public class VideoCamera extends NoSearchActivity
         if (CameraSwitch.hasCameraSwitch()) {
             MenuHelper.addSwitchDeviceMenuItem(menu, new Runnable() {
                 public void run() {
-                    final boolean switchToSecondary = CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode());
-                    switchCameraDevice(switchToSecondary);
+                    switchCameraDevice(CameraSettings.isMainCamera());
                 }
             });
         }

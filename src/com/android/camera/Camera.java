@@ -17,6 +17,13 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.ui.CameraHeadUpDisplay;
+import com.android.camera.ui.GLRootView;
+import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.ZoomController;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -61,6 +68,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -69,19 +77,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-import com.android.camera.ui.CameraHeadUpDisplay;
-import com.android.camera.ui.GLRootView;
-import com.android.camera.ui.HeadUpDisplay;
-import com.android.camera.ui.ZoomController;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -95,7 +92,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.lang.InterruptedException;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends NoSearchActivity implements View.OnClickListener,
@@ -2239,8 +2235,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (CameraSwitch.hasCameraSwitch()) {
             MenuHelper.addSwitchDeviceMenuItem(menu, new Runnable() {
                 public void run() {
-                    final boolean switchToSecondary = CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode());
-                    switchCameraDevice(switchToSecondary);
+                    switchCameraDevice(CameraSettings.isMainCamera());
                 }
             });
         }
