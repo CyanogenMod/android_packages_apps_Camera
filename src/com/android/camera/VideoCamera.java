@@ -40,6 +40,7 @@ import android.hardware.Camera.Size;
 import android.hardware.CameraSwitch;
 import android.media.CamcorderProfile;
 import android.media.EncoderCapabilities;
+import android.media.EncoderCapabilities.AudioEncoderCap;
 import android.media.EncoderCapabilities.VideoEncoderCap;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
@@ -235,17 +236,25 @@ public class VideoCamera extends NoSearchActivity
             }
         }
         VIDEO_ENCODER_TABLE.putDefault(MediaRecorder.VideoEncoder.DEFAULT);
-
-        AUDIO_ENCODER_TABLE.put("amrnb", MediaRecorder.AudioEncoder.AMR_NB);
+        
+        for (AudioEncoderCap encoder : EncoderCapabilities.getAudioEncoders()) {
+            switch (encoder.mCodec) {
+                case MediaRecorder.AudioEncoder.AMR_NB:
+                    AUDIO_ENCODER_TABLE.put("amrnb", MediaRecorder.AudioEncoder.AMR_NB);
+                    break;
+                case MediaRecorder.AudioEncoder.AAC:
+                    AUDIO_ENCODER_TABLE.put("aac", MediaRecorder.AudioEncoder.AAC);
+                    break;
+            }
+        }
         AUDIO_ENCODER_TABLE.putDefault(MediaRecorder.AudioEncoder.DEFAULT);
+        
 	/*
         AUDIO_ENCODER_TABLE.put("amrwb", MediaRecorder.AudioEncoder.AMR_WB);
         AUDIO_ENCODER_TABLE.put("qcelp", MediaRecorder.AudioEncoder.QCELP);
         AUDIO_ENCODER_TABLE.put("evrc", MediaRecorder.AudioEncoder.EVRC);
-        AUDIO_ENCODER_TABLE.put("aac", MediaRecorder.AudioEncoder.AAC);
         AUDIO_ENCODER_TABLE.put("aacplus", MediaRecorder.AudioEncoder.AAC_PLUS);
-        AUDIO_ENCODER_TABLE.put("eaacplus",
-                MediaRecorder.AudioEncoder.EAAC_PLUS);
+        AUDIO_ENCODER_TABLE.put("eaacplus", MediaRecorder.AudioEncoder.EAAC_PLUS);
 	*/
 
         VIDEOQUALITY_BITRATE_TABLE.put("1280x720", 6000000);
@@ -309,6 +318,7 @@ public class VideoCamera extends NoSearchActivity
                         finalizeHeadUpDisplay();
                         initializeHeadUpDisplay();
                     }
+                    break;
                 }
                 default:
                     Log.v(TAG, "Unhandled message: " + msg.what);

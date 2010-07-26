@@ -73,10 +73,16 @@
     <!-- Camera Preferences Audio Encoder dialog box entries -->
     <string-array name="pref_camera_audioencoder_entries" translatable="false">
         <item>@string/pref_camera_audioencoder_entry_0</item>
+        <item>@string/pref_camera_audioencoder_entry_1</item>
+        <item>@string/pref_camera_audioencoder_entry_2</item>
+        <item>@string/pref_camera_audioencoder_entry_3</item>
     </string-array>
 
     <string-array name="pref_camera_audioencoder_entryvalues" translatable="false">
         <item>amrnb</item>
+        <item>qcelp</item>
+        <item>evrc</item>
+        <item>aac</item>
     </string-array>
 
     <!-- Camera Preferences Video Duration dialog box entries -->
