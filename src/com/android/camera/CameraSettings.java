@@ -28,7 +28,6 @@ import android.media.EncoderCapabilities.VideoEncoderCap;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -62,11 +61,10 @@ public class CameraSettings {
     public static final String QUICK_CAPTURE_ON = "on";
     public static final String QUICK_CAPTURE_OFF = "off";
 
-    private static final String VIDEO_QUALITY_LOW = "low";
     private static final String VIDEO_QUALITY_HIGH = "high";
     private static final String VIDEO_QUALITY_MMS = "mms";
     private static final String VIDEO_QUALITY_YOUTUBE = "youtube";
-
+    
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
     public static final int CURRENT_VERSION = 4;
@@ -100,7 +98,7 @@ public class CameraSettings {
     }
     
     public static String getDefaultVideoQualityValue() {
-        return CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode()) ? VIDEO_QUALITY_HIGH : VIDEO_QUALITY_LOW;
+        return VIDEO_QUALITY_HIGH;
     }
     
     public synchronized PreferenceGroup getPreferenceGroup(int preferenceRes) {
@@ -175,13 +173,11 @@ public class CameraSettings {
         ListPreference saturation = group.findPreference(KEY_SATURATION);
         ListPreference brightness = group.findPreference(KEY_BRIGHTNESS);
         ListPreference videoEncoder = group.findPreference(KEY_VIDEO_ENCODER);
+        ListPreference audioEncoder = group.findPreference(KEY_AUDIO_ENCODER);
         
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
         if (videoQuality != null) {
-            if (!CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode())) {
-        //        videoQuality.filterUnsupported(Arrays.asList(VIDEO_QUALITY_LOW, VIDEO_QUALITY_MMS, VIDEO_QUALITY_YOUTUBE));
-            }
             // Modify video duration settings.
             // The first entry is for MMS video duration, and we need to fill
             // in the device-dependent value (in seconds).
@@ -196,8 +192,14 @@ public class CameraSettings {
             }         
         }
 
-        // Filter out unsupported settings / options
+        // Filter out unsupported settings / options    
+        if (audioEncoder != null) {
+            filterUnsupportedOptions(group, audioEncoder, new ArrayList<String>(VideoCamera.AUDIO_ENCODER_TABLE.keySet()));
+        }
+        
         if (videoSize != null && videoEncoder != null) {
+            filterUnsupportedOptions(group, videoEncoder, new ArrayList<String>(VideoCamera.VIDEO_ENCODER_TABLE.keySet()));
+            
             final int selectedEncoder = VideoCamera.VIDEO_ENCODER_TABLE.get(videoEncoder.getValue());
             VideoEncoderCap cap = null;
             for (VideoEncoderCap vc : EncoderCapabilities.getVideoEncoders()) {
@@ -347,11 +349,6 @@ public class CameraSettings {
         }
     }
 
-    private static Size stringToSize(String sizeStr) {
-        String[] dim = sizeStr.split("x");
-        return CameraHolder.instance().getCameraDevice().new Size(Integer.parseInt(dim[0]), Integer.parseInt(dim[1]));
-    }
-    
     private static List<String> sizeListToStringList(List<Size> sizes) {
         ArrayList<String> list = new ArrayList<String>();
         for (Size size : sizes) {
@@ -406,11 +403,21 @@ public class CameraSettings {
     }
 
     public static boolean getVideoQuality(String quality) {
-        return (CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode())
-                    && VIDEO_QUALITY_YOUTUBE.equals(quality))
-                || VIDEO_QUALITY_HIGH.equals(quality);
+        return VIDEO_QUALITY_YOUTUBE.equals(quality) || VIDEO_QUALITY_HIGH.equals(quality);
     }
 
+    public static CamcorderProfile getCamcorderProfile(boolean highQuality) {
+        int profile = CamcorderProfile.QUALITY_LOW;
+        if (highQuality) {
+            profile = isMainCamera() ? CamcorderProfile.QUALITY_HIGH : CamcorderProfile.QUALITY_FRONT;
+        }
+        return CamcorderProfile.get(profile);
+    }
+    
+    public static boolean isMainCamera() {
+        return CameraSwitch.SWITCH_CAMERA_MAIN.equals(CameraHolder.instance().getCameraNode());
+    }
+    
     public static int getVidoeDurationInMillis(String quality) {
         if (VIDEO_QUALITY_MMS.equals(quality)) {
             return MMS_VIDEO_DURATION * 1000;
