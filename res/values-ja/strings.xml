@@ -104,7 +104,7 @@
     <string name="pref_camera_multi_entry_level4">"レベル4"</string>
     <string name="pref_camera_sharpness_title">"シャープネス"</string>
     <string name="pref_camera_contrast_title">"コントラスト"</string>
-    <string name="pref_camera_saturation_title">"彩度"</string>>
+    <string name="pref_camera_saturation_title">"彩度"</string>
     <string name="pref_camera_brightness_title">"明るさ"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"シーンモード"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"オート"</string>
