@@ -41,11 +41,27 @@
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"低（30m）"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS（低、30s）"</string>
     <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube（高、10m）"</string>
+    <string name="pref_video_quality_entry_custom">"カスタム"</string>
+    <string name="pref_camera_videosize_title">"動画品質"</string>
+    <string name="pref_camera_videoencoder_title">"動画エンコーダ"</string>
+    <string name="pref_camera_videoencoder_dialogtitle">"動画エンコーダ"</string>
+    <string name="pref_camera_audioencoder_title">"音声エンコーダ"</string>
+    <string name="pref_camera_video_duration_title">"録画時間"</string>
+    <string name="pref_camera_video_duration_entry_mms">"30秒(MMS)"</string>
+    <string name="pref_camera_video_duration_entry_10">"10分"</string>
+    <string name="pref_camera_video_duration_entry_30">"30分"</string>
+
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"カメラ設定"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"ビデオ録画設定"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"表示サイズ"</string>
+    <string name="pref_camera_picturesize_entry_3264x2448">"8メガピクセル"</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">"6メガピクセル(ワイド)"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5メガピクセル"</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">"4メガピクセル(ワイド)"</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">"4メガピクセル"</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">"4メガピクセル"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3メガピクセル"</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">"2.5メガピクセル(ワイド)"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2メガピクセル"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1メガピクセル"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -57,6 +73,7 @@
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"オート"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"無限遠"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"マクロ"</string>
+    <string name="pref_camera_focusmode_entry_normal">"標準"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"フラッシュモード"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"オート"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"ON"</string>
@@ -80,6 +97,15 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"色合い（赤）"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"色合い（青）"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"色合い（緑）"</string>
+    <string name="pref_camera_multi_entry_level0">"レベル0"</string>
+    <string name="pref_camera_multi_entry_level1">"レベル1"</string>
+    <string name="pref_camera_multi_entry_level2">"レベル2(デフォルト)"</string>
+    <string name="pref_camera_multi_entry_level3">"レベル3"</string>
+    <string name="pref_camera_multi_entry_level4">"レベル4"</string>
+    <string name="pref_camera_sharpness_title">"シャープネス"</string>
+    <string name="pref_camera_contrast_title">"コントラスト"</string>
+    <string name="pref_camera_saturation_title">"彩度"</string>>
+    <string name="pref_camera_brightness_title">"明るさ"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"シーンモード"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"オート"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"操作"</string>
@@ -105,4 +131,21 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"ズーム"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"写真に切替"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"ムービーに切替"</string>
+    <string name="switch_to_main_label">"背面カメラに切替"</string>
+    <string name="switch_to_secondary_label">"全面カメラに切替"</string>
+    <string name="pref_camera_iso_title">"ISO選択"</string>
+    <string name="pref_camera_iso_entry_auto">"オート"</string>
+    <string name="pref_camera_iso_entry_isodeblur">"デブラー"</string>
+    <string name="pref_camera_lensshading_title">"レンズシェーディング"</string>
+    <string name="pref_camera_lensshading_entry_enable">"有効"</string>
+    <string name="pref_camera_lensshading_entry_disable">"無効"</string>
+    <string name="pref_camera_antibanding_title">"アンチバンディング"</string>
+    <string name="pref_camera_antibanding_entry_0">"オフ"</string>
+    <string name="pref_camera_antibanding_entry_3">"オート"</string>
+    <string name="pref_camera_autoexposure_title">"測光モード"</string>
+
+    <string name="pref_camera_autoexposure_entry_frameaverage">"分割"</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">"中央重点"</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">"スポット測光"</string>
+
 </resources>
