@@ -458,20 +458,25 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private float[] getZoomRatios() {
         List<Integer> zoomRatios = mParameters.getZoomRatios();
-        if (zoomRatios != null) {
-            float result[] = new float[zoomRatios.size()];
-            for (int i = 0, n = result.length; i < n; ++i) {
-                result[i] = (float) zoomRatios.get(i) / 100f;
-            }
-            return result;
-        } else {
-            //1.0, 1.2, 1.44, 1.6, 1.8, 2.0
+        if (mParameters.get("taking-picture-zoom") != null) {
+            // HTC camera zoom
             float result[] = new float[mZoomMax + 1];
             for (int i = 0, n = result.length; i < n; ++i) {
                 result[i] = 1 + i * 0.2f;
             }
             return result;
+        } else if (zoomRatios != null) {
+            float result[] = new float[zoomRatios.size()];
+            for (int i = 0, n = result.length; i < n; ++i) {
+                result[i] = (float) zoomRatios.get(i) / 100f;
+            }
+            return result;
+            
         }
+        
+        float[] result = new float[1];
+        result[0] = 0.0f;
+        return result;
     }
 
     private class ZoomGestureListener extends
