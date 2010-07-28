@@ -53,8 +53,6 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     private static final long WAIT_FOR_PREVIEW = 1500; //1.5 seconds
     private static final long WAIT_FOR_STABLE_STATE = 2000; //2 seconds
     private static final int NO_OF_LOOPS_TAKE_MEMORY_SNAPSHOT = 10;
-    private static final String CAMERA_MEM_OUTPUTFILE = 
-        Environment.getExternalStorageDirectory().toString() + "/ImageCaptureMemOut.txt";
 
     //the tolerant memory leak
     private static final int MAX_ACCEPTED_MEMORY_LEAK_KB = 150;
@@ -64,8 +62,6 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     private static int mStartPid = 0;
     private static int mEndPid = 0;
 
-    private static final String CAMERA_TEST_OUTPUT_FILE =
-        Environment.getExternalStorageDirectory().toString() + "/mediaStressOut.txt";
     private BufferedWriter mOut;
     private FileWriter mfstream;
 
@@ -87,8 +83,10 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     }
 
     private void prepareOutputFile(){
+      String camera_test_output_file =
+          Environment.getExternalStorageDirectory().toString() + "/mediaStressOut.txt";
         try{
-            mfstream = new FileWriter(CAMERA_TEST_OUTPUT_FILE, true);
+            mfstream = new FileWriter(camera_test_output_file, true);
             mOut = new BufferedWriter(mfstream);
         } catch (Exception e){
             assertTrue("ImageCapture open output",false);
@@ -186,9 +184,12 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
 
         //TODO(yslau): Need to integrate the outoput with the central dashboard,
         //write to a txt file as a temp solution
+        String camera_mem_out =
+            Environment.getExternalStorageDirectory().toString() + "/ImageCaptureMemOut.txt";
         boolean memoryResult = false;
         Instrumentation inst = getInstrumentation();
-        File imageCaptureMemFile = new File(CAMERA_MEM_OUTPUTFILE);
+        File imageCaptureMemFile = new File(camera_mem_out);
+
         mStartPid = getMediaserverPid();
         mStartMemory = getMediaserverVsize();
         Log.v(TAG, "start memory : " + mStartMemory);
@@ -239,12 +240,14 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     public void testVideoCapture() {
         //TODO(yslau): Need to integrate the output with the central dashboard,
         //write to a txt file as a temp solution
+        String camera_mem_out =
+            Environment.getExternalStorageDirectory().toString() + "/ImageCaptureMemOut.txt";
         boolean memoryResult = false;
         int total_num_of_videos = CameraStressTestRunner.mVideoIterations;
         int video_duration = CameraStressTestRunner.mVideoDuration;
 
         Instrumentation inst = getInstrumentation();
-        File imageCaptureMemFile = new File(CAMERA_MEM_OUTPUTFILE);
+        File imageCaptureMemFile = new File(camera_mem_out);
         mStartPid = getMediaserverPid();
         mStartMemory = getMediaserverVsize();
         Log.v(TAG, "start memory : " + mStartMemory);
@@ -284,4 +287,3 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     }
 
 }
-
