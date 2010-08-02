@@ -22,6 +22,7 @@ import java.io.FileWriter;
 
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.os.Environment;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
@@ -41,7 +42,8 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
     private static final int TOTAL_NUMBER_OF_SWITCHING = 200;
     private static final long WAIT_FOR_PREVIEW = 4000;
 
-    private static final String CAMERA_TEST_OUTPUT_FILE = "/sdcard/mediaStressOut.txt";
+    private static final String CAMERA_TEST_OUTPUT_FILE =
+        Environment.getExternalStorageDirectory() + "/mediaStressOut.txt";
     private BufferedWriter mOut;
     private FileWriter mfstream;
 

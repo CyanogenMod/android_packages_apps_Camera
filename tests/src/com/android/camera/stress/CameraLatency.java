@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 
 import android.app.Instrumentation;
+import android.os.Environment;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
@@ -36,7 +37,8 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
     private String TAG = "CameraLatency";
     private static final int TOTAL_NUMBER_OF_IMAGECAPTURE = 20;
     private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 4000;
-    private static final String CAMERA_TEST_OUTPUT_FILE = "/sdcard/mediaStressOut.txt";
+    private static final String CAMERA_TEST_OUTPUT_FILE =
+        Environment.getExternalStorageDirectory() + "/mediaStressOut.txt";
 
     private long mTotalAutoFocusTime;
     private long mTotalShutterLag;
