@@ -26,6 +26,7 @@
     <string name="no_storage" msgid="820691042667338625">"Legen Sie vor Verwendung der Kamera eine SD-Karte ein."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"Ihre SD-Karte ist voll."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"SD-Karte wird vorbereitet..."</string>
+    <string name="access_sd_fail" msgid="4427585260986849912">"Kein Zugriff auf SD-Karte möglich"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Standard wiederherstellen"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Die Kameraeinstellungen werden auf die Standardeinstellungen wiederhergestellt."</string>
     <string name="review_play" msgid="6015456244323302817">"WIEDERGEBEN"</string>
@@ -33,6 +34,7 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"ERNEUT AUFNEHMEN"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"Kamera wechseln"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Ort speichern"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Aus"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"An"</string>
@@ -99,6 +101,10 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Kameraeinstellungen"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"Standard wiederherstellen"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Belichtung"</string>
+    <string name="pref_camera_meteringmode_title" msgid="4316862664975999393">"Belichtungsmessung"</string>
+    <string name="pref_camera_meteringmode_entry_center_weighted" msgid="6362205429617163588">"Mittenbetont"</string>
+    <string name="pref_camera_meteringmode_entry_frame_average" msgid="7462891363691741735">"Durchschnittliche Frames"</string>
+    <string name="pref_camera_meteringmode_entry_spot" msgid="3971259987457110980">"Spot"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Auf Ihrer SD-Karte ist nicht mehr genügend Speicherplatz vorhanden. Ändern Sie die Qualitätseinstellung oder löschen Sie Elemente aus der Galerie."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Maximale Größe erreicht"</string>

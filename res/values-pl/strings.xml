@@ -26,6 +26,7 @@
     <string name="no_storage" msgid="820691042667338625">"Zanim zaczniesz korzystać z aparatu fotograficznego, włóż kartę SD."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"Karta SD jest pełna."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"Przygotowywanie karty SD..."</string>
+    <string name="access_sd_fail" msgid="4427585260986849912">"Nie można uzyskać dostępu do karty SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Przywróć wartości domyślne"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Zostaną przywrócone ustawienia domyślne aparatu."</string>
     <string name="review_play" msgid="6015456244323302817">"ODTWÓRZ"</string>
@@ -33,6 +34,7 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"ZRÓB PONOWNIE"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeria"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"Przełącz aparat"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Zapis lokalizacji"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Wyłączony"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Włączony"</string>
@@ -99,6 +101,10 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Ustawienia aparatu"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"Przywróć wartości domyślne"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Ekspozycja"</string>
+    <string name="pref_camera_meteringmode_title" msgid="4316862664975999393">"Metoda pomiaru"</string>
+    <string name="pref_camera_meteringmode_entry_center_weighted" msgid="6362205429617163588">"Centralnie ważony"</string>
+    <string name="pref_camera_meteringmode_entry_frame_average" msgid="7462891363691741735">"Uśredniony z kadru"</string>
+    <string name="pref_camera_meteringmode_entry_spot" msgid="3971259987457110980">"Punktowy"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Na karcie SD brakuje miejsca. Zmień ustawienie jakości lub usuń elementy z Galerii."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Osiągnięto limit rozmiaru."</string>
