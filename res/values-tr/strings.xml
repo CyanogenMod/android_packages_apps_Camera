@@ -26,6 +26,7 @@
     <string name="no_storage" msgid="820691042667338625">"Kamerayı kullanmadan önce lütfen bir SD kart takın."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"SD kartınız dolu."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"SD kart hazırlanıyor..."</string>
+    <string name="access_sd_fail" msgid="4427585260986849912">"SD karta erişilemiyor."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Varsayılanları geri yükle"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Kamera ayarlarının varsayılan değerleri geri yüklenecek."</string>
     <string name="review_play" msgid="6015456244323302817">"YÜRÜT"</string>
@@ -33,6 +34,7 @@
     <string name="review_ok" msgid="5305096180300056529">"Tamam"</string>
     <string name="review_retake" msgid="7804864054896088338">"YENİDEN ÇEK"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeri"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"Kamerayı Değiştir"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Depo konumu"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Kapalı"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Açık"</string>
@@ -99,6 +101,10 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Kamera ayarları"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"Varsayılan değerleri geri yükle"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Pozlama"</string>
+    <string name="pref_camera_meteringmode_title" msgid="4316862664975999393">"Ölçme modu"</string>
+    <string name="pref_camera_meteringmode_entry_center_weighted" msgid="6362205429617163588">"Merkez Ağırlıklı"</string>
+    <string name="pref_camera_meteringmode_entry_frame_average" msgid="7462891363691741735">"Çerçeve Ortalaması"</string>
+    <string name="pref_camera_meteringmode_entry_spot" msgid="3971259987457110980">"Nokta"</string>
     <string name="details_ok" msgid="6848594369924424312">"Tamam"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"SD kartınızda boş alan azalıyor. Kalite ayarlarını değiştirin veya Galeri\'den öğe silin."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Boyut sınırına ulaşıldı."</string>

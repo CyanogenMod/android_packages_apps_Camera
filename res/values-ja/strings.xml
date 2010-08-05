@@ -26,6 +26,7 @@
     <string name="no_storage" msgid="820691042667338625">"カメラを使用する前にSDカードを挿入してください。"</string>
     <string name="not_enough_space" msgid="6655334407957844653">"SDカードがいっぱいです。"</string>
     <string name="preparing_sd" msgid="2914969119574812666">"SDカードの準備中..."</string>
+    <string name="access_sd_fail" msgid="4427585260986849912">"SDカードにアクセスできません。"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"初期設定に戻す"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"カメラを初期設定に戻します。"</string>
     <string name="review_play" msgid="6015456244323302817">"再生"</string>
@@ -33,6 +34,7 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"撮り直し"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"ギャラリー"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"カメラを切り替え"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"位置情報を記録する"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"OFF"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"ON"</string>
@@ -99,6 +101,10 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"カメラ設定"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"初期設定に戻す"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"露出"</string>
+    <string name="pref_camera_meteringmode_title" msgid="4316862664975999393">"測光モード"</string>
+    <string name="pref_camera_meteringmode_entry_center_weighted" msgid="6362205429617163588">"中央重点測光"</string>
+    <string name="pref_camera_meteringmode_entry_frame_average" msgid="7462891363691741735">"多分割測光"</string>
+    <string name="pref_camera_meteringmode_entry_spot" msgid="3971259987457110980">"スポット測光"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"SDカードの容量が足りません。クオリティ設定を変更するか、ギャラリーからアイテムを削除してください。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"サイズ制限に達しました。"</string>
