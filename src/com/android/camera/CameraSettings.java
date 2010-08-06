@@ -38,6 +38,7 @@ public class CameraSettings {
     public static final String KEY_LOCAL_VERSION = "pref_local_version_key";
     public static final String KEY_RECORD_LOCATION = RecordLocationPreference.KEY;
     public static final String KEY_VIDEO_QUALITY = "pref_video_quality_key";
+    public static final String KEY_VIDEO_TIME_LAPSE_QUALITY = "pref_video_time_lapse_quality_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
@@ -58,6 +59,16 @@ public class CameraSettings {
     private static final String VIDEO_QUALITY_MMS = "mms";
     private static final String VIDEO_QUALITY_YOUTUBE = "youtube";
 
+    private static final String VIDEO_TIME_LAPSE_QUALITY_LOW= "low";
+    private static final String VIDEO_TIME_LAPSE_QUALITY_HIGH= "high";
+    private static final String VIDEO_TIME_LAPSE_QUALITY_720P = "720p";
+    private static final String VIDEO_TIME_LAPSE_QUALITY_1080P = "1080p";
+
+    public static final int TIME_LAPSE_VIDEO_QUALITY_LOW = 1;
+    public static final int TIME_LAPSE_VIDEO_QUALITY_HIGH = 2;
+    public static final int TIME_LAPSE_VIDEO_QUALITY_720P = 3;
+    public static final int TIME_LAPSE_VIDEO_QUALITY_1080P = 4;
+
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
     public static final int CURRENT_VERSION = 4;
@@ -69,6 +80,7 @@ public class CameraSettings {
     private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 10 mins
 
     public static final String DEFAULT_VIDEO_QUALITY_VALUE = "high";
+    public static final String DEFAULT_VIDEO_TIME_LAPSE_QUALITY_VALUE = "high";
 
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
@@ -339,6 +351,20 @@ public class CameraSettings {
     public static boolean getVideoQuality(String quality) {
         return VIDEO_QUALITY_YOUTUBE.equals(
                 quality) || VIDEO_QUALITY_HIGH.equals(quality);
+    }
+
+    public static int getVideoTimeLapseQuality(String quality) {
+        if (VIDEO_TIME_LAPSE_QUALITY_LOW.equals(quality)) {
+            return TIME_LAPSE_VIDEO_QUALITY_LOW;
+        } else if (VIDEO_TIME_LAPSE_QUALITY_HIGH.equals(quality)) {
+            return TIME_LAPSE_VIDEO_QUALITY_HIGH;
+        } else if (VIDEO_TIME_LAPSE_QUALITY_720P.equals(quality)) {
+            return TIME_LAPSE_VIDEO_QUALITY_720P;
+        } else if (VIDEO_TIME_LAPSE_QUALITY_1080P.equals(quality)) {
+            return TIME_LAPSE_VIDEO_QUALITY_1080P;
+        } else {
+            throw new IllegalArgumentException("Unknown quality" + quality);
+        }
     }
 
     public static int getVidoeDurationInMillis(String quality) {

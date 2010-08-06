@@ -59,6 +59,7 @@ public class MenuHelper {
     public static final int POSITION_SWITCH_CAMERA_MODE = 1;
     public static final int POSITION_GOTO_GALLERY = 2;
     public static final int POSITION_SWITCH_CAMERA_ID = 3;
+    public static final int POSITION_SWITCH_TIME_LAPSE_MODE = 4;
 
     public static final int NO_STORAGE_ERROR = -1;
     public static final int CANNOT_STAT_ERROR = -2;

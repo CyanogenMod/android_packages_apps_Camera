@@ -1672,53 +1672,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         clearFocusState();
     }
 
-    private Size getOptimalPreviewSize(List<Size> sizes, double targetRatio) {
-        final double ASPECT_TOLERANCE = 0.05;
-        if (sizes == null) return null;
-
-        Size optimalSize = null;
-        double minDiff = Double.MAX_VALUE;
-
-        // Because of bugs of overlay and layout, we sometimes will try to
-        // layout the viewfinder in the portrait orientation and thus get the
-        // wrong size of mSurfaceView. When we change the preview size, the
-        // new overlay will be created before the old one closed, which causes
-        // an exception. For now, just get the screen size
-
-        Display display = getWindowManager().getDefaultDisplay();
-        int targetHeight = Math.min(display.getHeight(), display.getWidth());
-
-        if (targetHeight <= 0) {
-            // We don't know the size of SurefaceView, use screen height
-            WindowManager windowManager = (WindowManager)
-                    getSystemService(Context.WINDOW_SERVICE);
-            targetHeight = windowManager.getDefaultDisplay().getHeight();
-        }
-
-        // Try to find an size match aspect ratio and size
-        for (Size size : sizes) {
-            double ratio = (double) size.width / size.height;
-            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
-            if (Math.abs(size.height - targetHeight) < minDiff) {
-                optimalSize = size;
-                minDiff = Math.abs(size.height - targetHeight);
-            }
-        }
-
-        // Cannot find the one match the aspect ratio, ignore the requirement
-        if (optimalSize == null) {
-            Log.v(TAG, "No preview size match the aspect ratio");
-            minDiff = Double.MAX_VALUE;
-            for (Size size : sizes) {
-                if (Math.abs(size.height - targetHeight) < minDiff) {
-                    optimalSize = size;
-                    minDiff = Math.abs(size.height - targetHeight);
-                }
-            }
-        }
-        return optimalSize;
-    }
-
     private static boolean isSupported(String value, List<String> supported) {
         return supported == null ? false : supported.indexOf(value) >= 0;
     }
@@ -1762,7 +1715,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Set a preview size that is closest to the viewfinder height and has
         // the right aspect ratio.
         List<Size> sizes = mParameters.getSupportedPreviewSizes();
-        Size optimalSize = getOptimalPreviewSize(
+        Size optimalSize = Util.getOptimalPreviewSize(this,
                 sizes, (double) size.width / size.height);
         if (optimalSize != null) {
             Size original = mParameters.getPreviewSize();
