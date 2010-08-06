@@ -81,6 +81,9 @@ public class HeadUpDisplay extends GLView {
 
     protected Listener mListener;
 
+    protected ZoomIndicator mZoomIndicator;
+    protected boolean mZoomSupported;
+
     private Handler mHandler;
 
     private final OnSharedPreferenceChangeListener mSharedPreferenceChangeListener =
@@ -93,7 +96,8 @@ public class HeadUpDisplay extends GLView {
         }
     };
 
-    public HeadUpDisplay(Context context) {
+    public HeadUpDisplay(Context context, boolean zoomSupported) {
+        mZoomSupported = zoomSupported;
         initializeStaticVariables(context);
     }
 
@@ -428,4 +432,23 @@ public class HeadUpDisplay extends GLView {
         mPreferenceGroup.reloadValue();
         mIndicatorBar.reloadPreferences();
     }
+
+    public void setZoomListener(ZoomController.ZoomListener listener) {
+        if (mZoomSupported) {
+            mZoomIndicator.setZoomListener(listener);
+        }
+    }
+
+    public void setZoomIndex(int index) {
+        if (mZoomSupported) {
+            mZoomIndicator.setZoomIndex(index);
+        }
+    }
+
+    public void setZoomRatios(float[] zoomRatios) {
+        if (mZoomSupported) {
+            mZoomIndicator.setZoomRatios(zoomRatios);
+        }
+    }
+
 }

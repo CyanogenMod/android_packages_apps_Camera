@@ -62,8 +62,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -92,11 +90,9 @@ import java.util.StringTokenizer;
 /**
  * The Camcorder activity.
  */
-public class VideoCamera extends NoSearchActivity
-        implements View.OnClickListener,
-        ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
+public class VideoCamera extends BaseCamera implements
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        Switcher.OnSwitchListener, PreviewFrameLayout.OnSizeChangedListener {
+        PreviewFrameLayout.OnSizeChangedListener {
 
     private static final String TAG = "videocamera";
 
@@ -125,11 +121,6 @@ public class VideoCamera extends NoSearchActivity
 
     private static final long SHUTTER_BUTTON_TIMEOUT = 500L; // 500ms
 
-    private int mZoomValue;  // The current zoom value.
-    private int mZoomMax;
-    private GestureDetector mGestureDetector;
-    private final ZoomListener mZoomListener = new ZoomListener();
-
     /**
      * An unpublished intent flag requesting to start recording straight away
      * and return as soon as recording is stopped.
@@ -145,7 +136,6 @@ public class VideoCamera extends NoSearchActivity
     private SurfaceHolder mSurfaceHolder = null;
     private ImageView mVideoFrame;
     private GLRootView mGLRootView;
-    private CamcorderHeadUpDisplay mHeadUpDisplay;
 
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
@@ -278,9 +268,6 @@ public class VideoCamera extends NoSearchActivity
     // The video duration limit. 0 menas no limit.
     private int mMaxVideoDurationInMs;
 
-    boolean mPausing = false;
-    boolean mPreviewing = false; // True if preview is started.
-
     private ContentResolver mContentResolver;
 
     private ShutterButton mShutterButton;
@@ -291,9 +278,7 @@ public class VideoCamera extends NoSearchActivity
     private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private final Handler mHandler = new MainHandler();
-    private Parameters mParameters;
-    private Menu mOptionsMenu;
-    
+
     // This Handler is used to post message back onto the main thread of the
     // application
     private class MainHandler extends Handler {
@@ -623,7 +608,7 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void onStopVideoRecording(boolean valid) {
-        mHeadUpDisplay.setVideoQualityControlsEnabled(true);
+        ((CamcorderHeadUpDisplay)mHeadUpDisplay).setVideoQualityControlsEnabled(true);
         if (mIsVideoCaptureIntent) {
             if (mQuickCapture) {
                 stopVideoRecordingAndReturn(valid);
@@ -1107,8 +1092,6 @@ public class VideoCamera extends NoSearchActivity
         }
     }
 
-    private android.hardware.Camera mCameraDevice;
-
     // Prepares media recorder.
     private void initializeRecorder() {
         Log.v(TAG, "initializeRecorder");
@@ -1405,7 +1388,7 @@ public class VideoCamera extends NoSearchActivity
                 Log.e(TAG, "Could not start media recorder. ", e);
                 return;
             }
-            mHeadUpDisplay.setVideoQualityControlsEnabled(false);
+            ((CamcorderHeadUpDisplay)mHeadUpDisplay).setVideoQualityControlsEnabled(false);
 
             mMediaRecorderRecording = true;
             mRecordingStartTime = SystemClock.uptimeMillis();
@@ -1738,7 +1721,7 @@ public class VideoCamera extends NoSearchActivity
         setCameraHardwareParameters();
     }
 
-    private void setCameraHardwareParameters() {
+    protected void setCameraHardwareParameters() {
         Log.d(TAG, mParameters.flatten());
         if (mMediaRecorder != null) {
             mMediaRecorder.setCameraParameters(mParameters.flatten());
@@ -1825,7 +1808,13 @@ public class VideoCamera extends NoSearchActivity
         MenuHelper.updateSwitchDeviceMenuItem(mOptionsMenu, !switchToSecondary);
         return true;
     }
-    
+
+    protected void onZoomValueChanged(int index) {
+        mZoomValue = index;
+        mParameters.setZoom(index);
+        setCameraHardwareParameters();
+    }
+
     public void onSizeChanged() {
         // TODO: update the content on GLRootView
     }
@@ -1886,86 +1875,5 @@ public class VideoCamera extends NoSearchActivity
         }
     }
 
-    private class ZoomGestureListener extends GestureDetector.SimpleOnGestureListener {
 
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            // Perform zoom only when preview is started and snapshot is not in
-            // progress.
-            if (mPausing || !mPreviewing || mHeadUpDisplay == null) {
-                return false;
-            }
-
-            if (mZoomValue < mZoomMax) {
-                // Zoom in to the maximum.
-                mZoomValue = mZoomMax;
-            } else {
-                mZoomValue = 0;
-            }
-
-            setCameraParameters();
-
-            mHeadUpDisplay.setZoomIndex(mZoomValue);
-            return true;
-        }
-    }
-
-    private void initializeZoom() {
-        if (!mParameters.isZoomSupported()) return;
-
-        // Maximum zoom value may change after preview size is set. Get the
-        // latest parameters here.
-        mZoomMax = mParameters.getMaxZoom();
-        mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
-
-        mCameraDevice.setZoomChangeListener(mZoomListener);
-    }
-
-    private void onZoomValueChanged(int index) {
-        Log.d(TAG, "VideoZoom: " + index);
-        mZoomValue = index;
-        mParameters.setZoom(index);
-        setCameraHardwareParameters();
-    }
-
-    private float[] getZoomRatios() {
-        List<Integer> zoomRatios = mParameters.getZoomRatios();
-        if (mParameters.get("taking-picture-zoom") != null) {
-            // HTC camera zoom
-            float result[] = new float[mZoomMax + 1];
-            for (int i = 0, n = result.length; i < n; ++i) {
-                result[i] = 1 + i * 0.2f;
-            }
-            return result;
-        } else if (zoomRatios != null) {
-            float result[] = new float[zoomRatios.size()];
-            for (int i = 0, n = result.length; i < n; ++i) {
-                result[i] = (float) zoomRatios.get(i) / 100f;
-            }
-            return result;
-
-        }
-
-        float[] result = new float[1];
-        result[0] = 0.0f;
-        return result;
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent m) {
-        if (!super.dispatchTouchEvent(m) && mGestureDetector != null) {
-            return mGestureDetector.onTouchEvent(m);
-        }
-        return true;
-    }
-
-    private final class ZoomListener implements android.hardware.Camera.OnZoomChangeListener {
-        public void onZoomChange(int value, boolean stopped, android.hardware.Camera camera) {
-            Log.d(TAG, "Zoom changed: value=" + value + ". stopped=" + stopped);
-            mZoomValue = value;
-            // Keep mParameters up to date. We do not getParameter again in
-            // takePicture. If we do not do this, wrong zoom value will be set.
-            mParameters.setZoom(value);
-        }
-    }
 }

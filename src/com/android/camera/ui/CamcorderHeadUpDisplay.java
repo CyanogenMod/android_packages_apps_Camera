@@ -28,12 +28,9 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
 
     private OtherSettingsIndicator mOtherSettings;
     private BasicIndicator mVideoQualitySettings;
-    private ZoomIndicator mZoomIndicator;
-    private boolean mZoomSupported;
 
     public CamcorderHeadUpDisplay(Context context, boolean zoomSupported) {
-        super(context);
-        mZoomSupported = zoomSupported;
+        super(context, zoomSupported);
     }
 
     @Override
@@ -75,24 +72,6 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
         if (mZoomSupported) {
             mZoomIndicator = new ZoomIndicator(context);
             mIndicatorBar.addComponent(mZoomIndicator);
-        }
-    }
-
-    public void setZoomListener(ZoomController.ZoomListener listener) {
-        if (mZoomSupported) {
-            mZoomIndicator.setZoomListener(listener);
-        }
-    }
-
-    public void setZoomIndex(int index) {
-        if (mZoomSupported) {
-            mZoomIndicator.setZoomIndex(index);
-        }
-    }
-
-    public void setZoomRatios(float[] zoomRatios) {
-        if (mZoomSupported) {
-            mZoomIndicator.setZoomRatios(zoomRatios);
         }
     }
 

@@ -29,12 +29,9 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
 
     private OtherSettingsIndicator mOtherSettings;
     private GpsIndicator mGpsIndicator;
-    private ZoomIndicator mZoomIndicator;
-    private boolean mZoomSupported;
-    
+
     public CameraHeadUpDisplay(Context context, boolean zoomSupported) {
-        super(context);
-        mZoomSupported = zoomSupported;
+        super(context, zoomSupported);
     }
 
     @Override
@@ -82,14 +79,6 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         }
     }
 
-    public void setZoomListener(ZoomController.ZoomListener listener) {
-        mZoomIndicator.setZoomListener(listener);
-    }
-
-    public void setZoomIndex(int index) {
-        mZoomIndicator.setZoomIndex(index);
-    }
-
     public void setGpsHasSignal(final boolean hasSignal) {
         GLRootView root = getGLRootView();
         if (root != null) {
@@ -103,7 +92,4 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         }
     }
 
-    public void setZoomRatios(float[] zoomRatios) {
-        mZoomIndicator.setZoomRatios(zoomRatios);
-    }
 }
