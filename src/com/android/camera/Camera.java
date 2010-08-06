@@ -2146,19 +2146,12 @@ public class Camera extends BaseCamera {
 
     private boolean switchCameraDevice(boolean switchToSecondary) {
         if (isFinishing() || !isCameraIdle()) return false;
-        stopPreview();
-        finalizeHeadUpDisplay();
-        closeCamera();
-        CameraHolder holder = CameraHolder.instance();
-        holder.setCameraNode(switchToSecondary ? 
+        CameraHolder.instance().setCameraNode(switchToSecondary ?
                 CameraSwitch.SWITCH_CAMERA_SECONDARY : CameraSwitch.SWITCH_CAMERA_MAIN);
-        mPreferences = getSharedPreferences(holder.getCameraNode(), Context.MODE_PRIVATE);
-        restartPreview();
-        initializeHeadUpDisplay();
-        MenuHelper.updateSwitchDeviceMenuItem(mOptionsMenu, !switchToSecondary);
+        MenuHelper.gotoCameraMode(this);
         return true;
     }
-    
+
     private boolean switchToVideoMode() {
         if (isFinishing() || !isCameraIdle()) return false;
         MenuHelper.gotoVideoMode(this);

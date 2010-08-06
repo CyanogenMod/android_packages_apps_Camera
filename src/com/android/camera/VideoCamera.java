@@ -461,8 +461,6 @@ public class VideoCamera extends BaseCamera implements
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
-        initializeZoom();
-
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -473,6 +471,8 @@ public class VideoCamera extends BaseCamera implements
         } catch (InterruptedException ex) {
             // ignore
         }
+
+        initializeZoom();
     }
 
     private void overrideHudSettings(final String videoEncoder,
@@ -979,6 +979,7 @@ public class VideoCamera extends BaseCamera implements
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        Log.d(TAG, "********* SURFACE CHANGED! **************");
         // Make sure we have a surface in the holder before proceeding.
         if (holder.getSurface() == null) {
             Log.d(TAG, "holder.getSurface() == null");
@@ -1788,24 +1789,9 @@ public class VideoCamera extends BaseCamera implements
     
     private boolean switchCameraDevice(boolean switchToSecondary) {
         if (isFinishing() || mMediaRecorderRecording) return false;
-        
-        releaseMediaRecorder();
-        closeCamera();
-        finalizeHeadUpDisplay();
-
-        CameraHolder holder = CameraHolder.instance();
-        holder.setCameraNode(switchToSecondary ? 
+        CameraHolder.instance().setCameraNode(switchToSecondary ?
                 CameraSwitch.SWITCH_CAMERA_SECONDARY : CameraSwitch.SWITCH_CAMERA_MAIN);
-        mPreferences = getSharedPreferences(holder.getCameraNode(), Context.MODE_PRIVATE);
-        readVideoPreferences();
-        try {
-            startPreview(); // Parameters will be set in startPreview().
-        } catch (CameraHardwareException e) {
-            showCameraBusyAndFinish();
-        }
-        mHandler.sendEmptyMessage(INIT_RECORDER);
-        initializeHeadUpDisplay();
-        MenuHelper.updateSwitchDeviceMenuItem(mOptionsMenu, !switchToSecondary);
+        MenuHelper.gotoVideoMode(this);
         return true;
     }
 
