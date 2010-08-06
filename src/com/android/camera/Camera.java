@@ -1401,8 +1401,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void cancelAutoFocus() {
         // User releases half-pressed focus key.
-        if (mFocusState == FOCUSING || mFocusState == FOCUS_SUCCESS
-                || mFocusState == FOCUS_FAIL) {
+        if (mStatus != SNAPSHOT_IN_PROGRESS && (mFocusState == FOCUSING
+                || mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)) {
             Log.v(TAG, "Cancel autofocus.");
             mHeadUpDisplay.setEnabled(true);
             mCameraDevice.cancelAutoFocus();
