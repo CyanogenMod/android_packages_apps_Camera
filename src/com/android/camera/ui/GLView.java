@@ -62,6 +62,8 @@ public class GLView {
     protected int mScrollHeight = 0;
     protected int mScrollWidth = 0;
 
+    protected boolean mEnabled = true;
+
     public void startAnimation(Animation animation) {
         GLRootView root = getGLRootView();
         if (root == null) throw new IllegalStateException();
@@ -177,6 +179,10 @@ public class GLView {
         if (root != null) root.requestRender();
     }
 
+    public void setEnabled(boolean enabled) {
+        mEnabled = enabled;
+    }
+
     public void requestLayout() {
         mViewFlags |= FLAG_LAYOUT_REQUESTED;
         if (mParent != null) {
@@ -227,7 +233,7 @@ public class GLView {
     }
 
     protected boolean onTouch(MotionEvent event) {
-        if (mOnTouchListener != null) {
+        if (mEnabled && mOnTouchListener != null) {
             return mOnTouchListener.onTouch(this, event);
         }
         return false;

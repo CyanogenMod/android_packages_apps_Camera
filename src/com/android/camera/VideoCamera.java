@@ -22,6 +22,7 @@ import com.android.camera.ui.CamcorderHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.GLView;
 import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.ZoomController;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -61,6 +62,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -121,6 +124,11 @@ public class VideoCamera extends NoSearchActivity
     private static final boolean SWITCH_VIDEO = false;
 
     private static final long SHUTTER_BUTTON_TIMEOUT = 500L; // 500ms
+
+    private int mZoomValue;  // The current zoom value.
+    private int mZoomMax;
+    private GestureDetector mGestureDetector;
+    private final ZoomListener mZoomListener = new ZoomListener();
 
     /**
      * An unpublished intent flag requesting to start recording straight away
@@ -468,6 +476,8 @@ public class VideoCamera extends NoSearchActivity
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
+        initializeZoom();
+
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -536,7 +546,7 @@ public class VideoCamera extends NoSearchActivity
         mGLRootView = new GLRootView(this);
         frame.addView(mGLRootView);
 
-        mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
+        mHeadUpDisplay = new CamcorderHeadUpDisplay(this, CameraSettings.isVideoZoomSupported(mParameters));
         CameraSettings settings = new CameraSettings(this, mParameters);
 
         PreferenceGroup group =
@@ -547,6 +557,21 @@ public class VideoCamera extends NoSearchActivity
         mHeadUpDisplay.initialize(this, group);
         mGLRootView.setContentPane(mHeadUpDisplay);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
+
+        if (mParameters.isZoomSupported()) {
+            mHeadUpDisplay.setZoomRatios(getZoomRatios());
+            mHeadUpDisplay.setZoomIndex(mZoomValue);
+            mHeadUpDisplay.setZoomListener(new ZoomController.ZoomListener() {
+                public void onZoomChanged(
+                        final int index, float ratio, boolean isMoving) {
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            onZoomValueChanged(index);
+                        }
+                    });
+                }
+            });
+        }
         updateProfileInHud();
     }
 
@@ -598,6 +623,7 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void onStopVideoRecording(boolean valid) {
+        mHeadUpDisplay.setVideoQualityControlsEnabled(true);
         if (mIsVideoCaptureIntent) {
             if (mQuickCapture) {
                 stopVideoRecordingAndReturn(valid);
@@ -828,7 +854,7 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void startPreview() throws CameraHardwareException {
-        Log.v(TAG, "startPreview");
+        Log.d(TAG, "startPreview");
         if (mPreviewing) {
             // After recording a video, preview is not stopped. So just return.
             return;
@@ -851,13 +877,6 @@ public class VideoCamera extends NoSearchActivity
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
         }
-
-        // If setPreviewDisplay has been set with a valid surface, unlock now.
-        // If surface is null, unlock later. Otherwise, setPreviewDisplay in
-        // surfaceChanged will fail.
-        if (mSurfaceHolder != null) {
-            mCameraDevice.unlock();
-        }
     }
 
     private void closeCamera() {
@@ -866,7 +885,7 @@ public class VideoCamera extends NoSearchActivity
             Log.d(TAG, "already stopped.");
             return;
         }
-        // If we don't lock the camera, release() will fail.
+        releaseMediaRecorder();
         mCameraDevice.lock();
         CameraHolder.instance().release();
         mCameraDevice = null;
@@ -1006,6 +1025,8 @@ public class VideoCamera extends NoSearchActivity
             setPreviewDisplay(holder);
             mCameraDevice.unlock();
             mHandler.sendEmptyMessage(INIT_RECORDER);
+        } else {
+            mCameraDevice.unlock();
         }
     }
 
@@ -1197,10 +1218,12 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void releaseMediaRecorder() {
-        Log.v(TAG, "Releasing media recorder.");
+        Log.d(TAG, "Releasing media recorder.");
         if (mMediaRecorder != null) {
             cleanupEmptyFile();
+            Log.d(TAG, "xxxxxxxxx reset recorder");
             mMediaRecorder.reset();
+            Log.d(TAG, "xxxxxxxxx release recorder");
             mMediaRecorder.release();
             mMediaRecorder = null;
         }
@@ -1382,7 +1405,7 @@ public class VideoCamera extends NoSearchActivity
                 Log.e(TAG, "Could not start media recorder. ", e);
                 return;
             }
-            mHeadUpDisplay.setEnabled(false);
+            mHeadUpDisplay.setVideoQualityControlsEnabled(false);
 
             mMediaRecorderRecording = true;
             mRecordingStartTime = SystemClock.uptimeMillis();
@@ -1710,10 +1733,18 @@ public class VideoCamera extends NoSearchActivity
         if (mParameters.getMaxBrightness() > 0) {
             mParameters.setBrightness(Float.parseFloat(brightness));
         }
-         
+
         CameraSettings.setCamMode(mParameters, CameraSettings.VIDEO_MODE);
+        setCameraHardwareParameters();
+    }
+
+    private void setCameraHardwareParameters() {
         Log.d(TAG, mParameters.flatten());
-        mCameraDevice.setParameters(mParameters);
+        if (mMediaRecorder != null) {
+            mMediaRecorder.setCameraParameters(mParameters.flatten());
+        } else {
+            mCameraDevice.setParameters(mParameters);
+        }
     }
 
     private boolean switchToCameraMode() {
@@ -1757,26 +1788,18 @@ public class VideoCamera extends NoSearchActivity
         if (sizeChanged) {
             // It is assumed media recorder is released before
             // onSharedPreferenceChanged, so we can close the camera here.
+            mCameraDevice.stopPreview();
+            releaseMediaRecorder();
             closeCamera();
             try {
                 resizeForPreviewAspectRatio();
+                mHandler.sendEmptyMessage(RELOAD_HUD);
                 startPreview(); // Parameters will be set in startPreview().
             } catch (CameraHardwareException e) {
                 showCameraBusyAndFinish();
             }
         } else {
-            try {
-                // We need to lock the camera before writing parameters.
-                mCameraDevice.lock();
-            } catch (RuntimeException e) {
-                // When preferences are added for the first time, this method
-                // will be called. But OnScreenSetting is not displayed yet and
-                // media recorder still owns the camera. Lock will fail and we
-                // just ignore it.
-                return;
-            }
             setCameraParameters();
-            mCameraDevice.unlock();
         }
     }
     
@@ -1834,11 +1857,9 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void onPopupWindowVisibilityChanged(int visibility) {
-        if (visibility == GLView.VISIBLE) {
-            releaseMediaRecorder();
-        } else {
-            if (!mPausing && mSurfaceHolder != null) initializeRecorder();
-        }
+        if (visibility != GLView.VISIBLE && !mPausing && mSurfaceHolder != null) {
+           initializeRecorder();
+         }
     }
 
     private void onRestorePreferencesClicked() {
@@ -1862,6 +1883,89 @@ public class VideoCamera extends NoSearchActivity
             // startPreview().
             if (mCameraDevice == null) return;
             resetCameraParameters();
+        }
+    }
+
+    private class ZoomGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            // Perform zoom only when preview is started and snapshot is not in
+            // progress.
+            if (mPausing || !mPreviewing || mHeadUpDisplay == null) {
+                return false;
+            }
+
+            if (mZoomValue < mZoomMax) {
+                // Zoom in to the maximum.
+                mZoomValue = mZoomMax;
+            } else {
+                mZoomValue = 0;
+            }
+
+            setCameraParameters();
+
+            mHeadUpDisplay.setZoomIndex(mZoomValue);
+            return true;
+        }
+    }
+
+    private void initializeZoom() {
+        if (!mParameters.isZoomSupported()) return;
+
+        // Maximum zoom value may change after preview size is set. Get the
+        // latest parameters here.
+        mZoomMax = mParameters.getMaxZoom();
+        mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
+
+        mCameraDevice.setZoomChangeListener(mZoomListener);
+    }
+
+    private void onZoomValueChanged(int index) {
+        Log.d(TAG, "VideoZoom: " + index);
+        mZoomValue = index;
+        mParameters.setZoom(index);
+        setCameraHardwareParameters();
+    }
+
+    private float[] getZoomRatios() {
+        List<Integer> zoomRatios = mParameters.getZoomRatios();
+        if (mParameters.get("taking-picture-zoom") != null) {
+            // HTC camera zoom
+            float result[] = new float[mZoomMax + 1];
+            for (int i = 0, n = result.length; i < n; ++i) {
+                result[i] = 1 + i * 0.2f;
+            }
+            return result;
+        } else if (zoomRatios != null) {
+            float result[] = new float[zoomRatios.size()];
+            for (int i = 0, n = result.length; i < n; ++i) {
+                result[i] = (float) zoomRatios.get(i) / 100f;
+            }
+            return result;
+
+        }
+
+        float[] result = new float[1];
+        result[0] = 0.0f;
+        return result;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent m) {
+        if (!super.dispatchTouchEvent(m) && mGestureDetector != null) {
+            return mGestureDetector.onTouchEvent(m);
+        }
+        return true;
+    }
+
+    private final class ZoomListener implements android.hardware.Camera.OnZoomChangeListener {
+        public void onZoomChange(int value, boolean stopped, android.hardware.Camera camera) {
+            Log.d(TAG, "Zoom changed: value=" + value + ". stopped=" + stopped);
+            mZoomValue = value;
+            // Keep mParameters up to date. We do not getParameter again in
+            // takePicture. If we do not do this, wrong zoom value will be set.
+            mParameters.setZoom(value);
         }
     }
 }

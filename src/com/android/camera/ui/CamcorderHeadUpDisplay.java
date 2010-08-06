@@ -27,9 +27,13 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
     protected static final String TAG = "CamcorderHeadUpDisplay";
 
     private OtherSettingsIndicator mOtherSettings;
+    private BasicIndicator mVideoQualitySettings;
+    private ZoomIndicator mZoomIndicator;
+    private boolean mZoomSupported;
 
-    public CamcorderHeadUpDisplay(Context context) {
+    public CamcorderHeadUpDisplay(Context context, boolean zoomSupported) {
         super(context);
+        mZoomSupported = zoomSupported;
     }
 
     @Override
@@ -66,6 +70,33 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
 
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);
-        addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
+        mVideoQualitySettings = addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
+
+        if (mZoomSupported) {
+            mZoomIndicator = new ZoomIndicator(context);
+            mIndicatorBar.addComponent(mZoomIndicator);
+        }
+    }
+
+    public void setZoomListener(ZoomController.ZoomListener listener) {
+        if (mZoomSupported) {
+            mZoomIndicator.setZoomListener(listener);
+        }
+    }
+
+    public void setZoomIndex(int index) {
+        if (mZoomSupported) {
+            mZoomIndicator.setZoomIndex(index);
+        }
+    }
+
+    public void setZoomRatios(float[] zoomRatios) {
+        if (mZoomSupported) {
+            mZoomIndicator.setZoomRatios(zoomRatios);
+        }
+    }
+
+    public void setVideoQualityControlsEnabled(boolean enabled) {
+        mVideoQualitySettings.setEnabled(enabled);
     }
 }
