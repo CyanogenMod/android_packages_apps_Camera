@@ -40,7 +40,7 @@
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Alta (30 m)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Bassa (30 m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (bassa, 30 s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (alta, 10 m)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (alta, 15 m)"</string>
     <string name="pref_video_quality_entry_custom">Personalizzata</string>
      
      <!-- Settings screen, Video quality title -->
@@ -150,4 +150,7 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Passa a fotocamera"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Passa a video"</string>
+
+    <!-- Settings screen, Select Iso title -->
+     <string name="pref_camera_iso_title">Seleziona ISO</string>
 </resources>
