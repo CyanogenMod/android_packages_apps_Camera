@@ -723,6 +723,7 @@ public class Camera extends BaseCamera {
             Location loc = null;
             if (mRecordLocation) {
                 loc = getCurrentLocation();
+                mParameters.setGpsStatus(1);
             }
 
             if (loc != null) {
@@ -763,12 +764,6 @@ public class Camera extends BaseCamera {
                         // no altitude information, but the driver needs it, so
                         // we fake one.
                         mParameters.setGpsAltitude(0);
-                    }
-                    if (loc.getTime() != 0) {
-                        // Location.getTime() is UTC in milliseconds.
-                        // gps-timestamp is UTC in seconds.
-                        long utcTimeSeconds = loc.getTime() / 1000;
-                        mParameters.setGpsTimestamp(utcTimeSeconds);
                     }
                 } else {
                     loc = null;
@@ -1914,10 +1909,10 @@ public class Camera extends BaseCamera {
             //Clearing previous GPS data if any
             if(mRecordLocation) {
                 //Reset the values when store location is selected
+                mParameters.setGpsStatus(0);
                 mParameters.setGpsLatitude(0);
                 mParameters.setGpsLongitude(0);
                 mParameters.setGpsAltitude(0);
-                mParameters.setGpsTimestamp(0);
             }
 
             // Set focus mode.
