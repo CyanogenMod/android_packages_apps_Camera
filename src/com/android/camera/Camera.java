@@ -57,7 +57,6 @@ import android.os.Message;
 import android.os.MessageQueue;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -720,61 +719,35 @@ public class Camera extends BaseCamera {
             mParameters.setGpsTimestamp(System.currentTimeMillis() / 1000);
 
             // Set GPS location.
-            Location loc = null;
-            if (mRecordLocation) {
-                loc = getCurrentLocation();
-                mParameters.setGpsStatus(1);
-            }
-
+            Location loc = mRecordLocation ? getCurrentLocation() : null;
             if (loc != null) {
                 double lat = loc.getLatitude();
                 double lon = loc.getLongitude();
                 boolean hasLatLon = (lat != 0.0d) || (lon != 0.0d);
-                Log.v(TAG, "in capture lat = " + lat + " lon = " + lon);
 
                 if (hasLatLon) {
-                    String latRef= "N";
-                    String lonRef= "E";
-                    if(lat < 0) {
-                        latRef = "S";
-                        lat *= -1;
-                    }
-                    if (lon < 0) {
-                        lonRef = "W";
-                        lon *= -1;
-                    }
-                    mParameters.setGpsLatitudeRef(latRef);
                     mParameters.setGpsLatitude(lat);
-                    mParameters.setGpsLongitudeRef(lonRef);
                     mParameters.setGpsLongitude(lon);
                     mParameters.setGpsProcessingMethod(loc.getProvider().toUpperCase());
                     if (loc.hasAltitude()) {
-                        Double altitude = loc.getAltitude();
-                        Double altitudeX1000 = altitude * 1000;
-                        long altitudeDividend = altitudeX1000.longValue();
-                        if(altitudeDividend < 0) {
-                            altitudeDividend *= -1;
-                            mParameters.setGpsAltitudeRef(1);
-                    }
-                        else
-                            mParameters.setGpsAltitudeRef(0);
-                        mParameters.setGpsAltitude(altitude);
+                        mParameters.setGpsAltitude(loc.getAltitude());
                     } else {
                         // for NETWORK_PROVIDER location provider, we may have
                         // no altitude information, but the driver needs it, so
                         // we fake one.
                         mParameters.setGpsAltitude(0);
                     }
+                    if (loc.getTime() != 0) {
+                        // Location.getTime() is UTC in milliseconds.
+                        // gps-timestamp is UTC in seconds.
+                        long utcTimeSeconds = loc.getTime() / 1000;
+                        mParameters.setGpsTimestamp(utcTimeSeconds);
+                    }
                 } else {
                     loc = null;
                 }
             }
-            long dateTaken = System.currentTimeMillis();
-            if (dateTaken != 0) {
-                String datetime = DateFormat.format("yyyy:MM:dd kk:mm:ss", dateTaken).toString();
-                Log.e(TAG,"datetime : " +  datetime);
-                mParameters.setExifDateTime(datetime);
-            }
+
             mCameraDevice.setParameters(mParameters);
 
             Size pictureSize = mParameters.getPictureSize();
@@ -1904,15 +1877,6 @@ public class Camera extends BaseCamera {
                 if (whiteBalance == null) {
                     whiteBalance = Parameters.WHITE_BALANCE_AUTO;
                 }
-            }
-
-            //Clearing previous GPS data if any
-            if(mRecordLocation) {
-                //Reset the values when store location is selected
-                mParameters.setGpsStatus(0);
-                mParameters.setGpsLatitude(0);
-                mParameters.setGpsLongitude(0);
-                mParameters.setGpsAltitude(0);
             }
 
             // Set focus mode.
