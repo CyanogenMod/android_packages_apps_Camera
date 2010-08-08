@@ -28,7 +28,9 @@ import android.media.EncoderCapabilities.VideoEncoderCap;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  *  Provides utilities and keys for Camera settings.
@@ -442,7 +444,12 @@ public class CameraSettings {
             ret = !(size.width == 1280 && size.height == 720);
         }
         return ret;
+    }
 
-
+    public static void dumpParameters(Parameters params) {
+        final String[] paramList = params.flatten().split(";");
+        final TreeSet<String> sortedParams = new TreeSet<String>();
+        sortedParams.addAll(Arrays.asList(paramList));
+        Log.d(TAG, sortedParams.toString());
     }
 }

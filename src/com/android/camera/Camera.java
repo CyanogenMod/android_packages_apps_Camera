@@ -1915,9 +1915,9 @@ public class Camera extends BaseCamera {
                 updateCameraParametersPreference();
             }
         }
-        
+
         CameraSettings.setCamMode(mParameters, CameraSettings.CAMERA_MODE);
-        Log.d(TAG, mParameters.flatten());
+        CameraSettings.dumpParameters(mParameters);
         mCameraDevice.setParameters(mParameters);
     }
 

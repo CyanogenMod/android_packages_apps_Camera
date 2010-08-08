@@ -979,7 +979,7 @@ public class VideoCamera extends BaseCamera implements
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        Log.d(TAG, "********* SURFACE CHANGED! **************");
+        Log.d(TAG, "surfaceChanged");
         // Make sure we have a surface in the holder before proceeding.
         if (holder.getSurface() == null) {
             Log.d(TAG, "holder.getSurface() == null");
@@ -1202,12 +1202,10 @@ public class VideoCamera extends BaseCamera implements
     }
 
     private void releaseMediaRecorder() {
-        Log.d(TAG, "Releasing media recorder.");
+        Log.d(TAG, "releaseMediaRecorder");
         if (mMediaRecorder != null) {
             cleanupEmptyFile();
-            Log.d(TAG, "xxxxxxxxx reset recorder");
             mMediaRecorder.reset();
-            Log.d(TAG, "xxxxxxxxx release recorder");
             mMediaRecorder.release();
             mMediaRecorder = null;
         }
@@ -1723,7 +1721,7 @@ public class VideoCamera extends BaseCamera implements
     }
 
     protected void setCameraHardwareParameters() {
-        Log.d(TAG, mParameters.flatten());
+        CameraSettings.dumpParameters(mParameters);
         if (mMediaRecorder != null) {
             mMediaRecorder.setCameraParameters(mParameters.flatten());
         } else {
