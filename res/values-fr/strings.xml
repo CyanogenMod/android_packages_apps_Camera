@@ -41,11 +41,26 @@
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Faible (30 mn)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (faible, 30 s)"</string>
     <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (élevée, 10 mn)"</string>
+    <string name="pref_video_quality_entry_custom">"Personnalisée"</string>
+    <string name="pref_camera_videosize_title">"Qualité vidéo"</string>
+    <string name="pref_camera_videoencoder_title">"Encodeur vidéo"</string>
+    <string name="pref_camera_videoencoder_dialogtitle">"Encodeur vidéo"</string>
+    <string name="pref_camera_audioencoder_title">"Encodeur audio"</string>
+    <string name="pref_camera_video_duration_title">"Durée de la vidéo"</string>
+    <string name="pref_camera_video_duration_entry_mms">"30 secondes (MMS)</string>
+    <string name="pref_camera_video_duration_entry_10">"10 minutes"</string>
+    <string name="pref_camera_video_duration_entry_30">"30 minutes"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Paramètres de l\'appareil photo"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Mode Caméra"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Taille d\'image"</string>
+    <string name="pref_camera_picturesize_entry_3264x2448">"8 M Pixels"</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">"6 M Pixels (large)"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 M pixels"</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">"4 M Pixels (large)"</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">"4 M Pixels"</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">"4 M Pixels"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 M pixels"</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">"2.5M Pixels (large)"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 M pixels"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 M pixels"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -55,8 +70,9 @@
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normale"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Mode de mise au point"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatique"</string>
-    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infini"</string>
+    <string name="pref_camera_focusmode_entry_normal">"Normal"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infini"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Mode Flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatique"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activé"</string>
@@ -80,6 +96,15 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Teinte rouge"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Teinte bleue"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Teinte verte"</string>
+    <string name="pref_camera_multi_entry_level0">"Niveau 0"</string>
+    <string name="pref_camera_multi_entry_level1">"Niveau 1"</string>
+    <string name="pref_camera_multi_entry_level2">"Niveau 2 (Défaut)"</string>
+    <string name="pref_camera_multi_entry_level3">"Niveau 3"</string>
+    <string name="pref_camera_multi_entry_level4">"Niveau 4"</string>
+    <string name="pref_camera_sharpness_title">"Finesse"</string>
+    <string name="pref_camera_contrast_title">"Contraste"</string>
+    <string name="pref_camera_saturation_title">"Saturation"</string>
+    <string name="pref_camera_brightness_title">"Luminosité"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Mode Scène"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatique"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Action"</string>
@@ -105,4 +130,19 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Passer en mode photo"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Passer en mode vidéo"</string>
+    <string name="switch_to_main_label">"Utiliser capteur arrière"</string>
+    <string name="switch_to_secondary_label">"Utiliser capteur avant"</string>
+    <string name="pref_camera_iso_title">"Sensibilité"</string>
+    <string name="pref_camera_iso_entry_auto">"Auto"</string>
+    <string name="pref_camera_iso_entry_isodeblur">"Antibrouillage"</string>
+    <string name="pref_camera_lensshading_title">"Foncer l\'image</string>
+    <string name="pref_camera_lensshading_entry_enable">"Activé"</string>
+    <string name="pref_camera_lensshading_entry_disable">"Désactivé"</string>
+    <string name="pref_camera_antibanding_title">"Antiscintillement"</string>
+    <string name="pref_camera_antibanding_entry_0">"Désactivé"</string>
+    <string name="pref_camera_antibanding_entry_3">"Auto"</string>
+    <string name="pref_camera_autoexposure_title">"Mode de mesure"</string>
+    <string name="pref_camera_autoexposure_entry_frameaverage">"Multizone"</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">"Pondéré"</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">"Spot"</string>
 </resources>
