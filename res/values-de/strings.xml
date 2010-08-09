@@ -40,7 +40,25 @@
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Hoch (30m)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Niedrig (30m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (niedrig, 30s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (hoch, 10m)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (hoch, 15m)"</string>
+    <string name="pref_video_quality_entry_custom">Andere</string>
+
+    <!-- Settings screen, Video quality title -->
+    <string name="pref_camera_videosize_title">Video-Qualität</string>
+
+    <!-- Settings screen, Video encoder title -->
+    <string name="pref_camera_videoencoder_title">Video-Encoder</string>
+    <!-- Settings screen, Video encoder dialog title -->
+    <string name="pref_camera_videoencoder_dialogtitle">Video-Encoder</string>
+    <!-- Settings screen, Audio encoder title -->
+    <string name="pref_camera_audioencoder_title">Audio-Encoder</string>
+    <!-- Settings screen, Video duration title -->
+    <string name="pref_camera_video_duration_title">Video-Dauer</string>
+    <!-- Settings screen, Video duration dialog radio button choices -->
+    <string name="pref_camera_video_duration_entry_mms">30 Sekunden(MMS)</string>
+    <string name="pref_camera_video_duration_entry_10">10 Minuten</string>
+    <string name="pref_camera_video_duration_entry_30">30 Minuten</string>
+
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameraeinstellungen"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcordereinstellungen"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Bildgröße"</string>
@@ -57,6 +75,8 @@
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Autom."</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Unendlich"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
+    <string name="pref_camera_focusmode_entry_normal">Normal</string>
+    <string name="pref_camera_focusmode_entry_touch">Berührung</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Blitzmodus"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Autom."</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"An"</string>
@@ -105,4 +125,22 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Zu Kamera wechseln"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Zu Video wechseln"</string>
+
+    <!-- Settings screen, Select brightness title -->
+    <string name="pref_camera_brightness_title">Helligkeit</string>
+
+    <!-- Settings screen, Select sharpness title -->
+    <string name="pref_camera_sharpness_title">Schärfe</string>
+
+    <!-- Settings screen, Select contrast title -->
+    <string name="pref_camera_contrast_title">Kontrast</string>
+
+    <!-- Settings screen, Select saturation title -->
+    <string name="pref_camera_saturation_title">Sättigung</string>
+
+    <!-- Settings screen, Select auto exposure title -->
+    <string name="pref_camera_autoexposure_title">Dosiermodus</string>
+
+    <!-- Toast shown when touch-to-focus is enabled -->
+    <string name="touch_focus_enabled">Bildschirm berühren, um die Kamera zu fokusieren.</string>
 </resources>
