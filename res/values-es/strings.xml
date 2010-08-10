@@ -26,7 +26,7 @@
     <string name="no_storage" msgid="820691042667338625">"Inserta o activa la tarjeta SD para poder utilizar la cámara."</string>
     <string name="not_enough_space" msgid="6655334407957844653">"La tarjeta SD está llena."</string>
     <string name="preparing_sd" msgid="2914969119574812666">"Preparando tarjeta SD…"</string>
-    <string name="access_sd_fail" msgid="4427585260986849912">"Sin acceso a la tarjeta SD."</string>
+    <string name="access_sd_fail" msgid="4427585260986849912">"Sin acceso a la tarjeta SD"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restaurar valores predeterminados"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Se restaurará la configuración de cámara predeterminada."</string>
     <string name="review_play" msgid="6015456244323302817">"REPRODUCIR"</string>
