@@ -52,6 +52,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.MediaStore.Video;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -130,6 +131,7 @@ public class VideoCamera extends NoSearchActivity
     private ImageView mVideoFrame;
     private GLRootView mGLRootView;
     private CamcorderHeadUpDisplay mHeadUpDisplay;
+    private MenuItem mSwitchTimeLapseMenuItem;
 
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
@@ -159,6 +161,15 @@ public class VideoCamera extends NoSearchActivity
 
     // The video duration limit. 0 menas no limit.
     private int mMaxVideoDurationInMs;
+
+    // Time Lapse parameters.
+    private boolean mCaptureTimeLapse = false;
+    private boolean mUseStillCameraForTimeLapse = false;
+    private int mTimeBetweenTimeLapseFrameCaptureMs = 2000;
+    private int mEncoderLevel;
+
+    private int mDesiredPreviewWidth;
+    private int mDesiredPreviewHeight;
 
     boolean mPausing = false;
     boolean mSwitching;
@@ -388,11 +399,10 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void initializeHeadUpDisplay() {
-        mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
+        mHeadUpDisplay = new CamcorderHeadUpDisplay(this, mCaptureTimeLapse);
         CameraSettings settings = new CameraSettings(this, mParameters);
 
-        PreferenceGroup group =
-                settings.getPreferenceGroup(R.xml.video_preferences);
+        PreferenceGroup group = settings.getPreferenceGroup(R.xml.video_preferences);
         if (mIsVideoCaptureIntent) {
             group = filterPreferenceScreenByIntent(group);
         }
@@ -538,7 +548,76 @@ public class VideoCamera extends NoSearchActivity
                 : STORAGE_STATUS_OK;
     }
 
+    private void readTimeLapseVideoPreferences() {
+        String qualityStr = mPreferences.getString(
+                CameraSettings.KEY_VIDEO_TIME_LAPSE_QUALITY,
+                CameraSettings.DEFAULT_VIDEO_TIME_LAPSE_QUALITY_VALUE);
+
+        int quality = CameraSettings.getVideoTimeLapseQuality(qualityStr);
+
+        mProfile = CamcorderProfile.get(
+                (quality == CameraSettings.TIME_LAPSE_VIDEO_QUALITY_LOW)
+                ? CamcorderProfile.QUALITY_LOW
+                : CamcorderProfile.QUALITY_HIGH);
+
+        mTimeBetweenTimeLapseFrameCaptureMs = 2000;
+
+        // TODO: Add new profiles for time lapse instead of setting mProfile
+        // values here.
+        switch (quality) {
+            case CameraSettings.TIME_LAPSE_VIDEO_QUALITY_LOW:
+                mUseStillCameraForTimeLapse = false;
+                mProfile.videoFrameWidth = 176;
+                mProfile.videoFrameHeight = 144;
+                mEncoderLevel = 0;
+                break;
+
+            case CameraSettings.TIME_LAPSE_VIDEO_QUALITY_HIGH:
+                mUseStillCameraForTimeLapse = false;
+                mProfile.videoFrameWidth = 720;
+                mProfile.videoFrameHeight = 480;
+                mEncoderLevel = 0;
+                break;
+
+            case CameraSettings.TIME_LAPSE_VIDEO_QUALITY_720P:
+                mUseStillCameraForTimeLapse = true;
+                mProfile.videoFrameWidth = 1280;
+                mProfile.videoFrameHeight = 720;
+                mProfile.videoBitRate = 20000000;
+                mEncoderLevel = 50;
+                break;
+
+            case CameraSettings.TIME_LAPSE_VIDEO_QUALITY_1080P:
+                mUseStillCameraForTimeLapse = true;
+                mProfile.videoFrameWidth = 1920;
+                mProfile.videoFrameHeight = 1088;
+                mProfile.videoBitRate = 20000000;
+                mEncoderLevel = 50;
+                break;
+        }
+
+        if (mUseStillCameraForTimeLapse) {
+            // When using still camera for capturing time lapse frames
+            // mProfile.{videoFrameWidth,videoFrameHeight} may correspond to
+            // HD resolution not supported by the video camera. So choose
+            // preview size optimally from the supported preview sizes.
+            List<Size> sizes = mParameters.getSupportedPreviewSizes();
+            Size optimalSize = Util.getOptimalPreviewSize(this,
+                    sizes, (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
+            mDesiredPreviewWidth = optimalSize.width;
+            mDesiredPreviewHeight = optimalSize.height;
+        } else {
+            mDesiredPreviewWidth = mProfile.videoFrameWidth;
+            mDesiredPreviewHeight = mProfile.videoFrameHeight;
+        }
+    }
+
     private void readVideoPreferences() {
+        if (mCaptureTimeLapse) {
+            readTimeLapseVideoPreferences();
+            return;
+        }
+
         String quality = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
@@ -566,6 +645,9 @@ public class VideoCamera extends NoSearchActivity
         mProfile = CamcorderProfile.get(videoQualityHigh
                 ? CamcorderProfile.QUALITY_HIGH
                 : CamcorderProfile.QUALITY_LOW);
+
+        mDesiredPreviewWidth = mProfile.videoFrameWidth;
+        mDesiredPreviewHeight = mProfile.videoFrameHeight;
     }
 
     private void resizeForPreviewAspectRatio() {
@@ -672,17 +754,7 @@ public class VideoCamera extends NoSearchActivity
         mPreviewing = false;
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mPausing = true;
-
-        changeHeadUpDisplayState();
-
-        // Hide the preview now. Otherwise, the preview may be rotated during
-        // onPause and it is annoying to users.
-        mVideoPreview.setVisibility(View.INVISIBLE);
-
+    private void finishRecorderAndCloseCamera() {
         // This is similar to what mShutterButton.performClick() does,
         // but not quite the same.
         if (mMediaRecorderRecording) {
@@ -696,6 +768,20 @@ public class VideoCamera extends NoSearchActivity
             stopVideoRecording();
         }
         closeCamera();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPausing = true;
+
+        changeHeadUpDisplayState();
+
+        // Hide the preview now. Otherwise, the preview may be rotated during
+        // onPause and it is annoying to users.
+        mVideoPreview.setVisibility(View.INVISIBLE);
+
+        finishRecorderAndCloseCamera();
 
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
@@ -923,6 +1009,10 @@ public class VideoCamera extends NoSearchActivity
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setProfile(mProfile);
         mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
+        if (mCaptureTimeLapse) {
+            mMediaRecorder.setTimeLapseParameters(mCaptureTimeLapse, mUseStillCameraForTimeLapse,
+                    mTimeBetweenTimeLapseFrameCaptureMs, mEncoderLevel);
+        }
 
         // Set output file.
         if (mStorageStatus != STORAGE_STATUS_OK) {
@@ -1045,6 +1135,14 @@ public class VideoCamera extends NoSearchActivity
         }
     }
 
+    private void setTimeLapseSwitchTitle(boolean enableTimeLapse) {
+        int labelId = enableTimeLapse
+                ? R.string.enable_time_lapse_mode
+                : R.string.disable_time_lapse_mode;
+
+        mSwitchTimeLapseMenuItem.setTitle(labelId);
+    }
+
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, false, new Runnable() {
             public void run() {
@@ -1075,6 +1173,51 @@ public class VideoCamera extends NoSearchActivity
                 }
             }).setIcon(android.R.drawable.ic_menu_camera);
         }
+
+        mSwitchTimeLapseMenuItem = menu.add(Menu.NONE, Menu.NONE,
+                MenuHelper.POSITION_SWITCH_TIME_LAPSE_MODE,
+                R.string.enable_time_lapse_mode)
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                switchTimeLapseMode();
+                return true;
+            }
+        }).setIcon(android.R.drawable.ic_menu_camera);
+    }
+
+    private void switchTimeLapseMode() {
+        mCaptureTimeLapse = !mCaptureTimeLapse;
+
+        mSwitching = true;
+        changeHeadUpDisplayState();
+
+        finishRecorderAndCloseCamera();
+        mHandler.removeMessages(INIT_RECORDER);
+
+        // Read the video preferences
+        readVideoPreferences();
+        resetCameraParameters();
+
+        // Restart preview
+        try {
+            startPreview();
+        } catch (CameraHardwareException e) {
+            showCameraBusyAndFinish();
+            return;
+        }
+
+        // Reload the UI.
+        initializeHeadUpDisplay();
+
+        if (mSurfaceHolder != null) {
+            mHandler.sendEmptyMessage(INIT_RECORDER);
+        }
+
+        mSwitching = false;
+        changeHeadUpDisplayState();
+
+        // Change menu
+        setTimeLapseSwitchTitle(!mCaptureTimeLapse);
     }
 
     private void switchCameraId() {
@@ -1085,19 +1228,7 @@ public class VideoCamera extends NoSearchActivity
 
         changeHeadUpDisplayState();
 
-        // This is similar to what mShutterButton.performClick() does,
-        // but not quite the same.
-        if (mMediaRecorderRecording) {
-            if (mIsVideoCaptureIntent) {
-                stopVideoRecording();
-                showAlert();
-            } else {
-                stopVideoRecordingAndGetThumbnail();
-            }
-        } else {
-            stopVideoRecording();
-        }
-        closeCamera();
+        finishRecorderAndCloseCamera();
         mHandler.removeMessages(INIT_RECORDER);
 
         // Reload the preferences.
@@ -1443,7 +1574,7 @@ public class VideoCamera extends NoSearchActivity
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
-        mParameters.setPreviewSize(mProfile.videoFrameWidth, mProfile.videoFrameHeight);
+        mParameters.setPreviewSize(mDesiredPreviewWidth, mDesiredPreviewHeight);
         mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
 
         // Set flash mode.
@@ -1516,8 +1647,8 @@ public class VideoCamera extends NoSearchActivity
     private void resetCameraParameters() {
         // We need to restart the preview if preview size is changed.
         Size size = mParameters.getPreviewSize();
-        if (size.width != mProfile.videoFrameWidth
-                || size.height != mProfile.videoFrameHeight) {
+        if (size.width != mDesiredPreviewWidth
+                || size.height != mDesiredPreviewHeight) {
             // It is assumed media recorder is released before
             // onSharedPreferenceChanged, so we can close the camera here.
             closeCamera();
