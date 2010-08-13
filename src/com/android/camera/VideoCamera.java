@@ -580,7 +580,7 @@ public class VideoCamera extends NoSearchActivity
                 break;
 
             case CameraSettings.TIME_LAPSE_VIDEO_QUALITY_720P:
-                mUseStillCameraForTimeLapse = true;
+                mUseStillCameraForTimeLapse = false;
                 mProfile.videoFrameWidth = 1280;
                 mProfile.videoFrameHeight = 720;
                 mProfile.videoBitRate = 20000000;
