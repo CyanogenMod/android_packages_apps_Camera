@@ -62,6 +62,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -130,7 +131,9 @@ public class VideoCamera extends BaseCamera implements
             "android.intent.extra.quickCapture";
 
     private SharedPreferences mPreferences;
-
+    private OrientationEventListener mOrientationListener;
+    private int mLastOrientation = 0;  // No rotation (landscape) by default.
+    
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceView mVideoPreview;
     private SurfaceHolder mSurfaceHolder = null;
@@ -385,6 +388,32 @@ public class VideoCamera extends BaseCamera implements
 
         readVideoPreferences();
 
+        // Create orientation listenter. This should be done first because it
+        // takes some time to get first orientation.
+        mOrientationListener = new OrientationEventListener(VideoCamera.this) {
+            @Override
+            public void onOrientationChanged(int orientation) {
+                // We keep the last known orientation. So if the user
+                // first orient the camera then point the camera to
+                if (orientation != ORIENTATION_UNKNOWN) {
+                    orientation += 90;
+                }
+                orientation = ImageManager.roundOrientation(orientation);
+                if (orientation != mLastOrientation) {
+                    mLastOrientation = orientation;
+                    setOrientationIndicator(mLastOrientation);
+                    if (mGLRootView != null) {
+                        mGLRootView.queueEvent(new Runnable() {
+                            public void run() {
+                                mHeadUpDisplay.setOrientation(mLastOrientation);
+                            }
+                        });
+                    }
+                }
+            }
+        };
+        mOrientationListener.enable();
+        
         /*
          * To reduce startup time, we start the preview in another thread.
          * We make sure the preview is started at the end of onCreate.
@@ -526,7 +555,7 @@ public class VideoCamera extends BaseCamera implements
         }
     }
 
-    private void initializeHeadUpDisplay() {
+    private synchronized void initializeHeadUpDisplay() {
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
         mGLRootView = new GLRootView(this);
         frame.addView(mGLRootView);
@@ -542,7 +571,8 @@ public class VideoCamera extends BaseCamera implements
         mHeadUpDisplay.initialize(this, group);
         mGLRootView.setContentPane(mHeadUpDisplay);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
-
+        mHeadUpDisplay.setOrientation(mLastOrientation);
+        
         if (mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomRatios(getZoomRatios());
             mHeadUpDisplay.setZoomIndex(mZoomValue);
@@ -566,6 +596,15 @@ public class VideoCamera extends BaseCamera implements
         mGLRootView = null;
     }
 
+    private void setOrientationIndicator(int degree) {
+        ((RotateImageView) findViewById(
+                R.id.review_thumbnail)).setDegree(degree);
+        ((RotateImageView) findViewById(
+                R.id.camera_switch_icon)).setDegree(degree);
+        ((RotateImageView) findViewById(
+                R.id.video_switch_icon)).setDegree(degree);
+    }
+    
     @Override
     protected void onStart() {
         super.onStart();
@@ -790,7 +829,7 @@ public class VideoCamera extends BaseCamera implements
     protected void onResume() {
         super.onResume();
         mPausing = false;
-
+        mOrientationListener.enable();
         mVideoPreview.setVisibility(View.VISIBLE);
         readVideoPreferences();
         resizeForPreviewAspectRatio();
@@ -802,6 +841,7 @@ public class VideoCamera extends BaseCamera implements
                 return;
             }
         }
+        changeHeadUpDisplayState();
         keepScreenOnAwhile();
 
         // install an intent filter to receive SD card related events.
@@ -821,12 +861,10 @@ public class VideoCamera extends BaseCamera implements
                 showStorageHint();
             }
         }, 200);
-
+       
         if (mSurfaceHolder != null) {
             mHandler.sendEmptyMessage(INIT_RECORDER);
         }
-
-        changeHeadUpDisplayState();
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
@@ -881,7 +919,7 @@ public class VideoCamera extends BaseCamera implements
     protected void onPause() {
         super.onPause();
         mPausing = true;
-
+        mOrientationListener.disable();
         changeHeadUpDisplayState();
 
         // Hide the preview now. Otherwise, the preview may be rotated during
