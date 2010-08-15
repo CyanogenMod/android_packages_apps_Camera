@@ -40,7 +40,7 @@
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"高（30m）"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"低（30m）"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS（低、30s）"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube（高、10m）"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube（高、15m）"</string>
     <string name="pref_video_quality_entry_custom">"カスタム"</string>
     <string name="pref_camera_videosize_title">"動画品質"</string>
     <string name="pref_camera_videoencoder_title">"動画エンコーダ"</string>
