@@ -35,6 +35,10 @@
     <string name="review_retake" msgid="7804864054896088338">"YENİDEN ÇEK"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeri"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Kamerayı Değiştir"</string>
+    <!-- no translation found for enable_time_lapse_mode (9176865387013576340) -->
+    <skip />
+    <!-- no translation found for disable_time_lapse_mode (1025813874111023552) -->
+    <skip />
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Depo konumu"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Kapalı"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Açık"</string>
@@ -43,8 +47,20 @@
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Düşük (30m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (Düşük, 30s)"</string>
     <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (Yüksek, 10m)"</string>
+    <!-- no translation found for pref_video_time_lapse_quality_title (1163053302966946838) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_quality_entry_low (5315843743598116968) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_quality_entry_high (3933491126045555205) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_quality_entry_720p (5690053556278956164) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_quality_entry_1080p (5778910390187650906) -->
+    <skip />
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kamera ayarları"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Kamera ayarları"</string>
+    <!-- no translation found for pref_camcorder_time_lapse_settings_category (5345496682937496419) -->
+    <skip />
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Resim boyutu"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5M Piksel"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M Piksel"</string>
