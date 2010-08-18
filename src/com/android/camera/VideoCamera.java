@@ -560,6 +560,7 @@ public class VideoCamera extends NoSearchActivity
                 ? CamcorderProfile.QUALITY_LOW
                 : CamcorderProfile.QUALITY_HIGH);
 
+        mMaxVideoDurationInMs = 0; // No limit
         mTimeBetweenTimeLapseFrameCaptureMs = 2000;
 
         // TODO: Add new profiles for time lapse instead of setting mProfile
@@ -1008,7 +1009,9 @@ public class VideoCamera extends NoSearchActivity
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setProfile(mProfile);
-        mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
+        if (mMaxVideoDurationInMs != 0) {
+            mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
+        }
         if (mCaptureTimeLapse) {
             mMediaRecorder.setTimeLapseParameters(mCaptureTimeLapse, mUseStillCameraForTimeLapse,
                     mTimeBetweenTimeLapseFrameCaptureMs, mEncoderLevel);
