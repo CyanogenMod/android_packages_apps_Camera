@@ -1514,6 +1514,62 @@ public class VideoCamera extends NoSearchActivity
         list.close();
     }
 
+    private static String millisecondToTimeString(long milliSeconds, boolean displayCentiSeconds) {
+        long seconds = milliSeconds / 1000; // round down to compute seconds
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long remainderMinutes = minutes - (hours * 60);
+        long remainderSeconds = seconds - (minutes * 60);
+
+        StringBuilder timeStringBuilder = new StringBuilder();
+
+        // Hours
+        if (hours > 0) {
+            if (hours < 10) {
+                timeStringBuilder.append('0');
+            }
+            timeStringBuilder.append(hours);
+
+            timeStringBuilder.append(':');
+        }
+
+        // Minutes
+        if (remainderMinutes < 10) {
+            timeStringBuilder.append('0');
+        }
+        timeStringBuilder.append(remainderMinutes);
+        timeStringBuilder.append(':');
+
+        // Seconds
+        if (remainderSeconds < 10) {
+            timeStringBuilder.append('0');
+        }
+        timeStringBuilder.append(remainderSeconds);
+
+        // Centi seconds
+        if (displayCentiSeconds) {
+            timeStringBuilder.append('.');
+            long remainderCentiSeconds = (milliSeconds - seconds * 1000) / 10;
+            if (remainderCentiSeconds < 10) {
+                timeStringBuilder.append('0');
+            }
+            timeStringBuilder.append(remainderCentiSeconds);
+        }
+
+        return timeStringBuilder.toString();
+    }
+
+    // Calculates the time lapse video length till now and returns it in
+    // the format hh:mm:ss.dd, where dd are the centi seconds.
+    private String getTimeLapseVideoLengthString(long deltaMs) {
+        // For better approximation calculate fractional number of frames captured.
+        // This will update the video time at a higher resolution.
+        double numberOfFrames = (double) deltaMs / mTimeBetweenTimeLapseFrameCaptureMs;
+        long videoTimeMs =
+            (long) (numberOfFrames / (double) mProfile.videoFrameRate * 1000);
+        return millisecondToTimeString(videoTimeMs, true);
+    }
+
     private void updateRecordingTime() {
         if (!mMediaRecorderRecording) {
             return;
@@ -1526,36 +1582,19 @@ public class VideoCamera extends NoSearchActivity
         boolean countdownRemainingTime = (mMaxVideoDurationInMs != 0
                 && delta >= mMaxVideoDurationInMs - 60000);
 
-        long next_update_delay = 1000 - (delta % 1000);
-        long seconds;
+        long deltaAdjusted = delta;
         if (countdownRemainingTime) {
-            delta = Math.max(0, mMaxVideoDurationInMs - delta);
-            seconds = (delta + 999) / 1000;
-        } else {
-            seconds = delta / 1000; // round to nearest
+            deltaAdjusted = Math.max(0, mMaxVideoDurationInMs - deltaAdjusted) + 999;
+        }
+        String text = millisecondToTimeString(deltaAdjusted, false);
+
+        if (mCaptureTimeLapse) {
+            // Since the length of time lapse video is different from the length
+            // of the actual wall clock time elapsed, we display the video length
+            // alongside the wall clock time.
+            text = text  + " (" + getTimeLapseVideoLengthString(delta) + ")";
         }
 
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        long remainderMinutes = minutes - (hours * 60);
-        long remainderSeconds = seconds - (minutes * 60);
-
-        String secondsString = Long.toString(remainderSeconds);
-        if (secondsString.length() < 2) {
-            secondsString = "0" + secondsString;
-        }
-        String minutesString = Long.toString(remainderMinutes);
-        if (minutesString.length() < 2) {
-            minutesString = "0" + minutesString;
-        }
-        String text = minutesString + ":" + secondsString;
-        if (hours > 0) {
-            String hoursString = Long.toString(hours);
-            if (hoursString.length() < 2) {
-                hoursString = "0" + hoursString;
-            }
-            text = hoursString + ":" + text;
-        }
         mRecordingTimeView.setText(text);
 
         if (mRecordingTimeCountsDown != countdownRemainingTime) {
@@ -1570,8 +1609,9 @@ public class VideoCamera extends NoSearchActivity
             mRecordingTimeView.setTextColor(color);
         }
 
+        long nextUpdateDelay = 1000 - (delta % 1000);
         mHandler.sendEmptyMessageDelayed(
-                UPDATE_RECORD_TIME, next_update_delay);
+                UPDATE_RECORD_TIME, nextUpdateDelay);
     }
 
     private static boolean isSupported(String value, List<String> supported) {

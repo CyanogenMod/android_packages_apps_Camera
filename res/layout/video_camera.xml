@@ -41,7 +41,7 @@
                  attribute is required because otherwise the
                  text's drop shadow will be clipped. -->
             <TextView android:id="@+id/recording_time"
-                    android:layout_width="180dp"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|bottom"
                     android:layout_marginBottom="13dp"
