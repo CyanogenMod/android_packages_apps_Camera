@@ -105,10 +105,13 @@
     <!-- Button indicating to switch to another camera -->
     <string name="switch_camera_id">Switch Camera</string>
 
-    <!-- Button indicating to enable the time lapse mode -->
+    <!-- Button indicating to enable the time lapse mode. Time lapse mode refers
+    to capturing video at a rate much slower than it is played back. Appears as
+    a Menu item in Camcorder mode. [CHAR LIMIT=20] -->
     <string name="enable_time_lapse_mode">Enable Time Lapse</string>
 
-    <!-- Button indicating to disable the time lapse mode -->
+    <!-- Button indicating to disable the time lapse mode. Appears as a Menu item in
+    Camcorder mode. [CHAR LIMIT=20] -->
     <string name="disable_time_lapse_mode">Disable Time Lapse</string>
 
     <!-- Settings screen, setting title text -->
@@ -128,22 +131,24 @@
     <string name="pref_video_quality_entry_mms">MMS (Low, 30s)</string>
     <string name="pref_video_quality_entry_youtube">YouTube (High, 10m)</string>
 
-    <!-- The Time Lapse Video quality settings in preference -->
+    <!-- Describes the preference dialog for choosing quality for time lapse video.
+    Appears at top of the dialog. [CHAR LIMIT=30] -->
     <string name="pref_video_time_lapse_quality_title">Time lapse video quality</string>
     <string name="pref_video_time_lapse_quality_default" translatable="false">high</string>
+    <!-- Refers to the video quality [CHAR LIMIT=8] -->
     <string name="pref_video_time_lapse_quality_entry_low">Low</string>
+    <!-- Refers to the video quality [CHAR LIMIT=8] -->
     <string name="pref_video_time_lapse_quality_entry_high">High</string>
-    <string name="pref_video_time_lapse_quality_entry_720p">720p</string>
-    <string name="pref_video_time_lapse_quality_entry_1080p">1080p</string>
+    <!-- Refers to the video quality -->
+    <string name="pref_video_time_lapse_quality_entry_720p" translatable="false">720p</string>
+    <!-- Refers to the video quality -->
+    <string name="pref_video_time_lapse_quality_entry_1080p" translatable="false">1080p</string>
 
     <!-- Settings screen, Camera setting category title -->
     <string name="pref_camera_settings_category">Camera settings</string>
 
     <!-- Settings screen, Camcorder setting category title -->
     <string name="pref_camcorder_settings_category">Camcorder settings</string>
-
-    <!-- Settings screen, Camcorder Time Lapse setting category title -->
-    <string name="pref_camcorder_time_lapse_settings_category">Camcorder Time Lapse settings</string>
 
     <!-- Settings screen, Picture size title -->
     <string name="pref_camera_picturesize_title">Picture size</string>
