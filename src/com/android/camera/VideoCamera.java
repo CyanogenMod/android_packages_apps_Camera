@@ -45,6 +45,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
 import android.os.Message;
 import android.os.StatFs;
 import android.os.SystemClock;
@@ -71,7 +72,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -146,8 +146,8 @@ public class VideoCamera extends NoSearchActivity
     private long mRecordingStartTime;
     // The video file that the hardware camera is about to record into
     // (or is recording into.)
-    private String mCameraVideoFilename;
-    private FileDescriptor mCameraVideoFileDescriptor;
+    private String mVideoFilename;
+    private ParcelFileDescriptor mVideoFileDescriptor;
 
     // The video file that has already been recorded, and that is being
     // examined by the user.
@@ -877,11 +877,11 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void cleanupEmptyFile() {
-        if (mCameraVideoFilename != null) {
-            File f = new File(mCameraVideoFilename);
+        if (mVideoFilename != null) {
+            File f = new File(mVideoFilename);
             if (f.length() == 0 && f.delete()) {
-                Log.v(TAG, "Empty video file deleted: " + mCameraVideoFilename);
-                mCameraVideoFilename = null;
+                Log.v(TAG, "Empty video file deleted: " + mVideoFilename);
+                mVideoFilename = null;
             }
         }
     }
@@ -905,9 +905,8 @@ public class VideoCamera extends NoSearchActivity
             Uri saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
             if (saveUri != null) {
                 try {
-                    mCameraVideoFileDescriptor =
-                            mContentResolver.openFileDescriptor(saveUri, "rw")
-                            .getFileDescriptor();
+                    mVideoFileDescriptor =
+                            mContentResolver.openFileDescriptor(saveUri, "rw");
                     mCurrentVideoUri = saveUri;
                 } catch (java.io.FileNotFoundException ex) {
                     // invalid uri
@@ -930,11 +929,16 @@ public class VideoCamera extends NoSearchActivity
         } else {
             // Try Uri in the intent first. If it doesn't exist, use our own
             // instead.
-            if (mCameraVideoFileDescriptor != null) {
-                mMediaRecorder.setOutputFile(mCameraVideoFileDescriptor);
+            if (mVideoFileDescriptor != null) {
+                mMediaRecorder.setOutputFile(mVideoFileDescriptor.getFileDescriptor());
+                try {
+                    mVideoFileDescriptor.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Fail to close fd", e);
+                }
             } else {
                 createVideoPath();
-                mMediaRecorder.setOutputFile(mCameraVideoFilename);
+                mMediaRecorder.setOutputFile(mVideoFilename);
             }
         }
 
@@ -961,7 +965,7 @@ public class VideoCamera extends NoSearchActivity
         try {
             mMediaRecorder.prepare();
         } catch (IOException e) {
-            Log.e(TAG, "prepare failed for " + mCameraVideoFilename);
+            Log.e(TAG, "prepare failed for " + mVideoFilename);
             releaseMediaRecorder();
             throw new RuntimeException(e);
         }
@@ -1000,13 +1004,13 @@ public class VideoCamera extends NoSearchActivity
         values.put(Video.Media.DATE_TAKEN, dateTaken);
         values.put(Video.Media.MIME_TYPE, "video/3gpp");
         values.put(Video.Media.DATA, filePath);
-        mCameraVideoFilename = filePath;
-        Log.v(TAG, "Current camera video filename: " + mCameraVideoFilename);
+        mVideoFilename = filePath;
+        Log.v(TAG, "Current camera video filename: " + mVideoFilename);
         mCurrentVideoValues = values;
     }
 
     private void registerVideo() {
-        if (mCameraVideoFileDescriptor == null) {
+        if (mVideoFileDescriptor == null) {
             Uri videoTable = Uri.parse("content://media/external/video/media");
             mCurrentVideoValues.put(Video.Media.SIZE,
                     new File(mCurrentVideoFilename).length());
@@ -1308,7 +1312,7 @@ public class VideoCamera extends NoSearchActivity
                     Log.e(TAG, "stop fail: " + e.getMessage());
                 }
                 mHeadUpDisplay.setEnabled(true);
-                mCurrentVideoFilename = mCameraVideoFilename;
+                mCurrentVideoFilename = mVideoFilename;
                 Log.v(TAG, "Setting current video filename: "
                         + mCurrentVideoFilename);
                 needToRegisterRecording = true;
@@ -1323,8 +1327,8 @@ public class VideoCamera extends NoSearchActivity
             registerVideo();
         }
 
-        mCameraVideoFilename = null;
-        mCameraVideoFileDescriptor = null;
+        mVideoFilename = null;
+        mVideoFileDescriptor = null;
     }
 
     private void resetScreenOn() {
