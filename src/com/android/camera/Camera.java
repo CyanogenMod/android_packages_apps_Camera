@@ -154,8 +154,6 @@ public class Camera extends BaseCamera {
 
     private ImageCapture mImageCapture = null;
 
-    private boolean mPreviewing;
-    private boolean mPausing;
     private boolean mFirstTimeInitialized;
     private boolean mIsImageCaptureIntent;
     private boolean mRecordLocation;
