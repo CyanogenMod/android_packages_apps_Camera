@@ -1459,6 +1459,7 @@ public class Camera extends BaseCamera {
         if (!mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY) && !mFocusMode.equals("touch")) {
             if (pressed) {  // Focus key down.
                 autoFocus();
+                resetFocusIndicator();
             } else {  // Focus key up.
                 cancelAutoFocus();
             }
