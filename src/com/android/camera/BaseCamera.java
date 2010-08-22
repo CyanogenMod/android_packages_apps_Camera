@@ -19,6 +19,7 @@ package com.android.camera;
 
 import com.android.camera.ui.HeadUpDisplay;
 
+import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -41,7 +42,9 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     protected HeadUpDisplay mHeadUpDisplay;
     protected Parameters mParameters;
     protected Menu mOptionsMenu;
-    
+    protected FocusRectangle mFocusRectangle;
+    protected String mFocusMode;
+
     protected static final int ZOOM_STOPPED = 0;
     protected static final int ZOOM_START = 1;
     protected static final int ZOOM_STOPPING = 2;
@@ -52,14 +55,17 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     protected boolean mSmoothZoomSupported;
     protected int mZoomValue;  // The current zoom value.
     protected int mZoomMax;
-    protected GestureDetector mGestureDetector;
+    protected GestureDetector mZoomGestureDetector;
+    protected GestureDetector mFocusGestureDetector;
     protected final ZoomListener mZoomListener = new ZoomListener();
-    
+
     protected boolean mPausing = false;
     protected boolean mPreviewing = false; // True if preview is started.
-        
+    protected boolean mFocusing = false;
+
     protected abstract void onZoomValueChanged(int index);
-    
+
+
     protected void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;
 
@@ -67,9 +73,13 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
         // latest parameters here.
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
-        mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
+        mZoomGestureDetector = new GestureDetector(this, new ZoomGestureListener());
 
         mCameraDevice.setZoomChangeListener(mZoomListener);
+    }
+
+    protected void initializeTouchFocus() {
+        mFocusGestureDetector = new GestureDetector(this, new FocusGestureListener());
     }
 
     protected float[] getZoomRatios() {
@@ -97,10 +107,68 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        if (!super.dispatchTouchEvent(m) && mGestureDetector != null) {
-            return mGestureDetector.onTouchEvent(m);
+        boolean ret = true;
+        if (!super.dispatchTouchEvent(m)) {
+            if (mZoomGestureDetector != null) {
+                ret = mZoomGestureDetector.onTouchEvent(m);
+            }
+            if (mFocusGestureDetector != null) {
+                ret = mFocusGestureDetector.onTouchEvent(m);
+            }
         }
-        return true;
+        return ret;
+    }
+
+    protected void resetFocusIndicator() {
+        if (mFocusRectangle == null)
+            return;
+
+        mFocusRectangle.setVisibility(View.VISIBLE);
+        PreviewFrameLayout frameLayout = (PreviewFrameLayout) findViewById(R.id.frame_layout);
+        int x = frameLayout.getActualWidth() / 2;
+        int y = frameLayout.getActualHeight() / 2;
+        updateTouchFocus(x, y);
+    }
+
+    private class FocusGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (mPausing || !mPreviewing || mHeadUpDisplay == null || mFocusing
+                    || !"touch".equals(mFocusMode)) {
+                return false;
+            }
+
+            mFocusing = true;
+            int x = (int) e.getX();
+            int y = (int) e.getY();
+
+            updateTouchFocus(x, y);
+            mFocusRectangle.showStart();
+
+            mCameraDevice.autoFocus(new android.hardware.Camera.AutoFocusCallback() {
+                @Override
+                public void onAutoFocus(boolean success, Camera camera) {
+                    if (mFocusing) {
+                        mParameters.set("touch-aec", "off");
+                        mCameraDevice.setParameters(mParameters);
+                        mFocusRectangle.showSuccess();
+                        mFocusing = false;
+                    }
+                }
+            });
+
+            return true;
+        }
+    }
+
+    private void updateTouchFocus(int x, int y) {
+        Log.d(TAG, "updateTouchFocus x=" + x + " y=" + y);
+        mFocusRectangle.setVisibility(View.VISIBLE);
+        mFocusRectangle.setPosition(x, y);
+        mParameters.set("touch-aec", "on");
+        mParameters.set("touch-focus", x + "," + y);
+        mCameraDevice.setParameters(mParameters);
     }
 
     private class ZoomGestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -109,7 +177,7 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
         public boolean onDoubleTap(MotionEvent e) {
             // Perform zoom only when preview is started and snapshot is not in
             // progress.
-            if (mPausing || !mPreviewing || mHeadUpDisplay == null) {
+            if (mFocusing || mPausing || !mPreviewing || mHeadUpDisplay == null) {
                 return false;
             }
 
@@ -119,7 +187,6 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
             } else {
                 mZoomValue = 0;
             }
-
             mHeadUpDisplay.setZoomIndex(mZoomValue);
             return true;
         }
@@ -144,4 +211,6 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
             }
         }
     }
+
 }
+

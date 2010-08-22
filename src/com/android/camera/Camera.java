@@ -57,7 +57,6 @@ import android.os.Message;
 import android.os.MessageQueue;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -74,6 +73,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -135,7 +135,6 @@ public class Camera extends BaseCamera {
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
-    private FocusRectangle mFocusRectangle;
     private ToneGenerator mFocusToneGenerator;
     private Switcher mSwitcher;
     private boolean mStartPreviewFail = false;
@@ -203,13 +202,10 @@ public class Camera extends BaseCamera {
     // Add for test
     public static boolean mMediaServerDied = false;
 
-    // Focus mode. Options are pref_camera_focusmode_entryvalues.
-    private String mFocusMode;
     private String mSceneMode;
 
     private final Handler mHandler = new MainHandler();
     private boolean mQuickCapture;
-    private Menu mOptionsMenu;
 
     private int mImageWidth = 0;
     private int mImageHeight = 0;
@@ -346,6 +342,7 @@ public class Camera extends BaseCamera {
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
+        initializeTouchFocus();
 
         mFirstTimeInitialized = true;
 
@@ -1141,7 +1138,7 @@ public class Camera extends BaseCamera {
     }
 
     public void onShutterButtonClick(ShutterButton button) {
-        if (mPausing) {
+        if (mPausing || mFocusing) {
             return;
         }
         switch (button.getId()) {
@@ -1437,13 +1434,14 @@ public class Camera extends BaseCamera {
     private void doSnap() {
         if (mHeadUpDisplay.collapse()) return;
 
-        Log.v(TAG, "doSnap: mFocusState=" + mFocusState);
+        Log.d(TAG, "doSnap: mFocusState=" + mFocusState + " mFocusMode=" + mFocusMode);
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
         if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
-                || (mFocusState == FOCUS_SUCCESS
-                || mFocusState == FOCUS_FAIL)) {
+                || mFocusMode.equals("touch")
+                || mFocusState == FOCUS_SUCCESS
+                || mFocusState == FOCUS_FAIL) {
             mImageCapture.onSnap();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
@@ -1458,7 +1456,7 @@ public class Camera extends BaseCamera {
     private void doFocus(boolean pressed) {
         // Do the focus if the mode is not infinity.
         if (mHeadUpDisplay.collapse()) return;
-        if (!mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)) {
+        if (!mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY) && !mFocusMode.equals("touch")) {
             if (pressed) {  // Focus key down.
                 autoFocus();
             } else {  // Focus key up.
@@ -1587,6 +1585,9 @@ public class Camera extends BaseCamera {
         // the screen).
         if (mPreviewing) stopPreview();
         clearFocusState();
+        if ("touch".equals(mFocusMode)) {
+            resetFocusIndicator();
+        }
 
         setPreviewDisplay(mSurfaceHolder);
         setCameraParameters(UPDATE_PARAM_ALL);
@@ -1881,8 +1882,11 @@ public class Camera extends BaseCamera {
             mFocusMode = mPreferences.getString(
                     CameraSettings.KEY_FOCUS_MODE,
                     getString(R.string.pref_camera_focusmode_default));
+
             if (isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
                 mParameters.setFocusMode(mFocusMode);
+            } else if ("touch".equals(mFocusMode)) {
+                mParameters.setFocusMode(Parameters.FOCUS_MODE_AUTO);
             } else {
                 mFocusMode = mParameters.getFocusMode();
                 if (mFocusMode == null) {
@@ -2146,6 +2150,13 @@ public class Camera extends BaseCamera {
             }
         }
 
+        String focusMode = mPreferences.getString(CameraSettings.KEY_FOCUS_MODE, null);
+        if ("touch".equals(focusMode) && !focusMode.equals(mFocusMode)) {
+            // Show the user a hint since they've just enabled touch-to-focus
+            Toast.makeText(this, R.string.touch_focus_enabled,
+                    Toast.LENGTH_LONG).show();
+        }
+
         setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
     }
 
@@ -2208,36 +2219,6 @@ public class Camera extends BaseCamera {
                 getString(R.string.confirm_restore_title),
                 getString(R.string.confirm_restore_message),
                 runnable);
-    }
-}
-
-class FocusRectangle extends View {
-
-    @SuppressWarnings("unused")
-    private static final String TAG = "FocusRectangle";
-
-    public FocusRectangle(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    private void setDrawable(int resid) {
-        setBackgroundDrawable(getResources().getDrawable(resid));
-    }
-
-    public void showStart() {
-        setDrawable(R.drawable.focus_focusing);
-    }
-
-    public void showSuccess() {
-        setDrawable(R.drawable.focus_focused);
-    }
-
-    public void showFail() {
-        setDrawable(R.drawable.focus_focus_failed);
-    }
-
-    public void clear() {
-        setBackgroundDrawable(null);
     }
 }
 

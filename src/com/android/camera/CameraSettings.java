@@ -250,8 +250,13 @@ public class CameraSettings {
                     flashMode, mParameters.getSupportedFlashModes());
         }
         if (focusMode != null) {
+            List<String> focusModes = mParameters.getSupportedFocusModes();
+            // Probably not the best way to check, but will do for now
+            if (mParameters.get("taking-picture-zoom") != null) {
+                focusModes.add("touch");
+            }
             filterUnsupportedOptions(group,
-                    focusMode, mParameters.getSupportedFocusModes());
+                    focusMode, focusModes);
         }
         if (videoFlashMode != null) {
             filterUnsupportedOptions(group,
