@@ -82,6 +82,7 @@
     <string name="pref_camera_focusmode_entry_normal">Normale</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Off"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
+    <string name="pref_camera_focusmode_entry_touch">Touch</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modalità flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatica"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Attiva"</string>
@@ -157,5 +158,16 @@
      <!-- Settings screen, lens shading radio button choices -->
      <string name="pref_camera_lensshading_entry_enable">Attivo</string>
      <string name="pref_camera_lensshading_entry_disable">Non attivo</string>
+
+     <!-- Settings screen, Select auto exposure title -->
+     <string name="pref_camera_autoexposure_title">Modalità di Misurazione</string>
+
+     <!-- Settings screen, auto exposure dialog radio button choices -->
+     <string name="pref_camera_autoexposure_entry_frameaverage">Valutativa</string>
+     <string name="pref_camera_autoexposure_entry_centerweighted">Ponderata Centrale</string>
+     <string name="pref_camera_autoexposure_entry_spotmetering">Spot</string>
+
+     <!-- Toast shown when touch-to-focus is enabled -->
+    <string name="touch_focus_enabled">Tocca lo schermo per mettere a fuoco.</string>
 
 </resources>
