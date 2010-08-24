@@ -1894,6 +1894,12 @@ public class Camera extends BaseCamera {
                     mFocusMode = Parameters.FOCUS_MODE_AUTO;
                 }
             }
+            
+            // Clear out touch focus/AEC
+            if (mParameters.get("touch-aec") != null) {
+                mParameters.set("touch-aec", "off");
+                mParameters.set("touch-focus", "");
+            }
         } else {
             mFocusMode = mParameters.getFocusMode();
         }

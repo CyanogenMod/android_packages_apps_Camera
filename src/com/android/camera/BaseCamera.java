@@ -79,6 +79,8 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     }
 
     protected void initializeTouchFocus() {
+        Log.d(TAG, "initializeTouchFocus");
+        enableTouchAEC(false); 
         mFocusGestureDetector = new GestureDetector(this, new FocusGestureListener());
     }
 
@@ -143,6 +145,7 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
             int x = (int) e.getX();
             int y = (int) e.getY();
 
+            enableTouchAEC(true);
             updateTouchFocus(x, y);
             mFocusRectangle.showStart();
 
@@ -150,8 +153,6 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
                 @Override
                 public void onAutoFocus(boolean success, Camera camera) {
                     if (mFocusing) {
-                        mParameters.set("touch-aec", "off");
-                        mCameraDevice.setParameters(mParameters);
                         mFocusRectangle.showSuccess();
                         mFocusing = false;
                     }
@@ -166,11 +167,16 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
         Log.d(TAG, "updateTouchFocus x=" + x + " y=" + y);
         mFocusRectangle.setVisibility(View.VISIBLE);
         mFocusRectangle.setPosition(x, y);
-        mParameters.set("touch-aec", "on");
         mParameters.set("touch-focus", x + "," + y);
         mCameraDevice.setParameters(mParameters);
     }
 
+    private void enableTouchAEC(boolean enable) {
+        Log.d(TAG, "enableTouchAEC: " + enable);
+        mParameters.set("touch-aec", enable ? "on" : "off");
+        mCameraDevice.setParameters(mParameters);
+    }
+    
     private class ZoomGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
