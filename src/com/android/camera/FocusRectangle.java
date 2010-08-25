@@ -10,8 +10,6 @@ public class FocusRectangle extends View {
     @SuppressWarnings("unused")
     private static final String TAG = "FocusRectangle";
 
-    private static final int SIZE = 50;
-
     private int xActual, yActual;
 
     public FocusRectangle(Context context, AttributeSet attrs) {
@@ -23,15 +21,15 @@ public class FocusRectangle extends View {
     }
 
     public void showStart() {
-        setDrawable(R.drawable.focus_focusing);
+        setDrawable(R.drawable.sk_auto_focusing);
     }
 
     public void showSuccess() {
-        setDrawable(R.drawable.focus_focused);
+        setDrawable(R.drawable.sk_auto_focused);
     }
 
     public void showFail() {
-        setDrawable(R.drawable.focus_focus_failed);
+        setDrawable(R.drawable.sk_auto_focused);
     }
 
     public void clear() {
@@ -42,7 +40,8 @@ public class FocusRectangle extends View {
         if (x >= 0 && y >= 0) {
             xActual = x;
             yActual = y;
-            this.layout(x - SIZE, y - SIZE, x + SIZE, y + SIZE);
+            int size = getWidth() / 2;
+            this.layout(x - size, y - size, x + size, y + size);
         }
     }
 
