@@ -102,7 +102,7 @@ public class VideoCamera extends BaseCamera implements
     private static final int UPDATE_RECORD_TIME = 5;
     private static final int ENABLE_SHUTTER_BUTTON = 6;
     private static final int RELOAD_HUD = 7;
-    
+
     private static final int SCREEN_DELAY = 1000;
 
     // The brightness settings used when it is set to automatic in the system.
@@ -133,7 +133,7 @@ public class VideoCamera extends BaseCamera implements
     private SharedPreferences mPreferences;
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = 0;  // No rotation (landscape) by default.
-    
+
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceView mVideoPreview;
     private SurfaceHolder mSurfaceHolder = null;
@@ -222,7 +222,7 @@ public class VideoCamera extends BaseCamera implements
         OUTPUT_FORMAT_TABLE.put("3gp", MediaRecorder.OutputFormat.THREE_GPP);
         OUTPUT_FORMAT_TABLE.put("mp4", MediaRecorder.OutputFormat.MPEG_4);
         OUTPUT_FORMAT_TABLE.putDefault(MediaRecorder.OutputFormat.DEFAULT);
-        
+
         for (VideoEncoderCap encoder : EncoderCapabilities.getVideoEncoders()) {
             switch (encoder.mCodec) {
                 case MediaRecorder.VideoEncoder.H263:
@@ -237,7 +237,7 @@ public class VideoCamera extends BaseCamera implements
             }
         }
         VIDEO_ENCODER_TABLE.putDefault(MediaRecorder.VideoEncoder.DEFAULT);
-        
+
         for (AudioEncoderCap encoder : EncoderCapabilities.getAudioEncoders()) {
             switch (encoder.mCodec) {
                 case MediaRecorder.AudioEncoder.AMR_NB:
@@ -249,7 +249,7 @@ public class VideoCamera extends BaseCamera implements
             }
         }
         AUDIO_ENCODER_TABLE.putDefault(MediaRecorder.AudioEncoder.DEFAULT);
-        
+
 	/*
         AUDIO_ENCODER_TABLE.put("amrwb", MediaRecorder.AudioEncoder.AMR_WB);
         AUDIO_ENCODER_TABLE.put("qcelp", MediaRecorder.AudioEncoder.QCELP);
@@ -401,7 +401,10 @@ public class VideoCamera extends BaseCamera implements
                 orientation = ImageManager.roundOrientation(orientation);
                 if (orientation != mLastOrientation) {
                     mLastOrientation = orientation;
-                    setOrientationIndicator(mLastOrientation);
+                    if (!mIsVideoCaptureIntent) {
+                        setOrientationIndicator(mLastOrientation);
+                    }
+
                     if (mGLRootView != null) {
                         mGLRootView.queueEvent(new Runnable() {
                             public void run() {
@@ -413,7 +416,7 @@ public class VideoCamera extends BaseCamera implements
             }
         };
         mOrientationListener.enable();
-        
+
         /*
          * To reduce startup time, we start the preview in another thread.
          * We make sure the preview is started at the end of onCreate.
@@ -572,7 +575,7 @@ public class VideoCamera extends BaseCamera implements
         mGLRootView.setContentPane(mHeadUpDisplay);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         mHeadUpDisplay.setOrientation(mLastOrientation);
-        
+
         if (mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomRatios(getZoomRatios());
             mHeadUpDisplay.setZoomIndex(mZoomValue);
@@ -604,7 +607,7 @@ public class VideoCamera extends BaseCamera implements
         ((RotateImageView) findViewById(
                 R.id.video_switch_icon)).setDegree(degree);
     }
-    
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -755,7 +758,7 @@ public class VideoCamera extends BaseCamera implements
             mProfile = CameraSettings.getCamcorderProfile(videoQualityHigh);
         } else {
             mProfile = null;
-        
+
             String videoEncoder = mPreferences.getString(
                         CameraSettings.KEY_VIDEO_ENCODER,
                         getString(R.string.pref_camera_videoencoder_default));
@@ -764,7 +767,7 @@ public class VideoCamera extends BaseCamera implements
                 mHandler.sendEmptyMessage(RELOAD_HUD);
             }
             mVideoEncoder = encoderId;
-            
+
             String audioEncoder = mPreferences.getString(
                         CameraSettings.KEY_AUDIO_ENCODER,
                         getString(R.string.pref_camera_audioencoder_default));
@@ -861,7 +864,7 @@ public class VideoCamera extends BaseCamera implements
                 showStorageHint();
             }
         }, 200);
-       
+
         if (mSurfaceHolder != null) {
             mHandler.sendEmptyMessage(INIT_RECORDER);
         }
@@ -1253,12 +1256,12 @@ public class VideoCamera extends BaseCamera implements
         long dateTaken = System.currentTimeMillis();
         String title = createName(dateTaken);
         String filename;
-        if (mProfile == null) { 
+        if (mProfile == null) {
             filename = title + "." + mOutputFormat;
         } else {
             filename = title + (MediaRecorder.OutputFormat.MPEG_4 == mProfile.fileFormat ? ".mp4" : ".3gp"); // Used when emailing.
         }
-        
+
         String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
         String filePath = cameraDirPath + "/" + filename;
         File cameraDir = new File(cameraDirPath);
@@ -1272,7 +1275,7 @@ public class VideoCamera extends BaseCamera implements
         } else {
             values.put(Video.Media.MIME_TYPE, "video/" +
                     (MediaRecorder.OutputFormat.MPEG_4 == mProfile.fileFormat ? "mp4" : "3gpp"));
-        } 
+        }
         values.put(Video.Media.DATA, filePath);
         mCameraVideoFilename = filePath;
         Log.v(TAG, "Current camera video filename: " + mCameraVideoFilename);
@@ -1325,7 +1328,7 @@ public class VideoCamera extends BaseCamera implements
                 switchToCameraMode();
             }
         });
-        
+
         if (CameraSwitch.hasCameraSwitch()) {
             MenuHelper.addSwitchDeviceMenuItem(menu, new Runnable() {
                 public void run() {
@@ -1333,7 +1336,7 @@ public class VideoCamera extends BaseCamera implements
                 }
             });
         }
-        
+
         MenuItem gallery = menu.add(Menu.NONE, Menu.NONE,
                 MenuHelper.POSITION_GOTO_GALLERY,
                 R.string.camera_gallery_photos_text)
@@ -1348,7 +1351,7 @@ public class VideoCamera extends BaseCamera implements
         mGalleryItems.add(gallery);
         mOptionsMenu = menu;
     }
-   
+
     private PreferenceGroup filterPreferenceScreenByIntent(
             PreferenceGroup screen) {
         Intent intent = getIntent();
@@ -1721,7 +1724,7 @@ public class VideoCamera extends BaseCamera implements
         if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
             mParameters.setColorEffect(colorEffect);
         }
-       
+
         // Set sharpness parameter.
         String sharpness = mPreferences.getString(
                 CameraSettings.KEY_SHARPNESS,
@@ -1745,7 +1748,7 @@ public class VideoCamera extends BaseCamera implements
         if (mParameters.getMaxSaturation() > 0) {
             mParameters.setSaturation(Float.parseFloat(saturation));
         }
-        
+
         // Set brightness parameter.
         String brightness = mPreferences.getString(
                 CameraSettings.KEY_BRIGHTNESS,
@@ -1822,7 +1825,7 @@ public class VideoCamera extends BaseCamera implements
             setCameraParameters();
         }
     }
-    
+
     private boolean switchCameraDevice(boolean switchToSecondary) {
         if (isFinishing() || mMediaRecorderRecording) return false;
         CameraHolder.instance().setCameraNode(switchToSecondary ?
