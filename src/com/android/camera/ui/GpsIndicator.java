@@ -20,7 +20,6 @@ import android.content.Context;
 
 import com.android.camera.R;
 import com.android.camera.IconListPreference;
-import com.android.camera.PreferenceGroup;
 
 class GpsIndicator extends BasicIndicator {
 
@@ -29,9 +28,8 @@ class GpsIndicator extends BasicIndicator {
     private ResourceTexture mNoSignalIcon;
     private boolean mHasSignal = false;
 
-    public GpsIndicator(Context context,
-            PreferenceGroup group, IconListPreference preference) {
-        super(context, group, preference);
+    public GpsIndicator(Context context, IconListPreference preference) {
+        super(context, preference);
     }
 
     @Override

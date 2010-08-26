@@ -18,6 +18,7 @@ package com.android.camera;
 
 import static com.android.camera.Util.Assert;
 
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.os.Build;
 import android.os.Handler;
@@ -48,6 +49,7 @@ public class CameraHolder {
     private final Handler mHandler;
     private int mUsers = 0;  // number of open() - number of release()
     private int mNumberOfCameras;
+    private CameraInfo[] mInfo;
 
     // We store the camera parameters when we actually open the device,
     // so we can restore them in the subsequent open() requests by the user.
@@ -92,20 +94,19 @@ public class CameraHolder {
         ht.start();
         mHandler = new MyHandler(ht.getLooper());
         mNumberOfCameras = android.hardware.Camera.getNumberOfCameras();
-
-        android.hardware.Camera.CameraInfo info =
-                new android.hardware.Camera.CameraInfo();
-        Log.v(TAG, "# of cameras:" + mNumberOfCameras);
+        mInfo = new CameraInfo[mNumberOfCameras];
         for (int i = 0; i < mNumberOfCameras; i++) {
-            Log.v(TAG, "camera info #" + i);
-            android.hardware.Camera.getCameraInfo(i, info);
-            Log.v(TAG, "facing: " + info.mFacing);
-            Log.v(TAG, "orientation: " + info.mOrientation);
+            mInfo[i] = new CameraInfo();
+            android.hardware.Camera.getCameraInfo(i, mInfo[i]);
         }
     }
 
     public int getNumberOfCameras() {
         return mNumberOfCameras;
+    }
+
+    public CameraInfo[] getCameraInfo() {
+        return mInfo;
     }
 
     public synchronized android.hardware.Camera open(int cameraId)

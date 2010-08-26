@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
@@ -47,7 +48,7 @@ public class CameraSettings {
     public static final String KEY_WHITE_BALANCE = "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
-    public static final String KEY_CAMERA_ID = "pref_camera_id";
+    public static final String KEY_CAMERA_ID = "pref_camera_id_key";
 
     private static final String VIDEO_QUALITY_HIGH = "high";
     private static final String VIDEO_QUALITY_MMS = "mms";
@@ -73,10 +74,13 @@ public class CameraSettings {
 
     private final Context mContext;
     private final Parameters mParameters;
+    private final CameraInfo[] mCameraInfo;
 
-    public CameraSettings(Activity activity, Parameters parameters) {
+    public CameraSettings(Activity activity, Parameters parameters,
+                          CameraInfo[] cameraInfo) {
         mContext = activity;
         mParameters = parameters;
+        mCameraInfo = cameraInfo;
     }
 
     public PreferenceGroup getPreferenceGroup(int preferenceRes) {
@@ -136,6 +140,8 @@ public class CameraSettings {
         ListPreference flashMode = group.findPreference(KEY_FLASH_MODE);
         ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
         ListPreference exposure = group.findPreference(KEY_EXPOSURE);
+        IconListPreference cameraId =
+                (IconListPreference)group.findPreference(KEY_CAMERA_ID);
         ListPreference videoFlashMode =
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
 
@@ -185,10 +191,8 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     videoFlashMode, mParameters.getSupportedFlashModes());
         }
-
-        if (exposure != null) {
-            buildExposureCompensation(group, exposure);
-        }
+        if (exposure != null) buildExposureCompensation(group, exposure);
+        if (cameraId != null) buildCameraId(group, cameraId);
     }
 
     private void buildExposureCompensation(
@@ -214,6 +218,38 @@ public class CameraSettings {
         }
         exposure.setEntries(entries);
         exposure.setEntryValues(entryValues);
+    }
+
+    private void buildCameraId(
+            PreferenceGroup group, IconListPreference cameraId) {
+        int numOfCameras = mCameraInfo.length;
+        if (numOfCameras < 2) {
+            removePreference(group, cameraId.getKey());
+            return;
+        }
+
+        CharSequence entries[] = new CharSequence[numOfCameras];
+        CharSequence entryValues[] = new CharSequence[numOfCameras];
+        int[] iconIds = new int[numOfCameras];
+        int[] largeIconIds = new int[numOfCameras];
+        for (int i = 0; i < numOfCameras; i++) {
+            entryValues[i] = Integer.toString(i);
+            if (mCameraInfo[i].mFacing == CameraInfo.CAMERA_FACING_FRONT) {
+                entries[i] = mContext.getString(
+                        R.string.pref_camera_id_entry_front);
+                iconIds[i] = R.drawable.ic_menuselect_camera_facing_front;
+                largeIconIds[i] = R.drawable.ic_viewfinder_camera_facing_front;
+            } else {
+                entries[i] = mContext.getString(
+                        R.string.pref_camera_id_entry_back);
+                iconIds[i] = R.drawable.ic_menuselect_camera_facing_back;
+                largeIconIds[i] = R.drawable.ic_viewfinder_camera_facing_back;
+            }
+        }
+        cameraId.setEntries(entries);
+        cameraId.setEntryValues(entryValues);
+        cameraId.setIconIds(iconIds);
+        cameraId.setLargeIconIds(largeIconIds);
     }
 
     private static boolean removePreference(PreferenceGroup group, String key) {
@@ -340,13 +376,14 @@ public class CameraSettings {
     }
 
     public static int readPreferredCameraId(SharedPreferences pref) {
-        return pref.getInt(KEY_CAMERA_ID, 0);
+        String id = Integer.toString(android.hardware.Camera.CAMERA_ID_DEFAULT);
+        return Integer.parseInt(pref.getString(KEY_CAMERA_ID, id));
     }
 
     public static void writePreferredCameraId(SharedPreferences pref,
             int cameraId) {
         Editor editor = pref.edit();
-        editor.putInt(KEY_CAMERA_ID, cameraId);
+        editor.putString(KEY_CAMERA_ID, Integer.toString(cameraId));
         editor.apply();
     }
 }

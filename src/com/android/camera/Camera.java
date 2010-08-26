@@ -172,7 +172,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private boolean mPreviewing;
     private boolean mPausing;
-    private boolean mSwitching;
     private boolean mFirstTimeInitialized;
     private boolean mIsImageCaptureIntent;
     private boolean mRecordLocation;
@@ -359,6 +358,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
+        mHeadUpDisplay = new CameraHeadUpDisplay(this);
+        mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
         mFirstTimeInitialized = true;
         changeHeadUpDisplayState();
@@ -438,16 +439,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private float[] getZoomRatios() {
+        if(!mParameters.isZoomSupported()) return null;
         List<Integer> zoomRatios = mParameters.getZoomRatios();
-        if (zoomRatios != null) {
-            float result[] = new float[zoomRatios.size()];
-            for (int i = 0, n = result.length; i < n; ++i) {
-                result[i] = (float) zoomRatios.get(i) / 100f;
-            }
-            return result;
-        } else {
-            throw new IllegalStateException("cannot get zoom ratios");
+        float result[] = new float[zoomRatios.size()];
+        for (int i = 0, n = result.length; i < n; ++i) {
+            result[i] = (float) zoomRatios.get(i) / 100f;
         }
+        return result;
     }
 
     private class ZoomGestureListener extends
@@ -971,7 +969,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // becomes landscape.
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
-                && !mPausing && !mSwitching && mFirstTimeInitialized) {
+                && !mPausing && mFirstTimeInitialized) {
             if (mGLRootView == null) attachHeadUpDisplay();
         } else if (mGLRootView != null) {
             detachHeadUpDisplay();
@@ -998,17 +996,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void initializeHeadUpDisplay() {
-        mHeadUpDisplay = new CameraHeadUpDisplay(this);
-        CameraSettings settings = new CameraSettings(this, mInitialParams);
+        CameraSettings settings = new CameraSettings(this, mInitialParams,
+                CameraHolder.instance().getCameraInfo());
         mHeadUpDisplay.initialize(this,
-                settings.getPreferenceGroup(R.xml.camera_preferences));
-        mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
-    }
-
-    private void attachHeadUpDisplay() {
-        mHeadUpDisplay.setOrientation(mLastOrientation);
+                settings.getPreferenceGroup(R.xml.camera_preferences),
+                getZoomRatios(), mLastOrientation);
         if (mParameters.isZoomSupported()) {
-            mHeadUpDisplay.setZoomRatios(getZoomRatios());
             mHeadUpDisplay.setZoomIndex(mZoomValue);
             mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
                 public void onZoomChanged(
@@ -1016,13 +1009,18 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     onZoomValueChanged(index);
                 }
             });
+        } else {
+            mHeadUpDisplay.setZoomListener(null);
         }
+        updateSceneModeInHud();
+    }
+
+    private void attachHeadUpDisplay() {
+        mHeadUpDisplay.setOrientation(mLastOrientation);
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
         mGLRootView = new GLRootView(this);
         mGLRootView.setContentPane(mHeadUpDisplay);
         frame.addView(mGLRootView);
-
-        updateSceneModeInHud();
     }
 
     private void detachHeadUpDisplay() {
@@ -1821,7 +1819,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             Log.w(TAG, "invalid exposure: " + exposure);
         }
 
-        if (mGLRootView != null) updateSceneModeInHud();
+        if (mHeadUpDisplay != null) updateSceneModeInHud();
 
         if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
             // Set flash mode.
@@ -2068,22 +2066,19 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     R.string.switch_camera_id)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    switchCameraId();
+                    switchCameraId((mCameraId + 1) % mNumberOfCameras);
                     return true;
                 }
             }).setIcon(android.R.drawable.ic_menu_camera);
         }
     }
 
-    private void switchCameraId() {
-        mSwitching = true;
-
-        mCameraId = (mCameraId + 1) % mNumberOfCameras;
-        CameraSettings.writePreferredCameraId(mPreferences, mCameraId);
+    private void switchCameraId(int cameraId) {
+        mCameraId = cameraId;
+        CameraSettings.writePreferredCameraId(mPreferences, cameraId);
 
         stopPreview();
         closeCamera();
-        changeHeadUpDisplayState();
 
         // Remove the messages in the event queue.
         mHandler.removeMessages(RESTART_PREVIEW);
@@ -2096,7 +2091,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
-
         // Restart the preview.
         resetExposureCompensation();
         if (!restartPreview()) return;
@@ -2107,9 +2101,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mFirstTimeInitialized) {
             initializeHeadUpDisplay();
         }
-
-        mSwitching = false;
-        changeHeadUpDisplayState();
     }
 
     private boolean switchToVideoMode() {
@@ -2145,8 +2136,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 stopReceivingLocationUpdates();
             }
         }
-
-        setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
+        int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
+        if (mCameraId != cameraId) {
+            switchCameraId(cameraId);
+        } else {
+            setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
+        }
     }
 
     @Override

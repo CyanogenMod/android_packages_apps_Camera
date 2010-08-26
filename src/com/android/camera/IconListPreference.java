@@ -51,6 +51,14 @@ public class IconListPreference extends ListPreference {
         return mIconIds;
     }
 
+    public void setLargeIconIds(int[] largeIconIds) {
+        mLargeIconIds = largeIconIds;
+    }
+
+    public void setIconIds(int[] iconIds) {
+        mIconIds = iconIds;
+    }
+
     private int[] getIconIds(Resources res, int iconsRes) {
         if (iconsRes == 0) return null;
         TypedArray array = res.obtainTypedArray(iconsRes);

@@ -31,10 +31,19 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     private GpsIndicator mGpsIndicator;
     private ZoomIndicator mZoomIndicator;
     private Context mContext;
+    private float[] mInitialZoomRatios;
+    private int mInitialOrientation;
 
     public CameraHeadUpDisplay(Context context) {
         super(context);
         mContext = context;
+    }
+
+    public void initialize(Context context, PreferenceGroup group,
+            float[] initialZoomRatios, int initialOrientation) {
+        mInitialZoomRatios = initialZoomRatios;
+        mInitialOrientation = initialOrientation;
+        super.initialize(context, group);
     }
 
     @Override
@@ -61,12 +70,24 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         mIndicatorBar.addComponent(mOtherSettings);
 
         mGpsIndicator = new GpsIndicator(
-                context, group, (IconListPreference)
+                context, (IconListPreference)
                 group.findPreference(CameraSettings.KEY_RECORD_LOCATION));
         mIndicatorBar.addComponent(mGpsIndicator);
 
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_FLASH_MODE);
+
+        if (mInitialZoomRatios != null) {
+            mZoomIndicator = new ZoomIndicator(mContext);
+            mZoomIndicator.setZoomRatios(mInitialZoomRatios);
+            mIndicatorBar.addComponent(mZoomIndicator);
+        } else {
+            mZoomIndicator = null;
+        }
+
+        addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
+
+        mIndicatorBar.setOrientation(mInitialOrientation);
     }
 
     public void setZoomListener(ZoomControllerListener listener) {
@@ -114,10 +135,6 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     }
 
     private void setZoomRatiosLocked(float[] zoomRatios) {
-        if (mZoomIndicator == null) {
-            mZoomIndicator = new ZoomIndicator(mContext);
-            mIndicatorBar.addComponent(mZoomIndicator);
-        }
         mZoomIndicator.setZoomRatios(zoomRatios);
     }
 }

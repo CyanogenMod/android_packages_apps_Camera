@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.camera.R;
 import com.android.camera.ui.ZoomControllerListener;
@@ -69,7 +70,7 @@ class ZoomIndicator extends AbstractIndicator {
         if (mDrawIndex != mZoomIndex) {
             mDrawIndex = mZoomIndex;
             if (mTitle != null) mTitle.deleteFromGL();
-            float value = mZoomRatios == null ? 0 : mZoomRatios[mZoomIndex];
+            float value = mZoomRatios[mZoomIndex];
             mTitle = StringTexture.newInstance(
                     sZoomFormat.format(value), mFontSize, FONT_COLOR);
         }
@@ -110,7 +111,8 @@ class ZoomIndicator extends AbstractIndicator {
 
     public void setZoomRatios(float[] ratios) {
         mZoomRatios = ratios;
-        requestLayout();
+        mDrawIndex = -1;
+        invalidate();
     }
 
     private class MyZoomListener implements ZoomControllerListener {
