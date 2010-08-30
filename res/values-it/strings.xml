@@ -117,10 +117,6 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Impostazioni fotocamera"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"Ripristina predefinite"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Esposizione"</string>
-    <string name="pref_camera_meteringmode_title" msgid="4316862664975999393">"Modalità di misurazione"</string>
-    <string name="pref_camera_meteringmode_entry_center_weighted" msgid="6362205429617163588">"Ponderata al centro"</string>
-    <string name="pref_camera_meteringmode_entry_frame_average" msgid="7462891363691741735">"Media"</string>
-    <string name="pref_camera_meteringmode_entry_spot" msgid="3971259987457110980">"Spot"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina elementi nella galleria."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite di dimensione raggiunto."</string>

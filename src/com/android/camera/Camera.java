@@ -1832,14 +1832,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         } else {
             mFocusMode = mParameters.getFocusMode();
         }
-
-        // Set metering mode parameter.
-        String meteringMode = mPreferences.getString(
-                CameraSettings.KEY_METERING_MODE,
-                getString(R.string.pref_camera_meteringmode_default));
-        if (isSupported(meteringMode, mParameters.getSupportedMeteringModes())) {
-            mParameters.setMeteringMode(meteringMode);
-        }
     }
 
     // We separate the parameters into several subsets, so we can update only
