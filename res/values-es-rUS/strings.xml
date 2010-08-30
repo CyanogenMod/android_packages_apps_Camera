@@ -39,6 +39,12 @@
     <skip />
     <!-- no translation found for disable_time_lapse_mode (1025813874111023552) -->
     <skip />
+    <!-- no translation found for pref_camera_id_title (6023059405578511534) -->
+    <skip />
+    <!-- no translation found for pref_camera_id_entry_back (5142699735103692485) -->
+    <skip />
+    <!-- no translation found for pref_camera_id_entry_front (5668958706828733669) -->
+    <skip />
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Ubicación de tienda"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Apagado"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Encendido"</string>
@@ -53,14 +59,8 @@
     <skip />
     <!-- no translation found for pref_video_time_lapse_quality_entry_high (3933491126045555205) -->
     <skip />
-    <!-- no translation found for pref_video_time_lapse_quality_entry_720p (5690053556278956164) -->
-    <skip />
-    <!-- no translation found for pref_video_time_lapse_quality_entry_1080p (5778910390187650906) -->
-    <skip />
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuración de cámara"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuración de videocámara"</string>
-    <!-- no translation found for pref_camcorder_time_lapse_settings_category (5345496682937496419) -->
-    <skip />
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamaño de imagen"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5M píxeles"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M píxeles"</string>
