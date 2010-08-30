@@ -181,8 +181,6 @@ public class HeadUpDisplay extends GLView {
     public void initialize(Context context, PreferenceGroup preferenceGroup) {
         mPreferenceGroup = preferenceGroup;
         mSharedPrefs = ComboPreferences.get(context);
-        mSharedPrefs.registerOnSharedPreferenceChangeListener(
-                mSharedPreferenceChangeListener);
         initializeIndicatorBar(context, preferenceGroup);
     }
 
@@ -228,6 +226,8 @@ public class HeadUpDisplay extends GLView {
 
     private void hidePopupWindow() {
         mPopupWindow.popoff();
+        // Unregister is important to avoid leaking activities.
+        // ComboPreference.sMap->ComboPreference->HeadUpDisplay->Activity
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(
                 mSharedPreferenceChangeListener);
         if (mListener != null) {
