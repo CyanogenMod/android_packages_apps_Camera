@@ -107,10 +107,6 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Ρυθμίσεις φωτογραφικής μηχανής"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"Επαναφορά στις προεπιλογές"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Έκθεση"</string>
-    <string name="pref_camera_meteringmode_title" msgid="4316862664975999393">"Τρόπος φωτομέτρησης"</string>
-    <string name="pref_camera_meteringmode_entry_center_weighted" msgid="6362205429617163588">"Κεντροσταθμισμένη"</string>
-    <string name="pref_camera_meteringmode_entry_frame_average" msgid="7462891363691741735">"Μέσος όρος καρέ"</string>
-    <string name="pref_camera_meteringmode_entry_spot" msgid="3971259987457110980">"Σημείο"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Ο διαθέσιμος χώρος στην κάρτα SD είναι ελάχιστος. Αλλάξτε τη ρύθμιση ποιότητας ή διαγράψτε στοιχεία από τη συλλογή."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Συμπληρώθηκε το όριο μεγέθους."</string>

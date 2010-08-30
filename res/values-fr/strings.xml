@@ -107,10 +107,6 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Paramètres de l\'appareil photo"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"Rétablir les paramètres par défaut"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposition"</string>
-    <string name="pref_camera_meteringmode_title" msgid="4316862664975999393">"Mode de mesure"</string>
-    <string name="pref_camera_meteringmode_entry_center_weighted" msgid="6362205429617163588">"Pondérée centrale"</string>
-    <string name="pref_camera_meteringmode_entry_frame_average" msgid="7462891363691741735">"Moyenne"</string>
-    <string name="pref_camera_meteringmode_entry_spot" msgid="3971259987457110980">"Spot"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"Votre carte SD est pleine. Modifiez le paramètre de qualité ou supprimez des éléments de la galerie."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Taille maximale atteinte."</string>

@@ -265,17 +265,6 @@
     <string name="pref_exposure_title">Exposure</string>
     <string name="pref_exposure_default" translatable="false">0</string>
 
-    <!-- Default metering mode setting.-->
-    <string name="pref_camera_meteringmode_default" translatable="false">center-weighted</string>
-
-    <!-- Settings screen, Metering mode title -->
-    <string name="pref_camera_meteringmode_title">Metering mode</string>
-
-    <!-- Settings screen, Metering mode dialog radio button choices -->
-    <string name="pref_camera_meteringmode_entry_center_weighted">Center Weighted</string>
-    <string name="pref_camera_meteringmode_entry_frame_average">Frame Average</string>
-    <string name="pref_camera_meteringmode_entry_spot">Spot</string>
-
     <!-- Framing grid settings in preference -->
 
     <!-- Message to show when there's no lat/lng information in the image -->

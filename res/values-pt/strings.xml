@@ -107,10 +107,6 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Configurações da câmera"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"Restaurar para os valores padrão"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposição"</string>
-    <string name="pref_camera_meteringmode_title" msgid="4316862664975999393">"Modo de medição"</string>
-    <string name="pref_camera_meteringmode_entry_center_weighted" msgid="6362205429617163588">"Centralizar"</string>
-    <string name="pref_camera_meteringmode_entry_frame_average" msgid="7462891363691741735">"Média de frames"</string>
-    <string name="pref_camera_meteringmode_entry_spot" msgid="3971259987457110980">"Ponto"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" msgid="2848517537672543641">"O seu cartão SD está sem espaço. Mude a configuração de qualidade ou exclua itens da Galeria."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite de tamanho atingido."</string>

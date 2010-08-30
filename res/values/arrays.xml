@@ -261,18 +261,5 @@
     <string-array name="pref_camera_quickcapture_entryvalues" translatable="false">
         <item>off</item>
         <item>on</item>
-      </string-array>
-
-    <!-- Camera Preferences metering mode dialog box entries -->
-    <string-array name="pref_camera_meteringmode_entries" translatable="false">
-        <item>@string/pref_camera_meteringmode_entry_center_weighted</item>
-        <item>@string/pref_camera_meteringmode_entry_spot</item>
-        <item>@string/pref_camera_meteringmode_entry_frame_average</item>
-    </string-array>
-
-    <string-array name="pref_camera_meteringmode_entryvalues" translatable="false">
-        <item>center-weighted</item>
-        <item>frame-average</item>
-        <item>spot</item>
     </string-array>
 </resources>
