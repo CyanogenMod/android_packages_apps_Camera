@@ -636,12 +636,12 @@ public class VideoCamera extends NoSearchActivity
             // If the activity is paused and resumed, camera device has been
             // released and we need to open the camera.
             mCameraDevice = CameraHolder.instance().open(mCameraId);
-            Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
         }
 
         mCameraDevice.lock();
-        setCameraParameters();
         setPreviewDisplay(mSurfaceHolder);
+        Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
+        setCameraParameters();
 
         try {
             mCameraDevice.startPreview();

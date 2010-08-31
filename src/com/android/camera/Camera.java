@@ -1580,7 +1580,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void ensureCameraDevice() throws CameraHardwareException {
         if (mCameraDevice == null) {
             mCameraDevice = CameraHolder.instance().open(mCameraId);
-            Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
             mInitialParams = mCameraDevice.getParameters();
         }
     }
@@ -1639,10 +1638,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mPreviewing) stopPreview();
 
         setPreviewDisplay(mSurfaceHolder);
+        Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
         setCameraParameters(UPDATE_PARAM_ALL);
-
-        final long wallTimeStart = SystemClock.elapsedRealtime();
-        final long threadTimeStart = Debug.threadCpuTimeNanos();
 
         mCameraDevice.setErrorCallback(mErrorCallback);
 
