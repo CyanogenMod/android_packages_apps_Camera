@@ -142,7 +142,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
             return result1 && result2;
         }
 
-        public void startCommit() {
+        public void apply() {
             commit();
         }
 
