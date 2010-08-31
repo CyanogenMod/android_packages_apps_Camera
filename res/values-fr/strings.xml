@@ -73,6 +73,8 @@
     <string name="pref_camera_focusmode_entry_normal">"Normal"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infini"</string>
+    <string name="pref_camera_focusmode_entry_touch">Toucher</string>
+    <string name="touch_focus_enabled">Toucher l\'écran pour faire la netteté</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Mode Flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatique"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activé"</string>
