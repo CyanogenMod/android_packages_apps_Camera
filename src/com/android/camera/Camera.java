@@ -1283,12 +1283,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Start the preview if it is not started.
         if (!mPreviewing && !mStartPreviewFail) {
             resetExposureCompensation();
-            try {
-                startPreview();
-            } catch (CameraHardwareException e) {
-                showCameraErrorAndFinish();
-                return;
-            }
+            if (!restartPreview()) return;
         }
 
         if (mSurfaceHolder != null) {
@@ -1615,13 +1610,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 ress.getString(R.string.cannot_connect_camera));
     }
 
-    private void restartPreview() {
+    private boolean restartPreview() {
         try {
             startPreview();
         } catch (CameraHardwareException e) {
             showCameraErrorAndFinish();
-            return;
+            return false;
         }
+        return true;
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
@@ -2063,12 +2059,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // Restart the preview.
         resetExposureCompensation();
-        try {
-            startPreview();
-        } catch (CameraHardwareException e) {
-            showCameraErrorAndFinish();
-            return;
-        }
+        if (!restartPreview()) return;
 
         initializeZoom();
 

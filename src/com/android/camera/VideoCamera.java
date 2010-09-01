@@ -257,11 +257,21 @@ public class VideoCamera extends NoSearchActivity
         return dateFormat.format(date);
     }
 
-    private void showCameraBusyAndFinish() {
+    private void showCameraErrorAndFinish() {
         Resources ress = getResources();
         Util.showFatalErrorAndFinish(VideoCamera.this,
                 ress.getString(R.string.camera_error_title),
                 ress.getString(R.string.cannot_connect_camera));
+    }
+
+    private boolean restartPreview() {
+        try {
+            startPreview();
+        } catch (CameraHardwareException e) {
+            showCameraErrorAndFinish();
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -371,7 +381,7 @@ public class VideoCamera extends NoSearchActivity
         try {
             startPreviewThread.join();
             if (mStartPreviewFail) {
-                showCameraBusyAndFinish();
+                showCameraErrorAndFinish();
                 return;
             }
         } catch (InterruptedException ex) {
@@ -665,12 +675,7 @@ public class VideoCamera extends NoSearchActivity
         readVideoPreferences();
         resizeForPreviewAspectRatio();
         if (!mPreviewing && !mStartPreviewFail) {
-            try {
-                startPreview();
-            } catch (CameraHardwareException e) {
-                showCameraBusyAndFinish();
-                return;
-            }
+            if (!restartPreview()) return;
         }
         keepScreenOnAwhile();
 
@@ -710,11 +715,6 @@ public class VideoCamera extends NoSearchActivity
 
     private void startPreview() throws CameraHardwareException {
         Log.v(TAG, "startPreview");
-        if (mPreviewing) {
-            // After recording a video, preview is not stopped. So just return.
-            return;
-        }
-
         if (mCameraDevice == null) {
             // If the activity is paused and resumed, camera device has been
             // released and we need to open the camera.
@@ -867,6 +867,8 @@ public class VideoCamera extends NoSearchActivity
             return;
         }
 
+        mSurfaceHolder = holder;
+
         if (mPausing) {
             // We're pausing, the screen is off and we already stopped
             // video recording. We don't want to start the camera again
@@ -882,21 +884,20 @@ public class VideoCamera extends NoSearchActivity
         // finish the activity, so it's OK to ignore it.
         if (mCameraDevice == null) return;
 
-        if (mMediaRecorderRecording) {
-            stopVideoRecording();
-        }
-
         // Set preview display if the surface is being created. Preview was
         // already started.
         if (holder.isCreating()) {
             setPreviewDisplay(holder);
             mCameraDevice.unlock();
             mHandler.sendEmptyMessage(INIT_RECORDER);
+        } else {
+            stopVideoRecording();
+            restartPreview();
+            initializeRecorder();
         }
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-        mSurfaceHolder = holder;
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -1242,13 +1243,7 @@ public class VideoCamera extends NoSearchActivity
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
-        // Restart preview
-        try {
-            startPreview();
-        } catch (CameraHardwareException e) {
-            showCameraBusyAndFinish();
-            return;
-        }
+        restartPreview();
 
         // Reload the UI.
         initializeHeadUpDisplay();
@@ -1699,12 +1694,8 @@ public class VideoCamera extends NoSearchActivity
             // It is assumed media recorder is released before
             // onSharedPreferenceChanged, so we can close the camera here.
             closeCamera();
-            try {
-                resizeForPreviewAspectRatio();
-                startPreview(); // Parameters will be set in startPreview().
-            } catch (CameraHardwareException e) {
-                showCameraBusyAndFinish();
-            }
+            resizeForPreviewAspectRatio();
+            restartPreview(); // Parameters will be set in startPreview().
         } else {
             try {
                 // We need to lock the camera before writing parameters.
