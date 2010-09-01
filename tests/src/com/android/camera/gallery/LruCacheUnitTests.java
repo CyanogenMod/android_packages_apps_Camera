@@ -1,10 +1,12 @@
 package com.android.camera.gallery;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 
 public class LruCacheUnitTests extends AndroidTestCase {
 
+    @SmallTest
     public void testPut() {
         LruCache<Integer, Integer> cache = new LruCache<Integer, Integer>(2);
         Integer key = Integer.valueOf(1);
@@ -13,6 +15,7 @@ public class LruCacheUnitTests extends AndroidTestCase {
         assertEquals(value, cache.get(key));
     }
 
+    @SmallTest
     public void testTracingInUsedObject() {
         LruCache<Integer, Integer> cache = new LruCache<Integer, Integer>(2);
         Integer key = Integer.valueOf(1);
@@ -25,6 +28,7 @@ public class LruCacheUnitTests extends AndroidTestCase {
         assertEquals(value, cache.get(key));
     }
 
+    @SmallTest
     public void testLruAlgorithm() {
         LruCache<Integer, Integer> cache = new LruCache<Integer, Integer>(2);
         cache.put(0, new Integer(0));
