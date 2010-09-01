@@ -1210,7 +1210,7 @@ public class VideoCamera extends NoSearchActivity
         try {
             startPreview();
         } catch (CameraHardwareException e) {
-            showCameraBusyAndFinish();
+            showCameraErrorAndFinish();
             return;
         }
 
