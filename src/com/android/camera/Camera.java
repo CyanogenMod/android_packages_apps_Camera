@@ -227,7 +227,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private String mSceneMode;
 
     private final Handler mHandler = new MainHandler();
-    private boolean mQuickCapture;
     private CameraHeadUpDisplay mHeadUpDisplay;
 
     // multiple cameras support
@@ -630,7 +629,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 // We want to show the taken picture for a while, so we wait
                 // for at least 1.2 second before restarting the preview.
                 long delay = 1200 - mPictureDisplayedToJpegCallbackTime;
-                if (delay < 0 || mQuickCapture) {
+                if (delay < 0) {
                     restartPreview();
                 } else {
                     mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, delay);
@@ -900,9 +899,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
         mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
-
-        // comment out -- unused now.
-        //mQuickCapture = getQuickCaptureSettings();
 
         // we need to reset exposure for the preview
         resetExposureCompensation();
@@ -2140,7 +2136,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         recordLocation = RecordLocationPreference.get(
                 mPreferences, getContentResolver());
-        mQuickCapture = getQuickCaptureSettings();
 
         if (mRecordLocation != recordLocation) {
             mRecordLocation = recordLocation;
@@ -2152,13 +2147,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
 
         setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
-    }
-
-    private boolean getQuickCaptureSettings() {
-        String value = mPreferences.getString(
-                CameraSettings.KEY_QUICK_CAPTURE,
-                getString(R.string.pref_camera_quickcapture_default));
-        return CameraSettings.QUICK_CAPTURE_ON.equals(value);
     }
 
     @Override

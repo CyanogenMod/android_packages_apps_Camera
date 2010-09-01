@@ -101,9 +101,6 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"일몰"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"손떨림 방지 사진"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"불꽃놀이"</string>
-    <string name="pref_camera_quickcapture_title" msgid="1839831697232292196">"웹캠으로 바로 올리기"</string>
-    <string name="pref_camera_quickcapture_entry_on" msgid="1940258136944434407">"사용"</string>
-    <string name="pref_camera_quickcapture_entry_off" msgid="5000775068226508567">"사용 안함"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"카메라 설정"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"기본값으로 복원"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"노출"</string>
