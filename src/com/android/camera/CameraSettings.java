@@ -47,12 +47,8 @@ public class CameraSettings {
     public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
     public static final String KEY_WHITE_BALANCE = "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
-    public static final String KEY_QUICK_CAPTURE = "pref_camera_quickcapture_key";
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
     public static final String KEY_CAMERA_ID = "pref_camera_id";
-
-    public static final String QUICK_CAPTURE_ON = "on";
-    public static final String QUICK_CAPTURE_OFF = "off";
 
     private static final String VIDEO_QUALITY_HIGH = "high";
     private static final String VIDEO_QUALITY_MMS = "mms";
