@@ -101,9 +101,6 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"黃昏"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"防手震"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"煙火"</string>
-    <string name="pref_camera_quickcapture_title" msgid="1839831697232292196">"快速錄製"</string>
-    <string name="pref_camera_quickcapture_entry_on" msgid="1940258136944434407">"開啟"</string>
-    <string name="pref_camera_quickcapture_entry_off" msgid="5000775068226508567">"關閉"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"相機設定"</string>
     <string name="pref_restore_detail" msgid="5326039608800383369">"還原成預設值"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
