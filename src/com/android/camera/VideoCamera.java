@@ -639,6 +639,10 @@ public class VideoCamera extends NoSearchActivity
         }
 
         mCameraDevice.lock();
+        if (mPreviewing == true) {
+            mCameraDevice.stopPreview();
+            mPreviewing = false;
+        }
         setPreviewDisplay(mSurfaceHolder);
         Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
         setCameraParameters();
@@ -805,6 +809,10 @@ public class VideoCamera extends NoSearchActivity
             mHandler.sendEmptyMessage(INIT_RECORDER);
         } else {
             stopVideoRecording();
+            // If video quality changes, the surface will change. But we need to
+            // initialize the recorder here. So collpase the head-up display to
+            // keep the state of recorder consistent.
+            mHeadUpDisplay.collapse();
             restartPreview();
             initializeRecorder();
         }
