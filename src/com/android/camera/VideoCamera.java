@@ -1908,7 +1908,6 @@ public class VideoCamera extends BaseCamera implements
 
     @Override
     protected int getCameraMode() {
-        // TODO Auto-generated method stub
         return CameraSettings.VIDEO_MODE;
     }
 
