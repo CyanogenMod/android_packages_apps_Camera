@@ -143,7 +143,8 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
 
         public void apply() {
-            commit();
+            mEditorGlobal.apply();
+            mEditorLocal.apply();
         }
 
         // Note: clear() and remove() affects both local and global preferences.
