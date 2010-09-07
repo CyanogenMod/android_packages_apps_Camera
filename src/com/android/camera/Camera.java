@@ -2227,6 +2227,12 @@ public class Camera extends BaseCamera {
                 getString(R.string.confirm_restore_message),
                 runnable);
     }
+
+    @Override
+    protected int getCameraMode() {
+        // TODO Auto-generated method stub
+        return CameraSettings.VIDEO_MODE;
+    }
 }
 
 /*

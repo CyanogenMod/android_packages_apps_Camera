@@ -154,6 +154,11 @@ public class CameraSettings {
         return false;
     }
 
+    public static boolean hasTouchFocusSupport(Parameters parameters) {
+        // Not the best way to check, but works for HTC cameras
+        return parameters.get("taking-picture-zoom") != null;
+    }
+    
     private void initPreference(PreferenceGroup group) {
         ListPreference videoQuality = group.findPreference(KEY_VIDEO_QUALITY);
         ListPreference videoSize = group.findPreference(KEY_VIDEO_SIZE);
@@ -252,7 +257,7 @@ public class CameraSettings {
         if (focusMode != null) {
             List<String> focusModes = mParameters.getSupportedFocusModes();
             // Probably not the best way to check, but will do for now
-            if (mParameters.get("taking-picture-zoom") != null) {
+            if (hasTouchFocusSupport(mParameters)) {
                 focusModes.add("touch");
             }
             filterUnsupportedOptions(group,

@@ -33,6 +33,11 @@
             <SurfaceView android:id="@+id/camera_preview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
+            <com.android.camera.FocusRectangle
+                    android:id="@+id/focus_rectangle"
+                    android:layout_width="100dip"
+		    android:layout_height="100dip"
+                    android:layout_gravity="center" />
             <ImageView android:id="@+id/video_frame"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
