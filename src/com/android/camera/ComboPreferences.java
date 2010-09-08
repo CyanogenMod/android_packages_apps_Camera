@@ -49,8 +49,8 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
     }
 
-    public void setLocalId(Context context, int id) {
-        String prefName = context.getPackageName() + "_preferences_" + id;
+    public void setLocalId(Context context, int cameraId) {
+        String prefName = context.getPackageName() + "_preferences_" + cameraId;
         if (mPrefLocal != null) {
             mPrefLocal.unregisterOnSharedPreferenceChangeListener(this);
         }

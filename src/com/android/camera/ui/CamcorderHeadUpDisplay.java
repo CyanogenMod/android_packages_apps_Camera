@@ -29,9 +29,14 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
     private boolean mCaptureTimeLapse;
     private OtherSettingsIndicator mOtherSettings;
 
-    public CamcorderHeadUpDisplay(Context context, boolean captureTimeLapse) {
+    public CamcorderHeadUpDisplay(Context context) {
         super(context);
+    }
+
+    public void initialize(Context context, PreferenceGroup group,
+                           boolean captureTimeLapse) {
         mCaptureTimeLapse = captureTimeLapse;
+        super.initialize(context, group);
     }
 
     @Override
@@ -64,5 +69,6 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
         } else {
             addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
         }
+        addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
     }
 }

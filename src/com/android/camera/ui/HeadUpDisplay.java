@@ -181,7 +181,10 @@ public class HeadUpDisplay extends GLView {
     public void initialize(Context context, PreferenceGroup preferenceGroup) {
         mPreferenceGroup = preferenceGroup;
         mSharedPrefs = ComboPreferences.get(context);
+        mPopupWindow = null;
+        clearComponents();
         initializeIndicatorBar(context, preferenceGroup);
+        requestLayout();
     }
 
     private void layoutPopupWindow(GLView anchorView) {
@@ -329,7 +332,7 @@ public class HeadUpDisplay extends GLView {
         IconListPreference iconPref =
                 (IconListPreference) group.findPreference(key);
         if (iconPref == null) return null;
-        BasicIndicator indicator = new BasicIndicator(context, group, iconPref);
+        BasicIndicator indicator = new BasicIndicator(context, iconPref);
         mIndicatorBar.addComponent(indicator);
         return indicator;
     }

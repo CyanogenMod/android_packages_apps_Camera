@@ -172,7 +172,6 @@ public class VideoCamera extends NoSearchActivity
     private int mDesiredPreviewHeight;
 
     boolean mPausing = false;
-    boolean mSwitching;
     boolean mPreviewing = false; // True if preview is started.
 
     private ContentResolver mContentResolver;
@@ -390,6 +389,8 @@ public class VideoCamera extends NoSearchActivity
 
         // Initialize the HeadUpDiplay after startPreview(). We need mParameters
         // for HeadUpDisplay and it is initialized in that function.
+        mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
+        mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
     }
 
@@ -401,7 +402,7 @@ public class VideoCamera extends NoSearchActivity
         // becomes landscape.
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
-                && !mPausing && !mSwitching && mGLRootView == null) {
+                && !mPausing && mGLRootView == null) {
             attachHeadUpDisplay();
         } else if (mGLRootView != null) {
             detachHeadUpDisplay();
@@ -409,15 +410,14 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void initializeHeadUpDisplay() {
-        mHeadUpDisplay = new CamcorderHeadUpDisplay(this, mCaptureTimeLapse);
-        CameraSettings settings = new CameraSettings(this, mParameters);
+        CameraSettings settings = new CameraSettings(this, mParameters,
+                CameraHolder.instance().getCameraInfo());
 
         PreferenceGroup group = settings.getPreferenceGroup(R.xml.video_preferences);
         if (mIsVideoCaptureIntent) {
             group = filterPreferenceScreenByIntent(group);
         }
-        mHeadUpDisplay.initialize(this, group);
-        mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
+        mHeadUpDisplay.initialize(this, group, mCaptureTimeLapse);
     }
 
     private void attachHeadUpDisplay() {
@@ -1184,7 +1184,7 @@ public class VideoCamera extends NoSearchActivity
                     R.string.switch_camera_id)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    switchCameraId();
+                    switchCameraId((mCameraId + 1) % mNumberOfCameras);
                     return true;
                 }
             }).setIcon(android.R.drawable.ic_menu_camera);
@@ -1203,9 +1203,6 @@ public class VideoCamera extends NoSearchActivity
 
     private void switchTimeLapseMode() {
         mCaptureTimeLapse = !mCaptureTimeLapse;
-
-        mSwitching = true;
-        changeHeadUpDisplayState();
 
         finishRecorderAndCloseCamera();
         mHandler.removeMessages(INIT_RECORDER);
@@ -1229,20 +1226,13 @@ public class VideoCamera extends NoSearchActivity
             mHandler.sendEmptyMessage(INIT_RECORDER);
         }
 
-        mSwitching = false;
-        changeHeadUpDisplayState();
-
         // Change menu
         setTimeLapseSwitchTitle(!mCaptureTimeLapse);
     }
 
-    private void switchCameraId() {
-        mSwitching = true;
-
-        mCameraId = (mCameraId + 1) % mNumberOfCameras;
-        CameraSettings.writePreferredCameraId(mPreferences, mCameraId);
-
-        changeHeadUpDisplayState();
+    private void switchCameraId(int cameraId) {
+        mCameraId = cameraId;
+        CameraSettings.writePreferredCameraId(mPreferences, cameraId);
 
         finishRecorderAndCloseCamera();
         mHandler.removeMessages(INIT_RECORDER);
@@ -1259,9 +1249,6 @@ public class VideoCamera extends NoSearchActivity
         if (mSurfaceHolder != null) {
             mHandler.sendEmptyMessage(INIT_RECORDER);
         }
-
-        mSwitching = false;
-        changeHeadUpDisplayState();
     }
 
     private PreferenceGroup filterPreferenceScreenByIntent(
@@ -1778,7 +1765,14 @@ public class VideoCamera extends NoSearchActivity
             // If mCameraDevice is not ready then we can set the parameter in
             // startPreview().
             if (mCameraDevice == null) return;
-            resetCameraParameters();
+
+            // Check if camera id is changed.
+            int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
+            if (mCameraId != cameraId) {
+                switchCameraId(cameraId);
+            } else {
+                resetCameraParameters();
+            }
         }
     }
 }
