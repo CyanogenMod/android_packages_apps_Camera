@@ -405,7 +405,7 @@ public class HeadUpDisplay extends GLView {
         Context context = getGLRootView().getContext();
         Editor editor = mSharedPrefs.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
         CameraSettings.upgradeAllPreferences(mSharedPrefs);
         CameraSettings.initialCameraPictureSize(context, param);
         reloadPreferences();

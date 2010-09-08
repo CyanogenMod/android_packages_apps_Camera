@@ -112,7 +112,7 @@ public class CameraSettings {
                 SharedPreferences.Editor editor = ComboPreferences
                         .get(context).edit();
                 editor.putString(KEY_PICTURE_SIZE, candidate);
-                editor.commit();
+                editor.apply();
                 return;
             }
         }
@@ -284,7 +284,7 @@ public class CameraSettings {
         if (version == CURRENT_LOCAL_VERSION) return;
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt(KEY_LOCAL_VERSION, CURRENT_LOCAL_VERSION);
-        editor.commit();
+        editor.apply();
     }
 
     public static void upgradeGlobalPreferences(SharedPreferences pref) {
@@ -329,7 +329,7 @@ public class CameraSettings {
             editor.remove("pref_camera_video_duration_key");
         }
         editor.putInt(KEY_VERSION, CURRENT_VERSION);
-        editor.commit();
+        editor.apply();
     }
 
     public static void upgradeAllPreferences(ComboPreferences pref) {
@@ -373,6 +373,6 @@ public class CameraSettings {
             int cameraId) {
         Editor editor = pref.edit();
         editor.putInt(KEY_CAMERA_ID, cameraId);
-        editor.commit();
+        editor.apply();
     }
 }
