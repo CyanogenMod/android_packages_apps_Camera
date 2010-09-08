@@ -108,7 +108,7 @@ public class ListPreference extends CameraPreference {
     protected void persistStringValue(String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putString(mKey, value);
-        editor.commit();
+        editor.apply();
     }
 
     @Override
