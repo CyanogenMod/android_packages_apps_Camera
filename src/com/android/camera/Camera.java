@@ -278,7 +278,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (!CameraSettings.EXPOSURE_DEFAULT_VALUE.equals(value)) {
             Editor editor = mPreferences.edit();
             editor.putString(CameraSettings.KEY_EXPOSURE, "0");
-            editor.commit();
+            editor.apply();
             if (mHeadUpDisplay != null) {
                 mHeadUpDisplay.reloadPreferences();
             }
