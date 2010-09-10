@@ -155,30 +155,6 @@ public class ImageManager {
         }
     }
 
-    public static int roundOrientation(int orientationInput) {
-        int orientation = orientationInput;
-
-        if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
-            orientation = 0;
-        }
-
-        orientation = orientation % 360;
-        int retVal;
-        if (orientation < (0 * 90) + 45) {
-            retVal = 0;
-        } else if (orientation < (1 * 90) + 45) {
-            retVal = 90;
-        } else if (orientation < (2 * 90) + 45) {
-            retVal = 180;
-        } else if (orientation < (3 * 90) + 45) {
-            retVal = 270;
-        } else {
-            retVal = 0;
-        }
-
-        return retVal;
-    }
-
     //
     // Stores a bitmap or a jpeg byte array to a file (using the specified
     // directory and filename). Also add an entry to the media store for
