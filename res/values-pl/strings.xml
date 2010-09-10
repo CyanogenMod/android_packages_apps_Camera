@@ -35,11 +35,11 @@
     <string name="review_retake" msgid="7804864054896088338">"ZRÓB PONOWNIE"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeria"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Przełącz aparat"</string>
-    <!-- no translation found for enable_time_lapse_mode (9176865387013576340) -->
-    <skip />
-    <!-- no translation found for disable_time_lapse_mode (1025813874111023552) -->
-    <skip />
+    <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Wł. tryb poklatkowy"</string>
+    <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Wył. tryb poklatkowy"</string>
     <!-- no translation found for pref_camera_id_title (6023059405578511534) -->
+    <skip />
+    <!-- no translation found for pref_camera_id_default (364294331738577214) -->
     <skip />
     <!-- no translation found for pref_camera_id_entry_back (5142699735103692485) -->
     <skip />
@@ -53,12 +53,9 @@
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Niska (30 min)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (niska, 30 s)"</string>
     <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (wysoka, 10 min)"</string>
-    <!-- no translation found for pref_video_time_lapse_quality_title (1163053302966946838) -->
-    <skip />
-    <!-- no translation found for pref_video_time_lapse_quality_entry_low (5315843743598116968) -->
-    <skip />
-    <!-- no translation found for pref_video_time_lapse_quality_entry_high (3933491126045555205) -->
-    <skip />
+    <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Jakość filmu poklatkowego"</string>
+    <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Niska"</string>
+    <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Wysoka"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Ustawienia aparatu"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Ustawienia kamery"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Rozmiar zdjęcia"</string>
