@@ -77,15 +77,18 @@ public class IconListPreference extends ListPreference {
         IntArray iconIds = new IntArray();
         IntArray largeIconIds = new IntArray();
 
+        // We allow mIconsIds to be null, but not mLargeIconIds. The reason is that if large icons
+        // are unspecified, the on screen icons will be blank which is a bug.
         for (int i = 0, len = entryValues.length; i < len; i++) {
             if (supported.indexOf(entryValues[i].toString()) >= 0) {
-                iconIds.add(mIconIds[i]);
+                if (mIconIds != null) {
+                    iconIds.add(mIconIds[i]);
+                }
                 largeIconIds.add(mLargeIconIds[i]);
             }
         }
-        int size = iconIds.size();
-        mIconIds = iconIds.toArray(new int[size]);
-        mLargeIconIds = iconIds.toArray(new int[size]);
+        if (mIconIds != null) mIconIds = iconIds.toArray(new int[iconIds.size()]);
+        mLargeIconIds = largeIconIds.toArray(new int[largeIconIds.size()]);
         super.filterUnsupported(supported);
     }
 }
