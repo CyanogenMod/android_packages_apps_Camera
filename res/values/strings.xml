@@ -150,6 +150,8 @@
     <!-- Refers to the video quality [CHAR LIMIT=8] -->
     <string name="pref_video_time_lapse_quality_entry_high">High</string>
     <!-- Refers to the video quality -->
+    <string name="pref_video_time_lapse_quality_entry_480p" translatable="false">480p</string>
+    <!-- Refers to the video quality -->
     <string name="pref_video_time_lapse_quality_entry_720p" translatable="false">720p</string>
     <!-- Refers to the video quality -->
     <string name="pref_video_time_lapse_quality_entry_1080p" translatable="false">1080p</string>

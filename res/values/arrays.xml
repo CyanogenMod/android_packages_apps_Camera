@@ -42,6 +42,7 @@
     <string-array name="pref_video_time_lapse_quality_entries" translatable="false">
         <item>@string/pref_video_time_lapse_quality_entry_low</item>
         <item>@string/pref_video_time_lapse_quality_entry_high</item>
+        <item>@string/pref_video_time_lapse_quality_entry_480p</item>
         <item>@string/pref_video_time_lapse_quality_entry_720p</item>
         <item>@string/pref_video_time_lapse_quality_entry_1080p</item>
     </string-array>
@@ -49,6 +50,7 @@
     <string-array name="pref_video_time_lapse_quality_entryvalues" translatable="false">
         <item>low</item>
         <item>high</item>
+        <item>480p</item>
         <item>720p</item>
         <item>1080p</item>
     </string-array>
@@ -56,6 +58,7 @@
     <array name="video_time_lapse_quality_icons" translatable="false">
         <item>@drawable/ic_viewfinder_video_time_lapse_quality_low</item>
         <item>@drawable/ic_viewfinder_video_time_lapse_quality_high</item>
+        <item>@drawable/ic_viewfinder_video_time_lapse_quality_480p</item>
         <item>@drawable/ic_viewfinder_video_time_lapse_quality_720p</item>
         <item>@drawable/ic_viewfinder_video_time_lapse_quality_1080p</item>
     </array>
