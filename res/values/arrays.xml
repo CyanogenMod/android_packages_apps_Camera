@@ -47,12 +47,14 @@
         <item>@string/pref_video_time_lapse_quality_entry_1080p</item>
     </string-array>
 
+    <!-- These values correspond to the quality level integers defined
+    in CamcorderProfile.java. E.g. QUALITY_TIME_LAPSE_480P = 1004 -->
     <string-array name="pref_video_time_lapse_quality_entryvalues" translatable="false">
-        <item>low</item>
-        <item>high</item>
-        <item>480p</item>
-        <item>720p</item>
-        <item>1080p</item>
+        <item>1000</item>
+        <item>1001</item>
+        <item>1004</item>
+        <item>1005</item>
+        <item>1006</item>
     </string-array>
 
     <array name="video_time_lapse_quality_icons" translatable="false">

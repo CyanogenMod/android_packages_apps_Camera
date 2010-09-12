@@ -55,16 +55,6 @@ public class CameraSettings {
     private static final String VIDEO_QUALITY_MMS = "mms";
     private static final String VIDEO_QUALITY_YOUTUBE = "youtube";
 
-    private static final String VIDEO_TIME_LAPSE_QUALITY_LOW= "low";
-    private static final String VIDEO_TIME_LAPSE_QUALITY_HIGH= "high";
-    private static final String VIDEO_TIME_LAPSE_QUALITY_720P = "720p";
-    private static final String VIDEO_TIME_LAPSE_QUALITY_1080P = "1080p";
-
-    public static final int TIME_LAPSE_VIDEO_QUALITY_LOW = 1;
-    public static final int TIME_LAPSE_VIDEO_QUALITY_HIGH = 2;
-    public static final int TIME_LAPSE_VIDEO_QUALITY_720P = 3;
-    public static final int TIME_LAPSE_VIDEO_QUALITY_1080P = 4;
-
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
     public static final int CURRENT_VERSION = 4;
@@ -145,6 +135,7 @@ public class CameraSettings {
 
     private void initPreference(PreferenceGroup group) {
         ListPreference videoQuality = group.findPreference(KEY_VIDEO_QUALITY);
+        ListPreference videoTimeLapseQuality = group.findPreference(KEY_VIDEO_TIME_LAPSE_QUALITY);
         ListPreference pictureSize = group.findPreference(KEY_PICTURE_SIZE);
         ListPreference whiteBalance =  group.findPreference(KEY_WHITE_BALANCE);
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
@@ -175,6 +166,9 @@ public class CameraSettings {
         }
 
         // Filter out unsupported settings / options
+        if (videoTimeLapseQuality != null) {
+            filterUnsupportedOptions(group, videoTimeLapseQuality, getSupportedTimeLapseProfiles());
+        }
         if (pictureSize != null) {
             filterUnsupportedOptions(group, pictureSize, sizeListToStringList(
                     mParameters.getSupportedPictureSizes()));
@@ -205,6 +199,21 @@ public class CameraSettings {
         }
         if (exposure != null) buildExposureCompensation(group, exposure);
         if (cameraId != null) buildCameraId(group, cameraId);
+    }
+
+    private static List<String> getSupportedTimeLapseProfiles() {
+        ArrayList<String> supportedProfiles = new ArrayList<String>();
+        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_TIME_LAPSE_480P)) {
+            supportedProfiles.add(Integer.toString(CamcorderProfile.QUALITY_TIME_LAPSE_480P));
+        }
+        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_TIME_LAPSE_720P)) {
+            supportedProfiles.add(Integer.toString(CamcorderProfile.QUALITY_TIME_LAPSE_720P));
+        }
+        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_TIME_LAPSE_1080P)) {
+            supportedProfiles.add(Integer.toString(CamcorderProfile.QUALITY_TIME_LAPSE_1080P));
+        }
+
+        return supportedProfiles;
     }
 
     private void buildExposureCompensation(
@@ -376,20 +385,6 @@ public class CameraSettings {
     public static boolean getVideoQuality(String quality) {
         return VIDEO_QUALITY_YOUTUBE.equals(
                 quality) || VIDEO_QUALITY_HIGH.equals(quality);
-    }
-
-    public static int getVideoTimeLapseQuality(String quality) {
-        if (VIDEO_TIME_LAPSE_QUALITY_LOW.equals(quality)) {
-            return TIME_LAPSE_VIDEO_QUALITY_LOW;
-        } else if (VIDEO_TIME_LAPSE_QUALITY_HIGH.equals(quality)) {
-            return TIME_LAPSE_VIDEO_QUALITY_HIGH;
-        } else if (VIDEO_TIME_LAPSE_QUALITY_720P.equals(quality)) {
-            return TIME_LAPSE_VIDEO_QUALITY_720P;
-        } else if (VIDEO_TIME_LAPSE_QUALITY_1080P.equals(quality)) {
-            return TIME_LAPSE_VIDEO_QUALITY_1080P;
-        } else {
-            throw new IllegalArgumentException("Unknown quality" + quality);
-        }
     }
 
     public static int getVidoeDurationInMillis(String quality) {

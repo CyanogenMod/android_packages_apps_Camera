@@ -563,49 +563,10 @@ public class VideoCamera extends NoSearchActivity
                 CameraSettings.KEY_VIDEO_TIME_LAPSE_QUALITY,
                 CameraSettings.DEFAULT_VIDEO_TIME_LAPSE_QUALITY_VALUE);
 
-        int quality = CameraSettings.getVideoTimeLapseQuality(qualityStr);
-
-        mProfile = CamcorderProfile.get(
-                (quality == CameraSettings.TIME_LAPSE_VIDEO_QUALITY_LOW)
-                ? CamcorderProfile.QUALITY_LOW
-                : CamcorderProfile.QUALITY_HIGH);
+        mProfile = CamcorderProfile.get(Integer.parseInt(qualityStr));
 
         mMaxVideoDurationInMs = 0; // No limit
         mTimeBetweenTimeLapseFrameCaptureMs = 2000;
-
-        // TODO: Add new profiles for time lapse instead of setting mProfile
-        // values here.
-        switch (quality) {
-            case CameraSettings.TIME_LAPSE_VIDEO_QUALITY_LOW:
-                mUseStillCameraForTimeLapse = false;
-                mProfile.videoFrameWidth = 176;
-                mProfile.videoFrameHeight = 144;
-                mEncoderLevel = 0;
-                break;
-
-            case CameraSettings.TIME_LAPSE_VIDEO_QUALITY_HIGH:
-                mUseStillCameraForTimeLapse = false;
-                mProfile.videoFrameWidth = 720;
-                mProfile.videoFrameHeight = 480;
-                mEncoderLevel = 0;
-                break;
-
-            case CameraSettings.TIME_LAPSE_VIDEO_QUALITY_720P:
-                mUseStillCameraForTimeLapse = false;
-                mProfile.videoFrameWidth = 1280;
-                mProfile.videoFrameHeight = 720;
-                mProfile.videoBitRate = 20000000;
-                mEncoderLevel = 50;
-                break;
-
-            case CameraSettings.TIME_LAPSE_VIDEO_QUALITY_1080P:
-                mUseStillCameraForTimeLapse = true;
-                mProfile.videoFrameWidth = 1920;
-                mProfile.videoFrameHeight = 1088;
-                mProfile.videoBitRate = 20000000;
-                mEncoderLevel = 50;
-                break;
-        }
 
         if (mUseStillCameraForTimeLapse) {
             // When using still camera for capturing time lapse frames
