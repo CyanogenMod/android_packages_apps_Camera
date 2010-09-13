@@ -164,7 +164,6 @@ public class VideoCamera extends NoSearchActivity
 
     // Time Lapse parameters.
     private boolean mCaptureTimeLapse = false;
-    private boolean mUseStillCameraForTimeLapse = false;
     private int mTimeBetweenTimeLapseFrameCaptureMs = 2000;
     private int mEncoderLevel;
 
@@ -568,20 +567,16 @@ public class VideoCamera extends NoSearchActivity
         mMaxVideoDurationInMs = 0; // No limit
         mTimeBetweenTimeLapseFrameCaptureMs = 2000;
 
-        if (mUseStillCameraForTimeLapse) {
-            // When using still camera for capturing time lapse frames
-            // mProfile.{videoFrameWidth,videoFrameHeight} may correspond to
-            // HD resolution not supported by the video camera. So choose
-            // preview size optimally from the supported preview sizes.
-            List<Size> sizes = mParameters.getSupportedPreviewSizes();
-            Size optimalSize = Util.getOptimalPreviewSize(this,
-                    sizes, (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
-            mDesiredPreviewWidth = optimalSize.width;
-            mDesiredPreviewHeight = optimalSize.height;
-        } else {
-            mDesiredPreviewWidth = mProfile.videoFrameWidth;
-            mDesiredPreviewHeight = mProfile.videoFrameHeight;
-        }
+        // Time lapse mode can capture video (using the still camera) at resolutions
+        // higher than the supported preview sizes. In that case
+        // mProfile.{videoFrameWidth,videoFrameHeight} will correspond to an unsupported
+        // preview size. So choose preview size optimally from the supported preview
+        // sizes.
+        List<Size> sizes = mParameters.getSupportedPreviewSizes();
+        Size optimalSize = Util.getOptimalPreviewSize(this,
+                sizes, (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
+        mDesiredPreviewWidth = optimalSize.width;
+        mDesiredPreviewHeight = optimalSize.height;
     }
 
     private void readVideoPreferences() {
@@ -975,14 +970,16 @@ public class VideoCamera extends NoSearchActivity
         mMediaRecorder = new MediaRecorder();
 
         mMediaRecorder.setCamera(mCameraDevice);
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        if (!mCaptureTimeLapse) {
+            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        }
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setProfile(mProfile);
         if (mMaxVideoDurationInMs != 0) {
             mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
         }
         if (mCaptureTimeLapse) {
-            mMediaRecorder.setTimeLapseParameters(mCaptureTimeLapse, mUseStillCameraForTimeLapse,
+            mMediaRecorder.setTimeLapseParameters(mCaptureTimeLapse, false,
                     mTimeBetweenTimeLapseFrameCaptureMs, mEncoderLevel);
         }
 
