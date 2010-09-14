@@ -979,8 +979,7 @@ public class VideoCamera extends NoSearchActivity
             mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
         }
         if (mCaptureTimeLapse) {
-            mMediaRecorder.setTimeLapseParameters(mCaptureTimeLapse, false,
-                    mTimeBetweenTimeLapseFrameCaptureMs, mEncoderLevel);
+            mMediaRecorder.setCaptureRate((1000 / (double) mTimeBetweenTimeLapseFrameCaptureMs));
         }
 
         // Set output file.
