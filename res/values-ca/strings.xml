@@ -76,11 +76,6 @@
   <string name="pref_camera_coloreffect_entry_redtint">Vermellós</string>
   <string name="pref_camera_coloreffect_entry_bluetint">Blavós</string>
   <string name="pref_camera_coloreffect_entry_greentint">Verdós</string>
-  <string name="pref_camera_multi_entry_level0">Nivell 0</string>
-  <string name="pref_camera_multi_entry_level1">Nivell 1</string>
-  <string name="pref_camera_multi_entry_level2">Nivell 2 (predeterminat)</string>
-  <string name="pref_camera_multi_entry_level3">Nivell 3</string>
-  <string name="pref_camera_multi_entry_level4">Nivell 4</string>
   <string name="pref_camera_sharpness_title">Nitidesa</string>
   <string name="pref_camera_contrast_title">Contrast</string>
   <string name="pref_camera_saturation_title">Saturació</string>

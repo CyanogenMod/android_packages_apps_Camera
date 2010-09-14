@@ -70,7 +70,9 @@ public class HeadUpDisplay extends GLView {
 
     protected IndicatorBar mIndicatorBar;
 
-    private SharedPreferences mSharedPrefs;
+    protected Parameters mParameters;
+    protected SharedPreferences mSharedPrefs;
+
     private PreferenceGroup mPreferenceGroup;
 
     private PopupWindow mPopupWindow;
@@ -84,6 +86,8 @@ public class HeadUpDisplay extends GLView {
     protected ZoomIndicator mZoomIndicator;
     protected boolean mZoomSupported;
 
+    protected SettingsIndicator mSettingsIndicator;
+
     private Handler mHandler;
 
     private final OnSharedPreferenceChangeListener mSharedPreferenceChangeListener =
@@ -96,8 +100,9 @@ public class HeadUpDisplay extends GLView {
         }
     };
 
-    public HeadUpDisplay(Context context, boolean zoomSupported) {
+    public HeadUpDisplay(Context context, Parameters params, boolean zoomSupported) {
         mZoomSupported = zoomSupported;
+        mParameters = params;
         initializeStaticVariables(context);
     }
 

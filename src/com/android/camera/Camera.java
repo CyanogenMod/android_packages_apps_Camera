@@ -32,7 +32,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -120,7 +119,6 @@ public class Camera extends BaseCamera {
 
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = 0;  // No rotation (landscape) by default.
-    private SharedPreferences mPreferences;
 
     private static final int IDLE = 1;
     private static final int SNAPSHOT_IN_PROGRESS = 2;
@@ -946,7 +944,7 @@ public class Camera extends BaseCamera {
         mGLRootView = new GLRootView(this);
         frame.addView(mGLRootView);
 
-        mHeadUpDisplay = new CameraHeadUpDisplay(this, mParameters.isZoomSupported());
+        mHeadUpDisplay = new CameraHeadUpDisplay(this, mParameters);
         CameraSettings settings = new CameraSettings(this, mInitialParams);
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences));
@@ -1671,10 +1669,6 @@ public class Camera extends BaseCamera {
         return optimalSize;
     }
 
-    private static boolean isSupported(String value, List<String> supported) {
-        return supported == null ? false : supported.indexOf(value) >= 0;
-    }
-
     private void updateCameraParametersInitialize() {
         // Reset preview frame rate to the maximum because it may be lowered by
         // video camera application.
@@ -1779,38 +1773,6 @@ public class Camera extends BaseCamera {
              mParameters.setAutoExposure(autoExposure);
          }
 
-        // Set sharpness parameter.
-        String sharpness = mPreferences.getString(
-                CameraSettings.KEY_SHARPNESS,
-                getString(R.string.pref_camera_sharpness_default));
-        if (mParameters.getMaxSharpness() > 0) {
-            mParameters.setSharpness(Float.parseFloat(sharpness));
-        }
-
-        // Set contrast parameter.
-        String contrast = mPreferences.getString(
-                CameraSettings.KEY_CONTRAST,
-                getString(R.string.pref_camera_contrast_default));
-        if (mParameters.getMaxContrast() > 0) {
-            mParameters.setContrast(Float.parseFloat(contrast));
-        }
-
-        // Set saturation parameter.
-        String saturation = mPreferences.getString(
-                CameraSettings.KEY_SATURATION,
-                getString(R.string.pref_camera_saturation_default));
-        if (mParameters.getMaxSaturation() > 0) {
-            mParameters.setSaturation(Float.parseFloat(saturation));
-        }
-        
-        // Set brightness parameter.
-        String brightness = mPreferences.getString(
-                CameraSettings.KEY_BRIGHTNESS,
-                getString(R.string.pref_camera_brightness_default));
-        if (mParameters.getMaxBrightness() > 0) {
-            mParameters.setBrightness(Float.parseFloat(brightness));
-        }
-        
         // Set anti banding parameter.
         String antiBanding = mPreferences.getString(
                 CameraSettings.KEY_ANTIBANDING,
@@ -1819,33 +1781,7 @@ public class Camera extends BaseCamera {
             mParameters.setAntibanding(antiBanding);
         }
 
-        // For the following settings, we need to check if the settings are
-        // still supported by latest driver, if not, ignore the settings.
-
-        // Set color effect parameter.
-        String colorEffect = mPreferences.getString(
-                CameraSettings.KEY_COLOR_EFFECT,
-                getString(R.string.pref_camera_coloreffect_default));
-        if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
-            mParameters.setColorEffect(colorEffect);
-        }
-
-        // Set exposure compensation
-        String exposure = mPreferences.getString(
-                CameraSettings.KEY_EXPOSURE,
-                getString(R.string.pref_exposure_default));
-        try {
-            int value = Integer.parseInt(exposure);
-            int max = mParameters.getMaxExposureCompensation();
-            int min = mParameters.getMinExposureCompensation();
-            if (value >= min && value <= max) {
-                mParameters.setExposureCompensation(value);
-            } else {
-                Log.w(TAG, "invalid exposure range: " + exposure);
-            }
-        } catch (NumberFormatException e) {
-            Log.w(TAG, "invalid exposure: " + exposure);
-        }
+        setCommonParameters();
 
         if (mGLRootView != null) updateSceneModeInHud();
 
@@ -1865,19 +1801,7 @@ public class Camera extends BaseCamera {
                 }
             }
 
-            // Set white balance parameter.
-            String whiteBalance = mPreferences.getString(
-                    CameraSettings.KEY_WHITE_BALANCE,
-                    getString(R.string.pref_camera_whitebalance_default));
-            if (isSupported(whiteBalance,
-                    mParameters.getSupportedWhiteBalance())) {
-                mParameters.setWhiteBalance(whiteBalance);
-            } else {
-                whiteBalance = mParameters.getWhiteBalance();
-                if (whiteBalance == null) {
-                    whiteBalance = Parameters.WHITE_BALANCE_AUTO;
-                }
-            }
+            setWhiteBalance();
 
             // Set focus mode.
             mFocusMode = mPreferences.getString(

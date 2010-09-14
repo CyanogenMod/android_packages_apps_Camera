@@ -21,6 +21,11 @@ import android.view.View.MeasureSpec;
 
 public class LinearLayout extends GLView {
 
+    public static final int HORIZONTAL = 0;
+    public static final int VERTICAL   = 1;
+
+    private int mOrientation = VERTICAL;
+
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         int width = 0;
@@ -28,8 +33,13 @@ public class LinearLayout extends GLView {
         for (int i = 0, n = getComponentCount(); i < n; ++i) {
             GLView view = getComponent(i);
             view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-            width = Math.max(width, view.getMeasuredWidth());
-            height += view.getMeasuredHeight();
+            if (mOrientation == VERTICAL) {
+                width = Math.max(width, view.getMeasuredWidth());
+                height += view.getMeasuredHeight();
+            } else {
+                width += view.getMeasuredWidth();
+                height = Math.max(height, view.getMeasuredHeight());
+            }
         }
         new MeasureHelper(this)
                 .setPreferredContentSize(width, height)
@@ -41,14 +51,25 @@ public class LinearLayout extends GLView {
         Rect p = mPaddings;
         int offsetX = p.left;
         int width = (r - l) - p.left - p.right;
+        int height = (b - t) - p.top - p.bottom;
         int offsetY = p.top;
         for (int i = 0, n = getComponentCount(); i < n; ++i) {
             GLView view = getComponent(i);
             view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-            int nextOffsetY = offsetY + view.getMeasuredHeight();
-            view.layout(offsetX, offsetY, offsetX + width, nextOffsetY);
-            offsetY = nextOffsetY;
+            if (mOrientation == VERTICAL) {
+                int nextOffsetY = offsetY + view.getMeasuredHeight();
+                view.layout(offsetX, offsetY, offsetX + width, nextOffsetY);
+                offsetY = nextOffsetY;
+            } else {
+                int nextOffsetX = offsetX + view.getMeasuredWidth();
+                view.layout(offsetX, offsetY, nextOffsetX, offsetY + height);
+                offsetX = nextOffsetX;
+            }
         }
+    }
+
+    public void setOrientation(int orientation) {
+        mOrientation = orientation;
     }
 
 }

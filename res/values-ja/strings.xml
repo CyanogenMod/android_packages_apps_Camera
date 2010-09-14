@@ -99,11 +99,6 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"色合い（赤）"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"色合い（青）"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"色合い（緑）"</string>
-    <string name="pref_camera_multi_entry_level0">"レベル0"</string>
-    <string name="pref_camera_multi_entry_level1">"レベル1"</string>
-    <string name="pref_camera_multi_entry_level2">"レベル2(デフォルト)"</string>
-    <string name="pref_camera_multi_entry_level3">"レベル3"</string>
-    <string name="pref_camera_multi_entry_level4">"レベル4"</string>
     <string name="pref_camera_sharpness_title">"シャープネス"</string>
     <string name="pref_camera_contrast_title">"コントラスト"</string>
     <string name="pref_camera_saturation_title">"彩度"</string>

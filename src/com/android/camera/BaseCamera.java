@@ -19,6 +19,7 @@ package com.android.camera;
 
 import com.android.camera.ui.HeadUpDisplay;
 
+import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.media.MediaRecorder;
@@ -42,6 +43,7 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     protected android.hardware.Camera mCameraDevice;
     protected MediaRecorder mMediaRecorder;
 
+    protected SharedPreferences mPreferences;
     protected HeadUpDisplay mHeadUpDisplay;
     protected Parameters mParameters;
     protected Menu mOptionsMenu;
@@ -69,6 +71,77 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     protected abstract void onZoomValueChanged(int index);
 
     protected abstract int getCameraMode();
+
+    protected void setCommonParameters() {
+
+        // Set color effect parameter.
+        String colorEffect = mPreferences.getString(
+                CameraSettings.KEY_COLOR_EFFECT,
+                getString(R.string.pref_camera_coloreffect_default));
+        if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
+            mParameters.setColorEffect(colorEffect);
+        }
+
+        // Set sharpness parameter.
+        if (mParameters.getMaxSharpness() > 0) {
+            String sharpness = mPreferences.getString(
+                    CameraSettings.KEY_SHARPNESS,
+                    String.valueOf(mParameters.getDefaultSharpness()));
+            mParameters.setSharpness(Integer.valueOf(sharpness));
+        }
+
+        // Set contrast parameter.
+        if (mParameters.getMaxContrast() > 0) {
+            String contrast = mPreferences.getString(
+                    CameraSettings.KEY_CONTRAST,
+                    String.valueOf(mParameters.getDefaultContrast()));
+            mParameters.setContrast(Integer.valueOf(contrast));
+        }
+
+        // Set saturation parameter.
+        if (mParameters.getMaxSaturation() > 0) {
+            String saturation = mPreferences.getString(
+                    CameraSettings.KEY_SATURATION,
+                    String.valueOf(mParameters.getDefaultSaturation()));
+            mParameters.setSaturation(Integer.valueOf(saturation));
+        }
+
+        // Set exposure compensation
+        String exposure = mPreferences.getString(
+                CameraSettings.KEY_EXPOSURE,
+                CameraSettings.EXPOSURE_DEFAULT_VALUE);
+        try {
+            float value = Float.parseFloat(exposure);
+            int max = mParameters.getMaxExposureCompensation();
+            int min = mParameters.getMinExposureCompensation();
+            if (value >= min && value <= max) {
+                mParameters.set("exposure-compensation", exposure);
+            } else {
+                Log.w(TAG, "invalid exposure range: " + exposure);
+            }
+        } catch (NumberFormatException e) {
+            Log.w(TAG, "invalid exposure: " + exposure);
+        }
+    }
+
+    protected void setWhiteBalance() {
+        String whiteBalance = mPreferences.getString(
+                CameraSettings.KEY_WHITE_BALANCE,
+                getString(R.string.pref_camera_whitebalance_default));
+        if (isSupported(whiteBalance,
+                mParameters.getSupportedWhiteBalance())) {
+            mParameters.setWhiteBalance(whiteBalance);
+        } else {
+            whiteBalance = mParameters.getWhiteBalance();
+            if (whiteBalance == null) {
+                whiteBalance = Parameters.WHITE_BALANCE_AUTO;
+            }
+        }
+    }
+
+    protected static boolean isSupported(String value, List<String> supported) {
+        return supported == null ? false : supported.indexOf(value) >= 0;
+    }
 
     protected void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;

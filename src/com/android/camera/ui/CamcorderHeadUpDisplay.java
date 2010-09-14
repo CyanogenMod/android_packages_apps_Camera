@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.hardware.Camera.Parameters;
 
 import com.android.camera.CameraSettings;
 import com.android.camera.ListPreference;
@@ -29,8 +30,8 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
     private OtherSettingsIndicator mOtherSettings;
     private BasicIndicator mVideoQualitySettings;
 
-    public CamcorderHeadUpDisplay(Context context, boolean zoomSupported) {
-        super(context, zoomSupported);
+    public CamcorderHeadUpDisplay(Context context, Parameters params) {
+        super(context, params, CameraSettings.isVideoZoomSupported(params));
     }
 
     @Override
@@ -40,16 +41,11 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
 
         ListPreference[] prefs = getListPreferences(group,
                 CameraSettings.KEY_FOCUS_MODE,
-                CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_JPEG_QUALITY,
                 CameraSettings.KEY_COLOR_EFFECT,
                 CameraSettings.KEY_AUTOEXPOSURE,
-                CameraSettings.KEY_BRIGHTNESS,
-                CameraSettings.KEY_SATURATION,
-                CameraSettings.KEY_CONTRAST,
-                CameraSettings.KEY_SHARPNESS,
                 CameraSettings.KEY_VIDEO_SIZE,
                 CameraSettings.KEY_VIDEO_ENCODER,
                 CameraSettings.KEY_AUDIO_ENCODER,
@@ -64,6 +60,11 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
             }
         });
         mIndicatorBar.addComponent(mOtherSettings);
+
+        mSettingsIndicator = new SettingsIndicator(context, mParameters, mSharedPrefs);
+        if (mSettingsIndicator.isAvailable()) {
+            mIndicatorBar.addComponent(mSettingsIndicator);
+        }
 
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);

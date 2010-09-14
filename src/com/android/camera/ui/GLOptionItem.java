@@ -28,7 +28,7 @@ import javax.microedition.khronos.opengles.GL11;
 
 public class GLOptionItem extends GLView {
     private static final int FONT_COLOR = Color.WHITE;
-    private static final float FONT_SIZE = 18;
+    private static final float FONT_SIZE = 16;
 
     private static final int MINIMAL_WIDTH = 120;
     private static final int MINIMAL_HEIGHT = 32;

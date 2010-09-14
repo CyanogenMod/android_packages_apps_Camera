@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.hardware.Camera.Parameters;
 
 import com.android.camera.CameraSettings;
 import com.android.camera.IconListPreference;
@@ -30,8 +31,8 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     private OtherSettingsIndicator mOtherSettings;
     private GpsIndicator mGpsIndicator;
 
-    public CameraHeadUpDisplay(Context context, boolean zoomSupported) {
-        super(context, zoomSupported);
+    public CameraHeadUpDisplay(Context context, Parameters params) {
+        super(context, params, params.isZoomSupported());
     }
 
     @Override
@@ -41,17 +42,12 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
 
         ListPreference prefs[] = getListPreferences(group,
                 CameraSettings.KEY_FOCUS_MODE,
-                CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_COLOR_EFFECT,
                 CameraSettings.KEY_ISO,
                 CameraSettings.KEY_LENSSHADING,
                 CameraSettings.KEY_AUTOEXPOSURE,
                 CameraSettings.KEY_ANTIBANDING,
-                CameraSettings.KEY_BRIGHTNESS,
-                CameraSettings.KEY_SATURATION,
-                CameraSettings.KEY_CONTRAST,
-                CameraSettings.KEY_SHARPNESS,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_JPEG_QUALITY);
 
@@ -65,6 +61,11 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         });
         mIndicatorBar.addComponent(mOtherSettings);
 
+        mSettingsIndicator = new SettingsIndicator(context, mParameters, mSharedPrefs);
+        if (mSettingsIndicator.isAvailable()) {
+            mIndicatorBar.addComponent(mSettingsIndicator);
+        }
+
         mGpsIndicator = new GpsIndicator(
                 context, group, (IconListPreference)
                 group.findPreference(CameraSettings.KEY_RECORD_LOCATION));
@@ -77,6 +78,7 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
             mZoomIndicator = new ZoomIndicator(context);
             mIndicatorBar.addComponent(mZoomIndicator);
         }
+
     }
 
     public void setGpsHasSignal(final boolean hasSignal) {

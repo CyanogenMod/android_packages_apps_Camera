@@ -47,30 +47,18 @@
                 camera:title="@string/pref_camera_coloreffect_title"
                 camera:entries="@array/pref_camera_coloreffect_entries"
                 camera:entryValues="@array/pref_camera_coloreffect_entryvalues"/>
-         <ListPreference
-                camera:key="pref_camera_brightness_key"
-                camera:defaultValue="@string/pref_camera_brightness_default"
-                camera:title="@string/pref_camera_brightness_title"
-                camera:entries="@array/pref_camera_multi_entries"
-                camera:entryValues="@array/pref_camera_brightness_entryvalues"/>
+        <ListPreference
+                camera:key="pref_camera_exposure_key"
+                camera:title="@string/pref_exposure_title" />
          <ListPreference
                 camera:key="pref_camera_sharpness_key"
-                camera:defaultValue="@string/pref_camera_sharpness_default"
-                camera:title="@string/pref_camera_sharpness_title"
-                camera:entries="@array/pref_camera_multi_entries"
-                camera:entryValues="@array/pref_camera_sharpness_entryvalues"/>
+                camera:title="@string/pref_camera_sharpness_title" />
         <ListPreference
                 camera:key="pref_camera_contrast_key"
-                camera:defaultValue="@string/pref_camera_contrast_default"
-                camera:title="@string/pref_camera_contrast_title"
-                camera:entries="@array/pref_camera_multi_entries"
-                camera:entryValues="@array/pref_camera_contrast_entryvalues" />
+                camera:title="@string/pref_camera_contrast_title" />
         <ListPreference
                 camera:key="pref_camera_saturation_key"
-                camera:defaultValue="@string/pref_camera_saturation_default"
-                camera:title="@string/pref_camera_saturation_title"
-                camera:entries="@array/pref_camera_multi_entries"
-                camera:entryValues="@array/pref_camera_saturation_entryvalues" />
+                camera:title="@string/pref_camera_saturation_title" />
         <ListPreference
                 camera:key="pref_camera_videosize_key"
                 camera:defaultValue="@string/pref_camera_videosize_default"

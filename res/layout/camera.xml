@@ -36,7 +36,7 @@
             <com.android.camera.FocusRectangle
                     android:id="@+id/focus_rectangle"
                     android:layout_width="100dip"
-		    android:layout_height="100dip"
+                    android:layout_height="100dip"
                     android:layout_gravity="center" />
         </FrameLayout>
     </com.android.camera.PreviewFrameLayout>

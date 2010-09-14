@@ -30,14 +30,13 @@ import java.util.Arrays;
 
 import javax.microedition.khronos.opengles.GL11;
 
-public class ZoomController extends GLView {
+public class SettingsController extends GLView {
     private static final int LABEL_COLOR = Color.WHITE;
 
-    private static final DecimalFormat sZoomFormat = new DecimalFormat("#.#x");
     private static final int INVALID_POSITION = Integer.MAX_VALUE;
 
-    private static final float LABEL_FONT_SIZE = 11;
-    private static final int HORIZONTAL_PADDING = 3;
+    private static final float LABEL_FONT_SIZE = 10;
+    private static final int HORIZONTAL_PADDING = 1;
     private static final int VERTICAL_PADDING = 3;
     private static final int MINIMAL_HEIGHT = 150;
     private static final float TOLERANCE_RADIUS = 30;
@@ -54,7 +53,7 @@ public class ZoomController extends GLView {
     private static Texture sFineTickMark;
 
     private StringTexture mTickLabels[];
-    private float mRatios[];
+    private String mValues[];
     private int mIndex;
 
     private int mFineTickStep;
@@ -68,13 +67,13 @@ public class ZoomController extends GLView {
     private int mSliderLeft;
     private int mSliderPosition = INVALID_POSITION;
     private float mValueGap;
-    private ZoomListener mZoomListener;
+    private ValueListener mValueListener;
 
-    public interface ZoomListener {
-        public void onZoomChanged(int index, float ratio, boolean isMoving);
+    public interface ValueListener {
+        public void onValueChanged(int index, String value, boolean isMoving);
     }
 
-    public ZoomController(Context context) {
+    public SettingsController(Context context) {
         initializeStaticVariable(context);
     }
 
@@ -84,12 +83,12 @@ public class ZoomController extends GLView {
         mSliderPosition = position;
         invalidate();
 
-        int index = mRatios.length - 1 - (int)
+        int index = mValues.length - 1 - (int)
                 ((float)(position - mSliderTop) /  mValueGap + .5f);
         if (index != mIndex || !isMoving) {
             mIndex = index;
-            if (mZoomListener != null) {
-                mZoomListener.onZoomChanged(mIndex, mRatios[mIndex], isMoving);
+            if (mValueListener != null) {
+                mValueListener.onValueChanged(mIndex, mValues[mIndex], isMoving);
             }
         }
     }
@@ -103,8 +102,8 @@ public class ZoomController extends GLView {
         sMinimalHeight = dpToPixel(context, MINIMAL_HEIGHT);
         sToleranceRadius = dpToPixel(context, TOLERANCE_RADIUS);
 
-        sBackground = new NinePatchTexture(context, R.drawable.zoom_background);
-        sSlider = new ResourceTexture(context, R.drawable.zoom_slider);
+        sBackground = new NinePatchTexture(context, R.drawable.settings_background);
+        sSlider = new ResourceTexture(context, R.drawable.settings_slider);
         sTickMark = new ResourceTexture(context, R.drawable.zoom_tickmark);
         sFineTickMark = new ResourceTexture(
                 context, R.drawable.zoom_finetickmark);
@@ -116,7 +115,7 @@ public class ZoomController extends GLView {
         Rect p = mPaddings;
         int height = b - t - p.top - p.bottom;
         int margin = Math.max(sSlider.getHeight(), mMaxLabelHeight);
-        mValueGap = (float) (height - margin) / (mRatios.length - 1);
+        mValueGap = (float) (height - margin) / (mValues.length - 1);
 
         mSliderLeft = p.left + mMaxLabelWidth + sHorizontalPadding
                 + sTickMark.getWidth() + sHorizontalPadding;
@@ -127,7 +126,7 @@ public class ZoomController extends GLView {
 
     private boolean withInToleranceRange(float x, float y) {
         float sx = mSliderLeft + sSlider.getWidth() / 2;
-        float sy = mSliderTop + (mRatios.length - 1 - mIndex) * mValueGap
+        float sy = mSliderTop + (mValues.length - 1 - mIndex) * mValueGap
                 + sSlider.getHeight() / 2;
         float dist = Util.distance(x, y, sx, sy);
         return dist <= sToleranceRadius;
@@ -158,15 +157,15 @@ public class ZoomController extends GLView {
         return true;
     }
 
-    public void setAvailableZoomRatios(float ratios[]) {
-        if (Arrays.equals(ratios, mRatios)) return;
-        mRatios = ratios;
-        mLabelStep = getLabelStep(ratios.length);
+    public void setAvailableValues(String values[]) {
+        if (Arrays.equals(values, mValues)) return;
+        mValues = values;
+        mLabelStep = getLabelStep(values.length);
         mTickLabels = new StringTexture[
-                (ratios.length + mLabelStep - 1) / mLabelStep];
+                (values.length + mLabelStep - 1) / mLabelStep];
         for (int i = 0, n = mTickLabels.length; i < n; ++i) {
             mTickLabels[i] = StringTexture.newInstance(
-                    sZoomFormat.format(ratios[i * mLabelStep]),
+                    String.valueOf(values[i * mLabelStep]),
                     sLabelSize, LABEL_COLOR);
         }
         mFineTickStep = mLabelStep % 3 == 0
@@ -196,7 +195,7 @@ public class ZoomController extends GLView {
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         int labelCount = mTickLabels.length;
-        int ratioCount = mRatios.length;
+        int ratioCount = mValues.length;
 
         int height = (mMaxLabelHeight + sVerticalPadding)
                 * (labelCount - 1) * ratioCount / (mLabelStep * labelCount)
@@ -247,7 +246,7 @@ public class ZoomController extends GLView {
             xoffset += sTickMark.getWidth() - tickMark.getWidth();
             yoffset = mSliderBottom - sSlider.getHeight() / 2;
             halfHeight = tickMark.getHeight() / 2;
-            for (int i = 0, n = mRatios.length; i < n; ++i) {
+            for (int i = 0, n = mValues.length; i < n; ++i) {
                 if (i % mLabelStep != 0) {
                     tickMark.draw(root, xoffset, (int) (yoffset - halfHeight));
                 }
@@ -265,22 +264,22 @@ public class ZoomController extends GLView {
 
         if (mSliderPosition == INVALID_POSITION) {
             sSlider.draw(root, left, (int)
-                    (top + mValueGap * (mRatios.length - 1 - mIndex)));
+                    (top + mValueGap * (mValues.length - 1 - mIndex)));
         } else {
             sSlider.draw(root, left, mSliderPosition);
         }
     }
 
-    public void setZoomListener(ZoomListener listener) {
-        mZoomListener = listener;
+    public void setValueListener(ValueListener listener) {
+        mValueListener = listener;
     }
 
-    public void setZoomIndex(int index) {
-        index = Util.clamp(index, 0, mRatios.length - 1);
+    public void setValueIndex(int index) {
+        index = Util.clamp(index, 0, mValues.length - 1);
         if (mIndex == index) return;
         mIndex = index;
-        if (mZoomListener != null) {
-            mZoomListener.onZoomChanged(mIndex, mRatios[mIndex], false);
+        if (mValueListener != null) {
+            mValueListener.onValueChanged(mIndex, mValues[mIndex], false);
         }
     }
 }
