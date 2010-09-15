@@ -65,6 +65,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);
         if (mCaptureTimeLapse) {
+            addIndicator(context, group, CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL);
             addIndicator(context, group, CameraSettings.KEY_VIDEO_TIME_LAPSE_QUALITY);
         } else {
             addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);

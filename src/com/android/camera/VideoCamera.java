@@ -165,7 +165,6 @@ public class VideoCamera extends NoSearchActivity
     // Time Lapse parameters.
     private boolean mCaptureTimeLapse = false;
     private int mTimeBetweenTimeLapseFrameCaptureMs = 2000;
-    private int mEncoderLevel;
 
     private int mDesiredPreviewWidth;
     private int mDesiredPreviewHeight;
@@ -558,14 +557,19 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void readTimeLapseVideoPreferences() {
+        // Read CamcorderProfile quality.
         String qualityStr = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_TIME_LAPSE_QUALITY,
-                CameraSettings.DEFAULT_VIDEO_TIME_LAPSE_QUALITY_VALUE);
-
+                getString(R.string.pref_video_time_lapse_quality_default));
         mProfile = CamcorderProfile.get(Integer.parseInt(qualityStr));
 
+        // Read interval between frame capture.
+        String frameIntervalStr = mPreferences.getString(
+                CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
+                getString(R.string.pref_video_time_lapse_frame_interval_default));
+        mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
+
         mMaxVideoDurationInMs = 0; // No limit
-        mTimeBetweenTimeLapseFrameCaptureMs = 2000;
 
         // Time lapse mode can capture video (using the still camera) at resolutions
         // higher than the supported preview sizes. In that case

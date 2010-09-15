@@ -40,6 +40,7 @@ public class CameraSettings {
     public static final String KEY_RECORD_LOCATION = RecordLocationPreference.KEY;
     public static final String KEY_VIDEO_QUALITY = "pref_video_quality_key";
     public static final String KEY_VIDEO_TIME_LAPSE_QUALITY = "pref_video_time_lapse_quality_key";
+    public static final String KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL = "pref_video_time_lapse_frame_interval_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
@@ -66,7 +67,6 @@ public class CameraSettings {
     private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 10 mins
 
     public static final String DEFAULT_VIDEO_QUALITY_VALUE = "high";
-    public static final String DEFAULT_VIDEO_TIME_LAPSE_QUALITY_VALUE = "high";
 
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
