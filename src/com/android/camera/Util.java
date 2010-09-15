@@ -298,7 +298,7 @@ public class Util {
                 new android.hardware.Camera.CameraInfo();
         android.hardware.Camera.getCameraInfo(cameraId, info);
         int degrees = getDisplayRotation(activity);
-        int result = (info.mOrientation - degrees + 360) % 360;
+        int result = (info.orientation - degrees + 360) % 360;
         camera.setDisplayOrientation(result);
     }
 }
