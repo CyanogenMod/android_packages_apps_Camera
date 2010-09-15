@@ -30,6 +30,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
@@ -133,8 +134,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private Parameters mParameters;
     private Parameters mInitialParams;
 
-    private OrientationEventListener mOrientationListener;
-    private int mLastOrientation = 0;  // No rotation (landscape) by default.
+    private MyOrientationEventListener mOrientationListener;
+    // The device orientation in degrees. Default is unknown.
+    private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
+    // The orientation compensation for icons and thumbnails.
+    private int mOrientationCompensation = 0;
     private ComboPreferences mPreferences;
 
     private static final int IDLE = 1;
@@ -302,24 +306,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // Create orientation listenter. This should be done first because it
         // takes some time to get first orientation.
-        mOrientationListener = new OrientationEventListener(Camera.this) {
-            @Override
-            public void onOrientationChanged(int orientation) {
-                // We keep the last known orientation. So if the user
-                // first orient the camera then point the camera to
-                if (orientation != ORIENTATION_UNKNOWN) {
-                    orientation += 90;
-                }
-                orientation = ImageManager.roundOrientation(orientation);
-                if (orientation != mLastOrientation) {
-                    mLastOrientation = orientation;
-                    if (!mIsImageCaptureIntent)  {
-                        setOrientationIndicator(mLastOrientation);
-                    }
-                    mHeadUpDisplay.setOrientation(mLastOrientation);
-                }
-            }
-        };
+        mOrientationListener = new MyOrientationEventListener(Camera.this);
         mOrientationListener.enable();
 
         // Initialize location sevice.
@@ -789,8 +776,18 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         private void capture() {
             mCaptureOnlyData = null;
 
-            // Set rotation.
-            mParameters.setRotation(mLastOrientation);
+            // Set JPEG rotation to match the orientation of what users see. The
+            // rotation is relative to the orientation of the camera. The value
+            // from OrientationEventListener is relative to the natural
+            // orientation of the device. CameraInfo.mOrientation is the angle
+            // between camera orientation and natural device orientation. The
+            // sum of the two is the value for setRotation.
+            int rotation = 0;
+            if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
+                CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+                rotation = (mOrientation + info.mOrientation) % 360;
+            }
+            mParameters.setRotation(rotation);
 
             // Clear previous GPS location from the parameters.
             mParameters.removeGpsData();
@@ -1000,7 +997,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 CameraHolder.instance().getCameraInfo());
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences),
-                getZoomRatios(), mLastOrientation);
+                getZoomRatios(), mOrientationCompensation);
         if (mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomIndex(mZoomValue);
             mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
@@ -1016,7 +1013,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void attachHeadUpDisplay() {
-        mHeadUpDisplay.setOrientation(mLastOrientation);
+        mHeadUpDisplay.setOrientation(mOrientationCompensation);
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
         mGLRootView = new GLRootView(this);
         mGLRootView.setContentPane(mHeadUpDisplay);
@@ -1028,6 +1025,36 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mHeadUpDisplay.collapse();
         ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         mGLRootView = null;
+    }
+
+    public static int roundOrientation(int orientation) {
+        return ((orientation + 45) / 90 * 90) % 360;
+    }
+
+    private class MyOrientationEventListener
+            extends OrientationEventListener {
+        public MyOrientationEventListener(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onOrientationChanged(int orientation) {
+            // We keep the last known orientation. So if the user first orient
+            // the camera then point the camera to floor or sky, we still have
+            // the correct orientation.
+            if (orientation == ORIENTATION_UNKNOWN) return;
+            orientation = roundOrientation(orientation);
+            if (orientation != mOrientation) {
+                mOrientation = orientation;
+                mOrientationCompensation = orientation
+                        + Util.getDisplayRotation(Camera.this);
+
+                if (!mIsImageCaptureIntent) {
+                    setOrientationIndicator(mOrientationCompensation);
+                }
+                mHeadUpDisplay.setOrientation(mOrientationCompensation);
+            }
+        }
     }
 
     private void setOrientationIndicator(int degree) {
