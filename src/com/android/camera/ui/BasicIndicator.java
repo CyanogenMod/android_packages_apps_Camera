@@ -19,31 +19,47 @@ package com.android.camera.ui;
 import android.content.Context;
 
 import com.android.camera.IconListPreference;
+import com.android.camera.ListPreference;
 import com.android.camera.R;
 import com.android.camera.Util;
 import com.android.camera.ui.GLListView.OnItemSelectedListener;
 
 class BasicIndicator extends AbstractIndicator {
+    private static final float FONT_SIZE = 18;
+    private static final int FONT_COLOR = 0xA8FFFFFF;
     private static final int COLOR_OPTION_ITEM_HIGHLIGHT = 0xFF181818;
 
     private final ResourceTexture mIcon[];
-    private final IconListPreference mPreference;
+    private final ListPreference mPreference;
     protected int mIndex;
     private GLListView mPopupContent;
     private PreferenceAdapter mModel;
     private String mOverride;
+    private int mTitleIndex;
+    private StringTexture mTitle;
+    private final float mFontSize;
+    private boolean mIsIconListMode;
 
-    public BasicIndicator(Context context, IconListPreference preference) {
+    public BasicIndicator(Context context, ListPreference preference) {
         super(context);
         mPreference = preference;
-        mIcon = new ResourceTexture[preference.getLargeIconIds().length];
         mIndex = preference.findIndexOfValue(preference.getValue());
+        if (preference instanceof IconListPreference) {
+            mIsIconListMode = true;
+            mIcon = new ResourceTexture[((IconListPreference) preference).getLargeIconIds().length];
+            mFontSize = 0;
+        } else {
+            mIsIconListMode = false;
+            mIcon = null;
+            mFontSize = GLRootView.dpToPixel(context, FONT_SIZE);
+            mTitleIndex = -1;
+        }
     }
 
     // Set the override and/or reload the value from preferences.
     private void updateContent(String override, boolean reloadValue) {
         if (!reloadValue && Util.equals(mOverride, override)) return;
-        IconListPreference pref = mPreference;
+        ListPreference pref = mPreference;
         mOverride = override;
         int index = pref.findIndexOfValue(
                 override == null ? pref.getValue() : override);
@@ -55,7 +71,7 @@ class BasicIndicator extends AbstractIndicator {
 
     @Override
     public void overrideSettings(String key, String settings) {
-        IconListPreference pref = mPreference;
+        ListPreference pref = mPreference;
         if (!pref.getKey().equals(key)) return;
         updateContent(settings, false);
     }
@@ -104,13 +120,23 @@ class BasicIndicator extends AbstractIndicator {
     }
 
     @Override
-    protected ResourceTexture getIcon() {
-        int index = mIndex;
-        if (mIcon[index] == null) {
-            Context context = getGLRootView().getContext();
-            mIcon[index] = new ResourceTexture(
-                    context, mPreference.getLargeIconIds()[index]);
+    protected BitmapTexture getIcon() {
+        if (mIsIconListMode) {
+            int index = mIndex;
+            if (mIcon[index] == null) {
+                Context context = getGLRootView().getContext();
+                mIcon[index] = new ResourceTexture(
+                        context, ((IconListPreference) mPreference).getLargeIconIds()[index]);
+            }
+            return mIcon[index];
+        } else {
+            if (mTitleIndex != mIndex) {
+                mTitleIndex = mIndex;
+                if (mTitle != null) mTitle.deleteFromGL();
+                String value = mPreference.getEntry();
+                mTitle = StringTexture.newInstance(value, mFontSize, FONT_COLOR);
+            }
+            return mTitle;
         }
-        return mIcon[index];
     }
 }

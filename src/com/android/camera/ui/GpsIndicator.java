@@ -33,7 +33,7 @@ class GpsIndicator extends BasicIndicator {
     }
 
     @Override
-    protected ResourceTexture getIcon() {
+    protected BitmapTexture getIcon() {
         if (mIndex == GPS_ON_INDEX && !mHasSignal) {
             if (mNoSignalIcon == null) {
                 Context context = getGLRootView().getContext();

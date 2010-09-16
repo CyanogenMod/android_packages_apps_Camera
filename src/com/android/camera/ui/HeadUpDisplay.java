@@ -329,8 +329,7 @@ public class HeadUpDisplay extends GLView {
 
     protected BasicIndicator addIndicator(
             Context context, PreferenceGroup group, String key) {
-        IconListPreference iconPref =
-                (IconListPreference) group.findPreference(key);
+        ListPreference iconPref = group.findPreference(key);
         if (iconPref == null) return null;
         BasicIndicator indicator = new BasicIndicator(context, iconPref);
         mIndicatorBar.addComponent(indicator);

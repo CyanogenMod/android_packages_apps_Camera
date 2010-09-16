@@ -144,7 +144,7 @@
     <!-- Describes the preference dialog for choosing quality for time lapse video.
     Appears at top of the dialog. [CHAR LIMIT=30] -->
     <string name="pref_video_time_lapse_quality_title">Time lapse video quality</string>
-    <string name="pref_video_time_lapse_quality_default" translatable="false">high</string>
+    <string name="pref_video_time_lapse_quality_default" translatable="false">1001</string>
     <!-- Refers to the video quality [CHAR LIMIT=8] -->
     <string name="pref_video_time_lapse_quality_entry_low">Low</string>
     <!-- Refers to the video quality [CHAR LIMIT=8] -->
@@ -155,6 +155,20 @@
     <string name="pref_video_time_lapse_quality_entry_720p" translatable="false">720p</string>
     <!-- Refers to the video quality -->
     <string name="pref_video_time_lapse_quality_entry_1080p" translatable="false">1080p</string>
+
+    <!-- Describes the preference dialog for choosing interval between frame capture for
+    time lapse recording. Appears at top of the dialog. [CHAR LIMIT=30] -->
+    <string name="pref_video_time_lapse_frame_interval_title">Frame capture interval</string>
+    <string name="pref_video_time_lapse_frame_interval_default" translatable="false">2000</string>
+    <!-- The time interval between frame capture for time lapse recording -->
+    <string name="pref_video_time_lapse_frame_interval_entry_500" translatable="false">0.5s</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_1000" translatable="false">1s</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_1500" translatable="false">1.5s</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_2000" translatable="false">2s</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_2500" translatable="false">2.5s</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_3000" translatable="false">3s</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_5000" translatable="false">5s</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_10000" translatable="false">10s</string>
 
     <!-- Settings screen, Camera setting category title -->
     <string name="pref_camera_settings_category">Camera settings</string>
