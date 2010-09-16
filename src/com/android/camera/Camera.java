@@ -785,7 +785,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             int rotation = 0;
             if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
                 CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-                rotation = (mOrientation + info.mOrientation) % 360;
+                rotation = (mOrientation + info.orientation) % 360;
             }
             mParameters.setRotation(rotation);
 

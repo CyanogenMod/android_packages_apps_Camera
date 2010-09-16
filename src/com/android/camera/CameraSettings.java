@@ -255,7 +255,7 @@ public class CameraSettings {
         int[] largeIconIds = new int[numOfCameras];
         for (int i = 0; i < numOfCameras; i++) {
             entryValues[i] = Integer.toString(i);
-            if (mCameraInfo[i].mFacing == CameraInfo.CAMERA_FACING_FRONT) {
+            if (mCameraInfo[i].facing == CameraInfo.CAMERA_FACING_FRONT) {
                 entries[i] = mContext.getString(
                         R.string.pref_camera_id_entry_front);
                 iconIds[i] = R.drawable.ic_menuselect_camera_facing_front;
