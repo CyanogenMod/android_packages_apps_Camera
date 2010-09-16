@@ -1304,14 +1304,15 @@ public class VideoCamera extends NoSearchActivity
                     mMediaRecorder.setOnErrorListener(null);
                     mMediaRecorder.setOnInfoListener(null);
                     mMediaRecorder.stop();
+                    mCurrentVideoFilename = mVideoFilename;
+                    Log.v(TAG, "Setting current video filename: "
+                            + mCurrentVideoFilename);
+                    needToRegisterRecording = true;
                 } catch (RuntimeException e) {
                     Log.e(TAG, "stop fail: " + e.getMessage());
+                    deleteVideoFile(mVideoFilename);
                 }
                 mHeadUpDisplay.setEnabled(true);
-                mCurrentVideoFilename = mVideoFilename;
-                Log.v(TAG, "Setting current video filename: "
-                        + mCurrentVideoFilename);
-                needToRegisterRecording = true;
                 mMediaRecorderRecording = false;
             }
             releaseMediaRecorder();
