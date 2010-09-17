@@ -33,6 +33,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Parameters;
@@ -50,8 +51,9 @@ import android.os.Message;
 import android.os.StatFs;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.provider.MediaStore.Video;
+import android.provider.MediaStore.Video.VideoColumns;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -67,8 +69,12 @@ import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CursorAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -135,10 +141,15 @@ public class VideoCamera extends NoSearchActivity
 
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
-    // mLastPictureButton and mThumbController
-    // are non-null only if mIsVideoCaptureIntent is true.
-    private ImageView mLastPictureButton;
-    private ThumbnailController mThumbController;
+
+    // The layout of small devices has a thumbnail button, which shows the last
+    // captured picture.
+    private RotateImageView mThumbnailButton;
+    // The layout of xlarge devices have a list of thumbnails, which show the
+    // last captured pictures.
+    private ListView mThumbnailList;
+    private OnItemClickListener mThumbnailItemClickListener =
+	    new ThumbnailItemClickListener();
     private boolean mStartPreviewFail = false;
 
     private int mStorageStatus = STORAGE_STATUS_OK;
@@ -348,12 +359,7 @@ public class VideoCamera extends NoSearchActivity
         if (!mIsVideoCaptureIntent) {
             View controlBar = inflater.inflate(
                     R.layout.camera_control, rootView);
-            mLastPictureButton =
-                    (ImageView) controlBar.findViewById(R.id.review_thumbnail);
-            mThumbController = new ThumbnailController(
-                    getResources(), mLastPictureButton, mContentResolver);
-            mLastPictureButton.setOnClickListener(this);
-            mThumbController.loadData(ImageManager.getLastVideoThumbPath());
+            initThumbnailButton();
             mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
             mSwitcher.setOnSwitchListener(this);
             mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
@@ -460,10 +466,11 @@ public class VideoCamera extends NoSearchActivity
                 doReturnToCaller(true);
                 break;
             case R.id.btn_cancel:
-                stopVideoRecordingAndReturn(false);
+                stopVideoRecording();
+                doReturnToCaller(false);
                 break;
             case R.id.review_thumbnail:
-                if (!mMediaRecorderRecording) viewLastVideo();
+                if (!mMediaRecorderRecording) viewVideo(mThumbnailButton);
                 break;
         }
     }
@@ -473,14 +480,15 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void onStopVideoRecording(boolean valid) {
+        stopVideoRecording();
         if (mIsVideoCaptureIntent) {
             if (mQuickCapture) {
-                stopVideoRecordingAndReturn(valid);
+                doReturnToCaller(valid);
             } else {
-                stopVideoRecordingAndShowAlert();
+                showAlert();
             }
         } else {
-            stopVideoRecordingAndGetThumbnail();
+            getThumbnail();
             initializeRecorder();
         }
     }
@@ -508,7 +516,8 @@ public class VideoCamera extends NoSearchActivity
 
     private void discardCurrentVideoAndInitRecorder() {
         deleteCurrentVideo();
-        hideAlertAndInitializeRecorder();
+        hideAlert();
+        mHandler.sendEmptyMessage(INIT_RECORDER);
     }
 
     private OnScreenHint mStorageHint;
@@ -662,6 +671,13 @@ public class VideoCamera extends NoSearchActivity
         }
 
         changeHeadUpDisplayState();
+        // Update the last video thumbnail.
+        if (!mIsVideoCaptureIntent) {
+            if (mThumbnailButton != null && !mThumbnailButton.isUriValid()) {
+                updateThumbnailButton();
+            }
+            updateThumbnailList();
+        }
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
@@ -727,7 +743,8 @@ public class VideoCamera extends NoSearchActivity
                 stopVideoRecording();
                 showAlert();
             } else {
-                stopVideoRecordingAndGetThumbnail();
+                stopVideoRecording();
+                getThumbnail();
             }
         } else {
             stopVideoRecording();
@@ -754,8 +771,8 @@ public class VideoCamera extends NoSearchActivity
         }
         resetScreenOn();
 
-        if (!mIsVideoCaptureIntent) {
-            mThumbController.storeData(ImageManager.getLastVideoThumbPath());
+        if (!mIsVideoCaptureIntent && mThumbnailButton != null) {
+            mThumbnailButton.storeData(ImageManager.getLastVideoThumbPath());
         }
 
         if (mStorageHint != null) {
@@ -854,6 +871,7 @@ public class VideoCamera extends NoSearchActivity
             setPreviewDisplay(holder);
             mCameraDevice.unlock();
             mHandler.sendEmptyMessage(INIT_RECORDER);
+            initThumbnailList();
         } else {
             stopVideoRecording();
             // If video quality changes, the surface will change. But we need to
@@ -1033,14 +1051,6 @@ public class VideoCamera extends NoSearchActivity
             throw new RuntimeException(e);
         }
         mMediaRecorderRecording = false;
-
-        // Update the last video thumbnail.
-        if (!mIsVideoCaptureIntent) {
-            if (!mThumbController.isUriValid()) {
-                updateLastVideo();
-            }
-            mThumbController.updateDisplayIfNeeded();
-        }
     }
 
     private void releaseMediaRecorder() {
@@ -1309,19 +1319,9 @@ public class VideoCamera extends NoSearchActivity
         mShutterButton.setImageDrawable(drawable);
     }
 
-    private void stopVideoRecordingAndGetThumbnail() {
-        stopVideoRecording();
+    private void getThumbnail() {
         acquireVideoThumb();
-    }
-
-    private void stopVideoRecordingAndReturn(boolean valid) {
-        stopVideoRecording();
-        doReturnToCaller(valid);
-    }
-
-    private void stopVideoRecordingAndShowAlert() {
-        stopVideoRecording();
-        showAlert();
+        updateThumbnailList();
     }
 
     private void showAlert() {
@@ -1367,22 +1367,21 @@ public class VideoCamera extends NoSearchActivity
         return this.mVideoFrame.getVisibility() == View.VISIBLE;
     }
 
-    private void viewLastVideo() {
-        Intent intent = null;
-        if (mThumbController.isUriValid()) {
-            intent = new Intent(Util.REVIEW_ACTION, mThumbController.getUri());
+    private void viewVideo(RotateImageView view) {
+        if(view.isUriValid()) {
+            Intent intent = new Intent(Util.REVIEW_ACTION, view.getUri());
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {
                 try {
-                    intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
+                    intent = new Intent(Intent.ACTION_VIEW, view.getUri());
                     startActivity(intent);
                 } catch (ActivityNotFoundException e) {
-                    Log.e(TAG, "review video fail", e);
+                    Log.e(TAG, "review video fail. uri=" + view.getUri(), e);
                 }
             }
         } else {
-            Log.e(TAG, "Can't view last video.");
+            Log.e(TAG, "Uri invalid. uri=" + view.getUri());
         }
     }
 
@@ -1435,22 +1434,23 @@ public class VideoCamera extends NoSearchActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    private void hideAlertAndInitializeRecorder() {
-        hideAlert();
-        mHandler.sendEmptyMessage(INIT_RECORDER);
-    }
-
     private void acquireVideoThumb() {
-        Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
-                mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
-        mThumbController.setData(mCurrentVideoUri, videoFrame);
+        if (mThumbnailButton != null) {
+            Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
+                    mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
+            mThumbnailButton.setData(mCurrentVideoUri, videoFrame);
+        }
     }
 
-    private static ImageManager.DataLocation dataLocation() {
-        return ImageManager.DataLocation.EXTERNAL;
+    private void initThumbnailButton() {
+        mThumbnailButton = (RotateImageView)findViewById(R.id.review_thumbnail);
+        if (mThumbnailButton != null) {
+            mThumbnailButton.setOnClickListener(this);
+            mThumbnailButton.loadData(ImageManager.getLastVideoThumbPath());
+        }
     }
 
-    private void updateLastVideo() {
+    private void updateThumbnailButton() {
         IImageList list = ImageManager.makeImageList(
                         mContentResolver,
                         dataLocation(),
@@ -1461,11 +1461,57 @@ public class VideoCamera extends NoSearchActivity
         if (count > 0) {
             IImage image = list.getImageAt(count - 1);
             Uri uri = image.fullSizeImageUri();
-            mThumbController.setData(uri, image.miniThumbBitmap());
+            mThumbnailButton.setData(uri, image.miniThumbBitmap());
         } else {
-            mThumbController.setData(null, null);
+            mThumbnailButton.setData(null, null);
         }
         list.close();
+    }
+
+    private Cursor getThumbnailsCursor(int thumbnailCount) {
+        Log.v(TAG, "thumbnailCount=" + thumbnailCount);
+        String[] projections = { MediaStore.Video.Thumbnails._ID };
+        Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                .buildUpon()
+                .appendQueryParameter("limit", String.valueOf(thumbnailCount))
+                .build();
+        // TODO: managedQuery is deprecated. Use CursorLoader.
+        return managedQuery(uri, projections, null, null,
+                VideoColumns._ID + " DESC");
+    }
+
+    private void initThumbnailList() {
+        mThumbnailList = (ListView) findViewById(R.id.image_list);
+        if (mThumbnailList != null) {
+            int width = mThumbnailList.getWidth();
+            int height = mThumbnailList.getHeight();
+            int thumbnailCount = (height + mThumbnailList.getDividerHeight())
+                    / (width + mThumbnailList.getDividerHeight());
+            Cursor cursor = getThumbnailsCursor(thumbnailCount);
+            ThumbnailAdapter adapter = new ThumbnailAdapter(
+                    getApplicationContext(), R.layout.thumbnail_item, cursor,
+                    false);
+            mThumbnailList.setAdapter(adapter);
+            mThumbnailList.setOnItemClickListener(mThumbnailItemClickListener);
+        }
+    }
+
+    private void updateThumbnailList() {
+        if (mThumbnailList == null) return;
+        CursorAdapter adapter = (CursorAdapter) mThumbnailList.getAdapter();
+        Cursor cursor = adapter.getCursor();
+        cursor.requery();
+        adapter.notifyDataSetChanged();
+    }
+
+    private class ThumbnailItemClickListener implements OnItemClickListener {
+        public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
+            viewVideo((RotateImageView)v);
+         }
+    }
+
+    private static ImageManager.DataLocation dataLocation() {
+        return ImageManager.DataLocation.EXTERNAL;
     }
 
     private static String millisecondToTimeString(long milliSeconds, boolean displayCentiSeconds) {

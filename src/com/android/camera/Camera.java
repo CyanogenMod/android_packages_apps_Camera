@@ -24,10 +24,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera.CameraInfo;
@@ -43,23 +43,22 @@ import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
-import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -68,9 +67,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.MenuItem.OnMenuItemClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CursorAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
@@ -163,10 +164,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private GLRootView mGLRootView;
 
-    // mPostCaptureAlert, mLastPictureButton, mThumbController
-    // are non-null only if isImageCaptureIntent() is true.
-    private ImageView mLastPictureButton;
-    private ThumbnailController mThumbController;
+    // The layouts of small devices have a thumbnail button, which shows the last
+    // captured picture.
+    private RotateImageView mThumbnailButton;
+    // The layouts of xlarge devices have a list of thumbnails, which show the
+    // last captured pictures.
+    private ListView mThumbnailList;
+    private OnItemClickListener mThumbnailItemClickListener =
+            new ThumbnailItemClickListener();
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -323,14 +328,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mContentResolver = getContentResolver();
         if (!mIsImageCaptureIntent)  {
             findViewById(R.id.camera_switch).setOnClickListener(this);
-            mLastPictureButton =
-                    (ImageView) findViewById(R.id.review_thumbnail);
-            mLastPictureButton.setOnClickListener(this);
-            mThumbController = new ThumbnailController(
-                    getResources(), mLastPictureButton, mContentResolver);
-            mThumbController.loadData(ImageManager.getLastImageThumbPath());
-            // Update last image thumbnail.
-            updateThumbnailButton();
+            initThumbnailButton();
+            initThumbnailList();
         }
 
         // Initialize shutter button.
@@ -363,12 +362,82 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         });
     }
 
-    private void updateThumbnailButton() {
-        // Update last image if URI is invalid and the storage is ready.
-        if (!mThumbController.isUriValid() && mPicturesRemaining >= 0) {
-            updateLastImage();
+    private void initThumbnailButton() {
+        mThumbnailButton =
+                (RotateImageView) findViewById(R.id.review_thumbnail);
+        if (mThumbnailButton != null) {
+            mThumbnailButton.setOnClickListener(this);
+            mThumbnailButton.loadData(ImageManager.getLastImageThumbPath());
+            updateThumbnailButton();
         }
-        mThumbController.updateDisplayIfNeeded();
+    }
+
+    private void updateThumbnailButton() {
+        if (mThumbnailButton == null) return;
+        // Update last image if URI is invalid and the storage is ready.
+        if (!mThumbnailButton.isUriValid() && mPicturesRemaining >= 0) {
+            IImageList list = ImageManager.makeImageList(
+                mContentResolver,
+                dataLocation(),
+                ImageManager.INCLUDE_IMAGES,
+                ImageManager.SORT_ASCENDING,
+                ImageManager.CAMERA_IMAGE_BUCKET_ID);
+            int count = list.getCount();
+            if (count > 0) {
+                IImage image = list.getImageAt(count - 1);
+                Uri uri = image.fullSizeImageUri();
+                mThumbnailButton.setData(uri, image.miniThumbBitmap());
+            } else {
+                mThumbnailButton.setData(null, null);
+            }
+            list.close();
+        }
+    }
+
+    private void setLastPictureThumb(byte[] data, int degree, Uri uri) {
+        if (mThumbnailButton == null) return;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 16;
+        Bitmap lastPictureThumb =
+                BitmapFactory.decodeByteArray(data, 0, data.length, options);
+        lastPictureThumb = Util.rotate(lastPictureThumb, degree);
+        mThumbnailButton.setData(uri, lastPictureThumb);
+    }
+
+    private void initThumbnailList() {
+        mThumbnailList = (ListView) findViewById(R.id.image_list);
+        if (mThumbnailList != null) {
+            int width = mThumbnailList.getWidth();
+            int height = mThumbnailList.getHeight();
+            int thumbnailCount = (height + mThumbnailList.getDividerHeight())
+                    / (width + mThumbnailList.getDividerHeight());
+            Cursor cursor = getThumbnailsCursor(thumbnailCount);
+            ThumbnailAdapter adapter = new ThumbnailAdapter(
+                    getApplicationContext(), R.layout.thumbnail_item, cursor,
+                    true);
+            mThumbnailList.setAdapter(adapter);
+            mThumbnailList.setOnItemClickListener(mThumbnailItemClickListener);
+        }
+    }
+
+    private void updateThumbnailList() {
+        if (mThumbnailList == null) return;
+        CursorAdapter adapter = (CursorAdapter) mThumbnailList.getAdapter();
+        Cursor cursor = adapter.getCursor();
+        cursor.requery();
+        adapter.notifyDataSetChanged();
+    }
+
+    private Cursor getThumbnailsCursor(int thumbnailCount) {
+        Log.v(TAG, "thumbnailCount=" + thumbnailCount);
+        String[] projections = { MediaStore.Images.Thumbnails._ID };
+        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                .buildUpon()
+                .appendQueryParameter("limit", String.valueOf(thumbnailCount))
+                .build();
+        // TODO: managedQuery is deprecated.
+        return managedQuery(uri, projections, null, null,
+                ImageColumns._ID + " DESC");
     }
 
     // If the activity is paused and resumed, this method will be called in
@@ -486,6 +555,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 checkStorage();
                 if (!mIsImageCaptureIntent)  {
                     updateThumbnailButton();
+                    updateThumbnailList();
                 }
             }
         }
@@ -747,7 +817,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         "com.android.camera.NEW_PICTURE", mLastContentUri));
                 setLastPictureThumb(data, degree,
                         mImageCapture.getLastCaptureUri());
-                mThumbController.updateDisplayIfNeeded();
+                updateThumbnailList();
             } else {
                 mCaptureOnlyData = data;
                 showPostCaptureAlert();
@@ -861,15 +931,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             MenuHelper.closeSilently(f);
         }
         return true;
-    }
-
-    private void setLastPictureThumb(byte[] data, int degree, Uri uri) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 16;
-        Bitmap lastPictureThumb =
-                BitmapFactory.decodeByteArray(data, 0, data.length, options);
-        lastPictureThumb = Util.rotate(lastPictureThumb, degree);
-        mThumbController.setData(uri, lastPictureThumb);
     }
 
     private String createName(long dateTaken) {
@@ -1058,8 +1119,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void setOrientationIndicator(int degree) {
-        ((RotateImageView) findViewById(
-                R.id.review_thumbnail)).setDegree(degree);
+        RotateImageView thumbnail = (RotateImageView) findViewById(
+                R.id.review_thumbnail);
+        if (thumbnail != null) thumbnail.setDegree(degree);
+
         ((RotateImageView) findViewById(
                 R.id.camera_switch_icon)).setDegree(degree);
         ((RotateImageView) findViewById(
@@ -1096,7 +1159,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 break;
             case R.id.review_thumbnail:
                 if (isCameraIdle()) {
-                    viewLastImage();
+                    viewImage(mThumbnailButton);
                 }
                 break;
             case R.id.btn_done:
@@ -1105,6 +1168,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             case R.id.btn_cancel:
                 doCancel();
         }
+    }
+
+    private class ThumbnailItemClickListener implements OnItemClickListener {
+        public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
+            viewImage((RotateImageView)v);
+         }
     }
 
     private Bitmap createCaptureBitmap(byte[] data) {
@@ -1341,8 +1410,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
             if (!mIsImageCaptureIntent) {
-                mThumbController.storeData(
-                        ImageManager.getLastImageThumbPath());
+                if (mThumbnailButton != null) {
+                    mThumbnailButton.storeData(
+                            ImageManager.getLastImageThumbPath());
+                }
             }
             hidePostCaptureAlert();
         }
@@ -1603,24 +1674,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mCameraDevice = CameraHolder.instance().open(mCameraId);
             mInitialParams = mCameraDevice.getParameters();
         }
-    }
-
-    private void updateLastImage() {
-        IImageList list = ImageManager.makeImageList(
-            mContentResolver,
-            dataLocation(),
-            ImageManager.INCLUDE_IMAGES,
-            ImageManager.SORT_ASCENDING,
-            ImageManager.CAMERA_IMAGE_BUCKET_ID);
-        int count = list.getCount();
-        if (count > 0) {
-            IImage image = list.getImageAt(count - 1);
-            Uri uri = image.fullSizeImageUri();
-            mThumbController.setData(uri, image.miniThumbBitmap());
-        } else {
-            mThumbController.setData(null, null);
-        }
-        list.close();
     }
 
     private void showCameraErrorAndFinish() {
@@ -1893,21 +1946,21 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         MenuHelper.gotoCameraImageGallery(this);
     }
 
-    private void viewLastImage() {
-        if (mThumbController.isUriValid()) {
-            Intent intent = new Intent(Util.REVIEW_ACTION, mThumbController.getUri());
+    private void viewImage(RotateImageView view) {
+        if(view.isUriValid()) {
+            Intent intent = new Intent(Util.REVIEW_ACTION, view.getUri());
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {
                 try {
-                    intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
+                    intent = new Intent(Intent.ACTION_VIEW, view.getUri());
                     startActivity(intent);
                 } catch (ActivityNotFoundException e) {
-                    Log.e(TAG, "review image fail", e);
+                    Log.e(TAG, "review image fail. uri=" + view.getUri(), e);
                 }
             }
         } else {
-            Log.e(TAG, "Can't view last image.");
+            Log.e(TAG, "Uri invalid. uri=" + view.getUri());
         }
     }
 
