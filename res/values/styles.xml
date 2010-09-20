@@ -18,6 +18,9 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="ThemeCamera" parent="android:Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@drawable/camera_background</item>
+    </style>
     <style name="OnScreenHintTextAppearance">
         <item name="android:textColor">@android:color/primary_text_dark</item>
         <item name="android:textColorHighlight">#FFFF9200</item>
