@@ -22,6 +22,10 @@ import com.android.camera.ui.HeadUpDisplay;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -35,11 +39,11 @@ import java.util.List;
 /**
  * Base class for camera implementations.
  */
-public abstract class BaseCamera extends NoSearchActivity implements View.OnClickListener,
+public abstract class BaseCamera extends NoSearchActivity implements View.OnClickListener, SensorEventListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback, Switcher.OnSwitchListener {
-    
+
     private static final String TAG = "BaseCamera";
-    
+
     protected android.hardware.Camera mCameraDevice;
     protected MediaRecorder mMediaRecorder;
 
@@ -68,10 +72,98 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     protected boolean mPreviewing = false; // True if preview is started.
     protected boolean mFocusing = false;
 
+    private long lastSensorUpdate = -1;
+
+    private float[] lastSensorValues = new float[3];
+
+    protected boolean deviceStable = false;
+
     protected abstract void onZoomValueChanged(int index);
 
     protected abstract int getCameraMode();
 
+    private StabilityListener mStabilityListener;
+
+    private StabilityChangeListener mStabilityChangeListener;
+
+    private boolean mStable = false;
+
+    public interface StabilityListener {
+        public void onStable();
+    }
+
+    public interface StabilityChangeListener {
+        public void onStabilityChanged(boolean stable);
+    }
+
+    protected void setStabilityListener(StabilityListener listener) {
+        mStabilityListener = listener;
+    }
+
+    protected void setStabilityChangeListener(StabilityChangeListener listener) {
+        mStabilityChangeListener = listener;
+    }
+
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    public void onSensorChanged(SensorEvent event) {
+
+        long curTime = System.currentTimeMillis();
+        if (lastSensorUpdate == -1 || (curTime - lastSensorUpdate) > 500) {
+            lastSensorUpdate = curTime;
+            if (lastSensorUpdate == -1) {
+                lastSensorValues[0] = 0.0f;
+                lastSensorValues[1] = 0.0f;
+                lastSensorValues[2] = 0.0f;
+            } else {
+
+                if (Math.abs(event.values[0] - lastSensorValues[0]) < 0.25f
+                        && Math.abs(event.values[1] - lastSensorValues[1]) < 0.25f
+                        && Math.abs(event.values[2] - lastSensorValues[2]) < 0.25f) {
+                    if (mStabilityListener != null) {
+                        mStabilityListener.onStable();
+                    }
+                    if (!mStable) {
+                        mStable = true;
+                        Log.d(TAG, "Stability changed: " + mStable);
+                        if (mStabilityChangeListener != null) {
+                            mStabilityChangeListener.onStabilityChanged(mStable);
+                        }
+                    }
+                } else {
+                    if (mStable) {
+                        mStable = false;
+                        Log.d(TAG, "Stability changed: " + mStable);
+                        if (mStabilityChangeListener != null) {
+                            mStabilityChangeListener.onStabilityChanged(mStable);
+                        }
+                    }
+                }
+
+
+                lastSensorValues[0] = event.values[0];
+                lastSensorValues[1] = event.values[1];
+                lastSensorValues[2] = event.values[2];
+            }
+        }
+    }
+
+    protected void onResume() {
+        super.onResume();
+
+        SensorManager mgr = (SensorManager)getSystemService(SENSOR_SERVICE);
+        Sensor sensor = mgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mgr.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    protected void onPause() {
+        super.onPause();
+
+        SensorManager mgr = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mgr.unregisterListener(this);
+    }
     protected void setCommonParameters() {
 
         // Set color effect parameter.
@@ -208,6 +300,7 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
         PreviewFrameLayout frameLayout = (PreviewFrameLayout) findViewById(R.id.frame_layout);
         int x = frameLayout.getActualWidth() / 2;
         int y = frameLayout.getActualHeight() / 2;
+        mFocusRectangle.setPosition(x, y);
         updateTouchFocus(x, y);
     }
 
@@ -264,8 +357,8 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
             mMediaRecorder.setCameraParameters(mParameters.flatten());
         }
     }
-    
-    private android.hardware.Camera.AutoFocusCallback getAutoFocusCallback() {
+
+    protected android.hardware.Camera.AutoFocusCallback getAutoFocusCallback() {
         return new android.hardware.Camera.AutoFocusCallback() {
             @Override
             public void onAutoFocus(boolean success, Camera camera) {
