@@ -62,11 +62,27 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameraeinstellungen"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcordereinstellungen"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Bildgröße"</string>
+    <string name="pref_camera_picturesize_entry_3264x2448">8 Millionen Pixel</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">8 Millionen Pixel (breit)</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 Millionen Pixel"</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">5 Millionen Pixels (breit)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">5 Millionen Pixel</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4 Millionen Pixel</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 Millionen Pixel"</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">3 Millionen Pixel (breit)</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 Millionen Pixel"</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
+    <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 Million Pixel"</string>
+    <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
+    <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
+    <string name="pref_camera_picturesize_entry_640x480">VGA</string>
+    <string name="pref_camera_picturesize_entry_352x288">CIF</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
+    <string name="pref_camera_picturesize_entry_176x144">QCIF</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Bildqualität"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Extrafein"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fein"</string>
@@ -126,6 +142,13 @@
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Zu Kamera wechseln"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Zu Video wechseln"</string>
 
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_multi_entry_level0">Stufe 0</string>
+    <string name="pref_camera_multi_entry_level1">Stufe 1</string>
+    <string name="pref_camera_multi_entry_level2">Stufe 2(Standard)</string>
+    <string name="pref_camera_multi_entry_level3">Stufe 3</string>
+    <string name="pref_camera_multi_entry_level4">Stufe 4</string>
+
     <!-- Settings screen, Select brightness title -->
     <string name="pref_camera_brightness_title">Helligkeit</string>
 
@@ -139,7 +162,12 @@
     <string name="pref_camera_saturation_title">Sättigung</string>
 
     <!-- Settings screen, Select auto exposure title -->
-    <string name="pref_camera_autoexposure_title">Dosiermodus</string>
+    <string name="pref_camera_autoexposure_title">Messmethode</string>
+
+    <!-- Settings screen, auto exposure dialog radio button choices -->
+    <string name="pref_camera_autoexposure_entry_frameaverage">Mittelwert</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">Mittengewichtet</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">Punktmessung</string>
 
     <!-- Toast shown when touch-to-focus is enabled -->
     <string name="touch_focus_enabled">Bildschirm berühren, um die Kamera zu fokusieren.</string>
