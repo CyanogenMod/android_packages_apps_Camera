@@ -203,6 +203,19 @@
         <item>touch</item>
     </string-array>
 
+    <!-- Camera Preferences video focus mode -->
+    <string-array name="pref_camera_video_focusmode_entries" translatable="false">
+        <item>@string/pref_camera_focusmode_entry_auto</item>
+        <item>@string/pref_camera_focusmode_entry_touch</item>
+        <item>@string/pref_camera_focusmode_entry_infinity</item>
+    </string-array>
+
+    <string-array name="pref_camera_video_focusmode_entryvalues" translatable="false">
+        <item>auto</item>
+        <item>touch</item>
+        <item>infinity</item>
+    </string-array>
+
     <!-- Camera Preferences flash mode dialog box entries -->
     <string-array name="pref_camera_flashmode_entries" translatable="false">
         <item>@string/pref_camera_flashmode_entry_auto</item>

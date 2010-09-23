@@ -59,7 +59,8 @@ public class CameraSettings {
     public static final String KEY_CONTRAST = "pref_camera_contrast_key";
     public static final String KEY_SATURATION = "pref_camera_saturation_key";
     public static final String KEY_BRIGHTNESS = "pref_camera_brightness_key";
-    
+    public static final String KEY_VIDEOCAMERA_FOCUS_MODE = "pref_camera_video_focusmode_key";
+
     public static final String QUICK_CAPTURE_ON = "on";
     public static final String QUICK_CAPTURE_OFF = "off";
 
@@ -408,10 +409,14 @@ public class CameraSettings {
         boolean ret = params.isZoomSupported();
         if (ret) {
             // No zoom at 720P currently. Driver limitation?
-            Size size = params.getPreviewSize();
-            ret = !(size.width == 1280 && size.height == 720);
+            ret = !is720p(params);
         }
         return ret;
+    }
+
+    public static boolean is720p(Parameters params) {
+        Size size = params.getPreviewSize();
+        return !(size.width == 1280 && size.height == 720);
     }
 
     public static void dumpParameters(Parameters params) {
