@@ -37,14 +37,9 @@
     <string name="switch_camera_id" msgid="837545176602471325">"Přepnout fotoaparát"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Zapnout časosběr"</string>
     <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Vypnout časosběr"</string>
-    <!-- no translation found for pref_camera_id_title (6023059405578511534) -->
-    <skip />
-    <!-- no translation found for pref_camera_id_default (364294331738577214) -->
-    <skip />
-    <!-- no translation found for pref_camera_id_entry_back (5142699735103692485) -->
-    <skip />
-    <!-- no translation found for pref_camera_id_entry_front (5668958706828733669) -->
-    <skip />
+    <string name="pref_camera_id_title" msgid="6023059405578511534">"Vybrat fotoaparát"</string>
+    <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Zadní"</string>
+    <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Přední"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Úložiště"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Vypnuto"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Zapnout"</string>
@@ -56,6 +51,8 @@
     <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Kvalita časoběrného videa"</string>
     <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Nízká"</string>
     <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Vysoká"</string>
+    <!-- no translation found for pref_video_time_lapse_frame_interval_title (5023524580863002541) -->
+    <skip />
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Nastavení fotoaparátu"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Nastavení videokamery"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Velikost fotografií"</string>
