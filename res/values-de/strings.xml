@@ -142,13 +142,6 @@
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Zu Kamera wechseln"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Zu Video wechseln"</string>
 
-    <!-- Settings screen, Multiple levels entries -->
-    <string name="pref_camera_multi_entry_level0">Stufe 0</string>
-    <string name="pref_camera_multi_entry_level1">Stufe 1</string>
-    <string name="pref_camera_multi_entry_level2">Stufe 2(Standard)</string>
-    <string name="pref_camera_multi_entry_level3">Stufe 3</string>
-    <string name="pref_camera_multi_entry_level4">Stufe 4</string>
-
     <!-- Settings screen, Select brightness title -->
     <string name="pref_camera_brightness_title">Helligkeit</string>
 
