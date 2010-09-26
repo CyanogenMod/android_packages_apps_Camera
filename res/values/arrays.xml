@@ -450,4 +450,20 @@
          <item>@string/pref_camera_autoexposure_value_spotmetering</item>
      </string-array>
 
+     <!-- Stable shot settings entries -->
+     <string-array name="pref_camera_stableshot_entries">
+         <item>@string/pref_camera_stableshot_entry_0</item>
+         <item>@string/pref_camera_stableshot_entry_1</item>
+         <item>@string/pref_camera_stableshot_entry_2</item>
+         <item>@string/pref_camera_stableshot_entry_3</item>
+     </string-array>
+
+     <!-- Stable shot settings values -->
+     <string-array name="pref_camera_stableshot_entryvalues">
+         <item>@string/pref_camera_stableshot_value_0</item>
+         <item>@string/pref_camera_stableshot_value_1</item>
+         <item>@string/pref_camera_stableshot_value_2</item>
+         <item>@string/pref_camera_stableshot_value_3</item>
+     </string-array>
+
 </resources>
