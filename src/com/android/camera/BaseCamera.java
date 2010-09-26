@@ -73,8 +73,10 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     protected boolean mFocusing = false;
 
     private long lastSensorUpdate = -1;
-
     private float[] lastSensorValues = new float[3];
+
+    protected int mStableShotDuration = 0;
+    protected int mStableShotCounter = 0;
 
     protected boolean deviceStable = false;
 
@@ -97,6 +99,7 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     }
 
     protected void setStabilityListener(StabilityListener listener) {
+        mStableShotCounter = 0;
         mStabilityListener = listener;
     }
 
@@ -111,7 +114,8 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     public void onSensorChanged(SensorEvent event) {
 
         long curTime = System.currentTimeMillis();
-        if (lastSensorUpdate == -1 || (curTime - lastSensorUpdate) > 500) {
+        long elapsed = curTime - lastSensorUpdate;
+        if (lastSensorUpdate == -1 || elapsed > 500) {
             lastSensorUpdate = curTime;
             if (lastSensorUpdate == -1) {
                 lastSensorValues[0] = 0.0f;
@@ -122,8 +126,12 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
                 if (Math.abs(event.values[0] - lastSensorValues[0]) < 0.25f
                         && Math.abs(event.values[1] - lastSensorValues[1]) < 0.25f
                         && Math.abs(event.values[2] - lastSensorValues[2]) < 0.25f) {
-                    if (mStabilityListener != null) {
-                        mStabilityListener.onStable();
+                    if (mStabilityListener != null && mStableShotDuration > 0) {
+                        mStableShotCounter++;
+                        Log.d(TAG, "** Stableshot: " + mStableShotCounter);
+                        if (mStableShotCounter >= mStableShotDuration) {
+                            mStabilityListener.onStable();
+                        }
                     }
                     if (!mStable) {
                         mStable = true;
@@ -135,6 +143,7 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
                 } else {
                     if (mStable) {
                         mStable = false;
+                        mStableShotCounter = 0;
                         Log.d(TAG, "Stability changed: " + mStable);
                         if (mStabilityChangeListener != null) {
                             mStabilityChangeListener.onStabilityChanged(mStable);
@@ -196,6 +205,15 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
                     CameraSettings.KEY_SATURATION,
                     String.valueOf(mParameters.getDefaultSaturation()));
             mParameters.setSaturation(Integer.valueOf(saturation));
+        }
+
+        // Set stable shot duration
+        try {
+            mStableShotDuration = Integer.parseInt(mPreferences.getString(
+                    CameraSettings.KEY_STABLESHOT,
+                    getResources().getString(R.string.pref_camera_stableshot_default)));
+        } catch (NumberFormatException e) {
+            mStableShotDuration = 0;
         }
 
         // Set exposure compensation

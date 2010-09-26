@@ -675,13 +675,18 @@ public class Camera extends BaseCamera {
             if (mCameraDevice == null) {
                 return;
             }
-            final StabilityListener stableCapture = new StabilityListener() {
-                public void onStable() {
-                    setStabilityListener(null);
-                    capture();
-                }
-            };
-            setStabilityListener(stableCapture);
+            if (mStableShotDuration > 0) {
+                Log.d(TAG, "** Stable shot: " + mStableShotDuration);
+                final StabilityListener stableCapture = new StabilityListener() {
+                    public void onStable() {
+                        setStabilityListener(null);
+                        capture();
+                    }
+                };
+                setStabilityListener(stableCapture);
+            } else {
+                capture();
+            }
         }
 
         public Uri getLastCaptureUri() {

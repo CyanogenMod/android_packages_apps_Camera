@@ -60,6 +60,7 @@ public class CameraSettings {
     public static final String KEY_SATURATION = "pref_camera_saturation_key";
     public static final String KEY_BRIGHTNESS = "pref_camera_brightness_key";
     public static final String KEY_VIDEOCAMERA_FOCUS_MODE = "pref_camera_video_focusmode_key";
+    public static final String KEY_STABLESHOT = "pref_camera_stableshot_key";
 
     public static final String QUICK_CAPTURE_ON = "on";
     public static final String QUICK_CAPTURE_OFF = "off";
