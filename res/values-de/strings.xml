@@ -164,4 +164,13 @@
 
     <!-- Toast shown when touch-to-focus is enabled -->
     <string name="touch_focus_enabled">Bildschirm berühren, um die Kamera zu fokusieren.</string>
+
+    <!-- Stable shot setting title -->
+    <string name="pref_camera_stableshot_title">Stabile Aufnahme</string>
+
+    <!-- Stable shot settings entries -->
+    <string name="pref_camera_stableshot_entry_0">Aus</string>
+    <string name="pref_camera_stableshot_entry_1">½ Sekunde</string>
+    <string name="pref_camera_stableshot_entry_2">1 Sekunde</string>
+    <string name="pref_camera_stableshot_entry_3">2 Sekunden</string>
 </resources>
