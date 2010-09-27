@@ -1287,6 +1287,7 @@ public class VideoCamera extends NoSearchActivity
             } catch (ActivityNotFoundException ex) {
                 try {
                     intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
+                    startActivity(intent);
                 } catch (ActivityNotFoundException e) {
                     Log.e(TAG, "review video fail", e);
                 }
