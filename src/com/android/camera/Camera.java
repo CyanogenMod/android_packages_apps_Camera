@@ -2054,6 +2054,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void switchCameraId(int cameraId) {
+        if (mPausing || !isCameraIdle()) return;
         mCameraId = cameraId;
         CameraSettings.writePreferredCameraId(mPreferences, cameraId);
 

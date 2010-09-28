@@ -1192,6 +1192,7 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void switchCameraId(int cameraId) {
+        if (mPausing) return;
         mCameraId = cameraId;
         CameraSettings.writePreferredCameraId(mPreferences, cameraId);
 
