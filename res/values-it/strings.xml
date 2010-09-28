@@ -163,4 +163,13 @@
      <!-- Toast shown when touch-to-focus is enabled -->
     <string name="touch_focus_enabled">Tocca lo schermo per mettere a fuoco.</string>
 
+     <!-- Stable shot setting title -->
+     <string name="pref_camera_stableshot_title">Stabilizzatore Immagine</string>
+
+     <!-- Stable shot settings entries -->
+     <string name="pref_camera_stableshot_entry_0">Non Attivo</string>
+     <string name="pref_camera_stableshot_entry_1">1/2 Secondo</string>
+     <string name="pref_camera_stableshot_entry_2">1 Secondo</string>
+     <string name="pref_camera_stableshot_entry_3">2 Secondi</string>
+
 </resources>
