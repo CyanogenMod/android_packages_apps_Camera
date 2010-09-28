@@ -1899,7 +1899,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {
-                Log.e(TAG, "review image fail", ex);
+                try {
+                    intent = new Intent(Intent.ACTION_VIEW, mThumbController.getUri());
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Log.e(TAG, "review image fail", e);
+                }
             }
         } else {
             Log.e(TAG, "Can't view last image.");
