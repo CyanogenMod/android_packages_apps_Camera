@@ -999,7 +999,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 settings.getPreferenceGroup(R.xml.camera_preferences),
                 getZoomRatios(), mOrientationCompensation);
         if (mParameters.isZoomSupported()) {
-            mHeadUpDisplay.setZoomIndex(mZoomValue);
             mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
                 public void onZoomChanged(
                         int index, float ratio, boolean isMoving) {
@@ -1014,6 +1013,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void attachHeadUpDisplay() {
         mHeadUpDisplay.setOrientation(mOrientationCompensation);
+        if (mParameters.isZoomSupported()) {
+            mHeadUpDisplay.setZoomIndex(mZoomValue);
+        }
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
         mGLRootView = new GLRootView(this);
         mGLRootView.setContentPane(mHeadUpDisplay);
