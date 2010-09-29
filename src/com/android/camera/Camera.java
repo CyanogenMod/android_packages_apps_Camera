@@ -16,6 +16,13 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IImage;
+import com.android.camera.gallery.IImageList;
+import com.android.camera.ui.CameraHeadUpDisplay;
+import com.android.camera.ui.GLRootView;
+import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.ZoomControllerListener;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -49,8 +56,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.Settings;
+import android.provider.MediaStore.Images.ImageColumns;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -58,7 +65,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -67,18 +73,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
-import com.android.camera.ui.CameraHeadUpDisplay;
-import com.android.camera.ui.GLRootView;
-import com.android.camera.ui.HeadUpDisplay;
-import com.android.camera.ui.ZoomControllerListener;
+import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1947,20 +1947,21 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void viewImage(RotateImageView view) {
-        if(view.isUriValid()) {
-            Intent intent = new Intent(Util.REVIEW_ACTION, view.getUri());
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException ex) {
-                try {
-                    intent = new Intent(Intent.ACTION_VIEW, view.getUri());
-                    startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    Log.e(TAG, "review image fail. uri=" + view.getUri(), e);
-                }
-            }
-        } else {
+        if(!view.isUriValid()) {
             Log.e(TAG, "Uri invalid. uri=" + view.getUri());
+            return;
+        }
+
+        try {
+            startActivity(new Intent(
+                    Util.REVIEW_ACTION, view.getUri()));
+        } catch (ActivityNotFoundException ex) {
+            try {
+                startActivity(new Intent(
+                        Intent.ACTION_VIEW, view.getUri()));
+            } catch (ActivityNotFoundException e) {
+                Log.e(TAG, "review image fail. uri=" + view.getUri(), e);
+            }
         }
     }
 

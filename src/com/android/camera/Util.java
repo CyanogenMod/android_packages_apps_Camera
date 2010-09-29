@@ -16,6 +16,8 @@
 
 package com.android.camera;
 
+import com.android.camera.gallery.IImage;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,11 +32,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.R;
-
-import java.util.List;
 import java.io.Closeable;
+import java.util.List;
 
 /**
  * Collection of utility functions used in this package.
@@ -46,7 +45,7 @@ public class Util {
     public static final int DIRECTION_UP = 2;
     public static final int DIRECTION_DOWN = 3;
 
-    public static final String REVIEW_ACTION = "com.cooliris.media.action.REVIEW";
+    public static final String REVIEW_ACTION = "com.android.camera.action.REVIEW";
 
     private Util() {
     }
