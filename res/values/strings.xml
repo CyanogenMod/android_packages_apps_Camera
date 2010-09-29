@@ -38,17 +38,25 @@
     <!-- alert to the user to wait for some operation to complete -->
     <string name="wait">Please wait\u2026</string>
 
+    <!-- alert to the user that an shared storage must be available before using the camera [CHAR LIMIT=NONE] -->
+    <string name="no_storage" product="nosdcard">Please mount shared storage before using the camera.</string>
     <!-- alert to the user that an SD card must be installed before using the camera -->
-    <string name="no_storage">Please insert an SD card before using the camera.</string>
+    <string name="no_storage" product="default">Please insert an SD card before using the camera.</string>
 
+    <!-- alert to the user that the shared storage is too full to complete the operation [CHAR LIMIT=NONE] -->
+    <string name="not_enough_space" product="nosdcard">Your shared storage is full.</string>
     <!-- alert to the user that the SD card is too full to complete the operation -->
-    <string name="not_enough_space">Your SD card is full.</string>
+    <string name="not_enough_space" product="default">Your SD card is full.</string>
 
+    <!-- alert to the user that the shared storage is being disk-checked [CHAR LIMIT=30] -->
+    <string name="preparing_sd" product="nosdcard">Preparing shared storage\u2026</string>
     <!-- alert to the user that the SD card is being disk-checked -->
-    <string name="preparing_sd">Preparing SD card\u2026</string>
+    <string name="preparing_sd" product="default">Preparing SD card\u2026</string>
 
+    <!-- alert to the user that the camera fails to read or write the shared storage. [CHAR LIMIT=NONE] -->
+    <string name="access_sd_fail" product="nosdcard">Failed to access shared storage.</string>
     <!-- alert to the user that the camera fails to read or write the SD card. -->
-    <string name="access_sd_fail">Fail to access SD card.</string>
+    <string name="access_sd_fail" product="default">Fail to access SD card.</string>
 
     <!-- Settings stuff -->
 
@@ -298,8 +306,10 @@
     <!-- Displayed in the title of the dialog for things to do with a video that
          is to be sent to another application. -->
 
-    <!-- Low-memory dialog message -->
-    <string name="spaceIsLow_content">Your SD card is running out of space. Change the quality setting or delete items from Gallery.</string>
+    <!-- Low-memory dialog message [CHAR LIMT=NONE] -->
+    <string name="spaceIsLow_content" product="nosdcard">Your shared storage is running out of space. Change the quality setting or delete some images or other files.</string>
+    <!-- Low-memory dialog message [CHAR LIMIT=NONE] -->
+    <string name="spaceIsLow_content" product="default">Your SD card is running out of space. Change the quality setting or delete some images or other files.</string>
 
     <!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
     <string name="image_file_name_format" translatable="false">"'IMG'_yyyyMMdd_HHmmss"</string>
