@@ -622,7 +622,8 @@ public class VideoCamera extends NoSearchActivity
             mMaxVideoDurationInMs =
                     CameraSettings.getVidoeDurationInMillis(quality);
         }
-        mProfile = CamcorderProfile.get(videoQualityHigh
+        mProfile = CamcorderProfile.get(mCameraId,
+                videoQualityHigh
                 ? CamcorderProfile.QUALITY_HIGH
                 : CamcorderProfile.QUALITY_LOW);
 
