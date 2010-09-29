@@ -23,10 +23,14 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Imágenes de cámara"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Vídeos de cámara"</string>
     <string name="wait" msgid="8600187532323801552">"Por favor, espera..."</string>
-    <string name="no_storage" msgid="820691042667338625">"Inserta o activa la tarjeta SD para poder utilizar la cámara."</string>
-    <string name="not_enough_space" msgid="6655334407957844653">"La tarjeta SD está llena."</string>
-    <string name="preparing_sd" msgid="2914969119574812666">"Preparando tarjeta SD…"</string>
-    <string name="access_sd_fail" msgid="4427585260986849912">"Sin acceso a la tarjeta SD"</string>
+    <!-- outdated translation 820691042667338625 -->     <string name="no_storage" product="nosdcard" msgid="2585076435604779811">"Inserta o activa la tarjeta SD para poder utilizar la cámara."</string>
+    <string name="no_storage" product="default" msgid="820691042667338625">"Inserta o activa la tarjeta SD para poder utilizar la cámara."</string>
+    <!-- outdated translation 6655334407957844653 -->     <string name="not_enough_space" product="nosdcard" msgid="7966388882416357252">"La tarjeta SD está llena."</string>
+    <string name="not_enough_space" product="default" msgid="6655334407957844653">"La tarjeta SD está llena."</string>
+    <!-- outdated translation 2914969119574812666 -->     <string name="preparing_sd" product="nosdcard" msgid="183917364005592061">"Preparando tarjeta SD…"</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparando tarjeta SD…"</string>
+    <!-- outdated translation 4427585260986849912 -->     <string name="access_sd_fail" product="nosdcard" msgid="1518739048621172182">"Sin acceso a la tarjeta SD"</string>
+    <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Sin acceso a la tarjeta SD"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restaurar valores predeterminados"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Se restaurará la configuración de cámara predeterminada."</string>
     <string name="review_play" msgid="6015456244323302817">"REPRODUCIR"</string>
@@ -102,7 +106,8 @@
     <string name="pref_restore_detail" msgid="5326039608800383369">"Restaurar a los valores predeterminados"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposición"</string>
     <string name="details_ok" msgid="6848594369924424312">"Aceptar"</string>
-    <string name="spaceIsLow_content" msgid="2848517537672543641">"No queda espacio en la tarjeta SD. Cambia la configuración de calidad o elimina elementos de la galería."</string>
+    <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="3117623741859928332">"No queda espacio en la tarjeta SD. Cambia la configuración de calidad o elimina elementos de la galería."</string>
+    <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"No queda espacio en la tarjeta SD. Cambia la configuración de calidad o elimina elementos de la galería."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Se ha alcanzado el límite de tamaño."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Cambiar a cámara"</string>

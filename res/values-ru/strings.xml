@@ -23,10 +23,14 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Снимки, сделанные камерой"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Видео"</string>
     <string name="wait" msgid="8600187532323801552">"Подождите..."</string>
-    <string name="no_storage" msgid="820691042667338625">"Прежде чем использовать камеру, вставьте SD-карту."</string>
-    <string name="not_enough_space" msgid="6655334407957844653">"Ваша SD-карта заполнена."</string>
-    <string name="preparing_sd" msgid="2914969119574812666">"Подготовка карты SD..."</string>
-    <string name="access_sd_fail" msgid="4427585260986849912">"Не удалось получить доступ к SD-карте."</string>
+    <!-- outdated translation 820691042667338625 -->     <string name="no_storage" product="nosdcard" msgid="2585076435604779811">"Прежде чем использовать камеру, вставьте SD-карту."</string>
+    <string name="no_storage" product="default" msgid="820691042667338625">"Прежде чем использовать камеру, вставьте SD-карту."</string>
+    <!-- outdated translation 6655334407957844653 -->     <string name="not_enough_space" product="nosdcard" msgid="7966388882416357252">"Ваша SD-карта заполнена."</string>
+    <string name="not_enough_space" product="default" msgid="6655334407957844653">"Ваша SD-карта заполнена."</string>
+    <!-- outdated translation 2914969119574812666 -->     <string name="preparing_sd" product="nosdcard" msgid="183917364005592061">"Подготовка карты SD..."</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Подготовка карты SD..."</string>
+    <!-- outdated translation 4427585260986849912 -->     <string name="access_sd_fail" product="nosdcard" msgid="1518739048621172182">"Не удалось получить доступ к SD-карте."</string>
+    <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Не удалось получить доступ к SD-карте."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Восстановить настройки по умолчанию"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Для камеры будут восстановлены настройки по умолчанию."</string>
     <string name="review_play" msgid="6015456244323302817">"ВОСПРОИЗВЕСТИ"</string>
@@ -102,7 +106,8 @@
     <string name="pref_restore_detail" msgid="5326039608800383369">"Заводские настройки"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Экспозиция"</string>
     <string name="details_ok" msgid="6848594369924424312">"ОК"</string>
-    <string name="spaceIsLow_content" msgid="2848517537672543641">"Место на вашей SD-карте заканчивается. Измените настройки качества или удалите содержимое из галереи."</string>
+    <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="3117623741859928332">"Место на вашей SD-карте заканчивается. Измените настройки качества или удалите содержимое из галереи."</string>
+    <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Место на вашей SD-карте заканчивается. Измените настройки качества или удалите содержимое из галереи."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Достигнут предельный размер видео."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Масштаб"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Переключить на фото"</string>
