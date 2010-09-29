@@ -570,7 +570,7 @@ public class VideoCamera extends NoSearchActivity
         String qualityStr = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_TIME_LAPSE_QUALITY,
                 getString(R.string.pref_video_time_lapse_quality_default));
-        mProfile = CamcorderProfile.get(Integer.parseInt(qualityStr));
+        mProfile = CamcorderProfile.get(mCameraId, Integer.parseInt(qualityStr));
 
         // Read interval between frame capture.
         String frameIntervalStr = mPreferences.getString(
