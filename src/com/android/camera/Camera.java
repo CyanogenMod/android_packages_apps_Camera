@@ -1005,8 +1005,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     onZoomValueChanged(index);
                 }
             });
-        } else {
-            mHeadUpDisplay.setZoomListener(null);
         }
         updateSceneModeInHud();
     }
