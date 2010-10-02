@@ -103,6 +103,7 @@
         <item>@string/pref_camera_picturesize_entry_2048x1536</item>
         <item>@string/pref_camera_picturesize_entry_1600x1200</item>
         <item>@string/pref_camera_picturesize_entry_1024x768</item>
+        <item>@string/pref_camera_picturesize_entry_640x480</item>
         <item>@string/pref_camera_picturesize_entry_320x240</item>
     </string-array>
 
@@ -115,6 +116,7 @@
         <item>2048x1536</item>
         <item>1600x1200</item>
         <item>1024x768</item>
+        <item>640x480</item>
         <item>320x240</item>
     </string-array>
 

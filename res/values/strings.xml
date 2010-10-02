@@ -192,7 +192,8 @@
     <string name="pref_camera_picturesize_entry_2048x1536">3M Pixels</string>
     <string name="pref_camera_picturesize_entry_1600x1200">2M Pixels</string>
     <string name="pref_camera_picturesize_entry_1024x768">1M Pixels</string>
-    <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
+    <string name="pref_camera_picturesize_entry_640x480" translatable="false">VGA</string>
+    <string name="pref_camera_picturesize_entry_320x240" translatable="false">QVGA</string>
 
     <!-- Default picture quality setting. See
          pref_camera_jpegquality_entryvalues for possible values -->
