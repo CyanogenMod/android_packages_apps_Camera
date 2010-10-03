@@ -48,6 +48,7 @@
         -->
         <item>@string/pref_camera_picturesize_entry_2592x1936</item>
         <item>@string/pref_camera_picturesize_entry_2592x1936</item>
+        <item>@string/pref_camera_picturesize_entry_2592x1936</item>
         <item>@string/pref_camera_picturesize_entry_2048x1536</item>
         <item>@string/pref_camera_picturesize_entry_1600x1200</item>
         <item>@string/pref_camera_picturesize_entry_1024x768</item>
@@ -61,6 +62,7 @@
     <string-array name="pref_camera_picturesize_entryvalues" translatable="false">
         <item>2592x1944</item>
         <item>2592x1936</item>
+        <item>2560x1920</item>
         <item>2048x1536</item>
         <item>1600x1200</item>
         <item>1024x768</item>
