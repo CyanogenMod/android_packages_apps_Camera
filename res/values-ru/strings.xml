@@ -60,6 +60,7 @@
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 мегапикселя"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 мегапикселя"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 мегапиксель"</string>
+    <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Качество фотографий"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Отличное"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Хорошее"</string>
