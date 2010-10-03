@@ -77,11 +77,13 @@ public class CameraSettings {
     private final Context mContext;
     private final Parameters mParameters;
     private final CameraInfo[] mCameraInfo;
+    private final int mCameraId;
 
     public CameraSettings(Activity activity, Parameters parameters,
-                          CameraInfo[] cameraInfo) {
+                          int cameraId, CameraInfo[] cameraInfo) {
         mContext = activity;
         mParameters = parameters;
+        mCameraId = cameraId;
         mCameraInfo = cameraInfo;
     }
 
@@ -143,7 +145,7 @@ public class CameraSettings {
         ListPreference flashMode = group.findPreference(KEY_FLASH_MODE);
         ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
         ListPreference exposure = group.findPreference(KEY_EXPOSURE);
-        IconListPreference cameraId =
+        IconListPreference cameraIdPref =
                 (IconListPreference)group.findPreference(KEY_CAMERA_ID);
         ListPreference videoFlashMode =
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
@@ -167,7 +169,8 @@ public class CameraSettings {
 
         // Filter out unsupported settings / options
         if (videoTimeLapseQuality != null) {
-            filterUnsupportedOptions(group, videoTimeLapseQuality, getSupportedTimeLapseProfiles());
+            filterUnsupportedOptions(group, videoTimeLapseQuality,
+                    getSupportedTimeLapseProfiles(mCameraId));
         }
         if (pictureSize != null) {
             filterUnsupportedOptions(group, pictureSize, sizeListToStringList(
@@ -198,18 +201,18 @@ public class CameraSettings {
                     videoFlashMode, mParameters.getSupportedFlashModes());
         }
         if (exposure != null) buildExposureCompensation(group, exposure);
-        if (cameraId != null) buildCameraId(group, cameraId);
+        if (cameraIdPref != null) buildCameraId(group, cameraIdPref);
     }
 
-    private static List<String> getSupportedTimeLapseProfiles() {
+    private static List<String> getSupportedTimeLapseProfiles(int cameraId) {
         ArrayList<String> supportedProfiles = new ArrayList<String>();
-        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_TIME_LAPSE_480P)) {
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_TIME_LAPSE_480P)) {
             supportedProfiles.add(Integer.toString(CamcorderProfile.QUALITY_TIME_LAPSE_480P));
         }
-        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_TIME_LAPSE_720P)) {
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_TIME_LAPSE_720P)) {
             supportedProfiles.add(Integer.toString(CamcorderProfile.QUALITY_TIME_LAPSE_720P));
         }
-        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_TIME_LAPSE_1080P)) {
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_TIME_LAPSE_1080P)) {
             supportedProfiles.add(Integer.toString(CamcorderProfile.QUALITY_TIME_LAPSE_1080P));
         }
 

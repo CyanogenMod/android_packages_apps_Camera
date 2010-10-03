@@ -415,7 +415,7 @@ public class VideoCamera extends NoSearchActivity
 
     private void initializeHeadUpDisplay() {
         CameraSettings settings = new CameraSettings(this, mParameters,
-                CameraHolder.instance().getCameraInfo());
+                mCameraId, CameraHolder.instance().getCameraInfo());
 
         PreferenceGroup group = settings.getPreferenceGroup(R.xml.video_preferences);
         if (mIsVideoCaptureIntent) {
