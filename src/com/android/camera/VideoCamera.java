@@ -54,6 +54,7 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.provider.MediaStore.Video.VideoColumns;
+import android.provider.MediaStore.Video.Media;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -1496,7 +1497,8 @@ public class VideoCamera extends NoSearchActivity
                 .appendQueryParameter("limit", String.valueOf(thumbnailCount))
                 .build();
         // TODO: managedQuery is deprecated. Use CursorLoader.
-        return managedQuery(uri, projections, null, null,
+        return managedQuery(uri, projections, Media.BUCKET_ID + " = ?",
+                new String[] {ImageManager.CAMERA_IMAGE_BUCKET_ID},
                 VideoColumns._ID + " DESC");
     }
 

@@ -60,6 +60,7 @@ import android.os.MessageQueue;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.MediaStore.Images.ImageColumns;
+import android.provider.MediaStore.Images.Media;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -454,7 +455,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 .appendQueryParameter("limit", String.valueOf(thumbnailCount))
                 .build();
         // TODO: managedQuery is deprecated.
-        return managedQuery(uri, projections, null, null,
+        return managedQuery(uri, projections,
+                Media.MIME_TYPE + " = 'image/jpeg' AND " + Media.BUCKET_ID + " = ?",
+                new String[] {ImageManager.CAMERA_IMAGE_BUCKET_ID},
                 ImageColumns._ID + " DESC");
     }
 
