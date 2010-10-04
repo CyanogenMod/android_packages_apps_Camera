@@ -71,6 +71,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -131,6 +132,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
     private int mTargetZoomValue;
+    private ZoomPicker mZoomPicker;
 
     private Parameters mParameters;
     private Parameters mInitialParams;
@@ -471,6 +473,17 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
+        ViewStub zoomStub = (ViewStub) findViewById(R.id.zoom_stub);
+        if (zoomStub != null) {
+            mZoomPicker = (ZoomPicker) zoomStub.inflate();
+            mZoomPicker.setZoomRatios(getZoomRatios());
+            mZoomPicker.setOnZoomChangeListener(
+                    new ZoomPicker.OnZoomChangedListener() {
+                public void onZoomChanged(int index) {
+                    onZoomValueChanged(index);
+                }
+            });
+        }
 
         mCameraDevice.setZoomChangeListener(mZoomListener);
     }
@@ -525,7 +538,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
 
-            mHeadUpDisplay.setZoomIndex(mZoomValue);
+            if (mZoomPicker != null) {
+                mZoomPicker.setZoomIndex(mZoomValue);
+            } else {
+                mHeadUpDisplay.setZoomIndex(mZoomValue);
+            }
             return true;
         }
     }
@@ -1056,10 +1073,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void initializeHeadUpDisplay() {
         CameraSettings settings = new CameraSettings(this, mInitialParams,
                 mCameraId, CameraHolder.instance().getCameraInfo());
+        // If we have zoom picker, do not show zoom control on head-up display.
+        float[] zoomRatios = null;
+        if (mZoomPicker == null) zoomRatios = getZoomRatios();
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences),
-                getZoomRatios(), mOrientationCompensation);
-        if (mParameters.isZoomSupported()) {
+                zoomRatios, mOrientationCompensation);
+        if (mZoomPicker == null && mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
                 public void onZoomChanged(
                         int index, float ratio, boolean isMoving) {
@@ -1072,7 +1092,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void attachHeadUpDisplay() {
         mHeadUpDisplay.setOrientation(mOrientationCompensation);
-        if (mParameters.isZoomSupported()) {
+        if (mZoomPicker == null && mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomIndex(mZoomValue);
         }
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
