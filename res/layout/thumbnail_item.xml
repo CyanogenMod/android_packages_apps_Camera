@@ -16,6 +16,6 @@
 <com.android.camera.RotateImageView xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_alignParentTop="true"
      android:layout_alignParentRight="true"
-     android:layout_height="90dp"
-     android:layout_width="90dp"
+     android:layout_height="96dp"
+     android:layout_width="96dp"
      android:background="@drawable/border_last_picture"/>

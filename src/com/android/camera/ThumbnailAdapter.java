@@ -26,10 +26,16 @@ import android.view.ViewGroup;
 import android.widget.ResourceCursorAdapter;
 import android.util.Log;
 
+import java.lang.Math;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class ThumbnailAdapter extends ResourceCursorAdapter {
     private final String TAG = "ThumbnailAdapter";
     private int idIndex;
     private boolean mIsImage;
+    private LinkedHashMap<String, Bitmap> mMap;
+
     public ThumbnailAdapter(Context context, int layout, Cursor c,
             boolean isImage) {
         super(context, layout, c, false);
@@ -39,6 +45,14 @@ public class ThumbnailAdapter extends ResourceCursorAdapter {
         } else {
             idIndex = c.getColumnIndexOrThrow(MediaStore.Video.Thumbnails._ID);
         }
+        final int capacity = Math.max(c.getCount() * 2, 16);
+        mMap = new LinkedHashMap<String, Bitmap>(16, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, Bitmap> eldest) {
+                return size() > capacity;
+            }
+        };
+
     }
 
     @Override
@@ -47,25 +61,35 @@ public class ThumbnailAdapter extends ResourceCursorAdapter {
         Bitmap b;
         Uri uri;
         RotateImageView v = (RotateImageView) view;
+
         if (mIsImage) {
-            uri = Uri.withAppendedPath(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id);
-            if (!uri.equals(v.getUri())) {
+            uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    Integer.toString(id));
+        } else {
+            uri = Uri.withAppendedPath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    Integer.toString(id));
+        }
+        long start = System.currentTimeMillis();
+        // Sometimes MetadataRetriever fails to generate video thumbnail. To
+        // avoid wasting time to get thumbnail again, null is still put into
+        // hash map.
+        if (!mMap.containsKey(uri.toString())) {
+            if (mIsImage) {
                 b = MediaStore.Images.Thumbnails.getThumbnail(
                         context.getContentResolver(), id,
-                        MediaStore.Images.Thumbnails.MINI_KIND, null);
-                v.setData(uri, b);
-            }
-        } else {
-            uri = Uri.withAppendedPath(
-                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI, "" + id);
-            if (!uri.equals(v.getUri())) {
+                        MediaStore.Images.Thumbnails.MICRO_KIND, null);
+            } else {
                 b = MediaStore.Video.Thumbnails.getThumbnail(
                         context.getContentResolver(), id,
-                        MediaStore.Video.Thumbnails.MINI_KIND, null);
-                v.setData(uri, b);
+                        MediaStore.Video.Thumbnails.MICRO_KIND, null);
             }
+            mMap.put(uri.toString(), b);
+        } else {
+            b = mMap.get(uri.toString());
         }
+        long end = System.currentTimeMillis();
+        Log.v(TAG, "Getting thumbnail takes " + (end - start) + "ms");
+        v.setData(uri, b);
     }
 
     @Override

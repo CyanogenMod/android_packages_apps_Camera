@@ -25,13 +25,13 @@
         android:layout_alignParentRight="true">
 
     <ListView android:id="@+id/image_list"
-            android:layout_width="93dp"
+            android:layout_width="96dp"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:dividerHeight="10dp"
+            android:dividerHeight="6dp"
             android:orientation="vertical"
             android:gravity="center">
     </ListView>
