@@ -53,7 +53,7 @@ public class HeadUpDisplay extends GLView {
 
     private static final int COLOR_ICONBAR_HIGHLIGHT = 0x9A2B2B2B;
 
-    private static final float MAX_HEIGHT_RATIO = 0.8f;
+    private static final float MAX_HEIGHT_RATIO = 0.85f;
     private static final float MAX_WIDTH_RATIO = 0.8f;
 
     private static final int DESELECT_INDICATOR = 0;
