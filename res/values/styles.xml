@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="ThemeCamera" parent="android:Theme.Black.NoTitleBar.Fullscreen">
-        <item name="android:windowBackground">@drawable/camera_background</item>
+        <item name="android:windowBackground">@drawable/bg_camera_pattern</item>
     </style>
     <style name="OnScreenHintTextAppearance">
         <item name="android:textColor">@android:color/primary_text_dark</item>
