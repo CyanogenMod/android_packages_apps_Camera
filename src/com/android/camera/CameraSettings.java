@@ -433,7 +433,7 @@ public class CameraSettings {
 
     public static boolean is720p(Parameters params) {
         Size size = params.getPreviewSize();
-        return !(size.width == 1280 && size.height == 720);
+        return (size.width == 1280 && size.height == 720);
     }
 
     public static void dumpParameters(Parameters params) {
