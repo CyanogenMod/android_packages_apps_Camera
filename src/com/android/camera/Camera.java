@@ -213,7 +213,8 @@ public class Camera extends BaseCamera {
                 long now = System.currentTimeMillis();
 
                 // 2 second interval for measuring stability
-                if (stable && canTakePicture() && (now - mLastStabilityChange) > 120) {
+                if (!mHeadUpDisplay.isActive() && stable && canTakePicture()
+                        && (now - mLastStabilityChange) > 120) {
                     Log.d(TAG, "** Camera stable **");
                     mLastStabilityChange = now;
                     mHandler.sendEmptyMessage(AUTOFOCUS_FAST);

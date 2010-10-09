@@ -327,7 +327,7 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             if (mPausing || !mPreviewing || mHeadUpDisplay == null || mFocusing
-                    || !"touch".equals(mFocusMode)) {
+                    || !"touch".equals(mFocusMode) || mHeadUpDisplay.isActive()) {
                 return false;
             }
 

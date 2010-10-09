@@ -327,7 +327,8 @@ public class VideoCamera extends BaseCamera implements
             long now = System.currentTimeMillis();
 
             // 2 second interval for measuring stability
-            if (stable && (now - mLastStabilityChange) > 120) {
+            if (!mHeadUpDisplay.isActive() && stable
+                    && (now - mLastStabilityChange) > 120) {
                 Log.d(TAG, "** Camera stable **");
                 mLastStabilityChange = now;
                 if (mMediaRecorder != null) {

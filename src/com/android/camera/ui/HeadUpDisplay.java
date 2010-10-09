@@ -456,4 +456,7 @@ public class HeadUpDisplay extends GLView {
         }
     }
 
+    public boolean isActive() {
+        return mIndicatorBar.isActivated();
+    }
 }
