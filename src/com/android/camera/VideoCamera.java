@@ -22,6 +22,7 @@ import com.android.camera.ui.CamcorderHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.GLView;
 import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.SettingsWheel;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -137,6 +138,7 @@ public class VideoCamera extends NoSearchActivity
     private ImageView mVideoFrame;
     private GLRootView mGLRootView;
     private CamcorderHeadUpDisplay mHeadUpDisplay;
+    private SettingsWheel mSettingsWheel;
     private MenuItem mSwitchTimeLapseMenuItem;
 
     private boolean mIsVideoCaptureIntent;
@@ -396,6 +398,7 @@ public class VideoCamera extends NoSearchActivity
         mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
+        initializeSettingsWheel();
     }
 
     private void changeHeadUpDisplayState() {
@@ -435,6 +438,16 @@ public class VideoCamera extends NoSearchActivity
         mHeadUpDisplay.collapse();
         ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         mGLRootView = null;
+    }
+
+    private void initializeSettingsWheel() {
+        mSettingsWheel = (SettingsWheel) findViewById(R.id.settings_wheel);
+        if (mSettingsWheel != null) {
+            CameraSettings settings = new CameraSettings(this, mParameters,
+                    mCameraId, CameraHolder.instance().getCameraInfo());
+            mSettingsWheel.initialize(this,
+                    settings.getPreferenceGroup(R.xml.video_preferences));
+        }
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.SettingsWheel;
 import com.android.camera.ui.ZoomControllerListener;
 
 import android.app.Activity;
@@ -238,6 +239,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private final Handler mHandler = new MainHandler();
     private CameraHeadUpDisplay mHeadUpDisplay;
+    private SettingsWheel mSettingsWheel;
 
     // multiple cameras support
     private int mNumberOfCameras;
@@ -349,6 +351,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mHeadUpDisplay = new CameraHeadUpDisplay(this);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
+        initializeSettingsWheel();
         mFirstTimeInitialized = true;
         changeHeadUpDisplayState();
         addIdleHandler();
@@ -1067,6 +1070,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     mParameters.getWhiteBalance(), mParameters.getFocusMode());
         } else {
             overrideHudSettings(null, null, null);
+        }
+    }
+
+    private void initializeSettingsWheel() {
+        mSettingsWheel = (SettingsWheel) findViewById(R.id.settings_wheel);
+        if (mSettingsWheel != null) {
+            CameraSettings settings = new CameraSettings(this, mInitialParams,
+                    mCameraId, CameraHolder.instance().getCameraInfo());
+            mSettingsWheel.initialize(this,
+                    settings.getPreferenceGroup(R.xml.camera_preferences));
         }
     }
 
