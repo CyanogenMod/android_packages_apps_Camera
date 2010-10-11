@@ -2,7 +2,7 @@ package com.android.camera.stress;
 
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.os.Debug;
+import android.os.Environment;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.app.Activity;
@@ -18,7 +18,8 @@ public class CameraStartUp extends InstrumentationTestCase {
     private static final int TOTAL_NUMBER_OF_STARTUP = 20;
 
     private String TAG = "CameraStartUp";
-    private static final String CAMERA_TEST_OUTPUT_FILE = "/sdcard/mediaStressOut.txt";
+    private static final String CAMERA_TEST_OUTPUT_FILE =
+        Environment.getExternalStorageDirectory() + "/mediaStressOut.txt";
     private static final String CAMERA_PACKAGE_NAME = "com.google.android.camera";
     private static final String CAMERA_ACTIVITY_NAME = "com.android.camera.Camera";
     private static final String VIDEORECORDER_ACTIVITY_NAME = "com.android.camera.VideoCamera";
