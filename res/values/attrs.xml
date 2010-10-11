@@ -30,5 +30,6 @@
     <declare-styleable name="IconListPreference">
         <attr name="icons" />
         <attr name="largeIcons" format="reference" />
+        <attr name="images" format="reference" />
     </declare-styleable>
 </resources>

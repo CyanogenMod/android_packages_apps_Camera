@@ -18,6 +18,7 @@ package com.android.camera;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
+import com.android.camera.ui.BasicSettingPicker;
 import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
@@ -240,6 +241,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private final Handler mHandler = new MainHandler();
     private CameraHeadUpDisplay mHeadUpDisplay;
     private SettingsWheel mSettingsWheel;
+    private BasicSettingPicker mWhiteBalancePicker;
+    private PreferenceGroup mPreferenceGroup;
 
     // multiple cameras support
     private int mNumberOfCameras;
@@ -1078,8 +1081,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mSettingsWheel != null) {
             CameraSettings settings = new CameraSettings(this, mInitialParams,
                     mCameraId, CameraHolder.instance().getCameraInfo());
-            mSettingsWheel.initialize(this,
-                    settings.getPreferenceGroup(R.xml.camera_preferences));
+            mPreferenceGroup = settings.getPreferenceGroup(R.xml.camera_preferences);
+            mSettingsWheel.initialize(this, mPreferenceGroup);
+            mSettingsWheel.setListener(new MySettingsWheelListener());
         }
     }
 
@@ -1200,7 +1204,19 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 break;
             case R.id.btn_cancel:
                 doCancel();
+                break;
+            case R.id.wb_done:
+                hideSettingPicker();
+                break;
         }
+    }
+
+    private boolean hideSettingPicker() {
+        if (mThumbnailList == null) return false;
+        int visible = mThumbnailList.getVisibility();
+        mWhiteBalancePicker.setVisibility(View.INVISIBLE);
+        mThumbnailList.setVisibility(View.VISIBLE);
+        return visible == View.INVISIBLE;
     }
 
     private class ThumbnailItemClickListener implements OnItemClickListener {
@@ -1632,6 +1648,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void doFocus(boolean pressed) {
         // Do the focus if the mode is not infinity.
         if (mHeadUpDisplay.collapse()) return;
+        if (hideSettingPicker()) return;
         if (!mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)) {
             if (pressed) {  // Focus key down.
                 autoFocus();
@@ -2259,6 +2276,36 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 getString(R.string.confirm_restore_title),
                 getString(R.string.confirm_restore_message),
                 runnable);
+    }
+
+    private class MySettingsWheelListener implements SettingsWheel.Listener {
+        public void onSettingClicked() {
+            if (mWhiteBalancePicker == null) {
+                mThumbnailList.setVisibility(View.INVISIBLE);
+                ViewStub stub = (ViewStub) findViewById(R.id.whitebalance_stub);
+                mWhiteBalancePicker = (BasicSettingPicker) (stub.inflate());
+                mWhiteBalancePicker.setSharedPreferenceChangedListener(
+                        new MySharedPreferenceChangedListener());
+                mWhiteBalancePicker.setPreference((IconListPreference)
+                        mPreferenceGroup.findPreference(CameraSettings.KEY_WHITE_BALANCE));
+                View v = findViewById(R.id.wb_done);
+                v.setOnClickListener(Camera.this);
+            } else {
+                if (mWhiteBalancePicker.getVisibility() == View.INVISIBLE) {
+                    mThumbnailList.setVisibility(View.INVISIBLE);
+                    mWhiteBalancePicker.setVisibility(View.VISIBLE);
+                } else {
+                    hideSettingPicker();
+                }
+            }
+        }
+    }
+
+    private class MySharedPreferenceChangedListener
+            implements BasicSettingPicker.Listener {
+        public void onSharedPreferenceChanged() {
+            Camera.this.onSharedPreferenceChanged();
+        }
     }
 }
 

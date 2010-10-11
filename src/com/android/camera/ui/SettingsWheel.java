@@ -26,6 +26,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Button;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.View;
 
@@ -39,6 +40,26 @@ public class SettingsWheel extends ViewGroup {
     private static final String TAG = "SettingsWheel";
     private ComboPreferences mSharedPrefs;
     private PreferenceGroup mPreferenceGroup;
+    private Listener mListener;
+
+    static public interface Listener {
+        public void onSettingClicked();
+    }
+
+    public void setListener(Listener listener) {
+        mListener = listener;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mListener != null) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                mListener.onSettingClicked();
+                return true;
+            }
+        }
+        return false;
+    }
 
     public SettingsWheel(Context context) {
         super(context);
@@ -128,6 +149,7 @@ public class SettingsWheel extends ViewGroup {
         int index = pref.findIndexOfValue(pref.getValue());
         Button b = new Button(context);
         b.setBackgroundResource(pref.getLargeIconIds()[index]);
+        b.setClickable(false);
         addView(b);
     }
 

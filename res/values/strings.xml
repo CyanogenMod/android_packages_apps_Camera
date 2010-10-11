@@ -366,4 +366,7 @@
 
     <string name="switch_to_camera_lable">Switch to camera</string>
     <string name="switch_to_video_lable">Switch to video</string>
+
+    <!-- Button indicating to exit the camera setting picker. -->
+    <string name="camera_setting_picker_done">Done</string>
 </resources>
