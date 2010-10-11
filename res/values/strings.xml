@@ -302,7 +302,7 @@
 
     <!-- Restore settings item in preference -->
     <string name="pref_restore_title">Camera settings</string>
-    <string name="pref_restore_detail">Restore to defaults</string>
+    <string name="pref_restore_detail">Restore defaults</string>
 
     <!-- Exposure settings in preference -->
     <string name="pref_exposure_title">Exposure</string>
