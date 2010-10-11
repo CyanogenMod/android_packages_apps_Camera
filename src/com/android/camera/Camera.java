@@ -25,6 +25,7 @@ import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.ZoomController;
 
 import android.app.Activity;
+import android.app.backup.BackupManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentProviderClient;
@@ -2015,6 +2016,8 @@ public class Camera extends BaseCamera {
         }
 
         setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
+
+        BackupManager.dataChanged(this.getPackageName());
     }
 
     private boolean getQuickCaptureSettings() {
