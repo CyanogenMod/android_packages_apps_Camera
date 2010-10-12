@@ -43,6 +43,7 @@ public class IconListPreference extends ListPreference {
                 R.styleable.IconListPreference_largeIcons, 0));
         mImageIds = getIds(res, a.getResourceId(
                 R.styleable.IconListPreference_images, 0));
+        if (mImageIds == null) mImageIds = mLargeIconIds;
         a.recycle();
     }
 

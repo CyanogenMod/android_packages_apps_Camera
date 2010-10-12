@@ -22,7 +22,7 @@ import com.android.camera.ui.BasicSettingPicker;
 import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
-import com.android.camera.ui.SettingsWheel;
+import com.android.camera.ui.ControlPanel;
 import com.android.camera.ui.ZoomControllerListener;
 
 import android.app.Activity;
@@ -249,8 +249,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private final Handler mHandler = new MainHandler();
     private CameraHeadUpDisplay mHeadUpDisplay;
-    private SettingsWheel mSettingsWheel;
-    private BasicSettingPicker mWhiteBalancePicker;
+    private ControlPanel mControlPanel;
     private PreferenceGroup mPreferenceGroup;
 
     // multiple cameras support
@@ -365,7 +364,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mHeadUpDisplay = new CameraHeadUpDisplay(this);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
-        initializeSettingsWheel();
+        initializeControlPanel();
         mFirstTimeInitialized = true;
         changeHeadUpDisplayState();
         addIdleHandler();
@@ -424,7 +423,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void initThumbnailList() {
-        mThumbnailList = (ListView) findViewById(R.id.image_list);
+        mThumbnailList = (ListView) findViewById(R.id.thumbnail_list);
         if (mThumbnailList != null) {
             int width = mThumbnailList.getWidth();
             int height = mThumbnailList.getHeight();
@@ -1099,14 +1098,18 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private void initializeSettingsWheel() {
-        mSettingsWheel = (SettingsWheel) findViewById(R.id.settings_wheel);
-        if (mSettingsWheel != null) {
+    private void initializeControlPanel() {
+        String[] keys = new String[]{CameraSettings.KEY_FLASH_MODE,
+            CameraSettings.KEY_WHITE_BALANCE,
+            CameraSettings.KEY_RECORD_LOCATION,
+            CameraSettings.KEY_CAMERA_ID};
+        mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
+        if (mControlPanel != null) {
             CameraSettings settings = new CameraSettings(this, mInitialParams,
                     mCameraId, CameraHolder.instance().getCameraInfo());
             mPreferenceGroup = settings.getPreferenceGroup(R.xml.camera_preferences);
-            mSettingsWheel.initialize(this, mPreferenceGroup);
-            mSettingsWheel.setListener(new MySettingsWheelListener());
+            mControlPanel.initialize(this, mPreferenceGroup, keys);
+            mControlPanel.setListener(new MyControlPanelListener());
         }
     }
 
@@ -1228,18 +1231,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             case R.id.btn_cancel:
                 doCancel();
                 break;
-            case R.id.wb_done:
-                hideSettingPicker();
-                break;
         }
-    }
-
-    private boolean hideSettingPicker() {
-        if (mThumbnailList == null) return false;
-        int visible = mThumbnailList.getVisibility();
-        mWhiteBalancePicker.setVisibility(View.INVISIBLE);
-        mThumbnailList.setVisibility(View.VISIBLE);
-        return visible == View.INVISIBLE;
     }
 
     private class ThumbnailItemClickListener implements OnItemClickListener {
@@ -1478,6 +1470,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         closeCamera();
         resetScreenOn();
         changeHeadUpDisplayState();
+        if (mControlPanel != null) mControlPanel.hideSettingPicker();
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -1621,6 +1614,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     // the shutter button gets the focus, doFocus() will be
                     // called again but it is fine.
                     if (mHeadUpDisplay.collapse()) return true;
+                    if (mControlPanel != null) mControlPanel.hideSettingPicker();
                     doFocus(true);
                     if (mShutterButton.isInTouchMode()) {
                         mShutterButton.requestFocusFromTouch();
@@ -1649,6 +1643,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void doSnap() {
         if (mHeadUpDisplay.collapse()) return;
+        if (mControlPanel != null) mControlPanel.hideSettingPicker();
 
         Log.v(TAG, "doSnap: mFocusState=" + mFocusState);
         // If the user has half-pressed the shutter and focus is completed, we
@@ -1673,6 +1668,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void doFocus(boolean pressed) {
         // Do the focus if the mode is not infinity.
         if (mHeadUpDisplay.collapse()) return;
+        if (mControlPanel != null) mControlPanel.hideSettingPicker();
         if (!(mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                   || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
                   || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF))) {
@@ -2235,7 +2231,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private void onSharedPreferenceChanged() {
+    private void onSharedPreferencesChanged() {
         // ignore the events after "onPause()"
         if (mPausing) return;
 
@@ -2280,7 +2276,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private class MyHeadUpDisplayListener implements HeadUpDisplay.Listener {
 
         public void onSharedPreferencesChanged() {
-            Camera.this.onSharedPreferenceChanged();
+            Camera.this.onSharedPreferencesChanged();
         }
 
         public void onRestorePreferencesClicked() {
@@ -2304,33 +2300,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 runnable);
     }
 
-    private class MySettingsWheelListener implements SettingsWheel.Listener {
-        public void onSettingClicked() {
-            if (mWhiteBalancePicker == null) {
-                mThumbnailList.setVisibility(View.INVISIBLE);
-                ViewStub stub = (ViewStub) findViewById(R.id.whitebalance_stub);
-                mWhiteBalancePicker = (BasicSettingPicker) (stub.inflate());
-                mWhiteBalancePicker.setSharedPreferenceChangedListener(
-                        new MySharedPreferenceChangedListener());
-                mWhiteBalancePicker.setPreference((IconListPreference)
-                        mPreferenceGroup.findPreference(CameraSettings.KEY_WHITE_BALANCE));
-                View v = findViewById(R.id.wb_done);
-                v.setOnClickListener(Camera.this);
-            } else {
-                if (mWhiteBalancePicker.getVisibility() == View.INVISIBLE) {
-                    mThumbnailList.setVisibility(View.INVISIBLE);
-                    mWhiteBalancePicker.setVisibility(View.VISIBLE);
-                } else {
-                    hideSettingPicker();
-                }
-            }
-        }
-    }
-
-    private class MySharedPreferenceChangedListener
-            implements BasicSettingPicker.Listener {
-        public void onSharedPreferenceChanged() {
-            Camera.this.onSharedPreferenceChanged();
+    private class MyControlPanelListener implements ControlPanel.Listener {
+        public void onSharedPreferencesChanged() {
+            Camera.this.onSharedPreferencesChanged();
         }
     }
 }

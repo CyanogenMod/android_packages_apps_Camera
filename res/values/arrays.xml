@@ -320,4 +320,14 @@
         <item>party</item>
         <item>candlelight</item>
     </string-array>
+
+    <array name="pref_camera_id_icons" translatable="false">
+        <item>@drawable/ic_menuselect_camera_facing_back</item>
+        <item>@drawable/ic_menuselect_camera_facing_front</item>
+    </array>
+
+    <array name="id_icons">
+        <item>@drawable/ic_viewfinder_camera_facing_back</item>
+        <item>@drawable/ic_viewfinder_camera_facing_front</item>
+    </array>
 </resources>

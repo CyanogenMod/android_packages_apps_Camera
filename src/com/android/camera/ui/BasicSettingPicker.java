@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,7 +47,7 @@ public class BasicSettingPicker extends LinearLayout {
         mContext = context;
     }
 
-    public void setPreference(IconListPreference preference) {
+    public void initialize(IconListPreference preference) {
         mPreference = preference;
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
@@ -58,11 +59,20 @@ public class BasicSettingPicker extends LinearLayout {
         int pos = 0;
         for (int i = 0, n = entries.length; i < n; ++i) {
             // Add the image.
-            ImageView image = (ImageView) inflater.inflate(
-                    R.layout.setting_image_item, null);
-            image.setImageResource(imageIds[i]);
+            ImageView image;
+            Drawable drawable = mContext.getResources().getDrawable(imageIds[i]);
+            // Sacle the image if it is too small.
+            if (drawable.getIntrinsicWidth() >= getLayoutParams().width) {
+                image = (ImageView) inflater.inflate(
+                        R.layout.setting_image_item, null);
+            } else {
+                image = (ImageView) inflater.inflate(
+                        R.layout.setting_scale_image_item, null);
+            }
+            image.setImageDrawable(drawable);
             image.setClickable(false);
             addView(image, pos++);
+
             // Add the text.
             TextView text = (TextView) inflater.inflate(
                     R.layout.setting_text_item, null);
@@ -83,13 +93,11 @@ public class BasicSettingPicker extends LinearLayout {
         int action = event.getAction();
         if (action == MotionEvent.ACTION_MOVE
                 || action == MotionEvent.ACTION_DOWN) {
-            int x = (int) event.getX();
             int y = (int) event.getY();
             // Check which child is pressed.
             for (int i = 0; i < getChildCount() - 1; i++) {
                 View v = getChildAt(i);
-                if (x >= v.getLeft() && x <= v.getRight() && y >= v.getTop()
-                        && y <= v.getBottom()) {
+                if (y >= v.getTop() && y <= v.getBottom()) {
                     int index = i / 2;
                     CharSequence[] values = mPreference.getEntryValues();
                     int oldIndex = mPreference.findIndexOfValue(mPreference.getValue());

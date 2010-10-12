@@ -14,8 +14,8 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/control_bar"
+<com.android.camera.ui.ControlPanel xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/control_panel"
         android:layout_height="match_parent"
         android:layout_width="240dp"
         android:layout_marginTop="20dp"
@@ -24,7 +24,7 @@
         android:layout_marginRight="10dp"
         android:layout_alignParentRight="true">
 
-    <ListView android:id="@+id/image_list"
+    <ListView android:id="@+id/thumbnail_list"
             android:layout_width="96dp"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
@@ -36,20 +36,6 @@
             android:gravity="center">
     </ListView>
 
-    <ViewStub android:id="@+id/whitebalance_stub"
-            android:inflatedId="@+id/whitebalance_picker"
-            android:layout="@layout/whitebalance_picker"
-            android:layout_width="96dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:dividerHeight="6dp"
-            android:orientation="vertical"
-            android:gravity="center">
-    </ViewStub>
-
     <ViewStub android:id="@+id/zoom_stub"
             android:inflatedId="@+id/zoom_picker"
             android:layout="@layout/zoom_picker"
@@ -60,12 +46,11 @@
             android:layout_marginTop="10dp"
             android:layout_centerInParent="true"/>
 
-    <com.android.camera.ui.SettingsWheel android:id="@+id/settings_wheel"
-                android:layout_width="wrap_content"
+    <com.android.camera.ui.IndicatorWheel android:id="@+id/indicator_wheel"
+                android:layout_width="144dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_alignParentRight="true"
-                android:layout_toRightOf="@id/image_list">
+                android:layout_alignParentRight="true">
         <com.android.camera.ShutterButton android:id="@+id/shutter_button"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -74,7 +59,7 @@
                     android:focusable="true"
                     android:src="@drawable/btn_ic_camera_shutter"
                     android:background="@drawable/btn_shutter" />
-    </com.android.camera.ui.SettingsWheel>
+    </com.android.camera.ui.IndicatorWheel>
 
     <LinearLayout android:id="@+id/camera_switch_set"
             android:orientation="vertical"
@@ -99,5 +84,5 @@
                 android:layout_width="wrap_content"
                 android:src="@drawable/btn_ic_mode_switch_camera"/>
     </LinearLayout>
-</RelativeLayout>
+</com.android.camera.ui.ControlPanel>
 

@@ -19,10 +19,10 @@ package com.android.camera;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.CamcorderHeadUpDisplay;
+import com.android.camera.ui.ControlPanel;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.GLView;
 import com.android.camera.ui.HeadUpDisplay;
-import com.android.camera.ui.SettingsWheel;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -138,7 +138,7 @@ public class VideoCamera extends NoSearchActivity
     private ImageView mVideoFrame;
     private GLRootView mGLRootView;
     private CamcorderHeadUpDisplay mHeadUpDisplay;
-    private SettingsWheel mSettingsWheel;
+    private ControlPanel mControlPanel;
     private MenuItem mSwitchTimeLapseMenuItem;
 
     private boolean mIsVideoCaptureIntent;
@@ -398,7 +398,7 @@ public class VideoCamera extends NoSearchActivity
         mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
-        initializeSettingsWheel();
+        initializeControlPanel();
     }
 
     private void changeHeadUpDisplayState() {
@@ -440,13 +440,17 @@ public class VideoCamera extends NoSearchActivity
         mGLRootView = null;
     }
 
-    private void initializeSettingsWheel() {
-        mSettingsWheel = (SettingsWheel) findViewById(R.id.settings_wheel);
-        if (mSettingsWheel != null) {
+    private void initializeControlPanel() {
+        String[] keys = new String[]{CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
+            CameraSettings.KEY_WHITE_BALANCE,
+            CameraSettings.KEY_CAMERA_ID};
+        mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
+        if (mControlPanel != null) {
             CameraSettings settings = new CameraSettings(this, mParameters,
                     mCameraId, CameraHolder.instance().getCameraInfo());
-            mSettingsWheel.initialize(this,
-                    settings.getPreferenceGroup(R.xml.video_preferences));
+            mControlPanel.initialize(this,
+                    settings.getPreferenceGroup(R.xml.video_preferences), keys);
+            mControlPanel.setListener(new MyControlPanelListener());
         }
     }
 
@@ -510,6 +514,7 @@ public class VideoCamera extends NoSearchActivity
         switch (button.getId()) {
             case R.id.shutter_button:
                 if (mHeadUpDisplay.collapse()) return;
+                if (mControlPanel != null) mControlPanel.hideSettingPicker();
 
                 if (mMediaRecorderRecording) {
                     onStopVideoRecording(true);
@@ -772,6 +777,7 @@ public class VideoCamera extends NoSearchActivity
         mPausing = true;
 
         changeHeadUpDisplayState();
+        if (mControlPanel != null) mControlPanel.hideSettingPicker();
 
         // Hide the preview now. Otherwise, the preview may be rotated during
         // onPause and it is annoying to users.
@@ -1495,7 +1501,7 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void initThumbnailList() {
-        mThumbnailList = (ListView) findViewById(R.id.image_list);
+        mThumbnailList = (ListView) findViewById(R.id.thumbnail_list);
         if (mThumbnailList != null) {
             int width = mThumbnailList.getWidth();
             int height = mThumbnailList.getHeight();
@@ -1797,6 +1803,12 @@ public class VideoCamera extends NoSearchActivity
             } else {
                 resetCameraParameters();
             }
+        }
+    }
+
+    private class MyControlPanelListener implements ControlPanel.Listener {
+        public void onSharedPreferencesChanged() {
+            VideoCamera.this.onSharedPreferencesChanged();
         }
     }
 }

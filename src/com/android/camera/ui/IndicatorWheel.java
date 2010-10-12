@@ -16,9 +16,7 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.CameraSettings;
 import com.android.camera.ComboPreferences;
-import com.android.camera.IconListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
@@ -36,14 +34,15 @@ import java.lang.Math;
  * A view that contains camera settings and shutter buttons. The settings are
  * spreaded around the shutter button.
  */
-public class SettingsWheel extends ViewGroup {
-    private static final String TAG = "SettingsWheel";
-    private ComboPreferences mSharedPrefs;
-    private PreferenceGroup mPreferenceGroup;
+public class IndicatorWheel extends ViewGroup {
+    private static final String TAG = "IndicatorWheel";
     private Listener mListener;
+    private int mCenterX, mCenterY;
+    private double mShutterButtonRadius;
+    private double mSectorInitialRadians[];
 
     static public interface Listener {
-        public void onSettingClicked();
+        public void onIndicatorClicked(int index);
     }
 
     public void setListener(Listener listener) {
@@ -52,25 +51,37 @@ public class SettingsWheel extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mListener != null) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                mListener.onSettingClicked();
-                return true;
+        int count = getChildCount();
+        if (mListener == null || count <= 1) return false;
+
+        // Check if any setting is pressed.
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_DOWN
+                || action == MotionEvent.ACTION_MOVE) {
+            double dx = event.getX() - mCenterX;
+            double dy = mCenterY - event.getY();
+            double radius = Math.sqrt(dx * dx + dy * dy);
+            // Ignore the event if it's too near to the shutter button.
+            if (radius < mShutterButtonRadius) return false;
+
+            double intervalDegrees = 180.0 / (count - 2);
+            double delta = Math.atan2(dy, dx);
+            if (delta < 0) delta += Math.PI * 2;
+            // Check which sector is pressed.
+            if (delta > mSectorInitialRadians[0]) {
+                for (int i = 1; i < count; i++) {
+                    if (delta < mSectorInitialRadians[i]) {
+                        mListener.onIndicatorClicked(i - 1);
+                        return true;
+                    }
+                }
             }
         }
         return false;
     }
 
-    public SettingsWheel(Context context) {
-        super(context);
-    }
-
-    public SettingsWheel(Context context, AttributeSet attrs) {
+    public IndicatorWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public SettingsWheel(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
     }
 
     @Override
@@ -84,7 +95,7 @@ public class SettingsWheel extends ViewGroup {
         // Measure myself.
         View shutterButton = getChildAt(0);
         int desiredWidth = (int)(shutterButton.getMeasuredWidth() * 2.5);
-        int desiredHeight = (int)(shutterButton.getMeasuredHeight() * 3);
+        int desiredHeight = (int)(shutterButton.getMeasuredHeight() * 2.5);
         int widthMode = MeasureSpec.getMode(widthSpec);
         int heightMode = MeasureSpec.getMode(heightSpec);
         int measuredWidth, measuredHeight;
@@ -114,11 +125,12 @@ public class SettingsWheel extends ViewGroup {
         // Layout the shutter button.
         View shutterButton = findViewById(R.id.shutter_button);
         int width = shutterButton.getMeasuredWidth();
+        mShutterButtonRadius = width / 2.0 + 10;
         int height = shutterButton.getMeasuredHeight();
-        int xCenter = (right - left) - width / 2;
-        int yCenter = (bottom - top) / 2;
-        shutterButton.layout(xCenter - width / 2, yCenter - height / 2,
-                xCenter + width / 2, yCenter + height / 2);
+        mCenterX = (right - left) - width / 2;
+        mCenterY = (bottom - top) / 2;
+        shutterButton.layout(mCenterX - width / 2, mCenterY - height / 2,
+                mCenterX + width / 2, mCenterY + height / 2);
 
         // Layout the settings. The icons are spreaded on the left side of the
         // shutter button. So the angle starts from 90 to 270 degrees.
@@ -127,39 +139,32 @@ public class SettingsWheel extends ViewGroup {
         double intervalDegrees = 180.0 / (count - 2);
         double initialDegrees = 90.0;
         int index = 0;
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < count; i++) {
             View view = getChildAt(i);
             if (view == shutterButton) continue;
             double degree = initialDegrees + intervalDegrees * index;
-            double radian = degree * Math.PI / 180.0;
-            int x = xCenter + (int)(radius * Math.cos(radian));
-            int y = yCenter - (int)(radius * Math.sin(radian));
+            double radian = Math.toRadians(degree);
+            int x = mCenterX + (int)(radius * Math.cos(radian));
+            int y = mCenterY - (int)(radius * Math.sin(radian));
             width = view.getMeasuredWidth();
             height = view.getMeasuredHeight();
             view.layout(x - width / 2, y - height / 2, x + width / 2,
                     y + height / 2);
             index++;
         }
+
+        // Store the radian intervals for each icon.
+        mSectorInitialRadians = new double[count];
+        mSectorInitialRadians[0] = Math.toRadians(
+                initialDegrees - intervalDegrees / 2.0);
+        for (int i = 1; i < count; i++) {
+            mSectorInitialRadians[i] = mSectorInitialRadians[i - 1]
+                    + Math.toRadians(intervalDegrees);
+        }
     }
 
-    protected void addIndicator(
-            Context context, PreferenceGroup group, String key) {
-        IconListPreference pref = (IconListPreference) group.findPreference(key);
-        if (pref == null) return;
-        int index = pref.findIndexOfValue(pref.getValue());
-        Button b = new Button(context);
-        b.setBackgroundResource(pref.getLargeIconIds()[index]);
-        b.setClickable(false);
-        addView(b);
-    }
-
-    public void initialize(Context context, PreferenceGroup group) {
-        mPreferenceGroup = group;
-        mSharedPrefs = ComboPreferences.get(context);
-        addIndicator(context, group, CameraSettings.KEY_FLASH_MODE);
-        addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
-        addIndicator(context, group, CameraSettings.KEY_RECORD_LOCATION);
-        addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
-        requestLayout();
+    public void updateIndicator(int index) {
+        IndicatorButton indicator = (IndicatorButton) getChildAt(index + 1);
+        indicator.reloadPreference();
     }
 }

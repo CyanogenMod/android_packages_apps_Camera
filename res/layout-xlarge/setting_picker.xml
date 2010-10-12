@@ -18,15 +18,21 @@
 -->
 
 <com.android.camera.ui.BasicSettingPicker xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
+        android:layout_width="96dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:dividerHeight="6dp" >
 
-    <Button android:id="@+id/wb_done"
+    <Button android:id="@+id/setting_exit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="@string/camera_setting_picker_done" />
+        android:text="@string/camera_setting_picker_exit" />
 </com.android.camera.ui.BasicSettingPicker>
