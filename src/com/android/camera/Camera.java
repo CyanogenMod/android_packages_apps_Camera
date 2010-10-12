@@ -1648,7 +1648,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void doFocus(boolean pressed) {
         // Do the focus if the mode is not infinity.
         if (mHeadUpDisplay.collapse()) return;
-        if (hideSettingPicker()) return;
         if (!mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)) {
             if (pressed) {  // Focus key down.
                 autoFocus();
