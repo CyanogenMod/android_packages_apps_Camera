@@ -1512,6 +1512,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
         if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
+                || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
+                || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF)
                 || (mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL)) {
             mImageCapture.onSnap();
@@ -1528,7 +1530,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void doFocus(boolean pressed) {
         // Do the focus if the mode is not infinity.
         if (mHeadUpDisplay.collapse()) return;
-        if (!mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)) {
+        if (!(mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
+                  || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
+                  || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF))) {
             if (pressed) {  // Focus key down.
                 autoFocus();
             } else {  // Focus key up.
