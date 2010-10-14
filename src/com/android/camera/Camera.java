@@ -535,6 +535,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 return false;
             }
 
+            int x = Math.round(e.getX());
+            int y = Math.round(e.getY());
+            if (x < mSurfaceView.getLeft() || x > mSurfaceView.getRight()
+                    || y < mSurfaceView.getTop() || y > mSurfaceView.getBottom()) {
+                return false;
+            }
+
             if (mZoomValue < mZoomMax) {
                 // Zoom in to the maximum.
                 mZoomValue = mZoomMax;
