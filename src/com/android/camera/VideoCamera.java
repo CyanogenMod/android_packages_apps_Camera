@@ -192,7 +192,7 @@ public class VideoCamera extends NoSearchActivity
     private ContentResolver mContentResolver;
 
     private ShutterButton mShutterButton;
-    private TextView mRecordingTimeView;
+    private TextView mRecordingTimeView, mTimeLapseRecordingTimeView;
     private Switcher mSwitcher;
     private boolean mRecordingTimeCountsDown = false;
 
@@ -358,7 +358,6 @@ public class VideoCamera extends NoSearchActivity
 
         mIsVideoCaptureIntent = isVideoCaptureIntent();
         mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
-        mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
 
         ViewGroup rootView = (ViewGroup) findViewById(R.id.video_camera);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -385,6 +384,10 @@ public class VideoCamera extends NoSearchActivity
         mShutterButton.setImageResource(R.drawable.btn_ic_video_record);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
+
+        mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
+        mTimeLapseRecordingTimeView = (TextView) findViewById(
+                R.id.time_lapse_recording_time);
 
         // Make sure preview is started.
         try {
@@ -1333,6 +1336,10 @@ public class VideoCamera extends NoSearchActivity
             updateRecordingIndicator(false);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
+            if (mTimeLapseRecordingTimeView != null) {
+                mTimeLapseRecordingTimeView.setText("");
+                mTimeLapseRecordingTimeView.setVisibility(View.VISIBLE);
+            }
             updateRecordingTime();
             keepScreenOn();
         }
@@ -1435,6 +1442,9 @@ public class VideoCamera extends NoSearchActivity
             releaseMediaRecorder();
             updateRecordingIndicator(true);
             mRecordingTimeView.setVisibility(View.GONE);
+            if (mTimeLapseRecordingTimeView != null) {
+                mTimeLapseRecordingTimeView.setVisibility(View.GONE);
+            }
             keepScreenOnAwhile();
         }
         if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {
@@ -1632,7 +1642,15 @@ public class VideoCamera extends NoSearchActivity
             // Since the length of time lapse video is different from the length
             // of the actual wall clock time elapsed, we display the video length
             // alongside the wall clock time.
-            text = text  + " (" + getTimeLapseVideoLengthString(delta) + ")";
+            String timeLapseText = "(" + getTimeLapseVideoLengthString(delta) + ")";
+            // In xlarge layout, recording time and time lapse recording time
+            // are separated in two lines. In other layouts, they are in one
+            // line.
+            if (mTimeLapseRecordingTimeView == null) {
+                text += " " + timeLapseText;
+            } else {
+                mTimeLapseRecordingTimeView.setText(timeLapseText);
+            }
         }
 
         mRecordingTimeView.setText(text);
