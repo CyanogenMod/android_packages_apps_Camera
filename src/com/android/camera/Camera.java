@@ -79,10 +79,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -177,6 +178,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private ListView mThumbnailList;
     private OnItemClickListener mThumbnailItemClickListener =
             new ThumbnailItemClickListener();
+    private ThumbnailAdapter mThumbnailAdapter;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -425,26 +427,37 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void initThumbnailList() {
         mThumbnailList = (ListView) findViewById(R.id.thumbnail_list);
-        if (mThumbnailList != null) {
-            int width = mThumbnailList.getWidth();
-            int height = mThumbnailList.getHeight();
-            int thumbnailCount = (height + mThumbnailList.getDividerHeight())
-                    / (width + mThumbnailList.getDividerHeight());
-            Cursor cursor = getThumbnailsCursor(thumbnailCount);
-            ThumbnailAdapter adapter = new ThumbnailAdapter(
-                    getApplicationContext(), R.layout.thumbnail_item, cursor,
-                    true);
-            mThumbnailList.setAdapter(adapter);
-            mThumbnailList.setOnItemClickListener(mThumbnailItemClickListener);
+        if (mThumbnailList == null) return;
+
+        int width = mThumbnailList.getWidth();
+        int height = mThumbnailList.getHeight();
+
+        // Add gallery button to header view.
+        if (mThumbnailList.getHeaderViewsCount() == 0) {
+            LayoutInflater inflater = getLayoutInflater();
+            Button b = new Button(this);
+            ListView.LayoutParams params = new ListView.LayoutParams(width, width);
+            b.setId(R.id.btn_gallery);
+            b.setLayoutParams(params);
+            b.setOnClickListener(this);
+            b.setBackgroundResource(R.drawable.ic_menu_gallery);
+            mThumbnailList.addHeaderView(b);
         }
+
+        // Set data adapter.
+        int thumbnailCount = (height + mThumbnailList.getDividerHeight())
+                / (width + mThumbnailList.getDividerHeight()) - 1;
+        Cursor cursor = getThumbnailsCursor(thumbnailCount);
+        mThumbnailAdapter = new ThumbnailAdapter(
+                getApplicationContext(), R.layout.thumbnail_item, cursor, true);
+        mThumbnailList.setAdapter(mThumbnailAdapter);
+        mThumbnailList.setOnItemClickListener(mThumbnailItemClickListener);
     }
 
     private void updateThumbnailList() {
         if (mThumbnailList == null) return;
-        CursorAdapter adapter = (CursorAdapter) mThumbnailList.getAdapter();
-        Cursor cursor = adapter.getCursor();
-        cursor.requery();
-        adapter.notifyDataSetChanged();
+        mThumbnailAdapter.getCursor().requery();
+        mThumbnailAdapter.notifyDataSetChanged();
     }
 
     private Cursor getThumbnailsCursor(int thumbnailCount) {
@@ -1233,6 +1246,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 break;
             case R.id.btn_cancel:
                 doCancel();
+                break;
+            case R.id.btn_gallery:
+                gotoGallery();
                 break;
         }
     }
