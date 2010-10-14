@@ -306,6 +306,10 @@ public class CameraSettings {
         }
 
         pref.filterUnsupported(supported);
+        if (pref.getEntries().length <= 1) {
+            removePreference(group, pref.getKey());
+            return;
+        }
 
         // Set the value to the first entry if it is invalid.
         String value = pref.getValue();
