@@ -9,6 +9,6 @@ public class CameraBackupAgent extends BackupAgentHelper
 
     public void onCreate () {
         addHelper(SHARED_KEY, new SharedPreferencesBackupHelper(this,
-                                                                CameraHolder.instance().getCameraNode()));
+              CameraHolder.instance().getCameraNode()));
     }
 }
