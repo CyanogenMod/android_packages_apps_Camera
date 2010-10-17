@@ -59,10 +59,6 @@ public class ZoomPicker extends LinearLayout {
         }
     };
 
-    public ZoomPicker(Context context) {
-        this(context, null);
-    }
-
     public ZoomPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -109,6 +105,7 @@ public class ZoomPicker extends LinearLayout {
         Button decrementButton = (Button) findViewById(R.id.decrement);
         decrementButton.setOnTouchListener(decrementTouchListener);
         mText = (TextView) findViewById(R.id.zoom_ratio);
+        mText.setText(formatZoomRatio(1.0f));
     }
 
     public void setOnZoomChangeListener(OnZoomChangedListener listener) {

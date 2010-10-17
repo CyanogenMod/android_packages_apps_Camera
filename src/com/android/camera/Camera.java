@@ -367,7 +367,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mHeadUpDisplay = new CameraHeadUpDisplay(this);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
-        initializeControlPanel();
         mFirstTimeInitialized = true;
         changeHeadUpDisplayState();
         addIdleHandler();
@@ -505,9 +504,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
-        ViewStub zoomStub = (ViewStub) findViewById(R.id.zoom_stub);
-        if (zoomStub != null) {
-            mZoomPicker = (ZoomPicker) zoomStub.inflate();
+        if (mZoomPicker != null) {
             mZoomPicker.setZoomRatios(getZoomRatios());
             mZoomPicker.setOnZoomChangeListener(
                     new ZoomPicker.OnZoomChangedListener() {
@@ -1068,6 +1065,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         }
 
+        // Show zoom picker.
+        ViewStub zoomStub = (ViewStub) findViewById(R.id.zoom_stub);
+        if (zoomStub != null) mZoomPicker = (ZoomPicker) zoomStub.inflate();
+
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -1078,6 +1079,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         } catch (InterruptedException ex) {
             // ignore
         }
+
+        initializeControlPanel();
     }
 
     private void changeHeadUpDisplayState() {
