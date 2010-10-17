@@ -20,7 +20,7 @@
     <application android:icon="@drawable/ic_launcher_camera"
             android:label="@string/camera_label"
             android:taskAffinity=""
-            android:backupAgent="Bluetooth.CameraBackupAgent">
+            android:backupAgent=".CameraBackupAgent">
         <meta-data android:name="com.google.android.backup.api_key"
                 android:value="AEdPqrEAAAAI85IcCDWp9k7eNpJe4_pinqsKoMpNIKw6BGAElw" />
         <receiver android:name="com.android.camera.CameraButtonIntentReceiver">
