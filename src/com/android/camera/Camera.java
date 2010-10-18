@@ -776,16 +776,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         private void capture() {
             mCaptureOnlyData = null;
 
-            // Set JPEG rotation to match the orientation of what users see. The
-            // rotation is relative to the orientation of the camera. The value
-            // from OrientationEventListener is relative to the natural
-            // orientation of the device. CameraInfo.mOrientation is the angle
-            // between camera orientation and natural device orientation. The
-            // sum of the two is the value for setRotation.
+            // See android.hardware.Camera.Parameters.setRotation for
+            // documentation.
             int rotation = 0;
             if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
                 CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-                rotation = (mOrientation + info.orientation) % 360;
+                if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
+                    rotation = (info.orientation - mOrientation + 360) % 360;
+                } else {  // back-facing camera
+                    rotation = (info.orientation + mOrientation) % 360;
+                }
             }
             mParameters.setRotation(rotation);
 
