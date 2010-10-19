@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.Log;
 import android.view.Display;
@@ -295,12 +296,19 @@ public class Util {
     }
 
     public static void setCameraDisplayOrientation(Activity activity,
-            int cameraId, android.hardware.Camera camera) {
-        android.hardware.Camera.CameraInfo info =
-                new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
+            int cameraId, Camera camera) {
+        // See android.hardware.Camera.setCameraDisplayOrientation for
+        // documentation.
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraId, info);
         int degrees = getDisplayRotation(activity);
-        int result = (info.orientation - degrees + 360) % 360;
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
         camera.setDisplayOrientation(result);
     }
 
