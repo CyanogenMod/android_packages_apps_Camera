@@ -1216,7 +1216,7 @@ public class VideoCamera extends BaseCamera implements
                        " Audio Encoder "  + mAudioEncoder);
         }
 
-
+        updateAndShowStorageHint(true);
         // Set output file.
         if (mStorageStatus != STORAGE_STATUS_OK) {
             mMediaRecorder.setOutputFile("/dev/null");
