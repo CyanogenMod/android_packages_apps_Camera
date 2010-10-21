@@ -133,7 +133,6 @@ public class VideoCamera extends BaseCamera implements
     private int mLastOrientation = 0;  // No rotation (landscape) by default.
 
     private PreviewFrameLayout mPreviewFrameLayout;
-    private SurfaceView mVideoPreview;
     private SurfaceHolder mSurfaceHolder = null;
     private ImageView mVideoFrame;
     private GLRootView mGLRootView;
@@ -467,14 +466,14 @@ public class VideoCamera extends BaseCamera implements
         mPreviewFrameLayout.setOnSizeChangedListener(this);
         resizeForPreviewAspectRatio();
 
-        mVideoPreview = (SurfaceView) findViewById(R.id.camera_preview);
+        mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
         
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
         // assume that when it is set, the surface is also set.
-        SurfaceHolder holder = mVideoPreview.getHolder();
+        SurfaceHolder holder = mSurfaceView.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
@@ -855,7 +854,7 @@ public class VideoCamera extends BaseCamera implements
         super.onResume();
         mPausing = false;
         mOrientationListener.enable();
-        mVideoPreview.setVisibility(View.VISIBLE);
+        mSurfaceView.setVisibility(View.VISIBLE);
         readVideoPreferences();
         resizeForPreviewAspectRatio();
         if (!mPreviewing && !mStartPreviewFail) {
@@ -955,7 +954,7 @@ public class VideoCamera extends BaseCamera implements
 
         // Hide the preview now. Otherwise, the preview may be rotated during
         // onPause and it is annoying to users.
-        mVideoPreview.setVisibility(View.INVISIBLE);
+        mSurfaceView.setVisibility(View.INVISIBLE);
 
         // This is similar to what mShutterButton.performClick() does,
         // but not quite the same.

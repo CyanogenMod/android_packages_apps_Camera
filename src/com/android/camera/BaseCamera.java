@@ -22,6 +22,7 @@ import com.android.camera.ui.HeadUpDisplay;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -32,6 +33,7 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 
 import java.util.List;
@@ -89,7 +91,9 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
     private StabilityChangeListener mStabilityChangeListener;
 
     private boolean mStable = false;
-
+    
+    protected SurfaceView mSurfaceView;
+    
     public interface StabilityListener {
         public void onStable();
     }
@@ -322,6 +326,18 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
         updateTouchFocus(x, y);
     }
 
+    void transformCoordinate(float[] Coordinate, int[] SurfaceViewLocation) {
+        float x = Coordinate[0] - SurfaceViewLocation[0];
+        float y = Coordinate[1] - SurfaceViewLocation[1];
+
+        int SurfaceViewWidth = mSurfaceView.getWidth();
+        int SurfaceViewHeight = mSurfaceView.getHeight();
+        Size s = mParameters.getPreviewSize();
+
+        Coordinate[0] = (s.width * x) / SurfaceViewWidth;
+        Coordinate[1] = (s.height * y) / SurfaceViewHeight;
+    }
+    
     private class FocusGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
@@ -332,12 +348,25 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
             }
 
             mFocusing = true;
-            int x = (int) e.getX();
-            int y = (int) e.getY();
+            float[] coord = new float[2];
+            coord[0] = e.getX();
+            coord[1] = e.getY();
 
-            enableTouchAEC(true);
-            updateTouchFocus(x, y);
-            mFocusRectangle.showStart();
+            int[] SurfaceViewLocation = new int[2];
+            mSurfaceView.getLocationOnScreen(SurfaceViewLocation);
+
+            if (coord[0] <= SurfaceViewLocation[0] || coord[1] <= SurfaceViewLocation[1]
+                    || coord[0] >= mSurfaceView.getWidth()
+                    || coord[1] >= mSurfaceView.getHeight()) {
+                return true;
+            }
+
+            // Scale the touch co-ordinates to match the current preview size
+            transformCoordinate(coord, SurfaceViewLocation);
+
+            // Pass the actual touch co-ordinated to display focus rectangle
+            mFocusRectangle.setPosition((int) e.getX() - SurfaceViewLocation[0], (int) e.getY()
+                    - SurfaceViewLocation[1]);
 
             if (mMediaRecorder == null) {
                 mCameraDevice.autoFocus(getAutoFocusCallback());
@@ -347,6 +376,8 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
                 // FIXME: No autofocus callback via MediaRecorder yet.
                 mMediaRecorder.autoFocusCamera();
                 mFocusRectangle.showSuccess();
+                enableTouchAEC(true);
+                updateTouchFocus((int)coord[0], (int)coord[1]);
                 mFocusing = false;
             }
           

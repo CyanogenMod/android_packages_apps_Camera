@@ -132,7 +132,7 @@ public class Camera extends BaseCamera {
     private static final String sTempCropFilename = "crop-temp";
 
     private ContentProviderClient mMediaProviderClient;
-    private SurfaceView mSurfaceView;
+    
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
     private ToneGenerator mFocusToneGenerator;
