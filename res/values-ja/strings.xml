@@ -87,8 +87,6 @@
     <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"ソラライズ"</string>
     <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"ポスタライズ"</string>
     <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"アクア"</string>
-    <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"パステル"</string>
-    <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"モザイク"</string>
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"色合い（赤）"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"色合い（青）"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"色合い（緑）"</string>

@@ -87,8 +87,6 @@
     <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"曝光效果"</string>
     <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"色調分離"</string>
     <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"水底效果"</string>
-    <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"粉蠟筆效果"</string>
-    <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"馬賽克效果"</string>
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"紅色調"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"藍色調"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"綠色調"</string>

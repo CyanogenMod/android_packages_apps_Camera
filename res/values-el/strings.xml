@@ -87,8 +87,6 @@
     <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Υπερφώτιση"</string>
     <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Ποστεροποίηση"</string>
     <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Γαλάζιο"</string>
-    <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"Παστέλ"</string>
-    <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"Μωσαϊκό"</string>
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Κόκκινη απόχρωση"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Μπλε απόχρωση"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Πράσινη απόχρωση"</string>

@@ -22,8 +22,8 @@
                 camera:key="pref_camera_flashmode_key"
                 camera:defaultValue="@string/pref_camera_flashmode_default"
                 camera:title="@string/pref_camera_flashmode_title"
-                camera:icons="@array/pref_camera_flashmode_icons"
-                camera:largeIcons="@array/flashmode_icons"
+                camera:icons="@array/camera_flashmode_icons"
+                camera:largeIcons="@array/camera_flashmode_largeicons"
                 camera:entries="@array/pref_camera_flashmode_entries"
                 camera:entryValues="@array/pref_camera_flashmode_entryvalues" />
         <ListPreference
@@ -40,23 +40,25 @@
                 camera:key="pref_camera_whitebalance_key"
                 camera:defaultValue="@string/pref_camera_whitebalance_default"
                 camera:title="@string/pref_camera_whitebalance_title"
-                camera:icons="@array/pref_camera_whitebalance_icons"
-                camera:largeIcons="@array/whitebalance_icons"
+                camera:icons="@array/whitebalance_icons"
+                camera:largeIcons="@array/whitebalance_largeicons"
                 camera:images="@array/whitebalance_images"
                 camera:entries="@array/pref_camera_whitebalance_entries"
                 camera:entryValues="@array/pref_camera_whitebalance_entryvalues" />
-        <ListPreference
+        <IconListPreference
                 camera:key="pref_camera_coloreffect_key"
                 camera:defaultValue="@string/pref_camera_coloreffect_default"
                 camera:title="@string/pref_camera_coloreffect_title"
+                camera:largeIcons="@array/coloreffect_largeicons"
+                camera:images="@array/coloreffect_images"
                 camera:entries="@array/pref_camera_coloreffect_entries"
                 camera:entryValues="@array/pref_camera_coloreffect_entryvalues" />
         <RecordLocationPreference
                 camera:key="pref_camera_recordlocation_key"
                 camera:defaultValue="@string/pref_camera_recordlocation_default"
                 camera:title="@string/pref_camera_recordlocation_title"
-                camera:icons="@array/pref_camera_recordlocation_icons"
-                camera:largeIcons="@array/recordlocation_icons"
+                camera:icons="@array/camera_recordlocation_icons"
+                camera:largeIcons="@array/camera_recordlocation_largeicons"
                 camera:entries="@array/pref_camera_recordlocation_entries"
                 camera:entryValues="@array/pref_camera_recordlocation_entryvalues" />
         <ListPreference
@@ -80,7 +82,7 @@
                 camera:key="pref_camera_id_key"
                 camera:defaultValue="@string/pref_camera_id_default"
                 camera:title="@string/pref_camera_id_title"
-                camera:icons="@array/pref_camera_id_icons"
-                camera:largeIcons="@array/id_icons" />
+                camera:icons="@array/camera_id_icons"
+                camera:largeIcons="@array/camera_id_largeicons" />
     </PreferenceGroup>
 </PreferenceGroup>

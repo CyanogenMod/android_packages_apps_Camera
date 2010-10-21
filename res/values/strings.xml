@@ -263,8 +263,6 @@
     <string name="pref_camera_coloreffect_entry_solarize">Solarize</string>
     <string name="pref_camera_coloreffect_entry_posterize">Posterize</string>
     <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
-    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
-    <string name="pref_camera_coloreffect_entry_mosaic">Mosaic</string>
     <string name="pref_camera_coloreffect_entry_redtint">Red tint</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Blue tint</string>
     <string name="pref_camera_coloreffect_entry_greentint">Green tint</string>

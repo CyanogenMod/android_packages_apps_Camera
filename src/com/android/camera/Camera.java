@@ -1121,6 +1121,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         String[] keys = new String[]{CameraSettings.KEY_FLASH_MODE,
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_RECORD_LOCATION,
+            CameraSettings.KEY_COLOR_EFFECT,
             CameraSettings.KEY_CAMERA_ID};
         mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
         if (mControlPanel != null) {

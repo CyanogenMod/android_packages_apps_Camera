@@ -31,7 +31,7 @@
         <item>youtube</item>
     </string-array>
 
-    <array name="video_quality_icons" translatable="false">
+    <array name="video_quality_largeicons" translatable="false">
         <item>@drawable/ic_viewfinder_video_quality_high</item>
         <item>@drawable/ic_viewfinder_video_quality_low</item>
         <item>@drawable/ic_viewfinder_video_quality_mms</item>
@@ -82,7 +82,7 @@
         <item>10000</item>
     </string-array>
 
-    <array name="video_time_lapse_quality_icons" translatable="false">
+    <array name="video_time_lapse_quality_largeicons" translatable="false">
         <item>@drawable/ic_viewfinder_video_time_lapse_quality_low</item>
         <item>@drawable/ic_viewfinder_video_time_lapse_quality_high</item>
         <item>@drawable/ic_viewfinder_video_time_lapse_quality_480p</item>
@@ -161,13 +161,13 @@
         <item>off</item>
     </string-array>
 
-    <array name="pref_camera_flashmode_icons">
+    <array name="camera_flashmode_icons" translatable="false">
         <item>@drawable/ic_menuselect_flash_auto</item>
         <item>@drawable/ic_menuselect_flash_on</item>
         <item>@drawable/ic_menuselect_flash_off</item>
     </array>
 
-    <array name="flashmode_icons">
+    <array name="camera_flashmode_largeicons" translatable="false">
         <item>@drawable/ic_viewfinder_flash_auto</item>
         <item>@drawable/ic_viewfinder_flash_on</item>
         <item>@drawable/ic_viewfinder_flash_off</item>
@@ -184,12 +184,12 @@
         <item>off</item>
     </string-array>
 
-    <array name="pref_camera_video_flashmode_icons">
+    <array name="video_flashmode_icons" translatable="false">
         <item>@drawable/ic_menuselect_flash_on</item>
         <item>@drawable/ic_menuselect_flash_off</item>
     </array>
 
-    <array name="video_flashmode_icons">
+    <array name="video_flashmode_largeicons" translatable="false">
         <item>@drawable/ic_viewfinder_flash_on</item>
         <item>@drawable/ic_viewfinder_flash_off</item>
     </array>
@@ -204,12 +204,12 @@
         <item>@string/pref_camera_recordlocation_entry_on</item>
     </array>
 
-    <array name="pref_camera_recordlocation_icons" translatable="false">
+    <array name="camera_recordlocation_icons" translatable="false">
         <item>@drawable/ic_menuselect_gps_off</item>
         <item>@drawable/ic_menuselect_gps_on</item>
     </array>
 
-    <array name="recordlocation_icons">
+    <array name="camera_recordlocation_largeicons" translatable="false">
         <item>@drawable/ic_viewfinder_gps_off</item>
         <item>@drawable/ic_viewfinder_gps_on</item>
     </array>
@@ -231,7 +231,7 @@
         <item>cloudy-daylight</item>
     </string-array>
 
-    <array name="pref_camera_whitebalance_icons">
+    <array name="whitebalance_icons" translatable="false">
         <item>@drawable/ic_menuselect_wb_auto</item>
         <item>@drawable/ic_menuselect_wb_incandescent</item>
         <item>@drawable/ic_menuselect_wb_daylight</item>
@@ -239,7 +239,7 @@
         <item>@drawable/ic_menuselect_wb_cloudy</item>
     </array>
 
-    <array name="whitebalance_icons">
+    <array name="whitebalance_largeicons" translatable="false">
         <item>@drawable/ic_viewfinder_wb_auto</item>
         <item>@drawable/ic_viewfinder_wb_incandescent</item>
         <item>@drawable/ic_viewfinder_wb_daylight</item>
@@ -247,7 +247,7 @@
         <item>@drawable/ic_viewfinder_wb_cloudy</item>
     </array>
 
-    <array name="whitebalance_images">
+    <array name="whitebalance_images" translatable="false">
         <item>@drawable/btn_wb_auto</item>
         <item>@drawable/btn_wb_incandescent</item>
         <item>@drawable/btn_wb_daylight</item>
@@ -264,8 +264,6 @@
         <item>@string/pref_camera_coloreffect_entry_solarize</item>
         <item>@string/pref_camera_coloreffect_entry_posterize</item>
         <item>@string/pref_camera_coloreffect_entry_aqua</item>
-        <item>@string/pref_camera_coloreffect_entry_pastel</item>
-        <item>@string/pref_camera_coloreffect_entry_mosaic</item>
         <item>@string/pref_camera_coloreffect_entry_redtint</item>
         <item>@string/pref_camera_coloreffect_entry_bluetint</item>
         <item>@string/pref_camera_coloreffect_entry_greentint</item>
@@ -279,12 +277,37 @@
         <item>solarize</item>
         <item>posterize</item>
         <item>aqua</item>
-        <item>pastel</item>
-        <item>mosaic</item>
         <item>red-tint</item>
         <item>blue-tint</item>
         <item>green-tint</item>
     </string-array>
+
+    <!-- Color effect has no separate icons. -->
+    <array name="coloreffect_largeicons" translatable="false">
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+        <item>@drawable/ic_viewfinder_coloreffect</item>
+    </array>
+
+    <array name="coloreffect_images" translatable="false">
+        <item>@drawable/btn_coloreffect_none</item>
+        <item>@drawable/btn_coloreffect_mono</item>
+        <item>@drawable/btn_coloreffect_sepia</item>
+        <item>@drawable/btn_coloreffect_negative</item>
+        <item>@drawable/btn_coloreffect_solarize</item>
+        <item>@drawable/btn_coloreffect_posterize</item>
+        <item>@drawable/btn_coloreffect_aqua</item>
+        <item>@drawable/btn_coloreffect_redtint</item>
+        <item>@drawable/btn_coloreffect_bluetint</item>
+        <item>@drawable/btn_coloreffect_greentint</item>
+    </array>
 
     <!-- Camera Preferences Scene Mode dialog box entries -->
     <string-array name="pref_camera_scenemode_entries" translatable="false">
@@ -321,12 +344,12 @@
         <item>candlelight</item>
     </string-array>
 
-    <array name="pref_camera_id_icons" translatable="false">
+    <array name="camera_id_icons" translatable="false">
         <item>@drawable/ic_menuselect_camera_facing_back</item>
         <item>@drawable/ic_menuselect_camera_facing_front</item>
     </array>
 
-    <array name="id_icons">
+    <array name="camera_id_largeicons" translatable="false">
         <item>@drawable/ic_viewfinder_camera_facing_back</item>
         <item>@drawable/ic_viewfinder_camera_facing_front</item>
     </array>
