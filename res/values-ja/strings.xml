@@ -23,13 +23,13 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"カメラ (写真)"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"カメラ (動画)"</string>
     <string name="wait" msgid="8600187532323801552">"お待ちください..."</string>
-    <string name="no_storage" product="nosdcard" msgid="2585076435604779811">"カメラを使用する前に共有ストレージをマウントしてください。"</string>
+    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"カメラを使用する前に共有ストレージをマウントしてください。"</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"カメラを使用する前にSDカードを挿入してください。"</string>
-    <string name="not_enough_space" product="nosdcard" msgid="7966388882416357252">"共有ストレージに空き領域がありません。"</string>
+    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"共有ストレージに空き領域がありません。"</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SDカードがいっぱいです。"</string>
-    <string name="preparing_sd" product="nosdcard" msgid="183917364005592061">"共有ストレージの準備中..."</string>
+    <!-- outdated translation 183917364005592061 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"共有ストレージの準備中..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"SDカードの準備中..."</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="1518739048621172182">"共有ストレージにアクセスできませんでした。"</string>
+    <!-- outdated translation 1518739048621172182 -->     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"共有ストレージにアクセスできませんでした。"</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"SDカードにアクセスできません。"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"初期設定に戻す"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"カメラを初期設定に戻します。"</string>
@@ -109,7 +109,7 @@
     <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"初期設定に戻す"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"露出"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="3117623741859928332">"共有ストレージの空き領域が少なくなっています。画質設定を変更するか、画像などのファイルを一部削除してください。"</string>
+    <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"共有ストレージの空き領域が少なくなっています。画質設定を変更するか、画像などのファイルを一部削除してください。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SDカードの空き領域が少なくなっています。画質設定を変更するか、画像などのファイルを一部削除してください。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"サイズ制限に達しました。"</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"ズーム"</string>
