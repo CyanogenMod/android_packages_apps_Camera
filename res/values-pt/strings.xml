@@ -23,13 +23,13 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Imagens da câmera"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Vídeos de câmera"</string>
     <string name="wait" msgid="8600187532323801552">"Aguarde..."</string>
-    <string name="no_storage" product="nosdcard" msgid="2585076435604779811">"Conecte o armazenamento compartilhado antes de usar a câmera."</string>
+    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Conecte o armazenamento compartilhado antes de usar a câmera."</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"Insira um cartão SD antes de usar a câmera."</string>
-    <string name="not_enough_space" product="nosdcard" msgid="7966388882416357252">"Seu armazenamento compartilhado está cheio."</string>
+    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Seu armazenamento compartilhado está cheio."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"O seu cartão SD está cheio."</string>
-    <string name="preparing_sd" product="nosdcard" msgid="183917364005592061">"Preparando o armazenamento compartilhado..."</string>
+    <!-- outdated translation 183917364005592061 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Preparando o armazenamento compartilhado..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparando o cartão SD…"</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="1518739048621172182">"Falha ao acessar armazenamento compartilhado."</string>
+    <!-- outdated translation 1518739048621172182 -->     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Falha ao acessar armazenamento compartilhado."</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Falha ao acessar o cartão SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restaurar padrões"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"As configurações da câmera serão restauradas para os valores padrão."</string>
@@ -109,7 +109,7 @@
     <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar para os valores padrão"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposição"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="3117623741859928332">"Seu armazenamento compartilhado está sem espaço. Altere a configuração de qualidade ou exclua algumas imagens ou outros arquivos."</string>
+    <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Seu armazenamento compartilhado está sem espaço. Altere a configuração de qualidade ou exclua algumas imagens ou outros arquivos."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Seu cartão SD está sem espaço. Altere a configuração de qualidade ou exclua algumas imagens ou outros arquivos."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite de tamanho atingido."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
