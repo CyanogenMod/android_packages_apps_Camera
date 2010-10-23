@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import com.android.camera.Util;
+import com.android.camera.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -182,7 +183,11 @@ public class GLRootView extends GLSurfaceView
 
     private void initialize() {
         mFlags |= FLAG_INITIALIZED;
-        setEGLConfigChooser(mEglConfigChooser);
+        if (getResources().getBoolean(R.bool.softwareGLOnly)) {
+            setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+        } else {
+            setEGLConfigChooser(mEglConfigChooser);
+        }
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         setZOrderOnTop(true);
 
@@ -648,7 +653,11 @@ public class GLRootView extends GLSurfaceView
         clearClip();
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
         gl.glEnable(GL11.GL_BLEND);
-        gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        if (getResources().getBoolean(R.bool.softwareGLOnly)) {
+            gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        } else {
+            gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        }
 
         mAnimationTime = SystemClock.uptimeMillis();
         if (mContentView != null) {
