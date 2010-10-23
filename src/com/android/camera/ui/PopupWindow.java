@@ -16,6 +16,8 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.R;
+
 import android.graphics.Rect;
 import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
@@ -139,7 +141,11 @@ public class PopupWindow extends GLView {
 
         gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);
         backup.draw(root, aXoffset, aYoffset, aWidth, aHeight, 1);
-        gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        if (getGLRootView().getContext().getResources().getBoolean(R.bool.softwareGLOnly)) {
+            gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        } else {
+            gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        }
     }
 
     public void setContent(GLView content) {
