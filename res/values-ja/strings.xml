@@ -145,4 +145,9 @@
     <string name="pref_camera_autoexposure_entry_centerweighted">"中央重点"</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">"スポット測光"</string>
 
+    <string name="pref_camera_stableshot_title">手ぶれ補正</string>
+    <string name="pref_camera_stableshot_entry_0">オフ</string>
+    <string name="pref_camera_stableshot_entry_1">1/2秒</string>
+    <string name="pref_camera_stableshot_entry_2">1秒</string>
+    <string name="pref_camera_stableshot_entry_3">2秒</string>
 </resources>
