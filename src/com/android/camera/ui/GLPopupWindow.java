@@ -26,7 +26,7 @@ import android.view.animation.ScaleAnimation;
 
 import javax.microedition.khronos.opengles.GL11;
 
-class PopupWindow extends GLView {
+class GLPopupWindow extends GLView {
 
     protected BitmapTexture mAnchor;
     protected int mAnchorOffset;
@@ -38,7 +38,7 @@ class PopupWindow extends GLView {
     protected Texture mBackground;
     private boolean mUsingStencil;
 
-    public PopupWindow() {
+    public GLPopupWindow() {
         super.addComponent(mRotatePane);
     }
 

@@ -35,7 +35,7 @@ class ZoomIndicator extends AbstractIndicator {
     private final float mFontSize;
 
     private ZoomController mZoomController;
-    private LinearLayout mPopupContent;
+    private GLLinearLayout mPopupContent;
     private ZoomControllerListener mZoomListener;
     private int mZoomIndex = 0;
     private int mDrawIndex = -1;
@@ -85,7 +85,7 @@ class ZoomIndicator extends AbstractIndicator {
             mZoomController.setAvailableZoomRatios(mZoomRatios);
             mZoomController.setPaddings(15, 6, 15, 6);
 
-            mPopupContent = new LinearLayout();
+            mPopupContent = new GLLinearLayout();
             GLOptionHeader header = new GLOptionHeader(context,
                     context.getString(R.string.zoom_control_title));
             header.setBackground(new ColorTexture(COLOR_OPTION_HEADER));
