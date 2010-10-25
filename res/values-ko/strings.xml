@@ -101,12 +101,10 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"일몰"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"손떨림 방지 사진"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"불꽃놀이"</string>
-    <!-- no translation found for pref_camera_scenemode_entry_party (907053529286788253) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_candlelight (2066183182126946813) -->
-    <skip />
+    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"파티"</string>
+    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"촛불"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"카메라 설정"</string>
-    <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"기본값으로 복원"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"기본값 복원"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"노출"</string>
     <string name="details_ok" msgid="6848594369924424312">"확인"</string>
     <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"공유 저장장치의 공간이 부족합니다. 화질 설정을 변경하거나 일부 이미지 또는 기타 파일을 삭제하세요."</string>

@@ -101,12 +101,10 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"日落"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"防抖"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"烟火"</string>
-    <!-- no translation found for pref_camera_scenemode_entry_party (907053529286788253) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_candlelight (2066183182126946813) -->
-    <skip />
+    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"派对"</string>
+    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"烛光"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"相机设置"</string>
-    <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"还原为默认设置"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"还原默认设置"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
     <string name="details_ok" msgid="6848594369924424312">"确定"</string>
     <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"共享存储设备空间不足，请更改照片品质设置，或删除某些照片或者其他文件。"</string>
