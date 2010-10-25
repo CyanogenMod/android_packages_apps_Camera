@@ -68,7 +68,7 @@ public class HeadUpDisplay extends GLView {
     private ComboPreferences mSharedPrefs;
     private PreferenceGroup mPreferenceGroup;
 
-    private PopupWindow mPopupWindow;
+    private GLPopupWindow mPopupWindow;
 
     private GLView mAnchorView;
     private int mOrientation = 0;
@@ -270,7 +270,7 @@ public class HeadUpDisplay extends GLView {
     }
 
     private void initializePopupWindow(Context context) {
-        mPopupWindow = new PopupWindow();
+        mPopupWindow = new GLPopupWindow();
         mPopupWindow.setBackground(
                 new NinePatchTexture(context, R.drawable.menu_popup));
         mPopupWindow.setAnchor(new ResourceTexture(
