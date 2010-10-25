@@ -28,10 +28,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import java.util.ArrayList;
 
 public class ControlPanel extends RelativeLayout
         implements BasicSettingPicker.Listener, IndicatorWheel.Listener,
@@ -43,7 +42,7 @@ public class ControlPanel extends RelativeLayout
     private String[] mPreferenceKeys;
     private Listener mListener;
     private IndicatorWheel mIndicatorWheel;
-    private BasicSettingPicker[] mSettingPickers = new BasicSettingPicker[8];
+    private BasicSettingPicker[] mSettingPickers;
     private int mActiveIndicator = -1;
 
     private ListView mThumbnailList;
@@ -69,15 +68,25 @@ public class ControlPanel extends RelativeLayout
         mIndicatorWheel.addView(b);
     }
 
+    private void addOtherSettingIndicator(Context context) {
+        Button b = new Button(context);
+        b.setBackgroundResource(R.drawable.ic_viewfinder_settings);
+        b.setClickable(false);
+        mIndicatorWheel.addView(b);
+    }
+
     public void initialize(Context context, PreferenceGroup group, String[] keys) {
         mPreferenceGroup = group;
         mPreferenceKeys = keys;
+        // Add one more for other settings.
+        mSettingPickers = new BasicSettingPicker[mPreferenceKeys.length + 1];
         mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
         mThumbnailList = (ListView) findViewById(R.id.thumbnail_list);
         mSharedPrefs = ComboPreferences.get(context);
         for (int i = 0; i < mPreferenceKeys.length; i++) {
             addIndicator(context, group, mPreferenceKeys[i]);
         }
+        addOtherSettingIndicator(context);
         requestLayout();
         mIndicatorWheel.setListener(this);
     }
@@ -108,6 +117,7 @@ public class ControlPanel extends RelativeLayout
     }
 
     private void initializeSettingPicker(int index) {
+        if (index >= mPreferenceKeys.length) return;
         IconListPreference pref = (IconListPreference)
                 mPreferenceGroup.findPreference(mPreferenceKeys[index]);
 
@@ -125,7 +135,7 @@ public class ControlPanel extends RelativeLayout
         if (mSettingPickers[index] == null) return false;
 
         mThumbnailList.setVisibility(View.INVISIBLE);
-        for (int i = 0; i < mPreferenceKeys.length; i++) {
+        for (int i = 0; i < mSettingPickers.length; i++) {
             if (i != index && mSettingPickers[i] != null) {
                 mSettingPickers[i].setVisibility(View.INVISIBLE);
             }
