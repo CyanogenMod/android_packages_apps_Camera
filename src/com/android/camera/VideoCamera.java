@@ -1114,7 +1114,9 @@ public class VideoCamera extends NoSearchActivity
         // Reload the preferences.
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
-
+        // Read media profile again because camera id is changed.
+        readVideoPreferences();
+        resizeForPreviewAspectRatio();
         restartPreview();
 
         // Reload the UI.
@@ -1488,6 +1490,8 @@ public class VideoCamera extends NoSearchActivity
         }
 
         mCameraDevice.setParameters(mParameters);
+        // Keep preview size up to date.
+        mParameters = mCameraDevice.getParameters();
     }
 
     private boolean switchToCameraMode() {
