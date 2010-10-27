@@ -639,7 +639,12 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                     mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, delay);
                 }
             }
-            mImageCapture.storeImage(jpegData, camera, mLocation);
+
+            if(jpegData != null) {
+                mImageCapture.storeImage(jpegData, camera, mLocation);
+            } else {
+                Log.e(TAG, "null jpeg data, not storing");
+            }
 
             // Calculate this in advance of each shot so we don't add to shutter
             // latency. It's true that someone else could write to the SD card in
