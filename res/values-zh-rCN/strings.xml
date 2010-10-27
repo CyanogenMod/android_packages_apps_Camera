@@ -23,10 +23,14 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"用相机拍摄的照片"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"用相机拍摄的视频"</string>
     <string name="wait" msgid="8600187532323801552">"请稍候..."</string>
-    <string name="no_storage" msgid="820691042667338625">"使用相机前请先插入 SD 卡。"</string>
-    <string name="not_enough_space" msgid="6655334407957844653">"SD 卡已满。"</string>
-    <string name="preparing_sd" msgid="2914969119574812666">"正在准备 SD 卡..."</string>
-    <string name="access_sd_fail" msgid="4427585260986849912">"无法访问 SD 卡。"</string>
+    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"请先装载共享存储设备，再使用相机。"</string>
+    <string name="no_storage" product="default" msgid="820691042667338625">"使用相机前请先插入 SD 卡。"</string>
+    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"共享存储设备空间已满。"</string>
+    <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD 卡已满。"</string>
+    <!-- outdated translation 183917364005592061 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"正在准备共享存储设备..."</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"正在准备 SD 卡..."</string>
+    <!-- outdated translation 1518739048621172182 -->     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"无法访问共享存储设备。"</string>
+    <string name="access_sd_fail" product="default" msgid="4427585260986849912">"无法访问 SD 卡。"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"还原默认设置"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"相机设置将还原为默认值。"</string>
     <string name="review_play" msgid="6015456244323302817">"播放"</string>
@@ -51,8 +55,7 @@
     <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"延时视频品质"</string>
     <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"低"</string>
     <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"高"</string>
-    <!-- no translation found for pref_video_time_lapse_frame_interval_title (5023524580863002541) -->
-    <skip />
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5023524580863002541">"帧捕获间隔"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"相机设置"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"摄像机设置"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"照片大小"</string>
@@ -60,6 +63,7 @@
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 百万像素"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 百万像素"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 百万像素"</string>
+    <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"照片质量"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"极精细"</string>
@@ -103,13 +107,22 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"日落"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"防抖"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"烟火"</string>
+    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"派对"</string>
+    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"烛光"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"相机设置"</string>
-    <string name="pref_restore_detail" msgid="5326039608800383369">"还原为默认设置"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"还原默认设置"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
     <string name="details_ok" msgid="6848594369924424312">"确定"</string>
-    <string name="spaceIsLow_content" msgid="2848517537672543641">"SD 卡空间已快用完。请更改画质设置或删除图库中的部分内容。"</string>
+    <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"共享存储设备空间不足，请更改照片品质设置，或删除某些照片或者其他文件。"</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SD 卡空间不足，请更改照片品质设置，或删除某些照片或者其他文件。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"已达到大小上限。"</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"缩放"</string>
+    <!-- no translation found for zoom_increment (63154013702178400) -->
+    <skip />
+    <!-- no translation found for zoom_decrement (2712310206413552821) -->
+    <skip />
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"切换到相机"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"切换到视频"</string>
+    <!-- no translation found for camera_setting_picker_exit (2574026697338481860) -->
+    <skip />
 </resources>

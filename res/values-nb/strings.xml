@@ -23,10 +23,14 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Bilder fra kamera"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videoer fra kamera"</string>
     <string name="wait" msgid="8600187532323801552">"Vent litt…"</string>
-    <string name="no_storage" msgid="820691042667338625">"Sett inn et minnekort før du bruker kameraet."</string>
-    <string name="not_enough_space" msgid="6655334407957844653">"Minnekortet er fullt."</string>
-    <string name="preparing_sd" msgid="2914969119574812666">"Forbereder minnekort…"</string>
-    <string name="access_sd_fail" msgid="4427585260986849912">"Får ikke tilgang til SD-kort."</string>
+    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Sett inn enhet for delt lagring før du bruker kameraet."</string>
+    <string name="no_storage" product="default" msgid="820691042667338625">"Sett inn et minnekort før du bruker kameraet."</string>
+    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Delt lagring er full."</string>
+    <string name="not_enough_space" product="default" msgid="6655334407957844653">"Minnekortet er fullt."</string>
+    <!-- outdated translation 183917364005592061 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Forbereder delt lagring ..."</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Forbereder minnekort…"</string>
+    <!-- outdated translation 1518739048621172182 -->     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Ingen tilgang til lagringsplass."</string>
+    <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Får ikke tilgang til SD-kort."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Gjenopprett standardinnstillingene"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Kamerainnstillingene gjenopprettes til standard."</string>
     <string name="review_play" msgid="6015456244323302817">"Spill"</string>
@@ -51,8 +55,7 @@
     <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Tidsforløp for videokvalitet"</string>
     <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Lav"</string>
     <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Høy"</string>
-    <!-- no translation found for pref_video_time_lapse_frame_interval_title (5023524580863002541) -->
-    <skip />
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5023524580863002541">"Intervall for rammetaking"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kamerainnstillinger"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videoinnstillinger"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Bildestørrelse"</string>
@@ -60,6 +63,7 @@
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M (2048x1536)"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2M (1600x1200)"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M (1024x768)"</string>
+    <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Bildekvalitet"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Ekstra fin"</string>
@@ -103,13 +107,22 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Solnedgang"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Stødig foto"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fyrverkeri"</string>
+    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fest"</string>
+    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Stearinlys"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Kamerainnstillinger"</string>
-    <string name="pref_restore_detail" msgid="5326039608800383369">"Gjenopprett til standardinnstillingene"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"Gjenopprett standardinnstillingene"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Eksponering"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="spaceIsLow_content" msgid="2848517537672543641">"Minnekortet begynner å gå tom for plass. Endre kvalitetsinnstillingen eller slett bilder fra galleriet."</string>
+    <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Delt lagringsplass er snart oppbrukt. Endre kvalitetsinnstillingene, eller slett bilder eller andre filer."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Lagringsplassen på SD-kortet er snart oppbrukt. Endre kvalitetsinnstillingene, eller slett bilder eller andre filer."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Videoen ble for stor."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
+    <!-- no translation found for zoom_increment (63154013702178400) -->
+    <skip />
+    <!-- no translation found for zoom_decrement (2712310206413552821) -->
+    <skip />
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Bytt til kamera"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Bytt til video"</string>
+    <!-- no translation found for camera_setting_picker_exit (2574026697338481860) -->
+    <skip />
 </resources>
