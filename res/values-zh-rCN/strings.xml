@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--  Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -12,97 +12,476 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
- -->
+-->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="camera_error_title" msgid="6484667504938477337">"相机故障"</string>
-    <string name="cannot_connect_camera" msgid="8029009101380114174">"无法连接到相机。"</string>
-    <string name="camera_label" msgid="6346560772074764302">"相机"</string>
-    <string name="video_camera_label" msgid="2899292505526427293">"摄像机"</string>
-    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"用相机拍摄的照片"</string>
-    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"用相机拍摄的视频"</string>
-    <string name="wait" msgid="8600187532323801552">"请稍候..."</string>
-    <string name="no_storage" msgid="820691042667338625">"使用相机前请先插入 SD 卡。"</string>
-    <string name="not_enough_space" msgid="6655334407957844653">"SD 卡已满。"</string>
-    <string name="preparing_sd" msgid="2914969119574812666">"正在准备 SD 卡..."</string>
-    <string name="confirm_restore_title" msgid="1229914538263792180">"还原默认设置"</string>
-    <string name="confirm_restore_message" msgid="5239464943578877295">"相机设置将还原为默认值。"</string>
-    <string name="review_play" msgid="6015456244323302817">"播放"</string>
-    <string name="review_cancel" msgid="8188009385853399254">"取消"</string>
-    <string name="review_ok" msgid="5305096180300056529">"确定"</string>
-    <string name="review_retake" msgid="7804864054896088338">"重拍"</string>
-    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"图库"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"存储位置"</string>
-    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"关"</string>
-    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"开"</string>
-    <string name="pref_video_quality_title" msgid="8245379279801096922">"视频画质"</string>
-    <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"高画质（30 分钟）"</string>
-    <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"低画质（30 分钟）"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"彩信（低画质，30 秒）"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube（高画质，10 分钟）"</string>
-    <string name="pref_camera_settings_category" msgid="2576236450859613120">"相机设置"</string>
-    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"摄像机设置"</string>
-    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"照片大小"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 百万像素"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 百万像素"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 百万像素"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 百万像素"</string>
-    <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
-    <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"照片质量"</string>
-    <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"极精细"</string>
-    <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"精细"</string>
-    <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"正常"</string>
-    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"对焦方式"</string>
-    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自动"</string>
-    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"无限远"</string>
-    <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"闪光模式"</string>
-    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"自动"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"开"</string>
-    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"关"</string>
-    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"白平衡"</string>
-    <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"自动"</string>
-    <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"白炽光"</string>
-    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"日光"</string>
-    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"荧光"</string>
-    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"阴天"</string>
-    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"色彩效果"</string>
-    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"无"</string>
-    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"单色"</string>
-    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"棕褐色"</string>
-    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"负片"</string>
-    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"曝光"</string>
-    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"色调分离"</string>
-    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"浅绿色"</string>
-    <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"柔和"</string>
-    <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"马赛克"</string>
-    <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"偏红"</string>
-    <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"偏蓝"</string>
-    <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"偏绿"</string>
-    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"取景模式"</string>
-    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"自动"</string>
-    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"运动"</string>
-    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"纵向"</string>
-    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"横向"</string>
-    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"夜景"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"夜景人像"</string>
-    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"影院"</string>
-    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"海滩"</string>
-    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"雪景"</string>
-    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"日落"</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"防抖"</string>
-    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"烟火"</string>
-    <string name="pref_camera_quickcapture_title" msgid="1839831697232292196">"快速拍摄"</string>
-    <string name="pref_camera_quickcapture_entry_on" msgid="1940258136944434407">"开"</string>
-    <string name="pref_camera_quickcapture_entry_off" msgid="5000775068226508567">"关"</string>
-    <string name="pref_restore_title" msgid="6479274979730178961">"相机设置"</string>
-    <string name="pref_restore_detail" msgid="5326039608800383369">"还原为默认设置"</string>
-    <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
-    <string name="details_ok" msgid="6848594369924424312">"确定"</string>
-    <string name="spaceIsLow_content" msgid="2848517537672543641">"SD 卡空间已快用完。请更改画质设置或删除图库中的部分内容。"</string>
-    <string name="video_reach_size_limit" msgid="6179877322015552390">"已达到大小上限。"</string>
-    <string name="zoom_control_title" msgid="6532562653386981815">"缩放"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"切换到相机"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"切换到视频"</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- General strings -->
+
+    <!-- title for the dialog showing the error of camera hardware -->
+    <string name="camera_error_title">相机错误</string>
+
+    <!-- message for the dialog showing the error of camera hardware -->
+    <string name="cannot_connect_camera">无法连接到相机。</string>
+
+    <!-- label for the icon meaning 'show me all the images that were taken with the camera' -->
+    <string name="camera_label">相机</string>
+
+    <!-- label for the 'video recording application shown in the top level 'all applications' -->
+    <string name="video_camera_label">摄像机</string>
+
+    <!-- label for the folder that contains Camera pictures in the gallery -->
+    <string name="gallery_camera_bucket_name">用相机拍摄的照片</string>
+
+    <!-- label for the folder that contains Camera videos in the gallery -->
+    <string name="gallery_camera_videos_bucket_name">用相机拍摄的视频</string>
+
+    <!-- alert to the user to wait for some operation to complete -->
+    <string name="wait">请稍候\u2026</string>
+
+    <!-- alert to the user to that an SD card must be installed before using the camera -->
+    <string name="no_storage">使用相机前请先插入 SD 卡。</string>
+
+    <!-- alert to the user to that the SD card is too full to complete the operation -->
+    <string name="not_enough_space">SD 卡已满。</string>
+
+    <!-- alert to the user to that the SD card is being disk-checked -->
+    <string name="preparing_sd">正在准备 SD 卡\u2026</string>
+
+    <!-- Settings stuff -->
+
+    <!-- Menu items: -->
+    <!-- menu pick to go to the settings screen -->
+
+    <!-- menu pick to view the details of the currently selected image -->
+
+    <!-- menu pick to show the location of the currently selected image on maps-->
+
+    <!-- menu pick to rotate the currently selected image (brings up submenu) -->
+
+    <!-- menu pick to rotate the currently selected image to the left -->
+
+    <!-- menu pick to rotate the currently selected image to the right -->
+
+    <!-- Confirmation dialog title after deleting a picture -->
+    <!-- Confirmation dialog message after deleting a picture -->
+    <!-- Confirmation dialog message after deleting a video -->
+
+    <!-- Confirmation dialog when restoring settings -->
+    <string name="confirm_restore_title">还原默认设置</string>
+    <string name="confirm_restore_message">相机设置将还原为默认值。</string>
+
+    <!-- button in review mode indicating that the video just taken should be played -->
+    <string name="review_play">播放</string>
+
+    <!-- button in review mode indicating that the video recording session should be canceled -->
+    <string name="review_cancel">取消</string>
+
+    <!-- button in review mode indicating that the taken video is OK to be attached/uploaded -->
+    <string name="review_ok">确定</string>
+
+    <!-- button in review mode indicate the user want to retake another picture for attachment -->
+    <string name="review_retake">重拍</string>
+
+    <!-- button indicating that the picture just taken should be deleted -->
+
+    <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
+
+    <!-- button indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
+
+    <!-- button indicating that the picture just taken should be cropped -->
+
+    <!-- Toast after trying to share a picture indicating that there are no applications which are capable of so doing. -->
+
+    <!-- Toast after trying to share a video indicating that there are no applications which are capable of so doing. -->
+
+    <!-- Menu item for playing the video. -->
+
+    <!-- Button indicating to go to the image gallery -->
+    <string name="camera_gallery_photos_text">图库</string>
+
+    <!-- Settings screen, setting title text -->
+    <string name="pref_camera_recordlocation_title">记录地理位置</string>
+
+    <string name="pref_camera_recordlocation_default" translatable="false">none</string>
+
+    <!-- Settings screen, Record location dialog choices -->
+    <string name="pref_camera_recordlocation_entry_off">关</string>
+    <string name="pref_camera_recordlocation_entry_on">开</string>
+
+
+    <!-- The Video length settings in preference -->
+    <string name="pref_video_quality_title">视频画质</string>
+    <string name="pref_video_quality_default" translatable="false">high</string>
+    <string name="pref_video_quality_entry_high">高画质（30 分钟）</string>
+    <string name="pref_video_quality_entry_low">低画质（30 分钟）</string>
+    <string name="pref_video_quality_entry_mms">彩信（低画质，30 秒）</string>
+    <string name="pref_video_quality_entry_youtube">YouTube（高画质，10 分钟）</string>
+    <string name="pref_video_quality_entry_custom">自定义</string>
+    <!-- Default video quality setting. A numerical value. -->
+    <string name="pref_camera_videosize_default" translatable="false">qvga</string>
+
+    <!-- Settings screen, Video quality title -->
+    <string name="pref_camera_videosize_title">视频质量</string>
+
+    <!-- Settings screen, Video quality dialog radio button choices -->
+    <string name="pref_camera_videosize_entry_0">720P</string>
+    <string name="pref_camera_videosize_entry_1">D1</string>
+    <string name="pref_camera_videosize_entry_2">WVGA</string>
+    <string name="pref_camera_videosize_entry_3">VGA</string>
+    <string name="pref_camera_videosize_entry_4">HVGA</string>
+    <string name="pref_camera_videosize_entry_5">CIF</string>
+    <string name="pref_camera_videosize_entry_6">QVGA</string>
+    <string name="pref_camera_videosize_entry_7">QCIF</string>
+
+
+
+    <!-- Default video encoder setting. A numerical value. -->
+    <string name="pref_camera_videoencoder_default" translatable="false">m4v</string>
+
+    <!-- Settings screen, Video encoder title -->
+    <string name="pref_camera_videoencoder_title">视频编码格式</string>
+
+    <!-- Settings screen, Video encoder dialog radio button choices -->
+    <string name="pref_camera_videoencoder_entry_0">MPEG4</string>
+    <string name="pref_camera_videoencoder_entry_1">H263</string>
+    <string name="pref_camera_videoencoder_entry_2">H264</string>
+
+    <!-- Settings screen, Video encoder dialog title -->
+    <string name="pref_camera_videoencoder_dialogtitle">视频编码格式</string>
+
+    <!-- Default audio encoder setting. A numerical value. -->
+    <string name="pref_camera_audioencoder_default" translatable="false">amrnb</string>
+
+    <!-- Settings screen, Audio encoder title -->
+    <string name="pref_camera_audioencoder_title">音频编码格式</string>
+
+    <!-- Settings screen, Audio encoder dialog radio button choices -->
+    <string name="pref_camera_audioencoder_entry_0">AMRNB</string>
+    <string name="pref_camera_audioencoder_entry_1">QCELP</string>
+    <string name="pref_camera_audioencoder_entry_2">EVRC</string>
+    <string name="pref_camera_audioencoder_entry_3">AAC</string>
+
+
+    <!-- Default video duration setting. A numerical value.-->
+    <string name="pref_camera_video_duration_default" translatable="false">10</string>
+
+    <!-- Settings screen, Video duration title -->
+    <string name="pref_camera_video_duration_title">视频时长</string>
+
+    <!-- Settings screen, Video duration dialog radio button choices -->
+    <string name="pref_camera_video_duration_entry_mms">
+        30 秒（MMS）
+    </string>
+    <string name="pref_camera_video_duration_entry_10">10 分钟</string>
+    <string name="pref_camera_video_duration_entry_30">30 分钟</string>
+
+    <!-- Settings screen, Camera setting category title -->
+    <string name="pref_camera_settings_category">相机设置</string>
+
+    <!-- Settings screen, Camcorder setting category title -->
+    <string name="pref_camcorder_settings_category">摄像机设置</string>
+
+    <!-- Settings screen, Picture size title -->
+    <string name="pref_camera_picturesize_title">照片大小</string>
+
+    <!-- Settings screen, Picture size dialog radio button choices -->
+    <string name="pref_camera_picturesize_entry_3264x2448">8 百万像素</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6 百万像素 (宽屏)</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5 百万像素</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4 百万像素 (宽屏)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4 百万像素</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4 百万像素</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3 百万像素</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2.5 百万像素 (宽屏)</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">高清1080</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
+    <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
+    <string name="pref_camera_picturesize_entry_1024x768">XGA</string>
+    <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
+    <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
+    <string name="pref_camera_picturesize_entry_640x480">VGA</string>
+    <string name="pref_camera_picturesize_entry_352x288">CIF</string>
+    <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
+    <string name="pref_camera_picturesize_entry_176x144">QCIF</string>
+
+    <!-- Default picture quality setting. See
+         pref_camera_jpegquality_entryvalues for possible values -->
+    <string name="pref_camera_jpegquality_default" translatable="false">superfine</string>
+
+    <!-- Settings screen, Picture quality title -->
+    <string name="pref_camera_jpegquality_title">照片质量</string>
+
+    <!-- Settings screen, Picture quality dialog radio button choices -->
+    <string name="pref_camera_jpegquality_entry_superfine">极精细</string>
+    <string name="pref_camera_jpegquality_entry_fine">精细</string>
+    <string name="pref_camera_jpegquality_entry_normal">正常</string>
+
+    <!-- Default focus mode setting.-->
+    <string name="pref_camera_focusmode_default" translatable="false">auto</string>
+
+    <!-- Settings screen, Focus mode title -->
+    <string name="pref_camera_focusmode_title">对焦方式</string>
+
+    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <string name="pref_camera_focusmode_entry_auto">自动</string>
+    <string name="pref_camera_focusmode_entry_normal">正常</string>
+    <string name="pref_camera_focusmode_entry_macro">微距</string>
+    <string name="pref_camera_focusmode_entry_infinity">关</string>
+    <string name="pref_camera_focusmode_entry_touch">触屏</string>
+
+    <!-- Toast shown when touch-to-focus is enabled -->
+    <string name="touch_focus_enabled">点击屏幕进行对焦。</string>
+
+    <!-- Default flash mode setting.-->
+    <string name="pref_camera_flashmode_default" translatable="false">auto</string>
+
+    <!-- Value for flash off setting-->
+    <string name="pref_camera_flashmode_no_flash" translatable="false">no_flash</string>
+
+    <!-- Settings screen, Flash mode title -->
+    <string name="pref_camera_flashmode_title">闪光模式</string>
+
+    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <string name="pref_camera_flashmode_entry_auto">自动</string>
+    <string name="pref_camera_flashmode_entry_on">开</string>
+    <string name="pref_camera_flashmode_entry_off">关</string>
+
+    <!-- Default videocamera flash mode setting.-->
+    <string name="pref_camera_video_flashmode_default" translatable="false">off</string>
+
+    <!-- Default white balance setting. -->
+    <string name="pref_camera_whitebalance_default" translatable="false">auto</string>
+
+    <!-- Settings screen, white balance title -->
+    <string name="pref_camera_whitebalance_title">白平衡</string>
+
+    <!-- Settings screen, White balance dialog radio button choices -->
+    <string name="pref_camera_whitebalance_entry_auto">自动</string>
+    <string name="pref_camera_whitebalance_entry_incandescent">白炽光</string>
+    <string name="pref_camera_whitebalance_entry_daylight">日光</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent">荧光</string>
+    <string name="pref_camera_whitebalance_entry_cloudy">阴天</string>
+
+    <!-- Default color effect setting. -->
+    <string name="pref_camera_coloreffect_default" translatable="false">none</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">色彩效果</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">无</string>
+    <string name="pref_camera_coloreffect_entry_mono">单色</string>
+    <string name="pref_camera_coloreffect_entry_sepia">棕褐色</string>
+    <string name="pref_camera_coloreffect_entry_negative">负片</string>
+    <!-- Color effect that overexposes and reverses some of the tones. -->
+    <string name="pref_camera_coloreffect_entry_solarize">曝光</string>
+    <string name="pref_camera_coloreffect_entry_posterize">色调分离</string>
+    <string name="pref_camera_coloreffect_entry_aqua">浅绿色</string>
+    <string name="pref_camera_coloreffect_entry_pastel">柔和</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">马赛克</string>
+    <string name="pref_camera_coloreffect_entry_redtint">偏红</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">偏蓝</string>
+    <string name="pref_camera_coloreffect_entry_greentint">偏绿</string>
+
+    <!-- Settings screen, Select sharpness title -->
+    <string name="pref_camera_sharpness_title">锐利度</string>
+
+    <!-- Settings screen, Select contrast title -->
+    <string name="pref_camera_contrast_title">对比度</string>
+
+    <!-- Settings screen, Select saturation title -->
+    <string name="pref_camera_saturation_title">饱和度</string>
+
+    <!-- Settings screen, Select brightness title -->
+    <string name="pref_camera_brightness_title">亮度</string>
+
+    <!-- Default scene mode setting. -->
+    <string name="pref_camera_scenemode_default" translatable="false">auto</string>
+
+    <!-- Settings screen, Select Scene mode -->
+    <string name="pref_camera_scenemode_title">取景模式</string>
+
+    <!-- Settings menu, scene mode choices -->
+    <string name="pref_camera_scenemode_entry_auto">自动</string>
+    <!-- Scene mode that takes an image quickly with little motion blur. -->
+    <string name="pref_camera_scenemode_entry_action">运动</string>
+    <!-- Scene mode that takes an image with as little noise as possible so details of the subject are maintained. -->
+    <string name="pref_camera_scenemode_entry_portrait">纵向</string>
+    <!-- Scene mode that takes an image of a landscape assuming all subjects are relatively far from the phone. -->
+    <string name="pref_camera_scenemode_entry_landscape">横向</string>
+    <!-- Scene mode that takes long exposures to capture night scenes without flash. -->
+    <string name="pref_camera_scenemode_entry_night">夜景</string>
+    <!-- Scene mode that takes night shots with long exposure and flash to illuminate the subject while still capturing darker detail in the background. -->
+    <string name="pref_camera_scenemode_entry_night_portrait">夜景人像</string>
+    <!-- Scene mode to be used in a stage show. -->
+    <string name="pref_camera_scenemode_entry_theatre">影院</string>
+    <!-- Scene mode optimized for taking images on the beach. -->
+    <string name="pref_camera_scenemode_entry_beach">海滩</string>
+    <!-- Scene mode optimized for taking images in the snow. -->
+    <string name="pref_camera_scenemode_entry_snow">雪景</string>
+    <!-- Scene mode optimized for taking images in the sunset. -->
+    <string name="pref_camera_scenemode_entry_sunset">日落</string>
+    <!-- Scene mode for taking a photo as sharp as possible. -->
+    <string name="pref_camera_scenemode_entry_steadyphoto">防抖</string>
+    <!-- Scene mode optimized for taking images of fireworks. -->
+    <string name="pref_camera_scenemode_entry_fireworks">烟火</string>
+
+    <!-- Settings menu, enable quick capture mode or not -->
+    <string name="pref_camera_quickcapture_title">快速拍摄</string>
+    <string name="pref_camera_quickcapture_default" translatable="false">off</string>
+    <string name="pref_camera_quickcapture_entry_on">开</string>
+    <string name="pref_camera_quickcapture_entry_off">关</string>
+
+    <!-- Restore settings item in preference -->
+    <string name="pref_restore_title">相机设置</string>
+    <string name="pref_restore_detail">还原为默认设置</string>
+
+    <!-- Exposure settings in preference -->
+    <string name="pref_exposure_title">曝光</string>
+
+    <!-- Framing grid settings in preference -->
+
+    <!-- Message to show when there's no lat/lng information in the image -->
+    <!-- Title of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+
+    <!-- Used to format image dimensions in Details dialog. e.g. 64 x 64 -->
+    <!-- Used to format short video duration in Details dialog. minutes:seconds e.g. 00:30 -->
+    <!-- Used to format video duration in Details dialog. hours:minutes:seconds e.g. 0:21:30 -->
+    <!-- Unit of measure in the Details dialog frames per second. e.g. 20 fps -->
+    <!-- Unit of measure in the Details dialog K bits per second. e.g. 192 Kbps -->
+    <!-- Unit of measure in the Details dialog M bits per second. e.g. 2.3 Mbps -->
+    <!-- Details dialog "OK" button. Dismisses dialog. -->
+    <string name="details_ok">确定</string>
+
+    <!-- Displayed in the title of the dialog for things to do with a picture that
+         is to be sent to another application: -->
+
+    <!-- Displayed in the title of the dialog for things to do with a picture that
+         is to be "set as" (e.g. set as contact photo or set as wallpaper) -->
+
+    <!-- Displayed in the title of the dialog for things to do with a video that
+         is to be sent to another application. -->
+
+    <!-- Low-memory dialog message -->
+    <string name="spaceIsLow_content">SD 卡空间已快用完。请更改画质设置或删除图库中的部分内容。</string>
+
+    <!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
+    <string name="image_file_name_format" translatable="false">"'IMG'_yyyyMMdd_HHmmss"</string>
+
+    <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
+    <string name="video_file_name_format" translatable="false">"'VID'_yyyyMMdd_HHmmss"</string>
+
+    <!-- The messsage shown when video record reaches size limit. -->
+    <string name="video_reach_size_limit">已达到大小上限。</string>
+
+    <!-- The title show on the zoom controller -->
+    <string name="zoom_control_title">缩放</string>
+
+    <string name="switch_to_camera_lable">切换到相机</string>
+    <string name="switch_to_video_lable">切换到视频</string>
+
+    <string name="switch_to_main_label">切换到背面镜头</string>
+    <string name="switch_to_secondary_label">切换到正面镜头</string>
+
+     <!-- Default iso setting. Do not translate. -->
+     <string name="pref_camera_iso_default">auto</string>
+
+     <!-- Settings screen, Select Iso title -->
+     <string name="pref_camera_iso_title">选择ISO感光度</string>
+
+     <!-- Settings screen, ISO dialog radio button choices -->
+     <string name="pref_camera_iso_entry_auto">自动</string>
+     <string name="pref_camera_iso_entry_isodeblur">去模糊</string>
+     <string name="pref_camera_iso_entry_iso100">ISO100</string>
+     <string name="pref_camera_iso_entry_iso200">ISO200</string>
+     <string name="pref_camera_iso_entry_iso400">ISO400</string>
+     <string name="pref_camera_iso_entry_iso800">ISO800</string>
+     <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
+	
+     <!-- ISO entry values. Do not translate. -->
+     <string name="pref_camera_iso_value_auto">auto</string>
+     <string name="pref_camera_iso_value_isodeblur">deblur</string>
+     <string name="pref_camera_iso_value_iso100">100</string>
+     <string name="pref_camera_iso_value_iso200">200</string>
+     <string name="pref_camera_iso_value_iso400">400</string>
+     <string name="pref_camera_iso_value_iso800">800</string>
+     <string name="pref_camera_iso_value_iso1250">1250</string>
+
+     <!-- Default auto lens shading setting. Do not translate. -->
+     <string name="pref_camera_lensshading_default">enable</string>
+
+     <!-- Settings screen, Select lens shading title -->
+     <string name="pref_camera_lensshading_title">镜头校正</string>
+
+     <!-- Settings screen, lens shading radio button choices -->
+     <string name="pref_camera_lensshading_entry_enable">打开</string>
+     <string name="pref_camera_lensshading_entry_disable">关闭</string>
+
+     <!-- Lens shading entry values. Do not translate. -->
+     <string name="pref_camera_lensshading_value_enable">enable</string>
+     <string name="pref_camera_lensshading_value_disable">disable</string>
+
+     <!-- Settings screen, Anti Banding title -->
+     <string name="pref_camera_antibanding_title">消除波纹（CRT电视等）</string>
+
+     <!-- Default Anti Banding setting. -->
+     <string name="pref_camera_antibanding_default">Off</string>
+
+     <!-- Settings screen, Anti Banding entries -->
+     <string name="pref_camera_antibanding_entry_0">关</string>
+     <string name="pref_camera_antibanding_entry_1">50 赫兹</string>
+     <string name="pref_camera_antibanding_entry_2">60 赫兹</string>
+     <string name="pref_camera_antibanding_entry_3">自动</string>
+
+     <!-- Default auto exposure setting. Do not translate. -->
+     <string name="pref_camera_autoexposure_default">meter-average</string>
+
+     <!-- Settings screen, Select auto exposure title -->
+     <string name="pref_camera_autoexposure_title">测光模式</string>
+
+     <!-- Settings screen, auto exposure dialog radio button choices -->
+     <string name="pref_camera_autoexposure_entry_frameaverage">相框内平衡测光</string>
+     <string name="pref_camera_autoexposure_entry_centerweighted">相框中部测光</string>
+     <string name="pref_camera_autoexposure_entry_spotmetering">定点测光</string>
+
+     <!-- Auto exposure entry values. Do not translate. -->
+     <string name="pref_camera_autoexposure_value_frameaverage">meter-average</string>
+     <string name="pref_camera_autoexposure_value_centerweighted">meter-center</string>
+     <string name="pref_camera_autoexposure_value_spotmetering">meter-spot</string>
+
+     <!-- Stable shot setting title -->
+     <string name="pref_camera_stableshot_title">防抖设置</string>
+
+     <!-- Stable shot default. Do not translate. -->
+     <string name="pref_camera_stableshot_default">0</string>
+
+     <!-- Stable shot settings entries -->
+     <string name="pref_camera_stableshot_entry_0">关闭</string>
+     <string name="pref_camera_stableshot_entry_1">半秒</string>
+     <string name="pref_camera_stableshot_entry_2">1 秒</string>
+     <string name="pref_camera_stableshot_entry_3">2 秒</string>
+
+     <!-- Stable shot settings values (.5 second intervals). Do not translate. -->
+     <string name="pref_camera_stableshot_value_0">0</string>
+     <string name="pref_camera_stableshot_value_1">1</string>
+     <string name="pref_camera_stableshot_value_2">2</string>
+     <string name="pref_camera_stableshot_value_3">4</string>
+
 </resources>
