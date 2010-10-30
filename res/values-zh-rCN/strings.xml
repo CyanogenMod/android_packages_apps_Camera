@@ -246,8 +246,8 @@
 	<string name="switch_to_camera_lable">切换到相机</string>
 	<string name="switch_to_video_lable">切换到视频</string>
 
-	<string name="switch_to_main_label">切换到后方</string>
-	<string name="switch_to_secondary_label">切换到前方</string>
+	<string name="switch_to_main_label">切换到背面镜头</string>
+	<string name="switch_to_secondary_label">切换到正面镜头</string>
 
 	<!-- Settings screen, Select Iso title -->
 	<string name="pref_camera_iso_title">选择 ISO</string>
@@ -256,14 +256,14 @@
 	<string name="pref_camera_iso_entry_auto">自动</string>
 
 	<!-- Settings screen, Select lens shading title -->
-	<string name="pref_camera_lensshading_title">镜头阴影</string>
+	<string name="pref_camera_lensshading_title">遮光罩</string>
 
 	<!-- Settings screen, lens shading radio button choices -->
 	<string name="pref_camera_lensshading_entry_enable">开启</string>
 	<string name="pref_camera_lensshading_entry_disable">关闭</string>
 
 	<!-- Settings screen, Anti Banding title -->
-	<string name="pref_camera_antibanding_title">反闪烁</string>
+	<string name="pref_camera_antibanding_title">消除波纹</string>
 
 	<!-- Settings screen, Anti Banding entries -->
 	<string name="pref_camera_antibanding_entry_0">关闭</string>
@@ -278,7 +278,7 @@
 	<string name="pref_camera_autoexposure_entry_spotmetering">点测光</string>
 
 	<!-- Stable shot setting title -->
-	<string name="pref_camera_stableshot_title">稳定拍摄</string>
+	<string name="pref_camera_stableshot_title">防抖设置</string>
 
 	<!-- Stable shot settings entries -->
 	<string name="pref_camera_stableshot_entry_0">关闭</string>
