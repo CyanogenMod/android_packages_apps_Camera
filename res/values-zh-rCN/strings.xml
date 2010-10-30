@@ -47,25 +47,6 @@
 	<!-- alert to the user to that the SD card is being disk-checked -->
 	<string name="preparing_sd">正在准备 SD 卡...</string>
 
-	<!-- Settings stuff -->
-
-	<!-- Menu items: -->
-	<!-- menu pick to go to the settings screen -->
-
-	<!-- menu pick to view the details of the currently selected image -->
-
-	<!-- menu pick to show the location of the currently selected image on maps-->
-
-	<!-- menu pick to rotate the currently selected image (brings up submenu) -->
-
-	<!-- menu pick to rotate the currently selected image to the left -->
-
-	<!-- menu pick to rotate the currently selected image to the right -->
-
-	<!-- Confirmation dialog title after deleting a picture -->
-	<!-- Confirmation dialog message after deleting a picture -->
-	<!-- Confirmation dialog message after deleting a video -->
-
 	<!-- Confirmation dialog when restoring settings -->
 	<string name="confirm_restore_title">还原默认设置</string>
 	<string name="confirm_restore_message">相机设置将还原为默认值。</string>
@@ -82,32 +63,15 @@
 	<!-- button in review mode indicate the user want to retake another picture for attachment -->
 	<string name="review_retake">重拍</string>
 
-	<!-- button indicating that the picture just taken should be deleted -->
-
-	<!-- button indicating that the picture just taken should be shared by email, mms, etc -->
-
-	<!-- button indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
-
-	<!-- button indicating that the picture just taken should be cropped -->
-
-	<!-- Toast after trying to share a picture indicating that there are no applications which are capable of so doing. -->
-
-	<!-- Toast after trying to share a video indicating that there are no applications which are capable of so doing. -->
-
-	<!-- Menu item for playing the video. -->
-
 	<!-- Button indicating to go to the image gallery -->
 	<string name="camera_gallery_photos_text">图库</string>
 
 	<!-- Settings screen, setting title text -->
 	<string name="pref_camera_recordlocation_title">存储位置</string>
 
-
-
 	<!-- Settings screen, Record location dialog choices -->
 	<string name="pref_camera_recordlocation_entry_off">关</string>
 	<string name="pref_camera_recordlocation_entry_on">开</string>
-
 
 	<!-- The Video length settings in preference -->
 	<string name="pref_video_quality_title">视频画质</string>
@@ -117,21 +81,12 @@
 	<string name="pref_video_quality_entry_mms">彩信（低画质，30 秒）</string>
 	<string name="pref_video_quality_entry_youtube">YouTube（高画质，10 分钟）</string>
 	<string name="pref_video_quality_entry_custom">自定义</string>
-	<!-- Default video quality setting. A numerical value. -->
 
 	<!-- Settings screen, Video quality title -->
 	<string name="pref_camera_videosize_title">视频画质</string>
 
-	<!-- Settings screen, Video quality dialog radio button choices -->
-
-
-
-	<!-- Default video encoder setting. A numerical value. -->
-
 	<!-- Settings screen, Video encoder title -->
 	<string name="pref_camera_videoencoder_title">视频编码器</string>
-
-	<!-- Settings screen, Video encoder dialog radio button choices -->
 
 	<!-- Settings screen, Video encoder dialog title -->
 	<string name="pref_camera_videoencoder_dialogtitle">视频编码器</string>
@@ -140,11 +95,6 @@
 
 	<!-- Settings screen, Audio encoder title -->
 	<string name="pref_camera_audioencoder_title">音频频编码器</string>
-
-	<!-- Settings screen, Audio encoder dialog radio button choices -->
-
-
-	<!-- Default video duration setting. A numerical value.-->
 
 	<!-- Settings screen, Video duration title -->
 	<string name="pref_camera_video_duration_title">视频长度</string>
@@ -165,11 +115,6 @@
 	<!-- Settings screen, Picture size title -->
 	<string name="pref_camera_picturesize_title">照片大小</string>
 
-	<!-- Settings screen, Picture size dialog radio button choices -->
-
-	<!-- Default picture quality setting. See
-	pref_camera_jpegquality_entryvalues for possible values -->
-
 	<!-- Settings screen, Picture quality title -->
 	<string name="pref_camera_jpegquality_title">照片质量</string>
 
@@ -177,8 +122,6 @@
 	<string name="pref_camera_jpegquality_entry_superfine">极精细</string>
 	<string name="pref_camera_jpegquality_entry_fine">精细</string>
 	<string name="pref_camera_jpegquality_entry_normal">正常</string>
-
-	<!-- Default focus mode setting.-->
 
 	<!-- Settings screen, Focus mode title -->
 	<string name="pref_camera_focusmode_title">对焦方式</string>
@@ -193,10 +136,6 @@
 	<!-- Toast shown when touch-to-focus is enabled -->
 	<string name="touch_focus_enabled">触摸屏幕对焦</string>
 
-	<!-- Default flash mode setting.-->
-
-	<!-- Value for flash off setting-->
-
 	<!-- Settings screen, Flash mode title -->
 	<string name="pref_camera_flashmode_title">闪光模式</string>
 
@@ -204,10 +143,6 @@
 	<string name="pref_camera_flashmode_entry_auto">自动</string>
 	<string name="pref_camera_flashmode_entry_on">开</string>
 	<string name="pref_camera_flashmode_entry_off">关</string>
-
-	<!-- Default videocamera flash mode setting.-->
-
-	<!-- Default white balance setting. -->
 
 	<!-- Settings screen, white balance title -->
 	<string name="pref_camera_whitebalance_title">白平衡</string>
@@ -218,8 +153,6 @@
 	<string name="pref_camera_whitebalance_entry_daylight">日光</string>
 	<string name="pref_camera_whitebalance_entry_fluorescent">荧光</string>
 	<string name="pref_camera_whitebalance_entry_cloudy">阴天</string>
-
-	<!-- Default color effect setting. -->
 
 	<!-- Settings screen, Select Color effect title -->
 	<string name="pref_camera_coloreffect_title">色彩效果</string>
@@ -246,27 +179,17 @@
 	<string name="pref_camera_multi_entry_level3">级别 3</string>
 	<string name="pref_camera_multi_entry_level4">级别 4</string>
 
-	<!-- Default sharpness setting. Do not translate. -->
-
 	<!-- Settings screen, Select sharpness title -->
 	<string name="pref_camera_sharpness_title">锐度</string>
-
-	<!-- Default contrast setting. Do not translate. -->
 
 	<!-- Settings screen, Select contrast title -->
 	<string name="pref_camera_contrast_title">对比度</string>
 
-	<!-- Default saturation setting. Do not translate. -->
-
 	<!-- Settings screen, Select saturation title -->
 	<string name="pref_camera_saturation_title">饱和度</string>
 
-	<!-- Default brightness setting. Do not translate. -->
-
 	<!-- Settings screen, Select brightness title -->
 	<string name="pref_camera_brightness_title">亮度</string>
-
-	<!-- Default scene mode setting. -->
 
 	<!-- Settings screen, Select Scene mode -->
 	<string name="pref_camera_scenemode_title">取景模式</string>
@@ -308,49 +231,11 @@
 	<!-- Exposure settings in preference -->
 	<string name="pref_exposure_title">曝光</string>
 
-	<!-- Framing grid settings in preference -->
-
-	<!-- Message to show when there's no lat/lng information in the image -->
-	<!-- Title of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-	<!-- Label in message of Details dialog  -->
-
-	<!-- Used to format image dimensions in Details dialog. e.g. 64 x 64 -->
-	<!-- Used to format short video duration in Details dialog. minutes:seconds e.g. 00:30 -->
-	<!-- Used to format video duration in Details dialog. hours:minutes:seconds e.g. 0:21:30 -->
-	<!-- Unit of measure in the Details dialog frames per second. e.g. 20 fps -->
-	<!-- Unit of measure in the Details dialog K bits per second. e.g. 192 Kbps -->
-	<!-- Unit of measure in the Details dialog M bits per second. e.g. 2.3 Mbps -->
 	<!-- Details dialog "OK" button. Dismisses dialog. -->
 	<string name="details_ok">确定</string>
 
-	<!-- Displayed in the title of the dialog for things to do with a picture that
-	is to be sent to another application: -->
-
-	<!-- Displayed in the title of the dialog for things to do with a picture that
-	is to be "set as" (e.g. set as contact photo or set as wallpaper) -->
-
-	<!-- Displayed in the title of the dialog for things to do with a video that
-	is to be sent to another application. -->
-
 	<!-- Low-memory dialog message -->
 	<string name="spaceIsLow_content">SD 卡空间已快用完。请更改画质设置或删除图库中的部分内容。</string>
-
-	<!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->
-
-	<!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
 
 	<!-- The messsage shown when video record reaches size limit. -->
 	<string name="video_reach_size_limit">已达到大小上限。</string>
@@ -364,17 +249,11 @@
 	<string name="switch_to_main_label">切换到后方</string>
 	<string name="switch_to_secondary_label">切换到前方</string>
 
-	<!-- Default iso setting. Do not translate. -->
-
 	<!-- Settings screen, Select Iso title -->
 	<string name="pref_camera_iso_title">选择 ISO</string>
 
 	<!-- Settings screen, ISO dialog radio button choices -->
 	<string name="pref_camera_iso_entry_auto">自动</string>
-
-	<!-- ISO entry values. Do not translate. -->
-
-	<!-- Default auto lens shading setting. Do not translate. -->
 
 	<!-- Settings screen, Select lens shading title -->
 	<string name="pref_camera_lensshading_title">镜头阴影</string>
@@ -383,18 +262,12 @@
 	<string name="pref_camera_lensshading_entry_enable">开启</string>
 	<string name="pref_camera_lensshading_entry_disable">关闭</string>
 
-	<!-- Lens shading entry values. Do not translate. -->
-
 	<!-- Settings screen, Anti Banding title -->
 	<string name="pref_camera_antibanding_title">反闪烁</string>
-
-	<!-- Default Anti Banding setting. -->
 
 	<!-- Settings screen, Anti Banding entries -->
 	<string name="pref_camera_antibanding_entry_0">关闭</string>
 	<string name="pref_camera_antibanding_entry_3">自动</string>
-
-	<!-- Default auto exposure setting. Do not translate. -->
 
 	<!-- Settings screen, Select auto exposure title -->
 	<string name="pref_camera_autoexposure_title">测光模式</string>
