@@ -371,4 +371,7 @@
 
     <!-- Button indicating to exit the camera setting picker. -->
     <string name="camera_setting_picker_exit">Back</string>
+
+    <string name="setting_increment" translatable="false">&gt;</string>
+    <string name="setting_decrement" translatable="false">&lt;</string>
 </resources>

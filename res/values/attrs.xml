@@ -32,4 +32,7 @@
         <attr name="largeIcons" format="reference" />
         <attr name="images" format="reference" />
     </declare-styleable>
+    <declare-styleable name="InLineSettingPicker">
+        <attr name="prefKey" format="string" />
+    </declare-styleable>
 </resources>

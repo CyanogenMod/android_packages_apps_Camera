@@ -457,7 +457,8 @@ public class VideoCamera extends NoSearchActivity
             CameraSettings settings = new CameraSettings(this, mParameters,
                     mCameraId, CameraHolder.instance().getCameraInfo());
             mControlPanel.initialize(this,
-                    settings.getPreferenceGroup(R.xml.video_preferences), keys);
+                    settings.getPreferenceGroup(R.xml.video_preferences), keys,
+                    false);
             mControlPanel.setListener(new MyControlPanelListener());
         }
     }

@@ -17,7 +17,7 @@
 */
 -->
 
-<com.android.camera.ZoomPicker xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.ZoomPicker xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -40,4 +40,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_zoom_picker_down" />
-</com.android.camera.ZoomPicker>
+</com.android.camera.ui.ZoomPicker>

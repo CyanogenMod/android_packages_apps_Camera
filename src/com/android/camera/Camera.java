@@ -24,6 +24,7 @@ import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.ControlPanel;
 import com.android.camera.ui.ZoomControllerListener;
+import com.android.camera.ui.ZoomPicker;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -251,7 +252,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private String mSceneMode;
 
     private final Handler mHandler = new MainHandler();
+    // Small devices use head-up display for camera settings.
     private CameraHeadUpDisplay mHeadUpDisplay;
+    // xlarge devices use control panel for camera settings.
     private ControlPanel mControlPanel;
     private PreferenceGroup mPreferenceGroup;
 
@@ -364,8 +367,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-        mHeadUpDisplay = new CameraHeadUpDisplay(this);
-        mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
+        if (mControlPanel == null) {
+            mHeadUpDisplay = new CameraHeadUpDisplay(this);
+            mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
+        }
         initializeHeadUpDisplay();
         mFirstTimeInitialized = true;
         changeHeadUpDisplayState();
@@ -731,7 +736,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
                     + mPictureDisplayedToJpegCallbackTime + "ms");
-            mHeadUpDisplay.setEnabled(true);
+            enableCameraControls(true);
 
             if (!mIsImageCaptureIntent) {
                 // We want to show the taken picture for a while, so we wait
@@ -966,7 +971,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             mCaptureStartTime = System.currentTimeMillis();
             mPostViewPictureCallbackTime = 0;
-            mHeadUpDisplay.setEnabled(false);
+            enableCameraControls(false);
             mStatus = SNAPSHOT_IN_PROGRESS;
 
             mImageCapture.initiate();
@@ -1084,6 +1089,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void changeHeadUpDisplayState() {
+        if (mHeadUpDisplay == null) return;
         // If the camera resumes behind the lock screen, the orientation
         // will be portrait. That causes OOM when we try to allocation GPU
         // memory for the GLSurfaceView again when the orientation changes. So,
@@ -1127,12 +1133,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             CameraSettings settings = new CameraSettings(this, mInitialParams,
                     mCameraId, CameraHolder.instance().getCameraInfo());
             mPreferenceGroup = settings.getPreferenceGroup(R.xml.camera_preferences);
-            mControlPanel.initialize(this, mPreferenceGroup, keys);
+            mControlPanel.initialize(this, mPreferenceGroup, keys, true);
             mControlPanel.setListener(new MyControlPanelListener());
         }
     }
 
     private void initializeHeadUpDisplay() {
+        if (mHeadUpDisplay == null) return;
         CameraSettings settings = new CameraSettings(this, mInitialParams,
                 mCameraId, CameraHolder.instance().getCameraInfo());
         // If we have zoom picker, do not show zoom control on head-up display.
@@ -1154,7 +1161,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void attachHeadUpDisplay() {
         mHeadUpDisplay.setOrientation(mOrientationCompensation);
-        if (mZoomPicker == null && mParameters.isZoomSupported()) {
+        if (mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomIndex(mZoomValue);
         }
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
@@ -1168,6 +1175,21 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mHeadUpDisplay.collapse();
         ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         mGLRootView = null;
+    }
+
+    private boolean collapseCameraControls() {
+        if (mHeadUpDisplay != null && mHeadUpDisplay.collapse()) {
+            return true;
+        }
+        if (mControlPanel != null && mControlPanel.hideSettingPicker()) {
+            return true;
+        }
+        return false;
+    }
+
+    private void enableCameraControls(boolean enable) {
+        if (mHeadUpDisplay != null) mHeadUpDisplay.setEnabled(enable);
+        if (mControlPanel != null) mControlPanel.setEnabled(enable);
     }
 
     public static int roundOrientation(int orientation) {
@@ -1195,7 +1217,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 if (!mIsImageCaptureIntent) {
                     setOrientationIndicator(mOrientationCompensation);
                 }
-                mHeadUpDisplay.setOrientation(mOrientationCompensation);
+                if (mHeadUpDisplay != null) {
+                    mHeadUpDisplay.setOrientation(mOrientationCompensation);
+                }
             }
         }
     }
@@ -1491,8 +1515,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Close the camera now because other activities may need to use it.
         closeCamera();
         resetScreenOn();
+        collapseCameraControls();
         changeHeadUpDisplayState();
-        if (mControlPanel != null) mControlPanel.hideSettingPicker();
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -1564,7 +1588,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Initiate autofocus only when preview is started and snapshot is not
         // in progress.
         if (canTakePicture()) {
-            mHeadUpDisplay.setEnabled(false);
+            enableCameraControls(false);
             Log.v(TAG, "Start autofocus.");
             mFocusStartTime = System.currentTimeMillis();
             mFocusState = FOCUSING;
@@ -1578,7 +1602,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mStatus != SNAPSHOT_IN_PROGRESS && (mFocusState == FOCUSING
                 || mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)) {
             Log.v(TAG, "Cancel autofocus.");
-            mHeadUpDisplay.setEnabled(true);
+            enableCameraControls(true);
             mCameraDevice.cancelAutoFocus();
         }
         if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
@@ -1610,7 +1634,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (!isCameraIdle()) {
             // ignore backs while we're taking a picture
             return;
-        } else if (mHeadUpDisplay == null || !mHeadUpDisplay.collapse()) {
+        } else if (!collapseCameraControls()) {
             super.onBackPressed();
         }
     }
@@ -1635,8 +1659,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     // Start auto-focus immediately to reduce shutter lag. After
                     // the shutter button gets the focus, doFocus() will be
                     // called again but it is fine.
-                    if (mHeadUpDisplay.collapse()) return true;
-                    if (mControlPanel != null) mControlPanel.hideSettingPicker();
+                    if (collapseCameraControls()) return true;
                     doFocus(true);
                     if (mShutterButton.isInTouchMode()) {
                         mShutterButton.requestFocusFromTouch();
@@ -1664,8 +1687,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void doSnap() {
-        if (mHeadUpDisplay.collapse()) return;
-        if (mControlPanel != null) mControlPanel.hideSettingPicker();
+        if (collapseCameraControls()) return;
 
         Log.v(TAG, "doSnap: mFocusState=" + mFocusState);
         // If the user has half-pressed the shutter and focus is completed, we
@@ -1689,8 +1711,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void doFocus(boolean pressed) {
         // Do the focus if the mode is not infinity.
-        if (mHeadUpDisplay.collapse()) return;
-        if (mControlPanel != null) mControlPanel.hideSettingPicker();
+        if (collapseCameraControls()) return;
         if (!(mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                   || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
                   || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF))) {
@@ -1947,6 +1968,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
 
         if (mHeadUpDisplay != null) updateSceneModeInHud();
+        // TODO: update icons on control panel.
 
         if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
             // Set flash mode.
@@ -2313,7 +2335,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mPausing) return;
         Runnable runnable = new Runnable() {
             public void run() {
-                mHeadUpDisplay.restorePreferences(mParameters);
+                if (mHeadUpDisplay != null) {
+                    mHeadUpDisplay.restorePreferences(mParameters);
+                }
             }
         };
         MenuHelper.confirmAction(this,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.camera;
+package com.android.camera.ui;
 
 import android.content.Context;
 import android.os.Handler;
@@ -27,6 +27,8 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.android.camera.R;
 
 import java.util.Formatter;
 
