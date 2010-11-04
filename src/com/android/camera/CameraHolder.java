@@ -49,6 +49,7 @@ public class CameraHolder {
     private final Handler mHandler;
     private int mUsers = 0;  // number of open() - number of release()
     private int mNumberOfCameras;
+    private int mCameraId = -1;
     private CameraInfo[] mInfo;
 
     // We store the camera parameters when we actually open the device,
@@ -112,10 +113,16 @@ public class CameraHolder {
     public synchronized android.hardware.Camera open(int cameraId)
             throws CameraHardwareException {
         Assert(mUsers == 0);
+        if (mCameraDevice != null && mCameraId != cameraId) {
+            mCameraDevice.release();
+            mCameraDevice = null;
+            mCameraId = -1;
+        }
         if (mCameraDevice == null) {
             try {
                 Log.v(TAG, "open camera " + cameraId);
                 mCameraDevice = android.hardware.Camera.open(cameraId);
+                mCameraId = cameraId;
             } catch (RuntimeException e) {
                 Log.e(TAG, "fail to connect Camera", e);
                 throw new CameraHardwareException(e);
@@ -171,6 +178,7 @@ public class CameraHolder {
         }
         mCameraDevice.release();
         mCameraDevice = null;
+        mCameraId = -1;
     }
 
     public synchronized void keep() {
