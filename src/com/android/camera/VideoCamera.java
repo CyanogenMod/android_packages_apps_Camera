@@ -281,7 +281,10 @@ public class VideoCamera extends NoSearchActivity
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
-        mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
+        // Use only back-facing camera for camcorder.
+        // TODO: fix this after we have a complete video rotation fix.
+        // mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
+        mCameraId = 0;
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
@@ -1078,7 +1081,8 @@ public class VideoCamera extends NoSearchActivity
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
         mGalleryItems.add(gallery);
 
-        if (mNumberOfCameras > 1) {
+        // TODO: add this back after we have a complete video rotation fix.
+        /*if (mNumberOfCameras > 1) {
             menu.add(Menu.NONE, Menu.NONE,
                     MenuHelper.POSITION_SWITCH_CAMERA_ID,
                     R.string.switch_camera_id)
@@ -1088,7 +1092,7 @@ public class VideoCamera extends NoSearchActivity
                     return true;
                 }
             }).setIcon(android.R.drawable.ic_menu_camera);
-        }
+        }*/
     }
 
     private void switchCameraId(int cameraId) {
@@ -1606,13 +1610,15 @@ public class VideoCamera extends NoSearchActivity
             // startPreview().
             if (mCameraDevice == null) return;
 
+            // TODO: fix this after we have a complete video rotation fix.
             // Check if camera id is changed.
-            int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
+            /*int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
             if (mCameraId != cameraId) {
                 switchCameraId(cameraId);
             } else {
                 resetCameraParameters();
-            }
+            }*/
+            resetCameraParameters();
         }
     }
 }

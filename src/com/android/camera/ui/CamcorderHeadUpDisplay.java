@@ -58,6 +58,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);
         addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
-        addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
+        // TODO: add this back after we have a complete video rotation fix.
+        //addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
     }
 }
