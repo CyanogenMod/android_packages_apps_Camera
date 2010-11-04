@@ -44,7 +44,7 @@ public class InLineSettingPicker extends LinearLayout {
     private Listener mListener;
 
     static public interface Listener {
-        public void onSharedPreferenceChanged();
+        public void onSettingChanged();
     }
 
     private Handler mHandler;
@@ -126,7 +126,7 @@ public class InLineSettingPicker extends LinearLayout {
         mIndex = index;
         mPreference.setValueIndex(mIndex);
         if (mListener != null) {
-            mListener.onSharedPreferenceChanged();
+            mListener.onSettingChanged();
         }
         updateView();
         return true;
@@ -136,7 +136,7 @@ public class InLineSettingPicker extends LinearLayout {
         mText.setText(mPreference.getEntry());
     }
 
-    public void setSharedPreferenceChangedListener(Listener listener) {
+    public void setSettingChangedListener(Listener listener) {
         mListener = listener;
     }
 }

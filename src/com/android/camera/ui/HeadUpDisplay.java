@@ -108,7 +108,7 @@ public class HeadUpDisplay extends GLView {
         public void onSharedPreferenceChanged(
                 SharedPreferences sharedPreferences, String key) {
             if (mListener != null) {
-                mListener.onSharedPreferencesChanged();
+                mListener.onSharedPreferenceChanged();
             }
         }
     };
@@ -132,7 +132,7 @@ public class HeadUpDisplay extends GLView {
     static public interface Listener {
         public void onPopupWindowVisibilityChanged(int visibility);
         public void onRestorePreferencesClicked();
-        public void onSharedPreferencesChanged();
+        public void onSharedPreferenceChanged();
     }
 
     public void overrideSettings(final String ... keyvalues) {
@@ -400,7 +400,7 @@ public class HeadUpDisplay extends GLView {
                 mSharedPreferenceChangeListener;
         // Unregister the listener since "upgrade preference" will
         // change bunch of preferences. We can handle them with one
-        // onSharedPreferencesChanged();
+        // onSharedPreferenceChanged();
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(l);
         Context context = getGLRootView().getContext();
         Editor editor = mSharedPrefs.edit();
@@ -410,7 +410,7 @@ public class HeadUpDisplay extends GLView {
         CameraSettings.initialCameraPictureSize(context, param);
         reloadPreferences();
         if (mListener != null) {
-            mListener.onSharedPreferencesChanged();
+            mListener.onSharedPreferenceChanged();
         }
         mSharedPrefs.registerOnSharedPreferenceChangeListener(l);
     }

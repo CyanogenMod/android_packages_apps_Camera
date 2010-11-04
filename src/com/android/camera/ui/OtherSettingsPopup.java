@@ -26,9 +26,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 /* A popup window that contains several camera settings. */
-public class OtherSettingsPicker extends PopupWindow
+public class OtherSettingsPopup extends PopupWindow
         implements InLineSettingPicker.Listener {
-    private static final String TAG = "OtherSettingsPicker";
+    private static final String TAG = "OtherSettingsPopup";
     private Listener mListener;
 
     static public interface Listener {
@@ -39,7 +39,7 @@ public class OtherSettingsPicker extends PopupWindow
         mListener = listener;
     }
 
-    public OtherSettingsPicker(View contentView, int width, int height,
+    public OtherSettingsPopup(View contentView, int width, int height,
             boolean focusable) {
         super(contentView, width, height, focusable);
     }
@@ -51,12 +51,12 @@ public class OtherSettingsPicker extends PopupWindow
             TableRow row = (TableRow) table.getChildAt(i);
             InLineSettingPicker picker = (InLineSettingPicker) row.getChildAt(1);
             ListPreference pref = group.findPreference(picker.getKey());
-            picker.setSharedPreferenceChangedListener(this);
+            picker.setSettingChangedListener(this);
             picker.initialize(pref);
        }
     }
 
-    public void onSharedPreferenceChanged() {
+    public void onSettingChanged() {
         if (mListener != null) {
             mListener.onOtherSettingChanged();
         }

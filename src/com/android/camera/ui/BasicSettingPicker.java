@@ -39,7 +39,7 @@ public class BasicSettingPicker extends LinearLayout {
     private Listener mListener;
 
     static public interface Listener {
-        public void onSharedPreferenceChanged();
+        public void onSettingChanged();
     }
 
     public BasicSettingPicker(Context context, AttributeSet attrs) {
@@ -84,7 +84,7 @@ public class BasicSettingPicker extends LinearLayout {
         requestLayout();
     }
 
-    public void setSharedPreferenceChangedListener(Listener listener) {
+    public void setSettingChangedListener(Listener listener) {
         mListener = listener;
     }
 
@@ -108,7 +108,7 @@ public class BasicSettingPicker extends LinearLayout {
                         text.setPressed(true);
                         mPreference.setValueIndex(index);
                         if (mListener != null) {
-                            mListener.onSharedPreferenceChanged();
+                            mListener.onSettingChanged();
                         }
                     }
                 }

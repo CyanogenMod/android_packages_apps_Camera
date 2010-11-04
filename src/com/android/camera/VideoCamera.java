@@ -1786,10 +1786,10 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private class MyHeadUpDisplayListener implements HeadUpDisplay.Listener {
-        public void onSharedPreferencesChanged() {
+        public void onSharedPreferenceChanged() {
             mHandler.post(new Runnable() {
                 public void run() {
-                    VideoCamera.this.onSharedPreferencesChanged();
+                    VideoCamera.this.onSharedPreferenceChanged();
                 }
             });
         }
@@ -1831,7 +1831,7 @@ public class VideoCamera extends NoSearchActivity
                 runnable);
     }
 
-    private void onSharedPreferencesChanged() {
+    private void onSharedPreferenceChanged() {
         // ignore the events after "onPause()" or preview has not started yet
         if (mPausing) return;
         synchronized (mPreferences) {
@@ -1851,8 +1851,8 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private class MyControlPanelListener implements ControlPanel.Listener {
-        public void onSharedPreferencesChanged() {
-            VideoCamera.this.onSharedPreferencesChanged();
+        public void onSharedPreferenceChanged() {
+            VideoCamera.this.onSharedPreferenceChanged();
         }
     }
 }

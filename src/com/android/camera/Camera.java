@@ -2275,7 +2275,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private void onSharedPreferencesChanged() {
+    private void onSharedPreferenceChanged() {
         // ignore the events after "onPause()"
         if (mPausing) return;
 
@@ -2319,8 +2319,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private class MyHeadUpDisplayListener implements HeadUpDisplay.Listener {
 
-        public void onSharedPreferencesChanged() {
-            Camera.this.onSharedPreferencesChanged();
+        public void onSharedPreferenceChanged() {
+            Camera.this.onSharedPreferenceChanged();
         }
 
         public void onRestorePreferencesClicked() {
@@ -2347,8 +2347,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private class MyControlPanelListener implements ControlPanel.Listener {
-        public void onSharedPreferencesChanged() {
-            Camera.this.onSharedPreferencesChanged();
+        public void onSharedPreferenceChanged() {
+            Camera.this.onSharedPreferenceChanged();
         }
     }
 }
