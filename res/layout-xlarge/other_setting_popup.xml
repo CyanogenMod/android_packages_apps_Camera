@@ -17,10 +17,13 @@
 */
 -->
 
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.OtherSettingsPopup xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/menu_popup">
 
     <TableRow style="@style/OtherSettingTableRow">
         <TextView android:text="@string/pref_camera_recordlocation_title"
@@ -63,4 +66,4 @@
         <com.android.camera.ui.InLineSettingPicker
             camera:prefKey="pref_camera_scenemode_key" />
     </TableRow>
-</TableLayout>
+</com.android.camera.ui.OtherSettingsPopup>

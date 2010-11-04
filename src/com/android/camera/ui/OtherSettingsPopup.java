@@ -19,14 +19,15 @@ package com.android.camera.ui;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.PopupWindow;
+import android.view.ViewGroup;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 
 /* A popup window that contains several camera settings. */
-public class OtherSettingsPopup extends PopupWindow
+public class OtherSettingsPopup extends TableLayout
         implements InLineSettingPicker.Listener {
     private static final String TAG = "OtherSettingsPopup";
     private Listener mListener;
@@ -39,23 +40,21 @@ public class OtherSettingsPopup extends PopupWindow
         mListener = listener;
     }
 
-    public OtherSettingsPopup(View contentView, int width, int height,
-            boolean focusable) {
-        super(contentView, width, height, focusable);
+    public OtherSettingsPopup(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     public void initialize(PreferenceGroup group) {
-        TableLayout table = (TableLayout) getContentView();
         // Initialize each camera setting.
-        for (int i = table.getChildCount() - 1; i >= 0 ; i--) {
-            TableRow row = (TableRow) table.getChildAt(i);
+        for (int i = getChildCount() - 1; i >= 0 ; i--) {
+            ViewGroup row = (ViewGroup) getChildAt(i);
             InLineSettingPicker picker = (InLineSettingPicker) row.getChildAt(1);
             ListPreference pref = group.findPreference(picker.getKey());
             if (pref != null) {
                 picker.setSettingChangedListener(this);
                 picker.initialize(pref);
             } else {  // remove the row if the preference is not supported
-                table.removeViewAt(i);
+                removeViewAt(i);
             }
        }
     }

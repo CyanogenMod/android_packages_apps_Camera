@@ -20,8 +20,7 @@
         android:layout_height="match_parent"
         android:layout_width="76dp"
         android:layout_marginTop="13dp"
-        android:layout_marginBottom="10dp"
-        android:layout_alignParentRight="true">
+        android:layout_marginBottom="10dp">
 
     <com.android.camera.RotateImageView
             android:id="@+id/review_thumbnail"

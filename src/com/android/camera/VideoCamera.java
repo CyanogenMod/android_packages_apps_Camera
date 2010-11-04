@@ -58,10 +58,12 @@ import android.provider.MediaStore.Video.Media;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -204,6 +206,8 @@ public class VideoCamera extends NoSearchActivity
     // multiple cameras support
     private int mNumberOfCameras;
     private int mCameraId;
+
+    private GestureDetector mPopupGestureDetector;
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -435,7 +439,7 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void attachHeadUpDisplay() {
-        FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
+        ViewGroup frame = (ViewGroup) findViewById(R.id.frame);
         mGLRootView = new GLRootView(this);
         frame.addView(mGLRootView);
         mGLRootView.setContentPane(mHeadUpDisplay);
@@ -460,6 +464,8 @@ public class VideoCamera extends NoSearchActivity
                     settings.getPreferenceGroup(R.xml.video_preferences), keys,
                     false);
             mControlPanel.setListener(new MyControlPanelListener());
+            mPopupGestureDetector = new GestureDetector(this,
+                    new PopupGestureListener());
         }
     }
 
@@ -526,7 +532,7 @@ public class VideoCamera extends NoSearchActivity
         switch (button.getId()) {
             case R.id.shutter_button:
                 if (mHeadUpDisplay.collapse()) return;
-                if (mControlPanel != null) mControlPanel.hideSettingPicker();
+                if (mControlPanel != null) mControlPanel.dismissSettingPopup();
 
                 if (mMediaRecorderRecording) {
                     onStopVideoRecording(true);
@@ -789,7 +795,7 @@ public class VideoCamera extends NoSearchActivity
         mPausing = true;
 
         changeHeadUpDisplayState();
-        if (mControlPanel != null) mControlPanel.hideSettingPicker();
+        if (mControlPanel != null) mControlPanel.dismissSettingPopup();
 
         // Hide the preview now. Otherwise, the preview may be rotated during
         // onPause and it is annoying to users.
@@ -1855,6 +1861,38 @@ public class VideoCamera extends NoSearchActivity
     private class MyControlPanelListener implements ControlPanel.Listener {
         public void onSharedPreferenceChanged() {
             VideoCamera.this.onSharedPreferenceChanged();
+        }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent m) {
+        // Check if the popup window should be dismissed first.
+        if (mPopupGestureDetector != null && mPopupGestureDetector.onTouchEvent(m)) {
+            return true;
+        }
+
+        return super.dispatchTouchEvent(m);
+    }
+
+    private int mPopupLocations[] = new int[2];
+    private class PopupGestureListener extends
+            GestureDetector.SimpleOnGestureListener {
+        public boolean onDown(MotionEvent e) {
+            int x = Math.round(e.getX());
+            int y = Math.round(e.getY());
+
+            // Check if the popup window is visible.
+            View v = mControlPanel.getActivePopupWindow();
+            if (v == null) return false;
+
+            // Dismiss the popup window if users touch on the outside.
+            v.getLocationOnScreen(mPopupLocations);
+            if (x < mPopupLocations[0] || x > mPopupLocations[0] + v.getWidth()
+                    || y < mPopupLocations[1] || y > mPopupLocations[1] + v.getHeight()) {
+                mControlPanel.dismissSettingPopup();
+                return true;
+            }
+            return false;
         }
     }
 }

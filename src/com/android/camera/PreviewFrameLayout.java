@@ -24,8 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * A layout which handles the preview aspect ratio and the position of
- * the gripper.
+ * A layout which handles the preview aspect ratio.
  */
 public class PreviewFrameLayout extends ViewGroup {
     private static final int MIN_HORIZONTAL_MARGIN = 10; // 10dp

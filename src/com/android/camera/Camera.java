@@ -18,7 +18,6 @@ package com.android.camera;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
-import com.android.camera.ui.BasicSettingPicker;
 import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
@@ -164,7 +163,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private ShutterButton mShutterButton;
     private FocusRectangle mFocusRectangle;
     private ToneGenerator mFocusToneGenerator;
-    private GestureDetector mGestureDetector;
+    private GestureDetector mPopupGestureDetector;
+    private GestureDetector mZoomGestureDetector;
     private Switcher mSwitcher;
     private boolean mStartPreviewFail = false;
 
@@ -512,7 +512,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
-        mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
+        mZoomGestureDetector = new GestureDetector(this, new ZoomGestureListener());
         if (mZoomPicker != null) {
             mZoomPicker.setZoomRatios(getZoomRatios());
             mZoomPicker.setOnZoomChangeListener(
@@ -592,12 +592,40 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
+    private int mPopupLocations[] = new int[2];
+    private class PopupGestureListener extends
+            GestureDetector.SimpleOnGestureListener {
+        public boolean onDown(MotionEvent e) {
+            int x = Math.round(e.getX());
+            int y = Math.round(e.getY());
+
+            // Check if the popup window is visible.
+            View v = mControlPanel.getActivePopupWindow();
+            if (v == null) return false;
+
+            // Dismiss the popup window if users touch on the outside.
+            v.getLocationOnScreen(mPopupLocations);
+            if (x < mPopupLocations[0] || x > mPopupLocations[0] + v.getWidth()
+                    || y < mPopupLocations[1] || y > mPopupLocations[1] + v.getHeight()) {
+                mControlPanel.dismissSettingPopup();
+                return true;
+            }
+            return false;
+        }
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        if (!super.dispatchTouchEvent(m) && mGestureDetector != null) {
-            return mGestureDetector.onTouchEvent(m);
+        // Check if the popup window should be dismissed first.
+        if (mPopupGestureDetector != null && mPopupGestureDetector.onTouchEvent(m)) {
+            return true;
         }
-        return true;
+
+        if (!super.dispatchTouchEvent(m) && mZoomGestureDetector != null) {
+            return mZoomGestureDetector.onTouchEvent(m);
+        }
+
+        return false;
     }
 
     LocationListener [] mLocationListeners = new LocationListener[] {
@@ -1163,6 +1191,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mPreferenceGroup = settings.getPreferenceGroup(R.xml.camera_preferences);
             mControlPanel.initialize(this, mPreferenceGroup, keys, true);
             mControlPanel.setListener(new MyControlPanelListener());
+            mPopupGestureDetector = new GestureDetector(this,
+                    new PopupGestureListener());
         }
     }
 
@@ -1209,7 +1239,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mHeadUpDisplay != null && mHeadUpDisplay.collapse()) {
             return true;
         }
-        if (mControlPanel != null && mControlPanel.hideSettingPicker()) {
+        if (mControlPanel != null && mControlPanel.dismissSettingPopup()) {
             return true;
         }
         return false;

@@ -16,10 +16,12 @@
 ** limitations under the License.
 */
 -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:singleLine="true"
-    android:textColor="@drawable/btn_setting_picker"
-    android:textSize="16dp" />
+
+<com.android.camera.ui.BasicSettingPopup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/menu_popup"
+        android:orientation="vertical" />
+

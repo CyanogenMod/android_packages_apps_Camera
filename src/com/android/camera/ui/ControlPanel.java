@@ -30,15 +30,16 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 public class ControlPanel extends RelativeLayout
-        implements BasicSettingPicker.Listener, IndicatorWheel.Listener,
-        View.OnClickListener, OtherSettingsPopup.Listener,
-        PopupWindow.OnDismissListener {
+        implements BasicSettingPopup.Listener, IndicatorWheel.Listener,
+        OtherSettingsPopup.Listener, PopupWindow.OnDismissListener {
     private static final String TAG = "ControlPanel";
     private Context mContext;
     private ComboPreferences mSharedPrefs;
@@ -46,11 +47,10 @@ public class ControlPanel extends RelativeLayout
     private String[] mPreferenceKeys;
     private Listener mListener;
     private IndicatorWheel mIndicatorWheel;
-    private BasicSettingPicker[] mSettingPickers;
+    private BasicSettingPopup[] mBasicSettingPopups;
     private OtherSettingsPopup mOtherSettingsPopup;
     private int mActiveIndicator = -1;
     private boolean mEnabled = true;
-
     private ListView mThumbnailList;
 
     static public interface Listener {
@@ -84,19 +84,18 @@ public class ControlPanel extends RelativeLayout
     public void initialize(Context context, PreferenceGroup group,
             String[] keys, boolean enableOtherSettings) {
         // Reset the variables and states.
-        hideSettingPicker();
+        dismissSettingPopup();
         if (mIndicatorWheel != null) {
             // The first view is the shutter button.
             mIndicatorWheel.removeViews(1, mIndicatorWheel.getChildCount() - 1);
         }
         mOtherSettingsPopup = null;
-        mSettingPickers = null;
         mActiveIndicator = -1;
 
         // Initialize all variables and icons.
         mPreferenceGroup = group;
         mPreferenceKeys = keys;
-        mSettingPickers = new BasicSettingPicker[mPreferenceKeys.length];
+        mBasicSettingPopups = new BasicSettingPopup[mPreferenceKeys.length];
         mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
         mThumbnailList = (ListView) findViewById(R.id.thumbnail_list);
         mSharedPrefs = ComboPreferences.get(context);
@@ -123,84 +122,66 @@ public class ControlPanel extends RelativeLayout
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        if (!mEnabled) return;
-        switch (v.getId()) {
-            case R.id.setting_exit:
-                hideSettingPicker();
-                break;
-        }
-    }
-
     public void onIndicatorClicked(int index) {
         if (!mEnabled) return;
-        if (index < mSettingPickers.length) {
-            if (mSettingPickers[index] == null) {
-                initializeSettingPicker(index);
+        if (index < mBasicSettingPopups.length) {
+            if (mBasicSettingPopups[index] == null) {
+                initializeSettingPopup(index);
             }
         } else if (mOtherSettingsPopup == null) {
-            initializeOtherSettingPicker();
+            initializeOtherSettingPopup();
         }
-        if (!showSettingPicker(index)) {
-            hideSettingPicker();
-        }
+        showSettingPopup(index);
     }
 
-    private void initializeSettingPicker(int index) {
+    private void initializeSettingPopup(int index) {
         IconListPreference pref = (IconListPreference)
                 mPreferenceGroup.findPreference(mPreferenceKeys[index]);
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.basic_setting_picker, this);
-        mSettingPickers[index] = (BasicSettingPicker) getChildAt(
-                getChildCount() - 1);
-        mSettingPickers[index].setSettingChangedListener(this);
-        mSettingPickers[index].initialize(pref);
-        View v = mSettingPickers[index].findViewById(R.id.setting_exit);
-        v.setOnClickListener(this);
+        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.frame);
+        BasicSettingPopup popup = (BasicSettingPopup) inflater.inflate(
+                R.layout.basic_setting_popup, root, false);
+        mBasicSettingPopups[index] = popup;
+        popup.setSettingChangedListener(this);
+        popup.initialize(pref);
+        RelativeLayout.LayoutParams params =
+                (RelativeLayout.LayoutParams) popup.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params.addRule(RelativeLayout.CENTER_VERTICAL);
+        popup.setLayoutParams(params);
+        root.addView(popup);
     }
 
-    private void initializeOtherSettingPicker() {
+    private void initializeOtherSettingPopup() {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.other_setting_popup, null);
-        // Framework has a bug so WRAP_CONTENT does not work. Hardcode the
-        // dimension for now.
-        mOtherSettingsPopup = new OtherSettingsPopup(view, 420, 410, true);
-        Drawable border = getResources().getDrawable(R.drawable.menu_popup);
-        mOtherSettingsPopup.setBackgroundDrawable(border);
+        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.frame);
+        mOtherSettingsPopup = (OtherSettingsPopup) inflater.inflate(
+                R.layout.other_setting_popup, root, false);
         mOtherSettingsPopup.setOtherSettingChangedListener(this);
-        mOtherSettingsPopup.setOnDismissListener(this);
-        mOtherSettingsPopup.setFocusable(true);
         mOtherSettingsPopup.initialize(mPreferenceGroup);
+        root.addView(mOtherSettingsPopup);
     }
 
-    private boolean showSettingPicker(int index) {
-        for (int i = 0; i < mSettingPickers.length; i++) {
-            if (i != index && mSettingPickers[i] != null) {
-                mSettingPickers[i].setVisibility(View.INVISIBLE);
-            }
-        }
-        if (index == mSettingPickers.length) {
-            mOtherSettingsPopup.showAtLocation(this, Gravity.CENTER, 0, 0);
-            mThumbnailList.setVisibility(View.VISIBLE);
+    private void showSettingPopup(int index) {
+        if (mActiveIndicator == index) return;
+        dismissSettingPopup();
+        if (index == mBasicSettingPopups.length) {
+            mOtherSettingsPopup.setVisibility(View.VISIBLE);
         } else {
-            mSettingPickers[index].setVisibility(View.VISIBLE);
-            mThumbnailList.setVisibility(View.INVISIBLE);
+            mBasicSettingPopups[index].setVisibility(View.VISIBLE);
         }
         mActiveIndicator = index;
-        return true;
     }
 
-    public boolean hideSettingPicker() {
+    public boolean dismissSettingPopup() {
         if (mActiveIndicator >= 0) {
-            if (mActiveIndicator == mSettingPickers.length) {
-                mOtherSettingsPopup.dismiss();
+            if (mActiveIndicator == mBasicSettingPopups.length) {
+                mOtherSettingsPopup.setVisibility(View.INVISIBLE);
             } else {
-                mSettingPickers[mActiveIndicator].setVisibility(View.INVISIBLE);
-                mThumbnailList.setVisibility(View.VISIBLE);
+                mBasicSettingPopups[mActiveIndicator].setVisibility(View.INVISIBLE);
             }
             mActiveIndicator = -1;
             return true;
@@ -216,5 +197,17 @@ public class ControlPanel extends RelativeLayout
     // Popup window is dismissed.
     public void onDismiss() {
         mActiveIndicator = -1;
+    }
+
+    public View getActivePopupWindow() {
+        if (mActiveIndicator >= 0) {
+            if (mActiveIndicator == mBasicSettingPopups.length) {
+                return mOtherSettingsPopup;
+            } else {
+                return mBasicSettingPopups[mActiveIndicator];
+            }
+        } else {
+            return null;
+        }
     }
 }

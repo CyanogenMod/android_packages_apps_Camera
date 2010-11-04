@@ -19,7 +19,7 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
     <Button android:id="@+id/decrement"
-        android:layout_width="24dp"
+        android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center"
@@ -39,7 +39,7 @@
         android:textSize="20dp" />
 
     <Button android:id="@+id/increment"
-        android:layout_width="24dp"
+        android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center"

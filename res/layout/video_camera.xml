@@ -25,7 +25,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="2dip"
             android:layout_weight="1">
-        <FrameLayout android:id="@+id/frame"
+        <RelativeLayout android:id="@+id/frame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/border_view_finder">
@@ -50,6 +50,6 @@
                     android:layout_marginLeft="17dp"
                     android:paddingRight="2dp"
                     android:visibility="gone" />
-        </FrameLayout>
+        </RelativeLayout>
     </com.android.camera.PreviewFrameLayout>
 </LinearLayout>
