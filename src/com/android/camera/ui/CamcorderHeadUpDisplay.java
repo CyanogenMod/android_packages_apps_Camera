@@ -27,9 +27,16 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
     private static final String TAG = "CamcorderHeadUpDisplay";
 
     private OtherSettingsIndicator mOtherSettings;
+    private int mInitialOrientation;
 
     public CamcorderHeadUpDisplay(Context context) {
         super(context);
+    }
+
+    public void initialize(Context context, PreferenceGroup group,
+            int initialOrientation) {
+        mInitialOrientation = initialOrientation;
+        super.initialize(context, group);
     }
 
     @Override
@@ -59,5 +66,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
         addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);
         addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
         addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
+
+        mIndicatorBar.setOrientation(mInitialOrientation);
     }
 }
