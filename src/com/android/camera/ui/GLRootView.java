@@ -92,9 +92,6 @@ public class GLRootView extends GLSurfaceView
 
     private boolean mIsQueueActive = true;
 
-    private int mFirstWidth;
-    private int mFirstHeight;
-
     // TODO: move this part (handler) into GLSurfaceView
     private final Looper mLooper;
 

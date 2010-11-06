@@ -23,8 +23,6 @@ import android.net.Uri;
  * The class for normal images in gallery.
  */
 public class Image extends BaseImage implements IImage {
-    private static final String TAG = "BaseImage";
-
     private final int mRotation;
 
     public Image(ContentResolver cr,
