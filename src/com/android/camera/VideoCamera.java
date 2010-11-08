@@ -35,6 +35,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
@@ -57,6 +58,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -89,7 +91,6 @@ public class VideoCamera extends NoSearchActivity
 
     private static final String TAG = "videocamera";
 
-    private static final int INIT_RECORDER = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
     private static final int ENABLE_SHUTTER_BUTTON = 6;
@@ -179,6 +180,12 @@ public class VideoCamera extends NoSearchActivity
     private int mNumberOfCameras;
     private int mCameraId;
 
+    private MyOrientationEventListener mOrientationListener;
+    // The device orientation in degrees. Default is unknown.
+    private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
+    // The orientation compensation for icons and thumbnails.
+    private int mOrientationCompensation = 0;
+
     // This Handler is used to post message back onto the main thread of the
     // application
     private class MainHandler extends Handler {
@@ -201,11 +208,6 @@ public class VideoCamera extends NoSearchActivity
                     break;
                 }
 
-                case INIT_RECORDER: {
-                    initializeRecorder();
-                    break;
-                }
-
                 default:
                     Log.v(TAG, "Unhandled message: " + msg.what);
                     break;
@@ -224,7 +226,7 @@ public class VideoCamera extends NoSearchActivity
                 stopVideoRecording();
             } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 updateAndShowStorageHint(true);
-                initializeRecorder();
+                updateThumbnailButton();
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
                 // handled in ACTION_MEDIA_EJECT
@@ -365,6 +367,8 @@ public class VideoCamera extends NoSearchActivity
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
+        mOrientationListener = new MyOrientationEventListener(VideoCamera.this);
+
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -407,10 +411,11 @@ public class VideoCamera extends NoSearchActivity
         if (mIsVideoCaptureIntent) {
             group = filterPreferenceScreenByIntent(group);
         }
-        mHeadUpDisplay.initialize(this, group);
+        mHeadUpDisplay.initialize(this, group, mOrientationCompensation);
     }
 
     private void attachHeadUpDisplay() {
+        mHeadUpDisplay.setOrientation(mOrientationCompensation);
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
         mGLRootView = new GLRootView(this);
         frame.addView(mGLRootView);
@@ -421,6 +426,47 @@ public class VideoCamera extends NoSearchActivity
         mHeadUpDisplay.collapse();
         ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         mGLRootView = null;
+    }
+
+    public static int roundOrientation(int orientation) {
+        return ((orientation + 45) / 90 * 90) % 360;
+    }
+
+    private class MyOrientationEventListener
+            extends OrientationEventListener {
+        public MyOrientationEventListener(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onOrientationChanged(int orientation) {
+            if (mMediaRecorderRecording) return;
+            // We keep the last known orientation. So if the user first orient
+            // the camera then point the camera to floor or sky, we still have
+            // the correct orientation.
+            if (orientation == ORIENTATION_UNKNOWN) return;
+            mOrientation = roundOrientation(orientation);
+            // When the screen is unlocked, display rotation may change. Always
+            // calculate the up-to-date orientationCompensation.
+            int orientationCompensation = mOrientation
+                    + Util.getDisplayRotation(VideoCamera.this);
+            if (mOrientationCompensation != orientationCompensation) {
+                mOrientationCompensation = orientationCompensation;
+                if (!mIsVideoCaptureIntent) {
+                    setOrientationIndicator(mOrientationCompensation);
+                }
+                mHeadUpDisplay.setOrientation(mOrientationCompensation);
+            }
+        }
+    }
+
+    private void setOrientationIndicator(int degree) {
+        ((RotateImageView) findViewById(
+                R.id.review_thumbnail)).setDegree(degree);
+        ((RotateImageView) findViewById(
+                R.id.camera_switch_icon)).setDegree(degree);
+        ((RotateImageView) findViewById(
+                R.id.video_switch_icon)).setDegree(degree);
     }
 
     @Override
@@ -443,7 +489,8 @@ public class VideoCamera extends NoSearchActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_retake:
-                discardCurrentVideoAndInitRecorder();
+                deleteCurrentVideo();
+                hideAlert();
                 break;
             case R.id.btn_play:
                 startPlayVideoActivity();
@@ -473,7 +520,6 @@ public class VideoCamera extends NoSearchActivity
             }
         } else {
             stopVideoRecordingAndGetThumbnail();
-            initializeRecorder();
         }
     }
 
@@ -484,11 +530,7 @@ public class VideoCamera extends NoSearchActivity
 
                 if (mMediaRecorderRecording) {
                     onStopVideoRecording(true);
-                } else if (mMediaRecorder != null) {
-                    // If the click comes before recorder initialization, it is
-                    // ignored. If users click the button during initialization,
-                    // the event is put in the queue and record will be started
-                    // eventually.
+                } else {
                     startVideoRecording();
                 }
                 mShutterButton.setEnabled(false);
@@ -496,11 +538,6 @@ public class VideoCamera extends NoSearchActivity
                         ENABLE_SHUTTER_BUTTON, SHUTTER_BUTTON_TIMEOUT);
                 break;
         }
-    }
-
-    private void discardCurrentVideoAndInitRecorder() {
-        deleteCurrentVideo();
-        hideAlertAndInitializeRecorder();
     }
 
     private OnScreenHint mStorageHint;
@@ -589,6 +626,9 @@ public class VideoCamera extends NoSearchActivity
         super.onResume();
         mPausing = false;
 
+        // Start orientation listener as soon as possible because it takes
+        // some time to get first orientation.
+        mOrientationListener.enable();
         mVideoPreview.setVisibility(View.VISIBLE);
         readVideoPreferences();
         resizeForPreviewAspectRatio();
@@ -615,11 +655,9 @@ public class VideoCamera extends NoSearchActivity
             }
         }, 200);
 
-        if (mSurfaceHolder != null) {
-            mHandler.sendEmptyMessage(INIT_RECORDER);
-        }
-
         changeHeadUpDisplayState();
+
+        updateThumbnailButton();
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
@@ -639,7 +677,6 @@ public class VideoCamera extends NoSearchActivity
             mCameraDevice = CameraHolder.instance().open(mCameraId);
         }
 
-        mCameraDevice.lock();
         if (mPreviewing == true) {
             mCameraDevice.stopPreview();
             mPreviewing = false;
@@ -654,13 +691,6 @@ public class VideoCamera extends NoSearchActivity
         } catch (Throwable ex) {
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
-        }
-
-        // If setPreviewDisplay has been set with a valid surface, unlock now.
-        // If surface is null, unlock later. Otherwise, setPreviewDisplay in
-        // surfaceChanged will fail.
-        if (mSurfaceHolder != null) {
-            mCameraDevice.unlock();
         }
     }
 
@@ -717,8 +747,7 @@ public class VideoCamera extends NoSearchActivity
             mStorageHint = null;
         }
 
-        mHandler.removeMessages(INIT_RECORDER);
-
+        mOrientationListener.disable();
     }
 
     @Override
@@ -806,16 +835,9 @@ public class VideoCamera extends NoSearchActivity
         // already started.
         if (holder.isCreating()) {
             setPreviewDisplay(holder);
-            mCameraDevice.unlock();
-            mHandler.sendEmptyMessage(INIT_RECORDER);
         } else {
             stopVideoRecording();
-            // If video quality changes, the surface will change. But we need to
-            // initialize the recorder here. So collpase the head-up display to
-            // keep the state of recorder consistent.
-            mHeadUpDisplay.collapse();
             restartPreview();
-            initializeRecorder();
         }
     }
 
@@ -901,11 +923,8 @@ public class VideoCamera extends NoSearchActivity
     // Prepares media recorder.
     private void initializeRecorder() {
         Log.v(TAG, "initializeRecorder");
-        if (mMediaRecorder != null) return;
-
-        // We will call initializeRecorder() again when the alert is hidden.
         // If the mCameraDevice is null, then this activity is going to finish
-        if (isAlertVisible() || mCameraDevice == null) return;
+        if (mCameraDevice == null) return;
 
         Intent intent = getIntent();
         Bundle myExtras = intent.getExtras();
@@ -927,6 +946,8 @@ public class VideoCamera extends NoSearchActivity
         }
         mMediaRecorder = new MediaRecorder();
 
+        // Unlock the camera object before passing it to media recorder.
+        mCameraDevice.unlock();
         mMediaRecorder.setCamera(mCameraDevice);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
@@ -972,22 +993,29 @@ public class VideoCamera extends NoSearchActivity
             // on the size restriction.
         }
 
+        // See android.hardware.Camera.Parameters.setRotation for
+        // documentation.
+        int rotation = 0;
+        if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
+            CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+            if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
+                rotation = (info.orientation - mOrientation + 360) % 360;
+            } else {  // back-facing camera
+                rotation = (info.orientation + mOrientation) % 360;
+            }
+        }
+        mMediaRecorder.setOrientationHint(rotation);
+
         try {
             mMediaRecorder.prepare();
         } catch (IOException e) {
-            Log.e(TAG, "prepare failed for " + mVideoFilename);
+            Log.e(TAG, "prepare failed for " + mVideoFilename, e);
             releaseMediaRecorder();
             throw new RuntimeException(e);
         }
-        mMediaRecorderRecording = false;
 
-        // Update the last video thumbnail.
-        if (!mIsVideoCaptureIntent) {
-            if (!mThumbController.isUriValid()) {
-                updateLastVideo();
-            }
-            mThumbController.updateDisplayIfNeeded();
-        }
+        mMediaRecorder.setOnErrorListener(this);
+        mMediaRecorder.setOnInfoListener(this);
     }
 
     private void releaseMediaRecorder() {
@@ -998,6 +1026,8 @@ public class VideoCamera extends NoSearchActivity
             mMediaRecorder.release();
             mMediaRecorder = null;
         }
+        // Take back the camera object control from media recorder.
+        mCameraDevice.lock();
     }
 
     private void createVideoPath() {
@@ -1109,7 +1139,6 @@ public class VideoCamera extends NoSearchActivity
             stopVideoRecording();
         }
         closeCamera();
-        mHandler.removeMessages(INIT_RECORDER);
 
         // Reload the preferences.
         mPreferences.setLocalId(this, mCameraId);
@@ -1121,10 +1150,6 @@ public class VideoCamera extends NoSearchActivity
 
         // Reload the UI.
         initializeHeadUpDisplay();
-
-        if (mSurfaceHolder != null) {
-            mHandler.sendEmptyMessage(INIT_RECORDER);
-        }
     }
 
     private PreferenceGroup filterPreferenceScreenByIntent(
@@ -1180,39 +1205,35 @@ public class VideoCamera extends NoSearchActivity
 
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
-        if (!mMediaRecorderRecording) {
-
-            if (mStorageStatus != STORAGE_STATUS_OK) {
-                Log.v(TAG, "Storage issue, ignore the start request");
-                return;
-            }
-
-            // Check mMediaRecorder to see whether it is initialized or not.
-            if (mMediaRecorder == null) {
-                Log.e(TAG, "MediaRecorder is not initialized.");
-                return;
-            }
-
-            pauseAudioPlayback();
-
-            try {
-                mMediaRecorder.setOnErrorListener(this);
-                mMediaRecorder.setOnInfoListener(this);
-                mMediaRecorder.start(); // Recording is now started
-            } catch (RuntimeException e) {
-                Log.e(TAG, "Could not start media recorder. ", e);
-                return;
-            }
-            mHeadUpDisplay.setEnabled(false);
-
-            mMediaRecorderRecording = true;
-            mRecordingStartTime = SystemClock.uptimeMillis();
-            updateRecordingIndicator(false);
-            mRecordingTimeView.setText("");
-            mRecordingTimeView.setVisibility(View.VISIBLE);
-            updateRecordingTime();
-            keepScreenOn();
+        if (mStorageStatus != STORAGE_STATUS_OK) {
+            Log.v(TAG, "Storage issue, ignore the start request");
+            return;
         }
+
+        initializeRecorder();
+        if (mMediaRecorder == null) {
+            Log.e(TAG, "Fail to initialize media recorder");
+            return;
+        }
+
+        pauseAudioPlayback();
+
+        try {
+            mMediaRecorder.start(); // Recording is now started
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Could not start media recorder. ", e);
+            releaseMediaRecorder();
+            return;
+        }
+        mHeadUpDisplay.setEnabled(false);
+
+        mMediaRecorderRecording = true;
+        mRecordingStartTime = SystemClock.uptimeMillis();
+        updateRecordingIndicator(false);
+        mRecordingTimeView.setText("");
+        mRecordingTimeView.setVisibility(View.VISIBLE);
+        updateRecordingTime();
+        keepScreenOn();
     }
 
     private void updateRecordingIndicator(boolean showRecording) {
@@ -1302,35 +1323,32 @@ public class VideoCamera extends NoSearchActivity
 
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
-        boolean needToRegisterRecording = false;
-        if (mMediaRecorderRecording || mMediaRecorder != null) {
-            if (mMediaRecorderRecording && mMediaRecorder != null) {
-                try {
-                    mMediaRecorder.setOnErrorListener(null);
-                    mMediaRecorder.setOnInfoListener(null);
-                    mMediaRecorder.stop();
-                    mCurrentVideoFilename = mVideoFilename;
-                    Log.v(TAG, "Setting current video filename: "
-                            + mCurrentVideoFilename);
-                    needToRegisterRecording = true;
-                } catch (RuntimeException e) {
-                    Log.e(TAG, "stop fail: " + e.getMessage());
-                    deleteVideoFile(mVideoFilename);
-                }
-                mHeadUpDisplay.setEnabled(true);
-                mMediaRecorderRecording = false;
+        if (mMediaRecorderRecording) {
+            boolean needToRegisterRecording = false;
+            mMediaRecorder.setOnErrorListener(null);
+            mMediaRecorder.setOnInfoListener(null);
+            try {
+                mMediaRecorder.stop();
+                mCurrentVideoFilename = mVideoFilename;
+                Log.v(TAG, "Setting current video filename: "
+                        + mCurrentVideoFilename);
+                needToRegisterRecording = true;
+            } catch (RuntimeException e) {
+                Log.e(TAG, "stop fail: " + e.getMessage());
+                deleteVideoFile(mVideoFilename);
             }
-            releaseMediaRecorder();
+            mMediaRecorderRecording = false;
+            mHeadUpDisplay.setEnabled(true);
             updateRecordingIndicator(true);
             mRecordingTimeView.setVisibility(View.GONE);
             keepScreenOnAwhile();
+            if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {
+                registerVideo();
+            }
+            mVideoFilename = null;
+            mVideoFileDescriptor = null;
         }
-        if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {
-            registerVideo();
-        }
-
-        mVideoFilename = null;
-        mVideoFileDescriptor = null;
+        releaseMediaRecorder();  // always release media recorder
     }
 
     private void resetScreenOn() {
@@ -1349,19 +1367,25 @@ public class VideoCamera extends NoSearchActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    private void hideAlertAndInitializeRecorder() {
-        hideAlert();
-        mHandler.sendEmptyMessage(INIT_RECORDER);
-    }
-
     private void acquireVideoThumb() {
         Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
                 mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
         mThumbController.setData(mCurrentVideoUri, videoFrame);
+        mThumbController.updateDisplayIfNeeded();
     }
 
     private static ImageManager.DataLocation dataLocation() {
         return ImageManager.DataLocation.EXTERNAL;
+    }
+
+    private void updateThumbnailButton() {
+        // Update the last video thumbnail.
+        if (!mIsVideoCaptureIntent) {
+            if (!mThumbController.isUriValid()) {
+                updateLastVideo();
+            }
+            mThumbController.updateDisplayIfNeeded();
+        }
     }
 
     private void updateLastVideo() {
@@ -1532,18 +1556,7 @@ public class VideoCamera extends NoSearchActivity
             resizeForPreviewAspectRatio();
             restartPreview(); // Parameters will be set in startPreview().
         } else {
-            try {
-                // We need to lock the camera before writing parameters.
-                mCameraDevice.lock();
-            } catch (RuntimeException e) {
-                // When preferences are added for the first time, this method
-                // will be called. But OnScreenSetting is not displayed yet and
-                // media recorder still owns the camera. Lock will fail and we
-                // just ignore it.
-                return;
-            }
             setCameraParameters();
-            mCameraDevice.unlock();
         }
     }
 
@@ -1569,19 +1582,6 @@ public class VideoCamera extends NoSearchActivity
         }
 
         public void onPopupWindowVisibilityChanged(final int visibility) {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    VideoCamera.this.onPopupWindowVisibilityChanged(visibility);
-                }
-            });
-        }
-    }
-
-    private void onPopupWindowVisibilityChanged(int visibility) {
-        if (visibility == GLView.VISIBLE) {
-            releaseMediaRecorder();
-        } else {
-            if (!mPausing && mSurfaceHolder != null) initializeRecorder();
         }
     }
 
