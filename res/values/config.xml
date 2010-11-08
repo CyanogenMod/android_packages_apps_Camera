@@ -20,7 +20,10 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
 <resources>
-	<!-- set this to true if the device doesn't have a GPU, or an EGL
-	     library is for some reason unavailable -->
-	<bool name="softwareGLOnly">false</bool>
+    <!-- set this to true if the device doesn't have a GPU, or an EGL
+         library is for some reason unavailable -->
+    <bool name="softwareGLOnly">false</bool>
+    
+    <!-- does device lack ability to zoom smoothly? -->
+    <bool name="lacks_smooth_zoom">false</bool>
 </resources>
