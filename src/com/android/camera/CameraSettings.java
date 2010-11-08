@@ -404,8 +404,7 @@ public class CameraSettings {
     }
 
     public static int readPreferredCameraId(SharedPreferences pref) {
-        String id = Integer.toString(android.hardware.Camera.CAMERA_ID_DEFAULT);
-        return Integer.parseInt(pref.getString(KEY_CAMERA_ID, id));
+        return Integer.parseInt(pref.getString(KEY_CAMERA_ID, "0"));
     }
 
     public static void writePreferredCameraId(SharedPreferences pref,
