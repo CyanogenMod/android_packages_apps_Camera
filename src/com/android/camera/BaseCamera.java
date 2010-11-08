@@ -18,7 +18,6 @@
 package com.android.camera;
 
 import com.android.camera.ui.HeadUpDisplay;
-
 import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -275,7 +274,11 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
         // Maximum zoom value may change after preview size is set. Get the
         // latest parameters here.
         mZoomMax = mParameters.getMaxZoom();
-        mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
+        if (getResources().getBoolean(R.bool.lacks_smooth_zoom)) {
+            mSmoothZoomSupported = false;
+        } else {
+            mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
+        }
         mZoomGestureDetector = new GestureDetector(this, new ZoomGestureListener());
 
         mCameraDevice.setZoomChangeListener(mZoomListener);
