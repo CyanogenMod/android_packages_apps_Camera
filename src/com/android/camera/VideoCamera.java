@@ -949,7 +949,7 @@ public class VideoCamera extends NoSearchActivity
         // Unlock the camera object before passing it to media recorder.
         mCameraDevice.unlock();
         mMediaRecorder.setCamera(mCameraDevice);
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setProfile(mProfile);
         mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
