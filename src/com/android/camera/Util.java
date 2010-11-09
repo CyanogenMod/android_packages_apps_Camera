@@ -54,10 +54,28 @@ public class Util {
     // Rotates the bitmap by the specified degree.
     // If a new bitmap is created, the original bitmap is recycled.
     public static Bitmap rotate(Bitmap b, int degrees) {
-        if (degrees != 0 && b != null) {
+        return rotateAndMirror(b, degrees, false);
+    }
+
+    // Rotates and/or mirrors the bitmap. If a new bitmap is created, the
+    // original bitmap is recycled.
+    public static Bitmap rotateAndMirror(Bitmap b, int degrees, boolean mirror) {
+        if ((degrees != 0 || mirror) && b != null) {
             Matrix m = new Matrix();
             m.setRotate(degrees,
                     (float) b.getWidth() / 2, (float) b.getHeight() / 2);
+            if (mirror) {
+                m.postScale(-1, 1);
+                degrees = (degrees + 360) % 360;
+                if (degrees == 0 || degrees == 180) {
+                    m.postTranslate((float) b.getWidth(), 0);
+                } else if (degrees == 90 || degrees == 270) {
+                    m.postTranslate((float) b.getHeight(), 0);
+                } else {
+                    throw new IllegalArgumentException("Invalid degrees=" + degrees);
+                }
+            }
+
             try {
                 Bitmap b2 = Bitmap.createBitmap(
                         b, 0, 0, b.getWidth(), b.getHeight(), m, true);

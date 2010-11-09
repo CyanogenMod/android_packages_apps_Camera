@@ -206,6 +206,7 @@ public class VideoCamera extends NoSearchActivity
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
     // The orientation compensation for icons and thumbnails.
     private int mOrientationCompensation = 0;
+    private int mOrientationHint; // the orientation hint for video playback
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -1124,6 +1125,7 @@ public class VideoCamera extends NoSearchActivity
             }
         }
         mMediaRecorder.setOrientationHint(rotation);
+        mOrientationHint = rotation;
 
         try {
             mMediaRecorder.prepare();
@@ -1413,9 +1415,17 @@ public class VideoCamera extends NoSearchActivity
     private void showAlert() {
         fadeOut(findViewById(R.id.shutter_button));
         if (mCurrentVideoFilename != null) {
-            mVideoFrame.setImageBitmap(
-                    ThumbnailUtils.createVideoThumbnail(mCurrentVideoFilename,
-                             Video.Thumbnails.MINI_KIND));
+            Bitmap src = ThumbnailUtils.createVideoThumbnail(
+                    mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
+            // MetadataRetriever already rotates the thumbnail. We should rotate
+            // it back (and mirror if it is front-facing camera).
+            CameraInfo[] info = CameraHolder.instance().getCameraInfo();
+            if (info[mCameraId].facing == CameraInfo.CAMERA_FACING_BACK) {
+                src = Util.rotateAndMirror(src, -mOrientationHint, false);
+            } else {
+                src = Util.rotateAndMirror(src, -mOrientationHint, true);
+            }
+            mVideoFrame.setImageBitmap(src);
             mVideoFrame.setVisibility(View.VISIBLE);
         }
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};

@@ -18,11 +18,22 @@
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_bar"
         android:layout_height="match_parent"
-        android:layout_width="90dp"
+        android:layout_width="120dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp">
+    <TextView android:id="@+id/recording_time"
+            style="@style/RecordingTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="90dp"
+            android:drawablePadding="8dp"
+            android:drawableLeft="@drawable/ic_recording_indicator"
+            android:visibility="gone" />
+
     <LinearLayout android:orientation="vertical"
             android:gravity="top|center_horizontal"
             android:layout_alignParentTop="true"
@@ -56,6 +67,7 @@
                     android:text="@string/review_play" />
         </LinearLayout>
     </LinearLayout>
+
     <com.android.camera.ShutterButton android:id="@+id/shutter_button"
             android:layout_centerInParent="true"
             android:layout_centerHorizontal="true"
