@@ -23,13 +23,13 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Снимки, сделанные камерой"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Видео"</string>
     <string name="wait" msgid="8600187532323801552">"Подождите..."</string>
-    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Перед использованием камеры подключите общий накопитель."</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Перед использованием камеры подключите USB-накопитель."</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"Прежде чем использовать камеру, вставьте SD-карту."</string>
-    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"На общем накопителе нет места."</string>
+    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"На USB-накопителе нет места."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Ваша SD-карта заполнена."</string>
-    <!-- outdated translation 183917364005592061 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Подготавливается общий накопитель..."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Подготовка USB-накопителя…"</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Подготовка карты SD..."</string>
-    <!-- outdated translation 1518739048621172182 -->     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Не удается получить доступ к общему накопителю."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Не удается получить доступ к USB-накопителю."</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Не удалось получить доступ к SD-карте."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Восстановить настройки по умолчанию"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Для камеры будут восстановлены настройки по умолчанию."</string>

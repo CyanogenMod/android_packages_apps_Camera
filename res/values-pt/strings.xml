@@ -23,13 +23,13 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Imagens da câmera"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Vídeos de câmera"</string>
     <string name="wait" msgid="8600187532323801552">"Aguarde..."</string>
-    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Conecte o armazenamento compartilhado antes de usar a câmera."</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Conecte o armazenamento USB antes de usar a câmera."</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"Insira um cartão SD antes de usar a câmera."</string>
-    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Seu armazenamento compartilhado está cheio."</string>
+    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Seu armazenamento USB está cheio."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"O seu cartão SD está cheio."</string>
-    <!-- outdated translation 183917364005592061 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Preparando o armazenamento compartilhado..."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Preparando armazenamento USB…"</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparando o cartão SD…"</string>
-    <!-- outdated translation 1518739048621172182 -->     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Falha ao acessar armazenamento compartilhado."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Falha ao acessar o armazenamento USB."</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Falha ao acessar o cartão SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restaurar padrões"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"As configurações da câmera serão restauradas para os valores padrão."</string>
