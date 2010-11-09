@@ -36,6 +36,20 @@
                     android:id="@+id/focus_rectangle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
+            <ImageView style="@style/OnScreenGpsIndicator"
+                    android:id="@+id/onscreen_gps_indicator_no_signal"
+                    android:src="@drawable/ic_viewfinder_gps_no_signal"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="10dp"
+                    android:visibility="invisible"/>
+            <ImageView style="@style/OnScreenGpsIndicator"
+                    android:id="@+id/onscreen_gps_indicator_on"
+                    android:src="@drawable/ic_viewfinder_gps_on"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="10dp"
+                    android:visibility="invisible"/>
         </RelativeLayout>
     </com.android.camera.PreviewFrameLayout>
 </LinearLayout>

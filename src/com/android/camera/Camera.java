@@ -186,6 +186,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private ImageCapture mImageCapture = null;
 
+    // GPS on-screen indicator
+    private View mGpsNoSignalView;
+    private View mGpsHasSignalView;
+
     /**
      * An unpublished intent flag requesting to return as soon as capturing
      * is completed.
@@ -341,6 +345,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 getSystemService(Context.LOCATION_SERVICE);
         mRecordLocation = RecordLocationPreference.get(
                 mPreferences, getContentResolver());
+        initGpsOnScreenIndicator();
         if (mRecordLocation) startReceivingLocationUpdates();
 
         keepMediaProviderInstance();
@@ -618,6 +623,26 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     };
 
+    private void initGpsOnScreenIndicator() {
+        mGpsNoSignalView = findViewById(R.id.onscreen_gps_indicator_no_signal);
+        mGpsHasSignalView = findViewById(R.id.onscreen_gps_indicator_on);
+    }
+
+    private void showGpsOnScreenIndicator(boolean hasSignal) {
+        if (hasSignal) {
+            if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.INVISIBLE);
+            if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.VISIBLE);
+        } else {
+            if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.VISIBLE);
+            if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void hideGpsOnScreenIndicator() {
+        if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.INVISIBLE);
+        if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.INVISIBLE);
+    }
+
     private class LocationListener
             implements android.location.LocationListener {
         Location mLastLocation;
@@ -642,6 +667,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 if (mHeadUpDisplay != null) {
                     mHeadUpDisplay.setGpsHasSignal(true);
                 }
+                showGpsOnScreenIndicator(true);
             }
             mLastLocation.set(newLocation);
             mValid = true;
@@ -665,6 +691,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         if (mHeadUpDisplay != null) {
                             mHeadUpDisplay.setGpsHasSignal(false);
                         }
+                        showGpsOnScreenIndicator(false);
                     }
                     break;
                 }
@@ -2099,6 +2126,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         1000,
                         0F,
                         mLocationListeners[0]);
+                showGpsOnScreenIndicator(false);
             } catch (java.lang.SecurityException ex) {
                 Log.i(TAG, "fail to request location update, ignore", ex);
             } catch (IllegalArgumentException ex) {
@@ -2117,6 +2145,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
             }
         }
+        hideGpsOnScreenIndicator();
     }
 
     private Location getCurrentLocation() {
