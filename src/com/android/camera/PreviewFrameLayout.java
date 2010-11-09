@@ -20,8 +20,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 /**
  * A layout which handles the preview aspect ratio and the position of
@@ -36,7 +36,7 @@ public class PreviewFrameLayout extends ViewGroup {
     }
 
     private double mAspectRatio = 4.0 / 3.0;
-    private FrameLayout mFrame;
+    private View mFrame;
     private OnSizeChangedListener mSizeListener;
     private final DisplayMetrics mMetrics = new DisplayMetrics();
 
@@ -52,7 +52,7 @@ public class PreviewFrameLayout extends ViewGroup {
 
     @Override
     protected void onFinishInflate() {
-        mFrame = (FrameLayout) findViewById(R.id.frame);
+        mFrame = (View) findViewById(R.id.frame);
         if (mFrame == null) {
             throw new IllegalStateException(
                     "must provide child with id as \"frame\"");
@@ -73,7 +73,7 @@ public class PreviewFrameLayout extends ViewGroup {
         int frameWidth = getWidth();
         int frameHeight = getHeight();
 
-        FrameLayout f = mFrame;
+        View f = mFrame;
         int horizontalPadding = f.getPaddingLeft() + f.getPaddingRight();
         int verticalPadding = f.getPaddingBottom() + f.getPaddingTop();
         int previewHeight = frameHeight - verticalPadding;

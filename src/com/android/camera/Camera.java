@@ -83,7 +83,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.CursorAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import java.io.File;
@@ -1164,7 +1163,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomIndex(mZoomValue);
         }
-        FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
+        ViewGroup frame = (ViewGroup) findViewById(R.id.frame);
         mGLRootView = new GLRootView(this);
         mGLRootView.setContentPane(mHeadUpDisplay);
         frame.addView(mGLRootView);
