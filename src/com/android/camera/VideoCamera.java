@@ -22,6 +22,7 @@ import com.android.camera.ui.CamcorderHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.GLView;
 import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.RotateRecordingTime;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -167,6 +168,7 @@ public class VideoCamera extends NoSearchActivity
     private ContentResolver mContentResolver;
 
     private ShutterButton mShutterButton;
+    private RotateRecordingTime mRecordingTimeRect;
     private TextView mRecordingTimeView;
     private Switcher mSwitcher;
     private boolean mRecordingTimeCountsDown = false;
@@ -183,7 +185,8 @@ public class VideoCamera extends NoSearchActivity
     private MyOrientationEventListener mOrientationListener;
     // The device orientation in degrees. Default is unknown.
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
-    // The orientation compensation for icons and thumbnails.
+    // The orientation compensation for icons and thumbnails. Degrees are in
+    // counter-clockwise
     private int mOrientationCompensation = 0;
     private int mOrientationHint; // the orientation hint for video playback
 
@@ -336,6 +339,7 @@ public class VideoCamera extends NoSearchActivity
         mIsVideoCaptureIntent = isVideoCaptureIntent();
         mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
+        mRecordingTimeRect = (RotateRecordingTime) findViewById(R.id.recording_time_rect);
 
         ViewGroup rootView = (ViewGroup) findViewById(R.id.video_camera);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -1232,6 +1236,8 @@ public class VideoCamera extends NoSearchActivity
         mMediaRecorderRecording = true;
         mRecordingStartTime = SystemClock.uptimeMillis();
         updateRecordingIndicator(false);
+        // Rotate the recording time.
+        mRecordingTimeRect.setOrientation(mOrientationCompensation);
         mRecordingTimeView.setText("");
         mRecordingTimeView.setVisibility(View.VISIBLE);
         updateRecordingTime();
