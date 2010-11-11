@@ -23,13 +23,13 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"カメラ (写真)"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"カメラ (動画)"</string>
     <string name="wait" msgid="8600187532323801552">"お待ちください..."</string>
-    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"カメラを使用する前に共有ストレージをマウントしてください。"</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"カメラを使用する前にUSBストレージをマウントしてください。"</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"カメラを使用する前にSDカードを挿入してください。"</string>
-    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"共有ストレージに空き領域がありません。"</string>
+    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"USBストレージに空き領域がありません。"</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SDカードがいっぱいです。"</string>
-    <!-- outdated translation 183917364005592061 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"共有ストレージの準備中..."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USBストレージの準備中..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"SDカードの準備中..."</string>
-    <!-- outdated translation 1518739048621172182 -->     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"共有ストレージにアクセスできませんでした。"</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"USBストレージにアクセスできませんでした。"</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"SDカードにアクセスできません。"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"初期設定に戻す"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"カメラを初期設定に戻します。"</string>
