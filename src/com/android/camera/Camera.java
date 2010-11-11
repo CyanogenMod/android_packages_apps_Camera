@@ -227,7 +227,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private final AutoFocusCallback mAutoFocusCallback =
             new AutoFocusCallback();
     private final ZoomListener mZoomListener = new ZoomListener();
-    private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
+    // Use the ErrorCallback to capture the crash count
+    // on the mediaserver
+    private final ErrorCallback mErrorCallback = new ErrorCallback();
 
     private long mFocusStartTime;
     private long mFocusCallbackTime;
@@ -244,6 +246,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     public long mShutterToPictureDisplayedTime;
     public long mPictureDisplayedToJpegCallbackTime;
     public long mJpegCallbackFinishTime;
+
+    // Add for test
+    public static boolean mMediaServerDied = false;
 
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
@@ -825,6 +830,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 // Do nothing.
             }
             updateFocusIndicator();
+        }
+    }
+
+    private static final class ErrorCallback
+        implements android.hardware.Camera.ErrorCallback {
+        public void onError(int error, android.hardware.Camera camera) {
+            if (error == android.hardware.Camera.CAMERA_ERROR_SERVER_DIED) {
+                 mMediaServerDied = true;
+                 Log.v(TAG, "media server died");
+            }
         }
     }
 
@@ -1832,7 +1847,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mPausing || isFinishing()) return;
 
         ensureCameraDevice();
-        mCameraDevice.setErrorCallback(mErrorCallback);
 
         // If we're previewing already, stop the preview first (this will blank
         // the screen).
@@ -1842,6 +1856,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
         setCameraParameters(UPDATE_PARAM_ALL);
 
+        mCameraDevice.setErrorCallback(mErrorCallback);
 
         try {
             Log.v(TAG, "startPreview");
