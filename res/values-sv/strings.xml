@@ -23,13 +23,13 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Kamerabilder"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Kameravideor"</string>
     <string name="wait" msgid="8600187532323801552">"Vänta…"</string>
-    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Sätt i den delade lagringsenheten innan du använder kameran."</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Sätt i USB-lagringsenheten innan du använder kameran."</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"Sätt i ett SD-kort innan du använder kameran."</string>
-    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Din delade lagringsenhet är fullt."</string>
+    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"USB-lagringsenheten är full."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Ditt SD-kort är fullt."</string>
-    <!-- outdated translation 183917364005592061 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Förbereder delad lagringsenhet..."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USB-lagring förbereds…"</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Förbereder SD-kort…"</string>
-    <!-- outdated translation 1518739048621172182 -->     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Det gick inte att öppna den delade lagringsenheten."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Ingen åtkomst till USB-lagringsenheten."</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Det gick inte att öppna SD-kortet."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Återställ standardinställningar"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Kamerans standardinställningar återställs."</string>
