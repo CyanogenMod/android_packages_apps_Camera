@@ -214,14 +214,6 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
                     Log.v(TAG, "value of i :" + i);
                     getMemoryWriteToLog(output);
                 }
-                //Check if the mediaserver died, if so, exit the test
-                if (Camera.mMediaServerDied){
-                    mOut.write("\nmedia server died\n");
-                    mOut.flush();
-                    output.close();
-                    Camera.mMediaServerDied = false;
-                    assertTrue("Camera Image Capture", false);
-                }
                 mOut.write(" ," + i);
                 mOut.flush();
             }

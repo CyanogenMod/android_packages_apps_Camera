@@ -134,6 +134,9 @@ public class VideoCamera extends NoSearchActivity
     private final static String EXTRA_QUICK_CAPTURE =
             "android.intent.extra.quickCapture";
 
+    private android.hardware.Camera mCameraDevice;
+    private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
+
     private ComboPreferences mPreferences;
 
     private PreviewFrameLayout mPreviewFrameLayout;
@@ -730,6 +733,7 @@ public class VideoCamera extends NoSearchActivity
             // released and we need to open the camera.
             mCameraDevice = CameraHolder.instance().open(mCameraId);
         }
+        mCameraDevice.setErrorCallback(mErrorCallback);
 
         mCameraDevice.lock();
         if (mPreviewing == true) {
@@ -994,8 +998,6 @@ public class VideoCamera extends NoSearchActivity
             }
         }
     }
-
-    private android.hardware.Camera mCameraDevice;
 
     // Prepares media recorder.
     private void initializeRecorder() {
