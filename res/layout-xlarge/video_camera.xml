@@ -20,22 +20,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <com.android.camera.PreviewFrameLayout android:id="@+id/frame_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="2dip"
-            android:layout_weight="1">
-        <RelativeLayout android:id="@+id/frame"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/border_view_finder">
-            <SurfaceView android:id="@+id/camera_preview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            <ImageView android:id="@+id/video_frame"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
-        </RelativeLayout>
-    </com.android.camera.PreviewFrameLayout>
+    <include layout="@layout/thumbnail_list"/>
+    <include layout="@layout/preview_frame_video"/>
+    <include layout="@layout/camera_control"/>
 </LinearLayout>

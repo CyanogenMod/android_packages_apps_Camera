@@ -93,7 +93,7 @@ public class PreviewFrameLayout extends ViewGroup {
         mFrame.measure(
                 MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
-        mFrame.layout(l + hSpace, t + vSpace, r - hSpace, b - vSpace);
+        mFrame.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
         if (mSizeListener != null) {
             mSizeListener.onSizeChanged();
         }

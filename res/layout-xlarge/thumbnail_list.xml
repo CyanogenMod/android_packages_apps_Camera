@@ -14,14 +14,10 @@
      limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
-        android:id="@+id/camera"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <include layout="@layout/thumbnail_list"/>
-    <include layout="@layout/preview_frame"/>
-    <include layout="@layout/camera_control"/>
-</LinearLayout>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/thumbnail_list"
+        android:layout_width="96dp"
+        android:layout_height="match_parent"
+        android:dividerHeight="6dp"
+        android:orientation="vertical"
+        android:gravity="center"/>

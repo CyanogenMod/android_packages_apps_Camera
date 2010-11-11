@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.camera.PreviewFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="2dip"
+        android:layout_weight="1">
+    <FrameLayout android:id="@+id/frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/border_view_finder">
+        <SurfaceView android:id="@+id/camera_preview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        <ImageView android:id="@+id/video_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        <!-- Note: In this TextView the paddingRight="2"
+             attribute is required because otherwise the
+             text's drop shadow will be clipped. -->
+        <TextView android:id="@+id/recording_time"
+                style="@style/RecordingTime"
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/ic_recording_indicator"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|bottom"
+                android:layout_marginBottom="13dp"
+                android:layout_marginLeft="17dp"
+                android:paddingRight="2dp"
+                android:visibility="gone" />
+    </FrameLayout>
+</com.android.camera.PreviewFrameLayout>

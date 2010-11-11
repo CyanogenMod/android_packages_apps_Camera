@@ -343,7 +343,26 @@ public class VideoCamera extends NoSearchActivity
         mContentResolver = getContentResolver();
 
         requestWindowFeature(Window.FEATURE_PROGRESS);
-        setContentView(R.layout.video_camera);
+        mIsVideoCaptureIntent = isVideoCaptureIntent();
+        if (mIsVideoCaptureIntent) {
+            setContentView(R.layout.video_camera_attach);
+
+            View controlBar = findViewById(R.id.control_bar);
+            controlBar.findViewById(R.id.btn_cancel).setOnClickListener(this);
+            ImageView retake =
+                    (ImageView) controlBar.findViewById(R.id.btn_retake);
+            retake.setOnClickListener(this);
+            retake.setImageResource(R.drawable.btn_ic_review_retake_video);
+            controlBar.findViewById(R.id.btn_play).setOnClickListener(this);
+            controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
+        } else {
+            setContentView(R.layout.video_camera);
+
+            initThumbnailButton();
+            mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
+            mSwitcher.setOnSwitchListener(this);
+            mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
+        }
 
         mPreviewFrameLayout = (PreviewFrameLayout)
                 findViewById(R.id.frame_layout);
@@ -360,29 +379,7 @@ public class VideoCamera extends NoSearchActivity
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mIsVideoCaptureIntent = isVideoCaptureIntent();
         mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
-
-        ViewGroup rootView = (ViewGroup) findViewById(R.id.video_camera);
-        LayoutInflater inflater = this.getLayoutInflater();
-        if (!mIsVideoCaptureIntent) {
-            View controlBar = inflater.inflate(
-                    R.layout.camera_control, rootView);
-            initThumbnailButton();
-            mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
-            mSwitcher.setOnSwitchListener(this);
-            mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
-        } else {
-            View controlBar = inflater.inflate(
-                    R.layout.attach_camera_control, rootView);
-            controlBar.findViewById(R.id.btn_cancel).setOnClickListener(this);
-            ImageView retake =
-                    (ImageView) controlBar.findViewById(R.id.btn_retake);
-            retake.setOnClickListener(this);
-            retake.setImageResource(R.drawable.btn_ic_review_retake_video);
-            controlBar.findViewById(R.id.btn_play).setOnClickListener(this);
-            controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
-        }
 
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterButton.setImageResource(R.drawable.btn_ic_video_record);
@@ -1539,7 +1536,6 @@ public class VideoCamera extends NoSearchActivity
 
         // Add gallery button to header view.
         if (mThumbnailList.getHeaderViewsCount() == 0) {
-            LayoutInflater inflater = getLayoutInflater();
             Button b = new Button(this);
             ListView.LayoutParams params = new ListView.LayoutParams(width, width);
             b.setId(R.id.btn_gallery);

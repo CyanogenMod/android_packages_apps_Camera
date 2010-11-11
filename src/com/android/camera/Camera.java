@@ -442,7 +442,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // Add gallery button to header view.
         if (mThumbnailList.getHeaderViewsCount() == 0) {
-            LayoutInflater inflater = getLayoutInflater();
             Button b = new Button(this);
             ListView.LayoutParams params = new ListView.LayoutParams(width, width);
             b.setId(R.id.btn_gallery);
@@ -1061,7 +1060,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        setContentView(R.layout.camera);
+        mIsImageCaptureIntent = isImageCaptureIntent();
+        if (mIsImageCaptureIntent) {
+            setContentView(R.layout.camera_attach);
+        } else {
+            setContentView(R.layout.camera);
+        }
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 
         mPreferences = new ComboPreferences(this);
@@ -1103,22 +1107,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mIsImageCaptureIntent = isImageCaptureIntent();
         if (mIsImageCaptureIntent) {
             setupCaptureParams();
-        }
 
-        LayoutInflater inflater = getLayoutInflater();
-
-        ViewGroup rootView = (ViewGroup) findViewById(R.id.camera);
-        if (mIsImageCaptureIntent) {
-            View controlBar = inflater.inflate(
-                    R.layout.attach_camera_control, rootView);
+            View controlBar = findViewById(R.id.control_bar);
             controlBar.findViewById(R.id.btn_cancel).setOnClickListener(this);
             controlBar.findViewById(R.id.btn_retake).setOnClickListener(this);
             controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
         } else {
-            inflater.inflate(R.layout.camera_control, rootView);
             mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
             mSwitcher.setOnSwitchListener(this);
             mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));

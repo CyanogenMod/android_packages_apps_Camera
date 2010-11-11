@@ -21,7 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <include layout="@layout/thumbnail_list"/>
     <include layout="@layout/preview_frame"/>
-    <include layout="@layout/camera_control"/>
+    <include layout="@layout/attach_camera_control"/>
 </LinearLayout>
