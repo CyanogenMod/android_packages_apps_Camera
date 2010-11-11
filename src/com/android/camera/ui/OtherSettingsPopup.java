@@ -47,12 +47,16 @@ public class OtherSettingsPopup extends PopupWindow
     public void initialize(PreferenceGroup group) {
         TableLayout table = (TableLayout) getContentView();
         // Initialize each camera setting.
-        for (int i = 0; i < table.getChildCount(); i++) {
+        for (int i = table.getChildCount() - 1; i >= 0 ; i--) {
             TableRow row = (TableRow) table.getChildAt(i);
             InLineSettingPicker picker = (InLineSettingPicker) row.getChildAt(1);
             ListPreference pref = group.findPreference(picker.getKey());
-            picker.setSettingChangedListener(this);
-            picker.initialize(pref);
+            if (pref != null) {
+                picker.setSettingChangedListener(this);
+                picker.initialize(pref);
+            } else {  // remove the row if the preference is not supported
+                table.removeViewAt(i);
+            }
        }
     }
 
