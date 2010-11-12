@@ -425,19 +425,15 @@ public class Camera extends BaseCamera {
 
     protected void onZoomValueChanged(int index) {
         if (mSmoothZoomSupported) {
-            if (mTargetZoomValue != index && mZoomState != ZOOM_STOPPED) {
-                mTargetZoomValue = index;
-                if (mZoomState == ZOOM_START) {
-                    mZoomState = ZOOM_STOPPING;
-                    mCameraDevice.stopSmoothZoom();
-                }
-            } else if (mZoomState == ZOOM_STOPPED && mZoomValue != index) {
-                mTargetZoomValue = index;
+            if (mTargetZoomValue != index) {
+                mZoomValue = index;
+                mCameraDevice.stopSmoothZoom();
                 mCameraDevice.startSmoothZoom(index);
-                mZoomState = ZOOM_START;
+                mTargetZoomValue = index;
+            } else {
+                mCameraDevice.stopSmoothZoom();
             }
         } else {
-            mZoomValue = index;
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
         }
     }
@@ -943,7 +939,7 @@ public class Camera extends BaseCamera {
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
         mGLRootView = new GLRootView(this);
         frame.addView(mGLRootView);
-
+        mCameraDevice.stopSmoothZoom();
         mHeadUpDisplay = new CameraHeadUpDisplay(this, mParameters);
         CameraSettings settings = new CameraSettings(this, mInitialParams);
         mHeadUpDisplay.initialize(this,
@@ -1215,7 +1211,7 @@ public class Camera extends BaseCamera {
     @Override
     protected void onResume() {
         super.onResume();
-
+        mCameraDevice.stopSmoothZoom();
         mPausing = false;
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
@@ -1514,7 +1510,6 @@ public class Camera extends BaseCamera {
         if (mPreviewing) stopPreview();
         clearFocusState();
         resetFocusIndicator();
-
         setPreviewDisplay(mSurfaceHolder);
         setCameraParameters(UPDATE_PARAM_ALL);
 
@@ -1528,7 +1523,6 @@ public class Camera extends BaseCamera {
             throw new RuntimeException("startPreview failed", ex);
         }
         mPreviewing = true;
-        mZoomState = ZOOM_STOPPED;
         mStatus = IDLE;
 
         /* Get the correct max zoom value, as this varies with

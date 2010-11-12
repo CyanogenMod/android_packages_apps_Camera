@@ -461,13 +461,12 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
             mParameters.setZoom(value);
             // We only care if the zoom is stopped. mZooming is set to true when
             // we start smooth zoom.
-            if (stopped && mZoomState != ZOOM_STOPPED) {
-                if (value != mTargetZoomValue) {
-                    mCameraDevice.startSmoothZoom(mTargetZoomValue);
-                    mZoomState = ZOOM_START;
-                } else {
-                    mZoomState = ZOOM_STOPPED;
-                }
+            if (mTargetZoomValue == value) {
+                mCameraDevice.stopSmoothZoom();
+            } else if (stopped && mTargetZoomValue != value) {
+                mCameraDevice.startSmoothZoom(mTargetZoomValue);
+            } else {
+                mCameraDevice.stopSmoothZoom();
             }
         }
     }
