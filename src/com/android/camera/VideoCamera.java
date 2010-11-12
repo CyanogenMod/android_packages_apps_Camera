@@ -1224,6 +1224,7 @@ public class VideoCamera extends NoSearchActivity
 
         // Reload the UI.
         initializeHeadUpDisplay();
+        initializeControlPanel();
 
         if (mSurfaceHolder != null) {
             mHandler.sendEmptyMessage(INIT_RECORDER);
@@ -1251,6 +1252,7 @@ public class VideoCamera extends NoSearchActivity
 
         // Reload the UI.
         initializeHeadUpDisplay();
+        initializeControlPanel();
 
         if (mSurfaceHolder != null) {
             mHandler.sendEmptyMessage(INIT_RECORDER);

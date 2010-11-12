@@ -1111,6 +1111,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             // ignore
         }
 
+        // Do this after starting preview because it depends on camera
+        // parameters.
         initializeControlPanel();
     }
 
@@ -2285,6 +2287,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mFirstTimeInitialized) {
             initializeHeadUpDisplay();
         }
+        initializeControlPanel();
     }
 
     private boolean switchToVideoMode() {

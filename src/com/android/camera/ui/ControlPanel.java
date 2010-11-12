@@ -83,9 +83,19 @@ public class ControlPanel extends RelativeLayout
 
     public void initialize(Context context, PreferenceGroup group,
             String[] keys, boolean enableOtherSettings) {
+        // Reset the variables and states.
+        hideSettingPicker();
+        if (mIndicatorWheel != null) {
+            // The first view is the shutter button.
+            mIndicatorWheel.removeViews(1, mIndicatorWheel.getChildCount() - 1);
+        }
+        mOtherSettingsPopup = null;
+        mSettingPickers = null;
+        mActiveIndicator = -1;
+
+        // Initialize all variables and icons.
         mPreferenceGroup = group;
         mPreferenceKeys = keys;
-        // Add one more for other settings.
         mSettingPickers = new BasicSettingPicker[mPreferenceKeys.length];
         mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
         mThumbnailList = (ListView) findViewById(R.id.thumbnail_list);
@@ -122,6 +132,7 @@ public class ControlPanel extends RelativeLayout
                 break;
         }
     }
+
     public void onIndicatorClicked(int index) {
         if (!mEnabled) return;
         if (index < mSettingPickers.length) {
