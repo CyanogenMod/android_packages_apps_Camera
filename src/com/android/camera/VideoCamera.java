@@ -931,6 +931,11 @@ public class VideoCamera extends NoSearchActivity
         // If the mCameraDevice is null, then this activity is going to finish
         if (mCameraDevice == null) return;
 
+        if (mSurfaceHolder == null) {
+            Log.v(TAG, "Surface holder is null. Wait for surface changed.");
+            return;
+        }
+
         Intent intent = getIntent();
         Bundle myExtras = intent.getExtras();
 
