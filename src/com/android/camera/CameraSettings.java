@@ -423,7 +423,7 @@ public class CameraSettings {
     }
 
     public static boolean isVideoZoomSupported(Parameters params) {
-        boolean ret = params.isZoomSupported();
+        boolean ret = (params.isZoomSupported() && !params.isSmoothZoomSupported());
         if (ret) {
             // No zoom at 720P currently. Driver limitation?
             ret = !is720p(params);
