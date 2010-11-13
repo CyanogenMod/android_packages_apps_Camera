@@ -22,6 +22,7 @@ import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.ControlPanel;
+import com.android.camera.ui.FocusRectangle;
 import com.android.camera.ui.ZoomControllerListener;
 import com.android.camera.ui.ZoomPicker;
 
@@ -47,7 +48,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.AudioManager;
-import android.media.CameraProfile;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Build;
@@ -61,7 +61,6 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Media;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -2326,60 +2325,3 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 }
 
-class FocusRectangle extends View {
-
-    @SuppressWarnings("unused")
-    private static final String TAG = "FocusRectangle";
-
-    public FocusRectangle(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    private void setDrawable(int resid) {
-        setBackgroundDrawable(getResources().getDrawable(resid));
-    }
-
-    public void showStart() {
-        setDrawable(R.drawable.focus_focusing);
-    }
-
-    public void showSuccess() {
-        setDrawable(R.drawable.focus_focused);
-    }
-
-    public void showFail() {
-        setDrawable(R.drawable.focus_focus_failed);
-    }
-
-    public void clear() {
-        setBackgroundDrawable(null);
-    }
-}
-
-/*
- * Provide a mapping for Jpeg encoding quality levels
- * from String representation to numeric representation.
- */
-class JpegEncodingQualityMappings {
-    private static final String TAG = "JpegEncodingQualityMappings";
-    private static final int DEFAULT_QUALITY = 85;
-    private static HashMap<String, Integer> mHashMap =
-            new HashMap<String, Integer>();
-
-    static {
-        mHashMap.put("normal",    CameraProfile.QUALITY_LOW);
-        mHashMap.put("fine",      CameraProfile.QUALITY_MEDIUM);
-        mHashMap.put("superfine", CameraProfile.QUALITY_HIGH);
-    }
-
-    // Retrieve and return the Jpeg encoding quality number
-    // for the given quality level.
-    public static int getQualityNumber(String jpegQuality) {
-        Integer quality = mHashMap.get(jpegQuality);
-        if (quality == null) {
-            Log.w(TAG, "Unknown Jpeg quality: " + jpegQuality);
-            return DEFAULT_QUALITY;
-        }
-        return CameraProfile.getJpegEncodingQualityParameter(quality.intValue());
-    }
-}
