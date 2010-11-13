@@ -117,12 +117,6 @@
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SD 카드의 공간이 부족합니다. 화질 설정을 변경하거나 일부 이미지 또는 기타 파일을 삭제하세요."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"크기 한도에 도달했습니다."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"확대/축소"</string>
-    <!-- no translation found for zoom_increment (63154013702178400) -->
-    <skip />
-    <!-- no translation found for zoom_decrement (2712310206413552821) -->
-    <skip />
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"카메라로 전환"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"동영상으로 전환"</string>
-    <!-- no translation found for camera_setting_picker_exit (2574026697338481860) -->
-    <skip />
 </resources>

@@ -363,14 +363,14 @@
 
     <!-- The title show on the zoom controller -->
     <string name="zoom_control_title">Zoom</string>
-    <string name="zoom_increment" translable="false">+</string>
-    <string name="zoom_decrement" translable="false">-</string>
+    <string name="zoom_increment" translatable="false">+</string>
+    <string name="zoom_decrement" translatable="false">-</string>
 
     <string name="switch_to_camera_lable">Switch to camera</string>
     <string name="switch_to_video_lable">Switch to video</string>
 
-    <!-- Button indicating to exit the camera setting picker. -->
-    <string name="camera_setting_picker_exit">Back</string>
+    <!-- Button indicating to dismiss the camera setting popup-window. [CHAR LIMIT=4] -->
+    <string name="camera_setting_done">Done</string>
 
     <string name="setting_increment" translatable="false">&gt;</string>
     <string name="setting_decrement" translatable="false">&lt;</string>

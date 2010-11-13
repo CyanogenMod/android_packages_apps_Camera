@@ -117,9 +117,6 @@
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Tu tarjeta SD se está quedando sin espacio. Cambia la configuración de calidad o elimina algunas imágenes u otros archivos."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Se alcanzó el límite del tamaño."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Ampliar"</string>
-    <string name="zoom_increment" msgid="63154013702178400">"+"</string>
-    <string name="zoom_decrement" msgid="2712310206413552821">"-"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Cambiar a cámara"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Cambiar a video"</string>
-    <string name="camera_setting_picker_exit" msgid="2574026697338481860">"Atrás"</string>
 </resources>

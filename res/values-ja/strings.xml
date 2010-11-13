@@ -117,12 +117,6 @@
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SDカードの空き領域が少なくなっています。画質設定を変更するか、画像などのファイルを一部削除してください。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"サイズ制限に達しました。"</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"ズーム"</string>
-    <!-- no translation found for zoom_increment (63154013702178400) -->
-    <skip />
-    <!-- no translation found for zoom_decrement (2712310206413552821) -->
-    <skip />
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"写真に切替"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"ムービーに切替"</string>
-    <!-- no translation found for camera_setting_picker_exit (2574026697338481860) -->
-    <skip />
 </resources>
