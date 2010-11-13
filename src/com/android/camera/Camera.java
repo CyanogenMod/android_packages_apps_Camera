@@ -250,9 +250,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private String mSceneMode;
 
     private final Handler mHandler = new MainHandler();
-    // Small devices use head-up display for camera settings.
+    // xlarge devices use control panel. Other devices use head-up display.
     private CameraHeadUpDisplay mHeadUpDisplay;
-    // xlarge devices use control panel for camera settings.
     private ControlPanel mControlPanel;
     private PreferenceGroup mPreferenceGroup;
 
@@ -366,11 +365,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
+        // xlarge devices use control panel. Other devices use head-up display.
         if (mControlPanel == null) {
             mHeadUpDisplay = new CameraHeadUpDisplay(this);
             mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
+            initializeHeadUpDisplay();
         }
-        initializeHeadUpDisplay();
         mFirstTimeInitialized = true;
         changeHeadUpDisplayState();
         addIdleHandler();

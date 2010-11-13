@@ -144,6 +144,7 @@ public class VideoCamera extends NoSearchActivity
     private SurfaceHolder mSurfaceHolder = null;
     private ImageView mVideoFrame;
     private GLRootView mGLRootView;
+    // xlarge devices use control panel. Other devices use head-up display.
     private CamcorderHeadUpDisplay mHeadUpDisplay;
     private ControlPanel mControlPanel;
     private MenuItem mSwitchTimeLapseMenuItem;
@@ -404,15 +405,18 @@ public class VideoCamera extends NoSearchActivity
             // ignore
         }
 
-        // Initialize the HeadUpDiplay after startPreview(). We need mParameters
-        // for HeadUpDisplay and it is initialized in that function.
-        mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
-        mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
-        initializeHeadUpDisplay();
+        // Initialize after startPreview becuase this need mParameters.
         initializeControlPanel();
+        // xlarge devices use control panel. Other devices use head-up display.
+        if (mControlPanel == null) {
+            mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
+            mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
+            initializeHeadUpDisplay();
+        }
     }
 
     private void changeHeadUpDisplayState() {
+        if (mHeadUpDisplay == null) return;
         // If the camera resumes behind the lock screen, the orientation
         // will be portrait. That causes OOM when we try to allocation GPU
         // memory for the GLSurfaceView again when the orientation changes. So,
@@ -428,6 +432,7 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void initializeHeadUpDisplay() {
+        if (mHeadUpDisplay == null) return;
         CameraSettings settings = new CameraSettings(this, mParameters,
                 mCameraId, CameraHolder.instance().getCameraInfo());
 
@@ -451,10 +456,26 @@ public class VideoCamera extends NoSearchActivity
         mGLRootView = null;
     }
 
+    private boolean collapseCameraControls() {
+        if (mHeadUpDisplay != null && mHeadUpDisplay.collapse()) {
+            return true;
+        }
+        if (mControlPanel != null && mControlPanel.dismissSettingPopup()) {
+            return true;
+        }
+        return false;
+    }
+
+    private void enableCameraControls(boolean enable) {
+        if (mHeadUpDisplay != null) mHeadUpDisplay.setEnabled(enable);
+        if (mControlPanel != null) mControlPanel.setEnabled(enable);
+    }
+
     private void initializeControlPanel() {
         String[] keys = new String[]{CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_COLOR_EFFECT,
+            CameraSettings.KEY_VIDEO_QUALITY,
             CameraSettings.KEY_CAMERA_ID};
         mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
         if (mControlPanel != null) {
@@ -531,8 +552,7 @@ public class VideoCamera extends NoSearchActivity
     public void onShutterButtonClick(ShutterButton button) {
         switch (button.getId()) {
             case R.id.shutter_button:
-                if (mHeadUpDisplay.collapse()) return;
-                if (mControlPanel != null) mControlPanel.dismissSettingPopup();
+                if (collapseCameraControls()) return;
 
                 if (mMediaRecorderRecording) {
                     onStopVideoRecording(true);
@@ -834,7 +854,7 @@ public class VideoCamera extends NoSearchActivity
         if (mPausing) return;
         if (mMediaRecorderRecording) {
             onStopVideoRecording(false);
-        } else if (mHeadUpDisplay == null || !mHeadUpDisplay.collapse()) {
+        } else if (!collapseCameraControls()) {
             super.onBackPressed();
         }
     }
@@ -916,7 +936,7 @@ public class VideoCamera extends NoSearchActivity
             // If video quality changes, the surface will change. But we need to
             // initialize the recorder here. So collpase the head-up display to
             // keep the state of recorder consistent.
-            mHeadUpDisplay.collapse();
+            collapseCameraControls();
             restartPreview();
             initializeRecorder();
         }
@@ -1340,7 +1360,7 @@ public class VideoCamera extends NoSearchActivity
                 Log.e(TAG, "Could not start media recorder. ", e);
                 return;
             }
-            mHeadUpDisplay.setEnabled(false);
+            enableCameraControls(false);
 
             mMediaRecorderRecording = true;
             mRecordingStartTime = SystemClock.uptimeMillis();
@@ -1447,7 +1467,7 @@ public class VideoCamera extends NoSearchActivity
                     Log.e(TAG, "stop fail: " + e.getMessage());
                     deleteVideoFile(mVideoFilename);
                 }
-                mHeadUpDisplay.setEnabled(true);
+                enableCameraControls(true);
                 mMediaRecorderRecording = false;
             }
             releaseMediaRecorder();
@@ -1828,7 +1848,9 @@ public class VideoCamera extends NoSearchActivity
     private void onRestorePreferencesClicked() {
         Runnable runnable = new Runnable() {
             public void run() {
-                mHeadUpDisplay.restorePreferences(mParameters);
+                if (mHeadUpDisplay != null) {
+                    mHeadUpDisplay.restorePreferences(mParameters);
+                }
             }
         };
         MenuHelper.confirmAction(this,
