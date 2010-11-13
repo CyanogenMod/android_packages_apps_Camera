@@ -37,6 +37,8 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+
 public class ControlPanel extends RelativeLayout
         implements BasicSettingPopup.Listener, IndicatorWheel.Listener,
         OtherSettingsPopup.Listener, PopupWindow.OnDismissListener {
@@ -44,14 +46,13 @@ public class ControlPanel extends RelativeLayout
     private Context mContext;
     private ComboPreferences mSharedPrefs;
     private PreferenceGroup mPreferenceGroup;
-    private String[] mPreferenceKeys;
+    private ArrayList<String> mPreferenceKeys;
     private Listener mListener;
     private IndicatorWheel mIndicatorWheel;
     private BasicSettingPopup[] mBasicSettingPopups;
     private OtherSettingsPopup mOtherSettingsPopup;
     private int mActiveIndicator = -1;
     private boolean mEnabled = true;
-    private ListView mThumbnailList;
 
     static public interface Listener {
         public void onSharedPreferenceChanged();
@@ -66,12 +67,13 @@ public class ControlPanel extends RelativeLayout
         mContext = context;
     }
 
-    protected void addIndicator(
+    protected boolean addIndicator(
             Context context, PreferenceGroup group, String key) {
         IconListPreference pref = (IconListPreference) group.findPreference(key);
-        if (pref == null) return;
+        if (pref == null) return false;
         IndicatorButton b = new IndicatorButton(context, pref);
         mIndicatorWheel.addView(b);
+        return true;
     }
 
     private void addOtherSettingIndicator(Context context) {
@@ -81,32 +83,35 @@ public class ControlPanel extends RelativeLayout
         mIndicatorWheel.addView(b);
     }
 
+    @Override
+    protected void onFinishInflate() {
+        mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
+        mIndicatorWheel.setListener(this);
+    }
+
     public void initialize(Context context, PreferenceGroup group,
             String[] keys, boolean enableOtherSettings) {
         // Reset the variables and states.
         dismissSettingPopup();
-        if (mIndicatorWheel != null) {
-            // The first view is the shutter button.
-            mIndicatorWheel.removeViews(1, mIndicatorWheel.getChildCount() - 1);
-        }
+        mIndicatorWheel.removeIndicators();
         mOtherSettingsPopup = null;
         mActiveIndicator = -1;
+        mPreferenceKeys = new ArrayList<String>();
 
         // Initialize all variables and icons.
         mPreferenceGroup = group;
-        mPreferenceKeys = keys;
-        mBasicSettingPopups = new BasicSettingPopup[mPreferenceKeys.length];
-        mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
-        mThumbnailList = (ListView) findViewById(R.id.thumbnail_list);
         mSharedPrefs = ComboPreferences.get(context);
-        for (int i = 0; i < mPreferenceKeys.length; i++) {
-            addIndicator(context, group, mPreferenceKeys[i]);
+        for (int i = 0; i < keys.length; i++) {
+            if (addIndicator(context, group, keys[i])) {
+                mPreferenceKeys.add(keys[i]);
+            }
         }
+        mBasicSettingPopups = new BasicSettingPopup[mPreferenceKeys.size()];
+
         if (enableOtherSettings) {
             addOtherSettingIndicator(context);
         }
         requestLayout();
-        mIndicatorWheel.setListener(this);
     }
 
     public void onOtherSettingChanged() {
@@ -136,7 +141,7 @@ public class ControlPanel extends RelativeLayout
 
     private void initializeSettingPopup(int index) {
         IconListPreference pref = (IconListPreference)
-                mPreferenceGroup.findPreference(mPreferenceKeys[index]);
+                mPreferenceGroup.findPreference(mPreferenceKeys.get(index));
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);

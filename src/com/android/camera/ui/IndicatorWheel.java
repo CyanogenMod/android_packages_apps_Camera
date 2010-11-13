@@ -84,6 +84,14 @@ public class IndicatorWheel extends ViewGroup {
         super(context, attrs);
     }
 
+    public void removeIndicators() {
+        // Remove everything but the shutter button.
+        int count = getChildCount();
+        if (count > 1) {
+            removeViews(1, count - 1);
+        }
+    }
+
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         // Measure all children.
