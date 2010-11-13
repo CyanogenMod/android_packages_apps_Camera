@@ -28,13 +28,15 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
 
     private boolean mCaptureTimeLapse;
     private OtherSettingsIndicator mOtherSettings;
+    private int mInitialOrientation;
 
     public CamcorderHeadUpDisplay(Context context) {
         super(context);
     }
 
     public void initialize(Context context, PreferenceGroup group,
-                           boolean captureTimeLapse) {
+                           int initialOrientation, boolean captureTimeLapse) {
+        mInitialOrientation = initialOrientation;
         mCaptureTimeLapse = captureTimeLapse;
         super.initialize(context, group);
     }
@@ -71,5 +73,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
             addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
         }
         addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
+
+        mIndicatorBar.setOrientation(mInitialOrientation);
     }
 }

@@ -1183,12 +1183,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             // the camera then point the camera to floor or sky, we still have
             // the correct orientation.
             if (orientation == ORIENTATION_UNKNOWN) return;
-            orientation = roundOrientation(orientation);
-            if (orientation != mOrientation) {
-                mOrientation = orientation;
-                mOrientationCompensation = orientation
-                        + Util.getDisplayRotation(Camera.this);
-
+            mOrientation = roundOrientation(orientation);
+            // When the screen is unlocked, display rotation may change. Always
+            // calculate the up-to-date orientationCompensation.
+            int orientationCompensation = mOrientation
+                    + Util.getDisplayRotation(Camera.this);
+            if (mOrientationCompensation != orientationCompensation) {
+                mOrientationCompensation = orientationCompensation;
                 if (!mIsImageCaptureIntent) {
                     setOrientationIndicator(mOrientationCompensation);
                 }
