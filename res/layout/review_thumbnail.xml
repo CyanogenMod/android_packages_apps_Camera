@@ -14,10 +14,12 @@
      limitations under the License.
 -->
 
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/thumbnail_list"
-        android:layout_width="96dp"
-        android:layout_height="match_parent"
-        android:dividerHeight="6dp"
-        android:orientation="vertical"
-        android:gravity="center"/>
+<com.android.camera.RotateImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/review_thumbnail"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:focusable="false"
+        android:background="@drawable/border_last_picture" />

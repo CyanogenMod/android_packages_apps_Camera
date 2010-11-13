@@ -78,11 +78,6 @@ import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.CursorAdapter;
-import android.widget.ListView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -170,15 +165,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private GLRootView mGLRootView;
 
-    // The layouts of small devices have a thumbnail button, which shows the last
-    // captured picture.
+    // The last captured picture.
     private RotateImageView mThumbnailButton;
-    // The layouts of xlarge devices have a list of thumbnails, which show the
-    // last captured pictures.
-    private ListView mThumbnailList;
-    private OnItemClickListener mThumbnailItemClickListener =
-            new ThumbnailItemClickListener();
-    private ThumbnailAdapter mThumbnailAdapter;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -350,7 +338,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (!mIsImageCaptureIntent)  {
             findViewById(R.id.camera_switch).setOnClickListener(this);
             initThumbnailButton();
-            initThumbnailList();
         }
 
         // Initialize shutter button.
@@ -426,54 +413,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 BitmapFactory.decodeByteArray(data, 0, data.length, options);
         lastPictureThumb = Util.rotate(lastPictureThumb, degree);
         mThumbnailButton.setData(uri, lastPictureThumb);
-    }
-
-    private void initThumbnailList() {
-        mThumbnailList = (ListView) findViewById(R.id.thumbnail_list);
-        if (mThumbnailList == null) return;
-
-        int width = mThumbnailList.getWidth();
-        int height = mThumbnailList.getHeight();
-
-        // Add gallery button to header view.
-        if (mThumbnailList.getHeaderViewsCount() == 0) {
-            Button b = new Button(this);
-            ListView.LayoutParams params = new ListView.LayoutParams(width, width);
-            b.setId(R.id.btn_gallery);
-            b.setLayoutParams(params);
-            b.setOnClickListener(this);
-            b.setBackgroundResource(R.drawable.ic_menu_gallery);
-            mThumbnailList.addHeaderView(b);
-        }
-
-        // Set data adapter.
-        int thumbnailCount = (height + mThumbnailList.getDividerHeight())
-                / (width + mThumbnailList.getDividerHeight()) - 1;
-        Cursor cursor = getThumbnailsCursor(thumbnailCount);
-        mThumbnailAdapter = new ThumbnailAdapter(
-                getApplicationContext(), R.layout.thumbnail_item, cursor, true);
-        mThumbnailList.setAdapter(mThumbnailAdapter);
-        mThumbnailList.setOnItemClickListener(mThumbnailItemClickListener);
-    }
-
-    private void updateThumbnailList() {
-        if (mThumbnailList == null) return;
-        mThumbnailAdapter.getCursor().requery();
-        mThumbnailAdapter.notifyDataSetChanged();
-    }
-
-    private Cursor getThumbnailsCursor(int thumbnailCount) {
-        Log.v(TAG, "thumbnailCount=" + thumbnailCount);
-        String[] projections = { MediaStore.Images.Thumbnails._ID };
-        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                .buildUpon()
-                .appendQueryParameter("limit", String.valueOf(thumbnailCount))
-                .build();
-        // TODO: managedQuery is deprecated.
-        return managedQuery(uri, projections,
-                Media.MIME_TYPE + " = 'image/jpeg' AND " + Media.BUCKET_ID + " = ?",
-                new String[] {ImageManager.CAMERA_IMAGE_BUCKET_ID},
-                ImageColumns._ID + " DESC");
     }
 
     // If the activity is paused and resumed, this method will be called in
@@ -639,7 +578,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 checkStorage();
                 if (!mIsImageCaptureIntent)  {
                     updateThumbnailButton();
-                    updateThumbnailList();
                 }
             }
         }
@@ -913,7 +851,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         "com.android.camera.NEW_PICTURE", mLastContentUri));
                 setLastPictureThumb(data, degree,
                         mImageCapture.getLastCaptureUri());
-                updateThumbnailList();
             } else {
                 mCaptureOnlyData = data;
                 if (!mQuickCapture) {
@@ -1317,12 +1254,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 gotoGallery();
                 break;
         }
-    }
-
-    private class ThumbnailItemClickListener implements OnItemClickListener {
-        public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
-            viewImage((RotateImageView)v);
-         }
     }
 
     private Bitmap createCaptureBitmap(byte[] data) {

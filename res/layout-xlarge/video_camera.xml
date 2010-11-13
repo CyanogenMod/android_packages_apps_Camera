@@ -20,7 +20,8 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <include layout="@layout/thumbnail_list"/>
+
+    <include layout="@layout/review_thumbnail"/>
     <include layout="@layout/preview_frame_video"/>
     <include layout="@layout/camera_control"/>
 </LinearLayout>

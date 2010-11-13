@@ -73,13 +73,7 @@ import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.CursorAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -152,15 +146,8 @@ public class VideoCamera extends NoSearchActivity
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
 
-    // The layout of small devices has a thumbnail button, which shows the last
-    // captured picture.
+    // The last recorded video.
     private RotateImageView mThumbnailButton;
-    // The layout of xlarge devices have a list of thumbnails, which show the
-    // last captured pictures.
-    private ListView mThumbnailList;
-    private OnItemClickListener mThumbnailItemClickListener =
-            new ThumbnailItemClickListener();
-    private ThumbnailAdapter mThumbnailAdapter;
 
     private boolean mStartPreviewFail = false;
 
@@ -733,7 +720,6 @@ public class VideoCamera extends NoSearchActivity
             if (mThumbnailButton != null && !mThumbnailButton.isUriValid()) {
                 updateThumbnailButton();
             }
-            updateThumbnailList();
         }
     }
 
@@ -930,7 +916,6 @@ public class VideoCamera extends NoSearchActivity
             setPreviewDisplay(holder);
             mCameraDevice.unlock();
             mHandler.sendEmptyMessage(INIT_RECORDER);
-            initThumbnailList();
         } else {
             stopVideoRecording();
             // If video quality changes, the surface will change. But we need to
@@ -1386,7 +1371,6 @@ public class VideoCamera extends NoSearchActivity
 
     private void getThumbnail() {
         acquireVideoThumb();
-        updateThumbnailList();
     }
 
     private void showAlert() {
@@ -1534,60 +1518,6 @@ public class VideoCamera extends NoSearchActivity
             mThumbnailButton.setData(null, null);
         }
         list.close();
-    }
-
-    private Cursor getThumbnailsCursor(int thumbnailCount) {
-        Log.v(TAG, "thumbnailCount=" + thumbnailCount);
-        String[] projections = { MediaStore.Video.Thumbnails._ID };
-        Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                .buildUpon()
-                .appendQueryParameter("limit", String.valueOf(thumbnailCount))
-                .build();
-        // TODO: managedQuery is deprecated. Use CursorLoader.
-        return managedQuery(uri, projections, Media.BUCKET_ID + " = ?",
-                new String[] {ImageManager.CAMERA_IMAGE_BUCKET_ID},
-                VideoColumns._ID + " DESC");
-    }
-
-    private void initThumbnailList() {
-        mThumbnailList = (ListView) findViewById(R.id.thumbnail_list);
-        if (mThumbnailList == null) return;
-
-        int width = mThumbnailList.getWidth();
-        int height = mThumbnailList.getHeight();
-
-        // Add gallery button to header view.
-        if (mThumbnailList.getHeaderViewsCount() == 0) {
-            Button b = new Button(this);
-            ListView.LayoutParams params = new ListView.LayoutParams(width, width);
-            b.setId(R.id.btn_gallery);
-            b.setLayoutParams(params);
-            b.setOnClickListener(this);
-            b.setBackgroundResource(R.drawable.ic_menu_gallery);
-            mThumbnailList.addHeaderView(b);
-        }
-
-        // Set cursor adapter.
-        int thumbnailCount = (height + mThumbnailList.getDividerHeight())
-                / (width + mThumbnailList.getDividerHeight()) - 1;
-        Cursor cursor = getThumbnailsCursor(thumbnailCount);
-        mThumbnailAdapter = new ThumbnailAdapter(
-                getApplicationContext(), R.layout.thumbnail_item, cursor,
-                false);
-        mThumbnailList.setAdapter(mThumbnailAdapter);
-        mThumbnailList.setOnItemClickListener(mThumbnailItemClickListener);
-    }
-
-    private void updateThumbnailList() {
-        if (mThumbnailList == null) return;
-        mThumbnailAdapter.getCursor().requery();
-        mThumbnailAdapter.notifyDataSetChanged();
-    }
-
-    private class ThumbnailItemClickListener implements OnItemClickListener {
-        public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
-            viewVideo((RotateImageView)v);
-         }
     }
 
     private static ImageManager.DataLocation dataLocation() {

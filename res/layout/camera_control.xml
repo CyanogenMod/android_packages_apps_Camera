@@ -22,15 +22,7 @@
         android:layout_marginTop="13dp"
         android:layout_marginBottom="10dp">
 
-    <com.android.camera.RotateImageView
-            android:id="@+id/review_thumbnail"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_height="52dp"
-            android:layout_width="52dp"
-            android:clickable="true"
-            android:focusable="false"
-            android:background="@drawable/border_last_picture"/>
+    <include layout="@layout/review_thumbnail"/>
 
     <LinearLayout android:id="@+id/camera_switch_set"
             android:orientation="vertical"
