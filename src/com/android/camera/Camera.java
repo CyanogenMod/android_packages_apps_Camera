@@ -163,6 +163,8 @@ public class Camera extends BaseCamera {
     private static final int FOCUS_SUCCESS = 3;
     private static final int FOCUS_FAIL = 4;
     private int mFocusState = FOCUS_NOT_STARTED;
+    private long mFocusStartTime;
+    private long mFocusCallbackTime;
 
     private ContentResolver mContentResolver;
     private boolean mDidRegister = false;
@@ -207,6 +209,7 @@ public class Camera extends BaseCamera {
     private int mImageHeight = 0;
 
     private long mLastStabilityChange = 0;
+    private final AutoFocusCallback mAutoFocusCallback = new AutoFocusCallback();
 
     private StabilityChangeListener mStabilityChangeListener = new StabilityChangeListener() {
         public void onStabilityChanged(boolean stable) {
@@ -424,7 +427,9 @@ public class Camera extends BaseCamera {
     }
 
     protected void onZoomValueChanged(int index) {
-        if (mSmoothZoomSupported) {
+        if (false) { // was "mSmoothZoomSupported" disable smooth zoom for now -
+                     // only droid supports it and it's too slow.
+                     // Keep the code case we change our mind later
             if (mTargetZoomValue != index && mZoomState != ZOOM_STOPPED) {
                 mTargetZoomValue = index;
                 if (mZoomState == ZOOM_START) {
@@ -1330,14 +1335,62 @@ public class Camera extends BaseCamera {
     private void autoFocusFast() {
         if (canTakePicture()) {
             mFocusState = FOCUSING;
+            mFocusStartTime = System.currentTimeMillis();
             updateFocusIndicator();
-            mCameraDevice.autoFocus(new android.hardware.Camera.AutoFocusCallback() {
-                @Override
-                public void onAutoFocus(boolean success, android.hardware.Camera camera) {
-                    mFocusState = success ? FOCUS_SUCCESS : FOCUS_FAIL;
-                    updateFocusIndicator();
+            if (mSmoothZoomSupported) {
+                mCameraDevice.autoFocus(mAutoFocusCallback);
+                if (mFocusState == FOCUSING || mFocusState == FOCUS_SUCCESS
+                        || mFocusState == FOCUS_FAIL) {
+                    Log.v(TAG, "Cancel autofocus.");
+                    mHeadUpDisplay.setEnabled(true);
+                    mCameraDevice.cancelAutoFocus();
                 }
-            });
+            } else {
+                mCameraDevice.autoFocus(new android.hardware.Camera.AutoFocusCallback() { 
+                    @Override
+                    public void onAutoFocus(boolean success, android.hardware.Camera camera) {
+                        mFocusState = success ? FOCUS_SUCCESS : FOCUS_FAIL;
+                        updateFocusIndicator();
+                    }
+                });
+            }
+        }
+    }
+
+    private final class AutoFocusCallback  // Re-added this to support droid
+                                           // (check mSmoothZoomSupported above)
+            implements android.hardware.Camera.AutoFocusCallback {
+        public void onAutoFocus(boolean focused, android.hardware.Camera camera) {
+            mFocusCallbackTime = System.currentTimeMillis();
+            mAutoFocusTime = mFocusCallbackTime - mFocusStartTime;
+            Log.e(TAG, "<PROFILE> mAutoFocusTime = " + mAutoFocusTime + "ms");
+            if (mFocusState == FOCUSING_SNAP_ON_FINISH) {
+            // Take the picture no matter focus succeeds or fails. No need
+            // to play the AF sound if we're about to play the shutter
+            // sound.
+                if (focused) {
+                    mFocusState = FOCUS_SUCCESS;
+                } else {
+                    mFocusState = FOCUS_FAIL;
+                }
+                mImageCapture.onSnap();
+            } else if (mFocusState == FOCUSING) {
+                // User is half-pressing the focus key. Play the focus tone.
+                // Do not take the picture now.
+                ToneGenerator tg = mFocusToneGenerator;
+                if (tg != null) {
+                    tg.startTone(ToneGenerator.TONE_PROP_BEEP2);
+                }
+                if (focused) {
+                    mFocusState = FOCUS_SUCCESS;
+                } else {
+                    mFocusState = FOCUS_FAIL;
+                }
+            } else if (mFocusState == FOCUS_NOT_STARTED) {
+                // User has released the focus key before focus completes.
+                // Do nothing.
+            }
+            updateFocusIndicator();
         }
     }
 
