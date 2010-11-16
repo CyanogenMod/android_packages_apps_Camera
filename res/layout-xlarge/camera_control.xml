@@ -18,10 +18,11 @@
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_panel"
         android:layout_height="match_parent"
-        android:layout_width="134dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="10dp">
+        android:layout_width="220dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="-26dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginRight="0dp">
 
         <ViewStub android:id="@+id/zoom_stub"
                 android:inflatedId="@+id/zoom_picker"
@@ -30,6 +31,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:layout_marginTop="10dp" />
 
         <TextView android:id="@+id/recording_time"
@@ -69,21 +71,24 @@
         <LinearLayout android:id="@+id/camera_switch_set"
                 android:orientation="vertical"
                 android:gravity="center"
+                android:layout_height="150dp"
+                android:layout_width="45dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content">
+                android:layout_marginLeft="1dp"
+                android:background="@drawable/mode_switch_bg_v2">
             <com.android.camera.RotateImageView android:id="@+id/video_switch_icon"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:src="@drawable/btn_ic_mode_switch_video"/>
             <com.android.camera.Switcher android:id="@+id/camera_switch"
                     android:layout_width="wrap_content"
-                    android:layout_height="70dp"
-                    android:src="@drawable/btn_mode_switch_knob"
-                    android:background="@drawable/btn_mode_switch_bg" />
-            <com.android.camera.RotateImageView
-                    android:id="@+id/camera_switch_icon"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/btn_mode_switch_knob_v2"
+                    android:background="@drawable/btn_mode_switch_bg_v2" />
+            <com.android.camera.RotateImageView android:id="@+id/camera_switch_icon"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:src="@drawable/btn_ic_mode_switch_camera"/>

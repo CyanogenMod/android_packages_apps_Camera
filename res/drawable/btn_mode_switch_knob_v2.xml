@@ -14,13 +14,9 @@
      limitations under the License.
 -->
 
-<com.android.camera.RotateImageView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/review_thumbnail"
-        android:layout_width="112dp"
-        android:layout_height="112dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="27dp"
-        android:layout_marginRight="27dp"
-        android:clickable="true"
-        android:focusable="false"
-        android:background="@drawable/border_last_picture"/>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/btn_mode_switch_knob_v2_pressed" />
+    <item android:drawable="@drawable/btn_mode_switch_knob_v2_normal" />
+</selector>
+
+
