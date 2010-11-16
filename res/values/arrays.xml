@@ -247,14 +247,6 @@
         <item>@drawable/ic_viewfinder_wb_cloudy</item>
     </array>
 
-    <array name="whitebalance_images" translatable="false">
-        <item>@drawable/btn_wb_auto</item>
-        <item>@drawable/btn_wb_incandescent</item>
-        <item>@drawable/btn_wb_daylight</item>
-        <item>@drawable/btn_wb_fluorescent</item>
-        <item>@drawable/btn_wb_cloudy</item>
-    </array>
-
     <!-- Camera Preferences Color effect dialog box entries -->
     <string-array name="pref_camera_coloreffect_entries" translatable="false">
         <item>@string/pref_camera_coloreffect_entry_none</item>

@@ -42,7 +42,6 @@
                 camera:title="@string/pref_camera_whitebalance_title"
                 camera:icons="@array/whitebalance_icons"
                 camera:largeIcons="@array/whitebalance_largeicons"
-                camera:images="@array/whitebalance_images"
                 camera:entries="@array/pref_camera_whitebalance_entries"
                 camera:entryValues="@array/pref_camera_whitebalance_entryvalues" />
         <IconListPreference
