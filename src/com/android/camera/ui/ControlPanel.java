@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -85,8 +86,11 @@ public class ControlPanel extends RelativeLayout
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
         mIndicatorWheel.setListener(this);
+        MarginLayoutParams params = (MarginLayoutParams) getLayoutParams();
+        mIndicatorWheel.setOverlapWidth(-params.leftMargin);
     }
 
     public void initialize(Context context, PreferenceGroup group,
@@ -151,11 +155,6 @@ public class ControlPanel extends RelativeLayout
         mBasicSettingPopups[index] = popup;
         popup.setSettingChangedListener(this);
         popup.initialize(pref);
-        RelativeLayout.LayoutParams params =
-                (RelativeLayout.LayoutParams) popup.getLayoutParams();
-        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        params.addRule(RelativeLayout.CENTER_VERTICAL);
-        popup.setLayoutParams(params);
         root.addView(popup);
     }
 

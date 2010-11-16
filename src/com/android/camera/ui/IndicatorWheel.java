@@ -21,6 +21,9 @@ import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Button;
@@ -31,15 +34,28 @@ import android.view.View;
 import java.lang.Math;
 
 /**
- * A view that contains camera settings and shutter buttons. The settings are
- * spreaded around the shutter button.
+ * A view that contains shutter button and camera setting indicators. The
+ * indicators are spreaded around the shutter button. The first child is always
+ * the shutter button.
  */
 public class IndicatorWheel extends ViewGroup {
     private static final String TAG = "IndicatorWheel";
     private Listener mListener;
+    // The center of the shutter button.
     private int mCenterX, mCenterY;
+    // The width of the wheel stroke.
+    private int mStrokeWidth = 40;
+    private final int STROKE_COLOR = 0x50000000;
+    // The width of the edges on both sides of the wheel, which has less alpha.
+    private final int EDGE_STROKE_WIDTH = 4, EDGE_STROKE_COLOR = 0x30000000;
+    private View mShutterButton;
     private double mShutterButtonRadius;
+    private double mWheelRadius;
     private double mSectorInitialRadians[];
+    private Paint mBackgroundPaint;
+    private RectF mBackgroundRect;
+    // The overlapping width between control panel and indicator wheel.
+    private int mOverlapWidth;
 
     static public interface Listener {
         public void onIndicatorClicked(int index);
@@ -47,6 +63,21 @@ public class IndicatorWheel extends ViewGroup {
 
     public void setListener(Listener listener) {
         mListener = listener;
+    }
+
+    public IndicatorWheel(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setWillNotDraw(false);
+
+        mBackgroundPaint = new Paint();
+        mBackgroundPaint.setStyle(Paint.Style.STROKE);
+        mBackgroundPaint.setAntiAlias(true);
+
+        mBackgroundRect = new RectF();
+    }
+
+    public void setOverlapWidth(int width) {
+        mOverlapWidth = width;
     }
 
     @Override
@@ -80,8 +111,11 @@ public class IndicatorWheel extends ViewGroup {
         return false;
     }
 
-    public IndicatorWheel(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        // The first view is shutter button.
+        mShutterButton = getChildAt(0);
     }
 
     public void removeIndicators() {
@@ -95,15 +129,19 @@ public class IndicatorWheel extends ViewGroup {
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         // Measure all children.
+        int childCount = getChildCount();
         int freeSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-        for (int i = 0; i < getChildCount(); i++) {
+        for (int i = 0; i < childCount; i++) {
             getChildAt(i).measure(freeSpec, freeSpec);
         }
 
+        if (childCount > 1) {
+            mStrokeWidth = (int) (getChildAt(1).getMeasuredWidth() * 1.3);
+        }
+
         // Measure myself.
-        View shutterButton = getChildAt(0);
-        int desiredWidth = (int)(shutterButton.getMeasuredWidth() * 2.5);
-        int desiredHeight = (int)(shutterButton.getMeasuredHeight() * 2.5);
+        int desiredWidth = (int)(mShutterButton.getMeasuredWidth() * 2.5);
+        int desiredHeight = (int)(mShutterButton.getMeasuredHeight() * 4.5);
         int widthMode = MeasureSpec.getMode(widthSpec);
         int heightMode = MeasureSpec.getMode(heightSpec);
         int measuredWidth, measuredHeight;
@@ -131,31 +169,33 @@ public class IndicatorWheel extends ViewGroup {
         if (count == 0) return;
 
         // Layout the shutter button.
-        View shutterButton = findViewById(R.id.shutter_button);
-        int width = shutterButton.getMeasuredWidth();
-        mShutterButtonRadius = width / 2.0 + 10;
-        int height = shutterButton.getMeasuredHeight();
-        mCenterX = (right - left) - width / 2;
+        int shutterButtonWidth = mShutterButton.getMeasuredWidth();
+        mShutterButtonRadius = shutterButtonWidth / 2.0 + 10;
+        int shutterButtonHeight = mShutterButton.getMeasuredHeight();
+        mCenterX = (right - left + mOverlapWidth) / 2;
         mCenterY = (bottom - top) / 2;
-        shutterButton.layout(mCenterX - width / 2, mCenterY - height / 2,
-                mCenterX + width / 2, mCenterY + height / 2);
+        mShutterButton.layout(mCenterX - shutterButtonWidth / 2,
+                mCenterY - shutterButtonHeight / 2,
+                mCenterX + shutterButtonWidth / 2,
+                mCenterY + shutterButtonHeight / 2);
 
         // Layout the settings. The icons are spreaded on the left side of the
         // shutter button. So the angle starts from 90 to 270 degrees.
         if (count == 1) return;
-        double radius = shutterButton.getMeasuredWidth();
+        mWheelRadius = (right - left - mOverlapWidth) / 2.0
+                + EDGE_STROKE_WIDTH + mStrokeWidth / 2.0;
         double intervalDegrees = 180.0 / (count - 2);
         double initialDegrees = 90.0;
         int index = 0;
         for (int i = 0; i < count; i++) {
             View view = getChildAt(i);
-            if (view == shutterButton) continue;
+            if (view == mShutterButton) continue;
             double degree = initialDegrees + intervalDegrees * index;
             double radian = Math.toRadians(degree);
-            int x = mCenterX + (int)(radius * Math.cos(radian));
-            int y = mCenterY - (int)(radius * Math.sin(radian));
-            width = view.getMeasuredWidth();
-            height = view.getMeasuredHeight();
+            int x = mCenterX + (int)(mWheelRadius * Math.cos(radian));
+            int y = mCenterY - (int)(mWheelRadius * Math.sin(radian));
+            int width = view.getMeasuredWidth();
+            int height = view.getMeasuredHeight();
             view.layout(x - width / 2, y - height / 2, x + width / 2,
                     y + height / 2);
             index++;
@@ -169,6 +209,29 @@ public class IndicatorWheel extends ViewGroup {
             mSectorInitialRadians[i] = mSectorInitialRadians[i - 1]
                     + Math.toRadians(intervalDegrees);
         }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        // Draw the dark background.
+        mBackgroundPaint.setStrokeWidth(mStrokeWidth);
+        mBackgroundPaint.setColor(STROKE_COLOR);
+        mBackgroundRect.set((float)(mCenterX - mWheelRadius),
+                (float)(mCenterY - mWheelRadius),
+                (float)(mCenterX + mWheelRadius),
+                (float)(mCenterY + mWheelRadius));
+        canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
+
+        // Draw a lighter background on the both sides of the arc.
+        mBackgroundPaint.setStrokeWidth(EDGE_STROKE_WIDTH);
+        mBackgroundPaint.setColor(EDGE_STROKE_COLOR);
+        float delta = (mStrokeWidth + EDGE_STROKE_WIDTH) / 2.0f;
+        mBackgroundRect.inset(-delta, -delta);
+        canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
+        mBackgroundRect.inset(delta * 2, delta * 2);
+        canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
+
+        super.onDraw(canvas);
     }
 
     public void updateIndicator(int index) {

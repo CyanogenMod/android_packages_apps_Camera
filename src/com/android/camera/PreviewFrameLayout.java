@@ -51,6 +51,7 @@ public class PreviewFrameLayout extends ViewGroup {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         mFrame = (View) findViewById(R.id.frame);
         if (mFrame == null) {
             throw new IllegalStateException(

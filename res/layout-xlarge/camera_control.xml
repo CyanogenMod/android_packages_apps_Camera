@@ -18,11 +18,10 @@
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_panel"
         android:layout_height="match_parent"
-        android:layout_width="220dp"
+        android:layout_width="230dp"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="-26dp"
-        android:layout_marginBottom="25dp"
-        android:layout_marginRight="0dp">
+        android:layout_marginLeft="-46dp"
+        android:layout_marginBottom="25dp">
 
         <ViewStub android:id="@+id/zoom_stub"
                 android:inflatedId="@+id/zoom_picker"
@@ -31,7 +30,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
+                android:layout_marginLeft="7dp"
                 android:layout_marginTop="10dp" />
 
         <TextView android:id="@+id/recording_time"
@@ -75,7 +74,7 @@
                 android:layout_width="45dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="1dp"
+                android:layout_marginLeft="21dp"
                 android:background="@drawable/mode_switch_bg_v2">
             <com.android.camera.RotateImageView android:id="@+id/video_switch_icon"
                     android:layout_height="wrap_content"
