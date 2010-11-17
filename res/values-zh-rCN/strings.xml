@@ -113,7 +113,7 @@
     <string name="pref_restore_detail" msgid="5732490002291044791">"还原默认设置"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
     <string name="details_ok" msgid="6848594369924424312">"确定"</string>
-    <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"共享存储设备空间不足，请更改照片品质设置，或删除某些照片或者其他文件。"</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USB 存储设备空间不足，请更改照片品质设置，或删除某些照片或者其他文件。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SD 卡空间不足，请更改照片品质设置，或删除某些照片或者其他文件。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"已达到大小上限。"</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"缩放"</string>
