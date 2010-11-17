@@ -42,7 +42,7 @@ import java.util.ArrayList;
 
 public class ControlPanel extends RelativeLayout
         implements BasicSettingPopup.Listener, IndicatorWheel.Listener,
-        OtherSettingsPopup.Listener, PopupWindow.OnDismissListener {
+        OtherSettingsPopup.Listener,PopupWindow.OnDismissListener {
     private static final String TAG = "ControlPanel";
     private Context mContext;
     private ComboPreferences mSharedPrefs;

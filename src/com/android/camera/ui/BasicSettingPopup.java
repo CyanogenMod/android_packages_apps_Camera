@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -33,12 +34,14 @@ import android.widget.TextView;
 import com.android.camera.IconListPreference;
 import com.android.camera.R;
 import com.android.camera.Util;
-import com.android.camera.ui.GLListView.OnItemSelectedListener;
 
-public class BasicSettingPopup extends LinearLayout {
+// A popup window that shows one camera setting. The title is the name of the
+// setting (ex: white-balance). The entries are the supported values (ex:
+// daylight, incandescent, etc).
+public class BasicSettingPopup extends AbstractSettingPopup implements
+        View.OnTouchListener {
     private static final String TAG = "BasicSettingPopup";
     private IconListPreference mPreference;
-    private final Context mContext;
     private Listener mListener;
 
     static public interface Listener {
@@ -47,25 +50,20 @@ public class BasicSettingPopup extends LinearLayout {
 
     public BasicSettingPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
-
-        // Use system holo background.
-        Theme dialogTheme = getResources().newTheme();
-        dialogTheme.applyStyle(android.R.style.Theme_Holo_Dialog, true);
-        TypedArray ta = dialogTheme.obtainStyledAttributes(new int[] {
-                android.R.attr.windowBackground });
-        setBackgroundDrawable(ta.getDrawable(0));
-        ta.recycle();
     }
 
     public void initialize(IconListPreference preference) {
         mPreference = preference;
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+        Context context = getContext();
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         CharSequence[] entries = mPreference.getEntries();
         CharSequence[] values = mPreference.getEntryValues();
         int[] imageIds = mPreference.getImageIds();
-        int index = preference.findIndexOfValue(preference.getValue());
+        int index = mPreference.findIndexOfValue(mPreference.getValue());
+
+        // Set title.
+        mTitle.setText(mPreference.getTitle());
 
         int pos = 0;
         for (int i = 0, n = entries.length; i < n; ++i) {
@@ -78,11 +76,11 @@ public class BasicSettingPopup extends LinearLayout {
             if (index == i) text.setPressed(true);
 
             // Initialize the image.
-            Drawable drawable = mContext.getResources().getDrawable(imageIds[i]);
+            Drawable drawable = context.getResources().getDrawable(imageIds[i]);
             ImageView image = (ImageView) row.findViewById(R.id.image);
             image.setImageDrawable(drawable);
             image.setClickable(false);
-            addView(row);
+            mContentPanel.addView(row);
         }
     }
 
@@ -91,25 +89,33 @@ public class BasicSettingPopup extends LinearLayout {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mContentPanel.setOnTouchListener(this);
+    }
+
+    public boolean onTouch(View view, MotionEvent event) {
         int action = event.getAction();
+        ViewGroup group = (ViewGroup) view;
         if (action == MotionEvent.ACTION_MOVE
                 || action == MotionEvent.ACTION_DOWN) {
             int y = (int) event.getY();
+            int childCount = group.getChildCount();
             // Check which child is pressed.
-            for (int i = 0; i < getChildCount(); i++) {
-                View v = getChildAt(i);
-                if (y >= v.getTop() && y <= v.getBottom()) {
+            for (int i = 0; i < childCount; i++) {
+                View child = group.getChildAt(i);
+                if (y >= child.getTop() && y <= child.getBottom()) {
                     int oldIndex = mPreference.findIndexOfValue(mPreference.getValue());
                     if (oldIndex != i) {
-                        View oldRow = getChildAt(oldIndex);
+                        View oldRow = group.getChildAt(oldIndex);
                         oldRow.findViewById(R.id.text).setPressed(false);
-                        v.findViewById(R.id.text).setPressed(true);
+                        child.findViewById(R.id.text).setPressed(true);
                         mPreference.setValueIndex(i);
                         if (mListener != null) {
                             mListener.onSettingChanged();
                         }
                     }
+                    break;
                 }
             }
             return true;

@@ -23,5 +23,23 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="40dp"
-        android:orientation="vertical" />
+        android:orientation="vertical">
+    <FrameLayout android:id="@+id/topPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dip">
+        <TextView android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|bottom"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@android:color/white"
+                style="@style/SettingPickerText" />
+    </FrameLayout>
+    <LinearLayout android:id="@+id/contentPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+</com.android.camera.ui.BasicSettingPopup>
 

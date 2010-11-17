@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 /* A popup window that contains several camera settings. */
-public class OtherSettingsPopup extends LinearLayout
+public class OtherSettingsPopup extends AbstractSettingPopup
         implements InLineSettingPicker.Listener {
     private static final String TAG = "OtherSettingsPopup";
     private Listener mListener;
@@ -44,26 +44,18 @@ public class OtherSettingsPopup extends LinearLayout
 
     public OtherSettingsPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        // Use system holo background.
-        Theme dialogTheme = getResources().newTheme();
-        dialogTheme.applyStyle(android.R.style.Theme_Holo_Dialog, true);
-        TypedArray ta = dialogTheme.obtainStyledAttributes(new int[] {
-                android.R.attr.windowBackground });
-        setBackgroundDrawable(ta.getDrawable(0));
-        ta.recycle();
     }
 
     public void initialize(PreferenceGroup group) {
         // Initialize each camera setting.
-        for (int i = getChildCount() - 1; i >= 0; i--) {
-            InLineSettingPicker picker = (InLineSettingPicker) getChildAt(i);
+        for (int i = mContentPanel.getChildCount() - 1; i >= 0; i--) {
+            InLineSettingPicker picker = (InLineSettingPicker) mContentPanel.getChildAt(i);
             ListPreference pref = group.findPreference(picker.getKey());
             if (pref != null) {
                 picker.setSettingChangedListener(this);
                 picker.initialize(pref);
             } else {  // remove the row if the preference is not supported
-                removeViewAt(i);
+                mContentPanel.removeViewAt(i);
             }
        }
        requestLayout();
