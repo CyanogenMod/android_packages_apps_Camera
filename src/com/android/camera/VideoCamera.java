@@ -1087,7 +1087,7 @@ public class VideoCamera extends NoSearchActivity
                     Log.e(TAG, "Fail to close fd", e);
                 }
             } else {
-                createVideoPath();
+                createVideoPath(mProfile.fileFormat);
                 mMediaRecorder.setOutputFile(mVideoFilename);
             }
         }
@@ -1150,10 +1150,15 @@ public class VideoCamera extends NoSearchActivity
         if (mCameraDevice != null) mCameraDevice.lock();
     }
 
-    private void createVideoPath() {
+    private void createVideoPath(int outputFileFormat) {
         long dateTaken = System.currentTimeMillis();
         String title = createName(dateTaken);
         String filename = title + ".3gp"; // Used when emailing.
+        String mime = "video/3gpp";
+        if (outputFileFormat == MediaRecorder.OutputFormat.MPEG_4) {
+            filename = title + ".mp4";
+            mime = "video/mp4";
+        }
         String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
         String filePath = cameraDirPath + "/" + filename;
         File cameraDir = new File(cameraDirPath);
@@ -1162,7 +1167,7 @@ public class VideoCamera extends NoSearchActivity
         values.put(Video.Media.TITLE, title);
         values.put(Video.Media.DISPLAY_NAME, filename);
         values.put(Video.Media.DATE_TAKEN, dateTaken);
-        values.put(Video.Media.MIME_TYPE, "video/3gpp");
+        values.put(Video.Media.MIME_TYPE, mime);
         values.put(Video.Media.DATA, filePath);
         mVideoFilename = filePath;
         Log.v(TAG, "Current camera video filename: " + mVideoFilename);
