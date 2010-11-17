@@ -259,6 +259,7 @@ public class CameraSettings {
                 if (hasTouchFocusSupport(mParameters)) {
                     focusModes.add("touch");
                 }
+                focusModes.add("classic"); // fake mode (really auto)
                 filterUnsupportedOptions(group, focusMode, focusModes);
             } else {
                 // Front camera cannot focus
@@ -429,6 +430,11 @@ public class CameraSettings {
             ret = !is720p(params);
         }
         return ret;
+    }
+
+    public static boolean useLegacyAF(Parameters params) {
+        return params.isSmoothZoomSupported() &&
+                params.getFocusMode().equals(Parameters.FOCUS_MODE_AUTO);
     }
 
     public static boolean is720p(Parameters params) {

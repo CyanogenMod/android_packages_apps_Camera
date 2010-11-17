@@ -226,11 +226,12 @@
     <string name="pref_camera_focusmode_title">Focus mode</string>
 
     <!-- Settings screen, Focue mode dialog radio button choices -->
-    <string name="pref_camera_focusmode_entry_auto">Auto</string>
+    <string name="pref_camera_focusmode_entry_auto">Continuous</string>
     <string name="pref_camera_focusmode_entry_normal">Normal</string>
     <string name="pref_camera_focusmode_entry_macro">Macro</string>
-    <string name="pref_camera_focusmode_entry_infinity">Off</string>
+    <string name="pref_camera_focusmode_entry_infinity">Infinity</string>
     <string name="pref_camera_focusmode_entry_touch">Touch</string>
+    <string name="pref_camera_focusmode_entry_classic">Auto</string>
 
     <!-- Toast shown when touch-to-focus is enabled -->
     <string name="touch_focus_enabled">Touch the screen to focus the camera.</string>
