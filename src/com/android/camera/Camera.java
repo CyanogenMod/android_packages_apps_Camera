@@ -119,6 +119,8 @@ public class Camera extends BaseCamera {
 
     private Parameters mInitialParams;
 
+    protected boolean classicAutoMode;
+
     private OrientationEventListener mOrientationListener;
     private int mLastOrientation = 0;  // No rotation (landscape) by default.
 
@@ -213,7 +215,7 @@ public class Camera extends BaseCamera {
 
     private StabilityChangeListener mStabilityChangeListener = new StabilityChangeListener() {
         public void onStabilityChanged(boolean stable) {
-            if ("auto".equals(mFocusMode)) {
+            if ("auto".equals(mFocusMode) && !classicAutoMode) {
                 long now = System.currentTimeMillis();
 
                 // 2 second interval for measuring stability
@@ -1132,10 +1134,11 @@ public class Camera extends BaseCamera {
         if (mPausing) {
             return;
         }
-     
         switch (button.getId()) {
             case R.id.shutter_button:
-             //   doFocus(pressed);
+                if (classicAutoMode) {
+                    doFocusClassic(pressed);
+                }
                 break;
         }
     }
@@ -1146,7 +1149,11 @@ public class Camera extends BaseCamera {
         }
         switch (button.getId()) {
             case R.id.shutter_button:
-                doSnap();
+                if (classicAutoMode) {
+                    doSnapClassic();
+                } else {
+                    doSnap();
+                }
                 break;
         }
     }
@@ -1343,7 +1350,6 @@ public class Camera extends BaseCamera {
                         || mFocusState == FOCUS_FAIL) {
                     Log.v(TAG, "Cancel autofocus.");
                     mHeadUpDisplay.setEnabled(true);
-                    mCameraDevice.cancelAutoFocus();
                 }
             } else {
                 mCameraDevice.autoFocus(new android.hardware.Camera.AutoFocusCallback() { 
@@ -1429,11 +1435,40 @@ public class Camera extends BaseCamera {
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                    doSnap();
+                    if (classicAutoMode) {
+                        doSnapClassic();
+                    } else {
+                        doSnap();
+                    }
                 }
                 return true;
+            case KeyEvent.KEYCODE_FOCUS:
+                if (classicAutoMode) {
+                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+                        doFocusClassic(true);
+                    }
+                    return true;
+                }
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                if (classicAutoMode) {
+                    // If we get a dpad center event without any focused view, move
+                    // the focus to the shutter button and press it.
+                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+                        // Start auto-focus immediately to reduce shutter lag. After
+                        // the shutter button gets the focus, doFocus() will be
+                        // called again but it is fine.
+                        if (mHeadUpDisplay.collapse()) return true;
+                        doFocusClassic(true);
+                        if (mShutterButton.isInTouchMode()) {
+                            mShutterButton.requestFocusFromTouch();
+                        } else {
+                            mShutterButton.requestFocus();
+                        }
+                        mShutterButton.setPressed(true);
+                    }
+                    return true;
+                }
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -1787,15 +1822,22 @@ public class Camera extends BaseCamera {
             mFocusMode = mPreferences.getString(
                     CameraSettings.KEY_FOCUS_MODE,
                     getString(R.string.pref_camera_focusmode_default));
-
+            if ("classic".equals(mFocusMode)) {
+                mFocusMode = Parameters.FOCUS_MODE_AUTO;
+                classicAutoMode = true;
+            } else {
+                classicAutoMode = false;
+            }
             if (isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
                 mParameters.setFocusMode(mFocusMode);
             } else if ("touch".equals(mFocusMode)) {
                 mParameters.setFocusMode(Parameters.FOCUS_MODE_AUTO);
+                classicAutoMode = false;
             } else {
                 mFocusMode = mParameters.getFocusMode();
                 if (mFocusMode == null) {
                     mFocusMode = Parameters.FOCUS_MODE_AUTO;
+                    classicAutoMode = false;
                 }
             }
             
@@ -2132,6 +2174,79 @@ public class Camera extends BaseCamera {
                 getString(R.string.confirm_restore_title),
                 getString(R.string.confirm_restore_message),
                 runnable);
+    }
+
+    private void doSnapClassic() {
+        if (mHeadUpDisplay.collapse()) return;
+        Log.d(TAG, "doSnap: mFocusState=" + mFocusState + " mFocusMode=" + mFocusMode);
+        // If the user has half-pressed the shutter and focus is completed, we
+        // can take the photo right away. If the focus mode is infinity, we can
+        // also take the photo.
+        if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
+                || mFocusMode.equals("touch")
+                || mFocusState == FOCUS_SUCCESS
+                || mFocusState == FOCUS_FAIL) {
+            mImageCapture.onSnap();
+        } else if (mFocusState == FOCUSING) {
+        // Half pressing the shutter (i.e. the focus button event) will
+        // already have requested AF for us, so just request capture on
+        // focus here.
+            mFocusState = FOCUSING_SNAP_ON_FINISH;
+        } else if (mFocusState == FOCUS_NOT_STARTED) {
+        // Focus key down event is dropped for some reasons. Just ignore.
+        }
+    }
+
+    private void doFocusClassic(boolean pressed) {
+        // Do the focus if the mode is not infinity.
+        if (mHeadUpDisplay.collapse()) return;
+        if (!mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY) && !mFocusMode.equals("touch")) {
+            if (pressed) {  // Focus key down.
+                autoFocusClassic();
+                resetFocusIndicator();
+            } else {  // Focus key up.
+                cancelAutoFocusClassic();
+            }
+        }
+    }
+
+    private void autoFocusClassic() {
+        // Initiate autofocus only when preview is started and snapshot is not
+        // in progress.
+        if (canTakePicture()) {
+            mHeadUpDisplay.setEnabled(false);
+            Log.v(TAG, "Start autofocus.");
+            mFocusStartTime = System.currentTimeMillis();
+            mFocusState = FOCUSING;
+            updateFocusIndicator();
+            mCameraDevice.autoFocus(mAutoFocusCallback);
+        }
+    }
+
+    private void cancelAutoFocusClassic() {
+        // User releases half-pressed focus key.
+        if (mFocusState == FOCUSING || mFocusState == FOCUS_SUCCESS
+                || mFocusState == FOCUS_FAIL) {
+            Log.v(TAG, "Cancel autofocus.");
+            mHeadUpDisplay.setEnabled(true);
+            mCameraDevice.cancelAutoFocus();
+        }
+        if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
+            clearFocusState();
+        }
+    }
+
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_FOCUS:
+                if (mFirstTimeInitialized) {
+                doFocusClassic(false);
+            }
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     @Override
