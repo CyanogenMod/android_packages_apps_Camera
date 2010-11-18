@@ -159,7 +159,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private ToneGenerator mFocusToneGenerator;
     private GestureDetector mPopupGestureDetector;
     private GestureDetector mZoomGestureDetector;
-    private Switcher mSwitcher;
+    private SwitcherSet mSwitcher;
     private boolean mStartPreviewFail = false;
 
     private GLRootView mGLRootView;
@@ -1036,9 +1036,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             controlBar.findViewById(R.id.btn_retake).setOnClickListener(this);
             controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
         } else {
-            mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
+            mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
             mSwitcher.setOnSwitchListener(this);
-            mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         }
 
         // Show zoom picker.
@@ -1201,14 +1200,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void setOrientationIndicator(int degree) {
-        RotateImageView thumbnail = (RotateImageView) findViewById(
+        RotateImageView icon = (RotateImageView) findViewById(
                 R.id.review_thumbnail);
-        if (thumbnail != null) thumbnail.setDegree(degree);
+        if (icon != null) icon.setDegree(degree);
 
-        ((RotateImageView) findViewById(
-                R.id.camera_switch_icon)).setDegree(degree);
-        ((RotateImageView) findViewById(
-                R.id.video_switch_icon)).setDegree(degree);
+        icon = (RotateImageView) findViewById(R.id.camera_switch_icon);
+        if (icon != null) icon.setDegree(degree);
+        icon = (RotateImageView) findViewById(R.id.video_switch_icon);
+        if (icon != null) icon.setDegree(degree);
     }
 
     @Override
@@ -2234,7 +2233,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private boolean switchToVideoMode() {
         if (isFinishing() || !isCameraIdle()) return false;
-        MenuHelper.gotoVideoMode(this);
+        MenuHelper.gotoVideoMode(Camera.this);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
         return true;

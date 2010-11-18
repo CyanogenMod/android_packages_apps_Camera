@@ -24,7 +24,7 @@
 
     <include layout="@layout/review_thumbnail"/>
 
-    <LinearLayout android:id="@+id/camera_switch_set"
+    <com.android.camera.SwitcherSet android:id="@+id/camera_switch"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_centerInParent="true"
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:src="@drawable/btn_ic_mode_switch_video"/>
-        <com.android.camera.Switcher android:id="@+id/camera_switch"
+        <com.android.camera.Switcher android:id="@+id/switcher"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
                 android:src="@drawable/btn_mode_switch_knob"
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_marginBottom="3dp"
                 android:src="@drawable/btn_ic_mode_switch_camera"/>
-    </LinearLayout>
+    </com.android.camera.SwitcherSet>
 
     <com.android.camera.ShutterButton android:id="@+id/shutter_button"
             android:layout_alignParentBottom="true"
