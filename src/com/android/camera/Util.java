@@ -58,7 +58,7 @@ public class Util {
     // Rotates and/or mirrors the bitmap. If a new bitmap is created, the
     // original bitmap is recycled.
     public static Bitmap rotateAndMirror(Bitmap b, int degrees, boolean mirror) {
-        if (degrees != 0 && b != null) {
+        if ((degrees != 0 || mirror) && b != null) {
             Matrix m = new Matrix();
             m.setRotate(degrees,
                     (float) b.getWidth() / 2, (float) b.getHeight() / 2);
