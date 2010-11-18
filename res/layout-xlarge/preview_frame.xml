@@ -22,8 +22,7 @@
         android:layout_weight="1">
     <RelativeLayout android:id="@+id/frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/border_view_finder">
+            android:layout_height="match_parent">
         <SurfaceView android:id="@+id/camera_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
