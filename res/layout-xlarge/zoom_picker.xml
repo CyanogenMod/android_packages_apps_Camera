@@ -18,26 +18,35 @@
 -->
 
 <com.android.camera.ui.ZoomPicker xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="45dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/mode_switch_bg_v2">
 
     <TextView android:id="@+id/zoom_ratio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:gravity="center"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        android:textSize="24dp" />
-
-    <Button android:id="@+id/increment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textSize="16dp" />
+
+    <Button android:id="@+id/increment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/btn_zoom_picker_up" />
 
     <Button android:id="@+id/decrement"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/btn_zoom_picker_down" />
 </com.android.camera.ui.ZoomPicker>
