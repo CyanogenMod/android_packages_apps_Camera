@@ -18,8 +18,11 @@
 -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:id="@+id/title"
+        style="@style/SettingPickerText"  />
+
     <Button android:id="@+id/decrement"
-        android:layout_width="48dp"
+        android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center"
@@ -39,7 +42,7 @@
         android:textSize="20dp" />
 
     <Button android:id="@+id/increment"
-        android:layout_width="48dp"
+        android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center"

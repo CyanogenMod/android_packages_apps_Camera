@@ -17,22 +17,15 @@
 */
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="35dp"
-    android:paddingLeft="14dp"
-    android:paddingRight="14dp"
-    style="@style/OtherSettingTableRow">
+    style="@style/SettingRow">
 
     <TextView android:id="@+id/text"
         style="@style/SettingPickerText"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:singleLine="true"
         android:textColor="@drawable/btn_setting_picker" />
     <ImageView android:id="@+id/image"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:layout_marginRight="14dp"
         android:gravity="center"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true" />
