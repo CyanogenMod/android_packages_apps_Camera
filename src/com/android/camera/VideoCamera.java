@@ -525,11 +525,7 @@ public class VideoCamera extends BaseCamera implements
 
         initializeZoom();
         initializeTouchFocus();
-        if (!mSmoothZoomSupported) {
-            setStabilityChangeListener(mStabilityChangeListener);
-        } else {
-            setStabilityChangeListener(null);
-        }
+        updateFocusMode();
     }
 
     private void overrideHudSettings(final String videoEncoder,
@@ -1735,6 +1731,15 @@ public class VideoCamera extends BaseCamera implements
             }
         }
 
+        updateFocusMode();
+        setCommonParameters();
+        setWhiteBalance();
+
+        CameraSettings.setCamMode(mParameters, CameraSettings.VIDEO_MODE);
+        setCameraHardwareParameters();
+    }
+
+    private void updateFocusMode() {
         mFocusMode = mPreferences.getString(
                 CameraSettings.KEY_VIDEOCAMERA_FOCUS_MODE,
                 getString(R.string.pref_camera_focusmode_default));
@@ -1745,12 +1750,6 @@ public class VideoCamera extends BaseCamera implements
                 mSmoothZoomSupported == true) {
             setStabilityChangeListener(null);
         }
-
-        setCommonParameters();
-        setWhiteBalance();
-
-        CameraSettings.setCamMode(mParameters, CameraSettings.VIDEO_MODE);
-        setCameraHardwareParameters();
     }
 
     protected void setCameraHardwareParameters() {
