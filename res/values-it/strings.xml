@@ -78,11 +78,12 @@
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fine"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normale"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modalità messa a fuoco"</string>
-    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatica"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Continua"</string>
     <string name="pref_camera_focusmode_entry_normal">Normale</string>
-    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Off"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinita"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_focusmode_entry_touch">Touch</string>
+    <string name="pref_camera_focusmode_entry_classic">Automatica</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modalità flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatica"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Attiva"</string>
