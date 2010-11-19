@@ -380,19 +380,21 @@ public abstract class BaseCamera extends NoSearchActivity implements View.OnClic
             mFocusRectangle.setPosition((int) e.getX() - SurfaceViewLocation[0], (int) e.getY()
                     - SurfaceViewLocation[1]);
 
+            enableTouchAEC(true);
+            updateTouchFocus((int)coord[0], (int)coord[1]);
+
             if (mMediaRecorder == null) {
+
                 mCameraDevice.autoFocus(getAutoFocusCallback());
 
             } else {
-                
+
                 // FIXME: No autofocus callback via MediaRecorder yet.
                 mMediaRecorder.autoFocusCamera();
                 mFocusRectangle.showSuccess();
-                enableTouchAEC(true);
-                updateTouchFocus((int)coord[0], (int)coord[1]);
                 mFocusing = false;
             }
-          
+
             return true;
         }
     }
