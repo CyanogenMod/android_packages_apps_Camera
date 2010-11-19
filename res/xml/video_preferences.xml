@@ -85,7 +85,7 @@
                 camera:entryValues="@array/pref_camera_video_duration_entryvalues" />
         <ListPreference
                 camera:key="pref_camera_video_focusmode_key"
-                camera:defaultValue="@string/pref_camera_focusmode_default"
+                camera:defaultValue="@string/pref_camera_video_focusmode_default"
                 camera:title="@string/pref_camera_focusmode_title"
                 camera:entries="@array/pref_camera_video_focusmode_entries"
                 camera:entryValues="@array/pref_camera_video_focusmode_entryvalues" />
