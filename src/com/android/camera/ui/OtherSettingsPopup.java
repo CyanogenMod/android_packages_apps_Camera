@@ -20,6 +20,8 @@ import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 
 import android.content.Context;
+import android.content.res.Resources.Theme;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -42,6 +44,14 @@ public class OtherSettingsPopup extends TableLayout
 
     public OtherSettingsPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        // Use system holo background.
+        Theme dialogTheme = getResources().newTheme();
+        dialogTheme.applyStyle(android.R.style.Theme_Holo_Dialog, true);
+        TypedArray ta = dialogTheme.obtainStyledAttributes(new int[] {
+                android.R.attr.windowBackground });
+        setBackgroundDrawable(ta.getDrawable(0));
+        ta.recycle();
     }
 
     public void initialize(PreferenceGroup group) {
