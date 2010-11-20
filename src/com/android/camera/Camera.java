@@ -444,6 +444,10 @@ public class Camera extends BaseCamera {
                 mZoomState = ZOOM_START;
             }
         } else {
+            if (mSmoothZoomSupported) {
+                clearFocusState();
+                mCameraDevice.cancelAutoFocus();
+            }
             mZoomValue = index;
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
         }
@@ -1136,7 +1140,7 @@ public class Camera extends BaseCamera {
         }
         switch (button.getId()) {
             case R.id.shutter_button:
-                if (classicAutoMode) {
+                if (classicAutoMode || "macro".equals(mFocusMode)) {
                     doFocusClassic(pressed);
                 }
                 break;
@@ -1149,7 +1153,7 @@ public class Camera extends BaseCamera {
         }
         switch (button.getId()) {
             case R.id.shutter_button:
-                if (classicAutoMode) {
+                if (classicAutoMode || "macro".equals(mFocusMode)) {
                     doSnapClassic();
                 } else {
                     doSnap();
@@ -1348,7 +1352,6 @@ public class Camera extends BaseCamera {
                 mCameraDevice.autoFocus(mAutoFocusCallback);
                 if (mFocusState == FOCUSING || mFocusState == FOCUS_SUCCESS
                         || mFocusState == FOCUS_FAIL) {
-                    Log.v(TAG, "Cancel autofocus.");
                     mHeadUpDisplay.setEnabled(true);
                 }
             } else {
@@ -1383,7 +1386,7 @@ public class Camera extends BaseCamera {
             } else if (mFocusState == FOCUSING) {
                 // User is half-pressing the focus key. Play the focus tone.
                 // Do not take the picture now.
-                if (classicAutoMode) {
+                if (classicAutoMode || "macro".equals(mFocusMode)) {
                     ToneGenerator tg = mFocusToneGenerator;
                     if (tg != null) {
                         tg.startTone(ToneGenerator.TONE_PROP_BEEP2);
@@ -1437,7 +1440,7 @@ public class Camera extends BaseCamera {
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                    if (classicAutoMode) {
+                    if (classicAutoMode || "macro".equals(mFocusMode)) {
                         doSnapClassic();
                     } else {
                         doSnap();
@@ -1445,14 +1448,14 @@ public class Camera extends BaseCamera {
                 }
                 return true;
             case KeyEvent.KEYCODE_FOCUS:
-                if (classicAutoMode) {
+                if (classicAutoMode || "macro".equals(mFocusMode)) {
                     if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
                         doFocusClassic(true);
                     }
                     return true;
                 }
             case KeyEvent.KEYCODE_DPAD_CENTER:
-                if (classicAutoMode) {
+                if (classicAutoMode || "macro".equals(mFocusMode)) {
                     // If we get a dpad center event without any focused view, move
                     // the focus to the shutter button and press it.
                     if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
