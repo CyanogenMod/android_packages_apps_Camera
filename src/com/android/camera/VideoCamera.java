@@ -931,6 +931,14 @@ public class VideoCamera extends BaseCamera implements
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
         }
+
+        // If setPreviewDisplay has been set with a valid surface, unlock now.
+        // If surface is null, unlock later. Otherwise, setPreviewDisplay in
+        // surfaceChanged will fail.
+        if (mSurfaceHolder != null) {
+            mCameraDevice.unlock();
+        }
+
     }
 
     private void closeCamera() {
