@@ -1734,7 +1734,7 @@ public class VideoCamera extends BaseCamera implements
         updateFocusMode();
         setCommonParameters();
         setWhiteBalance();
-
+        mHandler.sendEmptyMessage(RELOAD_HUD);
         CameraSettings.setCamMode(mParameters, CameraSettings.VIDEO_MODE);
         setCameraHardwareParameters();
     }
@@ -1743,12 +1743,14 @@ public class VideoCamera extends BaseCamera implements
         mFocusMode = mPreferences.getString(
                 CameraSettings.KEY_VIDEOCAMERA_FOCUS_MODE,
                 getString(R.string.pref_camera_focusmode_default));
-        if (Parameters.FOCUS_MODE_AUTO.equals(mFocusMode) && !mSmoothZoomSupported) {
+        if (Parameters.FOCUS_MODE_AUTO.equals(mFocusMode)) {
             setStabilityChangeListener(mStabilityChangeListener);
+            mParameters.setFocusMode(mFocusMode);
         } else if ("touch".equals(mFocusMode) ||
-                Parameters.FOCUS_MODE_INFINITY.equals(mFocusMode) ||
-                mSmoothZoomSupported == true) {
+                Parameters.FOCUS_MODE_INFINITY.equals(mFocusMode)) {
             setStabilityChangeListener(null);
+            mFocusMode = "infinity";
+            mParameters.setFocusMode(mFocusMode);
         }
     }
 
