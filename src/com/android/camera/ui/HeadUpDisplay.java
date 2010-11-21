@@ -31,6 +31,7 @@ import android.hardware.Camera.Parameters;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
@@ -85,6 +86,7 @@ public class HeadUpDisplay extends GLView {
 
     protected ZoomIndicator mZoomIndicator;
     protected boolean mZoomSupported;
+    protected boolean mDisableZoom;
 
     protected SettingsIndicator mSettingsIndicator;
 
@@ -100,8 +102,9 @@ public class HeadUpDisplay extends GLView {
         }
     };
 
-    public HeadUpDisplay(Context context, Parameters params, boolean zoomSupported) {
+    public HeadUpDisplay(Context context, Parameters params, boolean zoomSupported, boolean disableZoom) {
         mZoomSupported = zoomSupported;
+        mDisableZoom = disableZoom;
         mParameters = params;
         initializeStaticVariables(context);
     }
@@ -439,19 +442,19 @@ public class HeadUpDisplay extends GLView {
     }
 
     public void setZoomListener(ZoomController.ZoomListener listener) {
-        if (mZoomSupported) {
+        if (mZoomSupported && !mDisableZoom) {
             mZoomIndicator.setZoomListener(listener);
         }
     }
 
     public void setZoomIndex(int index) {
-        if (mZoomSupported) {
+        if (mZoomSupported && !mDisableZoom) {
             mZoomIndicator.setZoomIndex(index);
         }
     }
 
     public void setZoomRatios(float[] zoomRatios) {
-        if (mZoomSupported) {
+        if (mZoomSupported && !mDisableZoom) {
             mZoomIndicator.setZoomRatios(zoomRatios);
         }
     }

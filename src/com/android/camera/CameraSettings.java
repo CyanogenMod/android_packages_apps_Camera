@@ -432,6 +432,10 @@ public class CameraSettings {
         return ret;
     }
 
+    public static boolean disableZoom(Parameters params) {
+        return "auto".equals(params.getFocusMode()) && params.isSmoothZoomSupported();
+    }
+
     public static boolean useLegacyAF(Parameters params) {
         return params.isSmoothZoomSupported() &&
                 params.getFocusMode().equals(Parameters.FOCUS_MODE_AUTO);

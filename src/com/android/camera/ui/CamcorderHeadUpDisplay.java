@@ -31,7 +31,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
     private BasicIndicator mVideoQualitySettings;
 
     public CamcorderHeadUpDisplay(Context context, Parameters params) {
-        super(context, params, CameraSettings.isVideoZoomSupported(params));
+        super(context, params, CameraSettings.isVideoZoomSupported(params), CameraSettings.disableZoom(params));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
         addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);
         mVideoQualitySettings = addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
 
-        if (mZoomSupported) {
+        if (mZoomSupported && !mDisableZoom) {
             mZoomIndicator = new ZoomIndicator(context);
             mIndicatorBar.addComponent(mZoomIndicator);
         }

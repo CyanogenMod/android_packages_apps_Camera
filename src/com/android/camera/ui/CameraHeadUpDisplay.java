@@ -32,7 +32,7 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     private GpsIndicator mGpsIndicator;
 
     public CameraHeadUpDisplay(Context context, Parameters params) {
-        super(context, params, params.isZoomSupported());
+        super(context, params, params.isZoomSupported(), false); // false does nothing here
     }
 
     @Override
