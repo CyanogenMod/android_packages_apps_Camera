@@ -78,6 +78,7 @@ public class CameraSettings {
     private final Parameters mParameters;
     private final CameraInfo[] mCameraInfo;
     private final int mCameraId;
+    private int[] mCameraIdByIndex;
 
     public CameraSettings(Activity activity, Parameters parameters,
                           int cameraId, CameraInfo[] cameraInfo) {
@@ -245,35 +246,35 @@ public class CameraSettings {
     }
 
     private void buildCameraId(
-            PreferenceGroup group, IconListPreference cameraId) {
+            PreferenceGroup group, IconListPreference preference) {
         int numOfCameras = mCameraInfo.length;
         if (numOfCameras < 2) {
-            removePreference(group, cameraId.getKey());
+            removePreference(group, preference.getKey());
             return;
         }
 
-        CharSequence entries[] = new CharSequence[numOfCameras];
-        CharSequence entryValues[] = new CharSequence[numOfCameras];
-        int[] iconIds = new int[numOfCameras];
-        int[] largeIconIds = new int[numOfCameras];
-        for (int i = 0; i < numOfCameras; i++) {
-            entryValues[i] = Integer.toString(i);
-            if (mCameraInfo[i].facing == CameraInfo.CAMERA_FACING_FRONT) {
-                entries[i] = mContext.getString(
-                        R.string.pref_camera_id_entry_front);
-                iconIds[i] = R.drawable.ic_menuselect_camera_facing_front;
-                largeIconIds[i] = R.drawable.ic_viewfinder_camera_facing_front;
-            } else {
-                entries[i] = mContext.getString(
-                        R.string.pref_camera_id_entry_back);
-                iconIds[i] = R.drawable.ic_menuselect_camera_facing_back;
-                largeIconIds[i] = R.drawable.ic_viewfinder_camera_facing_back;
+        CharSequence[] entryValues = new CharSequence[2];
+        mCameraIdByIndex = new int[2];
+        for (int i = 0 ; i < mCameraInfo.length ; ++i) {
+            int index =
+                    (mCameraInfo[i].facing == CameraInfo.CAMERA_FACING_FRONT)
+                    ? CameraInfo.CAMERA_FACING_FRONT
+                    : CameraInfo.CAMERA_FACING_BACK;
+            if (entryValues[index] == null) {
+                entryValues[index] = "" + i;
+                mCameraIdByIndex[index] = i;
+                if (entryValues[((index == 1) ? 0 : 1)] != null) break;
             }
         }
-        cameraId.setEntries(entries);
-        cameraId.setEntryValues(entryValues);
-        cameraId.setIconIds(iconIds);
-        cameraId.setLargeIconIds(largeIconIds);
+        preference.setEntryValues(entryValues);
+    }
+
+    int getCameraIdByIndex(int facingIndex) {
+        if (facingIndex > CameraInfo.CAMERA_FACING_FRONT || facingIndex < 0) {
+            Log.e(TAG, "Unsupported camera facing index " + facingIndex);
+            return mCameraIdByIndex[CameraInfo.CAMERA_FACING_BACK];
+        }
+        return mCameraIdByIndex[facingIndex];
     }
 
     private static boolean removePreference(PreferenceGroup group, String key) {

@@ -336,6 +336,11 @@
         <item>candlelight</item>
     </string-array>
 
+    <array name="camera_id_entries" translatable="false">
+        <item>@string/pref_camera_id_entry_back</item>
+        <item>@string/pref_camera_id_entry_front</item>
+    </array>
+
     <array name="camera_id_icons" translatable="false">
         <item>@drawable/ic_menuselect_camera_facing_back</item>
         <item>@drawable/ic_menuselect_camera_facing_front</item>

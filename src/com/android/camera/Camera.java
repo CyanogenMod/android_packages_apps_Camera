@@ -19,6 +19,7 @@ package com.android.camera;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.CameraHeadUpDisplay;
+import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.ControlPanel;
@@ -177,6 +178,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private View mGpsNoSignalView;
     private View mGpsHasSignalView;
 
+    // Front/Back camera pciker for xlarge layout
+    private CameraPicker mCameraPicker;
+
     /**
      * An unpublished intent flag requesting to return as soon as capturing
      * is completed.
@@ -245,6 +249,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // multiple cameras support
     private int mNumberOfCameras;
     private int mCameraId;
+    private int mFrontCameraId;
+    private int mBackCameraId;
 
     private boolean mQuickCapture;
 
@@ -581,6 +587,18 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
         }
     };
+
+    private void initializeCameraPicker() {
+        mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
+        if (mCameraPicker != null) {
+            ListPreference pref = mPreferenceGroup.findPreference(
+                    CameraSettings.KEY_CAMERA_ID);
+            if (pref != null) {
+                mCameraPicker.initialize(pref);
+                mCameraPicker.setListener(new MyCameraPickerListener());
+            }
+        }
+    }
 
     private void initGpsOnScreenIndicator() {
         mGpsNoSignalView = findViewById(R.id.onscreen_gps_indicator_no_signal);
@@ -1055,9 +1073,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             // ignore
         }
 
+        loadCameraPreferences();
+
         // Do this after starting preview because it depends on camera
         // parameters.
         initializeControlPanel();
+        initializeCameraPicker();
     }
 
     private void changeHeadUpDisplayState() {
@@ -1095,6 +1116,17 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
+    private void loadCameraPreferences() {
+        CameraSettings settings = new CameraSettings(this, mInitialParams,
+                mCameraId, CameraHolder.instance().getCameraInfo());
+        mPreferenceGroup = settings.getPreferenceGroup(
+                R.xml.camera_preferences);
+        mFrontCameraId =
+                settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_FRONT);
+        mBackCameraId =
+                settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_BACK);
+    }
+
     private void initializeControlPanel() {
         String[] keys = new String[]{CameraSettings.KEY_FLASH_MODE,
             CameraSettings.KEY_WHITE_BALANCE,
@@ -1102,9 +1134,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             CameraSettings.KEY_CAMERA_ID};
         mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
         if (mControlPanel != null) {
-            CameraSettings settings = new CameraSettings(this, mInitialParams,
-                    mCameraId, CameraHolder.instance().getCameraInfo());
-            mPreferenceGroup = settings.getPreferenceGroup(R.xml.camera_preferences);
             mControlPanel.initialize(this, mPreferenceGroup, keys, true);
             mControlPanel.setListener(new MyControlPanelListener());
             mPopupGestureDetector = new GestureDetector(this,
@@ -1114,13 +1143,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void initializeHeadUpDisplay() {
         if (mHeadUpDisplay == null) return;
-        CameraSettings settings = new CameraSettings(this, mInitialParams,
-                mCameraId, CameraHolder.instance().getCameraInfo());
         // If we have zoom picker, do not show zoom control on head-up display.
         float[] zoomRatios = null;
         if (mZoomPicker == null) zoomRatios = getZoomRatios();
-        mHeadUpDisplay.initialize(this,
-                settings.getPreferenceGroup(R.xml.camera_preferences),
+        mHeadUpDisplay.initialize(this, mPreferenceGroup,
                 zoomRatios, mOrientationCompensation);
         if (mZoomPicker == null && mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
@@ -2192,7 +2218,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     R.string.switch_camera_id)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    switchCameraId((mCameraId + 1) % mNumberOfCameras);
+                    CameraSettings.writePreferredCameraId(mPreferences,
+                            ((mCameraId == mFrontCameraId)
+                            ? mBackCameraId : mFrontCameraId));
+                    onSharedPreferenceChanged();
                     return true;
                 }
             }).setIcon(android.R.drawable.ic_menu_camera);
@@ -2202,7 +2231,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void switchCameraId(int cameraId) {
         if (mPausing || !isCameraIdle()) return;
         mCameraId = cameraId;
-        CameraSettings.writePreferredCameraId(mPreferences, cameraId);
 
         stopPreview();
         closeCamera();
@@ -2323,5 +2351,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             Camera.this.onSharedPreferenceChanged();
         }
     }
-}
 
+    private class MyCameraPickerListener implements CameraPicker.Listener {
+        public void onSharedPreferenceChanged() {
+            Camera.this.onSharedPreferenceChanged();
+        }
+    }
+}

@@ -19,6 +19,7 @@ package com.android.camera;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.CamcorderHeadUpDisplay;
+import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.ControlPanel;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.GLView;
@@ -133,6 +134,7 @@ public class VideoCamera extends NoSearchActivity
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
     private ComboPreferences mPreferences;
+    private PreferenceGroup mPreferenceGroup;
 
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceView mVideoPreview;
@@ -143,6 +145,8 @@ public class VideoCamera extends NoSearchActivity
     private CamcorderHeadUpDisplay mHeadUpDisplay;
     private ControlPanel mControlPanel;
     private MenuItem mSwitchTimeLapseMenuItem;
+    // Front/back camera picker for xlarge layout.
+    private CameraPicker mCameraPicker;
 
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
@@ -198,6 +202,8 @@ public class VideoCamera extends NoSearchActivity
     // multiple cameras support
     private int mNumberOfCameras;
     private int mCameraId;
+    private int mFrontCameraId;
+    private int mBackCameraId;
 
     private GestureDetector mPopupGestureDetector;
 
@@ -395,6 +401,8 @@ public class VideoCamera extends NoSearchActivity
             // ignore
         }
 
+        loadCameraPreferences();
+
         // Initialize after startPreview becuase this need mParameters.
         initializeControlPanel();
         // xlarge devices use control panel. Other devices use head-up display.
@@ -403,6 +411,7 @@ public class VideoCamera extends NoSearchActivity
             mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
             initializeHeadUpDisplay();
         }
+        initializeCameraPicker();
     }
 
     private void changeHeadUpDisplayState() {
@@ -421,16 +430,36 @@ public class VideoCamera extends NoSearchActivity
         }
     }
 
-    private void initializeHeadUpDisplay() {
-        if (mHeadUpDisplay == null) return;
+    private void initializeCameraPicker() {
+        mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
+        if (mCameraPicker != null) {
+            ListPreference pref = mPreferenceGroup.findPreference(
+                    CameraSettings.KEY_CAMERA_ID);
+            if (pref != null) {
+                mCameraPicker.initialize(pref);
+                mCameraPicker.setListener(new MyCameraPickerListener());
+            }
+        }
+    }
+
+    private void loadCameraPreferences() {
         CameraSettings settings = new CameraSettings(this, mParameters,
                 mCameraId, CameraHolder.instance().getCameraInfo());
 
-        PreferenceGroup group = settings.getPreferenceGroup(R.xml.video_preferences);
+        mPreferenceGroup = settings.getPreferenceGroup(R.xml.video_preferences);
+        mFrontCameraId =
+                settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_FRONT);
+        mBackCameraId =
+                settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_BACK);
+    }
+
+    private void initializeHeadUpDisplay() {
+        if (mHeadUpDisplay == null) return;
         if (mIsVideoCaptureIntent) {
-            group = filterPreferenceScreenByIntent(group);
+            mPreferenceGroup = filterPreferenceScreenByIntent(mPreferenceGroup);
         }
-        mHeadUpDisplay.initialize(this, group, mOrientationCompensation, mCaptureTimeLapse);
+        mHeadUpDisplay.initialize(this, mPreferenceGroup,
+                mOrientationCompensation, mCaptureTimeLapse);
     }
 
     private void attachHeadUpDisplay() {
@@ -470,11 +499,7 @@ public class VideoCamera extends NoSearchActivity
             CameraSettings.KEY_CAMERA_ID};
         mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
         if (mControlPanel != null) {
-            CameraSettings settings = new CameraSettings(this, mParameters,
-                    mCameraId, CameraHolder.instance().getCameraInfo());
-            mControlPanel.initialize(this,
-                    settings.getPreferenceGroup(R.xml.video_preferences), keys,
-                    false);
+            mControlPanel.initialize(this, mPreferenceGroup, keys, false);
             mControlPanel.setListener(new MyControlPanelListener());
             mPopupGestureDetector = new GestureDetector(this,
                     new PopupGestureListener());
@@ -1248,7 +1273,10 @@ public class VideoCamera extends NoSearchActivity
                     R.string.switch_camera_id)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    switchCameraId((mCameraId + 1) % mNumberOfCameras);
+                    CameraSettings.writePreferredCameraId(mPreferences,
+                            ((mCameraId == mFrontCameraId)
+                            ? mBackCameraId : mFrontCameraId));
+                    onSharedPreferenceChanged();
                     return true;
                 }
             }).setIcon(android.R.drawable.ic_menu_camera);
@@ -1293,7 +1321,6 @@ public class VideoCamera extends NoSearchActivity
     private void switchCameraId(int cameraId) {
         if (mPausing) return;
         mCameraId = cameraId;
-        CameraSettings.writePreferredCameraId(mPreferences, cameraId);
 
         finishRecorderAndCloseCamera();
 
@@ -1828,6 +1855,12 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private class MyControlPanelListener implements ControlPanel.Listener {
+        public void onSharedPreferenceChanged() {
+            VideoCamera.this.onSharedPreferenceChanged();
+        }
+    }
+
+    private class MyCameraPickerListener implements CameraPicker.Listener {
         public void onSharedPreferenceChanged() {
             VideoCamera.this.onSharedPreferenceChanged();
         }

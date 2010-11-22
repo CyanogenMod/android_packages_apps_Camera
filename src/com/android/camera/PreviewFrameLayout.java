@@ -22,11 +22,13 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 /**
  * A layout which handles the preview aspect ratio.
  */
-public class PreviewFrameLayout extends ViewGroup {
+public class PreviewFrameLayout extends RelativeLayout {
     private static final int MIN_HORIZONTAL_MARGIN = 10; // 10dp
 
     /** A callback to be invoked when the preview frame's size changes. */
@@ -36,6 +38,7 @@ public class PreviewFrameLayout extends ViewGroup {
 
     private double mAspectRatio = 4.0 / 3.0;
     private View mFrame;
+    private RadioGroup mCameraPicker;
     private OnSizeChangedListener mSizeListener;
     private final DisplayMetrics mMetrics = new DisplayMetrics();
 
@@ -57,6 +60,7 @@ public class PreviewFrameLayout extends ViewGroup {
             throw new IllegalStateException(
                     "must provide child with id as \"frame\"");
         }
+        mCameraPicker = (RadioGroup) findViewById(R.id.camera_picker);
     }
 
     public void setAspectRatio(double ratio) {
@@ -98,6 +102,16 @@ public class PreviewFrameLayout extends ViewGroup {
         if (mSizeListener != null) {
             mSizeListener.onSizeChanged();
         }
+        if (mCameraPicker != null) {
+            mCameraPicker.measure(
+                    MeasureSpec.makeMeasureSpec(r - l,  MeasureSpec.AT_MOST),
+                    MeasureSpec.makeMeasureSpec(b - t, MeasureSpec.AT_MOST));
+            int width = mCameraPicker.getMeasuredWidth();
+            int height = mCameraPicker.getMeasuredHeight();
+            int ct = t + ((ViewGroup.MarginLayoutParams)
+                    mCameraPicker.getLayoutParams()).topMargin;
+            int cl = (r - l - width) / 2;
+            mCameraPicker.layout(cl, ct, cl + width, ct + height);
+        }
     }
 }
-

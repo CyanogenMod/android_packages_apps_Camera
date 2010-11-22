@@ -13,7 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <com.android.camera.PreviewFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
@@ -45,4 +44,5 @@
                 android:layout_margin="10dp"
                 android:visibility="invisible"/>
     </RelativeLayout>
+    <include layout="@layout/camera_picker" />
 </com.android.camera.PreviewFrameLayout>
