@@ -930,6 +930,7 @@ public class VideoCamera extends BaseCamera implements
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
         }
+
     }
 
     private void closeCamera() {
@@ -1190,6 +1191,13 @@ public class VideoCamera extends BaseCamera implements
             requestedSizeLimit = myExtras.getLong(MediaStore.EXTRA_SIZE_LIMIT);
         }
         mMediaRecorder = new MediaRecorder();
+
+        // If we got here locked... make sure we unlock. Not pretty, but
+        // until the race condition is properly fixed it'll have to do
+
+        try { // There should be a method to check if the camera is locked
+            mCameraDevice.unlock();
+        } catch (RuntimeException rte) {}
 
         mMediaRecorder.setCamera(mCameraDevice);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
