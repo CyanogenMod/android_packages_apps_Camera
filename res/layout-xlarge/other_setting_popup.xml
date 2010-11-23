@@ -23,47 +23,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="40dp">
+        android:layout_marginRight="40dp"
+        android:orientation="vertical">
 
-    <TableRow style="@style/OtherSettingTableRow">
-        <TextView android:text="@string/pref_camera_recordlocation_title"
-            style="@style/SettingPickerText" />
-        <com.android.camera.ui.InLineSettingPicker
-            camera:prefKey="pref_camera_recordlocation_key" />
-    </TableRow>
-
-    <TableRow style="@style/OtherSettingTableRow">
-        <TextView android:text="@string/pref_camera_focusmode_title"
-            style="@style/SettingPickerText"  />
-        <com.android.camera.ui.InLineSettingPicker
-            camera:prefKey="pref_camera_focusmode_key" />
-    </TableRow>
-
-    <TableRow style="@style/OtherSettingTableRow">
-        <TextView android:text="@string/pref_exposure_title"
-            style="@style/SettingPickerText"  />
-        <com.android.camera.ui.InLineSettingPicker
-            camera:prefKey="pref_camera_exposure_key" />
-    </TableRow>
-
-    <TableRow style="@style/OtherSettingTableRow">
-        <TextView android:text="@string/pref_camera_picturesize_title"
-            style="@style/SettingPickerText"  />
-        <com.android.camera.ui.InLineSettingPicker
-            camera:prefKey="pref_camera_picturesize_key" />
-    </TableRow>
-
-    <TableRow style="@style/OtherSettingTableRow">
-        <TextView android:text="@string/pref_camera_jpegquality_title"
-            style="@style/SettingPickerText"  />
-        <com.android.camera.ui.InLineSettingPicker
-            camera:prefKey="pref_camera_jpegquality_key" />
-    </TableRow>
-
-    <TableRow style="@style/OtherSettingTableRow">
-        <TextView android:text="@string/pref_camera_scenemode_title"
-            style="@style/SettingPickerText"  />
-        <com.android.camera.ui.InLineSettingPicker
-            camera:prefKey="pref_camera_scenemode_key" />
-    </TableRow>
+    <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_recordlocation_key"
+        style="@style/SettingRow" />
+    <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_focusmode_key"
+        style="@style/SettingRow" />
+    <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_exposure_key"
+        style="@style/SettingRow" />
+    <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_picturesize_key"
+        style="@style/SettingRow" />
+    <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_jpegquality_key"
+        style="@style/SettingRow" />
+    <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_scenemode_key"
+        style="@style/SettingRow" />
 </com.android.camera.ui.OtherSettingsPopup>

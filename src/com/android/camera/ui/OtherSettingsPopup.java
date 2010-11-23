@@ -26,10 +26,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TableLayout;
+import android.widget.LinearLayout;
 
 /* A popup window that contains several camera settings. */
-public class OtherSettingsPopup extends TableLayout
+public class OtherSettingsPopup extends LinearLayout
         implements InLineSettingPicker.Listener {
     private static final String TAG = "OtherSettingsPopup";
     private Listener mListener;
@@ -56,9 +56,8 @@ public class OtherSettingsPopup extends TableLayout
 
     public void initialize(PreferenceGroup group) {
         // Initialize each camera setting.
-        for (int i = getChildCount() - 1; i >= 0 ; i--) {
-            ViewGroup row = (ViewGroup) getChildAt(i);
-            InLineSettingPicker picker = (InLineSettingPicker) row.getChildAt(1);
+        for (int i = getChildCount() - 1; i >= 0; i--) {
+            InLineSettingPicker picker = (InLineSettingPicker) getChildAt(i);
             ListPreference pref = group.findPreference(picker.getKey());
             if (pref != null) {
                 picker.setSettingChangedListener(this);
@@ -67,6 +66,7 @@ public class OtherSettingsPopup extends TableLayout
                 removeViewAt(i);
             }
        }
+       requestLayout();
     }
 
     public void onSettingChanged() {

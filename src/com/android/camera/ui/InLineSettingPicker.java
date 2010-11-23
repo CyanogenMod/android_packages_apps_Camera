@@ -34,9 +34,15 @@ import com.android.camera.ListPreference;
 
 import java.util.Formatter;
 
+/* A one-line camera setting that includes a title (ex: Picture size), a
+   previous button, the current value (ex: 5MP), and a next button. Other
+   setting popup window includes several InLineSettingPicker. */
 public class InLineSettingPicker extends LinearLayout {
     private final String TAG = "InLineSettingPicker";
-    private TextView mText;
+    // The view that shows the name of the setting. Ex: Picture size
+    private TextView mTitle;
+    // The view that shows the current selected setting. Ex: 5MP
+    private TextView mEntry;
     private ListPreference mPreference;
     private boolean mNext, mPrevious;
     private int mIndex;
@@ -67,7 +73,6 @@ public class InLineSettingPicker extends LinearLayout {
         LayoutInflater inflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.in_line_setting_picker, this, true);
-
         mHandler = new Handler();
 
         OnTouchListener nextTouchListener = new OnTouchListener() {
@@ -104,7 +109,8 @@ public class InLineSettingPicker extends LinearLayout {
         nextButton.setOnTouchListener(nextTouchListener);
         Button previousButton = (Button) findViewById(R.id.decrement);
         previousButton.setOnTouchListener(previousTouchListener);
-        mText = (TextView) findViewById(R.id.current_setting);
+        mEntry = (TextView) findViewById(R.id.current_setting);
+        mTitle = (TextView) findViewById(R.id.title);
 
         TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.InLineSettingPicker, 0, 0);
@@ -118,6 +124,7 @@ public class InLineSettingPicker extends LinearLayout {
     public void initialize(ListPreference preference) {
         mPreference = preference;
         mIndex = mPreference.findIndexOfValue(mPreference.getValue());
+        mTitle.setText(mPreference.getTitle());
         updateView();
     }
 
@@ -133,7 +140,7 @@ public class InLineSettingPicker extends LinearLayout {
     }
 
     private void updateView() {
-        mText.setText(mPreference.getEntry());
+        mEntry.setText(mPreference.getEntry());
     }
 
     public void setSettingChangedListener(Listener listener) {
