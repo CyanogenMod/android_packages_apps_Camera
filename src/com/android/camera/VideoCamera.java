@@ -187,7 +187,7 @@ public class VideoCamera extends NoSearchActivity
 
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView, mTimeLapseRecordingTimeView;
-    private Switcher mSwitcher;
+    private SwitcherSet mSwitcher;
     private boolean mRecordingTimeCountsDown = false;
 
     private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
@@ -353,9 +353,8 @@ public class VideoCamera extends NoSearchActivity
             setContentView(R.layout.video_camera);
 
             initThumbnailButton();
-            mSwitcher = ((Switcher) findViewById(R.id.camera_switch));
+            mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
             mSwitcher.setOnSwitchListener(this);
-            mSwitcher.addTouchView(findViewById(R.id.camera_switch_set));
         }
 
         mPreviewFrameLayout = (PreviewFrameLayout)
@@ -517,14 +516,14 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void setOrientationIndicator(int degree) {
-        RotateImageView thumbnail = (RotateImageView) findViewById(
+        RotateImageView icon = (RotateImageView) findViewById(
                 R.id.review_thumbnail);
-        if (thumbnail != null) thumbnail.setDegree(degree);
+        if (icon != null) icon.setDegree(degree);
 
-        ((RotateImageView) findViewById(
-                R.id.camera_switch_icon)).setDegree(degree);
-        ((RotateImageView) findViewById(
-                R.id.video_switch_icon)).setDegree(degree);
+        icon = (RotateImageView) findViewById(R.id.camera_switch_icon);
+        if (icon != null) icon.setDegree(degree);
+        icon = (RotateImageView) findViewById(R.id.video_switch_icon);
+        if (icon != null) icon.setDegree(degree);
     }
 
     @Override
@@ -1730,7 +1729,7 @@ public class VideoCamera extends NoSearchActivity
 
     private boolean switchToCameraMode() {
         if (isFinishing() || mMediaRecorderRecording) return false;
-        MenuHelper.gotoCameraMode(this);
+        MenuHelper.gotoCameraMode(VideoCamera.this);
         finish();
         return true;
     }

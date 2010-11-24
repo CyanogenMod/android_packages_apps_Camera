@@ -27,7 +27,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 /**
- * A widget which switchs between the {@code Camera} and the {@code VideoCamera}
+ * A widget which switches between the {@code Camera} and the {@code VideoCamera}
  * activities.
  */
 public class Switcher extends ImageView implements View.OnTouchListener {
