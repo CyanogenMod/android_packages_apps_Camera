@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="40dp"
+        android:layout_marginRight="225dp"
         android:orientation="vertical">
 
     <FrameLayout android:id="@+id/topPanel"

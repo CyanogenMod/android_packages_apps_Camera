@@ -44,18 +44,19 @@ public class IndicatorWheel extends ViewGroup {
     // The center of the shutter button.
     private int mCenterX, mCenterY;
     // The width of the wheel stroke.
-    private int mStrokeWidth = 40;
-    private final int STROKE_COLOR = 0x50000000;
+    private int mStrokeWidth = 60;
+    private final int STROKE_COLOR = 0x12FFFFFF;
     // The width of the edges on both sides of the wheel, which has less alpha.
-    private final int EDGE_STROKE_WIDTH = 4, EDGE_STROKE_COLOR = 0x30000000;
+    private final int EDGE_STROKE_WIDTH = 6, EDGE_STROKE_COLOR = 0x07FFFFFF;
+    // Leave some space between the settings wheel and the decoration edges.
+    private final int LINE_SPACE = 2;
+    private final int OUTER_EDGE_STROKE_WIDTH = 3, OUTER_EDGE_STROKE_COLOR = 0x07FFFFFF;
     private View mShutterButton;
     private double mShutterButtonRadius;
     private double mWheelRadius;
     private double mSectorInitialRadians[];
     private Paint mBackgroundPaint;
     private RectF mBackgroundRect;
-    // The overlapping width between control panel and indicator wheel.
-    private int mOverlapWidth;
 
     static public interface Listener {
         public void onIndicatorClicked(int index);
@@ -76,10 +77,6 @@ public class IndicatorWheel extends ViewGroup {
         mBackgroundRect = new RectF();
     }
 
-    public void setOverlapWidth(int width) {
-        mOverlapWidth = width;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int count = getChildCount();
@@ -94,6 +91,8 @@ public class IndicatorWheel extends ViewGroup {
             double radius = Math.sqrt(dx * dx + dy * dy);
             // Ignore the event if it's too near to the shutter button.
             if (radius < mShutterButtonRadius) return false;
+            // Ignore the event if it's too far from the shutter button.
+            if ((radius - mWheelRadius) > mStrokeWidth) return false;
 
             double intervalDegrees = 180.0 / (count - 2);
             double delta = Math.atan2(dy, dx);
@@ -136,12 +135,12 @@ public class IndicatorWheel extends ViewGroup {
         }
 
         if (childCount > 1) {
-            mStrokeWidth = (int) (getChildAt(1).getMeasuredWidth() * 1.3);
+            mStrokeWidth = (int) (getChildAt(1).getMeasuredWidth() * 2.0);
         }
 
         // Measure myself.
-        int desiredWidth = (int)(mShutterButton.getMeasuredWidth() * 2.5);
-        int desiredHeight = (int)(mShutterButton.getMeasuredHeight() * 4.5);
+        int desiredWidth = (int)(mShutterButton.getMeasuredWidth() * 3);
+        int desiredHeight = (int)(mShutterButton.getMeasuredHeight() * 4.5) + 2;
         int widthMode = MeasureSpec.getMode(widthSpec);
         int heightMode = MeasureSpec.getMode(heightSpec);
         int measuredWidth, measuredHeight;
@@ -170,9 +169,8 @@ public class IndicatorWheel extends ViewGroup {
 
         // Layout the shutter button.
         int shutterButtonWidth = mShutterButton.getMeasuredWidth();
-        mShutterButtonRadius = shutterButtonWidth / 2.0 + 10;
+        mShutterButtonRadius = shutterButtonWidth / 2.0;
         int shutterButtonHeight = mShutterButton.getMeasuredHeight();
-        mCenterX = (right - left + mOverlapWidth) / 2;
         mCenterY = (bottom - top) / 2;
         mShutterButton.layout(mCenterX - shutterButtonWidth / 2,
                 mCenterY - shutterButtonHeight / 2,
@@ -182,8 +180,8 @@ public class IndicatorWheel extends ViewGroup {
         // Layout the settings. The icons are spreaded on the left side of the
         // shutter button. So the angle starts from 90 to 270 degrees.
         if (count == 1) return;
-        mWheelRadius = (right - left - mOverlapWidth) / 2.0
-                + EDGE_STROKE_WIDTH + mStrokeWidth / 2.0;
+        mWheelRadius = mShutterButtonRadius + mStrokeWidth * 1.5;
+        mCenterX = (int) (right - mShutterButtonRadius * 1.2);
         double intervalDegrees = 180.0 / (count - 2);
         double initialDegrees = 90.0;
         int index = 0;
@@ -226,9 +224,15 @@ public class IndicatorWheel extends ViewGroup {
         mBackgroundPaint.setStrokeWidth(EDGE_STROKE_WIDTH);
         mBackgroundPaint.setColor(EDGE_STROKE_COLOR);
         float delta = (mStrokeWidth + EDGE_STROKE_WIDTH) / 2.0f;
-        mBackgroundRect.inset(-delta, -delta);
+        mBackgroundRect.inset(-delta - LINE_SPACE, -delta - LINE_SPACE);
         canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
-        mBackgroundRect.inset(delta * 2, delta * 2);
+        mBackgroundRect.inset((delta + LINE_SPACE) * 2, (delta + LINE_SPACE) * 2);
+        canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
+
+        // Draw another thinner, lighter background on the outer circle
+        mBackgroundPaint.setStrokeWidth(OUTER_EDGE_STROKE_WIDTH);
+        mBackgroundPaint.setColor(OUTER_EDGE_STROKE_COLOR);
+        mBackgroundRect.inset(-delta * 4 - EDGE_STROKE_WIDTH, -delta * 4 - EDGE_STROKE_WIDTH);
         canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
 
         super.onDraw(canvas);

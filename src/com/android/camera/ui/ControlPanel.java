@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -89,8 +88,6 @@ public class ControlPanel extends RelativeLayout
         super.onFinishInflate();
         mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
         mIndicatorWheel.setListener(this);
-        MarginLayoutParams params = (MarginLayoutParams) getLayoutParams();
-        mIndicatorWheel.setOverlapWidth(-params.leftMargin);
     }
 
     public void initialize(Context context, PreferenceGroup group,
@@ -149,7 +146,7 @@ public class ControlPanel extends RelativeLayout
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
-        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.frame);
+        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.app_root);
         BasicSettingPopup popup = (BasicSettingPopup) inflater.inflate(
                 R.layout.basic_setting_popup, root, false);
         mBasicSettingPopups[index] = popup;
@@ -161,7 +158,7 @@ public class ControlPanel extends RelativeLayout
     private void initializeOtherSettingPopup() {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
-        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.frame);
+        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.app_root);
         mOtherSettingsPopup = (OtherSettingsPopup) inflater.inflate(
                 R.layout.other_setting_popup, root, false);
         mOtherSettingsPopup.setOtherSettingChangedListener(this);

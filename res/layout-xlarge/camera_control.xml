@@ -18,20 +18,19 @@
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_panel"
         android:layout_height="match_parent"
-        android:layout_width="230dp"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="40dp"
-        android:layout_marginLeft="-46dp"
         android:layout_marginBottom="40dp">
 
         <ViewStub android:id="@+id/zoom_stub"
                 android:inflatedId="@+id/zoom_picker"
                 android:layout="@layout/zoom_picker"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
                 android:layout_width="45dp"
                 android:layout_height="150dp"
-                android:layout_marginLeft="21dp"
-                android:layout_marginTop="10dp" />
+                android:layout_marginRight="160dp"/>
 
         <TextView android:id="@+id/recording_time"
                 style="@style/RecordingTime"
@@ -63,8 +62,8 @@
                         android:scaleType="center"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/btn_ic_camera_shutter"
-                        android:background="@drawable/btn_shutter" />
+                        android:src="@drawable/btn_ic_camera_shutter_large"
+                        android:background="@drawable/btn_shutter_large" />
         </com.android.camera.ui.IndicatorWheel>
 
         <com.android.camera.SwitcherSet android:id="@+id/camera_switch"
@@ -73,8 +72,8 @@
                 android:layout_height="150dp"
                 android:layout_width="45dp"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="21dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="160dp"
                 android:background="@drawable/mode_switch_bg_v2">
             <RadioButton android:id="@+id/switch_off_button"
                     android:layout_height="wrap_content"
