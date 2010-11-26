@@ -52,7 +52,7 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
     private long mAvgJpegCallbackFinishTime;
 
     public CameraLatency() {
-        super("com.google.android.camera", Camera.class);
+        super(Camera.class);
     }
 
     @Override
