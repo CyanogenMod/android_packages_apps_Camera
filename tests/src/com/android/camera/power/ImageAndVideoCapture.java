@@ -66,10 +66,9 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
         try {
             Thread.sleep(WAIT_FOR_STABLE_STATE);
         } catch (Exception e) {
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
             assertTrue("testImageCaptureDoNothing", false);
         }
-        assertTrue("testImageCaptureDoNothing", true);
     }
 
     @LargeTest
@@ -85,10 +84,9 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
             }
             Thread.sleep(WAIT_FOR_STABLE_STATE);
         } catch (Exception e) {
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
             assertTrue("testImageCapture", false);
         }
-        assertTrue("testImageCapture", true);
     }
 
     @LargeTest
@@ -111,9 +109,8 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
             }
             Thread.sleep(WAIT_FOR_STABLE_STATE);
         } catch (Exception e) {
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
             assertTrue("testVideoCapture", false);
         }
-        assertTrue("testVideoCapture", true);
     }
 }

@@ -72,7 +72,7 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
             mfstream = new FileWriter(CAMERA_TEST_OUTPUT_FILE, true);
             mOut = new BufferedWriter(mfstream);
         } catch (Exception e){
-            assertTrue("Camera Switch Mode",false);
+            assertTrue("Camera Switch Mode", false);
         }
     }
 
@@ -108,8 +108,7 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
                 mOut.flush();
             }
         } catch (Exception e){
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
         }
-            assertTrue("testSwitchMode",true);
     }
 }

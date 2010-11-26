@@ -90,7 +90,7 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
                 }
             }
         } catch (Exception e) {
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
         }
         //ToDO: yslau
         //1) Need to get the baseline from the cupcake so that we can add the
@@ -135,7 +135,6 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
         Log.v(TAG, "Avg mPictureDisplayedToJpegCallbackTime = "
                 + mAvgPictureDisplayedToJpegCallbackTime);
         Log.v(TAG, "Avg mJpegCallbackFinishTime = " + mAvgJpegCallbackFinishTime);
-        assertTrue("testImageCapture", true);
     }
 }
 
