@@ -168,6 +168,7 @@ public class VideoCamera extends BaseCamera implements
     private int mVideoBitrate;
     private String mOutputFormat = "3gp";
     private int mVideoFps = 30;
+    private boolean focusModeChanged;
 
 
     //
@@ -1745,6 +1746,7 @@ public class VideoCamera extends BaseCamera implements
     }
 
     private void updateFocusMode() {
+        String oldmode = mFocusMode;
         mFocusMode = mPreferences.getString(
                 CameraSettings.KEY_VIDEOCAMERA_FOCUS_MODE,
                 getString(R.string.pref_camera_focusmode_default));
@@ -1756,6 +1758,11 @@ public class VideoCamera extends BaseCamera implements
             setStabilityChangeListener(null);
             mFocusMode = "infinity";
             mParameters.setFocusMode(mFocusMode);
+        }
+        if (oldmode != mFocusMode) {
+            focusModeChanged = true;
+        } else {
+            focusModeChanged = false;
         }
     }
 
@@ -1806,7 +1813,7 @@ public class VideoCamera extends BaseCamera implements
         } else {
             sizeChanged = size.width != mVideoWidth || size.height != mVideoHeight;
         }
-        if (sizeChanged) {
+        if (sizeChanged || (mSmoothZoomSupported && focusModeChanged)) {
             // It is assumed media recorder is released before
             // onSharedPreferenceChanged, so we can close the camera here.
             mCameraDevice.stopPreview();
