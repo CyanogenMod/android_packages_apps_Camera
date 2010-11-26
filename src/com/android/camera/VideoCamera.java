@@ -495,8 +495,7 @@ public class VideoCamera extends NoSearchActivity
         String[] keys = new String[]{CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_COLOR_EFFECT,
-            CameraSettings.KEY_VIDEO_QUALITY,
-            CameraSettings.KEY_CAMERA_ID};
+            CameraSettings.KEY_VIDEO_QUALITY};
         mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
         if (mControlPanel != null) {
             mControlPanel.initialize(this, mPreferenceGroup, keys, false);
