@@ -185,6 +185,7 @@ public class ControlPanel extends RelativeLayout
                 mBasicSettingPopups[mActiveIndicator].setVisibility(View.INVISIBLE);
             }
             mActiveIndicator = -1;
+            mIndicatorWheel.unselectIndicator();
             return true;
         }
         return false;

@@ -51,12 +51,16 @@ public class IndicatorWheel extends ViewGroup {
     // Leave some space between the settings wheel and the decoration edges.
     private final int LINE_SPACE = 2;
     private final int OUTER_EDGE_STROKE_WIDTH = 3, OUTER_EDGE_STROKE_COLOR = 0x07FFFFFF;
+    private final int HIGHLIGHT_COLOR = 0xFF6899FF;
+    private final int HIGHLIGHT_WIDTH = 4;
+    private final int HIGHLIGHT_DEGREE = 30;
     private View mShutterButton;
     private double mShutterButtonRadius;
     private double mWheelRadius;
     private double mSectorInitialRadians[];
     private Paint mBackgroundPaint;
     private RectF mBackgroundRect;
+    private int mSelectedIndex = -1;
 
     static public interface Listener {
         public void onIndicatorClicked(int index);
@@ -77,6 +81,11 @@ public class IndicatorWheel extends ViewGroup {
         mBackgroundRect = new RectF();
     }
 
+    public void unselectIndicator() {
+        mSelectedIndex = -1;
+        invalidate();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int count = getChildCount();
@@ -94,25 +103,22 @@ public class IndicatorWheel extends ViewGroup {
             // Ignore the event if it's too far from the shutter button.
             if ((radius - mWheelRadius) > mStrokeWidth) return false;
 
-            double intervalDegrees = 180.0 / (count - 2);
             double delta = Math.atan2(dy, dx);
             if (delta < 0) delta += Math.PI * 2;
             // Check which sector is pressed.
             if (delta > mSectorInitialRadians[0]) {
                 for (int i = 1; i < count; i++) {
                     if (delta < mSectorInitialRadians[i]) {
-                        // Invoke the listener if it is "other setting" or if
-                        // scene mode does not override the setting.
+                        // Do nothing if scene mode overrides the setting.
                         View child = getChildAt(i);
                         if (child instanceof IndicatorButton) {
-                            IndicatorButton v = (IndicatorButton) child;
-                            if (!v.isOverridden()) {
-                                mListener.onIndicatorClicked(i - 1);
+                            if (((IndicatorButton) child).isOverridden()) {
+                                return true;
                             }
-                        } else {
-                            // "Other settings" indicator button
-                            mListener.onIndicatorClicked(i - 1);
                         }
+                        mSelectedIndex = i - 1;
+                        invalidate();
+                        mListener.onIndicatorClicked(i - 1);
                         return true;
                     }
                 }
@@ -193,7 +199,7 @@ public class IndicatorWheel extends ViewGroup {
         // shutter button. So the angle starts from 90 to 270 degrees.
         if (count == 1) return;
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 1.5;
-        double intervalDegrees = 180.0 / (count - 2);
+        double intervalDegrees = (count == 2) ? 90.0 : 180.0 / (count - 2);
         double initialDegrees = 90.0;
         int index = 0;
         for (int i = 0; i < count; i++) {
@@ -240,10 +246,24 @@ public class IndicatorWheel extends ViewGroup {
         mBackgroundRect.inset((delta + LINE_SPACE) * 2, (delta + LINE_SPACE) * 2);
         canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
 
-        // Draw another thinner, lighter background on the outer circle
+        // Draw highlight.
+        mBackgroundRect.inset(-delta * 2, -delta * 2);
+        if (mSelectedIndex >= 0) {
+            int count = getChildCount();
+            float initialDegrees = 90.0f;
+            float intervalDegrees = (count <= 2) ? 0.0f : 180.0f / (count - 2);
+            float degree = initialDegrees + intervalDegrees * mSelectedIndex;
+            mBackgroundPaint.setStrokeWidth(HIGHLIGHT_WIDTH);
+            mBackgroundPaint.setStrokeCap(Paint.Cap.ROUND);
+            mBackgroundPaint.setColor(HIGHLIGHT_COLOR);
+            canvas.drawArc(mBackgroundRect, -degree - HIGHLIGHT_DEGREE / 2,
+                    HIGHLIGHT_DEGREE, false, mBackgroundPaint);
+        }
+
+        // Draw another thinner, lighter background on the outer circle.
         mBackgroundPaint.setStrokeWidth(OUTER_EDGE_STROKE_WIDTH);
         mBackgroundPaint.setColor(OUTER_EDGE_STROKE_COLOR);
-        mBackgroundRect.inset(-delta * 4 - EDGE_STROKE_WIDTH, -delta * 4 - EDGE_STROKE_WIDTH);
+        mBackgroundRect.inset(-delta * 2 - EDGE_STROKE_WIDTH, -delta * 2 - EDGE_STROKE_WIDTH);
         canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
 
         super.onDraw(canvas);
