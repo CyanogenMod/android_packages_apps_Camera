@@ -36,17 +36,6 @@
                 android:layout_height="150dp"
                 android:layout_marginRight="160dp"/>
 
-        <TextView android:id="@+id/recording_time"
-                style="@style/RecordingTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="90dp"
-                android:drawablePadding="8dp"
-                android:drawableLeft="@drawable/ic_recording_indicator"
-                android:visibility="gone" />
-
         <TextView android:id="@+id/time_lapse_recording_time"
                 style="@style/RecordingTime"
                 android:layout_width="wrap_content"

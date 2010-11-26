@@ -61,14 +61,14 @@
         <item name="android:layout_width">match_parent</item>
     </style>
     <style name="RecordingTime">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">26dp</item>
         <item name="android:shadowColor">#c0000000</item>
         <item name="android:shadowDx">1</item>
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">1</item>
         <item name="android:textColor">@color/recording_time_elapsed_text</item>
-        <item name="android:textSize">23dp</item>
+        <item name="android:textSize">16dp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="SettingPickerText">

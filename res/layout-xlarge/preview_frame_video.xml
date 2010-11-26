@@ -36,6 +36,17 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
         <include layout="@layout/review_thumbnail"/>
+        <TextView android:id="@+id/recording_time"
+                style="@style/RecordingTime"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="26dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="8dp"
+                android:gravity="center"
+                android:background="@drawable/mode_switch_bg_v2"
+                android:drawableLeft="@drawable/ic_recording_indicator_small"
+                android:visibility="gone"/>
     </RelativeLayout>
     <include layout="@layout/camera_picker"/>
 </com.android.camera.PreviewFrameLayout>
