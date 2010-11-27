@@ -1756,8 +1756,7 @@ public class VideoCamera extends BaseCamera implements
         } else if ("touch".equals(mFocusMode) ||
                 Parameters.FOCUS_MODE_INFINITY.equals(mFocusMode)) {
             setStabilityChangeListener(null);
-            mFocusMode = "infinity";
-            mParameters.setFocusMode(mFocusMode);
+            mParameters.setFocusMode(Parameters.FOCUS_MODE_INFINITY);
         }
         if (oldmode != mFocusMode) {
             focusModeChanged = true;
