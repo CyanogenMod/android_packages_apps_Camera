@@ -55,7 +55,5 @@
                 style="@style/SettingRow" />
         <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_jpegquality_key"
                 style="@style/SettingRow" />
-        <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_scenemode_key"
-                style="@style/SettingRow" />
     </LinearLayout>
 </com.android.camera.ui.OtherSettingsPopup>

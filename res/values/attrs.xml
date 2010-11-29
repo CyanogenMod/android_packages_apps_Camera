@@ -28,6 +28,8 @@
         <attr name="modes" format="reference" />
     </declare-styleable>
     <declare-styleable name="IconListPreference">
+        <!-- If a preference does not have individual icons for each entry, it can has a single icon to represent it. -->
+        <attr name="singleIcon" format="reference" />
         <attr name="icons" />
         <attr name="largeIcons" format="reference" />
         <attr name="images" format="reference" />

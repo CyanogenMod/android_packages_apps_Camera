@@ -274,20 +274,6 @@
         <item>green-tint</item>
     </string-array>
 
-    <!-- Color effect has no separate icons. -->
-    <array name="coloreffect_largeicons" translatable="false">
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-        <item>@drawable/ic_viewfinder_coloreffect</item>
-    </array>
-
     <array name="coloreffect_images" translatable="false">
         <item>@drawable/btn_coloreffect_none</item>
         <item>@drawable/btn_coloreffect_mono</item>
