@@ -181,7 +181,7 @@ public class IndicatorWheel extends ViewGroup {
         // shutter button. So the angle starts from 90 to 270 degrees.
         if (count == 1) return;
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 1.5;
-        mCenterX = (int) (right - mShutterButtonRadius * 1.2);
+        mCenterX = (int) (right - mShutterButtonRadius * 1.2 - left);
         double intervalDegrees = 180.0 / (count - 2);
         double initialDegrees = 90.0;
         int index = 0;
