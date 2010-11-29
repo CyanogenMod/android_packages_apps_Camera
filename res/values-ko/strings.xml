@@ -113,7 +113,7 @@
     <string name="pref_restore_detail" msgid="5732490002291044791">"기본값 복원"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"노출"</string>
     <string name="details_ok" msgid="6848594369924424312">"확인"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USB 저장 공간이 부족합니다. 화질 설정을 변경하거나 일부 이미지 또는 파일을 삭제하세요."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USB 저장장치의 공간이 부족합니다. 화질 설정을 변경하거나 일부 이미지 또는 기타 파일을 삭제하세요."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SD 카드의 공간이 부족합니다. 화질 설정을 변경하거나 일부 이미지 또는 기타 파일을 삭제하세요."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"크기 한도에 도달했습니다."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"확대/축소"</string>
