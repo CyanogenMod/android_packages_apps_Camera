@@ -38,6 +38,7 @@ public class PreviewFrameLayout extends RelativeLayout {
 
     private double mAspectRatio = 4.0 / 3.0;
     private View mFrame;
+    private View mBorderView;
     private RadioGroup mCameraPicker;
     private OnSizeChangedListener mSizeListener;
     private final DisplayMetrics mMetrics = new DisplayMetrics();
@@ -61,6 +62,14 @@ public class PreviewFrameLayout extends RelativeLayout {
                     "must provide child with id as \"frame\"");
         }
         mCameraPicker = (RadioGroup) findViewById(R.id.camera_picker);
+
+        View preview = (View) findViewById(R.id.camera_preview);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)
+                preview.getLayoutParams();
+        mBorderView = (View) findViewById(R.id.preview_border);
+        View f = mBorderView;
+        params.setMargins(f.getPaddingLeft(), f.getPaddingTop(), f.getPaddingRight(), f.getPaddingBottom());
+        preview.setLayoutParams(params);
     }
 
     public void setAspectRatio(double ratio) {
@@ -77,7 +86,7 @@ public class PreviewFrameLayout extends RelativeLayout {
         int frameWidth = getWidth();
         int frameHeight = getHeight();
 
-        View f = mFrame;
+        View f = mBorderView;
         int horizontalPadding = f.getPaddingLeft() + f.getPaddingRight();
         int verticalPadding = f.getPaddingBottom() + f.getPaddingTop();
         int previewHeight = frameHeight - verticalPadding;
