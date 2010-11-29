@@ -113,7 +113,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
             //Write to file output
             output.write(memusage);
         } catch (Exception e) {
-            e.toString();
+            Log.v(TAG, "Got exception", e);
         }
     }
 
@@ -131,7 +131,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
             }
             memoryUsage = sb.toString();
         } catch (IOException e) {
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
         }
         String[] poList = memoryUsage.split("\r|\n|\r\n");
         String memusage = poList[1].concat("\n");
@@ -224,10 +224,9 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
             output.close();
             assertTrue("Camera image capture memory test", memoryResult);
         } catch (Exception e) {
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
             assertTrue("testImageCapture", false);
         }
-        assertTrue("testImageCapture", true);
     }
 
     @LargeTest
@@ -275,7 +274,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
             output.close();
             assertTrue("Camera video capture memory test", memoryResult);
         } catch (Exception e) {
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
             fail("Fails to capture video");
         }
     }

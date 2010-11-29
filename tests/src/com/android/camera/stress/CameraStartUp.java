@@ -42,7 +42,7 @@ public class CameraStartUp extends InstrumentationTestCase {
             Thread.sleep(1000);
             Log.v(TAG, "camera startup time: " + startupTime);
         } catch (Exception e) {
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
             fail("Fails to get the output file");
         }
         return startupTime;
@@ -66,7 +66,7 @@ public class CameraStartUp extends InstrumentationTestCase {
             Thread.sleep(WAIT_TIME_FOR_PREVIEW);
             Log.v(TAG, "video startup time: " + startupTime);
         } catch (Exception e) {
-            Log.v(TAG, e.toString());
+            Log.v(TAG, "Got exception", e);
             fail("Fails to launch video output file");
         }
         return startupTime;
