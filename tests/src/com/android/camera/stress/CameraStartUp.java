@@ -1,5 +1,8 @@
 package com.android.camera.stress;
 
+import com.android.camera.Camera;
+import com.android.camera.VideoCamera;
+
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -22,16 +25,13 @@ public class CameraStartUp extends InstrumentationTestCase {
     private String TAG = "CameraStartUp";
     private static final String CAMERA_TEST_OUTPUT_FILE =
             Environment.getExternalStorageDirectory().toString() + "/mediaStressOut.txt";
-    private static final String CAMERA_PACKAGE_NAME = "com.google.android.camera";
-    private static final String CAMERA_ACTIVITY_NAME = "com.android.camera.Camera";
-    private static final String VIDEORECORDER_ACTIVITY_NAME = "com.android.camera.VideoCamera";
     private static int WAIT_TIME_FOR_PREVIEW = 1500; //1.5 second
 
     private long launchCamera() {
         long startupTime = 0;
         try {
             Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.setClassName(CAMERA_PACKAGE_NAME, CAMERA_ACTIVITY_NAME);
+            intent.setClass(getInstrumentation().getTargetContext(), Camera.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             long beforeStart = System.currentTimeMillis();
             Instrumentation inst = getInstrumentation();
@@ -53,7 +53,7 @@ public class CameraStartUp extends InstrumentationTestCase {
 
         try {
             Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.setClassName(CAMERA_PACKAGE_NAME, VIDEORECORDER_ACTIVITY_NAME);
+            intent.setClass(getInstrumentation().getTargetContext(), VideoCamera.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             long beforeStart = System.currentTimeMillis();
             Instrumentation inst = getInstrumentation();

@@ -16,6 +16,7 @@
 
 package com.android.camera.stress;
 
+import com.android.camera.Camera;
 import com.android.camera.VideoCamera;
 
 import android.app.Instrumentation;
@@ -49,7 +50,7 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
     private FileWriter mfstream;
 
     public SwitchPreview() {
-        super("com.google.android.camera", VideoCamera.class);
+        super(VideoCamera.class);
     }
 
     @Override
@@ -96,12 +97,12 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
             for (int i=0; i< TOTAL_NUMBER_OF_SWITCHING; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 Intent intent = new Intent();
-                intent.setClassName("com.google.android.camera",
-                        "com.android.camera.VideoCamera");
+                intent.setClass(getInstrumentation().getTargetContext(),
+                        VideoCamera.class);
                 getActivity().startActivity(intent);
                 Thread.sleep(WAIT_FOR_PREVIEW);
-                intent.setClassName("com.google.android.camera",
-                "com.android.camera.Camera");
+                intent.setClass(getInstrumentation().getTargetContext(),
+                        Camera.class);
                 getActivity().startActivity(intent);
                 mOut.write(" ," + i);
                 mOut.flush();

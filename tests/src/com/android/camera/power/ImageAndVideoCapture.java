@@ -17,6 +17,7 @@
 package com.android.camera.power;
 
 import com.android.camera.Camera;
+import com.android.camera.VideoCamera;
 
 import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
@@ -45,7 +46,7 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
     private static final long WAIT_FOR_STABLE_STATE = 2000; //2 seconds
 
     public ImageAndVideoCapture() {
-        super("com.google.android.camera", Camera.class);
+        super(Camera.class);
     }
 
     @Override
@@ -97,8 +98,8 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
         try {
             // Switch to the video mode
             Intent intent = new Intent();
-            intent.setClassName("com.google.android.camera",
-                    "com.android.camera.VideoCamera");
+            intent.setClass(getInstrumentation().getTargetContext(),
+                    VideoCamera.class);
             getActivity().startActivity(intent);
             for (int i = 0; i < TOTAL_NUMBER_OF_VIDEOCAPTURE; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
