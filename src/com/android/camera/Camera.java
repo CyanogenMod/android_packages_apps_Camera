@@ -20,10 +20,10 @@ import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.CameraPicker;
-import com.android.camera.ui.GLRootView;
-import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.ControlPanel;
 import com.android.camera.ui.FocusRectangle;
+import com.android.camera.ui.GLRootView;
+import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.ZoomControllerListener;
 import com.android.camera.ui.ZoomPicker;
 
@@ -495,19 +495,19 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private class PopupGestureListener extends
             GestureDetector.SimpleOnGestureListener {
         public boolean onDown(MotionEvent e) {
-            int x = Math.round(e.getX());
-            int y = Math.round(e.getY());
-
             // Check if the popup window is visible.
             View v = mControlPanel.getActivePopupWindow();
             if (v == null) return false;
+
+            int x = Math.round(e.getX());
+            int y = Math.round(e.getY());
 
             // Dismiss the popup window if users touch on the outside.
             v.getLocationOnScreen(mPopupLocations);
             if (x < mPopupLocations[0] || x > mPopupLocations[0] + v.getWidth()
                     || y < mPopupLocations[1] || y > mPopupLocations[1] + v.getHeight()) {
                 mControlPanel.dismissSettingPopup();
-                return true;
+                // Let event fall through.
             }
             return false;
         }
