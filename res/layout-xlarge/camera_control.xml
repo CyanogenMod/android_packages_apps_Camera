@@ -23,9 +23,9 @@
         android:layout_marginTop="40dp"
         android:layout_marginBottom="40dp">
         <!-- The width is determined by IndicatorWheel so we should set
-             layout_width as wrap_contant instead of hardcoding the width
-             but somehow doing so makes the control panel occupy the whole
-             screen width. Framework bug? -->
+             layout_width as wrap_contant but RelativeLayout Javadoc says that
+             this is circular dependency and is not allowed so it's very
+             unfortunate that we have to hardcode the width here. -->
 
         <ViewStub android:id="@+id/zoom_stub"
                 android:inflatedId="@+id/zoom_picker"
