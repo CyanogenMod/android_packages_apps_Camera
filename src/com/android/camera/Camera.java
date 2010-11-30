@@ -159,7 +159,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private FocusRectangle mFocusRectangle;
     private ToneGenerator mFocusToneGenerator;
     private GestureDetector mPopupGestureDetector;
-    private GestureDetector mZoomGestureDetector;
     private SwitcherSet mSwitcher;
     private boolean mStartPreviewFail = false;
 
@@ -450,7 +449,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
-        mZoomGestureDetector = new GestureDetector(this, new ZoomGestureListener());
         if (mZoomPicker != null) {
             mZoomPicker.setZoomRatios(getZoomRatios());
             mZoomPicker.setOnZoomChangeListener(
@@ -493,43 +491,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         return result;
     }
 
-    private class ZoomGestureListener extends
-            GestureDetector.SimpleOnGestureListener {
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            // Perform zoom only when preview is started and snapshot is not in
-            // progress.
-            if (mPausing || !isCameraIdle() || !mPreviewing
-                    || mZoomState != ZOOM_STOPPED) {
-                return false;
-            }
-
-            int x = Math.round(e.getX());
-            int y = Math.round(e.getY());
-            if (x < mSurfaceView.getLeft() || x > mSurfaceView.getRight()
-                    || y < mSurfaceView.getTop() || y > mSurfaceView.getBottom()) {
-                return false;
-            }
-
-            if (mZoomValue < mZoomMax) {
-                // Zoom in to the maximum.
-                mZoomValue = mZoomMax;
-            } else {
-                mZoomValue = 0;
-            }
-
-            setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
-
-            if (mZoomPicker != null) {
-                mZoomPicker.setZoomIndex(mZoomValue);
-            } else {
-                mHeadUpDisplay.setZoomIndex(mZoomValue);
-            }
-            return true;
-        }
-    }
-
     private int mPopupLocations[] = new int[2];
     private class PopupGestureListener extends
             GestureDetector.SimpleOnGestureListener {
@@ -559,11 +520,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             return true;
         }
 
-        if (!super.dispatchTouchEvent(m) && mZoomGestureDetector != null) {
-            return mZoomGestureDetector.onTouchEvent(m);
-        }
-
-        return false;
+        return super.dispatchTouchEvent(m);
     }
 
     LocationListener [] mLocationListeners = new LocationListener[] {
