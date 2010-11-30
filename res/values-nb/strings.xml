@@ -107,7 +107,7 @@
     <string name="pref_restore_detail" msgid="5732490002291044791">"Gjenopprett standardinnstillingene"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Eksponering"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Delt lagringsplass er snart oppbrukt. Endre kvalitetsinnstillingene, eller slett bilder eller andre filer."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USB-lagringsplass er snart oppbrukt. Endre kvalitetsinnstillingene, eller slett bilder eller andre filer."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Lagringsplassen på SD-kortet er snart oppbrukt. Endre kvalitetsinnstillingene, eller slett bilder eller andre filer."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Videoen ble for stor."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
