@@ -58,7 +58,7 @@
                 camera:key="pref_camera_coloreffect_key"
                 camera:defaultValue="@string/pref_camera_coloreffect_default"
                 camera:title="@string/pref_camera_coloreffect_title"
-                camera:largeIcons="@array/coloreffect_largeicons"
+                camera:singleIcon="@drawable/ic_viewfinder_coloreffect"
                 camera:images="@array/coloreffect_images"
                 camera:entries="@array/pref_camera_coloreffect_entries"
                 camera:entryValues="@array/pref_camera_coloreffect_entryvalues"/>

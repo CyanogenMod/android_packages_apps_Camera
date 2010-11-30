@@ -27,7 +27,7 @@ import java.util.List;
 
 /** A {@code ListPreference} where each entry has a corresponding icon. */
 public class IconListPreference extends ListPreference {
-
+    private int mSingleIconId;
     private int mIconIds[];
     private int mLargeIconIds[];
     private int mImageIds[];
@@ -37,14 +37,19 @@ public class IconListPreference extends ListPreference {
         TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.IconListPreference, 0, 0);
         Resources res = context.getResources();
+        mSingleIconId = a.getResourceId(
+                R.styleable.IconListPreference_singleIcon, 0);
         mIconIds = getIds(res, a.getResourceId(
                 R.styleable.IconListPreference_icons, 0));
         mLargeIconIds = getIds(res, a.getResourceId(
                 R.styleable.IconListPreference_largeIcons, 0));
         mImageIds = getIds(res, a.getResourceId(
                 R.styleable.IconListPreference_images, 0));
-        if (mImageIds == null) mImageIds = mLargeIconIds;
         a.recycle();
+    }
+
+    public int getSingleIcon() {
+        return mSingleIconId;
     }
 
     public int[] getIconIds() {
@@ -86,17 +91,17 @@ public class IconListPreference extends ListPreference {
         IntArray largeIconIds = new IntArray();
         IntArray imageIds = new IntArray();
 
-        // We allow mIconsIds to be null, but not mLargeIconIds. The reason is that if large icons
-        // are unspecified, the on screen icons will be blank which is a bug.
         for (int i = 0, len = entryValues.length; i < len; i++) {
             if (supported.indexOf(entryValues[i].toString()) >= 0) {
                 if (mIconIds != null) iconIds.add(mIconIds[i]);
-                largeIconIds.add(mLargeIconIds[i]);
+                if (mLargeIconIds != null) largeIconIds.add(mLargeIconIds[i]);
                 if (mImageIds != null) imageIds.add(mImageIds[i]);
             }
         }
         if (mIconIds != null) mIconIds = iconIds.toArray(new int[iconIds.size()]);
-        mLargeIconIds = largeIconIds.toArray(new int[largeIconIds.size()]);
+        if (mLargeIconIds != null) {
+            mLargeIconIds = largeIconIds.toArray(new int[largeIconIds.size()]);
+        }
         if (mImageIds != null) mImageIds = imageIds.toArray(new int[imageIds.size()]);
         super.filterUnsupported(supported);
     }

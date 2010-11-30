@@ -32,7 +32,14 @@ public class IndicatorButton extends Button {
     }
 
     public void reloadPreference() {
-        int index = mPreference.findIndexOfValue(mPreference.getValue());
-        setBackgroundResource(mPreference.getLargeIconIds()[index]);
+        int[] iconIds = mPreference.getLargeIconIds();
+        if (iconIds != null) {
+            // Each entry has a corresponding icon.
+            int index = mPreference.findIndexOfValue(mPreference.getValue());
+            setBackgroundResource(iconIds[index]);
+        } else {
+            // The preference only has a single icon to represent it.
+            setBackgroundResource(mPreference.getSingleIcon());
+        }
     }
 }

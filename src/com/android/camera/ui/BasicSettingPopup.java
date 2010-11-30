@@ -59,7 +59,10 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
                 Context.LAYOUT_INFLATER_SERVICE);
         CharSequence[] entries = mPreference.getEntries();
         CharSequence[] values = mPreference.getEntryValues();
-        int[] imageIds = mPreference.getImageIds();
+        int[] iconIds = mPreference.getImageIds();
+        if (iconIds == null) {
+            iconIds = mPreference.getLargeIconIds();
+        }
         int index = mPreference.findIndexOfValue(mPreference.getValue());
 
         // Set title.
@@ -75,11 +78,13 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
             text.setClickable(false);
             if (index == i) text.setPressed(true);
 
-            // Initialize the image.
-            Drawable drawable = context.getResources().getDrawable(imageIds[i]);
-            ImageView image = (ImageView) row.findViewById(R.id.image);
-            image.setImageDrawable(drawable);
-            image.setClickable(false);
+            // Initialize the icon.
+            if (iconIds != null) {
+                Drawable drawable = context.getResources().getDrawable(iconIds[i]);
+                ImageView image = (ImageView) row.findViewById(R.id.image);
+                image.setImageDrawable(drawable);
+                image.setClickable(false);
+            }
             mContentPanel.addView(row);
         }
     }
