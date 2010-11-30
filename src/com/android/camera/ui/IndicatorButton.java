@@ -23,6 +23,8 @@ import android.widget.Button;
 
 public class IndicatorButton extends Button {
     private IconListPreference mPreference;
+    // Scene mode can override the original preference value.
+    private String mOverrideValue;
 
     public IndicatorButton(Context context, IconListPreference pref) {
         super(context);
@@ -35,11 +37,29 @@ public class IndicatorButton extends Button {
         int[] iconIds = mPreference.getLargeIconIds();
         if (iconIds != null) {
             // Each entry has a corresponding icon.
-            int index = mPreference.findIndexOfValue(mPreference.getValue());
+            int index;
+            if (mOverrideValue == null) {
+                index = mPreference.findIndexOfValue(mPreference.getValue());
+            } else {
+                index = mPreference.findIndexOfValue(mOverrideValue);
+            }
             setBackgroundResource(iconIds[index]);
         } else {
             // The preference only has a single icon to represent it.
             setBackgroundResource(mPreference.getSingleIcon());
         }
+    }
+
+    public String getKey() {
+        return mPreference.getKey();
+    }
+
+    public boolean isOverridden() {
+        return mOverrideValue != null;
+    }
+
+    public void overrideSettings(String value) {
+        mOverrideValue = value;
+        reloadPreference();
     }
 }

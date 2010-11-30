@@ -24,7 +24,8 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="225dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible">
 
     <FrameLayout android:id="@+id/topPanel"
             android:layout_width="match_parent"

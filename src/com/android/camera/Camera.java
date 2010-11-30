@@ -1097,22 +1097,30 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private void overrideHudSettings(final String flashMode,
+    private void overrideCameraSettings(final String flashMode,
             final String whiteBalance, final String focusMode) {
-        mHeadUpDisplay.overrideSettings(
-                CameraSettings.KEY_FLASH_MODE, flashMode,
-                CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
-                CameraSettings.KEY_FOCUS_MODE, focusMode);
+        if (mHeadUpDisplay != null) {
+            mHeadUpDisplay.overrideSettings(
+                    CameraSettings.KEY_FLASH_MODE, flashMode,
+                    CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
+                    CameraSettings.KEY_FOCUS_MODE, focusMode);
+        }
+        if (mControlPanel != null) {
+            mControlPanel.overrideSettings(
+                    CameraSettings.KEY_FLASH_MODE, flashMode,
+                    CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
+                    CameraSettings.KEY_FOCUS_MODE, focusMode);
+        }
     }
 
-    private void updateSceneModeInHud() {
+    private void updateSceneModeUI() {
         // If scene mode is set, we cannot set flash mode, white balance, and
         // focus mode, instead, we read it from driver
         if (!Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
-            overrideHudSettings(mParameters.getFlashMode(),
+            overrideCameraSettings(mParameters.getFlashMode(),
                     mParameters.getWhiteBalance(), mParameters.getFocusMode());
         } else {
-            overrideHudSettings(null, null, null);
+            overrideCameraSettings(null, null, null);
         }
     }
 
@@ -1156,7 +1164,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
             });
         }
-        updateSceneModeInHud();
+        updateSceneModeUI();
     }
 
     private void attachHeadUpDisplay() {
@@ -1962,8 +1970,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             Log.w(TAG, "invalid exposure: " + exposure);
         }
 
-        if (mHeadUpDisplay != null) updateSceneModeInHud();
-        // TODO: update icons on control panel.
+        updateSceneModeUI();
 
         if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
             // Set flash mode.

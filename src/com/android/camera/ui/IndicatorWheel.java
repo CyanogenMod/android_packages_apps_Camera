@@ -101,7 +101,18 @@ public class IndicatorWheel extends ViewGroup {
             if (delta > mSectorInitialRadians[0]) {
                 for (int i = 1; i < count; i++) {
                     if (delta < mSectorInitialRadians[i]) {
-                        mListener.onIndicatorClicked(i - 1);
+                        // Invoke the listener if it is "other setting" or if
+                        // scene mode does not override the setting.
+                        View child = getChildAt(i);
+                        if (child instanceof IndicatorButton) {
+                            IndicatorButton v = (IndicatorButton) child;
+                            if (!v.isOverridden()) {
+                                mListener.onIndicatorClicked(i - 1);
+                            }
+                        } else {
+                            // "Other settings" indicator button
+                            mListener.onIndicatorClicked(i - 1);
+                        }
                         return true;
                     }
                 }
@@ -241,5 +252,19 @@ public class IndicatorWheel extends ViewGroup {
     public void updateIndicator(int index) {
         IndicatorButton indicator = (IndicatorButton) getChildAt(index + 1);
         indicator.reloadPreference();
+    }
+
+    // Scene mode may override other camera settings (ex: flash mode).
+    public void overrideSettings(String key, String value) {
+        int count = getChildCount();
+        for (int j = 1; j < count; j++) {
+            View v = getChildAt(j);
+            if (v instanceof IndicatorButton) {  // skip the button of "other settings"
+                IndicatorButton indicator = (IndicatorButton) v;
+                if (key.equals(indicator.getKey())) {
+                    indicator.overrideSettings(value);
+                }
+            }
+        }
     }
 }

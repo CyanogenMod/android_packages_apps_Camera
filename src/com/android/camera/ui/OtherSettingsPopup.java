@@ -66,4 +66,15 @@ public class OtherSettingsPopup extends AbstractSettingPopup
             mListener.onOtherSettingChanged();
         }
     }
+
+    // Scene mode can override other camera settings (ex: flash mode).
+    public void overrideSettings(String key, String value) {
+        int count = mContentPanel.getChildCount();
+        for (int j = 1; j < count; j++) {
+            InLineSettingPicker v = (InLineSettingPicker) mContentPanel.getChildAt(j);
+            if (key.equals(v.getKey())) {
+                v.overrideSettings(value);
+            }
+        }
+    }
 }

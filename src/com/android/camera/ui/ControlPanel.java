@@ -211,4 +211,22 @@ public class ControlPanel extends RelativeLayout
             return null;
         }
     }
+
+    // Scene mode may override other camera settings (ex: flash mode).
+    public void overrideSettings(final String ... keyvalues) {
+        if (keyvalues.length % 2 != 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (mOtherSettingsPopup == null) {
+            initializeOtherSettingPopup();
+        }
+
+        for (int i = 0; i < keyvalues.length; i += 2) {
+            String key = keyvalues[i];
+            String value = keyvalues[i + 1];
+            mIndicatorWheel.overrideSettings(key, value);
+            mOtherSettingsPopup.overrideSettings(key, value);
+        }
+    }
 }

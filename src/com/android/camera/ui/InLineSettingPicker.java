@@ -48,6 +48,8 @@ public class InLineSettingPicker extends LinearLayout {
     private int mIndex;
     private String mKey;
     private Listener mListener;
+    // Scene mode can override the original preference value.
+    private String mOverrideValue;
 
     static public interface Listener {
         public void onSettingChanged();
@@ -77,6 +79,8 @@ public class InLineSettingPicker extends LinearLayout {
 
         OnTouchListener nextTouchListener = new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
+                if (mOverrideValue != null) return true;
+
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if (!mNext && changeIndex(mIndex - 1)) {
                         mNext = true;
@@ -92,6 +96,8 @@ public class InLineSettingPicker extends LinearLayout {
 
         OnTouchListener previousTouchListener = new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
+                if (mOverrideValue != null) return true;
+
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if (!mPrevious && changeIndex(mIndex + 1)) {
                         mPrevious = true;
@@ -140,10 +146,20 @@ public class InLineSettingPicker extends LinearLayout {
     }
 
     private void updateView() {
-        mEntry.setText(mPreference.getEntry());
+        if (mOverrideValue == null) {
+            mEntry.setText(mPreference.getEntry());
+        } else {
+            int index = mPreference.findIndexOfValue(mOverrideValue);
+            mEntry.setText(mPreference.getEntries()[index]);
+        }
     }
 
     public void setSettingChangedListener(Listener listener) {
         mListener = listener;
+    }
+
+    public void overrideSettings(String value) {
+        mOverrideValue = value;
+        updateView();
     }
 }
