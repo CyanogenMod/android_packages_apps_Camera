@@ -71,10 +71,21 @@
         <item name="android:textSize">16dp</item>
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="SettingPickerText">
+    <style name="SettingTitleText">
         <item name="android:textSize">22dp</item>
+        <item name="android:layout_gravity">left|bottom</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:paddingLeft">16dp</item>
+    </style>
+    <style name="SettingPickerText">
+        <item name="android:textSize">21dp</item>
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:layout_width">190dp</item>
+        <item name="android:layout_width">200dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:singleLine">true</item>
     </style>
