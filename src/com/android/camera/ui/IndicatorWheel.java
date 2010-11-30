@@ -171,6 +171,7 @@ public class IndicatorWheel extends ViewGroup {
         int shutterButtonWidth = mShutterButton.getMeasuredWidth();
         mShutterButtonRadius = shutterButtonWidth / 2.0;
         int shutterButtonHeight = mShutterButton.getMeasuredHeight();
+        mCenterX = (int) (right - left - mShutterButtonRadius * 1.2);
         mCenterY = (bottom - top) / 2;
         mShutterButton.layout(mCenterX - shutterButtonWidth / 2,
                 mCenterY - shutterButtonHeight / 2,
@@ -181,7 +182,6 @@ public class IndicatorWheel extends ViewGroup {
         // shutter button. So the angle starts from 90 to 270 degrees.
         if (count == 1) return;
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 1.5;
-        mCenterX = (int) (right - mShutterButtonRadius * 1.2 - left);
         double intervalDegrees = 180.0 / (count - 2);
         double initialDegrees = 90.0;
         int index = 0;
