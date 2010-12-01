@@ -80,10 +80,12 @@
     </style>
     <style name="SettingRow">
         <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">55dp</item>
+        <item name="android:background">@drawable/setting_picker</item>
     </style>
     <style name="OnScreenGpsIndicator">
         <item name="android:layout_height">wrap_content</item>

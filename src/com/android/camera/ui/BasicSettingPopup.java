@@ -76,7 +76,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
             TextView text = (TextView) row.findViewById(R.id.text);
             text.setText(entries[i].toString());
             text.setClickable(false);
-            if (index == i) text.setPressed(true);
+            row.setPressed(index == i);
 
             // Initialize the icon.
             if (iconIds != null) {
@@ -113,8 +113,8 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
                     int oldIndex = mPreference.findIndexOfValue(mPreference.getValue());
                     if (oldIndex != i) {
                         View oldRow = group.getChildAt(oldIndex);
-                        oldRow.findViewById(R.id.text).setPressed(false);
-                        child.findViewById(R.id.text).setPressed(true);
+                        oldRow.setPressed(false);
+                        child.setPressed(true);
                         mPreference.setValueIndex(i);
                         if (mListener != null) {
                             mListener.onSettingChanged();

@@ -42,25 +42,6 @@ abstract public class AbstractSettingPopup extends LinearLayout {
         super.onFinishInflate();
 
         mTitle = (TextView) findViewById(R.id.title);
-        View topPanel = findViewById(R.id.topPanel);
         mContentPanel = (ViewGroup) findViewById(R.id.contentPanel);
-
-        // Use system holo background for now.
-        // TODO: We need to add alpha to the background.
-        Context context = getContext();
-        Theme dialogTheme = context.getResources().newTheme();
-        dialogTheme.applyStyle(android.R.style.Theme_Holo, true);
-        TypedArray ta = dialogTheme.obtainStyledAttributes(new int[] {
-                android.R.attr.alertDialogStyle });
-        int resourceId = ta.getResourceId(0, 0);
-        TypedArray ta2 = context.obtainStyledAttributes(resourceId, new int[] {
-                android.R.attr.topDark,
-                android.R.attr.bottomDark});
-
-        topPanel.setBackgroundDrawable(ta2.getDrawable(0));
-        mContentPanel.setBackgroundDrawable(ta2.getDrawable(1));
-
-        ta.recycle();
-        ta2.recycle();
     }
 }
