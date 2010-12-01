@@ -88,6 +88,8 @@ public class IndicatorWheel extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!isEnabled()) return false;
+
         int count = getChildCount();
         if (mListener == null || count <= 1) return false;
 
