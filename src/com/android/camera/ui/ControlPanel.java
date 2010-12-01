@@ -52,7 +52,6 @@ public class ControlPanel extends RelativeLayout
     private BasicSettingPopup[] mBasicSettingPopups;
     private OtherSettingsPopup mOtherSettingsPopup;
     private int mActiveIndicator = -1;
-    private boolean mEnabled = true;
 
     static public interface Listener {
         public void onSharedPreferenceChanged();
@@ -129,7 +128,7 @@ public class ControlPanel extends RelativeLayout
     }
 
     public void onIndicatorClicked(int index) {
-        if (!mEnabled) return;
+        if (!isEnabled()) return;
         if (index < mBasicSettingPopups.length) {
             if (mBasicSettingPopups[index] == null) {
                 initializeSettingPopup(index);
@@ -191,9 +190,10 @@ public class ControlPanel extends RelativeLayout
         return false;
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
-        if (mEnabled == enabled) return;
-        mEnabled = enabled;
+        super.setEnabled(enabled);
+        mIndicatorWheel.setEnabled(enabled);
     }
 
     // Popup window is dismissed.
