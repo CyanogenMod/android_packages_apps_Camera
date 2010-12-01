@@ -31,7 +31,7 @@ import android.view.LayoutInflater;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -76,8 +76,8 @@ public class ControlPanel extends RelativeLayout
     }
 
     private void addOtherSettingIndicator(Context context) {
-        Button b = new Button(context);
-        b.setBackgroundResource(R.drawable.ic_viewfinder_settings);
+        ImageView b = new ImageView(context);
+        b.setImageResource(R.drawable.ic_viewfinder_settings);
         b.setClickable(false);
         mIndicatorWheel.addView(b);
     }

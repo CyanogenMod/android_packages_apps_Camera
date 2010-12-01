@@ -19,9 +19,9 @@ package com.android.camera.ui;
 import com.android.camera.IconListPreference;
 
 import android.content.Context;
-import android.widget.Button;
+import android.widget.ImageView;
 
-public class IndicatorButton extends Button {
+public class IndicatorButton extends ImageView {
     private IconListPreference mPreference;
     // Scene mode can override the original preference value.
     private String mOverrideValue;
@@ -43,10 +43,10 @@ public class IndicatorButton extends Button {
             } else {
                 index = mPreference.findIndexOfValue(mOverrideValue);
             }
-            setBackgroundResource(iconIds[index]);
+            setImageResource(iconIds[index]);
         } else {
             // The preference only has a single icon to represent it.
-            setBackgroundResource(mPreference.getSingleIcon());
+            setImageResource(mPreference.getSingleIcon());
         }
     }
 

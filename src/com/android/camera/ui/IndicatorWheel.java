@@ -26,7 +26,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.View;
@@ -82,6 +82,7 @@ public class IndicatorWheel extends ViewGroup {
     }
 
     public void unselectIndicator() {
+        setHighlight(mSelectedIndex, false);
         mSelectedIndex = -1;
         invalidate();
     }
@@ -118,7 +119,9 @@ public class IndicatorWheel extends ViewGroup {
                                 return true;
                             }
                         }
+                        setHighlight(mSelectedIndex, false);
                         mSelectedIndex = i - 1;
+                        setHighlight(mSelectedIndex, true);
                         invalidate();
                         mListener.onIndicatorClicked(i - 1);
                         return true;
@@ -287,6 +290,17 @@ public class IndicatorWheel extends ViewGroup {
                     indicator.overrideSettings(value);
                 }
             }
+        }
+    }
+
+    // Sets/unsets highlight on the specified setting icon
+    private void setHighlight(int index, boolean enabled) {
+        if ((index < 0) || (index >= getChildCount() - 1)) return;
+        ImageView child = (ImageView) getChildAt(index + 1);
+        if (enabled) {
+            child.setColorFilter(HIGHLIGHT_COLOR);
+        } else {
+            child.clearColorFilter();
         }
     }
 }
