@@ -65,13 +65,15 @@ public class Switcher extends ImageView implements View.OnTouchListener {
         try {
             if (mSwitch == onOff) return;
 
+            // Switch may be changed during the callback so set it before the
+            // callback.
+            mSwitch = onOff;
             if (mListener != null) {
                 if (!mListener.onSwitchChanged(this, onOff)) {
+                    mSwitch = !onOff;
                     return;
                 }
             }
-
-            mSwitch = onOff;
         } finally {
             startParkingAnimation();
         }

@@ -24,7 +24,8 @@ import android.widget.RadioGroup;
 /**
  * A widget that includes two {@code RadioButton}'s and a {@link Switcher}.
  */
-public class SwitcherSet extends RadioGroup implements Switcher.OnSwitchListener {
+public class SwitcherSet extends RadioGroup implements Switcher.OnSwitchListener,
+        RadioGroup.OnCheckedChangeListener {
     private Switcher.OnSwitchListener mListener;
     private CompoundButton mOnView;
     private CompoundButton mOffView;
@@ -32,6 +33,12 @@ public class SwitcherSet extends RadioGroup implements Switcher.OnSwitchListener
 
     public SwitcherSet(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        boolean onOff = checkedId == mOnView.getId();
+        tryToSetSwitch(onOff);
     }
 
     protected void onFinishInflate() {
@@ -42,24 +49,19 @@ public class SwitcherSet extends RadioGroup implements Switcher.OnSwitchListener
         }
         mSwitcher.setOnSwitchListener(this);
         mSwitcher.addTouchView(this);
+        setOnCheckedChangeListener(this);
         mOnView = (CompoundButton) findViewById(R.id.switch_on_button);
         mOffView = (CompoundButton) findViewById(R.id.switch_off_button);
-        CompoundButton.OnCheckedChangeListener listener =
-                new CompoundButton.OnCheckedChangeListener() {
-                    public void onCheckedChanged(CompoundButton v, boolean isChecked) {
-                        if (!isChecked) return;
-                        boolean onOff = (v == mOnView) ^ !isChecked;
-                        tryToSetSwitch(onOff);
-                    }
-                };
-        if (mOnView != null) mOnView.setOnCheckedChangeListener(listener);
-        if (mOffView != null) mOffView.setOnCheckedChangeListener(listener);
     }
 
     public void setSwitch(boolean onOff) {
-        // will trigger onCheckedChanged() and callback in tryToSetSwitch()
-        CompoundButton button = onOff ? mOnView : mOffView;
-        if (button != null) button.setChecked(true);
+        if ((mOnView == null) && (mOffView == null)) {
+            tryToSetSwitch(onOff);
+        } else {
+            // will trigger onCheckedChanged() and callback in tryToSetSwitch()
+            CompoundButton button = onOff ? mOnView : mOffView;
+            if (button != null) button.setChecked(true);
+        }
     }
 
     public void setOnSwitchListener(Switcher.OnSwitchListener listener) {
