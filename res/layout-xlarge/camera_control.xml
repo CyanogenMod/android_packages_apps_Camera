@@ -19,9 +19,7 @@
         android:id="@+id/control_panel"
         android:layout_height="match_parent"
         android:layout_width="300dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="40dp">
+        android:layout_alignParentRight="true">
         <!-- The width is determined by IndicatorWheel so we should set
              layout_width as wrap_contant but RelativeLayout Javadoc says that
              this is circular dependency and is not allowed so it's very
@@ -34,14 +32,16 @@
                 android:layout_alignParentRight="true"
                 android:layout_width="45dp"
                 android:layout_height="150dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginRight="160dp"/>
 
         <TextView android:id="@+id/time_lapse_recording_time"
                 style="@style/RecordingTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/recording_time"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
+                android:layout_marginTop="40dp"
                 android:visibility="gone" />
 
         <com.android.camera.ui.IndicatorWheel android:id="@+id/indicator_wheel"
@@ -60,6 +60,7 @@
         </com.android.camera.ui.IndicatorWheel>
 
         <com.android.camera.SwitcherSet android:id="@+id/camera_switch"
+                android:visibility="invisible"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_height="150dp"
@@ -67,6 +68,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="160dp"
+                android:layout_marginBottom="40dp"
                 android:background="@drawable/mode_switch_bg_v2">
             <RadioButton android:id="@+id/switch_off_button"
                     android:layout_height="wrap_content"
@@ -86,5 +88,6 @@
                     android:button="@android:color/transparent"
                     android:background="@drawable/btn_ic_mode_switch_camera"/>
         </com.android.camera.SwitcherSet>
+        <include layout="@layout/review_control"/>
 </com.android.camera.ui.ControlPanel>
 

@@ -23,6 +23,7 @@
         android:layout_marginBottom="10dp"
         android:layout_alignParentRight="true">
     <LinearLayout android:orientation="vertical"
+            android:id="@+id/review_control"
             android:gravity="top|center_horizontal"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"

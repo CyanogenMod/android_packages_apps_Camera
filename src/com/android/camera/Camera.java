@@ -161,6 +161,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private GestureDetector mPopupGestureDetector;
     private SwitcherSet mSwitcher;
     private boolean mStartPreviewFail = false;
+    private View mIndicatorWheel;
 
     private GLRootView mGLRootView;
 
@@ -381,6 +382,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mThumbnailButton =
                 (RotateImageView) findViewById(R.id.review_thumbnail);
         if (mThumbnailButton != null) {
+            mThumbnailButton.setVisibility(View.VISIBLE);
             mThumbnailButton.setOnClickListener(this);
             mThumbnailButton.loadData(ImageManager.getLastImageThumbPath());
             updateThumbnailButton();
@@ -1006,14 +1008,17 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mIsImageCaptureIntent) {
             setupCaptureParams();
 
-            View controlBar = findViewById(R.id.control_bar);
-            controlBar.findViewById(R.id.btn_cancel).setOnClickListener(this);
-            controlBar.findViewById(R.id.btn_retake).setOnClickListener(this);
-            controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
+            View reviewControl = findViewById(R.id.review_control);
+            reviewControl.setVisibility(View.VISIBLE);
+            reviewControl.findViewById(R.id.btn_cancel).setOnClickListener(this);
+            reviewControl.findViewById(R.id.btn_retake).setOnClickListener(this);
+            reviewControl.findViewById(R.id.btn_done).setOnClickListener(this);
         } else {
             mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
+            mSwitcher.setVisibility(View.VISIBLE);
             mSwitcher.setOnSwitchListener(this);
         }
+        mIndicatorWheel = findViewById(R.id.indicator_wheel);
 
         // Show zoom picker.
         ViewStub zoomStub = (ViewStub) findViewById(R.id.zoom_stub);
@@ -2109,7 +2114,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void showPostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            findViewById(R.id.shutter_button).setVisibility(View.INVISIBLE);
+            if (mIndicatorWheel == null) {
+                mShutterButton.setVisibility(View.INVISIBLE);
+            }
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
                 View button = findViewById(id);
@@ -2120,7 +2127,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void hidePostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            findViewById(R.id.shutter_button).setVisibility(View.VISIBLE);
+            if (mIndicatorWheel == null) {
+                mShutterButton.setVisibility(View.VISIBLE);
+            }
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
                 View button = findViewById(id);

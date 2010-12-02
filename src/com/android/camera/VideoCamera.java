@@ -360,6 +360,7 @@ public class VideoCamera extends NoSearchActivity
 
             initThumbnailButton();
             mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
+            mSwitcher.setVisibility(View.VISIBLE);
             mSwitcher.setOnSwitchListener(this);
         }
 
@@ -1566,6 +1567,7 @@ public class VideoCamera extends NoSearchActivity
     private void initThumbnailButton() {
         mThumbnailButton = (RotateImageView)findViewById(R.id.review_thumbnail);
         if (mThumbnailButton != null) {
+            mThumbnailButton.setVisibility(View.VISIBLE);
             mThumbnailButton.setOnClickListener(this);
             mThumbnailButton.loadData(ImageManager.getLastVideoThumbPath());
         }
