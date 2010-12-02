@@ -1740,7 +1740,9 @@ public class VideoCamera extends BaseCamera implements
         updateFocusMode();
         setCommonParameters();
         setWhiteBalance();
-        mHandler.sendEmptyMessage(RELOAD_HUD);
+        if (focusModeChanged) {
+            mHandler.sendEmptyMessage(RELOAD_HUD);
+        }
         CameraSettings.setCamMode(mParameters, CameraSettings.VIDEO_MODE);
         setCameraHardwareParameters();
     }
