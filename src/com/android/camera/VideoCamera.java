@@ -389,8 +389,6 @@ public class VideoCamera extends NoSearchActivity
 
         resizeForPreviewAspectRatio();
 
-        loadCameraPreferences();
-
         // Initialize after startPreview becuase this need mParameters.
         initializeControlPanel();
         // xlarge devices use control panel. Other devices use head-up display.
@@ -435,15 +433,22 @@ public class VideoCamera extends NoSearchActivity
         CameraSettings settings = new CameraSettings(this, mParameters,
                 mCameraId, CameraHolder.instance().getCameraInfo());
 
-        mPreferenceGroup = settings.getPreferenceGroup(R.xml.video_preferences);
-        mFrontCameraId =
-                settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_FRONT);
-        mBackCameraId =
-                settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_BACK);
+        // Only need to load camera ID's once
+        if (mPreferenceGroup == null) {
+            mPreferenceGroup = settings.getPreferenceGroup(R.xml.video_preferences);
+            mFrontCameraId =
+                    settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_FRONT);
+            mBackCameraId =
+                    settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_BACK);
+        } else {
+            mPreferenceGroup = settings.getPreferenceGroup(R.xml.video_preferences);
+        }
     }
 
     private void initializeHeadUpDisplay() {
         if (mHeadUpDisplay == null) return;
+        loadCameraPreferences();
+
         if (mIsVideoCaptureIntent) {
             mPreferenceGroup = filterPreferenceScreenByIntent(mPreferenceGroup);
         }
@@ -481,17 +486,18 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void initializeControlPanel() {
+        mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
+        if (mControlPanel == null) return;
+        loadCameraPreferences();
+
         String[] keys = new String[]{CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_COLOR_EFFECT,
             CameraSettings.KEY_VIDEO_QUALITY};
-        mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
-        if (mControlPanel != null) {
-            mControlPanel.initialize(this, mPreferenceGroup, keys, false);
-            mControlPanel.setListener(new MyControlPanelListener());
-            mPopupGestureDetector = new GestureDetector(this,
-                    new PopupGestureListener());
-        }
+        mControlPanel.initialize(this, mPreferenceGroup, keys, false);
+        mControlPanel.setListener(new MyControlPanelListener());
+        mPopupGestureDetector = new GestureDetector(this,
+                new PopupGestureListener());
     }
 
     public static int roundOrientation(int orientation) {

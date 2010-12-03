@@ -1036,8 +1036,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             // ignore
         }
 
-        loadCameraPreferences();
-
         // Do this after starting preview because it depends on camera
         // parameters.
         initializeControlPanel();
@@ -1090,31 +1088,40 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void loadCameraPreferences() {
         CameraSettings settings = new CameraSettings(this, mInitialParams,
                 mCameraId, CameraHolder.instance().getCameraInfo());
-        mPreferenceGroup = settings.getPreferenceGroup(
-                R.xml.camera_preferences);
-        mFrontCameraId =
-                settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_FRONT);
-        mBackCameraId =
-                settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_BACK);
+        // Only need to load camera IDs once
+        if (mPreferenceGroup == null) {
+            mPreferenceGroup = settings.getPreferenceGroup(
+                    R.xml.camera_preferences);
+            mFrontCameraId =
+                    settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_FRONT);
+            mBackCameraId =
+                    settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_BACK);
+        } else {
+            mPreferenceGroup = settings.getPreferenceGroup(
+                    R.xml.camera_preferences);
+        }
     }
 
     private void initializeControlPanel() {
+        mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
+        if (mControlPanel == null) return;
+        loadCameraPreferences();
+
         String[] keys = new String[]{CameraSettings.KEY_FLASH_MODE,
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_COLOR_EFFECT,
             CameraSettings.KEY_SCENE_MODE};
-        mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
-        if (mControlPanel != null) {
-            mControlPanel.initialize(this, mPreferenceGroup, keys, true);
-            mControlPanel.setListener(new MyControlPanelListener());
-            mPopupGestureDetector = new GestureDetector(this,
-                    new PopupGestureListener());
-            updateSceneModeUI();
-        }
+        mControlPanel.initialize(this, mPreferenceGroup, keys, true);
+        mControlPanel.setListener(new MyControlPanelListener());
+        mPopupGestureDetector = new GestureDetector(this,
+                new PopupGestureListener());
+        updateSceneModeUI();
     }
 
     private void initializeHeadUpDisplay() {
         if (mHeadUpDisplay == null) return;
+        loadCameraPreferences();
+
         // If we have zoom picker, do not show zoom control on head-up display.
         float[] zoomRatios = null;
         if (mZoomPicker == null) zoomRatios = getZoomRatios();
@@ -2227,9 +2234,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         initializeZoom();
 
         // Reload the UI.
-        if (mFirstTimeInitialized) {
-            initializeHeadUpDisplay();
-        }
+        initializeHeadUpDisplay();
         initializeControlPanel();
     }
 
