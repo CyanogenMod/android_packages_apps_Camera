@@ -20,8 +20,10 @@ import com.android.camera.IconListPreference;
 
 import android.content.Context;
 import android.widget.ImageView;
+import android.util.Log;
 
 public class IndicatorButton extends ImageView {
+    private final String TAG = "IndicatorButton";
     private IconListPreference mPreference;
     // Scene mode can override the original preference value.
     private String mOverrideValue;
@@ -42,6 +44,12 @@ public class IndicatorButton extends ImageView {
                 index = mPreference.findIndexOfValue(mPreference.getValue());
             } else {
                 index = mPreference.findIndexOfValue(mOverrideValue);
+                if (index == -1) {
+                    // Avoid the crash if camera driver has bugs.
+                    Log.e(TAG, "Fail to find override value=" + mOverrideValue);
+                    mPreference.print();
+                    return;
+                }
             }
             setImageResource(iconIds[index]);
         } else {

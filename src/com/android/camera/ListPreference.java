@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.android.camera.R;
 
@@ -31,7 +32,7 @@ import java.util.List;
  * is limited.
  */
 public class ListPreference extends CameraPreference {
-
+    private final String TAG = "ListPreference";
     private final String mKey;
     private String mValue;
     private final String mDefaultValue;
@@ -128,5 +129,12 @@ public class ListPreference extends CameraPreference {
         int size = entries.size();
         mEntries = entries.toArray(new CharSequence[size]);
         mEntryValues = entryValues.toArray(new CharSequence[size]);
+    }
+
+    public void print() {
+        Log.v(TAG, "Preference key=" + getKey() + ". value=" + getValue());
+        for (int i = 0; i < mEntryValues.length; i++) {
+            Log.v(TAG, "entryValues[" + i + "]=" + mEntryValues[i]);
+        }
     }
 }

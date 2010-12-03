@@ -150,7 +150,13 @@ public class InLineSettingPicker extends LinearLayout {
             mEntry.setText(mPreference.getEntry());
         } else {
             int index = mPreference.findIndexOfValue(mOverrideValue);
-            mEntry.setText(mPreference.getEntries()[index]);
+            if (index != -1) {
+                mEntry.setText(mPreference.getEntries()[index]);
+            } else {
+                // Avoid the crash if camera driver has bugs.
+                Log.e(TAG, "Fail to find override value=" + mOverrideValue);
+                mPreference.print();
+            }
         }
     }
 
