@@ -85,6 +85,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -154,7 +155,7 @@ public class VideoCamera extends NoSearchActivity
     // The last recorded video.
     private RotateImageView mThumbnailButton;
 
-    private boolean mStartPreviewFail = false;
+    private boolean mOpenCameraFail = false;
 
     private int mStorageStatus = STORAGE_STATUS_OK;
 
@@ -282,16 +283,6 @@ public class VideoCamera extends NoSearchActivity
                 ress.getString(R.string.cannot_connect_camera));
     }
 
-    private boolean restartPreview() {
-        try {
-            startPreview();
-        } catch (CameraHardwareException e) {
-            showCameraErrorAndFinish();
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -317,25 +308,20 @@ public class VideoCamera extends NoSearchActivity
 
         mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
 
-        readVideoPreferences();
-
         /*
          * To reduce startup time, we start the preview in another thread.
          * We make sure the preview is started at the end of onCreate.
          */
         Thread startPreviewThread = new Thread(new Runnable() {
             public void run() {
-                try {
-                    mStartPreviewFail = false;
-                    startPreview();
-                } catch (CameraHardwareException e) {
-                    // In eng build, we throw the exception so that test tool
-                    // can detect it and report it
-                    if ("eng".equals(Build.TYPE)) {
-                        throw new RuntimeException(e);
-                    }
-                    mStartPreviewFail = true;
+                mOpenCameraFail = !openCamera();
+                // In eng build, we throw the exception so that test tool
+                // can detect it and report it
+                if (mOpenCameraFail && "eng".equals(Build.TYPE)) {
+                    throw new RuntimeException("openCamera failed");
                 }
+                readVideoPreferences();
+                startPreview();
             }
         });
         startPreviewThread.start();
@@ -367,7 +353,6 @@ public class VideoCamera extends NoSearchActivity
         mPreviewFrameLayout = (PreviewFrameLayout)
                 findViewById(R.id.frame_layout);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
-        resizeForPreviewAspectRatio();
 
         mVideoPreview = (SurfaceView) findViewById(R.id.camera_preview);
         mVideoFrame = (ImageView) findViewById(R.id.video_frame);
@@ -394,13 +379,15 @@ public class VideoCamera extends NoSearchActivity
         // Make sure preview is started.
         try {
             startPreviewThread.join();
-            if (mStartPreviewFail) {
+            if (mOpenCameraFail) {
                 showCameraErrorAndFinish();
                 return;
             }
         } catch (InterruptedException ex) {
             // ignore
         }
+
+        resizeForPreviewAspectRatio();
 
         loadCameraPreferences();
 
@@ -686,17 +673,7 @@ public class VideoCamera extends NoSearchActivity
         mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
 
         mMaxVideoDurationInMs = 0; // No limit
-
-        // Time lapse mode can capture video (using the still camera) at resolutions
-        // higher than the supported preview sizes. In that case
-        // mProfile.{videoFrameWidth,videoFrameHeight} will correspond to an unsupported
-        // preview size. So choose preview size optimally from the supported preview
-        // sizes.
-        List<Size> sizes = mParameters.getSupportedPreviewSizes();
-        Size optimalSize = Util.getOptimalPreviewSize(this,
-                sizes, (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
-        mDesiredPreviewWidth = optimalSize.width;
-        mDesiredPreviewHeight = optimalSize.height;
+        getDesiredPreviewSize();
     }
 
     private void readVideoPreferences() {
@@ -733,9 +710,33 @@ public class VideoCamera extends NoSearchActivity
                 videoQualityHigh
                 ? CamcorderProfile.QUALITY_HIGH
                 : CamcorderProfile.QUALITY_LOW);
+        getDesiredPreviewSize();
+    }
 
-        mDesiredPreviewWidth = mProfile.videoFrameWidth;
-        mDesiredPreviewHeight = mProfile.videoFrameHeight;
+    private void getDesiredPreviewSize() {
+        mParameters = mCameraDevice.getParameters();
+        if (mParameters.getSupportedVideoSizes() == null) {
+            mDesiredPreviewWidth = mProfile.videoFrameWidth;
+            mDesiredPreviewHeight = mProfile.videoFrameHeight;
+        } else {  // Driver supports separates outputs for preview and video.
+            List<Size> sizes = mParameters.getSupportedPreviewSizes();
+            Size preferred = mParameters.getPreferredPreviewSizeForVideo();
+            int product = preferred.width * preferred.height;
+            Iterator it = sizes.iterator();
+            // Remove the preview sizes that are not preferred.
+            while (it.hasNext()) {
+                Size size = (Size) it.next();
+                if (size.width * size.height > product) {
+                    it.remove();
+                }
+            }
+            Size optimalSize = Util.getOptimalPreviewSize(this, sizes,
+                (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
+            mDesiredPreviewWidth = optimalSize.width;
+            mDesiredPreviewHeight = optimalSize.height;
+        }
+        Log.v(TAG, "mDesiredPreviewWidth=" + mDesiredPreviewWidth +
+                ". mDesiredPreviewHeight=" + mDesiredPreviewHeight);
     }
 
     private void resizeForPreviewAspectRatio() {
@@ -752,10 +753,11 @@ public class VideoCamera extends NoSearchActivity
         // some time to get first orientation.
         mOrientationListener.enable();
         mVideoPreview.setVisibility(View.VISIBLE);
-        readVideoPreferences();
-        resizeForPreviewAspectRatio();
-        if (!mPreviewing && !mStartPreviewFail) {
-            if (!restartPreview()) return;
+        if (!mPreviewing && !mOpenCameraFail) {
+            if (!openCamera()) return;
+            readVideoPreferences();
+            resizeForPreviewAspectRatio();
+            startPreview();
         }
         keepScreenOnAwhile();
 
@@ -796,13 +798,20 @@ public class VideoCamera extends NoSearchActivity
         }
     }
 
-    private void startPreview() throws CameraHardwareException {
-        Log.v(TAG, "startPreview");
-        if (mCameraDevice == null) {
-            // If the activity is paused and resumed, camera device has been
-            // released and we need to open the camera.
-            mCameraDevice = CameraHolder.instance().open(mCameraId);
+    private boolean openCamera() {
+        try {
+            if (mCameraDevice == null) {
+                mCameraDevice = CameraHolder.instance().open(mCameraId);
+            }
+        } catch (CameraHardwareException e) {
+            showCameraErrorAndFinish();
+            return false;
         }
+        return true;
+    }
+
+    private void startPreview() {
+        Log.v(TAG, "startPreview");
         mCameraDevice.setErrorCallback(mErrorCallback);
 
         if (mPreviewing == true) {
@@ -971,7 +980,7 @@ public class VideoCamera extends NoSearchActivity
             setPreviewDisplay(holder);
         } else {
             stopVideoRecording();
-            restartPreview();
+            startPreview();
         }
     }
 
@@ -1296,19 +1305,11 @@ public class VideoCamera extends NoSearchActivity
     private void switchTimeLapseMode() {
         mCaptureTimeLapse = !mCaptureTimeLapse;
 
-        finishRecorderAndCloseCamera();
-
         // Read the video preferences
+        mCameraDevice.stopPreview();
         readVideoPreferences();
-        resetCameraParameters();
-
-        // Restart preview
-        try {
-            startPreview();
-        } catch (CameraHardwareException e) {
-            showCameraErrorAndFinish();
-            return;
-        }
+        resizeForPreviewAspectRatio();
+        startPreview();
 
         // Reload the UI.
         initializeHeadUpDisplay();
@@ -1328,9 +1329,10 @@ public class VideoCamera extends NoSearchActivity
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
         // Read media profile again because camera id is changed.
+        openCamera();
         readVideoPreferences();
         resizeForPreviewAspectRatio();
-        restartPreview();
+        startPreview();
 
         // Reload the UI.
         initializeHeadUpDisplay();
@@ -1782,21 +1784,6 @@ public class VideoCamera extends NoSearchActivity
         changeHeadUpDisplayState();
     }
 
-    private void resetCameraParameters() {
-        // We need to restart the preview if preview size is changed.
-        Size size = mParameters.getPreviewSize();
-        if (size.width != mDesiredPreviewWidth
-                || size.height != mDesiredPreviewHeight) {
-            // It is assumed media recorder is released before
-            // onSharedPreferenceChanged, so we can close the camera here.
-            closeCamera();
-            resizeForPreviewAspectRatio();
-            restartPreview(); // Parameters will be set in startPreview().
-        } else {
-            setCameraParameters();
-        }
-    }
-
     public void onSizeChanged() {
         // TODO: update the content on GLRootView
     }
@@ -1840,7 +1827,6 @@ public class VideoCamera extends NoSearchActivity
         // ignore the events after "onPause()" or preview has not started yet
         if (mPausing) return;
         synchronized (mPreferences) {
-            readVideoPreferences();
             // If mCameraDevice is not ready then we can set the parameter in
             // startPreview().
             if (mCameraDevice == null) return;
@@ -1850,7 +1836,17 @@ public class VideoCamera extends NoSearchActivity
             if (mCameraId != cameraId) {
                 switchCameraId(cameraId);
             } else {
-                resetCameraParameters();
+                readVideoPreferences();
+                // We need to restart the preview if preview size is changed.
+                Size size = mParameters.getPreviewSize();
+                if (size.width != mDesiredPreviewWidth
+                        || size.height != mDesiredPreviewHeight) {
+                    mCameraDevice.stopPreview();
+                    resizeForPreviewAspectRatio();
+                    startPreview(); // Parameters will be set in startPreview().
+                } else {
+                    setCameraParameters();
+                }
             }
         }
     }
