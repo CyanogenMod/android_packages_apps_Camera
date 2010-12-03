@@ -30,6 +30,7 @@
     <FrameLayout android:id="@+id/topPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/dialog_top_holo_dark"
             android:minHeight="48dip">
         <TextView android:id="@+id/title"
                 android:text="@string/pref_camera_settings_category"
@@ -45,6 +46,7 @@
     <LinearLayout android:id="@+id/contentPanel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/dialog_bottom_holo_dark"
             android:orientation="vertical">
         <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_recordlocation_key"
                 style="@style/SettingRow" />
