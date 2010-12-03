@@ -1108,6 +1108,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mControlPanel.setListener(new MyControlPanelListener());
             mPopupGestureDetector = new GestureDetector(this,
                     new PopupGestureListener());
+            updateSceneModeUI();
         }
     }
 
@@ -1932,8 +1933,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             Log.w(TAG, "invalid exposure: " + exposure);
         }
 
-        updateSceneModeUI();
-
         if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
             // Set flash mode.
             String flashMode = mPreferences.getString(
@@ -2013,6 +2012,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             return;
         } else if (isCameraIdle()) {
             setCameraParameters(mUpdateSet);
+            updateSceneModeUI();
             mUpdateSet = 0;
         } else {
             if (!mHandler.hasMessages(SET_CAMERA_PARAMETERS_WHEN_IDLE)) {
