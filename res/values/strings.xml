@@ -220,7 +220,7 @@
     <string name="pref_camera_jpegquality_entry_normal">Normal</string>
 
     <!-- Default focus mode setting.-->
-    <string name="pref_camera_focusmode_default" translatable="false">auto</string>
+    <string name="pref_camera_focusmode_default" translatable="false">classic</string>
     <string name="pref_camera_video_focusmode_default" translatable="false">infinity</string>
 
     <!-- Settings screen, Focus mode title -->
