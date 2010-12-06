@@ -48,5 +48,4 @@
                 android:drawableLeft="@drawable/ic_recording_indicator_small"
                 android:visibility="gone"/>
     </RelativeLayout>
-    <include layout="@layout/camera_picker"/>
 </com.android.camera.PreviewFrameLayout>

@@ -23,15 +23,12 @@ import android.content.Context;
 import android.hardware.Camera.CameraInfo;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.ImageView;
 
 /**
  * A view for switching the front/back camera.
  */
-public class CameraPicker extends RadioGroup implements View.OnClickListener {
-    private RadioButton mFrontCamera;
-    private RadioButton mBackCamera;
+public class CameraPicker extends ImageView implements View.OnClickListener {
     private Listener mListener;
     private ListPreference mPreference;
     private CharSequence[] mCameras;
@@ -53,35 +50,24 @@ public class CameraPicker extends RadioGroup implements View.OnClickListener {
         mPreference = pref;
         mCameras = pref.getEntryValues();
         if (mCameras == null) return;
+        setOnClickListener(this);
         String cameraId = pref.getValue();
         setVisibility(View.VISIBLE);
         if (mCameras[CameraInfo.CAMERA_FACING_FRONT].equals(cameraId)) {
-            mFrontCamera.setChecked(true);
             mCameraIndex = CameraInfo.CAMERA_FACING_FRONT;
         } else {
-            mBackCamera.setChecked(true);
             mCameraIndex = CameraInfo.CAMERA_FACING_BACK;
         }
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mFrontCamera = (RadioButton) findViewById(R.id.camera_switch_to_front);
-        mFrontCamera.setOnClickListener(this);
-        mBackCamera = (RadioButton) findViewById(R.id.camera_switch_to_back);
-        mBackCamera.setOnClickListener(this);
-    }
-
     public void onClick(View v) {
-        int newCameraIndex = (v == mFrontCamera)
+        if (mCameras == null) return;
+        int newCameraIndex = (mCameraIndex == CameraInfo.CAMERA_FACING_BACK)
                 ? CameraInfo.CAMERA_FACING_FRONT
                 : CameraInfo.CAMERA_FACING_BACK;
-        if (mCameraIndex != newCameraIndex) {
-            mCameraIndex = newCameraIndex;
-            mPreference.setValue((String) mCameras[mCameraIndex]);
-            mListener.onSharedPreferenceChanged();
-        }
+        mCameraIndex = newCameraIndex;
+        mPreference.setValue((String) mCameras[mCameraIndex]);
+        mListener.onSharedPreferenceChanged();
     }
 
 }

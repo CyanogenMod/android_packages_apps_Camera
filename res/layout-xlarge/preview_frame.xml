@@ -50,5 +50,4 @@
                 android:visibility="invisible"/>
         <include layout="@layout/review_thumbnail"/>
     </RelativeLayout>
-    <include layout="@layout/camera_picker" />
 </com.android.camera.PreviewFrameLayout>

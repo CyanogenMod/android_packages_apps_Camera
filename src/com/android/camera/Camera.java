@@ -550,6 +550,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void initializeCameraPicker() {
         mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
         if (mCameraPicker != null) {
+            mCameraPicker.setImageResource(R.drawable.camera_toggle);
             ListPreference pref = mPreferenceGroup.findPreference(
                     CameraSettings.KEY_CAMERA_ID);
             if (pref != null) {

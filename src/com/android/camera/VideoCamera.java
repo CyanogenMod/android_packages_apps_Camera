@@ -421,6 +421,7 @@ public class VideoCamera extends NoSearchActivity
     private void initializeCameraPicker() {
         mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
         if (mCameraPicker != null) {
+            mCameraPicker.setImageResource(R.drawable.camera_toggle_video);
             ListPreference pref = mPreferenceGroup.findPreference(
                     CameraSettings.KEY_CAMERA_ID);
             if (pref != null) {
@@ -1419,6 +1420,7 @@ public class VideoCamera extends NoSearchActivity
         updateRecordingIndicator(false);
         mRecordingTimeView.setText("");
         mRecordingTimeView.setVisibility(View.VISIBLE);
+        mCameraPicker.setVisibility(View.GONE);
         if (mTimeLapseRecordingTimeView != null) {
             mTimeLapseRecordingTimeView.setText("");
             mTimeLapseRecordingTimeView.setVisibility(View.VISIBLE);
@@ -1529,6 +1531,7 @@ public class VideoCamera extends NoSearchActivity
             enableCameraControls(true);
             updateRecordingIndicator(true);
             mRecordingTimeView.setVisibility(View.GONE);
+            mCameraPicker.setVisibility(View.VISIBLE);
             if (mTimeLapseRecordingTimeView != null) {
                 mTimeLapseRecordingTimeView.setVisibility(View.GONE);
             }
