@@ -49,7 +49,8 @@ public class CameraHolder {
     private final Handler mHandler;
     private int mUsers = 0;  // number of open() - number of release()
     private int mNumberOfCameras;
-    private int mCameraId = -1;
+    private int mCameraId = -1;  // current camera id
+    private int mBackCameraId = -1, mFrontCameraId = -1;
     private CameraInfo[] mInfo;
 
     // We store the camera parameters when we actually open the device,
@@ -99,6 +100,12 @@ public class CameraHolder {
         for (int i = 0; i < mNumberOfCameras; i++) {
             mInfo[i] = new CameraInfo();
             android.hardware.Camera.getCameraInfo(i, mInfo[i]);
+            if (mBackCameraId == -1 && mInfo[i].facing == CameraInfo.CAMERA_FACING_BACK) {
+                mBackCameraId = i;
+            }
+            if (mFrontCameraId == -1 && mInfo[i].facing == CameraInfo.CAMERA_FACING_FRONT) {
+                mFrontCameraId = i;
+            }
         }
     }
 
@@ -188,5 +195,13 @@ public class CameraHolder {
         Assert(mUsers == 1 || mUsers == 0);
         // Keep the camera instance for 3 seconds.
         mKeepBeforeTime = System.currentTimeMillis() + 3000;
+    }
+
+    public int getBackCameraId() {
+        return mBackCameraId;
+    }
+
+    public int getFrontCameraId() {
+        return mFrontCameraId;
     }
 }

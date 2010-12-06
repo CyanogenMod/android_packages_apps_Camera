@@ -44,7 +44,6 @@ public class ControlPanel extends RelativeLayout
         OtherSettingsPopup.Listener,PopupWindow.OnDismissListener {
     private static final String TAG = "ControlPanel";
     private Context mContext;
-    private ComboPreferences mSharedPrefs;
     private PreferenceGroup mPreferenceGroup;
     private ArrayList<String> mPreferenceKeys;
     private Listener mListener;
@@ -55,6 +54,7 @@ public class ControlPanel extends RelativeLayout
 
     static public interface Listener {
         public void onSharedPreferenceChanged();
+        public void onRestorePreferencesClicked();
     }
 
     public void setListener(Listener listener) {
@@ -100,7 +100,6 @@ public class ControlPanel extends RelativeLayout
 
         // Initialize all variables and icons.
         mPreferenceGroup = group;
-        mSharedPrefs = ComboPreferences.get(context);
         for (int i = 0; i < keys.length; i++) {
             if (addIndicator(context, group, keys[i])) {
                 mPreferenceKeys.add(keys[i]);
@@ -117,6 +116,12 @@ public class ControlPanel extends RelativeLayout
     public void onOtherSettingChanged() {
         if (mListener != null) {
             mListener.onSharedPreferenceChanged();
+        }
+    }
+
+    public void onRestorePreferencesClicked() {
+        if (mListener != null) {
+            mListener.onRestorePreferencesClicked();
         }
     }
 

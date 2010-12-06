@@ -1037,6 +1037,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             // ignore
         }
 
+        mBackCameraId = CameraHolder.instance().getBackCameraId();
+        mFrontCameraId = CameraHolder.instance().getFrontCameraId();
+
         // Do this after starting preview because it depends on camera
         // parameters.
         initializeControlPanel();
@@ -1094,18 +1097,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void loadCameraPreferences() {
         CameraSettings settings = new CameraSettings(this, mInitialParams,
                 mCameraId, CameraHolder.instance().getCameraInfo());
-        // Only need to load camera IDs once
-        if (mPreferenceGroup == null) {
-            mPreferenceGroup = settings.getPreferenceGroup(
-                    R.xml.camera_preferences);
-            mFrontCameraId =
-                    settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_FRONT);
-            mBackCameraId =
-                    settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_BACK);
-        } else {
-            mPreferenceGroup = settings.getPreferenceGroup(
-                    R.xml.camera_preferences);
-        }
+        mPreferenceGroup = settings.getPreferenceGroup(R.xml.camera_preferences);
     }
 
     private void initializeControlPanel() {
@@ -2320,9 +2312,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mPausing) return;
         Runnable runnable = new Runnable() {
             public void run() {
-                if (mHeadUpDisplay != null) {
-                    mHeadUpDisplay.restorePreferences(mParameters);
-                }
+                restorePreferences();
             }
         };
         MenuHelper.confirmAction(this,
@@ -2331,9 +2321,27 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 runnable);
     }
 
+    private void restorePreferences() {
+        if (mHeadUpDisplay != null) {
+            mHeadUpDisplay.restorePreferences(mParameters);
+        }
+
+        if (mControlPanel != null) {
+            mControlPanel.dismissSettingPopup();
+            CameraSettings.restorePreferences(Camera.this, mPreferences,
+                    mParameters);
+            initializeControlPanel();
+            onSharedPreferenceChanged();
+        }
+    }
+
     private class MyControlPanelListener implements ControlPanel.Listener {
         public void onSharedPreferenceChanged() {
             Camera.this.onSharedPreferenceChanged();
+        }
+
+        public void onRestorePreferencesClicked() {
+            Camera.this.onRestorePreferencesClicked();
         }
     }
 

@@ -77,7 +77,6 @@ public class CameraSettings {
     private final Parameters mParameters;
     private final CameraInfo[] mCameraInfo;
     private final int mCameraId;
-    private int[] mCameraIdByIndex;
 
     public CameraSettings(Activity activity, Parameters parameters,
                           int cameraId, CameraInfo[] cameraInfo) {
@@ -253,7 +252,6 @@ public class CameraSettings {
         }
 
         CharSequence[] entryValues = new CharSequence[2];
-        mCameraIdByIndex = new int[2];
         for (int i = 0 ; i < mCameraInfo.length ; ++i) {
             int index =
                     (mCameraInfo[i].facing == CameraInfo.CAMERA_FACING_FRONT)
@@ -261,19 +259,10 @@ public class CameraSettings {
                     : CameraInfo.CAMERA_FACING_BACK;
             if (entryValues[index] == null) {
                 entryValues[index] = "" + i;
-                mCameraIdByIndex[index] = i;
                 if (entryValues[((index == 1) ? 0 : 1)] != null) break;
             }
         }
         preference.setEntryValues(entryValues);
-    }
-
-    int getCameraIdByIndex(int facingIndex) {
-        if (facingIndex > CameraInfo.CAMERA_FACING_FRONT || facingIndex < 0) {
-            Log.e(TAG, "Unsupported camera facing index " + facingIndex);
-            return mCameraIdByIndex[CameraInfo.CAMERA_FACING_BACK];
-        }
-        return mCameraIdByIndex[facingIndex];
     }
 
     private static boolean removePreference(PreferenceGroup group, String key) {
@@ -382,11 +371,6 @@ public class CameraSettings {
         editor.apply();
     }
 
-    public static void upgradeAllPreferences(ComboPreferences pref) {
-        upgradeGlobalPreferences(pref.getGlobal());
-        upgradeLocalPreferences(pref.getLocal());
-    }
-
     public static boolean getVideoQuality(String quality) {
         return VIDEO_QUALITY_YOUTUBE.equals(
                 quality) || VIDEO_QUALITY_HIGH.equals(quality);
@@ -410,5 +394,36 @@ public class CameraSettings {
         Editor editor = pref.edit();
         editor.putString(KEY_CAMERA_ID, Integer.toString(cameraId));
         editor.apply();
+    }
+
+
+    public static void restorePreferences(Context context,
+            ComboPreferences preferences, Parameters parameters) {
+        int currentCameraId = readPreferredCameraId(preferences);
+
+        // Clear the preferences of both cameras.
+        int backCameraId = CameraHolder.instance().getBackCameraId();
+        if (backCameraId != -1) {
+            preferences.setLocalId(context, backCameraId);
+            Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+        }
+        int frontCameraId = CameraHolder.instance().getFrontCameraId();
+        if (frontCameraId != -1) {
+            preferences.setLocalId(context, frontCameraId);
+            Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+        }
+
+        upgradeGlobalPreferences(preferences.getGlobal());
+        upgradeLocalPreferences(preferences.getLocal());
+
+        // Write back the current camera id because parameters are related to
+        // the camera. Otherwise, we may switch to the front camera but the
+        // initial picture size is that of the back camera.
+        initialCameraPictureSize(context, parameters);
+        writePreferredCameraId(preferences, currentCameraId);
     }
 }

@@ -30,12 +30,13 @@ import android.widget.LinearLayout;
 
 /* A popup window that contains several camera settings. */
 public class OtherSettingsPopup extends AbstractSettingPopup
-        implements InLineSettingPicker.Listener {
+        implements InLineSettingPicker.Listener, View.OnClickListener {
     private static final String TAG = "OtherSettingsPopup";
     private Listener mListener;
 
     static public interface Listener {
         public void onOtherSettingChanged();
+        public void onRestorePreferencesClicked();
     }
 
     public void setOtherSettingChangedListener(Listener listener) {
@@ -49,13 +50,18 @@ public class OtherSettingsPopup extends AbstractSettingPopup
     public void initialize(PreferenceGroup group) {
         // Initialize each camera setting.
         for (int i = mContentPanel.getChildCount() - 1; i >= 0; i--) {
-            InLineSettingPicker picker = (InLineSettingPicker) mContentPanel.getChildAt(i);
-            ListPreference pref = group.findPreference(picker.getKey());
-            if (pref != null) {
-                picker.setSettingChangedListener(this);
-                picker.initialize(pref);
-            } else {  // remove the row if the preference is not supported
-                mContentPanel.removeViewAt(i);
+            View v = mContentPanel.getChildAt(i);
+            if (v instanceof InLineSettingPicker) {
+                InLineSettingPicker picker = (InLineSettingPicker) v;
+                ListPreference pref = group.findPreference(picker.getKey());
+                if (pref != null) {
+                    picker.setSettingChangedListener(this);
+                    picker.initialize(pref);
+                } else {  // remove the row if the preference is not supported
+                    mContentPanel.removeViewAt(i);
+                }
+            } else {  // This row is restore defaults.
+                v.setOnClickListener(this);
             }
        }
        requestLayout();
@@ -70,11 +76,21 @@ public class OtherSettingsPopup extends AbstractSettingPopup
     // Scene mode can override other camera settings (ex: flash mode).
     public void overrideSettings(String key, String value) {
         int count = mContentPanel.getChildCount();
-        for (int j = 1; j < count; j++) {
-            InLineSettingPicker v = (InLineSettingPicker) mContentPanel.getChildAt(j);
-            if (key.equals(v.getKey())) {
-                v.overrideSettings(value);
+        for (int i = 0; i < count; i++) {
+            View v = mContentPanel.getChildAt(i);
+            if (v instanceof InLineSettingPicker) {
+                InLineSettingPicker picker = (InLineSettingPicker) v;
+                if (key.equals(picker.getKey())) {
+                    picker.overrideSettings(value);
+                }
             }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mListener != null) {
+            mListener.onRestorePreferencesClicked();
         }
     }
 }

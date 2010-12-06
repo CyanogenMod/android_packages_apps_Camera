@@ -18,7 +18,7 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="ThemeCamera" parent="android:Theme.Black.NoTitleBar">
+    <style name="ThemeCamera" parent="android:Theme.Holo.NoActionBar">
         <item name="android:windowBackground">@drawable/bg_camera_pattern</item>
     </style>
 </resources>

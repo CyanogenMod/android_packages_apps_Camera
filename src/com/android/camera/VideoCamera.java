@@ -389,6 +389,9 @@ public class VideoCamera extends NoSearchActivity
 
         resizeForPreviewAspectRatio();
 
+        mBackCameraId = CameraHolder.instance().getBackCameraId();
+        mFrontCameraId = CameraHolder.instance().getFrontCameraId();
+
         // Initialize after startPreview becuase this need mParameters.
         initializeControlPanel();
         // xlarge devices use control panel. Other devices use head-up display.
@@ -432,17 +435,7 @@ public class VideoCamera extends NoSearchActivity
     private void loadCameraPreferences() {
         CameraSettings settings = new CameraSettings(this, mParameters,
                 mCameraId, CameraHolder.instance().getCameraInfo());
-
-        // Only need to load camera ID's once
-        if (mPreferenceGroup == null) {
-            mPreferenceGroup = settings.getPreferenceGroup(R.xml.video_preferences);
-            mFrontCameraId =
-                    settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_FRONT);
-            mBackCameraId =
-                    settings.getCameraIdByIndex(CameraInfo.CAMERA_FACING_BACK);
-        } else {
-            mPreferenceGroup = settings.getPreferenceGroup(R.xml.video_preferences);
-        }
+        mPreferenceGroup = settings.getPreferenceGroup(R.xml.video_preferences);
     }
 
     private void initializeHeadUpDisplay() {
@@ -1826,15 +1819,27 @@ public class VideoCamera extends NoSearchActivity
     private void onRestorePreferencesClicked() {
         Runnable runnable = new Runnable() {
             public void run() {
-                if (mHeadUpDisplay != null) {
-                    mHeadUpDisplay.restorePreferences(mParameters);
-                }
+                restorePreferences();
             }
         };
         MenuHelper.confirmAction(this,
                 getString(R.string.confirm_restore_title),
                 getString(R.string.confirm_restore_message),
                 runnable);
+    }
+
+    private void restorePreferences() {
+        if (mHeadUpDisplay != null) {
+            mHeadUpDisplay.restorePreferences(mParameters);
+        }
+
+        if (mControlPanel != null) {
+            mControlPanel.dismissSettingPopup();
+            CameraSettings.restorePreferences(VideoCamera.this, mPreferences,
+                    mParameters);
+            initializeControlPanel();
+            onSharedPreferenceChanged();
+        }
     }
 
     private void onSharedPreferenceChanged() {
@@ -1868,6 +1873,10 @@ public class VideoCamera extends NoSearchActivity
     private class MyControlPanelListener implements ControlPanel.Listener {
         public void onSharedPreferenceChanged() {
             VideoCamera.this.onSharedPreferenceChanged();
+        }
+
+        public void onRestorePreferencesClicked() {
+            VideoCamera.this.onRestorePreferencesClicked();
         }
     }
 

@@ -403,11 +403,7 @@ public class HeadUpDisplay extends GLView {
         // onSharedPreferenceChanged();
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(l);
         Context context = getGLRootView().getContext();
-        Editor editor = mSharedPrefs.edit();
-        editor.clear();
-        editor.apply();
-        CameraSettings.upgradeAllPreferences(mSharedPrefs);
-        CameraSettings.initialCameraPictureSize(context, param);
+        CameraSettings.restorePreferences(context, mSharedPrefs, param);
         reloadPreferences();
         if (mListener != null) {
             mListener.onSharedPreferenceChanged();

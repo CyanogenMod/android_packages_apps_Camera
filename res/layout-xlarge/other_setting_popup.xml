@@ -58,5 +58,11 @@
                 style="@style/SettingRow" />
         <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_jpegquality_key"
                 style="@style/SettingRow" />
+        <TextView
+                android:text="@string/pref_restore_detail"
+                android:gravity="center"
+                android:textSize="22dp"
+                style="@style/SettingRow">
+        </TextView>
     </LinearLayout>
 </com.android.camera.ui.OtherSettingsPopup>
