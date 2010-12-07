@@ -365,6 +365,8 @@
     <string name="zoom_control_title">Zoom</string>
     <string name="zoom_increment" translatable="false">+</string>
     <string name="zoom_decrement" translatable="false">-</string>
+    <!-- The text to show the current zoom factor. [CHAR LIMIT=NONE] -->
+    <string name="zoom_text">Zoom <xliff:g id="zoom_text" example="1.1x">%s</xliff:g></string>
 
     <string name="switch_to_camera_lable">Switch to camera</string>
     <string name="switch_to_video_lable">Switch to video</string>

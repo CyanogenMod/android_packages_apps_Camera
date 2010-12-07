@@ -21,4 +21,5 @@
     <color name="recording_time_elapsed_text">#FFFFFFFF</color>
     <color name="recording_time_remaining_text">#FFFF0033</color>
     <color name="zoom_picker_btn_pressed">#FFFFAD00</color>
+    <color name="zoom_text_background_color">#77333333</color>
 </resources>

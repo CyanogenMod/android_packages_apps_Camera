@@ -30,10 +30,10 @@
                 android:layout="@layout/zoom_picker"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_width="45dp"
-                android:layout_height="150dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="160dp"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"/>
 
         <TextView android:id="@+id/time_lapse_recording_time"
                 style="@style/RecordingTime"

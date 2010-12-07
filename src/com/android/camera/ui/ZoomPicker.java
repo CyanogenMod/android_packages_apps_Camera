@@ -16,6 +16,8 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.R;
+
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -28,8 +30,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.camera.R;
-
 import java.util.Formatter;
 
 /**
@@ -37,7 +37,7 @@ import java.util.Formatter;
  */
 public class ZoomPicker extends LinearLayout {
     private final String TAG = "ZoomPicker";
-    private TextView mText;
+    private TextView mZoomTextView;
     private int mZoomMax, mZoomIndex;
     private float[] mZoomRatios;
     private OnZoomChangedListener mListener;
@@ -45,15 +45,20 @@ public class ZoomPicker extends LinearLayout {
     private final StringBuilder mBuilder = new StringBuilder();
     private final Formatter mFormatter = new Formatter(mBuilder);
     private final Object[] mFormatterArgs = new Object[1];
+    private String mZoomText;
+    private Button mIncrementButton;
+    private Button mDecrementButton;
 
     private Handler mHandler;
     private final Runnable mRunnable = new Runnable() {
         public void run() {
             if (mIncrement) {
+                mIncrementButton.setBackgroundResource(R.drawable.button_zoom_in_longpressed_holo);
                 if (changeZoomIndex(mZoomIndex + 1)) {
                     mHandler.postDelayed(this, 65);
                 }
             } else if (mDecrement) {
+                mDecrementButton.setBackgroundResource(R.drawable.button_zoom_out_longpressed_holo);
                 if (changeZoomIndex(mZoomIndex - 1)) {
                     mHandler.postDelayed(this, 65);
                 }
@@ -63,6 +68,7 @@ public class ZoomPicker extends LinearLayout {
 
     public ZoomPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mZoomText = context.getString(R.string.zoom_text);
     }
 
     @Override
@@ -80,6 +86,7 @@ public class ZoomPicker extends LinearLayout {
                         mHandler.postDelayed(mRunnable, 200);
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    mIncrementButton.setBackgroundResource(R.drawable.button_zoom_in_holo);
                     mIncrement = false;
                 }
                 return false;
@@ -96,18 +103,17 @@ public class ZoomPicker extends LinearLayout {
                         mHandler.postDelayed(mRunnable, 200);
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    mDecrementButton.setBackgroundResource(R.drawable.button_zoom_out_holo);
                     mDecrement = false;
                 }
                 return false;
             }
         };
 
-        Button incrementButton = (Button) findViewById(R.id.increment);
+        Button incrementButton = mIncrementButton = (Button) findViewById(R.id.increment);
         incrementButton.setOnTouchListener(incrementTouchListener);
-        Button decrementButton = (Button) findViewById(R.id.decrement);
+        Button decrementButton = mDecrementButton = (Button) findViewById(R.id.decrement);
         decrementButton.setOnTouchListener(decrementTouchListener);
-        mText = (TextView) findViewById(R.id.zoom_ratio);
-        mText.setText(formatZoomRatio(1.0f));
     }
 
     public void setOnZoomChangeListener(OnZoomChangedListener listener) {
@@ -143,7 +149,15 @@ public class ZoomPicker extends LinearLayout {
     }
 
     private void updateView() {
-        mText.setText(formatZoomRatio(mZoomRatios[mZoomIndex]));
+        if (mZoomTextView == null) {
+            mZoomTextView = (TextView) getRootView().findViewById(R.id.zoom_ratio);
+        }
+        if (mZoomIndex == 0) {
+            mZoomTextView.setVisibility(View.INVISIBLE);
+        } else {
+            mZoomTextView.setText(String.format(mZoomText, formatZoomRatio(mZoomRatios[mZoomIndex])));
+            mZoomTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     private String formatZoomRatio(float value) {

@@ -18,35 +18,21 @@
 -->
 
 <com.android.camera.ui.ZoomPicker xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:gravity="center"
-        android:layout_width="45dp"
-        android:layout_height="150dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/mode_switch_bg_v2">
-
-    <TextView android:id="@+id/zoom_ratio"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        android:textSize="16dp" />
-
-    <Button android:id="@+id/increment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/btn_zoom_picker_up" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true">
 
     <Button android:id="@+id/decrement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/btn_zoom_picker_down" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_zoom_out" />
+
+    <Button android:id="@+id/increment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:background="@drawable/btn_zoom_in" />
 </com.android.camera.ui.ZoomPicker>
