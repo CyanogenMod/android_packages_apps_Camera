@@ -453,6 +453,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
         if (mZoomPicker != null) {
             mZoomPicker.setZoomRatios(getZoomRatios());
+            mZoomPicker.setZoomIndex(mParameters.getZoom());
             mZoomPicker.setOnZoomChangeListener(
                     new ZoomPicker.OnZoomChangedListener() {
                 public void onZoomChanged(int index) {
