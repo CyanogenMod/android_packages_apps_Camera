@@ -382,7 +382,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mThumbnailButton =
                 (RotateImageView) findViewById(R.id.review_thumbnail);
         if (mThumbnailButton != null) {
-            mThumbnailButton.setVisibility(View.VISIBLE);
             mThumbnailButton.setOnClickListener(this);
             mThumbnailButton.loadData(ImageManager.getLastImageThumbPath());
             updateThumbnailButton();
@@ -409,6 +408,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             list.close();
         }
+        mThumbnailButton.setVisibility(
+                (mThumbnailButton.getUri() != null) ? View.VISIBLE : View.GONE);
     }
 
     private void setLastPictureThumb(byte[] data, int degree, Uri uri) {
@@ -419,6 +420,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 BitmapFactory.decodeByteArray(data, 0, data.length, options);
         lastPictureThumb = Util.rotate(lastPictureThumb, degree);
         mThumbnailButton.setData(uri, lastPictureThumb);
+        if (lastPictureThumb != null) {
+            mThumbnailButton.setVisibility(View.VISIBLE);
+        }
     }
 
     // If the activity is paused and resumed, this method will be called in

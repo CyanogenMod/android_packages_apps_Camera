@@ -790,9 +790,7 @@ public class VideoCamera extends NoSearchActivity
 
         // Update the last video thumbnail.
         if (!mIsVideoCaptureIntent) {
-            if (mThumbnailButton != null && !mThumbnailButton.isUriValid()) {
-                updateThumbnailButton();
-            }
+            updateThumbnailButton();
         }
     }
 
@@ -1572,34 +1570,41 @@ public class VideoCamera extends NoSearchActivity
             Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
                     mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
             mThumbnailButton.setData(mCurrentVideoUri, videoFrame);
+            if (videoFrame != null) {
+                mThumbnailButton.setVisibility(View.VISIBLE);
+            }
         }
     }
 
     private void initThumbnailButton() {
         mThumbnailButton = (RotateImageView)findViewById(R.id.review_thumbnail);
         if (mThumbnailButton != null) {
-            mThumbnailButton.setVisibility(View.VISIBLE);
             mThumbnailButton.setOnClickListener(this);
             mThumbnailButton.loadData(ImageManager.getLastVideoThumbPath());
         }
     }
 
     private void updateThumbnailButton() {
-        IImageList list = ImageManager.makeImageList(
-                        mContentResolver,
-                        dataLocation(),
-                        ImageManager.INCLUDE_VIDEOS,
-                        ImageManager.SORT_ASCENDING,
-                        ImageManager.CAMERA_IMAGE_BUCKET_ID);
-        int count = list.getCount();
-        if (count > 0) {
-            IImage image = list.getImageAt(count - 1);
-            Uri uri = image.fullSizeImageUri();
-            mThumbnailButton.setData(uri, image.miniThumbBitmap());
-        } else {
-            mThumbnailButton.setData(null, null);
+        if (mThumbnailButton == null) return;
+        if (!mThumbnailButton.isUriValid()) {
+            IImageList list = ImageManager.makeImageList(
+                    mContentResolver,
+                    dataLocation(),
+                    ImageManager.INCLUDE_VIDEOS,
+                    ImageManager.SORT_ASCENDING,
+                    ImageManager.CAMERA_IMAGE_BUCKET_ID);
+            int count = list.getCount();
+            if (count > 0) {
+                IImage image = list.getImageAt(count - 1);
+                Uri uri = image.fullSizeImageUri();
+                mThumbnailButton.setData(uri, image.miniThumbBitmap());
+            } else {
+                mThumbnailButton.setData(null, null);
+            }
+            list.close();
         }
-        list.close();
+        mThumbnailButton.setVisibility(
+                (mThumbnailButton.getUri() != null) ? View.VISIBLE : View.GONE);
     }
 
     private static ImageManager.DataLocation dataLocation() {
