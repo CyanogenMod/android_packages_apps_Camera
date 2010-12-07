@@ -42,12 +42,11 @@ import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -370,7 +369,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void addIdleHandler() {
-        MessageQueue queue = getMainLooper().myQueue();
+        MessageQueue queue = Looper.myQueue();
         queue.addIdleHandler(new MessageQueue.IdleHandler() {
             public boolean queueIdle() {
                 ImageManager.ensureOSXCompatibleFolder();
@@ -1005,14 +1004,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         CameraSettings.KEY_WHITE_BALANCE, whiteBalance);
                 mHeadUpDisplay.overrideSettings(
                         CameraSettings.KEY_FOCUS_MODE, focusMode);
-            }});        
+            }});
     }
 
-    private void updateSceneModeInHud() {        
+    private void updateSceneModeInHud() {
         // If scene mode is set, we cannot set flash mode, white balance, and
-        // focus mode, instead, we read it from driver        
+        // focus mode, instead, we read it from driver
         if (!Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
-            overrideHudSettings(mParameters.getFlashMode(), 
+            overrideHudSettings(mParameters.getFlashMode(),
                     mParameters.getWhiteBalance(), mParameters.getFocusMode());
         } else {
             overrideHudSettings(null, null, null);
@@ -1663,9 +1662,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         setPreviewDisplay(mSurfaceHolder);
         setCameraParameters(UPDATE_PARAM_ALL);
-
-        final long wallTimeStart = SystemClock.elapsedRealtime();
-        final long threadTimeStart = Debug.threadCpuTimeNanos();
 
         mCameraDevice.setErrorCallback(mErrorCallback);
 
