@@ -46,7 +46,6 @@ import java.io.IOException;
  */
 public class ThumbnailController {
 
-    @SuppressWarnings("unused")
     private static final String TAG = "ThumbnailController";
     private final ContentResolver mContentResolver;
     private Uri mUri;
