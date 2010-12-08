@@ -1428,11 +1428,15 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void updateRecordingIndicator(boolean showRecording) {
-        int drawableId =
-                showRecording ? R.drawable.btn_ic_video_record
-                        : R.drawable.btn_ic_video_record_stop;
-        Drawable drawable = getResources().getDrawable(drawableId);
-        mShutterButton.setImageDrawable(drawable);
+        if (showRecording) {
+            mShutterButton.setImageDrawable(getResources().getDrawable(
+                    R.drawable.btn_ic_video_record));
+            mShutterButton.setBackgroundResource(R.drawable.btn_shutter);
+        } else {
+            mShutterButton.setImageDrawable(getResources().getDrawable(
+                    R.drawable.btn_ic_video_record_stop));
+            mShutterButton.setBackgroundResource(R.drawable.btn_shutter_recording);
+        }
     }
 
     private void getThumbnail() {

@@ -45,12 +45,8 @@ public class IndicatorWheel extends ViewGroup {
     private int mCenterX, mCenterY;
     // The width of the wheel stroke.
     private int mStrokeWidth = 60;
-    private final int STROKE_COLOR = 0x12FFFFFF;
     // The width of the edges on both sides of the wheel, which has less alpha.
-    private final int EDGE_STROKE_WIDTH = 6, EDGE_STROKE_COLOR = 0x07FFFFFF;
-    // Leave some space between the settings wheel and the decoration edges.
-    private final int LINE_SPACE = 2;
-    private final int OUTER_EDGE_STROKE_WIDTH = 3, OUTER_EDGE_STROKE_COLOR = 0x07FFFFFF;
+    private final float EDGE_STROKE_WIDTH = 6f;
     private final int HIGHLIGHT_COLOR = 0xFF6899FF;
     private final int HIGHLIGHT_WIDTH = 4;
     private final int HIGHLIGHT_DEGREE = 30;
@@ -156,10 +152,6 @@ public class IndicatorWheel extends ViewGroup {
             getChildAt(i).measure(freeSpec, freeSpec);
         }
 
-        if (childCount > 1) {
-            mStrokeWidth = (int) (getChildAt(1).getMeasuredWidth() * 2.0);
-        }
-
         // Measure myself.
         int desiredWidth = (int)(mShutterButton.getMeasuredWidth() * 3);
         int desiredHeight = (int)(mShutterButton.getMeasuredHeight() * 4.5) + 2;
@@ -193,8 +185,10 @@ public class IndicatorWheel extends ViewGroup {
         int shutterButtonWidth = mShutterButton.getMeasuredWidth();
         mShutterButtonRadius = shutterButtonWidth / 2.0;
         int shutterButtonHeight = mShutterButton.getMeasuredHeight();
-        mCenterX = (int) (right - left - mShutterButtonRadius * 1.2);
-        mCenterY = (bottom - top) / 2;
+        mStrokeWidth = (int) (mShutterButtonRadius * 1.05);
+        int innerRadius = (int) (mShutterButtonRadius + mStrokeWidth * 0.8);
+        mCenterX = right - left - innerRadius;
+        mCenterY = (bottom - top) / 2 + 3;
         mShutterButton.layout(mCenterX - shutterButtonWidth / 2,
                 mCenterY - shutterButtonHeight / 2,
                 mCenterX + shutterButtonWidth / 2,
@@ -203,7 +197,7 @@ public class IndicatorWheel extends ViewGroup {
         // Layout the settings. The icons are spreaded on the left side of the
         // shutter button. So the angle starts from 90 to 270 degrees.
         if (count == 1) return;
-        mWheelRadius = mShutterButtonRadius + mStrokeWidth * 1.5;
+        mWheelRadius = innerRadius + mStrokeWidth * 0.5;
         double intervalDegrees = (count == 2) ? 90.0 : 180.0 / (count - 2);
         double initialDegrees = 90.0;
         int index = 0;
@@ -233,26 +227,13 @@ public class IndicatorWheel extends ViewGroup {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Draw the dark background.
-        mBackgroundPaint.setStrokeWidth(mStrokeWidth);
-        mBackgroundPaint.setColor(STROKE_COLOR);
-        mBackgroundRect.set((float)(mCenterX - mWheelRadius),
-                (float)(mCenterY - mWheelRadius),
-                (float)(mCenterX + mWheelRadius),
-                (float)(mCenterY + mWheelRadius));
-        canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
-
-        // Draw a lighter background on the both sides of the arc.
-        mBackgroundPaint.setStrokeWidth(EDGE_STROKE_WIDTH);
-        mBackgroundPaint.setColor(EDGE_STROKE_COLOR);
-        float delta = (mStrokeWidth + EDGE_STROKE_WIDTH) / 2.0f;
-        mBackgroundRect.inset(-delta - LINE_SPACE, -delta - LINE_SPACE);
-        canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
-        mBackgroundRect.inset((delta + LINE_SPACE) * 2, (delta + LINE_SPACE) * 2);
-        canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
-
         // Draw highlight.
-        mBackgroundRect.inset(-delta * 2, -delta * 2);
+        float delta = mStrokeWidth * 0.5f;
+        float radius = (float) (mWheelRadius + mStrokeWidth * 0.5 + EDGE_STROKE_WIDTH);
+        mBackgroundRect.set((float)(mCenterX - radius),
+                (float)(mCenterY - radius),
+                (float)(mCenterX + radius),
+                (float)(mCenterY + radius));
         if (mSelectedIndex >= 0) {
             int count = getChildCount();
             float initialDegrees = 90.0f;
@@ -264,12 +245,6 @@ public class IndicatorWheel extends ViewGroup {
             canvas.drawArc(mBackgroundRect, -degree - HIGHLIGHT_DEGREE / 2,
                     HIGHLIGHT_DEGREE, false, mBackgroundPaint);
         }
-
-        // Draw another thinner, lighter background on the outer circle.
-        mBackgroundPaint.setStrokeWidth(OUTER_EDGE_STROKE_WIDTH);
-        mBackgroundPaint.setColor(OUTER_EDGE_STROKE_COLOR);
-        mBackgroundRect.inset(-delta * 2 - EDGE_STROKE_WIDTH, -delta * 2 - EDGE_STROKE_WIDTH);
-        canvas.drawArc(mBackgroundRect, 0, 360, false, mBackgroundPaint);
 
         super.onDraw(canvas);
     }

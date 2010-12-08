@@ -16,7 +16,7 @@
 
 <com.android.camera.PreviewFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/frame_layout"
-        android:layout_width="1040dp"
+        android:layout_width="978dp"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="5dp"

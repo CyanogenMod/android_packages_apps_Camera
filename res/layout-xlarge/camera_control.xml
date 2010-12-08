@@ -18,7 +18,7 @@
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_panel"
         android:layout_height="match_parent"
-        android:layout_width="300dp"
+        android:layout_width="325dp"
         android:layout_alignParentRight="true">
         <!-- The width is determined by IndicatorWheel so we should set
              layout_width as wrap_contant but RelativeLayout Javadoc says that
@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginRight="23dp"/>
 
         <TextView android:id="@+id/time_lapse_recording_time"
                 style="@style/RecordingTime"
@@ -66,8 +66,8 @@
                 android:layout_width="45dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="160dp"
-                android:layout_marginBottom="40dp"
+                android:layout_marginRight="180dp"
+                android:layout_marginBottom="30dp"
                 android:background="@drawable/mode_switch_bg_v2">
             <RadioButton android:id="@+id/switch_off_button"
                     android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginRight="38dp"
-                android:layout_marginBottom="80dp" />
+                android:layout_marginRight="60dp"
+                android:layout_marginBottom="30dp" />
 </com.android.camera.ui.ControlPanel>
 
