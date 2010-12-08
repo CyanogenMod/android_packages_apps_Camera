@@ -16,5 +16,6 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true" android:drawable="@drawable/button_zoom_out_pressed_holo" />
+    <item android:state_enabled="false" android:drawable="@drawable/button_zoom_out_disabled_holo" />
     <item android:drawable="@drawable/button_zoom_out_holo" />
 </selector>

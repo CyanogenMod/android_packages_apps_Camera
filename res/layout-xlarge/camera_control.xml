@@ -25,9 +25,8 @@
              this is circular dependency and is not allowed so it's very
              unfortunate that we have to hardcode the width here. -->
 
-        <ViewStub android:id="@+id/zoom_stub"
-                android:inflatedId="@+id/zoom_picker"
-                android:layout="@layout/zoom_picker"
+        <include android:id="@+id/zoom_picker"
+                layout="@layout/zoom_picker"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"

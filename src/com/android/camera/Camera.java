@@ -1026,10 +1026,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
         mIndicatorWheel = findViewById(R.id.indicator_wheel);
 
-        // Show zoom picker.
-        ViewStub zoomStub = (ViewStub) findViewById(R.id.zoom_stub);
-        if (zoomStub != null) mZoomPicker = (ZoomPicker) zoomStub.inflate();
-
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -1045,6 +1041,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // parameters.
         initializeControlPanel();
         initializeCameraPicker();
+
+        if (mControlPanel != null) {
+            mZoomPicker = (ZoomPicker) mControlPanel.findViewById(R.id.zoom_picker);
+            mZoomPicker.setEnabled(true); // disabled initially in xml
+        }
     }
 
     private void changeHeadUpDisplayState() {

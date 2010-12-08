@@ -83,10 +83,10 @@ public class ZoomPicker extends LinearLayout {
                         mIncrement = true;
                         // Give bigger delay so users can tap to change only one
                         // zoom step.
-                        mHandler.postDelayed(mRunnable, 200);
+                        mHandler.postDelayed(mRunnable, 300);
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    mIncrementButton.setBackgroundResource(R.drawable.button_zoom_in_holo);
+                    mIncrementButton.setBackgroundResource(R.drawable.btn_zoom_in);
                     mIncrement = false;
                 }
                 return false;
@@ -100,10 +100,10 @@ public class ZoomPicker extends LinearLayout {
                         mDecrement = true;
                         // Give bigger delay so users can tap to change only one
                         // zoom step.
-                        mHandler.postDelayed(mRunnable, 200);
+                        mHandler.postDelayed(mRunnable, 300);
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    mDecrementButton.setBackgroundResource(R.drawable.button_zoom_out_holo);
+                    mDecrementButton.setBackgroundResource(R.drawable.btn_zoom_out);
                     mDecrement = false;
                 }
                 return false;
@@ -165,5 +165,12 @@ public class ZoomPicker extends LinearLayout {
         mBuilder.delete(0, mBuilder.length());
         mFormatter.format("%2.1fx", mFormatterArgs);
         return mFormatter.toString();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        mIncrementButton.setEnabled(enabled);
+        mDecrementButton.setEnabled(enabled);
     }
 }
