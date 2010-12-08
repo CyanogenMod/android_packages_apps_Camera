@@ -34,14 +34,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom"
-                android:layout_marginLeft="16dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginBottom="10dp"
+                android:paddingLeft="16dp"
                 android:textColor="@android:color/white"
                 style="@style/SettingPickerText" />
     </FrameLayout>
-    <LinearLayout android:id="@+id/contentPanel"
-            android:layout_width="wrap_content"
+    <FrameLayout android:paddingTop="10dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/dialog_bottom_holo_dark"
-            android:orientation="vertical" />
+            android:background="@drawable/dialog_bottom_holo_dark">
+            <ScrollView android:orientation="vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_gravity="center"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+                <LinearLayout android:id="@+id/contentPanel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+            </ScrollView>
+    </FrameLayout>
 </com.android.camera.ui.BasicSettingPopup>

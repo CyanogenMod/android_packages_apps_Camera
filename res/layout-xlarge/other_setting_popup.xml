@@ -37,32 +37,44 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom"
-                android:layout_marginLeft="16dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginBottom="10dp"
+                android:paddingLeft="16dp"
                 android:textColor="@android:color/white"
                 style="@style/SettingPickerText" />
     </FrameLayout>
 
-    <LinearLayout android:id="@+id/contentPanel"
-            android:layout_width="wrap_content"
+    <FrameLayout android:paddingTop="10dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/dialog_bottom_holo_dark"
-            android:orientation="vertical">
-        <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_recordlocation_key"
-                style="@style/SettingRow" />
-        <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_focusmode_key"
-                style="@style/SettingRow" />
-        <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_exposure_key"
-                style="@style/SettingRow" />
-        <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_picturesize_key"
-                style="@style/SettingRow" />
-        <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_jpegquality_key"
-                style="@style/SettingRow" />
-        <TextView
-                android:text="@string/pref_restore_detail"
-                android:gravity="center"
-                android:textSize="22dp"
-                style="@style/SettingRow">
-        </TextView>
-    </LinearLayout>
+            android:background="@drawable/dialog_bottom_holo_dark">
+        <ScrollView android:orientation="vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <LinearLayout android:id="@+id/contentPanel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_recordlocation_key"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_focusmode_key"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_exposure_key"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_picturesize_key"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_jpegquality_key"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <TextView
+                        android:text="@string/pref_restore_detail"
+                        android:gravity="center"
+                        android:textSize="22dp"
+                        style="@style/SettingRow">
+                </TextView>
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
 </com.android.camera.ui.OtherSettingsPopup>

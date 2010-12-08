@@ -17,38 +17,52 @@
 */
 -->
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView android:id="@+id/title"
-        style="@style/SettingPickerText"  />
-
-    <Button android:id="@+id/decrement"
-        android:layout_width="72dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
-        android:text="@string/setting_decrement"
-        android:textColor="@drawable/btn_setting_picker"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:background="@android:color/transparent" />
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical">
+    <ImageView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/divider_horizontal_holo_dark"
+            android:gravity="center"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true" />
+    <LinearLayout android:orientation="horizontal"
+            style="@style/SettingRow">
+        <TextView android:id="@+id/title"
+                style="@style/SettingPickerText"  />
 
-    <TextView android:id="@+id/current_setting"
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        android:textSize="20dp" />
+        <Button android:id="@+id/decrement"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/setting_decrement"
+                android:textColor="@drawable/btn_setting_picker"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:background="@android:color/transparent" />
 
-    <Button android:id="@+id/increment"
-        android:layout_width="72dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
-        android:text="@string/setting_increment"
-        android:textColor="@drawable/btn_setting_picker"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:background="@android:color/transparent" />
-</merge>
+        <TextView android:id="@+id/current_setting"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="20dp" />
+
+        <Button android:id="@+id/increment"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/setting_increment"
+                android:textColor="@drawable/btn_setting_picker"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:background="@android:color/transparent" />
+    </LinearLayout>
+</LinearLayout>

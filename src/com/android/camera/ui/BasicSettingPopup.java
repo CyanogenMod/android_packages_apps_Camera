@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.camera.IconListPreference;
@@ -39,7 +40,7 @@ import com.android.camera.Util;
 // setting (ex: white-balance). The entries are the supported values (ex:
 // daylight, incandescent, etc).
 public class BasicSettingPopup extends AbstractSettingPopup implements
-        View.OnTouchListener {
+        View.OnClickListener {
     private static final String TAG = "BasicSettingPopup";
     private IconListPreference mPreference;
     private Listener mListener;
@@ -76,7 +77,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
             TextView text = (TextView) row.findViewById(R.id.text);
             text.setText(entries[i].toString());
             text.setClickable(false);
-            row.setPressed(index == i);
+            row.setSelected(index == i);
 
             // Initialize the icon.
             if (iconIds != null) {
@@ -85,6 +86,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
                 image.setImageDrawable(drawable);
                 image.setClickable(false);
             }
+            row.setOnClickListener(this);
             mContentPanel.addView(row);
         }
     }
@@ -96,35 +98,16 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mContentPanel.setOnTouchListener(this);
     }
 
-    public boolean onTouch(View view, MotionEvent event) {
-        int action = event.getAction();
-        ViewGroup group = (ViewGroup) view;
-        if (action == MotionEvent.ACTION_MOVE
-                || action == MotionEvent.ACTION_DOWN) {
-            int y = (int) event.getY();
-            int childCount = group.getChildCount();
-            // Check which child is pressed.
-            for (int i = 0; i < childCount; i++) {
-                View child = group.getChildAt(i);
-                if (y >= child.getTop() && y <= child.getBottom()) {
-                    int oldIndex = mPreference.findIndexOfValue(mPreference.getValue());
-                    if (oldIndex != i) {
-                        View oldRow = group.getChildAt(oldIndex);
-                        oldRow.setPressed(false);
-                        child.setPressed(true);
-                        mPreference.setValueIndex(i);
-                        if (mListener != null) {
-                            mListener.onSettingChanged();
-                        }
-                    }
-                    break;
-                }
-            }
-            return true;
+    public void onClick(View view) {
+        int i = mContentPanel.indexOfChild(view);
+        int oldIndex = mPreference.findIndexOfValue(mPreference.getValue());
+        if ((i != -1) && (oldIndex != i)) {
+            mContentPanel.getChildAt(oldIndex).setSelected(false);
+            view.setSelected(true);
+            mPreference.setValueIndex(i);
+            if (mListener != null) mListener.onSettingChanged();
         }
-        return false;
     }
 }
