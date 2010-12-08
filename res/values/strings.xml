@@ -122,6 +122,9 @@
     Camcorder mode. [CHAR LIMIT=20] -->
     <string name="disable_time_lapse_mode">Disable Time Lapse</string>
 
+    <!-- A lable that overlays on top of the preview frame to indicate the camcorder is in time lapse mode [CHAR LIMIT=35] -->
+    <string name="time_lapse_title">Time Lapse</string>
+
     <!-- Settings screen, camera selection dialog title. Users can select a camera from the phone (front-facing or back-facing). [CHAR LIMIT=20] -->
     <string name="pref_camera_id_title">Select camera</string>
 
@@ -152,23 +155,17 @@
     <!-- Describes the preference dialog for choosing quality for time lapse video.
     Appears at top of the dialog. [CHAR LIMIT=30] -->
     <string name="pref_video_time_lapse_quality_title">Time lapse video quality</string>
-    <string name="pref_video_time_lapse_quality_default" translatable="false">1001</string>
     <!-- Refers to the video quality [CHAR LIMIT=8] -->
     <string name="pref_video_time_lapse_quality_entry_low">Low</string>
     <!-- Refers to the video quality [CHAR LIMIT=8] -->
     <string name="pref_video_time_lapse_quality_entry_high">High</string>
-    <!-- Refers to the video quality -->
-    <string name="pref_video_time_lapse_quality_entry_480p" translatable="false">480p</string>
-    <!-- Refers to the video quality -->
-    <string name="pref_video_time_lapse_quality_entry_720p" translatable="false">720p</string>
-    <!-- Refers to the video quality -->
-    <string name="pref_video_time_lapse_quality_entry_1080p" translatable="false">1080p</string>
 
     <!-- Describes the preference dialog for choosing interval between frame capture for
     time lapse recording. Appears at top of the dialog. [CHAR LIMIT=30] -->
-    <string name="pref_video_time_lapse_frame_interval_title">Frame capture interval</string>
-    <string name="pref_video_time_lapse_frame_interval_default" translatable="false">2000</string>
+    <string name="pref_video_time_lapse_frame_interval_title">Time lapse interval</string>
+    <string name="pref_video_time_lapse_frame_interval_default" translatable="false">0</string>
     <!-- The time interval between frame capture for time lapse recording -->
+    <string name="pref_video_time_lapse_frame_interval_entry_250" translatable="false">0.25s</string>
     <string name="pref_video_time_lapse_frame_interval_entry_500" translatable="false">0.5s</string>
     <string name="pref_video_time_lapse_frame_interval_entry_1000" translatable="false">1s</string>
     <string name="pref_video_time_lapse_frame_interval_entry_1500" translatable="false">1.5s</string>

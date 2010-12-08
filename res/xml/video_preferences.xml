@@ -26,16 +26,10 @@
                 camera:entries="@array/pref_video_quality_entries"
                 camera:entryValues="@array/pref_video_quality_entryvalues"/>
         <IconListPreference
-                camera:key="pref_video_time_lapse_quality_key"
-                camera:defaultValue="@string/pref_video_time_lapse_quality_default"
-                camera:title="@string/pref_video_time_lapse_quality_title"
-                camera:largeIcons="@array/video_time_lapse_quality_largeicons"
-                camera:entries="@array/pref_video_time_lapse_quality_entries"
-                camera:entryValues="@array/pref_video_time_lapse_quality_entryvalues"/>
-        <ListPreference
                 camera:key="pref_video_time_lapse_frame_interval_key"
                 camera:defaultValue="@string/pref_video_time_lapse_frame_interval_default"
                 camera:title="@string/pref_video_time_lapse_frame_interval_title"
+                camera:singleIcon="@drawable/ic_viewfinder_settings"
                 camera:entries="@array/pref_video_time_lapse_frame_interval_entries"
                 camera:entryValues="@array/pref_video_time_lapse_frame_interval_entryvalues"/>
         <IconListPreference

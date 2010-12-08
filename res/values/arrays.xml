@@ -38,27 +38,10 @@
         <item>@drawable/ic_viewfinder_video_quality_youtube</item>
     </array>
 
-    <!-- Camera Preferences Time Lapse Video Quality entries -->
-    <string-array name="pref_video_time_lapse_quality_entries" translatable="false">
-        <item>@string/pref_video_time_lapse_quality_entry_low</item>
-        <item>@string/pref_video_time_lapse_quality_entry_high</item>
-        <item>@string/pref_video_time_lapse_quality_entry_480p</item>
-        <item>@string/pref_video_time_lapse_quality_entry_720p</item>
-        <item>@string/pref_video_time_lapse_quality_entry_1080p</item>
-    </string-array>
-
-    <!-- These values correspond to the quality level integers defined
-    in CamcorderProfile.java. E.g. QUALITY_TIME_LAPSE_480P = 1004 -->
-    <string-array name="pref_video_time_lapse_quality_entryvalues" translatable="false">
-        <item>1000</item>
-        <item>1001</item>
-        <item>1004</item>
-        <item>1005</item>
-        <item>1006</item>
-    </string-array>
-
     <!-- Camera Preferences Time Lapse Frame Interval entries -->
     <string-array name="pref_video_time_lapse_frame_interval_entries" translatable="false">
+        <item>@string/pref_camera_recordlocation_entry_off</item>
+        <item>@string/pref_video_time_lapse_frame_interval_entry_250</item>
         <item>@string/pref_video_time_lapse_frame_interval_entry_500</item>
         <item>@string/pref_video_time_lapse_frame_interval_entry_1000</item>
         <item>@string/pref_video_time_lapse_frame_interval_entry_1500</item>
@@ -72,6 +55,8 @@
     <!-- These values correspond to the time interval between frame capture in millseconds
     for time lapse recording -->
     <string-array name="pref_video_time_lapse_frame_interval_entryvalues" translatable="false">
+        <item>0</item>
+        <item>250</item>
         <item>500</item>
         <item>1000</item>
         <item>1500</item>
@@ -81,14 +66,6 @@
         <item>5000</item>
         <item>10000</item>
     </string-array>
-
-    <array name="video_time_lapse_quality_largeicons" translatable="false">
-        <item>@drawable/ic_viewfinder_video_time_lapse_quality_low</item>
-        <item>@drawable/ic_viewfinder_video_time_lapse_quality_high</item>
-        <item>@drawable/ic_viewfinder_video_time_lapse_quality_480p</item>
-        <item>@drawable/ic_viewfinder_video_time_lapse_quality_720p</item>
-        <item>@drawable/ic_viewfinder_video_time_lapse_quality_1080p</item>
-    </array>
 
     <!-- Camera Preferences Picture size dialog box entries -->
     <string-array name="pref_camera_picturesize_entries" translatable="false">

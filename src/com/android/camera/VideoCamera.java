@@ -145,7 +145,6 @@ public class VideoCamera extends NoSearchActivity
     // xlarge devices use control panel. Other devices use head-up display.
     private CamcorderHeadUpDisplay mHeadUpDisplay;
     private ControlPanel mControlPanel;
-    private MenuItem mSwitchTimeLapseMenuItem;
     // Front/back camera picker for xlarge layout.
     private CameraPicker mCameraPicker;
 
@@ -180,7 +179,9 @@ public class VideoCamera extends NoSearchActivity
 
     // Time Lapse parameters.
     private boolean mCaptureTimeLapse = false;
-    private int mTimeBetweenTimeLapseFrameCaptureMs = 2000;
+    // Default 0. If it is larger than 0, the camcorder is in time lapse mode.
+    private int mTimeBetweenTimeLapseFrameCaptureMs = 0;
+    private View mTimeLapseLabel;
 
     private int mDesiredPreviewWidth;
     private int mDesiredPreviewHeight;
@@ -191,7 +192,7 @@ public class VideoCamera extends NoSearchActivity
     private ContentResolver mContentResolver;
 
     private ShutterButton mShutterButton;
-    private TextView mRecordingTimeView, mTimeLapseRecordingTimeView;
+    private TextView mRecordingTimeView;
     private SwitcherSet mSwitcher;
     private boolean mRecordingTimeCountsDown = false;
 
@@ -373,9 +374,8 @@ public class VideoCamera extends NoSearchActivity
         mShutterButton.requestFocus();
 
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
-        mTimeLapseRecordingTimeView = (TextView) findViewById(
-                R.id.time_lapse_recording_time);
         mOrientationListener = new MyOrientationEventListener(VideoCamera.this);
+        mTimeLapseLabel = findViewById(R.id.time_lapse_label);
 
         // Make sure preview is started.
         try {
@@ -388,6 +388,7 @@ public class VideoCamera extends NoSearchActivity
             // ignore
         }
 
+        showTimeLapseLabel(mCaptureTimeLapse);
         resizeForPreviewAspectRatio();
 
         mBackCameraId = CameraHolder.instance().getBackCameraId();
@@ -488,6 +489,8 @@ public class VideoCamera extends NoSearchActivity
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_COLOR_EFFECT,
             CameraSettings.KEY_VIDEO_QUALITY};
+            // TODO: add this back after time lapse recording is ready.
+            //,CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
         mControlPanel.initialize(this, mPreferenceGroup, keys, false);
         mControlPanel.setListener(new MyControlPanelListener());
         mPopupGestureDetector = new GestureDetector(this,
@@ -666,33 +669,10 @@ public class VideoCamera extends NoSearchActivity
                 : STORAGE_STATUS_OK;
     }
 
-    private void readTimeLapseVideoPreferences() {
-        // Read CamcorderProfile quality.
-        String qualityStr = mPreferences.getString(
-                CameraSettings.KEY_VIDEO_TIME_LAPSE_QUALITY,
-                getString(R.string.pref_video_time_lapse_quality_default));
-        mProfile = CamcorderProfile.get(mCameraId, Integer.parseInt(qualityStr));
-
-        // Read interval between frame capture.
-        String frameIntervalStr = mPreferences.getString(
-                CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
-                getString(R.string.pref_video_time_lapse_frame_interval_default));
-        mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
-
-        mMaxVideoDurationInMs = 0; // No limit
-        getDesiredPreviewSize();
-    }
-
     private void readVideoPreferences() {
-        if (mCaptureTimeLapse) {
-            readTimeLapseVideoPreferences();
-            return;
-        }
-
         String quality = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
-
         boolean videoQualityHigh = CameraSettings.getVideoQuality(quality);
 
         // Set video quality.
@@ -713,10 +693,33 @@ public class VideoCamera extends NoSearchActivity
             mMaxVideoDurationInMs =
                     CameraSettings.getVidoeDurationInMillis(quality);
         }
-        mProfile = CamcorderProfile.get(mCameraId,
-                videoQualityHigh
-                ? CamcorderProfile.QUALITY_HIGH
-                : CamcorderProfile.QUALITY_LOW);
+
+        // Read time lapse recording interval.
+        String frameIntervalStr = mPreferences.getString(
+                CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
+                getString(R.string.pref_video_time_lapse_frame_interval_default));
+        // TODO: uncomment after time lapse recording is ready.
+        //mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
+        mTimeBetweenTimeLapseFrameCaptureMs = 0;
+
+        mCaptureTimeLapse = (mTimeBetweenTimeLapseFrameCaptureMs != 0);
+        int profileQuality;
+        if (!mCaptureTimeLapse) {
+            if (videoQualityHigh) {
+                profileQuality = CamcorderProfile.QUALITY_HIGH;
+            } else {
+                profileQuality = CamcorderProfile.QUALITY_LOW;
+            }
+        } else {
+            if (videoQualityHigh) {
+                // TODO: change this to time lapse high after the profile is
+                // fixed.
+                profileQuality = CamcorderProfile.QUALITY_TIME_LAPSE_480P;
+            } else {
+                profileQuality = CamcorderProfile.QUALITY_TIME_LAPSE_LOW;
+            }
+        }
+        mProfile = CamcorderProfile.get(mCameraId, profileQuality);
         getDesiredPreviewSize();
     }
 
@@ -1254,14 +1257,6 @@ public class VideoCamera extends NoSearchActivity
         }
     }
 
-    private void setTimeLapseSwitchTitle(boolean enableTimeLapse) {
-        int labelId = enableTimeLapse
-                ? R.string.enable_time_lapse_mode
-                : R.string.disable_time_lapse_mode;
-
-        mSwitchTimeLapseMenuItem.setTitle(labelId);
-    }
-
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, false, new Runnable() {
             public void run() {
@@ -1295,33 +1290,6 @@ public class VideoCamera extends NoSearchActivity
                 }
             }).setIcon(android.R.drawable.ic_menu_camera);
         }
-
-        mSwitchTimeLapseMenuItem = menu.add(Menu.NONE, Menu.NONE,
-                MenuHelper.POSITION_SWITCH_TIME_LAPSE_MODE,
-                R.string.enable_time_lapse_mode)
-                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                switchTimeLapseMode();
-                return true;
-            }
-        }).setIcon(android.R.drawable.ic_menu_camera);
-    }
-
-    private void switchTimeLapseMode() {
-        mCaptureTimeLapse = !mCaptureTimeLapse;
-
-        // Read the video preferences
-        mCameraDevice.stopPreview();
-        readVideoPreferences();
-        resizeForPreviewAspectRatio();
-        startPreview();
-
-        // Reload the UI.
-        initializeHeadUpDisplay();
-        initializeControlPanel();
-
-        // Change menu
-        setTimeLapseSwitchTitle(!mCaptureTimeLapse);
     }
 
     private void switchCameraId(int cameraId) {
@@ -1425,10 +1393,6 @@ public class VideoCamera extends NoSearchActivity
         mRecordingTimeView.setText("");
         mRecordingTimeView.setVisibility(View.VISIBLE);
         if (mCameraPicker != null) mCameraPicker.setEnabled(false);
-        if (mTimeLapseRecordingTimeView != null) {
-            mTimeLapseRecordingTimeView.setText("");
-            mTimeLapseRecordingTimeView.setVisibility(View.VISIBLE);
-        }
 
         updateRecordingTime();
         keepScreenOn();
@@ -1545,9 +1509,6 @@ public class VideoCamera extends NoSearchActivity
             mRecordingTimeView.setVisibility(View.GONE);
             if (!mIsVideoCaptureIntent) {
                 if (mCameraPicker != null) mCameraPicker.setEnabled(true);
-            }
-            if (mTimeLapseRecordingTimeView != null) {
-                mTimeLapseRecordingTimeView.setVisibility(View.GONE);
             }
             keepScreenOnAwhile();
             if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {
@@ -1699,15 +1660,7 @@ public class VideoCamera extends NoSearchActivity
             // Since the length of time lapse video is different from the length
             // of the actual wall clock time elapsed, we display the video length
             // alongside the wall clock time.
-            String timeLapseText = "(" + getTimeLapseVideoLengthString(delta) + ")";
-            // In xlarge layout, recording time and time lapse recording time
-            // are separated in two lines. In other layouts, they are in one
-            // line.
-            if (mTimeLapseRecordingTimeView == null) {
-                text += " " + timeLapseText;
-            } else {
-                mTimeLapseRecordingTimeView.setText(timeLapseText);
-            }
+            text += " (" + getTimeLapseVideoLengthString(delta) + ")";
         }
 
         mRecordingTimeView.setText(text);
@@ -1884,7 +1837,13 @@ public class VideoCamera extends NoSearchActivity
                     setCameraParameters();
                 }
             }
+            showTimeLapseLabel(mCaptureTimeLapse);
         }
+    }
+
+    private void showTimeLapseLabel(boolean enable) {
+        if (mTimeLapseLabel == null) return;
+        mTimeLapseLabel.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
     }
 
     private class MyControlPanelListener implements ControlPanel.Listener {
