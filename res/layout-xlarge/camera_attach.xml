@@ -19,7 +19,8 @@
         android:id="@+id/app_root"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_video_ring_bg_holo">
 
     <include layout="@layout/camera_control"/>
     <include layout="@layout/preview_frame"/>

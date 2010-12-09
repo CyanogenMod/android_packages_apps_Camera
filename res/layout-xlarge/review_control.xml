@@ -23,8 +23,7 @@
         android:gravity="top|center_horizontal"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="150dp">
+        android:layout_marginRight="180dp">
     <LinearLayout style="@style/ReviewControlGroup"
             android:visibility="gone"
             android:layout_alignParentBottom="true"
