@@ -87,7 +87,6 @@
                     android:button="@android:color/transparent"
                     android:background="@drawable/btn_ic_mode_switch_camera"/>
         </com.android.camera.SwitcherSet>
-        <include layout="@layout/review_control"/>
         <com.android.camera.ui.CameraPicker android:id="@+id/camera_picker"
                 android:clickable="true"
                 android:layout_width="wrap_content"

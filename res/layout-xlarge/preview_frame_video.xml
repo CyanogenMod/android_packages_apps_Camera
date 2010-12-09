@@ -37,24 +37,23 @@
                 android:visibility="gone" />
         <include layout="@layout/review_thumbnail"/>
         <TextView android:id="@+id/recording_time"
-                style="@style/RecordingTime"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="26dp"
-                android:layout_alignParentTop="true"
+                style="@style/OnViewfinderLabel"
+                android:layout_below="@+id/review_control"
                 android:layout_alignParentRight="true"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
                 android:gravity="center"
-                android:background="@drawable/mode_switch_bg_v2"
                 android:drawableLeft="@drawable/ic_recording_indicator_small"
                 android:visibility="gone"/>
+        <include layout="@layout/review_control"/>
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:background="@color/on_viewfinder_label_background_color"
                 android:visibility="gone">
             <ImageView style="@style/ReviewControlIcon"
                     android:id="@+id/btn_play"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:src="@drawable/btn_ic_review_play"/>
         </LinearLayout>
         <TextView android:id="@+id/time_lapse_label"

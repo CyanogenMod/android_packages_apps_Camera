@@ -82,16 +82,16 @@
     <string name="confirm_restore_message">Camera settings will be restored to defaults.</string>
 
     <!-- button in review mode indicating that the video just taken should be played -->
-    <string name="review_play">PLAY</string>
+    <string name="review_play">Play</string>
 
     <!-- button in review mode indicating that the video recording session should be canceled -->
-    <string name="review_cancel">CANCEL</string>
+    <string name="review_cancel">Cancel</string>
 
     <!-- button in review mode indicating that the taken video is OK to be attached/uploaded -->
-    <string name="review_ok">OK</string>
+    <string name="review_ok">Ok</string>
 
     <!-- button in review mode indicate the user want to retake another picture for attachment -->
-    <string name="review_retake">RETAKE</string>
+    <string name="review_retake">Retake</string>
 
     <!-- button indicating that the picture just taken should be deleted -->
 

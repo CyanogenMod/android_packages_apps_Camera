@@ -76,6 +76,7 @@ import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -339,10 +340,14 @@ public class VideoCamera extends NoSearchActivity
             reviewControl.findViewById(R.id.btn_cancel).setOnClickListener(this);
             reviewControl.findViewById(R.id.btn_done).setOnClickListener(this);
             findViewById(R.id.btn_play).setOnClickListener(this);
-            ImageView retake =
-                    (ImageView) reviewControl.findViewById(R.id.btn_retake);
+            View retake = reviewControl.findViewById(R.id.btn_retake);
             retake.setOnClickListener(this);
-            retake.setImageResource(R.drawable.btn_ic_review_retake_video);
+            if (retake instanceof ImageView) {
+                ((ImageView) retake).setImageResource(R.drawable.btn_ic_review_retake_video);
+            } else {
+                ((Button) retake).setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_switch_video_holo_dark, 0, 0, 0);
+            }
         } else {
             setContentView(R.layout.video_camera);
 
@@ -1434,18 +1439,29 @@ public class VideoCamera extends NoSearchActivity
             View button = findViewById(id);
             fadeIn(((View) button.getParent()));
         }
+
+        // Remove the text of the cancel button
+        View view = findViewById(R.id.btn_cancel);
+        if (view instanceof Button) ((Button) view).setText("");
     }
 
     private void hideAlert() {
         mVideoFrame.setVisibility(View.INVISIBLE);
         fadeIn(findViewById(R.id.shutter_button));
+        mShutterButton.setEnabled(true);
+        if (mCameraPicker != null) mCameraPicker.setEnabled(true);
+
+        // Restore the text of the cancel button
+        View view = findViewById(R.id.btn_cancel);
+        if (view instanceof Button) {
+            ((Button) view).setText(R.string.review_cancel);
+        }
+
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
         for (int id : pickIds) {
             View button = findViewById(id);
-            fadeOut(((View) button.getParent()));
+            ((View) button.getParent()).setVisibility(View.GONE);
         }
-        if (mCameraPicker != null) mCameraPicker.setEnabled(true);
-        mShutterButton.setEnabled(true);
     }
 
     private static void fadeIn(View view) {

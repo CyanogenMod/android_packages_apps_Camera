@@ -78,6 +78,7 @@ import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.widget.Button;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -2130,6 +2131,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             if (mCameraPicker != null) mCameraPicker.setEnabled(false);
             if (mZoomPicker != null) mZoomPicker.setEnabled(false);
+
+            // Remove the text of the cancel button
+            View view = findViewById(R.id.btn_cancel);
+            if (view instanceof Button) ((Button) view).setText("");
         }
     }
 
@@ -2145,6 +2150,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             if (mCameraPicker != null) mCameraPicker.setEnabled(true);
             if (mZoomPicker != null) mZoomPicker.setEnabled(true);
+
+            // Restore the text of the cancel button
+            View view = findViewById(R.id.btn_cancel);
+            if (view instanceof Button) {
+                ((Button) view).setText(R.string.review_cancel);
+            }
         }
     }
 
