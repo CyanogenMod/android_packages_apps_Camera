@@ -44,15 +44,6 @@
                 android:text="@string/review_retake" />
     </LinearLayout>
     <LinearLayout style="@style/ReviewControlGroup"
-            android:visibility="gone"
-            android:layout_marginBottom="15dp">
-        <ImageView style="@style/ReviewControlIcon"
-                android:id="@+id/btn_play"
-                android:src="@drawable/btn_ic_review_play"/>
-        <TextView style="@style/ReviewControlText"
-                android:text="@string/review_play" />
-    </LinearLayout>
-    <LinearLayout style="@style/ReviewControlGroup"
             android:layout_marginBottom="15dp">
         <ImageView style="@style/ReviewControlIcon"
                 android:id="@+id/btn_cancel"

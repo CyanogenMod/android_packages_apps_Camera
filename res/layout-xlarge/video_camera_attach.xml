@@ -14,10 +14,14 @@
      limitations under the License.
 -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/ic_rotate_video_pressed_holo_dark" />
-    <item android:state_enabled="false" android:drawable="@drawable/ic_rotate_video_pressed_holo_dark" />
-    <item android:drawable="@drawable/ic_rotate_video_holo_dark" />
-</selector>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
+        android:id="@+id/app_root"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_video_ring_bg_holo">
 
-
+    <include layout="@layout/camera_control"/>
+    <include layout="@layout/preview_frame_video"/>
+</RelativeLayout>

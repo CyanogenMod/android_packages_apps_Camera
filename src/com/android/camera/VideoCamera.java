@@ -333,14 +333,15 @@ public class VideoCamera extends NoSearchActivity
         if (mIsVideoCaptureIntent) {
             setContentView(R.layout.video_camera_attach);
 
-            View controlBar = findViewById(R.id.control_bar);
-            controlBar.findViewById(R.id.btn_cancel).setOnClickListener(this);
+            View reviewControl = findViewById(R.id.review_control);
+            reviewControl.setVisibility(View.VISIBLE);
+            reviewControl.findViewById(R.id.btn_cancel).setOnClickListener(this);
+            reviewControl.findViewById(R.id.btn_done).setOnClickListener(this);
+            findViewById(R.id.btn_play).setOnClickListener(this);
             ImageView retake =
-                    (ImageView) controlBar.findViewById(R.id.btn_retake);
+                    (ImageView) reviewControl.findViewById(R.id.btn_retake);
             retake.setOnClickListener(this);
             retake.setImageResource(R.drawable.btn_ic_review_retake_video);
-            controlBar.findViewById(R.id.btn_play).setOnClickListener(this);
-            controlBar.findViewById(R.id.btn_done).setOnClickListener(this);
         } else {
             setContentView(R.layout.video_camera);
 
@@ -608,8 +609,14 @@ public class VideoCamera extends NoSearchActivity
                     startVideoRecording();
                 }
                 mShutterButton.setEnabled(false);
-                mHandler.sendEmptyMessageDelayed(
-                        ENABLE_SHUTTER_BUTTON, SHUTTER_BUTTON_TIMEOUT);
+
+                // Keep the shutter button disabled when in video capture intent
+                // mode and recording is stopped. It'll be re-enabled when
+                // re-take button is clicked.
+                if (!mIsVideoCaptureIntent || mMediaRecorderRecording) {
+                    mHandler.sendEmptyMessageDelayed(
+                            ENABLE_SHUTTER_BUTTON, SHUTTER_BUTTON_TIMEOUT);
+                }
                 break;
         }
     }
@@ -1417,7 +1424,7 @@ public class VideoCamera extends NoSearchActivity
         updateRecordingIndicator(false);
         mRecordingTimeView.setText("");
         mRecordingTimeView.setVisibility(View.VISIBLE);
-        mCameraPicker.setVisibility(View.GONE);
+        if (mCameraPicker != null) mCameraPicker.setEnabled(false);
         if (mTimeLapseRecordingTimeView != null) {
             mTimeLapseRecordingTimeView.setText("");
             mTimeLapseRecordingTimeView.setVisibility(View.VISIBLE);
@@ -1444,7 +1451,9 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void showAlert() {
-        fadeOut(findViewById(R.id.shutter_button));
+        if (mControlPanel == null) {
+            fadeOut(findViewById(R.id.shutter_button));
+        }
         if (mCurrentVideoFilename != null) {
             Bitmap src = ThumbnailUtils.createVideoThumbnail(
                     mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
@@ -1474,6 +1483,8 @@ public class VideoCamera extends NoSearchActivity
             View button = findViewById(id);
             fadeOut(((View) button.getParent()));
         }
+        if (mCameraPicker != null) mCameraPicker.setEnabled(true);
+        mShutterButton.setEnabled(true);
     }
 
     private static void fadeIn(View view) {
@@ -1532,7 +1543,9 @@ public class VideoCamera extends NoSearchActivity
             enableCameraControls(true);
             updateRecordingIndicator(true);
             mRecordingTimeView.setVisibility(View.GONE);
-            mCameraPicker.setVisibility(View.VISIBLE);
+            if (!mIsVideoCaptureIntent) {
+                if (mCameraPicker != null) mCameraPicker.setEnabled(true);
+            }
             if (mTimeLapseRecordingTimeView != null) {
                 mTimeLapseRecordingTimeView.setVisibility(View.GONE);
             }

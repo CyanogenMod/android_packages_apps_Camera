@@ -47,5 +47,14 @@
                 android:background="@drawable/mode_switch_bg_v2"
                 android:drawableLeft="@drawable/ic_recording_indicator_small"
                 android:visibility="gone"/>
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone">
+            <ImageView style="@style/ReviewControlIcon"
+                    android:id="@+id/btn_play"
+                    android:src="@drawable/btn_ic_review_play"/>
+        </LinearLayout>
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>
