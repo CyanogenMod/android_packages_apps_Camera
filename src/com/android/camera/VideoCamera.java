@@ -488,9 +488,8 @@ public class VideoCamera extends NoSearchActivity
         String[] keys = new String[]{CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_COLOR_EFFECT,
-            CameraSettings.KEY_VIDEO_QUALITY};
-            // TODO: add this back after time lapse recording is ready.
-            //,CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
+            CameraSettings.KEY_VIDEO_QUALITY,
+            CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
         mControlPanel.initialize(this, mPreferenceGroup, keys, false);
         mControlPanel.setListener(new MyControlPanelListener());
         mPopupGestureDetector = new GestureDetector(this,
@@ -698,9 +697,7 @@ public class VideoCamera extends NoSearchActivity
         String frameIntervalStr = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
                 getString(R.string.pref_video_time_lapse_frame_interval_default));
-        // TODO: uncomment after time lapse recording is ready.
-        //mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
-        mTimeBetweenTimeLapseFrameCaptureMs = 0;
+        mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
 
         mCaptureTimeLapse = (mTimeBetweenTimeLapseFrameCaptureMs != 0);
         int profileQuality;
