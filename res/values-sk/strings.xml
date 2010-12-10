@@ -132,6 +132,8 @@
     <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Na vašej karte SD je málo miesta. Zmeňte nastavenie kvality alebo odstráňte položky z Galérie."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Bolo dosiahnuté obmedzenie veľkosti."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Lupa"</string>
+    <!-- no translation found for zoom_text (3450360177919418123) -->
+    <skip />
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Prepnúť do režimu fotoaparát"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Prepnúť do režimu video"</string>
 </resources>

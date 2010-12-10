@@ -117,6 +117,8 @@
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Место на вашей SD-карте заканчивается. Измените настройки качества или удалите ненужные изображения и другие файлы."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Достигнут предельный размер видео."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Масштаб"</string>
+    <!-- no translation found for zoom_text (3450360177919418123) -->
+    <skip />
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Переключить на фото"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Переключить на видео"</string>
 </resources>
