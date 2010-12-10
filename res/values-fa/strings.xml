@@ -132,6 +132,8 @@
     <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"حافظه کارت SD تمام شده است. تنظیم کیفیت را تغییر دهید یا موارد را از گالری حذف کنید."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"بیش از حداکثر مجاز."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"بزرگنمایی"</string>
+    <!-- no translation found for zoom_text (3450360177919418123) -->
+    <skip />
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"رفتن به دوربین"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"رفتن به ویدیو"</string>
 </resources>

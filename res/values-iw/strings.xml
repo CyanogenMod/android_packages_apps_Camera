@@ -132,6 +132,8 @@
     <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"בכרטיס ה-SD אוזל שטח האחסון. שנה את הגדרת האיכות או מחק פריטים מהגלריה."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"הגעת למגבלת הגודל."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"מרחק מתצוגה"</string>
+    <!-- no translation found for zoom_text (3450360177919418123) -->
+    <skip />
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"עבור למצלמה"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"עבור לווידאו"</string>
 </resources>
