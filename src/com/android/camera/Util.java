@@ -20,6 +20,7 @@ import com.android.camera.gallery.IImage;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
@@ -35,6 +37,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
 import java.io.Closeable;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -385,5 +388,34 @@ public class Util {
         while (tokenizer.hasMoreElements()) {
             Log.d(TAG, tokenizer.nextToken());
         }
+    }
+
+   /**
+     * Returns whether the device is voice-capable (meaning, it can do MMS).
+     */
+    public static boolean isMmsCapable(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager)
+                context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager == null) {
+            return false;
+        }
+
+        try {
+            Class partypes[] = new Class[0];
+            Method sIsVoiceCapable = TelephonyManager.class.getMethod(
+                    "isVoiceCapable", partypes);
+
+            Object arglist[] = new Object[0];
+            Object retobj = sIsVoiceCapable.invoke(telephonyManager, arglist);
+            return (Boolean) retobj;
+        } catch (java.lang.reflect.InvocationTargetException ite) {
+            // Failure, must be another device.
+            // Assume that it is voice capable.
+        } catch (java.lang.IllegalAccessException iae) {
+            // Failure, must be an other device.
+            // Assume that it is voice capable.
+        } catch (NoSuchMethodException nsme) {
+        }
+        return true;
     }
 }

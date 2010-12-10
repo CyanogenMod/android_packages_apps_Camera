@@ -152,18 +152,7 @@ public class CameraSettings {
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
         if (videoQuality != null) {
-            // Modify video duration settings.
-            // The first entry is for MMS video duration, and we need to fill
-            // in the device-dependent value (in seconds).
-            CharSequence[] entries = videoQuality.getEntries();
-            CharSequence[] values = videoQuality.getEntryValues();
-            for (int i = 0; i < entries.length; ++i) {
-                if (VIDEO_QUALITY_MMS.equals(values[i])) {
-                    entries[i] = entries[i].toString().replace(
-                            "30", Integer.toString(MMS_VIDEO_DURATION));
-                    break;
-                }
-            }
+            initVideoQuality(videoQuality);
         }
 
         // Filter out unsupported settings / options
@@ -425,5 +414,31 @@ public class CameraSettings {
         // initial picture size is that of the back camera.
         initialCameraPictureSize(context, parameters);
         writePreferredCameraId(preferences, currentCameraId);
+    }
+
+    private void initVideoQuality(ListPreference videoQuality) {
+        CharSequence[] entries = videoQuality.getEntries();
+        CharSequence[] values = videoQuality.getEntryValues();
+        if (Util.isMmsCapable(mContext)) {
+            // We need to fill in the device-dependent value (in seconds).
+            for (int i = 0; i < entries.length; ++i) {
+                if (VIDEO_QUALITY_MMS.equals(values[i])) {
+                    entries[i] = entries[i].toString().replace(
+                            "30", Integer.toString(MMS_VIDEO_DURATION));
+                    break;
+                }
+            }
+        } else {
+            // The device does not support mms. Remove it. Using
+            // filterUnsupported is not efficient but adding a new method
+            // for remove is not worth it.
+            ArrayList<String> supported = new ArrayList<String>();
+            for (int i = 0; i < entries.length; ++i) {
+                if (!VIDEO_QUALITY_MMS.equals(values[i])) {
+                    supported.add(values[i].toString());
+                }
+            }
+            videoQuality.filterUnsupported(supported);
+        }
     }
 }
