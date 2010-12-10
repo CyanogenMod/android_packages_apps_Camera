@@ -2128,6 +2128,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 View button = findViewById(id);
                 ((View) button.getParent()).setVisibility(View.VISIBLE);
             }
+            if (mCameraPicker != null) mCameraPicker.setEnabled(false);
+            if (mZoomPicker != null) mZoomPicker.setEnabled(false);
         }
     }
 
@@ -2141,6 +2143,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 View button = findViewById(id);
                 ((View) button.getParent()).setVisibility(View.GONE);
             }
+            if (mCameraPicker != null) mCameraPicker.setEnabled(true);
+            if (mZoomPicker != null) mZoomPicker.setEnabled(true);
         }
     }
 
