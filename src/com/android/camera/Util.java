@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.util.Log;
 import android.view.Display;
@@ -35,6 +36,7 @@ import android.view.animation.TranslateAnimation;
 
 import java.io.Closeable;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Collection of utility functions used in this package.
@@ -374,5 +376,14 @@ public class Util {
             }
         }
         return optimalSize;
+    }
+
+    public static void dumpParameters(Parameters parameters) {
+        String flattened = parameters.flatten();
+        StringTokenizer tokenizer = new StringTokenizer(flattened, ";");
+        Log.d(TAG, "Dump all camera parameters:");
+        while (tokenizer.hasMoreElements()) {
+            Log.d(TAG, tokenizer.nextToken());
+        }
     }
 }
