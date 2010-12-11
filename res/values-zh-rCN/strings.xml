@@ -127,11 +127,12 @@
 	<string name="pref_camera_focusmode_title">对焦方式</string>
 
 	<!-- Settings screen, Focue mode dialog radio button choices -->
-	<string name="pref_camera_focusmode_entry_auto">自动</string>
-	<string name="pref_camera_focusmode_entry_normal">正常</string>
-	<string name="pref_camera_focusmode_entry_macro">微距</string>
-	<string name="pref_camera_focusmode_entry_infinity">关</string>
-	<string name="pref_camera_focusmode_entry_touch">触摸</string>
+    <string name="pref_camera_focusmode_entry_auto">连续</string>
+    <string name="pref_camera_focusmode_entry_normal">正常</string>
+    <string name="pref_camera_focusmode_entry_macro">微距</string>
+    <string name="pref_camera_focusmode_entry_infinity">无限远</string>
+    <string name="pref_camera_focusmode_entry_touch">触摸</string>
+    <string name="pref_camera_focusmode_entry_classic">自动</string>
 
 	<!-- Toast shown when touch-to-focus is enabled -->
 	<string name="touch_focus_enabled">触摸屏幕对焦</string>
