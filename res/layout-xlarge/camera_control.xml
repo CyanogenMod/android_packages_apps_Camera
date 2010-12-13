@@ -60,27 +60,26 @@
 
         <com.android.camera.SwitcherSet android:id="@+id/camera_switch"
                 android:visibility="invisible"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_height="150dp"
-                android:layout_width="45dp"
+                android:layout_width="150dp"
+                android:layout_height="45dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="180dp"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/mode_switch_bg_v2">
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="30dp">
             <RadioButton android:id="@+id/switch_off_button"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:button="@android:color/transparent"
                     android:background="@drawable/btn_ic_mode_switch_video"/>
-            <com.android.camera.Switcher android:id="@+id/switcher"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:src="@drawable/btn_mode_switch_knob_v2"
-                    android:background="@drawable/btn_mode_switch_bg_v2" />
+            <com.android.camera.HorizontalSwitcher android:id="@+id/switcher"
+                    android:layout_width="50dp"
+                    android:layout_height="18dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/toggle_switch_control_holo_dark"
+                    android:background="@drawable/toggle_switch_bg_holo_dark" />
             <RadioButton android:id="@+id/switch_on_button"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -93,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginRight="60dp"
-                android:layout_marginBottom="30dp" />
+                android:layout_marginRight="220dp"
+                android:layout_marginBottom="25dp" />
 </com.android.camera.ui.ControlPanel>
 

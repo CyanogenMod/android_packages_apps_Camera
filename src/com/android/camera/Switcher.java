@@ -26,8 +26,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 /**
- * A widget which switches between the {@code Camera} and the {@code VideoCamera}
- * activities.
+ * A (vertical) widget which switches between the {@code Camera} and the
+ * {@code VideoCamera} activities.
  */
 public class Switcher extends ImageView implements View.OnTouchListener {
 
@@ -86,9 +86,6 @@ public class Switcher extends ImageView implements View.OnTouchListener {
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) return false;
 
-        final int available = getHeight() - getPaddingTop() - getPaddingBottom()
-                - getDrawable().getIntrinsicHeight();
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mAnimationStartTime = NO_ANIMATION;
@@ -102,7 +99,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
 
             case MotionEvent.ACTION_UP:
                 trackTouchEvent(event);
-                tryToSetSwitch(mPosition >= available / 2);
+                tryToSetSwitch(mPosition >= getAvailableLength() / 2);
                 setPressed(false);
                 break;
 
@@ -119,32 +116,51 @@ public class Switcher extends ImageView implements View.OnTouchListener {
         mAnimationStartPosition = mPosition;
     }
 
+    protected int getAvailableLength() {
+        return getHeight() - getPaddingTop() - getPaddingBottom()
+                - getDrawable().getIntrinsicHeight();
+    }
+
+    /** Returns the logical position of this switch. */
+    protected int trackTouch(MotionEvent event) {
+        return (int) event.getY() - getPaddingTop()
+                - (getDrawable().getIntrinsicHeight() / 2);
+    }
+
     private void trackTouchEvent(MotionEvent event) {
-        Drawable drawable = getDrawable();
-        int drawableHeight = drawable.getIntrinsicHeight();
-        final int height = getHeight();
-        final int available = height - getPaddingTop() - getPaddingBottom()
-                - drawableHeight;
-        int x = (int) event.getY();
-        mPosition = x - getPaddingTop() - drawableHeight / 2;
-        if (mPosition < 0) mPosition = 0;
-        if (mPosition > available) mPosition = available;
+        final int available = getAvailableLength();
+        mPosition = trackTouch(event);
+        if (mPosition < 0) {
+            mPosition = 0;
+        } else if (mPosition > available) {
+            mPosition = available;
+        }
         invalidate();
+    }
+
+    protected int getOffsetTopToDraw() {
+        return getPaddingTop() + mPosition;
+    }
+
+    protected int getOffsetLeftToDraw() {
+        return (getWidth() - getDrawable().getIntrinsicWidth()) / 2;
+    }
+
+    protected int getLogicalPosition() {
+        return mPosition;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
 
         Drawable drawable = getDrawable();
-        int drawableHeight = drawable.getIntrinsicHeight();
-        int drawableWidth = drawable.getIntrinsicWidth();
 
-        if (drawableWidth == 0 || drawableHeight == 0) {
+        if ((drawable.getIntrinsicHeight() == 0)
+                || (drawable.getIntrinsicWidth() == 0)) {
             return;     // nothing to draw (empty bounds)
         }
 
-        final int available = getHeight() - getPaddingTop()
-                - getPaddingBottom() - drawableHeight;
+        final int available = getAvailableLength();
         if (mAnimationStartTime != NO_ANIMATION) {
             long time = AnimationUtils.currentAnimationTimeMillis();
             int deltaTime = (int) (time - mAnimationStartTime);
@@ -161,11 +177,9 @@ public class Switcher extends ImageView implements View.OnTouchListener {
         } else if (!isPressed()){
             mPosition = mSwitch ? available : 0;
         }
-        int offsetTop = getPaddingTop() + mPosition;
-        int offsetLeft = (getWidth() - drawableWidth) / 2;
         int saveCount = canvas.getSaveCount();
         canvas.save();
-        canvas.translate(offsetLeft, offsetTop);
+        canvas.translate(getOffsetLeftToDraw(), getOffsetTopToDraw());
         drawable.draw(canvas);
         canvas.restoreToCount(saveCount);
     }
