@@ -206,7 +206,6 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
             mOut.write("loop: ");
             //Move the foucs to the image capture button
             inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
-            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
             for (int i = 0; i < total_num_of_images; i++) {
                 Thread.sleep(WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
                 inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);

@@ -71,7 +71,6 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <Camera> {
         Log.v(TAG, "start testImageCapture test");
         Instrumentation inst = getInstrumentation();
         inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
-        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
         try {
             for (int i = 0; i < TOTAL_NUMBER_OF_IMAGECAPTURE; i++) {
                 Thread.sleep(WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN);
