@@ -1667,13 +1667,15 @@ public class VideoCamera extends NoSearchActivity
         if (countdownRemainingTime) {
             deltaAdjusted = Math.max(0, mMaxVideoDurationInMs - deltaAdjusted) + 999;
         }
-        String text = millisecondToTimeString(deltaAdjusted, false);
+        String text;
 
-        if (mCaptureTimeLapse) {
-            // Since the length of time lapse video is different from the length
-            // of the actual wall clock time elapsed, we display the video length
-            // alongside the wall clock time.
-            text += " (" + getTimeLapseVideoLengthString(delta) + ")";
+        if (!mCaptureTimeLapse) {
+            text = millisecondToTimeString(deltaAdjusted, false);
+        } else {
+            // The length of time lapse video is different from the length
+            // of the actual wall clock time elapsed. Display the video length
+            // only.
+            text = getTimeLapseVideoLengthString(delta);
         }
 
         mRecordingTimeView.setText(text);
