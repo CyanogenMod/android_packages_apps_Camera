@@ -29,7 +29,7 @@
                 camera:key="pref_video_time_lapse_frame_interval_key"
                 camera:defaultValue="@string/pref_video_time_lapse_frame_interval_default"
                 camera:title="@string/pref_video_time_lapse_frame_interval_title"
-                camera:singleIcon="@drawable/ic_viewfinder_settings"
+                camera:singleIcon="@drawable/ic_time_lapse_holo_dark"
                 camera:entries="@array/pref_video_time_lapse_frame_interval_entries"
                 camera:entryValues="@array/pref_video_time_lapse_frame_interval_entryvalues"/>
         <IconListPreference
