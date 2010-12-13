@@ -2337,6 +2337,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void restorePreferences() {
+        // Reset the zoom. Zoom value is not stored in preference.
+        if (mParameters.isZoomSupported()) {
+            mZoomValue = 0;
+            setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
+            if (mZoomPicker != null) mZoomPicker.setZoomIndex(0);
+        }
+
         if (mHeadUpDisplay != null) {
             mHeadUpDisplay.restorePreferences(mParameters);
         }
