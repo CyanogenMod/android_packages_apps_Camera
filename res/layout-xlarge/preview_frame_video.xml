@@ -42,6 +42,13 @@
                 android:layout_alignParentRight="true"
                 android:gravity="center"
                 android:drawableLeft="@drawable/ic_recording_indicator_small"
+                android:drawablePadding="5dp"
+                android:visibility="gone"/>
+        <TextView android:id="@+id/time_lapse_label"
+                android:text="@string/time_lapse_title"
+                style="@style/OnViewfinderLabel"
+                android:layout_toLeftOf="@+id/recording_time"
+                android:layout_alignWithParentIfMissing="true"
                 android:visibility="gone"/>
         <include layout="@layout/review_control"/>
         <LinearLayout
@@ -56,10 +63,5 @@
                     android:paddingBottom="10dp"
                     android:src="@drawable/btn_ic_review_play"/>
         </LinearLayout>
-        <TextView android:id="@+id/time_lapse_label"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:text="@string/time_lapse_title"
-                style="@style/OnViewfinderLabel"/>
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>

@@ -123,7 +123,7 @@
     <string name="disable_time_lapse_mode">Disable Time Lapse</string>
 
     <!-- A lable that overlays on top of the preview frame to indicate the camcorder is in time lapse mode [CHAR LIMIT=35] -->
-    <string name="time_lapse_title">Time Lapse</string>
+    <string name="time_lapse_title">Time lapse recording</string>
 
     <!-- Settings screen, camera selection dialog title. Users can select a camera from the phone (front-facing or back-facing). [CHAR LIMIT=20] -->
     <string name="pref_camera_id_title">Select camera</string>
