@@ -21,6 +21,7 @@ import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -40,16 +41,19 @@ import java.lang.Math;
  */
 public class IndicatorWheel extends ViewGroup {
     private static final String TAG = "IndicatorWheel";
+    // The width of the edges on both sides of the wheel, which has less alpha.
+    private static final float EDGE_STROKE_WIDTH = 6f;
+    private static final int HIGHLIGHT_WIDTH = 4;
+    private static final int HIGHLIGHT_DEGREE = 30;
+
+    private final int HIGHLIGHT_COLOR;
+    private final int DISABLED_COLOR;
+
     private Listener mListener;
     // The center of the shutter button.
     private int mCenterX, mCenterY;
     // The width of the wheel stroke.
     private int mStrokeWidth = 60;
-    // The width of the edges on both sides of the wheel, which has less alpha.
-    private final float EDGE_STROKE_WIDTH = 6f;
-    private final int HIGHLIGHT_COLOR = 0xFF6899FF;
-    private final int HIGHLIGHT_WIDTH = 4;
-    private final int HIGHLIGHT_DEGREE = 30;
     private View mShutterButton;
     private double mShutterButtonRadius;
     private double mWheelRadius;
@@ -68,6 +72,9 @@ public class IndicatorWheel extends ViewGroup {
 
     public IndicatorWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
+        Resources resources = context.getResources();
+        HIGHLIGHT_COLOR = resources.getColor(R.color.review_control_pressed_color);
+        DISABLED_COLOR = resources.getColor(R.color.icon_disabled_color);
         setWillNotDraw(false);
 
         mBackgroundPaint = new Paint();
@@ -276,6 +283,21 @@ public class IndicatorWheel extends ViewGroup {
             child.setColorFilter(HIGHLIGHT_COLOR);
         } else {
             child.clearColorFilter();
+        }
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        int count = getChildCount();
+        if (enabled) {
+            for (int i = 1; i < count; i++) {
+                ((ImageView) getChildAt(i)).clearColorFilter();
+            }
+        } else {
+            for (int i = 1; i < count; i++) {
+                ((ImageView) getChildAt(i)).setColorFilter(DISABLED_COLOR);
+            }
         }
     }
 }

@@ -708,9 +708,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
                     + mPictureDisplayedToJpegCallbackTime + "ms");
-            enableCameraControls(true);
 
             if (!mIsImageCaptureIntent) {
+                enableCameraControls(true);
+
                 // We want to show the taken picture for a while, so we wait
                 // for at least 1.2 second before restarting the preview.
                 long delay = 1200 - mPictureDisplayedToJpegCallbackTime;
@@ -1171,6 +1172,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void enableCameraControls(boolean enable) {
         if (mHeadUpDisplay != null) mHeadUpDisplay.setEnabled(enable);
         if (mControlPanel != null) mControlPanel.setEnabled(enable);
+        if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
+        if (mZoomPicker != null) mZoomPicker.setEnabled(enable);
+        if (mSwitcher != null) mSwitcher.setEnabled(enable);
     }
 
     public static int roundOrientation(int orientation) {
@@ -2126,14 +2130,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mIsImageCaptureIntent) {
             if (mIndicatorWheel == null) {
                 mShutterButton.setVisibility(View.INVISIBLE);
+            } else {
+                mShutterButton.setEnabled(false);
             }
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
                 View button = findViewById(id);
                 ((View) button.getParent()).setVisibility(View.VISIBLE);
             }
-            if (mCameraPicker != null) mCameraPicker.setEnabled(false);
-            if (mZoomPicker != null) mZoomPicker.setEnabled(false);
 
             // Remove the text of the cancel button
             View view = findViewById(R.id.btn_cancel);
@@ -2145,14 +2149,15 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mIsImageCaptureIntent) {
             if (mIndicatorWheel == null) {
                 mShutterButton.setVisibility(View.VISIBLE);
+            } else {
+                mShutterButton.setEnabled(true);
             }
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
                 View button = findViewById(id);
                 ((View) button.getParent()).setVisibility(View.GONE);
             }
-            if (mCameraPicker != null) mCameraPicker.setEnabled(true);
-            if (mZoomPicker != null) mZoomPicker.setEnabled(true);
+            enableCameraControls(true);
 
             // Restore the text of the cancel button
             View view = findViewById(R.id.btn_cancel);

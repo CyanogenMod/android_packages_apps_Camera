@@ -485,6 +485,8 @@ public class VideoCamera extends NoSearchActivity
     private void enableCameraControls(boolean enable) {
         if (mHeadUpDisplay != null) mHeadUpDisplay.setEnabled(enable);
         if (mControlPanel != null) mControlPanel.setEnabled(enable);
+        if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
+        if (mSwitcher != null) mSwitcher.setEnabled(enable);
     }
 
     private void initializeControlPanel() {
@@ -1396,7 +1398,6 @@ public class VideoCamera extends NoSearchActivity
         updateRecordingIndicator(false);
         mRecordingTimeView.setText("");
         mRecordingTimeView.setVisibility(View.VISIBLE);
-        if (mCameraPicker != null) mCameraPicker.setEnabled(false);
 
         updateRecordingTime();
         keepScreenOn();
@@ -1451,7 +1452,7 @@ public class VideoCamera extends NoSearchActivity
         mVideoFrame.setVisibility(View.INVISIBLE);
         fadeIn(findViewById(R.id.shutter_button));
         mShutterButton.setEnabled(true);
-        if (mCameraPicker != null) mCameraPicker.setEnabled(true);
+        enableCameraControls(true);
 
         // Restore the text of the cancel button
         View view = findViewById(R.id.btn_cancel);
@@ -1519,11 +1520,10 @@ public class VideoCamera extends NoSearchActivity
                 deleteVideoFile(mVideoFilename);
             }
             mMediaRecorderRecording = false;
-            enableCameraControls(true);
             updateRecordingIndicator(true);
             mRecordingTimeView.setVisibility(View.GONE);
             if (!mIsVideoCaptureIntent) {
-                if (mCameraPicker != null) mCameraPicker.setEnabled(true);
+                enableCameraControls(true);
             }
             keepScreenOnAwhile();
             if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {

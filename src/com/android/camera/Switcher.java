@@ -18,6 +18,7 @@ package com.android.camera;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -43,6 +44,8 @@ public class Switcher extends ImageView implements View.OnTouchListener {
     private static final int ANIMATION_SPEED = 200;
     private static final long NO_ANIMATION = -1;
 
+    private final int DISABLED_COLOR;
+
     private boolean mSwitch = false;
     private int mPosition = 0;
     private long mAnimationStartTime = NO_ANIMATION;
@@ -51,6 +54,7 @@ public class Switcher extends ImageView implements View.OnTouchListener {
 
     public Switcher(Context context, AttributeSet attrs) {
         super(context, attrs);
+        DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
     }
 
     public void setSwitch(boolean onOff) {
@@ -194,5 +198,16 @@ public class Switcher extends ImageView implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         onTouchEvent(event);
         return true;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        Drawable drawable = getDrawable();
+        if (enabled) {
+            drawable.clearColorFilter();
+        } else {
+            drawable.setColorFilter(DISABLED_COLOR, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 }

@@ -17,6 +17,8 @@
 package com.android.camera;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
@@ -26,6 +28,8 @@ import android.widget.RadioGroup;
  */
 public class SwitcherSet extends RadioGroup implements Switcher.OnSwitchListener,
         RadioGroup.OnCheckedChangeListener {
+    private final int DISABLED_COLOR;
+
     private Switcher.OnSwitchListener mListener;
     private CompoundButton mOnView;
     private CompoundButton mOffView;
@@ -33,6 +37,7 @@ public class SwitcherSet extends RadioGroup implements Switcher.OnSwitchListener
 
     public SwitcherSet(Context context, AttributeSet attrs) {
         super(context, attrs);
+        DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
     }
 
     @Override
@@ -82,5 +87,23 @@ public class SwitcherSet extends RadioGroup implements Switcher.OnSwitchListener
     public boolean onSwitchChanged(Switcher source, boolean onOff) {
         setSwitch(onOff);
         return true;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        mSwitcher.setEnabled(enabled);
+        if (mOnView != null) setEnabled(mOnView, enabled);
+        if (mOffView != null) setEnabled(mOffView, enabled);
+    }
+
+    private void setEnabled(CompoundButton button, boolean enabled) {
+        button.setEnabled(enabled);
+        Drawable drawable = button.getBackground();
+        if (enabled) {
+            drawable.clearColorFilter();
+        } else {
+            drawable.setColorFilter(DISABLED_COLOR, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 }
