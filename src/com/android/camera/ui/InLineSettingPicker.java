@@ -43,6 +43,7 @@ public class InLineSettingPicker extends LinearLayout {
     private TextView mTitle;
     // The view that shows the current selected setting. Ex: 5MP
     private TextView mEntry;
+    private Button mPrevButton, mNextButton;
     private ListPreference mPreference;
     private boolean mNext, mPrevious;
     private int mIndex;
@@ -87,7 +88,8 @@ public class InLineSettingPicker extends LinearLayout {
                         // Give bigger delay so users can change only one step.
                         mHandler.postDelayed(mRunnable, 300);
                     }
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                } else if (event.getAction() == MotionEvent.ACTION_UP
+                        || event.getAction() == MotionEvent.ACTION_CANCEL) {
                     mNext = false;
                 }
                 return false;
@@ -104,17 +106,18 @@ public class InLineSettingPicker extends LinearLayout {
                         // Give bigger delay so users can change only one step.
                         mHandler.postDelayed(mRunnable, 300);
                     }
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                } else if (event.getAction() == MotionEvent.ACTION_UP
+                        || event.getAction() == MotionEvent.ACTION_CANCEL) {
                     mPrevious = false;
                 }
                 return false;
             }
         };
 
-        Button nextButton = (Button) findViewById(R.id.increment);
-        nextButton.setOnTouchListener(nextTouchListener);
-        Button previousButton = (Button) findViewById(R.id.decrement);
-        previousButton.setOnTouchListener(previousTouchListener);
+        mNextButton = (Button) findViewById(R.id.increment);
+        mNextButton.setOnTouchListener(nextTouchListener);
+        mPrevButton = (Button) findViewById(R.id.decrement);
+        mPrevButton.setOnTouchListener(previousTouchListener);
         mEntry = (TextView) findViewById(R.id.current_setting);
         mTitle = (TextView) findViewById(R.id.title);
 
@@ -158,6 +161,10 @@ public class InLineSettingPicker extends LinearLayout {
                 mPreference.print();
             }
         }
+
+        mNextButton.setVisibility(mIndex == 0 ? View.INVISIBLE : View.VISIBLE);
+        mPrevButton.setVisibility(mIndex == mPreference.getEntryValues().length - 1
+                ? View.INVISIBLE : View.VISIBLE);
     }
 
     public void setSettingChangedListener(Listener listener) {
