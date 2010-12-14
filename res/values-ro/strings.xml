@@ -35,16 +35,18 @@
     <skip />
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restabiliţi valorile prestabilite"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Setările camerei foto vor fi restabilite la valorile prestabilite."</string>
-    <string name="review_play" msgid="6015456244323302817">"REDAŢI"</string>
-    <string name="review_cancel" msgid="8188009385853399254">"Anulaţi"</string>
-    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
-    <string name="review_retake" msgid="7804864054896088338">"ALTĂ FOTOGRAFIE"</string>
+    <!-- outdated translation 6015456244323302817 -->     <string name="review_play" msgid="6378271587740884696">"REDAŢI"</string>
+    <!-- outdated translation 8188009385853399254 -->     <string name="review_cancel" msgid="7842670783357645942">"Anulaţi"</string>
+    <!-- outdated translation 5305096180300056529 -->     <string name="review_ok" msgid="4750691949877864726">"OK"</string>
+    <!-- outdated translation 7804864054896088338 -->     <string name="review_retake" msgid="7776579640762112761">"ALTĂ FOTOGRAFIE"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
     <!-- no translation found for switch_camera_id (837545176602471325) -->
     <skip />
     <!-- no translation found for enable_time_lapse_mode (9176865387013576340) -->
     <skip />
     <!-- no translation found for disable_time_lapse_mode (1025813874111023552) -->
+    <skip />
+    <!-- no translation found for time_lapse_title (4360632427760662691) -->
     <skip />
     <!-- no translation found for pref_camera_id_title (6023059405578511534) -->
     <skip />
@@ -66,7 +68,7 @@
     <skip />
     <!-- no translation found for pref_video_time_lapse_quality_entry_high (3933491126045555205) -->
     <skip />
-    <!-- no translation found for pref_video_time_lapse_frame_interval_title (5023524580863002541) -->
+    <!-- no translation found for pref_video_time_lapse_frame_interval_title (5262531404348504642) -->
     <skip />
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Setările camerei foto"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Setările camerei video"</string>
