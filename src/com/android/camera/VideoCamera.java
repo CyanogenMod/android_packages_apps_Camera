@@ -183,6 +183,7 @@ public class VideoCamera extends NoSearchActivity
     // Default 0. If it is larger than 0, the camcorder is in time lapse mode.
     private int mTimeBetweenTimeLapseFrameCaptureMs = 0;
     private View mTimeLapseLabel;
+    private View mPreviewBorder;
 
     private int mDesiredPreviewWidth;
     private int mDesiredPreviewHeight;
@@ -381,6 +382,7 @@ public class VideoCamera extends NoSearchActivity
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mOrientationListener = new MyOrientationEventListener(VideoCamera.this);
         mTimeLapseLabel = findViewById(R.id.time_lapse_label);
+        mPreviewBorder = findViewById(R.id.preview_border);
 
         // Make sure preview is started.
         try {
@@ -393,7 +395,7 @@ public class VideoCamera extends NoSearchActivity
             // ignore
         }
 
-        showTimeLapseLabel(mCaptureTimeLapse);
+        showTimeLapseUI(mCaptureTimeLapse);
         resizeForPreviewAspectRatio();
 
         mBackCameraId = CameraHolder.instance().getBackCameraId();
@@ -1852,13 +1854,20 @@ public class VideoCamera extends NoSearchActivity
                     setCameraParameters();
                 }
             }
-            showTimeLapseLabel(mCaptureTimeLapse);
+            showTimeLapseUI(mCaptureTimeLapse);
         }
     }
 
-    private void showTimeLapseLabel(boolean enable) {
-        if (mTimeLapseLabel == null) return;
-        mTimeLapseLabel.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+    private void showTimeLapseUI(boolean enable) {
+        if (mTimeLapseLabel != null) {
+            mTimeLapseLabel.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+        }
+        if (mPreviewBorder != null) {
+            mPreviewBorder.setBackgroundResource(enable
+                    ? R.drawable.border_preview_time_lapse
+                    : R.drawable.border_preview);
+        }
+
     }
 
     private class MyControlPanelListener implements ControlPanel.Listener {
