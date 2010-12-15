@@ -53,7 +53,7 @@
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"高 (30 分鐘)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"低 (30 分鐘)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (低，30 秒)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (高，10 分鐘)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (高，15 分鐘)"</string>
     <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"延時攝影的影片品質"</string>
     <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"低畫質"</string>
     <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"高畫質"</string>
