@@ -72,7 +72,8 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
     }
 
     private static boolean isGlobal(String key) {
-        return key.equals(CameraSettings.KEY_CAMERA_ID)
+        return key.equals(CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL)
+                || key.equals(CameraSettings.KEY_CAMERA_ID)
                 || key.equals(CameraSettings.KEY_RECORD_LOCATION);
     }
 
