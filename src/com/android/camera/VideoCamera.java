@@ -1864,8 +1864,8 @@ public class VideoCamera extends NoSearchActivity
         }
         if (mPreviewBorder != null) {
             mPreviewBorder.setBackgroundResource(enable
-                    ? R.drawable.border_preview_time_lapse
-                    : R.drawable.border_preview);
+                    ? R.drawable.border_preview_time_lapse_holo
+                    : R.drawable.border_preview_holo);
         }
 
     }

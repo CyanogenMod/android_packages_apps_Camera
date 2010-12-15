@@ -30,7 +30,7 @@
         <ImageView android:id="@+id/preview_border"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/border_preview"/>
+                android:background="@drawable/border_preview_holo"/>
         <ImageView android:id="@+id/video_frame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
