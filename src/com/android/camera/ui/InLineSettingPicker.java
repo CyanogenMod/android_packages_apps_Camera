@@ -151,6 +151,9 @@ public class InLineSettingPicker extends LinearLayout {
     private void updateView() {
         if (mOverrideValue == null) {
             mEntry.setText(mPreference.getEntry());
+            mNextButton.setVisibility(mIndex == 0 ? View.INVISIBLE : View.VISIBLE);
+            mPrevButton.setVisibility(mIndex == mPreference.getEntryValues().length - 1
+                    ? View.INVISIBLE : View.VISIBLE);
         } else {
             int index = mPreference.findIndexOfValue(mOverrideValue);
             if (index != -1) {
@@ -160,11 +163,9 @@ public class InLineSettingPicker extends LinearLayout {
                 Log.e(TAG, "Fail to find override value=" + mOverrideValue);
                 mPreference.print();
             }
+            mNextButton.setVisibility(View.INVISIBLE);
+            mPrevButton.setVisibility(View.INVISIBLE);
         }
-
-        mNextButton.setVisibility(mIndex == 0 ? View.INVISIBLE : View.VISIBLE);
-        mPrevButton.setVisibility(mIndex == mPreference.getEntryValues().length - 1
-                ? View.INVISIBLE : View.VISIBLE);
     }
 
     public void setSettingChangedListener(Listener listener) {

@@ -270,6 +270,7 @@ public class IndicatorWheel extends ViewGroup {
                 IndicatorButton indicator = (IndicatorButton) v;
                 if (key.equals(indicator.getKey())) {
                     indicator.overrideSettings(value);
+                    setEnabled(indicator, (value == null));
                 }
             }
         }
@@ -290,14 +291,16 @@ public class IndicatorWheel extends ViewGroup {
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         int count = getChildCount();
+        for (int i = 1; i < count; i++) {
+            setEnabled((ImageView) getChildAt(i), enabled);
+        }
+    }
+
+    private void setEnabled(ImageView view, boolean enabled) {
         if (enabled) {
-            for (int i = 1; i < count; i++) {
-                ((ImageView) getChildAt(i)).clearColorFilter();
-            }
+            view.clearColorFilter();
         } else {
-            for (int i = 1; i < count; i++) {
-                ((ImageView) getChildAt(i)).setColorFilter(DISABLED_COLOR);
-            }
+            view.setColorFilter(DISABLED_COLOR);
         }
     }
 }
