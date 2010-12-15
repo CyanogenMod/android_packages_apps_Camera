@@ -21,7 +21,7 @@
         android:layout_height="112dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
+        android:layout_margin="15dp"
         android:clickable="true"
         android:focusable="false"
         android:background="@drawable/border_last_picture"/>

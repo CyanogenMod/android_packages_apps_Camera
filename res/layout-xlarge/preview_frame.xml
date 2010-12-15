@@ -29,7 +29,7 @@
         <ImageView android:id="@+id/preview_border"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/border_preview"/>
+                android:background="@drawable/border_preview_holo"/>
         <com.android.camera.ui.FocusRectangle
                 android:id="@+id/focus_rectangle"
                 android:layout_width="match_parent"
@@ -43,14 +43,14 @@
                 android:src="@drawable/ic_viewfinder_gps_no_signal"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:layout_margin="10dp"
+                android:layout_margin="15dp"
                 android:visibility="invisible"/>
         <ImageView style="@style/OnScreenGpsIndicator"
                 android:id="@+id/onscreen_gps_indicator_on"
                 android:src="@drawable/ic_viewfinder_gps_on"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:layout_margin="10dp"
+                android:layout_margin="15dp"
                 android:visibility="invisible"/>
         <include layout="@layout/review_thumbnail"/>
         <include layout="@layout/review_control"/>
