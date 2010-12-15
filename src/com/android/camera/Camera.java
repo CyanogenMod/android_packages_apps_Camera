@@ -471,6 +471,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void onZoomValueChanged(int index) {
+        // Not useful to change zoom value when the activity is paused.
+        if (mPausing) return;
+
         if (mSmoothZoomSupported) {
             if (mTargetZoomValue != index && mZoomState != ZOOM_STOPPED) {
                 mTargetZoomValue = index;
