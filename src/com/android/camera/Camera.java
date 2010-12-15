@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2007 The Android Open Source Project
+ * Copyright (c) 2009, Code Aurora Forum. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -175,6 +176,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private boolean mPreviewing;
     private boolean mPausing;
     private boolean mFirstTimeInitialized;
+    private static  int keypresscount = 0;
+    private static  int keyup = 0;
     private boolean mIsImageCaptureIntent;
     private boolean mRecordLocation;
 
@@ -211,6 +214,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private long mPostViewPictureCallbackTime;
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
+    private long mShutterdownTime;
+    private long mShutterupTime;
     private int mPicturesRemaining;
 
     // These latency time are for the CameraLatency test.
@@ -573,6 +578,12 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mRawPictureCallbackTime = System.currentTimeMillis();
             Log.v(TAG, "mShutterToRawCallbackTime = "
                     + (mRawPictureCallbackTime - mShutterCallbackTime) + "ms");
+
+            if (mShutterdownTime != 0)
+                Log.e(TAG,"<PROFILE> Snapshot to Thumb Latency = "
+                        + (mRawPictureCallbackTime - mShutterdownTime) + " ms");
+
+
         }
     }
 
@@ -608,6 +619,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     + mPictureDisplayedToJpegCallbackTime + "ms");
             mHeadUpDisplay.setEnabled(true);
 
+            if (mShutterdownTime != 0)
+                Log.e(TAG,"<PROFILE> Snapshot to Snapshot Latency = "
+                        + (mJpegPictureCallbackTime - mShutterdownTime) + " ms");
+
+
             if (!mIsImageCaptureIntent) {
                 // We want to show the taken picture for a while, so we wait
                 // for at least 1.2 second before restarting the preview.
@@ -637,8 +653,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         + mJpegCallbackFinishTime + "ms");
                 mJpegPictureCallbackTime = 0;
             }
+            mStatus = IDLE;
+            decrementkeypress();
         }
-    }
+        }
 
     private final class AutoFocusCallback
             implements android.hardware.Camera.AutoFocusCallback {
@@ -646,7 +664,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 boolean focused, android.hardware.Camera camera) {
             mFocusCallbackTime = System.currentTimeMillis();
             mAutoFocusTime = mFocusCallbackTime - mFocusStartTime;
-            Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
+            Log.e(TAG, "<PROFILE> mAutoFocusTime = " + mAutoFocusTime + "ms");
             if (mFocusState == FOCUSING_SNAP_ON_FINISH) {
                 // Take the picture no matter focus succeeds or fails. No need
                 // to play the AF sound if we're about to play the shutter
@@ -825,6 +843,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
             mCameraDevice.setParameters(mParameters);
 
+            incrementkeypress();
             mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                     mPostViewPictureCallback, new JpegPictureCallback(loc));
             mPreviewing = false;
@@ -890,6 +909,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
+
+        mShutterdownTime = 0;
+        mShutterupTime = 0;
 
         mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
 
@@ -1202,10 +1224,36 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         finish();
     }
 
+    private synchronized void incrementkeypress() {
+        if(keypresscount == 0)
+            keypresscount++;
+    }
+
+    private synchronized void decrementkeypress() {
+        if(keypresscount > 0)
+            keypresscount--;
+    }
+    private synchronized int keypressvalue() {
+        return keypresscount;
+    }
+
+
     public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
         if (mPausing) {
             return;
         }
+       int keydown =  keypressvalue();
+        if(keydown==0 && pressed)
+         {
+            keyup = 1;
+            Log.v(TAG, "the keydown is  pressed first time");
+            mShutterdownTime = System.currentTimeMillis();
+         }
+         else if(keyup==1 && !pressed)
+         {
+          Log.v(TAG, "the keyup is pressed first time ");
+          keyup = 0;
+         }
         switch (button.getId()) {
             case R.id.shutter_button:
                 doFocus(pressed);
@@ -1214,6 +1262,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     public void onShutterButtonClick(ShutterButton button) {
+        mShutterupTime = System.currentTimeMillis();
         if (mPausing) {
             return;
         }
@@ -1346,7 +1395,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             hidePostCaptureAlert();
         }
-
+        keypresscount = 0;
         if (mDidRegister) {
             unregisterReceiver(mReceiver);
             mDidRegister = false;
@@ -1821,6 +1870,96 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 CameraSettings.KEY_JPEG_QUALITY,
                 getString(R.string.pref_camera_jpegquality_default));
         mParameters.setJpegQuality(JpegEncodingQualityMappings.getQualityNumber(jpegQuality));
+
+
+         // Set ISO parameter.
+        String iso = mPreferences.getString(
+                CameraSettings.KEY_ISO,
+                getString(R.string.pref_camera_iso_default));
+        if (isSupported(iso,
+                mParameters.getSupportedIsoValues())) {
+                mParameters.setISOValue(iso);
+         }
+
+        //Set LensShading
+        String lensshade = mPreferences.getString(
+                CameraSettings.KEY_LENSSHADING,
+                getString(R.string.pref_camera_lensshading_default));
+        if (isSupported(lensshade,
+                mParameters.getSupportedLensShadeModes())) {
+                mParameters.setLensShade(lensshade);
+        }
+
+         // Set auto exposure parameter.
+         String autoExposure = mPreferences.getString(
+                 CameraSettings.KEY_AUTOEXPOSURE,
+                 getString(R.string.pref_camera_autoexposure_default));
+         if (isSupported(autoExposure, mParameters.getSupportedAutoexposure())) {
+             mParameters.setAutoExposure(autoExposure);
+         }
+
+        // Set Touch AF/AEC parameter.
+        String touchAfAec = mPreferences.getString(
+                CameraSettings.KEY_TOUCH_AF_AEC,
+                getString(R.string.pref_camera_touchafaec_default));
+        if (isSupported(touchAfAec, mParameters.getSupportedTouchAfAec())) {
+            if (touchAfAec.equals(Parameters.TOUCH_AF_AEC_ON)) {
+                  if (mFocusGestureDetector == null) {
+                      mFocusGestureDetector = new GestureDetector(this, new FocusGestureListener(), mHandler);
+
+                      //Setting the touch index to negative value to
+                      //indicate that a touch event has not occured yet
+                      mParameters.setTouchIndexAec(-1,-1);
+                      mParameters.setTouchIndexAf(-1,-1);
+                  }
+            }
+            else {
+                  if (mFocusRectangle != null)
+                      mFocusRectangle.clear();
+                  mFocusGestureDetector = null;
+            }
+            mParameters.setTouchAfAec(touchAfAec);
+        }
+
+        // Set sharpness parameter.
+        String sharpnessStr = mPreferences.getString(
+                CameraSettings.KEY_SHARPNESS,
+                getString(R.string.pref_camera_sharpness_default));
+        int sharpness = Integer.parseInt(sharpnessStr) *
+                (mParameters.getMaxSharpness()/MAX_SHARPNESS_LEVEL);
+        if((0 <= sharpness) &&
+                (sharpness <= mParameters.getMaxSharpness()))
+            mParameters.setSharpness(sharpness);
+
+
+        // Set contrast parameter.
+        String contrastStr = mPreferences.getString(
+                CameraSettings.KEY_CONTRAST,
+                getString(R.string.pref_camera_contrast_default));
+        int contrast = Integer.parseInt(contrastStr) *
+                (mParameters.getMaxContrast()/MAX_CONTRAST_LEVEL);
+        if((0 <= contrast) &&
+                (contrast <= mParameters.getMaxContrast()))
+            mParameters.setContrast(contrast);
+
+
+        // Set saturation parameter.
+        String saturationStr = mPreferences.getString(
+                CameraSettings.KEY_SATURATION,
+                getString(R.string.pref_camera_saturation_default));
+        int saturation = Integer.parseInt(saturationStr) *
+            (mParameters.getMaxSaturation()/MAX_SATURATION_LEVEL);
+        if((0 <= saturation) &&
+                (saturation <= mParameters.getMaxSaturation()))
+            mParameters.setSaturation(saturation);
+
+         // Set anti banding parameter.
+         String antiBanding = mPreferences.getString(
+                 CameraSettings.KEY_ANTIBANDING,
+                 getString(R.string.pref_camera_antibanding_default));
+         if (isSupported(antiBanding, mParameters.getSupportedAntibanding())) {
+             mParameters.setAntibanding(antiBanding);
+         }
 
         // For the following settings, we need to check if the settings are
         // still supported by latest driver, if not, ignore the settings.
