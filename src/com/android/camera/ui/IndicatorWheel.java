@@ -64,6 +64,7 @@ public class IndicatorWheel extends ViewGroup {
 
     static public interface Listener {
         public void onIndicatorClicked(int index);
+        public void onOverriddenIndicatorClicked();
     }
 
     public void setListener(Listener listener) {
@@ -119,6 +120,11 @@ public class IndicatorWheel extends ViewGroup {
                         View child = getChildAt(i);
                         if (child instanceof IndicatorButton) {
                             if (((IndicatorButton) child).isOverridden()) {
+                                // Do not notify in ACTION_MOVE to avoid lots of
+                                // toast being displayed.
+                                if (action == MotionEvent.ACTION_DOWN) {
+                                    mListener.onOverriddenIndicatorClicked();
+                                }
                                 return true;
                             }
                         }

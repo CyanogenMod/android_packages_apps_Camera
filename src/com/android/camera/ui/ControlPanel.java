@@ -55,6 +55,7 @@ public class ControlPanel extends RelativeLayout
     static public interface Listener {
         public void onSharedPreferenceChanged();
         public void onRestorePreferencesClicked();
+        public void onOverriddenPreferencesClicked();
     }
 
     public void setListener(Listener listener) {
@@ -142,6 +143,12 @@ public class ControlPanel extends RelativeLayout
             initializeOtherSettingPopup();
         }
         showSettingPopup(index);
+    }
+
+    public void onOverriddenIndicatorClicked() {
+        if (mListener != null) {
+            mListener.onOverriddenPreferencesClicked();
+        }
     }
 
     private void initializeSettingPopup(int index) {

@@ -1876,6 +1876,9 @@ public class VideoCamera extends NoSearchActivity
         public void onRestorePreferencesClicked() {
             VideoCamera.this.onRestorePreferencesClicked();
         }
+
+        public void onOverriddenPreferencesClicked() {
+        }
     }
 
     private class MyCameraPickerListener implements CameraPicker.Listener {

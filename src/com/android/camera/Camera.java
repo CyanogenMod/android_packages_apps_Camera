@@ -79,6 +79,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -240,6 +241,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // Focus mode. Options are pref_camera_focusmode_entryvalues.
     private String mFocusMode;
     private String mSceneMode;
+    private Toast mNotSelectableToast;
 
     private final Handler mHandler = new MainHandler();
     // xlarge devices use control panel. Other devices use head-up display.
@@ -2364,6 +2366,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
+    protected void onOverriddenPreferencesClicked() {
+        if (mPausing) return;
+        if (mNotSelectableToast == null) {
+            String str = getResources().getString(R.string.not_selectable_in_scene_mode);
+            mNotSelectableToast = Toast.makeText(Camera.this, str, Toast.LENGTH_SHORT);
+        }
+        mNotSelectableToast.cancel();
+        mNotSelectableToast.show();
+    }
+
     private class MyControlPanelListener implements ControlPanel.Listener {
         public void onSharedPreferenceChanged() {
             Camera.this.onSharedPreferenceChanged();
@@ -2371,6 +2383,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         public void onRestorePreferencesClicked() {
             Camera.this.onRestorePreferencesClicked();
+        }
+
+        public void onOverriddenPreferencesClicked() {
+            Camera.this.onOverriddenPreferencesClicked();
         }
     }
 

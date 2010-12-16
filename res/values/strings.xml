@@ -299,6 +299,9 @@
     <!-- Scene mode optimized for capturing the naturally warm color of scenes lit by candles. [CHAR LIMIT=16] -->
     <string name="pref_camera_scenemode_entry_candlelight">Candlelight</string>
 
+    <!-- Toast after trying to select a setting that is not allowed to change in scene mode [CHAR LIMIT=NONE] -->
+    <string name="not_selectable_in_scene_mode">This is not selectable in scene mode</string>
+
     <!-- Restore settings item in preference -->
     <string name="pref_restore_title">Camera settings</string>
     <string name="pref_restore_detail">Restore defaults</string>
