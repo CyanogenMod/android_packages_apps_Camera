@@ -34,14 +34,7 @@
             android:minHeight="48dip">
         <TextView android:id="@+id/title"
                 android:text="@string/pref_camera_settings_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|bottom"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="10dp"
-                android:paddingLeft="16dp"
-                android:textColor="@android:color/white"
-                style="@style/SettingPickerText" />
+                style="@style/SettingTitleText" />
     </FrameLayout>
 
     <FrameLayout android:paddingTop="10dp"
