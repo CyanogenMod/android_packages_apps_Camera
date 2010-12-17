@@ -1879,17 +1879,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         List<Size> sizes = mParameters.getSupportedPreviewSizes();
         Size optimalSize = Util.getOptimalPreviewSize(this,
                 sizes, (double) size.width / size.height);
-        if (optimalSize != null) {
-            Size original = mParameters.getPreviewSize();
-            if (!original.equals(optimalSize)) {
-                mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
+        Size original = mParameters.getPreviewSize();
+        if (!original.equals(optimalSize)) {
+            mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
 
-                // Zoom related settings will be changed for different preview
-                // sizes, so set and read the parameters to get lastest values
-                mCameraDevice.setParameters(mParameters);
-                mParameters = mCameraDevice.getParameters();
-            }
+            // Zoom related settings will be changed for different preview
+            // sizes, so set and read the parameters to get lastest values
+            mCameraDevice.setParameters(mParameters);
+            mParameters = mCameraDevice.getParameters();
         }
+        Log.v(TAG, "Preview size is " + optimalSize.width + "x" + optimalSize.height);
 
         // Since change scene mode may change supported values,
         // Set scene mode first,
