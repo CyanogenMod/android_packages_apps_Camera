@@ -53,7 +53,7 @@
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Alta (30 m)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Baixa (30 m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (baixa, 30 s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (Alta, 10 m)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (Alta, 15 m)"</string>
     <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Qual. do vídeo lapso de tempo"</string>
     <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Baixa"</string>
     <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Alta"</string>
