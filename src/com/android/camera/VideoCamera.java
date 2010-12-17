@@ -1114,9 +1114,7 @@ public class VideoCamera extends NoSearchActivity
         }
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setProfile(mProfile);
-        if (mMaxVideoDurationInMs != 0) {
-            mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
-        }
+        mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
         if (mCaptureTimeLapse) {
             mMediaRecorder.setCaptureRate((1000 / (double) mTimeBetweenTimeLapseFrameCaptureMs));
         }

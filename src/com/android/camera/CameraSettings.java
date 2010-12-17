@@ -64,12 +64,9 @@ public class CameraSettings {
     // max video duration in seconds for mms and youtube.
     private static final int MMS_VIDEO_DURATION = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW).duration;
     private static final int YOUTUBE_VIDEO_DURATION = 15 * 60; // 15 mins
-    private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 30 mins
+    private static final int DEFAULT_VIDEO_DURATION = 0; // no limit
 
     public static final String DEFAULT_VIDEO_QUALITY_VALUE = "high";
-
-    // MMS video length
-    public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
 
     private static final String TAG = "CameraSettings";
 
@@ -371,7 +368,7 @@ public class CameraSettings {
         } else if (VIDEO_QUALITY_YOUTUBE.equals(quality)) {
             return YOUTUBE_VIDEO_DURATION * 1000;
         }
-        return DEFAULT_VIDEO_DURATION * 1000;
+        return DEFAULT_VIDEO_DURATION;
     }
 
     public static int readPreferredCameraId(SharedPreferences pref) {

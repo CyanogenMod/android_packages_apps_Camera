@@ -147,8 +147,8 @@
     <!-- The Video length settings in preference -->
     <string name="pref_video_quality_title">Video quality</string>
     <string name="pref_video_quality_default" translatable="false">high</string>
-    <string name="pref_video_quality_entry_high">High (30m)</string>
-    <string name="pref_video_quality_entry_low">Low (30m)</string>
+    <string name="pref_video_quality_entry_high">High</string>
+    <string name="pref_video_quality_entry_low">Low</string>
     <string name="pref_video_quality_entry_mms">MMS (Low, 30s)</string>
     <string name="pref_video_quality_entry_youtube">YouTube (High, 15m)</string>
 
