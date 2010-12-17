@@ -17,25 +17,14 @@
 */
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <ImageView android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/divider_horizontal_holo_dark"
-            android:scaleType="fitXY" />
-    <LinearLayout android:id="@+id/setting_row"
         style="@style/SettingRow">
 
         <TextView android:id="@+id/text"
-                style="@style/SettingPickerText"
-                android:textColor="@drawable/btn_setting_picker" />
+                style="@style/SettingPickerText"/>
         <ImageView android:id="@+id/image"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:layout_marginRight="35dp"
                 android:gravity="center"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true" />
-    </LinearLayout>
 </LinearLayout>

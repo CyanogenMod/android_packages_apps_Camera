@@ -17,31 +17,26 @@
 package com.android.camera.ui;
 
 import android.content.Context;
-import android.content.res.Resources.Theme;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import com.android.camera.IconListPreference;
 import com.android.camera.R;
 import com.android.camera.Util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 // A popup window that shows one camera setting. The title is the name of the
 // setting (ex: white-balance). The entries are the supported values (ex:
 // daylight, incandescent, etc).
 public class BasicSettingPopup extends AbstractSettingPopup implements
-        View.OnClickListener {
-    private static final String TAG = "BasicSettingPopup";
+        AdapterView.OnItemClickListener {
     private IconListPreference mPreference;
     private Listener mListener;
 
@@ -56,39 +51,31 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
     public void initialize(IconListPreference preference) {
         mPreference = preference;
         Context context = getContext();
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
         CharSequence[] entries = mPreference.getEntries();
-        CharSequence[] values = mPreference.getEntryValues();
         int[] iconIds = mPreference.getImageIds();
         if (iconIds == null) {
             iconIds = mPreference.getLargeIconIds();
         }
-        int index = mPreference.findIndexOfValue(mPreference.getValue());
 
         // Set title.
         mTitle.setText(mPreference.getTitle());
 
-        int pos = 0;
-        for (int i = 0, n = entries.length; i < n; ++i) {
-            LinearLayout row = (LinearLayout) inflater.inflate(
-                    R.layout.setting_item, this, false);
-            // Initialize the text.
-            TextView text = (TextView) row.findViewById(R.id.text);
-            text.setText(entries[i].toString());
-            text.setClickable(false);
-            row.setSelected(index == i);
-
-            // Initialize the icon.
-            if (iconIds != null) {
-                Drawable drawable = context.getResources().getDrawable(iconIds[i]);
-                ImageView image = (ImageView) row.findViewById(R.id.image);
-                image.setImageDrawable(drawable);
-                image.setClickable(false);
-            }
-            row.setOnClickListener(this);
-            mContentPanel.addView(row);
+        // Prepare the ListView.
+        ArrayList<HashMap<String, Object>> listItem =
+                new ArrayList<HashMap<String, Object>>();
+        for(int i = 0; i < entries.length; ++i) {
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("text", entries[i].toString());
+            if (iconIds != null) map.put("image", iconIds[i]);
+            listItem.add(map);
         }
+        SimpleAdapter listItemAdapter = new SimpleAdapter(context, listItem,
+                R.layout.setting_item,
+                new String[] {"text", "image"},
+                new int[] {R.id.text, R.id.image});
+        ((ListView) mContentPanel).setAdapter(listItemAdapter);
+        ((ListView) mContentPanel).setOnItemClickListener(this);
+        ((ListView) mContentPanel).setSelector(android.R.color.transparent);
     }
 
     public void setSettingChangedListener(Listener listener) {
@@ -96,22 +83,26 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
+    public void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        int index = mPreference.findIndexOfValue(mPreference.getValue());
+        View selected = ((ListView) mContentPanel).getChildAt(index);
+        if (selected != null) selected.setActivated(true);
     }
 
-    public void onClick(View view) {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view,
+            int index, long id) {
         // If popup window is dismissed, ignore the event. This may happen when
         // users press home and then select a setting immediately.
         if (getVisibility() == View.INVISIBLE) return;
 
-        int i = mContentPanel.indexOfChild(view);
         int oldIndex = mPreference.findIndexOfValue(mPreference.getValue());
-        if ((i != -1) && (oldIndex != i)) {
-            mContentPanel.getChildAt(oldIndex).setSelected(false);
-            view.setSelected(true);
-            mPreference.setValueIndex(i);
+        if (oldIndex != index) {
+            ((LinearLayout) parent.getChildAt(oldIndex)).setActivated(false);
+            mPreference.setValueIndex(index);
             if (mListener != null) mListener.onSettingChanged();
         }
+        view.setActivated(true);
     }
 }

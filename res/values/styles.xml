@@ -87,6 +87,7 @@
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:layout_width">200dp</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:singleLine">true</item>
     </style>
     <style name="SettingRow">
@@ -94,6 +95,8 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
         <item name="android:background">@drawable/setting_picker</item>
     </style>
     <style name="OnScreenGpsIndicator">
