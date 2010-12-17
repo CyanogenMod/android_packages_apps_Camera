@@ -617,6 +617,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
                 showGpsOnScreenIndicator(true);
             }
+            if (!mValid) {
+                Log.d(TAG, "Got first location.");
+            }
             mLastLocation.set(newLocation);
             mValid = true;
         }
@@ -899,6 +902,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 boolean hasLatLon = (lat != 0.0d) || (lon != 0.0d);
 
                 if (hasLatLon) {
+                    Log.d(TAG, "Set gps location");
                     mParameters.setGpsLatitude(lat);
                     mParameters.setGpsLongitude(lon);
                     mParameters.setGpsProcessingMethod(loc.getProvider().toUpperCase());
@@ -2085,6 +2089,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             } catch (IllegalArgumentException ex) {
                 Log.d(TAG, "provider does not exist " + ex.getMessage());
             }
+            Log.d(TAG, "startReceivingLocationUpdates");
         }
     }
 
@@ -2097,6 +2102,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     Log.i(TAG, "fail to remove location listners, ignore", ex);
                 }
             }
+            Log.d(TAG, "stopReceivingLocationUpdates");
         }
         hideGpsOnScreenIndicator();
     }
@@ -2107,6 +2113,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             Location l = mLocationListeners[i].current();
             if (l != null) return l;
         }
+        Log.d(TAG, "No location received yet.");
         return null;
     }
 
