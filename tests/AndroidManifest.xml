@@ -17,6 +17,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.camera.tests">
 
+    <uses-permission android:name="android.permission.INJECT_EVENTS" />
+
     <application>
         <uses-library android:name="android.test.runner" />
     </application>

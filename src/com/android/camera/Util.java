@@ -51,6 +51,10 @@ public class Util {
 
     public static final String REVIEW_ACTION = "com.android.camera.action.REVIEW";
 
+    // Private intent extras. Test only.
+    public static final String EXTRAS_CAMERA_FACING =
+        "android.intent.extras.CAMERA_FACING";
+
     private Util() {
     }
 
@@ -408,4 +412,36 @@ public class Util {
         }
         return true;
     }
+
+    // This is for test only. Allow the camera to launch the specific camera.
+    public static int getCameraFacingIntentExtras(Activity currentActivity) {
+        int cameraId = -1;
+
+        int intentCameraId =
+                currentActivity.getIntent().getIntExtra(Util.EXTRAS_CAMERA_FACING, -1);
+
+        if (isFrontCameraIntent(intentCameraId)) {
+            // Check if the front camera exist
+            int frontCameraId = CameraHolder.instance().getFrontCameraId();
+            if (frontCameraId != -1) {
+                cameraId = frontCameraId;
+            }
+        } else if (isBackCameraIntent(intentCameraId)) {
+            // Check if the back camera exist
+            int backCameraId = CameraHolder.instance().getBackCameraId();
+            if (backCameraId != -1) {
+                cameraId = backCameraId;
+            }
+        }
+        return cameraId;
+    }
+
+    private static boolean isFrontCameraIntent(int intentCameraId) {
+        return (intentCameraId == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
+    }
+
+    private static boolean isBackCameraIntent(int intentCameraId) {
+        return (intentCameraId == android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
+    }
+
 }

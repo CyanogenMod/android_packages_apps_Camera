@@ -34,6 +34,7 @@ public class CameraStressTestRunner extends InstrumentationTestRunner {
     public TestSuite getAllTests() {
         TestSuite suite = new InstrumentationTestSuite(this);
         suite.addTestSuite(ImageCapture.class);
+        suite.addTestSuite(VideoCapture.class);
         return suite;
     }
 
