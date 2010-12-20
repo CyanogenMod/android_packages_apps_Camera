@@ -958,7 +958,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         } catch (IOException e) {
             return false;
         } finally {
-            MenuHelper.closeSilently(f);
+            Util.closeSilently(f);
         }
         return true;
     }
