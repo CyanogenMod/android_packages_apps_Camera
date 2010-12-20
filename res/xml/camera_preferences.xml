@@ -91,5 +91,17 @@
                  camera:title="@string/pref_camera_lensshading_title"
                  camera:entries="@array/pref_camera_lensshading_entries"
                  camera:entryValues="@array/pref_camera_lensshading_entryvalues" />
+         <ListPreference
+                 camera:key="pref_camera_antibanding_key"
+                 camera:defaultValue="@string/pref_camera_antibanding_default"
+                 camera:title="@string/pref_camera_antibanding_title"
+                 camera:entries="@array/pref_camera_antibanding_entries"
+                 camera:entryValues="@array/pref_camera_antibanding_entryvalues" />
+         <ListPreference
+                 camera:key="pref_camera_autoexposure_key"
+                 camera:defaultValue="@string/pref_camera_autoexposure_default"
+                 camera:title="@string/pref_camera_autoexposure_title"
+                 camera:entries="@array/pref_camera_autoexposure_entries"
+                 camera:entryValues="@array/pref_camera_autoexposure_entryvalues" />
     </PreferenceGroup>
 </PreferenceGroup>
