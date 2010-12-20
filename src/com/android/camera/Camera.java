@@ -53,7 +53,6 @@ import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -229,7 +228,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private long mPostViewPictureCallbackTime;
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
-    private int mPicturesRemaining;
+    private long mPicturesRemaining;
 
     // These latency time are for the CameraLatency test.
     public long mAutoFocusTime;
@@ -735,7 +734,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             calculatePicturesRemaining();
 
             if (mPicturesRemaining < 1) {
-                updateStorageHint(mPicturesRemaining);
+                updateStorageHint();
             }
 
             if (!mHandler.hasMessages(RESTART_PREVIEW)) {
@@ -1246,7 +1245,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void checkStorage() {
         calculatePicturesRemaining();
-        updateStorageHint(mPicturesRemaining);
+        updateStorageHint();
     }
 
     public void onClick(View v) {
@@ -1391,19 +1390,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private OnScreenHint mStorageHint;
 
-    private void updateStorageHint(int remaining) {
+    private void updateStorageHint() {
         String noStorageText = null;
 
-        if (remaining == MenuHelper.NO_STORAGE_ERROR) {
-            String state = Environment.getExternalStorageState();
-            if (state == Environment.MEDIA_CHECKING) {
-                noStorageText = getString(R.string.preparing_sd);
-            } else {
-                noStorageText = getString(R.string.no_storage);
-            }
-        } else if (remaining == MenuHelper.CANNOT_STAT_ERROR) {
+        if (mPicturesRemaining == Storage.UNAVAILABLE) {
+            noStorageText = getString(R.string.no_storage);
+        } else if (mPicturesRemaining == Storage.PREPARING) {
+            noStorageText = getString(R.string.preparing_sd);
+        } else if (mPicturesRemaining == Storage.UNKNOWN_SIZE) {
             noStorageText = getString(R.string.access_sd_fail);
-        } else if (remaining < 1) {
+        } else if (mPicturesRemaining < 1L) {
             noStorageText = getString(R.string.not_enough_space);
         }
 
@@ -2175,9 +2171,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private int calculatePicturesRemaining() {
-        mPicturesRemaining = MenuHelper.calculatePicturesRemaining();
-        return mPicturesRemaining;
+    private void calculatePicturesRemaining() {
+        mPicturesRemaining = Storage.getAvailableSpace();
+        if (mPicturesRemaining > 0) {
+            mPicturesRemaining /= 1500000;
+        }
     }
 
     @Override

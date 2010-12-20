@@ -24,8 +24,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.StatFs;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
@@ -59,8 +57,6 @@ public class MenuHelper {
     public static final int POSITION_SWITCH_CAMERA_ID = 3;
     public static final int POSITION_SWITCH_TIME_LAPSE_MODE = 4;
 
-    public static final int NO_STORAGE_ERROR = -1;
-    public static final int CANNOT_STAT_ERROR = -2;
     public static final String EMPTY_STRING = "";
     public static final String JPEG_MIME_TYPE = "image/jpeg";
     // valid range is -180f to +180f
@@ -167,28 +163,6 @@ public class MenuHelper {
             activity.startActivity(intent);
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "Could not start gallery activity", e);
-        }
-    }
-
-    public static int calculatePicturesRemaining() {
-        try {
-            if (!ImageManager.hasStorage()) {
-                return NO_STORAGE_ERROR;
-            } else {
-                String storageDirectory =
-                        Environment.getExternalStorageDirectory().toString();
-                StatFs stat = new StatFs(storageDirectory);
-                final int PICTURE_BYTES = 1500000;
-                float remaining = ((float) stat.getAvailableBlocks()
-                        * (float) stat.getBlockSize()) / PICTURE_BYTES;
-                return (int) remaining;
-            }
-        } catch (Exception ex) {
-            // if we can't stat the filesystem then we don't know how many
-            // pictures are remaining.  it might be zero but just leave it
-            // blank since we really don't know.
-            Log.e(TAG, "Fail to access sdcard", ex);
-            return CANNOT_STAT_ERROR;
         }
     }
 }

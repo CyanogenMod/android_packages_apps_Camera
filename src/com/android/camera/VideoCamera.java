@@ -47,11 +47,9 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.os.Message;
-import android.os.StatFs;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
@@ -110,14 +108,7 @@ public class VideoCamera extends NoSearchActivity
     // The reason why it is set to 0.7 is just because 1.0 is too bright.
     private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
-    private static final long NO_STORAGE_ERROR = -1L;
-    private static final long CANNOT_STAT_ERROR = -2L;
     private static final long LOW_STORAGE_THRESHOLD = 512L * 1024L;
-
-    private static final int STORAGE_STATUS_OK = 0;
-    private static final int STORAGE_STATUS_LOW = 1;
-    private static final int STORAGE_STATUS_NONE = 2;
-    private static final int STORAGE_STATUS_FAIL = 3;
 
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
@@ -158,7 +149,7 @@ public class VideoCamera extends NoSearchActivity
 
     private boolean mOpenCameraFail = false;
 
-    private int mStorageStatus = STORAGE_STATUS_OK;
+    private long mStorageSpace;
 
     private MediaRecorder mMediaRecorder;
     private boolean mMediaRecorderRecording = false;
@@ -255,10 +246,10 @@ public class VideoCamera extends NoSearchActivity
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-                updateAndShowStorageHint(false);
+                updateAndShowStorageHint();
                 stopVideoRecording();
             } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                updateAndShowStorageHint(true);
+                updateAndShowStorageHint();
                 updateThumbnailButton();
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
@@ -267,7 +258,7 @@ public class VideoCamera extends NoSearchActivity
                 Toast.makeText(VideoCamera.this,
                         getResources().getString(R.string.wait), 5000);
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                updateAndShowStorageHint(true);
+                updateAndShowStorageHint();
             }
         }
     }
@@ -614,8 +605,9 @@ public class VideoCamera extends NoSearchActivity
         switch (button.getId()) {
             case R.id.shutter_button:
                 if (collapseCameraControls()) return;
+                boolean stop = mMediaRecorderRecording;
 
-                if (mMediaRecorderRecording) {
+                if (stop) {
                     onStopVideoRecording(true);
                 } else {
                     startVideoRecording();
@@ -625,7 +617,7 @@ public class VideoCamera extends NoSearchActivity
                 // Keep the shutter button disabled when in video capture intent
                 // mode and recording is stopped. It'll be re-enabled when
                 // re-take button is clicked.
-                if (!mIsVideoCaptureIntent || mMediaRecorderRecording) {
+                if (!(mIsVideoCaptureIntent && stop)) {
                     mHandler.sendEmptyMessageDelayed(
                             ENABLE_SHUTTER_BUTTON, SHUTTER_BUTTON_TIMEOUT);
                 }
@@ -635,24 +627,23 @@ public class VideoCamera extends NoSearchActivity
 
     private OnScreenHint mStorageHint;
 
-    private void updateAndShowStorageHint(boolean mayHaveSd) {
-        mStorageStatus = getStorageStatus(mayHaveSd);
+    private void updateAndShowStorageHint() {
+        mStorageSpace = Storage.getAvailableSpace();
         showStorageHint();
     }
 
     private void showStorageHint() {
         String errorMessage = null;
-        switch (mStorageStatus) {
-            case STORAGE_STATUS_NONE:
-                errorMessage = getString(R.string.no_storage);
-                break;
-            case STORAGE_STATUS_LOW:
-                errorMessage = getString(R.string.spaceIsLow_content);
-                break;
-            case STORAGE_STATUS_FAIL:
-                errorMessage = getString(R.string.access_sd_fail);
-                break;
+        if (mStorageSpace == Storage.UNAVAILABLE) {
+            errorMessage = getString(R.string.no_storage);
+        } else if (mStorageSpace == Storage.PREPARING) {
+            errorMessage = getString(R.string.preparing_sd);
+        } else if (mStorageSpace == Storage.UNKNOWN_SIZE) {
+            errorMessage = getString(R.string.access_sd_fail);
+        } else if (mStorageSpace < LOW_STORAGE_THRESHOLD) {
+            errorMessage = getString(R.string.spaceIsLow_content);
         }
+
         if (errorMessage != null) {
             if (mStorageHint == null) {
                 mStorageHint = OnScreenHint.makeText(this, errorMessage);
@@ -664,18 +655,6 @@ public class VideoCamera extends NoSearchActivity
             mStorageHint.cancel();
             mStorageHint = null;
         }
-    }
-
-    private int getStorageStatus(boolean mayHaveSd) {
-        long remaining = mayHaveSd ? getAvailableStorage() : NO_STORAGE_ERROR;
-        if (remaining == NO_STORAGE_ERROR) {
-            return STORAGE_STATUS_NONE;
-        } else if (remaining == CANNOT_STAT_ERROR) {
-            return STORAGE_STATUS_FAIL;
-        }
-        return remaining < LOW_STORAGE_THRESHOLD
-                ? STORAGE_STATUS_LOW
-                : STORAGE_STATUS_OK;
     }
 
     private void readVideoPreferences() {
@@ -788,7 +767,7 @@ public class VideoCamera extends NoSearchActivity
         intentFilter.addDataScheme("file");
         mReceiver = new MyBroadcastReceiver();
         registerReceiver(mReceiver, intentFilter);
-        mStorageStatus = getStorageStatus(true);
+        mStorageSpace = Storage.getAvailableSpace();
 
         mHandler.postDelayed(new Runnable() {
             public void run() {
@@ -1041,31 +1020,6 @@ public class VideoCamera extends NoSearchActivity
         finish();
     }
 
-    /**
-     * Returns
-     *
-     * @return number of bytes available, or an ERROR code.
-     */
-    private static long getAvailableStorage() {
-        try {
-            if (!ImageManager.hasStorage()) {
-                return NO_STORAGE_ERROR;
-            } else {
-                String storageDirectory =
-                        Environment.getExternalStorageDirectory().toString();
-                StatFs stat = new StatFs(storageDirectory);
-                return (long) stat.getAvailableBlocks()
-                        * (long) stat.getBlockSize();
-            }
-        } catch (Exception ex) {
-            // if we can't stat the filesystem then we don't know how many
-            // free bytes exist. It might be zero but just leave it
-            // blank since we really don't know.
-            Log.e(TAG, "Fail to access sdcard", ex);
-            return CANNOT_STAT_ERROR;
-        }
-    }
-
     private void cleanupEmptyFile() {
         if (mVideoFilename != null) {
             File f = new File(mVideoFilename);
@@ -1121,22 +1075,18 @@ public class VideoCamera extends NoSearchActivity
         }
 
         // Set output file.
-        if (mStorageStatus != STORAGE_STATUS_OK) {
-            mMediaRecorder.setOutputFile("/dev/null");
-        } else {
-            // Try Uri in the intent first. If it doesn't exist, use our own
-            // instead.
-            if (mVideoFileDescriptor != null) {
-                mMediaRecorder.setOutputFile(mVideoFileDescriptor.getFileDescriptor());
-                try {
-                    mVideoFileDescriptor.close();
-                } catch (IOException e) {
-                    Log.e(TAG, "Fail to close fd", e);
-                }
-            } else {
-                createVideoPath(mProfile.fileFormat);
-                mMediaRecorder.setOutputFile(mVideoFilename);
+        // Try Uri in the intent first. If it doesn't exist, use our own
+        // instead.
+        if (mVideoFileDescriptor != null) {
+            mMediaRecorder.setOutputFile(mVideoFileDescriptor.getFileDescriptor());
+            try {
+                mVideoFileDescriptor.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Fail to close fd", e);
             }
+        } else {
+            createVideoPath(mProfile.fileFormat);
+            mMediaRecorder.setOutputFile(mVideoFilename);
         }
 
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
@@ -1145,7 +1095,7 @@ public class VideoCamera extends NoSearchActivity
         // remaining >= LOW_STORAGE_THRESHOLD at this point, reserve a quarter
         // of that to make it more likely that recording can complete
         // successfully.
-        long maxFileSize = getAvailableStorage() - LOW_STORAGE_THRESHOLD / 4;
+        long maxFileSize = mStorageSpace - LOW_STORAGE_THRESHOLD / 4;
         if (requestedSizeLimit > 0 && requestedSizeLimit < maxFileSize) {
             maxFileSize = requestedSizeLimit;
         }
@@ -1251,7 +1201,7 @@ public class VideoCamera extends NoSearchActivity
             mContentResolver.delete(mCurrentVideoUri, null, null);
             mCurrentVideoUri = null;
         }
-        updateAndShowStorageHint(true);
+        updateAndShowStorageHint();
     }
 
     private void deleteVideoFile(String fileName) {
@@ -1337,7 +1287,7 @@ public class VideoCamera extends NoSearchActivity
         if (what == MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN) {
             // We may have run out of space on the sdcard.
             stopVideoRecording();
-            updateAndShowStorageHint(true);
+            updateAndShowStorageHint();
         }
     }
 
@@ -1370,7 +1320,9 @@ public class VideoCamera extends NoSearchActivity
 
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
-        if (mStorageStatus != STORAGE_STATUS_OK) {
+
+        updateAndShowStorageHint();
+        if (mStorageSpace < LOW_STORAGE_THRESHOLD) {
             Log.v(TAG, "Storage issue, ignore the start request");
             return;
         }
@@ -1531,7 +1483,7 @@ public class VideoCamera extends NoSearchActivity
                 enableCameraControls(true);
             }
             keepScreenOnAwhile();
-            if (needToRegisterRecording && mStorageStatus == STORAGE_STATUS_OK) {
+            if (needToRegisterRecording && mStorageSpace >= LOW_STORAGE_THRESHOLD) {
                 registerVideo();
             }
             mVideoFilename = null;
