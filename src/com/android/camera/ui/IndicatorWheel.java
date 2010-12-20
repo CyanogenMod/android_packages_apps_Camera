@@ -277,6 +277,7 @@ public class IndicatorWheel extends ViewGroup {
                 if (key.equals(indicator.getKey())) {
                     indicator.overrideSettings(value);
                     setEnabled(indicator, (value == null));
+                    break;
                 }
             }
         }
@@ -303,10 +304,15 @@ public class IndicatorWheel extends ViewGroup {
     }
 
     private void setEnabled(ImageView view, boolean enabled) {
-        if (enabled) {
-            view.clearColorFilter();
-        } else {
-            view.setColorFilter(DISABLED_COLOR);
+        // Don't do anything if state is not changed so not to interfere with
+        // the "highlight" state.
+        if (view.isEnabled() ^ enabled) {
+            view.setEnabled(enabled);
+            if (enabled) {
+                view.clearColorFilter();
+            } else {
+                view.setColorFilter(DISABLED_COLOR);
+            }
         }
     }
 }
