@@ -117,7 +117,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // The reason why it is set to 0.7 is just because 1.0 is too bright.
     private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
-    private static final int SCREEN_DELAY = 2 * 60 * 1000;
+    private static final int SCREEN_DELAY = 1000;
     private static final int FOCUS_BEEP_VOLUME = 100;
 
     private static final int ZOOM_STOPPED = 0;
