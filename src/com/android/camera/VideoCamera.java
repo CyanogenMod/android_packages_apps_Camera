@@ -148,6 +148,7 @@ public class VideoCamera extends NoSearchActivity
     private ControlPanel mControlPanel;
     // Front/back camera picker for xlarge layout.
     private CameraPicker mCameraPicker;
+    private View mReviewControl;
 
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
@@ -336,12 +337,12 @@ public class VideoCamera extends NoSearchActivity
         if (mIsVideoCaptureIntent) {
             setContentView(R.layout.video_camera_attach);
 
-            View reviewControl = findViewById(R.id.review_control);
-            reviewControl.setVisibility(View.VISIBLE);
-            reviewControl.findViewById(R.id.btn_cancel).setOnClickListener(this);
-            reviewControl.findViewById(R.id.btn_done).setOnClickListener(this);
+            mReviewControl = findViewById(R.id.review_control);
+            mReviewControl.setVisibility(View.VISIBLE);
+            mReviewControl.findViewById(R.id.btn_cancel).setOnClickListener(this);
+            mReviewControl.findViewById(R.id.btn_done).setOnClickListener(this);
             findViewById(R.id.btn_play).setOnClickListener(this);
-            View retake = reviewControl.findViewById(R.id.btn_retake);
+            View retake = mReviewControl.findViewById(R.id.btn_retake);
             retake.setOnClickListener(this);
             if (retake instanceof ImageView) {
                 ((ImageView) retake).setImageResource(R.drawable.btn_ic_review_retake_video);
@@ -1393,23 +1394,26 @@ public class VideoCamera extends NoSearchActivity
 
         mMediaRecorderRecording = true;
         mRecordingStartTime = SystemClock.uptimeMillis();
-        updateRecordingIndicator(false);
-        mRecordingTimeView.setText("");
-        mRecordingTimeView.setVisibility(View.VISIBLE);
+        showRecordingUI(true);
 
         updateRecordingTime();
         keepScreenOn();
     }
 
-    private void updateRecordingIndicator(boolean showRecording) {
-        if (showRecording) {
-            mShutterButton.setImageDrawable(getResources().getDrawable(
-                    R.drawable.btn_ic_video_record));
-            mShutterButton.setBackgroundResource(R.drawable.btn_shutter);
-        } else {
+    private void showRecordingUI(boolean recording) {
+        if (recording) {
             mShutterButton.setImageDrawable(getResources().getDrawable(
                     R.drawable.btn_ic_video_record_stop));
             mShutterButton.setBackgroundResource(R.drawable.btn_shutter_recording);
+            mRecordingTimeView.setText("");
+            mRecordingTimeView.setVisibility(View.VISIBLE);
+            if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
+        } else {
+            mShutterButton.setImageDrawable(getResources().getDrawable(
+                    R.drawable.btn_ic_video_record));
+            mShutterButton.setBackgroundResource(R.drawable.btn_shutter);
+            mRecordingTimeView.setVisibility(View.GONE);
+            if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1444,6 +1448,7 @@ public class VideoCamera extends NoSearchActivity
         // Remove the text of the cancel button
         View view = findViewById(R.id.btn_cancel);
         if (view instanceof Button) ((Button) view).setText("");
+        showTimeLapseUI(false);
     }
 
     private void hideAlert() {
@@ -1462,6 +1467,9 @@ public class VideoCamera extends NoSearchActivity
         for (int id : pickIds) {
             View button = findViewById(id);
             ((View) button.getParent()).setVisibility(View.GONE);
+        }
+        if (mCaptureTimeLapse) {
+            showTimeLapseUI(true);
         }
     }
 
@@ -1518,8 +1526,7 @@ public class VideoCamera extends NoSearchActivity
                 deleteVideoFile(mVideoFilename);
             }
             mMediaRecorderRecording = false;
-            updateRecordingIndicator(true);
-            mRecordingTimeView.setVisibility(View.GONE);
+            showRecordingUI(false);
             if (!mIsVideoCaptureIntent) {
                 enableCameraControls(true);
             }

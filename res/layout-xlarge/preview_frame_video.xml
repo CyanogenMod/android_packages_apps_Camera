@@ -38,19 +38,20 @@
         <include layout="@layout/review_thumbnail"/>
         <TextView android:id="@+id/recording_time"
                 style="@style/OnViewfinderLabel"
-                android:layout_below="@+id/review_control"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:gravity="center"
                 android:drawableLeft="@drawable/ic_recording_indicator_small"
                 android:drawablePadding="5dp"
                 android:visibility="gone"/>
+        <include layout="@layout/review_control"/>
         <TextView android:id="@+id/time_lapse_label"
                 android:text="@string/time_lapse_title"
                 style="@style/OnViewfinderLabel"
-                android:layout_toLeftOf="@+id/recording_time"
+                android:layout_toLeftOf="@id/recording_time"
+                android:layout_below="@id/review_control"
                 android:layout_alignWithParentIfMissing="true"
                 android:visibility="gone"/>
-        <include layout="@layout/review_control"/>
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
