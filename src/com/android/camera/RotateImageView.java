@@ -174,9 +174,9 @@ public class RotateImageView extends ImageView {
         } catch (IOException e) {
             return false;
         } finally {
-            MenuHelper.closeSilently(f);
-            MenuHelper.closeSilently(b);
-            MenuHelper.closeSilently(d);
+            Util.closeSilently(f);
+            Util.closeSilently(b);
+            Util.closeSilently(d);
         }
         return true;
     }
@@ -198,9 +198,9 @@ public class RotateImageView extends ImageView {
         } catch (IOException e) {
             return false;
         } finally {
-            MenuHelper.closeSilently(f);
-            MenuHelper.closeSilently(b);
-            MenuHelper.closeSilently(d);
+            Util.closeSilently(f);
+            Util.closeSilently(b);
+            Util.closeSilently(d);
         }
         return true;
     }

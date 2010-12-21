@@ -74,16 +74,6 @@ public class MenuHelper {
     private static final String CAMERA_CLASS = "com.android.camera.Camera";
     private static final String VIDEO_CAMERA_CLASS = "com.android.camera.VideoCamera";
 
-    public static void closeSilently(Closeable c) {
-        if (c != null) {
-            try {
-                c.close();
-            } catch (Throwable e) {
-                // ignore
-            }
-        }
-    }
-
     public static void confirmAction(Context context, String title,
             String message, final Runnable action) {
         OnClickListener listener = new OnClickListener() {

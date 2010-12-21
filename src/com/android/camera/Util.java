@@ -158,15 +158,6 @@ public class Util {
         }
     }
 
-    public static <T>  int indexOf(T [] array, T s) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].equals(s)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     public static void closeSilently(Closeable c) {
         if (c == null) return;
         try {
