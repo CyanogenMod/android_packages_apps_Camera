@@ -16,8 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -104,10 +102,10 @@ public class Util {
      * tolerable in terms of memory usage.
      *
      * The function returns a sample size based on the constraints.
-     * Both size and minSideLength can be passed in as IImage.UNCONSTRAINED,
+     * Both size and minSideLength can be passed in as -1
      * which indicates no care of the corresponding constraint.
      * The functions prefers returning a sample size that
-     * generates a smaller bitmap, unless minSideLength = IImage.UNCONSTRAINED.
+     * generates a smaller bitmap, unless minSideLength = -1.
      *
      * Also, the function rounds up the sample size to a power of 2 or multiple
      * of 8 because BitmapFactory only honors sample size this way.
@@ -137,9 +135,9 @@ public class Util {
         double w = options.outWidth;
         double h = options.outHeight;
 
-        int lowerBound = (maxNumOfPixels == IImage.UNCONSTRAINED) ? 1 :
+        int lowerBound = (maxNumOfPixels < 0) ? 1 :
                 (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
-        int upperBound = (minSideLength == IImage.UNCONSTRAINED) ? 128 :
+        int upperBound = (minSideLength < 0) ? 128 :
                 (int) Math.min(Math.floor(w / minSideLength),
                 Math.floor(h / minSideLength));
 
@@ -148,22 +146,12 @@ public class Util {
             return lowerBound;
         }
 
-        if ((maxNumOfPixels == IImage.UNCONSTRAINED) &&
-                (minSideLength == IImage.UNCONSTRAINED)) {
+        if (maxNumOfPixels < 0 && minSideLength < 0) {
             return 1;
-        } else if (minSideLength == IImage.UNCONSTRAINED) {
+        } else if (minSideLength < 0) {
             return lowerBound;
         } else {
             return upperBound;
-        }
-    }
-
-    public static void closeSilently(Closeable c) {
-        if (c == null) return;
-        try {
-            c.close();
-        } catch (Throwable t) {
-            // do nothing
         }
     }
 
@@ -178,7 +166,7 @@ public class Util {
                 return null;
             }
             options.inSampleSize = computeSampleSize(
-                    options, IImage.UNCONSTRAINED, maxNumOfPixels);
+                    options, -1, maxNumOfPixels);
             options.inJustDecodeBounds = false;
 
             options.inDither = false;
@@ -188,6 +176,15 @@ public class Util {
         } catch (OutOfMemoryError ex) {
             Log.e(TAG, "Got oom exception ", ex);
             return null;
+        }
+    }
+
+    public static void closeSilently(Closeable c) {
+        if (c == null) return;
+        try {
+            c.close();
+        } catch (Throwable t) {
+            // do nothing
         }
     }
 
