@@ -17,15 +17,11 @@
 */
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.InLineSettingPicker xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <ImageView android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/divider_horizontal_holo_dark"
-            android:scaleType="fitXY" />
-    <LinearLayout android:orientation="horizontal"
+        android:layout_height="wrap_content">
+    <LinearLayout android:id="@+id/setting_item"
+            android:orientation="horizontal"
             style="@style/SettingRow">
         <TextView android:id="@+id/title"
                 style="@style/SettingPickerText"  />
@@ -61,4 +57,10 @@
                 android:textStyle="bold"
                 android:background="@android:color/transparent" />
     </LinearLayout>
-</LinearLayout>
+    <!--  To have the same View(InLineSettingPicker) as the listview's components and also show the restore setting line, we have the relativelayout and control the visibilities of the restore and the setting_item component to achieve the goal. -->
+    <TextView android:id="@+id/restore"
+            android:gravity="center"
+            android:textSize="22dp"
+            style="@style/SettingRow">
+    </TextView>
+</com.android.camera.ui.InLineSettingPicker>

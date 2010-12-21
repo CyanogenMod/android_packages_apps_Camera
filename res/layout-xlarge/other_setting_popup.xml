@@ -37,42 +37,16 @@
                 style="@style/SettingTitleText" />
     </FrameLayout>
 
-    <FrameLayout android:paddingTop="10dp"
-            android:layout_width="match_parent"
+    <FrameLayout android:layout_width="570dp"
             android:layout_height="wrap_content"
             android:background="@drawable/dialog_bottom_holo_dark">
-        <ScrollView android:orientation="vertical"
+        <ListView android:id="@+id/contentPanel"
+                android:orientation="vertical"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:paddingBottom="3dp"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <LinearLayout android:id="@+id/contentPanel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_recordlocation_key"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_focusmode_key"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_exposure_key"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_picturesize_key"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                <com.android.camera.ui.InLineSettingPicker camera:prefKey="pref_camera_jpegquality_key"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                <ImageView android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/divider_horizontal_holo_dark"
-                        android:scaleType="fitXY" />
-                <TextView
-                        android:text="@string/pref_restore_detail"
-                        android:gravity="center"
-                        android:textSize="21dp"
-                        android:textColor="@android:color/white"
-                        style="@style/SettingRow">
-                </TextView>
-            </LinearLayout>
-        </ScrollView>
+                android:layout_height="wrap_content" />
     </FrameLayout>
 </com.android.camera.ui.OtherSettingsPopup>

@@ -16,27 +16,88 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.CameraSettings;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
+import com.android.camera.R;
 
 import android.content.Context;
-import android.content.res.Resources.Theme;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /* A popup window that contains several camera settings. */
 public class OtherSettingsPopup extends AbstractSettingPopup
-        implements InLineSettingPicker.Listener, View.OnClickListener {
+        implements InLineSettingPicker.Listener,
+        AdapterView.OnItemClickListener {
     private static final String TAG = "OtherSettingsPopup";
+    private static final String[] OTHER_SETTING_KEYS = {
+            CameraSettings.KEY_RECORD_LOCATION,
+            CameraSettings.KEY_FOCUS_MODE,
+            CameraSettings.KEY_EXPOSURE,
+            CameraSettings.KEY_PICTURE_SIZE,
+            CameraSettings.KEY_JPEG_QUALITY};
+    private static final String ITEM_KEY = "key";
+    private static final String ITEM_TITLE = "text";
+    private static final String ITEM_VALUE = "value";
+    private static final String ITEM_RESTORE = "reset";
+
+    private Context mContext;
     private Listener mListener;
+    private PreferenceGroup mPreferenceGroup;
+    private ArrayList<HashMap<String, Object>> mListItem =
+            new ArrayList<HashMap<String, Object>>();
 
     static public interface Listener {
         public void onOtherSettingChanged();
         public void onRestorePreferencesClicked();
+    }
+
+    private class OtherSettingsAdapter extends SimpleAdapter {
+
+        OtherSettingsAdapter(Context context,
+                List<? extends Map<String, ?>> data,
+                int resource, String[] from, int[] to) {
+            super(context, data, resource, from, to);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView != null) return convertView;
+
+            InLineSettingPicker view = (InLineSettingPicker)
+                    super.getView(position, convertView, parent);
+            TextView restoreSettings =
+                    (TextView) view.findViewById(R.id.restore);
+            View settingItem = view.findViewById(R.id.setting_item);
+
+            // We apply the same View(InLineSettingPicker) as the listview's
+            // components. To show the restore setting line, we control the
+            // visibilities of components in InLineSettingPicker.
+            boolean isRestoreItem = (position == mListItem.size() - 1);
+            settingItem.setVisibility(
+                    isRestoreItem ? View.GONE : View.VISIBLE);
+            restoreSettings.setVisibility(
+                    isRestoreItem ? View.VISIBLE : View.GONE);
+
+            if (!isRestoreItem) {
+                HashMap map = (HashMap) mListItem.get(position);
+                ListPreference pref = (ListPreference) map.get(ITEM_KEY);
+                view.initialize(pref);
+                view.setSettingChangedListener(OtherSettingsPopup.this);
+            }
+            return view;
+        }
     }
 
     public void setOtherSettingChangedListener(Listener listener) {
@@ -45,26 +106,36 @@ public class OtherSettingsPopup extends AbstractSettingPopup
 
     public OtherSettingsPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
     }
 
     public void initialize(PreferenceGroup group) {
-        // Initialize each camera setting.
-        for (int i = mContentPanel.getChildCount() - 1; i >= 0; i--) {
-            View v = mContentPanel.getChildAt(i);
-            if (v instanceof InLineSettingPicker) {
-                InLineSettingPicker picker = (InLineSettingPicker) v;
-                ListPreference pref = group.findPreference(picker.getKey());
-                if (pref != null) {
-                    picker.setSettingChangedListener(this);
-                    picker.initialize(pref);
-                } else {  // remove the row if the preference is not supported
-                    mContentPanel.removeViewAt(i);
-                }
-            } else {  // This row is restore defaults.
-                v.setOnClickListener(this);
+        mPreferenceGroup = group;
+        // Prepare the setting items.
+        for (int i = 0; i < OTHER_SETTING_KEYS.length; ++i) {
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            ListPreference pref = group.findPreference(OTHER_SETTING_KEYS[i]);
+            if (pref != null) {
+                map.put(ITEM_KEY, pref);
+                map.put(ITEM_TITLE, pref.getTitle());
+                map.put(ITEM_VALUE, pref.getEntry());
+                mListItem.add(map);
             }
-       }
-       requestLayout();
+        }
+
+        // Prepare the restore setting line.
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put(ITEM_RESTORE, mContext.getString(R.string.pref_restore_detail));
+        mListItem.add(map);
+
+        SimpleAdapter mListItemAdapter = new OtherSettingsAdapter(mContext,
+                mListItem,
+                R.layout.in_line_setting_picker,
+                new String[] {ITEM_TITLE, ITEM_VALUE, ITEM_RESTORE},
+                new int[] {R.id.title, R.id.current_setting, R.id.restore});
+        ((ListView) mContentPanel).setAdapter(mListItemAdapter);
+        ((ListView) mContentPanel).setOnItemClickListener(this);
+        ((ListView) mContentPanel).setSelector(android.R.color.transparent);
     }
 
     public void onSettingChanged() {
@@ -77,19 +148,18 @@ public class OtherSettingsPopup extends AbstractSettingPopup
     public void overrideSettings(String key, String value) {
         int count = mContentPanel.getChildCount();
         for (int i = 0; i < count; i++) {
-            View v = mContentPanel.getChildAt(i);
-            if (v instanceof InLineSettingPicker) {
-                InLineSettingPicker picker = (InLineSettingPicker) v;
-                if (key.equals(picker.getKey())) {
-                    picker.overrideSettings(value);
-                }
+            if (key.equals(mListItem.get(i).get(ITEM_KEY))) {
+                InLineSettingPicker picker =
+                        (InLineSettingPicker) mContentPanel.getChildAt(i);
+                picker.overrideSettings(value);
             }
         }
     }
 
     @Override
-    public void onClick(View v) {
-        if (mListener != null) {
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+            long id) {
+        if ((position == mListItem.size() - 1) && (mListener != null)) {
             mListener.onRestorePreferencesClicked();
         }
     }

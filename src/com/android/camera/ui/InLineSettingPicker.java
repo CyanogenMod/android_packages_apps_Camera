@@ -26,7 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.camera.R;
@@ -37,7 +37,7 @@ import java.util.Formatter;
 /* A one-line camera setting that includes a title (ex: Picture size), a
    previous button, the current value (ex: 5MP), and a next button. Other
    setting popup window includes several InLineSettingPicker. */
-public class InLineSettingPicker extends LinearLayout {
+public class InLineSettingPicker extends RelativeLayout {
     private final String TAG = "InLineSettingPicker";
     // The view that shows the name of the setting. Ex: Picture size
     private TextView mTitle;
@@ -73,11 +73,12 @@ public class InLineSettingPicker extends LinearLayout {
 
     public InLineSettingPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
-        LayoutInflater inflater =
-                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.in_line_setting_picker, this, true);
         mHandler = new Handler();
+    }
 
+    @Override
+    public void onFinishInflate() {
+        super.onFinishInflate();
         OnTouchListener nextTouchListener = new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if (mOverrideValue != null) return true;
@@ -120,20 +121,11 @@ public class InLineSettingPicker extends LinearLayout {
         mPrevButton.setOnTouchListener(previousTouchListener);
         mEntry = (TextView) findViewById(R.id.current_setting);
         mTitle = (TextView) findViewById(R.id.title);
-
-        TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.InLineSettingPicker, 0, 0);
-        mKey = a.getString(R.styleable.InLineSettingPicker_prefKey);
-    }
-
-    public String getKey() {
-        return mKey;
     }
 
     public void initialize(ListPreference preference) {
         mPreference = preference;
         mIndex = mPreference.findIndexOfValue(mPreference.getValue());
-        mTitle.setText(mPreference.getTitle());
         updateView();
     }
 
