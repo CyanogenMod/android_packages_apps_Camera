@@ -35,7 +35,7 @@
     <Button android:id="@+id/increment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="48dp"
             android:enabled="false"
             android:background="@drawable/btn_zoom_in" />
 </com.android.camera.ui.ZoomPicker>
