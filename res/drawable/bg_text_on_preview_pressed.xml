@@ -14,8 +14,8 @@
      limitations under the License.
 -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/bg_text_on_preview_pressed" />
-    <item android:drawable="@drawable/bg_text_on_preview_transparent" />
-</selector>
-
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="rectangle">
+   <solid android:color="@color/review_control_pressed_color"/>
+   <corners android:radius="3dp"/>
+</shape>

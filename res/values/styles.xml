@@ -117,6 +117,6 @@
         <item name="android:paddingBottom">3dp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">16dp</item>
-        <item name="android:background">@color/on_viewfinder_label_background_color</item>
+        <item name="android:background">@drawable/bg_text_on_preview</item>
     </style>
 </resources>

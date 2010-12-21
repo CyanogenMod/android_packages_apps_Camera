@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="@color/on_viewfinder_label_background_color"
+                android:background="@drawable/bg_text_on_preview"
                 android:visibility="gone">
             <ImageView style="@style/ReviewControlIcon"
                     android:id="@+id/btn_play"
