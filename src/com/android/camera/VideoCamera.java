@@ -748,7 +748,6 @@ public class VideoCamera extends NoSearchActivity
         // Start orientation listener as soon as possible because it takes
         // some time to get first orientation.
         mOrientationListener.enable();
-        mVideoPreview.setVisibility(View.VISIBLE);
         if (!mPreviewing && !mOpenCameraFail) {
             if (!openCamera()) return;
             readVideoPreferences();
@@ -862,10 +861,6 @@ public class VideoCamera extends NoSearchActivity
 
         changeHeadUpDisplayState();
         if (mControlPanel != null) mControlPanel.dismissSettingPopup();
-
-        // Hide the preview now. Otherwise, the preview may be rotated during
-        // onPause and it is annoying to users.
-        mVideoPreview.setVisibility(View.INVISIBLE);
 
         finishRecorderAndCloseCamera();
 
