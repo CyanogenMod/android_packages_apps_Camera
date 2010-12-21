@@ -68,7 +68,8 @@
                 <TextView
                         android:text="@string/pref_restore_detail"
                         android:gravity="center"
-                        android:textSize="22dp"
+                        android:textSize="21dp"
+                        android:textColor="@android:color/white"
                         style="@style/SettingRow">
                 </TextView>
             </LinearLayout>
