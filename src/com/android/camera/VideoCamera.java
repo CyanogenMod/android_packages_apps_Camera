@@ -16,8 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.CamcorderHeadUpDisplay;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.ControlPanel;
@@ -1520,28 +1518,17 @@ public class VideoCamera extends NoSearchActivity
     private void updateThumbnailButton() {
         if (mThumbnailButton == null) return;
         if (!mThumbnailButton.isUriValid()) {
-            IImageList list = ImageManager.makeImageList(
-                    mContentResolver,
-                    dataLocation(),
-                    ImageManager.INCLUDE_VIDEOS,
-                    ImageManager.SORT_ASCENDING,
-                    ImageManager.CAMERA_IMAGE_BUCKET_ID);
-            int count = list.getCount();
-            if (count > 0) {
-                IImage image = list.getImageAt(count - 1);
-                Uri uri = image.fullSizeImageUri();
-                mThumbnailButton.setData(uri, image.miniThumbBitmap());
+            Storage.Thumbnail thumbnail =
+                    Storage.getLastVideoThumbnail(mContentResolver);
+            if (thumbnail != null) {
+                mThumbnailButton.setData(thumbnail.getOriginalUri(),
+                        thumbnail.getBitmap(mContentResolver));
             } else {
                 mThumbnailButton.setData(null, null);
             }
-            list.close();
         }
         mThumbnailButton.setVisibility(
                 (mThumbnailButton.getUri() != null) ? View.VISIBLE : View.GONE);
-    }
-
-    private static ImageManager.DataLocation dataLocation() {
-        return ImageManager.DataLocation.EXTERNAL;
     }
 
     private static String millisecondToTimeString(long milliSeconds, boolean displayCentiSeconds) {

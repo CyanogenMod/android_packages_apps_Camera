@@ -16,8 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.gallery.IImage;
-import com.android.camera.gallery.IImageList;
 import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.ControlPanel;
@@ -374,7 +372,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         MessageQueue queue = Looper.myQueue();
         queue.addIdleHandler(new MessageQueue.IdleHandler() {
             public boolean queueIdle() {
-                ImageManager.ensureOSXCompatibleFolder();
+                Storage.ensureOSXCompatible();
                 return false;
             }
         });
@@ -394,37 +392,17 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mThumbnailButton == null) return;
         // Update last image if URI is invalid and the storage is ready.
         if (!mThumbnailButton.isUriValid() && mPicturesRemaining >= 0) {
-            IImageList list = ImageManager.makeImageList(
-                mContentResolver,
-                dataLocation(),
-                ImageManager.INCLUDE_IMAGES,
-                ImageManager.SORT_ASCENDING,
-                ImageManager.CAMERA_IMAGE_BUCKET_ID);
-            int count = list.getCount();
-            if (count > 0) {
-                IImage image = list.getImageAt(count - 1);
-                Uri uri = image.fullSizeImageUri();
-                mThumbnailButton.setData(uri, image.miniThumbBitmap());
+            Storage.Thumbnail thumbnail =
+                    Storage.getLastImageThumbnail(mContentResolver);
+            if (thumbnail != null) {
+                mThumbnailButton.setData(thumbnail.getOriginalUri(),
+                        thumbnail.getBitmap(mContentResolver));
             } else {
                 mThumbnailButton.setData(null, null);
             }
-            list.close();
         }
         mThumbnailButton.setVisibility(
                 (mThumbnailButton.getUri() != null) ? View.VISIBLE : View.GONE);
-    }
-
-    private void setLastPictureThumb(byte[] data, int degree, Uri uri) {
-        if (mThumbnailButton == null) return;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 16;
-        Bitmap lastPictureThumb =
-                BitmapFactory.decodeByteArray(data, 0, data.length, options);
-        lastPictureThumb = Util.rotate(lastPictureThumb, degree);
-        mThumbnailButton.setData(uri, lastPictureThumb);
-        if (lastPictureThumb != null) {
-            mThumbnailButton.setVisibility(View.VISIBLE);
-        }
     }
 
     // If the activity is paused and resumed, this method will be called in
@@ -804,40 +782,25 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private class ImageCapture {
 
-        private Uri mLastContentUri;
-
         byte[] mCaptureOnlyData;
-
-        // Returns the rotation degree in the jpeg header.
-        private int storeImage(byte[] data, Location loc) {
-            try {
-                long dateTaken = System.currentTimeMillis();
-                String title = createName(dateTaken);
-                String filename = title + ".jpg";
-                int[] degree = new int[1];
-                mLastContentUri = ImageManager.addImage(
-                        mContentResolver,
-                        title,
-                        dateTaken,
-                        loc, // location from gps/network
-                        ImageManager.CAMERA_IMAGE_BUCKET_NAME, filename,
-                        null, data,
-                        degree);
-                return degree[0];
-            } catch (Exception ex) {
-                Log.e(TAG, "Exception while compressing image.", ex);
-                return 0;
-            }
-        }
 
         public void storeImage(final byte[] data,
                 android.hardware.Camera camera, Location loc) {
             if (!mIsImageCaptureIntent) {
-                int degree = storeImage(data, loc);
-                sendBroadcast(new Intent(
-                        "com.android.camera.NEW_PICTURE", mLastContentUri));
-                setLastPictureThumb(data, degree,
-                        mImageCapture.getLastCaptureUri());
+                long dateTaken = System.currentTimeMillis();
+                String title = createName(dateTaken);
+
+                Storage.Thumbnail thumbnail = Storage.addImage(
+                        mContentResolver, title, dateTaken, loc, data);
+
+                if (thumbnail != null && mThumbnailButton != null) {
+                    mThumbnailButton.setData(thumbnail.getOriginalUri(),
+                            thumbnail.getBitmap(mContentResolver));
+                    mThumbnailButton.setVisibility(View.VISIBLE);
+
+                    sendBroadcast(new Intent("com.android.camera.NEW_PICTURE",
+                            thumbnail.getOriginalUri()));
+                }
             } else {
                 mCaptureOnlyData = data;
                 if (!mQuickCapture) {
@@ -857,10 +820,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
 
             capture();
-        }
-
-        public Uri getLastCaptureUri() {
-            return mLastContentUri;
         }
 
         public byte[] getLastCaptureData() {
@@ -1483,10 +1442,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
         changeHeadUpDisplayState();
-    }
-
-    private static ImageManager.DataLocation dataLocation() {
-        return ImageManager.DataLocation.EXTERNAL;
     }
 
     @Override
