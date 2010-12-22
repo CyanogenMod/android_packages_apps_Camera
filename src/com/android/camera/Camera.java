@@ -744,12 +744,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             } else if (mFocusState == FOCUSING) {
                 // User is half-pressing the focus key. Play the focus tone.
                 // Do not take the picture now.
-                ToneGenerator tg = mFocusToneGenerator;
-                if (tg != null) {
-                    tg.startTone(ToneGenerator.TONE_PROP_BEEP2);
-                }
                 if (focused) {
                     mFocusState = FOCUS_SUCCESS;
+                    if (mFocusToneGenerator != null) {
+                        mFocusToneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2);
+                    }
                 } else {
                     mFocusState = FOCUS_FAIL;
                 }
