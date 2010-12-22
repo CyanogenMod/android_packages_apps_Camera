@@ -20,24 +20,37 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
 
+import java.io.File;
+
 class Storage {
     private static final String TAG = "CameraStorage";
+
+    private static final String DCIM =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
+
+    public static final String DIRECTORY = DCIM + "/Camera";
 
     public static final long UNAVAILABLE = -1L;
     public static final long PREPARING = -2L;
     public static final long UNKNOWN_SIZE = -3L;
 
     public static long getAvailableSpace() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_CHECKING.equals(state)) {
+            return PREPARING;
+        }
+        if (!Environment.MEDIA_MOUNTED.equals(state)) {
+            return UNAVAILABLE;
+        }
+
+        File dir = new File(DIRECTORY);
+        dir.mkdirs();
+        if (!dir.isDirectory() || !dir.canWrite()) {
+            return UNAVAILABLE;
+        }
+
         try {
-            String state = Environment.getExternalStorageState();
-            if (Environment.MEDIA_CHECKING.equals(state)) {
-                return PREPARING;
-            }
-            if (!Environment.MEDIA_MOUNTED.equals(state)) {
-                return UNAVAILABLE;
-            }
-            StatFs stat = new StatFs(
-                    Environment.getExternalStorageDirectory().toString());
+            StatFs stat = new StatFs(DIRECTORY);
             return stat.getAvailableBlocks() * (long) stat.getBlockSize();
         } catch (Exception e) {
             Log.i(TAG, "Fail to access external storage", e);

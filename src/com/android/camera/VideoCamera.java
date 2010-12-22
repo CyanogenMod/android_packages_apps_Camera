@@ -1080,7 +1080,7 @@ public class VideoCamera extends NoSearchActivity
                 Log.e(TAG, "Fail to close fd", e);
             }
         } else {
-            createVideoPath(mProfile.fileFormat);
+            generateVideoFilename(mProfile.fileFormat);
             mMediaRecorder.setOutputFile(mVideoFilename);
         }
 
@@ -1143,7 +1143,7 @@ public class VideoCamera extends NoSearchActivity
         if (mCameraDevice != null) mCameraDevice.lock();
     }
 
-    private void createVideoPath(int outputFileFormat) {
+    private void generateVideoFilename(int outputFileFormat) {
         long dateTaken = System.currentTimeMillis();
         String title = createName(dateTaken);
         String filename = title + ".3gp"; // Used when emailing.
@@ -1152,19 +1152,14 @@ public class VideoCamera extends NoSearchActivity
             filename = title + ".mp4";
             mime = "video/mp4";
         }
-        String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
-        String filePath = cameraDirPath + "/" + filename;
-        File cameraDir = new File(cameraDirPath);
-        cameraDir.mkdirs();
-        ContentValues values = new ContentValues(7);
-        values.put(Video.Media.TITLE, title);
-        values.put(Video.Media.DISPLAY_NAME, filename);
-        values.put(Video.Media.DATE_TAKEN, dateTaken);
-        values.put(Video.Media.MIME_TYPE, mime);
-        values.put(Video.Media.DATA, filePath);
-        mVideoFilename = filePath;
-        Log.v(TAG, "Current camera video filename: " + mVideoFilename);
-        mCurrentVideoValues = values;
+        mVideoFilename = Storage.DIRECTORY + '/' + filename;
+        mCurrentVideoValues = new ContentValues(7);
+        mCurrentVideoValues.put(Video.Media.TITLE, title);
+        mCurrentVideoValues.put(Video.Media.DISPLAY_NAME, filename);
+        mCurrentVideoValues.put(Video.Media.DATE_TAKEN, dateTaken);
+        mCurrentVideoValues.put(Video.Media.MIME_TYPE, mime);
+        mCurrentVideoValues.put(Video.Media.DATA, mVideoFilename);
+        Log.v(TAG, "New video filename: " + mVideoFilename);
     }
 
     private void registerVideo() {

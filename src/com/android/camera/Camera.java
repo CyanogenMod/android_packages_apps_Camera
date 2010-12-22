@@ -727,15 +727,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
             mImageCapture.storeImage(jpegData, camera, mLocation);
 
-            // Calculate this in advance of each shot so we don't add to shutter
+            // Check this in advance of each shot so we don't add to shutter
             // latency. It's true that someone else could write to the SD card in
             // the mean time and fill it, but that could have happened between the
             // shutter press and saving the JPEG too.
-            calculatePicturesRemaining();
-
-            if (mPicturesRemaining < 1) {
-                updateStorageHint();
-            }
+            checkStorage();
 
             if (!mHandler.hasMessages(RESTART_PREVIEW)) {
                 long now = System.currentTimeMillis();
@@ -1244,7 +1240,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     }
 
     private void checkStorage() {
-        calculatePicturesRemaining();
+        mPicturesRemaining = Storage.getAvailableSpace();
+        if (mPicturesRemaining > 0) {
+            mPicturesRemaining /= 1500000;
+        }
         updateStorageHint();
     }
 
@@ -2168,13 +2167,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             if (view instanceof Button) {
                 ((Button) view).setText(R.string.review_cancel);
             }
-        }
-    }
-
-    private void calculatePicturesRemaining() {
-        mPicturesRemaining = Storage.getAvailableSpace();
-        if (mPicturesRemaining > 0) {
-            mPicturesRemaining /= 1500000;
         }
     }
 
