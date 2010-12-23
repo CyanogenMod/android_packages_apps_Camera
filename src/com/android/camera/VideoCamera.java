@@ -82,6 +82,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -112,6 +113,20 @@ public class VideoCamera extends NoSearchActivity
     private static final boolean SWITCH_VIDEO = false;
 
     private static final long SHUTTER_BUTTON_TIMEOUT = 500L; // 500ms
+
+    private static final int[] TIME_LAPSE_VIDEO_QUALITY = {
+            CamcorderProfile.QUALITY_TIME_LAPSE_1080P,
+            CamcorderProfile.QUALITY_TIME_LAPSE_720P,
+            CamcorderProfile.QUALITY_TIME_LAPSE_480P,
+            CamcorderProfile.QUALITY_TIME_LAPSE_CIF,
+            CamcorderProfile.QUALITY_TIME_LAPSE_QCIF};
+
+    private static final int[] VIDEO_QUALITY = {
+            CamcorderProfile.QUALITY_1080P,
+            CamcorderProfile.QUALITY_720P,
+            CamcorderProfile.QUALITY_480P,
+            CamcorderProfile.QUALITY_CIF,
+            CamcorderProfile.QUALITY_QCIF};
 
     /**
      * An unpublished intent flag requesting to start recording straight away
@@ -164,6 +179,11 @@ public class VideoCamera extends NoSearchActivity
     private ContentValues mCurrentVideoValues;
 
     private CamcorderProfile mProfile;
+    // The array of video quality profiles supported by each camera(s). Here the
+    // cameraId is the index of the array to get the profile map which contain
+    // the set of quality string and its real quality of a camera.
+    private HashMap<String, Integer>[] mProfileQuality;
+    private HashMap<String, Integer>[] mTimeLapseProfileQuality;
 
     // The video duration limit. 0 menas no limit.
     private int mMaxVideoDurationInMs;
@@ -659,14 +679,19 @@ public class VideoCamera extends NoSearchActivity
         String quality = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
-        boolean videoQualityHigh = CameraSettings.getVideoQuality(quality);
+        boolean videoQualityHigh =
+                CameraSettings.getVideoQuality(this, quality);
 
         // Set video quality.
         Intent intent = getIntent();
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
             int extraVideoQuality =
                     intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-            videoQualityHigh = (extraVideoQuality > 0);
+            if (extraVideoQuality > 0) {
+                quality = getString(R.string.pref_video_quality_high);
+            } else {  // 0 is mms.
+                quality = getString(R.string.pref_video_quality_mms);
+            }
         }
 
         // Set video duration limit. The limit is read from the preference,
@@ -677,7 +702,7 @@ public class VideoCamera extends NoSearchActivity
             mMaxVideoDurationInMs = 1000 * seconds;
         } else {
             mMaxVideoDurationInMs =
-                    CameraSettings.getVidoeDurationInMillis(quality);
+                    CameraSettings.getVideoDurationInMillis(this, quality);
         }
 
         // Read time lapse recording interval.
@@ -687,24 +712,59 @@ public class VideoCamera extends NoSearchActivity
         mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
 
         mCaptureTimeLapse = (mTimeBetweenTimeLapseFrameCaptureMs != 0);
-        int profileQuality;
-        if (!mCaptureTimeLapse) {
-            if (videoQualityHigh) {
-                profileQuality = CamcorderProfile.QUALITY_HIGH;
-            } else {
-                profileQuality = CamcorderProfile.QUALITY_LOW;
-            }
-        } else {
-            if (videoQualityHigh) {
-                // TODO: change this to time lapse high after the profile is
-                // fixed.
-                profileQuality = CamcorderProfile.QUALITY_TIME_LAPSE_480P;
-            } else {
-                profileQuality = CamcorderProfile.QUALITY_TIME_LAPSE_LOW;
-            }
-        }
+        int profileQuality = getProfileQuality(mCameraId, quality, mCaptureTimeLapse);
         mProfile = CamcorderProfile.get(mCameraId, profileQuality);
         getDesiredPreviewSize();
+    }
+
+    int getProfileQuality(int cameraId, String quality, boolean captureTimeLapse) {
+        HashMap<String, Integer>[] qualityMap;
+        if (captureTimeLapse) {
+            if (mTimeLapseProfileQuality == null) {
+                mTimeLapseProfileQuality = new HashMap[
+                        CameraHolder.instance().getNumberOfCameras()];
+            }
+            qualityMap = mTimeLapseProfileQuality;
+            if (qualityMap[cameraId] == null) {
+                qualityMap[cameraId] = buildProfileQuality(cameraId, TIME_LAPSE_VIDEO_QUALITY);
+            }
+        } else {
+            if (mProfileQuality == null) {
+                mProfileQuality = new HashMap[
+                        CameraHolder.instance().getNumberOfCameras()];
+            }
+            qualityMap = mProfileQuality;
+            if (qualityMap[cameraId] == null) {
+                qualityMap[cameraId] = buildProfileQuality(cameraId, VIDEO_QUALITY);
+            }
+        }
+        return qualityMap[cameraId].get(quality);
+    }
+
+    HashMap<String, Integer> buildProfileQuality(int cameraId,
+            int qualityList[]) {
+        HashMap<String, Integer> qualityMap = new HashMap<String, Integer>();
+        int highestQuality = -1, secondHighestQuality = -1,
+                lastEffectiveQuality = -1;
+        for (int i = 0; i < qualityList.length; i++) {
+            if (CamcorderProfile.hasProfile(cameraId, qualityList[i])) {
+                if (highestQuality == -1) {
+                    highestQuality = qualityList[i];
+                } else if (secondHighestQuality == -1) {
+                    secondHighestQuality = qualityList[i];
+                    break;
+                }
+                lastEffectiveQuality = qualityList[i];
+            }
+        }
+        if (secondHighestQuality == -1) {
+            secondHighestQuality = highestQuality;
+        }
+        qualityMap.put(getString(R.string.pref_video_quality_high), highestQuality);
+        qualityMap.put(getString(R.string.pref_video_quality_low), secondHighestQuality);
+        qualityMap.put(getString(R.string.pref_video_quality_youtube), highestQuality);
+        qualityMap.put(getString(R.string.pref_video_quality_mms), lastEffectiveQuality);
+        return qualityMap;
     }
 
     private void getDesiredPreviewSize() {
