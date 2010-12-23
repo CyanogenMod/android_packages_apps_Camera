@@ -23,16 +23,14 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Kameras attēli"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Kameras video"</string>
     <string name="wait" msgid="8600187532323801552">"Lūdzu, uzgaidiet…"</string>
-    <!-- outdated translation 820691042667338625 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Lūdzu, pirms kameras izmantošanas ievietojiet SD karti."</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Pirms kameras lietošanas, lūdzu, uzstādiet USB atmiņu."</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"Lūdzu, pirms kameras izmantošanas ievietojiet SD karti."</string>
-    <!-- outdated translation 6655334407957844653 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"SD karte ir pilna."</string>
+    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"USB atmiņa ir pilna."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD karte ir pilna."</string>
-    <!-- outdated translation 2914969119574812666 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Notiek SD kartes sagatavošana..."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Notiek USB atm. sagatavošana"</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Notiek SD kartes sagatavošana..."</string>
-    <!-- no translation found for access_sd_fail (7361816489339518850) -->
-    <skip />
-    <!-- no translation found for access_sd_fail (4427585260986849912) -->
-    <skip />
+    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Neizdevās piekļūt USB atmiņai."</string>
+    <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Neizdevās piekļūt SD kartei."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Atjaunot noklusējuma iestatījumus"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Tiks atjaunoti kameras noklusējuma iestatījumi."</string>
     <!-- outdated translation 6015456244323302817 -->     <string name="review_play" msgid="6378271587740884696">"ATSKAŅOT"</string>
@@ -40,36 +38,25 @@
     <!-- outdated translation 5305096180300056529 -->     <string name="review_ok" msgid="4750691949877864726">"Labi"</string>
     <!-- outdated translation 7804864054896088338 -->     <string name="review_retake" msgid="7776579640762112761">"Uzņemt vēlreiz"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerija"</string>
-    <!-- no translation found for switch_camera_id (837545176602471325) -->
-    <skip />
-    <!-- no translation found for enable_time_lapse_mode (9176865387013576340) -->
-    <skip />
-    <!-- no translation found for disable_time_lapse_mode (1025813874111023552) -->
-    <skip />
-    <!-- no translation found for time_lapse_title (4360632427760662691) -->
-    <skip />
-    <!-- no translation found for pref_camera_id_title (6023059405578511534) -->
-    <skip />
-    <!-- no translation found for pref_camera_id_entry_back (5142699735103692485) -->
-    <skip />
-    <!-- no translation found for pref_camera_id_entry_front (5668958706828733669) -->
-    <skip />
+    <string name="switch_camera_id" msgid="837545176602471325">"Pārslēgt kameru"</string>
+    <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Iesp. laika interv."</string>
+    <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Atsp. laika interv."</string>
+    <string name="time_lapse_title" msgid="4360632427760662691">"Ierakstīšana laika intervāla režīmā"</string>
+    <string name="pref_camera_id_title" msgid="6023059405578511534">"Atlasīt kameru"</string>
+    <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Atpakaļ"</string>
+    <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Priekšpuse"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Saglabāt atrašanās vietu"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Izslēgt"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Ieslēgts"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Video kvalitāte"</string>
-    <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Augsta (30 m)"</string>
-    <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Zema (30 m)"</string>
+    <!-- outdated translation 2874184763684055612 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Augsta (30 m)"</string>
+    <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Zema (30 m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"Multiziņa (zema, 30 s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (augsta, 15 min)"</string>
-    <!-- no translation found for pref_video_time_lapse_quality_title (1163053302966946838) -->
-    <skip />
-    <!-- no translation found for pref_video_time_lapse_quality_entry_low (5315843743598116968) -->
-    <skip />
-    <!-- no translation found for pref_video_time_lapse_quality_entry_high (3933491126045555205) -->
-    <skip />
-    <!-- no translation found for pref_video_time_lapse_frame_interval_title (5262531404348504642) -->
-    <skip />
+    <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (augsta, 10 min)"</string>
+    <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Laika interv. video kvalitāte"</string>
+    <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Zema"</string>
+    <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Augsta"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Laika intervāls"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameras iestatījumi"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videokameras iestatījumi"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Attēla izmērs"</string>
@@ -77,8 +64,7 @@
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 megapikseļi"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 megapikseļi"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 megapikselis"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_640x480 (5557572917973022995) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Attēla kvalitāte"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Ļoti augsta"</string>
@@ -122,20 +108,19 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Saulriets"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Stabils fotoattēls"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Salūts"</string>
-    <!-- no translation found for pref_camera_scenemode_entry_party (907053529286788253) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_candlelight (2066183182126946813) -->
+    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Viesības"</string>
+    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Sveču gaisma"</string>
+    <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
     <skip />
     <string name="pref_restore_title" msgid="6479274979730178961">"Kameras iestatījumi"</string>
-    <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"Atjaunot noklusējuma iestatījumus"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"Atjaunot noklusējuma iestatījumus"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Ekspozīcija"</string>
     <string name="details_ok" msgid="6848594369924424312">"Labi"</string>
-    <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"SD kartē drīz vairs nebūs vietas. Mainiet kvalitātes iestatījumu vai dzēsiet vienumus no galerijas."</string>
-    <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SD kartē drīz vairs nebūs vietas. Mainiet kvalitātes iestatījumu vai dzēsiet vienumus no galerijas."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USB atmiņa drīz būs pilna. Mainiet kvalitātes iestatījumu vai dzēsiet dažus attēlus vai citus failus."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SD karte drīz būs pilna. Mainiet kvalitātes iestatījumu vai dzēsiet dažus attēlus vai citus failus."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Lieluma ierobežojums ir sasniegts."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Tālummaiņa"</string>
-    <!-- no translation found for zoom_text (3450360177919418123) -->
-    <skip />
+    <string name="zoom_text" msgid="3450360177919418123">"Tālummaiņa: <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Pārslēgt uz kameras režīmu"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Pārslēgt uz video režīmu"</string>
 </resources>

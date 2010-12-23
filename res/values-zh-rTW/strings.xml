@@ -41,8 +41,7 @@
     <string name="switch_camera_id" msgid="837545176602471325">"切換相機"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"啟用延時攝影"</string>
     <string name="disable_time_lapse_mode" msgid="1025813874111023552">"停用延時攝影"</string>
-    <!-- no translation found for time_lapse_title (4360632427760662691) -->
-    <skip />
+    <string name="time_lapse_title" msgid="4360632427760662691">"延時攝影錄製"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"選取鏡頭"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"後置鏡頭"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"前置鏡頭"</string>
@@ -50,14 +49,14 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"關閉"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"開啟"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"影片品質"</string>
-    <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"高 (30 分鐘)"</string>
-    <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"低 (30 分鐘)"</string>
+    <!-- outdated translation 2874184763684055612 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"高 (30 分鐘)"</string>
+    <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"低 (30 分鐘)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (低，30 秒)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (高，15 分鐘)"</string>
+    <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (高，10 分鐘)"</string>
     <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"延時攝影的影片品質"</string>
     <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"低畫質"</string>
     <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"高畫質"</string>
-    <!-- outdated translation 5023524580863002541 -->     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"影像拍攝間隔"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"延時攝影間隔"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"相機設定"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"攝錄影機設定"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"相片大小"</string>
@@ -111,6 +110,8 @@
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"煙火"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"派對模式"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"燭光模式"</string>
+    <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
+    <skip />
     <string name="pref_restore_title" msgid="6479274979730178961">"相機設定"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"還原預設值"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
@@ -119,8 +120,7 @@
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"您 SD 卡的空間即將不足，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"已達大小上限。"</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"縮放"</string>
-    <!-- no translation found for zoom_text (3450360177919418123) -->
-    <skip />
+    <string name="zoom_text" msgid="3450360177919418123">"變焦 <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"切換為相機"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"切換為影片"</string>
 </resources>

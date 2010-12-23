@@ -50,10 +50,10 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Deactivà"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activà"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualitad dal video"</string>
-    <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Auta (30m)"</string>
-    <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Bassa (30 min)"</string>
+    <!-- outdated translation 2874184763684055612 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Auta (30m)"</string>
+    <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Bassa (30 min)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"\"MMS (bassa, 30s)\""</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"\"YouTube (auta, 15min)\""</string>
+    <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"\"YouTube (auta, 10min)\""</string>
     <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Qualitad da video cun l\'acceleratur"</string>
     <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Bassa"</string>
     <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Auta"</string>
@@ -114,6 +114,8 @@
     <!-- no translation found for pref_camera_scenemode_entry_party (907053529286788253) -->
     <skip />
     <!-- no translation found for pref_camera_scenemode_entry_candlelight (2066183182126946813) -->
+    <skip />
+    <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
     <skip />
     <string name="pref_restore_title" msgid="6479274979730178961">"Parameters da la camera"</string>
     <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar ils parameters predefinids"</string>

@@ -41,8 +41,7 @@
     <string name="switch_camera_id" msgid="837545176602471325">"카메라 전환"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"시간 경과 사용"</string>
     <string name="disable_time_lapse_mode" msgid="1025813874111023552">"시간 경과 사용안함"</string>
-    <!-- no translation found for time_lapse_title (4360632427760662691) -->
-    <skip />
+    <string name="time_lapse_title" msgid="4360632427760662691">"시간 경과 기록"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"카메라 선택"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"후방"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"전방"</string>
@@ -50,14 +49,14 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"사용 안함"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"사용"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"동영상 화질"</string>
-    <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"높음(30분)"</string>
-    <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"낮음(30분)"</string>
+    <!-- outdated translation 2874184763684055612 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"높음(30분)"</string>
+    <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"낮음(30분)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"멀티미디어 메시지(낮음, 30초)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube(높음, 15분)"</string>
+    <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube(높음, 10분)"</string>
     <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"시간 경과 동영상 화질"</string>
     <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"낮음"</string>
     <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"높음"</string>
-    <!-- outdated translation 5023524580863002541 -->     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"프레임 캡처 간격"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"시간 경과 간격"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"카메라 설정"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"캠코더 설정"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"사진 크기"</string>
@@ -111,6 +110,8 @@
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"불꽃놀이"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"파티"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"촛불"</string>
+    <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
+    <skip />
     <string name="pref_restore_title" msgid="6479274979730178961">"카메라 설정"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"기본값 복원"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"노출"</string>
@@ -119,8 +120,7 @@
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SD 카드의 공간이 부족합니다. 화질 설정을 변경하거나 일부 이미지 또는 기타 파일을 삭제하세요."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"크기 한도에 도달했습니다."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"확대/축소"</string>
-    <!-- no translation found for zoom_text (3450360177919418123) -->
-    <skip />
+    <string name="zoom_text" msgid="3450360177919418123">"<xliff:g id="ZOOM_TEXT">%s</xliff:g> 확대/축소"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"카메라로 전환"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"동영상으로 전환"</string>
 </resources>
