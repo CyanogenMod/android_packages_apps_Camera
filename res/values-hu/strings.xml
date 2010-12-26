@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- General strings -->
+
+    <!-- title for the dialog showing the error of camera hardware -->
+    <string name="camera_error_title">Fényképezőgép hiba</string>
+
+    <!-- message for the dialog showing the error of camera hardware -->
+    <string name="cannot_connect_camera">Nem lehet csatlakoztatni a kamerát!</string>
+
+    <!-- label for the icon meaning 'show me all the images that were taken with the camera' -->
+    <string name="camera_label">Fényképezőgép</string>
+
+    <!-- label for the 'video recording application shown in the top level 'all applications' -->
+    <string name="video_camera_label">Videókamera</string>
+
+    <!-- label for the folder that contains Camera pictures in the gallery -->
+    <string name="gallery_camera_bucket_name">Saját fotók</string>
+
+    <!-- label for the folder that contains Camera videos in the gallery -->
+    <string name="gallery_camera_videos_bucket_name">Saját videók</string>
+
+    <!-- alert to the user to wait for some operation to complete -->
+    <string name="wait">Kérem, várjon\u2026</string>
+
+    <!-- alert to the user to that an SD card must be installed before using the camera -->
+    <string name="no_storage">Kérjük, helyezze be az SD-kártyát, mielőtt használná a kamerát.</string>
+
+    <!-- alert to the user to that the SD card is too full to complete the operation -->
+    <string name="not_enough_space">Az SD-kártya megtelt.</string>
+
+    <!-- alert to the user to that the SD card is being disk-checked -->
+    <string name="preparing_sd">SD kártya előkészítése\u2026</string>
+
+    <!-- Settings stuff -->
+
+    <!-- Menu items: -->
+    <!-- menu pick to go to the settings screen -->
+
+    <!-- menu pick to view the details of the currently selected image -->
+
+    <!-- menu pick to show the location of the currently selected image on maps-->
+
+    <!-- menu pick to rotate the currently selected image (brings up submenu) -->
+
+    <!-- menu pick to rotate the currently selected image to the left -->
+
+    <!-- menu pick to rotate the currently selected image to the right -->
+
+    <!-- Confirmation dialog title after deleting a picture -->
+    <!-- Confirmation dialog message after deleting a picture -->
+    <!-- Confirmation dialog message after deleting a video -->
+
+    <!-- Confirmation dialog when restoring settings -->
+    <string name="confirm_restore_title">Alapértelmezett értékek visszaállítása</string>
+    <string name="confirm_restore_message">Kamera bállítások visszaállítása az alapértelmezettekre.</string>
+
+    <!-- button in review mode indicating that the video just taken should be played -->
+    <string name="review_play">Lejátszás</string>
+
+    <!-- button in review mode indicating that the video recording session should be canceled -->
+    <string name="review_cancel">Mégse</string>
+
+    <!-- button in review mode indicating that the taken video is OK to be attached/uploaded -->
+    <string name="review_ok">OK</string>
+
+    <!-- button in review mode indicate the user want to retake another picture for attachment -->
+    <string name="review_retake">Újra</string>
+
+    <!-- button indicating that the picture just taken should be deleted -->
+
+    <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
+
+    <!-- button indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
+
+    <!-- button indicating that the picture just taken should be cropped -->
+
+    <!-- Toast after trying to share a picture indicating that there are no applications which are capable of so doing. -->
+
+    <!-- Toast after trying to share a video indicating that there are no applications which are capable of so doing. -->
+
+    <!-- Menu item for playing the video. -->
+
+    <!-- Button indicating to go to the image gallery -->
+    <string name="camera_gallery_photos_text">Galéria</string>
+
+    <!-- Settings screen, setting title text -->
+    <string name="pref_camera_recordlocation_title">Mentés helye</string>
+
+    <!-- Settings screen, Record location dialog choices -->
+    <string name="pref_camera_recordlocation_entry_off">Kikapcsolva</string>
+    <string name="pref_camera_recordlocation_entry_on">Bekapcsolva</string>
+
+
+    <!-- The Video length settings in preference -->
+    <string name="pref_video_quality_title">Videó minősége</string>
+    <string name="pref_video_quality_entry_high">Magas (30 m)</string>
+    <string name="pref_video_quality_entry_low">Alacsony (30 m)</string>
+    <string name="pref_video_quality_entry_mms">MMS (alacsony, 30)</string>
+    <string name="pref_video_quality_entry_youtube">YouTube (magas, 15m)</string>
+    <string name="pref_video_quality_entry_custom">Egyéni</string>
+    <!-- Default video quality setting. A numerical value. -->
+
+    <!-- Settings screen, Video quality title -->
+    <string name="pref_camera_videosize_title">Videó minősége</string>
+
+    <!-- Settings screen, Video quality dialog radio button choices -->
+    <string name="pref_camera_videosize_entry_0">720P</string>
+    <string name="pref_camera_videosize_entry_1">D1</string>
+    <string name="pref_camera_videosize_entry_2">WVGA</string>
+    <string name="pref_camera_videosize_entry_3">VGA</string>
+    <string name="pref_camera_videosize_entry_4">HVGA</string>
+    <string name="pref_camera_videosize_entry_5">CIF</string>
+    <string name="pref_camera_videosize_entry_6">QVGA</string>
+    <string name="pref_camera_videosize_entry_7">QCIF</string>
+
+
+
+    <!-- Settings screen, Video encoder title -->
+    <string name="pref_camera_videoencoder_title">Videótömörítő</string>
+
+    <!-- Settings screen, Video encoder dialog radio button choices -->
+    <string name="pref_camera_videoencoder_entry_0">MPEG4</string>
+    <string name="pref_camera_videoencoder_entry_1">H263</string>
+    <string name="pref_camera_videoencoder_entry_2">H264</string>
+
+    <!-- Settings screen, Video encoder dialog title -->
+    <string name="pref_camera_videoencoder_dialogtitle">Videótömörítő</string>
+
+    <!-- Settings screen, Audio encoder title -->
+    <string name="pref_camera_audioencoder_title">Hangtömörítő</string>
+
+    <!-- Settings screen, Audio encoder dialog radio button choices -->
+    <string name="pref_camera_audioencoder_entry_0">AMRNB</string>
+    <string name="pref_camera_audioencoder_entry_1">QCELP</string>
+    <string name="pref_camera_audioencoder_entry_2">EVRC</string>
+    <string name="pref_camera_audioencoder_entry_3">AAC</string>
+
+
+    <!-- Settings screen, Video duration title -->
+    <string name="pref_camera_video_duration_title">Videó időtartama</string>
+
+    <!-- Settings screen, Video duration dialog radio button choices -->
+    <string name="pref_camera_video_duration_entry_mms">30 másodperc(MMS)</string>
+    <string name="pref_camera_video_duration_entry_10">10 perc</string>
+    <string name="pref_camera_video_duration_entry_30">30 perc</string>
+
+    <!-- Settings screen, Camera setting category title -->
+    <string name="pref_camera_settings_category">Fényképező beállítások</string>
+
+    <!-- Settings screen, Camcorder setting category title -->
+    <string name="pref_camcorder_settings_category">Videókamera beállítások</string>
+
+    <!-- Settings screen, Picture size title -->
+    <string name="pref_camera_picturesize_title">Képméret</string>
+
+    <!-- Settings screen, Picture size dialog radio button choices -->
+    <string name="pref_camera_picturesize_entry_3264x2448">8 megapixel</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6 megapixel (széles)</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4 megapixel (széles)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2,5 megapixel (széles)</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
+    <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
+    <string name="pref_camera_picturesize_entry_1024x768">XGA</string>
+    <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
+    <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
+    <string name="pref_camera_picturesize_entry_640x480">VGA</string>
+    <string name="pref_camera_picturesize_entry_352x288">CIF</string>
+    <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
+    <string name="pref_camera_picturesize_entry_176x144">QCIF</string>
+
+    <!-- Settings screen, Picture quality title -->
+    <string name="pref_camera_jpegquality_title">Képminőség</string>
+
+    <!-- Settings screen, Picture quality dialog radio button choices -->
+    <string name="pref_camera_jpegquality_entry_superfine">Szuper finom</string>
+    <string name="pref_camera_jpegquality_entry_fine">Finom</string>
+    <string name="pref_camera_jpegquality_entry_normal">Normál</string>
+
+    <!-- Settings screen, Focus mode title -->
+    <string name="pref_camera_focusmode_title">Fókusz mód</string>
+
+    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <string name="pref_camera_focusmode_entry_auto">Folyamatos</string>
+    <string name="pref_camera_focusmode_entry_normal">Normál</string>
+    <string name="pref_camera_focusmode_entry_macro">Makró</string>
+    <string name="pref_camera_focusmode_entry_infinity">Végtelen</string>
+    <string name="pref_camera_focusmode_entry_touch">Érintés</string>
+    <string name="pref_camera_focusmode_entry_classic">Auto</string>
+
+    <!-- Toast shown when touch-to-focus is enabled -->
+    <string name="touch_focus_enabled">Fókuszáláshoz érintse meg a kijelzőt.</string>
+
+    <!-- Settings screen, Flash mode title -->
+    <string name="pref_camera_flashmode_title">Vaku mód</string>
+
+    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <string name="pref_camera_flashmode_entry_auto">Auto</string>
+    <string name="pref_camera_flashmode_entry_on">Be</string>
+    <string name="pref_camera_flashmode_entry_off">Ki</string>
+
+    <!-- Settings screen, white balance title -->
+    <string name="pref_camera_whitebalance_title">Fehéregyensúly</string>
+
+    <!-- Settings screen, White balance dialog radio button choices -->
+    <string name="pref_camera_whitebalance_entry_auto">Automatikus</string>
+    <string name="pref_camera_whitebalance_entry_incandescent">Izzólámpa</string>
+    <string name="pref_camera_whitebalance_entry_daylight">Napfény</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent">Fluoreszkáló</string>
+    <string name="pref_camera_whitebalance_entry_cloudy">Felhős</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Színeffektus</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">Egyik sem</string>
+    <string name="pref_camera_coloreffect_entry_mono">Monó</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Szépia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negatív</string>
+    <!-- Color effect that overexposes and reverses some of the tones. -->
+    <string name="pref_camera_coloreffect_entry_solarize">Nap-effektus</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Poszter</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Vizes-hatású</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pasztell</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mozaik</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Piros színárnyalat</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Kék színárnyalat</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Zöld színárnyalat</string>
+
+    <!-- Settings screen, Select sharpness title -->
+    <string name="pref_camera_sharpness_title">Élesség</string>
+
+    <!-- Settings screen, Select contrast title -->
+    <string name="pref_camera_contrast_title">Kontraszt</string>
+
+    <!-- Settings screen, Select saturation title -->
+    <string name="pref_camera_saturation_title">Telítettség</string>
+
+    <!-- Settings screen, Select brightness title -->
+    <string name="pref_camera_brightness_title">Fényerősség</string>
+
+    <!-- Settings screen, Select Scene mode -->
+    <string name="pref_camera_scenemode_title">Jelenet üzemmód</string>
+
+    <!-- Settings menu, scene mode choices -->
+    <string name="pref_camera_scenemode_entry_auto">Automatikus</string>
+    <!-- Scene mode that takes an image quickly with little motion blur. -->
+    <string name="pref_camera_scenemode_entry_action">Akció</string>
+    <!-- Scene mode that takes an image with as little noise as possible so details of the subject are maintained. -->
+    <string name="pref_camera_scenemode_entry_portrait">Álló</string>
+    <!-- Scene mode that takes an image of a landscape assuming all subjects are relatively far from the phone. -->
+    <string name="pref_camera_scenemode_entry_landscape">Fekvő</string>
+    <!-- Scene mode that takes long exposures to capture night scenes without flash. -->
+    <string name="pref_camera_scenemode_entry_night">Éjszakai</string>
+    <!-- Scene mode that takes night shots with long exposure and flash to illuminate the subject while still capturing darker detail in the background. -->
+    <string name="pref_camera_scenemode_entry_night_portrait">Éjszakai portré</string>
+    <!-- Scene mode to be used in a stage show. -->
+    <string name="pref_camera_scenemode_entry_theatre">Színház</string>
+    <!-- Scene mode optimized for taking images on the beach. -->
+    <string name="pref_camera_scenemode_entry_beach">Tengerparti</string>
+    <!-- Scene mode optimized for taking images in the snow. -->
+    <string name="pref_camera_scenemode_entry_snow">Havas</string>
+    <!-- Scene mode optimized for taking images in the sunset. -->
+    <string name="pref_camera_scenemode_entry_sunset">Napnyugta</string>
+    <!-- Scene mode for taking a photo as sharp as possible. -->
+    <string name="pref_camera_scenemode_entry_steadyphoto">Álló kép</string>
+    <!-- Scene mode optimized for taking images of fireworks. -->
+    <string name="pref_camera_scenemode_entry_fireworks">Tűzijáték</string>
+
+    <!-- Settings menu, enable quick capture mode or not -->
+    <string name="pref_camera_quickcapture_title">Gyors rögzítés</string>
+    <string name="pref_camera_quickcapture_entry_on">Bekapcsolva</string>
+    <string name="pref_camera_quickcapture_entry_off">Ki</string>
+
+    <!-- Restore settings item in preference -->
+    <string name="pref_restore_title">Kamera beállítások</string>
+    <string name="pref_restore_detail">Alapértelmezettek visszaállítása</string>
+
+    <!-- Exposure settings in preference -->
+    <string name="pref_exposure_title">Expozíció</string>
+
+    <!-- Framing grid settings in preference -->
+
+    <!-- Message to show when there's no lat/lng information in the image -->
+    <!-- Title of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+    <!-- Label in message of Details dialog  -->
+
+    <!-- Used to format image dimensions in Details dialog. e.g. 64 x 64 -->
+    <!-- Used to format short video duration in Details dialog. minutes:seconds e.g. 00:30 -->
+    <!-- Used to format video duration in Details dialog. hours:minutes:seconds e.g. 0:21:30 -->
+    <!-- Unit of measure in the Details dialog frames per second. e.g. 20 fps -->
+    <!-- Unit of measure in the Details dialog K bits per second. e.g. 192 Kbps -->
+    <!-- Unit of measure in the Details dialog M bits per second. e.g. 2.3 Mbps -->
+    <!-- Details dialog "OK" button. Dismisses dialog. -->
+    <string name="details_ok">OK</string>
+
+    <!-- Displayed in the title of the dialog for things to do with a picture that
+         is to be sent to another application: -->
+
+    <!-- Displayed in the title of the dialog for things to do with a picture that
+         is to be "set as" (e.g. set as contact photo or set as wallpaper) -->
+
+    <!-- Displayed in the title of the dialog for things to do with a video that
+         is to be sent to another application. -->
+
+    <!-- Low-memory dialog message -->
+    <string name="spaceIsLow_content">Az SD kártya hamarosan betelik! Változtassa a kép minőségét vagy törölje a nem kívánt elemeket a Galériából!</string>
+
+    <!-- The messsage shown when video record reaches size limit. -->
+    <string name="video_reach_size_limit">Mérethatár elérve.</string>
+
+    <!-- The title show on the zoom controller -->
+    <string name="zoom_control_title">Nagyítás</string>
+
+    <string name="switch_to_camera_lable">Váltás a fényképezőre</string>
+    <string name="switch_to_video_lable">Váltás a videókamerára</string>
+
+    <string name="switch_to_main_label">Váltás a hátsó kamerára</string>
+    <string name="switch_to_secondary_label">Váltás az elülső kamerára</string>
+
+     <!-- Settings screen, Select Iso title -->
+     <string name="pref_camera_iso_title">ISO kiválasztása</string>
+
+     <!-- Settings screen, ISO dialog radio button choices -->
+     <string name="pref_camera_iso_entry_auto">Auto</string>
+     <string name="pref_camera_iso_entry_isodeblur">Élesítés</string>
+     <string name="pref_camera_iso_entry_iso100">ISO100</string>
+     <string name="pref_camera_iso_entry_iso200">ISO200</string>
+     <string name="pref_camera_iso_entry_iso400">ISO400</string>
+     <string name="pref_camera_iso_entry_iso800">ISO800</string>
+     <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
+	
+     <!-- Settings screen, Select lens shading title -->
+     <string name="pref_camera_lensshading_title">Lens Shading</string>
+
+     <!-- Settings screen, lens shading radio button choices -->
+     <string name="pref_camera_lensshading_entry_enable">Bekapcsolás</string>
+     <string name="pref_camera_lensshading_entry_disable">Kikapcsolás</string>
+
+     <!-- Settings screen, Anti Banding title -->
+     <string name="pref_camera_antibanding_title">Anti Banding</string>
+
+     <!-- Default Anti Banding setting. -->
+     <string name="pref_camera_antibanding_default">Ki</string>
+
+     <!-- Settings screen, Anti Banding entries -->
+     <string name="pref_camera_antibanding_entry_0">Ki</string>
+     <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+     <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+     <string name="pref_camera_antibanding_entry_3">Auto</string>
+
+     <!-- Settings screen, Select auto exposure title -->
+     <string name="pref_camera_autoexposure_title">Fénymérési mód</string>
+
+     <!-- Settings screen, auto exposure dialog radio button choices -->
+     <string name="pref_camera_autoexposure_entry_frameaverage">Átlag képszám</string>
+     <string name="pref_camera_autoexposure_entry_centerweighted">Középre súlyozott</string>
+     <string name="pref_camera_autoexposure_entry_spotmetering">Fénymérés</string>
+
+     <!-- Stable shot setting title -->
+     <string name="pref_camera_stableshot_title">Időzített fotózás</string>
+
+     <!-- Stable shot settings entries -->
+     <string name="pref_camera_stableshot_entry_0">Ki</string>
+     <string name="pref_camera_stableshot_entry_1">1/2 másodperc</string>
+     <string name="pref_camera_stableshot_entry_2">1 másodperc</string>
+     <string name="pref_camera_stableshot_entry_3">2 másodperc</string>
+
+</resources>
