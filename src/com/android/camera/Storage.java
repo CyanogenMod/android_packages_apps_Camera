@@ -24,7 +24,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Location;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StatFs;
@@ -173,23 +172,7 @@ class Storage {
         }
 
         // Get the orientation.
-        int orientation = 0;
-        try {
-            ExifInterface exif = new ExifInterface(path);
-            switch (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1)) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    orientation = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    orientation = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    orientation = 270;
-                    break;
-            }
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to read exif", e);
-        }
+        int orientation = Exif.getOrientation(jpeg);
 
         // Insert a row through ContentResolver.
         ContentValues values = new ContentValues(9);

@@ -1229,22 +1229,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private Bitmap createCaptureBitmap(byte[] data) {
-        // This is really stupid...we just want to read the orientation in
-        // the jpeg header.
-        String filepath = ImageManager.getTempJpegPath();
-        int degree = 0;
-        if (saveDataToFile(filepath, data)) {
-            degree = ImageManager.getExifOrientation(filepath);
-            new File(filepath).delete();
-        }
-
-        // Limit to 50k pixels so we can return it in the intent.
-        Bitmap bitmap = Util.makeBitmap(data, 50 * 1024);
-        bitmap = Util.rotate(bitmap, degree);
-        return bitmap;
-    }
-
     private void doAttach() {
         if (mPausing) {
             return;
@@ -1272,7 +1256,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     Util.closeSilently(outputStream);
                 }
             } else {
-                Bitmap bitmap = createCaptureBitmap(data);
+                int orientation = Exif.getOrientation(data);
+                Bitmap bitmap = Util.makeBitmap(data, 50 * 1024);
+                bitmap = Util.rotate(bitmap, orientation);
                 setResult(RESULT_OK,
                         new Intent("inline-data").putExtra("data", bitmap));
                 finish();
