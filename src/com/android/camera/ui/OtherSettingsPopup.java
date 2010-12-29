@@ -133,9 +133,9 @@ public class OtherSettingsPopup extends AbstractSettingPopup
                 R.layout.in_line_setting_picker,
                 new String[] {ITEM_TITLE, ITEM_VALUE, ITEM_RESTORE},
                 new int[] {R.id.title, R.id.current_setting, R.id.restore});
-        ((ListView) mContentPanel).setAdapter(mListItemAdapter);
-        ((ListView) mContentPanel).setOnItemClickListener(this);
-        ((ListView) mContentPanel).setSelector(android.R.color.transparent);
+        ((ListView) mSettingList).setAdapter(mListItemAdapter);
+        ((ListView) mSettingList).setOnItemClickListener(this);
+        ((ListView) mSettingList).setSelector(android.R.color.transparent);
     }
 
     public void onSettingChanged() {
@@ -146,11 +146,11 @@ public class OtherSettingsPopup extends AbstractSettingPopup
 
     // Scene mode can override other camera settings (ex: flash mode).
     public void overrideSettings(String key, String value) {
-        int count = mContentPanel.getChildCount();
+        int count = mSettingList.getChildCount();
         for (int i = 0; i < count; i++) {
             if (key.equals(mListItem.get(i).get(ITEM_KEY))) {
                 InLineSettingPicker picker =
-                        (InLineSettingPicker) mContentPanel.getChildAt(i);
+                        (InLineSettingPicker) mSettingList.getChildAt(i);
                 picker.overrideSettings(value);
             }
         }

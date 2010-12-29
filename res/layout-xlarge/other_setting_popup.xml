@@ -40,7 +40,7 @@
     <FrameLayout android:layout_width="570dp"
             android:layout_height="wrap_content"
             android:background="@drawable/dialog_bottom_holo_dark">
-        <ListView android:id="@+id/contentPanel"
+        <ListView android:id="@+id/settingList"
                 android:orientation="vertical"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
