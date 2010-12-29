@@ -97,6 +97,9 @@ public class VideoCamera extends NoSearchActivity
 
     private static final String TAG = "videocamera";
 
+    private static final String LAST_THUMB_PATH =
+            Storage.THUMBNAILS + "/video_last_thumb";
+
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
     private static final int ENABLE_SHUTTER_BUTTON = 6;
@@ -929,7 +932,7 @@ public class VideoCamera extends NoSearchActivity
         resetScreenOn();
 
         if (!mIsVideoCaptureIntent && mThumbnailButton != null) {
-            mThumbnailButton.storeData(ImageManager.getLastVideoThumbPath());
+            mThumbnailButton.storeData(LAST_THUMB_PATH);
         }
 
         if (mStorageHint != null) {
@@ -1571,7 +1574,7 @@ public class VideoCamera extends NoSearchActivity
         mThumbnailButton = (RotateImageView)findViewById(R.id.review_thumbnail);
         if (mThumbnailButton != null) {
             mThumbnailButton.setOnClickListener(this);
-            mThumbnailButton.loadData(ImageManager.getLastVideoThumbPath());
+            mThumbnailButton.loadData(LAST_THUMB_PATH);
         }
     }
 

@@ -97,6 +97,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private static final String TAG = "camera";
 
+    private static final String LAST_THUMB_PATH =
+            Storage.THUMBNAILS + "/image_last_thumb";
+
     private static final int CROP_MSG = 1;
     private static final int FIRST_TIME_INIT = 2;
     private static final int RESTART_PREVIEW = 3;
@@ -383,7 +386,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 (RotateImageView) findViewById(R.id.review_thumbnail);
         if (mThumbnailButton != null) {
             mThumbnailButton.setOnClickListener(this);
-            mThumbnailButton.loadData(ImageManager.getLastImageThumbPath());
+            mThumbnailButton.loadData(LAST_THUMB_PATH);
             updateThumbnailButton();
         }
     }
@@ -1444,8 +1447,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mOrientationListener.disable();
             if (!mIsImageCaptureIntent) {
                 if (mThumbnailButton != null) {
-                    mThumbnailButton.storeData(
-                            ImageManager.getLastImageThumbPath());
+                    mThumbnailButton.storeData(LAST_THUMB_PATH);
                 }
             }
             hidePostCaptureAlert();

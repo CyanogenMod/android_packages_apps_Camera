@@ -44,6 +44,8 @@ class Storage {
 
     public static final String DIRECTORY = DCIM + "/Camera";
 
+    public static final String THUMBNAILS = DCIM + "/.thumbnails";
+
     // Match the code in MediaProvider.computeBucketValues().
     public static final String BUCKET_ID =
             String.valueOf(DIRECTORY.toLowerCase().hashCode());
@@ -174,7 +176,7 @@ class Storage {
         // Get the orientation.
         int orientation = Exif.getOrientation(jpeg);
 
-        // Insert a row through ContentResolver.
+        // Insert into MediaStore.
         ContentValues values = new ContentValues(9);
         values.put(ImageColumns.TITLE, title);
         values.put(ImageColumns.DISPLAY_NAME, title + ".jpg");
@@ -190,11 +192,19 @@ class Storage {
         }
 
         Uri uri = resolver.insert(Images.Media.EXTERNAL_CONTENT_URI, values);
+        if (uri == null) {
+            Log.e(TAG, "Failed to write MediaStore");
+            return null;
+        }
 
         // Create the thumbnail.
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 16;
         Bitmap bitmap = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length, options);
+        if (bitmap == null) {
+            Log.e(TAG, "Failed to create thumbnail");
+            return null;
+        }
         return new Thumbnail(uri, bitmap, orientation);
     }
 

@@ -49,6 +49,9 @@ public class MenuHelper {
     public static final int INCLUDE_DETAILS_MENU  = (1 << 6);
     public static final int INCLUDE_SHOWMAP_MENU  = (1 << 7);
 
+    public static final int INCLUDE_IMAGES = (1 << 0);
+    public static final int INCLUDE_VIDEOS = (1 << 2);
+
     public static final int MENU_IMAGE_SHARE = 1;
     public static final int MENU_IMAGE_SHOWMAP = 2;
 
@@ -140,13 +143,11 @@ public class MenuHelper {
     }
 
     public static void gotoCameraImageGallery(Activity activity) {
-        gotoGallery(activity, R.string.gallery_camera_bucket_name,
-                ImageManager.INCLUDE_IMAGES);
+        gotoGallery(activity, R.string.gallery_camera_bucket_name, INCLUDE_IMAGES);
     }
 
     public static void gotoCameraVideoGallery(Activity activity) {
-        gotoGallery(activity, R.string.gallery_camera_videos_bucket_name,
-                ImageManager.INCLUDE_VIDEOS);
+        gotoGallery(activity, R.string.gallery_camera_videos_bucket_name, INCLUDE_VIDEOS);
     }
 
     private static void gotoGallery(Activity activity, int windowTitleId,
