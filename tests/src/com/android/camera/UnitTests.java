@@ -28,8 +28,7 @@ public class UnitTests extends TestSuite {
 
     public static Test suite() {
         return new UnitTestSuiteBuilder(UnitTests.class)
-                .includePackages("com.android.camera.unittest",
-                                 "com.android.camera.gallery")
+                .includePackages("com.android.camera.unittest")
                 .named("Camera Unit Tests")
                 .build();
     }
