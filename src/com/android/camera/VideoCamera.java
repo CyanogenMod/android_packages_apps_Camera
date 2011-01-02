@@ -409,7 +409,7 @@ public class VideoCamera extends NoSearchActivity
 
     private void initializeHeadUpDisplay() {
         CameraSettings settings = new CameraSettings(this, mParameters,
-                CameraHolder.instance().getCameraInfo());
+                CameraHolder.instance().getCameraInfo(), mCameraId);
 
         PreferenceGroup group =
                 settings.getPreferenceGroup(R.xml.video_preferences);
@@ -593,16 +593,25 @@ public class VideoCamera extends NoSearchActivity
     private void readVideoPreferences() {
         String quality = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_QUALITY,
-                CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
+                CameraSettings.getDefaultVideoQuality(mCameraId));
 
-        boolean videoQualityHigh = CameraSettings.getVideoQuality(quality);
+        int videoQuality = CameraSettings.getVideoQuality(quality);
 
         // Set video quality.
         Intent intent = getIntent();
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
-            int extraVideoQuality =
+            videoQuality =
                     intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-            videoQualityHigh = (extraVideoQuality > 0);
+            if (videoQuality < CamcorderProfile.QUALITY_LOW ||
+                    videoQuality > CamcorderProfile.QUALITY_HD) {
+                videoQuality = CamcorderProfile.QUALITY_HIGH;
+            }
+        }
+
+        // Double-check to make sure this camera is HD-capable
+        if (videoQuality == CamcorderProfile.QUALITY_HD &&
+                !CameraSettings.isHDCapable(mCameraId)) {
+            videoQuality = CamcorderProfile.QUALITY_HIGH;
         }
 
         // Set video duration limit. The limit is read from the preference,
@@ -615,10 +624,7 @@ public class VideoCamera extends NoSearchActivity
             mMaxVideoDurationInMs =
                     CameraSettings.getVidoeDurationInMillis(quality);
         }
-        mProfile = CamcorderProfile.get(mCameraId,
-                videoQualityHigh
-                ? CamcorderProfile.QUALITY_HIGH
-                : CamcorderProfile.QUALITY_LOW);
+        mProfile = CamcorderProfile.get(mCameraId, videoQuality);
     }
 
     private void resizeForPreviewAspectRatio() {

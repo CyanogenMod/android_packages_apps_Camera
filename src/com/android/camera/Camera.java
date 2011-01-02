@@ -992,7 +992,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void initializeHeadUpDisplay() {
         CameraSettings settings = new CameraSettings(this, mInitialParams,
-                CameraHolder.instance().getCameraInfo());
+                CameraHolder.instance().getCameraInfo(), mCameraId);
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences),
                 getZoomRatios(), mOrientationCompensation);

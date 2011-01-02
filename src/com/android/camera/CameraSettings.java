@@ -50,8 +50,10 @@ public class CameraSettings {
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
     public static final String KEY_CAMERA_ID = "pref_camera_id_key";
 
+    private static final String VIDEO_QUALITY_HD = "hd";
     private static final String VIDEO_QUALITY_HIGH = "high";
     private static final String VIDEO_QUALITY_MMS = "mms";
+    private static final String VIDEO_QUALITY_YOUTUBE_HD = "youtubehd";
     private static final String VIDEO_QUALITY_YOUTUBE = "youtube";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
@@ -64,8 +66,6 @@ public class CameraSettings {
     private static final int YOUTUBE_VIDEO_DURATION = 10 * 60; // 10 mins
     private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 10 mins
 
-    public static final String DEFAULT_VIDEO_QUALITY_VALUE = "high";
-
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
 
@@ -74,12 +74,14 @@ public class CameraSettings {
     private final Context mContext;
     private final Parameters mParameters;
     private final CameraInfo[] mCameraInfo;
+    private final int mCameraId;
 
     public CameraSettings(Activity activity, Parameters parameters,
-                          CameraInfo[] cameraInfo) {
+                          CameraInfo[] cameraInfo, int cameraId) {
         mContext = activity;
         mParameters = parameters;
         mCameraInfo = cameraInfo;
+        mCameraId = cameraId;
     }
 
     public PreferenceGroup getPreferenceGroup(int preferenceRes) {
@@ -158,6 +160,16 @@ public class CameraSettings {
                             "30", Integer.toString(MMS_VIDEO_DURATION));
                     break;
                 }
+            }
+            if (!isHDCapable(mCameraId)) {
+                List<String> supported = new ArrayList<String>();
+                for (CharSequence value : values) {
+                    if (!VIDEO_QUALITY_HD.equals(value) &&
+                            !VIDEO_QUALITY_YOUTUBE_HD.equals(value)) {
+                        supported.add(value.toString());
+                    }
+                }
+                filterUnsupportedOptions(group, videoQuality, supported);
             }
         }
 
@@ -362,15 +374,37 @@ public class CameraSettings {
         upgradeLocalPreferences(pref.getLocal());
     }
 
-    public static boolean getVideoQuality(String quality) {
-        return VIDEO_QUALITY_YOUTUBE.equals(
-                quality) || VIDEO_QUALITY_HIGH.equals(quality);
+    public static final String getDefaultVideoQuality(int cameraId) {
+        return isHDCapable(cameraId) ? VIDEO_QUALITY_HD : VIDEO_QUALITY_HIGH;
+    }
+
+    public static final boolean isHDCapable(int cameraId) {
+        boolean ret = false;
+        try {
+            ret = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_HD) != null;
+        } catch (Exception e) {
+            // Native code throws exception if not found
+        }
+        return ret;
+    }
+
+    public static int getVideoQuality(String quality) {
+        final int q;
+        if (VIDEO_QUALITY_YOUTUBE_HD.equals(quality) || VIDEO_QUALITY_HD.equals(quality)) {
+            q = CamcorderProfile.QUALITY_HD;
+        } else if (VIDEO_QUALITY_YOUTUBE.equals(quality) || VIDEO_QUALITY_HIGH.equals(quality)) {
+            q = CamcorderProfile.QUALITY_HIGH;
+        } else {
+            q = CamcorderProfile.QUALITY_LOW;
+        }
+        return q;
     }
 
     public static int getVidoeDurationInMillis(String quality) {
         if (VIDEO_QUALITY_MMS.equals(quality)) {
             return MMS_VIDEO_DURATION * 1000;
-        } else if (VIDEO_QUALITY_YOUTUBE.equals(quality)) {
+        } else if (VIDEO_QUALITY_YOUTUBE.equals(quality) ||
+                VIDEO_QUALITY_YOUTUBE_HD.equals(quality)) {
             return YOUTUBE_VIDEO_DURATION * 1000;
         }
         return DEFAULT_VIDEO_DURATION * 1000;

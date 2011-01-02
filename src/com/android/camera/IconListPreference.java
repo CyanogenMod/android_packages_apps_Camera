@@ -79,13 +79,16 @@ public class IconListPreference extends ListPreference {
 
         for (int i = 0, len = entryValues.length; i < len; i++) {
             if (supported.indexOf(entryValues[i].toString()) >= 0) {
-                iconIds.add(mIconIds[i]);
-                largeIconIds.add(mLargeIconIds[i]);
+                if (mIconIds != null && mIconIds.length > i) {
+                    iconIds.add(mIconIds[i]);
+                }
+                if (mLargeIconIds != null && mLargeIconIds.length > i) {
+                    largeIconIds.add(mLargeIconIds[i]);
+                }
             }
         }
-        int size = iconIds.size();
-        mIconIds = iconIds.toArray(new int[size]);
-        mLargeIconIds = iconIds.toArray(new int[size]);
+        mIconIds = iconIds.toArray(new int[iconIds.size()]);
+        mLargeIconIds = largeIconIds.toArray(new int[largeIconIds.size()]);
         super.filterUnsupported(supported);
     }
 }
