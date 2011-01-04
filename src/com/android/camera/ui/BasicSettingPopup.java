@@ -73,9 +73,9 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
                 R.layout.setting_item,
                 new String[] {"text", "image"},
                 new int[] {R.id.text, R.id.image});
-        ((ListView) mContentPanel).setAdapter(listItemAdapter);
-        ((ListView) mContentPanel).setOnItemClickListener(this);
-        ((ListView) mContentPanel).setSelector(android.R.color.transparent);
+        ((ListView) mSettingList).setAdapter(listItemAdapter);
+        ((ListView) mSettingList).setOnItemClickListener(this);
+        ((ListView) mSettingList).setSelector(android.R.color.transparent);
     }
 
     public void setSettingChangedListener(Listener listener) {
@@ -86,7 +86,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
     public void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         int index = mPreference.findIndexOfValue(mPreference.getValue());
-        View selected = ((ListView) mContentPanel).getChildAt(index);
+        View selected = ((ListView) mSettingList).getChildAt(index);
         if (selected != null) selected.setActivated(true);
     }
 

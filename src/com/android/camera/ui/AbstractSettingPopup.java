@@ -30,7 +30,7 @@ import com.android.camera.R;
 
 // A popup window that shows one or more camera settings.
 abstract public class AbstractSettingPopup extends LinearLayout {
-    protected ViewGroup mContentPanel;
+    protected ViewGroup mSettingList;
     protected TextView mTitle;
 
     public AbstractSettingPopup(Context context, AttributeSet attrs) {
@@ -42,6 +42,6 @@ abstract public class AbstractSettingPopup extends LinearLayout {
         super.onFinishInflate();
 
         mTitle = (TextView) findViewById(R.id.title);
-        mContentPanel = (ViewGroup) findViewById(R.id.contentPanel);
+        mSettingList = (ViewGroup) findViewById(R.id.settingList);
     }
 }
