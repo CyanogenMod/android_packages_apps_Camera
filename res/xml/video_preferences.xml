@@ -20,6 +20,7 @@
             camera:title="@string/pref_camcorder_settings_category">
         <IconListPreference
                 camera:key="pref_video_quality_key"
+                camera:defaultValue="@string/pref_video_quality_default"
                 camera:title="@string/pref_video_quality_title"
                 camera:largeIcons="@array/video_quality_icons"
                 camera:entries="@array/pref_video_quality_entries"
