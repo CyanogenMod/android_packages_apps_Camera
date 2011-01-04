@@ -20,7 +20,6 @@ import com.android.camera.ui.CamcorderHeadUpDisplay;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.ControlPanel;
 import com.android.camera.ui.GLRootView;
-import com.android.camera.ui.GLView;
 import com.android.camera.ui.HeadUpDisplay;
 
 import android.content.ActivityNotFoundException;
@@ -30,12 +29,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
@@ -46,19 +42,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.ParcelFileDescriptor;
 import android.os.Message;
+import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Video;
-import android.provider.MediaStore.Video.VideoColumns;
-import android.provider.MediaStore.Video.Media;
 import android.provider.Settings;
+import android.provider.MediaStore.Video;
 import android.util.Log;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -1228,6 +1220,12 @@ public class VideoCamera extends NoSearchActivity
             Uri videoTable = Uri.parse("content://media/external/video/media");
             mCurrentVideoValues.put(Video.Media.SIZE,
                     new File(mCurrentVideoFilename).length());
+            long duration = SystemClock.uptimeMillis() - mRecordingStartTime;
+            if (duration > 0) {
+                mCurrentVideoValues.put(Video.Media.DURATION, duration);
+            } else {
+                Log.w(TAG, "Video duration <= 0 : " + duration);
+            }
             try {
                 mCurrentVideoUri = mContentResolver.insert(videoTable,
                         mCurrentVideoValues);
