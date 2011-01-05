@@ -307,6 +307,11 @@ public class IndicatorWheel extends ViewGroup {
     }
 
     private void setEnabled(ImageView view, boolean enabled) {
+        // Do not enable the button if it is overridden by scene mode.
+        if ((view instanceof IndicatorButton) && ((IndicatorButton) view).isOverridden()) {
+            enabled = false;
+        }
+
         // Don't do anything if state is not changed so not to interfere with
         // the "highlight" state.
         if (view.isEnabled() ^ enabled) {
