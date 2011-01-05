@@ -1222,6 +1222,9 @@ public class VideoCamera extends NoSearchActivity
                     new File(mCurrentVideoFilename).length());
             long duration = SystemClock.uptimeMillis() - mRecordingStartTime;
             if (duration > 0) {
+                if (mCaptureTimeLapse) {
+                    duration = getTimeLapseVideoLength(duration);
+                }
                 mCurrentVideoValues.put(Video.Media.DURATION, duration);
             } else {
                 Log.w(TAG, "Video duration <= 0 : " + duration);
@@ -1637,15 +1640,11 @@ public class VideoCamera extends NoSearchActivity
         return timeStringBuilder.toString();
     }
 
-    // Calculates the time lapse video length till now and returns it in
-    // the format hh:mm:ss.dd, where dd are the centi seconds.
-    private String getTimeLapseVideoLengthString(long deltaMs) {
+    private long getTimeLapseVideoLength(long deltaMs) {
         // For better approximation calculate fractional number of frames captured.
         // This will update the video time at a higher resolution.
         double numberOfFrames = (double) deltaMs / mTimeBetweenTimeLapseFrameCaptureMs;
-        long videoTimeMs =
-            (long) (numberOfFrames / (double) mProfile.videoFrameRate * 1000);
-        return millisecondToTimeString(videoTimeMs, true);
+        return (long) (numberOfFrames / (double) mProfile.videoFrameRate * 1000);
     }
 
     private void updateRecordingTime() {
@@ -1671,8 +1670,8 @@ public class VideoCamera extends NoSearchActivity
         } else {
             // The length of time lapse video is different from the length
             // of the actual wall clock time elapsed. Display the video length
-            // only.
-            text = getTimeLapseVideoLengthString(delta);
+            // only in format hh:mm:ss.dd, where dd are the centi seconds.
+            text = millisecondToTimeString(getTimeLapseVideoLength(delta), true);
         }
 
         mRecordingTimeView.setText(text);
