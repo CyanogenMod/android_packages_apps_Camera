@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="camera_error_title" msgid="6484667504938477337">"Pogreška fotoaparata"</string>
+    <string name="cannot_connect_camera" msgid="8029009101380114174">"Povezivanje s fotoaparatom nije moguće."</string>
+    <string name="camera_label" msgid="6346560772074764302">"Fotoaparat"</string>
+    <string name="video_camera_label" msgid="2899292505526427293">"Kamera"</string>
+    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Slike fotoaparata"</string>
+    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videozapisi na fotoaparatu"</string>
+    <string name="wait" msgid="8600187532323801552">"Pričekajte…"</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Instalirajte USB memoriju prije upotrebe kamere."</string>
+    <string name="no_storage" product="default" msgid="820691042667338625">"Prije upotrebe fotoaparata umetnite SD karticu."</string>
+    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Vaša je USB memorija puna."</string>
+    <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD kartica je puna."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Pripremanje USB memorije..."</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Priprema SD kartice…"</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Pristup USB memoriji nije uspio."</string>
+    <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Pristup kartici SD nije uspio."</string>
+    <string name="confirm_restore_title" msgid="1229914538263792180">"Vrati zadano"</string>
+    <string name="confirm_restore_message" msgid="5239464943578877295">"Postavke fotoaparata bit će vraćene na zadane."</string>
+    <string name="review_play" msgid="6015456244323302817">"REPRODUCIRAJ"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"ODUSTANI"</string>
+    <string name="review_ok" msgid="5305096180300056529">"U redu"</string>
+    <string name="review_retake" msgid="7804864054896088338">"PONOVNO SNIMANJE"</string>
+    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerija"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"Promijeni kameru"</string>
+    <string name="pref_camera_id_title" msgid="6023059405578511534">"Odabir kamere"</string>
+    <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Natrag"</string>
+    <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Naprijed"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Lokacija pohranjivanja"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Isključeno"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Uključeno"</string>
+    <string name="pref_video_quality_title" msgid="8245379279801096922">"Videokvaliteta"</string>
+    <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Visoko (30 m)"</string>
+    <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Nisko (30 m)"</string>
+    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (nisko, 30 s)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (visoko, 10 m)"</string>
+    <string name="pref_camera_settings_category" msgid="2576236450859613120">"Postavke fotoaparata"</string>
+    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Postavke kamere"</string>
+    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Veličina slike"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5M piksela"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M piksela"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2M piksela"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M piksela"</string>
+    <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Kvaliteta slike"</string>
+    <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Super kvalitetno"</string>
+    <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fino"</string>
+    <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normalno"</string>
+    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Način fokusa"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatski"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Beskonačno"</string>
+    <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Način bljeskalice"</string>
+    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatski"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Uključeno"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Isključeno"</string>
+    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Balans bijele boje"</string>
+    <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automatski"</string>
+    <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Svjetlosni izvor sa žarnom niti"</string>
+    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Dnevno svjetlo"</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescentno"</string>
+    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Oblačno"</string>
+    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Efekt boje"</string>
+    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Ništa"</string>
+    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Mono"</string>
+    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"Sepija"</string>
+    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Negativno"</string>
+    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Solarizacija"</string>
+    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Od zadnje stavke"</string>
+    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Vodeno"</string>
+    <string name="pref_camera_coloreffect_entry_pastel" msgid="1263931790863509482">"Pastelno"</string>
+    <string name="pref_camera_coloreffect_entry_mosaic" msgid="1756287704236443515">"Mozaik"</string>
+    <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Crvena tinta"</string>
+    <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Plava tinta"</string>
+    <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Zelena tinta"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Način scene"</string>
+    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatski"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Radnja"</string>
+    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Portret"</string>
+    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"Pejzaž"</string>
+    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Noć"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"Noćni portret"</string>
+    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"Kazalište"</string>
+    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"Plaža"</string>
+    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"Snijeg"</string>
+    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Zalazak sunca"</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Mirna fotografija"</string>
+    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Vatromet"</string>
+    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Zabava"</string>
+    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Svjetlo svijeća"</string>
+    <string name="pref_restore_title" msgid="6479274979730178961">"Postavke fotoaparata"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"Vrati zadano"</string>
+    <string name="pref_exposure_title" msgid="1229093066434614811">"Ekspozicija"</string>
+    <string name="details_ok" msgid="6848594369924424312">"U redu"</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Na vašoj USB memoriji ponestaje prostora. Primijenite postavku kvalitete ili izbrišite neke slike ili druge datoteke."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Na vašoj kartici SD ponestaje prostora. Primijenite postavku kvalitete ili izbrišite neke slike ili druge datoteke."</string>
+    <string name="video_reach_size_limit" msgid="6179877322015552390">"Dostignuto je ograničenje veličine."</string>
+    <string name="zoom_control_title" msgid="6532562653386981815">"Zumiranje"</string>
+    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Prebaci na fotoaparat"</string>
+    <string name="switch_to_video_lable" msgid="4525451949497982385">"Prebaci na videozapis"</string>
+</resources>
