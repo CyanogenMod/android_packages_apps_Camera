@@ -941,7 +941,15 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
+
         mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
+
+        //Testing purpose. Launch a specific camera through the intent extras.
+        int intentCameraId = Util.getCameraFacingIntentExtras(this);
+        if (intentCameraId != -1) {
+            mCameraId = intentCameraId;
+        }
+
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
