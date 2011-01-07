@@ -22,13 +22,15 @@ import com.android.camera.R;
 import android.content.Context;
 import android.hardware.Camera.CameraInfo;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 /**
  * A view for switching the front/back camera.
  */
-public class CameraPicker extends ImageView implements View.OnClickListener {
+public class CameraPicker extends ImageView implements View.OnClickListener,
+        View.OnTouchListener {
     private Listener mListener;
     private ListPreference mPreference;
     private CharSequence[] mCameras;
@@ -51,6 +53,7 @@ public class CameraPicker extends ImageView implements View.OnClickListener {
         mCameras = pref.getEntryValues();
         if (mCameras == null) return;
         setOnClickListener(this);
+        setOnTouchListener(this);
         String cameraId = pref.getValue();
         setVisibility(View.VISIBLE);
         if (mCameras[CameraInfo.CAMERA_FACING_FRONT].equals(cameraId)) {
@@ -70,4 +73,12 @@ public class CameraPicker extends ImageView implements View.OnClickListener {
         mListener.onSharedPreferenceChanged();
     }
 
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            // Switching camera takes a long time. The drawable state changes
+            // after onClick. Set pressed state now so UI looks more responsive.
+            setPressed(true);
+        }
+        return false;
+    }
 }
