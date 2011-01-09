@@ -29,8 +29,8 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
     private OtherSettingsIndicator mOtherSettings;
     private int mInitialOrientation;
 
-    public CamcorderHeadUpDisplay(Context context) {
-        super(context);
+    public CamcorderHeadUpDisplay(Context context, boolean zoomSupported) {
+        super(context, zoomSupported);
     }
 
     public void initialize(Context context, PreferenceGroup group,

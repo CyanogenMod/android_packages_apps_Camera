@@ -27,6 +27,8 @@ import android.media.CamcorderProfile;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -183,8 +185,16 @@ public class CameraSettings {
                     whiteBalance, mParameters.getSupportedWhiteBalance());
         }
         if (colorEffect != null) {
-            filterUnsupportedOptions(group,
-                    colorEffect, mParameters.getSupportedColorEffects());
+            if (isFrontFacingCamera()) {
+                String supportedEffects = mContext.getResources().getString(R.string.ffc_supportedEffects);
+                if (supportedEffects != null && supportedEffects.length() > 0) {
+                    filterUnsupportedOptions(group, colorEffect,
+                            Arrays.asList(supportedEffects.split(",")));
+                }
+            } else {
+                filterUnsupportedOptions(group,
+                        colorEffect, mParameters.getSupportedColorEffects());
+            }
         }
         if (sceneMode != null) {
             filterUnsupportedOptions(group,
@@ -195,8 +205,12 @@ public class CameraSettings {
                     flashMode, mParameters.getSupportedFlashModes());
         }
         if (focusMode != null) {
-            filterUnsupportedOptions(group,
-                    focusMode, mParameters.getSupportedFocusModes());
+            if (isFrontFacingCamera() && !mContext.getResources().getBoolean(R.bool.ffc_canFocus)) {
+                filterUnsupportedOptions(group, focusMode, new ArrayList<String>());
+            } else {
+                filterUnsupportedOptions(group,
+                        focusMode, mParameters.getSupportedFocusModes());
+            }
         }
         if (videoFlashMode != null) {
             filterUnsupportedOptions(group,
@@ -419,5 +433,14 @@ public class CameraSettings {
         Editor editor = pref.edit();
         editor.putString(KEY_CAMERA_ID, Integer.toString(cameraId));
         editor.apply();
+    }
+
+    public static boolean isZoomSupported(Context context, int cameraId) {
+        return CameraHolder.instance().getCameraInfo()[cameraId].facing == CameraInfo.CAMERA_FACING_FRONT
+                && context.getResources().getBoolean(R.bool.ffc_canZoom);
+    }
+
+    private boolean isFrontFacingCamera() {
+        return mCameraInfo[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT;
     }
 }

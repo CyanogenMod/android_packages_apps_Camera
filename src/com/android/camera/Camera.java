@@ -343,7 +343,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-        mHeadUpDisplay = new CameraHeadUpDisplay(this);
+        mHeadUpDisplay = new CameraHeadUpDisplay(this, CameraSettings.isZoomSupported(this, mCameraId));
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
         mFirstTimeInitialized = true;
@@ -1916,7 +1916,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             updateCameraParametersPreference();
         }
 
-        mCameraDevice.setParameters(mParameters);
+        Log.d(TAG, "setParameters: " + mParameters.flatten());
+        try {
+            mCameraDevice.setParameters(mParameters);
+        } catch (Exception e) {
+            // Some phones with dual cameras fail to report the actual parameters
+            // on the FFC. Filtering is device-specific but would be better.
+            Log.e(TAG, "Error setting parameters: " + e.getMessage());
+        }
     }
 
     // If the Camera is idle, update the parameters immediately, otherwise

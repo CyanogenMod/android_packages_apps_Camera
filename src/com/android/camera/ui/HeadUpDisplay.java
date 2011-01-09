@@ -63,6 +63,8 @@ public class HeadUpDisplay extends GLView {
     private static int sPopupWindowOverlap;
     private static int sPopupTriangleOffset;
 
+    protected boolean mZoomSupported;
+
     private static final String TAG = "HeadUpDisplay";
 
     protected IndicatorBar mIndicatorBar;
@@ -115,8 +117,9 @@ public class HeadUpDisplay extends GLView {
         }
     };
 
-    public HeadUpDisplay(Context context) {
+    public HeadUpDisplay(Context context, boolean zoomSupported) {
         initializeStaticVariables(context);
+        mZoomSupported = zoomSupported;
     }
 
     private static void initializeStaticVariables(Context context) {

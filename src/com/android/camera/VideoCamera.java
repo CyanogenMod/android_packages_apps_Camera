@@ -387,7 +387,7 @@ public class VideoCamera extends NoSearchActivity
 
         // Initialize the HeadUpDiplay after startPreview(). We need mParameters
         // for HeadUpDisplay and it is initialized in that function.
-        mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
+        mHeadUpDisplay = new CamcorderHeadUpDisplay(this, CameraSettings.isZoomSupported(this, mCameraId));
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
     }
@@ -1540,7 +1540,15 @@ public class VideoCamera extends NoSearchActivity
             mParameters.setColorEffect(colorEffect);
         }
 
-        mCameraDevice.setParameters(mParameters);
+        Log.d(TAG, "setParameters: " + mParameters.flatten());
+        try {
+            mCameraDevice.setParameters(mParameters);
+        } catch (Exception e) {
+            // Some phones with dual cameras fail to report the actual parameters
+            // on the FFC. Filtering is device-specific but would be better.
+            Log.e(TAG, "Error setting parameters: " + e.getMessage());
+        }
+
         // Keep preview size up to date.
         mParameters = mCameraDevice.getParameters();
     }

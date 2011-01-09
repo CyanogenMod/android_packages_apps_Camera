@@ -34,8 +34,8 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     private float[] mInitialZoomRatios;
     private int mInitialOrientation;
 
-    public CameraHeadUpDisplay(Context context) {
-        super(context);
+    public CameraHeadUpDisplay(Context context, boolean zoomSupported) {
+        super(context, zoomSupported);
         mContext = context;
     }
 
@@ -77,7 +77,7 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_FLASH_MODE);
 
-        if (mInitialZoomRatios != null) {
+        if (mZoomSupported && mInitialZoomRatios != null) {
             mZoomIndicator = new ZoomIndicator(mContext);
             mZoomIndicator.setZoomRatios(mInitialZoomRatios);
             mIndicatorBar.addComponent(mZoomIndicator);
@@ -93,17 +93,21 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     public void setZoomListener(ZoomControllerListener listener) {
         // The rendering thread won't access listener variable, so we don't
         // need to do concurrency protection here
-        mZoomIndicator.setZoomListener(listener);
+        if (mZoomIndicator != null) {
+            mZoomIndicator.setZoomListener(listener);
+        }
     }
 
     public void setZoomIndex(int index) {
-        GLRootView root = getGLRootView();
-        if (root != null) {
-            synchronized (root) {
+        if (mZoomIndicator != null) {
+            GLRootView root = getGLRootView();
+            if (root != null) {
+                synchronized (root) {
+                    mZoomIndicator.setZoomIndex(index);
+                }
+            } else {
                 mZoomIndicator.setZoomIndex(index);
             }
-        } else {
-            mZoomIndicator.setZoomIndex(index);
         }
     }
 
