@@ -93,17 +93,21 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     public void setZoomListener(ZoomControllerListener listener) {
         // The rendering thread won't access listener variable, so we don't
         // need to do concurrency protection here
-        mZoomIndicator.setZoomListener(listener);
+        if (mZoomIndicator != null) {
+            mZoomIndicator.setZoomListener(listener);
+        }
     }
 
     public void setZoomIndex(int index) {
-        GLRootView root = getGLRootView();
-        if (root != null) {
-            synchronized (root) {
+        if (mZoomIndicator != null) {
+            GLRootView root = getGLRootView();
+            if (root != null) {
+                synchronized (root) {
+                    mZoomIndicator.setZoomIndex(index);
+                }
+            } else {
                 mZoomIndicator.setZoomIndex(index);
             }
-        } else {
-            mZoomIndicator.setZoomIndex(index);
         }
     }
 
