@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.android.camera.ui.ControlPanel xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_panel"
         android:layout_height="match_parent"
@@ -85,5 +85,5 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginRight="232dp"
                 android:layout_marginBottom="56dp" />
-</com.android.camera.ui.ControlPanel>
+</RelativeLayout>
 

@@ -18,8 +18,8 @@ package com.android.camera;
 
 import com.android.camera.ui.CamcorderHeadUpDisplay;
 import com.android.camera.ui.CameraPicker;
-import com.android.camera.ui.ControlPanel;
 import com.android.camera.ui.GLRootView;
+import com.android.camera.ui.IndicatorWheel;
 import com.android.camera.ui.HeadUpDisplay;
 
 import android.content.ActivityNotFoundException;
@@ -142,9 +142,9 @@ public class VideoCamera extends NoSearchActivity
     private SurfaceHolder mSurfaceHolder = null;
     private ImageView mVideoFrame;
     private GLRootView mGLRootView;
-    // xlarge devices use control panel. Other devices use head-up display.
+    // xlarge devices use indicator wheel. Other devices use head-up display.
     private CamcorderHeadUpDisplay mHeadUpDisplay;
-    private ControlPanel mControlPanel;
+    private IndicatorWheel mIndicatorWheel;
     // Front/back camera picker for xlarge layout.
     private CameraPicker mCameraPicker;
     private View mReviewControl;
@@ -414,9 +414,9 @@ public class VideoCamera extends NoSearchActivity
         mFrontCameraId = CameraHolder.instance().getFrontCameraId();
 
         // Initialize after startPreview becuase this need mParameters.
-        initializeControlPanel();
-        // xlarge devices use control panel. Other devices use head-up display.
-        if (mControlPanel == null) {
+        initializeIndicatorWheel();
+        // xlarge devices use indicator wheel. Other devices use head-up display.
+        if (mIndicatorWheel == null) {
             mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
             mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
             initializeHeadUpDisplay();
@@ -488,7 +488,7 @@ public class VideoCamera extends NoSearchActivity
         if (mHeadUpDisplay != null && mHeadUpDisplay.collapse()) {
             return true;
         }
-        if (mControlPanel != null && mControlPanel.dismissSettingPopup()) {
+        if (mIndicatorWheel != null && mIndicatorWheel.dismissSettingPopup()) {
             return true;
         }
         return false;
@@ -496,14 +496,14 @@ public class VideoCamera extends NoSearchActivity
 
     private void enableCameraControls(boolean enable) {
         if (mHeadUpDisplay != null) mHeadUpDisplay.setEnabled(enable);
-        if (mControlPanel != null) mControlPanel.setEnabled(enable);
+        if (mIndicatorWheel != null) mIndicatorWheel.setEnabled(enable);
         if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
         if (mSwitcher != null) mSwitcher.setEnabled(enable);
     }
 
-    private void initializeControlPanel() {
-        mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
-        if (mControlPanel == null) return;
+    private void initializeIndicatorWheel() {
+        mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
+        if (mIndicatorWheel == null) return;
         loadCameraPreferences();
 
         String[] keys = new String[]{CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
@@ -511,8 +511,8 @@ public class VideoCamera extends NoSearchActivity
             CameraSettings.KEY_COLOR_EFFECT,
             CameraSettings.KEY_VIDEO_QUALITY,
             CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
-        mControlPanel.initialize(this, mPreferenceGroup, keys, false);
-        mControlPanel.setListener(new MyControlPanelListener());
+        mIndicatorWheel.initialize(this, mPreferenceGroup, keys, false);
+        mIndicatorWheel.setListener(new MyIndicatorWheelListener());
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());
     }
@@ -920,7 +920,7 @@ public class VideoCamera extends NoSearchActivity
         mPausing = true;
 
         changeHeadUpDisplayState();
-        if (mControlPanel != null) mControlPanel.dismissSettingPopup();
+        if (mIndicatorWheel != null) mIndicatorWheel.dismissSettingPopup();
 
         finishRecorderAndCloseCamera();
 
@@ -1323,7 +1323,7 @@ public class VideoCamera extends NoSearchActivity
 
         // Reload the UI.
         initializeHeadUpDisplay();
-        initializeControlPanel();
+        initializeIndicatorWheel();
     }
 
     private PreferenceGroup filterPreferenceScreenByIntent(
@@ -1433,7 +1433,7 @@ public class VideoCamera extends NoSearchActivity
     }
 
     private void showAlert() {
-        if (mControlPanel == null) {
+        if (mIndicatorWheel == null) {
             fadeOut(findViewById(R.id.shutter_button));
         }
         if (mCurrentVideoFilename != null) {
@@ -1821,11 +1821,11 @@ public class VideoCamera extends NoSearchActivity
             mHeadUpDisplay.restorePreferences(mParameters);
         }
 
-        if (mControlPanel != null) {
-            mControlPanel.dismissSettingPopup();
+        if (mIndicatorWheel != null) {
+            mIndicatorWheel.dismissSettingPopup();
             CameraSettings.restorePreferences(VideoCamera.this, mPreferences,
                     mParameters);
-            initializeControlPanel();
+            initializeIndicatorWheel();
             onSharedPreferenceChanged();
         }
     }
@@ -1871,7 +1871,7 @@ public class VideoCamera extends NoSearchActivity
 
     }
 
-    private class MyControlPanelListener implements ControlPanel.Listener {
+    private class MyIndicatorWheelListener implements IndicatorWheel.Listener {
         public void onSharedPreferenceChanged() {
             VideoCamera.this.onSharedPreferenceChanged();
         }
@@ -1905,7 +1905,7 @@ public class VideoCamera extends NoSearchActivity
             GestureDetector.SimpleOnGestureListener {
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
-            View v = mControlPanel.getActivePopupWindow();
+            View v = mIndicatorWheel.getActivePopupWindow();
             if (v == null) return false;
 
             int x = Math.round(e.getX());
@@ -1915,7 +1915,7 @@ public class VideoCamera extends NoSearchActivity
             v.getLocationOnScreen(mPopupLocations);
             if (x < mPopupLocations[0] || x > mPopupLocations[0] + v.getWidth()
                     || y < mPopupLocations[1] || y > mPopupLocations[1] + v.getHeight()) {
-                mControlPanel.dismissSettingPopup();
+                mIndicatorWheel.dismissSettingPopup();
                 // Let event fall through.
             }
             return false;
