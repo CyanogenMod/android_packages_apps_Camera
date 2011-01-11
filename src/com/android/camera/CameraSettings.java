@@ -54,7 +54,8 @@ public class CameraSettings {
     public static final String KEY_CAMERA_ID = "pref_camera_id_key";
     public static final String KEY_ISO = "pref_camera_iso_key";
     public static final String KEY_LENSSHADING = "pref_camera_lensshading_key";
-
+    public static final String KEY_AUTOEXPOSURE = "pref_camera_autoexposure_key";
+    public static final String KEY_ANTIBANDING = "pref_camera_antibanding_key";
 
     private static final String VIDEO_QUALITY_HD = "hd";
     private static final String VIDEO_QUALITY_HIGH = "high";
@@ -153,6 +154,9 @@ public class CameraSettings {
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
         ListPreference mIso = group.findPreference(KEY_ISO);
         ListPreference lensShade = group.findPreference(KEY_LENSSHADING);
+        ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
+        ListPreference autoExposure = group.findPreference(KEY_AUTOEXPOSURE);
+
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -232,6 +236,14 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     lensShade, mParameters.getSupportedLensShadeModes());
         }
+         if (antiBanding != null) {
+             filterUnsupportedOptions(group,
+                     antiBanding, mParameters.getSupportedAntibanding());
+         }
+         if (autoExposure != null) {
+             filterUnsupportedOptions(group,
+                     autoExposure, mParameters.getSupportedAutoexposure());
+         }
     }
 
     private void buildExposureCompensation(

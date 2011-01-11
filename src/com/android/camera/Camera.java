@@ -1872,6 +1872,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mParameters.setJpegQuality(JpegEncodingQualityMappings.getQualityNumber(jpegQuality));
 
 
+
+        // For the following settings, we need to check if the settings are
+        // still supported by latest driver, if not, ignore the settings.
+
          // Set ISO parameter.
         String iso = mPreferences.getString(
                 CameraSettings.KEY_ISO,
@@ -1952,6 +1956,22 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if((0 <= saturation) &&
                 (saturation <= mParameters.getMaxSaturation()))
             mParameters.setSaturation(saturation);
+
+         // Set anti banding parameter.
+         String antiBanding = mPreferences.getString(
+                 CameraSettings.KEY_ANTIBANDING,
+                 getString(R.string.pref_camera_antibanding_default));
+         if (isSupported(antiBanding, mParameters.getSupportedAntibanding())) {
+             mParameters.setAntibanding(antiBanding);
+         }
+
+         // Set auto exposure parameter.
+         String autoExposure = mPreferences.getString(
+                 CameraSettings.KEY_AUTOEXPOSURE,
+                 getString(R.string.pref_camera_autoexposure_default));
+         if (isSupported(autoExposure, mParameters.getSupportedAutoexposure())) {
+             mParameters.setAutoExposure(autoExposure);
+         }
 
          // Set anti banding parameter.
          String antiBanding = mPreferences.getString(
