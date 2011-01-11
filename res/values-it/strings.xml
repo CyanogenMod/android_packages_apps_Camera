@@ -46,17 +46,37 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Non attiva"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Attiva"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualità video"</string>
+    <string name="pref_video_quality_entry_hd">HD (30m)</string>
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Alta (30 m)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Bassa (30 m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (bassa, 30 s)"</string>
+    <string name="pref_video_quality_entry_youtubehd">YouTube (HD, 10m)</string>
     <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (alta, 10 m)"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Impostazioni fotocamera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Impostazioni videocamera"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Dimensioni foto"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 Megapixel"</string>
+    <!-- Settings screen, Picture size dialog radio button choices -->
+    <string name="pref_camera_picturesize_entry_3264x2448">8M Pixel</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6M Pixel (esteso)</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5M Pixel</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4M Pixel (esteso)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4M Pixel</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4M Pixel</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3M Pixel</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2.5M Pixel (esteso)</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
+    <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
+    <string name="pref_camera_picturesize_entry_1024x768">XGA</string>
+    <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
+    <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
+    <string name="pref_camera_picturesize_entry_640x480">VGA</string>
+    <string name="pref_camera_picturesize_entry_352x288">CIF</string>
+    <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
+    <string name="pref_camera_picturesize_entry_176x144">QCIF</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Qualità immagine"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Super fine"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fine"</string>
