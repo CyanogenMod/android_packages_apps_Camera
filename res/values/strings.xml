@@ -347,4 +347,43 @@
 
     <string name="switch_to_camera_lable">Switch to camera</string>
     <string name="switch_to_video_lable">Switch to video</string>
+
+     <!-- Default iso setting. Do not translate. -->
+     <string name="pref_camera_iso_default">auto</string>
+
+     <!-- Settings screen, Select Iso title -->
+     <string name="pref_camera_iso_title">Select ISO</string>
+
+     <!-- Settings screen, ISO dialog radio button choices -->
+     <string name="pref_camera_iso_entry_auto">Auto</string>
+     <string name="pref_camera_iso_entry_isodeblur">ISO Auto(HJR)</string>
+     <string name="pref_camera_iso_entry_iso100">ISO100</string>
+     <string name="pref_camera_iso_entry_iso200">ISO200</string>
+     <string name="pref_camera_iso_entry_iso400">ISO400</string>
+     <string name="pref_camera_iso_entry_iso800">ISO800</string>
+
+     <!-- ISO entry values. Do not translate. -->
+     <string name="pref_camera_iso_value_auto">auto</string>
+     <string name="pref_camera_iso_value_isodeblur">ISO_HJR</string>
+     <string name="pref_camera_iso_value_iso100">ISO100</string>
+     <string name="pref_camera_iso_value_iso200">ISO200</string>
+     <string name="pref_camera_iso_value_iso400">ISO400</string>
+     <string name="pref_camera_iso_value_iso800">ISO800</string>
+
+
+     <!-- Default auto lens shading setting. Do not translate. -->
+     <string name="pref_camera_lensshading_default">enable</string>
+
+     <!-- Settings screen, Select lens shading title -->
+     <string name="pref_camera_lensshading_title">Lens Shading</string>
+
+     <!-- Settings screen, lens shading radio button choices -->
+     <string name="pref_camera_lensshading_entry_enable">Enable</string>
+     <string name="pref_camera_lensshading_entry_disable">Disable</string>
+
+     <!-- Lens shading entry values. Do not translate. -->
+     <string name="pref_camera_lensshading_value_enable">enable</string>
+     <string name="pref_camera_lensshading_value_disable">disable</string>
+
+
 </resources>
