@@ -110,8 +110,7 @@
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fyrverkerier"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fest"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Stearinljus"</string>
-    <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
-    <skip />
+    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Detta är inte valbart i skärmläge"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Kamerainställningar"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Återställ standardinställningar"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exponering"</string>
