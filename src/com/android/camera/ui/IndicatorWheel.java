@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import com.android.camera.ComboPreferences;
+import com.android.camera.IconListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
@@ -28,18 +29,21 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.View;
 
 import java.lang.Math;
+import java.util.ArrayList;
 
 /**
  * A view that contains shutter button and camera setting indicators. The
  * indicators are spreaded around the shutter button. The first child is always
  * the shutter button.
  */
-public class IndicatorWheel extends ViewGroup {
+public class IndicatorWheel extends ViewGroup implements
+        BasicSettingPopup.Listener, OtherSettingsPopup.Listener {
     private static final String TAG = "IndicatorWheel";
     // The width of the edges on both sides of the wheel, which has less alpha.
     private static final float EDGE_STROKE_WIDTH = 6f;
@@ -62,9 +66,16 @@ public class IndicatorWheel extends ViewGroup {
     private RectF mBackgroundRect;
     private int mSelectedIndex = -1;
 
+    private Context mContext;
+    private PreferenceGroup mPreferenceGroup;
+    private ArrayList<String> mPreferenceKeys;
+    private BasicSettingPopup[] mBasicSettingPopups;
+    private OtherSettingsPopup mOtherSettingsPopup;
+
     static public interface Listener {
-        public void onIndicatorClicked(int index);
-        public void onOverriddenIndicatorClicked();
+        public void onSharedPreferenceChanged();
+        public void onRestorePreferencesClicked();
+        public void onOverriddenPreferencesClicked();
     }
 
     public void setListener(Listener listener) {
@@ -73,6 +84,7 @@ public class IndicatorWheel extends ViewGroup {
 
     public IndicatorWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         Resources resources = context.getResources();
         HIGHLIGHT_COLOR = resources.getColor(R.color.review_control_pressed_color);
         DISABLED_COLOR = resources.getColor(R.color.icon_disabled_color);
@@ -85,31 +97,26 @@ public class IndicatorWheel extends ViewGroup {
         mBackgroundRect = new RectF();
     }
 
-    public void unselectIndicator() {
-        setHighlight(mSelectedIndex, false);
-        mSelectedIndex = -1;
-        invalidate();
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) return false;
 
         int count = getChildCount();
-        if (mListener == null || count <= 1) return false;
+        if (count <= 1) return false;
 
         // Check if any setting is pressed.
         int action = event.getAction();
-        if (action == MotionEvent.ACTION_DOWN
-                || action == MotionEvent.ACTION_MOVE) {
-            double dx = event.getX() - mCenterX;
-            double dy = mCenterY - event.getY();
-            double radius = Math.sqrt(dx * dx + dy * dy);
-            // Ignore the event if it's too near to the shutter button.
-            if (radius < mShutterButtonRadius) return false;
-            // Ignore the event if it's too far from the shutter button.
-            if ((radius - mWheelRadius) > mStrokeWidth) return false;
+        if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
+            return false;
+        }
 
+        double dx = event.getX() - mCenterX;
+        double dy = mCenterY - event.getY();
+        double radius = Math.sqrt(dx * dx + dy * dy);
+        // Ignore the event if it's too near to the shutter button or too far
+        // from the shutter button.
+
+        if (radius >= mShutterButtonRadius && radius <= mWheelRadius + mStrokeWidth) {
             double delta = Math.atan2(dy, dx);
             if (delta < 0) delta += Math.PI * 2;
             // Check which sector is pressed.
@@ -122,17 +129,18 @@ public class IndicatorWheel extends ViewGroup {
                             if (((IndicatorButton) child).isOverridden()) {
                                 // Do not notify in ACTION_MOVE to avoid lots of
                                 // toast being displayed.
-                                if (action == MotionEvent.ACTION_DOWN) {
-                                    mListener.onOverriddenIndicatorClicked();
+                                if (action == MotionEvent.ACTION_DOWN && mListener != null) {
+                                    mListener.onOverriddenPreferencesClicked();
                                 }
                                 return true;
                             }
                         }
                         setHighlight(mSelectedIndex, false);
+                        dismissSettingPopup();
                         mSelectedIndex = i - 1;
+                        showSettingPopup();
                         setHighlight(mSelectedIndex, true);
                         invalidate();
-                        mListener.onIndicatorClicked(i - 1);
                         return true;
                     }
                 }
@@ -265,11 +273,6 @@ public class IndicatorWheel extends ViewGroup {
         super.onDraw(canvas);
     }
 
-    public void updateIndicator(int index) {
-        IndicatorButton indicator = (IndicatorButton) getChildAt(index + 1);
-        indicator.reloadPreference();
-    }
-
     // Scene mode may override other camera settings (ex: flash mode).
     public void overrideSettings(String key, String value) {
         int count = getChildCount();
@@ -321,6 +324,159 @@ public class IndicatorWheel extends ViewGroup {
             } else {
                 view.setColorFilter(DISABLED_COLOR);
             }
+        }
+    }
+
+    protected boolean addIndicator(
+            Context context, PreferenceGroup group, String key) {
+        IconListPreference pref = (IconListPreference) group.findPreference(key);
+        if (pref == null) return false;
+        IndicatorButton b = new IndicatorButton(context, pref);
+        addView(b);
+        return true;
+    }
+
+    private void addOtherSettingIndicator(Context context) {
+        ImageView b = new ImageView(context);
+        b.setImageResource(R.drawable.ic_viewfinder_settings);
+        b.setClickable(false);
+        addView(b);
+    }
+
+    public void initialize(Context context, PreferenceGroup group,
+            String[] keys, boolean enableOtherSettings) {
+        // Reset the variables and states.
+        dismissSettingPopup();
+        removeIndicators();
+        mOtherSettingsPopup = null;
+        mSelectedIndex = -1;
+        mPreferenceKeys = new ArrayList<String>();
+
+        // Initialize all variables and icons.
+        mPreferenceGroup = group;
+        for (int i = 0; i < keys.length; i++) {
+            if (addIndicator(context, group, keys[i])) {
+                mPreferenceKeys.add(keys[i]);
+            }
+        }
+        mBasicSettingPopups = new BasicSettingPopup[mPreferenceKeys.size()];
+
+        if (enableOtherSettings) {
+            addOtherSettingIndicator(context);
+        }
+        requestLayout();
+    }
+
+    public void onOtherSettingChanged() {
+        if (mListener != null) {
+            mListener.onSharedPreferenceChanged();
+        }
+    }
+
+    public void onRestorePreferencesClicked() {
+        if (mListener != null) {
+            mListener.onRestorePreferencesClicked();
+        }
+    }
+
+    public void onSettingChanged() {
+        // Update indicator.
+        IndicatorButton indicator = (IndicatorButton) getChildAt(mSelectedIndex + 1);
+        indicator.reloadPreference();
+        if (mListener != null) {
+            mListener.onSharedPreferenceChanged();
+        }
+    }
+
+    private void initializeSettingPopup(int index) {
+        IconListPreference pref = (IconListPreference)
+                mPreferenceGroup.findPreference(mPreferenceKeys.get(index));
+
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.app_root);
+        BasicSettingPopup popup = (BasicSettingPopup) inflater.inflate(
+                R.layout.basic_setting_popup, root, false);
+        mBasicSettingPopups[index] = popup;
+        popup.setSettingChangedListener(this);
+        popup.initialize(pref);
+        root.addView(popup);
+    }
+
+    private void initializeOtherSettingPopup() {
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.app_root);
+        mOtherSettingsPopup = (OtherSettingsPopup) inflater.inflate(
+                R.layout.other_setting_popup, root, false);
+        mOtherSettingsPopup.setOtherSettingChangedListener(this);
+        mOtherSettingsPopup.initialize(mPreferenceGroup);
+        root.addView(mOtherSettingsPopup);
+    }
+
+    private void showSettingPopup() {
+        if (mSelectedIndex < mBasicSettingPopups.length) {
+            if (mBasicSettingPopups[mSelectedIndex] == null) {
+                initializeSettingPopup(mSelectedIndex);
+            }
+        } else if (mOtherSettingsPopup == null) {
+            initializeOtherSettingPopup();
+        }
+
+        if (mSelectedIndex == mBasicSettingPopups.length) {
+            mOtherSettingsPopup.setVisibility(View.VISIBLE);
+        } else {
+            mBasicSettingPopups[mSelectedIndex].setVisibility(View.VISIBLE);
+        }
+    }
+
+    public boolean dismissSettingPopup() {
+        if (mSelectedIndex >= 0) {
+            if (mSelectedIndex == mBasicSettingPopups.length) {
+                mOtherSettingsPopup.setVisibility(View.INVISIBLE);
+            } else {
+                mBasicSettingPopups[mSelectedIndex].setVisibility(View.INVISIBLE);
+            }
+            setHighlight(mSelectedIndex, false);
+            mSelectedIndex = -1;
+            invalidate();
+            return true;
+        }
+        return false;
+    }
+
+    // Popup window is dismissed.
+    public void onDismiss() {
+        mSelectedIndex = -1;
+    }
+
+    public View getActivePopupWindow() {
+        if (mSelectedIndex >= 0) {
+            if (mSelectedIndex == mBasicSettingPopups.length) {
+                return mOtherSettingsPopup;
+            } else {
+                return mBasicSettingPopups[mSelectedIndex];
+            }
+        } else {
+            return null;
+        }
+    }
+
+    // Scene mode may override other camera settings (ex: flash mode).
+    public void overrideSettings(final String ... keyvalues) {
+        if (keyvalues.length % 2 != 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (mOtherSettingsPopup == null) {
+            initializeOtherSettingPopup();
+        }
+
+        for (int i = 0; i < keyvalues.length; i += 2) {
+            String key = keyvalues[i];
+            String value = keyvalues[i + 1];
+            overrideSettings(key, value);
+            mOtherSettingsPopup.overrideSettings(key, value);
         }
     }
 }

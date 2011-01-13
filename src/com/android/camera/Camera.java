@@ -18,10 +18,10 @@ package com.android.camera;
 
 import com.android.camera.ui.CameraHeadUpDisplay;
 import com.android.camera.ui.CameraPicker;
-import com.android.camera.ui.ControlPanel;
 import com.android.camera.ui.FocusRectangle;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.IndicatorWheel;
 import com.android.camera.ui.ZoomControllerListener;
 import com.android.camera.ui.ZoomPicker;
 
@@ -163,7 +163,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private GestureDetector mPopupGestureDetector;
     private SwitcherSet mSwitcher;
     private boolean mStartPreviewFail = false;
-    private View mIndicatorWheel;
 
     private GLRootView mGLRootView;
 
@@ -244,9 +243,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private Toast mNotSelectableToast;
 
     private final Handler mHandler = new MainHandler();
-    // xlarge devices use control panel. Other devices use head-up display.
+    // xlarge devices use indicator wheel. Other devices use head-up display.
     private CameraHeadUpDisplay mHeadUpDisplay;
-    private ControlPanel mControlPanel;
+    private IndicatorWheel mIndicatorWheel;
     private PreferenceGroup mPreferenceGroup;
 
     // multiple cameras support
@@ -360,8 +359,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-        // xlarge devices use control panel. Other devices use head-up display.
-        if (mControlPanel == null) {
+        // xlarge devices use indicator wheel. Other devices use head-up display.
+        if (mIndicatorWheel == null) {
             mHeadUpDisplay = new CameraHeadUpDisplay(this);
             mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
             initializeHeadUpDisplay();
@@ -489,7 +488,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             GestureDetector.SimpleOnGestureListener {
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
-            View v = mControlPanel.getActivePopupWindow();
+            View v = mIndicatorWheel.getActivePopupWindow();
             if (v == null) return false;
 
             int x = Math.round(e.getX());
@@ -499,7 +498,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             v.getLocationOnScreen(mPopupLocations);
             if (x < mPopupLocations[0] || x > mPopupLocations[0] + v.getWidth()
                     || y < mPopupLocations[1] || y > mPopupLocations[1] + v.getHeight()) {
-                mControlPanel.dismissSettingPopup();
+                mIndicatorWheel.dismissSettingPopup();
                 // Let event fall through.
             }
             return false;
@@ -999,7 +998,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mSwitcher.setVisibility(View.VISIBLE);
             mSwitcher.setOnSwitchListener(this);
         }
-        mIndicatorWheel = findViewById(R.id.indicator_wheel);
 
         // Make sure preview is started.
         try {
@@ -1017,13 +1015,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // Do this after starting preview because it depends on camera
         // parameters.
-        initializeControlPanel();
+        initializeIndicatorWheel();
         initializeCameraPicker();
 
-        if (mControlPanel != null) {
-            mZoomPicker = (ZoomPicker) mControlPanel.findViewById(R.id.zoom_picker);
-            mZoomPicker.setEnabled(true); // disabled initially in xml
-        }
+        mZoomPicker = (ZoomPicker) findViewById(R.id.zoom_picker);
+        if (mZoomPicker != null) mZoomPicker.setEnabled(true); // disabled initially in xml
     }
 
     private void changeHeadUpDisplayState() {
@@ -1050,8 +1046,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
                     CameraSettings.KEY_FOCUS_MODE, focusMode);
         }
-        if (mControlPanel != null) {
-            mControlPanel.overrideSettings(
+        if (mIndicatorWheel != null) {
+            mIndicatorWheel.overrideSettings(
                     CameraSettings.KEY_FLASH_MODE, flashMode,
                     CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
                     CameraSettings.KEY_FOCUS_MODE, focusMode);
@@ -1075,17 +1071,17 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPreferenceGroup = settings.getPreferenceGroup(R.xml.camera_preferences);
     }
 
-    private void initializeControlPanel() {
-        mControlPanel = (ControlPanel) findViewById(R.id.control_panel);
-        if (mControlPanel == null) return;
+    private void initializeIndicatorWheel() {
+        mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
+        if (mIndicatorWheel == null) return;
         loadCameraPreferences();
 
         String[] keys = new String[]{CameraSettings.KEY_FLASH_MODE,
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_COLOR_EFFECT,
             CameraSettings.KEY_SCENE_MODE};
-        mControlPanel.initialize(this, mPreferenceGroup, keys, true);
-        mControlPanel.setListener(new MyControlPanelListener());
+        mIndicatorWheel.initialize(this, mPreferenceGroup, keys, true);
+        mIndicatorWheel.setListener(new MyIndicatorWheelListener());
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());
         updateSceneModeUI();
@@ -1133,7 +1129,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mHeadUpDisplay != null && mHeadUpDisplay.collapse()) {
             return true;
         }
-        if (mControlPanel != null && mControlPanel.dismissSettingPopup()) {
+        if (mIndicatorWheel != null && mIndicatorWheel.dismissSettingPopup()) {
             return true;
         }
         return false;
@@ -1141,7 +1137,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     private void enableCameraControls(boolean enable) {
         if (mHeadUpDisplay != null) mHeadUpDisplay.setEnabled(enable);
-        if (mControlPanel != null) mControlPanel.setEnabled(enable);
+        if (mIndicatorWheel != null) mIndicatorWheel.setEnabled(enable);
         if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
         if (mZoomPicker != null) mZoomPicker.setEnabled(enable);
         if (mSwitcher != null) mSwitcher.setEnabled(enable);
@@ -2204,7 +2200,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // Reload the UI.
         initializeHeadUpDisplay();
-        initializeControlPanel();
+        initializeIndicatorWheel();
     }
 
     private boolean switchToVideoMode() {
@@ -2304,11 +2300,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             mHeadUpDisplay.restorePreferences(mParameters);
         }
 
-        if (mControlPanel != null) {
-            mControlPanel.dismissSettingPopup();
+        if (mIndicatorWheel != null) {
+            mIndicatorWheel.dismissSettingPopup();
             CameraSettings.restorePreferences(Camera.this, mPreferences,
                     mParameters);
-            initializeControlPanel();
+            initializeIndicatorWheel();
             onSharedPreferenceChanged();
         }
     }
@@ -2323,7 +2319,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mNotSelectableToast.show();
     }
 
-    private class MyControlPanelListener implements ControlPanel.Listener {
+    private class MyIndicatorWheelListener implements IndicatorWheel.Listener {
         public void onSharedPreferenceChanged() {
             Camera.this.onSharedPreferenceChanged();
         }
