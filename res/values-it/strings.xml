@@ -110,8 +110,7 @@
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fuochi d\'artificio"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Festa"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Lume di candela"</string>
-    <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
-    <skip />
+    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Non è selezionabile in modalità scena"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Impostazioni fotocamera"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Ripristina predefinite"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Esposizione"</string>
