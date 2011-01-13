@@ -46,6 +46,4 @@
     <string name="zoom_control_title" msgid="3277883770806406787">"Zoom"</string>
     <!-- XL -->
     <string name="zoom_text" msgid="4293508210338527806">"Ampliar <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
-    <!-- XL -->
-    <string name="not_selectable_in_scene_mode" msgid="5093937203237797055">"Esto no puede seleccionarse en el modo de escena."</string>
 </resources>

@@ -41,7 +41,7 @@
     <string name="switch_camera_id" msgid="837545176602471325">"Chuyển Máy ảnh"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Bật chế độ thời gian trôi"</string>
     <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Tắt chế độ thời gian trôi"</string>
-    <string name="time_lapse_title" msgid="4360632427760662691">"Đang ghi âm thời gian trôi"</string>
+    <string name="time_lapse_title" msgid="4360632427760662691">"Đang ghi âm khoảng thời gian"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Chọn camera"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Quay lại"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Trước"</string>
@@ -56,7 +56,7 @@
     <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Chất lượng video thời gian trôi"</string>
     <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Thấp"</string>
     <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Cao"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Khoảng thời gian trôi"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Khoảng thời gian"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Cài đặt máy ảnh"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Cài đặt máy quay video"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Kích thước ảnh"</string>
@@ -110,8 +110,7 @@
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Pháo hoa"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Đảng"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Ánh nến"</string>
-    <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
-    <skip />
+    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Không thể chọn trong chế độ cảnh"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Cài đặt máy ảnh"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Khôi phục mặc định"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Phơi sáng"</string>
