@@ -64,7 +64,12 @@ public class IndicatorWheel extends ViewGroup implements
     private double mSectorInitialRadians[];
     private Paint mBackgroundPaint;
     private RectF mBackgroundRect;
+    // The index of the indicator that is currently selected.
     private int mSelectedIndex = -1;
+    // The index of the indicator that has been just de-selected. If users click
+    // on the same indicator, we want to dismiss the popup window without
+    // opening it again.
+    private int mJustDeselectedIndex = -1;
 
     private Context mContext;
     private PreferenceGroup mPreferenceGroup;
@@ -97,6 +102,22 @@ public class IndicatorWheel extends ViewGroup implements
         mBackgroundRect = new RectF();
     }
 
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // If the event will go to shutter button, dismiss the popup window now.
+        // If not, handle it in onTouchEvent.
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            float x = ev.getX();
+            float y = ev.getY();
+            float shutterButtonX = mShutterButton.getX();
+            float shutterButtonY = mShutterButton.getY();
+            if (x >= shutterButtonX && y >= shutterButtonY
+                    && (x < shutterButtonX + mShutterButton.getWidth())
+                    && (y < shutterButtonY + mShutterButton.getHeight()))
+                dismissSettingPopup();
+        }
+        return false;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) return false;
@@ -123,6 +144,15 @@ public class IndicatorWheel extends ViewGroup implements
             if (delta > mSectorInitialRadians[0]) {
                 for (int i = 1; i < count; i++) {
                     if (delta < mSectorInitialRadians[i]) {
+                        // If the touch is moving around the same indicator with
+                        // popup opened, return now to avoid redundent works.
+                        if (action == MotionEvent.ACTION_MOVE && (mSelectedIndex == i - 1)) {
+                            return false;
+                        }
+
+                        int selectedIndex = mSelectedIndex;
+                        dismissSettingPopup();
+
                         // Do nothing if scene mode overrides the setting.
                         View child = getChildAt(i);
                         if (child instanceof IndicatorButton) {
@@ -135,17 +165,24 @@ public class IndicatorWheel extends ViewGroup implements
                                 return true;
                             }
                         }
-                        setHighlight(mSelectedIndex, false);
-                        dismissSettingPopup();
-                        mSelectedIndex = i - 1;
-                        showSettingPopup();
-                        setHighlight(mSelectedIndex, true);
-                        invalidate();
+                        if (action == MotionEvent.ACTION_DOWN
+                                && (selectedIndex == i - 1) && (mJustDeselectedIndex != i - 1)) {
+                            // The same indicator is pressed with popup opened.
+                            mJustDeselectedIndex = i - 1;
+                        } else {
+                            if ((mJustDeselectedIndex != i - 1)
+                                    || (selectedIndex == -1 && action == MotionEvent.ACTION_DOWN)) {
+                                showSettingPopup(i - 1);
+                                mJustDeselectedIndex = -1;
+                            }
+                        }
                         return true;
                     }
                 }
             }
         }
+        dismissSettingPopup();
+        mJustDeselectedIndex = -1;
         return false;
     }
 
@@ -414,20 +451,25 @@ public class IndicatorWheel extends ViewGroup implements
         root.addView(mOtherSettingsPopup);
     }
 
-    private void showSettingPopup() {
-        if (mSelectedIndex < mBasicSettingPopups.length) {
-            if (mBasicSettingPopups[mSelectedIndex] == null) {
-                initializeSettingPopup(mSelectedIndex);
+    private void showSettingPopup(int index) {
+        if (index == mSelectedIndex) return;
+
+        if (index < mBasicSettingPopups.length) {
+            if (mBasicSettingPopups[index] == null) {
+                initializeSettingPopup(index);
             }
         } else if (mOtherSettingsPopup == null) {
             initializeOtherSettingPopup();
         }
 
-        if (mSelectedIndex == mBasicSettingPopups.length) {
+        if (index == mBasicSettingPopups.length) {
             mOtherSettingsPopup.setVisibility(View.VISIBLE);
         } else {
-            mBasicSettingPopups[mSelectedIndex].setVisibility(View.VISIBLE);
+            mBasicSettingPopups[index].setVisibility(View.VISIBLE);
         }
+        setHighlight(index, true);
+        mSelectedIndex = index;
+        invalidate();
     }
 
     public boolean dismissSettingPopup() {
@@ -443,11 +485,6 @@ public class IndicatorWheel extends ViewGroup implements
             return true;
         }
         return false;
-    }
-
-    // Popup window is dismissed.
-    public void onDismiss() {
-        mSelectedIndex = -1;
     }
 
     public View getActivePopupWindow() {

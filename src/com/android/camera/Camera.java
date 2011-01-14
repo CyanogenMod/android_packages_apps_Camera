@@ -483,7 +483,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         return result;
     }
 
-    private int mPopupLocations[] = new int[2];
+    private int mLocation[] = new int[2];
     private class PopupGestureListener extends
             GestureDetector.SimpleOnGestureListener {
         public boolean onDown(MotionEvent e) {
@@ -495,10 +495,15 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             int y = Math.round(e.getY());
 
             // Dismiss the popup window if users touch on the outside.
-            v.getLocationOnScreen(mPopupLocations);
-            if (x < mPopupLocations[0] || x > mPopupLocations[0] + v.getWidth()
-                    || y < mPopupLocations[1] || y > mPopupLocations[1] + v.getHeight()) {
-                mIndicatorWheel.dismissSettingPopup();
+            v.getLocationOnScreen(mLocation);
+            if (x < mLocation[0] || (x > mLocation[0] + v.getWidth())
+                    || y < mLocation[1] || (y > mLocation[1] + v.getHeight())) {
+                // Let indicator wheel handle its own event.
+                mIndicatorWheel.getLocationOnScreen(mLocation);
+                if (x < mLocation[0] || (x > mLocation[0] + mIndicatorWheel.getWidth())
+                        || y < mLocation[1] || (y > mLocation[1] + mIndicatorWheel.getHeight())) {
+                    mIndicatorWheel.dismissSettingPopup();
+                }
                 // Let event fall through.
             }
             return false;
