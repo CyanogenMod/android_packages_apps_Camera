@@ -83,8 +83,9 @@
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normale"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modalità messa a fuoco"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatica"</string>
-    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
+    <string name="pref_camera_focusmode_entry_normal">Normale</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">Off</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modalità flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatica"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Attiva"</string>
@@ -108,6 +109,41 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Tinta rossa"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Tinta blu"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Tinta verde"</string>
+
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_sharpness_entry_level0">Livello 0</string>
+    <string name="pref_camera_sharpness_entry_level1">Livello 1</string>
+    <string name="pref_camera_sharpness_entry_level2">Livello 2(Default)</string>
+    <string name="pref_camera_sharpness_entry_level3">Livello 3</string>
+    <string name="pref_camera_sharpness_entry_level4">Livello 4</string>
+    <string name="pref_camera_sharpness_entry_level5">Livello 5</string>
+
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_contrast_entry_level0">Livello 0</string>
+    <string name="pref_camera_contrast_entry_level1">Livello 1</string>
+    <string name="pref_camera_contrast_entry_level2">Livello 2</string>
+    <string name="pref_camera_contrast_entry_level3">Livello 3(Default)</string>
+    <string name="pref_camera_contrast_entry_level4">Livello 4</string>
+    <string name="pref_camera_contrast_entry_level5">Livello 5</string>
+
+
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_saturation_entry_level0">Livello 0</string>
+    <string name="pref_camera_saturation_entry_level1">Livello 1</string>
+    <string name="pref_camera_saturation_entry_level2">Livello 2</string>
+    <string name="pref_camera_saturation_entry_level3">Livello 3(Default)</string>
+    <string name="pref_camera_saturation_entry_level4">Livello 4</string>
+    <string name="pref_camera_saturation_entry_level5">Livello 5</string>
+
+    <!-- Settings screen, Select sharpness title -->
+    <string name="pref_camera_sharpness_title">Nitidezza</string>
+
+    <!-- Settings screen, Select contrast title -->
+    <string name="pref_camera_contrast_title">Contrasto</string>
+
+    <!-- Settings screen, Select saturation title -->
+    <string name="pref_camera_saturation_title">Saturazione</string>
+
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modalità scena"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatica"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Movimento"</string>
@@ -121,8 +157,14 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Tramonto"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Stabilizzazione foto"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fuochi d\'artificio"</string>
+    <!-- Scene mode optimized for taking images during sports . -->
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Festa"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Lume di candela"</string>
+    <!-- Scene mode for taking a photo with backlight. -->
+    <string name="pref_camera_scenemode_entry_backlight">Retroilluminazione</string>
+    <!-- Scene mode optimized for taking images of flowers. -->
+    <string name="pref_camera_scenemode_entry_flowers">Fiori</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Impostazioni fotocamera"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Ripristina predefinite"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Esposizione"</string>
@@ -133,4 +175,40 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Passa a fotocamera"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Passa a video"</string>
+
+     <!-- Settings screen, Select Iso title -->
+     <string name="pref_camera_iso_title">Seleziona ISO</string>
+
+     <!-- Settings screen, ISO dialog radio button choices -->
+     <string name="pref_camera_iso_entry_auto">Automatico</string>
+     <string name="pref_camera_iso_entry_isodeblur">ISO Auto(HJR)</string>
+     <string name="pref_camera_iso_entry_iso100">ISO100</string>
+     <string name="pref_camera_iso_entry_iso200">ISO200</string>
+     <string name="pref_camera_iso_entry_iso400">ISO400</string>
+     <string name="pref_camera_iso_entry_iso800">ISO800</string>
+
+     <!-- Settings screen, Select lens shading title -->
+     <string name="pref_camera_lensshading_title">Lens shading</string>
+
+     <!-- Settings screen, lens shading radio button choices -->
+     <string name="pref_camera_lensshading_entry_enable">Attivo</string>
+     <string name="pref_camera_lensshading_entry_disable">Non attivo</string>
+
+     <!-- Settings screen, Anti Banding title -->
+     <string name="pref_camera_antibanding_title">Anti Banding</string>
+
+     <!-- Settings screen, Anti Banding entries -->
+     <string name="pref_camera_antibanding_entry_0">Non attivo</string>
+     <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+     <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+     <string name="pref_camera_antibanding_entry_3">Automatico</string>
+
+     <!-- Settings screen, Select auto exposure title -->
+     <string name="pref_camera_autoexposure_title">Modalità di Misurazione</string>
+
+     <!-- Settings screen, auto exposure dialog radio button choices -->
+     <string name="pref_camera_autoexposure_entry_frameaverage">Valutativa</string>
+     <string name="pref_camera_autoexposure_entry_centerweighted">Ponderata Centrale</string>
+     <string name="pref_camera_autoexposure_entry_spotmetering">Spot</string>
+
 </resources>
