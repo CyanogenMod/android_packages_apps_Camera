@@ -237,7 +237,7 @@ class Storage {
      * imported. This is a temporary fix for bug#1655552.
      */
     public static void ensureOSXCompatible() {
-        File nnnAAAAA = new File(DIRECTORY, "100ANDRO");
+        File nnnAAAAA = new File(DCIM, "100ANDRO");
         if (!(nnnAAAAA.exists() || nnnAAAAA.mkdirs())) {
             Log.e(TAG, "Failed to create " + nnnAAAAA.getPath());
         }
