@@ -84,7 +84,7 @@ public class MenuHelper {
             }
         };
         new AlertDialog.Builder(context)
-            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setIconAttribute(android.R.attr.alertDialogIcon)
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton(android.R.string.ok, listener)

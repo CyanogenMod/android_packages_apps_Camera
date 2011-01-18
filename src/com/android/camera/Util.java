@@ -208,7 +208,7 @@ public class Util {
         };
         new AlertDialog.Builder(activity)
                 .setCancelable(false)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setTitle(title)
                 .setMessage(message)
                 .setNeutralButton(R.string.details_ok, buttonListener)
