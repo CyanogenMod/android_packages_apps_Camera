@@ -113,4 +113,62 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"ズーム"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"写真に切替"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"ムービーに切替"</string>
+
+    <!-- CM extra entries -->
+    <string name="pref_video_quality_entry_hd">HD (30分)</string>
+    <string name="pref_video_quality_entry_youtubehd">YouTube (HD, 10分)</string>
+    <string name="pref_camera_picturesize_entry_3264x2448">8メガピクセル</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6メガピクセル(ワイド)</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4メガピクセル(ワイド)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4メガピクセル</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4メガピクセル</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2.5メガピクセル(ワイド)</string>
+    <string name="pref_camera_focusmode_entry_normal">ノーマル</string>
+
+    <string name="pref_camera_sharpness_entry_level0">レベル 0</string>
+    <string name="pref_camera_sharpness_entry_level1">レベル 1</string>
+    <string name="pref_camera_sharpness_entry_level2">レベル 2(デフォルト)</string>
+    <string name="pref_camera_sharpness_entry_level3">レベル 3</string>
+    <string name="pref_camera_sharpness_entry_level4">レベル 4</string>
+    <string name="pref_camera_sharpness_entry_level5">レベル 5</string>
+
+    <string name="pref_camera_contrast_entry_level0">レベル 0</string>
+    <string name="pref_camera_contrast_entry_level1">レベル 1</string>
+    <string name="pref_camera_contrast_entry_level2">レベル 2</string>
+    <string name="pref_camera_contrast_entry_level3">レベル 3(デフォルト)</string>
+    <string name="pref_camera_contrast_entry_level4">レベル 4</string>
+    <string name="pref_camera_contrast_entry_level5">レベル 5</string>
+
+    <string name="pref_camera_saturation_entry_level0">レベル 0</string>
+    <string name="pref_camera_saturation_entry_level1">レベル 1</string>
+    <string name="pref_camera_saturation_entry_level2">レベル 2</string>
+    <string name="pref_camera_saturation_entry_level3">レベル 3(デフォルト)</string>
+    <string name="pref_camera_saturation_entry_level4">レベル 4</string>
+    <string name="pref_camera_saturation_entry_level5">レベル 5</string>
+
+    <string name="pref_camera_sharpness_title">シャープネス</string>
+    <string name="pref_camera_contrast_title">コントラスト</string>
+    <string name="pref_camera_saturation_title">サチュレーション</string>
+
+    <string name="pref_camera_scenemode_entry_sports">スポーツ</string>
+    <string name="pref_camera_scenemode_entry_backlight">バックライト</string>
+    <string name="pref_camera_scenemode_entry_flowers">花</string>
+
+    <string name="pref_camera_iso_title">ISO選択</string>
+    <string name="pref_camera_iso_entry_auto">オート</string>
+    <string name="pref_camera_iso_entry_isodeblur">ISOオート(HJR)</string>
+
+    <string name="pref_camera_lensshading_title">レンズ影</string>
+    <string name="pref_camera_lensshading_entry_enable">有効</string>
+    <string name="pref_camera_lensshading_entry_disable">無効</string>
+
+    <string name="pref_camera_antibanding_title">アンチバンディング</string>
+    <string name="pref_camera_antibanding_entry_0">オフ</string>
+    <string name="pref_camera_antibanding_entry_3">オート</string>
+
+    <string name="pref_camera_autoexposure_title">自動測光(AE)モード</string>
+    <string name="pref_camera_autoexposure_entry_frameaverage">多分割測光</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">中央部重点測光</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">スポット測光</string>
+
 </resources>
