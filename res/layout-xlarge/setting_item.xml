@@ -20,11 +20,12 @@
         style="@style/SettingRow">
 
         <TextView android:id="@+id/text"
-                style="@style/SettingPickerText"/>
+                style="@style/SettingPickerText"
+                android:layout_width="267dp"
+                android:layout_height="match_parent"/>
         <ImageView android:id="@+id/image"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:gravity="center"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true" />
 </LinearLayout>

@@ -18,7 +18,7 @@
 -->
 
 <com.android.camera.ui.BasicSettingPopup xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="359dp"
+        android:layout_width="410dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
