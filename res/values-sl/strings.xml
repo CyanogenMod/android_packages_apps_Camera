@@ -41,8 +41,7 @@
     <string name="switch_camera_id" msgid="837545176602471325">"Menjava kamere"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Omogoči časovni zamik"</string>
     <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Onemogoči časovni zamik"</string>
-    <!-- no translation found for time_lapse_title (4360632427760662691) -->
-    <skip />
+    <string name="time_lapse_title" msgid="4360632427760662691">"Snemanje s časovnim zamikom"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Izberite kamero"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Nazaj"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Pred"</string>
@@ -54,10 +53,7 @@
     <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Nizko (30 m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (nizko, 30 s)"</string>
     <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (visoko, 10 m)"</string>
-    <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Kakovost videop. s čas. zamik."</string>
-    <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Nizka"</string>
-    <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Visoka"</string>
-    <!-- outdated translation 5023524580863002541 -->     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Interval zajema okvirja"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Interval časovnega zamika"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Nastavitve fotoaparata"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Nastavitve kamere"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Velikost slike"</string>

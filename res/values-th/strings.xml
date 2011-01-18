@@ -53,9 +53,6 @@
     <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"ต่ำ (30m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (ต่ำ, 30 วินาที)"</string>
     <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (สูง, 10 นาที)"</string>
-    <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"คุณภาพวิดีโอของการถ่ายภาพช้า"</string>
-    <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"ต่ำ"</string>
-    <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"สูง"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"ช่วงระยะเวลา"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"การตั้งค่ากล้องถ่ายรูป"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"การตั้งค่ากล้องวิดีโอ"</string>

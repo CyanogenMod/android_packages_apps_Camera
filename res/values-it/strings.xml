@@ -53,9 +53,6 @@
     <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Bassa (30 m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (bassa, 30 s)"</string>
     <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (alta, 10 m)"</string>
-    <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Qualità video a rallentatore"</string>
-    <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Bassa"</string>
-    <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Alta"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervallo rallentatore"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Impostazioni fotocamera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Impostazioni videocamera"</string>
