@@ -37,7 +37,8 @@
                 style="@style/SettingTitleText" />
     </FrameLayout>
 
-    <FrameLayout android:layout_width="570dp"
+    <FrameLayout
+            android:layout_width="590dp"
             android:layout_height="wrap_content"
             android:background="@drawable/dialog_bottom_holo_dark">
         <ListView android:id="@+id/settingList"
