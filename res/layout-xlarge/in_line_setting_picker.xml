@@ -24,7 +24,9 @@
             android:orientation="horizontal"
             style="@style/SettingRow">
         <TextView android:id="@+id/title"
-                style="@style/SettingPickerText"  />
+                style="@style/SettingPickerText"
+                android:layout_width="220dp"
+                android:layout_height="match_parent" />
 
         <Button android:id="@+id/decrement"
                 android:layout_width="72dp"

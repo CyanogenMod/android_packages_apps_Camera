@@ -144,25 +144,22 @@
     <string name="pref_camera_recordlocation_entry_off">Off</string>
     <string name="pref_camera_recordlocation_entry_on">On</string>
 
-    <!-- The Video length settings in preference -->
+    <!-- The Video quality settings in preference [CHAR LIMIT=21] -->
     <string name="pref_video_quality_title">Video quality</string>
     <string name="pref_video_quality_default" translatable="false">high</string>
+    <!-- Video quality setting entry. Videos will be recorded in high quality. [CHAR LIMIT=24] -->
     <string name="pref_video_quality_entry_high">High</string>
+    <!-- Video quality setting entry. Videos will be recorded in low quality. [CHAR LIMIT=24] -->
     <string name="pref_video_quality_entry_low">Low</string>
+    <!-- Video quality setting entry. Videos will be recorded in low quality and the length is at most 30 seconds. [CHAR LIMIT=24] -->
     <string name="pref_video_quality_entry_mms">MMS (Low, 30s)</string>
+    <!-- Video quality setting entry. Videos will be recorded in high quality and the length is at most 15 minutes. [CHAR LIMIT=24] -->
     <string name="pref_video_quality_entry_youtube">YouTube (High, 15m)</string>
 
     <string name="pref_video_quality_high" translatable="false">high</string>
     <string name="pref_video_quality_low" translatable="false">low</string>
     <string name="pref_video_quality_mms" translatable="false">mms</string>
     <string name="pref_video_quality_youtube" translatable="false">youtube</string>
-    <!-- Describes the preference dialog for choosing quality for time lapse video.
-    Appears at top of the dialog. [CHAR LIMIT=30] -->
-    <string name="pref_video_time_lapse_quality_title">Time lapse video quality</string>
-    <!-- Refers to the video quality [CHAR LIMIT=8] -->
-    <string name="pref_video_time_lapse_quality_entry_low">Low</string>
-    <!-- Refers to the video quality [CHAR LIMIT=8] -->
-    <string name="pref_video_time_lapse_quality_entry_high">High</string>
 
     <!-- Describes the preference dialog for choosing interval between frame capture for
     time lapse recording. Appears at top of the dialog. [CHAR LIMIT=30] -->
