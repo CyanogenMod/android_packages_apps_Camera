@@ -39,7 +39,6 @@ public class CameraSettings {
     public static final String KEY_LOCAL_VERSION = "pref_local_version_key";
     public static final String KEY_RECORD_LOCATION = RecordLocationPreference.KEY;
     public static final String KEY_VIDEO_QUALITY = "pref_video_quality_key";
-    public static final String KEY_VIDEO_TIME_LAPSE_QUALITY = "pref_video_time_lapse_quality_key";
     public static final String KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL = "pref_video_time_lapse_frame_interval_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
@@ -129,7 +128,6 @@ public class CameraSettings {
 
     private void initPreference(PreferenceGroup group) {
         ListPreference videoQuality = group.findPreference(KEY_VIDEO_QUALITY);
-        ListPreference videoTimeLapseQuality = group.findPreference(KEY_VIDEO_TIME_LAPSE_QUALITY);
         ListPreference pictureSize = group.findPreference(KEY_PICTURE_SIZE);
         ListPreference whiteBalance =  group.findPreference(KEY_WHITE_BALANCE);
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
@@ -148,11 +146,6 @@ public class CameraSettings {
             initVideoQuality(videoQuality);
         }
 
-        // Filter out unsupported settings / options
-        if (videoTimeLapseQuality != null) {
-            filterUnsupportedOptions(group, videoTimeLapseQuality,
-                    getSupportedTimeLapseProfiles(mCameraId));
-        }
         if (pictureSize != null) {
             filterUnsupportedOptions(group, pictureSize, sizeListToStringList(
                     mParameters.getSupportedPictureSizes()));
