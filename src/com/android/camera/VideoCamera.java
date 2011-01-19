@@ -1419,12 +1419,20 @@ public class VideoCamera extends NoSearchActivity
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
+            if (mCaptureTimeLapse) {
+                mIndicatorWheel.startTimeLapseAnimation(
+                        mTimeBetweenTimeLapseFrameCaptureMs,
+                        mRecordingStartTime);
+            }
         } else {
             mShutterButton.setImageDrawable(getResources().getDrawable(
                     R.drawable.btn_ic_video_record));
             mShutterButton.setBackgroundResource(R.drawable.btn_shutter);
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
+            if (mCaptureTimeLapse) {
+                mIndicatorWheel.stopTimeLapseAnimation();
+            }
         }
     }
 
