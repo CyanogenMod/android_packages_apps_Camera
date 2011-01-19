@@ -26,6 +26,8 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
@@ -49,9 +51,11 @@ public class IndicatorWheel extends ViewGroup implements
     private static final float EDGE_STROKE_WIDTH = 6f;
     private static final int HIGHLIGHT_WIDTH = 4;
     private static final int HIGHLIGHT_DEGREE = 30;
+    private static final int TIME_LAPSE_ARC_WIDTH = 6;
 
     private final int HIGHLIGHT_COLOR;
     private final int DISABLED_COLOR;
+    private final int TIME_LAPSE_ARC_COLOR;
 
     private Listener mListener;
     // The center of the shutter button.
@@ -71,11 +75,24 @@ public class IndicatorWheel extends ViewGroup implements
     // opening it again.
     private int mJustDeselectedIndex = -1;
 
+    // Time lapse recording variables.
+    private int mTimeLapseInterval;  // in ms
+    private long mRecordingStartTime = 0;
+    private long mNumberOfFrames = 0;
+    private float mLastEndAngle;
+
     private Context mContext;
     private PreferenceGroup mPreferenceGroup;
     private ArrayList<String> mPreferenceKeys;
     private BasicSettingPopup[] mBasicSettingPopups;
     private OtherSettingsPopup mOtherSettingsPopup;
+
+    private Handler mHandler = new Handler();
+    private final Runnable mRunnable = new Runnable() {
+        public void run() {
+            invalidate();
+        }
+    };
 
     static public interface Listener {
         public void onSharedPreferenceChanged();
@@ -93,6 +110,7 @@ public class IndicatorWheel extends ViewGroup implements
         Resources resources = context.getResources();
         HIGHLIGHT_COLOR = resources.getColor(R.color.review_control_pressed_color);
         DISABLED_COLOR = resources.getColor(R.color.icon_disabled_color);
+        TIME_LAPSE_ARC_COLOR = resources.getColor(R.color.time_lapse_arc);
         setWillNotDraw(false);
 
         mBackgroundPaint = new Paint();
@@ -191,6 +209,7 @@ public class IndicatorWheel extends ViewGroup implements
         super.onFinishInflate();
         // The first view is shutter button.
         mShutterButton = getChildAt(0);
+        mHandler.postDelayed(mRunnable, 0);
     }
 
     public void removeIndicators() {
@@ -286,6 +305,19 @@ public class IndicatorWheel extends ViewGroup implements
         }
     }
 
+    public void startTimeLapseAnimation(int timeLapseInterval, long startTime) {
+        mTimeLapseInterval = timeLapseInterval;
+        mRecordingStartTime = startTime;
+        mNumberOfFrames = 0;
+        mLastEndAngle = 0f;
+        invalidate();
+    }
+
+    public void stopTimeLapseAnimation() {
+        mTimeLapseInterval = 0;
+        invalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         // Draw highlight.
@@ -305,6 +337,40 @@ public class IndicatorWheel extends ViewGroup implements
             mBackgroundPaint.setColor(HIGHLIGHT_COLOR);
             canvas.drawArc(mBackgroundRect, -degree - HIGHLIGHT_DEGREE / 2,
                     HIGHLIGHT_DEGREE, false, mBackgroundPaint);
+        }
+
+        // Draw arc shaped indicator in time lapse recording.
+        if (mTimeLapseInterval != 0) {
+            // Setup rectangle and paint.
+            mBackgroundRect.set((float)(mCenterX - mShutterButtonRadius),
+                    (float)(mCenterY - mShutterButtonRadius),
+                    (float)(mCenterX + mShutterButtonRadius),
+                    (float)(mCenterY + mShutterButtonRadius));
+            mBackgroundRect.inset(3f, 3f);
+            mBackgroundPaint.setStrokeWidth(TIME_LAPSE_ARC_WIDTH);
+            mBackgroundPaint.setStrokeCap(Paint.Cap.ROUND);
+            mBackgroundPaint.setColor(TIME_LAPSE_ARC_COLOR);
+
+            // Compute the start angle and sweep angle.
+            long timeDelta = SystemClock.uptimeMillis() - mRecordingStartTime;
+            long numberOfFrames = timeDelta / mTimeLapseInterval;
+            float sweepAngle, startAngle;
+            float endAngle = ((float) timeDelta) % mTimeLapseInterval / mTimeLapseInterval * 360f;
+            if (numberOfFrames > mNumberOfFrames) {
+                // The arc just acrosses 0 degree. Draw the arc from the degree
+                // of last onDraw. Otherwise some parts of the arc will be never
+                // drawn.
+                startAngle = mLastEndAngle;
+                sweepAngle = endAngle + 360f - mLastEndAngle;
+                mNumberOfFrames = numberOfFrames;
+            } else {
+                startAngle = 0;
+                sweepAngle = endAngle;
+            }
+            mLastEndAngle = endAngle;
+
+            canvas.drawArc(mBackgroundRect, startAngle, sweepAngle, false, mBackgroundPaint);
+            mHandler.postDelayed(mRunnable, 0);
         }
 
         super.onDraw(canvas);
