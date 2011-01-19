@@ -1672,13 +1672,16 @@ public class VideoCamera extends NoSearchActivity
         }
         String text;
 
+        long targetNextUpdateDelay;
         if (!mCaptureTimeLapse) {
             text = millisecondToTimeString(deltaAdjusted, false);
+            targetNextUpdateDelay = 1000;
         } else {
             // The length of time lapse video is different from the length
             // of the actual wall clock time elapsed. Display the video length
             // only in format hh:mm:ss.dd, where dd are the centi seconds.
             text = millisecondToTimeString(getTimeLapseVideoLength(delta), true);
+            targetNextUpdateDelay = mTimeBetweenTimeLapseFrameCaptureMs;
         }
 
         mRecordingTimeView.setText(text);
@@ -1695,9 +1698,9 @@ public class VideoCamera extends NoSearchActivity
             mRecordingTimeView.setTextColor(color);
         }
 
-        long nextUpdateDelay = 1000 - (delta % 1000);
+        long actualNextUpdateDelay = targetNextUpdateDelay - (delta % targetNextUpdateDelay);
         mHandler.sendEmptyMessageDelayed(
-                UPDATE_RECORD_TIME, nextUpdateDelay);
+                UPDATE_RECORD_TIME, actualNextUpdateDelay);
     }
 
     private static boolean isSupported(String value, List<String> supported) {
