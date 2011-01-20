@@ -20,10 +20,13 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="2dp"
         android:layout_weight="1">
-    <FrameLayout android:id="@+id/frame"
+    <RelativeLayout android:id="@+id/frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/border_view_finder">
+            android:layout_height="match_parent">
+        <ImageView android:id="@+id/preview_border"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/border_view_finder"/>
         <SurfaceView android:id="@+id/camera_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
@@ -31,5 +34,5 @@
                 android:id="@+id/focus_rectangle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-    </FrameLayout>
+    </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>
