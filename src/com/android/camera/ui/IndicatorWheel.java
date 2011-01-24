@@ -263,7 +263,7 @@ public class IndicatorWheel extends ViewGroup implements
         mShutterButtonRadius = shutterButtonWidth / 2.0;
         int shutterButtonHeight = mShutterButton.getMeasuredHeight();
         mStrokeWidth = (int) (mShutterButtonRadius * 1.05);
-        int innerRadius = (int) (mShutterButtonRadius + mStrokeWidth * 0.8);
+        int innerRadius = (int) (mShutterButtonRadius + mStrokeWidth * 0.84);
         // 64 is the requirement by UI design. The distance between the center
         // and the border is 64 pixels. This has to be consistent with the
         // background.
