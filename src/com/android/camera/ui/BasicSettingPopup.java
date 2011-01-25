@@ -76,18 +76,15 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
         ((ListView) mSettingList).setAdapter(listItemAdapter);
         ((ListView) mSettingList).setOnItemClickListener(this);
         ((ListView) mSettingList).setSelector(android.R.color.transparent);
+        int index = mPreference.findIndexOfValue(mPreference.getValue());
+        if (index != -1) {
+            ((ListView) mSettingList).setItemChecked(index, true);
+        }
+
     }
 
     public void setSettingChangedListener(Listener listener) {
         mListener = listener;
-    }
-
-    @Override
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        int index = mPreference.findIndexOfValue(mPreference.getValue());
-        View selected = ((ListView) mSettingList).getChildAt(index);
-        if (selected != null) selected.setActivated(true);
     }
 
     @Override
@@ -99,10 +96,8 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
 
         int oldIndex = mPreference.findIndexOfValue(mPreference.getValue());
         if (oldIndex != index) {
-            ((LinearLayout) parent.getChildAt(oldIndex)).setActivated(false);
             mPreference.setValueIndex(index);
             if (mListener != null) mListener.onSettingChanged();
         }
-        view.setActivated(true);
     }
 }
