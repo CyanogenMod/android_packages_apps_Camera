@@ -173,8 +173,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private String mCropValue;
     private Uri mSaveUri;
 
-    private ImageCapture mImageCapture = null;
-
     // GPS on-screen indicator
     private View mGpsNoSignalView;
     private View mGpsHasSignalView;
@@ -229,6 +227,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
     private long mPicturesRemaining;
+    private byte[] mJpegImageData;
 
     // These latency time are for the CameraLatency test.
     public long mAutoFocusTime;
@@ -710,7 +709,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                     mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, delay);
                 }
             }
-            mImageCapture.storeImage(jpegData, camera, mLocation);
+            storeImage(jpegData, camera, mLocation);
 
             // Check this in advance of each shot so we don't add to shutter
             // latency. It's true that someone else could write to the SD card in
@@ -744,7 +743,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 } else {
                     mFocusState = FOCUS_FAIL;
                 }
-                mImageCapture.onSnap();
+                capture();
             } else if (mFocusState == FOCUSING) {
                 // User is half-pressing the focus key. Play the focus tone.
                 // Do not take the picture now.
@@ -786,128 +785,99 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
-    private class ImageCapture {
+    public void storeImage(final byte[] data,
+            android.hardware.Camera camera, Location loc) {
+        if (!mIsImageCaptureIntent) {
+            long dateTaken = System.currentTimeMillis();
+            String title = createName(dateTaken);
 
-        byte[] mCaptureOnlyData;
+            Storage.Thumbnail thumbnail = Storage.addImage(
+                    mContentResolver, title, dateTaken, loc, data);
 
-        public void storeImage(final byte[] data,
-                android.hardware.Camera camera, Location loc) {
-            if (!mIsImageCaptureIntent) {
-                long dateTaken = System.currentTimeMillis();
-                String title = createName(dateTaken);
+            if (thumbnail != null && mThumbnailButton != null) {
+                mThumbnailButton.setData(thumbnail.getOriginalUri(),
+                        thumbnail.getBitmap(mContentResolver));
+                mThumbnailButton.setVisibility(View.VISIBLE);
 
-                Storage.Thumbnail thumbnail = Storage.addImage(
-                        mContentResolver, title, dateTaken, loc, data);
+                sendBroadcast(new Intent("com.android.camera.NEW_PICTURE",
+                        thumbnail.getOriginalUri()));
+            }
+        } else {
+            mJpegImageData = data;
+            if (!mQuickCapture) {
+                showPostCaptureAlert();
+            } else {
+                doAttach();
+            }
+        }
+    }
 
-                if (thumbnail != null && mThumbnailButton != null) {
-                    mThumbnailButton.setData(thumbnail.getOriginalUri(),
-                            thumbnail.getBitmap(mContentResolver));
-                    mThumbnailButton.setVisibility(View.VISIBLE);
+    private void capture() {
+        // If we are already in the middle of taking a snapshot then ignore.
+        if (mPausing || mStatus == SNAPSHOT_IN_PROGRESS || mCameraDevice == null) {
+            return;
+        }
+        mCaptureStartTime = System.currentTimeMillis();
+        mPostViewPictureCallbackTime = 0;
+        enableCameraControls(false);
+        mStatus = SNAPSHOT_IN_PROGRESS;
+        mJpegImageData = null;
 
-                    sendBroadcast(new Intent("com.android.camera.NEW_PICTURE",
-                            thumbnail.getOriginalUri()));
+        // See android.hardware.Camera.Parameters.setRotation for
+        // documentation.
+        int rotation = 0;
+        if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
+            CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+            if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
+                rotation = (info.orientation - mOrientation + 360) % 360;
+            } else {  // back-facing camera
+                rotation = (info.orientation + mOrientation) % 360;
+            }
+        }
+        mParameters.setRotation(rotation);
+
+        // Clear previous GPS location from the parameters.
+        mParameters.removeGpsData();
+
+        // We always encode GpsTimeStamp
+        mParameters.setGpsTimestamp(System.currentTimeMillis() / 1000);
+
+        // Set GPS location.
+        Location loc = mRecordLocation ? getCurrentLocation() : null;
+        if (loc != null) {
+            double lat = loc.getLatitude();
+            double lon = loc.getLongitude();
+            boolean hasLatLon = (lat != 0.0d) || (lon != 0.0d);
+
+            if (hasLatLon) {
+                Log.d(TAG, "Set gps location");
+                mParameters.setGpsLatitude(lat);
+                mParameters.setGpsLongitude(lon);
+                mParameters.setGpsProcessingMethod(loc.getProvider().toUpperCase());
+                if (loc.hasAltitude()) {
+                    mParameters.setGpsAltitude(loc.getAltitude());
+                } else {
+                    // for NETWORK_PROVIDER location provider, we may have
+                    // no altitude information, but the driver needs it, so
+                    // we fake one.
+                    mParameters.setGpsAltitude(0);
+                }
+                if (loc.getTime() != 0) {
+                    // Location.getTime() is UTC in milliseconds.
+                    // gps-timestamp is UTC in seconds.
+                    long utcTimeSeconds = loc.getTime() / 1000;
+                    mParameters.setGpsTimestamp(utcTimeSeconds);
                 }
             } else {
-                mCaptureOnlyData = data;
-                if (!mQuickCapture) {
-                    showPostCaptureAlert();
-                } else {
-                    doAttach();
-                }
+                loc = null;
             }
         }
 
-        /**
-         * Initiate the capture of an image.
-         */
-        public void initiate() {
-            if (mCameraDevice == null) {
-                return;
-            }
+        mCameraDevice.setParameters(mParameters);
 
-            capture();
-        }
-
-        public byte[] getLastCaptureData() {
-            return mCaptureOnlyData;
-        }
-
-        private void capture() {
-            mCaptureOnlyData = null;
-
-            // See android.hardware.Camera.Parameters.setRotation for
-            // documentation.
-            int rotation = 0;
-            if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
-                CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-                if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-                    rotation = (info.orientation - mOrientation + 360) % 360;
-                } else {  // back-facing camera
-                    rotation = (info.orientation + mOrientation) % 360;
-                }
-            }
-            mParameters.setRotation(rotation);
-
-            // Clear previous GPS location from the parameters.
-            mParameters.removeGpsData();
-
-            // We always encode GpsTimeStamp
-            mParameters.setGpsTimestamp(System.currentTimeMillis() / 1000);
-
-            // Set GPS location.
-            Location loc = mRecordLocation ? getCurrentLocation() : null;
-            if (loc != null) {
-                double lat = loc.getLatitude();
-                double lon = loc.getLongitude();
-                boolean hasLatLon = (lat != 0.0d) || (lon != 0.0d);
-
-                if (hasLatLon) {
-                    Log.d(TAG, "Set gps location");
-                    mParameters.setGpsLatitude(lat);
-                    mParameters.setGpsLongitude(lon);
-                    mParameters.setGpsProcessingMethod(loc.getProvider().toUpperCase());
-                    if (loc.hasAltitude()) {
-                        mParameters.setGpsAltitude(loc.getAltitude());
-                    } else {
-                        // for NETWORK_PROVIDER location provider, we may have
-                        // no altitude information, but the driver needs it, so
-                        // we fake one.
-                        mParameters.setGpsAltitude(0);
-                    }
-                    if (loc.getTime() != 0) {
-                        // Location.getTime() is UTC in milliseconds.
-                        // gps-timestamp is UTC in seconds.
-                        long utcTimeSeconds = loc.getTime() / 1000;
-                        mParameters.setGpsTimestamp(utcTimeSeconds);
-                    }
-                } else {
-                    loc = null;
-                }
-            }
-
-            mCameraDevice.setParameters(mParameters);
-
-            mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
-                    mPostViewPictureCallback, new JpegPictureCallback(loc));
-            mPreviewing = false;
-        }
-
-        public void onSnap() {
-            // If we are already in the middle of taking a snapshot then ignore.
-            if (mPausing || mStatus == SNAPSHOT_IN_PROGRESS) {
-                return;
-            }
-            mCaptureStartTime = System.currentTimeMillis();
-            mPostViewPictureCallbackTime = 0;
-            enableCameraControls(false);
-            mStatus = SNAPSHOT_IN_PROGRESS;
-
-            mImageCapture.initiate();
-        }
-
-        private void clearLastData() {
-            mCaptureOnlyData = null;
-        }
+        mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
+                mPostViewPictureCallback, new JpegPictureCallback(loc));
+        mPreviewing = false;
     }
 
     private boolean saveDataToFile(String filePath, byte[] data) {
@@ -1245,7 +1215,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             return;
         }
 
-        byte[] data = mImageCapture.getLastCaptureData();
+        byte[] data = mJpegImageData;
 
         if (mCropValue == null) {
             // First handle the no crop case -- just return the value.  If the
@@ -1415,7 +1385,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mPausing = false;
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
-        mImageCapture = new ImageCapture();
 
         // Start the preview if it is not started.
         if (!mPreviewing && !mStartPreviewFail) {
@@ -1479,8 +1448,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         // If we are in an image capture intent and has taken
         // a picture, we just clear it in onPause.
-        mImageCapture.clearLastData();
-        mImageCapture = null;
+        mJpegImageData = null;
 
         // Remove the messages in the event queue.
         mHandler.removeMessages(RESTART_PREVIEW);
@@ -1630,7 +1598,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF)
                 || (mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL)) {
-            mImageCapture.onSnap();
+            capture();
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
             // already have requested AF for us, so just request capture on
