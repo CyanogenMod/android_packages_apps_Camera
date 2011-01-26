@@ -148,7 +148,8 @@ public class OtherSettingsPopup extends AbstractSettingPopup
     public void overrideSettings(String key, String value) {
         int count = mSettingList.getChildCount();
         for (int i = 0; i < count; i++) {
-            if (key.equals(mListItem.get(i).get(ITEM_KEY))) {
+            ListPreference pref = (ListPreference) mListItem.get(i).get(ITEM_KEY);
+            if (pref != null && key.equals(pref.getKey())) {
                 InLineSettingPicker picker =
                         (InLineSettingPicker) mSettingList.getChildAt(i);
                 picker.overrideSettings(value);
