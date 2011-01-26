@@ -1630,6 +1630,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             return;
         }
 
+        Log.v(TAG, "surfaceChanged. w=" + w + ". h=" + h);
+
         // We need to save the holder for later use, even when the mCameraDevice
         // is null. This could happen if onResume() is invoked after this
         // function.
