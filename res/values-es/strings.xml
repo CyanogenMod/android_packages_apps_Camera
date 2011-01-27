@@ -31,7 +31,7 @@
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparando tarjeta SD…"</string>
     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Se ha producido un error al acceder al almacenamiento USB."</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Sin acceso a la tarjeta SD"</string>
-    <string name="confirm_restore_title" msgid="1229914538263792180">"Restaurar valores predeterminados"</string>
+    <string name="confirm_restore_title" msgid="1229914538263792180">"Restaurar valores"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Se restaurará la configuración de cámara predeterminada."</string>
     <string name="review_play" msgid="6015456244323302817">"REPRODUCIR"</string>
     <string name="review_cancel" msgid="8188009385853399254">"CANCELAR"</string>
