@@ -33,10 +33,10 @@
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"SDカードにアクセスできません。"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"初期設定に戻す"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"カメラを初期設定に戻します。"</string>
-    <!-- outdated translation 6015456244323302817 -->     <string name="review_play" msgid="6378271587740884696">"再生"</string>
-    <!-- outdated translation 8188009385853399254 -->     <string name="review_cancel" msgid="7842670783357645942">"キャンセル"</string>
-    <!-- outdated translation 5305096180300056529 -->     <string name="review_ok" msgid="4750691949877864726">"OK"</string>
-    <!-- outdated translation 7804864054896088338 -->     <string name="review_retake" msgid="7776579640762112761">"撮り直し"</string>
+    <!-- outdated translation 5047141865647555989 -->     <string name="review_play" msgid="6378271587740884696">"再生"</string>
+    <!-- outdated translation 1523837991770800825 -->     <string name="review_cancel" msgid="7842670783357645942">"キャンセル"</string>
+    <!-- outdated translation 6932659631925399099 -->     <string name="review_ok" msgid="4750691949877864726">"OK"</string>
+    <!-- outdated translation 8985003713073558823 -->     <string name="review_retake" msgid="7776579640762112761">"撮り直し"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"ギャラリー"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"カメラを切り替え"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"低速度撮影を有効にする"</string>
@@ -49,10 +49,10 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"OFF"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"ON"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"動画の画質"</string>
-    <!-- outdated translation 2874184763684055612 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"高（30m）"</string>
-    <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"低（30m）"</string>
+    <!-- outdated translation 2560124004142393472 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"高"</string>
+    <!-- outdated translation 8689217137398886757 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"低"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS（低、30s）"</string>
-    <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube（高、10m）"</string>
+    <!-- outdated translation 8275222444999068591 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube（高、15m）"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"低速度撮影の間隔"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"カメラ設定"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"ビデオ録画設定"</string>
