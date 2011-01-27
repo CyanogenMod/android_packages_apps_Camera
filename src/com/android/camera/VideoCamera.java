@@ -195,6 +195,9 @@ public class VideoCamera extends NoSearchActivity
 
     boolean mPausing = false;
     boolean mPreviewing = false; // True if preview is started.
+    // The display rotation in degrees. This is only valid when mPreviewing is
+    // true.
+    private int mDisplayRotation;
 
     private ContentResolver mContentResolver;
 
@@ -872,7 +875,8 @@ public class VideoCamera extends NoSearchActivity
             mPreviewing = false;
         }
         setPreviewDisplay(mSurfaceHolder);
-        Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
+        mDisplayRotation = Util.getDisplayRotation(this);
+        Util.setCameraDisplayOrientation(mDisplayRotation, mCameraId, mCameraDevice);
         setCameraParameters();
 
         try {
@@ -1006,6 +1010,8 @@ public class VideoCamera extends NoSearchActivity
             return;
         }
 
+        Log.v(TAG, "surfaceChanged. w=" + w + ". h=" + h);
+
         mSurfaceHolder = holder;
 
         if (mPausing) {
@@ -1024,8 +1030,12 @@ public class VideoCamera extends NoSearchActivity
         if (mCameraDevice == null) return;
 
         // Set preview display if the surface is being created. Preview was
-        // already started.
-        if (holder.isCreating()) {
+        // already started. Also restart the preview if display rotation has
+        // changed. Sometimes this happens when the device is held in portrait
+        // and camera app is opened. Rotation animation takes some time and
+        // display rotation in onCreate may not be what we want.
+        if (mPreviewing && (Util.getDisplayRotation(this) == mDisplayRotation)
+                && holder.isCreating()) {
             setPreviewDisplay(holder);
         } else {
             stopVideoRecording();
