@@ -310,13 +310,12 @@ public class Util {
         return 0;
     }
 
-    public static void setCameraDisplayOrientation(Activity activity,
+    public static void setCameraDisplayOrientation(int degrees,
             int cameraId, Camera camera) {
         // See android.hardware.Camera.setCameraDisplayOrientation for
         // documentation.
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, info);
-        int degrees = getDisplayRotation(activity);
         int result;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + degrees) % 360;

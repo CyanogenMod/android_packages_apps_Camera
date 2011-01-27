@@ -190,6 +190,9 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             "android.intent.extra.quickCapture";
 
     private boolean mPreviewing;
+    // The display rotation in degrees. This is only valid when mPreviewing is
+    // true.
+    private int mDisplayRotation;
     private boolean mPausing;
     private boolean mFirstTimeInitialized;
     private boolean mIsImageCaptureIntent;
@@ -1646,7 +1649,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Ignore it.
         if (mPausing || isFinishing()) return;
 
-        if (mPreviewing && holder.isCreating()) {
+        // Set preview display if the surface is being created. Preview was
+        // already started. Also restart the preview if display rotation has
+        // changed. Sometimes this happens when the device is held in portrait
+        // and camera app is opened. Rotation animation takes some time and
+        // display rotation in onCreate may not be what we want.
+        if (mPreviewing && (Util.getDisplayRotation(this) == mDisplayRotation)
+                && holder.isCreating()) {
             // Set preview display if the surface is being created and preview
             // was already started. That means preview display was set to null
             // and we need to set it now.
@@ -1730,7 +1739,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mPreviewing) stopPreview();
 
         setPreviewDisplay(mSurfaceHolder);
-        Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
+        mDisplayRotation = Util.getDisplayRotation(this);
+        Util.setCameraDisplayOrientation(mDisplayRotation, mCameraId, mCameraDevice);
         setCameraParameters(UPDATE_PARAM_ALL);
 
 
