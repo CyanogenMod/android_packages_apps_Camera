@@ -88,17 +88,17 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"色合い（赤）"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"色合い（青）"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"色合い（緑）"</string>
-    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"シーンモード"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"撮影モード"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"オート"</string>
-    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"操作"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"アクション"</string>
     <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"ポートレイト"</string>
-    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"横向き"</string>
+    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"風景"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"夜景"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"夜景ポートレイト"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"ナイトスナップ"</string>
     <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"シアター"</string>
     <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"ビーチ"</string>
-    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"雪"</string>
-    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"夕日"</string>
+    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"スノー"</string>
+    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"夕焼け"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"手振れ補正"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"花火"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"パーティー"</string>
