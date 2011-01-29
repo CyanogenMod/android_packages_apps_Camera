@@ -25,7 +25,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -1032,11 +1031,13 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private void initializeHeadUpDisplay() {
         CameraSettings settings = new CameraSettings(this, mInitialParams,
                 CameraHolder.instance().getCameraInfo(), mCameraId);
+
+        boolean zoomSupported = CameraSettings.isZoomSupported(this, mCameraId);
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences),
-                CameraSettings.isZoomSupported(this, mCameraId) ? getZoomRatios() : null,
+                zoomSupported ? getZoomRatios() : null,
                 mOrientationCompensation);
-        if (mParameters.isZoomSupported()) {
+        if (zoomSupported) {
             mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
                 public void onZoomChanged(
                         int index, float ratio, boolean isMoving) {
