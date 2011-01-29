@@ -402,30 +402,31 @@
      <string name="pref_camera_iso_default">auto</string>
 
      <!-- Settings screen, Select Iso title -->
-     <string name="pref_camera_iso_title">Select ISO</string>
+     <string name="pref_camera_iso_title">ISO</string>
 
      <!-- Settings screen, ISO dialog radio button choices -->
      <string name="pref_camera_iso_entry_auto">Auto</string>
-     <string name="pref_camera_iso_entry_isodeblur">ISO Auto(HJR)</string>
+     <string name="pref_camera_iso_entry_isodeblur">Deblur</string>
      <string name="pref_camera_iso_entry_iso100">ISO100</string>
      <string name="pref_camera_iso_entry_iso200">ISO200</string>
      <string name="pref_camera_iso_entry_iso400">ISO400</string>
      <string name="pref_camera_iso_entry_iso800">ISO800</string>
+     <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
 
      <!-- ISO entry values. Do not translate. -->
      <string name="pref_camera_iso_value_auto">auto</string>
-     <string name="pref_camera_iso_value_isodeblur">ISO_HJR</string>
-     <string name="pref_camera_iso_value_iso100">ISO100</string>
-     <string name="pref_camera_iso_value_iso200">ISO200</string>
-     <string name="pref_camera_iso_value_iso400">ISO400</string>
-     <string name="pref_camera_iso_value_iso800">ISO800</string>
-
+     <string name="pref_camera_iso_value_isodeblur">deblur</string>
+     <string name="pref_camera_iso_value_iso100">100</string>
+     <string name="pref_camera_iso_value_iso200">200</string>
+     <string name="pref_camera_iso_value_iso400">400</string>
+     <string name="pref_camera_iso_value_iso800">800</string>
+     <string name="pref_camera_iso_value_iso1250">1250</string>
 
      <!-- Default auto lens shading setting. Do not translate. -->
      <string name="pref_camera_lensshading_default">enable</string>
 
      <!-- Settings screen, Select lens shading title -->
-     <string name="pref_camera_lensshading_title">Lens Shading</string>
+     <string name="pref_camera_lensshading_title">Lens shading</string>
 
      <!-- Settings screen, lens shading radio button choices -->
      <string name="pref_camera_lensshading_entry_enable">Enable</string>
@@ -436,10 +437,10 @@
      <string name="pref_camera_lensshading_value_disable">disable</string>
 
      <!-- Settings screen, Anti Banding title -->
-     <string name="pref_camera_antibanding_title">Anti Banding</string>
+     <string name="pref_camera_antibanding_title">Flicker reduction</string>
 
      <!-- Default Anti Banding setting. -->
-     <string name="pref_camera_antibanding_default">Off</string>
+     <string name="pref_camera_antibanding_default">auto</string>
 
      <!-- Settings screen, Anti Banding entries -->
      <string name="pref_camera_antibanding_entry_0">Off</string>
@@ -448,21 +449,19 @@
      <string name="pref_camera_antibanding_entry_3">Auto</string>
 
      <!-- Default auto exposure setting. Do not translate. -->
-     <string name="pref_camera_autoexposure_default">frame-average</string>
+     <string name="pref_camera_autoexposure_default">meter-center</string>
 
      <!-- Settings screen, Select auto exposure title -->
-     <string name="pref_camera_autoexposure_title">Select Auto Exposure Mode</string>
+     <string name="pref_camera_autoexposure_title">Metering mode</string>
 
      <!-- Settings screen, auto exposure dialog radio button choices -->
-     <string name="pref_camera_autoexposure_entry_frameaverage">Frame Average</string>
-     <string name="pref_camera_autoexposure_entry_centerweighted">Center Weighted</string>
-     <string name="pref_camera_autoexposure_entry_spotmetering">Spot Metering</string>
+     <string name="pref_camera_autoexposure_entry_frameaverage">Frame average</string>
+     <string name="pref_camera_autoexposure_entry_centerweighted">Center weighted</string>
+     <string name="pref_camera_autoexposure_entry_spotmetering">Spot metering</string>
 
      <!-- Auto exposure entry values. Do not translate. -->
-     <string name="pref_camera_autoexposure_value_frameaverage">frame-average</string>
-     <string name="pref_camera_autoexposure_value_centerweighted">center-weighted</string>
-     <string name="pref_camera_autoexposure_value_spotmetering">spot-metering</string>
-
-
+     <string name="pref_camera_autoexposure_value_frameaverage">meter-average</string>
+     <string name="pref_camera_autoexposure_value_centerweighted">meter-center</string>
+     <string name="pref_camera_autoexposure_value_spotmetering">meter-spot</string>
 
 </resources>
