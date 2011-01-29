@@ -77,7 +77,7 @@ public class CameraSettings {
     private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 10 mins
 
     // MMS video length
-    public static final int DEFAULT_VIDEO_DURATION_VALUE = -1;
+    public static final int DEFAULT_VIDEO_DURATION_VALUE = 30;
 
     private static final String TAG = "CameraSettings";
 
@@ -478,4 +478,16 @@ public class CameraSettings {
     private boolean isFrontFacingCamera() {
         return mCameraInfo[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT;
     }
+
+    /*
+    public static boolean isVideoZoomSupported(Context context, int cameraId, Parameters params) {
+        boolean ret = params.isZoomSupported();
+        if (ret) {
+            // No zoom at 720P currently. Driver limitation?
+            Size size = params.getPreviewSize();
+            ret = !(size.width == 1280 && size.height == 720);
+        }
+        return ret;
+    }
+    */
 }
