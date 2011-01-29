@@ -127,7 +127,7 @@ class IndicatorBar extends GLView {
     }
 
     private void setSelectedItem(GLView view, int index) {
-        if (index == mSelectedIndex) return;
+        if ((view != null && !view.mEnabled) || index == mSelectedIndex) return;
         mSelectionChanged = true;
         mSelectedIndex = index;
         if (mSelectedListener != null) {
