@@ -33,10 +33,10 @@
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"เข้าถึงการ์ด SD ไม่สำเร็จ"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"คืนค่าเริ่มต้น"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"การตั้งค่ากล้องถ่ายรูปจะถูกคืนค่าเริ่มต้น"</string>
-    <!-- outdated translation 5047141865647555989 -->     <string name="review_play" msgid="6378271587740884696">"เล่น"</string>
-    <!-- outdated translation 1523837991770800825 -->     <string name="review_cancel" msgid="7842670783357645942">"ยกเลิก"</string>
-    <!-- outdated translation 6932659631925399099 -->     <string name="review_ok" msgid="4750691949877864726">"ตกลง"</string>
-    <!-- outdated translation 8985003713073558823 -->     <string name="review_retake" msgid="7776579640762112761">"ถ่ายภาพซ้ำ"</string>
+    <string name="review_play" msgid="6378271587740884696">"เล่น"</string>
+    <string name="review_cancel" msgid="7842670783357645942">"ยกเลิก"</string>
+    <string name="review_ok" msgid="4750691949877864726">"ตกลง"</string>
+    <string name="review_retake" msgid="7776579640762112761">"ถ่ายภาพซ้ำ"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"แกลเลอรี"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"เปลี่ยนกล้องถ่ายรูป"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"เปิดใช้งานการถ่ายภาพช้า"</string>
@@ -49,10 +49,10 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"ปิด"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"เปิด"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"คุณภาพวิดีโอ"</string>
-    <!-- outdated translation 2560124004142393472 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"สูง"</string>
-    <!-- outdated translation 8689217137398886757 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"ต่ำ"</string>
+    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"สูง"</string>
+    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"ต่ำ"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (ต่ำ, 30 วินาที)"</string>
-    <!-- outdated translation 8275222444999068591 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (สูง, 15 นาที)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (สูง, 15 นาที)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"ช่วงระยะเวลา"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"การตั้งค่ากล้องถ่ายรูป"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"การตั้งค่ากล้องวิดีโอ"</string>
