@@ -190,8 +190,12 @@ public class CameraSettings {
 
         // Filter out unsupported settings / options
         if (pictureSize != null) {
-            filterUnsupportedOptions(group, pictureSize, sizeListToStringList(
-                    mParameters.getSupportedPictureSizes()));
+            final List<String> pictureSizes = sizeListToStringList(mParameters.getSupportedPictureSizes());
+            final String filteredSizes = mContext.getResources().getString(R.string.filtered_pictureSizes);
+            if (filteredSizes != null && filteredSizes.length() > 0) {
+                pictureSizes.removeAll(Arrays.asList(filteredSizes.split(",")));
+            }
+            filterUnsupportedOptions(group, pictureSize, pictureSizes);
         }
         if (whiteBalance != null) {
             filterUnsupportedOptions(group,
