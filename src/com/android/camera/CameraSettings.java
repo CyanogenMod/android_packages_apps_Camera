@@ -492,4 +492,33 @@ public class CameraSettings {
         }
         return ret;
     }
+
+    /**
+     * Enable video mode for HTC cameras. This is needed for OV8810 sensors.
+     *
+     * @param params
+     * @param on
+     */
+    public static void setVideoMode(Parameters params, boolean on) {
+        if (isHtcCamera(params)) {
+            params.set("cam-mode", on ? "1" : "0");
+        }
+    }
+
+    /**
+     * Sets continuous-autofocus video mode on HTC cameras that support it.
+     *
+     * @param params
+     * @param on
+     */
+    public static void setContinuousAf(Parameters params, boolean on) {
+        if (isHtcCamera(params)) {
+            params.set("enable-caf", on ? "on" : "off");
+        }
+    }
+
+    // Hackish way to know if this is an HTC camera
+    private static boolean isHtcCamera(Parameters params) {
+        return params.get("taking-picture-zoom") != null;
+    }
 }

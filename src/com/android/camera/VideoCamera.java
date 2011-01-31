@@ -723,6 +723,10 @@ public class VideoCamera extends NoSearchActivity
         Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
         setCameraParameters();
 
+        CameraSettings.setContinuousAf(mParameters, false);
+        CameraSettings.setVideoMode(mParameters, true);
+        setCameraHardwareParameters();
+
         try {
             mCameraDevice.startPreview();
             mPreviewing = true;
@@ -1257,6 +1261,9 @@ public class VideoCamera extends NoSearchActivity
             Log.v(TAG, "Storage issue, ignore the start request");
             return;
         }
+
+        CameraSettings.setContinuousAf(mParameters, true);
+        setCameraHardwareParameters();
 
         initializeRecorder();
         if (mMediaRecorder == null) {
