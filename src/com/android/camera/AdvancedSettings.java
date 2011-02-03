@@ -155,7 +155,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
         } else if (key.equalsIgnoreCase(KEY_LONG_FOCUS)) {
             if (checked) {
                 preFocus.setEnabled(false);
-            } else if (!checked && !volUpShutter.isChecked() && !volDownShutter.isChecked()) {
+            } else if (!checked) {
                 preFocus.setEnabled(true);
             }
         } else if (key.equalsIgnoreCase(KEY_PRE_FOCUS)) {

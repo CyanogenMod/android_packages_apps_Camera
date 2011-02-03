@@ -1547,7 +1547,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             case KeyEvent.KEYCODE_SEARCH:
                 if (searchShutter) {
                     if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                        if (preFocus) {
+                        if (preFocus || longFocus) {
                             // Start auto-focus immediately to reduce shutter lag. After
                             // the shutter button gets the focus, doFocus() will be
                             // called again but it is fine.
@@ -1556,7 +1556,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         } else {
                             mFocusState = FOCUS_SUCCESS;
                         } 
-                        System.out.println("SNAPPING PIC!");
                         doSnap();
                     }
                 }
@@ -1564,7 +1563,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             case KeyEvent.KEYCODE_VOLUME_UP:
                 if (volUpShutter) {
                     if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                        if (preFocus) {
+                        if (preFocus || longFocus) {
                             // Start auto-focus immediately to reduce shutter lag. After
                             // the shutter button gets the focus, doFocus() will be
                             // called again but it is fine.
@@ -1574,8 +1573,10 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                             mFocusState = FOCUS_SUCCESS;
                         }
                         if (!longFocus) {
-                            System.out.println("SNAPPING PIC!");
                             doSnap();
+                        } else {
+                            if (mHeadUpDisplay.collapse()) return true;
+                            doFocus(true);
                         }
                     }
                 }
@@ -1604,7 +1605,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 if (volDownShutter) {
                     if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                        if (preFocus) {
+                        if (preFocus || longFocus) {
                             // Start auto-focus immediately to reduce shutter lag. After
                             // the shutter button gets the focus, doFocus() will be
                             // called again but it is fine.
@@ -1615,7 +1616,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                         }
 
                         if (!longFocus) {
-                            System.out.println("SNAPPING PIC!");
                             doSnap();
                         }
                     }
