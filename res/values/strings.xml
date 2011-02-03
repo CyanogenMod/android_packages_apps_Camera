@@ -186,6 +186,37 @@
     <string name="pref_camera_jpegquality_entry_fine">Fine</string>
     <string name="pref_camera_jpegquality_entry_normal">Normal</string>
 
+<!-- ********************** -->
+    <!-- More Settings screen, volume buttons title -->
+    <string name="pref_camera_vol_shutter_title">Volume Shutter</string>
+    <string name="pref_camera_vol_up_shutter">Volume Up</string>
+    <string name="pref_camera_vol_up_shutter_summary">Volume up takes a picture</string>
+    <string name="pref_camera_vol_down_shutter">Volume Down</string>
+    <string name="pref_camera_vol_down_shutter_summary">Volume down takes picture</string>
+
+    <!-- More Settings screen, zoom button title -->
+    <string name="pref_camera_vol_zoom_title">Volume Zoom</string>
+    <string name="pref_camera_vol_zoom">Volume Buttons Zoom</string>
+    <string name="pref_camera_vol_zoom_summary">Volume up/down zoom in/out respectively</string>
+
+    <!-- More Settings screen, search button title -->
+    <string name="pref_camera_search_shutter_title">Search Shutter</string>
+
+    <!-- More Settings screen, search button -->
+    <string name="pref_camera_search_shutter">Search Button</string>  
+    <string name="pref_camera_search_shutter_summary">Search button takes a picture</string>  
+
+    <!-- Settings screen, custom focus title -->
+    <string name="pref_camera_settings_focus_title">Focus</string>
+
+    <!-- Settings screen, focus settings -->
+    <string name="pref_camera_settings_focus">Pre-Focus</string>
+    <string name="pref_camera_settings_focus_summary">Focus before taking picture</string>
+    <string name="pref_camera_settings_long_focus">Long Focus</string>
+    <string name="pref_camera_settings_long_focus_summary">Hold down button to focus, release to take picture</string>
+
+<!-- ********************** -->
+
     <!-- Default focus mode setting.-->
     <string name="pref_camera_focusmode_default" translatable="false">auto</string>
 

@@ -160,7 +160,6 @@ public class CameraSettings {
         ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
         ListPreference autoExposure = group.findPreference(KEY_AUTOEXPOSURE);
 
-
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
         if (videoQuality != null) {
@@ -217,6 +216,7 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     flashMode, mParameters.getSupportedFlashModes());
         }
+
         if (focusMode != null) {
             if (isFrontFacingCamera() && !mContext.getResources().getBoolean(R.bool.ffc_canFocus)) {
                 filterUnsupportedOptions(group, focusMode, new ArrayList<String>());
@@ -225,6 +225,7 @@ public class CameraSettings {
                         focusMode, mParameters.getSupportedFocusModes());
             }
         }
+
         if (videoFlashMode != null) {
             filterUnsupportedOptions(group,
                     videoFlashMode, mParameters.getSupportedFlashModes());
