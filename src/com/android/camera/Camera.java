@@ -25,6 +25,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -1526,6 +1527,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
+        boolean searchShutter = prefs.getBoolean("search_shutter_enabled", false);
+        boolean volUpShutter = prefs.getBoolean("vol_up_shutter_enabled", false);
+        boolean volDownShutter = prefs.getBoolean("vol_down_shutter_enabled", false);
+        boolean volZoom = prefs.getBoolean("vol_zoom_enabled", false);
+        boolean longFocus = prefs.getBoolean("long_focus_enabled", false);
+        boolean preFocus = prefs.getBoolean("pre_focus_enabled", false);
+
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
@@ -1536,6 +1545,104 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
                     doSnap();
                 }
+                return true;
+            case KeyEvent.KEYCODE_SEARCH:
+                if (searchShutter) {
+                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+                        if (preFocus || longFocus) {
+                            // Start auto-focus immediately to reduce shutter lag. After
+                            // the shutter button gets the focus, doFocus() will be
+                            // called again but it is fine.
+                            if (mHeadUpDisplay.collapse()) return true;
+                            doFocus(true);
+                        } else {
+                            mFocusState = FOCUS_SUCCESS;
+                        } 
+                        doSnap();
+                    }
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (volUpShutter) {
+                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+                        if (preFocus || longFocus) {
+                            // Start auto-focus immediately to reduce shutter lag. After
+                            // the shutter button gets the focus, doFocus() will be
+                            // called again but it is fine.
+                            if (mHeadUpDisplay.collapse()) return true;
+                            doFocus(true);
+                        } else {
+                            mFocusState = FOCUS_SUCCESS;
+                        }
+                        if (!longFocus) {
+                            doSnap();
+                        } else {
+                            if (mHeadUpDisplay.collapse()) return true;
+                            doFocus(true);
+                        }
+                    }
+                }
+
+                if (volZoom) {
+                    if (mParameters.isZoomSupported()) {
+                        // Perform zoom only when preview is started and snapshot is not in
+                        // progress.
+                        if (mPausing || !isCameraIdle() || !mPreviewing
+                                || mZoomState != ZOOM_STOPPED) {
+                            return false;
+                        }
+
+                        if (mZoomValue < mZoomMax) {
+                            // Zoom out to the maximum.
+                            mZoomValue = mZoomMax;
+                        }
+
+                        setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
+
+                        mHeadUpDisplay.setZoomIndex(mZoomValue);
+                    }
+                }
+
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (volDownShutter) {
+                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+                        if (preFocus || longFocus) {
+                            // Start auto-focus immediately to reduce shutter lag. After
+                            // the shutter button gets the focus, doFocus() will be
+                            // called again but it is fine.
+                            if (mHeadUpDisplay.collapse()) return true;
+                            doFocus(true);
+                        } else {
+                            mFocusState = FOCUS_SUCCESS;
+                        }
+
+                        if (!longFocus) {
+                            doSnap();
+                        }
+                    }
+                }
+
+                if (volZoom) {
+                    if (mParameters.isZoomSupported()) {
+                        // Perform zoom only when preview is started and snapshot is not in
+                        // progress.
+                        if (mPausing || !isCameraIdle() || !mPreviewing
+                                || mZoomState != ZOOM_STOPPED) {
+                            return false;
+                        }
+
+                        if (mZoomValue > 0) {
+                            // Zoom in to the minimum.
+                            mZoomValue = 0;
+                        }
+
+                        setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
+
+                        mHeadUpDisplay.setZoomIndex(mZoomValue);
+                    }
+                }
+
                 return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 // If we get a dpad center event without any focused view, move
@@ -1561,7 +1668,26 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
+        boolean longFocus = prefs.getBoolean("long_focus_enabled", false);
+
         switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (longFocus) {
+                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+                        doSnap();
+                    }
+                }
+
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (longFocus) {
+                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+                        doSnap();
+                    }
+                }
+
+                return true;
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized) {
                     doFocus(false);
@@ -2103,6 +2229,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         }
     }
 
+    private void gotoCameraSettings() {
+        Intent intent = new Intent(this, AdvancedSettings.class);
+        startActivity(intent);
+    }
+
     private void gotoGallery() {
         MenuHelper.gotoCameraImageGallery(this);
     }
@@ -2258,6 +2389,17 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         });
         gallery.setIcon(android.R.drawable.ic_menu_gallery);
         mGalleryItems.add(gallery);
+
+        MenuItem mCameraSettings = menu.add(Menu.NONE, Menu.NONE,
+                MenuHelper.POSITION_CAMERA_SETTINGS,
+                "More Camera Settings")
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                gotoCameraSettings();
+                return true;
+            }
+        });
+        mGalleryItems.add(mCameraSettings);
 
         if (mNumberOfCameras > 1) {
             menu.add(Menu.NONE, Menu.NONE,

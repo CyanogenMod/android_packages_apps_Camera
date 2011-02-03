@@ -25,6 +25,13 @@
                 <action android:name="android.intent.action.CAMERA_BUTTON"/>
             </intent-filter>
         </receiver>
+        <activity android:name=".AdvancedSettings" android:label="More Camera Settings"
+                android:theme="@android:style/Theme.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.VOICE_LAUNCH" />
+            </intent-filter>
+        </activity>
         <activity android:name="com.android.camera.Camera"
                 android:configChanges="orientation|keyboardHidden"
                 android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
