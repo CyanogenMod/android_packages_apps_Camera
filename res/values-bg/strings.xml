@@ -36,7 +36,7 @@
     <string name="review_play" msgid="6378271587740884696">"Пускане"</string>
     <string name="review_cancel" msgid="7842670783357645942">"Отказ"</string>
     <string name="review_ok" msgid="4750691949877864726">"OK"</string>
-    <string name="review_retake" msgid="7776579640762112761">"Повт. снимане"</string>
+    <string name="review_retake" msgid="7776579640762112761">"Презаснимане"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Галерия"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Превключване на камерата"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Акт. на цайтрафер"</string>
