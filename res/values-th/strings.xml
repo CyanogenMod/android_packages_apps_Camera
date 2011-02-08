@@ -36,7 +36,7 @@
     <string name="review_play" msgid="6378271587740884696">"เล่น"</string>
     <string name="review_cancel" msgid="7842670783357645942">"ยกเลิก"</string>
     <string name="review_ok" msgid="4750691949877864726">"ตกลง"</string>
-    <string name="review_retake" msgid="7776579640762112761">"ถ่ายภาพซ้ำ"</string>
+    <string name="review_retake" msgid="7776579640762112761">"ถ่ายใหม่"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"แกลเลอรี"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"เปลี่ยนกล้องถ่ายรูป"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"เปิดใช้งานการถ่ายภาพช้า"</string>

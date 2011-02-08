@@ -52,7 +52,7 @@
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"مرتفعة"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"منخفضة"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"رسالة وسائط متعددة (منخفضة، 30 ث)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (مرتفعة، 15 د)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (عالية، 15 د)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"الفاصل الزمني للقطات المتتابعة"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"إعدادات الكاميرا"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"إعدادات كاميرا الفيديو"</string>
