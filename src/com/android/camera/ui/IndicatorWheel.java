@@ -268,7 +268,7 @@ public class IndicatorWheel extends ViewGroup implements
         // and the border is 64 pixels. This has to be consistent with the
         // background.
         mCenterX = right - left - 64;
-        mCenterY = (bottom - top) / 2 + 3;
+        mCenterY = (bottom - top) / 2;
         mShutterButton.layout(mCenterX - shutterButtonWidth / 2,
                 mCenterY - shutterButtonHeight / 2,
                 mCenterX + shutterButtonWidth / 2,
