@@ -40,6 +40,7 @@ public class ZoomPicker extends LinearLayout {
     private TextView mZoomTextView;
     private int mZoomMax, mZoomIndex;
     private float[] mZoomRatios;
+    private boolean mSmoothZoomSupported;
     private OnZoomChangedListener mListener;
     private boolean mIncrement, mDecrement;
     private final StringBuilder mBuilder = new StringBuilder();
@@ -49,17 +50,30 @@ public class ZoomPicker extends LinearLayout {
     private Button mIncrementButton;
     private Button mDecrementButton;
 
+    // The state of zoom button.
+    public static final int ZOOM_IN = 0;
+    public static final int ZOOM_OUT = 1;
+    public static final int ZOOM_STOP = 2;
+
     private Handler mHandler;
     private final Runnable mRunnable = new Runnable() {
         public void run() {
             if (mIncrement) {
                 mIncrementButton.setBackgroundResource(R.drawable.button_zoom_in_longpressed_holo);
-                if (changeZoomIndex(mZoomIndex + 1)) {
+                if (mSmoothZoomSupported) {
+                    if (mZoomIndex != mZoomMax && mListener != null) {
+                        mListener.onZoomStateChanged(ZOOM_IN);
+                    }
+                } else if (changeZoomIndex(mZoomIndex + 1)) {
                     mHandler.postDelayed(this, 65);
                 }
             } else if (mDecrement) {
                 mDecrementButton.setBackgroundResource(R.drawable.button_zoom_out_longpressed_holo);
-                if (changeZoomIndex(mZoomIndex - 1)) {
+                if (mSmoothZoomSupported) {
+                    if (mZoomIndex != 0 && mListener != null) {
+                        mListener.onZoomStateChanged(ZOOM_OUT);
+                    }
+                } else if (changeZoomIndex(mZoomIndex - 1)) {
                     mHandler.postDelayed(this, 65);
                 }
             }
@@ -78,16 +92,21 @@ public class ZoomPicker extends LinearLayout {
 
         OnTouchListener incrementTouchListener = new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                int action = event.getAction();
+                if (action == MotionEvent.ACTION_DOWN) {
                     if (!mIncrement && changeZoomIndex(mZoomIndex + 1)) {
                         mIncrement = true;
                         // Give bigger delay so users can tap to change only one
                         // zoom step.
                         mHandler.postDelayed(mRunnable, 300);
                     }
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                } else if (action == MotionEvent.ACTION_UP
+                        || action == MotionEvent.ACTION_CANCEL) {
                     mIncrementButton.setBackgroundResource(R.drawable.btn_zoom_in);
                     mIncrement = false;
+                    if (mSmoothZoomSupported) {
+                        if (mListener != null) mListener.onZoomStateChanged(ZOOM_STOP);
+                    }
                 }
                 return false;
             }
@@ -95,16 +114,21 @@ public class ZoomPicker extends LinearLayout {
 
         OnTouchListener decrementTouchListener = new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                int action = event.getAction();
+                if (action == MotionEvent.ACTION_DOWN) {
                     if (!mDecrement && changeZoomIndex(mZoomIndex - 1)) {
                         mDecrement = true;
                         // Give bigger delay so users can tap to change only one
                         // zoom step.
                         mHandler.postDelayed(mRunnable, 300);
                     }
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                } else if (action == MotionEvent.ACTION_UP
+                        || action == MotionEvent.ACTION_CANCEL) {
                     mDecrementButton.setBackgroundResource(R.drawable.btn_zoom_out);
                     mDecrement = false;
+                    if (mSmoothZoomSupported) {
+                        if (mListener != null) mListener.onZoomStateChanged(ZOOM_STOP);
+                    }
                 }
                 return false;
             }
@@ -121,7 +145,8 @@ public class ZoomPicker extends LinearLayout {
     }
 
     public interface OnZoomChangedListener {
-        void onZoomChanged(int index);
+        void onZoomValueChanged(int index);  // only for immediate zoom
+        void onZoomStateChanged(int state);  // only for smooth zoom
     }
 
     public void setZoomRatios(float[] zoomRatios) {
@@ -138,11 +163,15 @@ public class ZoomPicker extends LinearLayout {
         updateView();
     }
 
+    public void setSmoothZoomSupported(boolean smoothZoomSupported) {
+        mSmoothZoomSupported = smoothZoomSupported;
+    }
+
     private boolean changeZoomIndex(int index) {
         if (index > mZoomMax || index < 0) return false;
         mZoomIndex = index;
         if (mListener != null) {
-            mListener.onZoomChanged(mZoomIndex);
+            mListener.onZoomValueChanged(mZoomIndex);
         }
         updateView();
         return true;

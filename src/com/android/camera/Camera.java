@@ -442,10 +442,30 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         if (mZoomPicker != null) {
             mZoomPicker.setZoomRatios(getZoomRatios());
             mZoomPicker.setZoomIndex(mParameters.getZoom());
+            mZoomPicker.setSmoothZoomSupported(mSmoothZoomSupported);
             mZoomPicker.setOnZoomChangeListener(
                     new ZoomPicker.OnZoomChangedListener() {
-                public void onZoomChanged(int index) {
-                    onZoomValueChanged(index);
+                // only for immediate zoom
+                public void onZoomValueChanged(int index) {
+                    Camera.this.onZoomValueChanged(index);
+                }
+
+                // only for smooth zoom
+                public void onZoomStateChanged(int state) {
+                    if (mPausing) return;
+
+                    Log.v(TAG, "zoom picker state=" + state);
+                    if (state == mZoomPicker.ZOOM_IN) {
+                        Camera.this.onZoomValueChanged(mZoomMax);
+                    } else if (state == mZoomPicker.ZOOM_OUT){
+                        Camera.this.onZoomValueChanged(0);
+                    } else {
+                        mTargetZoomValue = -1;
+                        if (mZoomState == ZOOM_START) {
+                            mZoomState = ZOOM_STOPPING;
+                            mCameraDevice.stopSmoothZoom();
+                        }
+                    }
                 }
             });
         }
@@ -772,13 +792,16 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 int value, boolean stopped, android.hardware.Camera camera) {
             Log.v(TAG, "Zoom changed: value=" + value + ". stopped="+ stopped);
             mZoomValue = value;
+
+            // Update the UI when we get zoom value.
+            if (mZoomPicker != null) mZoomPicker.setZoomIndex(value);
+
             // Keep mParameters up to date. We do not getParameter again in
             // takePicture. If we do not do this, wrong zoom value will be set.
             mParameters.setZoom(value);
-            // We only care if the zoom is stopped. mZooming is set to true when
-            // we start smooth zoom.
+
             if (stopped && mZoomState != ZOOM_STOPPED) {
-                if (value != mTargetZoomValue) {
+                if (mTargetZoomValue != -1 && value != mTargetZoomValue) {
                     mCameraDevice.startSmoothZoom(mTargetZoomValue);
                     mZoomState = ZOOM_START;
                 } else {
