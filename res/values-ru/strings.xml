@@ -45,18 +45,44 @@
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Записывать местоположение"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Выкл."</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Вкл."</string>
-    <string name="pref_video_quality_title" msgid="8245379279801096922">"Качество видео"</string>
-    <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Высокое (30 мин.)"</string>
-    <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Низкое (30 мин.)"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (низкое, 30 с.)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (высокое, 10 мин.)"</string>
+
+    <!-- The Video length settings in preference -->
+    <string name="pref_video_quality_title">Качество видео</string>
+    <string name="pref_video_quality_default" translatable="false">hd</string>
+    <string name="pref_video_quality_entry_hd">HD (30m)</string>
+    <string name="pref_video_quality_entry_high">Высокое (30m)</string>
+    <string name="pref_video_quality_entry_low">Низкое (30m)</string>
+    <string name="pref_video_quality_entry_mms">MMS (Низкое, 30s)</string>
+    <string name="pref_video_quality_entry_youtubehd">YouTube (HD, 10m)</string>
+    <string name="pref_video_quality_entry_youtube">YouTube (высокое, 10m)</string>	
+	
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Настройки камеры"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Настройки видеокамеры"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Размер фотографии"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 мегапикселей"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 мегапикселя"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 мегапикселя"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 мегапиксель"</string>
+	
+    <!-- Settings screen, Picture size dialog radio button choices -->
+    <string name="pref_camera_picturesize_entry_3264x2448">8 Мп</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6 Мп (широкий)</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5 Мп</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4 Мп (широкий)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4 Мп</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4 Мп</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3 Мп</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2.5 Мп (широкй)</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
+    <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
+    <string name="pref_camera_picturesize_entry_1024x768">XGA</string>
+    <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
+    <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
+    <string name="pref_camera_picturesize_entry_640x480">VGA</string>
+    <string name="pref_camera_picturesize_entry_352x288">CIF</string>
+    <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
+    <string name="pref_camera_picturesize_entry_176x144">QCIF</string>
+	
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Качество фотографий"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Отличное"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Хорошее"</string>
@@ -88,6 +114,41 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Красный оттенок"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Синий оттенок"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Зеленый оттенок"</string>
+	
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_sharpness_entry_level0">Уровень 0</string>
+    <string name="pref_camera_sharpness_entry_level1">Уровень 1</string>
+    <string name="pref_camera_sharpness_entry_level2">Уровень 2(По умолчанию)</string>
+    <string name="pref_camera_sharpness_entry_level3">Уровень 3</string>
+    <string name="pref_camera_sharpness_entry_level4">Уровень 4</string>
+    <string name="pref_camera_sharpness_entry_level5">Уровень 5</string>
+
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_contrast_entry_level0">Уровень 0</string>
+    <string name="pref_camera_contrast_entry_level1">Уровень 1</string>
+    <string name="pref_camera_contrast_entry_level2">Уровень 2</string>
+    <string name="pref_camera_contrast_entry_level3">Уровень 3(По умолчанию)</string>
+    <string name="pref_camera_contrast_entry_level4">Уровень 4</string>
+    <string name="pref_camera_contrast_entry_level5">Уровень 5</string>
+
+
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_saturation_entry_level0">Уровень 0</string>
+    <string name="pref_camera_saturation_entry_level1">Уровень 1</string>
+    <string name="pref_camera_saturation_entry_level2">Уровень 2</string>
+    <string name="pref_camera_saturation_entry_level3">Уровень 3(По умолчанию)</string>
+    <string name="pref_camera_saturation_entry_level4">Уровень 4</string>
+    <string name="pref_camera_saturation_entry_level5">Уровень 5</string>
+	
+    <!-- Settings screen, Select sharpness title -->
+    <string name="pref_camera_sharpness_title">Четкость</string>
+	
+    <!-- Settings screen, Select contrast title -->
+    <string name="pref_camera_contrast_title">Контраст</string>
+	
+    <!-- Settings screen, Select saturation title -->
+    <string name="pref_camera_saturation_title">Насыщенность</string>
+	
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Режим съемки"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Авто"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Действие"</string>
@@ -103,8 +164,12 @@
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Фейерверк"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Вечеринка"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Слабое освещение"</string>
+    <!-- Scene mode for taking a photo with backlight. -->
+    <string name="pref_camera_scenemode_entry_backlight">Подсветка</string>
+    <!-- Scene mode optimized for taking images of flowers. -->
+    <string name="pref_camera_scenemode_entry_flowers">Цветы</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Настройки камеры"</string>
-    <string name="pref_restore_detail" msgid="5732490002291044791">"Восстановить настройки по умолчанию"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"Настройки по умолчанию"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Экспозиция"</string>
     <string name="details_ok" msgid="6848594369924424312">"ОК"</string>
     <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Место на общем накопителе заканчивается. Измените настройки качества или удалите ненужные изображения и другие файлы."</string>
@@ -113,4 +178,41 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"Масштаб"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Переключить на фото"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Переключить на видео"</string>
+	
+     <!-- Settings screen, Select Iso title -->
+     <string name="pref_camera_iso_title">Светочувствительность (ISO)</string>
+	 
+     <!-- Settings screen, ISO dialog radio button choices -->
+     <string name="pref_camera_iso_entry_auto">Авто</string>
+     <string name="pref_camera_iso_entry_isodeblur">Резкость</string>
+     <string name="pref_camera_iso_entry_iso100">ISO100</string>
+     <string name="pref_camera_iso_entry_iso200">ISO200</string>
+     <string name="pref_camera_iso_entry_iso400">ISO400</string>
+     <string name="pref_camera_iso_entry_iso800">ISO800</string>
+     <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
+	 
+     <!-- Settings screen, Select lens shading title -->
+     <string name="pref_camera_lensshading_title">Затемнение объектива</string>
+
+     <!-- Settings screen, lens shading radio button choices -->
+     <string name="pref_camera_lensshading_entry_enable">Включить</string>
+     <string name="pref_camera_lensshading_entry_disable">Выключить</string>
+	 
+     <!-- Settings screen, Anti Banding title -->
+     <string name="pref_camera_antibanding_title">Снижение мерцания</string>
+
+     <!-- Settings screen, Anti Banding entries -->
+     <string name="pref_camera_antibanding_entry_0">Выкл</string>
+     <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+     <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+     <string name="pref_camera_antibanding_entry_3">Авто</string>
+	 
+     <!-- Settings screen, Select auto exposure title -->
+     <string name="pref_camera_autoexposure_title">Режим замера</string>
+
+     <!-- Settings screen, auto exposure dialog radio button choices -->
+     <string name="pref_camera_autoexposure_entry_frameaverage">Средняя рамка</string>
+     <string name="pref_camera_autoexposure_entry_centerweighted">Центрирование</string>
+     <string name="pref_camera_autoexposure_entry_spotmetering">Точечный замер</string>
+	
 </resources>
