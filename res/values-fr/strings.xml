@@ -33,10 +33,10 @@
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Impossible d\'accéder à la carte SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Rétablir les paramètres par défaut"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Les paramètres par défaut de l\'appareil photo seront rétablis."</string>
-    <!-- outdated translation 6015456244323302817 -->     <string name="review_play" msgid="6378271587740884696">"LIRE"</string>
-    <!-- outdated translation 8188009385853399254 -->     <string name="review_cancel" msgid="7842670783357645942">"ANNULER"</string>
-    <!-- outdated translation 5305096180300056529 -->     <string name="review_ok" msgid="4750691949877864726">"OK"</string>
-    <!-- outdated translation 7804864054896088338 -->     <string name="review_retake" msgid="7776579640762112761">"AUTRE PHOTO"</string>
+    <string name="review_play" msgid="6378271587740884696">"Lire"</string>
+    <string name="review_cancel" msgid="7842670783357645942">"Annuler"</string>
+    <string name="review_ok" msgid="4750691949877864726">"OK"</string>
+    <string name="review_retake" msgid="7776579640762112761">"Autre photo"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Changer d\'appareil photo"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Activer time lapse"</string>
@@ -49,13 +49,10 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Désactivé"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activé"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualité vidéo"</string>
-    <!-- outdated translation 2874184763684055612 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Élevée (30 mn)"</string>
-    <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Faible (30 mn)"</string>
+    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Élevée"</string>
+    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Faible"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (faible, 30 s)"</string>
-    <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (élevée, 10 mn)"</string>
-    <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Qualité de la vidéo time lapse"</string>
-    <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Faible"</string>
-    <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Élevée"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (élevée, 15 mn)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalle de temps écoulé"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Paramètres de l\'appareil photo"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Mode Caméra"</string>
@@ -110,7 +107,7 @@
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Feux d\'artifice"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fête"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Bougies"</string>
-    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Ce paramètre ne peut être sélectionné en mode Scène."</string>
+    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Ce paramètre ne peut pas être sélectionné en mode Scène."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Paramètres de l\'appareil photo"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Rétablir les paramètres par défaut"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposition"</string>

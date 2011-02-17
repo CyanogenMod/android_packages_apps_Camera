@@ -33,10 +33,10 @@
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Nie można uzyskać dostępu do karty SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Przywróć wartości domyślne"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Zostaną przywrócone ustawienia domyślne aparatu."</string>
-    <!-- outdated translation 6015456244323302817 -->     <string name="review_play" msgid="6378271587740884696">"ODTWÓRZ"</string>
-    <!-- outdated translation 8188009385853399254 -->     <string name="review_cancel" msgid="7842670783357645942">"ANULUJ"</string>
-    <!-- outdated translation 5305096180300056529 -->     <string name="review_ok" msgid="4750691949877864726">"OK"</string>
-    <!-- outdated translation 7804864054896088338 -->     <string name="review_retake" msgid="7776579640762112761">"ZRÓB PONOWNIE"</string>
+    <string name="review_play" msgid="6378271587740884696">"Odtwórz"</string>
+    <string name="review_cancel" msgid="7842670783357645942">"Anuluj"</string>
+    <string name="review_ok" msgid="4750691949877864726">"OK"</string>
+    <string name="review_retake" msgid="7776579640762112761">"Zrób ponownie"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeria"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Przełącz aparat"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Wł. tryb poklatkowy"</string>
@@ -49,13 +49,10 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Wyłączony"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Włączony"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Jakość filmu wideo"</string>
-    <!-- outdated translation 2874184763684055612 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Wysoka (30 min)"</string>
-    <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Niska (30 min)"</string>
+    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Wysoka"</string>
+    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Niska"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (niska, 30 s)"</string>
-    <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (wysoka, 10 min)"</string>
-    <string name="pref_video_time_lapse_quality_title" msgid="1163053302966946838">"Jakość filmu poklatkowego"</string>
-    <string name="pref_video_time_lapse_quality_entry_low" msgid="5315843743598116968">"Niska"</string>
-    <string name="pref_video_time_lapse_quality_entry_high" msgid="3933491126045555205">"Wysoka"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (wysoka, 15 min)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Odstęp poklatkowy"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Ustawienia aparatu"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Ustawienia kamery"</string>
