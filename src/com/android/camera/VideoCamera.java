@@ -92,6 +92,7 @@ public class VideoCamera extends NoSearchActivity
     private static final String LAST_THUMB_PATH =
             Storage.THUMBNAILS + "/video_last_thumb";
 
+    private static final int CHECK_DISPLAY_ROTATION = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
     private static final int ENABLE_SHUTTER_BUTTON = 6;
@@ -162,6 +163,7 @@ public class VideoCamera extends NoSearchActivity
     private MediaRecorder mMediaRecorder;
     private boolean mMediaRecorderRecording = false;
     private long mRecordingStartTime;
+    private long mOnResumeTime;
     // The video file that the hardware camera is about to record into
     // (or is recording into.)
     private String mVideoFilename;
@@ -245,6 +247,22 @@ public class VideoCamera extends NoSearchActivity
 
                 case UPDATE_RECORD_TIME: {
                     updateRecordingTime();
+                    break;
+                }
+
+                case CHECK_DISPLAY_ROTATION: {
+                    // Restart the preview if display rotation has changed.
+                    // Sometimes this happens when the device is held upside
+                    // down and camera app is opened. Rotation animation will
+                    // take some time and the rotation value we have got may be
+                    // wrong. Framework does not have a callback for this now.
+                    if ((Util.getDisplayRotation(VideoCamera.this) != mDisplayRotation)
+                            && !mMediaRecorderRecording) {
+                        startPreview();
+                    }
+                    if (SystemClock.uptimeMillis() - mOnResumeTime < 5000) {
+                        mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
+                    }
                     break;
                 }
 
@@ -843,6 +861,11 @@ public class VideoCamera extends NoSearchActivity
         if (!mIsVideoCaptureIntent) {
             updateThumbnailButton();
         }
+
+        if (mPreviewing) {
+            mOnResumeTime = SystemClock.uptimeMillis();
+            mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
+        }
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
@@ -944,6 +967,8 @@ public class VideoCamera extends NoSearchActivity
         }
 
         mOrientationListener.disable();
+
+        mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
     }
 
     @Override

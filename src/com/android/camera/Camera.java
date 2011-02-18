@@ -55,6 +55,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.MediaStore.Images.ImageColumns;
@@ -105,6 +106,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private static final int RESTART_PREVIEW = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
+    private static final int CHECK_DISPLAY_ROTATION = 6;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -229,6 +231,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private long mPostViewPictureCallbackTime;
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
+    private long mOnResumeTime;
     private long mPicturesRemaining;
     private byte[] mJpegImageData;
 
@@ -291,6 +294,22 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
                 case SET_CAMERA_PARAMETERS_WHEN_IDLE: {
                     setCameraParametersWhenIdle(0);
+                    break;
+                }
+
+                case CHECK_DISPLAY_ROTATION: {
+                    // Restart the preview if display rotation has changed.
+                    // Sometimes this happens when the device is held upside
+                    // down and camera app is opened. Rotation animation will
+                    // take some time and the rotation value we have got may be
+                    // wrong. Framework does not have a callback for this now.
+                    if (Util.getDisplayRotation(Camera.this) != mDisplayRotation
+                            && isCameraIdle()) {
+                        restartPreview();
+                    }
+                    if (SystemClock.uptimeMillis() - mOnResumeTime < 5000) {
+                        mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
+                    }
                     break;
                 }
             }
@@ -1428,6 +1447,11 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
             }
         }
         keepScreenOnAwhile();
+
+        if (mPreviewing) {
+            mOnResumeTime = SystemClock.uptimeMillis();
+            mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
+        }
     }
 
     @Override
@@ -1479,6 +1503,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         // Remove the messages in the event queue.
         mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
+        mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
 
         super.onPause();
     }
