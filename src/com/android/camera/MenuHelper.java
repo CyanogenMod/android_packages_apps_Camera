@@ -129,7 +129,7 @@ public class MenuHelper {
             intent.setComponent(null);
             activity.startActivity(intent);
         }
-        activity.overridePendingTransition(NO_ANIMATION, NO_ANIMATION);
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     public static void gotoVideoMode(Activity activity) {
