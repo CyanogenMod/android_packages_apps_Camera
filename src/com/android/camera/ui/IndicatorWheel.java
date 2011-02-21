@@ -31,6 +31,8 @@ import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -87,6 +89,10 @@ public class IndicatorWheel extends ViewGroup implements
     private BasicSettingPopup[] mBasicSettingPopups;
     private OtherSettingsPopup mOtherSettingsPopup;
 
+    private Animation mFadeIn, mFadeOut;
+    // The previous view that has the animation. The animation may have stopped.
+    private View mPrevAnimatingView;
+
     private Handler mHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
         public void run() {
@@ -118,6 +124,9 @@ public class IndicatorWheel extends ViewGroup implements
         mBackgroundPaint.setAntiAlias(true);
 
         mBackgroundRect = new RectF();
+
+        mFadeIn = AnimationUtils.loadAnimation(mContext, R.anim.grow_fade_in_from_right);
+        mFadeOut = AnimationUtils.loadAnimation(mContext, R.anim.shrink_fade_out_from_right);
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -528,11 +537,16 @@ public class IndicatorWheel extends ViewGroup implements
             initializeOtherSettingPopup();
         }
 
+        View popup;
+        if (mPrevAnimatingView != null) mPrevAnimatingView.clearAnimation();
         if (index == mBasicSettingPopups.length) {
-            mOtherSettingsPopup.setVisibility(View.VISIBLE);
+            popup = mOtherSettingsPopup;
         } else {
-            mBasicSettingPopups[index].setVisibility(View.VISIBLE);
+            popup = mBasicSettingPopups[index];
         }
+        popup.startAnimation(mFadeIn);
+        popup.setVisibility(View.VISIBLE);
+        mPrevAnimatingView = popup;
         setHighlight(index, true);
         mSelectedIndex = index;
         invalidate();
@@ -540,11 +554,16 @@ public class IndicatorWheel extends ViewGroup implements
 
     public boolean dismissSettingPopup() {
         if (mSelectedIndex >= 0) {
+            View popup;
+            if (mPrevAnimatingView != null) mPrevAnimatingView.clearAnimation();
             if (mSelectedIndex == mBasicSettingPopups.length) {
-                mOtherSettingsPopup.setVisibility(View.INVISIBLE);
+                popup = mOtherSettingsPopup;
             } else {
-                mBasicSettingPopups[mSelectedIndex].setVisibility(View.INVISIBLE);
+                popup = mBasicSettingPopups[mSelectedIndex];
             }
+            popup.startAnimation(mFadeOut);
+            popup.setVisibility(View.INVISIBLE);
+            mPrevAnimatingView = popup;
             setHighlight(mSelectedIndex, false);
             mSelectedIndex = -1;
             invalidate();

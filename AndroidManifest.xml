@@ -19,7 +19,8 @@
 
     <application android:icon="@mipmap/ic_launcher_camera"
             android:label="@string/camera_label"
-            android:taskAffinity="">
+            android:taskAffinity=""
+            android:hardwareAccelerated="true">
         <receiver android:name="com.android.camera.CameraButtonIntentReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.CAMERA_BUTTON"/>
