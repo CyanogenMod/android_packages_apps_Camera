@@ -2392,7 +2392,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         MenuItem mCameraSettings = menu.add(Menu.NONE, Menu.NONE,
                 MenuHelper.POSITION_CAMERA_SETTINGS,
-                "Advanced Options")
+                R.string.advanced_options_label)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 gotoCameraSettings();
