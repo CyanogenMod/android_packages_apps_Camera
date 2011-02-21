@@ -110,6 +110,40 @@
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Tinta blu"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Tinta verde"</string>
 
+    <!-- ********************** -->
+    <!-- Advanced options label -->
+    <string name="advanced_options_label">Impostazioni avanzate</string>
+
+    <!-- More Settings screen, volume buttons title -->
+    <string name="pref_camera_vol_shutter_title">Scatta con tasti volume</string>
+    <string name="pref_camera_vol_up_shutter">Tasto volume più</string>
+    <string name="pref_camera_vol_up_shutter_summary">Utilizza il tasto volume più per scattare le foto</string>
+    <string name="pref_camera_vol_down_shutter">Tasto volume meno</string>
+    <string name="pref_camera_vol_down_shutter_summary">Utilizza il tasto volume meno per scattare le foto</string>
+
+    <!-- More Settings screen, zoom button title -->
+    <string name="pref_camera_vol_zoom_title">Zoom tramite tasti volume</string>
+    <string name="pref_camera_vol_zoom">Zoom tramite tasti volume</string>
+    <string name="pref_camera_vol_zoom_summary">Utilizza i tasti volume per controllare lo zoom</string>
+
+    <!-- More Settings screen, search button title -->
+    <string name="pref_camera_search_shutter_title">Scatta con tasto cerca</string>
+
+    <!-- More Settings screen, search button -->
+    <string name="pref_camera_search_shutter">Tasto cerca</string>
+    <string name="pref_camera_search_shutter_summary">Utilizza il tasto cerca per scattare le foto</string>
+
+    <!-- Settings screen, custom focus title -->
+    <string name="pref_camera_settings_focus_title">Focus</string>
+
+    <!-- Settings screen, focus settings -->
+    <string name="pref_camera_settings_focus">Pre-Focus</string>
+    <string name="pref_camera_settings_focus_summary">Mette a fuoco prima di scattare la foto</string>
+    <string name="pref_camera_settings_long_focus">Long Focus</string>
+    <string name="pref_camera_settings_long_focus_summary">Tieni premuto il tasto per mettere a fuoco, rilascia per scattare la foto</string>
+
+<!-- ********************** -->
+
     <!-- Settings screen, Multiple levels entries -->
     <string name="pref_camera_sharpness_entry_level0">Livello 0</string>
     <string name="pref_camera_sharpness_entry_level1">Livello 1</string>
