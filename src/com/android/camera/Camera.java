@@ -2399,8 +2399,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 return true;
             }
         });
-
-        mCameraSettings.setIcon(R.drawable.ic_viewfinder_settings);
+        mCameraSettings.setIcon(android.R.drawable.ic_menu_preferences);
         mGalleryItems.add(mCameraSettings);
 
         if (mNumberOfCameras > 1) {
