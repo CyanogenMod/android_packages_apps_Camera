@@ -2392,15 +2392,14 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
 
         MenuItem mCameraSettings = menu.add(Menu.NONE, Menu.NONE,
                 MenuHelper.POSITION_CAMERA_SETTINGS,
-                "Advanced Options")
+                R.string.advanced_options_label)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 gotoCameraSettings();
                 return true;
             }
         });
-
-        mCameraSettings.setIcon(R.drawable.ic_viewfinder_settings);
+        mCameraSettings.setIcon(android.R.drawable.ic_menu_preferences);
         mGalleryItems.add(mCameraSettings);
 
         if (mNumberOfCameras > 1) {
