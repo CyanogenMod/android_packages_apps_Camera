@@ -62,6 +62,8 @@
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fein"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normal"</string>
 
+    <string name="advanced_options_label">Erweiterte Optionen</string>
+
     <string name="pref_camera_vol_shutter_title">Lautstärke als Auslöser</string>
     <string name="pref_camera_vol_up_shutter">LAUTER-Taste</string>
     <string name="pref_camera_vol_up_shutter_summary">LAUTER-Taste zum Aufnehmen eines Bildes drücken</string>
