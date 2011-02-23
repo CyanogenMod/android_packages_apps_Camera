@@ -61,7 +61,32 @@
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Extrafein"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fein"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normal"</string>
+
     <string name="advanced_options_label">Erweiterte Optionen</string>
+
+    <string name="pref_camera_vol_shutter_title">Lautstärke als Auslöser</string>
+    <string name="pref_camera_vol_up_shutter">LAUTER-Taste</string>
+    <string name="pref_camera_vol_up_shutter_summary">LAUTER-Taste zum Aufnehmen eines Bildes drücken</string>
+    <string name="pref_camera_vol_down_shutter">LEISER-Taste</string>
+    <string name="pref_camera_vol_down_shutter_summary">LEISER-Taste zum Aufnehmen eines Bildes drücken</string>
+
+    <!-- More Settings screen, zoom button title -->
+    <string name="pref_camera_vol_zoom_title">Lautstärke als Zoom</string>
+    <string name="pref_camera_vol_zoom">Lautstärketasten als Zoomsteuerung</string>
+    <string name="pref_camera_vol_zoom_summary">LAUTER/LEISER-Tasten als Steuerung für den Kamerazoom verwenden</string>
+
+    <!-- More Settings screen, search button-->
+    <string name="pref_camera_search_shutter_title">Suche als Auslöser</string>
+    <string name="pref_camera_search_shutter">Suchen-Taste</string>
+    <string name="pref_camera_search_shutter_summary">Suchen-Taste zum Aufnehmen eines Bildes drücken</string>
+
+    <!-- Settings screen, custom focus -->
+    <string name="pref_camera_settings_focus_title">Fokus</string>
+    <string name="pref_camera_settings_focus">Vor-Fokus</string>
+    <string name="pref_camera_settings_focus_summary">Fokus vor Aufnahme</string>
+    <string name="pref_camera_settings_long_focus">Langer Fokus</string>
+    <string name="pref_camera_settings_long_focus_summary">Auslöser zum Fokusieren gedrückthalten, dann loslassen, um das Bild aufzunehmen</string>
+
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fokussierungsmodus"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatisch"</string>
     <string name="pref_camera_focusmode_entry_normal">Normal</string>
