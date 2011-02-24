@@ -17,16 +17,25 @@
 package com.android.camera;
 
 import android.app.Activity;
+import android.view.KeyEvent;
 
 /**
- * An activity which disables the search key function.
- *
- * <p> To use it, just inherit from {@code NoSearchActivity} instead of
- * {@code Activity}.
+ * Superclass of Camera and VideoCamera activities.
  */
-public class NoSearchActivity extends Activity {
+public class ActivityBase extends Activity {
     @Override
     public boolean onSearchRequested() {
         return false;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // Prevent software keyboard or voice search from showing up.
+        if (keyCode == KeyEvent.KEYCODE_SEARCH
+                || keyCode == KeyEvent.KEYCODE_MENU) {
+            if (event.isLongPress()) return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 }

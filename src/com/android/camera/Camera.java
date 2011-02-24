@@ -92,7 +92,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
-public class Camera extends NoSearchActivity implements View.OnClickListener,
+public class Camera extends ActivityBase implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         Switcher.OnSwitchListener {
 
