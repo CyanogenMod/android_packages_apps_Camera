@@ -1169,11 +1169,6 @@ public class VideoCamera extends NoSearchActivity
         // instead.
         if (mVideoFileDescriptor != null) {
             mMediaRecorder.setOutputFile(mVideoFileDescriptor.getFileDescriptor());
-            try {
-                mVideoFileDescriptor.close();
-            } catch (IOException e) {
-                Log.e(TAG, "Fail to close fd", e);
-            }
         } else {
             generateVideoFilename(mProfile.fileFormat);
             mMediaRecorder.setOutputFile(mVideoFilename);
@@ -1232,6 +1227,15 @@ public class VideoCamera extends NoSearchActivity
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
+        }
+        mVideoFilename = null;
+        if (mVideoFileDescriptor != null) {
+            try {
+                mVideoFileDescriptor.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Fail to close fd", e);
+            }
+            mVideoFileDescriptor = null;
         }
         // Take back the camera object control from media recorder. Camera
         // device may be null if the activity is paused.
@@ -1588,8 +1592,6 @@ public class VideoCamera extends NoSearchActivity
             if (needToRegisterRecording && mStorageSpace >= LOW_STORAGE_THRESHOLD) {
                 registerVideo();
             }
-            mVideoFilename = null;
-            mVideoFileDescriptor = null;
         }
         releaseMediaRecorder();  // always release media recorder
     }
