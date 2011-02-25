@@ -2207,35 +2207,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
-    private void switchCameraId(int cameraId) {
-        if (mPausing || !isCameraIdle()) return;
-        mCameraId = cameraId;
-
-        stopPreview();
-        closeCamera();
-
-        // Remove the messages in the event queue.
-        mHandler.removeMessages(RESTART_PREVIEW);
-
-        // Reset variables
-        mJpegPictureCallbackTime = 0;
-        mZoomValue = 0;
-
-        // Reload the preferences.
-        mPreferences.setLocalId(this, mCameraId);
-        CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
-
-        // Restart the preview.
-        resetExposureCompensation();
-        if (!restartPreview()) return;
-
-        initializeZoom();
-
-        // Reload the UI.
-        initializeHeadUpDisplay();
-        initializeIndicatorWheel();
-    }
-
     private boolean switchToVideoMode() {
         if (isFinishing() || !isCameraIdle()) return false;
         MenuHelper.gotoVideoMode(Camera.this);
@@ -2271,7 +2242,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
         int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
         if (mCameraId != cameraId) {
-            switchCameraId(cameraId);
+            // Restart the activity to have a crossfade animation.
+            // TODO: Use SurfaceTexture to implement a better and faster
+            // animation.
+            MenuHelper.gotoCameraMode(this);
+            finish();
         } else {
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
         }

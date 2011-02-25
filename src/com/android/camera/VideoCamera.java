@@ -1342,26 +1342,6 @@ public class VideoCamera extends ActivityBase
         }
     }
 
-    private void switchCameraId(int cameraId) {
-        if (mPausing) return;
-        mCameraId = cameraId;
-
-        finishRecorderAndCloseCamera();
-
-        // Reload the preferences.
-        mPreferences.setLocalId(this, mCameraId);
-        CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
-        // Read media profile again because camera id is changed.
-        openCamera();
-        readVideoPreferences();
-        resizeForPreviewAspectRatio();
-        startPreview();
-
-        // Reload the UI.
-        initializeHeadUpDisplay();
-        initializeIndicatorWheel();
-    }
-
     private PreferenceGroup filterPreferenceScreenByIntent(
             PreferenceGroup screen) {
         Intent intent = getIntent();
@@ -1886,7 +1866,11 @@ public class VideoCamera extends ActivityBase
             // Check if camera id is changed.
             int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
             if (mCameraId != cameraId) {
-                switchCameraId(cameraId);
+                // Restart the activity to have a crossfade animation.
+                // TODO: Use SurfaceTexture to implement a better and faster
+                // animation.
+                MenuHelper.gotoVideoMode(this);
+                finish();
             } else {
                 readVideoPreferences();
                 // We need to restart the preview if preview size is changed.
