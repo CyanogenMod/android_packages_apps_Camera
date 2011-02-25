@@ -81,7 +81,6 @@ public class IndicatorWheel extends ViewGroup implements
     private int mTimeLapseInterval;  // in ms
     private long mRecordingStartTime = 0;
     private long mNumberOfFrames = 0;
-    private float mLastEndAngle;
 
     private Context mContext;
     private PreferenceGroup mPreferenceGroup;
@@ -92,13 +91,6 @@ public class IndicatorWheel extends ViewGroup implements
     private Animation mFadeIn, mFadeOut;
     // The previous view that has the animation. The animation may have stopped.
     private View mPrevAnimatingView;
-
-    private Handler mHandler = new Handler();
-    private final Runnable mRunnable = new Runnable() {
-        public void run() {
-            invalidate();
-        }
-    };
 
     static public interface Listener {
         public void onSharedPreferenceChanged();
@@ -218,7 +210,7 @@ public class IndicatorWheel extends ViewGroup implements
         super.onFinishInflate();
         // The first view is shutter button.
         mShutterButton = getChildAt(0);
-        mHandler.postDelayed(mRunnable, 0);
+        invalidate();
     }
 
     public void removeIndicators() {
@@ -318,7 +310,6 @@ public class IndicatorWheel extends ViewGroup implements
         mTimeLapseInterval = timeLapseInterval;
         mRecordingStartTime = startTime;
         mNumberOfFrames = 0;
-        mLastEndAngle = 0f;
         invalidate();
     }
 
@@ -363,23 +354,18 @@ public class IndicatorWheel extends ViewGroup implements
             // Compute the start angle and sweep angle.
             long timeDelta = SystemClock.uptimeMillis() - mRecordingStartTime;
             long numberOfFrames = timeDelta / mTimeLapseInterval;
-            float sweepAngle, startAngle;
-            float endAngle = ((float) timeDelta) % mTimeLapseInterval / mTimeLapseInterval * 360f;
+            float sweepAngle;
             if (numberOfFrames > mNumberOfFrames) {
-                // The arc just acrosses 0 degree. Draw the arc from the degree
-                // of last onDraw. Otherwise some parts of the arc will be never
-                // drawn.
-                startAngle = mLastEndAngle;
-                sweepAngle = endAngle + 360f - mLastEndAngle;
+                // The arc just acrosses 0 degree. Draw a full circle so it
+                // looks better.
+                sweepAngle = 360;
                 mNumberOfFrames = numberOfFrames;
             } else {
-                startAngle = 0;
-                sweepAngle = endAngle;
+                sweepAngle = timeDelta % mTimeLapseInterval * 360f / mTimeLapseInterval;
             }
-            mLastEndAngle = endAngle;
 
-            canvas.drawArc(mBackgroundRect, startAngle, sweepAngle, false, mBackgroundPaint);
-            mHandler.postDelayed(mRunnable, 0);
+            canvas.drawArc(mBackgroundRect, 0, sweepAngle, false, mBackgroundPaint);
+            invalidate();
         }
 
         super.onDraw(canvas);
