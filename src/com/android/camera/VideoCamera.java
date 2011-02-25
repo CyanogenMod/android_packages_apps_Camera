@@ -81,7 +81,7 @@ import java.util.List;
 /**
  * The Camcorder activity.
  */
-public class VideoCamera extends NoSearchActivity
+public class VideoCamera extends ActivityBase
         implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
@@ -1008,10 +1008,7 @@ public class VideoCamera extends NoSearchActivity
                 }
                 break;
             case KeyEvent.KEYCODE_MENU:
-                if (mMediaRecorderRecording) {
-                    onStopVideoRecording(true);
-                    return true;
-                }
+                if (mMediaRecorderRecording) return true;
                 break;
         }
 
