@@ -76,6 +76,11 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
         ((ListView) mSettingList).setAdapter(listItemAdapter);
         ((ListView) mSettingList).setOnItemClickListener(this);
         ((ListView) mSettingList).setSelector(android.R.color.transparent);
+        reloadPreference();
+    }
+
+    // The value of the preference may have changed. Update the UI.
+    public void reloadPreference() {
         int index = mPreference.findIndexOfValue(mPreference.getValue());
         if (index != -1) {
             ((ListView) mSettingList).setItemChecked(index, true);

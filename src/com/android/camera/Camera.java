@@ -326,6 +326,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             if (mHeadUpDisplay != null) {
                 mHeadUpDisplay.reloadPreferences();
             }
+            if (mIndicatorWheel != null) {
+                mIndicatorWheel.reloadPreferences();
+            }
         }
     }
 

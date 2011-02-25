@@ -587,4 +587,14 @@ public class IndicatorWheel extends ViewGroup implements
             mOtherSettingsPopup.overrideSettings(key, value);
         }
     }
+
+    public void reloadPreferences() {
+        mPreferenceGroup.reloadValue();
+        for (BasicSettingPopup popup: mBasicSettingPopups) {
+            if (popup != null) popup.reloadPreference();
+        }
+        if (mOtherSettingsPopup != null) {
+            mOtherSettingsPopup.reloadPreference();
+        }
+    }
 }

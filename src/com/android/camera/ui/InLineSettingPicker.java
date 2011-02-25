@@ -125,6 +125,11 @@ public class InLineSettingPicker extends RelativeLayout {
 
     public void initialize(ListPreference preference) {
         mPreference = preference;
+        reloadPreference();
+    }
+
+    // The value of the preference may have changed. Update the UI.
+    public void reloadPreference() {
         mIndex = mPreference.findIndexOfValue(mPreference.getValue());
         updateView();
     }

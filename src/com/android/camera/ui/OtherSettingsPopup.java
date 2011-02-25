@@ -164,4 +164,16 @@ public class OtherSettingsPopup extends AbstractSettingPopup
             mListener.onRestorePreferencesClicked();
         }
     }
+
+    public void reloadPreference() {
+        int count = mSettingList.getChildCount();
+        for (int i = 0; i < count; i++) {
+            ListPreference pref = (ListPreference) mListItem.get(i).get(ITEM_KEY);
+            if (pref != null) {
+                InLineSettingPicker picker =
+                        (InLineSettingPicker) mSettingList.getChildAt(i);
+                picker.reloadPreference();
+            }
+        }
+    }
 }
