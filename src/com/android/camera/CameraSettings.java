@@ -399,6 +399,10 @@ public class CameraSettings {
             editor.apply();
         }
 
+        // Switch back to the preferences of the current camera. Otherwise,
+        // we may write the preference to wrong camera later.
+        preferences.setLocalId(context, currentCameraId);
+
         upgradeGlobalPreferences(preferences.getGlobal());
         upgradeLocalPreferences(preferences.getLocal());
 

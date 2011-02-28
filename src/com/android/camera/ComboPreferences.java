@@ -49,6 +49,8 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
     }
 
+    // Sets the camera id and reads its preferences. Each camera has its own
+    // preferences.
     public void setLocalId(Context context, int cameraId) {
         String prefName = context.getPackageName() + "_preferences_" + cameraId;
         if (mPrefLocal != null) {
