@@ -350,19 +350,7 @@
     <!-- Unit of measure in the Details dialog M bits per second. e.g. 2.3 Mbps -->
     <!-- Details dialog "OK" button. Dismisses dialog. -->
     <string name="details_ok" msgid="6848594369924424312">"確定"</string>
-
-    <!-- Displayed in the title of the dialog for things to do with a picture that
-         is to be sent to another application: -->
-
-    <!-- Displayed in the title of the dialog for things to do with a picture that
-         is to be "set as" (e.g. set as contact photo or set as wallpaper) -->
-
-    <!-- Displayed in the title of the dialog for things to do with a video that
-         is to be sent to another application. -->
-
-    <!-- Low-memory dialog message [CHAR LIMT=NONE] -->
-    <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"您的共用儲存裝置的空間即將不足，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
-    <!-- Low-memory dialog message [CHAR LIMIT=NONE] -->
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"您的 USB 儲存裝置的空間即將用盡，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"您 SD 卡的空間即將不足，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
 
     <!-- Camera format string for new image files. Passed to java.text.SimpleDateFormat. -->

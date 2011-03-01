@@ -107,7 +107,7 @@
     <string name="pref_restore_detail" msgid="5732490002291044791">"Varsayılanları geri yükle"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Pozlama"</string>
     <string name="details_ok" msgid="6848594369924424312">"Tamam"</string>
-    <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Paylaşılan depolama biriminizde boş alan azaldı. Kalite ayarını değiştirin veya bazı görüntüleri ya da diğer dosyaları silin."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USB depolama biriminizde boş alan azaldı. Kalite ayarını değiştirin veya bazı resimleri ya da diğer dosyaları silin."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SD kartınızda boş alan azaldı. Kalite ayarını değiştirin veya bazı resimleri ya da diğer dosyaları silin."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Boyut sınırına ulaşıldı."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Zum:"</string>

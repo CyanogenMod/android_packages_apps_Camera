@@ -88,17 +88,17 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"色合い（赤）"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"色合い（青）"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"色合い（緑）"</string>
-    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"シーンモード"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"撮影モード"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"オート"</string>
-    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"操作"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"スポーツ"</string>
     <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"ポートレイト"</string>
-    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"横向き"</string>
+    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"風景"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"夜景"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"夜景ポートレイト"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"ナイトスナップ"</string>
     <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"シアター"</string>
     <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"ビーチ"</string>
-    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"雪"</string>
-    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"夕日"</string>
+    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"スノー"</string>
+    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"夕焼け"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"手振れ補正"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"花火"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"パーティー"</string>
@@ -107,7 +107,7 @@
     <string name="pref_restore_detail" msgid="5732490002291044791">"初期設定に戻す"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"露出"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <!-- outdated translation 3117623741859928332 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"共有ストレージの空き領域が少なくなっています。画質設定を変更するか、画像などのファイルを一部削除してください。"</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USBストレージの空き領域が少なくなっています。画質設定を変更するか、画像など一部のファイルを削除してください。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SDカードの空き領域が少なくなっています。画質設定を変更するか、画像などのファイルを一部削除してください。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"サイズ制限に達しました。"</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"ズーム"</string>

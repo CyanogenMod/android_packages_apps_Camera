@@ -1076,8 +1076,9 @@ public class VideoCamera extends NoSearchActivity
             mMediaRecorder.release();
             mMediaRecorder = null;
         }
-        // Take back the camera object control from media recorder.
-        mCameraDevice.lock();
+        // Take back the camera object control from media recorder. Camera
+        // device may be null if the activity is paused.
+        if (mCameraDevice != null) mCameraDevice.lock();
     }
 
     private void createVideoPath() {
