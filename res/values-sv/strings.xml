@@ -38,7 +38,7 @@
     <string name="review_ok" msgid="4750691949877864726">"OK"</string>
     <string name="review_retake" msgid="7776579640762112761">"Ta om"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galleri"</string>
-    <string name="switch_camera_id" msgid="837545176602471325">"Växla kamera"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"Byt kamera"</string>
     <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Tidsavvikelse på"</string>
     <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Tidsavvikelse av"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Intervallinspelning"</string>
