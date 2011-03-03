@@ -19,8 +19,8 @@ package com.android.camera;
 import com.android.camera.ui.CamcorderHeadUpDisplay;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.GLRootView;
-import com.android.camera.ui.IndicatorWheel;
 import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.IndicatorWheel;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -1557,8 +1557,8 @@ public class VideoCamera extends ActivityBase
                         + mCurrentVideoFilename);
                 needToRegisterRecording = true;
             } catch (RuntimeException e) {
-                Log.e(TAG, "stop fail: " + e.getMessage());
-                deleteVideoFile(mVideoFilename);
+                Log.e(TAG, "stop fail",  e);
+                if (mVideoFilename != null) deleteVideoFile(mVideoFilename);
             }
             mMediaRecorderRecording = false;
             showRecordingUI(false);
@@ -1673,7 +1673,7 @@ public class VideoCamera extends ActivityBase
         // For better approximation calculate fractional number of frames captured.
         // This will update the video time at a higher resolution.
         double numberOfFrames = (double) deltaMs / mTimeBetweenTimeLapseFrameCaptureMs;
-        return (long) (numberOfFrames / (double) mProfile.videoFrameRate * 1000);
+        return (long) (numberOfFrames / mProfile.videoFrameRate * 1000);
     }
 
     private void updateRecordingTime() {
@@ -1932,6 +1932,7 @@ public class VideoCamera extends ActivityBase
     private int mLocation[] = new int[2];
     private class PopupGestureListener extends
             GestureDetector.SimpleOnGestureListener {
+        @Override
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
             View v = mIndicatorWheel.getActivePopupWindow();
