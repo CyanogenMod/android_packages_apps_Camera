@@ -23,7 +23,7 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Photos de l\'appareil"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Vidéos de la caméra"</string>
     <string name="wait" msgid="8600187532323801552">"Veuillez patienter..."</string>
-    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Une mémoire de stockage USB doit être connectée pour utiliser l\'appareil photo."</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Une mémoire de stockage USB doit être installée pour utiliser l\'appareil photo."</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"Veuillez insérer une carte SD avant d\'utiliser l\'appareil photo."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"La mémoire de stockage USB est pleine."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Votre carte SD est pleine."</string>
