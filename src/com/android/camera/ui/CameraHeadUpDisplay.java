@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.hardware.Camera.Parameters;
 
 import com.android.camera.CameraSettings;
 import com.android.camera.IconListPreference;
@@ -28,6 +29,7 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     private static final String TAG = "CamcoderHeadUpDisplay";
 
     private OtherSettingsIndicator mOtherSettings;
+    private SettingsIndicator mSettingsIndicator;
     private GpsIndicator mGpsIndicator;
     private ZoomIndicator mZoomIndicator;
     private Context mContext;
@@ -40,16 +42,16 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     }
 
     public void initialize(Context context, PreferenceGroup group,
-            float[] initialZoomRatios, int initialOrientation) {
+            float[] initialZoomRatios, int initialOrientation, Parameters params) {
         mInitialZoomRatios = initialZoomRatios;
         mInitialOrientation = initialOrientation;
-        super.initialize(context, group);
+        super.initialize(context, group, params);
     }
 
     @Override
     protected void initializeIndicatorBar(
-            Context context, PreferenceGroup group) {
-        super.initializeIndicatorBar(context, group);
+            Context context, PreferenceGroup group, Parameters params) {
+        super.initializeIndicatorBar(context, group, params);
 
         ListPreference prefs[] = getListPreferences(group,
                 CameraSettings.KEY_FOCUS_MODE,
@@ -61,10 +63,7 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
                 CameraSettings.KEY_ISO,
                 CameraSettings.KEY_LENSSHADING,
                 CameraSettings.KEY_AUTOEXPOSURE,
-                CameraSettings.KEY_ANTIBANDING,
-                CameraSettings.KEY_SATURATION,
-                CameraSettings.KEY_CONTRAST,
-                CameraSettings.KEY_SHARPNESS);
+                CameraSettings.KEY_ANTIBANDING);
 
         mOtherSettings = new OtherSettingsIndicator(context, prefs);
         mOtherSettings.setOnRestorePreferencesClickedRunner(new Runnable() {
@@ -75,6 +74,11 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
             }
         });
         mIndicatorBar.addComponent(mOtherSettings);
+
+        mSettingsIndicator = new SettingsIndicator(context, params);
+        if (mSettingsIndicator.isAvailable()) {
+            mIndicatorBar.addComponent(mSettingsIndicator);
+        }
 
         mGpsIndicator = new GpsIndicator(
                 context, (IconListPreference)

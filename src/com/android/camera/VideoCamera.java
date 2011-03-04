@@ -85,7 +85,7 @@ import java.util.List;
 /**
  * The Camcorder activity.
  */
-public class VideoCamera extends NoSearchActivity
+public class VideoCamera extends BaseCamera
         implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
@@ -129,8 +129,6 @@ public class VideoCamera extends NoSearchActivity
      */
     private final static String EXTRA_QUICK_CAPTURE =
             "android.intent.extra.quickCapture";
-
-    private ComboPreferences mPreferences;
 
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceView mVideoPreview;
@@ -182,7 +180,6 @@ public class VideoCamera extends NoSearchActivity
     private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private final Handler mHandler = new MainHandler();
-    private Parameters mParameters;
 
     // multiple cameras support
     private int mNumberOfCameras;
@@ -428,7 +425,7 @@ public class VideoCamera extends NoSearchActivity
         boolean zoomSupported = CameraSettings.isVideoZoomSupported(this, mCameraId, mParameters);
         mHeadUpDisplay.initialize(this, group,
                 zoomSupported ? getZoomRatios() : null,
-                mOrientationCompensation);
+                mOrientationCompensation, mParameters);
 
         if (zoomSupported) {
             mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
@@ -1533,10 +1530,6 @@ public class VideoCamera extends NoSearchActivity
                 UPDATE_RECORD_TIME, next_update_delay);
     }
 
-    private static boolean isSupported(String value, List<String> supported) {
-        return supported == null ? false : supported.indexOf(value) >= 0;
-    }
-
     private void setCameraParameters() {
         if (mMediaRecorder == null) {
             mParameters = mCameraDevice.getParameters();
@@ -1559,27 +1552,8 @@ public class VideoCamera extends NoSearchActivity
             }
         }
 
-        // Set white balance parameter.
-        String whiteBalance = mPreferences.getString(
-                CameraSettings.KEY_WHITE_BALANCE,
-                getString(R.string.pref_camera_whitebalance_default));
-        if (isSupported(whiteBalance,
-                mParameters.getSupportedWhiteBalance())) {
-            mParameters.setWhiteBalance(whiteBalance);
-        } else {
-            whiteBalance = mParameters.getWhiteBalance();
-            if (whiteBalance == null) {
-                whiteBalance = Parameters.WHITE_BALANCE_AUTO;
-            }
-        }
-
-        // Set color effect parameter.
-        String colorEffect = mPreferences.getString(
-                CameraSettings.KEY_COLOR_EFFECT,
-                getString(R.string.pref_camera_coloreffect_default));
-        if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
-            mParameters.setColorEffect(colorEffect);
-        }
+        setCommonParameters();
+        setWhiteBalance();
 
         try {
             setCameraHardwareParameters();
