@@ -77,6 +77,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -93,8 +94,8 @@ import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements View.OnClickListener,
-        ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
-        Switcher.OnSwitchListener {
+        View.OnTouchListener, ShutterButton.OnShutterButtonListener,
+        SurfaceHolder.Callback, Switcher.OnSwitchListener {
 
     private static final String TAG = "camera";
 
@@ -160,11 +161,14 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
-    private FocusRectangle mFocusRectangle;
     private ToneGenerator mFocusToneGenerator;
     private GestureDetector mPopupGestureDetector;
     private SwitcherSet mSwitcher;
     private boolean mStartPreviewFail = false;
+
+    private View mPreviewFrame;  // Preview frame area.
+    private FocusRectangle mFocusRectangle;
+    private boolean mTouchFocusEnabled;
 
     private GLRootView mGLRootView;
 
@@ -376,7 +380,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.setVisibility(View.VISIBLE);
 
-        mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
+        // Initialize focus UI.
+        mPreviewFrame = findViewById(R.id.frame);
+        mPreviewFrame.setOnTouchListener(this);
         updateFocusIndicator();
 
         initializeScreenBrightness();
@@ -960,13 +966,14 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             setContentView(R.layout.camera);
         }
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
+        mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
 
         mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
 
-        //Testing purpose. Launch a specific camera through the intent extras.
+        // Testing purpose. Launch a specific camera through the intent extras.
         int intentCameraId = Util.getCameraFacingIntentExtras(this);
         if (intentCameraId != -1) {
             mCameraId = intentCameraId;
@@ -1566,12 +1573,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void clearFocusState() {
         mFocusState = FOCUS_NOT_STARTED;
+        resetTouchFocus();
         updateFocusIndicator();
     }
 
     private void updateFocusIndicator() {
-        if (mFocusRectangle == null) return;
-
         if (mFocusState == FOCUSING || mFocusState == FOCUSING_SNAP_ON_FINISH) {
             mFocusRectangle.showStart();
         } else if (mFocusState == FOCUS_SUCCESS) {
@@ -1581,6 +1587,91 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         } else {
             mFocusRectangle.clear();
         }
+    }
+
+    // Preview area is touched. Handle touch focus.
+    @Override
+    public boolean onTouch(View v, MotionEvent e) {
+        if (mPausing || !mFirstTimeInitialized
+                || !canTakePicture() || !isFocusAreaSupported()
+                || (!mFocusMode.equals(Parameters.FOCUS_MODE_AUTO) &&
+                    !mFocusMode.equals(Parameters.FOCUS_MODE_MACRO) &&
+                    !mFocusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))) {
+            return false;
+        }
+
+        // Calculate the position of the focus rectangle.
+        int x = Math.round(e.getX());
+        int y = Math.round(e.getY());
+        int focusWidth = mFocusRectangle.getWidth();
+        int focusHeight = mFocusRectangle.getHeight();
+        int left = Util.clamp(x - focusWidth / 2, 0,
+                mPreviewFrame.getWidth() - focusWidth);
+        int top = Util.clamp(y - focusHeight / 2, 0,
+                mPreviewFrame.getHeight() - focusHeight);
+        Log.d(TAG, "x=" + x + ". y=" + y);
+        Log.d(TAG, "Margin left=" + left + " . Margin top=" + top);
+        Log.d(TAG, "mPreviewFrame width=" + mPreviewFrame.getWidth() +
+                "mPreviewFrame.getHeight()="+mPreviewFrame.getHeight());
+
+        // Use margin to set the focus rectangle to the touched area.
+        RelativeLayout.LayoutParams p =
+                (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
+        p.setMargins(left, top, 0, 0);
+        // Disable "center" rule because we no longer want to put it in the center.
+        int[] rules = p.getRules();
+        rules[RelativeLayout.CENTER_IN_PARENT] = 0;
+
+        // Set the focus area and take a picture.
+        mTouchFocusEnabled = true;
+        setCameraParameters(UPDATE_PARAM_PREFERENCE);
+        doFocus(true);
+        doSnap();
+        doFocus(false);
+
+        return true;
+    }
+
+    void resetTouchFocus() {
+        // Put focus rectangle to the center.
+        if (mTouchFocusEnabled) {
+            RelativeLayout.LayoutParams p =
+                    (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
+            int[] rules = p.getRules();
+            rules[RelativeLayout.CENTER_IN_PARENT] = RelativeLayout.TRUE;
+            p.setMargins(0, 0, 0, 0);
+            mTouchFocusEnabled = false;
+        }
+    }
+
+    boolean isFocusAreaSupported() {
+        try {
+            return mParameters.getInt("max-num-focus-areas") > 0;
+        } catch (NumberFormatException e) {
+        }
+        return false;
+    }
+
+    void setFocusAreasParameters() {
+        if (!isFocusAreaSupported()) return;
+
+        if (mTouchFocusEnabled) {
+            // The coordinates range from -1000 to 1000. Convert the coordinates
+            // to driver format.
+            RelativeLayout.LayoutParams params =
+                    (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
+            int left = (int) ((double) params.leftMargin / mPreviewFrame.getWidth() * 2000 - 1000);
+            int top = (int) ((double) params.topMargin / mPreviewFrame.getHeight() * 2000 - 1000);
+            int right = (int) ((double) (params.leftMargin + mFocusRectangle.getWidth())
+                    / mPreviewFrame.getWidth() * 2000 - 1000);
+            int bottom = (int) ((double) (params.topMargin + mFocusRectangle.getHeight())
+                    / mPreviewFrame.getHeight() * 2000 - 1000);
+            mParameters.set("focus-areas", "(" + left + "," + top + "," + right
+                    + "," + bottom + ",1000)");
+        } else {
+            mParameters.set("focus-areas", "(0,0,0,0,0)");
+        }
+        Log.d(TAG, "Parameter focus areas=" + mParameters.get("focus-areas"));
     }
 
     @Override
@@ -1782,6 +1873,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private void startPreview() throws CameraHardwareException {
         if (mPausing || isFinishing()) return;
 
+        resetTouchFocus();
+
         ensureCameraDevice();
         mCameraDevice.setErrorCallback(mErrorCallback);
 
@@ -1840,6 +1933,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void updateCameraParametersPreference() {
+        setFocusAreasParameters();
+
         // Set picture size.
         String pictureSize = mPreferences.getString(
                 CameraSettings.KEY_PICTURE_SIZE, null);
