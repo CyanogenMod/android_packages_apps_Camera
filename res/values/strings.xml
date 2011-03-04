@@ -139,8 +139,8 @@
     <string name="pref_video_quality_entry_high">High (30m)</string>
     <string name="pref_video_quality_entry_low">Low (30m)</string>
     <string name="pref_video_quality_entry_mms">MMS (Low, 30s)</string>
-    <string name="pref_video_quality_entry_youtubehd">YouTube (HD, 10m)</string>
-    <string name="pref_video_quality_entry_youtube">YouTube (High, 10m)</string>
+    <string name="pref_video_quality_entry_youtubehd">YouTube (HD, 15m)</string>
+    <string name="pref_video_quality_entry_youtube">YouTube (High, 15m)</string>
 
     <!-- Settings screen, Camera setting category title -->
     <string name="pref_camera_settings_category">Camera settings</string>

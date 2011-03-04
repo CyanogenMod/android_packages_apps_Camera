@@ -49,7 +49,7 @@
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Taas (30m)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Mababa (30m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (Mababa, 30s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (Taas, 10m)"</string>
+    <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (Taas, 15m)"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Mga setting ng kamera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Mga setting ng camcorder"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Laki ng larawan"</string>

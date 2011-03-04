@@ -73,8 +73,8 @@ public class CameraSettings {
 
     // max video duration in seconds for mms and youtube.
     private static final int MMS_VIDEO_DURATION = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW).duration;
-    private static final int YOUTUBE_VIDEO_DURATION = 10 * 60; // 10 mins
-    private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 10 mins
+    private static final int YOUTUBE_VIDEO_DURATION = 15 * 60; // 15 mins
+    private static final int DEFAULT_VIDEO_DURATION = 30 * 60; // 30 mins
 
     // MMS video length
     public static final int DEFAULT_VIDEO_DURATION_VALUE = 30;
