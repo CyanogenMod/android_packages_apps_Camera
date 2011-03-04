@@ -155,7 +155,7 @@ public class CameraSettings {
                 (IconListPreference)group.findPreference(KEY_CAMERA_ID);
         ListPreference videoFlashMode =
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
-        ListPreference mIso = group.findPreference(KEY_ISO);
+        ListPreference iso = group.findPreference(KEY_ISO);
         ListPreference lensShade = group.findPreference(KEY_LENSSHADING);
         ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
         ListPreference autoExposure = group.findPreference(KEY_AUTOEXPOSURE);
@@ -236,9 +236,9 @@ public class CameraSettings {
         }
         if (exposure != null) buildExposureCompensation(group, exposure);
         if (cameraId != null) buildCameraId(group, cameraId);
-        if (mIso != null) {
+        if (iso != null) {
             filterUnsupportedOptions(group,
-                    mIso, mParameters.getSupportedIsoValues());
+                    iso, mParameters.getSupportedIsoValues());
         }
         if (lensShade!= null) {
             filterUnsupportedOptions(group,

@@ -91,7 +91,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
-public class Camera extends NoSearchActivity implements View.OnClickListener,
+public class Camera extends BaseCamera implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         Switcher.OnSwitchListener {
 
@@ -130,7 +130,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private int mZoomMax;
     private int mTargetZoomValue;
 
-    private Parameters mParameters;
     private Parameters mInitialParams;
 
     private MyOrientationEventListener mOrientationListener;
@@ -138,7 +137,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
     // The orientation compensation for icons and thumbnails.
     private int mOrientationCompensation = 0;
-    private ComboPreferences mPreferences;
 
     private static final int IDLE = 1;
     private static final int SNAPSHOT_IN_PROGRESS = 2;
@@ -166,10 +164,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
     // are non-null only if isImageCaptureIntent() is true.
     private ImageView mLastPictureButton;
     private ThumbnailController mThumbController;
-
-    private static final int MAX_SHARPNESS_LEVEL = 5;
-    private static final int MAX_CONTRAST_LEVEL = 5;
-    private static final int MAX_SATURATION_LEVEL = 5;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -1037,7 +1031,7 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         mHeadUpDisplay.initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences),
                 zoomSupported ? getZoomRatios() : null,
-                mOrientationCompensation);
+                mOrientationCompensation, mParameters);
         if (zoomSupported) {
             mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
                 public void onZoomChanged(
@@ -1938,10 +1932,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
         return optimalSize;
     }
 
-    private static boolean isSupported(String value, List<String> supported) {
-        return supported == null ? false : supported.indexOf(value) >= 0;
-    }
-
     private void updateCameraParametersInitialize() {
         // Reset preview frame rate to the maximum because it may be lowered by
         // video camera application.
@@ -2054,37 +2044,6 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
              mParameters.setAutoExposure(autoExposure);
          }
 
-        // Set sharpness parameter.
-        String sharpnessStr = mPreferences.getString(
-                CameraSettings.KEY_SHARPNESS,
-                getString(R.string.pref_camera_sharpness_default));
-        int sharpness = Integer.parseInt(sharpnessStr) *
-                (mParameters.getMaxSharpness()/MAX_SHARPNESS_LEVEL);
-        if((0 <= sharpness) &&
-                (sharpness <= mParameters.getMaxSharpness()))
-            mParameters.setSharpness(sharpness);
-
-
-        // Set contrast parameter.
-        String contrastStr = mPreferences.getString(
-                CameraSettings.KEY_CONTRAST,
-                getString(R.string.pref_camera_contrast_default));
-        int contrast = Integer.parseInt(contrastStr) *
-                (mParameters.getMaxContrast()/MAX_CONTRAST_LEVEL);
-        if((0 <= contrast) &&
-                (contrast <= mParameters.getMaxContrast()))
-            mParameters.setContrast(contrast);
-
-
-        // Set saturation parameter.
-        String saturationStr = mPreferences.getString(
-                CameraSettings.KEY_SATURATION,
-                getString(R.string.pref_camera_saturation_default));
-        int saturation = Integer.parseInt(saturationStr) *
-            (mParameters.getMaxSaturation()/MAX_SATURATION_LEVEL);
-        if((0 <= saturation) &&
-                (saturation <= mParameters.getMaxSaturation()))
-            mParameters.setSaturation(saturation);
 
          // Set anti banding parameter.
          String antiBanding = mPreferences.getString(
@@ -2094,33 +2053,23 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
              mParameters.setAntibanding(antiBanding);
          }
 
-        // For the following settings, we need to check if the settings are
-        // still supported by latest driver, if not, ignore the settings.
+         // Set exposure compensation
+         String exposure = mPreferences.getString(CameraSettings.KEY_EXPOSURE,
+                 CameraSettings.EXPOSURE_DEFAULT_VALUE);
+         try {
+             float value = Float.parseFloat(exposure);
+             int max = mParameters.getMaxExposureCompensation();
+             int min = mParameters.getMinExposureCompensation();
+             if (value >= min && value <= max) {
+                 mParameters.set("exposure-compensation", exposure);
+             } else {
+                 Log.w(TAG, "invalid exposure range: " + exposure);
+             }
+         } catch (NumberFormatException e) {
+             Log.w(TAG, "invalid exposure: " + exposure);
+         }
 
-        // Set color effect parameter.
-        String colorEffect = mPreferences.getString(
-                CameraSettings.KEY_COLOR_EFFECT,
-                getString(R.string.pref_camera_coloreffect_default));
-        if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
-            mParameters.setColorEffect(colorEffect);
-        }
-
-        // Set exposure compensation
-        String exposure = mPreferences.getString(
-                CameraSettings.KEY_EXPOSURE,
-                getString(R.string.pref_exposure_default));
-        try {
-            int value = Integer.parseInt(exposure);
-            int max = mParameters.getMaxExposureCompensation();
-            int min = mParameters.getMinExposureCompensation();
-            if (value >= min && value <= max) {
-                mParameters.setExposureCompensation(value);
-            } else {
-                Log.w(TAG, "invalid exposure range: " + exposure);
-            }
-        } catch (NumberFormatException e) {
-            Log.w(TAG, "invalid exposure: " + exposure);
-        }
+         setCommonParameters();
 
         //Clearing previous GPS data if any
         if(mRecordLocation) {
@@ -2149,19 +2098,8 @@ public class Camera extends NoSearchActivity implements View.OnClickListener,
                 }
             }
 
-            // Set white balance parameter.
-            String whiteBalance = mPreferences.getString(
-                    CameraSettings.KEY_WHITE_BALANCE,
-                    getString(R.string.pref_camera_whitebalance_default));
-            if (isSupported(whiteBalance,
-                    mParameters.getSupportedWhiteBalance())) {
-                mParameters.setWhiteBalance(whiteBalance);
-            } else {
-                whiteBalance = mParameters.getWhiteBalance();
-                if (whiteBalance == null) {
-                    whiteBalance = Parameters.WHITE_BALANCE_AUTO;
-                }
-            }
+            // Do white balance after as scenemode affects it
+            setWhiteBalance();
 
             // Set focus mode.
             mFocusMode = mPreferences.getString(

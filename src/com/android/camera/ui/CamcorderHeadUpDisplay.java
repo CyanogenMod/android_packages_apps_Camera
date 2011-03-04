@@ -21,6 +21,7 @@ import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 
 import android.content.Context;
+import android.hardware.Camera.Parameters;
 import android.util.Log;
 
 public class CamcorderHeadUpDisplay extends HeadUpDisplay {
@@ -28,6 +29,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
     private static final String TAG = "CamcorderHeadUpDisplay";
 
     private OtherSettingsIndicator mOtherSettings;
+    private SettingsIndicator mSettingsIndicator;
     private int mInitialOrientation;
     private BasicIndicator mVideoQualitySettings;
     private float[] mInitialZoomRatios;
@@ -40,16 +42,16 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
     }
 
     public void initialize(Context context, PreferenceGroup group,
-            float[] initialZoomRatios, int initialOrientation) {
+            float[] initialZoomRatios, int initialOrientation, Parameters params) {
         mInitialOrientation = initialOrientation;
         mInitialZoomRatios = initialZoomRatios;
-        super.initialize(context, group);
+        super.initialize(context, group, params);
     }
 
     @Override
     protected void initializeIndicatorBar(
-            Context context, PreferenceGroup group) {
-        super.initializeIndicatorBar(context, group);
+            Context context, PreferenceGroup group, Parameters params) {
+        super.initializeIndicatorBar(context, group, params);
 
         ListPreference[] prefs = getListPreferences(group,
                 CameraSettings.KEY_FOCUS_MODE,
@@ -68,6 +70,11 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
             }
         });
         mIndicatorBar.addComponent(mOtherSettings);
+
+        mSettingsIndicator = new SettingsIndicator(context, params);
+        if (mSettingsIndicator.isAvailable()) {
+            mIndicatorBar.addComponent(mSettingsIndicator);
+        }
 
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);

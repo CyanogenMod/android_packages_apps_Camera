@@ -178,12 +178,12 @@ public class HeadUpDisplay extends GLView {
         }
     }
 
-    public void initialize(Context context, PreferenceGroup preferenceGroup) {
+    public void initialize(Context context, PreferenceGroup preferenceGroup, Parameters parameters) {
         mPreferenceGroup = preferenceGroup;
         mSharedPrefs = ComboPreferences.get(context);
         mPopupWindow = null;
         clearComponents();
-        initializeIndicatorBar(context, preferenceGroup);
+        initializeIndicatorBar(context, preferenceGroup, parameters);
         requestLayout();
     }
 
@@ -338,7 +338,7 @@ public class HeadUpDisplay extends GLView {
     }
 
     protected void initializeIndicatorBar(
-            Context context, PreferenceGroup group) {
+            Context context, PreferenceGroup group, Parameters parameters) {
         mIndicatorBar = new IndicatorBar();
 
         mIndicatorBar.setBackground(new NinePatchTexture(
