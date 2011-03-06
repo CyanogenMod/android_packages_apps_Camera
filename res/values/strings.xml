@@ -424,7 +424,7 @@
     <string name="switch_to_video_lable">Switch to video</string>
 
      <!-- Default iso setting. Do not translate. -->
-     <string name="pref_camera_iso_default">auto</string>
+     <string name="pref_camera_iso_default" translatable="false">auto</string>
 
      <!-- Settings screen, Select Iso title -->
      <string name="pref_camera_iso_title">ISO</string>
@@ -439,16 +439,16 @@
      <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
 
      <!-- ISO entry values. Do not translate. -->
-     <string name="pref_camera_iso_value_auto">auto</string>
-     <string name="pref_camera_iso_value_isodeblur">deblur</string>
-     <string name="pref_camera_iso_value_iso100">100</string>
-     <string name="pref_camera_iso_value_iso200">200</string>
-     <string name="pref_camera_iso_value_iso400">400</string>
-     <string name="pref_camera_iso_value_iso800">800</string>
-     <string name="pref_camera_iso_value_iso1250">1250</string>
+     <string name="pref_camera_iso_value_auto" translatable="false">auto</string>
+     <string name="pref_camera_iso_value_isodeblur" translatable="false">deblur</string>
+     <string name="pref_camera_iso_value_iso100" translatable="false">100</string>
+     <string name="pref_camera_iso_value_iso200" translatable="false">200</string>
+     <string name="pref_camera_iso_value_iso400" translatable="false">400</string>
+     <string name="pref_camera_iso_value_iso800" translatable="false">800</string>
+     <string name="pref_camera_iso_value_iso1250" translatable="false">1250</string>
 
      <!-- Default auto lens shading setting. Do not translate. -->
-     <string name="pref_camera_lensshading_default">enable</string>
+     <string name="pref_camera_lensshading_default" translatable="false">enable</string>
 
      <!-- Settings screen, Select lens shading title -->
      <string name="pref_camera_lensshading_title">Lens shading</string>
@@ -458,14 +458,14 @@
      <string name="pref_camera_lensshading_entry_disable">Disable</string>
 
      <!-- Lens shading entry values. Do not translate. -->
-     <string name="pref_camera_lensshading_value_enable">enable</string>
-     <string name="pref_camera_lensshading_value_disable">disable</string>
+     <string name="pref_camera_lensshading_value_enable" translatable="false">enable</string>
+     <string name="pref_camera_lensshading_value_disable" translatable="false">disable</string>
 
      <!-- Settings screen, Anti Banding title -->
      <string name="pref_camera_antibanding_title">Flicker reduction</string>
 
-     <!-- Default Anti Banding setting. -->
-     <string name="pref_camera_antibanding_default">auto</string>
+     <!-- Default Anti Banding setting. Do not translate. -->
+     <string name="pref_camera_antibanding_default" translatable="false">auto</string>
 
      <!-- Settings screen, Anti Banding entries -->
      <string name="pref_camera_antibanding_entry_0">Off</string>
@@ -474,7 +474,7 @@
      <string name="pref_camera_antibanding_entry_3">Auto</string>
 
      <!-- Default auto exposure setting. Do not translate. -->
-     <string name="pref_camera_autoexposure_default">meter-center</string>
+     <string name="pref_camera_autoexposure_default" translatable="false">meter-center</string>
 
      <!-- Settings screen, Select auto exposure title -->
      <string name="pref_camera_autoexposure_title">Metering mode</string>
@@ -485,8 +485,8 @@
      <string name="pref_camera_autoexposure_entry_spotmetering">Spot metering</string>
 
      <!-- Auto exposure entry values. Do not translate. -->
-     <string name="pref_camera_autoexposure_value_frameaverage">meter-average</string>
-     <string name="pref_camera_autoexposure_value_centerweighted">meter-center</string>
-     <string name="pref_camera_autoexposure_value_spotmetering">meter-spot</string>
+     <string name="pref_camera_autoexposure_value_frameaverage" translatable="false">meter-average</string>
+     <string name="pref_camera_autoexposure_value_centerweighted" translatable="false">meter-center</string>
+     <string name="pref_camera_autoexposure_value_spotmetering" translatable="false">meter-spot</string>
 
 </resources>
