@@ -46,25 +46,62 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Av"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"På"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Videokvalitet"</string>
+    <string name="pref_video_quality_entry_hd">HD (30m)</string>
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Hög (30 m)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Låg (30 m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (Låg, 30 s)"</string>
     <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (Hög, 15 m)"</string>
+    <string name="pref_video_quality_entry_youtubehd">YouTube (HD, 15m)</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kamerainställningar"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videokamerainställningar"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Bildstorlek"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 megapixlar"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 megapixlar"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 megapixlar"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 megapixel"</string>
+    <string name="pref_camera_picturesize_entry_3264x2448">8 Megapixlar</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6 Megapixlar (wide)</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5 Megapixlar</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4 Megapixlar (wide)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4 Megapixlar</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4 Megapixlar</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3 Megapixlar</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2.5 Megapixlar (wide)</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
+    <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
+    <string name="pref_camera_picturesize_entry_1024x768">XGA</string>
+    <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
+    <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
+    <string name="pref_camera_picturesize_entry_640x480">VGA</string>
+    <string name="pref_camera_picturesize_entry_352x288">CIF</string>
+    <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
+    <string name="pref_camera_picturesize_entry_176x144">QCIF</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Bildkvalitet"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Superfin"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fin"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normal"</string>
+    <string name="advanced_options_label">Avancerade inställningar</string>
+    <string name="pref_camera_vol_shutter_title">Volym-slutare</string>
+    <string name="pref_camera_vol_up_shutter">Volym Upp</string>
+    <string name="pref_camera_vol_up_shutter_summary">Volym upp tar en bild</string>
+    <string name="pref_camera_vol_down_shutter">Volym Ner</string>
+    <string name="pref_camera_vol_down_shutter_summary">Volym ner tar en bild</string>
+    <string name="pref_camera_vol_zoom_title">Volym-zoom</string>
+    <string name="pref_camera_vol_zoom">Zoom med volymknappar</string>
+    <string name="pref_camera_vol_zoom_summary">Volym upp/ner zoomar in/ut, respektive</string>
+    <string name="pref_camera_search_shutter_title">Sök-slutare</string>
+    <string name="pref_camera_search_shutter">Sök-knapp</string>
+    <string name="pref_camera_search_shutter_summary">Sök-knappen tar en bild</string>
+    <string name="pref_camera_settings_focus_title">Fokus</string>
+    <string name="pref_camera_settings_focus">För-fokusering</string>
+    <string name="pref_camera_settings_focus_summary">Fokusera innan bild tas</string>
+    <string name="pref_camera_settings_long_focus">Lång fokus</string>
+    <string name="pref_camera_settings_long_focus_summary">Håll ner knappen för att fokusera, släpp för att ta bild</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fokusläge"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatiskt"</string>
-    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Oändligt"</string>
+    <string name="pref_camera_focusmode_entry_normal">Normal</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Oändligt"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Blixtläge"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatiskt"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"På"</string>
@@ -88,6 +125,27 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Röd ton"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Blå ton"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Grön ton"</string>
+    <string name="pref_camera_sharpness_entry_level0">Nivå 0</string>
+    <string name="pref_camera_sharpness_entry_level1">Nivå 1</string>
+    <string name="pref_camera_sharpness_entry_level2">Nivå 2(Standard)</string>
+    <string name="pref_camera_sharpness_entry_level3">Nivå 3</string>
+    <string name="pref_camera_sharpness_entry_level4">Nivå 4</string>
+    <string name="pref_camera_sharpness_entry_level5">Nivå 5</string>
+    <string name="pref_camera_contrast_entry_level0">Nivå 0</string>
+    <string name="pref_camera_contrast_entry_level1">Nivå 1</string>
+    <string name="pref_camera_contrast_entry_level2">Nivå 2</string>
+    <string name="pref_camera_contrast_entry_level3">Nivå 3(Standard)</string>
+    <string name="pref_camera_contrast_entry_level4">Nivå 4</string>
+    <string name="pref_camera_contrast_entry_level5">Nivå 5</string>
+    <string name="pref_camera_saturation_entry_level0">Nivå 0</string>
+    <string name="pref_camera_saturation_entry_level1">Nivå 1</string>
+    <string name="pref_camera_saturation_entry_level2">Nivå 2</string>
+    <string name="pref_camera_saturation_entry_level3">Nivå 3(Standard)</string>
+    <string name="pref_camera_saturation_entry_level4">Nivå 4</string>
+    <string name="pref_camera_saturation_entry_level5">Nivå 5</string>
+    <string name="pref_camera_sharpness_title">Skärpa</string>
+    <string name="pref_camera_contrast_title">Kontrast</string>
+    <string name="pref_camera_saturation_title">Mättnad</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Scenläge"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatiskt"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Åtgärd"</string>
@@ -101,8 +159,11 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Solnedgång"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Stadigt foto"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fyrverkerier"</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fest"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Stearinljus"</string>
+    <string name="pref_camera_scenemode_entry_backlight">Bakljus</string>
+    <string name="pref_camera_scenemode_entry_flowers">Blommor</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Kamerainställningar"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Återställ standardinställningar"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exponering"</string>
@@ -113,4 +174,23 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Växla till kamera"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Växla till video"</string>
+    <string name="pref_camera_iso_title">ISO</string>
+    <string name="pref_camera_iso_entry_auto">Auto</string>
+    <string name="pref_camera_iso_entry_isodeblur">Anti-oskärpa</string>
+    <string name="pref_camera_iso_entry_iso100">ISO100</string>
+    <string name="pref_camera_iso_entry_iso200">ISO200</string>
+    <string name="pref_camera_iso_entry_iso400">ISO400</string>
+    <string name="pref_camera_iso_entry_iso800">ISO800</string>
+    <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
+    <string name="pref_camera_lensshading_entry_enable">Aktivera</string>
+    <string name="pref_camera_lensshading_entry_disable">Inaktivera</string>
+    <string name="pref_camera_antibanding_title">Reducering av flimmer</string>
+    <string name="pref_camera_antibanding_entry_0">Av</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">Auto</string>
+    <string name="pref_camera_autoexposure_title">Ljusmätningsmetod</string>
+    <string name="pref_camera_autoexposure_entry_frameaverage">Genomsnitt</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">Centrumvägd</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">Punktmätning</string>
 </resources>
