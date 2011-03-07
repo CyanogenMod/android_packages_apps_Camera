@@ -170,4 +170,24 @@
     <string name="pref_camera_autoexposure_entry_frameaverage">Moldura média</string>
     <string name="pref_camera_autoexposure_entry_centerweighted">Centro ponderado</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">Medição pontual</string>
+    <string name="pref_camera_scenemode_entry_sports">Esportes</string>
+    <string name="pref_camera_scenemode_entry_backlight">Luz de fundo</string>
+    <string name="pref_camera_scenemode_entry_flowers">Flores</string>
+    <string name="advanced_options_label">Opções avançadas</string>
+    <string name="pref_camera_vol_shutter_title">Volume</string>
+    <string name="pref_camera_vol_up_shutter">Aumentar Volume</string>
+    <string name="pref_camera_vol_up_shutter_summary">Aumentar volume tira foto</string>
+    <string name="pref_camera_vol_down_shutter">Diminuir Volume</string>
+    <string name="pref_camera_vol_down_shutter_summary">Diminuir volume tira foto</string>
+    <string name="pref_camera_vol_zoom_title">Zoom c/ Volume</string>
+    <string name="pref_camera_vol_zoom">Botões de volume dão zoom</string>
+    <string name="pref_camera_vol_zoom_summary">Volume cima/baixo dão zoom mais/menos respectivamente</string>
+    <string name="pref_camera_search_shutter_title">Pesquisa</string>
+    <string name="pref_camera_search_shutter">Botão de Pesquisa</string>
+    <string name="pref_camera_search_shutter_summary">Botão de pesquisa tira foto</string>
+    <string name="pref_camera_settings_focus_title">Foco</string>
+    <string name="pref_camera_settings_focus">Pré-Foco</string>
+    <string name="pref_camera_settings_focus_summary">Foca antes de tirar foto</string>
+    <string name="pref_camera_settings_long_focus">Foco longo</string>
+    <string name="pref_camera_settings_long_focus_summary">Segure o botão de foco e solte para tirar foto</string>
 </resources>
