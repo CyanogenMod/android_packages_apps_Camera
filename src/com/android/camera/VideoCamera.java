@@ -1359,6 +1359,7 @@ public class VideoCamera extends ActivityBase
 
     // from MediaRecorder.OnErrorListener
     public void onError(MediaRecorder mr, int what, int extra) {
+        Log.e(TAG, "MediaRecorder error. what=" + what + ". extra=" + extra);
         if (what == MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN) {
             // We may have run out of space on the sdcard.
             stopVideoRecording();
