@@ -1,415 +1,84 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
- * Copyright (C) 2008 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
  -->
 
-<resources>
-    <!-- Camera Preferences Video Quality entries -->
-    <string-array name="pref_video_quality_entries" translatable="false">
-        <item>@string/pref_video_quality_entry_hd</item>
-        <item>@string/pref_video_quality_entry_high</item>
-        <item>@string/pref_video_quality_entry_low</item>
-        <item>@string/pref_video_quality_entry_mms</item>
-        <item>@string/pref_video_quality_entry_youtubehd</item>
-        <item>@string/pref_video_quality_entry_youtube</item>
-    </string-array>
-
-    <string-array name="pref_video_quality_entryvalues" translatable="false">
-        <item>hd</item>
-        <item>high</item>
-        <item>low</item>
-        <item>mms</item>
-        <item>youtubehd</item>
-        <item>youtube</item>
-    </string-array>
-
-    <array name="video_quality_icons" translatable="false">
-        <item>@drawable/ic_viewfinder_video_quality_hd</item>
-        <item>@drawable/ic_viewfinder_video_quality_high</item>
-        <item>@drawable/ic_viewfinder_video_quality_low</item>
-        <item>@drawable/ic_viewfinder_video_quality_mms</item>
-        <item>@drawable/ic_viewfinder_video_quality_youtubehd</item>
-        <item>@drawable/ic_viewfinder_video_quality_youtube</item>
-    </array>
-
-    <!-- Camera Preferences Picture size dialog box entries -->
-    <string-array name="pref_camera_picturesize_entries" translatable="false">
-        <!-- TODO: Change to a better name of the preference.
-                The first element of the array sould be
-                "pref_camera_picturesize_entry_2592x1944". However, we are too
-                late for the translation. Since we show the same label as the
-                second item, we just use the second one instead.
-        -->
-        <item>@string/pref_camera_picturesize_entry_3264x2448</item>
-        <item>@string/pref_camera_picturesize_entry_3264x1952</item>
-        <item>@string/pref_camera_picturesize_entry_2592x1936</item>
-        <item>@string/pref_camera_picturesize_entry_2592x1936</item>
-        <item>@string/pref_camera_picturesize_entry_2592x1936</item>
-        <item>@string/pref_camera_picturesize_entry_2592x1936</item>
-        <item>@string/pref_camera_picturesize_entry_2592x1552</item>
-        <item>@string/pref_camera_picturesize_entry_2560x1712</item>
-        <item>@string/pref_camera_picturesize_entry_2304x1728</item>
-        <item>@string/pref_camera_picturesize_entry_2048x1536</item>
-        <item>@string/pref_camera_picturesize_entry_2048x1216</item>
-        <item>@string/pref_camera_picturesize_entry_1920x1080</item>
-        <item>@string/pref_camera_picturesize_entry_1600x1200</item>
-        <item>@string/pref_camera_picturesize_entry_1280x960</item>
-        <item>@string/pref_camera_picturesize_entry_1280x1024</item>
-        <item>@string/pref_camera_picturesize_entry_1280x768</item>
-        <item>@string/pref_camera_picturesize_entry_1280x720</item>
-        <item>@string/pref_camera_picturesize_entry_1024x768</item>
-        <item>@string/pref_camera_picturesize_entry_800x600</item>
-        <item>@string/pref_camera_picturesize_entry_800x480</item>
-        <item>@string/pref_camera_picturesize_entry_640x480</item>
-        <item>@string/pref_camera_picturesize_entry_352x288</item>
-        <item>@string/pref_camera_picturesize_entry_320x240</item>
-        <item>@string/pref_camera_picturesize_entry_176x144</item>
-    </string-array>
-
-    <!-- When launching the camera app first time, we will set the picture
-         size to the first one in the list that is also supported by the
-         driver -->
-    <string-array name="pref_camera_picturesize_entryvalues" translatable="false">
-        <item>3264x2448</item>
-        <item>3264x1952</item>
-        <item>2592x1944</item>
-        <item>2592x1936</item>
-        <item>2560x1920</item>
-        <item>2592x1952</item>
-        <item>2592x1552</item>
-        <item>2560x1712</item>
-        <item>2304x1728</item>
-        <item>2048x1536</item>
-        <item>2048x1216</item>
-        <item>1920x1080</item>
-        <item>1600x1200</item>
-        <item>1280x960</item>
-        <item>1280x1024</item>
-        <item>1280x768</item>
-        <item>1280x720</item>
-        <item>1024x768</item>
-        <item>800x600</item>
-        <item>800x480</item>
-        <item>640x480</item>
-        <item>352x288</item>
-        <item>320x240</item>
-        <item>176x144</item>
-    </string-array>
-
-    <!-- Camera Preferences JPEG quality dialog box entries -->
-    <string-array name="pref_camera_jpegquality_entries" translatable="false">
-        <item>@string/pref_camera_jpegquality_entry_superfine</item>
-        <item>@string/pref_camera_jpegquality_entry_fine</item>
-        <item>@string/pref_camera_jpegquality_entry_normal</item>
-    </string-array>
-
-    <string-array name="pref_camera_jpegquality_entryvalues" translatable="false">
-        <item>superfine</item>
-        <item>fine</item>
-        <item>normal</item>
-    </string-array>
-
-    <!-- Camera Preferences focus mode dialog box entries -->
-    <string-array name="pref_camera_focusmode_entries" translatable="false">
-        <item>@string/pref_camera_focusmode_entry_auto</item>
-        <item>@string/pref_camera_focusmode_entry_normal</item>
-        <item>@string/pref_camera_focusmode_entry_macro</item>
-        <item>@string/pref_camera_focusmode_entry_infinity</item>
-    </string-array>
-
-    <string-array name="pref_camera_focusmode_entryvalues" translatable="false">
-        <item>auto</item>
-        <item>normal</item>
-        <item>macro</item>
-        <item>infinity</item>
-    </string-array>
-
-    <!-- Camera Preferences flash mode dialog box entries -->
-    <string-array name="pref_camera_flashmode_entries" translatable="false">
-        <item>@string/pref_camera_flashmode_entry_auto</item>
-        <item>@string/pref_camera_flashmode_entry_on</item>
-        <item>@string/pref_camera_flashmode_entry_off</item>
-    </string-array>
-
-    <string-array name="pref_camera_flashmode_entryvalues" translatable="false">
-        <item>auto</item>
-        <item>on</item>
-        <item>off</item>
-    </string-array>
-
-    <array name="pref_camera_flashmode_icons">
-        <item>@drawable/ic_menuselect_flash_auto</item>
-        <item>@drawable/ic_menuselect_flash_on</item>
-        <item>@drawable/ic_menuselect_flash_off</item>
-    </array>
-
-    <array name="flashmode_icons">
-        <item>@drawable/ic_viewfinder_flash_auto</item>
-        <item>@drawable/ic_viewfinder_flash_on</item>
-        <item>@drawable/ic_viewfinder_flash_off</item>
-    </array>
-
-    <!-- Videocamera Preferences flash mode dialog box entries -->
-    <string-array name="pref_camera_video_flashmode_entries" translatable="false">
-        <item>@string/pref_camera_flashmode_entry_on</item>
-        <item>@string/pref_camera_flashmode_entry_off</item>
-    </string-array>
-
-    <string-array name="pref_camera_video_flashmode_entryvalues" translatable="false">
-        <item>torch</item>
-        <item>off</item>
-    </string-array>
-
-    <array name="pref_camera_video_flashmode_icons">
-        <item>@drawable/ic_menuselect_flash_on</item>
-        <item>@drawable/ic_menuselect_flash_off</item>
-    </array>
-
-    <array name="video_flashmode_icons">
-        <item>@drawable/ic_viewfinder_flash_on</item>
-        <item>@drawable/ic_viewfinder_flash_off</item>
-    </array>
-
-    <string-array name="pref_camera_recordlocation_entryvalues" translatable="false">
-        <item>off</item>
-        <item>on</item>
-    </string-array>
-
-    <array name="pref_camera_recordlocation_entries" translatable="false">
-        <item>@string/pref_camera_recordlocation_entry_off</item>
-        <item>@string/pref_camera_recordlocation_entry_on</item>
-    </array>
-
-    <array name="pref_camera_recordlocation_icons" translatable="false">
-        <item>@drawable/ic_menuselect_gps_off</item>
-        <item>@drawable/ic_menuselect_gps_on</item>
-    </array>
-
-    <array name="recordlocation_icons">
-        <item>@drawable/ic_viewfinder_gps_off</item>
-        <item>@drawable/ic_viewfinder_gps_on</item>
-    </array>
-
-    <!-- Camera Preferences White Balance dialog box entries -->
-    <string-array name="pref_camera_whitebalance_entries" translatable="false">
-        <item>@string/pref_camera_whitebalance_entry_auto</item>
-        <item>@string/pref_camera_whitebalance_entry_incandescent</item>
-        <item>@string/pref_camera_whitebalance_entry_daylight</item>
-        <item>@string/pref_camera_whitebalance_entry_fluorescent</item>
-        <item>@string/pref_camera_whitebalance_entry_cloudy</item>
-    </string-array>
-
-    <string-array name="pref_camera_whitebalance_entryvalues" translatable="false">
-        <item>auto</item>
-        <item>incandescent</item>
-        <item>daylight</item>
-        <item>fluorescent</item>
-        <item>cloudy-daylight</item>
-    </string-array>
-
-    <array name="pref_camera_whitebalance_icons">
-        <item>@drawable/ic_menuselect_wb_auto</item>
-        <item>@drawable/ic_menuselect_wb_incandescent</item>
-        <item>@drawable/ic_menuselect_wb_daylight</item>
-        <item>@drawable/ic_menuselect_wb_fluorescent</item>
-        <item>@drawable/ic_menuselect_wb_cloudy</item>
-    </array>
-
-    <array name="whitebalance_icons">
-        <item>@drawable/ic_viewfinder_wb_auto</item>
-        <item>@drawable/ic_viewfinder_wb_incandescent</item>
-        <item>@drawable/ic_viewfinder_wb_daylight</item>
-        <item>@drawable/ic_viewfinder_wb_fluorescent</item>
-        <item>@drawable/ic_viewfinder_wb_cloudy</item>
-    </array>
-
-    <!-- Camera Preferences Color effect dialog box entries -->
-    <string-array name="pref_camera_coloreffect_entries" translatable="false">
-        <item>@string/pref_camera_coloreffect_entry_none</item>
-        <item>@string/pref_camera_coloreffect_entry_mono</item>
-        <item>@string/pref_camera_coloreffect_entry_sepia</item>
-        <item>@string/pref_camera_coloreffect_entry_negative</item>
-        <item>@string/pref_camera_coloreffect_entry_solarize</item>
-        <item>@string/pref_camera_coloreffect_entry_posterize</item>
-        <item>@string/pref_camera_coloreffect_entry_aqua</item>
-        <item>@string/pref_camera_coloreffect_entry_pastel</item>
-        <item>@string/pref_camera_coloreffect_entry_mosaic</item>
-        <item>@string/pref_camera_coloreffect_entry_redtint</item>
-        <item>@string/pref_camera_coloreffect_entry_bluetint</item>
-        <item>@string/pref_camera_coloreffect_entry_greentint</item>
-    </string-array>
-
-    <string-array name="pref_camera_coloreffect_entryvalues" translatable="false">
-        <item>none</item>
-        <item>mono</item>
-        <item>sepia</item>
-        <item>negative</item>
-        <item>solarize</item>
-        <item>posterize</item>
-        <item>aqua</item>
-        <item>pastel</item>
-        <item>mosaic</item>
-        <item>red-tint</item>
-        <item>blue-tint</item>
-        <item>green-tint</item>
-    </string-array>
-
-    <!-- Camera Preferences MultiLevel dialog box entries -->
-    <string-array name="pref_camera_sharpness_entries">
-        <item>@string/pref_camera_sharpness_entry_level0</item>
-        <item>@string/pref_camera_sharpness_entry_level1</item>
-        <item>@string/pref_camera_sharpness_entry_level2</item>
-        <item>@string/pref_camera_sharpness_entry_level3</item>
-        <item>@string/pref_camera_sharpness_entry_level4</item>
-        <item>@string/pref_camera_sharpness_entry_level5</item>
-    </string-array>
-
-    <!-- Camera Preferences MultiLevel dialog box entries -->
-    <string-array name="pref_camera_contrast_entries">
-        <item>@string/pref_camera_contrast_entry_level0</item>
-        <item>@string/pref_camera_contrast_entry_level1</item>
-        <item>@string/pref_camera_contrast_entry_level2</item>
-        <item>@string/pref_camera_contrast_entry_level3</item>
-        <item>@string/pref_camera_contrast_entry_level4</item>
-        <item>@string/pref_camera_contrast_entry_level5</item>
-    </string-array>
-
-    <!-- Camera Preferences Saturation dialog box entries -->
-    <string-array name="pref_camera_saturation_entries">
-        <item>@string/pref_camera_saturation_entry_level0</item>
-        <item>@string/pref_camera_saturation_entry_level1</item>
-        <item>@string/pref_camera_saturation_entry_level2</item>
-        <item>@string/pref_camera_saturation_entry_level3</item>
-        <item>@string/pref_camera_saturation_entry_level4</item>
-        <item>@string/pref_camera_saturation_entry_level5</item>
-    </string-array>
-
-    <!-- Entry values array is shared between Saturation, Sharpness & Contrast -->
-    <string-array name="pref_camera_multilevel_entryvalues">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-    </string-array>
-
-
-    <!-- Camera Preferences Scene Mode dialog box entries -->
-    <string-array name="pref_camera_scenemode_entries" translatable="false">
-        <item>@string/pref_camera_scenemode_entry_auto</item>
-        <item>@string/pref_camera_scenemode_entry_action</item>
-        <item>@string/pref_camera_scenemode_entry_portrait</item>
-        <item>@string/pref_camera_scenemode_entry_landscape</item>
-        <item>@string/pref_camera_scenemode_entry_night</item>
-        <item>@string/pref_camera_scenemode_entry_night_portrait</item>
-        <item>@string/pref_camera_scenemode_entry_theatre</item>
-        <item>@string/pref_camera_scenemode_entry_beach</item>
-        <item>@string/pref_camera_scenemode_entry_snow</item>
-        <item>@string/pref_camera_scenemode_entry_sunset</item>
-        <item>@string/pref_camera_scenemode_entry_steadyphoto</item>
-        <item>@string/pref_camera_scenemode_entry_fireworks</item>
-        <item>@string/pref_camera_scenemode_entry_sports</item>
-        <item>@string/pref_camera_scenemode_entry_party</item>
-        <item>@string/pref_camera_scenemode_entry_candlelight</item>
-        <item>@string/pref_camera_scenemode_entry_backlight</item>
-        <item>@string/pref_camera_scenemode_entry_flowers</item>
-    </string-array>
-
-    <string-array name="pref_camera_scenemode_entryvalues" translatable="false">
-        <item>auto</item>
-        <item>action</item>
-        <item>portrait</item>
-        <item>landscape</item>
-        <item>night</item>
-        <item>night-portrait</item>
-        <item>theatre</item>
-        <item>beach</item>
-        <item>snow</item>
-        <item>sunset</item>
-        <item>steadyphoto</item>
-        <item>fireworks</item>
-        <item>sports</item>
-        <item>party</item>
-        <item>candlelight</item>
-        <item>backlight</item>
-        <item>flowers</item>
-    </string-array>
-
-    <!-- Camera Preferences ISO dialog box entries -->
-     <string-array name="pref_camera_iso_entries">
-         <item>@string/pref_camera_iso_entry_auto</item>
-         <item>@string/pref_camera_iso_entry_isodeblur</item>
-         <item>@string/pref_camera_iso_entry_iso100</item>
-         <item>@string/pref_camera_iso_entry_iso200</item>
-         <item>@string/pref_camera_iso_entry_iso400</item>
-         <item>@string/pref_camera_iso_entry_iso800</item>
-         <item>@string/pref_camera_iso_entry_iso1250</item>
-    </string-array>
-
-    <!-- Do not localize entryvalues -->
-    <string-array name="pref_camera_iso_entryvalues">
-         <item>@string/pref_camera_iso_value_auto</item>
-         <item>@string/pref_camera_iso_value_isodeblur</item>
-         <item>@string/pref_camera_iso_value_iso100</item>
-         <item>@string/pref_camera_iso_value_iso200</item>
-         <item>@string/pref_camera_iso_value_iso400</item>
-         <item>@string/pref_camera_iso_value_iso800</item>
-         <item>@string/pref_camera_iso_value_iso1250</item>
-     </string-array>
-
-     <!-- Camera Preferences Lens shading dialog box entries -->
-     <string-array name="pref_camera_lensshading_entries">
-          <item>@string/pref_camera_lensshading_entry_enable</item>
-          <item>@string/pref_camera_lensshading_entry_disable</item>
-     </string-array>
-
-     <!-- Do not localize entryvalues -->
-     <string-array name="pref_camera_lensshading_entryvalues">
-          <item>@string/pref_camera_lensshading_value_enable</item>
-          <item>@string/pref_camera_lensshading_value_disable</item>
-     </string-array>
-
-     <!-- Camera Preferences Anti Banding dialog box entries -->
-     <string-array name="pref_camera_antibanding_entries">
-         <item>@string/pref_camera_antibanding_entry_0</item>
-         <item>@string/pref_camera_antibanding_entry_1</item>
-         <item>@string/pref_camera_antibanding_entry_2</item>
-         <item>@string/pref_camera_antibanding_entry_3</item>
-     </string-array>
-
-     <!-- Do not translate -->
-     <string-array name="pref_camera_antibanding_entryvalues">
-         <item>off</item>
-         <item>50hz</item>
-         <item>60hz</item>
-         <item>auto</item>
-     </string-array>
-
-     <!-- Camera Preferences Auto Exposure dialog box entries -->
-     <string-array name="pref_camera_autoexposure_entries">
-         <item>@string/pref_camera_autoexposure_entry_frameaverage</item>
-         <item>@string/pref_camera_autoexposure_entry_centerweighted</item>
-         <item>@string/pref_camera_autoexposure_entry_spotmetering</item>
-     </string-array>
-
-     <!-- Do not localize entryvalues -->
-     <string-array name="pref_camera_autoexposure_entryvalues">
-         <item>@string/pref_camera_autoexposure_value_frameaverage</item>
-         <item>@string/pref_camera_autoexposure_value_centerweighted</item>
-         <item>@string/pref_camera_autoexposure_value_spotmetering</item>
-     </string-array>
-
+  <string-array name="pref_camera_jpegquality_entryvalues">
+    <item>איכותי מאוד</item>
+    <item>איכותי</item>
+    <item>רגיל</item>
+  </string-array>
+  <string-array name="pref_camera_focusmode_entryvalues">
+    <item>אוטומטי</item>
+    <item>רגיל</item>
+  </string-array>
+  <string-array name="pref_camera_flashmode_entryvalues">
+    <item>אוטומטי</item>
+    <item>מופעל</item>
+    <item>כבוי</item>
+  </string-array>
+  <string-array name="pref_camera_video_flashmode_entryvalues">
+    <item>לפיד</item>
+    <item>כבוי</item>
+  </string-array>
+  <string-array name="pref_camera_recordlocation_entryvalues">
+    <item>כבוי</item>
+    <item>מופעל</item>
+  </string-array>
+  <string-array name="pref_camera_whitebalance_entryvalues">
+    <item>אוטומטי</item>
+    <item>אור יום</item>
+    <item>פלורוסנט</item>
+    <item>אור יום-מעונן</item>
+  </string-array>
+  <string-array name="pref_camera_coloreffect_entryvalues">
+    <item>ללא</item>
+    <item>מונו</item>
+    <item>חום כהה</item>
+    <item>שלילי</item>
+    <item>סולריזציה</item>
+    <item>יצירת פוסטר</item>
+    <item>אקווה</item>
+    <item>פסטל</item>
+    <item>פסיפס</item>
+    <item>גוון אדום</item>
+    <item>גוון כחול</item>
+    <item>גוון ירוק</item>
+  </string-array>
+  <string-array name="pref_camera_scenemode_entryvalues">
+    <item>אוטומטי</item>
+    <item>פעולה</item>
+    <item>דיוקן</item>
+    <item>נוף</item>
+    <item>לילה</item>
+    <item>דיוקן בלילה</item>
+    <item>theatre</item>
+    <item>חוף</item>
+    <item>שלג</item>
+    <item>שקיעה</item>
+    <item>תמונה יציבה</item>
+    <item>זיקוקים</item>
+    <item>ספורט</item>
+    <item>מסיבה</item>
+    <item>אור הנר</item>
+    <item>תאורה אחורית</item>
+    <item>פרחים</item>
+  </string-array>
+  <string-array name="pref_camera_antibanding_entryvalues">
+    <item>כבוי</item>
+    <item>50Hz</item>
+    <item>60Hz</item>
+    <item>אוטומטי</item>
+  </string-array>
 </resources>
