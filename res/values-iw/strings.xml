@@ -53,14 +53,21 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"הגדרות מצלמה"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"הגדרות מצלמת וידאו"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"גודל התמונה"</string>
+	<string name="pref_camera_picturesize_entry_3264x2448">8M פיקסלים</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">שש מגה פיקסל (רחב)</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 מגה פיקסלים"</string>
+	<string name="pref_camera_picturesize_entry_2592x1552">ארבע מגה פיקסל (רחב)</string>
+  <string name="pref_camera_picturesize_entry_2560x1712">ארבע מגה פיקסל</string>
+  <string name="pref_camera_picturesize_entry_2304x1728">ארבע מגה פיקסל</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 מגה פיקסלים"</string>
+	 <string name="pref_camera_picturesize_entry_2048x1216">2.5 מגה פיקסל (רחב)</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 מגה פיקסלים"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 מגה פיקסלים"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"איכות תמונה"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"איכותי במיוחד"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"איכותי"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"רגיל"</string>
+	  <string name="advanced_options_label">אפשרויות מתקדמות</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"מצב מיקוד"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"אוטומטי"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"אינסוף"</string>
@@ -113,4 +120,29 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"מרחק מתצוגה"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"עבור למצלמה"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"עבור לווידאו"</string>
+ <string name="pref_camera_iso_default">אוטומטי</string>
+  <string name="pref_camera_iso_title">אסא</string>
+  <string name="pref_camera_iso_entry_auto">אוטומטי</string>
+  <string name="pref_camera_iso_value_auto">אוטומטי</string>
+  <string name="pref_camera_lensshading_default">לאפשר</string>
+  <string name="pref_camera_lensshading_title">עדשה הצללה</string>
+  <string name="pref_camera_lensshading_entry_enable">לאפשר</string>
+  <string name="pref_camera_lensshading_entry_disable">בטל</string>
+  <string name="pref_camera_lensshading_value_enable">אפשר</string>
+  <string name="pref_camera_lensshading_value_disable">בטל</string>
+  <string name="pref_camera_antibanding_title">הפחתת הבהוב</string>
+  <string name="pref_camera_antibanding_default">אוטומטי</string>
+  <string name="pref_camera_antibanding_entry_0">כבה</string>
+  <string name="pref_camera_antibanding_entry_1">50 הרץ</string>
+  <string name="pref_camera_antibanding_entry_2">60 הרץ</string>
+  <string name="pref_camera_antibanding_entry_3">אוטומטי</string>
+  <string name="pref_camera_autoexposure_default">מד במרכז</string>
+  <string name="pref_camera_autoexposure_title">מצב מדידה</string>
+  <string name="pref_camera_autoexposure_entry_frameaverage">ממוצע פריימים </string>
+  <string name="pref_camera_autoexposure_entry_centerweighted">מרכז משוקלל</string>
+  <string name="pref_camera_autoexposure_entry_spotmetering">מדידת נקודה</string>
+  <string name="pref_camera_autoexposure_value_frameaverage">מד-ממוצע</string>
+  <string name="pref_camera_autoexposure_value_centerweighted">מד במרכז</string>
+  <string name="pref_camera_autoexposure_value_spotmetering">מד-ספוט</string>
 </resources>
+
