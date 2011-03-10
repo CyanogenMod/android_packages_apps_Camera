@@ -194,9 +194,12 @@ public class Switcher extends ImageView implements View.OnTouchListener {
     }
 
     // This implements View.OnTouchListener so we intercept the touch events
-    // and pass them to ourselves.
+    // of the parent and pass them to ourselves.
     public boolean onTouch(View v, MotionEvent event) {
+        // Adjust the x and y because they are relative to the parent.
+        event.offsetLocation(-getLeft(), -getTop());
         onTouchEvent(event);
+        event.offsetLocation(getLeft(), getTop());
         return true;
     }
 
