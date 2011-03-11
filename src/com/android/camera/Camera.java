@@ -2248,7 +2248,13 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             // Restart the activity to have a crossfade animation.
             // TODO: Use SurfaceTexture to implement a better and faster
             // animation.
-            MenuHelper.gotoCameraMode(this);
+            if (mIsImageCaptureIntent) {
+                // If the intent is camera capture, stay in camera capture mode.
+                MenuHelper.gotoCameraMode(this, getIntent());
+            } else {
+                MenuHelper.gotoCameraMode(this);
+            }
+
             finish();
         } else {
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
