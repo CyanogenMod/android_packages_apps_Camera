@@ -1288,13 +1288,14 @@ public class VideoCamera extends ActivityBase
     }
 
     private void deleteCurrentVideo() {
+        // Remove the video and the uri if the uri is not passed in by intent.
         if (mCurrentVideoFilename != null) {
             deleteVideoFile(mCurrentVideoFilename);
             mCurrentVideoFilename = null;
-        }
-        if (mCurrentVideoUri != null) {
-            mContentResolver.delete(mCurrentVideoUri, null, null);
-            mCurrentVideoUri = null;
+            if (mCurrentVideoUri != null) {
+                mContentResolver.delete(mCurrentVideoUri, null, null);
+                mCurrentVideoUri = null;
+            }
         }
         updateAndShowStorageHint();
     }
@@ -1870,7 +1871,12 @@ public class VideoCamera extends ActivityBase
                 // Restart the activity to have a crossfade animation.
                 // TODO: Use SurfaceTexture to implement a better and faster
                 // animation.
-                MenuHelper.gotoVideoMode(this);
+                if (mIsVideoCaptureIntent) {
+                    // If the intent is video capture, stay in video capture mode.
+                    MenuHelper.gotoVideoMode(this, getIntent());
+                } else {
+                    MenuHelper.gotoVideoMode(this);
+                }
                 finish();
             } else {
                 readVideoPreferences();

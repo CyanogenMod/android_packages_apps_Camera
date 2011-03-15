@@ -112,9 +112,8 @@ public class MenuHelper {
         item.setIcon(iconId);
     }
 
-    private static void startCameraActivity(Activity activity, String action,
+    private static void startCameraActivity(Activity activity, Intent intent,
             String className) {
-        Intent intent = new Intent(action);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         intent.setClassName(activity.getPackageName(), className);
@@ -133,13 +132,21 @@ public class MenuHelper {
     }
 
     public static void gotoVideoMode(Activity activity) {
-        startCameraActivity(activity, MediaStore.INTENT_ACTION_VIDEO_CAMERA,
-                VIDEO_CAMERA_CLASS);
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
+        startCameraActivity(activity, intent, VIDEO_CAMERA_CLASS);
     }
 
     public static void gotoCameraMode(Activity activity) {
-        startCameraActivity(activity,
-                MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA, CAMERA_CLASS);
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        startCameraActivity(activity, intent, CAMERA_CLASS);
+    }
+
+    public static void gotoVideoMode(Activity activity, Intent intent) {
+        startCameraActivity(activity, intent, VIDEO_CAMERA_CLASS);
+     }
+
+    public static void gotoCameraMode(Activity activity, Intent intent) {
+        startCameraActivity(activity, intent, CAMERA_CLASS);
     }
 
     public static void gotoCameraImageGallery(Activity activity) {
