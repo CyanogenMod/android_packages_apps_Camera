@@ -1277,7 +1277,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     outputStream.write(data);
                     outputStream.close();
 
-                    setResult(RESULT_OK);
+                    setResultEx(RESULT_OK);
                     finish();
                 } catch (IOException ex) {
                     // ignore exception
@@ -1288,7 +1288,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 int orientation = Exif.getOrientation(data);
                 Bitmap bitmap = Util.makeBitmap(data, 50 * 1024);
                 bitmap = Util.rotate(bitmap, orientation);
-                setResult(RESULT_OK,
+                setResultEx(RESULT_OK,
                         new Intent("inline-data").putExtra("data", bitmap));
                 finish();
             }
@@ -1304,11 +1304,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 tempStream.close();
                 tempUri = Uri.fromFile(path);
             } catch (FileNotFoundException ex) {
-                setResult(Activity.RESULT_CANCELED);
+                setResultEx(Activity.RESULT_CANCELED);
                 finish();
                 return;
             } catch (IOException ex) {
-                setResult(Activity.RESULT_CANCELED);
+                setResultEx(Activity.RESULT_CANCELED);
                 finish();
                 return;
             } finally {
@@ -1335,7 +1335,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void doCancel() {
-        setResult(RESULT_CANCELED, new Intent());
+        setResultEx(RESULT_CANCELED, new Intent());
         finish();
     }
 
@@ -1523,7 +1523,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                         intent.putExtras(extras);
                     }
                 }
-                setResult(resultCode, intent);
+                setResultEx(resultCode, intent);
                 finish();
 
                 File path = getFileStreamPath(sTempCropFilename);
