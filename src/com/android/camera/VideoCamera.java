@@ -1103,7 +1103,7 @@ public class VideoCamera extends ActivityBase
         } else {
             resultCode = RESULT_CANCELED;
         }
-        setResult(resultCode, resultIntent);
+        setResultEx(resultCode, resultIntent);
         finish();
     }
 

@@ -2,3 +2,8 @@
 -keep class * extends com.android.camera.CameraPreference {
   <init>(...);
 }
+
+-keep class com.android.camera.ActivityBase {
+  public int getResultCode();
+  public android.content.Intent getResultData();
+}

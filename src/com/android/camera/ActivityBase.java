@@ -18,11 +18,15 @@ package com.android.camera;
 
 import android.app.Activity;
 import android.view.KeyEvent;
+import android.content.Intent;
 
 /**
  * Superclass of Camera and VideoCamera activities.
  */
 public class ActivityBase extends Activity {
+    private int mResultCodeForTesting;
+    private Intent mResultDataForTesting;
+
     @Override
     public boolean onSearchRequested() {
         return false;
@@ -37,5 +41,24 @@ public class ActivityBase extends Activity {
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    protected void setResultEx(int resultCode) {
+        mResultCodeForTesting = resultCode;
+        setResult(resultCode);
+    }
+
+    protected void setResultEx(int resultCode, Intent data) {
+        mResultCodeForTesting = resultCode;
+        mResultDataForTesting = data;
+        setResult(resultCode, data);
+    }
+
+    public int getResultCode() {
+        return mResultCodeForTesting;
+    }
+
+    public Intent getResultData() {
+        return mResultDataForTesting;
     }
 }
