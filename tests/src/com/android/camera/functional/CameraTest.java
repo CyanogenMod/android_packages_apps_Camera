@@ -5,9 +5,7 @@ import com.android.camera.R;
 import com.android.camera.VideoCamera;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Process;
@@ -68,34 +66,5 @@ public class CameraTest extends InstrumentationTestCase {
         }
         // If applications are leaking activity, every reference is reachable.
         assertTrue(refCount != TEST_COUNT);
-    }
-
-    @LargeTest
-    public void testImageCaptureIntent() throws Exception {
-        Instrumentation inst = getInstrumentation();
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        final Camera activity = (Camera) launchActivityWithIntent(
-                inst.getTargetContext().getPackageName(), Camera.class,
-                intent);
-
-        // Take a picture
-        inst.sendKeySync(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_FOCUS));
-        inst.sendCharacterSync(KeyEvent.KEYCODE_CAMERA);
-        Thread.sleep(4000);
-
-        // Press done button.
-        inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    activity.findViewById(R.id.btn_done).performClick();
-                }
-        });
-
-        assertTrue(activity.isFinishing());
-        assertEquals(Activity.RESULT_OK, activity.getResultCode());
-        Intent resultData = activity.getResultData();
-        Bitmap bitmap = (Bitmap) resultData.getParcelableExtra("data");
-        assertNotNull(bitmap);
-        assertTrue(bitmap.getWidth() > 0);
-        assertTrue(bitmap.getHeight() > 0);
     }
 }
