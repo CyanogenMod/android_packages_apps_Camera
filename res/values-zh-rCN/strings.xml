@@ -53,14 +53,62 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"相机设置"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"摄像机设置"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"照片大小"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 百万像素"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 百万像素"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 百万像素"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 百万像素"</string>
+    <string name="pref_camera_picturesize_entry_3264x2448">8 百万像素</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6 百万像素（宽屏）</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5 百万像素</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4 百万像素（宽屏）</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4 百万像素</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4 百万像素</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3 百万像素</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2.5 百万像素（宽屏）</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
+    <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
+    <string name="pref_camera_picturesize_entry_1024x768">XGA</string>
+    <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
+    <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
+    <string name="pref_camera_picturesize_entry_640x480">VGA</string>
+    <string name="pref_camera_picturesize_entry_352x288">CIF</string>
+    <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
+    <string name="pref_camera_picturesize_entry_176x144">QCIF</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"照片质量"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"极精细"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"精细"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"正常"</string>
+    <!-- Advanced options label -->
+    <string name="advanced_options_label">高级选项</string>
+
+    <!-- More Settings screen, volume buttons title -->
+    <string name="pref_camera_vol_shutter_title">音量键快门</string>
+    <string name="pref_camera_vol_up_shutter">增大音量</string>
+    <string name="pref_camera_vol_up_shutter_summary">用增大音量键拍照</string>
+    <string name="pref_camera_vol_down_shutter">减小音量</string>
+    <string name="pref_camera_vol_down_shutter_summary">用减小音量键拍照</string>
+
+    <!-- More Settings screen, zoom button title -->
+    <string name="pref_camera_vol_zoom_title">音量变焦</string>
+    <string name="pref_camera_vol_zoom">音量按键变焦</string>
+    <string name="pref_camera_vol_zoom_summary">增大/减小音量对应对焦放大/缩小</string>
+
+    <!-- More Settings screen, search button title -->
+    <string name="pref_camera_search_shutter_title">搜索快门</string>
+
+    <!-- More Settings screen, search button -->
+    <string name="pref_camera_search_shutter">搜索键</string>  
+    <string name="pref_camera_search_shutter_summary">按搜索键拍照</string>  
+
+    <!-- Settings screen, custom focus title -->
+    <string name="pref_camera_settings_focus_title">对焦</string>
+
+    <!-- Settings screen, focus settings -->
+    <string name="pref_camera_settings_focus">预对焦</string>
+    <string name="pref_camera_settings_focus_summary">在拍照前先对焦</string>
+    <string name="pref_camera_settings_long_focus">长对焦</string>
+    <string name="pref_camera_settings_long_focus_summary">按住按键对焦，释放后拍照</string>
+
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"对焦方式"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自动"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"无限远"</string>
@@ -113,4 +161,40 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"缩放"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"切换到相机"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"切换到视频"</string>
+
+    <!-- Settings screen, Select Iso title -->
+    <string name="pref_camera_iso_title">感光度</string>
+
+    <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">自动</string>
+    <string name="pref_camera_iso_entry_isodeblur">防抖</string>
+    <string name="pref_camera_iso_entry_iso100">ISO100</string>
+    <string name="pref_camera_iso_entry_iso200">ISO200</string>
+    <string name="pref_camera_iso_entry_iso400">ISO400</string>
+    <string name="pref_camera_iso_entry_iso800">ISO800</string>
+    <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
+
+    <!-- Settings screen, Select lens shading title -->
+    <string name="pref_camera_lensshading_title">镜头阴影</string>
+
+    <!-- Settings screen, lens shading radio button choices -->
+    <string name="pref_camera_lensshading_entry_enable">启用</string>
+    <string name="pref_camera_lensshading_entry_disable">禁用</string>
+
+    <!-- Settings screen, Anti Banding title -->
+    <string name="pref_camera_antibanding_title">减少闪烁</string>
+
+    <!-- Settings screen, Anti Banding entries -->
+    <string name="pref_camera_antibanding_entry_0">关闭</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">自动</string>
+
+    <!-- Settings screen, Select auto exposure title -->
+    <string name="pref_camera_autoexposure_title">测光模式</string>
+
+    <!-- Settings screen, auto exposure dialog radio button choices -->
+    <string name="pref_camera_autoexposure_entry_frameaverage">平均测光</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">中心测光</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">点测光</string>
 </resources>
