@@ -7,3 +7,7 @@
   public int getResultCode();
   public android.content.Intent getResultData();
 }
+
+-keep class com.android.camera.VideoCamera {
+  public boolean isRecording();
+}
