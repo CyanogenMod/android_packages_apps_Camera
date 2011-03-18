@@ -38,7 +38,7 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"TA OM"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galleri"</string>
-    <string name="switch_camera_id" msgid="837545176602471325">"Växla kamera"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"Byt kamera"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Välj kamera"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Bakre"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Främre"</string>

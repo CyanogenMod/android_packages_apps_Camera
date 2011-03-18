@@ -33,10 +33,10 @@
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Kein Zugriff auf SD-Karte möglich"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Standard wiederherstellen"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Die Kameraeinstellungen werden auf die Standardeinstellungen wiederhergestellt."</string>
-    <string name="review_play" msgid="6015456244323302817">"WIEDERGEBEN"</string>
-    <string name="review_cancel" msgid="8188009385853399254">"ABBRECHEN"</string>
+    <string name="review_play" msgid="6015456244323302817">"Wiedergeben"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"Abbrechen"</string>
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
-    <string name="review_retake" msgid="7804864054896088338">"ERNEUT AUFNEHMEN"</string>
+    <string name="review_retake" msgid="7804864054896088338">"Erneut aufnehmen"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Kamera wechseln"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Kamera auswählen"</string>
