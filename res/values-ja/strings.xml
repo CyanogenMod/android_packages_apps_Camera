@@ -171,4 +171,33 @@
     <string name="pref_camera_autoexposure_entry_centerweighted">中央部重点測光</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">スポット測光</string>
 
+    <!-- Advanced options label -->
+    <string name="advanced_options_label">追加オプション</string>
+
+    <!-- More Settings screen, volume buttons title -->
+    <string name="pref_camera_vol_shutter_title">ボリュームシャッター</string>
+    <string name="pref_camera_vol_up_shutter">ボリュームアップ</string>
+    <string name="pref_camera_vol_up_shutter_summary">ボリュームアップキーで撮影</string>
+    <string name="pref_camera_vol_down_shutter">ボリュームダウン</string>
+    <string name="pref_camera_vol_down_shutter_summary">ボリュームダウンキーで撮影</string>
+
+    <!-- More Settings screen, zoom button title -->
+    <string name="pref_camera_vol_zoom_title">ボリュームズーム</string>
+    <string name="pref_camera_vol_zoom">ボリュームキーでズーム</string>
+    <string name="pref_camera_vol_zoom_summary">ボリュームアップ/ダウンキーでそれぞれズームイン/アウトする</string>
+
+    <!-- More Settings screen, search button title -->
+    <string name="pref_camera_search_shutter_title">検索キーシャッター</string>
+
+    <!-- More Settings screen, search button -->
+    <string name="pref_camera_search_shutter">検索キー</string>
+    <string name="pref_camera_search_shutter_summary">検索キーで撮影する</string>
+    <!-- Settings screen, custom focus title -->
+    <string name="pref_camera_settings_focus_title">フォーカス</string>
+
+    <!-- Settings screen, focus settings -->
+    <string name="pref_camera_settings_focus">プリフォーカス</string>
+    <string name="pref_camera_settings_focus_summary">撮影前にフォーカスする</string>
+    <string name="pref_camera_settings_long_focus">ロングフォーカス</string>
+    <string name="pref_camera_settings_long_focus_summary">ボタンを長押しでフォーカスし、ボタンを離して撮影する</string>
 </resources>
