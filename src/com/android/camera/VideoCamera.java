@@ -1395,6 +1395,11 @@ public class VideoCamera extends ActivityBase
         sendBroadcast(i);
     }
 
+    // For testing.
+    public boolean isRecording() {
+        return mMediaRecorderRecording;
+    }
+
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
 
