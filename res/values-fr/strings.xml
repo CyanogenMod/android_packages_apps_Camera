@@ -16,14 +16,14 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="camera_error_title" msgid="6484667504938477337">"Erreur au niveau de l\'appareil photo"</string>
+    <string name="camera_error_title" msgid="6484667504938477337">"Erreur de l\'appareil photo."</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Impossible d\'établir une connexion avec l\'appareil photo."</string>
     <string name="camera_label" msgid="6346560772074764302">"Appareil photo"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Caméra"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Photos de l\'appareil"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Vidéos de la caméra"</string>
     <string name="wait" msgid="8600187532323801552">"Veuillez patienter..."</string>
-    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Une mémoire de stockage USB doit être connectée pour utiliser l\'appareil photo."</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Une mémoire de stockage USB doit être installée pour utiliser l\'appareil photo."</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"Veuillez insérer une carte SD avant d\'utiliser l\'appareil photo."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"La mémoire de stockage USB est pleine."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Votre carte SD est pleine."</string>
@@ -39,9 +39,9 @@
     <string name="review_retake" msgid="7776579640762112761">"Autre photo"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Changer d\'appareil photo"</string>
-    <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Activer time lapse"</string>
-    <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Désact. time lapse"</string>
-    <string name="time_lapse_title" msgid="4360632427760662691">"Enregistrement mode Écoulement de temps"</string>
+    <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Activer Time Lapse"</string>
+    <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Désact. Time Lapse"</string>
+    <string name="time_lapse_title" msgid="4360632427760662691">"Enregistrement mode time lapse"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Choisir appareil ph."</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Arrière"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Avant"</string>
@@ -51,9 +51,9 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualité vidéo"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Élevée"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Faible"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (faible, 30 s)"</string>
+    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (basse, 30 s)"</string>
     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (élevée, 15 mn)"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalle de temps écoulé"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalle time lapse"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Paramètres de l\'appareil photo"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Mode Caméra"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Taille d\'image"</string>
