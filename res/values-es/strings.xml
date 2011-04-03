@@ -137,9 +137,6 @@
     <!-- Settings screen, Anti Banding title -->
     <string name="pref_camera_antibanding_title">Reducción de parpadeo</string>
 
-    <!-- Default Anti Banding setting. -->
-    <string name="pref_camera_antibanding_default">Automático</string>
-
     <!-- Settings screen, Anti Banding entries -->
     <string name="pref_camera_antibanding_entry_0">Desactivado</string>
     <string name="pref_camera_antibanding_entry_1">50 Hz</string>
