@@ -31,4 +31,8 @@
 
 	<!-- Resolution filtering -->
 	<string name="filtered_pictureSizes"></string>
+
+	<!-- Rotation direction. Use this if your portrait snapshots come out
+	     upside-down even though the preview is correct -->
+	<bool name="rotatesCounterClockwise">false</bool>
 </resources>
