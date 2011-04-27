@@ -1592,11 +1592,15 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // Preview area is touched. Handle touch focus.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
-        if (mPausing || !mFirstTimeInitialized
-                || !canTakePicture() || !isFocusAreaSupported()
+        if (mPausing || !mFirstTimeInitialized || !canTakePicture()) {
+            return false;
+        }
+
+        // Take a picture if metering area or focus area is supported.
+        if (!isMeteringAreaSupported() && (!isFocusAreaSupported()
                 || (!mFocusMode.equals(Parameters.FOCUS_MODE_AUTO) &&
                     !mFocusMode.equals(Parameters.FOCUS_MODE_MACRO) &&
-                    !mFocusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))) {
+                    !mFocusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)))) {
             return false;
         }
 
@@ -1652,26 +1656,42 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         return false;
     }
 
-    void setFocusAreasParameters() {
-        if (!isFocusAreaSupported()) return;
+    void setAreasParameters() {
+        if (!isFocusAreaSupported() && !isMeteringAreaSupported()) return;
 
+        int left = 0, top = 0, right = 0, bottom = 0, weight = 0;
         if (mTouchFocusEnabled) {
             // The coordinates range from -1000 to 1000. Convert the coordinates
             // to driver format.
             RelativeLayout.LayoutParams params =
                     (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
-            int left = (int) ((double) params.leftMargin / mPreviewFrame.getWidth() * 2000 - 1000);
-            int top = (int) ((double) params.topMargin / mPreviewFrame.getHeight() * 2000 - 1000);
-            int right = (int) ((double) (params.leftMargin + mFocusRectangle.getWidth())
+            left = (int) ((double) params.leftMargin / mPreviewFrame.getWidth() * 2000 - 1000);
+            top = (int) ((double) params.topMargin / mPreviewFrame.getHeight() * 2000 - 1000);
+            right = (int) ((double) (params.leftMargin + mFocusRectangle.getWidth())
                     / mPreviewFrame.getWidth() * 2000 - 1000);
-            int bottom = (int) ((double) (params.topMargin + mFocusRectangle.getHeight())
+            bottom = (int) ((double) (params.topMargin + mFocusRectangle.getHeight())
                     / mPreviewFrame.getHeight() * 2000 - 1000);
-            mParameters.set("focus-areas", "(" + left + "," + top + "," + right
-                    + "," + bottom + ",1000)");
-        } else {
-            mParameters.set("focus-areas", "(0,0,0,0,0)");
+            weight = 1;
         }
-        Log.d(TAG, "Parameter focus areas=" + mParameters.get("focus-areas"));
+
+        if (isFocusAreaSupported()) {
+            mParameters.set("focus-areas", "(" + left + "," + top + "," + right
+                    + "," + bottom + "," + weight + ")");
+            Log.d(TAG, "Parameter focus areas=" + mParameters.get("focus-areas"));
+        }
+
+        if (isMeteringAreaSupported()) {
+            mParameters.set("metering-areas", "(" + left + "," + top + "," + right
+                    + "," + bottom + "," + weight + ")");
+        }
+    }
+
+    boolean isMeteringAreaSupported() {
+        try {
+            return mParameters.getInt("max-num-metering-areas") > 0;
+        } catch (NumberFormatException e) {
+        }
+        return false;
     }
 
     @Override
@@ -1933,7 +1953,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void updateCameraParametersPreference() {
-        setFocusAreasParameters();
+        setAreasParameters();
 
         // Set picture size.
         String pictureSize = mPreferences.getString(
