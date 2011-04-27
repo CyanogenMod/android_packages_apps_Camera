@@ -39,6 +39,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
@@ -167,7 +168,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private boolean mStartPreviewFail = false;
 
     private View mPreviewFrame;  // Preview frame area.
+    private View mPreviewBorder;
     private FocusRectangle mFocusRectangle;
+    private Rect mFocusArea = new Rect();  // focus area in driver format
     private boolean mTouchFocusEnabled;
 
     private GLRootView mGLRootView;
@@ -381,8 +384,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mShutterButton.setVisibility(View.VISIBLE);
 
         // Initialize focus UI.
-        mPreviewFrame = findViewById(R.id.frame);
+        mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
+        mPreviewBorder = (View) findViewById(R.id.preview_border);
         updateFocusIndicator();
 
         initializeScreenBrightness();
@@ -1618,10 +1622,20 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         Log.d(TAG, "mPreviewFrame width=" + mPreviewFrame.getWidth() +
                 "mPreviewFrame.getHeight()="+mPreviewFrame.getHeight());
 
+        // Convert the coordinates to driver format. The coordinates range from
+        // -1000 to 1000.
+        mFocusArea.left = (int) ((double) left / mPreviewFrame.getWidth() * 2000 - 1000);
+        mFocusArea.top = (int) ((double) top / mPreviewFrame.getHeight() * 2000 - 1000);
+        mFocusArea.right = (int) ((double) (left + focusWidth)
+                / mPreviewFrame.getWidth() * 2000 - 1000);
+        mFocusArea.bottom = (int) ((double) (top + focusHeight)
+                / mPreviewFrame.getHeight() * 2000 - 1000);
+
         // Use margin to set the focus rectangle to the touched area.
         RelativeLayout.LayoutParams p =
                 (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
-        p.setMargins(left, top, 0, 0);
+        p.setMargins(left + mPreviewBorder.getPaddingLeft(),
+                top + mPreviewBorder.getPaddingTop(), 0, 0);
         // Disable "center" rule because we no longer want to put it in the center.
         int[] rules = p.getRules();
         rules[RelativeLayout.CENTER_IN_PARENT] = 0;
@@ -1659,30 +1673,25 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     void setAreasParameters() {
         if (!isFocusAreaSupported() && !isMeteringAreaSupported()) return;
 
-        int left = 0, top = 0, right = 0, bottom = 0, weight = 0;
+        Rect rect;
+        int weight;
         if (mTouchFocusEnabled) {
-            // The coordinates range from -1000 to 1000. Convert the coordinates
-            // to driver format.
-            RelativeLayout.LayoutParams params =
-                    (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
-            left = (int) ((double) params.leftMargin / mPreviewFrame.getWidth() * 2000 - 1000);
-            top = (int) ((double) params.topMargin / mPreviewFrame.getHeight() * 2000 - 1000);
-            right = (int) ((double) (params.leftMargin + mFocusRectangle.getWidth())
-                    / mPreviewFrame.getWidth() * 2000 - 1000);
-            bottom = (int) ((double) (params.topMargin + mFocusRectangle.getHeight())
-                    / mPreviewFrame.getHeight() * 2000 - 1000);
+            rect = mFocusArea;
             weight = 1;
+        } else {
+            rect = new Rect();
+            weight = 0;
         }
 
         if (isFocusAreaSupported()) {
-            mParameters.set("focus-areas", "(" + left + "," + top + "," + right
-                    + "," + bottom + "," + weight + ")");
+            mParameters.set("focus-areas", "(" + rect.left + "," + rect.top + ","
+                    + rect.right + "," + rect.bottom + "," + weight + ")");
             Log.d(TAG, "Parameter focus areas=" + mParameters.get("focus-areas"));
         }
 
         if (isMeteringAreaSupported()) {
-            mParameters.set("metering-areas", "(" + left + "," + top + "," + right
-                    + "," + bottom + "," + weight + ")");
+            mParameters.set("metering-areas", "(" + rect.left + "," + rect.top + ","
+                    + rect.right + "," + rect.bottom + "," + weight + ")");
         }
     }
 
