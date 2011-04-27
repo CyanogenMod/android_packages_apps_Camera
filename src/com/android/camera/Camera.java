@@ -542,27 +542,21 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         return result;
     }
 
-    private int mLocation[] = new int[2];
-    private class PopupGestureListener extends
-            GestureDetector.SimpleOnGestureListener {
+    private class PopupGestureListener
+            extends GestureDetector.SimpleOnGestureListener {
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
-            View v = mIndicatorWheel.getActivePopupWindow();
-            if (v == null) return false;
+            View popup = mIndicatorWheel.getActivePopupWindow();
+            if (popup == null) return false;
 
-            int x = Math.round(e.getX());
-            int y = Math.round(e.getY());
 
-            // Dismiss the popup window if users touch on the outside.
-            v.getLocationOnScreen(mLocation);
-            if (x < mLocation[0] || (x > mLocation[0] + v.getWidth())
-                    || y < mLocation[1] || (y > mLocation[1] + v.getHeight())) {
-                // Let indicator wheel handle its own event.
-                mIndicatorWheel.getLocationOnScreen(mLocation);
-                if (x < mLocation[0] || (x > mLocation[0] + mIndicatorWheel.getWidth())
-                        || y < mLocation[1] || (y > mLocation[1] + mIndicatorWheel.getHeight())) {
-                    mIndicatorWheel.dismissSettingPopup();
-                }
+            // Let popup window, indicator wheel or preview frame handle the
+            // event by themselves. Dismiss the popup window if users touch on
+            // other areas.
+            if (!Util.pointInView(e.getX(), e.getY(), popup)
+                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorWheel)
+                    && !Util.pointInView(e.getX(), e.getY(), mPreviewFrame)) {
+                mIndicatorWheel.dismissSettingPopup();
                 // Let event fall through.
             }
             return false;
@@ -1601,6 +1595,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // Preview area is touched. Handle touch focus.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
+        // Do not trigger touch focus when popup window is dismissed.
+        if (collapseCameraControls()) return false;
+
         if (mPausing || !mFirstTimeInitialized || !canTakePicture()) {
             return false;
         }

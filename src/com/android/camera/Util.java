@@ -443,4 +443,12 @@ public class Util {
         return (intentCameraId == android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
     }
 
+    private static int mLocation[] = new int[2];
+
+    // This method is not thread-safe.
+    public static boolean pointInView(float x, float y, View v) {
+        v.getLocationInWindow(mLocation);
+        return x >= mLocation[0] && x < (mLocation[0] + v.getWidth())
+                && y >= mLocation[1] && y < (mLocation[1] + v.getHeight());
+    }
 }
