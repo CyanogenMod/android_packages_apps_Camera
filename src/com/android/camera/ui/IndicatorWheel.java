@@ -38,7 +38,6 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.View;
 
-import java.lang.Math;
 import java.util.ArrayList;
 
 /**

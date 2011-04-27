@@ -32,8 +32,8 @@
                 android:background="@drawable/border_preview_holo"/>
         <com.android.camera.ui.FocusRectangle
                 android:id="@+id/focus_rectangle"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
                 android:layout_centerInParent="true"/>
         <TextView android:id="@+id/zoom_ratio"
                 style="@style/OnViewfinderLabel"

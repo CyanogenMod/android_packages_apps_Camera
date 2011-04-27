@@ -404,7 +404,7 @@ public class Util {
         } catch (java.lang.reflect.InvocationTargetException ite) {
             // Failure, must be another device.
             // Assume that it is voice capable.
-        } catch (java.lang.IllegalAccessException iae) {
+        } catch (IllegalAccessException iae) {
             // Failure, must be an other device.
             // Assume that it is voice capable.
         } catch (NoSuchMethodException nsme) {

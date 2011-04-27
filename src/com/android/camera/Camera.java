@@ -387,6 +387,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
         mPreviewBorder = (View) findViewById(R.id.preview_border);
+        // Set the length of focus rectangle according to preview frame size.
+        int len = Math.min(mPreviewFrame.getWidth(), mPreviewFrame.getHeight()) / 4;
+        ViewGroup.LayoutParams layout = mFocusRectangle.getLayoutParams();
+        layout.width = len;
+        layout.height = len;
         updateFocusIndicator();
 
         initializeScreenBrightness();
@@ -2173,7 +2178,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                         1000,
                         0F,
                         mLocationListeners[1]);
-            } catch (java.lang.SecurityException ex) {
+            } catch (SecurityException ex) {
                 Log.i(TAG, "fail to request location update, ignore", ex);
             } catch (IllegalArgumentException ex) {
                 Log.d(TAG, "provider does not exist " + ex.getMessage());
@@ -2185,7 +2190,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                         0F,
                         mLocationListeners[0]);
                 showGpsOnScreenIndicator(false);
-            } catch (java.lang.SecurityException ex) {
+            } catch (SecurityException ex) {
                 Log.i(TAG, "fail to request location update, ignore", ex);
             } catch (IllegalArgumentException ex) {
                 Log.d(TAG, "provider does not exist " + ex.getMessage());
