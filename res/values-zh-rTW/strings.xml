@@ -283,6 +283,10 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"紅色調"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"藍色調"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"綠色調"</string>
+    <string name="pref_camera_coloreffect_entry_emboss">浮雕效果</string>
+    <string name="pref_camera_coloreffect_entry_vivid">鮮明效果</string>
+    <string name="pref_camera_coloreffect_entry_blue">藍</string>
+    <string name="pref_camera_coloreffect_entry_negative_sepia">懷舊負片</string>
 
     <!-- Settings screen, Multiple levels entries -->
     <string name="pref_camera_sharpness_entry_level0">水平 0</string>
@@ -309,20 +313,11 @@
     <string name="pref_camera_saturation_entry_level4">水平 4</string>
     <string name="pref_camera_saturation_entry_level5">水平 5</string>
 
-    <!-- Default sharpness setting. Do not translate. -->
-    <!-- skipping untranslatable /resources:0/string:name=pref_camera_sharpness_default -->
-
     <!-- Settings screen, Select sharpness title -->
     <string name="pref_camera_sharpness_title">銳利</string>
 
-    <!-- Default contrast setting. Do not translate. -->
-    <!-- skipping untranslatable /resources:0/string:name=pref_camera_contrast_default -->
-
     <!-- Settings screen, Select contrast title -->
     <string name="pref_camera_contrast_title">對比</string>
-
-    <!-- Default saturation setting. Do not translate. -->
-    <!-- skipping untranslatable /resources:0/string:name=pref_camera_saturation_default -->
 
     <!-- Settings screen, Select saturation title -->
     <string name="pref_camera_saturation_title">飽和</string>
@@ -473,6 +468,9 @@
 
      <!-- Settings screen, Anti Banding title -->
      <string name="pref_camera_antibanding_title">減低螢幕閃爍</string>
+
+     <!-- Default Anti Banding setting. Do not translate. -->
+     <!-- skipping untranslatable /resources:0/string:name=pref_camera_antibanding_default -->
 
      <!-- Settings screen, Anti Banding entries -->
      <string name="pref_camera_antibanding_entry_0">關閉</string>
