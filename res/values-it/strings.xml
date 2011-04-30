@@ -109,6 +109,11 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Tinta rossa"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Tinta blu"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Tinta verde"</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Rilievo</string>
+    <string name="pref_camera_coloreffect_entry_vivid">Vivido</string>
+    <string name="pref_camera_coloreffect_entry_blue">Blu</string>
+    <string name="pref_camera_coloreffect_entry_negative_sepia">Seppia Negativo</string>
+
 
     <!-- ********************** -->
     <!-- Advanced options label -->
