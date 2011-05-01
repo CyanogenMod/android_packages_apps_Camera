@@ -113,6 +113,10 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Красный оттенок"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Синий оттенок"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Зеленый оттенок"</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Рельеф</string>
+    <string name="pref_camera_coloreffect_entry_vivid">Яркий</string>
+    <string name="pref_camera_coloreffect_entry_blue">Синий</string>
+    <string name="pref_camera_coloreffect_entry_negative_sepia">Сепия в негативе</string>
 	
     <!-- Settings screen, Multiple levels entries -->
     <string name="pref_camera_sharpness_entry_level0">Уровень 0</string>
