@@ -172,6 +172,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private View mPreviewBorder;
     private FocusRectangle mFocusRectangle;
     private List<Area> mFocusArea;  // focus area in driver format
+    // Whether touch focus has been triggered. If true, focus rectangle is
+    // displayed. Autofocus may in progress or has completed.
     private boolean mTouchFocusEnabled;
 
     private GLRootView mGLRootView;
@@ -812,6 +814,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 } else {
                     mFocusState = FOCUS_FAIL;
                 }
+                // If this is triggerd by touching on the preview, enable the
+                // controls because picture is not being taken.
+                if (mTouchFocusEnabled) enableCameraControls(true);
             } else if (mFocusState == FOCUS_NOT_STARTED) {
                 // User has released the focus key before focus completes.
                 // Do nothing.
@@ -1552,16 +1557,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void autoFocus() {
-        // Initiate autofocus only when preview is started and snapshot is not
-        // in progress.
-        if (canTakePicture()) {
-            enableCameraControls(false);
-            Log.v(TAG, "Start autofocus.");
-            mFocusStartTime = System.currentTimeMillis();
-            mFocusState = FOCUSING;
-            updateFocusIndicator();
-            mCameraDevice.autoFocus(mAutoFocusCallback);
-        }
+        enableCameraControls(false);
+        Log.v(TAG, "Start autofocus.");
+        mFocusStartTime = System.currentTimeMillis();
+        mFocusState = FOCUSING;
+        updateFocusIndicator();
+        mCameraDevice.autoFocus(mAutoFocusCallback);
     }
 
     private void cancelAutoFocus() {
@@ -1646,13 +1647,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // Disable "center" rule because we no longer want to put it in the center.
         int[] rules = p.getRules();
         rules[RelativeLayout.CENTER_IN_PARENT] = 0;
+        mFocusRectangle.requestLayout();
 
-        // Set the focus area and take a picture.
+        // Set the focus area and do autofocus.
         mTouchFocusEnabled = true;
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
-        doFocus(true);
-        doSnap();
-        doFocus(false);
+        autoFocus();
 
         return true;
     }
@@ -1770,7 +1770,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                   || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
                   || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF))) {
             if (pressed) {  // Focus key down.
-                autoFocus();
+                // Initiate autofocus only when preview is started and snapshot
+                // is not in progress. Also, if touch focus has been triggerd,
+                // do not focus again before taking a picture.
+                if (!mTouchFocusEnabled && canTakePicture()) autoFocus();
             } else {  // Focus key up.
                 cancelAutoFocus();
             }
@@ -2199,7 +2202,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private boolean isCameraIdle() {
-        return mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED;
+        return mStatus == IDLE && (mFocusState == FOCUS_NOT_STARTED ||
+                // Touch focus has been trigged and autofocus has completed.
+                (mTouchFocusEnabled && (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)));
     }
 
     private boolean isImageCaptureIntent() {
