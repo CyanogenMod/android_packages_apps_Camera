@@ -110,6 +110,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
     private static final int CHECK_DISPLAY_ROTATION = 6;
+    private static final int CANCEL_AUTOFOCUS = 7;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -314,6 +315,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     if (SystemClock.uptimeMillis() - mOnResumeTime < 5000) {
                         mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
                     }
+                    break;
+                }
+
+                case CANCEL_AUTOFOCUS: {
+                    cancelAutoFocus();
                     break;
                 }
             }
@@ -796,8 +802,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 updateFocusUI();
                 capture();
             } else if (mCameraState == FOCUSING) {
-                // User is half-pressing the focus key. Play the focus tone.
-                // Do not take the picture now.
+                // This happens when (1) user is half-pressing the focus key or
+                // (2) touch focus is triggered. Play the focus tone. Do not
+                // take the picture now.
                 if (focused) {
                     mCameraState = FOCUS_SUCCESS;
                     if (mFocusToneGenerator != null) {
@@ -808,6 +815,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 }
                 updateFocusUI();
                 enableCameraControls(true);
+                // If this is triggered by touch focus, cancel focus after a
+                // while.
+                if (mFocusArea != null) {
+                    mHandler.sendEmptyMessageDelayed(CANCEL_AUTOFOCUS, 3000);
+                }
             } else if (mCameraState == IDLE) {
                 // User has released the focus key before focus completes.
                 // Do nothing.
@@ -933,6 +945,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         mCameraState = SNAPSHOT_IN_PROGRESS;
+        mHandler.removeMessages(CANCEL_AUTOFOCUS);
     }
 
     private boolean saveDataToFile(String filePath, byte[] data) {
@@ -1515,6 +1528,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
+        mHandler.removeMessages(CANCEL_AUTOFOCUS);
 
         super.onPause();
     }
@@ -1560,6 +1574,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mCameraDevice.cancelAutoFocus();
         mCameraState = IDLE;
         enableCameraControls(true);
+        mHandler.removeMessages(CANCEL_AUTOFOCUS);
         resetTouchFocus();
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
         updateFocusUI();
