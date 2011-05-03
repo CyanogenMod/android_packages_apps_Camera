@@ -40,6 +40,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.hardware.Camera.Area;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
@@ -170,7 +171,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private View mPreviewFrame;  // Preview frame area.
     private View mPreviewBorder;
     private FocusRectangle mFocusRectangle;
-    private Rect mFocusArea = new Rect();  // focus area in driver format
+    private List<Area> mFocusArea;  // focus area in driver format
     private boolean mTouchFocusEnabled;
 
     private GLRootView mGLRootView;
@@ -387,6 +388,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
         mPreviewBorder = (View) findViewById(R.id.preview_border);
+        mFocusArea = new ArrayList(1);
+        mFocusArea.add(new Area(new Rect(), 1));
         // Set the length of focus rectangle according to preview frame size.
         int len = Math.min(mPreviewFrame.getWidth(), mPreviewFrame.getHeight()) / 4;
         ViewGroup.LayoutParams layout = mFocusRectangle.getLayoutParams();
@@ -1603,10 +1606,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
 
         // Take a picture if metering area or focus area is supported.
-        if (!isMeteringAreaSupported() && (!isFocusAreaSupported()
-                || (!mFocusMode.equals(Parameters.FOCUS_MODE_AUTO) &&
-                    !mFocusMode.equals(Parameters.FOCUS_MODE_MACRO) &&
-                    !mFocusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)))) {
+        if (mParameters.getMaxNumMeteringAreas() == 0
+                && (mParameters.getMaxNumFocusAreas() == 0
+                    || (!mFocusMode.equals(Parameters.FOCUS_MODE_AUTO) &&
+                        !mFocusMode.equals(Parameters.FOCUS_MODE_MACRO) &&
+                        !mFocusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)))) {
             return false;
         }
 
@@ -1626,11 +1630,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         // Convert the coordinates to driver format. The coordinates range from
         // -1000 to 1000.
-        mFocusArea.left = (int) ((double) left / mPreviewFrame.getWidth() * 2000 - 1000);
-        mFocusArea.top = (int) ((double) top / mPreviewFrame.getHeight() * 2000 - 1000);
-        mFocusArea.right = (int) ((double) (left + focusWidth)
+        Rect rect = mFocusArea.get(0).rect;
+        rect.left = (int) ((double) left / mPreviewFrame.getWidth() * 2000 - 1000);
+        rect.top = (int) ((double) top / mPreviewFrame.getHeight() * 2000 - 1000);
+        rect.right = (int) ((double) (left + focusWidth)
                 / mPreviewFrame.getWidth() * 2000 - 1000);
-        mFocusArea.bottom = (int) ((double) (top + focusHeight)
+        rect.bottom = (int) ((double) (top + focusHeight)
                 / mPreviewFrame.getHeight() * 2000 - 1000);
 
         // Use margin to set the focus rectangle to the touched area.
@@ -1664,45 +1669,18 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
-    boolean isFocusAreaSupported() {
-        try {
-            return mParameters.getInt("max-num-focus-areas") > 0;
-        } catch (NumberFormatException e) {
-        }
-        return false;
-    }
-
     void setAreasParameters() {
-        if (!isFocusAreaSupported() && !isMeteringAreaSupported()) return;
+        List<Area> focusArea = (mTouchFocusEnabled ? mFocusArea : null);
 
-        Rect rect;
-        int weight;
-        if (mTouchFocusEnabled) {
-            rect = mFocusArea;
-            weight = 1;
-        } else {
-            rect = new Rect();
-            weight = 0;
-        }
-
-        if (isFocusAreaSupported()) {
-            mParameters.set("focus-areas", "(" + rect.left + "," + rect.top + ","
-                    + rect.right + "," + rect.bottom + "," + weight + ")");
+        if (mParameters.getMaxNumFocusAreas() > 0) {
+            mParameters.setFocusAreas(focusArea);
             Log.d(TAG, "Parameter focus areas=" + mParameters.get("focus-areas"));
         }
 
-        if (isMeteringAreaSupported()) {
-            mParameters.set("metering-areas", "(" + rect.left + "," + rect.top + ","
-                    + rect.right + "," + rect.bottom + "," + weight + ")");
+        if (mParameters.getMaxNumMeteringAreas() > 0) {
+            // Use the same area for focus and metering.
+            mParameters.setMeteringAreas(focusArea);
         }
-    }
-
-    boolean isMeteringAreaSupported() {
-        try {
-            return mParameters.getInt("max-num-metering-areas") > 0;
-        } catch (NumberFormatException e) {
-        }
-        return false;
     }
 
     @Override
