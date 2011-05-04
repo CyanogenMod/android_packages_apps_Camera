@@ -149,13 +149,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private int mOrientationCompensation = 0;
     private ComboPreferences mPreferences;
 
-    private static final int IDLE = 1;
-    private static final int SNAPSHOT_IN_PROGRESS = 2;
-
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
 
-    private int mStatus = IDLE;
     private static final String sTempCropFilename = "crop-temp";
 
     private android.hardware.Camera mCameraDevice;
@@ -172,9 +168,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private View mPreviewBorder;
     private FocusRectangle mFocusRectangle;
     private List<Area> mFocusArea;  // focus area in driver format
-    // Whether touch focus has been triggered. If true, focus rectangle is
-    // displayed. Autofocus may in progress or has completed.
-    private boolean mTouchFocusEnabled;
 
     private GLRootView mGLRootView;
 
@@ -201,21 +194,22 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private final static String EXTRA_QUICK_CAPTURE =
             "android.intent.extra.quickCapture";
 
-    private boolean mPreviewing;
-    // The display rotation in degrees. This is only valid when mPreviewing is
-    // true.
+    // The display rotation in degrees. This is only valid when mCameraState is
+    // not PREVIEW_STOPPED.
     private int mDisplayRotation;
     private boolean mPausing;
     private boolean mFirstTimeInitialized;
     private boolean mIsImageCaptureIntent;
     private boolean mRecordLocation;
 
-    private static final int FOCUS_NOT_STARTED = 0;
-    private static final int FOCUSING = 1;
-    private static final int FOCUSING_SNAP_ON_FINISH = 2;
-    private static final int FOCUS_SUCCESS = 3;
-    private static final int FOCUS_FAIL = 4;
-    private int mFocusState = FOCUS_NOT_STARTED;
+    private static final int PREVIEW_STOPPED = 0;
+    private static final int IDLE = 1;  // preview is active
+    private static final int FOCUSING = 2;
+    private static final int FOCUSING_SNAP_ON_FINISH = 3;
+    private static final int FOCUS_SUCCESS = 4;
+    private static final int FOCUS_FAIL = 5;
+    private static final int SNAPSHOT_IN_PROGRESS = 6;
+    private int mCameraState = PREVIEW_STOPPED;
 
     private ContentResolver mContentResolver;
     private boolean mDidRegister = false;
@@ -390,14 +384,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
         mPreviewBorder = (View) findViewById(R.id.preview_border);
-        mFocusArea = new ArrayList(1);
-        mFocusArea.add(new Area(new Rect(), 1));
         // Set the length of focus rectangle according to preview frame size.
         int len = Math.min(mPreviewFrame.getWidth(), mPreviewFrame.getHeight()) / 4;
         ViewGroup.LayoutParams layout = mFocusRectangle.getLayoutParams();
         layout.width = len;
         layout.height = len;
-        updateFocusIndicator();
 
         initializeScreenBrightness();
         installIntentFilter();
@@ -702,7 +693,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mShutterCallbackTime = System.currentTimeMillis();
             mShutterLag = mShutterCallbackTime - mCaptureStartTime;
             Log.v(TAG, "mShutterLag = " + mShutterLag + "ms");
-            clearFocusState();
+            updateFocusUI();
         }
     }
 
@@ -793,35 +784,35 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mFocusCallbackTime = System.currentTimeMillis();
             mAutoFocusTime = mFocusCallbackTime - mFocusStartTime;
             Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
-            if (mFocusState == FOCUSING_SNAP_ON_FINISH) {
+            if (mCameraState == FOCUSING_SNAP_ON_FINISH) {
                 // Take the picture no matter focus succeeds or fails. No need
                 // to play the AF sound if we're about to play the shutter
                 // sound.
                 if (focused) {
-                    mFocusState = FOCUS_SUCCESS;
+                    mCameraState = FOCUS_SUCCESS;
                 } else {
-                    mFocusState = FOCUS_FAIL;
+                    mCameraState = FOCUS_FAIL;
                 }
+                updateFocusUI();
                 capture();
-            } else if (mFocusState == FOCUSING) {
+            } else if (mCameraState == FOCUSING) {
                 // User is half-pressing the focus key. Play the focus tone.
                 // Do not take the picture now.
                 if (focused) {
-                    mFocusState = FOCUS_SUCCESS;
+                    mCameraState = FOCUS_SUCCESS;
                     if (mFocusToneGenerator != null) {
                         mFocusToneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2);
                     }
                 } else {
-                    mFocusState = FOCUS_FAIL;
+                    mCameraState = FOCUS_FAIL;
                 }
-                // If this is triggerd by touching on the preview, enable the
-                // controls because picture is not being taken.
-                if (mTouchFocusEnabled) enableCameraControls(true);
-            } else if (mFocusState == FOCUS_NOT_STARTED) {
+                updateFocusUI();
+                enableCameraControls(true);
+            } else if (mCameraState == IDLE) {
                 // User has released the focus key before focus completes.
                 // Do nothing.
             }
-            updateFocusIndicator();
+
         }
     }
 
@@ -879,13 +870,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void capture() {
         // If we are already in the middle of taking a snapshot then ignore.
-        if (mPausing || mStatus == SNAPSHOT_IN_PROGRESS || mCameraDevice == null) {
+        if (mPausing || mCameraState == SNAPSHOT_IN_PROGRESS || mCameraDevice == null) {
             return;
         }
         mCaptureStartTime = System.currentTimeMillis();
         mPostViewPictureCallbackTime = 0;
         enableCameraControls(false);
-        mStatus = SNAPSHOT_IN_PROGRESS;
         mJpegImageData = null;
 
         // See android.hardware.Camera.Parameters.setRotation for
@@ -942,7 +932,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
-        mPreviewing = false;
+        mCameraState = SNAPSHOT_IN_PROGRESS;
     }
 
     private boolean saveDataToFile(String filePath, byte[] data) {
@@ -1453,7 +1443,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mZoomValue = 0;
 
         // Start the preview if it is not started.
-        if (!mPreviewing && !mStartPreviewFail) {
+        if (mCameraState == PREVIEW_STOPPED && !mStartPreviewFail) {
             resetExposureCompensation();
             if (!restartPreview()) return;
         }
@@ -1469,7 +1459,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
         keepScreenOnAwhile();
 
-        if (mPreviewing) {
+        if (mCameraState == IDLE) {
             mOnResumeTime = SystemClock.uptimeMillis();
             mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
         }
@@ -1553,43 +1543,34 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private boolean canTakePicture() {
-        return isCameraIdle() && mPreviewing && (mPicturesRemaining > 0);
+        return isCameraIdle() && (mPicturesRemaining > 0);
     }
 
     private void autoFocus() {
-        enableCameraControls(false);
         Log.v(TAG, "Start autofocus.");
         mFocusStartTime = System.currentTimeMillis();
-        mFocusState = FOCUSING;
-        updateFocusIndicator();
         mCameraDevice.autoFocus(mAutoFocusCallback);
+        mCameraState = FOCUSING;
+        enableCameraControls(false);
+        updateFocusUI();
     }
 
     private void cancelAutoFocus() {
-        // User releases half-pressed focus key.
-        if (mStatus != SNAPSHOT_IN_PROGRESS && (mFocusState == FOCUSING
-                || mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)) {
-            Log.v(TAG, "Cancel autofocus.");
-            enableCameraControls(true);
-            mCameraDevice.cancelAutoFocus();
-        }
-        if (mFocusState != FOCUSING_SNAP_ON_FINISH) {
-            clearFocusState();
-        }
-    }
-
-    private void clearFocusState() {
-        mFocusState = FOCUS_NOT_STARTED;
+        Log.v(TAG, "Cancel autofocus.");
+        mCameraDevice.cancelAutoFocus();
+        mCameraState = IDLE;
+        enableCameraControls(true);
         resetTouchFocus();
-        updateFocusIndicator();
+        setCameraParameters(UPDATE_PARAM_PREFERENCE);
+        updateFocusUI();
     }
 
-    private void updateFocusIndicator() {
-        if (mFocusState == FOCUSING || mFocusState == FOCUSING_SNAP_ON_FINISH) {
+    private void updateFocusUI() {
+        if (mCameraState == FOCUSING || mCameraState == FOCUSING_SNAP_ON_FINISH) {
             mFocusRectangle.showStart();
-        } else if (mFocusState == FOCUS_SUCCESS) {
+        } else if (mCameraState == FOCUS_SUCCESS) {
             mFocusRectangle.showSuccess();
-        } else if (mFocusState == FOCUS_FAIL) {
+        } else if (mCameraState == FOCUS_FAIL) {
             mFocusRectangle.showFail();
         } else {
             mFocusRectangle.clear();
@@ -1631,6 +1612,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         // Convert the coordinates to driver format. The coordinates range from
         // -1000 to 1000.
+        if (mFocusArea == null) {
+            mFocusArea = new ArrayList<Area>();
+            mFocusArea.add(new Area(new Rect(), 1));
+        }
         Rect rect = mFocusArea.get(0).rect;
         rect.left = (int) ((double) left / mPreviewFrame.getWidth() * 2000 - 1000);
         rect.top = (int) ((double) top / mPreviewFrame.getHeight() * 2000 - 1000);
@@ -1650,7 +1635,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mFocusRectangle.requestLayout();
 
         // Set the focus area and do autofocus.
-        mTouchFocusEnabled = true;
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
         autoFocus();
 
@@ -1659,28 +1643,13 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     void resetTouchFocus() {
         // Put focus rectangle to the center.
-        if (mTouchFocusEnabled) {
-            RelativeLayout.LayoutParams p =
-                    (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
-            int[] rules = p.getRules();
-            rules[RelativeLayout.CENTER_IN_PARENT] = RelativeLayout.TRUE;
-            p.setMargins(0, 0, 0, 0);
-            mTouchFocusEnabled = false;
-        }
-    }
+        RelativeLayout.LayoutParams p =
+                (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
+        int[] rules = p.getRules();
+        rules[RelativeLayout.CENTER_IN_PARENT] = RelativeLayout.TRUE;
+        p.setMargins(0, 0, 0, 0);
 
-    void setAreasParameters() {
-        List<Area> focusArea = (mTouchFocusEnabled ? mFocusArea : null);
-
-        if (mParameters.getMaxNumFocusAreas() > 0) {
-            mParameters.setFocusAreas(focusArea);
-            Log.d(TAG, "Parameter focus areas=" + mParameters.get("focus-areas"));
-        }
-
-        if (mParameters.getMaxNumMeteringAreas() > 0) {
-            // Use the same area for focus and metering.
-            mParameters.setMeteringAreas(focusArea);
-        }
+        mFocusArea = null;
     }
 
     @Override
@@ -1743,22 +1712,22 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private void doSnap() {
         if (collapseCameraControls()) return;
 
-        Log.v(TAG, "doSnap: mFocusState=" + mFocusState);
+        Log.v(TAG, "doSnap: mCameraState=" + mCameraState);
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
         if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
                 || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF)
-                || (mFocusState == FOCUS_SUCCESS
-                || mFocusState == FOCUS_FAIL)) {
+                || (mCameraState == FOCUS_SUCCESS
+                || mCameraState == FOCUS_FAIL)) {
             capture();
-        } else if (mFocusState == FOCUSING) {
+        } else if (mCameraState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
             // already have requested AF for us, so just request capture on
             // focus here.
-            mFocusState = FOCUSING_SNAP_ON_FINISH;
-        } else if (mFocusState == FOCUS_NOT_STARTED) {
+            mCameraState = FOCUSING_SNAP_ON_FINISH;
+        } else if (mCameraState == IDLE) {
             // Focus key down event is dropped for some reasons. Just ignore.
         }
     }
@@ -1770,12 +1739,19 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                   || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
                   || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF))) {
             if (pressed) {  // Focus key down.
-                // Initiate autofocus only when preview is started and snapshot
-                // is not in progress. Also, if touch focus has been triggerd,
-                // do not focus again before taking a picture.
-                if (!mTouchFocusEnabled && canTakePicture()) autoFocus();
+                // Do not do focus if there is not enoguh storage. Do not focus
+                // if touch focus has been triggered, that is, camera state is
+                // FOCUS_SUCCESS or FOCUS_FAIL.
+                if (canTakePicture() && mCameraState != FOCUS_SUCCESS
+                        && mCameraState != FOCUS_FAIL) {
+                    autoFocus();
+                }
             } else {  // Focus key up.
-                cancelAutoFocus();
+                // User releases half-pressed focus key.
+                if (mCameraState == FOCUSING || mCameraState == FOCUS_SUCCESS
+                        || mCameraState == FOCUS_FAIL) {
+                    cancelAutoFocus();
+                }
             }
         }
     }
@@ -1808,7 +1784,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // changed. Sometimes this happens when the device is held in portrait
         // and camera app is opened. Rotation animation takes some time and
         // display rotation in onCreate may not be what we want.
-        if (mPreviewing && (Util.getDisplayRotation(this) == mDisplayRotation)
+        if (mCameraState != PREVIEW_STOPPED
+                && (Util.getDisplayRotation(this) == mDisplayRotation)
                 && holder.isCreating()) {
             // Set preview display if the surface is being created and preview
             // was already started. That means preview display was set to null
@@ -1845,7 +1822,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             CameraHolder.instance().release();
             mCameraDevice.setZoomChangeListener(null);
             mCameraDevice = null;
-            mPreviewing = false;
+            mCameraState = PREVIEW_STOPPED;
         }
     }
 
@@ -1892,7 +1869,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         // If we're previewing already, stop the preview first (this will blank
         // the screen).
-        if (mPreviewing) stopPreview();
+        if (mCameraState != PREVIEW_STOPPED) stopPreview();
 
         setPreviewDisplay(mSurfaceHolder);
         mDisplayRotation = Util.getDisplayRotation(this);
@@ -1907,19 +1884,18 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
         }
-        mPreviewing = true;
         mZoomState = ZOOM_STOPPED;
-        mStatus = IDLE;
+        mCameraState = IDLE;
     }
 
     private void stopPreview() {
-        if (mCameraDevice != null && mPreviewing) {
+        if (mCameraDevice != null && mCameraState != PREVIEW_STOPPED) {
             Log.v(TAG, "stopPreview");
             mCameraDevice.stopPreview();
         }
-        mPreviewing = false;
+        mCameraState = PREVIEW_STOPPED;
         // If auto focus was in progress, it would have been canceled.
-        clearFocusState();
+        updateFocusUI();
     }
 
     private static boolean isSupported(String value, List<String> supported) {
@@ -1945,7 +1921,15 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void updateCameraParametersPreference() {
-        setAreasParameters();
+        if (mParameters.getMaxNumFocusAreas() > 0) {
+            mParameters.setFocusAreas(mFocusArea);
+            Log.d(TAG, "Parameter focus areas=" + mParameters.get("focus-areas"));
+        }
+
+        if (mParameters.getMaxNumMeteringAreas() > 0) {
+            // Use the same area for focus and metering.
+            mParameters.setMeteringAreas(mFocusArea);
+        }
 
         // Set picture size.
         String pictureSize = mPreferences.getString(
@@ -2202,9 +2186,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private boolean isCameraIdle() {
-        return mStatus == IDLE && (mFocusState == FOCUS_NOT_STARTED ||
-                // Touch focus has been trigged and autofocus has completed.
-                (mTouchFocusEnabled && (mFocusState == FOCUS_SUCCESS || mFocusState == FOCUS_FAIL)));
+        return mCameraState == IDLE || mCameraState == FOCUS_SUCCESS || mCameraState == FOCUS_FAIL;
     }
 
     private boolean isImageCaptureIntent() {
