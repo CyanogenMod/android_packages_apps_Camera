@@ -1580,6 +1580,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // Preview area is touched. Handle touch focus.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
+        if (e.getAction() != MotionEvent.ACTION_DOWN) return false;
+
         // Do not trigger touch focus when popup window is dismissed.
         if (collapseCameraControls()) return false;
 
