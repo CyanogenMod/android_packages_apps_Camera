@@ -1567,6 +1567,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mCameraState = FOCUSING;
         enableCameraControls(false);
         updateFocusUI();
+        mHandler.removeMessages(CANCEL_AUTOFOCUS);
     }
 
     private void cancelAutoFocus() {
@@ -1574,10 +1575,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mCameraDevice.cancelAutoFocus();
         mCameraState = IDLE;
         enableCameraControls(true);
-        mHandler.removeMessages(CANCEL_AUTOFOCUS);
         resetTouchFocus();
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
         updateFocusUI();
+        mHandler.removeMessages(CANCEL_AUTOFOCUS);
     }
 
     private void updateFocusUI() {
