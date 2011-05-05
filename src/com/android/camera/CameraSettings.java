@@ -56,8 +56,7 @@ public class CameraSettings {
     public static final int CURRENT_VERSION = 4;
     public static final int CURRENT_LOCAL_VERSION = 1;
 
-    // max video duration in seconds for mms and youtube.
-    private static final int MMS_VIDEO_DURATION = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW).duration;
+    // max video duration in seconds for youtube.
     private static final int YOUTUBE_VIDEO_DURATION = 15 * 60; // 15 mins
     private static final int DEFAULT_VIDEO_DURATION = 0; // no limit
 
@@ -179,21 +178,6 @@ public class CameraSettings {
         if (cameraIdPref != null) buildCameraId(group, cameraIdPref);
 
         if (timeLapseInterval != null) resetIfInvalid(timeLapseInterval);
-    }
-
-    private static List<String> getSupportedTimeLapseProfiles(int cameraId) {
-        ArrayList<String> supportedProfiles = new ArrayList<String>();
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_TIME_LAPSE_480P)) {
-            supportedProfiles.add(Integer.toString(CamcorderProfile.QUALITY_TIME_LAPSE_480P));
-        }
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_TIME_LAPSE_720P)) {
-            supportedProfiles.add(Integer.toString(CamcorderProfile.QUALITY_TIME_LAPSE_720P));
-        }
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_TIME_LAPSE_1080P)) {
-            supportedProfiles.add(Integer.toString(CamcorderProfile.QUALITY_TIME_LAPSE_1080P));
-        }
-
-        return supportedProfiles;
     }
 
     private void buildExposureCompensation(
@@ -358,9 +342,11 @@ public class CameraSettings {
                 || context.getString(R.string.pref_video_quality_high).equals(quality);
     }
 
-    public static int getVideoDurationInMillis(Context context, String quality) {
+    public static int getVideoDurationInMillis(Context context, String quality, int cameraId) {
         if (context.getString(R.string.pref_video_quality_mms).equals(quality)) {
-            return MMS_VIDEO_DURATION * 1000;
+            int mmsVideoDuration = CamcorderProfile.get(cameraId,
+                    CamcorderProfile.QUALITY_LOW).duration;
+            return mmsVideoDuration * 1000;
         } else if (context.getString(R.string.pref_video_quality_youtube).equals(quality)) {
             return YOUTUBE_VIDEO_DURATION * 1000;
         }
@@ -417,11 +403,13 @@ public class CameraSettings {
         CharSequence[] entries = videoQuality.getEntries();
         CharSequence[] values = videoQuality.getEntryValues();
         if (Util.isMmsCapable(mContext)) {
+            int mmsVideoDuration = CamcorderProfile.get(mCameraId,
+                    CamcorderProfile.QUALITY_LOW).duration;
             // We need to fill in the device-dependent value (in seconds).
             for (int i = 0; i < entries.length; ++i) {
                 if (mContext.getString(R.string.pref_video_quality_mms).equals(values[i])) {
                     entries[i] = entries[i].toString().replace(
-                            "30", Integer.toString(MMS_VIDEO_DURATION));
+                            "30", Integer.toString(mmsVideoDuration));
                     break;
                 }
             }
