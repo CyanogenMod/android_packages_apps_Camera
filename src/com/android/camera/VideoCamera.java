@@ -725,7 +725,7 @@ public class VideoCamera extends ActivityBase
             mMaxVideoDurationInMs = 1000 * seconds;
         } else {
             mMaxVideoDurationInMs =
-                    CameraSettings.getVideoDurationInMillis(this, quality);
+                    CameraSettings.getVideoDurationInMillis(this, quality, mCameraId);
         }
 
         // Read time lapse recording interval.
