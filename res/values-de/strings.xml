@@ -50,6 +50,7 @@
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Niedrig (30m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (niedrig, 30s)"</string>
     <string name="pref_video_quality_entry_youtube" msgid="3731902408685997150">"YouTube (hoch, 15m)"</string>
+    <string name="pref_video_quality_entry_youtubehd">YouTube (HD, 15m)</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameraeinstellungen"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcordereinstellungen"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Bildgröße"</string>
@@ -115,6 +116,10 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Rottöne"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Blautöne"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Grüntöne"</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Gestanzt</string>
+    <string name="pref_camera_coloreffect_entry_vivid">Klar</string>
+    <string name="pref_camera_coloreffect_entry_blue">Blau</string>
+    <string name="pref_camera_coloreffect_entry_negative_sepia">Negatives Sepia</string>
 
     <!-- Settings screen, Multiple levels entries -->
     <string name="pref_camera_sharpness_entry_level0">Stufe 0</string>
