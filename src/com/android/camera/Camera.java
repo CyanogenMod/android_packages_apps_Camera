@@ -1120,11 +1120,19 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mIndicatorWheel == null) return;
         loadCameraPreferences();
 
-        String[] keys = new String[]{CameraSettings.KEY_FLASH_MODE,
-            CameraSettings.KEY_WHITE_BALANCE,
-            CameraSettings.KEY_COLOR_EFFECT,
-            CameraSettings.KEY_SCENE_MODE};
-        mIndicatorWheel.initialize(this, mPreferenceGroup, keys, true);
+        final String[] SETTING_KEYS = {
+                CameraSettings.KEY_FLASH_MODE,
+                CameraSettings.KEY_WHITE_BALANCE,
+                CameraSettings.KEY_COLOR_EFFECT,
+                CameraSettings.KEY_SCENE_MODE};
+        final String[] OTHER_SETTING_KEYS = {
+                CameraSettings.KEY_RECORD_LOCATION,
+                CameraSettings.KEY_FOCUS_MODE,
+                CameraSettings.KEY_EXPOSURE,
+                CameraSettings.KEY_PICTURE_SIZE,
+                CameraSettings.KEY_JPEG_QUALITY};
+        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS,
+                OTHER_SETTING_KEYS);
         mIndicatorWheel.setListener(new MyIndicatorWheelListener());
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());

@@ -83,9 +83,9 @@ public class IndicatorWheel extends ViewGroup implements
 
     private Context mContext;
     private PreferenceGroup mPreferenceGroup;
-    private ArrayList<String> mPreferenceKeys;
-    private BasicSettingPopup[] mBasicSettingPopups;
-    private OtherSettingsPopup mOtherSettingsPopup;
+    private ArrayList<String> mPrefKeys;
+    private String[] mOtherSettingPrefKeys;
+    private AbstractSettingPopup[] mSettingPopups;
 
     private Animation mFadeIn, mFadeOut;
     // The previous view that has the animation. The animation may have stopped.
@@ -441,26 +441,28 @@ public class IndicatorWheel extends ViewGroup implements
     }
 
     public void initialize(Context context, PreferenceGroup group,
-            String[] keys, boolean enableOtherSettings) {
+            String[] keys, String[] otherSettingKeys) {
         // Reset the variables and states.
         dismissSettingPopup();
         removeIndicators();
-        mOtherSettingsPopup = null;
         mSelectedIndex = -1;
-        mPreferenceKeys = new ArrayList<String>();
+        mPrefKeys = new ArrayList<String>();
 
         // Initialize all variables and icons.
         mPreferenceGroup = group;
         for (int i = 0; i < keys.length; i++) {
             if (addIndicator(context, group, keys[i])) {
-                mPreferenceKeys.add(keys[i]);
+                mPrefKeys.add(keys[i]);
             }
         }
-        mBasicSettingPopups = new BasicSettingPopup[mPreferenceKeys.size()];
-
-        if (enableOtherSettings) {
+        int len = keys.length;
+        mOtherSettingPrefKeys = otherSettingKeys;
+        if (mOtherSettingPrefKeys != null) {
             addOtherSettingIndicator(context);
+            len++;
         }
+        mSettingPopups = new AbstractSettingPopup[len];
+
         requestLayout();
     }
 
@@ -486,52 +488,38 @@ public class IndicatorWheel extends ViewGroup implements
     }
 
     private void initializeSettingPopup(int index) {
-        IconListPreference pref = (IconListPreference)
-                mPreferenceGroup.findPreference(mPreferenceKeys.get(index));
-
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.app_root);
-        BasicSettingPopup popup = (BasicSettingPopup) inflater.inflate(
-                R.layout.basic_setting_popup, root, false);
-        mBasicSettingPopups[index] = popup;
-        popup.setSettingChangedListener(this);
-        popup.initialize(pref);
-        root.addView(popup);
-    }
+        if (index < mPrefKeys.size()) {
+            IconListPreference pref = (IconListPreference)
+                    mPreferenceGroup.findPreference(mPrefKeys.get(index));
 
-    private void initializeOtherSettingPopup() {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.app_root);
-        mOtherSettingsPopup = (OtherSettingsPopup) inflater.inflate(
-                R.layout.other_setting_popup, root, false);
-        mOtherSettingsPopup.setOtherSettingChangedListener(this);
-        mOtherSettingsPopup.initialize(mPreferenceGroup);
-        root.addView(mOtherSettingsPopup);
+            BasicSettingPopup popup = (BasicSettingPopup) inflater.inflate(
+                    R.layout.basic_setting_popup, root, false);
+            mSettingPopups[index] = popup;
+            popup.setSettingChangedListener(this);
+            popup.initialize(pref);
+        } else {
+            // Initialize other settings popup window.
+            OtherSettingsPopup popup = (OtherSettingsPopup) inflater.inflate(
+                    R.layout.other_setting_popup, root, false);
+            mSettingPopups[index] = popup;
+            popup.setSettingChangedListener(this);
+            popup.initialize(mPreferenceGroup, mOtherSettingPrefKeys);
+        }
+        root.addView(mSettingPopups[index]);
     }
 
     private void showSettingPopup(int index) {
         if (index == mSelectedIndex) return;
 
-        if (index < mBasicSettingPopups.length) {
-            if (mBasicSettingPopups[index] == null) {
-                initializeSettingPopup(index);
-            }
-        } else if (mOtherSettingsPopup == null) {
-            initializeOtherSettingPopup();
-        }
+        if (mSettingPopups[index] == null) initializeSettingPopup(index);
 
-        View popup;
         if (mPrevAnimatingView != null) mPrevAnimatingView.clearAnimation();
-        if (index == mBasicSettingPopups.length) {
-            popup = mOtherSettingsPopup;
-        } else {
-            popup = mBasicSettingPopups[index];
-        }
-        popup.startAnimation(mFadeIn);
-        popup.setVisibility(View.VISIBLE);
-        mPrevAnimatingView = popup;
+        mSettingPopups[index].startAnimation(mFadeIn);
+        mSettingPopups[index].setVisibility(View.VISIBLE);
+        mPrevAnimatingView = mSettingPopups[index];
         setHighlight(index, true);
         mSelectedIndex = index;
         invalidate();
@@ -539,16 +527,10 @@ public class IndicatorWheel extends ViewGroup implements
 
     public boolean dismissSettingPopup() {
         if (mSelectedIndex >= 0) {
-            View popup;
             if (mPrevAnimatingView != null) mPrevAnimatingView.clearAnimation();
-            if (mSelectedIndex == mBasicSettingPopups.length) {
-                popup = mOtherSettingsPopup;
-            } else {
-                popup = mBasicSettingPopups[mSelectedIndex];
-            }
-            popup.startAnimation(mFadeOut);
-            popup.setVisibility(View.INVISIBLE);
-            mPrevAnimatingView = popup;
+            mSettingPopups[mSelectedIndex].startAnimation(mFadeOut);
+            mSettingPopups[mSelectedIndex].setVisibility(View.INVISIBLE);
+            mPrevAnimatingView = mSettingPopups[mSelectedIndex];
             setHighlight(mSelectedIndex, false);
             mSelectedIndex = -1;
             invalidate();
@@ -559,11 +541,7 @@ public class IndicatorWheel extends ViewGroup implements
 
     public View getActivePopupWindow() {
         if (mSelectedIndex >= 0) {
-            if (mSelectedIndex == mBasicSettingPopups.length) {
-                return mOtherSettingsPopup;
-            } else {
-                return mBasicSettingPopups[mSelectedIndex];
-            }
+            return mSettingPopups[mSelectedIndex];
         } else {
             return null;
         }
@@ -575,25 +553,26 @@ public class IndicatorWheel extends ViewGroup implements
             throw new IllegalArgumentException();
         }
 
-        if (mOtherSettingsPopup == null) {
-            initializeOtherSettingPopup();
-        }
-
+        // Override the setting indicator.
         for (int i = 0; i < keyvalues.length; i += 2) {
             String key = keyvalues[i];
             String value = keyvalues[i + 1];
             overrideSettings(key, value);
-            mOtherSettingsPopup.overrideSettings(key, value);
+        }
+
+        // Override other settings.
+        if (mOtherSettingPrefKeys != null) {
+            int index = mPrefKeys.size();
+            if (mSettingPopups[index] == null) initializeSettingPopup(index);
+            OtherSettingsPopup popup = (OtherSettingsPopup) mSettingPopups[index];
+            popup.overrideSettings(keyvalues);
         }
     }
 
     public void reloadPreferences() {
         mPreferenceGroup.reloadValue();
-        for (BasicSettingPopup popup: mBasicSettingPopups) {
+        for (AbstractSettingPopup popup: mSettingPopups) {
             if (popup != null) popup.reloadPreference();
-        }
-        if (mOtherSettingsPopup != null) {
-            mOtherSettingsPopup.reloadPreference();
         }
     }
 }

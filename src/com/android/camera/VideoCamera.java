@@ -527,12 +527,13 @@ public class VideoCamera extends ActivityBase
         if (mIndicatorWheel == null) return;
         loadCameraPreferences();
 
-        String[] keys = new String[]{CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
+        final String[] SETTING_KEYS = {
+            CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_COLOR_EFFECT,
             CameraSettings.KEY_VIDEO_QUALITY,
             CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
-        mIndicatorWheel.initialize(this, mPreferenceGroup, keys, false);
+        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS, null);
         mIndicatorWheel.setListener(new MyIndicatorWheelListener());
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());
