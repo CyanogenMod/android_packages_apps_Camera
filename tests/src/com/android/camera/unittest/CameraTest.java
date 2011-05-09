@@ -1,7 +1,24 @@
+/*
+ * Copyright (C) 2010 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.android.camera.unittest;
 
 import com.android.camera.Camera;
 
+import android.graphics.Rect;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import junit.framework.TestCase;
@@ -22,5 +39,21 @@ public class CameraTest extends TestCase {
         assertEquals(270, Camera.roundOrientation(270 + 44));
         assertEquals(0, Camera.roundOrientation(270 + 45));
         assertEquals(0, Camera.roundOrientation(359));
+    }
+
+    public void testConvertToFocusArea() {
+        Rect rect = new Rect();
+        Camera.convertToFocusArea(0, 0, 100, 100, 800, 480, rect);
+        assertEquals(new Rect(-1000, -1000, -750, -583), rect);
+        Camera.convertToFocusArea(0, 0, 400, 240, 800, 480, rect);
+        assertEquals(new Rect(-1000, -1000, 0, 0), rect);
+        Camera.convertToFocusArea(400, 240, 400, 240, 800, 480, rect);
+        assertEquals(new Rect(0, 0, 1000, 1000), rect);
+        Camera.convertToFocusArea(200, 120, 400, 240, 800, 480, rect);
+        assertEquals(new Rect(-500, -500, 500, 500), rect);
+        Camera.convertToFocusArea(0, 0, 800, 480, 800, 480, rect);
+        assertEquals(new Rect(-1000, -1000, 1000, 1000), rect);
+        Camera.convertToFocusArea(860, 620, 100, 100, 960, 720, rect);
+        assertEquals(new Rect(792, 722, 1000, 1000), rect);
     }
 }

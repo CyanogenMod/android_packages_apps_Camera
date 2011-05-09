@@ -1624,9 +1624,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         int top = Util.clamp(y - focusHeight / 2, 0,
                 mPreviewFrame.getHeight() - focusHeight);
         Log.d(TAG, "x=" + x + ". y=" + y);
-        Log.d(TAG, "Margin left=" + left + " . Margin top=" + top);
-        Log.d(TAG, "mPreviewFrame width=" + mPreviewFrame.getWidth() +
-                "mPreviewFrame.getHeight()="+mPreviewFrame.getHeight());
+        Log.d(TAG, "Margin left=" + left + ". top=" + top);
+        Log.d(TAG, "Preview width=" + mPreviewFrame.getWidth() +
+                ". height=" + mPreviewFrame.getHeight());
+        Log.d(TAG, "focusWidth=" + focusWidth + ". focusHeight=" + focusHeight);
 
         // Convert the coordinates to driver format. The coordinates range from
         // -1000 to 1000.
@@ -1635,12 +1636,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mFocusArea.add(new Area(new Rect(), 1));
         }
         Rect rect = mFocusArea.get(0).rect;
-        rect.left = (int) ((double) left / mPreviewFrame.getWidth() * 2000 - 1000);
-        rect.top = (int) ((double) top / mPreviewFrame.getHeight() * 2000 - 1000);
-        rect.right = (int) ((double) (left + focusWidth)
-                / mPreviewFrame.getWidth() * 2000 - 1000);
-        rect.bottom = (int) ((double) (top + focusHeight)
-                / mPreviewFrame.getHeight() * 2000 - 1000);
+        convertToFocusArea(left, top, focusWidth, focusHeight, mPreviewFrame.getWidth(),
+                mPreviewFrame.getHeight(), mFocusArea.get(0).rect);
 
         // Use margin to set the focus rectangle to the touched area.
         RelativeLayout.LayoutParams p =
@@ -1657,6 +1654,15 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         autoFocus();
 
         return true;
+    }
+
+    // Convert the touch point to the focus area in driver format.
+    public static void convertToFocusArea(int left, int top, int focusWidth, int focusHeight,
+            int previewWidth, int previewHeight, Rect rect) {
+        rect.left = Math.round((float) left / previewWidth * 2000 - 1000);
+        rect.top = Math.round((float) top / previewHeight * 2000 - 1000);
+        rect.right = Math.round((float) (left + focusWidth) / previewWidth * 2000 - 1000);
+        rect.bottom = Math.round((float) (top + focusHeight) / previewHeight * 2000 - 1000);
     }
 
     void resetTouchFocus() {
