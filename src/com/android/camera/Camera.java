@@ -251,6 +251,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private String mFocusMode;
     private String mSceneMode;
     private Toast mNotSelectableToast;
+    private Toast mNoShareToast;
 
     private final Handler mHandler = new MainHandler();
     // xlarge devices use indicator wheel. Other devices use head-up display.
@@ -1123,12 +1124,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         final String[] SETTING_KEYS = {
                 CameraSettings.KEY_FLASH_MODE,
                 CameraSettings.KEY_WHITE_BALANCE,
-                CameraSettings.KEY_COLOR_EFFECT,
                 CameraSettings.KEY_SCENE_MODE};
         final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_RECORD_LOCATION,
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_EXPOSURE,
+                CameraSettings.KEY_COLOR_EFFECT,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_JPEG_QUALITY};
         mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS,
@@ -2455,8 +2456,25 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             String str = getResources().getString(R.string.not_selectable_in_scene_mode);
             mNotSelectableToast = Toast.makeText(Camera.this, str, Toast.LENGTH_SHORT);
         }
-        mNotSelectableToast.cancel();
         mNotSelectableToast.show();
+    }
+
+    private void onShareButtonClicked() {
+        if (mPausing) return;
+
+        // Share the last captured picture.
+        if (mThumbnailButton.getUri() != null) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/jpeg");
+            intent.putExtra(Intent.EXTRA_STREAM, mThumbnailButton.getUri());
+            startActivity(Intent.createChooser(intent, getString(R.string.share_picture_via)));
+        } else {  // No last picture
+            if (mNoShareToast == null) {
+                mNoShareToast = Toast.makeText(this,
+                        getResources().getString(R.string.no_picture_to_share), Toast.LENGTH_SHORT);
+            }
+            mNoShareToast.show();
+        }
     }
 
     private class MyIndicatorWheelListener implements IndicatorWheel.Listener {
@@ -2470,6 +2488,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         public void onOverriddenPreferencesClicked() {
             Camera.this.onOverriddenPreferencesClicked();
+        }
+
+        public void onShareButtonClicked() {
+            Camera.this.onShareButtonClicked();
         }
     }
 

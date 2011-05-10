@@ -372,4 +372,16 @@
 
     <string name="setting_increment" translatable="false">&gt;</string>
     <string name="setting_decrement" translatable="false">&lt;</string>
+
+    <!-- Title of the dialog showing a list of applications that can share the captured picture. [CHAR LIMIT=30] -->
+    <string name="share_picture_via">Share picture via</string>
+
+    <!-- Title of the dialog showing a list of applications that can share the captured video. [CHAR LIMIT=30] -->
+    <string name="share_video_via">Share video via</string>
+
+    <!-- Toast saying that there is no picture to share. [CHAR LIMIT=30] -->
+    <string name="no_picture_to_share">No picture to share</string>
+
+    <!-- Toast saying that there is no video to share. [CHAR LIMIT=30] -->
+    <string name="no_video_to_share">No video to share</string>
 </resources>

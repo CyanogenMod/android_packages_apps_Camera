@@ -150,11 +150,15 @@ public class VideoCamera extends ActivityBase
     private CameraPicker mCameraPicker;
     private View mReviewControl;
 
-    private boolean mIsVideoCaptureIntent;
-    private boolean mQuickCapture;
-
+    private Toast mNoShareToast;
     // The last recorded video.
     private RotateImageView mThumbnailButton;
+    private ShutterButton mShutterButton;
+    private TextView mRecordingTimeView;
+    private SwitcherSet mSwitcher;
+
+    private boolean mIsVideoCaptureIntent;
+    private boolean mQuickCapture;
 
     private boolean mOpenCameraFail = false;
 
@@ -163,6 +167,7 @@ public class VideoCamera extends ActivityBase
     private MediaRecorder mMediaRecorder;
     private boolean mMediaRecorderRecording = false;
     private long mRecordingStartTime;
+    private boolean mRecordingTimeCountsDown = false;
     private long mOnResumeTime;
     // The video file that the hardware camera is about to record into
     // (or is recording into.)
@@ -202,11 +207,6 @@ public class VideoCamera extends ActivityBase
     private int mDisplayRotation;
 
     private ContentResolver mContentResolver;
-
-    private ShutterButton mShutterButton;
-    private TextView mRecordingTimeView;
-    private SwitcherSet mSwitcher;
-    private boolean mRecordingTimeCountsDown = false;
 
     private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
@@ -529,11 +529,12 @@ public class VideoCamera extends ActivityBase
 
         final String[] SETTING_KEYS = {
             CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
-            CameraSettings.KEY_WHITE_BALANCE,
-            CameraSettings.KEY_COLOR_EFFECT,
             CameraSettings.KEY_VIDEO_QUALITY,
             CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
-        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS, null);
+        final String[] OTHER_SETTING_KEYS = {
+                CameraSettings.KEY_WHITE_BALANCE,
+                CameraSettings.KEY_COLOR_EFFECT};
+        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS, OTHER_SETTING_KEYS);
         mIndicatorWheel.setListener(new MyIndicatorWheelListener());
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());
@@ -1913,6 +1914,24 @@ public class VideoCamera extends ActivityBase
 
     }
 
+    private void onShareButtonClicked() {
+        if (mPausing) return;
+
+        // Share the last captured video.
+        if (mThumbnailButton.getUri() != null) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("video/*");
+            intent.putExtra(Intent.EXTRA_STREAM, mThumbnailButton.getUri());
+            startActivity(Intent.createChooser(intent, getString(R.string.share_video_via)));
+        } else {  // No last picture
+            if (mNoShareToast == null) {
+                mNoShareToast = Toast.makeText(this,
+                        getResources().getString(R.string.no_picture_to_share), Toast.LENGTH_SHORT);
+            }
+            mNoShareToast.show();
+        }
+    }
+
     private class MyIndicatorWheelListener implements IndicatorWheel.Listener {
         public void onSharedPreferenceChanged() {
             VideoCamera.this.onSharedPreferenceChanged();
@@ -1923,6 +1942,10 @@ public class VideoCamera extends ActivityBase
         }
 
         public void onOverriddenPreferencesClicked() {
+        }
+
+        public void onShareButtonClicked() {
+            VideoCamera.this.onShareButtonClicked();
         }
     }
 

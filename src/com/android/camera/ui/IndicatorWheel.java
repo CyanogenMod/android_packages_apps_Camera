@@ -43,7 +43,7 @@ import java.util.ArrayList;
 /**
  * A view that contains shutter button and camera setting indicators. The
  * indicators are spreaded around the shutter button. The first child is always
- * the shutter button.
+ * the shutter button. The last indicator is always the share button.
  */
 public class IndicatorWheel extends ViewGroup implements
         BasicSettingPopup.Listener, OtherSettingsPopup.Listener {
@@ -83,9 +83,12 @@ public class IndicatorWheel extends ViewGroup implements
 
     private Context mContext;
     private PreferenceGroup mPreferenceGroup;
+    // Preference key of every setting (except other settings) on the wheel .
     private ArrayList<String> mPrefKeys;
     private String[] mOtherSettingPrefKeys;
+    // Popup window of every camera setting on the wheel.
     private AbstractSettingPopup[] mSettingPopups;
+    private int mIndicatorCount;
 
     private Animation mFadeIn, mFadeOut;
     // The previous view that has the animation. The animation may have stopped.
@@ -95,6 +98,7 @@ public class IndicatorWheel extends ViewGroup implements
         public void onSharedPreferenceChanged();
         public void onRestorePreferencesClicked();
         public void onOverriddenPreferencesClicked();
+        public void onShareButtonClicked();
     }
 
     public void setListener(Listener listener) {
@@ -140,8 +144,7 @@ public class IndicatorWheel extends ViewGroup implements
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) return false;
 
-        int count = getChildCount();
-        if (count <= 1) return false;
+        if (mIndicatorCount == 0) return false;
 
         // Check if any setting is pressed.
         int action = event.getAction();
@@ -154,17 +157,16 @@ public class IndicatorWheel extends ViewGroup implements
         double radius = Math.sqrt(dx * dx + dy * dy);
         // Ignore the event if it's too near to the shutter button or too far
         // from the shutter button.
-
         if (radius >= mShutterButtonRadius && radius <= mWheelRadius + mStrokeWidth) {
             double delta = Math.atan2(dy, dx);
             if (delta < 0) delta += Math.PI * 2;
             // Check which sector is pressed.
             if (delta > mSectorInitialRadians[0]) {
-                for (int i = 1; i < count; i++) {
-                    if (delta < mSectorInitialRadians[i]) {
+                for (int i = 0; i < mIndicatorCount; i++) {
+                    if (delta < mSectorInitialRadians[i + 1]) {
                         // If the touch is moving around the same indicator with
                         // popup opened, return now to avoid redundent works.
-                        if (action == MotionEvent.ACTION_MOVE && (mSelectedIndex == i - 1)) {
+                        if (action == MotionEvent.ACTION_MOVE && (mSelectedIndex == i)) {
                             return false;
                         }
 
@@ -172,7 +174,7 @@ public class IndicatorWheel extends ViewGroup implements
                         dismissSettingPopup();
 
                         // Do nothing if scene mode overrides the setting.
-                        View child = getChildAt(i);
+                        View child = getChildAt(i + 1);  // first child is shutter button
                         if (child instanceof IndicatorButton) {
                             if (((IndicatorButton) child).isOverridden()) {
                                 // Do not notify in ACTION_MOVE to avoid lots of
@@ -184,13 +186,13 @@ public class IndicatorWheel extends ViewGroup implements
                             }
                         }
                         if (action == MotionEvent.ACTION_DOWN
-                                && (selectedIndex == i - 1) && (mJustDeselectedIndex != i - 1)) {
+                                && (selectedIndex == i) && (mJustDeselectedIndex != i)) {
                             // The same indicator is pressed with popup opened.
-                            mJustDeselectedIndex = i - 1;
+                            mJustDeselectedIndex = i;
                         } else {
-                            if ((mJustDeselectedIndex != i - 1)
+                            if ((mJustDeselectedIndex != i)
                                     || (selectedIndex == -1 && action == MotionEvent.ACTION_DOWN)) {
-                                showSettingPopup(i - 1);
+                                showSettingPopup(i);
                                 mJustDeselectedIndex = -1;
                             }
                         }
@@ -218,6 +220,7 @@ public class IndicatorWheel extends ViewGroup implements
         if (count > 1) {
             removeViews(1, count - 1);
         }
+        mIndicatorCount = 0;
     }
 
     @Override
@@ -424,20 +427,17 @@ public class IndicatorWheel extends ViewGroup implements
         }
     }
 
-    protected boolean addIndicator(
-            Context context, PreferenceGroup group, String key) {
-        IconListPreference pref = (IconListPreference) group.findPreference(key);
-        if (pref == null) return false;
-        IndicatorButton b = new IndicatorButton(context, pref);
-        addView(b);
-        return true;
+    protected void addIndicator(Context context, IconListPreference pref) {
+        addView(new IndicatorButton(context, pref));
+        mIndicatorCount++;
     }
 
-    private void addOtherSettingIndicator(Context context) {
+    private void addIndicator(Context context, int resId) {
         ImageView b = new ImageView(context);
-        b.setImageResource(R.drawable.ic_viewfinder_settings);
+        b.setImageResource(resId);
         b.setClickable(false);
         addView(b);
+        mIndicatorCount++;
     }
 
     public void initialize(Context context, PreferenceGroup group,
@@ -451,17 +451,24 @@ public class IndicatorWheel extends ViewGroup implements
         // Initialize all variables and icons.
         mPreferenceGroup = group;
         for (int i = 0; i < keys.length; i++) {
-            if (addIndicator(context, group, keys[i])) {
+            IconListPreference pref = (IconListPreference) group.findPreference(keys[i]);
+            if (pref != null) {
+                addIndicator(context, pref);
                 mPrefKeys.add(keys[i]);
             }
         }
-        int len = keys.length;
+
+        int len = mPrefKeys.size();
+        // Add other settings indicator.
         mOtherSettingPrefKeys = otherSettingKeys;
         if (mOtherSettingPrefKeys != null) {
-            addOtherSettingIndicator(context);
+            addIndicator(context, R.drawable.ic_viewfinder_settings);
             len++;
         }
         mSettingPopups = new AbstractSettingPopup[len];
+
+        // Add share button. It is always the last one.
+        addIndicator(context, R.drawable.ic_viewfinder_share);
 
         requestLayout();
     }
@@ -484,6 +491,12 @@ public class IndicatorWheel extends ViewGroup implements
         indicator.reloadPreference();
         if (mListener != null) {
             mListener.onSharedPreferenceChanged();
+        }
+    }
+
+    public void onShareButtonClicked() {
+        if (mListener != null) {
+            mListener.onShareButtonClicked();
         }
     }
 
@@ -513,6 +526,12 @@ public class IndicatorWheel extends ViewGroup implements
 
     private void showSettingPopup(int index) {
         if (index == mSelectedIndex) return;
+
+        // The share button is the last indicator.
+        if (index == mIndicatorCount - 1) {
+            onShareButtonClicked();
+            return;
+        }
 
         if (mSettingPopups[index] == null) initializeSettingPopup(index);
 
