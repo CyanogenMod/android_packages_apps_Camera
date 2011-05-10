@@ -41,12 +41,6 @@ public class OtherSettingsPopup extends AbstractSettingPopup
         implements InLineSettingPicker.Listener,
         AdapterView.OnItemClickListener {
     private static final String TAG = "OtherSettingsPopup";
-    private static final String[] OTHER_SETTING_KEYS = {
-            CameraSettings.KEY_RECORD_LOCATION,
-            CameraSettings.KEY_FOCUS_MODE,
-            CameraSettings.KEY_EXPOSURE,
-            CameraSettings.KEY_PICTURE_SIZE,
-            CameraSettings.KEY_JPEG_QUALITY};
     private static final String ITEM_KEY = "key";
     private static final String ITEM_TITLE = "text";
     private static final String ITEM_VALUE = "value";
@@ -100,7 +94,7 @@ public class OtherSettingsPopup extends AbstractSettingPopup
         }
     }
 
-    public void setOtherSettingChangedListener(Listener listener) {
+    public void setSettingChangedListener(Listener listener) {
         mListener = listener;
     }
 
@@ -109,12 +103,12 @@ public class OtherSettingsPopup extends AbstractSettingPopup
         mContext = context;
     }
 
-    public void initialize(PreferenceGroup group) {
+    public void initialize(PreferenceGroup group, String[] keys) {
         mPreferenceGroup = group;
         // Prepare the setting items.
-        for (int i = 0; i < OTHER_SETTING_KEYS.length; ++i) {
+        for (int i = 0; i < keys.length; ++i) {
             HashMap<String, Object> map = new HashMap<String, Object>();
-            ListPreference pref = group.findPreference(OTHER_SETTING_KEYS[i]);
+            ListPreference pref = group.findPreference(keys[i]);
             if (pref != null) {
                 map.put(ITEM_KEY, pref);
                 map.put(ITEM_TITLE, pref.getTitle());
@@ -145,14 +139,18 @@ public class OtherSettingsPopup extends AbstractSettingPopup
     }
 
     // Scene mode can override other camera settings (ex: flash mode).
-    public void overrideSettings(String key, String value) {
+    public void overrideSettings(final String ... keyvalues) {
         int count = mSettingList.getChildCount();
-        for (int i = 0; i < count; i++) {
-            ListPreference pref = (ListPreference) mListItem.get(i).get(ITEM_KEY);
-            if (pref != null && key.equals(pref.getKey())) {
-                InLineSettingPicker picker =
-                        (InLineSettingPicker) mSettingList.getChildAt(i);
-                picker.overrideSettings(value);
+        for (int i = 0; i < keyvalues.length; i += 2) {
+            String key = keyvalues[i];
+            String value = keyvalues[i + 1];
+            for (int j = 0; j < count; j++) {
+                ListPreference pref = (ListPreference) mListItem.get(j).get(ITEM_KEY);
+                if (pref != null && key.equals(pref.getKey())) {
+                    InLineSettingPicker picker =
+                            (InLineSettingPicker) mSettingList.getChildAt(j);
+                    picker.overrideSettings(value);
+                }
             }
         }
     }
@@ -165,6 +163,7 @@ public class OtherSettingsPopup extends AbstractSettingPopup
         }
     }
 
+    @Override
     public void reloadPreference() {
         int count = mSettingList.getChildCount();
         for (int i = 0; i < count; i++) {

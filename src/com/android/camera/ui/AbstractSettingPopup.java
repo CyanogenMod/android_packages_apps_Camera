@@ -44,4 +44,6 @@ abstract public class AbstractSettingPopup extends LinearLayout {
         mTitle = (TextView) findViewById(R.id.title);
         mSettingList = (ViewGroup) findViewById(R.id.settingList);
     }
+
+    abstract public void reloadPreference();
 }

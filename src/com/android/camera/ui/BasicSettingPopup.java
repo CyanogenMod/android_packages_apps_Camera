@@ -80,6 +80,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
     }
 
     // The value of the preference may have changed. Update the UI.
+    @Override
     public void reloadPreference() {
         int index = mPreference.findIndexOfValue(mPreference.getValue());
         if (index != -1) {
