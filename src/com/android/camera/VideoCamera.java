@@ -290,7 +290,7 @@ public class VideoCamera extends ActivityBase
                 // handled in ACTION_MEDIA_EJECT
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
                 Toast.makeText(VideoCamera.this,
-                        getResources().getString(R.string.wait), 5000);
+                        getResources().getString(R.string.wait), Toast.LENGTH_LONG).show();
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
                 updateAndShowStorageHint();
             }
@@ -1926,7 +1926,7 @@ public class VideoCamera extends ActivityBase
         } else {  // No last picture
             if (mNoShareToast == null) {
                 mNoShareToast = Toast.makeText(this,
-                        getResources().getString(R.string.no_picture_to_share), Toast.LENGTH_SHORT);
+                        getResources().getString(R.string.no_video_to_share), Toast.LENGTH_SHORT);
             }
             mNoShareToast.show();
         }

@@ -13,7 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
 
@@ -58,25 +57,6 @@
     <!-- alert to the user that the camera fails to read or write the SD card. -->
     <string name="access_sd_fail" product="default">Fail to access SD card.</string>
 
-    <!-- Settings stuff -->
-
-    <!-- Menu items: -->
-    <!-- menu pick to go to the settings screen -->
-
-    <!-- menu pick to view the details of the currently selected image -->
-
-    <!-- menu pick to show the location of the currently selected image on maps-->
-
-    <!-- menu pick to rotate the currently selected image (brings up submenu) -->
-
-    <!-- menu pick to rotate the currently selected image to the left -->
-
-    <!-- menu pick to rotate the currently selected image to the right -->
-
-    <!-- Confirmation dialog title after deleting a picture -->
-    <!-- Confirmation dialog message after deleting a picture -->
-    <!-- Confirmation dialog message after deleting a video -->
-
     <!-- Confirmation dialog when restoring settings -->
     <string name="confirm_restore_title">Restore defaults</string>
     <string name="confirm_restore_message">Camera settings will be restored to defaults.</string>
@@ -93,34 +73,11 @@
     <!-- button in review mode indicate the user want to retake another photo/video for attachment [CHAR LIMIT=10] -->
     <string name="review_retake">Retake</string>
 
-    <!-- button indicating that the picture just taken should be deleted -->
-
-    <!-- button indicating that the picture just taken should be shared by email, mms, etc -->
-
-    <!-- button indicating that the picture just taken should be set as a contact photo, wallpaper, etc -->
-
-    <!-- button indicating that the picture just taken should be cropped -->
-
-    <!-- Toast after trying to share a picture indicating that there are no applications which are capable of so doing. -->
-
-    <!-- Toast after trying to share a video indicating that there are no applications which are capable of so doing. -->
-
-    <!-- Menu item for playing the video. -->
-
     <!-- Button indicating to go to the image gallery -->
     <string name="camera_gallery_photos_text">Gallery</string>
 
     <!-- Button indicating to switch to another camera -->
     <string name="switch_camera_id">Switch Camera</string>
-
-    <!-- Button indicating to enable the time lapse mode. Time lapse mode refers
-    to capturing video at a rate much slower than it is played back. Appears as
-    a Menu item in Camcorder mode. [CHAR LIMIT=20] -->
-    <string name="enable_time_lapse_mode">Enable Time Lapse</string>
-
-    <!-- Button indicating to disable the time lapse mode. Appears as a Menu item in
-    Camcorder mode. [CHAR LIMIT=20] -->
-    <string name="disable_time_lapse_mode">Disable Time Lapse</string>
 
     <!-- A lable that overlays on top of the preview frame to indicate the camcorder is in time lapse mode [CHAR LIMIT=35] -->
     <string name="time_lapse_title">Time lapse recording</string>
@@ -309,42 +266,8 @@
     <string name="pref_exposure_title">Exposure</string>
     <string name="pref_exposure_default" translatable="false">0</string>
 
-    <!-- Framing grid settings in preference -->
-
-    <!-- Message to show when there's no lat/lng information in the image -->
-    <!-- Title of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-    <!-- Label in message of Details dialog  -->
-
-    <!-- Used to format image dimensions in Details dialog. e.g. 64 x 64 -->
-    <!-- Used to format short video duration in Details dialog. minutes:seconds e.g. 00:30 -->
-    <!-- Used to format video duration in Details dialog. hours:minutes:seconds e.g. 0:21:30 -->
-    <!-- Unit of measure in the Details dialog frames per second. e.g. 20 fps -->
-    <!-- Unit of measure in the Details dialog K bits per second. e.g. 192 Kbps -->
-    <!-- Unit of measure in the Details dialog M bits per second. e.g. 2.3 Mbps -->
     <!-- Details dialog "OK" button. Dismisses dialog. -->
     <string name="details_ok">OK</string>
-
-    <!-- Displayed in the title of the dialog for things to do with a picture that
-         is to be sent to another application: -->
-
-    <!-- Displayed in the title of the dialog for things to do with a picture that
-         is to be "set as" (e.g. set as contact photo or set as wallpaper) -->
-
-    <!-- Displayed in the title of the dialog for things to do with a video that
-         is to be sent to another application. -->
 
     <!-- Low-memory dialog message [CHAR LIMT=NONE] -->
     <string name="spaceIsLow_content" product="nosdcard">Your USB storage is running out of space. Change the quality setting or delete some images or other files.</string>
@@ -362,8 +285,7 @@
 
     <!-- The title show on the zoom controller -->
     <string name="zoom_control_title">Zoom</string>
-    <string name="zoom_increment" translatable="false">+</string>
-    <string name="zoom_decrement" translatable="false">-</string>
+
     <!-- The text to show the current zoom factor. [CHAR LIMIT=NONE] -->
     <string name="zoom_text">Zoom <xliff:g id="zoom_text" example="1.1x">%s</xliff:g></string>
 
@@ -384,4 +306,5 @@
 
     <!-- Toast saying that there is no video to share. [CHAR LIMIT=30] -->
     <string name="no_video_to_share">No video to share</string>
+
 </resources>

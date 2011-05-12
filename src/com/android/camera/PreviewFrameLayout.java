@@ -39,7 +39,6 @@ public class PreviewFrameLayout extends RelativeLayout {
     private double mAspectRatio = 4.0 / 3.0;
     private View mFrame;
     private View mBorderView;
-    private RadioGroup mCameraPicker;
     private OnSizeChangedListener mSizeListener;
     private final DisplayMetrics mMetrics = new DisplayMetrics();
 
@@ -61,7 +60,6 @@ public class PreviewFrameLayout extends RelativeLayout {
             throw new IllegalStateException(
                     "must provide child with id as \"frame\"");
         }
-        mCameraPicker = (RadioGroup) findViewById(R.id.camera_picker);
 
         View preview = (View) findViewById(R.id.camera_preview);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)
@@ -110,17 +108,6 @@ public class PreviewFrameLayout extends RelativeLayout {
         mFrame.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
         if (mSizeListener != null) {
             mSizeListener.onSizeChanged();
-        }
-        if (mCameraPicker != null) {
-            mCameraPicker.measure(
-                    MeasureSpec.makeMeasureSpec(r - l,  MeasureSpec.AT_MOST),
-                    MeasureSpec.makeMeasureSpec(b - t, MeasureSpec.AT_MOST));
-            int width = mCameraPicker.getMeasuredWidth();
-            int height = mCameraPicker.getMeasuredHeight();
-            int ct = t + ((ViewGroup.MarginLayoutParams)
-                    mCameraPicker.getLayoutParams()).topMargin;
-            int cl = (r - l - width) / 2;
-            mCameraPicker.layout(cl, ct, cl + width, ct + height);
         }
     }
 }

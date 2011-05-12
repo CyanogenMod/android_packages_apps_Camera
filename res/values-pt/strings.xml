@@ -13,9 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
  -->
-
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Erro de câmera"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Não é possível se conectar à câmera."</string>
     <string name="camera_label" msgid="6346560772074764302">"Câmera"</string>
@@ -39,8 +37,6 @@
     <string name="review_retake" msgid="7776579640762112761">"Tirar outra"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeria"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Alternar câmera"</string>
-    <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Ativar tempo grav."</string>
-    <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Desat. tempo grav."</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Gravação de lapso de tempo"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Selecionar câmera"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Traseira"</string>

@@ -13,9 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
  -->
-
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Erreur de l\'appareil photo."</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Impossible d\'établir une connexion avec l\'appareil photo."</string>
     <string name="camera_label" msgid="6346560772074764302">"Appareil photo"</string>
@@ -39,8 +37,6 @@
     <string name="review_retake" msgid="7776579640762112761">"Autre photo"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Changer d\'appareil photo"</string>
-    <string name="enable_time_lapse_mode" msgid="9176865387013576340">"Activer Time Lapse"</string>
-    <string name="disable_time_lapse_mode" msgid="1025813874111023552">"Désact. Time Lapse"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Enregistrement mode time lapse"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Choisir appareil ph."</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Arrière"</string>

@@ -25,7 +25,7 @@
         android:layout_marginRight="229dp"
         android:orientation="vertical"
         android:visibility="invisible">
-    <FrameLayout android:id="@+id/topPanel"
+    <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/dialog_top_holo_dark"
