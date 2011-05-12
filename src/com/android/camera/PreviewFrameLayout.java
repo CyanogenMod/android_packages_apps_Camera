@@ -29,8 +29,6 @@ import android.widget.RelativeLayout;
  * A layout which handles the preview aspect ratio.
  */
 public class PreviewFrameLayout extends RelativeLayout {
-    private static final int MIN_HORIZONTAL_MARGIN = 10; // 10dp
-
     /** A callback to be invoked when the preview frame's size changes. */
     public interface OnSizeChangedListener {
         public void onSizeChanged();
@@ -56,18 +54,7 @@ public class PreviewFrameLayout extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mFrame = (View) findViewById(R.id.frame);
-        if (mFrame == null) {
-            throw new IllegalStateException(
-                    "must provide child with id as \"frame\"");
-        }
-
-        View preview = (View) findViewById(R.id.camera_preview);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)
-                preview.getLayoutParams();
         mBorderView = (View) findViewById(R.id.preview_border);
-        View f = mBorderView;
-        params.setMargins(f.getPaddingLeft(), f.getPaddingTop(), f.getPaddingRight(), f.getPaddingBottom());
-        preview.setLayoutParams(params);
     }
 
     public void setAspectRatio(double ratio) {
@@ -81,31 +68,38 @@ public class PreviewFrameLayout extends RelativeLayout {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        // Calculate the width and the height of preview frame.
         int frameWidth = getWidth();
         int frameHeight = getHeight();
-
         View f = mBorderView;
         int horizontalPadding = f.getPaddingLeft() + f.getPaddingRight();
         int verticalPadding = f.getPaddingBottom() + f.getPaddingTop();
         int previewHeight = frameHeight - verticalPadding;
         int previewWidth = frameWidth - horizontalPadding;
-
-        // resize frame and preview for aspect ratio
         if (previewWidth > previewHeight * mAspectRatio) {
             previewWidth = (int) (previewHeight * mAspectRatio + .5);
         } else {
             previewHeight = (int) (previewWidth / mAspectRatio + .5);
         }
 
+        // Measure and layout preview frame.
+        int hSpace = ((r - l) - previewWidth) / 2;
+        int vSpace = ((b - t) - previewHeight) / 2;
+        mFrame.measure(
+                MeasureSpec.makeMeasureSpec(previewWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(previewHeight, MeasureSpec.EXACTLY));
+        mFrame.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
+
+        // Measure and layout the border of preview frame.
         frameWidth = previewWidth + horizontalPadding;
         frameHeight = previewHeight + verticalPadding;
-
-        int hSpace = ((r - l) - frameWidth) / 2;
-        int vSpace = ((b - t) - frameHeight) / 2;
-        mFrame.measure(
+        hSpace = ((r - l) - frameWidth) / 2;
+        vSpace = ((b - t) - frameHeight) / 2;
+        mBorderView.measure(
                 MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
-        mFrame.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
+        mBorderView.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
+
         if (mSizeListener != null) {
             mSizeListener.onSizeChanged();
         }
