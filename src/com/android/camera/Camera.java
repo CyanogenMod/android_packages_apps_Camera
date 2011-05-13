@@ -26,7 +26,6 @@ import com.android.camera.ui.ZoomControllerListener;
 import com.android.camera.ui.ZoomPicker;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
@@ -101,8 +100,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private static final String TAG = "camera";
 
-    private static final String LAST_THUMB_PATH =
-            Storage.THUMBNAILS + "/image_last_thumb";
+    private static final String LAST_THUMB_FILENAME = "image_last_thumb";
 
     private static final int CROP_MSG = 1;
     private static final int FIRST_TIME_INIT = 2;
@@ -172,8 +170,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private GLRootView mGLRootView;
 
-    // The last captured picture.
+    // A button showing the last captured picture thumbnail. Clicking on it
+    // goes to gallery.
     private RotateImageView mThumbnailButton;
+    // The bitmap of the last captured picture thumbnail and the URI of the
+    // original picture.
+    private Thumbnail mThumbnail;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -377,7 +379,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         // Initialize last picture button.
         mContentResolver = getContentResolver();
-        if (!mIsImageCaptureIntent)  {
+        if (!mIsImageCaptureIntent) {  // no thumbnail in image capture intent
             findViewById(R.id.camera_switch).setOnClickListener(this);
             initThumbnailButton();
         }
@@ -423,30 +425,23 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void initThumbnailButton() {
-        mThumbnailButton =
-                (RotateImageView) findViewById(R.id.review_thumbnail);
-        if (mThumbnailButton != null) {
-            mThumbnailButton.setOnClickListener(this);
-            mThumbnailButton.loadData(LAST_THUMB_PATH);
-            updateThumbnailButton();
-        }
+        mThumbnailButton.setOnClickListener(this);
+        // Load the thumbnail from the disk.
+        mThumbnail = Thumbnail.loadFrom(LAST_THUMB_FILENAME);
+        updateThumbnailButton();
     }
 
     private void updateThumbnailButton() {
-        if (mThumbnailButton == null) return;
         // Update last image if URI is invalid and the storage is ready.
-        if (!mThumbnailButton.isUriValid() && mPicturesRemaining >= 0) {
-            Storage.Thumbnail thumbnail =
-                    Storage.getLastImageThumbnail(mContentResolver);
-            if (thumbnail != null) {
-                mThumbnailButton.setData(thumbnail.getOriginalUri(),
-                        thumbnail.getBitmap(mContentResolver));
-            } else {
-                mThumbnailButton.setData(null, null);
-            }
+        if ((mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), mContentResolver))
+                && mPicturesRemaining >= 0) {
+            mThumbnail = Thumbnail.getLastImageThumbnail(mContentResolver);
         }
-        mThumbnailButton.setVisibility(
-                (mThumbnailButton.getUri() != null) ? View.VISIBLE : View.GONE);
+        if (mThumbnail != null) {
+            mThumbnailButton.setBitmap(mThumbnail.getBitmap());
+        } else {
+            mThumbnailButton.setBitmap(null);
+        }
     }
 
     // If the activity is paused and resumed, this method will be called in
@@ -859,17 +854,15 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (!mIsImageCaptureIntent) {
             long dateTaken = System.currentTimeMillis();
             String title = createName(dateTaken);
-
-            Storage.Thumbnail thumbnail = Storage.addImage(
-                    mContentResolver, title, dateTaken, loc, data);
-
-            if (thumbnail != null && mThumbnailButton != null) {
-                mThumbnailButton.setData(thumbnail.getOriginalUri(),
-                        thumbnail.getBitmap(mContentResolver));
-                mThumbnailButton.setVisibility(View.VISIBLE);
-
-                sendBroadcast(new Intent("com.android.camera.NEW_PICTURE",
-                        thumbnail.getOriginalUri()));
+            int orientation = Exif.getOrientation(data);
+            Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
+                    loc, orientation, data);
+            if (uri != null) {
+                mThumbnail = Thumbnail.createThumbnail(data, orientation, uri);
+                if (mThumbnail != null) {
+                    mThumbnailButton.setBitmap(mThumbnail.getBitmap());
+                }
+                sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", uri));
             }
         } else {
             mJpegImageData = data;
@@ -982,6 +975,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
+        mThumbnailButton = (RotateImageView) findViewById(R.id.review_thumbnail);
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
@@ -1272,8 +1266,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 restartPreview();
                 break;
             case R.id.review_thumbnail:
-                if (isCameraIdle()) {
-                    viewImage(mThumbnailButton);
+                if (isCameraIdle() && mThumbnail != null) {
+                    Util.viewUri(mThumbnail.getUri(), this);
                 }
                 break;
             case R.id.btn_done:
@@ -1506,9 +1500,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
             if (!mIsImageCaptureIntent) {
-                if (mThumbnailButton != null) {
-                    mThumbnailButton.storeData(LAST_THUMB_PATH);
-                }
+                if (mThumbnail != null) mThumbnail.saveTo(LAST_THUMB_FILENAME);
             }
             hidePostCaptureAlert();
         }
@@ -2146,25 +2138,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         MenuHelper.gotoCameraImageGallery(this);
     }
 
-    private void viewImage(RotateImageView view) {
-        if(!view.isUriValid()) {
-            Log.e(TAG, "Uri invalid. uri=" + view.getUri());
-            return;
-        }
-
-        try {
-            startActivity(new Intent(
-                    Util.REVIEW_ACTION, view.getUri()));
-        } catch (ActivityNotFoundException ex) {
-            try {
-                startActivity(new Intent(
-                        Intent.ACTION_VIEW, view.getUri()));
-            } catch (ActivityNotFoundException e) {
-                Log.e(TAG, "review image fail. uri=" + view.getUri(), e);
-            }
-        }
-    }
-
     private void startReceivingLocationUpdates() {
         if (mLocationManager != null) {
             try {
@@ -2463,10 +2436,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mPausing) return;
 
         // Share the last captured picture.
-        if (mThumbnailButton.getUri() != null) {
+        if (mThumbnail != null) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("image/jpeg");
-            intent.putExtra(Intent.EXTRA_STREAM, mThumbnailButton.getUri());
+            intent.putExtra(Intent.EXTRA_STREAM, mThumbnail.getUri());
             startActivity(Intent.createChooser(intent, getString(R.string.share_picture_via)));
         } else {  // No last picture
             if (mNoShareToast == null) {

@@ -89,8 +89,7 @@ public class VideoCamera extends ActivityBase
 
     private static final String TAG = "videocamera";
 
-    private static final String LAST_THUMB_PATH =
-            Storage.THUMBNAILS + "/video_last_thumb";
+    private static final String LAST_THUMB_FILENAME = "video_last_thumb";
 
     private static final int CHECK_DISPLAY_ROTATION = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
@@ -151,8 +150,12 @@ public class VideoCamera extends ActivityBase
     private View mReviewControl;
 
     private Toast mNoShareToast;
-    // The last recorded video.
+    // A button showing the last captured video thumbnail. Clicking on it
+    // goes to gallery.
     private RotateImageView mThumbnailButton;
+    // The bitmap of the last captured video thumbnail and the URI of the
+    // original video.
+    private Thumbnail mThumbnail;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
     private SwitcherSet mSwitcher;
@@ -597,7 +600,7 @@ public class VideoCamera extends ActivityBase
         Intent intent = new Intent(Intent.ACTION_VIEW, mCurrentVideoUri);
         try {
             startActivity(intent);
-        } catch (android.content.ActivityNotFoundException ex) {
+        } catch (ActivityNotFoundException ex) {
             Log.e(TAG, "Couldn't view video " + mCurrentVideoUri, ex);
         }
     }
@@ -619,7 +622,9 @@ public class VideoCamera extends ActivityBase
                 doReturnToCaller(false);
                 break;
             case R.id.review_thumbnail:
-                if (!mMediaRecorderRecording) viewVideo(mThumbnailButton);
+                if (!mMediaRecorderRecording && mThumbnail != null) {
+                    Util.viewUri(mThumbnail.getUri(), this);
+                }
                 break;
             case R.id.btn_gallery:
                 gotoGallery();
@@ -959,8 +964,8 @@ public class VideoCamera extends ActivityBase
         }
         resetScreenOn();
 
-        if (!mIsVideoCaptureIntent && mThumbnailButton != null) {
-            mThumbnailButton.storeData(LAST_THUMB_PATH);
+        if (!mIsVideoCaptureIntent && mThumbnail != null) {
+            mThumbnail.saveTo(LAST_THUMB_FILENAME);
         }
 
         if (mStorageHint != null) {
@@ -1462,7 +1467,12 @@ public class VideoCamera extends ActivityBase
     }
 
     private void getThumbnail() {
-        acquireVideoThumb();
+        Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
+                mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
+        if (videoFrame != null) {
+            mThumbnail = new Thumbnail(mCurrentVideoUri, videoFrame, 0);
+            mThumbnailButton.setBitmap(mThumbnail.getBitmap());
+        }
     }
 
     private void showAlert() {
@@ -1535,24 +1545,6 @@ public class VideoCamera extends ActivityBase
         return this.mVideoFrame.getVisibility() == View.VISIBLE;
     }
 
-    private void viewVideo(RotateImageView view) {
-        if(view.isUriValid()) {
-            Intent intent = new Intent(Util.REVIEW_ACTION, view.getUri());
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException ex) {
-                try {
-                    intent = new Intent(Intent.ACTION_VIEW, view.getUri());
-                    startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    Log.e(TAG, "review video fail. uri=" + view.getUri(), e);
-                }
-            }
-        } else {
-            Log.e(TAG, "Uri invalid. uri=" + view.getUri());
-        }
-    }
-
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
         if (mMediaRecorderRecording) {
@@ -1598,39 +1590,22 @@ public class VideoCamera extends ActivityBase
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    private void acquireVideoThumb() {
-        if (mThumbnailButton != null) {
-            Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
-                    mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
-            mThumbnailButton.setData(mCurrentVideoUri, videoFrame);
-            if (videoFrame != null) {
-                mThumbnailButton.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
     private void initThumbnailButton() {
-        mThumbnailButton = (RotateImageView)findViewById(R.id.review_thumbnail);
-        if (mThumbnailButton != null) {
-            mThumbnailButton.setOnClickListener(this);
-            mThumbnailButton.loadData(LAST_THUMB_PATH);
-        }
+        mThumbnailButton = (RotateImageView) findViewById(R.id.review_thumbnail);
+        mThumbnailButton.setOnClickListener(this);
+        // Load the thumbnail from the disk.
+        mThumbnail = Thumbnail.loadFrom(LAST_THUMB_FILENAME);
     }
 
     private void updateThumbnailButton() {
-        if (mThumbnailButton == null) return;
-        if (!mThumbnailButton.isUriValid()) {
-            Storage.Thumbnail thumbnail =
-                    Storage.getLastVideoThumbnail(mContentResolver);
-            if (thumbnail != null) {
-                mThumbnailButton.setData(thumbnail.getOriginalUri(),
-                        thumbnail.getBitmap(mContentResolver));
-            } else {
-                mThumbnailButton.setData(null, null);
-            }
+        if (mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), mContentResolver)) {
+            mThumbnail = Thumbnail.getLastVideoThumbnail(mContentResolver);
         }
-        mThumbnailButton.setVisibility(
-                (mThumbnailButton.getUri() != null) ? View.VISIBLE : View.GONE);
+        if (mThumbnail != null) {
+            mThumbnailButton.setBitmap(mThumbnail.getBitmap());
+        } else {
+            mThumbnailButton.setBitmap(null);
+        }
     }
 
     private static String millisecondToTimeString(long milliSeconds, boolean displayCentiSeconds) {
@@ -1918,10 +1893,10 @@ public class VideoCamera extends ActivityBase
         if (mPausing) return;
 
         // Share the last captured video.
-        if (mThumbnailButton.getUri() != null) {
+        if (mThumbnail != null) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("video/*");
-            intent.putExtra(Intent.EXTRA_STREAM, mThumbnailButton.getUri());
+            intent.putExtra(Intent.EXTRA_STREAM, mThumbnail.getUri());
             startActivity(Intent.createChooser(intent, getString(R.string.share_video_via)));
         } else {  // No last picture
             if (mNoShareToast == null) {

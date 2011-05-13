@@ -18,14 +18,19 @@ package com.android.camera;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
@@ -35,6 +40,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -398,5 +404,38 @@ public class Util {
         v.getLocationInWindow(mLocation);
         return x >= mLocation[0] && x < (mLocation[0] + v.getWidth())
                 && y >= mLocation[1] && y < (mLocation[1] + v.getHeight());
+    }
+
+    public static boolean isUriValid(Uri uri, ContentResolver resolver) {
+        if (uri == null) return false;
+
+        try {
+            ParcelFileDescriptor pfd = resolver.openFileDescriptor(uri, "r");
+            if (pfd == null) {
+                Log.e(TAG, "Fail to open URI. URI=" + uri);
+                return false;
+            }
+            pfd.close();
+        } catch (IOException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void viewUri(Uri uri, Context context) {
+        if (!isUriValid(uri, context.getContentResolver())) {
+            Log.e(TAG, "Uri invalid. uri=" + uri);
+            return;
+        }
+
+        try {
+            context.startActivity(new Intent(Util.REVIEW_ACTION, uri));
+        } catch (ActivityNotFoundException ex) {
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            } catch (ActivityNotFoundException e) {
+                Log.e(TAG, "review image fail. uri=" + uri, e);
+            }
+        }
     }
 }

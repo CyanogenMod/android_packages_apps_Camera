@@ -17,20 +17,13 @@
 package com.android.camera;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StatFs;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
-import android.provider.MediaStore.Video;
-import android.provider.MediaStore.Video.VideoColumns;
 import android.util.Log;
 
 import java.io.File;
@@ -39,12 +32,10 @@ import java.io.FileOutputStream;
 class Storage {
     private static final String TAG = "CameraStorage";
 
-    private static final String DCIM =
+    public static final String DCIM =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
 
     public static final String DIRECTORY = DCIM + "/Camera";
-
-    public static final String THUMBNAILS = DCIM + "/.thumbnails";
 
     // Match the code in MediaProvider.computeBucketValues().
     public static final String BUCKET_ID =
@@ -54,109 +45,10 @@ class Storage {
     public static final long PREPARING = -2L;
     public static final long UNKNOWN_SIZE = -3L;
 
-    public static class Thumbnail {
-        private Uri mBaseUri;
-        private long mId;
-        private Uri mUri;
-        private Bitmap mBitmap;
-        private int mOrientation;
+    private static final int BUFSIZE = 4096;
 
-        private Thumbnail(Uri baseUri, long id, int orientation) {
-            mBaseUri = baseUri;
-            mId = id;
-            mOrientation = orientation;
-        }
-
-        private Thumbnail(Uri uri, Bitmap bitmap, int orientation) {
-            mUri = uri;
-            mBitmap = bitmap;
-            mOrientation = orientation;
-        }
-
-        public Uri getOriginalUri() {
-            if (mUri == null && mBaseUri != null) {
-                mUri = ContentUris.withAppendedId(mBaseUri, mId);
-            }
-            return mUri;
-        }
-
-        public Bitmap getBitmap(ContentResolver resolver) {
-            if (mBitmap == null) {
-                if (Images.Media.EXTERNAL_CONTENT_URI.equals(mBaseUri)) {
-                    mBitmap = Images.Thumbnails.getThumbnail(resolver, mId,
-                            Images.Thumbnails.MICRO_KIND, null);
-                } else if (Video.Media.EXTERNAL_CONTENT_URI.equals(mBaseUri)) {
-                    mBitmap = Video.Thumbnails.getThumbnail(resolver, mId,
-                            Video.Thumbnails.MICRO_KIND, null);
-                }
-            }
-            if (mBitmap != null && mOrientation != 0) {
-                // We only rotate the thumbnail once even if we get OOM.
-                Matrix m = new Matrix();
-                m.setRotate(mOrientation, mBitmap.getWidth() * 0.5f,
-                        mBitmap.getHeight() * 0.5f);
-                mOrientation = 0;
-
-                try {
-                    Bitmap rotated = Bitmap.createBitmap(mBitmap, 0, 0,
-                            mBitmap.getWidth(), mBitmap.getHeight(), m, true);
-                    mBitmap.recycle();
-                    mBitmap = rotated;
-                } catch (Throwable t) {
-                    Log.w(TAG, "Failed to rotate thumbnail", t);
-                }
-            }
-            return mBitmap;
-        }
-    }
-
-    public static Thumbnail getLastImageThumbnail(ContentResolver resolver) {
-        Uri baseUri = Images.Media.EXTERNAL_CONTENT_URI;
-
-        Uri query = baseUri.buildUpon().appendQueryParameter("limit", "1").build();
-        String[] projection = new String[] {ImageColumns._ID, ImageColumns.ORIENTATION};
-        String selection = ImageColumns.MIME_TYPE + "='image/jpeg' AND " +
-                ImageColumns.BUCKET_ID + '=' + BUCKET_ID;
-        String order = ImageColumns.DATE_TAKEN + " DESC," + ImageColumns._ID + " DESC";
-
-        Cursor cursor = null;
-        try {
-            cursor = resolver.query(query, projection, selection, null, order);
-            if (cursor != null && cursor.moveToFirst()) {
-                return new Thumbnail(baseUri, cursor.getLong(0), cursor.getInt(1));
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return null;
-    }
-
-    public static Thumbnail getLastVideoThumbnail(ContentResolver resolver) {
-        Uri baseUri = Video.Media.EXTERNAL_CONTENT_URI;
-
-        Uri query = baseUri.buildUpon().appendQueryParameter("limit", "1").build();
-        String[] projection = new String[] {VideoColumns._ID};
-        String selection = VideoColumns.BUCKET_ID + '=' + BUCKET_ID;
-        String order = VideoColumns.DATE_TAKEN + " DESC," + VideoColumns._ID + " DESC";
-
-        Cursor cursor = null;
-        try {
-            cursor = resolver.query(query, projection, selection, null, order);
-            if (cursor != null && cursor.moveToFirst()) {
-                return new Thumbnail(baseUri, cursor.getLong(0), 0);
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return null;
-    }
-
-    public static Thumbnail addImage(ContentResolver resolver, String title,
-            long date, Location location, byte[] jpeg) {
+    public static Uri addImage(ContentResolver resolver, String title,
+            long date, Location location, int orientation, byte[] jpeg) {
         // Save the image.
         String path = DIRECTORY + '/' + title + ".jpg";
         FileOutputStream out = null;
@@ -172,9 +64,6 @@ class Storage {
             } catch (Exception e) {
             }
         }
-
-        // Get the orientation.
-        int orientation = Exif.getOrientation(jpeg);
 
         // Insert into MediaStore.
         ContentValues values = new ContentValues(9);
@@ -196,16 +85,7 @@ class Storage {
             Log.e(TAG, "Failed to write MediaStore");
             return null;
         }
-
-        // Create the thumbnail.
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 16;
-        Bitmap bitmap = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length, options);
-        if (bitmap == null) {
-            Log.e(TAG, "Failed to create thumbnail");
-            return null;
-        }
-        return new Thumbnail(uri, bitmap, orientation);
+        return uri;
     }
 
     public static long getAvailableSpace() {

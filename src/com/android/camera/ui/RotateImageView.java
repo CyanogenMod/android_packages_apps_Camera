@@ -25,21 +25,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.Rect;
 import android.media.ThumbnailUtils;
-import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.animation.AnimationUtils;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * A @{code ImageView} which can rotate it's content.
@@ -59,8 +49,6 @@ public class RotateImageView extends ImageView {
 
     private long mAnimationStartTime = 0;
     private long mAnimationEndTime = 0;
-
-    private Uri mUri;
 
     public RotateImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -137,79 +125,14 @@ public class RotateImageView extends ImageView {
     private Drawable[] mThumbs;
     private TransitionDrawable mThumbTransition;
 
-    public void setData(Uri uri, Bitmap original) {
+    public void setBitmap(Bitmap bitmap) {
         // Make sure uri and original are consistently both null or both
         // non-null.
-        if (uri == null || original == null) {
-            uri = null;
-            original = null;
-        }
-        mUri = uri;
-        updateThumb(original);
-    }
-
-    public Uri getUri() {
-        return mUri;
-    }
-
-    private static final int BUFSIZE = 4096;
-
-    // Stores the data from the specified file.
-    // Returns true for success.
-    public boolean storeData(String filePath) {
-        if (mUri == null) {
-            return false;
-        }
-
-        FileOutputStream f = null;
-        BufferedOutputStream b = null;
-        DataOutputStream d = null;
-        try {
-            f = new FileOutputStream(filePath);
-            b = new BufferedOutputStream(f, BUFSIZE);
-            d = new DataOutputStream(b);
-            d.writeUTF(mUri.toString());
-            mThumb.compress(Bitmap.CompressFormat.PNG, 100, d);
-            d.close();
-        } catch (IOException e) {
-            return false;
-        } finally {
-            Util.closeSilently(f);
-            Util.closeSilently(b);
-            Util.closeSilently(d);
-        }
-        return true;
-    }
-
-    // Loads the data from the specified file.
-    // Returns true for success.
-    public boolean loadData(String filePath) {
-        FileInputStream f = null;
-        BufferedInputStream b = null;
-        DataInputStream d = null;
-        try {
-            f = new FileInputStream(filePath);
-            b = new BufferedInputStream(f, BUFSIZE);
-            d = new DataInputStream(b);
-            Uri uri = Uri.parse(d.readUTF());
-            Bitmap thumb = BitmapFactory.decodeStream(d);
-            setData(uri, thumb);
-            d.close();
-        } catch (IOException e) {
-            return false;
-        } finally {
-            Util.closeSilently(f);
-            Util.closeSilently(b);
-            Util.closeSilently(d);
-        }
-        return true;
-    }
-
-    private void updateThumb(Bitmap original) {
-        if (original == null) {
+        if (bitmap == null) {
             mThumb = null;
             mThumbs = null;
             setImageDrawable(null);
+            setVisibility(GONE);
             return;
         }
 
@@ -219,7 +142,7 @@ public class RotateImageView extends ImageView {
         final int miniThumbHeight = param.height
                 - getPaddingTop() - getPaddingBottom();
         mThumb = ThumbnailUtils.extractThumbnail(
-                original, miniThumbWidth, miniThumbHeight);
+                bitmap, miniThumbWidth, miniThumbHeight);
         Drawable drawable;
         if (mThumbs == null || !mEnableAnimation) {
             mThumbs = new Drawable[2];
@@ -232,23 +155,6 @@ public class RotateImageView extends ImageView {
             setImageDrawable(mThumbTransition);
             mThumbTransition.startTransition(500);
         }
-    }
-
-    public boolean isUriValid() {
-        if (mUri == null) {
-            return false;
-        }
-        try {
-            ParcelFileDescriptor pfd =
-                    getContext().getContentResolver().openFileDescriptor(mUri, "r");
-            if (pfd == null) {
-                Log.e(TAG, "Fail to open URI. URI=" + mUri);
-                return false;
-            }
-            pfd.close();
-        } catch (IOException ex) {
-            return false;
-        }
-        return true;
+        setVisibility(VISIBLE);
     }
 }
