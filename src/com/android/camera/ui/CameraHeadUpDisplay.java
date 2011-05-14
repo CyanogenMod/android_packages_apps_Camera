@@ -28,7 +28,6 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     private static final String TAG = "CamcoderHeadUpDisplay";
 
     private OtherSettingsIndicator mOtherSettings;
-    private GpsIndicator mGpsIndicator;
     private ZoomIndicator mZoomIndicator;
     private Context mContext;
     private float[] mInitialZoomRatios;
@@ -57,7 +56,8 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_JPEG_QUALITY,
-                CameraSettings.KEY_COLOR_EFFECT);
+                CameraSettings.KEY_COLOR_EFFECT,
+                CameraSettings.KEY_RECORD_LOCATION);
 
         mOtherSettings = new OtherSettingsIndicator(context, prefs);
         mOtherSettings.setOnRestorePreferencesClickedRunner(new Runnable() {
@@ -68,11 +68,6 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
             }
         });
         mIndicatorBar.addComponent(mOtherSettings);
-
-        mGpsIndicator = new GpsIndicator(
-                context, (IconListPreference)
-                group.findPreference(CameraSettings.KEY_RECORD_LOCATION));
-        mIndicatorBar.addComponent(mGpsIndicator);
 
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_FLASH_MODE);
@@ -104,17 +99,6 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
             }
         } else {
             mZoomIndicator.setZoomIndex(index);
-        }
-    }
-
-    public void setGpsHasSignal(final boolean hasSignal) {
-        GLRootView root = getGLRootView();
-        if (root != null) {
-            synchronized (root) {
-                mGpsIndicator.setHasSignal(hasSignal);
-            }
-        } else {
-            mGpsIndicator.setHasSignal(hasSignal);
         }
     }
 

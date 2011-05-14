@@ -644,9 +644,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             // update so update GPS indicator when we receive data.
             if (mRecordLocation
                     && LocationManager.GPS_PROVIDER.equals(mProvider)) {
-                if (mHeadUpDisplay != null) {
-                    mHeadUpDisplay.setGpsHasSignal(true);
-                }
                 showGpsOnScreenIndicator(true);
             }
             if (!mValid) {
@@ -671,9 +668,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     mValid = false;
                     if (mRecordLocation &&
                             LocationManager.GPS_PROVIDER.equals(provider)) {
-                        if (mHeadUpDisplay != null) {
-                            mHeadUpDisplay.setGpsHasSignal(false);
-                        }
                         showGpsOnScreenIndicator(false);
                     }
                     break;
@@ -1167,7 +1161,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void detachHeadUpDisplay() {
-        mHeadUpDisplay.setGpsHasSignal(false);
         mHeadUpDisplay.collapse();
         ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         mGLRootView = null;
