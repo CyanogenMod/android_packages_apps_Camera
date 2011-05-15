@@ -1816,6 +1816,14 @@ public class VideoCamera extends ActivityBase
 
         public void onPopupWindowVisibilityChanged(final int visibility) {
         }
+
+        public void onShareButtonClicked() {
+            mHandler.post(new Runnable() {
+                public void run() {
+                    VideoCamera.this.onShareButtonClicked();
+                }
+            });
+        }
     }
 
     private void onRestorePreferencesClicked() {

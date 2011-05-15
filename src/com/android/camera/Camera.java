@@ -2402,6 +2402,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         public void onPopupWindowVisibilityChanged(int visibility) {
         }
+
+        public void onShareButtonClicked() {
+            Camera.this.onShareButtonClicked();
+        }
     }
 
     protected void onRestorePreferencesClicked() {

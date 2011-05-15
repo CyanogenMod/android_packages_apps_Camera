@@ -25,18 +25,17 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-
 import java.util.ArrayList;
 
 // This is the UI for the on-screen settings. Since the rendering is run in the
@@ -133,6 +132,7 @@ public class HeadUpDisplay extends GLView {
         public void onPopupWindowVisibilityChanged(int visibility);
         public void onRestorePreferencesClicked();
         public void onSharedPreferenceChanged();
+        public void onShareButtonClicked();
     }
 
     public void overrideSettings(final String ... keyvalues) {
@@ -226,6 +226,7 @@ public class HeadUpDisplay extends GLView {
     }
 
     private void hidePopupWindow() {
+        if (mPopupWindow == null) return;
         mPopupWindow.popoff();
         // Unregister is important to avoid leaking activities.
         // ComboPreference.sMap->ComboPreference->HeadUpDisplay->Activity
@@ -365,6 +366,10 @@ public class HeadUpDisplay extends GLView {
 
         public void onNothingSelected() {
             hidePopupWindow();
+        }
+
+        public void onShareSelected() {
+            if (mListener != null) mListener.onShareButtonClicked();
         }
     }
 
