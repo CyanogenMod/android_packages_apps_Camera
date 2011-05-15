@@ -1627,34 +1627,37 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             cancelAutoFocus();
         }
 
-        // Calculate the position of the focus rectangle.
+        // Initialize variables.
         int x = Math.round(e.getX());
         int y = Math.round(e.getY());
         int focusWidth = mFocusRectangle.getWidth();
         int focusHeight = mFocusRectangle.getHeight();
-        int left = Util.clamp(x - focusWidth / 2, 0,
-                mPreviewFrame.getWidth() - focusWidth);
-        int top = Util.clamp(y - focusHeight / 2, 0,
-                mPreviewFrame.getHeight() - focusHeight);
-        Log.d(TAG, "x=" + x + ". y=" + y);
-        Log.d(TAG, "Margin left=" + left + ". top=" + top);
-        Log.d(TAG, "Preview width=" + mPreviewFrame.getWidth() +
-                ". height=" + mPreviewFrame.getHeight());
-        Log.d(TAG, "focusWidth=" + focusWidth + ". focusHeight=" + focusHeight);
-
-        // Convert the coordinates to driver format. The coordinates range from
-        // -1000 to 1000.
+        int previewWidth = mPreviewFrame.getWidth();
+        int previewHeight = mPreviewFrame.getHeight();
         if (mFocusArea == null) {
             mFocusArea = new ArrayList<Area>();
             mFocusArea.add(new Area(new Rect(), 1));
         }
+
+        // Convert the coordinates to driver format. The actual focus area is two times bigger than
+        // UI because a huge rectangle looks strange.
+        int areaWidth = focusWidth * 2;
+        int areaHeight = focusHeight * 2;
+        int areaLeft = Util.clamp(x - areaWidth / 2, 0, previewWidth - areaWidth);
+        int areaTop = Util.clamp(y - areaHeight / 2, 0, previewHeight - areaHeight);
+        Log.d(TAG, "x=" + x + ". y=" + y);
+        Log.d(TAG, "Focus area left=" + areaLeft + ". top=" + areaTop);
+        Log.d(TAG, "Preview width=" + previewWidth + ". height=" + previewHeight);
+        Log.d(TAG, "focusWidth=" + focusWidth + ". focusHeight=" + focusHeight);
         Rect rect = mFocusArea.get(0).rect;
-        convertToFocusArea(left, top, focusWidth, focusHeight, mPreviewFrame.getWidth(),
-                mPreviewFrame.getHeight(), mFocusArea.get(0).rect);
+        convertToFocusArea(areaLeft, areaTop, areaWidth, areaHeight, previewWidth, previewHeight,
+                mFocusArea.get(0).rect);
 
         // Use margin to set the focus rectangle to the touched area.
         RelativeLayout.LayoutParams p =
                 (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
+        int left = Util.clamp(x - focusWidth / 2, 0, previewWidth - focusWidth);
+        int top = Util.clamp(y - focusHeight / 2, 0, previewHeight - focusHeight);
         p.setMargins(left, top, 0, 0);
         // Disable "center" rule because we no longer want to put it in the center.
         int[] rules = p.getRules();
