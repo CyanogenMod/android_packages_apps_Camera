@@ -39,35 +39,13 @@ import java.io.Closeable;
 public class MenuHelper {
     private static final String TAG = "MenuHelper";
 
-    public static final int INCLUDE_ALL           = 0xFFFFFFFF;
-    public static final int INCLUDE_VIEWPLAY_MENU = (1 << 0);
-    public static final int INCLUDE_SHARE_MENU    = (1 << 1);
-    public static final int INCLUDE_SET_MENU      = (1 << 2);
-    public static final int INCLUDE_CROP_MENU     = (1 << 3);
-    public static final int INCLUDE_DELETE_MENU   = (1 << 4);
-    public static final int INCLUDE_ROTATE_MENU   = (1 << 5);
-    public static final int INCLUDE_DETAILS_MENU  = (1 << 6);
-    public static final int INCLUDE_SHOWMAP_MENU  = (1 << 7);
-
-    public static final int INCLUDE_IMAGES = (1 << 0);
-    public static final int INCLUDE_VIDEOS = (1 << 2);
-
-    public static final int MENU_IMAGE_SHARE = 1;
-    public static final int MENU_IMAGE_SHOWMAP = 2;
+    // TODO: These should be public and added to frameworks.
+    private static final int INCLUDE_IMAGES = (1 << 0);
+    private static final int INCLUDE_VIDEOS = (1 << 2);
 
     public static final int POSITION_SWITCH_CAMERA_MODE = 1;
     public static final int POSITION_GOTO_GALLERY = 2;
     public static final int POSITION_SWITCH_CAMERA_ID = 3;
-    public static final int POSITION_SWITCH_TIME_LAPSE_MODE = 4;
-
-    public static final String EMPTY_STRING = "";
-    public static final String JPEG_MIME_TYPE = "image/jpeg";
-    // valid range is -180f to +180f
-    public static final float INVALID_LATLNG = 255f;
-
-    /** Activity result code used to report crop results.
-     */
-    public static final int RESULT_COMMON_MENU_CROP = 490;
 
     private static final int NO_ANIMATION = 0;
     private static final String CAMERA_CLASS = "com.android.camera.Camera";

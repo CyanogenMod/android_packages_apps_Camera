@@ -41,7 +41,6 @@ import com.android.camera.R;
  */
 public class OnScreenHint {
     static final String TAG = "OnScreenHint";
-    static final boolean LOCAL_LOGV = false;
 
     int mGravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
     int mX, mY;

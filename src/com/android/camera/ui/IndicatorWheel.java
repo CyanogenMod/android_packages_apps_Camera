@@ -214,7 +214,7 @@ public class IndicatorWheel extends ViewGroup implements
         invalidate();
     }
 
-    public void removeIndicators() {
+    private void removeIndicators() {
         // Remove everything but the shutter button.
         int count = getChildCount();
         if (count > 1) {
@@ -374,7 +374,7 @@ public class IndicatorWheel extends ViewGroup implements
     }
 
     // Scene mode may override other camera settings (ex: flash mode).
-    public void overrideSettings(String key, String value) {
+    private void overrideSettings(String key, String value) {
         int count = getChildCount();
         for (int j = 1; j < count; j++) {
             View v = getChildAt(j);
@@ -427,7 +427,7 @@ public class IndicatorWheel extends ViewGroup implements
         }
     }
 
-    protected void addIndicator(Context context, IconListPreference pref) {
+    private void addIndicator(Context context, IconListPreference pref) {
         addView(new IndicatorButton(context, pref));
         mIndicatorCount++;
     }

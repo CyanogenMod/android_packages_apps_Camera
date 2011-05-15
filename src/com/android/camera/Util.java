@@ -44,16 +44,16 @@ import java.util.StringTokenizer;
  */
 public class Util {
     private static final String TAG = "Util";
-    public static final int DIRECTION_LEFT = 0;
-    public static final int DIRECTION_RIGHT = 1;
-    public static final int DIRECTION_UP = 2;
-    public static final int DIRECTION_DOWN = 3;
+    private static final int DIRECTION_LEFT = 0;
+    private static final int DIRECTION_RIGHT = 1;
+    private static final int DIRECTION_UP = 2;
+    private static final int DIRECTION_DOWN = 3;
 
     public static final String REVIEW_ACTION = "com.android.camera.action.REVIEW";
 
     // Private intent extras. Test only.
-    public static final String EXTRAS_CAMERA_FACING =
-        "android.intent.extras.CAMERA_FACING";
+    private static final String EXTRAS_CAMERA_FACING =
+            "android.intent.extras.CAMERA_FACING";
 
     private Util() {
     }
@@ -215,54 +215,6 @@ public class Util {
                 .show();
     }
 
-    public static Animation slideOut(View view, int to) {
-        view.setVisibility(View.INVISIBLE);
-        Animation anim;
-        switch (to) {
-            case DIRECTION_LEFT:
-                anim = new TranslateAnimation(0, -view.getWidth(), 0, 0);
-                break;
-            case DIRECTION_RIGHT:
-                anim = new TranslateAnimation(0, view.getWidth(), 0, 0);
-                break;
-            case DIRECTION_UP:
-                anim = new TranslateAnimation(0, 0, 0, -view.getHeight());
-                break;
-            case DIRECTION_DOWN:
-                anim = new TranslateAnimation(0, 0, 0, view.getHeight());
-                break;
-            default:
-                throw new IllegalArgumentException(Integer.toString(to));
-        }
-        anim.setDuration(500);
-        view.startAnimation(anim);
-        return anim;
-    }
-
-    public static Animation slideIn(View view, int from) {
-        view.setVisibility(View.VISIBLE);
-        Animation anim;
-        switch (from) {
-            case DIRECTION_LEFT:
-                anim = new TranslateAnimation(-view.getWidth(), 0, 0, 0);
-                break;
-            case DIRECTION_RIGHT:
-                anim = new TranslateAnimation(view.getWidth(), 0, 0, 0);
-                break;
-            case DIRECTION_UP:
-                anim = new TranslateAnimation(0, 0, -view.getHeight(), 0);
-                break;
-            case DIRECTION_DOWN:
-                anim = new TranslateAnimation(0, 0, view.getHeight(), 0);
-                break;
-            default:
-                throw new IllegalArgumentException(Integer.toString(from));
-        }
-        anim.setDuration(500);
-        view.startAnimation(anim);
-        return anim;
-    }
-
     public static <T> T checkNotNull(T object) {
         if (object == null) throw new NullPointerException();
         return object;
@@ -270,10 +222,6 @@ public class Util {
 
     public static boolean equals(Object a, Object b) {
         return (a == b) || (a == null ? false : a.equals(b));
-    }
-
-    public static boolean isPowerOf2(int n) {
-        return (n & -n) == n;
     }
 
     public static int nextPowerOf2(int n) {
