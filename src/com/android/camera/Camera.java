@@ -78,6 +78,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -155,7 +156,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private android.hardware.Camera mCameraDevice;
     private ContentProviderClient mMediaProviderClient;
-    private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
     private ToneGenerator mFocusToneGenerator;
@@ -176,6 +176,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // The bitmap of the last captured picture thumbnail and the URI of the
     // original picture.
     private Thumbnail mThumbnail;
+    // An review image having same size as preview. It is displayed when
+    // share button is pressed.
+    private ImageView mReviewImage;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -858,7 +861,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
                     loc, orientation, data);
             if (uri != null) {
-                mThumbnail = Thumbnail.createThumbnail(data, orientation, uri);
+                // Create a thumbnail whose size is smaller than half of the surface view.
+                int ratio = (int) Math.ceil((double) mParameters.getPictureSize().width
+                        / (mPreviewFrame.getWidth() / 2));
+                int inSampleSize = Util.nextPowerOf2(ratio);
+                mThumbnail = Thumbnail.createThumbnail(data, orientation, inSampleSize, uri);
                 if (mThumbnail != null) {
                     mThumbnailButton.setBitmap(mThumbnail.getBitmap());
                 }
@@ -973,9 +980,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         } else {
             setContentView(R.layout.camera);
         }
-        mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
         mThumbnailButton = (RotateImageView) findViewById(R.id.review_thumbnail);
+        mReviewImage = (ImageView) findViewById(R.id.review_image);
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
@@ -1020,7 +1027,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceChanged / surfaceDestroyed, other parts of the code
         // assume that when it is set, the surface is also set.
-        SurfaceHolder holder = mSurfaceView.getHolder();
+        SurfaceView preview = (SurfaceView) findViewById(R.id.camera_preview);
+        SurfaceHolder holder = preview.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
@@ -1457,6 +1465,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mPausing = false;
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
+
+        mReviewImage.setVisibility(View.GONE);
 
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED && !mStartPreviewFail) {
@@ -2437,6 +2447,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         // Share the last captured picture.
         if (mThumbnail != null) {
+            mReviewImage.setImageBitmap(mThumbnail.getBitmap());
+            mReviewImage.setVisibility(View.VISIBLE);
+
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("image/jpeg");
             intent.putExtra(Intent.EXTRA_STREAM, mThumbnail.getUri());

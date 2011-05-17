@@ -35,5 +35,10 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_centerInParent="true"/>
+        <ImageView android:id="@+id/review_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@android:color/black"/>
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>

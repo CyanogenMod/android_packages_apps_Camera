@@ -138,9 +138,7 @@ public class VideoCamera extends ActivityBase
     private PreferenceGroup mPreferenceGroup;
 
     private PreviewFrameLayout mPreviewFrameLayout;
-    private SurfaceView mVideoPreview;
     private SurfaceHolder mSurfaceHolder = null;
-    private ImageView mVideoFrame;
     private GLRootView mGLRootView;
     // xlarge devices use indicator wheel. Other devices use head-up display.
     private CamcorderHeadUpDisplay mHeadUpDisplay;
@@ -156,6 +154,9 @@ public class VideoCamera extends ActivityBase
     // The bitmap of the last captured video thumbnail and the URI of the
     // original video.
     private Thumbnail mThumbnail;
+    // An review image having same size as preview. It is displayed when
+    // recording is stopped in capture intent or share button is pressed.
+    private ImageView mReviewImage;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
     private SwitcherSet mSwitcher;
@@ -398,13 +399,13 @@ public class VideoCamera extends ActivityBase
                 findViewById(R.id.frame_layout);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
 
-        mVideoPreview = (SurfaceView) findViewById(R.id.camera_preview);
-        mVideoFrame = (ImageView) findViewById(R.id.video_frame);
+        mReviewImage = (ImageView) findViewById(R.id.review_image);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
         // assume that when it is set, the surface is also set.
-        SurfaceHolder holder = mVideoPreview.getHolder();
+        SurfaceView preview = (SurfaceView) findViewById(R.id.camera_preview);
+        SurfaceHolder holder = preview.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
@@ -832,6 +833,8 @@ public class VideoCamera extends ActivityBase
     protected void onResume() {
         super.onResume();
         mPausing = false;
+
+        mReviewImage.setVisibility(View.GONE);
 
         // Start orientation listener as soon as possible because it takes
         // some time to get first orientation.
@@ -1480,18 +1483,20 @@ public class VideoCamera extends ActivityBase
             fadeOut(findViewById(R.id.shutter_button));
         }
         if (mCurrentVideoFilename != null) {
-            Bitmap src = ThumbnailUtils.createVideoThumbnail(
+            Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(
                     mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
-            // MetadataRetriever already rotates the thumbnail. We should rotate
-            // it back (and mirror if it is front-facing camera).
-            CameraInfo[] info = CameraHolder.instance().getCameraInfo();
-            if (info[mCameraId].facing == CameraInfo.CAMERA_FACING_BACK) {
-                src = Util.rotateAndMirror(src, -mOrientationHint, false);
-            } else {
-                src = Util.rotateAndMirror(src, -mOrientationHint, true);
+            if (bitmap != null) {
+                // MetadataRetriever already rotates the thumbnail. We should rotate
+                // it back (and mirror if it is front-facing camera).
+                CameraInfo[] info = CameraHolder.instance().getCameraInfo();
+                if (info[mCameraId].facing == CameraInfo.CAMERA_FACING_BACK) {
+                    bitmap = Util.rotateAndMirror(bitmap, -mOrientationHint, false);
+                } else {
+                    bitmap = Util.rotateAndMirror(bitmap, -mOrientationHint, true);
+                }
+                mReviewImage.setImageBitmap(bitmap);
+                mReviewImage.setVisibility(View.VISIBLE);
             }
-            mVideoFrame.setImageBitmap(src);
-            mVideoFrame.setVisibility(View.VISIBLE);
         }
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
         for (int id : pickIds) {
@@ -1506,7 +1511,7 @@ public class VideoCamera extends ActivityBase
     }
 
     private void hideAlert() {
-        mVideoFrame.setVisibility(View.INVISIBLE);
+        mReviewImage.setVisibility(View.INVISIBLE);
         fadeIn(findViewById(R.id.shutter_button));
         mShutterButton.setEnabled(true);
         enableCameraControls(true);
@@ -1542,7 +1547,7 @@ public class VideoCamera extends ActivityBase
     }
 
     private boolean isAlertVisible() {
-        return this.mVideoFrame.getVisibility() == View.VISIBLE;
+        return this.mReviewImage.getVisibility() == View.VISIBLE;
     }
 
     private void stopVideoRecording() {
@@ -1894,6 +1899,9 @@ public class VideoCamera extends ActivityBase
 
         // Share the last captured video.
         if (mThumbnail != null) {
+            mReviewImage.setImageBitmap(mThumbnail.getBitmap());
+            mReviewImage.setVisibility(View.VISIBLE);
+
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("video/*");
             intent.putExtra(Intent.EXTRA_STREAM, mThumbnail.getUri());

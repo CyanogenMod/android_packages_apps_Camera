@@ -51,6 +51,11 @@
                 android:visibility="invisible"/>
         <include layout="@layout/review_thumbnail"/>
         <include layout="@layout/review_control"/>
+        <ImageView android:id="@+id/review_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@android:color/black"/>
     </RelativeLayout>
     <!-- This is the border of preview and the corner is round. If it is the background,
          preview will be on top and the inner corner will be square, which looks bad.

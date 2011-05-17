@@ -30,10 +30,6 @@
         <SurfaceView android:id="@+id/camera_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-        <ImageView android:id="@+id/video_frame"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
         <!-- Note: In this TextView the paddingRight="2"
              attribute is required because otherwise the
              text's drop shadow will be clipped. -->
@@ -48,5 +44,10 @@
                 android:layout_marginLeft="17dp"
                 android:paddingRight="2dp"
                 android:visibility="gone" />
+        <ImageView android:id="@+id/review_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@android:color/black" />
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>

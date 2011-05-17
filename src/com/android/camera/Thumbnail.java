@@ -143,7 +143,7 @@ class Thumbnail {
                 long id = cursor.getLong(0);
                 int orientation = cursor.getInt(1);
                 Bitmap bitmap = Images.Thumbnails.getThumbnail(resolver, id,
-                        Images.Thumbnails.MICRO_KIND, null);
+                        Images.Thumbnails.MINI_KIND, null);
                 Uri uri = ContentUris.withAppendedId(baseUri, id);
                 // Ensure there's no OOM. Ensure database and storage are in sync.
                 if (bitmap != null && Util.isUriValid(uri, resolver)) {
@@ -172,7 +172,7 @@ class Thumbnail {
             if (cursor != null && cursor.moveToFirst()) {
                 long id = cursor.getLong(0);
                 Bitmap bitmap = Video.Thumbnails.getThumbnail(resolver, id,
-                        Video.Thumbnails.MICRO_KIND, null);
+                        Video.Thumbnails.MINI_KIND, null);
                 Uri uri = ContentUris.withAppendedId(baseUri, id);
                 // Ensure there's no OOM. Ensure database and storage are in sync.
                 if (bitmap != null && Util.isUriValid(uri, resolver)) {
@@ -187,10 +187,11 @@ class Thumbnail {
         return null;
     }
 
-    public static Thumbnail createThumbnail(byte[] jpeg, int orientation, Uri uri) {
+    public static Thumbnail createThumbnail(byte[] jpeg, int orientation, int inSampleSize,
+            Uri uri) {
         // Create the thumbnail.
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 16;
+        options.inSampleSize = inSampleSize;
         Bitmap bitmap = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length, options);
         if (bitmap == null) {
             Log.e(TAG, "Failed to create thumbnail");

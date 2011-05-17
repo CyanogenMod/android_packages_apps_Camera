@@ -27,10 +27,6 @@
         <SurfaceView android:id="@+id/camera_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-        <ImageView android:id="@+id/video_frame"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
         <include layout="@layout/review_thumbnail"/>
         <TextView android:id="@+id/recording_time"
                 style="@style/OnViewfinderLabel"
@@ -60,6 +56,11 @@
                     android:paddingBottom="10dp"
                     android:src="@drawable/btn_ic_review_play"/>
         </LinearLayout>
+        <ImageView android:id="@+id/review_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@android:color/black"/>
     </RelativeLayout>
     <!-- This is the border of preview and the corner is round. If it is the background,
          preview will be on top and the inner corner will be square, which looks bad.
