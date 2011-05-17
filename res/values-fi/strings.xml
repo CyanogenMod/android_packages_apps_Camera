@@ -13,7 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
  -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Kameravirhe"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Kameraan ei voi muodostaa yhteyttä."</string>
     <string name="camera_label" msgid="6346560772074764302">"Kamera"</string>
@@ -115,4 +117,12 @@
     <string name="zoom_text" msgid="3450360177919418123">"Zoomaus <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Vaihda kameraan"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Vaihda videoon"</string>
+    <!-- no translation found for share_picture_via (1375127849431890447) -->
+    <skip />
+    <!-- no translation found for share_video_via (5152302809166549015) -->
+    <skip />
+    <!-- no translation found for no_picture_to_share (7700541451734517445) -->
+    <skip />
+    <!-- no translation found for no_video_to_share (3775826212074938990) -->
+    <skip />
 </resources>

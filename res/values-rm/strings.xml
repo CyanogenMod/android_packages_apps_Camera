@@ -13,7 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
  -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Errur da la camera"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Impussibel da connectar cun la camera."</string>
     <string name="camera_label" msgid="6346560772074764302">"Camera"</string>
@@ -38,7 +40,7 @@
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Catalog"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Midar la camera"</string>
     <!-- no translation found for time_lapse_title (4360632427760662691) -->
-    <skip/>
+    <skip />
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Tscherner la camera"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Enavos"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Frunt"</string>
@@ -51,7 +53,7 @@
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"\"MMS (bassa, 30s)\""</string>
     <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"\"YouTube (auta, 10min)\""</string>
     <!-- no translation found for pref_video_time_lapse_frame_interval_title (5262531404348504642) -->
-    <skip/>
+    <skip />
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Parameters da la camera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Parameters da la camera da video"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Grondezza dal maletg"</string>
@@ -60,7 +62,7 @@
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 milliuns pixels"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 milliun pixels"</string>
     <!-- no translation found for pref_camera_picturesize_entry_640x480 (5557572917973022995) -->
-    <skip/>
+    <skip />
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Qualitad dal maletg"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Qualitad fitg auta"</string>
@@ -105,11 +107,11 @@
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Stabilisaziun"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fieu artifizial"</string>
     <!-- no translation found for pref_camera_scenemode_entry_party (907053529286788253) -->
-    <skip/>
+    <skip />
     <!-- no translation found for pref_camera_scenemode_entry_candlelight (2066183182126946813) -->
-    <skip/>
+    <skip />
     <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
-    <skip/>
+    <skip />
     <string name="pref_restore_title" msgid="6479274979730178961">"Parameters da la camera"</string>
     <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar ils parameters predefinids"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposiziun"</string>
@@ -119,7 +121,15 @@
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Cuntanschì la grondezza maximala."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
     <!-- no translation found for zoom_text (3450360177919418123) -->
-    <skip/>
+    <skip />
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Midar a la camera"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Midar a video"</string>
+    <!-- no translation found for share_picture_via (1375127849431890447) -->
+    <skip />
+    <!-- no translation found for share_video_via (5152302809166549015) -->
+    <skip />
+    <!-- no translation found for no_picture_to_share (7700541451734517445) -->
+    <skip />
+    <!-- no translation found for no_video_to_share (3775826212074938990) -->
+    <skip />
 </resources>
