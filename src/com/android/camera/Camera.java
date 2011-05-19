@@ -1011,11 +1011,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mIsImageCaptureIntent) {
             setupCaptureParams();
 
-            View reviewControl = findViewById(R.id.review_control);
-            reviewControl.setVisibility(View.VISIBLE);
-            reviewControl.findViewById(R.id.btn_cancel).setOnClickListener(this);
-            reviewControl.findViewById(R.id.btn_retake).setOnClickListener(this);
-            reviewControl.findViewById(R.id.btn_done).setOnClickListener(this);
+            findViewById(R.id.review_control).setVisibility(View.VISIBLE);
+            findViewById(R.id.btn_cancel).setOnClickListener(this);
+            findViewById(R.id.btn_retake).setOnClickListener(this);
+            findViewById(R.id.btn_done).setOnClickListener(this);
         } else {
             mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
             mSwitcher.setVisibility(View.VISIBLE);
