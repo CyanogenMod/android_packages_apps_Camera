@@ -371,10 +371,10 @@ public class VideoCamera extends ActivityBase
 
             mReviewControl = findViewById(R.id.review_control);
             mReviewControl.setVisibility(View.VISIBLE);
-            mReviewControl.findViewById(R.id.btn_cancel).setOnClickListener(this);
-            mReviewControl.findViewById(R.id.btn_done).setOnClickListener(this);
+            findViewById(R.id.btn_cancel).setOnClickListener(this);
+            findViewById(R.id.btn_done).setOnClickListener(this);
             findViewById(R.id.btn_play).setOnClickListener(this);
-            View retake = mReviewControl.findViewById(R.id.btn_retake);
+            View retake = findViewById(R.id.btn_retake);
             retake.setOnClickListener(this);
             if (retake instanceof ImageView) {
                 ((ImageView) retake).setImageResource(R.drawable.btn_ic_review_retake_video);
