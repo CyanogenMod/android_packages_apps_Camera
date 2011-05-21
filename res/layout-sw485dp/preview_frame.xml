@@ -15,9 +15,9 @@
 -->
 <com.android.camera.PreviewFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/frame_layout"
-        android:layout_width="978dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/control_panel"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp">
     <RelativeLayout android:id="@+id/frame"
