@@ -34,10 +34,8 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
         super(context);
     }
 
-    public void initialize(Context context, PreferenceGroup group,
-                           int initialOrientation, boolean captureTimeLapse) {
+    public void initialize(Context context, PreferenceGroup group, int initialOrientation) {
         mInitialOrientation = initialOrientation;
-        mCaptureTimeLapse = captureTimeLapse;
         super.initialize(context, group);
     }
 
@@ -66,11 +64,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
 
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
         addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);
-        if (mCaptureTimeLapse) {
-            addIndicator(context, group, CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL);
-        } else {
-            addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
-        }
+        addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
         addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
 
         mIndicatorBar.setOrientation(mInitialOrientation);
