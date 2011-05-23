@@ -21,6 +21,7 @@ import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.IndicatorWheel;
+import com.android.camera.ui.RotateImageView;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;

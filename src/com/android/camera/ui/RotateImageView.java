@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package com.android.camera;
+package com.android.camera.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.drawable.TransitionDrawable;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.Rect;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.ThumbnailUtils;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.animation.AnimationUtils;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 /**
