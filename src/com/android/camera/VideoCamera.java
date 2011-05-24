@@ -487,8 +487,7 @@ public class VideoCamera extends ActivityBase
         if (mIsVideoCaptureIntent) {
             mPreferenceGroup = filterPreferenceScreenByIntent(mPreferenceGroup);
         }
-        mHeadUpDisplay.initialize(this, mPreferenceGroup,
-                mOrientationCompensation, mCaptureTimeLapse);
+        mHeadUpDisplay.initialize(this, mPreferenceGroup, mOrientationCompensation);
     }
 
     private void attachHeadUpDisplay() {
