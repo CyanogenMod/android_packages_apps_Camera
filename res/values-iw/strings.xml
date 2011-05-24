@@ -42,9 +42,9 @@
     <string name="pref_camera_id_title" msgid="6023059405578511534">"בחר מצלמה"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"הקודם"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"חזיתית"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"מיקום אחסון"</string>
-    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"כבוי"</string>
-    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"ב-"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"שמירת מיקום"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"כבויה"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"מופעלת"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"איכות סרטון וידאו"</string>
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"גבוהה (‎30m)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"נמוכה (‎30m)"</string>
@@ -67,7 +67,7 @@
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"מאקרו"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"מצב הבזק"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"אוטומטי"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"ב-"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"מופעל"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"כבוי"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"איזון לבן"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"אוטומטי"</string>
