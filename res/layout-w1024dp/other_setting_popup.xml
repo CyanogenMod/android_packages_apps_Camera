@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/dialog_top_holo_dark"
-            android:minHeight="48dip">
+            android:minHeight="48dp">
         <TextView android:id="@+id/title"
                 android:text="@string/pref_camera_settings_category"
                 style="@style/SettingTitleText" />
