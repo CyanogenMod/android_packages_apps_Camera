@@ -18,7 +18,7 @@
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_panel"
         android:layout_height="match_parent"
-        android:layout_width="325dp"
+        android:layout_width="302dp"
         android:layout_alignParentRight="true">
         <!-- The width is determined by IndicatorWheel so we should set
              layout_width as wrap_contant but RelativeLayout Javadoc says that
