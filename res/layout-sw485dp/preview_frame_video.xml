@@ -13,11 +13,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
 <com.android.camera.PreviewFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/frame_layout"
-        android:layout_width="978dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/control_panel"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp">
     <RelativeLayout android:id="@+id/frame"
@@ -26,31 +27,35 @@
         <SurfaceView android:id="@+id/camera_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-        <com.android.camera.ui.FocusRectangle
-                android:id="@+id/focus_rectangle"
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_centerInParent="true"/>
-        <TextView android:id="@+id/zoom_ratio"
-                style="@style/OnViewfinderLabel"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/review_control"/>
-        <ImageView style="@style/OnScreenGpsIndicator"
-                android:id="@+id/onscreen_gps_indicator_no_signal"
-                android:src="@drawable/ic_viewfinder_gps_no_signal"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="15dp"
-                android:visibility="invisible"/>
-        <ImageView style="@style/OnScreenGpsIndicator"
-                android:id="@+id/onscreen_gps_indicator_on"
-                android:src="@drawable/ic_viewfinder_gps_on"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="15dp"
-                android:visibility="invisible"/>
         <include layout="@layout/review_thumbnail"/>
+        <TextView android:id="@+id/recording_time"
+                style="@style/OnViewfinderLabel"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:drawableLeft="@drawable/ic_recording_indicator_small"
+                android:drawablePadding="5dp"
+                android:visibility="gone"/>
         <include layout="@layout/review_control"/>
+        <TextView android:id="@+id/time_lapse_label"
+                android:text="@string/time_lapse_title"
+                style="@style/OnViewfinderLabel"
+                android:layout_toLeftOf="@id/recording_time"
+                android:layout_below="@id/review_control"
+                android:layout_alignWithParentIfMissing="true"
+                android:visibility="gone"/>
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bg_text_on_preview"
+                android:visibility="gone">
+            <ImageView style="@style/ReviewControlIcon"
+                    android:id="@+id/btn_play"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:src="@drawable/btn_ic_review_play"/>
+        </LinearLayout>
         <ImageView android:id="@+id/review_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
