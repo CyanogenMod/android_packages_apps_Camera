@@ -1592,6 +1592,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mFocusRectangle.showSuccess();
         } else if (mCameraState == FOCUS_FAIL) {
             mFocusRectangle.showFail();
+        } else if (mCameraState == IDLE && mFocusArea != null) {
+            // Users touch on the preview and the rectangle indicates the metering area.
+            // Either focus area is not supported or autoFocus call is not required.
+            mFocusRectangle.showStart();
         } else {
             mFocusRectangle.clear();
         }
@@ -1600,22 +1604,34 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // Preview area is touched. Handle touch focus.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
-        if (e.getAction() != MotionEvent.ACTION_DOWN) return false;
-
-        // Do not trigger touch focus when popup window is dismissed.
-        if (collapseCameraControls()) return false;
-
-        if (mPausing || !mFirstTimeInitialized || !canTakePicture()) {
+        if (mPausing || !mFirstTimeInitialized || mCameraState == SNAPSHOT_IN_PROGRESS
+                || mCameraState == FOCUSING_SNAP_ON_FINISH) {
             return false;
         }
 
-        // Take a picture if metering area or focus area is supported.
-        if (mParameters.getMaxNumMeteringAreas() == 0
-                && (mParameters.getMaxNumFocusAreas() == 0
-                    || (!mFocusMode.equals(Parameters.FOCUS_MODE_AUTO) &&
-                        !mFocusMode.equals(Parameters.FOCUS_MODE_MACRO) &&
-                        !mFocusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)))) {
-            return false;
+        // Do not trigger touch focus if popup window is opened.
+        if (collapseCameraControls()) return false;
+
+        // Check if metering area or focus area is supported.
+        boolean focusAreaSupported = (mParameters.getMaxNumFocusAreas() > 0
+                && (mFocusMode.equals(Parameters.FOCUS_MODE_AUTO) ||
+                    mFocusMode.equals(Parameters.FOCUS_MODE_MACRO) ||
+                    mFocusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)));
+        boolean meteringAreaSupported = (mParameters.getMaxNumMeteringAreas() > 0);
+        if (!focusAreaSupported && !meteringAreaSupported) return false;
+
+        boolean callAutoFocusRequired = false;
+        if (focusAreaSupported &&
+                (mFocusMode.equals(Parameters.FOCUS_MODE_AUTO) ||
+                 mFocusMode.equals(Parameters.FOCUS_MODE_MACRO))) {
+            callAutoFocusRequired = true;
+        }
+
+        // Let users be able to cancel previous touch focus.
+        if (callAutoFocusRequired && mFocusArea != null && e.getAction() == MotionEvent.ACTION_DOWN
+                && (mCameraState == FOCUSING || mCameraState == FOCUS_SUCCESS ||
+                    mCameraState == FOCUS_FAIL)) {
+            cancelAutoFocus();
         }
 
         // Calculate the position of the focus rectangle.
@@ -1646,16 +1662,19 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // Use margin to set the focus rectangle to the touched area.
         RelativeLayout.LayoutParams p =
                 (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
-        p.setMargins(left + mPreviewBorder.getPaddingLeft(),
-                top + mPreviewBorder.getPaddingTop(), 0, 0);
+        p.setMargins(left, top, 0, 0);
         // Disable "center" rule because we no longer want to put it in the center.
         int[] rules = p.getRules();
         rules[RelativeLayout.CENTER_IN_PARENT] = 0;
         mFocusRectangle.requestLayout();
 
-        // Set the focus area and do autofocus.
+        // Set the focus area and metering area.
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
-        autoFocus();
+        if (callAutoFocusRequired && e.getAction() == MotionEvent.ACTION_UP) {
+            autoFocus();
+        } else {  // Just show the rectangle in all other cases.
+            updateFocusUI();
+        }
 
         return true;
     }

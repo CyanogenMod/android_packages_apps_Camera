@@ -22,6 +22,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
+// A square that indicates the focus area or the metering area.
 public class FocusRectangle extends View {
     public FocusRectangle(Context context, AttributeSet attrs) {
         super(context, attrs);
