@@ -18,7 +18,7 @@
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_panel"
         android:layout_height="match_parent"
-        android:layout_width="302dp"
+        android:layout_width="@dimen/camera_control_width"
         android:layout_alignParentRight="true">
         <!-- The width is determined by IndicatorWheel so we should set
              layout_width as wrap_contant but RelativeLayout Javadoc says that
@@ -31,8 +31,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                android:layout_marginRight="32dp"/>
+                android:layout_marginTop="@dimen/zoom_picker_margin_top"
+                android:layout_marginRight="@dimen/zoom_picker_margin_right"/>
 
         <com.android.camera.ui.IndicatorWheel android:id="@+id/indicator_wheel"
                     android:layout_width="wrap_content"
@@ -58,8 +58,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:padding="14dp"
-                android:layout_marginRight="34dp"
-                android:layout_marginBottom="50dp">
+                android:layout_marginRight="@dimen/mode_switcher_margin_right"
+                android:layout_marginBottom="@dimen/mode_switcher_margin_bottom">
             <RadioButton android:id="@+id/switch_off_button"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -69,8 +69,8 @@
             <com.android.camera.HorizontalSwitcher android:id="@+id/switcher"
                     android:layout_width="50dp"
                     android:layout_height="18dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="@dimen/mode_switcher_inner_margin"
+                    android:layout_marginRight="@dimen/mode_switcher_inner_margin"
                     android:src="@drawable/toggle_switch_control_holo_dark"
                     android:background="@drawable/toggle_switch_bg_holo_dark" />
             <RadioButton android:id="@+id/switch_on_button"
@@ -84,9 +84,9 @@
                 android:clickable="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginRight="232dp"
-                android:layout_marginBottom="56dp" />
+                android:layout_toLeftOf="@id/camera_switch"
+                android:layout_marginRight="@dimen/camera_switcher_margin_right"
+                android:layout_marginBottom="@dimen/camera_switcher_margin_bottom" />
 </RelativeLayout>
 
