@@ -29,7 +29,7 @@
             android:layout_centerInParent="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content">
-        <com.android.camera.RotateImageView android:id="@+id/video_switch_icon"
+        <com.android.camera.ui.RotateImageView android:id="@+id/video_switch_icon"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:src="@drawable/btn_ic_mode_switch_video"/>
@@ -38,7 +38,7 @@
                 android:layout_height="70dp"
                 android:src="@drawable/btn_mode_switch_knob"
                 android:background="@drawable/btn_mode_switch_bg" />
-        <com.android.camera.RotateImageView
+        <com.android.camera.ui.RotateImageView
                 android:id="@+id/camera_switch_icon"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"

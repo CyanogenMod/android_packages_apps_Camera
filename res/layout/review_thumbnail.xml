@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.android.camera.RotateImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.RotateImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/review_thumbnail"
         android:layout_width="52dp"
         android:layout_height="52dp"
