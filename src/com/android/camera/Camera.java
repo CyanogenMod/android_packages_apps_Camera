@@ -179,7 +179,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private View mGpsNoSignalView;
     private View mGpsHasSignalView;
 
-    // Front/Back camera pciker for xlarge layout
+    // Front/Back camera picker for w1024dp layout
     private CameraPicker mCameraPicker;
 
     /**
@@ -248,7 +248,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private Toast mNotSelectableToast;
 
     private final Handler mHandler = new MainHandler();
-    // xlarge devices use indicator wheel. Other devices use head-up display.
+    // w1024dp devices use indicator wheel. Other devices use head-up display.
     private CameraHeadUpDisplay mHeadUpDisplay;
     private IndicatorWheel mIndicatorWheel;
     private PreferenceGroup mPreferenceGroup;
@@ -383,7 +383,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-        // xlarge devices use indicator wheel. Other devices use head-up display.
+        // w1024dp devices use indicator wheel. Other devices use head-up display.
         if (mIndicatorWheel == null) {
             mHeadUpDisplay = new CameraHeadUpDisplay(this);
             mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
