@@ -117,12 +117,8 @@
     <string name="zoom_text" msgid="3450360177919418123">"Zoomen mit Faktor <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Zu Kamera wechseln"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Zu Video wechseln"</string>
-    <!-- no translation found for share_picture_via (1375127849431890447) -->
-    <skip />
-    <!-- no translation found for share_video_via (5152302809166549015) -->
-    <skip />
-    <!-- no translation found for no_picture_to_share (7700541451734517445) -->
-    <skip />
-    <!-- no translation found for no_video_to_share (3775826212074938990) -->
-    <skip />
+    <string name="share_picture_via" msgid="1375127849431890447">"Bild weiterleiten über"</string>
+    <string name="share_video_via" msgid="5152302809166549015">"Video weiterleiten über"</string>
+    <string name="no_picture_to_share" msgid="7700541451734517445">"Kein Bild für Weiterleitung"</string>
+    <string name="no_video_to_share" msgid="3775826212074938990">"Kein Video für Weiterleitung"</string>
 </resources>
