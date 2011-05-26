@@ -25,6 +25,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.provider.MediaStore.Video;
 import android.provider.MediaStore.Video.VideoColumns;
 import android.util.Log;
@@ -162,7 +163,7 @@ class Thumbnail {
         Uri baseUri = Video.Media.EXTERNAL_CONTENT_URI;
 
         Uri query = baseUri.buildUpon().appendQueryParameter("limit", "1").build();
-        String[] projection = new String[] {VideoColumns._ID};
+        String[] projection = new String[] {VideoColumns._ID, MediaColumns.DATA};
         String selection = VideoColumns.BUCKET_ID + '=' + Storage.BUCKET_ID;
         String order = VideoColumns.DATE_TAKEN + " DESC," + VideoColumns._ID + " DESC";
 
@@ -170,6 +171,7 @@ class Thumbnail {
         try {
             cursor = resolver.query(query, projection, selection, null, order);
             if (cursor != null && cursor.moveToFirst()) {
+                Log.d(TAG, "getLastVideoThumbnail: " + cursor.getString(1));
                 long id = cursor.getLong(0);
                 Bitmap bitmap = Video.Thumbnails.getThumbnail(resolver, id,
                         Video.Thumbnails.MINI_KIND, null);
