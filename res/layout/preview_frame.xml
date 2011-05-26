@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="2dp"
         android:layout_weight="1">
-    <!-- To be consistent with xlarge layout, preview border is not inside the preview frame. -->
+    <!-- To be consistent with w1024dp layout, preview border is not inside the preview frame. -->
     <ImageView android:id="@+id/preview_border"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

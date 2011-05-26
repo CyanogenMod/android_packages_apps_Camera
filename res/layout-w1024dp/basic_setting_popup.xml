@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/dialog_top_holo_dark"
-            android:minHeight="48dip">
+            android:minHeight="48dp">
         <TextView android:id="@+id/title"
                 style="@style/SettingTitleText" />
     </FrameLayout>
