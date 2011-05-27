@@ -87,7 +87,7 @@ public class CameraSettings {
     private final int mCameraId;
 
     public CameraSettings(Activity activity, Parameters parameters,
-                          CameraInfo[] cameraInfo, int cameraId) {
+            CameraInfo[] cameraInfo, int cameraId) {
         mContext = activity;
         mParameters = parameters;
         mCameraInfo = cameraInfo;
@@ -97,7 +97,7 @@ public class CameraSettings {
     public PreferenceGroup getPreferenceGroup(int preferenceRes) {
         PreferenceInflater inflater = new PreferenceInflater(mContext);
         PreferenceGroup group =
-                (PreferenceGroup) inflater.inflate(preferenceRes);
+            (PreferenceGroup) inflater.inflate(preferenceRes);
         initPreference(group);
         return group;
     }
@@ -113,7 +113,7 @@ public class CameraSettings {
                 R.array.pref_camera_picturesize_entryvalues)) {
             if (setCameraPictureSize(candidate, supported, parameters)) {
                 SharedPreferences.Editor editor = ComboPreferences
-                        .get(context).edit();
+                .get(context).edit();
                 editor.putString(KEY_PICTURE_SIZE, candidate);
                 editor.apply();
                 return;
@@ -152,9 +152,9 @@ public class CameraSettings {
         ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
         ListPreference exposure = group.findPreference(KEY_EXPOSURE);
         IconListPreference cameraId =
-                (IconListPreference)group.findPreference(KEY_CAMERA_ID);
+            (IconListPreference)group.findPreference(KEY_CAMERA_ID);
         ListPreference videoFlashMode =
-                group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
+            group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
         ListPreference iso = group.findPreference(KEY_ISO);
         ListPreference lensShade = group.findPreference(KEY_LENSSHADING);
         ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
@@ -244,14 +244,14 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     lensShade, mParameters.getSupportedLensShadeModes());
         }
-         if (antiBanding != null) {
-             filterUnsupportedOptions(group,
-                     antiBanding, mParameters.getSupportedAntibanding());
-         }
-         if (autoExposure != null) {
-             filterUnsupportedOptions(group,
-                     autoExposure, mParameters.getSupportedAutoexposure());
-         }
+        if (antiBanding != null) {
+            filterUnsupportedOptions(group,
+                    antiBanding, mParameters.getSupportedAntibanding());
+        }
+        if (autoExposure != null) {
+            filterUnsupportedOptions(group,
+                    autoExposure, mParameters.getSupportedAutoexposure());
+        }
     }
 
     private void buildExposureCompensation(
@@ -404,7 +404,7 @@ public class CameraSettings {
             editor.putString(KEY_RECORD_LOCATION,
                     pref.getBoolean(KEY_RECORD_LOCATION, false)
                     ? RecordLocationPreference.VALUE_ON
-                    : RecordLocationPreference.VALUE_NONE);
+                            : RecordLocationPreference.VALUE_NONE);
             version = 3;
         }
         if (version == 3) {
@@ -471,7 +471,7 @@ public class CameraSettings {
 
     public static boolean isZoomSupported(Context context, int cameraId) {
         return CameraHolder.instance().getCameraInfo()[cameraId].facing != CameraInfo.CAMERA_FACING_FRONT
-                || context.getResources().getBoolean(R.bool.ffc_canZoom);
+        || context.getResources().getBoolean(R.bool.ffc_canZoom);
     }
 
     public static void dumpParameters(Parameters params) {
@@ -509,6 +509,22 @@ public class CameraSettings {
     }
 
     /**
+     * Changes nv-sensor-mode to enable higher framerate video recording for some tegra 2 devices
+     *
+     * @param params
+     */
+    public static void enableHighFrameRateFHD(Parameters params) {
+        if (isNVCamera(params)) {
+            if (isO2X_G2x(params)) {
+                Log.v(TAG,"Enabling 1088p@30fps for O2X and G2x");
+                params.set("nv-sensor-mode", "3264x1224x30"); // Not listed as a supported parameter, but is.
+                params.setPreviewSize(1280, 720); // Default is 1600x1200, which causes nv-sensor-mode to be reset to 3264x2448x15 when attempting Full HD recording.
+            }
+        }
+    }
+
+
+    /**
      * Sets continuous-autofocus video mode on HTC cameras that support it.
      *
      * @param params
@@ -527,5 +543,17 @@ public class CameraSettings {
 
     private static boolean isNVCamera(Parameters params) {
         return params.get("nv-mode-hint") != null;
+    } 
+
+
+    /**
+     *  Tests if the sensor is 8mp and does Full HD recording. 
+     *  This is for LG Optimus 2x and T-Mobile G2x. Might work for other 8mp tegra 2 devices.
+     *
+     * @param params
+     */
+
+    private static boolean isO2X_G2x(Parameters params) {
+        return  params.get("nv-sensor-mode-values") != null && params.get("nv-sensor-mode-values").contains("3264x2448x15") &&  params.get("nv-sensor-mode-values").contains("1632x1224x30");
     }
 }
