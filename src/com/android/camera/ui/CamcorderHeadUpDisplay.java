@@ -26,7 +26,6 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
 
     private static final String TAG = "CamcorderHeadUpDisplay";
 
-    private boolean mCaptureTimeLapse;
     private OtherSettingsIndicator mOtherSettings;
     private int mInitialOrientation;
 
@@ -66,6 +65,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
         addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);
         addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
         addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
+        mIndicatorBar.addComponent(new ShareIndicator(context));
 
         mIndicatorBar.setOrientation(mInitialOrientation);
     }

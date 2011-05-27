@@ -19,12 +19,13 @@ package com.android.camera.ui;
 import javax.microedition.khronos.opengles.GL11;
 
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View.MeasureSpec;
 import android.view.animation.AlphaAnimation;
 
 class IndicatorBar extends GLView {
-
+    private static final String TAG ="IndicatorBar";
     public static final int INDEX_NONE = -1;
 
     private NinePatchTexture mBackground;
@@ -54,6 +55,7 @@ class IndicatorBar extends GLView {
     public interface OnItemSelectedListener {
         public void onItemSelected(GLView view, int position);
         public void onNothingSelected();
+        public void onShareSelected();
     }
 
     public IndicatorBar() {
@@ -127,6 +129,12 @@ class IndicatorBar extends GLView {
     }
 
     private void setSelectedItem(GLView view, int index) {
+        // Share button has no popup window. Just notifiy the listener.
+        if (view instanceof ShareIndicator) {
+            if (mSelectedListener != null) mSelectedListener.onShareSelected();
+            return;
+        }
+
         if (index == mSelectedIndex) return;
         mSelectionChanged = true;
         mSelectedIndex = index;
