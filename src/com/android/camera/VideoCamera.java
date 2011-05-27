@@ -638,6 +638,7 @@ public class VideoCamera extends BaseCamera
             videoQuality = CamcorderProfile.QUALITY_HIGH;
         }
 
+
         // Set video duration limit. The limit is read from the preference,
         // unless it is specified in the intent.
         if (intent.hasExtra(MediaStore.EXTRA_DURATION_LIMIT)) {
@@ -722,6 +723,7 @@ public class VideoCamera extends BaseCamera
 
         CameraSettings.setContinuousAf(mParameters, false);
         CameraSettings.setVideoMode(mParameters, true);
+
         setCameraHardwareParameters();
 
         try {
@@ -1261,6 +1263,8 @@ public class VideoCamera extends BaseCamera
         }
 
         CameraSettings.setContinuousAf(mParameters, true);
+	// Enable higher framerate recording on some tegra 2 devices
+	CameraSettings.enableHighFrameRateFHD(mParameters);
         setCameraHardwareParameters();
 
         initializeRecorder();
