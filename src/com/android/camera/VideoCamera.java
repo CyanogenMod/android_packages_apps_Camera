@@ -721,6 +721,8 @@ public class VideoCamera extends BaseCamera
         setCameraParameters();
 
         CameraSettings.setContinuousAf(mParameters, false);
+        // Enable higher framerate recording on some tegra 2 devices
+        CameraSettings.enableHighFrameRateFHD(mParameters);
         CameraSettings.setVideoMode(mParameters, true);
         setCameraHardwareParameters();
 

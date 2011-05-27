@@ -528,4 +528,24 @@ public class CameraSettings {
     private static boolean isNVCamera(Parameters params) {
         return params.get("nv-mode-hint") != null;
     }
+
+    /**
+     * Changes nv-sensor-mode to enable higher framerate video recording 
+     * for some tegra 2 devices
+     *
+     * @param params
+     */
+    public static void enableHighFrameRateFHD(Parameters params) {
+        if (isNVCamera(params)) {
+            Size size = params.getPreviewSize();
+            /* If the sensor supports this resolution, it will
+               probably allow for 1080p */
+            if (size.width == 1920 && size.height == 1088) {
+                Log.v(TAG,"Enabling 1080p@30fps on nvcamera");
+                params.set("nv-sensor-mode", "3264x1224x30"); // Not listed as a supported parameter, force it
+                params.setPreviewSize(1280, 720); // Default is 1600x1200, which causes nv-sensor-mode to be reset to 3264x2448x15 when attempting Full HD recording.
+            }
+        }
+    }
+
 }
