@@ -153,11 +153,12 @@ public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <Vi
     @LargeTest
     public void testExtraSizeLimit() throws Exception {
         mFile = new File(Environment.getExternalStorageDirectory(), "video.tmp");
-        final long sizeLimit = 10000;  // bytes
+        final long sizeLimit = 500000;  // bytes
 
         Uri uri = Uri.fromFile(mFile);
         mIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         mIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, sizeLimit);
+        mIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);  // use low quality to speed up
         setActivityIntent(mIntent);
         getActivity();
 
