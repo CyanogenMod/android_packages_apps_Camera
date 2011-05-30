@@ -31,7 +31,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
@@ -166,6 +165,7 @@ public class VideoCamera extends ActivityBase
     private boolean mQuickCapture;
 
     private boolean mOpenCameraFail = false;
+    private boolean mCameraDisabled = false;
 
     private long mStorageSpace;
 
@@ -310,13 +310,6 @@ public class VideoCamera extends ActivityBase
         return dateFormat.format(date);
     }
 
-    private void showCameraErrorAndFinish() {
-        Resources ress = getResources();
-        Util.showFatalErrorAndFinish(VideoCamera.this,
-                ress.getString(R.string.camera_error_title),
-                ress.getString(R.string.cannot_connect_camera));
-    }
-
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -356,11 +349,13 @@ public class VideoCamera extends ActivityBase
         Thread startPreviewThread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    openCamera();
+                    mCameraDevice = Util.openCamera(VideoCamera.this, mCameraId);
                     readVideoPreferences();
                     startPreview();
                 } catch(CameraHardwareException e) {
                     mOpenCameraFail = true;
+                } catch(CameraDisabledException e) {
+                    mCameraDisabled = true;
                 }
             }
         });
@@ -425,7 +420,10 @@ public class VideoCamera extends ActivityBase
         try {
             startPreviewThread.join();
             if (mOpenCameraFail) {
-                showCameraErrorAndFinish();
+                Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+                return;
+            } else if (mCameraDisabled) {
+                Util.showErrorAndFinish(this, R.string.camera_disabled);
                 return;
             }
         } catch (InterruptedException ex) {
@@ -824,7 +822,7 @@ public class VideoCamera extends ActivityBase
     protected void onResume() {
         super.onResume();
         mPausing = false;
-        if (mOpenCameraFail) return;
+        if (mOpenCameraFail || mCameraDisabled) return;
 
         mReviewImage.setVisibility(View.GONE);
 
@@ -833,12 +831,15 @@ public class VideoCamera extends ActivityBase
         mOrientationListener.enable();
         if (!mPreviewing) {
             try {
-                openCamera();
+                mCameraDevice = Util.openCamera(this, mCameraId);
                 readVideoPreferences();
                 resizeForPreviewAspectRatio();
                 startPreview();
             } catch(CameraHardwareException e) {
-                showCameraErrorAndFinish();
+                Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+                return;
+            } catch(CameraDisabledException e) {
+                Util.showErrorAndFinish(this, R.string.camera_disabled);
                 return;
             }
         }
@@ -881,22 +882,6 @@ public class VideoCamera extends ActivityBase
         } catch (Throwable ex) {
             closeCamera();
             throw new RuntimeException("setPreviewDisplay failed", ex);
-        }
-    }
-
-    private void openCamera() throws CameraHardwareException {
-        try {
-            if (mCameraDevice == null) {
-                mCameraDevice = CameraHolder.instance().open(mCameraId);
-            }
-        } catch (CameraHardwareException e) {
-            // In eng build, we throw the exception so that test tool
-            // can detect it and report it
-            if ("eng".equals(Build.TYPE)) {
-                throw new RuntimeException("openCamera failed", e);
-            } else {
-                throw e;
-            }
         }
     }
 

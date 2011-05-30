@@ -35,7 +35,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.Camera.Area;
@@ -156,6 +155,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private GestureDetector mPopupGestureDetector;
     private SwitcherSet mSwitcher;
     private boolean mOpenCameraFail = false;
+    private boolean mCameraDisabled = false;
 
     private View mPreviewFrame;  // Preview frame area.
     private View mPreviewBorder;
@@ -992,6 +992,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         // we need to reset exposure for the preview
         resetExposureCompensation();
+
         /*
          * To reduce startup time, we start the preview in another thread.
          * We make sure the preview is started at the end of onCreate.
@@ -999,10 +1000,13 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         Thread startPreviewThread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    openCamera();
+                    mCameraDevice = Util.openCamera(Camera.this, mCameraId);
+                    mInitialParams = mCameraDevice.getParameters();
                     startPreview();
                 } catch (CameraHardwareException e) {
                     mOpenCameraFail = true;
+                } catch (CameraDisabledException e) {
+                    mCameraDisabled = true;
                 }
             }
         });
@@ -1034,7 +1038,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         try {
             startPreviewThread.join();
             if (mOpenCameraFail) {
-                showCameraErrorAndFinish();
+                Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+                return;
+            } else if (mCameraDisabled) {
+                Util.showErrorAndFinish(this, R.string.camera_disabled);
                 return;
             }
         } catch (InterruptedException ex) {
@@ -1437,7 +1444,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     protected void onResume() {
         super.onResume();
         mPausing = false;
-        if (mOpenCameraFail) return;
+        if (mOpenCameraFail || mCameraDisabled) return;
 
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
@@ -1447,11 +1454,15 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED) {
             try {
-                openCamera();
+                mCameraDevice = Util.openCamera(this, mCameraId);
+                mInitialParams = mCameraDevice.getParameters();
                 resetExposureCompensation();
                 startPreview();
             } catch(CameraHardwareException e) {
-                showCameraErrorAndFinish();
+                Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+                return;
+            } catch(CameraDisabledException e) {
+                Util.showErrorAndFinish(this, R.string.camera_disabled);
                 return;
             }
         }
@@ -1865,30 +1876,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mCameraDevice = null;
             mCameraState = PREVIEW_STOPPED;
         }
-    }
-
-    private void openCamera() throws CameraHardwareException {
-        try {
-            if (mCameraDevice == null) {
-                mCameraDevice = CameraHolder.instance().open(mCameraId);
-                mInitialParams = mCameraDevice.getParameters();
-            }
-        } catch (CameraHardwareException e) {
-            // In eng build, we throw the exception so that test tool
-            // can detect it and report it
-            if ("eng".equals(Build.TYPE)) {
-                throw new RuntimeException("openCamera failed", e);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    private void showCameraErrorAndFinish() {
-        Resources ress = getResources();
-        Util.showFatalErrorAndFinish(Camera.this,
-                ress.getString(R.string.camera_error_title),
-                ress.getString(R.string.cannot_connect_camera));
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {

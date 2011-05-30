@@ -22,6 +22,9 @@
     <!-- message for the dialog showing the error of camera hardware -->
     <string name="cannot_connect_camera">Cannot connect to camera.</string>
 
+    <!-- message for the dialog showing the camera is disabled because of security policies. Camera cannot be used. -->
+    <string name="camera_disabled">Camera has been disabled because of security policies.</string>
+
     <!-- label for the icon meaning 'show me all the images that were taken with the camera' -->
     <string name="camera_label">Camera</string>
 

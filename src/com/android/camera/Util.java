@@ -18,9 +18,10 @@ package com.android.camera;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,14 +31,13 @@ import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.net.Uri;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -204,8 +204,29 @@ public class Util {
         }
     }
 
-    public static void showFatalErrorAndFinish(
-            final Activity activity, String title, String message) {
+    public static android.hardware.Camera openCamera(Activity activity, int cameraId)
+            throws CameraHardwareException, CameraDisabledException {
+        // Check if device policy has disabled the camera.
+        DevicePolicyManager dpm = (DevicePolicyManager) activity.getSystemService(
+                Context.DEVICE_POLICY_SERVICE);
+        if (dpm.getCameraDisabled(null)) {
+            throw new CameraDisabledException();
+        }
+
+        try {
+            return CameraHolder.instance().open(cameraId);
+        } catch (CameraHardwareException e) {
+            // In eng build, we throw the exception so that test tool
+            // can detect it and report it
+            if ("eng".equals(Build.TYPE)) {
+                throw new RuntimeException("openCamera failed", e);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    public static void showErrorAndFinish(final Activity activity, int msgId) {
         DialogInterface.OnClickListener buttonListener =
                 new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -215,8 +236,8 @@ public class Util {
         new AlertDialog.Builder(activity)
                 .setCancelable(false)
                 .setIconAttribute(android.R.attr.alertDialogIcon)
-                .setTitle(title)
-                .setMessage(message)
+                .setTitle(R.string.camera_error_title)
+                .setMessage(msgId)
                 .setNeutralButton(R.string.details_ok, buttonListener)
                 .show();
     }
@@ -337,7 +358,7 @@ public class Util {
         }
     }
 
-   /**
+    /**
      * Returns whether the device is voice-capable (meaning, it can do MMS).
      */
     public static boolean isMmsCapable(Context context) {
