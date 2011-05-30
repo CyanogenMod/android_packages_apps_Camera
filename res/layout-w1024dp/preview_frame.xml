@@ -32,7 +32,8 @@
         <TextView android:id="@+id/zoom_ratio"
                 style="@style/OnViewfinderLabel"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/review_control"/>
+                android:layout_below="@+id/review_control"
+                android:visibility="invisible"/>
         <ImageView style="@style/OnScreenGpsIndicator"
                 android:id="@+id/onscreen_gps_indicator_no_signal"
                 android:src="@drawable/ic_viewfinder_gps_no_signal"
