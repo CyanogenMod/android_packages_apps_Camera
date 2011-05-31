@@ -474,24 +474,26 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
         if (mZoomPicker != null) {
-            mZoomPicker.setZoomRatios(getZoomRatios());
+            mZoomPicker.setZoomRatios(Util.convertZoomRatios(mParameters.getZoomRatios()));
             mZoomPicker.setZoomIndex(mParameters.getZoom());
             mZoomPicker.setSmoothZoomSupported(mSmoothZoomSupported);
             mZoomPicker.setOnZoomChangeListener(
                     new ZoomPicker.OnZoomChangedListener() {
                 // only for immediate zoom
+                @Override
                 public void onZoomValueChanged(int index) {
                     Camera.this.onZoomValueChanged(index);
                 }
 
                 // only for smooth zoom
+                @Override
                 public void onZoomStateChanged(int state) {
                     if (mPausing) return;
 
                     Log.v(TAG, "zoom picker state=" + state);
-                    if (state == mZoomPicker.ZOOM_IN) {
+                    if (state == ZoomPicker.ZOOM_IN) {
                         Camera.this.onZoomValueChanged(mZoomMax);
-                    } else if (state == mZoomPicker.ZOOM_OUT){
+                    } else if (state == ZoomPicker.ZOOM_OUT){
                         Camera.this.onZoomValueChanged(0);
                     } else {
                         mTargetZoomValue = -1;
@@ -527,16 +529,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mZoomValue = index;
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
         }
-    }
-
-    private float[] getZoomRatios() {
-        if(!mParameters.isZoomSupported()) return null;
-        List<Integer> zoomRatios = mParameters.getZoomRatios();
-        float result[] = new float[zoomRatios.size()];
-        for (int i = 0, n = result.length; i < n; ++i) {
-            result[i] = (float) zoomRatios.get(i) / 100f;
-        }
-        return result;
     }
 
     private class PopupGestureListener
@@ -602,6 +594,13 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 mCameraPicker.initialize(pref);
                 mCameraPicker.setListener(new MyCameraPickerListener());
             }
+        }
+    }
+
+    private void initializeZoomPicker() {
+        mZoomPicker = (ZoomPicker) findViewById(R.id.zoom_picker);
+        if (mZoomPicker != null && mParameters.isZoomSupported()) {
+            mZoomPicker.setVisibility(View.VISIBLE);
         }
     }
 
@@ -819,6 +818,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private final class ZoomListener
             implements android.hardware.Camera.OnZoomChangeListener {
+        @Override
         public void onZoomChange(
                 int value, boolean stopped, android.hardware.Camera camera) {
             Log.v(TAG, "Zoom changed: value=" + value + ". stopped="+ stopped);
@@ -1056,9 +1056,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // parameters.
         initializeIndicatorWheel();
         initializeCameraPicker();
-
-        mZoomPicker = (ZoomPicker) findViewById(R.id.zoom_picker);
-        if (mZoomPicker != null) mZoomPicker.setEnabled(true); // disabled initially in xml
+        initializeZoomPicker();
     }
 
     private void changeHeadUpDisplayState() {
@@ -1138,12 +1136,13 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mHeadUpDisplay == null) return;
         loadCameraPreferences();
 
-        // If we have zoom picker, do not show zoom control on head-up display.
         float[] zoomRatios = null;
-        if (mZoomPicker == null) zoomRatios = getZoomRatios();
+        if(mParameters.isZoomSupported()) {
+            zoomRatios = Util.convertZoomRatios(mParameters.getZoomRatios());
+        }
         mHeadUpDisplay.initialize(this, mPreferenceGroup,
                 zoomRatios, mOrientationCompensation);
-        if (mZoomPicker == null && mParameters.isZoomSupported()) {
+        if (mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
                 public void onZoomChanged(
                         int index, float ratio, boolean isMoving) {

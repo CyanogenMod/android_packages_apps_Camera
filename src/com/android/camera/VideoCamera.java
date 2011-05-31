@@ -22,6 +22,7 @@ import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.IndicatorWheel;
 import com.android.camera.ui.RotateImageView;
+import com.android.camera.ui.ZoomPicker;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -232,6 +233,18 @@ public class VideoCamera extends ActivityBase
     // The orientation compensation for icons and thumbnails.
     private int mOrientationCompensation = 0;
     private int mOrientationHint; // the orientation hint for video playback
+
+    private static final int ZOOM_STOPPED = 0;
+    private static final int ZOOM_START = 1;
+    private static final int ZOOM_STOPPING = 2;
+
+    private int mZoomState = ZOOM_STOPPED;
+    private boolean mSmoothZoomSupported = false;
+    private int mZoomValue;  // The current zoom value.
+    private int mZoomMax;
+    private int mTargetZoomValue;
+    private ZoomPicker mZoomPicker;
+    private final ZoomListener mZoomListener = new ZoomListener();
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -445,6 +458,7 @@ public class VideoCamera extends ActivityBase
             initializeHeadUpDisplay();
         }
         initializeCameraPicker();
+        initializeZoomPicker();
     }
 
     private void changeHeadUpDisplayState() {
@@ -473,6 +487,13 @@ public class VideoCamera extends ActivityBase
                 mCameraPicker.initialize(pref);
                 mCameraPicker.setListener(new MyCameraPickerListener());
             }
+        }
+    }
+
+    private void initializeZoomPicker() {
+        mZoomPicker = (ZoomPicker) findViewById(R.id.zoom_picker);
+        if (mZoomPicker != null && mParameters.isZoomSupported()) {
+            mZoomPicker.setVisibility(View.VISIBLE);
         }
     }
 
@@ -823,6 +844,7 @@ public class VideoCamera extends ActivityBase
         super.onResume();
         mPausing = false;
         if (mOpenCameraFail || mCameraDisabled) return;
+        mZoomValue = 0;
 
         mReviewImage.setVisibility(View.GONE);
 
@@ -874,6 +896,7 @@ public class VideoCamera extends ActivityBase
             mOnResumeTime = SystemClock.uptimeMillis();
             mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
         }
+        initializeZoom();
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
@@ -900,11 +923,12 @@ public class VideoCamera extends ActivityBase
 
         try {
             mCameraDevice.startPreview();
-            mPreviewing = true;
         } catch (Throwable ex) {
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
         }
+        mZoomState = ZOOM_STOPPED;
+        mPreviewing = true;
     }
 
     private void closeCamera() {
@@ -913,8 +937,6 @@ public class VideoCamera extends ActivityBase
             Log.d(TAG, "already stopped.");
             return;
         }
-        // If we don't lock the camera, release() will fail.
-        mCameraDevice.lock();
         CameraHolder.instance().release();
         mCameraDevice = null;
         mPreviewing = false;
@@ -1230,9 +1252,6 @@ public class VideoCamera extends ActivityBase
             }
             mVideoFileDescriptor = null;
         }
-        // Take back the camera object control from media recorder. Camera
-        // device may be null if the activity is paused.
-        if (mCameraDevice != null) mCameraDevice.lock();
     }
 
     private void generateVideoFilename(int outputFileFormat) {
@@ -1749,6 +1768,11 @@ public class VideoCamera extends ActivityBase
             mParameters.setColorEffect(colorEffect);
         }
 
+        // Set zoom.
+        if (mParameters.isZoomSupported()) {
+            mParameters.setZoom(mZoomValue);
+        }
+
         mCameraDevice.setParameters(mParameters);
         // Keep preview size up to date.
         mParameters = mCameraDevice.getParameters();
@@ -1827,6 +1851,13 @@ public class VideoCamera extends ActivityBase
     }
 
     private void restorePreferences() {
+        // Reset the zoom. Zoom value is not stored in preference.
+        if (mParameters.isZoomSupported()) {
+            mZoomValue = 0;
+            setCameraParameters();
+            if (mZoomPicker != null) mZoomPicker.setZoomIndex(0);
+        }
+
         if (mHeadUpDisplay != null) {
             mHeadUpDisplay.restorePreferences(mParameters);
         }
@@ -1880,7 +1911,7 @@ public class VideoCamera extends ActivityBase
 
     private void showTimeLapseUI(boolean enable) {
         if (mTimeLapseLabel != null) {
-            mTimeLapseLabel.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+            mTimeLapseLabel.setVisibility(enable ? View.VISIBLE : View.GONE);
         }
         if (mPreviewBorder != null) {
             mPreviewBorder.setBackgroundResource(enable
@@ -1961,6 +1992,94 @@ public class VideoCamera extends ActivityBase
                 // Let event fall through.
             }
             return false;
+        }
+    }
+
+    private void initializeZoom() {
+        if (!mParameters.isZoomSupported()) return;
+
+        mZoomMax = mParameters.getMaxZoom();
+        mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
+        if (mZoomPicker != null) {
+            mZoomPicker.setZoomRatios(Util.convertZoomRatios(mParameters.getZoomRatios()));
+            mZoomPicker.setZoomIndex(mParameters.getZoom());
+            mZoomPicker.setSmoothZoomSupported(mSmoothZoomSupported);
+            mZoomPicker.setOnZoomChangeListener(
+                    new ZoomPicker.OnZoomChangedListener() {
+                // only for immediate zoom
+                @Override
+                public void onZoomValueChanged(int index) {
+                    VideoCamera.this.onZoomValueChanged(index);
+                }
+
+                // only for smooth zoom
+                @Override
+                public void onZoomStateChanged(int state) {
+                    if (mPausing) return;
+
+                    Log.v(TAG, "zoom picker state=" + state);
+                    if (state == ZoomPicker.ZOOM_IN) {
+                        VideoCamera.this.onZoomValueChanged(mZoomMax);
+                    } else if (state == ZoomPicker.ZOOM_OUT){
+                        VideoCamera.this.onZoomValueChanged(0);
+                    } else {
+                        mTargetZoomValue = -1;
+                        if (mZoomState == ZOOM_START) {
+                            mZoomState = ZOOM_STOPPING;
+                            mCameraDevice.stopSmoothZoom();
+                        }
+                    }
+                }
+            });
+        }
+
+        mCameraDevice.setZoomChangeListener(mZoomListener);
+    }
+
+    private final class ZoomListener
+            implements android.hardware.Camera.OnZoomChangeListener {
+        @Override
+        public void onZoomChange(int value, boolean stopped, android.hardware.Camera camera) {
+            Log.v(TAG, "Zoom changed: value=" + value + ". stopped="+ stopped);
+            mZoomValue = value;
+
+            // Update the UI when we get zoom value.
+            if (mZoomPicker != null) mZoomPicker.setZoomIndex(value);
+
+            // Keep mParameters up to date. We do not getParameter again in
+            // takePicture. If we do not do this, wrong zoom value will be set.
+            mParameters.setZoom(value);
+
+            if (stopped && mZoomState != ZOOM_STOPPED) {
+                if (mTargetZoomValue != -1 && value != mTargetZoomValue) {
+                    mCameraDevice.startSmoothZoom(mTargetZoomValue);
+                    mZoomState = ZOOM_START;
+                } else {
+                    mZoomState = ZOOM_STOPPED;
+                }
+            }
+        }
+    }
+
+    private void onZoomValueChanged(int index) {
+        // Not useful to change zoom value when the activity is paused.
+        if (mPausing) return;
+
+        if (mSmoothZoomSupported) {
+            if (mTargetZoomValue != index && mZoomState != ZOOM_STOPPED) {
+                mTargetZoomValue = index;
+                if (mZoomState == ZOOM_START) {
+                    mZoomState = ZOOM_STOPPING;
+                    mCameraDevice.stopSmoothZoom();
+                }
+            } else if (mZoomState == ZOOM_STOPPED && mZoomValue != index) {
+                mTargetZoomValue = index;
+                mCameraDevice.startSmoothZoom(index);
+                mZoomState = ZOOM_START;
+            }
+        } else {
+            mZoomValue = index;
+            setCameraParameters();
         }
     }
 }

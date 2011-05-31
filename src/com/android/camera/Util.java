@@ -358,6 +358,14 @@ public class Util {
         }
     }
 
+    public static float[] convertZoomRatios(List<Integer> zoomRatios) {
+        float result[] = new float[zoomRatios.size()];
+        for (int i = 0, n = result.length; i < n; ++i) {
+            result[i] = (float) zoomRatios.get(i) / 100f;
+        }
+        return result;
+    }
+
     /**
      * Returns whether the device is voice-capable (meaning, it can do MMS).
      */
