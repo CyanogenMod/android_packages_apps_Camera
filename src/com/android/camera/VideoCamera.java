@@ -141,10 +141,10 @@ public class VideoCamera extends ActivityBase
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceHolder mSurfaceHolder = null;
     private GLRootView mGLRootView;
-    // xlarge devices use indicator wheel. Other devices use head-up display.
+    // w1024dp devices use indicator wheel. Other devices use head-up display.
     private CamcorderHeadUpDisplay mHeadUpDisplay;
     private IndicatorWheel mIndicatorWheel;
-    // Front/back camera picker for xlarge layout.
+    // Front/back camera picker for w1024dp layout.
     private CameraPicker mCameraPicker;
     private View mReviewControl;
 
@@ -441,7 +441,7 @@ public class VideoCamera extends ActivityBase
 
         // Initialize after startPreview becuase this need mParameters.
         initializeIndicatorWheel();
-        // xlarge devices use indicator wheel. Other devices use head-up display.
+        // w1024dp devices use indicator wheel. Other devices use head-up display.
         if (mIndicatorWheel == null) {
             mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
             mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
