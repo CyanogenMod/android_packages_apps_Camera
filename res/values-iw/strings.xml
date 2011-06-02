@@ -118,7 +118,7 @@
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"עבור למצלמה"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"עבור לווידאו"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"שתף תמונה באמצעות"</string>
-    <string name="share_video_via" msgid="5152302809166549015">"שתף סרטון וידאו באמצעות"</string>
+    <string name="share_video_via" msgid="5152302809166549015">"שתף סרטון באמצעות"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"אין תמונה לשיתוף"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"אין סרטון וידאו לשיתוף"</string>
 </resources>
