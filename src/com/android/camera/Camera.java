@@ -155,7 +155,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private ToneGenerator mFocusToneGenerator;
     private GestureDetector mPopupGestureDetector;
     private SwitcherSet mSwitcher;
-    private boolean mStartPreviewFail = false;
+    private boolean mOpenCameraFail = false;
 
     private View mPreviewFrame;  // Preview frame area.
     private View mPreviewBorder;
@@ -389,7 +389,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // Initialize focus UI.
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
-        mPreviewBorder = (View) findViewById(R.id.preview_border);
+        mPreviewBorder = findViewById(R.id.preview_border);
         // Set the length of focus rectangle according to preview frame size.
         int len = Math.min(mPreviewFrame.getWidth(), mPreviewFrame.getHeight()) / 4;
         ViewGroup.LayoutParams layout = mFocusRectangle.getLayoutParams();
@@ -998,7 +998,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         Thread startPreviewThread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    mStartPreviewFail = false;
+                    mOpenCameraFail = false;
                     startPreview();
                 } catch (CameraHardwareException e) {
                     // In eng build, we throw the exception so that test tool
@@ -1006,7 +1006,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     if ("eng".equals(Build.TYPE)) {
                         throw new RuntimeException(e);
                     }
-                    mStartPreviewFail = true;
+                    mOpenCameraFail = true;
                 }
             }
         });
@@ -1036,7 +1036,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // Make sure preview is started.
         try {
             startPreviewThread.join();
-            if (mStartPreviewFail) {
+            if (mOpenCameraFail) {
                 showCameraErrorAndFinish();
                 return;
             }
@@ -1447,15 +1447,16 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     @Override
     protected void onResume() {
         super.onResume();
-
         mPausing = false;
+        if (mOpenCameraFail) return;
+
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
 
         mReviewImage.setVisibility(View.GONE);
 
         // Start the preview if it is not started.
-        if (mCameraState == PREVIEW_STOPPED && !mStartPreviewFail) {
+        if (mCameraState == PREVIEW_STOPPED) {
             resetExposureCompensation();
             if (!restartPreview()) return;
         }

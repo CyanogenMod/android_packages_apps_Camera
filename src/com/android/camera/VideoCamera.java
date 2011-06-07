@@ -47,13 +47,14 @@ import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.provider.MediaStore.Video;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -62,7 +63,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
@@ -833,13 +833,14 @@ public class VideoCamera extends ActivityBase
     protected void onResume() {
         super.onResume();
         mPausing = false;
+        if (mOpenCameraFail) return;
 
         mReviewImage.setVisibility(View.GONE);
 
         // Start orientation listener as soon as possible because it takes
         // some time to get first orientation.
         mOrientationListener.enable();
-        if (!mPreviewing && !mOpenCameraFail) {
+        if (!mPreviewing) {
             if (!openCamera()) return;
             readVideoPreferences();
             resizeForPreviewAspectRatio();
