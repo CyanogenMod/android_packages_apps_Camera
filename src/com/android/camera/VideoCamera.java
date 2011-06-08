@@ -459,8 +459,8 @@ public class VideoCamera extends ActivityBase
         // becomes landscape.
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
-                && !mPausing && mGLRootView == null) {
-            attachHeadUpDisplay();
+                && !mPausing) {
+            if (mGLRootView == null) attachHeadUpDisplay();
         } else if (mGLRootView != null) {
             detachHeadUpDisplay();
         }
