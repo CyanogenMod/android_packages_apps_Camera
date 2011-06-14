@@ -29,7 +29,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 
-class Storage {
+public class Storage {
     private static final String TAG = "CameraStorage";
 
     public static final String DCIM =

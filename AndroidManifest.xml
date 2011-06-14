@@ -20,6 +20,7 @@
     <application android:icon="@mipmap/ic_launcher_camera"
             android:label="@string/camera_label"
             android:taskAffinity=""
+            android:theme="@style/ThemeCamera"
             android:hardwareAccelerated="true">
         <receiver android:name="com.android.camera.CameraButtonIntentReceiver">
             <intent-filter>
@@ -28,10 +29,8 @@
         </receiver>
         <activity android:name="com.android.camera.Camera"
                 android:configChanges="orientation|keyboardHidden"
-                android:theme="@style/ThemeCamera"
                 android:screenOrientation="landscape"
                 android:clearTaskOnLaunch="true"
-                android:taskAffinity="android.task.camera"
                 android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,10 +50,8 @@
                 android:label="@string/video_camera_label"
                 android:configChanges="orientation|keyboardHidden"
                 android:icon="@mipmap/ic_launcher_video_camera"
-                android:theme="@style/ThemeCamera"
                 android:screenOrientation="landscape"
                 android:clearTaskOnLaunch="true"
-                android:taskAffinity="android.task.camcorder"
                 android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.media.action.VIDEO_CAMERA" />
@@ -64,6 +61,12 @@
                 <action android:name="android.media.action.VIDEO_CAPTURE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity android:name="com.android.camera.panorama.PanoramaActivity"
+                android:configChanges="orientation|keyboardHidden"
+                android:screenOrientation="landscape"
+                android:clearTaskOnLaunch="true"
+                android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
         </activity>
     </application>
 </manifest>

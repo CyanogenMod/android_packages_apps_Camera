@@ -763,7 +763,6 @@ void db_FrameToReferenceRegistration::GenerateQuarterResImage(const unsigned cha
       if ( (smooth_val < 0) || (smooth_val > 255))
       {
         return;
-        //throw(std::exception());
       }
 
     }
@@ -787,7 +786,6 @@ void db_FrameToReferenceRegistration::GenerateQuarterResImage(const unsigned cha
       if ( (smooth_val < 0) || (smooth_val > 255))
       {
         return;
-        //throw(std::exception());
       }
 
     }

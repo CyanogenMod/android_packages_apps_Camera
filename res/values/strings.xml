@@ -271,6 +271,9 @@
     <!-- Video Camera format string for new video files. Passed to java.text.SimpleDateFormat. -->
     <string name="video_file_name_format" translatable="false">"'VID'_yyyyMMdd_HHmmss"</string>
 
+    <!-- Filename prefix for panorama output. -->
+    <string name="pano_file_name_format" translatable="false">"'PANO'_yyyyMMdd_HHmmss"</string>
+
     <!-- The messsage shown when video record reaches size limit. -->
     <string name="video_reach_size_limit">Size limit reached.</string>
 
