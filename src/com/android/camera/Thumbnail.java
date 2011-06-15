@@ -34,6 +34,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,7 +42,6 @@ import java.io.IOException;
 class Thumbnail {
     private static final String TAG = "Thumbnail";
 
-    private static final String DIRECTORY = Storage.DCIM + "/.thumbnails/";
     private static final int BUFSIZE = 4096;
 
     private Uri mUri;
@@ -80,20 +80,19 @@ class Thumbnail {
     }
 
     // Stores the bitmap to the specified file.
-    public void saveTo(String filename) {
-        String path = DIRECTORY + filename;
+    public void saveTo(File file) {
         FileOutputStream f = null;
         BufferedOutputStream b = null;
         DataOutputStream d = null;
         try {
-            f = new FileOutputStream(path);
+            f = new FileOutputStream(file);
             b = new BufferedOutputStream(f, BUFSIZE);
             d = new DataOutputStream(b);
             d.writeUTF(mUri.toString());
             mBitmap.compress(Bitmap.CompressFormat.PNG, 100, d);
             d.close();
         } catch (IOException e) {
-            Log.e(TAG, "Fail to store bitmap. path=" + path, e);
+            Log.e(TAG, "Fail to store bitmap. path=" + file.getPath(), e);
         } finally {
             Util.closeSilently(f);
             Util.closeSilently(b);
@@ -104,14 +103,14 @@ class Thumbnail {
 
     // Loads the data from the specified file.
     // Returns null if failure.
-    public static Thumbnail loadFrom(String filename) {
+    public static Thumbnail loadFrom(File file) {
         Uri uri = null;
         Bitmap bitmap = null;
         FileInputStream f = null;
         BufferedInputStream b = null;
         DataInputStream d = null;
         try {
-            f = new FileInputStream(DIRECTORY + filename);
+            f = new FileInputStream(file);
             b = new BufferedInputStream(f, BUFSIZE);
             d = new DataInputStream(b);
             uri = Uri.parse(d.readUTF());

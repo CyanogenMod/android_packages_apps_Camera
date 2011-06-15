@@ -969,7 +969,7 @@ public class VideoCamera extends ActivityBase
         resetScreenOn();
 
         if (!mIsVideoCaptureIntent && mThumbnail != null) {
-            mThumbnail.saveTo(LAST_THUMB_FILENAME);
+            mThumbnail.saveTo(new File(getFilesDir(), LAST_THUMB_FILENAME));
         }
 
         if (mStorageHint != null) {
@@ -1600,7 +1600,7 @@ public class VideoCamera extends ActivityBase
         mThumbnailButton = (RotateImageView) findViewById(R.id.review_thumbnail);
         mThumbnailButton.setOnClickListener(this);
         // Load the thumbnail from the disk.
-        mThumbnail = Thumbnail.loadFrom(LAST_THUMB_FILENAME);
+        mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
     }
 
     private void updateThumbnailButton() {

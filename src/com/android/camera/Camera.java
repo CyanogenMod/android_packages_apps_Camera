@@ -424,7 +424,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private void initThumbnailButton() {
         mThumbnailButton.setOnClickListener(this);
         // Load the thumbnail from the disk.
-        mThumbnail = Thumbnail.loadFrom(LAST_THUMB_FILENAME);
+        mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
         updateThumbnailButton();
     }
 
@@ -1497,7 +1497,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
             if (!mIsImageCaptureIntent) {
-                if (mThumbnail != null) mThumbnail.saveTo(LAST_THUMB_FILENAME);
+                if (mThumbnail != null) {
+                    mThumbnail.saveTo(new File(getFilesDir(), LAST_THUMB_FILENAME));
+                }
             }
             hidePostCaptureAlert();
         }
