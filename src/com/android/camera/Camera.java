@@ -275,7 +275,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case RESTART_PREVIEW: {
-                    restartPreview();
+                    startPreview();
                     if (mJpegPictureCallbackTime != 0) {
                         long now = System.currentTimeMillis();
                         mJpegCallbackFinishTime = now - mJpegPictureCallbackTime;
@@ -310,7 +310,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     // wrong. Framework does not have a callback for this now.
                     if (Util.getDisplayRotation(Camera.this) != mDisplayRotation
                             && isCameraIdle()) {
-                        restartPreview();
+                        startPreview();
                     }
                     if (SystemClock.uptimeMillis() - mOnResumeTime < 5000) {
                         mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
@@ -463,6 +463,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         if (!mIsImageCaptureIntent) {
             updateThumbnailButton();
+            mSwitcher.setSwitch(SWITCH_CAMERA);
         }
     }
 
@@ -747,7 +748,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 // for at least 1.2 second before restarting the preview.
                 long delay = 1200 - mPictureDisplayedToJpegCallbackTime;
                 if (delay < 0) {
-                    restartPreview();
+                    startPreview();
                 } else {
                     mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, delay);
                 }
@@ -998,14 +999,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         Thread startPreviewThread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    mOpenCameraFail = false;
+                    openCamera();
                     startPreview();
                 } catch (CameraHardwareException e) {
-                    // In eng build, we throw the exception so that test tool
-                    // can detect it and report it
-                    if ("eng".equals(Build.TYPE)) {
-                        throw new RuntimeException(e);
-                    }
                     mOpenCameraFail = true;
                 }
             }
@@ -1031,6 +1027,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
             mSwitcher.setVisibility(View.VISIBLE);
             mSwitcher.setOnSwitchListener(this);
+            mSwitcher.setSwitch(SWITCH_CAMERA);
         }
 
         // Make sure preview is started.
@@ -1229,14 +1226,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (!mIsImageCaptureIntent) {
-            mSwitcher.setSwitch(SWITCH_CAMERA);
-        }
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         if (mMediaProviderClient != null) {
@@ -1257,7 +1246,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.btn_retake:
                 hidePostCaptureAlert();
-                restartPreview();
+                startPreview();
                 break;
             case R.id.review_thumbnail:
                 if (isCameraIdle() && mThumbnail != null) {
@@ -1457,8 +1446,14 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED) {
-            resetExposureCompensation();
-            if (!restartPreview()) return;
+            try {
+                openCamera();
+                resetExposureCompensation();
+                startPreview();
+            } catch(CameraHardwareException e) {
+                showCameraErrorAndFinish();
+                return;
+            }
         }
 
         if (mSurfaceHolder != null) {
@@ -1842,7 +1837,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             // framework may not support changing preview display on the fly.
             // 2. Start the preview now if surface was destroyed and preview
             // stopped.
-            restartPreview();
+            startPreview();
         }
 
         // If first time initialization is not finished, send a message to do
@@ -1872,10 +1867,20 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
-    private void ensureCameraDevice() throws CameraHardwareException {
-        if (mCameraDevice == null) {
-            mCameraDevice = CameraHolder.instance().open(mCameraId);
-            mInitialParams = mCameraDevice.getParameters();
+    private void openCamera() throws CameraHardwareException {
+        try {
+            if (mCameraDevice == null) {
+                mCameraDevice = CameraHolder.instance().open(mCameraId);
+                mInitialParams = mCameraDevice.getParameters();
+            }
+        } catch (CameraHardwareException e) {
+            // In eng build, we throw the exception so that test tool
+            // can detect it and report it
+            if ("eng".equals(Build.TYPE)) {
+                throw new RuntimeException("openCamera failed", e);
+            } else {
+                throw e;
+            }
         }
     }
 
@@ -1884,16 +1889,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         Util.showFatalErrorAndFinish(Camera.this,
                 ress.getString(R.string.camera_error_title),
                 ress.getString(R.string.cannot_connect_camera));
-    }
-
-    private boolean restartPreview() {
-        try {
-            startPreview();
-        } catch (CameraHardwareException e) {
-            showCameraErrorAndFinish();
-            return false;
-        }
-        return true;
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
@@ -1905,12 +1900,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
-    private void startPreview() throws CameraHardwareException {
+    private void startPreview() {
         if (mPausing || isFinishing()) return;
 
         resetTouchFocus();
 
-        ensureCameraDevice();
         mCameraDevice.setErrorCallback(mErrorCallback);
 
         // If we're previewing already, stop the preview first (this will blank

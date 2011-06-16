@@ -355,14 +355,13 @@ public class VideoCamera extends ActivityBase
          */
         Thread startPreviewThread = new Thread(new Runnable() {
             public void run() {
-                mOpenCameraFail = !openCamera();
-                // In eng build, we throw the exception so that test tool
-                // can detect it and report it
-                if (mOpenCameraFail && "eng".equals(Build.TYPE)) {
-                    throw new RuntimeException("openCamera failed");
+                try {
+                    openCamera();
+                    readVideoPreferences();
+                    startPreview();
+                } catch(CameraHardwareException e) {
+                    mOpenCameraFail = true;
                 }
-                readVideoPreferences();
-                startPreview();
             }
         });
         startPreviewThread.start();
@@ -587,14 +586,6 @@ public class VideoCamera extends ActivityBase
         if (icon != null) icon.setDegree(degree);
         icon = (RotateImageView) findViewById(R.id.video_switch_icon);
         if (icon != null) icon.setDegree(degree);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!mIsVideoCaptureIntent) {
-            mSwitcher.setSwitch(SWITCH_VIDEO);
-        }
     }
 
     private void startPlayVideoActivity() {
@@ -841,10 +832,15 @@ public class VideoCamera extends ActivityBase
         // some time to get first orientation.
         mOrientationListener.enable();
         if (!mPreviewing) {
-            if (!openCamera()) return;
-            readVideoPreferences();
-            resizeForPreviewAspectRatio();
-            startPreview();
+            try {
+                openCamera();
+                readVideoPreferences();
+                resizeForPreviewAspectRatio();
+                startPreview();
+            } catch(CameraHardwareException e) {
+                showCameraErrorAndFinish();
+                return;
+            }
         }
         keepScreenOnAwhile();
 
@@ -868,9 +864,9 @@ public class VideoCamera extends ActivityBase
 
         changeHeadUpDisplayState();
 
-        // Update the last video thumbnail.
         if (!mIsVideoCaptureIntent) {
-            updateThumbnailButton();
+            updateThumbnailButton();  // Update the last video thumbnail.
+            mSwitcher.setSwitch(SWITCH_VIDEO);
         }
 
         if (mPreviewing) {
@@ -888,16 +884,20 @@ public class VideoCamera extends ActivityBase
         }
     }
 
-    private boolean openCamera() {
+    private void openCamera() throws CameraHardwareException {
         try {
             if (mCameraDevice == null) {
                 mCameraDevice = CameraHolder.instance().open(mCameraId);
             }
         } catch (CameraHardwareException e) {
-            showCameraErrorAndFinish();
-            return false;
+            // In eng build, we throw the exception so that test tool
+            // can detect it and report it
+            if ("eng".equals(Build.TYPE)) {
+                throw new RuntimeException("openCamera failed", e);
+            } else {
+                throw e;
+            }
         }
-        return true;
     }
 
     private void startPreview() {
