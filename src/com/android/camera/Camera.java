@@ -102,7 +102,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
     private static final int CHECK_DISPLAY_ROTATION = 6;
-    private static final int CANCEL_AUTOFOCUS = 7;
+    private static final int RESET_TOUCH_FOCUS = 7;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -161,6 +161,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private View mPreviewBorder;
     private FocusRectangle mFocusRectangle;
     private List<Area> mFocusArea;  // focus area in driver format
+    private static final int RESET_TOUCH_FOCUS_DELAY = 3000;
 
     private GLRootView mGLRootView;
 
@@ -318,7 +319,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     break;
                 }
 
-                case CANCEL_AUTOFOCUS: {
+                case RESET_TOUCH_FOCUS: {
                     cancelAutoFocus();
                     break;
                 }
@@ -806,7 +807,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 // If this is triggered by touch focus, cancel focus after a
                 // while.
                 if (mFocusArea != null) {
-                    mHandler.sendEmptyMessageDelayed(CANCEL_AUTOFOCUS, 3000);
+                    mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
                 }
             } else if (mCameraState == IDLE) {
                 // User has released the focus key before focus completes.
@@ -935,7 +936,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         mCameraState = SNAPSHOT_IN_PROGRESS;
-        mHandler.removeMessages(CANCEL_AUTOFOCUS);
+        mHandler.removeMessages(RESET_TOUCH_FOCUS);
     }
 
     private boolean saveDataToFile(String filePath, byte[] data) {
@@ -1534,7 +1535,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
-        mHandler.removeMessages(CANCEL_AUTOFOCUS);
+        mHandler.removeMessages(RESET_TOUCH_FOCUS);
 
         super.onPause();
     }
@@ -1573,7 +1574,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mCameraState = FOCUSING;
         enableCameraControls(false);
         updateFocusUI();
-        mHandler.removeMessages(CANCEL_AUTOFOCUS);
+        mHandler.removeMessages(RESET_TOUCH_FOCUS);
     }
 
     private void cancelAutoFocus() {
@@ -1584,7 +1585,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         resetTouchFocus();
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
         updateFocusUI();
-        mHandler.removeMessages(CANCEL_AUTOFOCUS);
+        mHandler.removeMessages(RESET_TOUCH_FOCUS);
     }
 
     private void updateFocusUI() {
@@ -1679,6 +1680,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             autoFocus();
         } else {  // Just show the rectangle in all other cases.
             updateFocusUI();
+            // Reset the metering area in 3 seconds.
+            mHandler.removeMessages(RESET_TOUCH_FOCUS);
+            mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
         }
 
         return true;
