@@ -18,6 +18,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Erreur de l\'appareil photo."</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Impossible d\'établir une connexion avec l\'appareil photo."</string>
+    <!-- no translation found for camera_disabled (8923911090533439312) -->
+    <skip />
     <string name="camera_label" msgid="6346560772074764302">"Appareil photo"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Caméra"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Photos de l\'appareil"</string>

@@ -18,6 +18,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Hitilafu ya kamera"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Haiwezi kuunganisha kwa kamera."</string>
+    <!-- no translation found for camera_disabled (8923911090533439312) -->
+    <skip />
     <!-- no translation found for camera_label (6346560772074764302) -->
     <skip />
     <string name="video_camera_label" msgid="2899292505526427293">"Kamkoda"</string>
@@ -25,24 +27,23 @@
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Video za kamera"</string>
     <!-- no translation found for wait (8600187532323801552) -->
     <skip />
-    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Tafadhali weka hifadhi iliyoshirikiwa kabla ya kutumia kamera."</string>
-    <!-- outdated translation 852782056902429852 -->     <string name="no_storage" product="default" msgid="820691042667338625">"Tafadhali weka hifadhi iliyoshirikiwa kabla ya kutumia kamera."</string>
-    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Hifadhi yako iliyoshirikiwa imejaa."</string>
-    <!-- outdated translation 7966388882416357252 -->     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Hifadhi yako iliyoshirikiwa imejaa."</string>
-    <!-- outdated translation 183917364005592061 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Inaandaa hifadhi iliyoshirikiwa..."</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Tafadhali weka h ifadhi ya USB kabla ya kutumia kamera."</string>
+    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="820691042667338625">"Tafadhali weka h ifadhi ya USB kabla ya kutumia kamera."</string>
+    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Hifadhi yako ya USB imejaa."</string>
+    <!-- outdated translation 6452370395538050134 -->     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Hifadhi yako ya USB imejaa."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Inaandaa hifadhi ya USB..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Inatayarisha kadi ya SD..."</string>
-    <!-- outdated translation 4427585260986849912 -->     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Shindwa kufikia kadi ya SD."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Imeshindwa kufikia hifadhi ya USB."</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Shindwa kufikia kadi ya SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Rejesha kwa chaguo-msingi"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Mipangilio ya kamera itarejeshwa kwa chaguo-msingi."</string>
-    <!-- outdated translation 6015456244323302817 -->     <string name="review_play" msgid="6378271587740884696">"CHEZA"</string>
-    <!-- outdated translation 8188009385853399254 -->     <string name="review_cancel" msgid="7842670783357645942">"GHAIRI"</string>
-    <!-- outdated translation 5305096180300056529 -->     <string name="review_ok" msgid="4750691949877864726">"Sawa"</string>
-    <!-- outdated translation 7804864054896088338 -->     <string name="review_retake" msgid="7776579640762112761">"PIGA TENA"</string>
+    <string name="review_play" msgid="6378271587740884696">"Cheza"</string>
+    <string name="review_cancel" msgid="7842670783357645942">"Ghairi"</string>
+    <string name="review_ok" msgid="4750691949877864726">"Sawa"</string>
+    <string name="review_retake" msgid="7776579640762112761">"Piga picha tena"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Matunzio"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Badilisha Kamera"</string>
-    <!-- no translation found for time_lapse_title (4360632427760662691) -->
-    <skip />
+    <string name="time_lapse_title" msgid="4360632427760662691">"Rekodi ya kupita kwa muda"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Chagua Kamera"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Nyuma"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Mbele"</string>
@@ -50,12 +51,11 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Zima"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Washa"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Ubora wa video"</string>
-    <!-- outdated translation 2874184763684055612 -->     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Juu ya  (30m)"</string>
-    <!-- outdated translation 5282945640948667598 -->     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Chini (30m)"</string>
+    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Juu"</string>
+    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Chini"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (Chini, 30s)"</string>
-    <!-- outdated translation 3731902408685997150 -->     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (Juu, 10m)"</string>
-    <!-- no translation found for pref_video_time_lapse_frame_interval_title (5262531404348504642) -->
-    <skip />
+    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (Juu, 15m)"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Nafasi ya muda kupita"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Mipangilio ya kamera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Mipangilio ya kamkoda"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Ukubwa wa picha"</string>
@@ -107,22 +107,18 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Machweo"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Picha thabiti"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fataki"</string>
-    <!-- no translation found for pref_camera_scenemode_entry_party (907053529286788253) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_candlelight (2066183182126946813) -->
-    <skip />
-    <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
-    <skip />
+    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Karamu"</string>
+    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Mwangaza wa mshumaa"</string>
+    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Hii haiwezi kuchaguliwa katika hali ya mandhari"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Mipangilio ya kamera"</string>
-    <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"Rejesha kwa chaguo-msingi"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"Rejesha kwa chaguo misingi"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Mfichuo"</string>
     <string name="details_ok" msgid="6848594369924424312">"Sawa"</string>
-    <!-- outdated translation 1732882643101247179 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Nafasi ya kadi yako ya SD inaelekea kuisha. Badlisha mpangilio wa ubora au futa baadhi ya picha au faili zingine."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Hifadhi yako ya USB inaishiwa na nafasi. Badilisha mipangilio ya ubora au futa baadhi ya picha au faili."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Nafasi ya kadi yako ya SD inaelekea kuisha. Badlisha mpangilio wa ubora au futa baadhi ya picha au faili zingine."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Upeo wa ukubwa umefikiwa."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Kuza"</string>
-    <!-- no translation found for zoom_text (3450360177919418123) -->
-    <skip />
+    <string name="zoom_text" msgid="3450360177919418123">"Kuza <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Hamia kwa kamera"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Hamia kwa video"</string>
     <!-- no translation found for share_picture_via (1375127849431890447) -->
