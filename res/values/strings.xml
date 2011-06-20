@@ -151,18 +151,6 @@
     <string name="pref_camera_picturesize_entry_640x480">VGA</string>
     <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
 
-    <!-- Default picture quality setting. See
-         pref_camera_jpegquality_entryvalues for possible values -->
-    <string name="pref_camera_jpegquality_default" translatable="false">superfine</string>
-
-    <!-- Settings screen, Picture quality title -->
-    <string name="pref_camera_jpegquality_title">Picture quality</string>
-
-    <!-- Settings screen, Picture quality dialog radio button choices -->
-    <string name="pref_camera_jpegquality_entry_superfine">Super fine</string>
-    <string name="pref_camera_jpegquality_entry_fine">Fine</string>
-    <string name="pref_camera_jpegquality_entry_normal">Normal</string>
-
     <!-- Default focus mode setting.-->
     <string name="pref_camera_focusmode_default" translatable="false">auto</string>
 

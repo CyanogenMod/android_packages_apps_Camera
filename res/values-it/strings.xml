@@ -63,10 +63,6 @@
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
-    <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"Qualità immagine"</string>
-    <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Super fine"</string>
-    <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fine"</string>
-    <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normale"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modalità messa a fuoco"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatica"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
