@@ -1456,11 +1456,13 @@ public class VideoCamera extends ActivityBase
     }
 
     private void getThumbnail() {
-        Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
-                mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
-        if (videoFrame != null) {
-            mThumbnail = new Thumbnail(mCurrentVideoUri, videoFrame, 0);
-            mThumbnailButton.setBitmap(mThumbnail.getBitmap());
+        if (mCurrentVideoUri != null) {
+            Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
+                    mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
+            if (videoFrame != null) {
+                mThumbnail = new Thumbnail(mCurrentVideoUri, videoFrame, 0);
+                mThumbnailButton.setBitmap(mThumbnail.getBitmap());
+            }
         }
     }
 
