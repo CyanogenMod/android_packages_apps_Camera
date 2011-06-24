@@ -101,26 +101,29 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     public void checkBoxes() {
         if (volUpShutter.isChecked() || volDownShutter.isChecked()) {
             volZoom.setEnabled(false);
-        } else if (!volUpShutter.isChecked() && !volDownShutter.isChecked()) {
+            volZoom.setChecked(false);
+        } else {
             volZoom.setEnabled(true);
         }
         if (volZoom.isChecked()) {
             volUpShutter.setEnabled(false);
             volDownShutter.setEnabled(false);
-            longFocus.setEnabled(false);
+            /* no need to update checked, both must be unchecked anyway */
         } else {
             volUpShutter.setEnabled(true);
             volDownShutter.setEnabled(true);
-            longFocus.setEnabled(true);
         }
+
         if (longFocus.isChecked()) {
             preFocus.setEnabled(false);
+            preFocus.setChecked(false);
         } else {
             preFocus.setEnabled(true);
         }
 
         if (preFocus.isChecked()) {
             longFocus.setEnabled(false);
+            longFocus.setChecked(false);
         } else {
             longFocus.setEnabled(true);
         }
@@ -132,41 +135,28 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
         boolean checked = (Boolean)value;
         System.out.println("value = " + value + ", pref.isChecked() - " + 
             checkBox.isChecked());
-        String key = preference.getKey();
-        if (key.contains("vol")) {
-            if (key.contains("shutter")) {
-                if (checked) {
-                    volZoom.setEnabled(false);
-                } else if (!checked && 
-                        (volUpShutter.isChecked() && !volDownShutter.isChecked()) || 
-                        (volDownShutter.isChecked() && !volUpShutter.isChecked())) {
+
+        if (checkBox == volUpShutter || checkBox == volDownShutter) {
+            boolean up = checkBox == volUpShutter;
+
+            if (checked) {
+                volZoom.setEnabled(false);
+            } else {
+                boolean upChecked = up ? checked : volUpShutter.isChecked();
+                boolean downChecked = !up ? checked : volDownShutter.isChecked();
+                if (!upChecked && !downChecked) {
                     volZoom.setEnabled(true);
                 }
-            } else {
-                if (checked) {
-                    volUpShutter.setEnabled(false);
-                    volDownShutter.setEnabled(false);
-                    longFocus.setEnabled(false);
-                } else {
-                    volUpShutter.setEnabled(true);
-                    volDownShutter.setEnabled(true);                    
-                    longFocus.setEnabled(true);
-                }
             }
-        } else if (key.equalsIgnoreCase(KEY_LONG_FOCUS)) {
-            if (checked) {
-                preFocus.setEnabled(false);
-            } else if (!checked) {
-                preFocus.setEnabled(true);
-            }
-        } else if (key.equalsIgnoreCase(KEY_PRE_FOCUS)) {
-            if (checked) {
-                longFocus.setEnabled(false);
-            } else if (!checked) {
-                longFocus.setEnabled(true);
-            }
+        } else if (checkBox == volZoom) {
+            volUpShutter.setEnabled(!checked);
+            volDownShutter.setEnabled(!checked);
+        } else if (checkBox == longFocus) {
+            preFocus.setEnabled(!checked);
+        } else if (checkBox == preFocus) {
+            longFocus.setEnabled(!checked);
         }
-        
+
         return true;
     }
 }

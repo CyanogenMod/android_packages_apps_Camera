@@ -1527,8 +1527,6 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         boolean volUpShutter = prefs.getBoolean("vol_up_shutter_enabled", false);
         boolean volDownShutter = prefs.getBoolean("vol_down_shutter_enabled", false);
         boolean volZoom = prefs.getBoolean("vol_zoom_enabled", false);
-        boolean longFocus = prefs.getBoolean("long_focus_enabled", false);
-        boolean preFocus = prefs.getBoolean("pre_focus_enabled", false);
 
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
@@ -1543,99 +1541,17 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                 return true;
             case KeyEvent.KEYCODE_SEARCH:
                 if (searchShutter) {
-                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                        if (preFocus || longFocus) {
-                            // Start auto-focus immediately to reduce shutter lag. After
-                            // the shutter button gets the focus, doFocus() will be
-                            // called again but it is fine.
-                            if (mHeadUpDisplay.collapse()) return true;
-                            doFocus(true);
-                        } else {
-                            mFocusState = FOCUS_SUCCESS;
-                        } 
-                        doSnap();
-                    }
+                    doShutter(prefs, event);
                 }
                 return true;
             case KeyEvent.KEYCODE_VOLUME_UP:
-                if (volUpShutter) {
-                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                        if (preFocus || longFocus) {
-                            // Start auto-focus immediately to reduce shutter lag. After
-                            // the shutter button gets the focus, doFocus() will be
-                            // called again but it is fine.
-                            if (mHeadUpDisplay.collapse()) return true;
-                            doFocus(true);
-                        } else {
-                            mFocusState = FOCUS_SUCCESS;
-                        }
-                        if (!longFocus) {
-                            doSnap();
-                        } else {
-                            if (mHeadUpDisplay.collapse()) return true;
-                            doFocus(true);
-                        }
-                    }
-                }
-
-                if (volZoom) {
-                    if (mParameters.isZoomSupported()) {
-                        // Perform zoom only when preview is started and snapshot is not in
-                        // progress.
-                        if (mPausing || !isCameraIdle() || !mPreviewing
-                                || mZoomState != ZOOM_STOPPED) {
-                            return false;
-                        }
-
-                        if (mZoomValue < mZoomMax) {
-                            // Zoom out to the maximum.
-                            mZoomValue = mZoomMax;
-                        }
-
-                        setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
-
-                        mHeadUpDisplay.setZoomIndex(mZoomValue);
-                    }
-                }
-
-                return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (volDownShutter) {
-                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                        if (preFocus || longFocus) {
-                            // Start auto-focus immediately to reduce shutter lag. After
-                            // the shutter button gets the focus, doFocus() will be
-                            // called again but it is fine.
-                            if (mHeadUpDisplay.collapse()) return true;
-                            doFocus(true);
-                        } else {
-                            mFocusState = FOCUS_SUCCESS;
-                        }
-
-                        if (!longFocus) {
-                            doSnap();
-                        }
-                    }
+                if (volUpShutter && doShutter(prefs, event)) {
+                    return true;
                 }
 
-                if (volZoom) {
-                    if (mParameters.isZoomSupported()) {
-                        // Perform zoom only when preview is started and snapshot is not in
-                        // progress.
-                        if (mPausing || !isCameraIdle() || !mPreviewing
-                                || mZoomState != ZOOM_STOPPED) {
-                            return false;
-                        }
-
-                        if (mZoomValue > 0) {
-                            // Zoom in to the minimum.
-                            mZoomValue = 0;
-                        }
-
-                        setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
-
-                        mHeadUpDisplay.setZoomIndex(mZoomValue);
-                    }
+                if (volZoom && !doVolZoom(keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
+                    return false;
                 }
 
                 return true;
@@ -1661,20 +1577,63 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         return super.onKeyDown(keyCode, event);
     }
 
+    private boolean doShutter(SharedPreferences prefs, KeyEvent event) {
+        if (!mFirstTimeInitialized || event.getRepeatCount() != 0) {
+            return false;
+        }
+
+        boolean longFocus = prefs.getBoolean("long_focus_enabled", false);
+        boolean preFocus = prefs.getBoolean("pre_focus_enabled", false);
+
+        if (preFocus || longFocus) {
+            // Start auto-focus immediately to reduce shutter lag. After
+            // the shutter button gets the focus, doFocus() will be
+            // called again but it is fine.
+            if (mHeadUpDisplay.collapse()) return true;
+            doFocus(true);
+        } else {
+            mFocusState = FOCUS_SUCCESS;
+        }
+        if (!longFocus) {
+            doSnap();
+        } else {
+            if (mHeadUpDisplay.collapse()) return true;
+            doFocus(true);
+        }
+
+        return false;
+    }
+
+    private boolean doVolZoom(boolean up) {
+        if (!mParameters.isZoomSupported()) {
+            return true;
+        }
+
+        // Perform zoom only when preview is started and snapshot is not in progress.
+        if (mPausing || !isCameraIdle() || !mPreviewing || mZoomState != ZOOM_STOPPED) {
+            return false;
+        }
+
+        if (up && mZoomValue < mZoomMax) {
+            mZoomValue++;
+        } else if (!up && mZoomValue > 0) {
+            mZoomValue--;
+        }
+
+        setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
+        mHeadUpDisplay.setZoomIndex(mZoomValue);
+
+        return true;
+    }
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
         boolean longFocus = prefs.getBoolean("long_focus_enabled", false);
 
         switch (keyCode) {
+            case KeyEvent.KEYCODE_SEARCH:
             case KeyEvent.KEYCODE_VOLUME_UP:
-                if (longFocus) {
-                    if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                        doSnap();
-                    }
-                }
-
-                return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 if (longFocus) {
                     if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
