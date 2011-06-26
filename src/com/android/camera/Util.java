@@ -319,10 +319,11 @@ public class Util {
         Camera.getCameraInfo(cameraId, info);
         int degrees = getDisplayRotation(activity);
         int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT &&
+                info.orientation != 90) {
             result = (info.orientation + degrees) % 360;
             result = (360 - result) % 360;  // compensate the mirror
-        } else {  // back-facing
+        } else {  // back-facing (or acting like it)
             result = (info.orientation - degrees + 360) % 360;
         }
         camera.setDisplayOrientation(result);
