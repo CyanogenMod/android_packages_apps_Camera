@@ -132,7 +132,6 @@ public class HeadUpDisplay extends GLView {
         public void onPopupWindowVisibilityChanged(int visibility);
         public void onRestorePreferencesClicked();
         public void onSharedPreferenceChanged();
-        public void onShareButtonClicked();
     }
 
     public void overrideSettings(final String ... keyvalues) {
@@ -226,7 +225,6 @@ public class HeadUpDisplay extends GLView {
     }
 
     private void hidePopupWindow() {
-        if (mPopupWindow == null) return;
         mPopupWindow.popoff();
         // Unregister is important to avoid leaking activities.
         // ComboPreference.sMap->ComboPreference->HeadUpDisplay->Activity
@@ -366,10 +364,6 @@ public class HeadUpDisplay extends GLView {
 
         public void onNothingSelected() {
             hidePopupWindow();
-        }
-
-        public void onShareSelected() {
-            if (mListener != null) mListener.onShareButtonClicked();
         }
     }
 

@@ -81,7 +81,6 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         }
 
         addIndicator(context, group, CameraSettings.KEY_CAMERA_ID);
-        mIndicatorBar.addComponent(new ShareIndicator(context));
 
         mIndicatorBar.setOrientation(mInitialOrientation);
     }

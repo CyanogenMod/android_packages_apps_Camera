@@ -174,6 +174,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // An review image having same size as preview. It is displayed when
     // share button is pressed.
     private ImageView mReviewImage;
+    // A button sharing the last picture.
+    private RotateImageView mShareButton;
+    private RotateImageView mCameraSwitchIcon;
+    private RotateImageView mVideoSwitchIcon;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -380,6 +384,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (!mIsImageCaptureIntent) {  // no thumbnail in image capture intent
             findViewById(R.id.camera_switch).setOnClickListener(this);
             initThumbnailButton();
+            if (mShareButton != null) mShareButton.setOnClickListener(this);
         }
 
         // Initialize shutter button.
@@ -973,6 +978,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
         mThumbnailButton = (RotateImageView) findViewById(R.id.review_thumbnail);
         mReviewImage = (ImageView) findViewById(R.id.review_image);
+        mShareButton = (RotateImageView) findViewById(R.id.btn_share);
+        mCameraSwitchIcon = (RotateImageView) findViewById(R.id.camera_switch_icon);
+        mVideoSwitchIcon = (RotateImageView) findViewById(R.id.video_switch_icon);
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
@@ -1222,14 +1230,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void setOrientationIndicator(int degree) {
-        RotateImageView icon = (RotateImageView) findViewById(
-                R.id.review_thumbnail);
-        if (icon != null) icon.setDegree(degree);
-
-        icon = (RotateImageView) findViewById(R.id.camera_switch_icon);
-        if (icon != null) icon.setDegree(degree);
-        icon = (RotateImageView) findViewById(R.id.video_switch_icon);
-        if (icon != null) icon.setDegree(degree);
+        if (mThumbnailButton != null) mThumbnailButton.setDegree(degree);
+        if (mShareButton != null) mShareButton.setDegree(degree);
+        if (mCameraSwitchIcon != null) mCameraSwitchIcon.setDegree(degree);
+        if (mVideoSwitchIcon != null) mVideoSwitchIcon.setDegree(degree);
     }
 
     @Override
@@ -1268,6 +1272,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 break;
             case R.id.btn_gallery:
                 gotoGallery();
+                break;
+            case R.id.btn_share:
+                onShareButtonClicked();
                 break;
         }
     }
@@ -2391,10 +2398,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
 
         public void onPopupWindowVisibilityChanged(int visibility) {
-        }
-
-        public void onShareButtonClicked() {
-            Camera.this.onShareButtonClicked();
         }
     }
 

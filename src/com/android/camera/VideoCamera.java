@@ -158,6 +158,10 @@ public class VideoCamera extends ActivityBase
     // An review image having same size as preview. It is displayed when
     // recording is stopped in capture intent or share button is pressed.
     private ImageView mReviewImage;
+    // A button sharing the last picture.
+    private RotateImageView mShareButton;
+    private RotateImageView mCameraSwitchIcon;
+    private RotateImageView mVideoSwitchIcon;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
     private SwitcherSet mSwitcher;
@@ -398,6 +402,8 @@ public class VideoCamera extends ActivityBase
             setContentView(R.layout.video_camera);
 
             initThumbnailButton();
+            mShareButton = (RotateImageView) findViewById(R.id.btn_share);
+            if (mShareButton != null) mShareButton.setOnClickListener(this);
             mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
             mSwitcher.setVisibility(View.VISIBLE);
             mSwitcher.setOnSwitchListener(this);
@@ -408,6 +414,8 @@ public class VideoCamera extends ActivityBase
         mPreviewFrameLayout.setOnSizeChangedListener(this);
 
         mReviewImage = (ImageView) findViewById(R.id.review_image);
+        mCameraSwitchIcon = (RotateImageView) findViewById(R.id.camera_switch_icon);
+        mVideoSwitchIcon = (RotateImageView) findViewById(R.id.video_switch_icon);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
@@ -597,14 +605,10 @@ public class VideoCamera extends ActivityBase
     }
 
     private void setOrientationIndicator(int degree) {
-        RotateImageView icon = (RotateImageView) findViewById(
-                R.id.review_thumbnail);
-        if (icon != null) icon.setDegree(degree);
-
-        icon = (RotateImageView) findViewById(R.id.camera_switch_icon);
-        if (icon != null) icon.setDegree(degree);
-        icon = (RotateImageView) findViewById(R.id.video_switch_icon);
-        if (icon != null) icon.setDegree(degree);
+        if (mThumbnailButton != null) mThumbnailButton.setDegree(degree);
+        if (mShareButton != null) mShareButton.setDegree(degree);
+        if (mCameraSwitchIcon != null) mCameraSwitchIcon.setDegree(degree);
+        if (mVideoSwitchIcon != null) mVideoSwitchIcon.setDegree(degree);
     }
 
     private void startPlayVideoActivity() {
@@ -639,6 +643,9 @@ public class VideoCamera extends ActivityBase
                 break;
             case R.id.btn_gallery:
                 gotoGallery();
+                break;
+            case R.id.btn_share:
+                onShareButtonClicked();
                 break;
         }
     }
@@ -1827,14 +1834,6 @@ public class VideoCamera extends ActivityBase
         }
 
         public void onPopupWindowVisibilityChanged(final int visibility) {
-        }
-
-        public void onShareButtonClicked() {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    VideoCamera.this.onShareButtonClicked();
-                }
-            });
         }
     }
 

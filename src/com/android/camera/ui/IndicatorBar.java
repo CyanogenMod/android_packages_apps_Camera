@@ -55,7 +55,6 @@ class IndicatorBar extends GLView {
     public interface OnItemSelectedListener {
         public void onItemSelected(GLView view, int position);
         public void onNothingSelected();
-        public void onShareSelected();
     }
 
     public IndicatorBar() {
@@ -129,12 +128,6 @@ class IndicatorBar extends GLView {
     }
 
     private void setSelectedItem(GLView view, int index) {
-        // Share button has no popup window. Just notifiy the listener.
-        if (view instanceof ShareIndicator) {
-            if (mSelectedListener != null) mSelectedListener.onShareSelected();
-            return;
-        }
-
         if (index == mSelectedIndex) return;
         mSelectionChanged = true;
         mSelectedIndex = index;
