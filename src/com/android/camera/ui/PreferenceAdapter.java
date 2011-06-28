@@ -112,7 +112,11 @@ class PreferenceAdapter
     }
 
     public boolean isSelectable(int index) {
-        return mContent.get(index) instanceof GLOptionItem;
+        GLView view = getView(index);
+        if (view instanceof GLOptionItem) {
+            return ((GLOptionItem) view).isEnabled();
+        }
+        return false;
     }
 
     public int size() {
