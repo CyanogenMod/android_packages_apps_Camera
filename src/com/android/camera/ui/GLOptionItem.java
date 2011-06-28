@@ -149,4 +149,8 @@ class GLOptionItem extends GLView {
         mEnabled = enabled;
         invalidate();
     }
+
+    public boolean isEnabled() {
+        return mEnabled;
+    }
 }
