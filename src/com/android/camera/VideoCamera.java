@@ -1444,6 +1444,8 @@ public class VideoCamera extends ActivityBase
         } catch (RuntimeException e) {
             Log.e(TAG, "Could not start media recorder. ", e);
             releaseMediaRecorder();
+            // If start fails, frameworks will not lock the camera for us.
+            mCameraDevice.lock();
             return;
         }
         enableCameraControls(false);
