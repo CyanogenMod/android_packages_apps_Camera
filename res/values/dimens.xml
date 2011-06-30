@@ -18,5 +18,9 @@
 */
 -->
 <resources>
-    <dimen name="hint_y_offset">64dip</dimen>
+    <dimen name="hint_y_offset">64dp</dimen>
+    <dimen name="share_image_max_width_landscape">320dp</dimen>
+    <dimen name="share_image_max_height_landscape">240dp</dimen>
+    <dimen name="share_image_max_width_portrait">240dp</dimen>
+    <dimen name="share_image_max_height_portrait">240dp</dimen>
 </resources>

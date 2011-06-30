@@ -23,6 +23,7 @@ import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.HeadUpDisplay;
 import com.android.camera.ui.IndicatorWheel;
 import com.android.camera.ui.RotateImageView;
+import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomControllerListener;
 import com.android.camera.ui.ZoomPicker;
 
@@ -48,7 +49,6 @@ import android.location.LocationProvider;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -59,6 +59,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,7 +73,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -136,9 +136,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private Parameters mInitialParams;
 
     private MyOrientationEventListener mOrientationListener;
-    // The device orientation in degrees. Default is unknown.
+    // The degrees of the device rotated clockwise from its natural orientation.
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
-    // The orientation compensation for icons and thumbnails.
+    // The orientation compensation for icons and thumbnails. Ex: if the value
+    // is 90, the UI components should be rotated 90 degrees counter-clockwise.
     private int mOrientationCompensation = 0;
     private ComboPreferences mPreferences;
 
@@ -165,15 +166,14 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private GLRootView mGLRootView;
 
-    // A button showing the last captured picture thumbnail. Clicking on it
-    // goes to gallery.
+    // A button showing the last captured picture thumbnail. Clicking on it will
+    // show the share popup window.
     private RotateImageView mThumbnailButton;
+    // A popup window that contains a bigger thumbnail and a list of apps to share.
+    private SharePopup mSharePopup;
     // The bitmap of the last captured picture thumbnail and the URI of the
     // original picture.
     private Thumbnail mThumbnail;
-    // An review image having same size as preview. It is displayed when
-    // share button is pressed.
-    private ImageView mReviewImage;
     // A button sharing the last picture.
     private RotateImageView mShareButton;
     private RotateImageView mCameraSwitchIcon;
@@ -977,7 +977,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
         mThumbnailButton = (RotateImageView) findViewById(R.id.review_thumbnail);
-        mReviewImage = (ImageView) findViewById(R.id.review_image);
         mShareButton = (RotateImageView) findViewById(R.id.btn_share);
         mCameraSwitchIcon = (RotateImageView) findViewById(R.id.camera_switch_icon);
         mVideoSwitchIcon = (RotateImageView) findViewById(R.id.video_switch_icon);
@@ -1124,12 +1123,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         final String[] SETTING_KEYS = {
                 CameraSettings.KEY_FLASH_MODE,
                 CameraSettings.KEY_WHITE_BALANCE,
+                CameraSettings.KEY_COLOR_EFFECT,
                 CameraSettings.KEY_SCENE_MODE};
         final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_RECORD_LOCATION,
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_EXPOSURE,
-                CameraSettings.KEY_COLOR_EFFECT,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_JPEG_QUALITY};
         mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS,
@@ -1222,18 +1221,17 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 if (!mIsImageCaptureIntent) {
                     setOrientationIndicator(mOrientationCompensation);
                 }
-                if (mHeadUpDisplay != null) {
-                    mHeadUpDisplay.setOrientation(mOrientationCompensation);
-                }
             }
         }
     }
 
     private void setOrientationIndicator(int degree) {
+        if (mHeadUpDisplay != null) mHeadUpDisplay.setOrientation(mOrientationCompensation);
         if (mThumbnailButton != null) mThumbnailButton.setDegree(degree);
         if (mShareButton != null) mShareButton.setDegree(degree);
         if (mCameraSwitchIcon != null) mCameraSwitchIcon.setDegree(degree);
         if (mVideoSwitchIcon != null) mVideoSwitchIcon.setDegree(degree);
+        if (mSharePopup != null) mSharePopup.setOrientation(degree);
     }
 
     @Override
@@ -1274,7 +1272,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 gotoGallery();
                 break;
             case R.id.btn_share:
-                onShareButtonClicked();
+                if (isCameraIdle() && mThumbnail != null) {
+                    createSharePopup();
+                }
                 break;
         }
     }
@@ -1456,8 +1456,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
 
-        mReviewImage.setVisibility(View.GONE);
-
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED) {
             try {
@@ -1516,6 +1514,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             }
             hidePostCaptureAlert();
         }
+
+        dismissSharePopup();
 
         if (mDidRegister) {
             unregisterReceiver(mReceiver);
@@ -2444,14 +2444,25 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mNotSelectableToast.show();
     }
 
+    private void createSharePopup() {
+        if (mSharePopup != null) mSharePopup.dismiss();
+        mSharePopup = new SharePopup(this, mThumbnail.getUri(),
+                mThumbnail.getBitmap(), mOrientationCompensation, mThumbnailButton);
+        mSharePopup.showAtLocation(mThumbnailButton, Gravity.NO_GRAVITY, 0, 0);
+    }
+
+    private void dismissSharePopup() {
+        if (mSharePopup != null) {
+            mSharePopup.dismiss();
+            mSharePopup = null;
+        }
+    }
+
     private void onShareButtonClicked() {
         if (mPausing) return;
 
         // Share the last captured picture.
         if (mThumbnail != null) {
-            mReviewImage.setImageBitmap(mThumbnail.getBitmap());
-            mReviewImage.setVisibility(View.VISIBLE);
-
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("image/jpeg");
             intent.putExtra(Intent.EXTRA_STREAM, mThumbnail.getUri());
@@ -2476,10 +2487,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         public void onOverriddenPreferencesClicked() {
             Camera.this.onOverriddenPreferencesClicked();
-        }
-
-        public void onShareButtonClicked() {
-            Camera.this.onShareButtonClicked();
         }
     }
 

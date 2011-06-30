@@ -16,7 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.ComboPreferences;
 import com.android.camera.IconListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
@@ -26,24 +25,22 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.widget.ImageView;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
 /**
  * A view that contains shutter button and camera setting indicators. The
  * indicators are spreaded around the shutter button. The first child is always
- * the shutter button. The last indicator is always the share button.
+ * the shutter button.
  */
 public class IndicatorWheel extends ViewGroup implements
         BasicSettingPopup.Listener, OtherSettingsPopup.Listener {
@@ -98,7 +95,6 @@ public class IndicatorWheel extends ViewGroup implements
         public void onSharedPreferenceChanged();
         public void onRestorePreferencesClicked();
         public void onOverriddenPreferencesClicked();
-        public void onShareButtonClicked();
     }
 
     public void setListener(Listener listener) {
@@ -467,9 +463,6 @@ public class IndicatorWheel extends ViewGroup implements
         }
         mSettingPopups = new AbstractSettingPopup[len];
 
-        // Add share button. It is always the last one.
-        addIndicator(context, R.drawable.ic_viewfinder_share);
-
         requestLayout();
     }
 
@@ -491,12 +484,6 @@ public class IndicatorWheel extends ViewGroup implements
         indicator.reloadPreference();
         if (mListener != null) {
             mListener.onSharedPreferenceChanged();
-        }
-    }
-
-    public void onShareButtonClicked() {
-        if (mListener != null) {
-            mListener.onShareButtonClicked();
         }
     }
 
@@ -526,12 +513,6 @@ public class IndicatorWheel extends ViewGroup implements
 
     private void showSettingPopup(int index) {
         if (index == mSelectedIndex) return;
-
-        // The share button is the last indicator.
-        if (index == mIndicatorCount - 1) {
-            onShareButtonClicked();
-            return;
-        }
 
         if (mSettingPopups[index] == null) initializeSettingPopup(index);
 
