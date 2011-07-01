@@ -31,6 +31,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -540,7 +541,7 @@ public class VideoCamera extends BaseCamera
     }
 
     private void onStopVideoRecording(boolean valid) {
-        mHeadUpDisplay.setVideoQualityControlsEnabled(true);
+        // mHeadUpDisplay.setVideoQualityControlsEnabled(true); // done in stopVideo
         if (mIsVideoCaptureIntent) {
             if (mQuickCapture) {
                 stopVideoRecordingAndReturn(valid);
@@ -814,6 +815,8 @@ public class VideoCamera extends BaseCamera
             return true;
         }
 
+        SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
+        boolean volZoom = prefs.getBoolean("vol_zoom_enabled", false);
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 if (event.getRepeatCount() == 0) {
@@ -831,6 +834,38 @@ public class VideoCamera extends BaseCamera
                 if (mMediaRecorderRecording) {
                     onStopVideoRecording(true);
                     return true;
+                }
+                break;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (volZoom) {
+                        if (mZoomValue < mZoomMax) {
+                            mZoomValue ++;
+                        }
+                        else {
+                            // Zoom out to the maximum.
+                            mZoomValue = mZoomMax;
+                        }
+                        //mParameters.setZoom(mZoomValue);
+                        //setCameraHardwareParameters();
+                        onZoomValueChanged(mZoomValue);
+                        mHeadUpDisplay.setZoomIndex(mZoomValue);
+                        return true;
+                }
+                break;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (volZoom) {
+                        if (mZoomValue > 0) {
+                            mZoomValue --;
+                        }
+                        else {
+                            // Zoom out to the minimum.
+                            mZoomValue = 0;
+                        }
+                        //mParameters.setZoom(mZoomValue);
+                        //setCameraHardwareParameters();
+                        onZoomValueChanged(mZoomValue);
+                        mHeadUpDisplay.setZoomIndex(mZoomValue);
+                        return true;
                 }
                 break;
         }
