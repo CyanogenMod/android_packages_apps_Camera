@@ -64,6 +64,8 @@
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"フォーカスモード"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"オート"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"無限遠"</string>
+    <string name="pref_camera_focusmode_entry_touch">"タッチ"</string>
+    <string name="touch_focus_enabled">"画面をタッチしてカメラのフォーカスを合わせます"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"マクロ"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"フラッシュモード"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"オート"</string>

@@ -16,6 +16,8 @@
 
 package com.android.camera;
 
+import com.android.camera.R;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -35,10 +37,14 @@ public class PreviewFrameLayout extends ViewGroup {
         public void onSizeChanged();
     }
 
+    private static final int SIZE = 50;
     private double mAspectRatio = 4.0 / 3.0;
     private FrameLayout mFrame;
+    private FocusRectangle mFocus;
     private OnSizeChangedListener mSizeListener;
     private final DisplayMetrics mMetrics = new DisplayMetrics();
+    private int actualWidth;
+    private int actualHeight;
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -57,6 +63,7 @@ public class PreviewFrameLayout extends ViewGroup {
             throw new IllegalStateException(
                     "must provide child with id as \"frame\"");
         }
+        mFocus = (FocusRectangle) findViewById(R.id.focus_rectangle);
     }
 
     public void setAspectRatio(double ratio) {
@@ -89,15 +96,35 @@ public class PreviewFrameLayout extends ViewGroup {
         frameWidth = previewWidth + horizontalPadding;
         frameHeight = previewHeight + verticalPadding;
 
+        actualWidth = frameWidth;
+        actualHeight = frameHeight;
+
         int hSpace = ((r - l) - frameWidth) / 2;
         int vSpace = ((b - t) - frameHeight) / 2;
         mFrame.measure(
                 MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
         mFrame.layout(l + hSpace, t + vSpace, r - hSpace, b - vSpace);
+
+        if (mFocus != null) {
+            int x = mFocus.getTouchIndexX();
+            int y = mFocus.getTouchIndexY();
+            mFocus.layout(x - SIZE, y - SIZE,x + SIZE,y + SIZE);
+        }
+
         if (mSizeListener != null) {
+
             mSizeListener.onSizeChanged();
         }
     }
+
+    public int getActualWidth() {
+        return actualWidth;
+    }
+
+    public int getActualHeight() {
+        return actualHeight;
+    }
+
 }
 

@@ -51,7 +51,6 @@ import android.os.Message;
 import android.os.MessageQueue;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -70,6 +69,7 @@ import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
@@ -147,12 +147,10 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     private int mStatus = IDLE;
     private static final String sTempCropFilename = "crop-temp";
 
-    private android.hardware.Camera mCameraDevice;
     private ContentProviderClient mMediaProviderClient;
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
-    private FocusRectangle mFocusRectangle;
     private ToneGenerator mFocusToneGenerator;
     private GestureDetector mGestureDetector;
     private Switcher mSwitcher;
@@ -171,20 +169,11 @@ public class Camera extends BaseCamera implements View.OnClickListener,
 
     private ImageCapture mImageCapture = null;
 
-    private boolean mPreviewing;
-    private boolean mPausing;
     private boolean mFirstTimeInitialized;
     private static  int keypresscount = 0;
     private static  int keyup = 0;
     private boolean mIsImageCaptureIntent;
     private boolean mRecordLocation;
-
-    private static final int FOCUS_NOT_STARTED = 0;
-    private static final int FOCUSING = 1;
-    private static final int FOCUSING_SNAP_ON_FINISH = 2;
-    private static final int FOCUS_SUCCESS = 3;
-    private static final int FOCUS_FAIL = 4;
-    private int mFocusState = FOCUS_NOT_STARTED;
 
     private ContentResolver mContentResolver;
     private boolean mDidRegister = false;
@@ -226,12 +215,9 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     // Add for test
     public static boolean mMediaServerDied = false;
 
-    // Focus mode. Options are pref_camera_focusmode_entryvalues.
-    private String mFocusMode;
     private String mSceneMode;
 
     private final Handler mHandler = new MainHandler();
-    private CameraHeadUpDisplay mHeadUpDisplay;
 
     // multiple cameras support
     private int mNumberOfCameras;
@@ -352,6 +338,8 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         mHeadUpDisplay = new CameraHeadUpDisplay(this);
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
+        initializeTouchFocus();
+
         mFirstTimeInitialized = true;
         changeHeadUpDisplayState();
         addIdleHandler();
@@ -460,17 +448,23 @@ public class Camera extends BaseCamera implements View.OnClickListener,
 
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
 
-            mHeadUpDisplay.setZoomIndex(mZoomValue);
+            ((CameraHeadUpDisplay)mHeadUpDisplay).setZoomIndex(mZoomValue);
             return true;
         }
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        if (!super.dispatchTouchEvent(m) && mGestureDetector != null) {
-            return mGestureDetector.onTouchEvent(m);
+        boolean ret = true;
+        if (!super.dispatchTouchEvent(m)) {
+            if (mGestureDetector != null) {
+                ret = mGestureDetector.onTouchEvent(m);
+            }
+            if (mFocusGestureDetector != null) {
+                ret = mFocusGestureDetector.onTouchEvent(m);
+            }
         }
-        return true;
+        return ret;
     }
 
     LocationListener [] mLocationListeners = new LocationListener[] {
@@ -517,7 +511,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
             if (mRecordLocation
                     && LocationManager.GPS_PROVIDER.equals(mProvider)) {
                 if (mHeadUpDisplay != null) {
-                    mHeadUpDisplay.setGpsHasSignal(true);
+                    ((CameraHeadUpDisplay)mHeadUpDisplay).setGpsHasSignal(true);
                 }
             }
             mLastLocation.set(newLocation);
@@ -540,7 +534,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                     if (mRecordLocation &&
                             LocationManager.GPS_PROVIDER.equals(provider)) {
                         if (mHeadUpDisplay != null) {
-                            mHeadUpDisplay.setGpsHasSignal(false);
+                            ((CameraHeadUpDisplay)mHeadUpDisplay).setGpsHasSignal(false);
                         }
                     }
                     break;
@@ -1029,12 +1023,12 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                 CameraHolder.instance().getCameraInfo(), mCameraId);
 
         boolean zoomSupported = CameraSettings.isZoomSupported(this, mCameraId);
-        mHeadUpDisplay.initialize(this,
+        ((CameraHeadUpDisplay)mHeadUpDisplay).initialize(this,
                 settings.getPreferenceGroup(R.xml.camera_preferences),
                 zoomSupported ? getZoomRatios() : null,
                 mOrientationCompensation, mParameters);
         if (zoomSupported) {
-            mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
+            ((CameraHeadUpDisplay)mHeadUpDisplay).setZoomListener(new ZoomControllerListener() {
                 public void onZoomChanged(
                         int index, float ratio, boolean isMoving) {
                     onZoomValueChanged(index);
@@ -1047,7 +1041,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     private void attachHeadUpDisplay() {
         mHeadUpDisplay.setOrientation(mOrientationCompensation);
         if (mParameters.isZoomSupported()) {
-            mHeadUpDisplay.setZoomIndex(mZoomValue);
+            ((CameraHeadUpDisplay)mHeadUpDisplay).setZoomIndex(mZoomValue);
         }
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
         mGLRootView = new GLRootView(this);
@@ -1056,7 +1050,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     }
 
     private void detachHeadUpDisplay() {
-        mHeadUpDisplay.setGpsHasSignal(false);
+        ((CameraHeadUpDisplay)mHeadUpDisplay).setGpsHasSignal(false);
         mHeadUpDisplay.collapse();
         ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
         mGLRootView = null;
@@ -1630,7 +1624,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         }
 
         setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
-        mHeadUpDisplay.setZoomIndex(mZoomValue);
+        ((CameraHeadUpDisplay)mHeadUpDisplay).setZoomIndex(mZoomValue);
 
         return true;
     }
@@ -1663,13 +1657,14 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     private void doSnap() {
         if (mHeadUpDisplay.collapse()) return;
 
-        Log.v(TAG, "doSnap: mFocusState=" + mFocusState);
+        Log.d(TAG, "doSnap: mFocusState=" + mFocusState + " mFocusMode=" + mFocusMode);
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
         if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
                 || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF)
+                || mFocusMode.equals(CameraSettings.FOCUS_MODE_TOUCH)
                 || (mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL)) {
             mImageCapture.onSnap();
@@ -1688,7 +1683,8 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         if (mHeadUpDisplay.collapse()) return;
         if (!(mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                   || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
-                  || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF))) {
+                  || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF)
+                  || mFocusMode.equals(CameraSettings.FOCUS_MODE_TOUCH))) {
             if (pressed) {  // Focus key down.
                 autoFocus();
             } else {  // Focus key up.
@@ -1817,6 +1813,10 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         // If we're previewing already, stop the preview first (this will blank
         // the screen).
         if (mPreviewing) stopPreview();
+        clearFocusState();
+        if (CameraSettings.FOCUS_MODE_TOUCH.equals(mFocusMode)) {
+            resetFocusIndicator();
+        }
 
         setPreviewDisplay(mSurfaceHolder);
         Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
@@ -2074,14 +2074,20 @@ public class Camera extends BaseCamera implements View.OnClickListener,
             mFocusMode = mPreferences.getString(
                     CameraSettings.KEY_FOCUS_MODE,
                     getString(R.string.pref_camera_focusmode_default));
+
             if (isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
                 mParameters.setFocusMode(mFocusMode);
+            } else if (CameraSettings.FOCUS_MODE_TOUCH.equals(mFocusMode)) {
+                mParameters.setFocusMode(Parameters.FOCUS_MODE_AUTO);
             } else {
                 mFocusMode = mParameters.getFocusMode();
                 if (mFocusMode == null) {
                     mFocusMode = Parameters.FOCUS_MODE_AUTO;
                 }
             }
+
+            clearTouchFocusAEC();
+
         } else {
             mFocusMode = mParameters.getFocusMode();
         }
@@ -2392,6 +2398,13 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         } else {
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
         }
+
+        String focusMode = mPreferences.getString(CameraSettings.KEY_FOCUS_MODE, null);
+        if ("touch".equals(focusMode) && !focusMode.equals(mFocusMode)) {
+            // Show the user a hint since they've just enabled touch-to-focus
+            Toast.makeText(this, R.string.touch_focus_enabled,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -2436,36 +2449,6 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                 getString(R.string.confirm_restore_title),
                 getString(R.string.confirm_restore_message),
                 runnable);
-    }
-}
-
-class FocusRectangle extends View {
-
-    @SuppressWarnings("unused")
-    private static final String TAG = "FocusRectangle";
-
-    public FocusRectangle(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    private void setDrawable(int resid) {
-        setBackgroundDrawable(getResources().getDrawable(resid));
-    }
-
-    public void showStart() {
-        setDrawable(R.drawable.focus_focusing);
-    }
-
-    public void showSuccess() {
-        setDrawable(R.drawable.focus_focused);
-    }
-
-    public void showFail() {
-        setDrawable(R.drawable.focus_focus_failed);
-    }
-
-    public void clear() {
-        setBackgroundDrawable(null);
     }
 }
 

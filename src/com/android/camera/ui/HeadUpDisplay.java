@@ -430,4 +430,8 @@ public class HeadUpDisplay extends GLView {
             mIndicatorBar.reloadPreferences();
         }
     }
+
+    public boolean isActive() {
+        return mIndicatorBar.isActivated();
+    }
 }
