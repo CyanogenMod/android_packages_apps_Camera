@@ -14,23 +14,77 @@
      limitations under the License.
 -->
 
-<RelativeLayout
+<!-- Use a full-screen popup window because UI has some intermediate problems
+     when its size is changed. -->
+<FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <com.android.camera.ui.RotateLayout
-            android:id="@+id/rotate_layout"
+    <!-- Need a relative layout here because collapse button does not rotate and
+         it is not in the thumbnail. -->
+    <RelativeLayout android:id="@+id/root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true">
-        <!-- The size of the thumbnail is calculated in SharePopup.java -->
-        <ImageView
-                android:id="@+id/expanded_thumbnail"
+            android:layout_gravity="top|bottom">
+        <com.android.camera.ui.RotateLayout
+                android:id="@+id/share_view_rotate_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter" />
-    </com.android.camera.ui.RotateLayout>
-</RelativeLayout>
+                android:layout_toLeftOf="@+id/thumbnail_rotate_layout">
+            <!-- The width of the share list is calculated in SharePopup.java. -->
+            <LinearLayout android:id="@+id/share_view"
+                    android:layout_width="@dimen/share_list_width_landscape"
+                    android:layout_height="@dimen/share_image_max_height_landscape"
+                    android:orientation="vertical"
+                    android:background="@color/dark_gray"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:clickable="true">
+                <TextView android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="44dp"
+                        android:gravity="left|center_vertical"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:text="@string/share_picture_via"
+                        android:textColor="@android:color/white"
+                        android:paddingLeft="4dp" />
+                <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip"
+                        android:scaleType="fitXY"
+                        android:gravity="fill_horizontal"
+                        android:src="@drawable/divider_strong_holo" />
+                <ListView android:id="@+id/share_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center"
+                        android:choiceMode="singleChoice"
+                        style="@android:style/Widget.ListView" />
+            </LinearLayout>
+        </com.android.camera.ui.RotateLayout>
+        <com.android.camera.ui.RotateLayout
+                android:id="@+id/thumbnail_rotate_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true">
+            <!-- The size of the thumbnail is calculated in SharePopup.java -->
+            <ImageView android:id="@+id/thumbnail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/border_last_picture" />
+        </com.android.camera.ui.RotateLayout>
+        <ImageView android:id="@+id/collapse_button"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/btn_ic_review_play"
+                android:scaleType="center" />
+    </RelativeLayout>
+</FrameLayout>

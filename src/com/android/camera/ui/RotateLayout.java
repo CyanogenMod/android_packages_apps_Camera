@@ -17,15 +17,14 @@
 package com.android.camera.ui;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 // A RotateLayout is designed to display a single item and provides the
 // capabilities to rotate the item.
 class RotateLayout extends ViewGroup {
+    private static final String TAG = "RotateLayout";
     private int mOrientation;
     private View mChild;
 
@@ -36,6 +35,8 @@ class RotateLayout extends ViewGroup {
     @Override
     protected void onFinishInflate() {
         mChild = getChildAt(0);
+        mChild.setPivotX(0);
+        mChild.setPivotY(0);
     }
 
     @Override
@@ -57,54 +58,42 @@ class RotateLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
+        int w = 0, h = 0;
         switch(mOrientation) {
             case 0:
             case 180:
                 measureChild(mChild, widthSpec, heightSpec);
-                setMeasuredDimension(mChild.getMeasuredWidth(), mChild.getMeasuredHeight());
+                w = mChild.getMeasuredWidth();
+                h = mChild.getMeasuredHeight();
                 break;
             case 90:
             case 270:
                 measureChild(mChild, heightSpec, widthSpec);
-                setMeasuredDimension(mChild.getMeasuredHeight(), mChild.getMeasuredWidth());
+                w = mChild.getMeasuredHeight();
+                h = mChild.getMeasuredWidth();
                 break;
         }
-    }
+        setMeasuredDimension(w, h);
 
-    @Override
-    public void dispatchDraw(Canvas canvas) {
-        int w = getWidth();
-        int h = getHeight();
         switch (mOrientation) {
+            case 0:
+                mChild.setTranslationX(0);
+                mChild.setTranslationY(0);
+                break;
             case 90:
-                canvas.translate(0, h);
-                canvas.rotate(-mOrientation);
+                mChild.setTranslationX(0);
+                mChild.setTranslationY(h);
                 break;
             case 180:
-                canvas.rotate(-mOrientation, w / 2, h / 2);
+                mChild.setTranslationX(w);
+                mChild.setTranslationY(h);
                 break;
             case 270:
-                canvas.translate(w, 0);
-                canvas.rotate(-mOrientation);
+                mChild.setTranslationX(w);
+                mChild.setTranslationY(0);
                 break;
         }
-        super.dispatchDraw(canvas);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-        float width = getWidth();
-        float height = getHeight();
-        switch (mOrientation) {
-            case 90: event.setLocation(height - y, x); break;
-            case 180: event.setLocation(width - x, height - y); break;
-            case 270: event.setLocation(y, width - x); break;
-        }
-        boolean result = mChild.dispatchTouchEvent(event);
-        event.setLocation(x, y);
-        return result;
+        mChild.setRotation(-mOrientation);
     }
 
     // Rotate the view counter-clockwise

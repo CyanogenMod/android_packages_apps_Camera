@@ -150,19 +150,19 @@ public class VideoCamera extends ActivityBase
     private View mReviewControl;
 
     private Toast mNoShareToast;
-    // A button showing the last captured video thumbnail. Clicking on it will
-    // show the share popup window.
-    private RotateImageView mThumbnailButton;
+    // An review image having same size as preview. It is displayed when
+    // recording is stopped in capture intent.
+    private ImageView mReviewImage;
     // A popup window that contains a bigger thumbnail and a list of apps to share.
     private SharePopup mSharePopup;
     // The bitmap of the last captured video thumbnail and the URI of the
     // original video.
     private Thumbnail mThumbnail;
-    // An review image having same size as preview. It is displayed when
-    // recording is stopped in capture intent.
-    private ImageView mReviewImage;
-    // A button sharing the last picture.
-    private RotateImageView mShareButton;
+    // A button that contains the thumbnail and the share icon.
+    private View mShareButton;
+    // An imageview showing showing the last captured picture thumbnail.
+    private RotateImageView mThumbnailView;
+    private RotateImageView mShareIcon;
     private RotateImageView mCameraSwitchIcon;
     private RotateImageView mVideoSwitchIcon;
     private ShutterButton mShutterButton;
@@ -406,8 +406,7 @@ public class VideoCamera extends ActivityBase
             setContentView(R.layout.video_camera);
 
             initThumbnailButton();
-            mShareButton = (RotateImageView) findViewById(R.id.btn_share);
-            if (mShareButton != null) mShareButton.setOnClickListener(this);
+            mShareIcon = (RotateImageView) findViewById(R.id.share_icon);
             mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
             mSwitcher.setVisibility(View.VISIBLE);
             mSwitcher.setOnSwitchListener(this);
@@ -418,6 +417,8 @@ public class VideoCamera extends ActivityBase
         mPreviewFrameLayout.setOnSizeChangedListener(this);
 
         mReviewImage = (ImageView) findViewById(R.id.review_image);
+        mShareButton = findViewById(R.id.share_button);
+        mShareIcon = (RotateImageView) findViewById(R.id.share_icon);
         mCameraSwitchIcon = (RotateImageView) findViewById(R.id.camera_switch_icon);
         mVideoSwitchIcon = (RotateImageView) findViewById(R.id.video_switch_icon);
 
@@ -607,8 +608,8 @@ public class VideoCamera extends ActivityBase
 
     private void setOrientationIndicator(int degree) {
         if (mHeadUpDisplay != null) mHeadUpDisplay.setOrientation(mOrientationCompensation);
-        if (mThumbnailButton != null) mThumbnailButton.setDegree(degree);
-        if (mShareButton != null) mShareButton.setDegree(degree);
+        if (mThumbnailView != null) mThumbnailView.setDegree(degree);
+        if (mShareIcon != null) mShareIcon.setDegree(degree);
         if (mCameraSwitchIcon != null) mCameraSwitchIcon.setDegree(degree);
         if (mVideoSwitchIcon != null) mVideoSwitchIcon.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
@@ -623,8 +624,14 @@ public class VideoCamera extends ActivityBase
         }
     }
 
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.share_button:
+                if (!mMediaRecorderRecording && mThumbnail != null) {
+                    showSharePopup();
+                }
+                break;
             case R.id.btn_retake:
                 deleteCurrentVideo();
                 hideAlert();
@@ -638,19 +645,6 @@ public class VideoCamera extends ActivityBase
             case R.id.btn_cancel:
                 stopVideoRecording();
                 doReturnToCaller(false);
-                break;
-            case R.id.review_thumbnail:
-                if (!mMediaRecorderRecording && mThumbnail != null) {
-                    Util.viewUri(mThumbnail.getUri(), this);
-                }
-                break;
-            case R.id.btn_gallery:
-                gotoGallery();
-                break;
-            case R.id.btn_share:
-                if (!mMediaRecorderRecording && mThumbnail != null) {
-                    createSharePopup();
-                }
                 break;
         }
     }
@@ -981,7 +975,7 @@ public class VideoCamera extends ActivityBase
 
         finishRecorderAndCloseCamera();
 
-        dismissSharePopup();
+        if (mSharePopup != null) mSharePopup.dismiss();
 
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
@@ -1496,7 +1490,7 @@ public class VideoCamera extends ActivityBase
                     mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
             if (videoFrame != null) {
                 mThumbnail = new Thumbnail(mCurrentVideoUri, videoFrame, 0);
-                mThumbnailButton.setBitmap(mThumbnail.getBitmap());
+                mThumbnailView.setBitmap(mThumbnail.getBitmap());
             }
         }
     }
@@ -1619,8 +1613,8 @@ public class VideoCamera extends ActivityBase
     }
 
     private void initThumbnailButton() {
-        mThumbnailButton = (RotateImageView) findViewById(R.id.review_thumbnail);
-        mThumbnailButton.setOnClickListener(this);
+        mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+        findViewById(R.id.share_button).setOnClickListener(this);
         // Load the thumbnail from the disk.
         mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
     }
@@ -1630,9 +1624,9 @@ public class VideoCamera extends ActivityBase
             mThumbnail = Thumbnail.getLastVideoThumbnail(mContentResolver);
         }
         if (mThumbnail != null) {
-            mThumbnailButton.setBitmap(mThumbnail.getBitmap());
+            mThumbnailView.setBitmap(mThumbnail.getBitmap());
         } else {
-            mThumbnailButton.setBitmap(null);
+            mThumbnailView.setBitmap(null);
         }
     }
 
@@ -1921,36 +1915,13 @@ public class VideoCamera extends ActivityBase
 
     }
 
-    private void createSharePopup() {
-        if (mSharePopup != null) mSharePopup.dismiss();
-        mSharePopup = new SharePopup(this, mThumbnail.getUri(),
-                mThumbnail.getBitmap(), mOrientationCompensation, mThumbnailButton);
-        mSharePopup.showAtLocation(mThumbnailButton, Gravity.NO_GRAVITY, 0, 0);
-    }
-
-    private void dismissSharePopup() {
-        if (mSharePopup != null) {
-            mSharePopup.dismiss();
-            mSharePopup = null;
+    private void showSharePopup() {
+        Uri uri = mThumbnail.getUri();
+        if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
+            mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
+                    "video/*", mOrientationCompensation, mShareButton);
         }
-    }
-
-    private void onShareButtonClicked() {
-        if (mPausing) return;
-
-        // Share the last captured video.
-        if (mThumbnail != null) {
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("video/*");
-            intent.putExtra(Intent.EXTRA_STREAM, mThumbnail.getUri());
-            startActivity(Intent.createChooser(intent, getString(R.string.share_video_via)));
-        } else {  // No last picture
-            if (mNoShareToast == null) {
-                mNoShareToast = Toast.makeText(this,
-                        getResources().getString(R.string.no_video_to_share), Toast.LENGTH_SHORT);
-            }
-            mNoShareToast.show();
-        }
+        mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
 
     private class MyIndicatorWheelListener implements IndicatorWheel.Listener {
@@ -1963,10 +1934,6 @@ public class VideoCamera extends ActivityBase
         }
 
         public void onOverriddenPreferencesClicked() {
-        }
-
-        public void onShareButtonClicked() {
-            VideoCamera.this.onShareButtonClicked();
         }
     }
 

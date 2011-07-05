@@ -14,29 +14,22 @@
      limitations under the License.
 -->
 
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/share_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:orientation="vertical">
-    <com.android.camera.ui.RotateImageView
-            android:id="@+id/review_thumbnail"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="false"
+        android:background="@drawable/border_last_picture">
+    <com.android.camera.ui.RotateImageView android:id="@+id/thumbnail"
             android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:clickable="true"
-            android:focusable="false"
-            android:background="@drawable/border_last_picture" />
-    <com.android.camera.ui.RotateImageView
-            android:id="@+id/btn_share"
+            android:layout_height="52dp"/>
+    <com.android.camera.ui.RotateImageView android:id="@+id/share_icon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:clickable="true"
-            android:focusable="false"
             android:src="@drawable/ic_viewfinder_share"
             android:background="@android:color/black" />
 </LinearLayout>

@@ -23,4 +23,5 @@
     <dimen name="share_image_max_height_landscape">240dp</dimen>
     <dimen name="share_image_max_width_portrait">240dp</dimen>
     <dimen name="share_image_max_height_portrait">240dp</dimen>
+    <dimen name="share_list_width_landscape">180dp</dimen>
 </resources>
