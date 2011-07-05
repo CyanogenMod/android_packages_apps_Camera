@@ -88,8 +88,11 @@
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Обычное"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Режим фокусировки"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Авто"</string>
+    <string name="pref_camera_focusmode_entry_normal">Нормальный</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Бесконечность"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Макро"</string>
+    <string name="pref_camera_focusmode_entry_touch">Прикосновение</string>
+    <string name="touch_focus_enabled">Прикоснитесь к экрану чтобы сфокусировать камеру.</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Режим вспышки"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Авто"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Вкл."</string>
