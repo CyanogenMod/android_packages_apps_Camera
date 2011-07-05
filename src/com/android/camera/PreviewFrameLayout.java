@@ -37,7 +37,6 @@ public class PreviewFrameLayout extends ViewGroup {
         public void onSizeChanged();
     }
 
-    private static final int SIZE = 50;
     private double mAspectRatio = 4.0 / 3.0;
     private FrameLayout mFrame;
     private FocusRectangle mFocus;
@@ -107,9 +106,7 @@ public class PreviewFrameLayout extends ViewGroup {
         mFrame.layout(l + hSpace, t + vSpace, r - hSpace, b - vSpace);
 
         if (mFocus != null) {
-            int x = mFocus.getTouchIndexX();
-            int y = mFocus.getTouchIndexY();
-            mFocus.layout(x - SIZE, y - SIZE,x + SIZE,y + SIZE);
+            mFocus.redraw();
         }
 
         if (mSizeListener != null) {

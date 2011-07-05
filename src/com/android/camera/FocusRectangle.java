@@ -29,7 +29,7 @@ public class FocusRectangle extends View {
     }
 
     public void showFail() {
-        setDrawable(R.drawable.sk_auto_focused);
+        setDrawable(R.drawable.sk_auto_fail);
     }
 
     public void clear() {
@@ -40,16 +40,12 @@ public class FocusRectangle extends View {
         if (x >= 0 && y >= 0) {
             xActual = x;
             yActual = y;
-            int size = getWidth() / 2;
-            this.layout(x - size, y - size, x + size, y + size);
+            redraw();
         }
     }
 
-    public int getTouchIndexX() {
-        return xActual;
-    }
-
-    public int getTouchIndexY() {
-        return yActual;
+    public void redraw() {
+        int size = getWidth() / 2;
+        this.layout(xActual - size, yActual - size, xActual + size, yActual + size);
     }
 }
