@@ -88,8 +88,11 @@
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Обычное"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Режим фокусировки"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Авто"</string>
+    <string name="pref_camera_focusmode_entry_normal">Нормальный</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Бесконечность"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Макро"</string>
+    <string name="pref_camera_focusmode_entry_touch">Прикосновение</string>
+    <string name="touch_focus_enabled">Прикоснитесь к экрану чтобы сфокусировать камеру.</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Режим вспышки"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Авто"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Вкл."</string>
@@ -217,5 +220,36 @@
      <string name="pref_camera_autoexposure_entry_frameaverage">Средняя рамка</string>
      <string name="pref_camera_autoexposure_entry_centerweighted">Центрирование</string>
      <string name="pref_camera_autoexposure_entry_spotmetering">Точечный замер</string>
-	
+
+    <!-- Advanced options label -->
+    <string name="advanced_options_label">Дополнительные параметры</string>
+
+    <!-- More Settings screen, volume buttons title -->
+    <string name="pref_camera_vol_shutter_title">Съёмка кнопками громкости</string>
+    <string name="pref_camera_vol_up_shutter">Громче</string>
+    <string name="pref_camera_vol_up_shutter_summary">Кнопка \"громче\" делает снимок</string>
+    <string name="pref_camera_vol_down_shutter">Тише</string>
+    <string name="pref_camera_vol_down_shutter_summary">Кнопка \"тише\" делает снимок</string>
+
+    <!-- More Settings screen, zoom button title -->
+    <string name="pref_camera_vol_zoom_title">Приближение громкостью</string>
+    <string name="pref_camera_vol_zoom">Приближение кнопками громкости</string>
+    <string name="pref_camera_vol_zoom_summary">Кнопка \"громче\" приближает, кнопка \"тише\" отдаляет</string>
+
+    <!-- More Settings screen, search button title -->
+    <string name="pref_camera_search_shutter_title">Съёмка кнопкой поиск</string>
+
+    <!-- More Settings screen, search button -->
+    <string name="pref_camera_search_shutter">Кнопка поиск</string>  
+    <string name="pref_camera_search_shutter_summary">Кнопка поиск делает снимок</string>  
+
+    <!-- Settings screen, custom focus title -->
+    <string name="pref_camera_settings_focus_title">Фокус</string>
+
+    <!-- Settings screen, focus settings -->
+    <string name="pref_camera_settings_focus">Предварительный фокус</string>
+    <string name="pref_camera_settings_focus_summary">Фокусировка перед съёмкой</string>
+    <string name="pref_camera_settings_long_focus">Длинный фокус</string>
+    <string name="pref_camera_settings_long_focus_summary">Удерживайте кнопку для фокусировки, отпустите чтобы сделать снимок</string>
+
 </resources>
