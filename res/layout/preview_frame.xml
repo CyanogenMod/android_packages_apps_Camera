@@ -49,10 +49,5 @@
                 android:layout_alignParentBottom="true"
                 android:layout_margin="5dp"
                 android:visibility="invisible"/>
-        <ImageView android:id="@+id/review_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:background="@android:color/black"/>
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>

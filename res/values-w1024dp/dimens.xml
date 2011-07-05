@@ -27,4 +27,8 @@
     <dimen name="mode_switcher_inner_margin">10dp</dimen>
     <dimen name="camera_switcher_margin_right">16dp</dimen>
     <dimen name="camera_switcher_margin_bottom">24dp</dimen>
+    <dimen name="share_image_max_width_landscape">480dp</dimen>
+    <dimen name="share_image_max_height_landscape">360dp</dimen>
+    <dimen name="share_image_max_width_portrait">480dp</dimen>
+    <dimen name="share_image_max_height_portrait">480dp</dimen>
 </resources>

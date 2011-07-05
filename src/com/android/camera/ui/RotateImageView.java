@@ -56,6 +56,7 @@ public class RotateImageView extends ImageView {
         mEnableAnimation = enable;
     }
 
+    // Rotate the view counter-clockwise
     public void setDegree(int degree) {
         // make sure in the range of [0, 359]
         degree = degree >= 0 ? degree % 360 : degree % 360 + 360;
