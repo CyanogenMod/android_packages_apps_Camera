@@ -69,7 +69,6 @@ import android.view.WindowManager;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
@@ -339,6 +338,8 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
         initializeHeadUpDisplay();
         initializeTouchFocus();
+        clearFocusState();
+        resetFocusIndicator();
 
         mFirstTimeInitialized = true;
         changeHeadUpDisplayState();
@@ -1813,10 +1814,6 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         // If we're previewing already, stop the preview first (this will blank
         // the screen).
         if (mPreviewing) stopPreview();
-        clearFocusState();
-        if (CameraSettings.FOCUS_MODE_TOUCH.equals(mFocusMode)) {
-            resetFocusIndicator();
-        }
 
         setPreviewDisplay(mSurfaceHolder);
         Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
@@ -2085,6 +2082,8 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                     mFocusMode = Parameters.FOCUS_MODE_AUTO;
                 }
             }
+            clearFocusState();
+            resetFocusIndicator();
 
             clearTouchFocusAEC();
 
@@ -2397,13 +2396,6 @@ public class Camera extends BaseCamera implements View.OnClickListener,
             switchCameraId(cameraId);
         } else {
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
-        }
-
-        String focusMode = mPreferences.getString(CameraSettings.KEY_FOCUS_MODE, null);
-        if ("touch".equals(focusMode) && !focusMode.equals(mFocusMode)) {
-            // Show the user a hint since they've just enabled touch-to-focus
-            Toast.makeText(this, R.string.touch_focus_enabled,
-                    Toast.LENGTH_LONG).show();
         }
     }
 

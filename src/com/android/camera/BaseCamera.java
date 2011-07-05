@@ -107,11 +107,15 @@ public abstract class BaseCamera extends NoSearchActivity {
         if (mFocusRectangle == null)
             return;
 
-        mFocusRectangle.setVisibility(View.VISIBLE);
         PreviewFrameLayout frameLayout = (PreviewFrameLayout) findViewById(R.id.frame_layout);
         int x = frameLayout.getActualWidth() / 2;
         int y = frameLayout.getActualHeight() / 2;
-        updateTouchFocus(x, y);
+        if (mFocusMode.equals(CameraSettings.FOCUS_MODE_TOUCH)) {
+            updateTouchFocus(x, y);
+        } else {
+            mFocusRectangle.setPosition(x, y);
+        }
+
     }
 
     private class FocusGestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -136,7 +140,8 @@ public abstract class BaseCamera extends NoSearchActivity {
                 @Override
                 public void onAutoFocus(boolean success, android.hardware.Camera camera) {
                     if (mFocusState == FOCUSING) {
-                        mFocusRectangle.showSuccess();
+                        if (success) mFocusRectangle.showSuccess();
+                        else mFocusRectangle.showFail();
                         mFocusState = FOCUS_NOT_STARTED;
                     }
                 }
