@@ -235,6 +235,9 @@ public class CameraSettings {
                 if (isHtcCamera(mParameters)) {
                     focusModes.add(FOCUS_MODE_TOUCH);
                 }
+                if (isNVCamera(mParameters)) {
+                    focusModes.add(FOCUS_MODE_TOUCH);
+                }
                 filterUnsupportedOptions(group, focusMode, focusModes);
             }
         }
