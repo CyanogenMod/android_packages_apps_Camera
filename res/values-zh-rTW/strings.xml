@@ -194,9 +194,9 @@
     <!-- More Settings screen, volume buttons title -->
     <string name="pref_camera_vol_shutter_title">音量鍵快門</string>
     <string name="pref_camera_vol_up_shutter">提升音量鍵</string>
-    <string name="pref_camera_vol_up_shutter_summary">按提升音量鍵拍攝照片</string>
+    <string name="pref_camera_vol_up_shutter_summary">按提升音量鍵拍攝照片／影片</string>
     <string name="pref_camera_vol_down_shutter">降低音量鍵</string>
-    <string name="pref_camera_vol_down_shutter_summary">按降低音量鍵拍攝照片</string>
+    <string name="pref_camera_vol_down_shutter_summary">按降低音量鍵拍攝照片／影片</string>
 
     <!-- More Settings screen, zoom button title -->
     <string name="pref_camera_vol_zoom_title">音量鍵縮放</string>
@@ -207,8 +207,15 @@
     <string name="pref_camera_search_shutter_title">搜尋鍵快門</string>
 
     <!-- More Settings screen, search button -->
-    <string name="pref_camera_search_shutter">搜尋鍵快門</string>
-    <string name="pref_camera_search_shutter_summary">按搜尋鍵拍攝照片</string>
+    <string name="pref_camera_search_shutter">搜尋鍵</string>
+    <string name="pref_camera_search_shutter_summary">按搜尋鍵拍攝照片／影片</string>
+
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">電源鍵快門</string>
+
+    <!-- More Settings screen, power button -->
+    <string name="pref_camera_power_shutter">電源鍵</string>
+    <string name="pref_camera_power_shutter_summary">按電源鍵拍攝照片／影片</string>
 
     <!-- Settings screen, custom focus title -->
     <string name="pref_camera_settings_focus_title">對焦</string>
@@ -232,6 +239,10 @@
     <string name="pref_camera_focusmode_entry_normal">正常</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"無限遠"</string>
+    <string name="pref_camera_focusmode_entry_touch">觸控</string>
+
+    <!-- Toast shown when touch-to-focus is enabled -->
+    <string name="touch_focus_enabled">輕觸螢幕以使相機對焦。</string>
 
     <!-- Default flash mode setting.-->
     <!-- skipping untranslatable /resources:0/string:name=pref_camera_flashmode_default -->
