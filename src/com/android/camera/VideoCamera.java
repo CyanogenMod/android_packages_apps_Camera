@@ -563,12 +563,12 @@ public class VideoCamera extends ActivityBase
         if (mIndicatorWheel == null) return;
         loadCameraPreferences();
 
-        final String[] SETTING_KEYS = {
-            CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
-            CameraSettings.KEY_WHITE_BALANCE,
-            CameraSettings.KEY_VIDEO_QUALITY,
-            CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
-        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS, null);
+        final String[] SETTING_KEYS = {CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE};
+        final String[] OTHER_SETTING_KEYS = {
+                CameraSettings.KEY_VIDEO_QUALITY,
+                CameraSettings.KEY_WHITE_BALANCE,
+                CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
+        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS, OTHER_SETTING_KEYS);
         mIndicatorWheel.setListener(new MyIndicatorWheelListener());
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());
@@ -1991,7 +1991,7 @@ public class VideoCamera extends ActivityBase
         @Override
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
-            View popup = mIndicatorWheel.getActivePopupWindow();
+            View popup = mIndicatorWheel.getActiveSettingPopup();
             if (popup == null) return false;
 
             // Let popup window or indicator wheel handle the event by

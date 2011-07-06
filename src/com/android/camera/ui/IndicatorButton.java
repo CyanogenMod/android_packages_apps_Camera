@@ -17,21 +17,33 @@
 package com.android.camera.ui;
 
 import com.android.camera.IconListPreference;
+import com.android.camera.R;
 
 import android.content.Context;
-import android.widget.ImageView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
-public class IndicatorButton extends ImageView {
+// An indicator button that represents one camera setting. Ex: flash. Pressing it opens a popup
+// window.
+public class IndicatorButton extends AbstractIndicatorButton implements BasicSettingPopup.Listener {
     private final String TAG = "IndicatorButton";
     private IconListPreference mPreference;
     // Scene mode can override the original preference value.
     private String mOverrideValue;
+    private Listener mListener;
+
+    static public interface Listener {
+        public void onSettingChanged();
+    }
+
+    public void setSettingChangedListener(Listener listener) {
+        mListener = listener;
+    }
 
     public IndicatorButton(Context context, IconListPreference pref) {
         super(context);
         mPreference = pref;
-        setClickable(false);
         reloadPreference();
     }
 
@@ -62,12 +74,44 @@ public class IndicatorButton extends ImageView {
         return mPreference.getKey();
     }
 
+    @Override
     public boolean isOverridden() {
         return mOverrideValue != null;
     }
 
-    public void overrideSettings(String value) {
-        mOverrideValue = value;
+    @Override
+    public void overrideSettings(final String ... keyvalues) {
+        mOverrideValue = null;
+        for (int i = 0; i < keyvalues.length; i += 2) {
+            String key = keyvalues[i];
+            String value = keyvalues[i + 1];
+            if (key.equals(getKey())) {
+                mOverrideValue = value;
+                setEnabled(value == null);
+                break;
+            }
+        }
         reloadPreference();
+    }
+
+    @Override
+    protected void initializePopup() {
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.app_root);
+
+        BasicSettingPopup popup = (BasicSettingPopup) inflater.inflate(
+                R.layout.basic_setting_popup, root, false);
+        popup.setSettingChangedListener(this);
+        popup.initialize(mPreference);
+        root.addView(popup);
+        mPopup = popup;
+    }
+
+    public void onSettingChanged() {
+        reloadPreference();
+        if (mListener != null) {
+            mListener.onSettingChanged();
+        }
     }
 }
