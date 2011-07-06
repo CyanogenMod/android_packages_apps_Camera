@@ -19,7 +19,10 @@ package com.android.camera;
 
 import com.android.camera.ui.HeadUpDisplay;
 
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -27,7 +30,8 @@ import android.view.View;
 
 import java.util.List;
 
-public abstract class BaseCamera extends NoSearchActivity {
+public abstract class BaseCamera extends NoSearchActivity
+        implements PreviewFrameLayout.OnSizeChangedListener {
 
     private static final String LOG_TAG = "BaseCamera";
 
@@ -39,8 +43,10 @@ public abstract class BaseCamera extends NoSearchActivity {
 
     protected FocusRectangle mFocusRectangle;
     protected String mFocusMode;
-
     protected GestureDetector mFocusGestureDetector;
+
+    private PreviewFrameLayout mPreviewFrameLayout;
+    private Rect mPreviewRect;
 
     protected boolean mPreviewing;
     protected boolean mPausing;
@@ -58,6 +64,10 @@ public abstract class BaseCamera extends NoSearchActivity {
         Log.d(LOG_TAG, "initializeTouchFocus");
         enableTouchAEC(false);
         mFocusGestureDetector = new GestureDetector(this, new FocusGestureListener());
+
+        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame_layout);
+        mPreviewFrameLayout.setOnSizeChangedListener(this);
+        mPreviewRect = null;
     }
 
     protected void setCommonParameters() {
@@ -107,33 +117,46 @@ public abstract class BaseCamera extends NoSearchActivity {
         if (mFocusRectangle == null)
             return;
 
-        PreviewFrameLayout frameLayout = (PreviewFrameLayout) findViewById(R.id.frame_layout);
-        int x = frameLayout.getActualWidth() / 2;
-        int y = frameLayout.getActualHeight() / 2;
-        if (mFocusMode.equals(CameraSettings.FOCUS_MODE_TOUCH)) {
-            updateTouchFocus(x, y);
+       if (mFocusMode.equals(CameraSettings.FOCUS_MODE_TOUCH)) {
+            Size previewSize = mParameters.getPreviewSize();
+            updateTouchFocus(previewSize.width / 2, previewSize.height / 2);
         } else {
-            mFocusRectangle.setPosition(x, y);
+            int x = mPreviewFrameLayout.getActualWidth() / 2;
+            int y = mPreviewFrameLayout.getActualHeight() / 2;
+             mFocusRectangle.setPosition(x, y);
         }
-
     }
 
     private class FocusGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private void transformToPreviewCoords(Point point) {
+            float x = point.x - mPreviewRect.left;
+            float y = point.y - mPreviewRect.top;
+            Size previewSize = mParameters.getPreviewSize();
+
+            point.x = (int) ((previewSize.width * x) / mPreviewRect.width());
+            point.y = (int) ((previewSize.height * y) / mPreviewRect.height());
+        }
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
 
-            if (mPausing || !mPreviewing || mHeadUpDisplay == null || mFocusState != FOCUS_NOT_STARTED
-                    || !CameraSettings.FOCUS_MODE_TOUCH.equals(mFocusMode) || mHeadUpDisplay.isActive()) {
+            if (mPausing || !mPreviewing || mHeadUpDisplay == null || mPreviewRect == null
+                    || mFocusState != FOCUS_NOT_STARTED || mHeadUpDisplay.isActive()
+                    || !CameraSettings.FOCUS_MODE_TOUCH.equals(mFocusMode)) {
                 return false;
             }
 
-            mFocusState = FOCUSING;
-            int x = (int) e.getX();
-            int y = (int) e.getY();
+            Point touch = new Point((int) e.getX(), (int) e.getY());
+            Log.d(LOG_TAG, "touch event at " + touch + " preview rect " + mPreviewRect);
+            if (!mPreviewRect.contains(touch.x, touch.y)) {
+                return true;
+            }
+            transformToPreviewCoords(touch);
+            Log.d(LOG_TAG, "after transform " + touch);
 
+            mFocusState = FOCUSING;
             enableTouchAEC(true);
-            updateTouchFocus(x, y);
+            updateTouchFocus(touch.x, touch.y);
             mFocusRectangle.showStart();
 
             mCameraDevice.autoFocus(new android.hardware.Camera.AutoFocusCallback() {
@@ -157,10 +180,33 @@ public abstract class BaseCamera extends NoSearchActivity {
         }
     }
 
+    /* x and y are in preview coordinates */
     private void updateTouchFocus(int x, int y) {
         Log.d(LOG_TAG, "updateTouchFocus x=" + x + " y=" + y);
+
         mFocusRectangle.setVisibility(View.VISIBLE);
         mFocusRectangle.setPosition(x, y);
+
+        boolean needsRect;
+        String paramName;
+        int width = mFocusRectangle.getWidth();
+        Rect focusRect = new Rect(x - width / 2, y - width / 2, x + width / 2, y + width / 2);
+        Size previewSize = mParameters.getPreviewSize();
+
+        /* ensure the rect is fully within the preview */
+        int offsetX = 0, offsetY = 0;
+        if (focusRect.left < 0) {
+            offsetX = -focusRect.left;
+        } else if (focusRect.right > previewSize.width) {
+            offsetX = previewSize.width - focusRect.right;
+        }
+        if (focusRect.top < 0) {
+            offsetY = -focusRect.top;
+        } else if (focusRect.bottom > previewSize.height) {
+            offsetY = previewSize.height - focusRect.bottom;
+        }
+        focusRect.offset(offsetX, offsetY);
+
         if (mParameters.get("nv-max-areas-to-focus") != null) {
             /* Example region log output (for approx middle):
              * NvOmxCameraSettings( 1029): Setting focus region #1 (left,top,right,bottom):
@@ -171,17 +217,27 @@ public abstract class BaseCamera extends NoSearchActivity {
              * Arguments to configure a region are: 
              *      regionId,x-for-ul-corner,y-for-ul-corner,width,height
              */
-            int size = 80;
-            mParameters.set("nv-areas-to-focus", "1,"+(x-(size/2))+","+(y-(size/2))+","+size+","+size);
+            needsRect = true;
+            paramName = "nv-areas-to-focus";
         } else if (mParameters.get("mot-max-areas-to-focus") != null) {
             /* Motorola's libcamera uses the same format as Nvidia's:
              * regionId,left,top,width,height
              */
-            int size = 80;
-            mParameters.set("mot-areas-to-focus", "1,"+(x-(size/2))+","+(y-(size/2))+","+size+","+size);
+            needsRect = true;
+            paramName = "mot-areas-to-focus";
         } else {
-            mParameters.set("touch-focus", x + "," + y);
+            needsRect = false;
+            paramName = "touch-focus";
         }
+
+        if (needsRect) {
+            mParameters.set(paramName, "1," +
+                    focusRect.left + "," + focusRect.top + "," +
+                    focusRect.width() + "," + focusRect.height());
+        } else {
+            mParameters.set(paramName, focusRect.centerX() + "," + focusRect.centerY());
+        }
+
         mCameraDevice.setParameters(mParameters);
     }
 
@@ -189,6 +245,10 @@ public abstract class BaseCamera extends NoSearchActivity {
         Log.d(LOG_TAG, "enableTouchAEC: " + enable);
         mParameters.set("touch-aec", enable ? "on" : "off");
         mCameraDevice.setParameters(mParameters);
+    }
+
+    public void onSizeChanged(Rect newRect) {
+        mPreviewRect = new Rect(newRect);
     }
 
     protected static boolean isSupported(String value, List<String> supported) {
