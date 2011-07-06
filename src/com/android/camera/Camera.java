@@ -75,6 +75,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -604,9 +605,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void initializeZoomPicker() {
-        mZoomPicker = (ZoomPicker) findViewById(R.id.zoom_picker);
-        if (mZoomPicker != null && mParameters.isZoomSupported()) {
-            mZoomPicker.setVisibility(View.VISIBLE);
+        Button zoomIncrement = (Button) findViewById(R.id.zoom_increment);
+        Button zoomDecrement = (Button) findViewById(R.id.zoom_decrement);
+        TextView zoomRatio = (TextView) findViewById(R.id.zoom_ratio);
+        if (zoomIncrement != null && zoomDecrement != null && mParameters.isZoomSupported()) {
+            mZoomPicker = new ZoomPicker(this, zoomIncrement, zoomDecrement, zoomRatio);
         }
     }
 

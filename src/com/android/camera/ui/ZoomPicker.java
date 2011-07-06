@@ -20,22 +20,18 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
+import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Formatter;
 
 /**
- * A view for increasing or decresing zoom
+ * A class to increase or decrease zoom
  */
-public class ZoomPicker extends LinearLayout {
+public class ZoomPicker {
     private final String TAG = "ZoomPicker";
     private TextView mZoomTextView;
     private int mZoomMax, mZoomIndex;
@@ -80,14 +76,8 @@ public class ZoomPicker extends LinearLayout {
         }
     };
 
-    public ZoomPicker(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public ZoomPicker(Context context, Button increment, Button decrement, TextView zoomText) {
         mZoomText = context.getString(R.string.zoom_text);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
         mHandler = new Handler();
 
         OnTouchListener incrementTouchListener = new OnTouchListener() {
@@ -134,10 +124,13 @@ public class ZoomPicker extends LinearLayout {
             }
         };
 
-        Button incrementButton = mIncrementButton = (Button) findViewById(R.id.increment);
-        incrementButton.setOnTouchListener(incrementTouchListener);
-        Button decrementButton = mDecrementButton = (Button) findViewById(R.id.decrement);
-        decrementButton.setOnTouchListener(decrementTouchListener);
+        mIncrementButton = increment;
+        mIncrementButton.setOnTouchListener(incrementTouchListener);
+        mIncrementButton.setVisibility(View.VISIBLE);
+        mDecrementButton = decrement;
+        mDecrementButton.setOnTouchListener(decrementTouchListener);
+        mDecrementButton.setVisibility(View.VISIBLE);
+        mZoomTextView = zoomText;
     }
 
     public void setOnZoomChangeListener(OnZoomChangedListener listener) {
@@ -178,9 +171,8 @@ public class ZoomPicker extends LinearLayout {
     }
 
     private void updateView() {
-        if (mZoomTextView == null) {
-            mZoomTextView = (TextView) getRootView().findViewById(R.id.zoom_ratio);
-        }
+        if (mZoomTextView == null) return;
+
         if (mZoomIndex == 0) {
             mZoomTextView.setVisibility(View.INVISIBLE);
         } else {
@@ -196,9 +188,7 @@ public class ZoomPicker extends LinearLayout {
         return mFormatter.toString();
     }
 
-    @Override
     public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
         mIncrementButton.setEnabled(enabled);
         mDecrementButton.setEnabled(enabled);
     }
