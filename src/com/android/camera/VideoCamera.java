@@ -90,7 +90,7 @@ public class VideoCamera extends BaseCamera
         implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        Switcher.OnSwitchListener, PreviewFrameLayout.OnSizeChangedListener {
+        Switcher.OnSwitchListener {
 
     private static final String TAG = "videocamera";
 
@@ -327,7 +327,6 @@ public class VideoCamera extends BaseCamera
 
         mPreviewFrameLayout = (PreviewFrameLayout)
                 findViewById(R.id.frame_layout);
-        mPreviewFrameLayout.setOnSizeChangedListener(this);
         resizeForPreviewAspectRatio();
 
         mVideoPreview = (SurfaceView) findViewById(R.id.camera_preview);
@@ -1647,10 +1646,6 @@ public class VideoCamera extends BaseCamera
         } else {
             setCameraParameters();
         }
-    }
-
-    public void onSizeChanged() {
-        // TODO: update the content on GLRootView
     }
 
     private class MyHeadUpDisplayListener implements HeadUpDisplay.Listener {
