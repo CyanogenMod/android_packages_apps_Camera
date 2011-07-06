@@ -20,6 +20,7 @@ import com.android.camera.R;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ public class PreviewFrameLayout extends ViewGroup {
 
     /** A callback to be invoked when the preview frame's size changes. */
     public interface OnSizeChangedListener {
-        public void onSizeChanged();
+        public void onSizeChanged(Rect newRect);
     }
 
     private double mAspectRatio = 4.0 / 3.0;
@@ -100,18 +101,19 @@ public class PreviewFrameLayout extends ViewGroup {
 
         int hSpace = ((r - l) - frameWidth) / 2;
         int vSpace = ((b - t) - frameHeight) / 2;
+        Rect rect = new Rect(l + hSpace, t + vSpace, r - hSpace, b - vSpace);
+
         mFrame.measure(
                 MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
-        mFrame.layout(l + hSpace, t + vSpace, r - hSpace, b - vSpace);
+        mFrame.layout(rect.left, rect.top, rect.right, rect.bottom);
 
         if (mFocus != null) {
             mFocus.redraw();
         }
 
         if (mSizeListener != null) {
-
-            mSizeListener.onSizeChanged();
+            mSizeListener.onSizeChanged(rect);
         }
     }
 
