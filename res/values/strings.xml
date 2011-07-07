@@ -218,6 +218,13 @@
     <string name="pref_camera_settings_long_focus">Long Focus</string>
     <string name="pref_camera_settings_long_focus_summary">Hold down button to focus, release to take picture</string>
 
+    <!-- Settings screen, Camera Gestures title -->
+    <string name="pref_camera_settings_gesture_title">Camera Gestures</string>
+
+    <!-- Settings screen, focus settings -->
+    <string name="pref_camera_long_press_shutter">Long press shutter</string>
+    <string name="pref_camera_long_press_shutter_summary">Long press the screen to take a picture or start recording</string>
+
 <!-- ********************** -->
 
     <!-- Default focus mode setting.-->

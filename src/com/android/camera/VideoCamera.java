@@ -33,6 +33,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera.CameraInfo;
@@ -1681,7 +1682,7 @@ public class VideoCamera extends BaseCamera
         }
     }
 
-    private class ZoomGestureListener extends GestureDetector.SimpleOnGestureListener {
+    private class CameraGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
@@ -1703,6 +1704,16 @@ public class VideoCamera extends BaseCamera
             mHeadUpDisplay.setZoomIndex(mZoomValue);
             return true;
         }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            // Use the shutter button to start recording if the setting is checked
+            SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
+            if (prefs.getBoolean("long_press_shutter", false)) {
+                mShutterButton.performClick();
+                mShutterButton.setPressed(false);
+            }
+        }
     }
 
     private void initializeZoom() {
@@ -1711,7 +1722,7 @@ public class VideoCamera extends BaseCamera
         // Maximum zoom value may change after preview size is set. Get the
         // latest parameters here.
         mZoomMax = mParameters.getMaxZoom();
-        mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
+        mGestureDetector = new GestureDetector(this, new CameraGestureListener());
 
         mCameraDevice.setZoomChangeListener(mZoomListener);
     }

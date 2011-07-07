@@ -34,6 +34,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     private static final String KEY_VOL_ZOOM = "vol_zoom_enabled";
     private static final String KEY_LONG_FOCUS = "long_focus_enabled";
     private static final String KEY_PRE_FOCUS = "pre_focus_enabled";
+    private static final String KEY_LONG_PRESS_SHUTTER = "long_press_shutter";
 
     CheckBoxPreference volUpShutter = null;
     CheckBoxPreference volDownShutter = null;
@@ -41,6 +42,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     CheckBoxPreference volZoom = null;
     CheckBoxPreference longFocus = null;
     CheckBoxPreference preFocus = null;
+    CheckBoxPreference longPressShutter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
         volZoom = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_ZOOM);
         longFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_LONG_FOCUS);
         preFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PRE_FOCUS);
+        longPressShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_LONG_PRESS_SHUTTER);
 
         checkBoxes();
 
@@ -69,6 +72,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             volZoom.setOnPreferenceChangeListener(this);
             longFocus.setOnPreferenceChangeListener(this);
             preFocus.setOnPreferenceChangeListener(this);
+            longPressShutter.setOnPreferenceChangeListener(this);
         } else {
             volUpShutter.setOnPreferenceChangeListener(null);
             volDownShutter.setOnPreferenceChangeListener(null);
@@ -76,6 +80,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             volZoom.setOnPreferenceChangeListener(null);
             longFocus.setOnPreferenceChangeListener(null);
             preFocus.setOnPreferenceChangeListener(null);
+            longPressShutter.setOnPreferenceChangeListener(null);
         }
     }
 

@@ -394,7 +394,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
 
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
-        mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
+        mGestureDetector = new GestureDetector(this, new CameraGestureListener());
 
         mCameraDevice.setZoomChangeListener(mZoomListener);
     }
@@ -428,7 +428,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         return result;
     }
 
-    private class ZoomGestureListener extends
+    private class CameraGestureListener extends
             GestureDetector.SimpleOnGestureListener {
 
         @Override
@@ -451,6 +451,23 @@ public class Camera extends BaseCamera implements View.OnClickListener,
 
             ((CameraHeadUpDisplay)mHeadUpDisplay).setZoomIndex(mZoomValue);
             return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            // Use the shutter button to take a picture if the setting is checked
+            SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
+            if (prefs.getBoolean("long_press_shutter", false)) {
+                doFocus(true);
+                if (mShutterButton.isInTouchMode()) {
+                    mShutterButton.requestFocusFromTouch();
+                } else {
+                     mShutterButton.requestFocus();
+                }
+                mShutterButton.setPressed(true);
+                mShutterButton.performClick();
+                mShutterButton.setPressed(false);
+            }
         }
     }
 
