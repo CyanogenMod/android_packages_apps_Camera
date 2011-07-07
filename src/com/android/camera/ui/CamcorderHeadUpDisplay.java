@@ -16,11 +16,11 @@
 
 package com.android.camera.ui;
 
-import android.content.Context;
-
 import com.android.camera.CameraSettings;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
+
+import android.content.Context;
 
 public class CamcorderHeadUpDisplay extends HeadUpDisplay {
 
@@ -47,8 +47,7 @@ public class CamcorderHeadUpDisplay extends HeadUpDisplay {
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_SCENE_MODE,
-                CameraSettings.KEY_PICTURE_SIZE,
-                CameraSettings.KEY_COLOR_EFFECT);
+                CameraSettings.KEY_PICTURE_SIZE);
 
         mOtherSettings = new OtherSettingsIndicator(context, prefs);
         mOtherSettings.setOnRestorePreferencesClickedRunner(new Runnable() {

@@ -568,8 +568,7 @@ public class VideoCamera extends ActivityBase
             CameraSettings.KEY_WHITE_BALANCE,
             CameraSettings.KEY_VIDEO_QUALITY,
             CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
-        final String[] OTHER_SETTING_KEYS = {CameraSettings.KEY_COLOR_EFFECT};
-        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS, OTHER_SETTING_KEYS);
+        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS, null);
         mIndicatorWheel.setListener(new MyIndicatorWheelListener());
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());
@@ -1775,14 +1774,6 @@ public class VideoCamera extends ActivityBase
             if (whiteBalance == null) {
                 whiteBalance = Parameters.WHITE_BALANCE_AUTO;
             }
-        }
-
-        // Set color effect parameter.
-        String colorEffect = mPreferences.getString(
-                CameraSettings.KEY_COLOR_EFFECT,
-                getString(R.string.pref_camera_coloreffect_default));
-        if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
-            mParameters.setColorEffect(colorEffect);
         }
 
         // Set zoom.
