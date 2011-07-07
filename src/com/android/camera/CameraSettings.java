@@ -234,6 +234,7 @@ public class CameraSettings {
                 List<String> focusModes = mParameters.getSupportedFocusModes();
                 boolean allowTouchFocus = isHtcCamera(mParameters) ||
                                           isNVCamera(mParameters)  ||
+                                          isSamsungCamera()        ||
                                           mParameters.get("mot-areas-to-focus") != null;
 
                 if (allowTouchFocus) {
@@ -542,6 +543,20 @@ public class CameraSettings {
 
     private static boolean isNVCamera(Parameters params) {
         return params.get("nv-mode-hint") != null;
+    }
+
+    private static boolean isSamsungCamera() {
+        boolean isSamsungDevice = false;
+        // Supported Samsung device models can be added in the array below
+        String[] values = new String[] {"GT-I9000"};
+
+        for (int pos = 0; pos < values.length; pos++) {
+            if(values[pos].equals(android.os.Build.MODEL)) {
+                isSamsungDevice = true;
+            }
+        }
+
+        return isSamsungDevice;
     }
 
     /**
