@@ -246,9 +246,12 @@ public abstract class BaseCamera extends NoSearchActivity
              */
             needsRect = true;
             paramName = "mot-areas-to-focus";
-        } else {
+        } else if (mParameters.get("touch-focus") != null) {
             needsRect = false;
             paramName = "touch-focus";
+        } else {
+            Log.e(LOG_TAG, "Touch-to-focus enabled, but no supported property found.");
+            throw new IllegalStateException();
         }
 
         if (needsRect) {
