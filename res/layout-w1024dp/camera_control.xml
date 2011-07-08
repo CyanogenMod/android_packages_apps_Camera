@@ -25,6 +25,8 @@
              this is circular dependency and is not allowed so it's very
              unfortunate that we have to hardcode the width here. -->
 
+        <include layout="@layout/review_thumbnail" />
+
         <com.android.camera.ui.IndicatorWheel android:id="@+id/indicator_wheel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

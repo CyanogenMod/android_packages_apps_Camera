@@ -19,9 +19,8 @@
 -->
 <resources>
     <dimen name="camera_control_width">245dp</dimen>
-    <dimen name="zoom_picker_margin_top">16dp</dimen>
-    <dimen name="zoom_picker_margin_right">36dp</dimen>
-    <dimen name="zoom_picker_distance">44dp</dimen>
+    <dimen name="thumbnail_margin_top">8dp</dimen>
+    <dimen name="thumbnail_margin_right">28dp</dimen>
     <dimen name="mode_switcher_margin_right">5dp</dimen>
     <dimen name="mode_switcher_margin_bottom">21dp</dimen>
     <dimen name="mode_switcher_inner_margin">10dp</dimen>
