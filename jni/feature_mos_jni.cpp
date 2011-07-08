@@ -71,11 +71,6 @@ bool high_res = false;
 bool quarter_res[NR] = {false,false};
 float thresh_still[NR] = {5.0f,0.0f};
 
-JNIEXPORT jstring JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_StringFromJNI( JNIEnv* env, jobject thiz )
-{
-    return (env)->NewStringUTF(buffer);
-}
-
 /* return current time in milliseconds*/
 
 #ifndef now_ms
@@ -243,7 +238,7 @@ void YUV420toYVU24(ImageType yvu24, ImageType yuv420sp, int width, int height)
     }
 }
 
-JNIEXPORT jboolean JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_SetSourceImageDimensions(JNIEnv* env, jobject thiz, jint width, jint height)
+JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_setSourceImageDimensions(JNIEnv* env, jobject thiz, jint width, jint height)
 {
     tWidth[HR] = width;
     tHeight[HR] = height;
@@ -258,11 +253,10 @@ JNIEXPORT jboolean JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_SetSourceImageDimen
     {
             tImage[HR][i] = ImageUtils::allocateImage(tWidth[HR], tHeight[HR], ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
     }
-    return 1;
 }
 
 
-JNIEXPORT jfloatArray JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_SetSourceImage(JNIEnv* env, jobject thiz, jbyteArray photo_data)
+JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceImage(JNIEnv* env, jobject thiz, jbyteArray photo_data)
 {
     double  t0, t1, time_c;
     t0 = now_ms();
@@ -311,25 +305,20 @@ JNIEXPORT jfloatArray JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_SetSourceImage(J
     return bytes;
 }
 
-JNIEXPORT jboolean JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_SetBlendingType(JNIEnv* env, jobject thiz, jint type)
+JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_setBlendingType(JNIEnv* env, jobject thiz, jint type)
 {
     blendingType = int(type);
-
-    return 1;
 }
 
-JNIEXPORT jboolean JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_Reset(JNIEnv* env, jobject thiz, jint type)
+JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_reset(JNIEnv* env, jobject thiz)
 {
     frame_number_HR = 0;
     frame_number_LR = 0;
 
-    blendingType = int(type);
     Init(LR,MAX_FRAMES_LR);
-
-    return 1;
 }
 
-JNIEXPORT jboolean JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_CreateMosaic(JNIEnv* env, jobject thiz, jboolean value)
+JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(JNIEnv* env, jobject thiz, jboolean value)
 {
     high_res = bool(value);
 
@@ -349,10 +338,9 @@ JNIEXPORT jboolean JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_CreateMosaic(JNIEnv
     {
         Finalize(LR);
     }
-
-    return 1;
 }
-JNIEXPORT jintArray JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_GetFinalMosaic(JNIEnv* env, jobject thiz)
+
+JNIEXPORT jintArray JNICALL Java_com_android_camera_panorama_Mosaic_getFinalMosaic(JNIEnv* env, jobject thiz)
 {
     int y,x;
     int width = mosaicWidth;
@@ -394,7 +382,7 @@ JNIEXPORT jintArray JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_GetFinalMosaic(JNI
     return bytes;
 }
 
-JNIEXPORT jbyteArray JNICALL Java_sri_ics_vt_SmartPhone_Mosaic_GetFinalMosaicNV21(JNIEnv* env, jobject thiz)
+JNIEXPORT jbyteArray JNICALL Java_com_android_camera_panorama_Mosaic_getFinalMosaicNV21(JNIEnv* env, jobject thiz)
 {
     int y,x;
     int width;
