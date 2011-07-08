@@ -16,14 +16,12 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.CameraSettings;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -48,12 +46,11 @@ public class OtherSettingsPopup extends AbstractSettingPopup
 
     private Context mContext;
     private Listener mListener;
-    private PreferenceGroup mPreferenceGroup;
     private ArrayList<HashMap<String, Object>> mListItem =
             new ArrayList<HashMap<String, Object>>();
 
     static public interface Listener {
-        public void onOtherSettingChanged();
+        public void onSettingChanged();
         public void onRestorePreferencesClicked();
     }
 
@@ -104,7 +101,6 @@ public class OtherSettingsPopup extends AbstractSettingPopup
     }
 
     public void initialize(PreferenceGroup group, String[] keys) {
-        mPreferenceGroup = group;
         // Prepare the setting items.
         for (int i = 0; i < keys.length; ++i) {
             HashMap<String, Object> map = new HashMap<String, Object>();
@@ -132,9 +128,10 @@ public class OtherSettingsPopup extends AbstractSettingPopup
         ((ListView) mSettingList).setSelector(android.R.color.transparent);
     }
 
+    @Override
     public void onSettingChanged() {
         if (mListener != null) {
-            mListener.onOtherSettingChanged();
+            mListener.onSettingChanged();
         }
     }
 

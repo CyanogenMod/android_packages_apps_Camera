@@ -27,13 +27,9 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -43,7 +39,7 @@ import java.util.ArrayList;
  * the shutter button.
  */
 public class IndicatorWheel extends ViewGroup implements
-        BasicSettingPopup.Listener, OtherSettingsPopup.Listener {
+        IndicatorButton.Listener, OtherSettingsPopup.Listener {
     private static final String TAG = "IndicatorWheel";
     // The width of the edges on both sides of the wheel, which has less alpha.
     private static final float EDGE_STROKE_WIDTH = 6f;
@@ -52,7 +48,6 @@ public class IndicatorWheel extends ViewGroup implements
     private static final int TIME_LAPSE_ARC_WIDTH = 6;
 
     private final int HIGHLIGHT_COLOR;
-    private final int DISABLED_COLOR;
     private final int TIME_LAPSE_ARC_COLOR;
 
     private Listener mListener;
@@ -66,30 +61,18 @@ public class IndicatorWheel extends ViewGroup implements
     private double mSectorInitialRadians[];
     private Paint mBackgroundPaint;
     private RectF mBackgroundRect;
-    // The index of the indicator that is currently selected.
-    private int mSelectedIndex = -1;
-    // The index of the indicator that has been just de-selected. If users click
-    // on the same indicator, we want to dismiss the popup window without
-    // opening it again.
-    private int mJustDeselectedIndex = -1;
+    // The index of the indicator that is being pressed. This starts from 0.
+    // -1 means no indicator is being pressed.
+    private int mPressedIndex = -1;
 
     // Time lapse recording variables.
     private int mTimeLapseInterval;  // in ms
     private long mRecordingStartTime = 0;
     private long mNumberOfFrames = 0;
 
-    private Context mContext;
     private PreferenceGroup mPreferenceGroup;
-    // Preference key of every setting (except other settings) on the wheel .
-    private ArrayList<String> mPrefKeys;
-    private String[] mOtherSettingPrefKeys;
-    // Popup window of every camera setting on the wheel.
-    private AbstractSettingPopup[] mSettingPopups;
-    private int mIndicatorCount;
-
-    private Animation mFadeIn, mFadeOut;
-    // The previous view that has the animation. The animation may have stopped.
-    private View mPrevAnimatingView;
+    private ArrayList<AbstractIndicatorButton> mIndicators =
+            new ArrayList<AbstractIndicatorButton>();
 
     static public interface Listener {
         public void onSharedPreferenceChanged();
@@ -103,10 +86,8 @@ public class IndicatorWheel extends ViewGroup implements
 
     public IndicatorWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
         Resources resources = context.getResources();
         HIGHLIGHT_COLOR = resources.getColor(R.color.review_control_pressed_color);
-        DISABLED_COLOR = resources.getColor(R.color.icon_disabled_color);
         TIME_LAPSE_ARC_COLOR = resources.getColor(R.color.time_lapse_arc);
         setWillNotDraw(false);
 
@@ -115,38 +96,35 @@ public class IndicatorWheel extends ViewGroup implements
         mBackgroundPaint.setAntiAlias(true);
 
         mBackgroundRect = new RectF();
-
-        mFadeIn = AnimationUtils.loadAnimation(mContext, R.anim.grow_fade_in_from_right);
-        mFadeOut = AnimationUtils.loadAnimation(mContext, R.anim.shrink_fade_out_from_right);
     }
 
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // If the event will go to shutter button, dismiss the popup window now.
-        // If not, handle it in onTouchEvent.
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            float x = ev.getX();
-            float y = ev.getY();
-            float shutterButtonX = mShutterButton.getX();
-            float shutterButtonY = mShutterButton.getY();
-            if (x >= shutterButtonX && y >= shutterButtonY
-                    && (x < shutterButtonX + mShutterButton.getWidth())
-                    && (y < shutterButtonY + mShutterButton.getHeight()))
-                dismissSettingPopup();
+    public boolean isInsideShutterButton(MotionEvent ev) {
+        float x = ev.getX();
+        float y = ev.getY();
+        float shutterButtonX = mShutterButton.getX();
+        float shutterButtonY = mShutterButton.getY();
+        if (x >= shutterButtonX && y >= shutterButtonY
+                && (x < shutterButtonX + mShutterButton.getWidth())
+                && (y < shutterButtonY + mShutterButton.getHeight())) {
+            return true;
         }
         return false;
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!isEnabled()) return false;
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (!onFilterTouchEventForSecurity(event)) return false;
 
-        if (mIndicatorCount == 0) return false;
-
-        // Check if any setting is pressed.
         int action = event.getAction();
-        if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
+
+        // Check if the event should be dispatched to the shutter button.
+        if (isInsideShutterButton(event)) {
+            if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
+                return mShutterButton.dispatchTouchEvent(event);
+            }
             return false;
         }
+        if (!isEnabled()) return false;
 
         double dx = event.getX() - mCenterX;
         double dy = mCenterY - event.getY();
@@ -158,47 +136,60 @@ public class IndicatorWheel extends ViewGroup implements
             if (delta < 0) delta += Math.PI * 2;
             // Check which sector is pressed.
             if (delta > mSectorInitialRadians[0]) {
-                for (int i = 0; i < mIndicatorCount; i++) {
+                for (int i = 0; i < getChildCount() - 1; i++) {
                     if (delta < mSectorInitialRadians[i + 1]) {
-                        // If the touch is moving around the same indicator with
-                        // popup opened, return now to avoid redundent works.
-                        if (action == MotionEvent.ACTION_MOVE && (mSelectedIndex == i)) {
-                            return false;
-                        }
-
-                        int selectedIndex = mSelectedIndex;
-                        dismissSettingPopup();
-
-                        // Do nothing if scene mode overrides the setting.
-                        View child = getChildAt(i + 1);  // first child is shutter button
-                        if (child instanceof IndicatorButton) {
-                            if (((IndicatorButton) child).isOverridden()) {
-                                // Do not notify in ACTION_MOVE to avoid lots of
-                                // toast being displayed.
-                                if (action == MotionEvent.ACTION_DOWN && mListener != null) {
-                                    mListener.onOverriddenPreferencesClicked();
+                        View child = getChildAt(i + 1);
+                        if (action == MotionEvent.ACTION_DOWN) {
+                            if (child instanceof AbstractIndicatorButton) {
+                                AbstractIndicatorButton b = (AbstractIndicatorButton) child;
+                                // If the same setting is pressed when the popup is open,
+                                // do not dismiss it because it will be handled in the child.
+                                if (b.getPopupWindow() == null) {
+                                    dismissSettingPopup();
                                 }
-                                return true;
+                            } else {
+                                // Zoom button or back/front camera switch is pressed.
+                                dismissSettingPopup();
                             }
-                        }
-                        if (action == MotionEvent.ACTION_DOWN
-                                && (selectedIndex == i) && (mJustDeselectedIndex != i)) {
-                            // The same indicator is pressed with popup opened.
-                            mJustDeselectedIndex = i;
-                        } else {
-                            if ((mJustDeselectedIndex != i)
-                                    || (selectedIndex == -1 && action == MotionEvent.ACTION_DOWN)) {
-                                showSettingPopup(i);
-                                mJustDeselectedIndex = -1;
+                            child.dispatchTouchEvent(event);
+                            invalidate();
+                            mPressedIndex = i;
+                        } else if (action == MotionEvent.ACTION_UP) {
+                            child.dispatchTouchEvent(event);
+                            invalidate();
+                            mPressedIndex = -1;
+                        } else if (action == MotionEvent.ACTION_MOVE) {
+                            // Dispatch the event if the location across a sector.
+                            if (mPressedIndex != -1 && i != mPressedIndex) {
+                                dismissSettingPopup();
+                                // Cancel the previous one.
+                                View cancelChild = getChildAt(mPressedIndex + 1);
+                                event.setAction(MotionEvent.ACTION_CANCEL);
+                                cancelChild.dispatchTouchEvent(event);
+                                // Send down to the current one.
+                                event.setAction(MotionEvent.ACTION_DOWN);
+                                child.dispatchTouchEvent(event);
+                                event.setAction(action); // Set the action back
+                                invalidate();
                             }
+                            // The children do not care about ACTION_MOVE. Besides, the press
+                            // state will be wrong because of View.pointInView.
+                            mPressedIndex = i;
                         }
                         return true;
                     }
                 }
             }
         }
+        // The event is not on any of the child.
         dismissSettingPopup();
-        mJustDeselectedIndex = -1;
+        if (mPressedIndex != -1) {
+            View cancelChild = getChildAt(mPressedIndex + 1);
+            event.setAction(MotionEvent.ACTION_CANCEL);
+            cancelChild.dispatchTouchEvent(event);
+            mPressedIndex = -1;
+        }
+        invalidate();
         return false;
     }
 
@@ -211,12 +202,10 @@ public class IndicatorWheel extends ViewGroup implements
     }
 
     private void removeIndicators() {
-        // Remove everything but the shutter button.
-        int count = getChildCount();
-        if (count > 1) {
-            removeViews(1, count - 1);
+        for (View v: mIndicators) {
+            removeView(v);
         }
-        mIndicatorCount = 0;
+        mIndicators.clear();
     }
 
     @Override
@@ -229,7 +218,7 @@ public class IndicatorWheel extends ViewGroup implements
         }
 
         // Measure myself.
-        int desiredWidth = (int)(mShutterButton.getMeasuredWidth() * 3);
+        int desiredWidth = mShutterButton.getMeasuredWidth() * 3;
         int desiredHeight = (int)(mShutterButton.getMeasuredHeight() * 4.5) + 2;
         int widthMode = MeasureSpec.getMode(widthSpec);
         int heightMode = MeasureSpec.getMode(heightSpec);
@@ -316,20 +305,37 @@ public class IndicatorWheel extends ViewGroup implements
         invalidate();
     }
 
+    private int getSelectedIndicatorIndex() {
+        for (int i = 0; i < mIndicators.size(); i++) {
+            AbstractIndicatorButton b = mIndicators.get(i);
+            if (b.getPopupWindow() != null) {
+                return indexOfChild(b);
+            }
+        }
+        return -1;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         // Draw highlight.
         float delta = mStrokeWidth * 0.5f;
         float radius = (float) (mWheelRadius + mStrokeWidth * 0.5 + EDGE_STROKE_WIDTH);
-        mBackgroundRect.set((float)(mCenterX - radius),
-                (float)(mCenterY - radius),
-                (float)(mCenterX + radius),
-                (float)(mCenterY + radius));
-        if (mSelectedIndex >= 0) {
+        mBackgroundRect.set(mCenterX - radius, mCenterY - radius, mCenterX + radius,
+                 mCenterY + radius);
+
+        int selectedIndex = getSelectedIndicatorIndex();
+
+        // Draw the highlight arc if an indicator is selected or being pressed.
+        if (selectedIndex >= 0 || mPressedIndex >= 0) {
             int count = getChildCount();
             float initialDegrees = 90.0f;
             float intervalDegrees = (count <= 2) ? 0.0f : 180.0f / (count - 2);
-            float degree = initialDegrees + intervalDegrees * mSelectedIndex;
+            float degree;
+            if (selectedIndex >= 0) {
+                degree = initialDegrees + intervalDegrees * (selectedIndex - 1);
+            } else {
+                degree = initialDegrees + intervalDegrees * mPressedIndex;
+            }
             mBackgroundPaint.setStrokeWidth(HIGHLIGHT_WIDTH);
             mBackgroundPaint.setStrokeCap(Paint.Cap.ROUND);
             mBackgroundPaint.setColor(HIGHLIGHT_COLOR);
@@ -369,71 +375,35 @@ public class IndicatorWheel extends ViewGroup implements
         super.onDraw(canvas);
     }
 
-    // Scene mode may override other camera settings (ex: flash mode).
-    private void overrideSettings(String key, String value) {
-        int count = getChildCount();
-        for (int j = 1; j < count; j++) {
-            View v = getChildAt(j);
-            if (v instanceof IndicatorButton) {  // skip the button of "other settings"
-                IndicatorButton indicator = (IndicatorButton) v;
-                if (key.equals(indicator.getKey())) {
-                    indicator.overrideSettings(value);
-                    setEnabled(indicator, (value == null));
-                    break;
-                }
-            }
-        }
-    }
-
-    // Sets/unsets highlight on the specified setting icon
-    private void setHighlight(int index, boolean enabled) {
-        if ((index < 0) || (index >= getChildCount() - 1)) return;
-        ImageView child = (ImageView) getChildAt(index + 1);
-        if (enabled) {
-            child.setColorFilter(HIGHLIGHT_COLOR);
-        } else {
-            child.clearColorFilter();
-        }
+    @Override
+    public boolean shouldDelayChildPressedState() {
+        // Return false so the pressed feedback of the back/front camera switch
+        // can be showed right away.
+        return false;
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        int count = getChildCount();
-        for (int i = 1; i < count; i++) {
-            setEnabled((ImageView) getChildAt(i), enabled);
-        }
-    }
-
-    private void setEnabled(ImageView view, boolean enabled) {
-        // Do not enable the button if it is overridden by scene mode.
-        if ((view instanceof IndicatorButton) && ((IndicatorButton) view).isOverridden()) {
-            enabled = false;
-        }
-
-        // Don't do anything if state is not changed so not to interfere with
-        // the "highlight" state.
-        if (view.isEnabled() ^ enabled) {
-            view.setEnabled(enabled);
-            if (enabled) {
-                view.clearColorFilter();
-            } else {
-                view.setColorFilter(DISABLED_COLOR);
-            }
+        // Do not disable shutter button because it will block its performClick.
+        for (int i = 1; i < getChildCount(); i++) {
+            getChildAt(i).setEnabled(enabled);
         }
     }
 
     private void addIndicator(Context context, IconListPreference pref) {
-        addView(new IndicatorButton(context, pref));
-        mIndicatorCount++;
+        IndicatorButton b = new IndicatorButton(context, pref);
+        b.setSettingChangedListener(this);
+        addView(b);
+        mIndicators.add(b);
     }
 
-    private void addIndicator(Context context, int resId) {
-        ImageView b = new ImageView(context);
-        b.setImageResource(resId);
-        b.setClickable(false);
+    private void addOtherSettingIndicator(Context context, int resId, String[] keys) {
+        OtherSettingIndicatorButton b = new OtherSettingIndicatorButton(context, resId,
+                mPreferenceGroup, keys);
+        b.setSettingChangedListener(this);
         addView(b);
-        mIndicatorCount++;
+        mIndicators.add(b);
     }
 
     public void initialize(Context context, PreferenceGroup group,
@@ -441,8 +411,6 @@ public class IndicatorWheel extends ViewGroup implements
         // Reset the variables and states.
         dismissSettingPopup();
         removeIndicators();
-        mSelectedIndex = -1;
-        mPrefKeys = new ArrayList<String>();
 
         // Initialize all variables and icons.
         mPreferenceGroup = group;
@@ -450,101 +418,47 @@ public class IndicatorWheel extends ViewGroup implements
             IconListPreference pref = (IconListPreference) group.findPreference(keys[i]);
             if (pref != null) {
                 addIndicator(context, pref);
-                mPrefKeys.add(keys[i]);
             }
         }
 
-        int len = mPrefKeys.size();
         // Add other settings indicator.
-        mOtherSettingPrefKeys = otherSettingKeys;
-        if (mOtherSettingPrefKeys != null) {
-            addIndicator(context, R.drawable.ic_viewfinder_settings);
-            len++;
+        if (otherSettingKeys != null) {
+            addOtherSettingIndicator(context, R.drawable.ic_viewfinder_settings, otherSettingKeys);
         }
-        mSettingPopups = new AbstractSettingPopup[len];
 
         requestLayout();
     }
 
-    public void onOtherSettingChanged() {
-        if (mListener != null) {
-            mListener.onSharedPreferenceChanged();
-        }
-    }
-
+    @Override
     public void onRestorePreferencesClicked() {
         if (mListener != null) {
             mListener.onRestorePreferencesClicked();
         }
     }
 
+    @Override
     public void onSettingChanged() {
-        // Update indicator.
-        IndicatorButton indicator = (IndicatorButton) getChildAt(mSelectedIndex + 1);
-        indicator.reloadPreference();
         if (mListener != null) {
             mListener.onSharedPreferenceChanged();
         }
     }
 
-    private void initializeSettingPopup(int index) {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.app_root);
-        if (index < mPrefKeys.size()) {
-            IconListPreference pref = (IconListPreference)
-                    mPreferenceGroup.findPreference(mPrefKeys.get(index));
-
-            BasicSettingPopup popup = (BasicSettingPopup) inflater.inflate(
-                    R.layout.basic_setting_popup, root, false);
-            mSettingPopups[index] = popup;
-            popup.setSettingChangedListener(this);
-            popup.initialize(pref);
-        } else {
-            // Initialize other settings popup window.
-            OtherSettingsPopup popup = (OtherSettingsPopup) inflater.inflate(
-                    R.layout.other_setting_popup, root, false);
-            mSettingPopups[index] = popup;
-            popup.setSettingChangedListener(this);
-            popup.initialize(mPreferenceGroup, mOtherSettingPrefKeys);
-        }
-        root.addView(mSettingPopups[index]);
-    }
-
-    private void showSettingPopup(int index) {
-        if (index == mSelectedIndex) return;
-
-        if (mSettingPopups[index] == null) initializeSettingPopup(index);
-
-        if (mPrevAnimatingView != null) mPrevAnimatingView.clearAnimation();
-        mSettingPopups[index].startAnimation(mFadeIn);
-        mSettingPopups[index].setVisibility(View.VISIBLE);
-        mPrevAnimatingView = mSettingPopups[index];
-        setHighlight(index, true);
-        mSelectedIndex = index;
-        invalidate();
-    }
-
     public boolean dismissSettingPopup() {
-        if (mSelectedIndex >= 0) {
-            if (mPrevAnimatingView != null) mPrevAnimatingView.clearAnimation();
-            mSettingPopups[mSelectedIndex].startAnimation(mFadeOut);
-            mSettingPopups[mSelectedIndex].setVisibility(View.INVISIBLE);
-            mPrevAnimatingView = mSettingPopups[mSelectedIndex];
-            setHighlight(mSelectedIndex, false);
-            mSelectedIndex = -1;
-            invalidate();
-            return true;
+        for (AbstractIndicatorButton v: mIndicators) {
+            if (v.dismissPopup()) {
+                invalidate();
+                return true;
+            }
         }
         return false;
     }
 
-    public View getActivePopupWindow() {
-        if (mSelectedIndex >= 0) {
-            return mSettingPopups[mSelectedIndex];
-        } else {
-            return null;
+    public View getActiveSettingPopup() {
+        for (AbstractIndicatorButton v: mIndicators) {
+            View result = v.getPopupWindow();
+            if (result != null) return result;
         }
+        return null;
     }
 
     // Scene mode may override other camera settings (ex: flash mode).
@@ -553,26 +467,15 @@ public class IndicatorWheel extends ViewGroup implements
             throw new IllegalArgumentException();
         }
 
-        // Override the setting indicator.
-        for (int i = 0; i < keyvalues.length; i += 2) {
-            String key = keyvalues[i];
-            String value = keyvalues[i + 1];
-            overrideSettings(key, value);
-        }
-
-        // Override other settings.
-        if (mOtherSettingPrefKeys != null) {
-            int index = mPrefKeys.size();
-            if (mSettingPopups[index] == null) initializeSettingPopup(index);
-            OtherSettingsPopup popup = (OtherSettingsPopup) mSettingPopups[index];
-            popup.overrideSettings(keyvalues);
+        for (AbstractIndicatorButton b: mIndicators) {
+            b.overrideSettings(keyvalues);
         }
     }
 
     public void reloadPreferences() {
         mPreferenceGroup.reloadValue();
-        for (AbstractSettingPopup popup: mSettingPopups) {
-            if (popup != null) popup.reloadPreference();
+        for (AbstractIndicatorButton b: mIndicators) {
+            b.reloadPreferences();
         }
     }
 }

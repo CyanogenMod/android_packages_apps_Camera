@@ -540,9 +540,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private class PopupGestureListener
             extends GestureDetector.SimpleOnGestureListener {
+        @Override
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
-            View popup = mIndicatorWheel.getActivePopupWindow();
+            View popup = mIndicatorWheel.getActiveSettingPopup();
             if (popup == null) return false;
 
 
@@ -1125,11 +1126,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         loadCameraPreferences();
 
         final String[] SETTING_KEYS = {
-                CameraSettings.KEY_FLASH_MODE,
+                CameraSettings.KEY_FLASH_MODE};
+        final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_WHITE_BALANCE,
                 CameraSettings.KEY_COLOR_EFFECT,
-                CameraSettings.KEY_SCENE_MODE};
-        final String[] OTHER_SETTING_KEYS = {
+                CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_RECORD_LOCATION,
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_EXPOSURE,

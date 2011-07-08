@@ -25,15 +25,6 @@
              this is circular dependency and is not allowed so it's very
              unfortunate that we have to hardcode the width here. -->
 
-        <include android:id="@+id/zoom_picker"
-                layout="@layout/zoom_picker"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/zoom_picker_margin_top"
-                android:layout_marginRight="@dimen/zoom_picker_margin_right"/>
-
         <com.android.camera.ui.IndicatorWheel android:id="@+id/indicator_wheel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -47,6 +38,22 @@
                         android:focusable="true"
                         android:src="@drawable/btn_ic_camera_shutter"
                         android:background="@drawable/btn_shutter" />
+            <Button android:id="@+id/zoom_increment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_zoom_in"
+                    android:visibility="gone" />
+
+            <Button android:id="@+id/zoom_decrement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_zoom_out"
+                    android:visibility="gone" />
+
+            <com.android.camera.ui.CameraPicker android:id="@+id/camera_picker"
+                    android:clickable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
         </com.android.camera.ui.IndicatorWheel>
 
         <com.android.camera.SwitcherSet android:id="@+id/camera_switch"
@@ -80,13 +87,5 @@
                     android:clickable="false"
                     android:background="@drawable/btn_ic_mode_switch_camera"/>
         </com.android.camera.SwitcherSet>
-        <com.android.camera.ui.CameraPicker android:id="@+id/camera_picker"
-                android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_toLeftOf="@id/camera_switch"
-                android:layout_marginRight="@dimen/camera_switcher_margin_right"
-                android:layout_marginBottom="@dimen/camera_switcher_margin_bottom" />
 </RelativeLayout>
 
