@@ -547,10 +547,12 @@ public class CameraSettings {
             return;
         Log.v(TAG,"Enabling 1080p@30fps on nvcamera");
         // Not listed as a supported parameter, force it
-        params.set("nv-sensor-mode", "3264x1224x30"); 
+        params.set("nv-sensor-mode", "3264x2448x30"); // only cosmetic change. resolution has no effect here
         // Default is 1600x1200, which causes nv-sensor-mode to be 
         // reset to 3264x2448x15 when attempting Full HD recording.
-        params.setPreviewSize(1280, 720); 
+        // Forcing preview to 1280x720 removes zoom menu at any quality setting, because 1280x720 does not support zoom. 
+        // Use the next preview setting that supports zoom (800x480)
+        params.setPreviewSize(800, 480); 
         params.set("preview-frame-rate", "30"); 
     }
 
