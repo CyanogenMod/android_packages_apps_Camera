@@ -232,11 +232,7 @@ public class CameraSettings {
                 filterUnsupportedOptions(group, focusMode, new ArrayList<String>());
             } else {
                 List<String> focusModes = mParameters.getSupportedFocusModes();
-                boolean allowTouchFocus = mParameters.get("touch-focus") != null ||       /* HTC */
-                                          mParameters.get("nv-areas-to-focus") != null || /* Nvidia */
-                                          mParameters.get("mot-areas-to-focus") != null;  /* Motorola */
-
-                if (allowTouchFocus) {
+                if (touchFocusPossible()) {
                     focusModes.add(FOCUS_MODE_TOUCH);
                 }
                 filterUnsupportedOptions(group, focusMode, focusModes);
@@ -265,6 +261,26 @@ public class CameraSettings {
              filterUnsupportedOptions(group,
                      autoExposure, mParameters.getSupportedAutoexposure());
          }
+    }
+
+    private boolean touchFocusPossible() {
+        if (mParameters.get("taking-picture-zoom") != null) {
+            /* HTC camera, which always have touch-to-focus support. Unfortunately
+             * the touch-to-focus parameter 'touch-focus' is not present at initialization
+             * time, which is why we need to resort to another HTC specific parameter
+             */
+            return true;
+        }
+        if (mParameters.get("nv-areas-to-focus") != null) {
+            /* Nvidia camera with touch-to-focus support */
+            return true;
+        }
+        if (mParameters.get("mot-areas-to-focus") != null) {
+            /* Motorola camera with touch-to-focus support */
+            return true;
+        }
+
+        return false;
     }
 
     private void buildExposureCompensation(
