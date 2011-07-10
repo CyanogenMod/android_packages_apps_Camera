@@ -203,7 +203,7 @@ public abstract class BaseCamera extends NoSearchActivity
     protected void clearTouchFocusAEC() {
         if (mParameters.get("touch-aec") != null) {
             mParameters.set("touch-aec", "off");
-            mParameters.set("touch-focus", "");
+            mParameters.set(CameraSettings.getTouchFocusParameterName(), "");
         }
     }
 
@@ -211,8 +211,6 @@ public abstract class BaseCamera extends NoSearchActivity
     private void updateTouchFocus(int x, int y) {
         Log.d(LOG_TAG, "updateTouchFocus x=" + x + " y=" + y);
 
-        boolean needsRect;
-        String paramName;
         int width = mFocusRectangle.getWidth();
         Size previewSize = mParameters.getPreviewSize();
 
@@ -240,37 +238,18 @@ public abstract class BaseCamera extends NoSearchActivity
 
         Log.d(LOG_TAG, "determined focus rect as " + focusRect);
 
-        if (mParameters.get("nv-max-areas-to-focus") != null) {
-            /* Example region log output (for approx middle):
-             * NvOmxCameraSettings( 1029): Setting focus region #1 (left,top,right,bottom):
-             * (0xffffe400 (-0.109375), 0xffffcdde (-0.195831), 0x2400 (0.140625), 0x2333 (0.137497))
-             *
-             * - The region is divided into four quadrants, coords go from -1 to 1 with 0 being the 
-             *   axis intersection
-             * Arguments to configure a region are: 
+	final String paramName = CameraSettings.getTouchFocusParameterName();
+
+        if (CameraSettings.getTouchFocusNeedsRect()) {
+            /*
+	     * Arguments to configure a region are:
              *      regionId,x-for-ul-corner,y-for-ul-corner,width,height
              */
-            needsRect = true;
-            paramName = "nv-areas-to-focus";
-        } else if (mParameters.get("mot-max-areas-to-focus") != null) {
-            /* Motorola's libcamera uses the same format as Nvidia's:
-             * regionId,left,top,width,height
-             */
-            needsRect = true;
-            paramName = "mot-areas-to-focus";
-        } else if (mParameters.get("touch-focus") != null) {
-            needsRect = false;
-            paramName = "touch-focus";
-        } else {
-            Log.e(LOG_TAG, "Touch-to-focus enabled, but no supported property found.");
-            throw new IllegalStateException();
-        }
-
-        if (needsRect) {
             mParameters.set(paramName, "1," +
                     focusRect.left + "," + focusRect.top + "," +
                     focusRect.width() + "," + focusRect.height());
         } else {
+	    /* use center point */
             mParameters.set(paramName, focusRect.centerX() + "," + focusRect.centerY());
         }
 
