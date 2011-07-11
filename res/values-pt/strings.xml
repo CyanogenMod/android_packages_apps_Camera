@@ -205,4 +205,5 @@
     <string name="pref_camera_scenemode_entry_duskdawn">Pôr do Sol</string>
     <string name="pref_camera_scenemode_entry_fallcolor">Outono-Cor</string>
     <string name="pref_camera_scenemode_entry_text">Texto</string>
+    <string name="pref_camera_autoexposure_entry_matrixmetering">Medição em matriz</string>
 </resources>
