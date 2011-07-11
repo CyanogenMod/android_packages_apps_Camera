@@ -205,4 +205,17 @@
     <string name="pref_camera_scenemode_entry_duskdawn">Pôr do Sol</string>
     <string name="pref_camera_scenemode_entry_fallcolor">Outono-Cor</string>
     <string name="pref_camera_scenemode_entry_text">Texto</string>
+    <string name="pref_camera_autoexposure_entry_matrixmetering">Medição em matriz</string>
+    <string name="pref_camera_other_settings_title">Outras Configurações</string>
+    <string name="pref_camera_timer_duration">Duração do cronômetro</string>
+    <string name="pref_camera_timer_duration_summary">Selecione a duração para o cronômetro da câmera</string>
+    <string name="pref_camera_capturemode_title">Modo de captura</string>
+    <string name="pref_camera_capturemode_entry_default">Imediatamente</string>
+    <string name="pref_camera_capturemode_entry_timer">Cronômetro</string>
+    <string name="pref_camera_capturemode_entry_10">10 segundos</string>
+    <string name="pref_camera_capturemode_entry_20">20 segundos</string>
+    <string name="pref_camera_capturemode_entry_30">30 segundos</string>
+    <string name="pref_camera_capturemode_entry_40">40 segundos</string>
+    <string name="pref_camera_capturemode_entry_50">50 segundos</string>
+    <string name="pref_camera_capturemode_entry_60">60 segundos</string>
 </resources>
