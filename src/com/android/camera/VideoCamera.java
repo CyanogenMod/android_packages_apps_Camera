@@ -1915,8 +1915,8 @@ public class VideoCamera extends ActivityBase
         }
         if (mPreviewBorder != null) {
             mPreviewBorder.setBackgroundResource(enable
-                    ? R.drawable.border_preview_time_lapse_holo
-                    : R.drawable.border_preview_holo);
+                    ? R.drawable.border_preview_time_lapse
+                    : R.drawable.border_preview);
         }
 
     }
