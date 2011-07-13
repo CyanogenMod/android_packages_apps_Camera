@@ -138,6 +138,13 @@
     <string name="pref_camera_search_shutter">Tasto cerca</string>
     <string name="pref_camera_search_shutter_summary">Utilizza il tasto cerca per scattare le foto</string>
 
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">Scatta con tasto accensione</string>
+
+    <!-- More Settings screen, power button -->
+    <string name="pref_camera_power_shutter">Tasto accensione</string>
+    <string name="pref_camera_power_shutter_summary">Utilizza il tasto accensione per scattare le foto o riprender i video</string>
+
     <!-- Settings screen, custom focus title -->
     <string name="pref_camera_settings_focus_title">Focus</string>
 
