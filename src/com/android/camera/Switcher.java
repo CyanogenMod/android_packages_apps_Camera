@@ -202,15 +202,4 @@ public class Switcher extends ImageView implements View.OnTouchListener {
         event.offsetLocation(getLeft(), getTop());
         return true;
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        Drawable drawable = getDrawable();
-        if (enabled) {
-            drawable.clearColorFilter();
-        } else {
-            drawable.setColorFilter(DISABLED_COLOR, PorterDuff.Mode.SRC_ATOP);
-        }
-    }
 }

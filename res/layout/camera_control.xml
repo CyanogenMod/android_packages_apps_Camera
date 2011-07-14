@@ -43,7 +43,7 @@
         <com.android.camera.ui.RotateImageView android:id="@+id/video_switch_icon"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:src="@drawable/btn_ic_mode_switch_video"/>
+                android:src="@drawable/btn_ic_mode_switch_video_normal"/>
         <com.android.camera.Switcher android:id="@+id/switcher"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
@@ -53,6 +53,6 @@
                 android:id="@+id/camera_switch_icon"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:src="@drawable/btn_ic_mode_switch_camera"/>
+                android:src="@drawable/btn_ic_mode_switch_camera_normal"/>
     </com.android.camera.SwitcherSet>
 </RelativeLayout>
