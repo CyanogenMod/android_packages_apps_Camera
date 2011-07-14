@@ -43,8 +43,8 @@ public class ZoomPicker {
     private final Formatter mFormatter = new Formatter(mBuilder);
     private final Object[] mFormatterArgs = new Object[1];
     private String mZoomText;
-    private Button mIncrementButton;
-    private Button mDecrementButton;
+    private View mIncrementButton;
+    private View mDecrementButton;
 
     // The state of zoom button.
     public static final int ZOOM_IN = 0;
@@ -55,7 +55,6 @@ public class ZoomPicker {
     private final Runnable mRunnable = new Runnable() {
         public void run() {
             if (mIncrement) {
-                mIncrementButton.setBackgroundResource(R.drawable.button_zoom_in_longpressed_holo);
                 if (mSmoothZoomSupported) {
                     if (mZoomIndex != mZoomMax && mListener != null) {
                         mListener.onZoomStateChanged(ZOOM_IN);
@@ -64,7 +63,6 @@ public class ZoomPicker {
                     mHandler.postDelayed(this, 65);
                 }
             } else if (mDecrement) {
-                mDecrementButton.setBackgroundResource(R.drawable.button_zoom_out_longpressed_holo);
                 if (mSmoothZoomSupported) {
                     if (mZoomIndex != 0 && mListener != null) {
                         mListener.onZoomStateChanged(ZOOM_OUT);
@@ -76,7 +74,7 @@ public class ZoomPicker {
         }
     };
 
-    public ZoomPicker(Context context, Button increment, Button decrement, TextView zoomText) {
+    public ZoomPicker(Context context, View increment, View decrement, TextView zoomText) {
         mZoomText = context.getString(R.string.zoom_text);
         mHandler = new Handler();
 
@@ -92,7 +90,6 @@ public class ZoomPicker {
                     }
                 } else if (action == MotionEvent.ACTION_UP
                         || action == MotionEvent.ACTION_CANCEL) {
-                    mIncrementButton.setBackgroundResource(R.drawable.btn_zoom_in);
                     mIncrement = false;
                     if (mSmoothZoomSupported) {
                         if (mListener != null) mListener.onZoomStateChanged(ZOOM_STOP);
@@ -114,7 +111,6 @@ public class ZoomPicker {
                     }
                 } else if (action == MotionEvent.ACTION_UP
                         || action == MotionEvent.ACTION_CANCEL) {
-                    mDecrementButton.setBackgroundResource(R.drawable.btn_zoom_out);
                     mDecrement = false;
                     if (mSmoothZoomSupported) {
                         if (mListener != null) mListener.onZoomStateChanged(ZOOM_STOP);

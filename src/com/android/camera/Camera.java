@@ -606,8 +606,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void initializeZoomPicker() {
-        Button zoomIncrement = (Button) findViewById(R.id.zoom_increment);
-        Button zoomDecrement = (Button) findViewById(R.id.zoom_decrement);
+        View zoomIncrement = findViewById(R.id.zoom_increment);
+        View zoomDecrement = findViewById(R.id.zoom_decrement);
         TextView zoomRatio = (TextView) findViewById(R.id.zoom_ratio);
         if (zoomIncrement != null && zoomDecrement != null && mParameters.isZoomSupported()) {
             mZoomPicker = new ZoomPicker(this, zoomIncrement, zoomDecrement, zoomRatio);
@@ -1236,6 +1236,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mCameraSwitchIcon != null) mCameraSwitchIcon.setDegree(degree);
         if (mVideoSwitchIcon != null) mVideoSwitchIcon.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
+        if (mIndicatorWheel != null) mIndicatorWheel.setDegree(degree);
     }
 
     @Override

@@ -40,16 +40,18 @@
                         android:focusable="true"
                         android:src="@drawable/btn_ic_camera_shutter"
                         android:background="@drawable/btn_shutter" />
-            <Button android:id="@+id/zoom_increment"
+            <com.android.camera.ui.RotateImageView android:id="@+id/zoom_increment"
+                    android:clickable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn_zoom_in"
+                    android:src="@drawable/btn_zoom_in"
                     android:visibility="gone" />
 
-            <Button android:id="@+id/zoom_decrement"
+            <com.android.camera.ui.RotateImageView android:id="@+id/zoom_decrement"
+                    android:clickable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn_zoom_out"
+                    android:src="@drawable/btn_zoom_out"
                     android:visibility="gone" />
 
             <com.android.camera.ui.CameraPicker android:id="@+id/camera_picker"
