@@ -90,7 +90,7 @@
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Szenenmodus"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatisch"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Aktion"</string>
-    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Portrait"</string>
+    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Porträt"</string>
     <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"Landschaft"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nachtaufnahme"</string>
     <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"Nachtportrait"</string>
