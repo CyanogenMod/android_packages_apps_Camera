@@ -24,4 +24,5 @@
     <color name="review_control_pressed_color">#FF6899FF</color>
     <color name="icon_disabled_color">#DD777777</color>
     <color name="time_lapse_arc">#FFC5C5C5</color>
+    <color name="dark_gray">#151515</color>
 </resources>
