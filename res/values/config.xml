@@ -34,4 +34,7 @@
 
 	<!-- High Framerate 1080p for Nvidia Cameras -->
 	<bool name="supportsNvHighBitrateFullHD">false</bool>
+	
+	<!-- Non standard front facing camera orientation -->
+	<bool name="has_non_standard_ffc_orientation">false</bool>
 </resources>

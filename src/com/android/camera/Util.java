@@ -320,11 +320,29 @@ public class Util {
         int degrees = getDisplayRotation(activity);
         int result;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;  // compensate the mirror
+            boolean hasNonStandardFFC = activity.getResources().getBoolean(
+                    R.bool.has_non_standard_ffc_orientation);
+            if (hasNonStandardFFC && info.orientation == 90) {
+                result = getFacingBackCameraOrientation(degrees, info.orientation);
+            } else {
+                result = getFacingFrontCameraOrientation(degrees, info.orientation);
+            }
         } else {  // back-facing
-            result = (info.orientation - degrees + 360) % 360;
+            result = getFacingBackCameraOrientation(degrees, info.orientation);
         }
         camera.setDisplayOrientation(result);
+    }
+
+    public static int getFacingFrontCameraOrientation(int displayRotation, int cameraOrientation) {
+        int result;
+
+        result = (cameraOrientation + displayRotation) % 360;
+        result = (360 - result) % 360; // compensate the mirror
+
+        return result;
+    }
+
+    public static int getFacingBackCameraOrientation(int displayRotation, int cameraOrientation) {
+        return (cameraOrientation - displayRotation + 360) % 360;
     }
 }
