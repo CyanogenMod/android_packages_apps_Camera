@@ -27,7 +27,7 @@ import android.widget.ImageView;
 /**
  * A view for switching the front/back camera.
  */
-public class CameraPicker extends ImageView implements View.OnClickListener {
+public class CameraPicker extends RotateImageView implements View.OnClickListener {
     private Listener mListener;
     private ListPreference mPreference;
     private CharSequence[] mCameras;

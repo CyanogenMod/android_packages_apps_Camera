@@ -52,8 +52,16 @@ public class RotateImageView extends ImageView {
         super(context, attrs);
     }
 
+    public RotateImageView(Context context) {
+        super(context);
+    }
+
     public void enableAnimation(boolean enable) {
         mEnableAnimation = enable;
+    }
+
+    protected int getDegree() {
+        return mTargetDegree;
     }
 
     // Rotate the view counter-clockwise

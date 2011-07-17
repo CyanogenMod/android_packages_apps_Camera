@@ -111,6 +111,16 @@ public class IndicatorWheel extends ViewGroup implements
         return false;
     }
 
+    public void setDegree(int degree) {
+        int count = getChildCount();
+        for (int i = 0 ; i < count ; ++i) {
+            View view = getChildAt(i);
+            if (view instanceof RotateImageView) {
+                ((RotateImageView) view).setDegree(degree);
+            }
+        }
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (!onFilterTouchEventForSecurity(event)) return false;
