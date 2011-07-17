@@ -19,6 +19,7 @@ package com.android.camera;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -320,9 +321,7 @@ public class Util {
         int degrees = getDisplayRotation(activity);
         int result;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            boolean hasNonStandardFFC = activity.getResources().getBoolean(
-                    R.bool.has_non_standard_ffc_orientation);
-            if (hasNonStandardFFC && info.orientation == 90) {
+            if (hasNonStandardFFC(activity.getResources()) && info.orientation == 90) {
                 result = getFacingBackCameraOrientation(degrees, info.orientation);
             } else {
                 result = getFacingFrontCameraOrientation(degrees, info.orientation);
@@ -344,5 +343,9 @@ public class Util {
 
     public static int getFacingBackCameraOrientation(int displayRotation, int cameraOrientation) {
         return (cameraOrientation - displayRotation + 360) % 360;
+    }
+    
+    public static boolean hasNonStandardFFC(Resources resource) {
+        return resource.getBoolean(R.bool.has_non_standard_ffc_orientation);
     }
 }
