@@ -1281,7 +1281,7 @@ public class VideoCamera extends ActivityBase
         Log.v(TAG, "New video filename: " + mVideoFilename);
     }
 
-    private void registerVideo() {
+    private void addVideoToMediaStore() {
         if (mVideoFileDescriptor == null) {
             Uri videoTable = Uri.parse("content://media/external/video/media");
             mCurrentVideoValues.put(Video.Media.SIZE,
@@ -1298,6 +1298,8 @@ public class VideoCamera extends ActivityBase
             try {
                 mCurrentVideoUri = mContentResolver.insert(videoTable,
                         mCurrentVideoValues);
+                sendBroadcast(new Intent(android.hardware.Camera.ACTION_NEW_VIDEO,
+                        mCurrentVideoUri));
             } catch (Exception e) {
                 // We failed to insert into the database. This can happen if
                 // the SD card is unmounted.
@@ -1570,7 +1572,7 @@ public class VideoCamera extends ActivityBase
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
         if (mMediaRecorderRecording) {
-            boolean needToRegisterRecording = false;
+            boolean shouldAddToMediaStore = false;
             mMediaRecorder.setOnErrorListener(null);
             mMediaRecorder.setOnInfoListener(null);
             try {
@@ -1578,7 +1580,7 @@ public class VideoCamera extends ActivityBase
                 mCurrentVideoFilename = mVideoFilename;
                 Log.v(TAG, "Setting current video filename: "
                         + mCurrentVideoFilename);
-                needToRegisterRecording = true;
+                shouldAddToMediaStore = true;
             } catch (RuntimeException e) {
                 Log.e(TAG, "stop fail",  e);
                 if (mVideoFilename != null) deleteVideoFile(mVideoFilename);
@@ -1589,8 +1591,8 @@ public class VideoCamera extends ActivityBase
                 enableCameraControls(true);
             }
             keepScreenOnAwhile();
-            if (needToRegisterRecording && mStorageSpace >= LOW_STORAGE_THRESHOLD) {
-                registerVideo();
+            if (shouldAddToMediaStore && mStorageSpace >= LOW_STORAGE_THRESHOLD) {
+                addVideoToMediaStore();
             }
         }
         releaseMediaRecorder();  // always release media recorder

@@ -868,6 +868,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 if (mThumbnail != null) {
                     mThumbnailView.setBitmap(mThumbnail.getBitmap());
                 }
+
+                sendBroadcast(new Intent(android.hardware.Camera.ACTION_NEW_PICTURE, uri));
+                // Keep compatibility
                 sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", uri));
             }
         } else {
