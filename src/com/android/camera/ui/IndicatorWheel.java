@@ -16,8 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.IconListPreference;
-import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
 import android.content.Context;
@@ -29,7 +27,6 @@ import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
@@ -38,9 +35,9 @@ import java.util.ArrayList;
  * indicators are spreaded around the shutter button. The first child is always
  * the shutter button.
  */
-public class IndicatorWheel extends ViewGroup implements
-        IndicatorButton.Listener, OtherSettingsPopup.Listener {
+public class IndicatorWheel extends IndicatorControl {
     private static final String TAG = "IndicatorWheel";
+
     // The width of the edges on both sides of the wheel, which has less alpha.
     private static final float EDGE_STROKE_WIDTH = 6f;
     private static final int HIGHLIGHT_WIDTH = 4;
@@ -50,7 +47,6 @@ public class IndicatorWheel extends ViewGroup implements
     private final int HIGHLIGHT_COLOR;
     private final int TIME_LAPSE_ARC_COLOR;
 
-    private Listener mListener;
     // The center of the shutter button.
     private int mCenterX, mCenterY;
     // The width of the wheel stroke.
@@ -70,25 +66,12 @@ public class IndicatorWheel extends ViewGroup implements
     private long mRecordingStartTime = 0;
     private long mNumberOfFrames = 0;
 
-    private PreferenceGroup mPreferenceGroup;
-    private ArrayList<AbstractIndicatorButton> mIndicators =
-            new ArrayList<AbstractIndicatorButton>();
-
-    static public interface Listener {
-        public void onSharedPreferenceChanged();
-        public void onRestorePreferencesClicked();
-        public void onOverriddenPreferencesClicked();
-    }
-
-    public void setListener(Listener listener) {
-        mListener = listener;
-    }
-
     public IndicatorWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
         Resources resources = context.getResources();
         HIGHLIGHT_COLOR = resources.getColor(R.color.review_control_pressed_color);
         TIME_LAPSE_ARC_COLOR = resources.getColor(R.color.time_lapse_arc);
+
         setWillNotDraw(false);
 
         mBackgroundPaint = new Paint();
@@ -98,7 +81,7 @@ public class IndicatorWheel extends ViewGroup implements
         mBackgroundRect = new RectF();
     }
 
-    public boolean isInsideShutterButton(MotionEvent ev) {
+    private boolean isInsideShutterButton(MotionEvent ev) {
         float x = ev.getX();
         float y = ev.getY();
         float shutterButtonX = mShutterButton.getX();
@@ -109,16 +92,6 @@ public class IndicatorWheel extends ViewGroup implements
             return true;
         }
         return false;
-    }
-
-    public void setDegree(int degree) {
-        int count = getChildCount();
-        for (int i = 0 ; i < count ; ++i) {
-            View view = getChildAt(i);
-            if (view instanceof RotateImageView) {
-                ((RotateImageView) view).setDegree(degree);
-            }
-        }
     }
 
     @Override
@@ -209,13 +182,6 @@ public class IndicatorWheel extends ViewGroup implements
         // The first view is shutter button.
         mShutterButton = getChildAt(0);
         invalidate();
-    }
-
-    private void removeIndicators() {
-        for (View v: mIndicators) {
-            removeView(v);
-        }
-        mIndicators.clear();
     }
 
     @Override
@@ -383,109 +349,5 @@ public class IndicatorWheel extends ViewGroup implements
         }
 
         super.onDraw(canvas);
-    }
-
-    @Override
-    public boolean shouldDelayChildPressedState() {
-        // Return false so the pressed feedback of the back/front camera switch
-        // can be showed right away.
-        return false;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        // Do not disable shutter button because it will block its performClick.
-        for (int i = 1; i < getChildCount(); i++) {
-            getChildAt(i).setEnabled(enabled);
-        }
-    }
-
-    private void addIndicator(Context context, IconListPreference pref) {
-        IndicatorButton b = new IndicatorButton(context, pref);
-        b.setSettingChangedListener(this);
-        addView(b);
-        mIndicators.add(b);
-    }
-
-    private void addOtherSettingIndicator(Context context, int resId, String[] keys) {
-        OtherSettingIndicatorButton b = new OtherSettingIndicatorButton(context, resId,
-                mPreferenceGroup, keys);
-        b.setSettingChangedListener(this);
-        addView(b);
-        mIndicators.add(b);
-    }
-
-    public void initialize(Context context, PreferenceGroup group,
-            String[] keys, String[] otherSettingKeys) {
-        // Reset the variables and states.
-        dismissSettingPopup();
-        removeIndicators();
-
-        // Initialize all variables and icons.
-        mPreferenceGroup = group;
-        for (int i = 0; i < keys.length; i++) {
-            IconListPreference pref = (IconListPreference) group.findPreference(keys[i]);
-            if (pref != null) {
-                addIndicator(context, pref);
-            }
-        }
-
-        // Add other settings indicator.
-        if (otherSettingKeys != null) {
-            addOtherSettingIndicator(context, R.drawable.ic_viewfinder_settings, otherSettingKeys);
-        }
-
-        requestLayout();
-    }
-
-    @Override
-    public void onRestorePreferencesClicked() {
-        if (mListener != null) {
-            mListener.onRestorePreferencesClicked();
-        }
-    }
-
-    @Override
-    public void onSettingChanged() {
-        if (mListener != null) {
-            mListener.onSharedPreferenceChanged();
-        }
-    }
-
-    public boolean dismissSettingPopup() {
-        for (AbstractIndicatorButton v: mIndicators) {
-            if (v.dismissPopup()) {
-                invalidate();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public View getActiveSettingPopup() {
-        for (AbstractIndicatorButton v: mIndicators) {
-            View result = v.getPopupWindow();
-            if (result != null) return result;
-        }
-        return null;
-    }
-
-    // Scene mode may override other camera settings (ex: flash mode).
-    public void overrideSettings(final String ... keyvalues) {
-        if (keyvalues.length % 2 != 0) {
-            throw new IllegalArgumentException();
-        }
-
-        for (AbstractIndicatorButton b: mIndicators) {
-            b.overrideSettings(keyvalues);
-        }
-    }
-
-    public void reloadPreferences() {
-        mPreferenceGroup.reloadValue();
-        for (AbstractIndicatorButton b: mIndicators) {
-            b.reloadPreferences();
-        }
     }
 }

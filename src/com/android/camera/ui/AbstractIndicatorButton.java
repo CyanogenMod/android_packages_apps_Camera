@@ -90,7 +90,9 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
     @Override
     public void setDegree(int degree) {
         super.setDegree(degree);
-        if (mPopup != null) mPopup.setRotation(-degree);
+        if (mPopup != null) {
+            mPopup.setOrientation(degree);
+        }
     }
 
     abstract protected void initializePopup();
@@ -98,12 +100,11 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
     private void showPopup() {
         if (mPopup == null) initializePopup();
 
-        mPopup.setRotation(-getDegree());
+        mPopup.setVisibility(View.VISIBLE);
+        mPopup.setOrientation(getDegree());
         mPopup.clearAnimation();
         mPopup.startAnimation(mFadeIn);
-        mPopup.setVisibility(View.VISIBLE);
         setColorFilter(HIGHLIGHT_COLOR);
-        invalidate();
     }
 
     public boolean dismissPopup() {

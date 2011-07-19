@@ -17,11 +17,12 @@
 */
 -->
 
-<com.android.camera.ui.BasicSettingPopup xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.OtherSettingsPopup xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/indicator_control"
         android:visibility="invisible"
         android:background="@android:color/transparent">
     <!-- the transparent background here is a workaround of the render issue
@@ -30,29 +31,32 @@
         part of the view is visible. -->
 
     <LinearLayout android:orientation="vertical"
-        android:layout_width="410dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content">
 
         <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/dialog_top_holo_dark"
-                android:minHeight="48dp">
+                android:background="@drawable/dialog_top_holo_dark">
             <TextView android:id="@+id/title"
-                    style="@style/SettingTitleText" />
+                    android:text="@string/pref_camera_settings_category"
+                    style="@style/SettingTitleText"
+                    android:textSize="18dp"
+                    android:layout_height="32dp"/>
         </FrameLayout>
-        <FrameLayout android:layout_width="match_parent"
+
+        <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/dialog_bottom_holo_dark">
             <ListView android:id="@+id/settingList"
                     android:orientation="vertical"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
                     android:paddingBottom="3dp"
                     android:layout_gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:choiceMode="singleChoice" />
+                    android:layout_height="wrap_content" />
         </FrameLayout>
     </LinearLayout>
-</com.android.camera.ui.BasicSettingPopup>
+</com.android.camera.ui.OtherSettingsPopup>

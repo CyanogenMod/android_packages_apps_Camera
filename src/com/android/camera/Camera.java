@@ -16,12 +16,9 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.CameraHeadUpDisplay;
-import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.FocusRectangle;
 import com.android.camera.ui.GLRootView;
-import com.android.camera.ui.HeadUpDisplay;
-import com.android.camera.ui.IndicatorWheel;
+import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomControllerListener;
@@ -184,9 +181,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private View mGpsNoSignalView;
     private View mGpsHasSignalView;
 
-    // Front/Back camera picker for w1024dp layout
-    private CameraPicker mCameraPicker;
-
     /**
      * An unpublished intent flag requesting to return as soon as capturing
      * is completed.
@@ -255,9 +249,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private Toast mNoShareToast;
 
     private final Handler mHandler = new MainHandler();
-    // w1024dp devices use indicator wheel. Other devices use head-up display.
-    private CameraHeadUpDisplay mHeadUpDisplay;
-    private IndicatorWheel mIndicatorWheel;
+    private IndicatorControl mIndicatorControl;
     private PreferenceGroup mPreferenceGroup;
 
     // multiple cameras support
@@ -335,11 +327,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             Editor editor = mPreferences.edit();
             editor.putString(CameraSettings.KEY_EXPOSURE, "0");
             editor.apply();
-            if (mHeadUpDisplay != null) {
-                mHeadUpDisplay.reloadPreferences();
-            }
-            if (mIndicatorWheel != null) {
-                mIndicatorWheel.reloadPreferences();
+            if (mIndicatorControl != null) {
+                mIndicatorControl.reloadPreferences();
             }
         }
     }
@@ -401,14 +390,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-        // w1024dp devices use indicator wheel. Other devices use head-up display.
-        if (mIndicatorWheel == null) {
-            mHeadUpDisplay = new CameraHeadUpDisplay(this);
-            mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
-            initializeHeadUpDisplay();
-        }
         mFirstTimeInitialized = true;
-        changeHeadUpDisplayState();
         addIdleHandler();
     }
 
@@ -457,7 +439,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-        changeHeadUpDisplayState();
 
         keepMediaProviderInstance();
         checkStorage();
@@ -536,17 +517,17 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         @Override
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
-            View popup = mIndicatorWheel.getActiveSettingPopup();
+            View popup = mIndicatorControl.getActiveSettingPopup();
             if (popup == null) return false;
 
 
-            // Let popup window, indicator wheel or preview frame handle the
+            // Let popup window, indicator control or preview frame handle the
             // event by themselves. Dismiss the popup window if users touch on
             // other areas.
             if (!Util.pointInView(e.getX(), e.getY(), popup)
-                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorWheel)
+                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorControl)
                     && !Util.pointInView(e.getX(), e.getY(), mPreviewFrame)) {
-                mIndicatorWheel.dismissSettingPopup();
+                mIndicatorControl.dismissSettingPopup();
                 // Let event fall through.
             }
             return false;
@@ -584,19 +565,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             }
         }
     };
-
-    private void initializeCameraPicker() {
-        mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
-        if (mCameraPicker != null) {
-            mCameraPicker.setImageResource(R.drawable.camera_toggle);
-            ListPreference pref = mPreferenceGroup.findPreference(
-                    CameraSettings.KEY_CAMERA_ID);
-            if (pref != null) {
-                mCameraPicker.initialize(pref);
-                mCameraPicker.setListener(new MyCameraPickerListener());
-            }
-        }
-    }
 
     private void initializeZoomPicker() {
         View zoomIncrement = findViewById(R.id.zoom_increment);
@@ -1061,37 +1029,14 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         // Do this after starting preview because it depends on camera
         // parameters.
-        initializeIndicatorWheel();
-        initializeCameraPicker();
+        initializeIndicatorControl();
         initializeZoomPicker();
-    }
-
-    private void changeHeadUpDisplayState() {
-        if (mHeadUpDisplay == null) return;
-        // If the camera resumes behind the lock screen, the orientation
-        // will be portrait. That causes OOM when we try to allocation GPU
-        // memory for the GLSurfaceView again when the orientation changes. So,
-        // we delayed initialization of HeadUpDisplay until the orientation
-        // becomes landscape.
-        Configuration config = getResources().getConfiguration();
-        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
-                && !mPausing && mFirstTimeInitialized) {
-            if (mGLRootView == null) attachHeadUpDisplay();
-        } else if (mGLRootView != null) {
-            detachHeadUpDisplay();
-        }
     }
 
     private void overrideCameraSettings(final String flashMode,
             final String whiteBalance, final String focusMode) {
-        if (mHeadUpDisplay != null) {
-            mHeadUpDisplay.overrideSettings(
-                    CameraSettings.KEY_FLASH_MODE, flashMode,
-                    CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
-                    CameraSettings.KEY_FOCUS_MODE, focusMode);
-        }
-        if (mIndicatorWheel != null) {
-            mIndicatorWheel.overrideSettings(
+        if (mIndicatorControl != null) {
+            mIndicatorControl.overrideSettings(
                     CameraSettings.KEY_FLASH_MODE, flashMode,
                     CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
                     CameraSettings.KEY_FOCUS_MODE, focusMode);
@@ -1115,81 +1060,50 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mPreferenceGroup = settings.getPreferenceGroup(R.xml.camera_preferences);
     }
 
-    private void initializeIndicatorWheel() {
-        mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
-        if (mIndicatorWheel == null) return;
+    private void initializeIndicatorControl() {
+        // setting the indicator buttons.
+        mIndicatorControl = (IndicatorControl) findViewById(R.id.indicator_control);
+        if (mIndicatorControl == null) return;
         loadCameraPreferences();
-
-        final String[] SETTING_KEYS = {
-                CameraSettings.KEY_FLASH_MODE};
-        final String[] OTHER_SETTING_KEYS = {
-                CameraSettings.KEY_WHITE_BALANCE,
-                CameraSettings.KEY_COLOR_EFFECT,
-                CameraSettings.KEY_SCENE_MODE,
-                CameraSettings.KEY_RECORD_LOCATION,
-                CameraSettings.KEY_FOCUS_MODE,
-                CameraSettings.KEY_EXPOSURE,
-                CameraSettings.KEY_PICTURE_SIZE};
-        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS,
+        final String[] SETTING_KEYS, OTHER_SETTING_KEYS;
+        if (Util.isTabletUI()) {
+            SETTING_KEYS = new String[] {
+                    CameraSettings.KEY_FLASH_MODE};
+            OTHER_SETTING_KEYS = new String[] {
+                    CameraSettings.KEY_WHITE_BALANCE,
+                    CameraSettings.KEY_COLOR_EFFECT,
+                    CameraSettings.KEY_SCENE_MODE,
+                    CameraSettings.KEY_RECORD_LOCATION,
+                    CameraSettings.KEY_FOCUS_MODE,
+                    CameraSettings.KEY_EXPOSURE,
+                    CameraSettings.KEY_PICTURE_SIZE};
+        } else {
+            SETTING_KEYS = new String[] {
+                    CameraSettings.KEY_FLASH_MODE,
+                    CameraSettings.KEY_CAMERA_ID,
+                    CameraSettings.KEY_COLOR_EFFECT,
+                    CameraSettings.KEY_WHITE_BALANCE};
+            OTHER_SETTING_KEYS = new String[] {
+                    CameraSettings.KEY_FOCUS_MODE,
+                    CameraSettings.KEY_EXPOSURE,
+                    CameraSettings.KEY_SCENE_MODE,
+                    CameraSettings.KEY_PICTURE_SIZE,
+                    CameraSettings.KEY_RECORD_LOCATION};
+        }
+        mIndicatorControl.initialize(this, mPreferenceGroup, SETTING_KEYS,
                 OTHER_SETTING_KEYS);
-        mIndicatorWheel.setListener(new MyIndicatorWheelListener());
-        mPopupGestureDetector = new GestureDetector(this,
-                new PopupGestureListener());
-        updateSceneModeUI();
-    }
-
-    private void initializeHeadUpDisplay() {
-        if (mHeadUpDisplay == null) return;
-        loadCameraPreferences();
-
-        float[] zoomRatios = null;
-        if(mParameters.isZoomSupported()) {
-            zoomRatios = Util.convertZoomRatios(mParameters.getZoomRatios());
-        }
-        mHeadUpDisplay.initialize(this, mPreferenceGroup,
-                zoomRatios, mOrientationCompensation);
-        if (mParameters.isZoomSupported()) {
-            mHeadUpDisplay.setZoomListener(new ZoomControllerListener() {
-                public void onZoomChanged(
-                        int index, float ratio, boolean isMoving) {
-                    onZoomValueChanged(index);
-                }
-            });
-        }
-        updateSceneModeUI();
-    }
-
-    private void attachHeadUpDisplay() {
-        mHeadUpDisplay.setOrientation(mOrientationCompensation);
-        if (mParameters.isZoomSupported()) {
-            mHeadUpDisplay.setZoomIndex(mZoomValue);
-        }
-        ViewGroup frame = (ViewGroup) findViewById(R.id.frame);
-        mGLRootView = new GLRootView(this);
-        mGLRootView.setContentPane(mHeadUpDisplay);
-        frame.addView(mGLRootView);
-    }
-
-    private void detachHeadUpDisplay() {
-        mHeadUpDisplay.collapse();
-        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
-        mGLRootView = null;
+        mIndicatorControl.setListener(new MyIndicatorControlListener());
     }
 
     private boolean collapseCameraControls() {
-        if (mHeadUpDisplay != null && mHeadUpDisplay.collapse()) {
-            return true;
-        }
-        if (mIndicatorWheel != null && mIndicatorWheel.dismissSettingPopup()) {
+        if (mIndicatorControl != null && mIndicatorControl.dismissSettingPopup()) {
             return true;
         }
         return false;
     }
 
     private void enableCameraControls(boolean enable) {
-        if (mHeadUpDisplay != null) mHeadUpDisplay.setEnabled(enable);
-        if (mIndicatorWheel != null) mIndicatorWheel.setEnabled(enable);
-        if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
+        if (mIndicatorControl != null) mIndicatorControl.setEnabled(enable);
         if (mZoomPicker != null) mZoomPicker.setEnabled(enable);
         if (mModePicker != null) mModePicker.setEnabled(enable);
     }
@@ -1217,20 +1131,17 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     + Util.getDisplayRotation(Camera.this);
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
-                if (!mIsImageCaptureIntent) {
-                    setOrientationIndicator(mOrientationCompensation);
-                }
+                setOrientationIndicator(mOrientationCompensation);
             }
         }
     }
 
     private void setOrientationIndicator(int degree) {
-        if (mHeadUpDisplay != null) mHeadUpDisplay.setOrientation(mOrientationCompensation);
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
         if (mShareIcon != null) mShareIcon.setDegree(degree);
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
-        if (mIndicatorWheel != null) mIndicatorWheel.setDegree(degree);
+        if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
     }
 
     @Override
@@ -1482,12 +1393,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     @Override
-    public void onConfigurationChanged(Configuration config) {
-        super.onConfigurationChanged(config);
-        changeHeadUpDisplayState();
-    }
-
-    @Override
     protected void onPause() {
         mPausing = true;
         stopPreview();
@@ -1495,7 +1400,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         closeCamera();
         resetScreenOn();
         collapseCameraControls();
-        changeHeadUpDisplayState();
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -2215,10 +2119,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void showPostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            if (mIndicatorWheel == null) {
-                mShutterButton.setVisibility(View.INVISIBLE);
-            } else {
+            if (Util.isTabletUI()) {
                 mShutterButton.setEnabled(false);
+            } else {
+                mShutterButton.setVisibility(View.INVISIBLE);
             }
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
@@ -2234,10 +2138,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void hidePostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            if (mIndicatorWheel == null) {
-                mShutterButton.setVisibility(View.VISIBLE);
-            } else {
+            if (Util.isTabletUI()) {
                 mShutterButton.setEnabled(true);
+            } else {
+                mShutterButton.setVisibility(View.VISIBLE);
             }
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
@@ -2381,20 +2285,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
     }
 
-    private class MyHeadUpDisplayListener implements HeadUpDisplay.Listener {
-
-        public void onSharedPreferenceChanged() {
-            Camera.this.onSharedPreferenceChanged();
-        }
-
-        public void onRestorePreferencesClicked() {
-            Camera.this.onRestorePreferencesClicked();
-        }
-
-        public void onPopupWindowVisibilityChanged(int visibility) {
-        }
-    }
-
     protected void onRestorePreferencesClicked() {
         if (mPausing) return;
         Runnable runnable = new Runnable() {
@@ -2415,16 +2305,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
             if (mZoomPicker != null) mZoomPicker.setZoomIndex(0);
         }
-
-        if (mHeadUpDisplay != null) {
-            mHeadUpDisplay.restorePreferences(mParameters);
-        }
-
-        if (mIndicatorWheel != null) {
-            mIndicatorWheel.dismissSettingPopup();
+        if (mIndicatorControl != null) {
+            mIndicatorControl.dismissSettingPopup();
             CameraSettings.restorePreferences(Camera.this, mPreferences,
                     mParameters);
-            initializeIndicatorWheel();
+            initializeIndicatorControl();
             onSharedPreferenceChanged();
         }
     }
@@ -2447,7 +2332,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
 
-    private class MyIndicatorWheelListener implements IndicatorWheel.Listener {
+    private class MyIndicatorControlListener implements IndicatorControl.Listener {
         public void onSharedPreferenceChanged() {
             Camera.this.onSharedPreferenceChanged();
         }
@@ -2458,12 +2343,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         public void onOverriddenPreferencesClicked() {
             Camera.this.onOverriddenPreferencesClicked();
-        }
-    }
-
-    private class MyCameraPickerListener implements CameraPicker.Listener {
-        public void onSharedPreferenceChanged() {
-            Camera.this.onSharedPreferenceChanged();
         }
     }
 }

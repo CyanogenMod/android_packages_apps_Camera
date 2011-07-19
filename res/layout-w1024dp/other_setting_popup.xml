@@ -23,31 +23,39 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="229dp"
-        android:orientation="vertical"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        android:background="@android:color/transparent">
+    <!-- the transparent background here is a workaround of the render issue
+        happened when the popup window is rotated as the device's orientation
+        changed. The view looks fine in landscape. After rotation, only center
+        part of the view is visible. -->
 
-    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/dialog_top_holo_dark"
-            android:minHeight="48dp">
-        <TextView android:id="@+id/title"
-                android:text="@string/pref_camera_settings_category"
-                style="@style/SettingTitleText" />
-    </FrameLayout>
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <FrameLayout
-            android:layout_width="590dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/dialog_bottom_holo_dark">
-        <ListView android:id="@+id/settingList"
-                android:orientation="vertical"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:paddingBottom="3dp"
-                android:layout_gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-    </FrameLayout>
+        <FrameLayout
+                android:layout_width="590dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dialog_top_holo_dark"
+                android:minHeight="48dp">
+            <TextView android:id="@+id/title"
+                    android:text="@string/pref_camera_settings_category"
+                    style="@style/SettingTitleText" />
+        </FrameLayout>
+
+        <FrameLayout
+                android:layout_width="590dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dialog_bottom_holo_dark">
+            <ListView android:id="@+id/settingList"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:paddingBottom="3dp"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+        </FrameLayout>
+    </LinearLayout>
 </com.android.camera.ui.OtherSettingsPopup>

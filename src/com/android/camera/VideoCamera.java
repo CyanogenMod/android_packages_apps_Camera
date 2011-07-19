@@ -16,10 +16,8 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.CamcorderHeadUpDisplay;
-import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.GLRootView;
-import com.android.camera.ui.HeadUpDisplay;
+import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.IndicatorWheel;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.SharePopup;
@@ -142,11 +140,7 @@ public class VideoCamera extends ActivityBase
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceHolder mSurfaceHolder = null;
     private GLRootView mGLRootView;
-    // w1024dp devices use indicator wheel. Other devices use head-up display.
-    private CamcorderHeadUpDisplay mHeadUpDisplay;
-    private IndicatorWheel mIndicatorWheel;
-    // Front/back camera picker for w1024dp layout.
-    private CameraPicker mCameraPicker;
+    private IndicatorControl mIndicatorControl;
     private View mReviewControl;
 
     private Toast mNoShareToast;
@@ -460,44 +454,8 @@ public class VideoCamera extends ActivityBase
         mFrontCameraId = CameraHolder.instance().getFrontCameraId();
 
         // Initialize after startPreview becuase this need mParameters.
-        initializeIndicatorWheel();
-        // w1024dp devices use indicator wheel. Other devices use head-up display.
-        if (mIndicatorWheel == null) {
-            mHeadUpDisplay = new CamcorderHeadUpDisplay(this);
-            mHeadUpDisplay.setListener(new MyHeadUpDisplayListener());
-            initializeHeadUpDisplay();
-        }
-        initializeCameraPicker();
+        initializeIndicatorControl();
         initializeZoomPicker();
-    }
-
-    private void changeHeadUpDisplayState() {
-        if (mHeadUpDisplay == null) return;
-        // If the camera resumes behind the lock screen, the orientation
-        // will be portrait. That causes OOM when we try to allocation GPU
-        // memory for the GLSurfaceView again when the orientation changes. So,
-        // we delayed initialization of HeadUpDisplay until the orientation
-        // becomes landscape.
-        Configuration config = getResources().getConfiguration();
-        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE
-                && !mPausing) {
-            if (mGLRootView == null) attachHeadUpDisplay();
-        } else if (mGLRootView != null) {
-            detachHeadUpDisplay();
-        }
-    }
-
-    private void initializeCameraPicker() {
-        mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
-        if (mCameraPicker != null) {
-            mCameraPicker.setImageResource(R.drawable.camera_toggle_video);
-            ListPreference pref = mPreferenceGroup.findPreference(
-                    CameraSettings.KEY_CAMERA_ID);
-            if (pref != null) {
-                mCameraPicker.initialize(pref);
-                mCameraPicker.setListener(new MyCameraPickerListener());
-            }
-        }
     }
 
     private void initializeZoomPicker() {
@@ -515,59 +473,41 @@ public class VideoCamera extends ActivityBase
         mPreferenceGroup = settings.getPreferenceGroup(R.xml.video_preferences);
     }
 
-    private void initializeHeadUpDisplay() {
-        if (mHeadUpDisplay == null) return;
-        loadCameraPreferences();
-
-        if (mIsVideoCaptureIntent) {
-            mPreferenceGroup = filterPreferenceScreenByIntent(mPreferenceGroup);
-        }
-        mHeadUpDisplay.initialize(this, mPreferenceGroup, mOrientationCompensation);
-    }
-
-    private void attachHeadUpDisplay() {
-        mHeadUpDisplay.setOrientation(mOrientationCompensation);
-        ViewGroup frame = (ViewGroup) findViewById(R.id.frame);
-        mGLRootView = new GLRootView(this);
-        frame.addView(mGLRootView);
-        mGLRootView.setContentPane(mHeadUpDisplay);
-    }
-
-    private void detachHeadUpDisplay() {
-        mHeadUpDisplay.collapse();
-        ((ViewGroup) mGLRootView.getParent()).removeView(mGLRootView);
-        mGLRootView = null;
-    }
-
     private boolean collapseCameraControls() {
-        if (mHeadUpDisplay != null && mHeadUpDisplay.collapse()) {
-            return true;
-        }
-        if (mIndicatorWheel != null && mIndicatorWheel.dismissSettingPopup()) {
+        if (mIndicatorControl != null && mIndicatorControl.dismissSettingPopup()) {
             return true;
         }
         return false;
     }
 
     private void enableCameraControls(boolean enable) {
-        if (mHeadUpDisplay != null) mHeadUpDisplay.setEnabled(enable);
-        if (mIndicatorWheel != null) mIndicatorWheel.setEnabled(enable);
-        if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
+        if (mIndicatorControl != null) mIndicatorControl.setEnabled(enable);
         if (mModePicker != null) mModePicker.setEnabled(enable);
     }
 
-    private void initializeIndicatorWheel() {
-        mIndicatorWheel = (IndicatorWheel) findViewById(R.id.indicator_wheel);
-        if (mIndicatorWheel == null) return;
+    private void initializeIndicatorControl() {
+        mIndicatorControl = (IndicatorControl) findViewById(R.id.indicator_control);
+        if (mIndicatorControl == null) return;
         loadCameraPreferences();
 
-        final String[] SETTING_KEYS = {CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE};
-        final String[] OTHER_SETTING_KEYS = {
-                CameraSettings.KEY_VIDEO_QUALITY,
-                CameraSettings.KEY_WHITE_BALANCE,
-                CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
-        mIndicatorWheel.initialize(this, mPreferenceGroup, SETTING_KEYS, OTHER_SETTING_KEYS);
-        mIndicatorWheel.setListener(new MyIndicatorWheelListener());
+        final String[] SETTING_KEYS, OTHER_SETTING_KEYS;
+        if (Util.isTabletUI()) {
+            SETTING_KEYS = new String[] {CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE};
+            OTHER_SETTING_KEYS = new String[] {
+                    CameraSettings.KEY_VIDEO_QUALITY,
+                    CameraSettings.KEY_WHITE_BALANCE,
+                    CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
+        } else {
+            SETTING_KEYS = new String[] {
+                    CameraSettings.KEY_WHITE_BALANCE,
+                    CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
+                    CameraSettings.KEY_VIDEO_QUALITY,
+                    CameraSettings.KEY_CAMERA_ID};
+            OTHER_SETTING_KEYS = new String[] {
+                    CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
+        }
+        mIndicatorControl.initialize(this, mPreferenceGroup, SETTING_KEYS, OTHER_SETTING_KEYS);
+        mIndicatorControl.setListener(new MyIndicatorControlListener());
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());
     }
@@ -596,19 +536,17 @@ public class VideoCamera extends ActivityBase
                     + Util.getDisplayRotation(VideoCamera.this);
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
-                if (!mIsVideoCaptureIntent) {
-                    setOrientationIndicator(mOrientationCompensation);
-                }
+                setOrientationIndicator(mOrientationCompensation);
             }
         }
     }
 
     private void setOrientationIndicator(int degree) {
-        if (mHeadUpDisplay != null) mHeadUpDisplay.setOrientation(mOrientationCompensation);
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
         if (mShareIcon != null) mShareIcon.setDegree(degree);
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
+        if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
     }
 
     private void startPlayVideoActivity() {
@@ -886,8 +824,6 @@ public class VideoCamera extends ActivityBase
             }
         }, 200);
 
-        changeHeadUpDisplayState();
-
         if (!mIsVideoCaptureIntent) {
             updateThumbnailButton();  // Update the last video thumbnail.
             mModePicker.setCurrentMode(ModePicker.MODE_VIDEO);
@@ -965,8 +901,7 @@ public class VideoCamera extends ActivityBase
         super.onPause();
         mPausing = true;
 
-        changeHeadUpDisplayState();
-        if (mIndicatorWheel != null) mIndicatorWheel.dismissSettingPopup();
+        if (mIndicatorControl != null) mIndicatorControl.dismissSettingPopup();
 
         finishRecorderAndCloseCamera();
 
@@ -1466,9 +1401,11 @@ public class VideoCamera extends ActivityBase
             mRecordingTimeView.setVisibility(View.VISIBLE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
             if (mCaptureTimeLapse) {
-                mIndicatorWheel.startTimeLapseAnimation(
-                        mTimeBetweenTimeLapseFrameCaptureMs,
-                        mRecordingStartTime);
+                if (Util.isTabletUI()) {
+                    ((IndicatorWheel) mIndicatorControl).startTimeLapseAnimation(
+                            mTimeBetweenTimeLapseFrameCaptureMs,
+                            mRecordingStartTime);
+                }
             }
         } else {
             mShutterButton.setImageDrawable(getResources().getDrawable(
@@ -1477,7 +1414,9 @@ public class VideoCamera extends ActivityBase
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
-                mIndicatorWheel.stopTimeLapseAnimation();
+                if (Util.isTabletUI()) {
+                    ((IndicatorWheel) mIndicatorControl).stopTimeLapseAnimation();
+                }
             }
         }
     }
@@ -1494,7 +1433,7 @@ public class VideoCamera extends ActivityBase
     }
 
     private void showAlert() {
-        if (mIndicatorWheel == null) {
+        if (!Util.isTabletUI()) {
             fadeOut(findViewById(R.id.shutter_button));
         }
         if (mCurrentVideoFilename != null) {
@@ -1805,38 +1744,10 @@ public class VideoCamera extends ActivityBase
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
-
-        // If the camera resumes behind the lock screen, the orientation
-        // will be portrait. That causes OOM when we try to allocation GPU
-        // memory for the GLSurfaceView again when the orientation changes. So,
-        // we delayed initialization of HeadUpDisplay until the orientation
-        // becomes landscape.
-        changeHeadUpDisplayState();
     }
 
     public void onSizeChanged() {
         // TODO: update the content on GLRootView
-    }
-
-    private class MyHeadUpDisplayListener implements HeadUpDisplay.Listener {
-        public void onSharedPreferenceChanged() {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    VideoCamera.this.onSharedPreferenceChanged();
-                }
-            });
-        }
-
-        public void onRestorePreferencesClicked() {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    VideoCamera.this.onRestorePreferencesClicked();
-                }
-            });
-        }
-
-        public void onPopupWindowVisibilityChanged(final int visibility) {
-        }
     }
 
     private void onRestorePreferencesClicked() {
@@ -1859,15 +1770,11 @@ public class VideoCamera extends ActivityBase
             if (mZoomPicker != null) mZoomPicker.setZoomIndex(0);
         }
 
-        if (mHeadUpDisplay != null) {
-            mHeadUpDisplay.restorePreferences(mParameters);
-        }
-
-        if (mIndicatorWheel != null) {
-            mIndicatorWheel.dismissSettingPopup();
+        if (mIndicatorControl != null) {
+            mIndicatorControl.dismissSettingPopup();
             CameraSettings.restorePreferences(VideoCamera.this, mPreferences,
                     mParameters);
-            initializeIndicatorWheel();
+            initializeIndicatorControl();
             onSharedPreferenceChanged();
         }
     }
@@ -1931,7 +1838,7 @@ public class VideoCamera extends ActivityBase
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
 
-    private class MyIndicatorWheelListener implements IndicatorWheel.Listener {
+    private class MyIndicatorControlListener implements IndicatorControl.Listener {
         public void onSharedPreferenceChanged() {
             VideoCamera.this.onSharedPreferenceChanged();
         }
@@ -1941,12 +1848,6 @@ public class VideoCamera extends ActivityBase
         }
 
         public void onOverriddenPreferencesClicked() {
-        }
-    }
-
-    private class MyCameraPickerListener implements CameraPicker.Listener {
-        public void onSharedPreferenceChanged() {
-            VideoCamera.this.onSharedPreferenceChanged();
         }
     }
 
@@ -1965,15 +1866,15 @@ public class VideoCamera extends ActivityBase
         @Override
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
-            View popup = mIndicatorWheel.getActiveSettingPopup();
+            View popup = mIndicatorControl.getActiveSettingPopup();
             if (popup == null) return false;
 
             // Let popup window or indicator wheel handle the event by
             // themselves. Dismiss the popup window if users touch on other
             // areas.
             if (!Util.pointInView(e.getX(), e.getY(), popup)
-                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorWheel)) {
-                mIndicatorWheel.dismissSettingPopup();
+                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorControl)) {
+                mIndicatorControl.dismissSettingPopup();
                 // Let event fall through.
             }
             return false;

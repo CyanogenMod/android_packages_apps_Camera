@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.READ_SMS" />
 
     <application android:icon="@mipmap/ic_launcher_camera"
+            android:name="com.android.camera.CameraAppImpl"
             android:label="@string/camera_label"
             android:taskAffinity=""
             android:theme="@style/ThemeCamera"

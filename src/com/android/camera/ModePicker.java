@@ -146,7 +146,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
         view.setEnabled(enabled);
 
         // render disabled effect for tablet only.
-        if (mContext.getResources().getConfiguration().screenWidthDp < 1024) return;
+        if (!Util.isTabletUI()) return;
 
         Drawable drawable = ((ImageView) view).getDrawable();
         if (enabled) {

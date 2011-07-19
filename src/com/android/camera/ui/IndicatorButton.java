@@ -98,7 +98,7 @@ public class IndicatorButton extends AbstractIndicatorButton implements BasicSet
     protected void initializePopup() {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
-        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.app_root);
+        ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.frame);
 
         BasicSettingPopup popup = (BasicSettingPopup) inflater.inflate(
                 R.layout.basic_setting_popup, root, false);

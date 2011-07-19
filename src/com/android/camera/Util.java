@@ -61,7 +61,17 @@ public class Util {
     private static final String EXTRAS_CAMERA_FACING =
             "android.intent.extras.CAMERA_FACING";
 
+    private static boolean sIsTabletUI;
+
     private Util() {
+    }
+
+    public static void initialize(Context context) {
+        sIsTabletUI = (context.getResources().getConfiguration().screenWidthDp >= 1024);
+    }
+
+    public static boolean isTabletUI() {
+        return sIsTabletUI;
     }
 
     // Rotates the bitmap by the specified degree.

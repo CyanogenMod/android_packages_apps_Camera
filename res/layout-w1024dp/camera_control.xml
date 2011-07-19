@@ -27,7 +27,7 @@
 
         <include layout="@layout/review_thumbnail" />
 
-        <com.android.camera.ui.IndicatorWheel android:id="@+id/indicator_wheel"
+        <com.android.camera.ui.IndicatorWheel android:id="@+id/indicator_control"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -54,10 +54,6 @@
                     android:src="@drawable/btn_zoom_out"
                     android:visibility="gone" />
 
-            <com.android.camera.ui.CameraPicker android:id="@+id/camera_picker"
-                    android:clickable="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
         </com.android.camera.ui.IndicatorWheel>
 
         <include layout="@layout/mode_picker"/>

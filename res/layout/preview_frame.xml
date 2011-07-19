@@ -18,6 +18,7 @@
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/control_panel"
         android:layout_marginLeft="2dp"
         android:layout_weight="1">
     <!-- To be consistent with w1024dp layout, preview border is not inside the preview frame. -->
@@ -49,5 +50,11 @@
                 android:layout_alignParentBottom="true"
                 android:layout_margin="5dp"
                 android:visibility="invisible"/>
+        <com.android.camera.ui.IndicatorBar
+                android:id="@+id/indicator_control"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>

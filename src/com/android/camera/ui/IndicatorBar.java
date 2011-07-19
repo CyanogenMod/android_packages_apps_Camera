@@ -16,202 +16,70 @@
 
 package com.android.camera.ui;
 
-import javax.microedition.khronos.opengles.GL11;
-
-import android.graphics.Rect;
-import android.util.Log;
+import android.content.Context;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View.MeasureSpec;
-import android.view.animation.AlphaAnimation;
 
-class IndicatorBar extends GLView {
-    private static final String TAG ="IndicatorBar";
-    public static final int INDEX_NONE = -1;
+import java.util.ArrayList;
 
-    private NinePatchTexture mBackground;
-    private Texture mHighlight;
-    private int mSelectedIndex = INDEX_NONE;
+/**
+ * A view that contains camera setting indicators which are spread over a
+ * vertical bar in preview frame.
+ */
+public class IndicatorBar extends IndicatorControl {
+    private static final String TAG = "IndicatorBar";
+    int mSelectedIndex = -1;
 
-    private OnItemSelectedListener mSelectedListener;
-    private boolean mActivated = false;
-
-    private boolean mSelectionChanged = false;
-
-    private class Background extends GLView {
-        @Override
-        protected void render(GLRootView root, GL11 gl) {
-            mBackground.draw(root, 0, 0, getWidth(), getHeight());
-
-            if (mActivated && mSelectedIndex != INDEX_NONE
-                    && mHighlight != null) {
-                Rect bounds = IndicatorBar.this.getComponent(
-                        mSelectedIndex + 1).mBounds;
-                mHighlight.draw(root, bounds.left, bounds.top,
-                        bounds.width(), bounds.height());
-            }
-        }
+    public IndicatorBar(Context context) {
+        super(context);
     }
 
-    public interface OnItemSelectedListener {
-        public void onItemSelected(GLView view, int position);
-        public void onNothingSelected();
-    }
-
-    public IndicatorBar() {
-        GLView background = new Background();
-        background.setVisibility(GLView.INVISIBLE);
-        addComponent(background);
-    }
-
-    public void overrideSettings(String key, String value) {
-        for (int i = 1, n = getComponentCount(); i < n; ++i) {
-            AbstractIndicator indicator = (AbstractIndicator) getComponent(i);
-            indicator.overrideSettings(key, value);
-        }
-    }
-
-    public void setOnItemSelectedListener(OnItemSelectedListener l) {
-        mSelectedListener = l;
-    }
-
-    public void setBackground(NinePatchTexture background) {
-        if (mBackground == background) return;
-        mBackground = background;
-        if (background != null) {
-            setPaddings(background.getPaddings());
-        } else {
-            setPaddings(0, 0, 0, 0);
-        }
-        invalidate();
-    }
-
-    public void setHighlight(Texture highlight) {
-        if (mHighlight == highlight) return;
-        mHighlight = highlight;
-        invalidate();
+    public IndicatorBar(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     @Override
-    protected void onMeasure(int widthSpec, int heightSpec) {
-        int width = 0;
-        int height = 0;
-        for (int i = 1, n = getComponentCount(); i < n; ++i) {
-            GLView component = getComponent(i);
-            component.measure(
-                    MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-            width = Math.max(width, component.getMeasuredWidth());
-            height += component.getMeasuredHeight();
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (!onFilterTouchEventForSecurity(event)) return false;
+
+        int action = event.getAction();
+
+        if (!isEnabled()) return false;
+
+        double x = (double) event.getX();
+        double y = (double) event.getY();
+        if (x > getWidth() || x < 0) return false;
+        if (y > getHeight() || y < 0) return false;
+
+        int index = (int) (y * getChildCount()) / getHeight();
+        AbstractIndicatorButton b = (AbstractIndicatorButton) getChildAt(index);
+        b.dispatchTouchEvent(event);
+        if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
+            AbstractIndicatorButton c = (AbstractIndicatorButton) getChildAt(mSelectedIndex);
+            event.setAction(MotionEvent.ACTION_CANCEL);
+            c.dispatchTouchEvent(event);
+            c.dismissPopup();
+
+            if (action == MotionEvent.ACTION_MOVE) {
+                event.setAction(MotionEvent.ACTION_DOWN);
+                b.dispatchTouchEvent(event);
+            }
         }
-        new MeasureHelper(this)
-                .setPreferredContentSize(width, height)
-                .measure(widthSpec, heightSpec);
+        mSelectedIndex = index;
+        return true;
     }
 
     @Override
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
-        // Background
-        getComponent(0).layout(0, 0, right - left, bottom - top);
-
-        int count = getComponentCount();
-        Rect p = mPaddings;
-        int cBottom = bottom - top - p.bottom;
-        int cRight = right - left - p.right;
-        int yoffset = mPaddings.top;
-        int xoffset = mPaddings.left;
-        for (int i = 1; i < count; ++i) {
-            int cHeight = (cBottom - yoffset) / (count - i);
-            int nextYoffset = yoffset + cHeight;
-            getComponent(i).layout(xoffset, yoffset, cRight, nextYoffset);
-            yoffset = nextYoffset;
+        int count = getChildCount();
+        if (count == 0) return;
+        int width = right - left;
+        int height = bottom - top;
+        int h = height / count;
+        for (int i = 0; i < count; i++) {
+            getChildAt(i).layout(0, top + i * height / count, width,
+                    top + i * height / count + h);
         }
-    }
-
-    private void setSelectedItem(GLView view, int index) {
-        if (index == mSelectedIndex) return;
-        mSelectionChanged = true;
-        mSelectedIndex = index;
-        if (mSelectedListener != null) {
-            if (index == INDEX_NONE) {
-                mSelectedListener.onNothingSelected();
-            } else {
-                mSelectedListener.onItemSelected(view, index);
-            }
-        }
-        invalidate();
-    }
-
-    public void setSelectedIndex(int index) {
-        if (index == mSelectedIndex) return;
-        setSelectedItem(index == INDEX_NONE ? null :getComponent(index), index);
-    }
-
-    public void setActivated(boolean activated) {
-        if (activated == mActivated) return;
-        mActivated = activated;
-        if (activated) {
-            GLView background = getComponent(0);
-            background.setVisibility(GLView.VISIBLE);
-            AlphaAnimation anim = new AlphaAnimation(0, 1);
-            anim.setDuration(200);
-            background.startAnimation(anim);
-        } else {
-            GLView background = getComponent(0);
-            background.setVisibility(GLView.INVISIBLE);
-            AlphaAnimation anim = new AlphaAnimation(1, 0);
-            anim.setDuration(200);
-            background.startAnimation(anim);
-        }
-    }
-
-    public boolean isActivated() {
-        return mActivated;
-    }
-
-    @Override
-    protected boolean dispatchTouchEvent(MotionEvent event) {
-        // Do not pass motion events to children
-        return onTouch(event);
-    }
-
-    @Override @SuppressWarnings("fallthrough")
-    protected boolean onTouch(MotionEvent event) {
-        int y = (int) event.getY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mSelectionChanged = false;
-                setActivated(true);
-            case MotionEvent.ACTION_MOVE:
-                for (int i = 1, n = getComponentCount(); i < n; ++i) {
-                    GLView component = getComponent(i);
-                    if (y <= component.mBounds.bottom) {
-                        setSelectedItem(component, i - 1);
-                        return true;
-                    }
-                }
-                setSelectedItem(null, INDEX_NONE);
-                break;
-            case MotionEvent.ACTION_UP:
-                if (mSelectionChanged == false) {
-                    setSelectedItem(null, INDEX_NONE);
-                }
-        }
-        return true;
-    }
-
-    public void reloadPreferences() {
-        for (int i = 1, n = getComponentCount(); i < n; ++i) {
-            ((AbstractIndicator) getComponent(i)).reloadPreferences();
-        }
-    }
-
-    public void setOrientation(int orientation) {
-        for (int i = 1, n = getComponentCount(); i < n; ++i) {
-            ((AbstractIndicator) getComponent(i)).setOrientation(orientation);
-        }
-    }
-
-    public int getSelectedIndex() {
-        return mSelectedIndex;
     }
 }

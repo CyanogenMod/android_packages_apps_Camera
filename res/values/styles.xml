@@ -73,13 +73,13 @@
     </style>
     <style name="SettingTitleText">
         <item name="android:textSize">22dp</item>
-        <item name="android:layout_gravity">left|bottom</item>
+        <item name="android:layout_gravity">left</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
         <item name="android:paddingLeft">16dp</item>
     </style>
     <style name="SettingPickerText">
