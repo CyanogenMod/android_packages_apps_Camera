@@ -24,13 +24,19 @@
 #include <time.h>
 #include <db_utilities_camera.h>
 
+
+#ifdef TURN_ON_DEBUG
 #include <android/log.h>
 #define ANDROID_LOG_VERBOSE ANDROID_LOG_DEBUG
 #define LOG_TAG "CVJNI"
 #define LOGV(...) __android_log_print(ANDROID_LOG_SILENT, LOG_TAG, __VA_ARGS__)
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-
+#else
+#define LOGI(...) //
+#define LOGE(...) //
+#define LOGV(...) //
+#endif
 
 #include "mosaic/ImageUtils.h"
 #include "mosaic/AlignFeatures.h"
@@ -116,7 +122,7 @@ int Init(int mID, int nmax)
 
         t1 = now_ms();
         time_c = t1 - t0;
-        LOGI("Init[%d]: %g ms [%d frames]",mID,time_c,nmax);
+        LOGV("Init[%d]: %g ms [%d frames]",mID,time_c,nmax);
                 return 1;
 }
 
@@ -126,39 +132,42 @@ void GenerateQuarterResImagePlanar(ImageType im, int input_w, int input_h, Image
     ImageType outp;
 
     int count = 0;
-  for (int j = 0; j < input_h; j+=4)
-  {
-    imp = im + j*input_w;
-    outp = out + (int)(j/4)*(int(input_w/4));
 
-    for (int i = 0; i < input_w; i+=4)
+    for (int j = 0; j < input_h; j += H2L_FACTOR)
     {
-        *outp++ = *(imp+i);
-        count++;
-    }
-  }
-  for (int j = input_h; j < 2*input_h; j+=4)
-  {
-    imp = im + j*input_w;
-    outp = out + (int)(j/4)*(int(input_w/4));
+        imp = im + j * input_w;
+        outp = out + (j / H2L_FACTOR) * (input_w / H2L_FACTOR);
 
-    for (int i = 0; i < input_w; i+=4)
-    {
-        *outp++ = *(imp+i);
-        count++;
+        for (int i = 0; i < input_w; i += H2L_FACTOR)
+        {
+            *outp++ = *(imp + i);
+            count++;
+        }
     }
-  }
-  for (int j = 2*input_h; j < 3*input_h; j+=4)
-  {
-    imp = im + j*input_w;
-    outp = out + (int)(j/4)*(int(input_w/4));
 
-    for (int i = 0; i < input_w; i+=4)
+    for (int j = input_h; j < 2 * input_h; j += H2L_FACTOR)
     {
-        *outp++ = *(imp+i);
-        count++;
+        imp = im + j * input_w;
+        outp = out + (j / H2L_FACTOR) * (input_w / H2L_FACTOR);
+
+        for (int i = 0; i < input_w; i += H2L_FACTOR)
+        {
+            *outp++ = *(imp + i);
+            count++;
+        }
     }
-  }
+
+    for (int j = 2 * input_h; j < 3 * input_h; j += H2L_FACTOR)
+    {
+        imp = im + j * input_w;
+        outp = out + (j / H2L_FACTOR) * (input_w / H2L_FACTOR);
+
+        for (int i = 0; i < input_w; i += H2L_FACTOR)
+        {
+            *outp++ = *(imp + i);
+            count++;
+        }
+    }
 }
 
 int AddFrame(int mID, int k, float* trs1d)
@@ -171,10 +180,9 @@ int AddFrame(int mID, int k, float* trs1d)
 
     mosaic[mID]->getAligner()->getLastTRS(trs);
 
-    //    LOGI("REG: %s",mosaic[mID]->getAligner()->getRegProfileString());
     t1 = now_ms();
     time_c = t1 - t0;
-    LOGI("Align: %g ms",time_c);
+    LOGV("Align: %g ms",time_c);
 
     if(trs1d!=NULL)
     {
@@ -202,7 +210,7 @@ void Finalize(int mID)
     ret = mosaic[mID]->createMosaic();
     t1 = now_ms();
     time_c = t1 - t0;
-    LOGI("CreateMosaic: %g ms",time_c);
+    LOGV("CreateMosaic: %g ms",time_c);
 
     // Get back the result
     resultYVU = mosaic[mID]->getMosaic(mosaicWidth, mosaicHeight);
@@ -238,25 +246,79 @@ void YUV420toYVU24(ImageType yvu24, ImageType yuv420sp, int width, int height)
     }
 }
 
-JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_setSourceImageDimensions(JNIEnv* env, jobject thiz, jint width, jint height)
+void YUV420toYVU24_NEW(ImageType yvu24, ImageType yuv420sp, int width, int height)
 {
-    tWidth[HR] = width;
-    tHeight[HR] = height;
-    tWidth[LR] = int(width/H2L_FACTOR);
-    tHeight[LR] = int(height/H2L_FACTOR);
+    int frameSize = width * height;
 
-    for(int i=0; i<MAX_FRAMES_LR; i++)
+    ImageType oyp = yvu24;
+    ImageType ovp = yvu24 + frameSize;
+    ImageType oup = yvu24 + frameSize + frameSize;
+
+    memcpy(yvu24, yuv420sp, frameSize * sizeof(unsigned char));
+
+    for (int j = 0; j < height; j += 2)
     {
-            tImage[LR][i] = ImageUtils::allocateImage(tWidth[LR], tHeight[LR], ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
-    }
-    for(int i=0; i<MAX_FRAMES_HR; i++)
-    {
-            tImage[HR][i] = ImageUtils::allocateImage(tWidth[HR], tHeight[HR], ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
+        unsigned char u = 0, v = 0;
+        int uvp = frameSize + (j >> 1) * width;
+        ovp = yvu24 + frameSize + j * width;
+        oup = ovp + frameSize;
+
+        ImageType iuvp = yuv420sp + uvp;
+
+        for (int i = 0; i < width; i += 2)
+        {
+            v = *iuvp++;
+            u = *iuvp++;
+
+            *ovp++ = v;
+            *oup++ = u;
+
+            *ovp++ = v;
+            *oup++ = u;
+
+        }
+        memcpy(ovp, ovp - width, width * sizeof(unsigned char));
+        memcpy(oup, oup - width, width * sizeof(unsigned char));
     }
 }
 
 
-JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceImage(JNIEnv* env, jobject thiz, jbyteArray photo_data)
+JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_allocateMosaicMemory(JNIEnv* env, jobject thiz, jint width, jint height)
+{
+    tWidth[HR] = width;
+    tHeight[HR] = height;
+    tWidth[LR] = int(width / H2L_FACTOR);
+    tHeight[LR] = int(height / H2L_FACTOR);
+
+    for(int i=0; i<MAX_FRAMES_LR; i++)
+    {
+            tImage[LR][i] = ImageUtils::allocateImage(tWidth[LR], tHeight[LR],
+                    ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
+    }
+    for(int i=0; i<MAX_FRAMES_HR; i++)
+    {
+            tImage[HR][i] = ImageUtils::allocateImage(tWidth[HR], tHeight[HR],
+                    ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
+    }
+}
+
+
+JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_freeMosaicMemory(
+        JNIEnv* env, jobject thiz)
+{
+    for(int i = 0; i < MAX_FRAMES_LR; i++)
+    {
+        ImageUtils::freeImage(tImage[LR][i]);
+    }
+    for(int i = 0; i < MAX_FRAMES_HR; i++)
+    {
+        ImageUtils::freeImage(tImage[HR][i]);
+    }
+}
+
+
+JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceImage(
+        JNIEnv* env, jobject thiz, jbyteArray photo_data)
 {
     double  t0, t1, time_c;
     t0 = now_ms();
@@ -264,23 +326,35 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
     if(frame_number_HR<MAX_FRAMES_HR && frame_number_LR<MAX_FRAMES_LR)
     {
         jbyte *pixels = env->GetByteArrayElements(photo_data, 0);
-        YUV420toYVU24(tImage[HR][frame_number_HR], (ImageType)pixels, tWidth[HR], tHeight[HR]);
+
+        t1 = now_ms();
+        time_c = t1 - t0;
+        LOGV("[%d] GetByteArray: %g ms",frame_number_HR,time_c);
+
+        YUV420toYVU24_NEW(tImage[HR][frame_number_HR], (ImageType)pixels,
+                tWidth[HR], tHeight[HR]);
+
+        time_c = now_ms() - t1;
+        LOGV("[%d] 420to24_NEW: %g ms",frame_number_HR,time_c);
 
         env->ReleaseByteArrayElements(photo_data, pixels, 0);
 
         t1 = now_ms();
         time_c = t1 - t0;
-        LOGI("[%d] ReadImage: %g ms",frame_number_HR,time_c);
+        LOGV("[%d] ReadImage [GetByteArray+420to24+ReleaseByteArray]: %g ms",
+               frame_number_HR, time_c);
 
         double last_tx = mTx;
 
         t0 = now_ms();
-        GenerateQuarterResImagePlanar(tImage[HR][frame_number_HR], tWidth[HR], tHeight[HR], tImage[LR][frame_number_LR]);
+        GenerateQuarterResImagePlanar(tImage[HR][frame_number_HR], tWidth[HR],
+                tHeight[HR], tImage[LR][frame_number_LR]);
         t1 = now_ms();
         time_c = t1 - t0;
-        LOGI("[%d] HR->LR [%d]: %g ms",frame_number_HR,frame_number_LR,time_c);
+        LOGV("[%d] HR->LR [%d]: %g ms", frame_number_HR, frame_number_LR,
+                time_c);
 
-        int ret_code = AddFrame(LR,frame_number_LR,gTRS);
+        int ret_code = AddFrame(LR, frame_number_LR, gTRS);
 
         if(ret_code == Mosaic::MOSAIC_RET_OK)
         {
@@ -324,11 +398,11 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(JNIE
 
     if(high_res)
     {
-        Init(HR,frame_number_HR);
-        for(int k=0; k<frame_number_HR; k++)
+        Init(HR, frame_number_HR);
+        for(int k = 0; k < frame_number_HR; k++)
         {
-            AddFrame(HR,k,NULL);
-            LOGI("Added Frame [%d]",k);
+            AddFrame(HR, k, NULL);
+            LOGV("Added Frame [%d]", k);
         }
 
         Finalize(HR);
@@ -351,7 +425,7 @@ JNIEXPORT jintArray JNICALL Java_com_android_camera_panorama_Mosaic_getFinalMosa
     resultBGR = ImageUtils::allocateImage(mosaicWidth, mosaicHeight, ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
     ImageUtils::yvu2bgr(resultBGR, resultYVU, mosaicWidth, mosaicHeight);
 
-    LOGI("MosBytes: %d, W = %d, H = %d", imageSize, width, height);
+    LOGV("MosBytes: %d, W = %d, H = %d", imageSize, width, height);
 
     int* image = new int[imageSize];
     int* dims = new int[2];
@@ -405,7 +479,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_android_camera_panorama_Mosaic_getFinalMos
         }
     }
 
-    LOGI("MosBytes: %d, W = %d, H = %d", imageSize, width, height);
+    LOGV("MosBytes: %d, W = %d, H = %d", imageSize, width, height);
 
     unsigned char* dims = new unsigned char[8];
 
