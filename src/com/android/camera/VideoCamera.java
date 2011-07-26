@@ -799,7 +799,6 @@ public class VideoCamera extends ActivityBase
                     highestQuality = qualityList[i];
                 } else if (secondHighestQuality == -1) {
                     secondHighestQuality = qualityList[i];
-                    break;
                 }
                 lastEffectiveQuality = qualityList[i];
             }
