@@ -27,13 +27,13 @@
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Amavidiyo ekhamera"</string>
     <!-- no translation found for wait (8600187532323801552) -->
     <skip />
-    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Sicela ukhweze ukugcina nge-USB ngaphambi kokusebenzisa ikhamera."</string>
-    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="820691042667338625">"Sicela ukhweze ukugcina nge-USB ngaphambi kokusebenzisa ikhamera."</string>
-    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Ukugcina nge-USB kugcwele"</string>
-    <!-- outdated translation 6452370395538050134 -->     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Ukugcina nge-USB kugcwele"</string>
-    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Ilungiselela ukugcina nge-USB..."</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Sicela ukhweze isitoreji se-USB ngaphambi kokusebenzisa ikhamera."</string>
+    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="820691042667338625">"Sicela ukhweze isitoreji se-USB ngaphambi kokusebenzisa ikhamera."</string>
+    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Isitoreji se-USB sigcwele"</string>
+    <!-- outdated translation 6452370395538050134 -->     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Isitoreji se-USB sigcwele"</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Ilungiselela isitoreji se-USB..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Ilungiselela ikhadi le-SD..."</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Yehlulekile ukufinyelela kukugcina nge-USB."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Yehlulekile ukufinyelela kwisitoreji se-USB."</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Yehlulekile ukufinyelela ikhadi le-SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Buyisela esimweni okuzenzakalelayo"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Izilungiselelo zekhamera zibuyiselwa kokuzenzakalelayo"</string>
@@ -110,7 +110,7 @@
     <string name="pref_restore_detail" msgid="5732490002291044791">"Buyisela esimeni okumisiwe"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Isibonelelo"</string>
     <string name="details_ok" msgid="6848594369924424312">"KULUNGILE"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Ukugcina nge-USB yakho kuphelelwa isikhala. Shintsha ilungiselelo lekhwalithi noma susa ezinye izithombe noma amanye amafayela."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Isitoreji se-USB yakho siphelelwa yisikhala. Shintsha ilungiselelo lekhwalithi noma susa ezinye izithombe noma amanye amafayela."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Ikhadi lakho le-SD liphelelwa isikhathi. Shintsha ilungiselelo lekhwalithi noma susa eminye imifanekiso noma amanye amafayela."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Umkhwawulo wosayizi ufinyelelwe."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Sondeza"</string>
