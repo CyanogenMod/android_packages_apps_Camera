@@ -60,34 +60,6 @@
                     android:layout_height="wrap_content" />
         </com.android.camera.ui.IndicatorWheel>
 
-        <com.android.camera.SwitcherSet android:id="@+id/camera_switch"
-                android:visibility="invisible"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:padding="14dp"
-                android:layout_marginRight="@dimen/mode_switcher_margin_right"
-                android:layout_marginBottom="@dimen/mode_switcher_margin_bottom">
-            <com.android.camera.ui.RotateImageView
-                    android:id="@+id/video_switch_icon"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:src="@drawable/btn_ic_mode_switch_video"/>
-            <com.android.camera.HorizontalSwitcher android:id="@+id/switcher"
-                    android:layout_width="50dp"
-                    android:layout_height="18dp"
-                    android:layout_marginLeft="@dimen/mode_switcher_inner_margin"
-                    android:layout_marginRight="@dimen/mode_switcher_inner_margin"
-                    android:src="@drawable/toggle_switch_control_holo_dark"
-                    android:background="@drawable/toggle_switch_bg_holo_dark" />
-            <com.android.camera.ui.RotateImageView
-                    android:id="@+id/camera_switch_icon"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:src="@drawable/btn_ic_mode_switch_camera"/>
-        </com.android.camera.SwitcherSet>
+        <include layout="@layout/mode_picker"/>
 </RelativeLayout>
 

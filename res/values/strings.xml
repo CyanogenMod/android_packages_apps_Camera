@@ -283,8 +283,14 @@
     <!-- The text to show the current zoom factor. [CHAR LIMIT=NONE] -->
     <string name="zoom_text">Zoom <xliff:g id="zoom_text" example="1.1x">%s</xliff:g></string>
 
-    <string name="switch_to_camera_lable">Switch to camera</string>
-    <string name="switch_to_video_lable">Switch to video</string>
+    <!-- The text of menu item to switch the mode to Camera. [CHAR LIMIT=NONE] -->
+    <string name="switch_to_camera_label">Switch to camera</string>
+
+    <!-- The text of menu item to switch the mode to Video. [CHAR LIMIT=NONE] -->
+    <string name="switch_to_video_label">Switch to video</string>
+
+    <!-- The text of menu item to switch the mode to Panorama. [CHAR LIMIT=NONE] -->
+    <string name="switch_to_panorama_label">Switch to panorama</string>
 
     <string name="setting_increment" translatable="false">&gt;</string>
     <string name="setting_decrement" translatable="false">&lt;</string>

@@ -17,7 +17,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="match_parent"
         android:layout_width="76dp"
-        android:paddingTop="13dp"
+        android:paddingTop="24dp"
         android:paddingBottom="3dp">
 
     <include layout="@layout/review_thumbnail"/>
@@ -32,26 +32,6 @@
             android:src="@drawable/btn_ic_camera_shutter"
             android:background="@drawable/btn_shutter"/>
 
-    <com.android.camera.SwitcherSet android:id="@+id/camera_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:orientation="vertical"
-            android:gravity="center">
-        <com.android.camera.ui.RotateImageView android:id="@+id/video_switch_icon"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:src="@drawable/btn_ic_mode_switch_video_normal"/>
-        <com.android.camera.Switcher android:id="@+id/switcher"
-                android:layout_width="wrap_content"
-                android:layout_height="70dp"
-                android:src="@drawable/btn_mode_switch_knob"
-                android:background="@drawable/btn_mode_switch_bg" />
-        <com.android.camera.ui.RotateImageView
-                android:id="@+id/camera_switch_icon"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:src="@drawable/btn_ic_mode_switch_camera_normal"/>
-    </com.android.camera.SwitcherSet>
+    <include layout="@layout/mode_picker"/>
+
 </RelativeLayout>

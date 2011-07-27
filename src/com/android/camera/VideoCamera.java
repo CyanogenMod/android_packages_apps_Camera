@@ -87,7 +87,7 @@ public class VideoCamera extends ActivityBase
         implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        Switcher.OnSwitchListener, PreviewFrameLayout.OnSizeChangedListener {
+        ModePicker.OnModeChangeListener, PreviewFrameLayout.OnSizeChangedListener {
 
     private static final String TAG = "videocamera";
 
@@ -163,11 +163,9 @@ public class VideoCamera extends ActivityBase
     // An imageview showing showing the last captured picture thumbnail.
     private RotateImageView mThumbnailView;
     private RotateImageView mShareIcon;
-    private RotateImageView mCameraSwitchIcon;
-    private RotateImageView mVideoSwitchIcon;
+    private ModePicker mModePicker;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
-    private SwitcherSet mSwitcher;
 
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
@@ -407,9 +405,9 @@ public class VideoCamera extends ActivityBase
 
             initThumbnailButton();
             mShareIcon = (RotateImageView) findViewById(R.id.share_icon);
-            mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
-            mSwitcher.setVisibility(View.VISIBLE);
-            mSwitcher.setOnSwitchListener(this);
+            mModePicker = (ModePicker) findViewById(R.id.mode_picker);
+            mModePicker.setVisibility(View.VISIBLE);
+            mModePicker.setOnModeChangeListener(this);
         }
 
         mPreviewFrameLayout = (PreviewFrameLayout)
@@ -419,8 +417,7 @@ public class VideoCamera extends ActivityBase
         mReviewImage = (ImageView) findViewById(R.id.review_image);
         mShareButton = findViewById(R.id.share_button);
         mShareIcon = (RotateImageView) findViewById(R.id.share_icon);
-        mCameraSwitchIcon = (RotateImageView) findViewById(R.id.camera_switch_icon);
-        mVideoSwitchIcon = (RotateImageView) findViewById(R.id.video_switch_icon);
+        mModePicker = (ModePicker) findViewById(R.id.mode_picker);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
@@ -556,7 +553,7 @@ public class VideoCamera extends ActivityBase
         if (mHeadUpDisplay != null) mHeadUpDisplay.setEnabled(enable);
         if (mIndicatorWheel != null) mIndicatorWheel.setEnabled(enable);
         if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
-        if (mSwitcher != null) mSwitcher.setEnabled(enable);
+        if (mModePicker != null) mModePicker.setEnabled(enable);
     }
 
     private void initializeIndicatorWheel() {
@@ -610,8 +607,7 @@ public class VideoCamera extends ActivityBase
         if (mHeadUpDisplay != null) mHeadUpDisplay.setOrientation(mOrientationCompensation);
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
         if (mShareIcon != null) mShareIcon.setDegree(degree);
-        if (mCameraSwitchIcon != null) mCameraSwitchIcon.setDegree(degree);
-        if (mVideoSwitchIcon != null) mVideoSwitchIcon.setDegree(degree);
+        if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
     }
 
@@ -894,7 +890,7 @@ public class VideoCamera extends ActivityBase
 
         if (!mIsVideoCaptureIntent) {
             updateThumbnailButton();  // Update the last video thumbnail.
-            mSwitcher.setSwitch(SWITCH_VIDEO);
+            mModePicker.setCurrentMode(ModePicker.MODE_VIDEO);
         }
 
         if (mPreviewing) {
@@ -1333,14 +1329,17 @@ public class VideoCamera extends ActivityBase
     }
 
     private void addBaseMenuItems(Menu menu) {
-        MenuHelper.addSwitchModeMenuItem(menu, false, new Runnable() {
+        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_CAMERA, new Runnable() {
             public void run() {
-                switchToCameraMode();
+                switchToOtherMode(ModePicker.MODE_CAMERA);
             }
         });
-        MenuItem gallery = menu.add(Menu.NONE, Menu.NONE,
-                MenuHelper.POSITION_GOTO_GALLERY,
-                R.string.camera_gallery_photos_text)
+        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_PANORAMA, new Runnable() {
+            public void run() {
+                switchToOtherMode(ModePicker.MODE_PANORAMA);
+            }
+        });
+        MenuItem gallery = menu.add(R.string.camera_gallery_photos_text)
                 .setOnMenuItemClickListener(
                     new OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
@@ -1352,9 +1351,7 @@ public class VideoCamera extends ActivityBase
         mGalleryItems.add(gallery);
 
         if (mNumberOfCameras > 1) {
-            menu.add(Menu.NONE, Menu.NONE,
-                    MenuHelper.POSITION_SWITCH_CAMERA_ID,
-                    R.string.switch_camera_id)
+            menu.add(R.string.switch_camera_id)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     CameraSettings.writePreferredCameraId(mPreferences,
@@ -1787,16 +1784,16 @@ public class VideoCamera extends ActivityBase
         mParameters = mCameraDevice.getParameters();
     }
 
-    private boolean switchToCameraMode() {
+    private boolean switchToOtherMode(int mode) {
         if (isFinishing() || mMediaRecorderRecording) return false;
-        MenuHelper.gotoCameraMode(VideoCamera.this);
+        MenuHelper.gotoMode(mode, VideoCamera.this);
         finish();
         return true;
     }
 
-    public boolean onSwitchChanged(Switcher source, boolean onOff) {
-        if (onOff == SWITCH_CAMERA) {
-            return switchToCameraMode();
+    public boolean onModeChanged(int mode) {
+        if (mode != ModePicker.MODE_VIDEO) {
+            return switchToOtherMode(mode);
         } else {
             return true;
         }

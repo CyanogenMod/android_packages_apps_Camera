@@ -43,12 +43,9 @@ public class MenuHelper {
     private static final int INCLUDE_IMAGES = (1 << 0);
     private static final int INCLUDE_VIDEOS = (1 << 2);
 
-    public static final int POSITION_SWITCH_CAMERA_MODE = 1;
-    public static final int POSITION_GOTO_GALLERY = 2;
-    public static final int POSITION_SWITCH_CAMERA_ID = 3;
-
     private static final int NO_ANIMATION = 0;
     private static final String CAMERA_CLASS = "com.android.camera.Camera";
+    private static final String PANORAMA_CLASS = "com.android.camera.panorama.PanoramaActivity";
     private static final String VIDEO_CAMERA_CLASS = "com.android.camera.VideoCamera";
 
     public static void confirmAction(Context context, String title,
@@ -71,17 +68,28 @@ public class MenuHelper {
             .show();
     }
 
-    static void addSwitchModeMenuItem(Menu menu, boolean switchToVideo,
+    static void addSwitchModeMenuItem(Menu menu, int mode,
             final Runnable r) {
-        int labelId = switchToVideo
-                ? R.string.switch_to_video_lable
-                : R.string.switch_to_camera_lable;
-        int iconId = switchToVideo
-                ? R.drawable.ic_menu_camera_video_view
-                : android.R.drawable.ic_menu_camera;
-        MenuItem item = menu.add(Menu.NONE, Menu.NONE,
-                POSITION_SWITCH_CAMERA_MODE, labelId)
-                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+        int labelId, iconId;
+        switch(mode) {
+            case ModePicker.MODE_VIDEO:
+                labelId = R.string.switch_to_video_label;
+                iconId = R.drawable.ic_menu_camera_video_view;
+                break;
+            case ModePicker.MODE_CAMERA:
+                labelId = R.string.switch_to_camera_label;
+                iconId = android.R.drawable.ic_menu_camera;
+                break;
+            case ModePicker.MODE_PANORAMA:
+                labelId = R.string.switch_to_panorama_label;
+                iconId = R.drawable.btn_ic_panorama;
+                break;
+            default:
+                  // incorrect mode, do nothing.
+                  return;
+        }
+        MenuItem item = menu.add(labelId).setOnMenuItemClickListener(
+                new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 r.run();
                 return true;
@@ -107,6 +115,28 @@ public class MenuHelper {
             activity.startActivity(intent);
         }
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    public static void gotoMode(int mode, Activity activity) {
+        String action, className;
+        switch (mode) {
+            case ModePicker.MODE_PANORAMA:
+                action = PANORAMA_CLASS;
+                className = PANORAMA_CLASS;
+                break;
+            case ModePicker.MODE_VIDEO:
+                action = MediaStore.INTENT_ACTION_VIDEO_CAMERA;
+                className = VIDEO_CAMERA_CLASS;
+                break;
+            case ModePicker.MODE_CAMERA:
+                action = MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
+                className = CAMERA_CLASS;
+                break;
+            default:
+                Log.e(TAG, "unknown camera mode:" + mode);
+                return;
+        }
+        startCameraActivity(activity, new Intent(action), className);
     }
 
     public static void gotoVideoMode(Activity activity) {

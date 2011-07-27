@@ -92,7 +92,7 @@ import java.util.List;
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements View.OnClickListener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
-        SurfaceHolder.Callback, Switcher.OnSwitchListener {
+        SurfaceHolder.Callback, ModePicker.OnModeChangeListener {
 
     private static final String TAG = "camera";
 
@@ -145,9 +145,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private int mOrientationCompensation = 0;
     private ComboPreferences mPreferences;
 
-    private static final boolean SWITCH_CAMERA = true;
-    private static final boolean SWITCH_VIDEO = false;
-
     private static final String sTempCropFilename = "crop-temp";
 
     private android.hardware.Camera mCameraDevice;
@@ -156,7 +153,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private ShutterButton mShutterButton;
     private ToneGenerator mFocusToneGenerator;
     private GestureDetector mPopupGestureDetector;
-    private SwitcherSet mSwitcher;
     private boolean mOpenCameraFail = false;
     private boolean mCameraDisabled = false;
 
@@ -178,8 +174,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // An imageview showing showing the last captured picture thumbnail.
     private RotateImageView mThumbnailView;
     private RotateImageView mShareIcon;
-    private RotateImageView mCameraSwitchIcon;
-    private RotateImageView mVideoSwitchIcon;
+    private ModePicker mModePicker;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -384,7 +379,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // Initialize last picture button.
         mContentResolver = getContentResolver();
         if (!mIsImageCaptureIntent) {  // no thumbnail in image capture intent
-            findViewById(R.id.camera_switch).setOnClickListener(this);
             initThumbnailButton();
         }
 
@@ -470,7 +464,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         if (!mIsImageCaptureIntent) {
             updateThumbnailButton();
-            mSwitcher.setSwitch(SWITCH_CAMERA);
+            mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
         }
     }
 
@@ -986,8 +980,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mShareButton = findViewById(R.id.share_button);
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
         mShareIcon = (RotateImageView) findViewById(R.id.share_icon);
-        mCameraSwitchIcon = (RotateImageView) findViewById(R.id.camera_switch_icon);
-        mVideoSwitchIcon = (RotateImageView) findViewById(R.id.video_switch_icon);
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
@@ -1044,10 +1036,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             findViewById(R.id.btn_retake).setOnClickListener(this);
             findViewById(R.id.btn_done).setOnClickListener(this);
         } else {
-            mSwitcher = (SwitcherSet) findViewById(R.id.camera_switch);
-            mSwitcher.setVisibility(View.VISIBLE);
-            mSwitcher.setOnSwitchListener(this);
-            mSwitcher.setSwitch(SWITCH_CAMERA);
+            mModePicker = (ModePicker) findViewById(R.id.mode_picker);
+            mModePicker.setVisibility(View.VISIBLE);
+            mModePicker.setOnModeChangeListener(this);
+            mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
         }
 
         // Make sure preview is started.
@@ -1199,7 +1191,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mIndicatorWheel != null) mIndicatorWheel.setEnabled(enable);
         if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
         if (mZoomPicker != null) mZoomPicker.setEnabled(enable);
-        if (mSwitcher != null) mSwitcher.setEnabled(enable);
+        if (mModePicker != null) mModePicker.setEnabled(enable);
     }
 
     public static int roundOrientation(int orientation) {
@@ -1236,8 +1228,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mHeadUpDisplay != null) mHeadUpDisplay.setOrientation(mOrientationCompensation);
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
         if (mShareIcon != null) mShareIcon.setDegree(degree);
-        if (mCameraSwitchIcon != null) mCameraSwitchIcon.setDegree(degree);
-        if (mVideoSwitchIcon != null) mVideoSwitchIcon.setDegree(degree);
+        if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorWheel != null) mIndicatorWheel.setDegree(degree);
     }
@@ -2286,14 +2277,17 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void addBaseMenuItems(Menu menu) {
-        MenuHelper.addSwitchModeMenuItem(menu, true, new Runnable() {
+        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_VIDEO, new Runnable() {
             public void run() {
-                switchToVideoMode();
+                switchToOtherMode(ModePicker.MODE_VIDEO);
             }
         });
-        MenuItem gallery = menu.add(Menu.NONE, Menu.NONE,
-                MenuHelper.POSITION_GOTO_GALLERY,
-                R.string.camera_gallery_photos_text)
+        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_PANORAMA, new Runnable() {
+            public void run() {
+                switchToOtherMode(ModePicker.MODE_PANORAMA);
+            }
+        });
+        MenuItem gallery = menu.add(R.string.camera_gallery_photos_text)
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 gotoGallery();
@@ -2304,9 +2298,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mGalleryItems.add(gallery);
 
         if (mNumberOfCameras > 1) {
-            menu.add(Menu.NONE, Menu.NONE,
-                    MenuHelper.POSITION_SWITCH_CAMERA_ID,
-                    R.string.switch_camera_id)
+            menu.add(R.string.switch_camera_id)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     CameraSettings.writePreferredCameraId(mPreferences,
@@ -2319,17 +2311,17 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
-    private boolean switchToVideoMode() {
+    private boolean switchToOtherMode(int mode) {
         if (isFinishing() || !isCameraIdle()) return false;
-        MenuHelper.gotoVideoMode(Camera.this);
+        MenuHelper.gotoMode(mode, Camera.this);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
         return true;
     }
 
-    public boolean onSwitchChanged(Switcher source, boolean onOff) {
-        if (onOff == SWITCH_VIDEO) {
-            return switchToVideoMode();
+    public boolean onModeChanged(int mode) {
+        if (mode != ModePicker.MODE_CAMERA) {
+            return switchToOtherMode(mode);
         } else {
             return true;
         }

@@ -35,13 +35,16 @@ import android.widget.ImageView;
 import com.android.camera.CameraDisabledException;
 import com.android.camera.CameraHardwareException;
 import com.android.camera.CameraHolder;
+import com.android.camera.MenuHelper;
+import com.android.camera.ModePicker;
 import com.android.camera.R;
 import com.android.camera.ShutterButton;
 import com.android.camera.Util;
 
 import java.util.List;
 
-public class PanoramaActivity extends Activity {
+public class PanoramaActivity extends Activity implements
+        ModePicker.OnModeChangeListener {
     public static final int DEFAULT_SWEEP_ANGLE = 60;
     public static final int DEFAULT_BLEND_MODE = Mosaic.BLENDTYPE_HORIZONTAL;
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
@@ -58,6 +61,7 @@ public class PanoramaActivity extends Activity {
     private android.hardware.Camera mCameraDevice;
     private SensorManager mSensorManager;
     private Sensor mSensor;
+    private ModePicker mModePicker;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -167,6 +171,21 @@ public class PanoramaActivity extends Activity {
         }
     }
 
+    private boolean switchToOtherMode(int mode) {
+        if (isFinishing()) return false;
+        MenuHelper.gotoMode(mode, this);
+        finish();
+        return true;
+    }
+
+    public boolean onModeChanged(int mode) {
+        if (mode != ModePicker.MODE_PANORAMA) {
+            return switchToOtherMode(mode);
+        } else {
+            return true;
+        }
+    }
+
     private void createContentView() {
         setContentView(R.layout.panorama);
 
@@ -185,6 +204,10 @@ public class PanoramaActivity extends Activity {
                 mPreview.setCaptureStarted(DEFAULT_SWEEP_ANGLE, DEFAULT_BLEND_MODE);
             }
         });
+        mModePicker = (ModePicker) findViewById(R.id.mode_picker);
+        mModePicker.setVisibility(View.VISIBLE);
+        mModePicker.setOnModeChangeListener(this);
+        mModePicker.setCurrentMode(ModePicker.MODE_PANORAMA);
     }
 
     public void showResultingMosaic(String uri) {

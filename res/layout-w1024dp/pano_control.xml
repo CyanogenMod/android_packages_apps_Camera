@@ -16,15 +16,18 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="match_parent"
-        android:layout_width="76dp"
-        android:paddingTop="13dp">
+        android:layout_width="@dimen/camera_control_width"
+        android:layout_alignParentRight="true">
 
     <include layout="@layout/review_thumbnail"/>
 
     <com.android.camera.ShutterButton android:id="@+id/pano_shutter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="32dp"
+            android:scaleType="center"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/btn_ic_camera_shutter"
