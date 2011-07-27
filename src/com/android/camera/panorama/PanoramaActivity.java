@@ -151,6 +151,10 @@ public class PanoramaActivity extends Activity {
     private void configureCamera(Parameters parameters) {
         mCameraDevice.setParameters(parameters);
 
+        Util.setCameraDisplayOrientation(
+                Util.getDisplayRotation(this),
+                CameraHolder.instance().getBackCameraId(), mCameraDevice);
+
         int bufSize = getPreviewBufSize();
         Log.v(TAG, "BufSize = " + bufSize);
         for (int i = 0; i < 10; i++) {
