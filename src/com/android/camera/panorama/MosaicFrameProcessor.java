@@ -58,6 +58,10 @@ public class MosaicFrameProcessor {
     private int mTraversedAngleY;
     private float mTranslationRate;
 
+    private int mPreviewWidth;
+    private int mPreviewHeight;
+    private int mPreviewBufferSize;
+
 
     public interface ProgressListener {
         public void onProgress(boolean isFinished, float translationRate,
@@ -67,30 +71,61 @@ public class MosaicFrameProcessor {
 
     public MosaicFrameProcessor(int sweepAngle, int previewWidth, int previewHeight, int bufSize) {
         mMosaicer = new Mosaic();
-        setupMosaicer(previewWidth, previewHeight, bufSize);
-        reset();
-
         mCompassThreshold = sweepAngle;
-
-        int downSizedW = previewWidth / DOWN_SAMPLE_FACTOR;
-        int downSizedH = previewHeight / DOWN_SAMPLE_FACTOR;
-
-        mColors = new int[downSizedW * downSizedH];
-        mLRBitmapAlpha = Bitmap.createBitmap(downSizedW, downSizedH, Config.ARGB_8888);
+        mPreviewWidth = previewWidth;
+        mPreviewHeight = previewHeight;
+        mPreviewBufferSize = bufSize;
     }
 
     public void setProgressListener(ProgressListener listener) {
         mProgressListener = listener;
     }
 
+    public void onResume() {
+        setupMosaicer(mPreviewWidth, mPreviewHeight, mPreviewBufferSize);
+        setupAlphaBlendBitmap(mPreviewWidth, mPreviewHeight);
+    }
+
+    public void onPause() {
+        releaseMosaicer();
+        releaseAlphaBlendBitmap();
+    }
+
     private void setupMosaicer(int previewWidth, int previewHeight, int bufSize) {
         Log.v(TAG, "setupMosaicer w, h=" + previewWidth + ',' + previewHeight + ',' + bufSize);
-        mMosaicer.setSourceImageDimensions(previewWidth, previewHeight);
-
-        mTransformationMatrix = new Matrix();
+        mMosaicer.allocateMosaicMemory(previewWidth, previewHeight);
 
         for (int i = 0; i < NUM_FRAMES_IN_BUFFER; i++) {
             mFrames[i] = new byte[bufSize];
+        }
+
+        mFillIn = 0;
+        if  (mMosaicer != null) {
+            mMosaicer.reset();
+        }
+    }
+
+    private void releaseMosaicer() {
+        mMosaicer.freeMosaicMemory();
+
+        for (int i = 0; i < NUM_FRAMES_IN_BUFFER; i++) {
+            mFrames[i] = null;
+        }
+    }
+
+    private void setupAlphaBlendBitmap(int width, int height) {
+        int downSizedW = width / DOWN_SAMPLE_FACTOR;
+        int downSizedH = height / DOWN_SAMPLE_FACTOR;
+        mColors = new int[downSizedW * downSizedH];
+        mLRBitmapAlpha = Bitmap.createBitmap(downSizedW, downSizedH, Config.ARGB_8888);
+        mTransformationMatrix = new Matrix();
+    }
+
+    private void releaseAlphaBlendBitmap() {
+        mColors = null;
+        if (mLRBitmapAlpha != null) {
+            mLRBitmapAlpha.recycle();
+            mLRBitmapAlpha = null;
         }
     }
 
@@ -100,13 +135,6 @@ public class MosaicFrameProcessor {
 
     public byte[] getFinalMosaicNV21() {
         return mMosaicer.getFinalMosaicNV21();
-    }
-
-    public void reset() {
-        mFillIn = 0;
-        if  (mMosaicer != null) {
-            mMosaicer.reset();
-        }
     }
 
     // Processes the last filled image frame through the mosaicer and

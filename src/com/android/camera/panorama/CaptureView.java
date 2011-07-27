@@ -68,18 +68,29 @@ class CaptureView extends View {
             mCanvasBitmap.recycle();
         }
         Log.v(TAG, "onSizeChanged: W = " + w + ", H = " + h);
-        // TODO: 2000x2000 is a temporary setting from SRI's code. Should be fixed once the code is
+        // TODO: 2000x1000 is a temporary setting from SRI's code. Should be fixed once the code is
         // refactored.
-        mCanvasBitmap = Bitmap.createBitmap(2000, 2000, Bitmap.Config.ARGB_8888);
+        mCanvasBitmap = Bitmap.createBitmap(2000, 1000, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas();
         mCanvas.setBitmap(mCanvasBitmap);
         mAlphaOriginX = mCanvasBitmap.getWidth() * 0.4f;
         mAlphaOriginY = mCanvasBitmap.getHeight() * 0.4f;
     }
 
-    public void destroy() {
+    public void onResume() {
+        if (mCanvasBitmap == null) {
+            mCanvasBitmap = Bitmap.createBitmap(2000, 1000, Bitmap.Config.ARGB_8888);
+            mCanvas = new Canvas();
+            mCanvas.setBitmap(mCanvasBitmap);
+            mAlphaOriginX = mCanvasBitmap.getWidth() * 0.4f;
+            mAlphaOriginY = mCanvasBitmap.getHeight() * 0.4f;
+        }
+    }
+
+    public void onPause() {
         if (mCanvasBitmap != null) {
             mCanvasBitmap.recycle();
+            mCanvasBitmap = null;
         }
     }
 
