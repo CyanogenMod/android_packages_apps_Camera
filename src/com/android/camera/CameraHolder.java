@@ -185,6 +185,9 @@ public class CameraHolder {
         }
         mCameraDevice.release();
         mCameraDevice = null;
+        // We must set this to null because it has a reference to Camera.
+        // Camera has references to the listeners.
+        mParameters = null;
         mCameraId = -1;
     }
 
