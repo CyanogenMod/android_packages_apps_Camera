@@ -18,15 +18,24 @@ package com.android.camera.panorama;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaScannerConnection;
+import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -39,8 +48,12 @@ import com.android.camera.MenuHelper;
 import com.android.camera.ModePicker;
 import com.android.camera.R;
 import com.android.camera.ShutterButton;
+import com.android.camera.Storage;
 import com.android.camera.Util;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PanoramaActivity extends Activity implements
@@ -58,10 +71,63 @@ public class PanoramaActivity extends Activity implements
     private ShutterButton mShutterButton;
     private int mPreviewWidth;
     private int mPreviewHeight;
-    private android.hardware.Camera mCameraDevice;
+
+    private Camera mCameraDevice;
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private ModePicker mModePicker;
+
+    private MosaicFrameProcessor mMosaicFrameProcessor;
+    private ScannerClient mScannerClient;
+
+    private String mCurrentImagePath = null;
+    private long mTimeTaken;
+
+    // Need handler for callbacks to the UI thread
+    private final Handler mHandler = new Handler();
+
+    /**
+     * Inner class to tell the gallery app to scan the newly created mosaic images.
+     * TODO: insert the image to media store.
+     */
+    private static final class ScannerClient implements MediaScannerConnectionClient {
+        ArrayList<String> mPaths = new ArrayList<String>();
+        MediaScannerConnection mScannerConnection;
+        boolean mConnected;
+        Object mLock = new Object();
+
+        public ScannerClient(Context context) {
+            mScannerConnection = new MediaScannerConnection(context, this);
+        }
+
+        public void scanPath(String path) {
+            synchronized (mLock) {
+                if (mConnected) {
+                    mScannerConnection.scanFile(path, null);
+                } else {
+                    mPaths.add(path);
+                    mScannerConnection.connect();
+                }
+            }
+        }
+
+        @Override
+        public void onMediaScannerConnected() {
+            synchronized (mLock) {
+                mConnected = true;
+                if (!mPaths.isEmpty()) {
+                    for (String path : mPaths) {
+                        mScannerConnection.scanFile(path, null);
+                    }
+                    mPaths.clear();
+                }
+            }
+        }
+
+        @Override
+        public void onScanCompleted(String path, Uri uri) {
+        }
+    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -78,7 +144,17 @@ public class PanoramaActivity extends Activity implements
         if (mSensor == null) {
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         }
+        mScannerClient = new ScannerClient(getApplicationContext());
+
     }
+
+    // Create runnable for posting
+    private final Runnable mUpdateResults = new Runnable() {
+        public void run() {
+            showResultingMosaic("file://" + mCurrentImagePath);
+            mScannerClient.scanPath(mCurrentImagePath);
+        }
+    };
 
     private void setupCamera() {
         openCamera();
@@ -103,7 +179,7 @@ public class PanoramaActivity extends Activity implements
             boolean needSmaller) {
         int pixelsDiff = DEFAULT_CAPTURE_PIXELS;
         boolean hasFound = false;
-        for (Size size: supportedSizes) {
+        for (Size size : supportedSizes) {
             int h = size.height;
             int w = size.width;
             // we only want 4:3 format.
@@ -186,6 +262,74 @@ public class PanoramaActivity extends Activity implements
         }
     }
 
+    public void setCaptureStarted(int sweepAngle, int blendType) {
+        // Reset values so we can do this again.
+        mTimeTaken = System.currentTimeMillis();
+        mMosaicFrameProcessor = new MosaicFrameProcessor(sweepAngle - 5, mPreviewWidth,
+                mPreviewHeight, getPreviewBufSize());
+
+        mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
+            @Override
+            public void onProgress(boolean isFinished, float translationRate, int traversedAngleX,
+                    int traversedAngleY, Bitmap lowResBitmapAlpha, Matrix transformaMatrix) {
+                if (isFinished) {
+                    onMosaicFinished();
+                } else {
+                    updateProgress(translationRate, traversedAngleX, traversedAngleY,
+                            lowResBitmapAlpha, transformaMatrix);
+                }
+            }
+        });
+
+        // Preview callback used whenever new viewfinder frame is available
+        mCameraDevice.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
+            @Override
+            public void onPreviewFrame(final byte[] data, Camera camera) {
+                mMosaicFrameProcessor.processFrame(data, mPreviewWidth, mPreviewHeight);
+                // The returned buffer needs be added back to callback buffer again.
+                camera.addCallbackBuffer(data);
+            }
+        });
+
+        mCaptureView.setVisibility(View.VISIBLE);
+    }
+
+    private void onMosaicFinished() {
+        mMosaicFrameProcessor.setProgressListener(null);
+        mPreview.setVisibility(View.INVISIBLE);
+        mCaptureView.setVisibility(View.INVISIBLE);
+        mCaptureView.setBitmap(null);
+        mCaptureView.setStatusText("");
+        mCaptureView.setSweepAngle(0);
+        mCaptureView.invalidate();
+        // Background-process the final blending of the mosaic so
+        // that the UI is not blocked.
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                generateAndStoreFinalMosaic(false);
+            }
+        };
+        t.start();
+    }
+
+    private void updateProgress(float translationRate, int traversedAngleX, int traversedAngleY,
+            Bitmap lowResBitmapAlpha, Matrix transformationMatrix) {
+        mCaptureView.setBitmap(lowResBitmapAlpha, transformationMatrix);
+        if (translationRate > 150) {
+            // TODO: remove the text and draw implications according to the UI spec.
+            mCaptureView.setStatusText("S L O W   D O W N");
+            mCaptureView.setSweepAngle(
+                    Math.max(traversedAngleX, traversedAngleY) + 1);
+            mCaptureView.invalidate();
+        } else {
+            mCaptureView.setStatusText("");
+            mCaptureView.setSweepAngle(
+                    Math.max(traversedAngleX, traversedAngleY) + 1);
+            mCaptureView.invalidate();
+        }
+    }
+
     private void createContentView() {
         setContentView(R.layout.panorama);
 
@@ -201,7 +345,7 @@ public class PanoramaActivity extends Activity implements
         mShutterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPreview.setCaptureStarted(DEFAULT_SWEEP_ANGLE, DEFAULT_BLEND_MODE);
+                setCaptureStarted(DEFAULT_SWEEP_ANGLE, DEFAULT_BLEND_MODE);
             }
         });
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
@@ -221,7 +365,6 @@ public class PanoramaActivity extends Activity implements
     @Override
     protected void onPause() {
         super.onPause();
-        mPreview.onPause();
         mSensorManager.unregisterListener(mListener);
         releaseCamera();
     }
@@ -271,8 +414,8 @@ public class PanoramaActivity extends Activity implements
                 mCompassCurrY = event.values[1];
             }
 
-            if (mPreview != null) {
-                 mPreview.updateCompassValue(mCompassCurrX, mCompassCurrY);
+            if (mMosaicFrameProcessor != null) {
+                mMosaicFrameProcessor.updateCompassValue(mCompassCurrX, mCompassCurrY);
             }
         }
 
@@ -281,15 +424,47 @@ public class PanoramaActivity extends Activity implements
         }
     };
 
-    public int getPreviewFrameWidth() {
-        return mPreviewWidth;
+    public void generateAndStoreFinalMosaic(boolean highRes) {
+        mMosaicFrameProcessor.createMosaic(highRes);
+
+        mCurrentImagePath = Storage.DIRECTORY + "/" + PanoUtil.createName(
+                getResources().getString(R.string.pano_file_name_format), mTimeTaken);
+
+        if (highRes) {
+            mCurrentImagePath += "_HR.jpg";
+        } else {
+            mCurrentImagePath += "_LR.jpg";
+        }
+
+        try {
+            File mosDirectory = new File(Storage.DIRECTORY);
+            // have the object build the directory structure, if needed.
+            mosDirectory.mkdirs();
+
+            byte[] imageData = mMosaicFrameProcessor.getFinalMosaicNV21();
+            int len = imageData.length - 8;
+
+            int width = (imageData[len + 0] << 24) + ((imageData[len + 1] & 0xFF) << 16)
+                    + ((imageData[len + 2] & 0xFF) << 8) + (imageData[len + 3] & 0xFF);
+            int height = (imageData[len + 4] << 24) + ((imageData[len + 5] & 0xFF) << 16)
+                    + ((imageData[len + 6] & 0xFF) << 8) + (imageData[len + 7] & 0xFF);
+            Log.v(TAG, "ImLength = " + (len) + ", W = " + width + ", H = " + height);
+
+            YuvImage yuvimage = new YuvImage(imageData, ImageFormat.NV21, width, height, null);
+            FileOutputStream out = new FileOutputStream(mCurrentImagePath);
+            yuvimage.compressToJpeg(new Rect(0, 0, width, height), 100, out);
+            out.close();
+
+            // Now's a good time to run the GC.  Since we won't do any explicit
+            // allocation during the test, the GC should stay dormant and not
+            // influence our results.
+            System.runFinalization();
+            System.gc();
+
+            mHandler.post(mUpdateResults);
+        } catch (Exception e) {
+            Log.e(TAG, "exception in storing final mosaic", e);
+        }
     }
 
-    public int getPreviewFrameHeight() {
-        return mPreviewHeight;
-    }
-
-    public CaptureView getCaptureView() {
-        return mCaptureView;
-    }
 }
