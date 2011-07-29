@@ -77,7 +77,13 @@ public class Mosaic {
      * @param width width of the input frames in pixels
      * @param height height of the input frames in pixels
      */
-    public native void setSourceImageDimensions(int width, int height);
+    public native void allocateMosaicMemory(int width, int height);
+
+    /**
+     * Free memory allocated by allocateMosaicMemory.
+     *
+     */
+    public native void freeMosaicMemory();
 
     /**
      * Pass the input image frame to the native layer. Each time the a new
