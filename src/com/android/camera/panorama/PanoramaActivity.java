@@ -36,6 +36,7 @@ import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -52,98 +53,35 @@ import com.android.camera.Storage;
 import com.android.camera.Util;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PanoramaActivity extends Activity implements ModePicker.OnModeChangeListener {
     public static final int DEFAULT_SWEEP_ANGLE = 60;
-
     public static final int DEFAULT_BLEND_MODE = Mosaic.BLENDTYPE_HORIZONTAL;
-
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
 
-    private static final String TAG = "PanoramaActivity";
+    private static final int MSG_FINAL_MOSAIC_READY = 1;
 
+    private static final String TAG = "PanoramaActivity";
     private static final float NS2S = 1.0f / 1000000000.0f; // TODO: commit for
                                                             // this constant.
-
     private Preview mPreview;
-
     private ImageView mReview;
-
     private CaptureView mCaptureView;
 
     private ShutterButton mShutterButton;
-
     private int mPreviewWidth;
-
     private int mPreviewHeight;
-
     private Camera mCameraDevice;
-
     private SensorManager mSensorManager;
-
     private Sensor mSensor;
-
     private ModePicker mModePicker;
-
     private MosaicFrameProcessor mMosaicFrameProcessor;
-
-    private ScannerClient mScannerClient;
-
     private String mCurrentImagePath = null;
-
     private long mTimeTaken;
-
-    // Need handler for callbacks to the UI thread
-    private final Handler mHandler = new Handler();
-
-    /**
-     * Inner class to tell the gallery app to scan the newly created mosaic
-     * images. TODO: insert the image to media store.
-     */
-    private static final class ScannerClient implements MediaScannerConnectionClient {
-        ArrayList<String> mPaths = new ArrayList<String>();
-
-        MediaScannerConnection mScannerConnection;
-
-        boolean mConnected;
-
-        Object mLock = new Object();
-
-        public ScannerClient(Context context) {
-            mScannerConnection = new MediaScannerConnection(context, this);
-        }
-
-        public void scanPath(String path) {
-            synchronized (mLock) {
-                if (mConnected) {
-                    mScannerConnection.scanFile(path, null);
-                } else {
-                    mPaths.add(path);
-                    mScannerConnection.connect();
-                }
-            }
-        }
-
-        @Override
-        public void onMediaScannerConnected() {
-            synchronized (mLock) {
-                mConnected = true;
-                if (!mPaths.isEmpty()) {
-                    for (String path : mPaths) {
-                        mScannerConnection.scanFile(path, null);
-                    }
-                    mPaths.clear();
-                }
-            }
-        }
-
-        @Override
-        public void onScanCompleted(String path, Uri uri) {
-        }
-    }
+    private Handler mMainHandler;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -155,28 +93,36 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
         createContentView();
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         if (mSensor == null) {
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         }
-        mScannerClient = new ScannerClient(getApplicationContext());
 
+        mMainHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case MSG_FINAL_MOSAIC_READY:
+                        Uri uri = (Uri) msg.obj;
+                        showFinalMosaic(uri);
+                }
+            }
+        };
     }
-
-    // Create runnable for posting
-    private final Runnable mUpdateResults = new Runnable() {
-        public void run() {
-            showResultingMosaic("file://" + mCurrentImagePath);
-            mScannerClient.scanPath(mCurrentImagePath);
-        }
-    };
 
     private void setupCamera() {
         openCamera();
         Parameters parameters = mCameraDevice.getParameters();
         setupCaptureParams(parameters);
         configureCamera(parameters);
+    }
+
+    private void releaseCamera() {
+        if (mCameraDevice != null) {
+            mCameraDevice.stopPreview();
+            CameraHolder.instance().release();
+            mCameraDevice = null;
+        }
     }
 
     private void openCamera() {
@@ -311,14 +257,15 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
 
     private void onMosaicFinished() {
         mMosaicFrameProcessor.setProgressListener(null);
-        mPreview.setVisibility(View.INVISIBLE);
+        mCameraDevice.stopPreview();
+        mCameraDevice.setPreviewCallbackWithBuffer(null);
+        // TODO: set mPreview invisible after the camera driver bug is fixed.
         mCaptureView.setVisibility(View.INVISIBLE);
         mCaptureView.setBitmap(null);
         mCaptureView.setStatusText("");
         mCaptureView.setSweepAngle(0);
         mCaptureView.invalidate();
-        // Background-process the final blending of the mosaic so
-        // that the UI is not blocked.
+        // TODO: show some dialog for long computation.
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -368,11 +315,9 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
         mModePicker.setCurrentMode(ModePicker.MODE_PANORAMA);
     }
 
-    public void showResultingMosaic(String uri) {
-        Uri parsed = Uri.parse(uri);
-        mReview.setImageURI(parsed);
+    private void showFinalMosaic(Uri uri) {
+        mReview.setImageURI(uri);
         mReview.setVisibility(View.VISIBLE);
-        mPreview.setVisibility(View.INVISIBLE);
         mCaptureView.setVisibility(View.INVISIBLE);
     }
 
@@ -414,23 +359,12 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
         mCaptureView.onResume();
     }
 
-    private void releaseCamera() {
-        if (mCameraDevice != null) {
-            mCameraDevice.stopPreview();
-            CameraHolder.instance().release();
-            mCameraDevice = null;
-        }
-    }
-
     private final SensorEventListener mListener = new SensorEventListener() {
         private float mCompassCurrX; // degrees
-
         private float mCompassCurrY; // degrees
-
         private float mTimestamp;
 
         public void onSensorChanged(SensorEvent event) {
-
             if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
                 if (mTimestamp != 0) {
                     final float dT = (event.timestamp - mTimestamp) * NS2S;
@@ -457,21 +391,14 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
     public void generateAndStoreFinalMosaic(boolean highRes) {
         mMosaicFrameProcessor.createMosaic(highRes);
 
-        mCurrentImagePath = Storage.DIRECTORY
-                + "/"
-                + PanoUtil.createName(getResources().getString(R.string.pano_file_name_format),
-                        mTimeTaken);
+        mCurrentImagePath = PanoUtil.createName(
+                getResources().getString(R.string.pano_file_name_format), mTimeTaken);
 
         if (highRes) {
-            mCurrentImagePath += "_HR.jpg";
+            mCurrentImagePath += "_HR";
         } else {
-            mCurrentImagePath += "_LR.jpg";
+            mCurrentImagePath += "_LR";
         }
-
-        try {
-            File mosDirectory = new File(Storage.DIRECTORY);
-            // have the object build the directory structure, if needed.
-            mosDirectory.mkdirs();
 
             byte[] imageData = mMosaicFrameProcessor.getFinalMosaicNV21();
             int len = imageData.length - 8;
@@ -483,20 +410,24 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
             Log.v(TAG, "ImLength = " + (len) + ", W = " + width + ", H = " + height);
 
             YuvImage yuvimage = new YuvImage(imageData, ImageFormat.NV21, width, height, null);
-            FileOutputStream out = new FileOutputStream(mCurrentImagePath);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
             yuvimage.compressToJpeg(new Rect(0, 0, width, height), 100, out);
-            out.close();
+            try {
+                out.close();
+            } catch (Exception e) {
+                Log.e(TAG, "Exception in storing final mosaic", e);
+                return;
+            }
+            Uri uri = Storage.addImage(
+                    getContentResolver(), mCurrentImagePath, mTimeTaken, null, 0,
+                    out.toByteArray());
 
+            mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_FINAL_MOSAIC_READY, uri));
             // Now's a good time to run the GC. Since we won't do any explicit
             // allocation during the test, the GC should stay dormant and not
             // influence our results.
             System.runFinalization();
             System.gc();
-
-            mHandler.post(mUpdateResults);
-        } catch (Exception e) {
-            Log.e(TAG, "exception in storing final mosaic", e);
-        }
     }
 
 }
