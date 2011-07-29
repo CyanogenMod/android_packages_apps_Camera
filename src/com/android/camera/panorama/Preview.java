@@ -24,7 +24,6 @@ import android.view.SurfaceView;
 
 class Preview extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "Preview";
-
     private android.hardware.Camera mCameraDevice;
 
     public Preview(Context context, AttributeSet attrs) {

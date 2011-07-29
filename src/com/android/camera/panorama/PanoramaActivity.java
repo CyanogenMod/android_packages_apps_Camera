@@ -56,44 +56,60 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanoramaActivity extends Activity implements
-        ModePicker.OnModeChangeListener {
+public class PanoramaActivity extends Activity implements ModePicker.OnModeChangeListener {
     public static final int DEFAULT_SWEEP_ANGLE = 60;
+
     public static final int DEFAULT_BLEND_MODE = Mosaic.BLENDTYPE_HORIZONTAL;
+
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
 
     private static final String TAG = "PanoramaActivity";
-    private static final float NS2S = 1.0f / 1000000000.0f;  // TODO: commit for this constant.
+
+    private static final float NS2S = 1.0f / 1000000000.0f; // TODO: commit for
+                                                            // this constant.
 
     private Preview mPreview;
+
     private ImageView mReview;
+
     private CaptureView mCaptureView;
+
     private ShutterButton mShutterButton;
+
     private int mPreviewWidth;
+
     private int mPreviewHeight;
 
     private Camera mCameraDevice;
+
     private SensorManager mSensorManager;
+
     private Sensor mSensor;
+
     private ModePicker mModePicker;
 
     private MosaicFrameProcessor mMosaicFrameProcessor;
+
     private ScannerClient mScannerClient;
 
     private String mCurrentImagePath = null;
+
     private long mTimeTaken;
 
     // Need handler for callbacks to the UI thread
     private final Handler mHandler = new Handler();
 
     /**
-     * Inner class to tell the gallery app to scan the newly created mosaic images.
-     * TODO: insert the image to media store.
+     * Inner class to tell the gallery app to scan the newly created mosaic
+     * images. TODO: insert the image to media store.
      */
     private static final class ScannerClient implements MediaScannerConnectionClient {
         ArrayList<String> mPaths = new ArrayList<String>();
+
         MediaScannerConnection mScannerConnection;
+
         boolean mConnected;
+
         Object mLock = new Object();
 
         public ScannerClient(Context context) {
@@ -184,7 +200,7 @@ public class PanoramaActivity extends Activity implements
             int w = size.width;
             // we only want 4:3 format.
             int d = DEFAULT_CAPTURE_PIXELS - h * w;
-            if (needSmaller && d < 0) {  // no bigger preview than 960x720.
+            if (needSmaller && d < 0) { // no bigger preview than 960x720.
                 continue;
             }
             if (need4To3 && (h * 4 != w * 3)) {
@@ -231,9 +247,8 @@ public class PanoramaActivity extends Activity implements
     private void configureCamera(Parameters parameters) {
         mCameraDevice.setParameters(parameters);
 
-        Util.setCameraDisplayOrientation(
-                Util.getDisplayRotation(this),
-                CameraHolder.instance().getBackCameraId(), mCameraDevice);
+        Util.setCameraDisplayOrientation(Util.getDisplayRotation(this), CameraHolder.instance()
+                .getBackCameraId(), mCameraDevice);
 
         int bufSize = getPreviewBufSize();
         Log.v(TAG, "BufSize = " + bufSize);
@@ -248,7 +263,8 @@ public class PanoramaActivity extends Activity implements
     }
 
     private boolean switchToOtherMode(int mode) {
-        if (isFinishing()) return false;
+        if (isFinishing())
+            return false;
         MenuHelper.gotoMode(mode, this);
         finish();
         return true;
@@ -262,11 +278,9 @@ public class PanoramaActivity extends Activity implements
         }
     }
 
-    public void setCaptureStarted(int sweepAngle, int blendType) {
+    public void setCaptureStarted() {
         // Reset values so we can do this again.
         mTimeTaken = System.currentTimeMillis();
-        mMosaicFrameProcessor = new MosaicFrameProcessor(sweepAngle - 5, mPreviewWidth,
-                mPreviewHeight, getPreviewBufSize());
 
         mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
             @Override
@@ -286,7 +300,8 @@ public class PanoramaActivity extends Activity implements
             @Override
             public void onPreviewFrame(final byte[] data, Camera camera) {
                 mMosaicFrameProcessor.processFrame(data, mPreviewWidth, mPreviewHeight);
-                // The returned buffer needs be added back to callback buffer again.
+                // The returned buffer needs be added back to callback buffer
+                // again.
                 camera.addCallbackBuffer(data);
             }
         });
@@ -317,15 +332,14 @@ public class PanoramaActivity extends Activity implements
             Bitmap lowResBitmapAlpha, Matrix transformationMatrix) {
         mCaptureView.setBitmap(lowResBitmapAlpha, transformationMatrix);
         if (translationRate > 150) {
-            // TODO: remove the text and draw implications according to the UI spec.
+            // TODO: remove the text and draw implications according to the UI
+            // spec.
             mCaptureView.setStatusText("S L O W   D O W N");
-            mCaptureView.setSweepAngle(
-                    Math.max(traversedAngleX, traversedAngleY) + 1);
+            mCaptureView.setSweepAngle(Math.max(traversedAngleX, traversedAngleY) + 1);
             mCaptureView.invalidate();
         } else {
             mCaptureView.setStatusText("");
-            mCaptureView.setSweepAngle(
-                    Math.max(traversedAngleX, traversedAngleY) + 1);
+            mCaptureView.setSweepAngle(Math.max(traversedAngleX, traversedAngleY) + 1);
             mCaptureView.invalidate();
         }
     }
@@ -345,7 +359,7 @@ public class PanoramaActivity extends Activity implements
         mShutterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCaptureStarted(DEFAULT_SWEEP_ANGLE, DEFAULT_BLEND_MODE);
+                setCaptureStarted();
             }
         });
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
@@ -365,8 +379,11 @@ public class PanoramaActivity extends Activity implements
     @Override
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(mListener);
         releaseCamera();
+        mMosaicFrameProcessor.onPause();
+        mCaptureView.onPause();
+        mSensorManager.unregisterListener(mListener);
+        System.gc();
     }
 
     @Override
@@ -374,21 +391,32 @@ public class PanoramaActivity extends Activity implements
         super.onResume();
 
         /*
-         * It is not necessary to get accelerometer events at a very high
-         * rate, by using a slower rate (SENSOR_DELAY_UI), we get an
-         * automatic low-pass filter, which "extracts" the gravity component
-         * of the acceleration. As an added benefit, we use less power and
-         * CPU resources.
+         * It is not necessary to get accelerometer events at a very high rate,
+         * by using a slower rate (SENSOR_DELAY_UI), we get an automatic
+         * low-pass filter, which "extracts" the gravity component of the
+         * acceleration. As an added benefit, we use less power and CPU
+         * resources.
          */
         mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
 
         setupCamera();
         mPreview.setCameraDevice(mCameraDevice);
         mCameraDevice.startPreview();
+
+        if (mMosaicFrameProcessor == null) {
+            // Start the activity for the first time.
+            mMosaicFrameProcessor = new MosaicFrameProcessor(DEFAULT_SWEEP_ANGLE - 5,
+                    mPreviewWidth, mPreviewHeight, getPreviewBufSize());
+            mMosaicFrameProcessor.onResume();
+        } else {
+            mMosaicFrameProcessor.onResume();
+        }
+        mCaptureView.onResume();
     }
 
     private void releaseCamera() {
-        if (mCameraDevice != null){
+        if (mCameraDevice != null) {
+            mCameraDevice.stopPreview();
             CameraHolder.instance().release();
             mCameraDevice = null;
         }
@@ -396,7 +424,9 @@ public class PanoramaActivity extends Activity implements
 
     private final SensorEventListener mListener = new SensorEventListener() {
         private float mCompassCurrX; // degrees
+
         private float mCompassCurrY; // degrees
+
         private float mTimestamp;
 
         public void onSensorChanged(SensorEvent event) {
@@ -427,8 +457,10 @@ public class PanoramaActivity extends Activity implements
     public void generateAndStoreFinalMosaic(boolean highRes) {
         mMosaicFrameProcessor.createMosaic(highRes);
 
-        mCurrentImagePath = Storage.DIRECTORY + "/" + PanoUtil.createName(
-                getResources().getString(R.string.pano_file_name_format), mTimeTaken);
+        mCurrentImagePath = Storage.DIRECTORY
+                + "/"
+                + PanoUtil.createName(getResources().getString(R.string.pano_file_name_format),
+                        mTimeTaken);
 
         if (highRes) {
             mCurrentImagePath += "_HR.jpg";
@@ -455,7 +487,7 @@ public class PanoramaActivity extends Activity implements
             yuvimage.compressToJpeg(new Rect(0, 0, width, height), 100, out);
             out.close();
 
-            // Now's a good time to run the GC.  Since we won't do any explicit
+            // Now's a good time to run the GC. Since we won't do any explicit
             // allocation during the test, the GC should stay dormant and not
             // influence our results.
             System.runFinalization();
