@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.IllegalArgumentException;
 
 class Thumbnail {
     private static final String TAG = "Thumbnail";
@@ -50,6 +51,7 @@ class Thumbnail {
     public Thumbnail(Uri uri, Bitmap bitmap, int orientation) {
         mUri = uri;
         mBitmap = rotateImage(bitmap, orientation);
+        if (mBitmap == null) throw new IllegalArgumentException("null bitmap");
     }
 
     public Uri getUri() {
@@ -70,7 +72,9 @@ class Thumbnail {
             try {
                 Bitmap rotated = Bitmap.createBitmap(bitmap, 0, 0,
                         bitmap.getWidth(), bitmap.getHeight(), m, true);
-                bitmap.recycle();
+                // If the rotated bitmap is the original bitmap, then it
+                // should not be recycled.
+                if (rotated != bitmap) bitmap.recycle();
                 return rotated;
             } catch (Throwable t) {
                 Log.w(TAG, "Failed to rotate thumbnail", t);
@@ -100,7 +104,6 @@ class Thumbnail {
         }
     }
 
-
     // Loads the data from the specified file.
     // Returns null if failure.
     public static Thumbnail loadFrom(File file) {
@@ -124,7 +127,7 @@ class Thumbnail {
             Util.closeSilently(b);
             Util.closeSilently(d);
         }
-        return new Thumbnail(uri, bitmap, 0);
+        return createThumbnail(uri, bitmap, 0);
     }
 
     public static Thumbnail getLastImageThumbnail(ContentResolver resolver) {
@@ -146,8 +149,8 @@ class Thumbnail {
                         Images.Thumbnails.MINI_KIND, null);
                 Uri uri = ContentUris.withAppendedId(baseUri, id);
                 // Ensure there's no OOM. Ensure database and storage are in sync.
-                if (bitmap != null && Util.isUriValid(uri, resolver)) {
-                    return new Thumbnail(uri, bitmap, orientation);
+                if (Util.isUriValid(uri, resolver)) {
+                    return createThumbnail(uri, bitmap, orientation);
                 }
             }
         } finally {
@@ -176,8 +179,8 @@ class Thumbnail {
                         Video.Thumbnails.MINI_KIND, null);
                 Uri uri = ContentUris.withAppendedId(baseUri, id);
                 // Ensure there's no OOM. Ensure database and storage are in sync.
-                if (bitmap != null && Util.isUriValid(uri, resolver)) {
-                    return new Thumbnail(uri, bitmap, 0);
+                if (Util.isUriValid(uri, resolver)) {
+                    return createThumbnail(uri, bitmap, 0);
                 }
             }
         } finally {
@@ -194,10 +197,19 @@ class Thumbnail {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
         Bitmap bitmap = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length, options);
+        return createThumbnail(uri, bitmap, orientation);
+    }
+
+    private static Thumbnail createThumbnail(Uri uri, Bitmap bitmap, int orientation) {
         if (bitmap == null) {
-            Log.e(TAG, "Failed to create thumbnail");
+            Log.e(TAG, "Failed to create thumbnail from null bitmap");
             return null;
         }
-        return new Thumbnail(uri, bitmap, orientation);
+        try {
+            return new Thumbnail(uri, bitmap, orientation);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Failed to construct thumbnail", e);
+            return null;
+        }
     }
 }
