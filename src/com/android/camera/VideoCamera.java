@@ -193,6 +193,7 @@ public class VideoCamera extends BaseCamera
     // counter-clockwise
     private int mOrientationCompensation = 0;
     private int mOrientationHint; // the orientation hint for video playback
+    private SharedPreferences prefs;
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -323,6 +324,10 @@ public class VideoCamera extends BaseCamera
         mContentResolver = getContentResolver();
 
         requestWindowFeature(Window.FEATURE_PROGRESS);
+
+        prefs = getSharedPreferences("com.android.camera_preferences", 0);
+        powerShutter(prefs);
+
         setContentView(R.layout.video_camera);
 
         mPreviewFrameLayout = (PreviewFrameLayout)
@@ -867,6 +872,15 @@ public class VideoCamera extends BaseCamera
                     return true;
                 }
                 break;
+            case KeyEvent.KEYCODE_POWER:
+                if (powerShutter(prefs)){
+                    if (mMediaRecorderRecording){
+                        onStopVideoRecording(true);
+                    }else{
+                        startVideoRecording();
+                    }
+                }
+                return true;
         }
         return super.onKeyUp(keyCode, event);
     }

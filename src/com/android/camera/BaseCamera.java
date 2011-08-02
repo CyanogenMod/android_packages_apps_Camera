@@ -21,12 +21,14 @@ import com.android.camera.ui.HeadUpDisplay;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.content.SharedPreferences;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 
 import java.util.List;
 
@@ -125,6 +127,16 @@ public abstract class BaseCamera extends NoSearchActivity
             Size previewSize = mParameters.getPreviewSize();
             updateTouchFocus(previewSize.width / 2, previewSize.height / 2);
             mFocusRectangle.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected boolean powerShutter(SharedPreferences prefs) {
+        if (prefs.getBoolean("power_shutter_enabled", false)){
+            getWindow().addFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
+            return true;
+        }else{
+            getWindow().clearFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
+            return false;
         }
     }
 
