@@ -31,6 +31,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -322,6 +323,10 @@ public class VideoCamera extends BaseCamera
         mContentResolver = getContentResolver();
 
         requestWindowFeature(Window.FEATURE_PROGRESS);
+
+        SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
+        powerShutter(prefs);
+
         setContentView(R.layout.video_camera);
 
         mPreviewFrameLayout = (PreviewFrameLayout)
@@ -843,6 +848,15 @@ public class VideoCamera extends BaseCamera
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 mShutterButton.setPressed(false);
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (powerShutter(prefs)){
+                    if (mMediaRecorderRecording){
+                        onStopVideoRecording(true);
+                    }else{
+                        startVideoRecording();
+                    }
+                }
                 return true;
         }
         return super.onKeyUp(keyCode, event);
