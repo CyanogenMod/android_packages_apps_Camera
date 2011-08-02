@@ -79,6 +79,7 @@ public class PanoramaActivity extends Activity implements
     private SurfaceView mPreview;
     private ImageView mReview;
     private CaptureView mCaptureView;
+    private MosaicRendererSurfaceView mRealTimeMosaicView;
 
     private ShutterButton mShutterButton;
     private Button mStopButton;
@@ -289,7 +290,10 @@ public class PanoramaActivity extends Activity implements
 
     private void updateProgress(float translationRate, int traversedAngleX, int traversedAngleY,
             Bitmap lowResBitmapAlpha, Matrix transformationMatrix) {
-        mCaptureView.setBitmap(lowResBitmapAlpha, transformationMatrix);
+
+        mRealTimeMosaicView.setReady();
+        mRealTimeMosaicView.requestRender();
+
         if (translationRate > 150) {
             // TODO: remove the text and draw implications according to the UI
             // spec.
@@ -314,6 +318,8 @@ public class PanoramaActivity extends Activity implements
         mCaptureView = (CaptureView) findViewById(R.id.pano_capture_view);
         mCaptureView.setStartAngle(-DEFAULT_SWEEP_ANGLE / 2);
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
+
+        mRealTimeMosaicView = (MosaicRendererSurfaceView) findViewById(R.id.pano_renderer);
 
         mShutterButton = (ShutterButton) findViewById(R.id.pano_shutter_button);
         mShutterButton.setOnClickListener(new View.OnClickListener() {
@@ -343,7 +349,6 @@ public class PanoramaActivity extends Activity implements
         mCaptureLayout.setVisibility(View.INVISIBLE);
         mPreview.setVisibility(View.INVISIBLE);
         mReviewLayout.setVisibility(View.VISIBLE);
-        mCaptureView.setBitmap(null);
         mCaptureView.setStatusText("");
         mCaptureView.setSweepAngle(0);
     }
@@ -354,6 +359,7 @@ public class PanoramaActivity extends Activity implements
         releaseCamera();
         mMosaicFrameProcessor.onPause();
         mCaptureView.onPause();
+        mRealTimeMosaicView.onPause();
         mSensorManager.unregisterListener(mListener);
         System.gc();
     }
@@ -383,6 +389,7 @@ public class PanoramaActivity extends Activity implements
             mMosaicFrameProcessor.onResume();
         }
         mCaptureView.onResume();
+        mRealTimeMosaicView.onResume();
     }
 
     private final SensorEventListener mListener = new SensorEventListener() {

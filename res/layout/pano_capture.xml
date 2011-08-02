@@ -15,19 +15,22 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/pano_capture_layout"
-        android:visibility="invisible"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:id="@+id/pano_capture_layout" android:visibility="invisible"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.android.camera.panorama.CaptureView android:id="@+id/pano_capture_view"
-            android:layout_width="match_parent"
+    <FrameLayout android:layout_weight="1" android:gravity="center"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+        <com.android.camera.panorama.CaptureView
+            android:id="@+id/pano_capture_view" android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <com.android.camera.panorama.MosaicRendererSurfaceView
+            android:id="@+id/pano_renderer" android:layout_gravity="center"
+            android:layout_width="960dp" android:layout_height="360dp" />
+    </FrameLayout>
 
     <ImageView style="@style/PanoViewHorizontalGrayBar"
-            android:layout_alignParentTop="true"
-            android:layout_width="match_parent" />
+        android:layout_alignParentTop="true" android:layout_width="match_parent" />
 
     <LinearLayout android:id="@+id/pano_capture_control"
             style="@style/PanoViewHorizontalGrayBar"

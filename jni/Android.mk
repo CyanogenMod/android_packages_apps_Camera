@@ -13,6 +13,7 @@ LOCAL_CFLAGS := -O3 -DNDEBUG
 
 LOCAL_SRC_FILES := \
         feature_mos_jni.cpp \
+        mosaic_renderer_jni.cpp \
         feature_mos/src/mosaic/trsMatrix.cpp \
         feature_mos/src/mosaic/AlignFeatures.cpp \
         feature_mos/src/mosaic/Blend.cpp \
@@ -20,6 +21,8 @@ LOCAL_SRC_FILES := \
         feature_mos/src/mosaic/ImageUtils.cpp \
         feature_mos/src/mosaic/Mosaic.cpp \
         feature_mos/src/mosaic/Pyramid.cpp \
+        feature_mos/src/mosaic_renderer/WarpRenderer.cpp \
+        feature_mos/src/mosaic_renderer/FrameBuffer.cpp \
         feature_stab/db_vlvm/db_feature_detection.cpp \
         feature_stab/db_vlvm/db_feature_matching.cpp \
         feature_stab/db_vlvm/db_framestitching.cpp \
@@ -34,7 +37,8 @@ LOCAL_SRC_FILES := \
         feature_stab/src/dbreg/dbstabsmooth.cpp \
         feature_stab/src/dbreg/vp_motionmodel.c
 
-LOCAL_SHARED_LIBRARIES := liblog libnativehelper
+LOCAL_SHARED_LIBRARIES := liblog libnativehelper libGLESv2
+#LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -ldl -llog -lGLESv2 -L$(TARGET_OUT)
 
 LOCAL_MODULE_TAGS := optional
 
