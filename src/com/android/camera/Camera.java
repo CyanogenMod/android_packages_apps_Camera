@@ -1564,6 +1564,10 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                 }
 
                 return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (prefs.getBoolean("power_shutter_enabled", false))
+                    doFocus(true);
+                return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 // If we get a dpad center event without any focused view, move
                 // the focus to the shutter button and press it.
@@ -1650,6 +1654,10 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                     }
                 }
 
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (prefs.getBoolean("power_shutter_enabled", false))
+                    doSnap();
                 return true;
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized) {
