@@ -18,19 +18,18 @@
 package com.android.camera;
 
 import com.android.camera.R;
-
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
-import android.text.TextUtils;
 
 public class AdvancedSettings extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
 
     private static final String KEY_VOL_UP_SHUTTER = "vol_up_shutter_enabled";
     private static final String KEY_VOL_DOWN_SHUTTER = "vol_down_shutter_enabled";
     private static final String KEY_SEARCH_SHUTTER = "search_shutter_enabled";
+    private static final String KEY_POWER_SHUTTER = "power_shutter_enabled";
     private static final String KEY_VOL_ZOOM = "vol_zoom_enabled";
     private static final String KEY_LONG_FOCUS = "long_focus_enabled";
     private static final String KEY_PRE_FOCUS = "pre_focus_enabled";
@@ -38,6 +37,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     CheckBoxPreference volUpShutter = null;
     CheckBoxPreference volDownShutter = null;
     CheckBoxPreference searchShutter = null;
+    CheckBoxPreference powerShutter = null;
     CheckBoxPreference volZoom = null;
     CheckBoxPreference longFocus = null;
     CheckBoxPreference preFocus = null;
@@ -45,13 +45,13 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         addPreferencesFromResource(R.xml.camera_advanced_settings);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         
         volUpShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_UP_SHUTTER);
         volDownShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_DOWN_SHUTTER);
         searchShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_SEARCH_SHUTTER);
+        powerShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_POWER_SHUTTER);
         volZoom = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_ZOOM);
         longFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_LONG_FOCUS);
         preFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PRE_FOCUS);
@@ -66,6 +66,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             volUpShutter.setOnPreferenceChangeListener(this);
             volDownShutter.setOnPreferenceChangeListener(this);
             searchShutter.setOnPreferenceChangeListener(this);
+            powerShutter.setOnPreferenceChangeListener(this);
             volZoom.setOnPreferenceChangeListener(this);
             longFocus.setOnPreferenceChangeListener(this);
             preFocus.setOnPreferenceChangeListener(this);
@@ -73,6 +74,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             volUpShutter.setOnPreferenceChangeListener(null);
             volDownShutter.setOnPreferenceChangeListener(null);
             searchShutter.setOnPreferenceChangeListener(null);
+            powerShutter.setOnPreferenceChangeListener(null);
             volZoom.setOnPreferenceChangeListener(null);
             longFocus.setOnPreferenceChangeListener(null);
             preFocus.setOnPreferenceChangeListener(null);
@@ -133,8 +135,6 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     public boolean onPreferenceChange(Preference preference, Object value) {
         CheckBoxPreference checkBox = (CheckBoxPreference)preference;
         boolean checked = (Boolean)value;
-        System.out.println("value = " + value + ", pref.isChecked() - " + 
-            checkBox.isChecked());
 
         if (checkBox == volUpShutter || checkBox == volDownShutter) {
             boolean up = checkBox == volUpShutter;
@@ -155,6 +155,13 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             preFocus.setEnabled(!checked);
         } else if (checkBox == preFocus) {
             longFocus.setEnabled(!checked);
+        } else if (checkBox == powerShutter){
+            if (checked){
+                searchShutter.setChecked(!checked);
+            }
+        } else if (checkBox == searchShutter){
+            if (checked)
+                powerShutter.setChecked(!checked);
         }
 
         return true;

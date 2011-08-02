@@ -31,6 +31,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -840,9 +841,19 @@ public class VideoCamera extends BaseCamera
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 mShutterButton.setPressed(false);
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (prefs.getBoolean("power_shutter_enabled", false)){
+                    if (mMediaRecorderRecording){
+                        onStopVideoRecording(true);
+                    }else{
+                        startVideoRecording();
+                    }
+                }
                 return true;
         }
         return super.onKeyUp(keyCode, event);

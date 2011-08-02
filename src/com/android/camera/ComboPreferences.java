@@ -35,7 +35,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
             new WeakHashMap<Context, ComboPreferences>();
 
     public ComboPreferences(Context context) {
-        mPrefGlobal = PreferenceManager.getDefaultSharedPreferences(context);
+        mPrefGlobal = context.getSharedPreferences(context.getPackageName() + "_preferences",Context.MODE_WORLD_READABLE);
         mPrefGlobal.registerOnSharedPreferenceChangeListener(this);
         synchronized (sMap) {
             sMap.put(context, this);
