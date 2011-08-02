@@ -94,8 +94,10 @@ public class CameraSettings {
     // Nvidia 1080p high framerate
     private static boolean mSupportsNvHFR;
 
-    // Samsung camcorder mode
-    private static boolean mSamsungCamMode;
+    // Samsung camera unadvertised modes
+    private static boolean mSamsungCamMode; // camcorder mode
+    private static boolean mSamsungContinuousAf;
+    private static boolean mSamsungSpecialSettings; // slow_ae and video_recording_gamma
 
     public static final String FOCUS_MODE_TOUCH = "touch";
 
@@ -362,6 +364,8 @@ public class CameraSettings {
 
         mSupportsNvHFR = mContext.getResources().getBoolean(R.bool.supportsNvHighBitrateFullHD);
         mSamsungCamMode = mContext.getResources().getBoolean(R.bool.needsSamsungCamMode);
+        mSamsungContinuousAf = mContext.getResources().getBoolean(R.bool.needsSamsungContinuousAf);
+        mSamsungSpecialSettings = mContext.getResources().getBoolean(R.bool.needsSamsungSpecialSettings);
     }
 
     private static boolean removePreference(PreferenceGroup group, String key) {
@@ -562,6 +566,13 @@ public class CameraSettings {
         } else if (mSamsungCamMode) {
             params.set("cam_mode", on ? "1" : "0");
         }
+
+        if (mSamsungSpecialSettings) {
+            params.set("video_recording_gamma", on ? "on" : "off");
+            params.set("slow_ae", on ? "on" : "off");
+            params.set("iso", on ? "movie" : "auto");
+            params.set("metering", on ? "matrix" : "center");
+        }
     }
 
     /**
@@ -573,6 +584,8 @@ public class CameraSettings {
     public static void setContinuousAf(Parameters params, boolean on) {
         if (params.get("enable-caf") != null) {
             params.set("enable-caf", on ? "on" : "off");
+        } else if (mSamsungContinuousAf) {
+            params.set("continuous_af", on ? 1 : 0);
         }
     }
 
