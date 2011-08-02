@@ -59,6 +59,8 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 ميغا بكسل"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 ميغا بكسل"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 ميغا بكسل"</string>
+    <!-- no translation found for pref_camera_picturesize_entry_1280x960 (1648390393603363042) -->
+    <skip />
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 ميغا بكسل"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -112,8 +114,12 @@
     <string name="video_reach_size_limit" msgid="6179877322015552390">"تم بلوغ الحد الأقصى للحجم."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"تكبير/تصغير"</string>
     <string name="zoom_text" msgid="3450360177919418123">"تكبير/تصغير <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"تبديل إلى الكاميرا"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"تبديل إلى الفيديو"</string>
+    <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
+    <skip />
+    <!-- no translation found for switch_to_video_label (1167994386902254398) -->
+    <skip />
+    <!-- no translation found for switch_to_panorama_label (858801335653517864) -->
+    <skip />
     <string name="share_picture_via" msgid="1375127849431890447">"مشاركة الصورة عبر"</string>
     <string name="share_video_via" msgid="5152302809166549015">"مشاركة الفيديو عبر"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"لا توجد صورة لمشاركتها"</string>
