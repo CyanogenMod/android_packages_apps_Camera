@@ -62,6 +62,8 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5M pixels"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M pixels"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2M pixels"</string>
+    <!-- no translation found for pref_camera_picturesize_entry_1280x960 (1648390393603363042) -->
+    <skip />
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M pixels"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -115,8 +117,12 @@
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Groottebeperking bereik."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Zoem"</string>
     <string name="zoom_text" msgid="3450360177919418123">"Zoem <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Skakel oor na kamera"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"Skakel oor na video"</string>
+    <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
+    <skip />
+    <!-- no translation found for switch_to_video_label (1167994386902254398) -->
+    <skip />
+    <!-- no translation found for switch_to_panorama_label (858801335653517864) -->
+    <skip />
     <!-- no translation found for share_picture_via (1375127849431890447) -->
     <skip />
     <!-- no translation found for share_video_via (5152302809166549015) -->
