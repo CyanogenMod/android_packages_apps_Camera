@@ -49,6 +49,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
+import android.preference.CheckBoxPreference;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -905,8 +906,9 @@ public class Camera extends BaseCamera implements View.OnClickListener,
 
     @Override
     public void onCreate(Bundle icicle) {
+        SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
+        powerShutter(prefs);
         super.onCreate(icicle);
-
         setContentView(R.layout.camera);
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
 
@@ -1559,6 +1561,11 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                 }
 
                 return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (powerShutter(prefs)){
+                    doFocus(true);
+                }
+                return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 // If we get a dpad center event without any focused view, move
                 // the focus to the shutter button and press it.
@@ -1579,6 +1586,16 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    private boolean powerShutter(SharedPreferences prefs) {
+        if (prefs.getBoolean("power_shutter_enabled", false)){
+            getWindow().addFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
+            return true;
+        }else{
+            getWindow().clearFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
+            return false;
+        }
     }
 
     private boolean doShutter(SharedPreferences prefs, KeyEvent event) {
@@ -1645,6 +1662,11 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                     }
                 }
 
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (powerShutter(prefs)){
+                    doSnap();
+                }
                 return true;
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized) {

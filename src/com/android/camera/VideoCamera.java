@@ -31,6 +31,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -276,6 +277,9 @@ public class VideoCamera extends BaseCamera
         super.onCreate(icicle);
 
         Window win = getWindow();
+
+        SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
+        powerShutter(prefs);
 
         // Overright the brightness settings if it is automatic
         int mode = Settings.System.getInt(
@@ -838,11 +842,31 @@ public class VideoCamera extends BaseCamera
         return super.onKeyDown(keyCode, event);
     }
 
+    private boolean powerShutter(SharedPreferences prefs) {
+        if (prefs.getBoolean("power_shutter_enabled", false)){
+            getWindow().addFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
+            return true;
+        }else{
+            getWindow().clearFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
+            return false;
+        }
+    }
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        SharedPreferences prefs = getSharedPreferences("com.android.camera_preferences", 0);
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 mShutterButton.setPressed(false);
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (powerShutter(prefs)){
+                    if (mMediaRecorderRecording){
+                        onStopVideoRecording(true);
+                    }else{
+                        startVideoRecording();
+                    }
+                }
                 return true;
         }
         return super.onKeyUp(keyCode, event);
