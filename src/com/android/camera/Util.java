@@ -295,9 +295,8 @@ public class Util {
         return 0;
     }
 
-    public static void setCameraDisplayOrientation(int degrees,
-            int cameraId, Camera camera) {
-        // See android.hardware.Camera.setCameraDisplayOrientation for
+    public static int getDisplayOrientation(int degrees, int cameraId) {
+        // See android.hardware.Camera.setDisplayOrientation for
         // documentation.
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, info);
@@ -308,7 +307,7 @@ public class Util {
         } else {  // back-facing
             result = (info.orientation - degrees + 360) % 360;
         }
-        camera.setDisplayOrientation(result);
+        return result;
     }
 
     public static Size getOptimalPreviewSize(Activity currentActivity,

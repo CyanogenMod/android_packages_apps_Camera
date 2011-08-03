@@ -17,11 +17,9 @@
 package com.android.camera;
 
 import com.android.camera.ui.FocusRectangle;
-import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.SharePopup;
-import com.android.camera.ui.ZoomControllerListener;
 import com.android.camera.ui.ZoomPicker;
 
 import android.app.Activity;
@@ -32,7 +30,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.Camera.Area;
@@ -159,8 +156,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private List<Area> mFocusArea;  // focus area in driver format
     private static final int RESET_TOUCH_FOCUS_DELAY = 3000;
 
-    private GLRootView mGLRootView;
-
     // A popup window that contains a bigger thumbnail and a list of apps to share.
     private SharePopup mSharePopup;
     // The bitmap of the last captured picture thumbnail and the URI of the
@@ -193,6 +188,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // The display rotation in degrees. This is only valid when mCameraState is
     // not PREVIEW_STOPPED.
     private int mDisplayRotation;
+    // The value for android.hardware.Camera.setDisplayOrientation.
+    private int mDisplayOrientation;
     private boolean mPausing;
     private boolean mFirstTimeInitialized;
     private boolean mIsImageCaptureIntent;
@@ -222,6 +219,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private final AutoFocusCallback mAutoFocusCallback =
             new AutoFocusCallback();
     private final ZoomListener mZoomListener = new ZoomListener();
+    private FaceListener mFaceListener;
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
     private long mFocusStartTime;
@@ -314,6 +312,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
                 case RESET_TOUCH_FOCUS: {
                     cancelAutoFocus();
+                    startFaceDetection();
                     break;
                 }
             }
@@ -390,6 +389,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
+        startFaceDetection();
         mFirstTimeInitialized = true;
         addIdleHandler();
     }
@@ -439,7 +439,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-
+        startFaceDetection();
         keepMediaProviderInstance();
         checkStorage();
 
@@ -509,6 +509,26 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         } else {
             mZoomValue = index;
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
+        }
+    }
+
+    private void startFaceDetection() {
+        if (mParameters.getMaxNumDetectedFaces(
+                android.hardware.Camera.CAMERA_FACE_DETECTION_HW) > 0) {
+            if (mFaceListener == null) {
+                mFaceListener = new FaceListener(this,
+                    (ViewGroup) findViewById(R.id.frame), mDisplayOrientation);
+            }
+            mCameraDevice.setFaceDetectionListener(mFaceListener);
+            mCameraDevice.startFaceDetection(android.hardware.Camera.CAMERA_FACE_DETECTION_HW);
+        }
+    }
+
+    private void stopFaceDetection() {
+        if (mParameters.getMaxNumDetectedFaces(
+                android.hardware.Camera.CAMERA_FACE_DETECTION_HW) > 0) {
+            mCameraDevice.setFaceDetectionListener(null);
+            mCameraDevice.stopFaceDetection();
         }
     }
 
@@ -1557,10 +1577,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         int areaHeight = focusHeight * 2;
         int areaLeft = Util.clamp(x - areaWidth / 2, 0, previewWidth - areaWidth);
         int areaTop = Util.clamp(y - areaHeight / 2, 0, previewHeight - areaHeight);
-        Log.d(TAG, "x=" + x + ". y=" + y);
-        Log.d(TAG, "Focus area left=" + areaLeft + ". top=" + areaTop);
-        Log.d(TAG, "Preview width=" + previewWidth + ". height=" + previewHeight);
-        Log.d(TAG, "focusWidth=" + focusWidth + ". focusHeight=" + focusHeight);
         Rect rect = mFocusArea.get(0).rect;
         convertToFocusArea(areaLeft, areaTop, areaWidth, areaHeight, previewWidth, previewHeight,
                 mFocusArea.get(0).rect);
@@ -1575,6 +1591,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         int[] rules = p.getRules();
         rules[RelativeLayout.CENTER_IN_PARENT] = 0;
         mFocusRectangle.requestLayout();
+
+        // Stop face detection because we want to specify focus and metering area.
+        stopFaceDetection();
 
         // Set the focus area and metering area.
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
@@ -1806,9 +1825,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         setPreviewDisplay(mSurfaceHolder);
         mDisplayRotation = Util.getDisplayRotation(this);
-        Util.setCameraDisplayOrientation(mDisplayRotation, mCameraId, mCameraDevice);
+        mDisplayOrientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
+        mCameraDevice.setDisplayOrientation(mDisplayOrientation);
+        if (mFaceListener != null) {
+            mFaceListener.setDisplayOrientation(mDisplayOrientation);
+        }
         setCameraParameters(UPDATE_PARAM_ALL);
-
 
         try {
             Log.v(TAG, "startPreview");

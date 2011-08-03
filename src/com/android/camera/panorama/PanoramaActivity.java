@@ -196,8 +196,9 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
     private void configureCamera(Parameters parameters) {
         mCameraDevice.setParameters(parameters);
 
-        Util.setCameraDisplayOrientation(Util.getDisplayRotation(this), CameraHolder.instance()
-                .getBackCameraId(), mCameraDevice);
+        int orientation = Util.getDisplayOrientation(Util.getDisplayRotation(this),
+                CameraHolder.instance().getBackCameraId());
+        mCameraDevice.setDisplayOrientation(orientation);
 
         int bufSize = getPreviewBufSize();
         Log.v(TAG, "BufSize = " + bufSize);

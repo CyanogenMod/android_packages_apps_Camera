@@ -855,7 +855,8 @@ public class VideoCamera extends ActivityBase
         }
         setPreviewDisplay(mSurfaceHolder);
         mDisplayRotation = Util.getDisplayRotation(this);
-        Util.setCameraDisplayOrientation(mDisplayRotation, mCameraId, mCameraDevice);
+        int orientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
+        mCameraDevice.setDisplayOrientation(orientation);
         setCameraParameters();
 
         try {
