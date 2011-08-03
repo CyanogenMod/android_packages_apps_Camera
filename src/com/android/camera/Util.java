@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
@@ -326,6 +327,15 @@ public class Util {
         } else {  // back-facing (or acting like it)
             result = (info.orientation - degrees + 360) % 360;
         }
+
+        // Ugly hack: Make sure the flip-mode is completely off
+        // on nv-cameras. We may be enabling it for other apps
+        Parameters parameters = camera.getParameters();
+        if (parameters.get("nv-flip-mode") != null) {
+            parameters.set("nv-flip-mode", "off");
+            camera.setParameters(parameters);
+        }
+
         camera.setDisplayOrientation(result);
     }
 }
