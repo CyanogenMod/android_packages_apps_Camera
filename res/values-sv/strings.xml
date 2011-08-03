@@ -92,6 +92,9 @@
     <string name="pref_camera_search_shutter_title">Sök-slutare</string>
     <string name="pref_camera_search_shutter">Sök-knapp</string>
     <string name="pref_camera_search_shutter_summary">Sök-knappen tar en bild</string>
+    <string name="pref_camera_power_shutter_title">Ström-slutare</string>
+    <string name="pref_camera_power_shutter">Strömknapp</string>
+    <string name="pref_camera_power_shutter_summary">Strömknappen tar en bild/video</string>
     <string name="pref_camera_settings_focus_title">Fokus</string>
     <string name="pref_camera_settings_focus">För-fokusering</string>
     <string name="pref_camera_settings_focus_summary">Fokusera innan bild tas</string>
@@ -102,6 +105,8 @@
     <string name="pref_camera_focusmode_entry_normal">Normal</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Oändligt"</string>
+    <string name="pref_camera_focusmode_entry_touch">Touch</string>
+    <string name="touch_focus_enabled">Tryck på skärmen för att fokusera kameran.</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Blixtläge"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatiskt"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"På"</string>
@@ -125,6 +130,10 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Röd ton"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Blå ton"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Grön ton"</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Ciselera</string>
+    <string name="pref_camera_coloreffect_entry_vivid">Färgrik</string>
+    <string name="pref_camera_coloreffect_entry_blue">Blå</string>
+    <string name="pref_camera_coloreffect_entry_negative_sepia">Negativ Sepia</string>
     <string name="pref_camera_sharpness_entry_level0">Nivå 0</string>
     <string name="pref_camera_sharpness_entry_level1">Nivå 1</string>
     <string name="pref_camera_sharpness_entry_level2">Nivå 2(Standard)</string>
