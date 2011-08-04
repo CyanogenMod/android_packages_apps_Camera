@@ -153,8 +153,6 @@ public class MosaicFrameProcessor {
         if (mCurrProcessFrameIdx != mLastProcessFrameIdx) {
             mLastProcessFrameIdx = mCurrProcessFrameIdx;
 
-            if (LOGV) Log.v(TAG, "Processing: [" + mCurrProcessFrameIdx + "]");
-
             // Access the image data and the timestamp associated with it...
             byte[] currentFrame = mFrames[mCurrProcessFrameIdx];
             long timestamp = mFrameTimestamp[mCurrProcessFrameIdx];

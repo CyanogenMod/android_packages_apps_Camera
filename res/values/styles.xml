@@ -121,4 +121,10 @@
         <item name="android:windowEnterAnimation">@anim/grow_fade_in_from_top_right</item>
         <item name="android:windowExitAnimation">@anim/shrink_fade_out_from_top_right</item>
     </style>
+    <style name="PanoViewHorizontalGrayBar">
+        <item name="android:background">#444444</item>
+        <item name="android:alpha">0.5</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">180dp</item>
+    </style>
 </resources>

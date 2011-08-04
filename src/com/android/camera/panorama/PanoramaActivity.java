@@ -50,11 +50,15 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
+/**
+ * Activity to handle panorama capturing.
+ */
 public class PanoramaActivity extends Activity implements
         ModePicker.OnModeChangeListener, SurfaceHolder.Callback {
     public static final int DEFAULT_SWEEP_ANGLE = 60;
@@ -64,18 +68,20 @@ public class PanoramaActivity extends Activity implements
     private static final int MSG_FINAL_MOSAIC_READY = 1;
 
     private static final String TAG = "PanoramaActivity";
-
-    // Ratio of nanosecond to second
-    private static final float NS2S = 1.0f / 1000000000.0f;
-
     private static final int PREVIEW_STOPPED = 0;
     private static final int PREVIEW_ACTIVE = 1;
 
+    // Ratio of nanosecond to second
+    private static final float NS2S = 1.0f / 1000000000.0f;
+    private View mPanoControlLayout;
+    private View mCaptureLayout;
+    private View mReviewLayout;
     private SurfaceView mPreview;
     private ImageView mReview;
     private CaptureView mCaptureView;
 
     private ShutterButton mShutterButton;
+    private Button mStopButton;
     private int mPreviewWidth;
     private int mPreviewHeight;
     private Camera mCameraDevice;
@@ -219,8 +225,9 @@ public class PanoramaActivity extends Activity implements
     }
 
     private boolean switchToOtherMode(int mode) {
-        if (isFinishing())
+        if (isFinishing()) {
             return false;
+        }
         MenuHelper.gotoMode(mode, this);
         finish();
         return true;
@@ -234,7 +241,7 @@ public class PanoramaActivity extends Activity implements
         }
     }
 
-    public void setCaptureStarted() {
+    public void startCapture() {
         // Reset values so we can do this again.
         mTimeTaken = System.currentTimeMillis();
 
@@ -243,7 +250,7 @@ public class PanoramaActivity extends Activity implements
             public void onProgress(boolean isFinished, float translationRate, int traversedAngleX,
                     int traversedAngleY, Bitmap lowResBitmapAlpha, Matrix transformaMatrix) {
                 if (isFinished) {
-                    onMosaicFinished();
+                    stopCapture();
                 } else {
                     updateProgress(translationRate, traversedAngleX, traversedAngleY,
                             lowResBitmapAlpha, transformaMatrix);
@@ -262,19 +269,14 @@ public class PanoramaActivity extends Activity implements
             }
         });
 
-        mCaptureView.setVisibility(View.VISIBLE);
+        mCaptureLayout.setVisibility(View.VISIBLE);
+        mPanoControlLayout.setVisibility(View.GONE);
     }
 
-    private void onMosaicFinished() {
+    private void stopCapture() {
         mMosaicFrameProcessor.setProgressListener(null);
         mCameraDevice.stopPreview();
         mCameraDevice.setPreviewCallbackWithBuffer(null);
-        mPreview.setVisibility(View.INVISIBLE);
-        mCaptureView.setVisibility(View.INVISIBLE);
-        mCaptureView.setBitmap(null);
-        mCaptureView.setStatusText("");
-        mCaptureView.setSweepAngle(0);
-        mCaptureView.invalidate();
         // TODO: show some dialog for long computation.
         Thread t = new Thread() {
             @Override
@@ -304,23 +306,32 @@ public class PanoramaActivity extends Activity implements
     private void createContentView() {
         setContentView(R.layout.panorama);
 
-        mPreview = (SurfaceView) findViewById(R.id.pano_preview);
-        mPreview.getHolder().addCallback(this);
+        mCaptureLayout = (View) findViewById(R.id.pano_capture_layout);
+        mReviewLayout = (View) findViewById(R.id.pano_review_layout);
 
+        mPreview = (SurfaceView) findViewById(R.id.pano_preview_view);
+        mPreview.getHolder().addCallback(this);
         mCaptureView = (CaptureView) findViewById(R.id.pano_capture_view);
         mCaptureView.setStartAngle(-DEFAULT_SWEEP_ANGLE / 2);
-        mCaptureView.setVisibility(View.INVISIBLE);
-
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
-        mReview.setVisibility(View.INVISIBLE);
 
         mShutterButton = (ShutterButton) findViewById(R.id.pano_shutter_button);
         mShutterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCaptureStarted();
+                startCapture();
             }
         });
+        mStopButton = (Button) findViewById(R.id.pano_capture_stop_button);
+        mStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopCapture();
+            }
+        });
+
+        mPanoControlLayout = (View) findViewById(R.id.pano_control_layout);
+
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
         mModePicker.setVisibility(View.VISIBLE);
         mModePicker.setOnModeChangeListener(this);
@@ -329,8 +340,12 @@ public class PanoramaActivity extends Activity implements
 
     private void showFinalMosaic(Uri uri) {
         mReview.setImageURI(uri);
-        mReview.setVisibility(View.VISIBLE);
-        mCaptureView.setVisibility(View.INVISIBLE);
+        mCaptureLayout.setVisibility(View.INVISIBLE);
+        mPreview.setVisibility(View.INVISIBLE);
+        mReviewLayout.setVisibility(View.VISIBLE);
+        mCaptureView.setBitmap(null);
+        mCaptureView.setStatusText("");
+        mCaptureView.setSweepAngle(0);
     }
 
     @Override

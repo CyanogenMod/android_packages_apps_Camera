@@ -16,10 +16,11 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
-        android:id="@+id/panorama_root"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <include layout="@layout/pano_views"/>
-    <include layout="@layout/pano_control"/>
+        android:id="@+id/pano_layout"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+    <include layout="@layout/pano_preview" />
+    <include layout="@layout/pano_capture" />
+    <include layout="@layout/pano_review" />
 </RelativeLayout>
