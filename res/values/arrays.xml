@@ -130,6 +130,9 @@
         <item>@string/pref_camera_focusmode_entry_macro</item>
         <item>@string/pref_camera_focusmode_entry_infinity</item>
         <item>@string/pref_camera_focusmode_entry_touch</item>
+        <item>@string/pref_camera_focusmode_entry_fixed</item>
+        <item>@string/pref_camera_focusmode_entry_facedetect</item>
+        <item>@string/pref_camera_focusmode_entry_continuousvideo</item>
     </string-array>
 
     <string-array name="pref_camera_focusmode_entryvalues" translatable="false">
@@ -138,6 +141,9 @@
         <item>macro</item>
         <item>infinity</item>
         <item>touch</item>
+        <item>fixed</item>
+        <item>facedetect</item>
+        <item>continuous-video</item>
     </string-array>
 
     <!-- Camera Preferences flash mode dialog box entries -->
@@ -213,7 +219,7 @@
         <item>@string/pref_camera_whitebalance_entry_daylight</item>
         <item>@string/pref_camera_whitebalance_entry_fluorescent</item>
         <item>@string/pref_camera_whitebalance_entry_cloudy</item>
-        <item>@string/pref_camera_whitebalance_entry_cloudy</item>
+        <item>@string/pref_camera_whitebalance_entry_cloudydaylight</item>
     </string-array>
 
     <string-array name="pref_camera_whitebalance_entryvalues" translatable="false">
@@ -221,8 +227,8 @@
         <item>incandescent</item>
         <item>daylight</item>
         <item>fluorescent</item>
-        <item>cloudy-daylight</item>
         <item>cloudy</item>
+        <item>cloudy-daylight</item>
     </string-array>
 
     <array name="pref_camera_whitebalance_icons">
@@ -341,7 +347,11 @@
         <item>@string/pref_camera_scenemode_entry_party</item>
         <item>@string/pref_camera_scenemode_entry_candlelight</item>
         <item>@string/pref_camera_scenemode_entry_backlight</item>
+        <item>@string/pref_camera_scenemode_entry_backlight</item>
         <item>@string/pref_camera_scenemode_entry_flowers</item>
+        <item>@string/pref_camera_scenemode_entry_duskdawn</item>
+        <item>@string/pref_camera_scenemode_entry_fallcolor</item>
+        <item>@string/pref_camera_scenemode_entry_text</item>
     </string-array>
 
     <string-array name="pref_camera_scenemode_entryvalues" translatable="false">
@@ -361,7 +371,11 @@
         <item>party</item>
         <item>candlelight</item>
         <item>backlight</item>
+        <item>back-light</item>
         <item>flowers</item>
+        <item>dusk-dawn</item>
+        <item>fall-color</item>
+        <item>text</item>
     </string-array>
 
     <!-- Camera Preferences ISO dialog box entries -->

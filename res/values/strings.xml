@@ -239,6 +239,9 @@
     <string name="pref_camera_focusmode_entry_macro">Macro</string>
     <string name="pref_camera_focusmode_entry_infinity">Off</string>
     <string name="pref_camera_focusmode_entry_touch">Touch</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fixed</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Facedetect</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Auto Video</string>
 
     <!-- Toast shown when touch-to-focus is enabled -->
     <string name="touch_focus_enabled">Touch the screen to focus the camera.</string>
@@ -272,6 +275,7 @@
     <string name="pref_camera_whitebalance_entry_daylight">Daylight</string>
     <string name="pref_camera_whitebalance_entry_fluorescent">Fluorescent</string>
     <string name="pref_camera_whitebalance_entry_cloudy">Cloudy</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Cloudy-Daylight</string>
 
     <!-- Default color effect setting. -->
     <string name="pref_camera_coloreffect_default" translatable="false">none</string>
@@ -372,6 +376,12 @@
     <string name="pref_camera_scenemode_entry_backlight">Backlight</string>
     <!-- Scene mode optimized for taking images of flowers. -->
     <string name="pref_camera_scenemode_entry_flowers">Flowers</string>
+    <!-- Scene mode optimized for taking images on Dusk. -->
+    <string name="pref_camera_scenemode_entry_duskdawn">Dusk</string>
+    <!-- Scene mode optimized for taking images on Fall. -->
+    <string name="pref_camera_scenemode_entry_fallcolor">Fall-Color</string>
+    <!-- Scene mode optimized for taking images of Texts. -->
+    <string name="pref_camera_scenemode_entry_text">Text</string>
 
     <!-- Restore settings item in preference -->
     <string name="pref_restore_title">Camera settings</string>
