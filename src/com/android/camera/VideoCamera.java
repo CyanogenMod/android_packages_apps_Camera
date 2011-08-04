@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.IndicatorWheel;
@@ -246,6 +247,9 @@ public class VideoCamera extends ActivityBase
     private ZoomPicker mZoomPicker;
     private final ZoomListener mZoomListener = new ZoomListener();
 
+    // front/back camera switch.
+    private CameraPicker mCameraPicker;
+
     // This Handler is used to post message back onto the main thread of the
     // application
     private class MainHandler extends Handler {
@@ -456,6 +460,7 @@ public class VideoCamera extends ActivityBase
         // Initialize after startPreview becuase this need mParameters.
         initializeIndicatorControl();
         initializeZoomPicker();
+        initializeCameraPicker();
     }
 
     private void initializeZoomPicker() {
@@ -464,6 +469,19 @@ public class VideoCamera extends ActivityBase
         TextView zoomRatio = (TextView) findViewById(R.id.zoom_ratio);
         if (zoomIncrement != null && zoomDecrement != null && mParameters.isZoomSupported()) {
             mZoomPicker = new ZoomPicker(this, zoomIncrement, zoomDecrement, zoomRatio);
+        }
+    }
+
+    private void initializeCameraPicker() {
+        mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
+        if (mCameraPicker != null) {
+            mCameraPicker.setImageResource(R.drawable.camera_toggle_video);
+            ListPreference pref = mPreferenceGroup.findPreference(
+                    CameraSettings.KEY_CAMERA_ID);
+            if (pref != null) {
+                mCameraPicker.initialize(pref);
+                mCameraPicker.setListener(new MyCameraPickerListener());
+            }
         }
     }
 
@@ -483,6 +501,7 @@ public class VideoCamera extends ActivityBase
     private void enableCameraControls(boolean enable) {
         if (mIndicatorControl != null) mIndicatorControl.setEnabled(enable);
         if (mModePicker != null) mModePicker.setEnabled(enable);
+        if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
     }
 
     private void initializeIndicatorControl() {
@@ -501,8 +520,7 @@ public class VideoCamera extends ActivityBase
             SETTING_KEYS = new String[] {
                     CameraSettings.KEY_WHITE_BALANCE,
                     CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
-                    CameraSettings.KEY_VIDEO_QUALITY,
-                    CameraSettings.KEY_CAMERA_ID};
+                    CameraSettings.KEY_VIDEO_QUALITY};
             OTHER_SETTING_KEYS = new String[] {
                     CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
         }
@@ -547,6 +565,7 @@ public class VideoCamera extends ActivityBase
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
+        if (mCameraPicker != null) mCameraPicker.setDegree(degree);
     }
 
     private void startPlayVideoActivity() {
@@ -1966,6 +1985,12 @@ public class VideoCamera extends ActivityBase
         } else {
             mZoomValue = index;
             setCameraParameters();
+        }
+    }
+
+    private class MyCameraPickerListener implements CameraPicker.Listener {
+        public void onSharedPreferenceChanged() {
+            VideoCamera.this.onSharedPreferenceChanged();
         }
     }
 }
