@@ -31,13 +31,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.MediaScannerConnection;
-import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -52,12 +52,11 @@ import com.android.camera.ShutterButton;
 import com.android.camera.Storage;
 import com.android.camera.Util;
 
-import java.io.File;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-public class PanoramaActivity extends Activity implements ModePicker.OnModeChangeListener {
+public class PanoramaActivity extends Activity implements
+        ModePicker.OnModeChangeListener, SurfaceHolder.Callback {
     public static final int DEFAULT_SWEEP_ANGLE = 60;
     public static final int DEFAULT_BLEND_MODE = Mosaic.BLENDTYPE_HORIZONTAL;
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
@@ -65,9 +64,14 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
     private static final int MSG_FINAL_MOSAIC_READY = 1;
 
     private static final String TAG = "PanoramaActivity";
-    private static final float NS2S = 1.0f / 1000000000.0f; // TODO: commit for
-                                                            // this constant.
-    private Preview mPreview;
+
+    // Ratio of nanosecond to second
+    private static final float NS2S = 1.0f / 1000000000.0f;
+
+    private static final int PREVIEW_STOPPED = 0;
+    private static final int PREVIEW_ACTIVE = 1;
+
+    private SurfaceView mPreview;
     private ImageView mReview;
     private CaptureView mCaptureView;
 
@@ -75,6 +79,7 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
     private int mPreviewWidth;
     private int mPreviewHeight;
     private Camera mCameraDevice;
+    private int mCameraState;
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private ModePicker mModePicker;
@@ -82,6 +87,7 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
     private String mCurrentImagePath = null;
     private long mTimeTaken;
     private Handler mMainHandler;
+    private SurfaceHolder mSurfaceHolder;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -119,9 +125,9 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
 
     private void releaseCamera() {
         if (mCameraDevice != null) {
-            mCameraDevice.stopPreview();
             CameraHolder.instance().release();
             mCameraDevice = null;
+            mCameraState = PREVIEW_STOPPED;
         }
     }
 
@@ -298,7 +304,9 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
     private void createContentView() {
         setContentView(R.layout.panorama);
 
-        mPreview = (Preview) findViewById(R.id.pano_preview);
+        mPreview = (SurfaceView) findViewById(R.id.pano_preview);
+        mPreview.getHolder().addCallback(this);
+
         mCaptureView = (CaptureView) findViewById(R.id.pano_capture_view);
         mCaptureView.setStartAngle(-DEFAULT_SWEEP_ANGLE / 2);
         mCaptureView.setVisibility(View.INVISIBLE);
@@ -349,8 +357,7 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
         mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
 
         setupCamera();
-        mPreview.setCameraDevice(mCameraDevice);
-        mCameraDevice.startPreview();
+        startPreview();
 
         if (mMosaicFrameProcessor == null) {
             // Start the activity for the first time.
@@ -434,4 +441,70 @@ public class PanoramaActivity extends Activity implements ModePicker.OnModeChang
             System.gc();
     }
 
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        mSurfaceHolder = holder;
+
+        if (mCameraDevice == null) return;
+
+        // Set preview display if the surface is being created. Preview was
+        // already started. Also restart the preview if display rotation has
+        // changed. Sometimes this happens when the device is held in portrait
+        // and camera app is opened. Rotation animation takes some time and
+        // display rotation in onCreate may not be what we want.
+        if (holder.isCreating()) {
+            // Set preview display if the surface is being created and preview
+            // was already started. That means preview display was set to null
+            // and we need to set it now.
+            setPreviewDisplay(holder);
+        } else {
+            // 1. Restart the preview if the size of surface was changed. The
+            // framework may not support changing preview display on the fly.
+            // 2. Start the preview now if surface was destroyed and preview
+            // stopped.
+            startPreview();
+        }
+    }
+
+    private void setPreviewDisplay(SurfaceHolder holder) {
+        try {
+            mCameraDevice.setPreviewDisplay(holder);
+        } catch (Throwable ex) {
+            releaseCamera();
+            throw new RuntimeException("setPreviewDisplay failed", ex);
+        }
+    }
+
+    private void startPreview() {
+        // If we're previewing already, stop the preview first (this will blank
+        // the screen).
+        if (mCameraState != PREVIEW_STOPPED) stopPreview();
+
+        setPreviewDisplay(mSurfaceHolder);
+
+        try {
+            Log.v(TAG, "startPreview");
+            mCameraDevice.startPreview();
+        } catch (Throwable ex) {
+            releaseCamera();
+            throw new RuntimeException("startPreview failed", ex);
+        }
+        mCameraState = PREVIEW_ACTIVE;
+    }
+
+    private void stopPreview() {
+        if (mCameraDevice != null && mCameraState != PREVIEW_STOPPED) {
+            Log.v(TAG, "stopPreview");
+            mCameraDevice.stopPreview();
+        }
+        mCameraState = PREVIEW_STOPPED;
+    }
 }
