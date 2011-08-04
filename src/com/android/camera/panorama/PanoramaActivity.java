@@ -16,6 +16,16 @@
 
 package com.android.camera.panorama;
 
+import com.android.camera.CameraDisabledException;
+import com.android.camera.CameraHardwareException;
+import com.android.camera.CameraHolder;
+import com.android.camera.MenuHelper;
+import com.android.camera.ModePicker;
+import com.android.camera.R;
+import com.android.camera.ShutterButton;
+import com.android.camera.Storage;
+import com.android.camera.Util;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -41,16 +51,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-
-import com.android.camera.CameraDisabledException;
-import com.android.camera.CameraHardwareException;
-import com.android.camera.CameraHolder;
-import com.android.camera.MenuHelper;
-import com.android.camera.ModePicker;
-import com.android.camera.R;
-import com.android.camera.ShutterButton;
-import com.android.camera.Storage;
-import com.android.camera.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -269,7 +269,7 @@ public class PanoramaActivity extends Activity implements
         mMosaicFrameProcessor.setProgressListener(null);
         mCameraDevice.stopPreview();
         mCameraDevice.setPreviewCallbackWithBuffer(null);
-        // TODO: set mPreview invisible after the camera driver bug is fixed.
+        mPreview.setVisibility(View.INVISIBLE);
         mCaptureView.setVisibility(View.INVISIBLE);
         mCaptureView.setBitmap(null);
         mCaptureView.setStatusText("");
