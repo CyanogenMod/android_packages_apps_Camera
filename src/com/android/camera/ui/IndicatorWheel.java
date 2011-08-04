@@ -28,8 +28,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
-
 /**
  * A view that contains shutter button and camera setting indicators. The
  * indicators are spreaded around the shutter button. The first child is always
@@ -107,7 +105,6 @@ public class IndicatorWheel extends IndicatorControl {
             }
             return false;
         }
-        if (!isEnabled()) return false;
 
         double dx = event.getX() - mCenterX;
         double dy = mCenterY - event.getY();
@@ -134,30 +131,35 @@ public class IndicatorWheel extends IndicatorControl {
                                 // Zoom button or back/front camera switch is pressed.
                                 dismissSettingPopup();
                             }
-                            child.dispatchTouchEvent(event);
+                            if (child.dispatchTouchEvent(event)) {
+                                mPressedIndex = i;
+                            }
                             invalidate();
-                            mPressedIndex = i;
                         } else if (action == MotionEvent.ACTION_UP) {
                             child.dispatchTouchEvent(event);
                             invalidate();
                             mPressedIndex = -1;
                         } else if (action == MotionEvent.ACTION_MOVE) {
                             // Dispatch the event if the location across a sector.
-                            if (mPressedIndex != -1 && i != mPressedIndex) {
+                            if (i != mPressedIndex) {
                                 dismissSettingPopup();
                                 // Cancel the previous one.
-                                View cancelChild = getChildAt(mPressedIndex + 1);
-                                event.setAction(MotionEvent.ACTION_CANCEL);
-                                cancelChild.dispatchTouchEvent(event);
+                                if (mPressedIndex != -1) {
+                                    View cancelChild = getChildAt(mPressedIndex + 1);
+                                    event.setAction(MotionEvent.ACTION_CANCEL);
+                                    cancelChild.dispatchTouchEvent(event);
+                                    mPressedIndex = -1;
+                                }
                                 // Send down to the current one.
                                 event.setAction(MotionEvent.ACTION_DOWN);
-                                child.dispatchTouchEvent(event);
-                                event.setAction(action); // Set the action back
+                                if (child.dispatchTouchEvent(event)) {
+                                    mPressedIndex = i;
+                                }
                                 invalidate();
                             }
-                            // The children do not care about ACTION_MOVE. Besides, the press
-                            // state will be wrong because of View.pointInView.
-                            mPressedIndex = i;
+                            // The children do not care about ACTION_MOVE.
+                            // Besides, the press state will be wrong
+                            // because of View.pointInView.
                         }
                         return true;
                     }

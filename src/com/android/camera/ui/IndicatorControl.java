@@ -174,4 +174,17 @@ public abstract class IndicatorControl extends ViewGroup implements
             b.reloadPreferences();
         }
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View v = getChildAt(i);
+            // Zoom buttons and shutter button are controlled by the activity.
+            if (v instanceof AbstractIndicatorButton) {
+                v.setEnabled(enabled);
+            }
+        }
+    }
 }

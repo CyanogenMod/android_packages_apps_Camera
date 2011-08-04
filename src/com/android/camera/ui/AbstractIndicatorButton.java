@@ -23,7 +23,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
 // This is an indicator button and pressing it opens a popup window. Ex: flash or other settings.
 public abstract class AbstractIndicatorButton extends RotateImageView {
@@ -53,6 +52,8 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (!isEnabled()) return false;
+
         int action = ev.getAction();
         if (action == MotionEvent.ACTION_DOWN && !isOverridden()) {
             if (mPopup == null || mPopup.getVisibility() != View.VISIBLE) {
