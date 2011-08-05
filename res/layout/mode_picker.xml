@@ -24,6 +24,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_height="62dp"
                 android:layout_width="62dp"
+                android:scaleType="center"
                 android:background="@drawable/btn_mode_background"
                 android:src="@drawable/btn_ic_camera" />
         <LinearLayout android:id="@+id/mode_selection"
@@ -37,14 +38,17 @@
             <com.android.camera.ui.RotateImageView android:id="@+id/mode_panorama"
                     android:layout_height="62dp"
                     android:layout_width="62dp"
+                    android:scaleType="center"
                     android:src="@drawable/btn_ic_panorama" />
             <com.android.camera.ui.RotateImageView android:id="@+id/mode_video"
                     android:layout_height="62dp"
                     android:layout_width="62dp"
+                    android:scaleType="center"
                     android:src="@drawable/btn_ic_video" />
             <com.android.camera.ui.RotateImageView android:id="@+id/mode_camera"
                     android:layout_height="62dp"
                     android:layout_width="62dp"
+                    android:scaleType="center"
                     android:src="@drawable/btn_ic_camera" />
         </LinearLayout>
 </com.android.camera.ModePicker>

@@ -40,6 +40,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
         mFadeOut = AnimationUtils.loadAnimation(mContext, R.anim.shrink_fade_out_from_right);
         HIGHLIGHT_COLOR = mContext.getResources().getColor(R.color.review_control_pressed_color);
         DISABLED_COLOR = mContext.getResources().getColor(R.color.icon_disabled_color);
+        setScaleType(ImageView.ScaleType.CENTER);
     }
 
     // Whether scene mode affects this indicator and it cannot be changed.

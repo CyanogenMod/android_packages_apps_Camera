@@ -121,6 +121,13 @@ public class RotateImageView extends ImageView {
         int height = getHeight() - top - bottom;
 
         int saveCount = canvas.getSaveCount();
+
+        // Scale down the image first if required.
+        if ((getScaleType() == ImageView.ScaleType.FIT_CENTER) &&
+                ((width < w) || (height < h))) {
+            float ratio = Math.min((float) width / w, (float) height / h);
+            canvas.scale(ratio, ratio, width / 2.0f, height / 2.0f);
+        }
         canvas.translate(left + width / 2, top + height / 2);
         canvas.rotate(-mCurrentDegree);
         canvas.translate(-w / 2, -h / 2);

@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.FocusRectangle;
 import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.RotateImageView;
@@ -175,6 +176,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // GPS on-screen indicator
     private View mGpsNoSignalView;
     private View mGpsHasSignalView;
+
+    // front/back camera switch.
+    private CameraPicker mCameraPicker;
 
     /**
      * An unpublished intent flag requesting to return as soon as capturing
@@ -585,6 +589,19 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             }
         }
     };
+
+    private void initializeCameraPicker() {
+        mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
+        if (mCameraPicker != null) {
+            mCameraPicker.setImageResource(R.drawable.camera_toggle);
+            ListPreference pref = mPreferenceGroup.findPreference(
+                    CameraSettings.KEY_CAMERA_ID);
+            if (pref != null) {
+                mCameraPicker.initialize(pref);
+                mCameraPicker.setListener(new MyCameraPickerListener());
+            }
+        }
+    }
 
     private void initializeZoomPicker() {
         View zoomIncrement = findViewById(R.id.zoom_increment);
@@ -1051,6 +1068,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // parameters.
         initializeIndicatorControl();
         initializeZoomPicker();
+        initializeCameraPicker();
     }
 
     private void overrideCameraSettings(final String flashMode,
@@ -1100,7 +1118,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         } else {
             SETTING_KEYS = new String[] {
                     CameraSettings.KEY_FLASH_MODE,
-                    CameraSettings.KEY_CAMERA_ID,
                     CameraSettings.KEY_COLOR_EFFECT,
                     CameraSettings.KEY_WHITE_BALANCE};
             OTHER_SETTING_KEYS = new String[] {
@@ -1124,6 +1141,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void enableCameraControls(boolean enable) {
         if (mIndicatorControl != null) mIndicatorControl.setEnabled(enable);
+        if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
         if (mZoomPicker != null) mZoomPicker.setEnabled(enable);
         if (mModePicker != null) mModePicker.setEnabled(enable);
     }
@@ -1162,6 +1180,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
+        if (mCameraPicker != null) mCameraPicker.setDegree(degree);
     }
 
     @Override
@@ -2365,6 +2384,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         public void onOverriddenPreferencesClicked() {
             Camera.this.onOverriddenPreferencesClicked();
+        }
+    }
+
+    private class MyCameraPickerListener implements CameraPicker.Listener {
+        public void onSharedPreferenceChanged() {
+            Camera.this.onSharedPreferenceChanged();
         }
     }
 }

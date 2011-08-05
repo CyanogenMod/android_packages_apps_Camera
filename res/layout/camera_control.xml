@@ -19,11 +19,19 @@
         android:layout_alignParentRight="true"
         android:layout_height="match_parent"
         android:layout_width="76dp"
-        android:orientation="vertical"
-        android:paddingTop="24dp"
-        android:paddingBottom="3dp">
+        android:orientation="vertical">
 
     <include layout="@layout/review_thumbnail"/>
+
+    <com.android.camera.ui.CameraPicker android:id="@+id/camera_picker"
+        android:clickable="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/share_button"
+        android:layout_above="@+id/shutter_button"
+        android:layout_width="36dp"
+        android:layout_height="36dp" />
+    <!-- need fixed size of the view since the source icon(HDPI) will be too large for phones -->
 
     <com.android.camera.ShutterButton android:id="@+id/shutter_button"
             android:layout_width="wrap_content"
