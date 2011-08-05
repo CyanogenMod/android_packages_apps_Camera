@@ -42,7 +42,6 @@ class FaceListener implements android.hardware.Camera.FaceDetectionListener {
 
     @Override
     public void onFaceDetection(Face[] faces, android.hardware.Camera camera) {
-        if (faces.length == 0) return;
         if (LOGV) Log.v(TAG, "Num of faces=" + faces.length);
 
         // Rotate the coordinates if necessary.
