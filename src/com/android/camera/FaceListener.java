@@ -27,7 +27,7 @@ import android.widget.RelativeLayout;
 
 class FaceListener implements android.hardware.Camera.FaceDetectionListener {
     private final String TAG = "FaceListener";
-    private final boolean LOGV = true;
+    private final boolean LOGV = false;
     private final int MAX_NUM_FACES = 10; // Show 10 faces at most.
     private final Context mContext;
     private final ViewGroup mFrame;
