@@ -42,14 +42,14 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="5dp"
-                android:visibility="invisible"/>
+                android:visibility="gone"/>
         <ImageView style="@style/OnScreenGpsIndicator"
                 android:id="@+id/onscreen_gps_indicator_on"
                 android:src="@drawable/ic_viewfinder_gps_on"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="5dp"
-                android:visibility="invisible"/>
+                android:visibility="gone"/>
         <com.android.camera.ui.IndicatorBar
                 android:id="@+id/indicator_control"
                 android:layout_width="48dp"

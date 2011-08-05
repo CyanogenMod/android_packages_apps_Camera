@@ -619,17 +619,17 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void showGpsOnScreenIndicator(boolean hasSignal) {
         if (hasSignal) {
-            if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.INVISIBLE);
+            if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.GONE);
             if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.VISIBLE);
         } else {
             if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.VISIBLE);
-            if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.INVISIBLE);
+            if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.GONE);
         }
     }
 
     private void hideGpsOnScreenIndicator() {
-        if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.INVISIBLE);
-        if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.INVISIBLE);
+        if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.GONE);
+        if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.GONE);
     }
 
     private class LocationListener
@@ -2163,7 +2163,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             if (Util.isTabletUI()) {
                 mShutterButton.setEnabled(false);
             } else {
-                mShutterButton.setVisibility(View.INVISIBLE);
+                mShutterButton.setVisibility(View.GONE);
             }
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {

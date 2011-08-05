@@ -114,7 +114,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
         if (mPopup != null && mPopup.getVisibility() == View.VISIBLE) {
             mPopup.clearAnimation();
             mPopup.startAnimation(mFadeOut);
-            mPopup.setVisibility(View.INVISIBLE);
+            mPopup.setVisibility(View.GONE);
             clearColorFilter();
             invalidate();
             return true;

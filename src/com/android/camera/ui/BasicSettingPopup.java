@@ -98,7 +98,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
             int index, long id) {
         // If popup window is dismissed, ignore the event. This may happen when
         // users press home and then select a setting immediately.
-        if (getVisibility() == View.INVISIBLE) return;
+        if (getVisibility() != View.VISIBLE) return;
 
         int oldIndex = mPreference.findIndexOfValue(mPreference.getValue());
         if (oldIndex != index) {

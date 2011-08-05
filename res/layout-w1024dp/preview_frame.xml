@@ -33,21 +33,21 @@
                 style="@style/OnViewfinderLabel"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/review_control"
-                android:visibility="invisible"/>
+                android:visibility="gone"/>
         <ImageView style="@style/OnScreenGpsIndicator"
                 android:id="@+id/onscreen_gps_indicator_no_signal"
                 android:src="@drawable/ic_viewfinder_gps_no_signal"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="15dp"
-                android:visibility="invisible"/>
+                android:visibility="gone"/>
         <ImageView style="@style/OnScreenGpsIndicator"
                 android:id="@+id/onscreen_gps_indicator_on"
                 android:src="@drawable/ic_viewfinder_gps_on"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="15dp"
-                android:visibility="invisible"/>
+                android:visibility="gone"/>
         <include layout="@layout/review_control"/>
     </RelativeLayout>
     <!-- This is the border of preview and the corner is round. If it is the background,

@@ -71,9 +71,9 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     }
 
     private void enableModeSelection(boolean enabled) {
-        mCurrentModeIcon.setVisibility(enabled ? View.INVISIBLE : View.VISIBLE);
+        mCurrentModeIcon.setVisibility(enabled ? View.GONE : View.VISIBLE);
         mCurrentModeIcon.setOnClickListener(enabled ? null : this);
-        mModeSelection.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+        mModeSelection.setVisibility(enabled ? View.VISIBLE : View.GONE);
         for (int i = 0; i < 3; ++i) {
             mModeIcons[i].setOnClickListener(enabled ? this : null);
             highlightCurrentMode(mModeIcons[i], (i == mCurrentMode));

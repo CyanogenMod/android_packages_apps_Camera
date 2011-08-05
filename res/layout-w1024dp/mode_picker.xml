@@ -37,7 +37,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:gravity="center"
-                android:visibility="invisible">
+                android:visibility="gone">
             <com.android.camera.ui.RotateImageView android:id="@+id/mode_panorama"
                     android:layout_height="62dp"
                     android:layout_width="62dp"

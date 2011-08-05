@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:background="@android:color/transparent">
     <!-- the transparent background here is a workaround of the render issue
         happened when the popup window is rotated as the device's orientation
