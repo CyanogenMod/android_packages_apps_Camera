@@ -271,6 +271,8 @@ public class PanoramaActivity extends Activity implements
         });
 
         mCaptureLayout.setVisibility(View.VISIBLE);
+        mPreview.setVisibility(View.GONE);
+        mRealTimeMosaicView.setVisibility(View.VISIBLE);
         mPanoControlLayout.setVisibility(View.GONE);
     }
 
@@ -320,6 +322,7 @@ public class PanoramaActivity extends Activity implements
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
 
         mRealTimeMosaicView = (MosaicRendererSurfaceView) findViewById(R.id.pano_renderer);
+        mRealTimeMosaicView.setVisibility(View.GONE);
 
         mShutterButton = (ShutterButton) findViewById(R.id.pano_shutter_button);
         mShutterButton.setOnClickListener(new View.OnClickListener() {
