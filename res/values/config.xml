@@ -37,4 +37,10 @@
 
 	<!-- Samsung Camcorder Mode -->
 	<bool name="needsSamsungCamMode">false</bool>
+
+	<!-- Samsung Continuous Autofocus -->
+	<bool name="needsSamsungContinuousAf">false</bool>
+
+	<!-- Samsung Special Settings -->
+	<bool name="needsSamsungSpecialSettings">false</bool>
 </resources>
