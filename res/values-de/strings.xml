@@ -65,10 +65,12 @@
     <string name="pref_camera_picturesize_entry_3264x1952">6 Millionen Pixel (16:9)</string>
     <string name="pref_camera_picturesize_entry_2592x1936">5 Millionen Pixel</string>
     <string name="pref_camera_picturesize_entry_2592x1552">4 Millionen Pixel (16:9)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4 Millionen Pixel</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4 Millionen Pixel</string>
     <string name="pref_camera_picturesize_entry_2048x1536">3 Millionen Pixel</string>
     <string name="pref_camera_picturesize_entry_2048x1216">2,5 Millionen Pixel (16:9)</string>
-    <string name="pref_camera_picturesize_entry_1600x1200">2 Millionen Pixel</string>
-    <string name="pref_camera_picturesize_entry_1024x768">1 Million Pixel</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">2 Millionen Pixel</string>
+    <string name="pref_camera_picturesize_entry_1024x768">1 Million Pixel</string>
 
     <string name="pref_camera_jpegquality_title">Bildqualität</string>
     <string name="pref_camera_jpegquality_entry_superfine">Extrafein</string>
