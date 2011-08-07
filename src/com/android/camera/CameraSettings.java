@@ -575,11 +575,11 @@ public class CameraSettings {
         if (mSamsungSpecialSettings) {
             params.set("video_recording_gamma", on ? "on" : "off");
             params.set("slow_ae", on ? "on" : "off");
-            params.set("iso", on ? "movie" : "auto");
-            params.set("metering", on ? "matrix" : "center");
 
             if (on) {
                 params.set("antibanding", "50hz");
+                params.set("iso", "movie");
+                params.set("metering", "matrix");
             }
         }
     }
