@@ -29,6 +29,7 @@
             android:layout_centerInParent="true"
             android:clickable="true"
             android:focusable="true"
+            android:onClick="onShutterButtonClicked"
             android:background="@drawable/btn_shutter"/>
 
     <include layout="@layout/mode_picker"/>

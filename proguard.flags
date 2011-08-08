@@ -11,3 +11,7 @@
 -keep class com.android.camera.VideoCamera {
   public boolean isRecording();
 }
+
+-keep class * extends android.app.Activity {
+  @com.android.camera.panorama.OnClickAttr <methods>;
+}

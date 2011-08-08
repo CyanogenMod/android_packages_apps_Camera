@@ -39,11 +39,13 @@
 
         <Button android:id="@+id/pano_review_retake_button"
                 android:text="@string/review_retake"
+                android:onClick="onRetakeButtonClicked"
                 android:textSize="24dp"
                 android:layout_width="180dp"
                 android:layout_height="180dp" />
         <Button android:id="@+id/pano_review_ok_button"
                 android:text="@string/review_ok"
+                android:onClick="onOkButtonClicked"
                 android:textSize="24dp"
                 android:layout_width="180dp"
                 android:layout_height="180dp" />

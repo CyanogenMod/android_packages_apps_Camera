@@ -18,6 +18,9 @@ package com.android.camera.panorama;
 
 import android.util.Log;
 
+/**
+ * Class to handle the processing of each frame by Mosaicer.
+ */
 public class MosaicFrameProcessor {
     private static final boolean LOGV = true;
     private static final String TAG = "MosaicFrameProcessor";
@@ -54,7 +57,6 @@ public class MosaicFrameProcessor {
     private int mPreviewHeight;
     private int mPreviewBufferSize;
 
-
     public interface ProgressListener {
         public void onProgress(boolean isFinished, float translationRate,
                 int traversedAngleX, int traversedAngleY);
@@ -72,13 +74,19 @@ public class MosaicFrameProcessor {
         mProgressListener = listener;
     }
 
-    public void onResume() {
+    public void initialize() {
         setupMosaicer(mPreviewWidth, mPreviewHeight, mPreviewBufferSize);
+        reset();
     }
 
-    public void onPause() {
-        releaseMosaicer();
+    public void clear() {
+        mMosaicer.freeMosaicMemory();
+
+        for (int i = 0; i < NUM_FRAMES_IN_BUFFER; i++) {
+            mFrames[i] = null;
+        }
     }
+
 
     private void setupMosaicer(int previewWidth, int previewHeight, int bufSize) {
         Log.v(TAG, "setupMosaicer w, h=" + previewWidth + ',' + previewHeight + ',' + bufSize);
@@ -94,12 +102,15 @@ public class MosaicFrameProcessor {
         }
     }
 
-    private void releaseMosaicer() {
-        mMosaicer.freeMosaicMemory();
-
-        for (int i = 0; i < NUM_FRAMES_IN_BUFFER; i++) {
-            mFrames[i] = null;
-        }
+    public void reset() {
+        // reset() can be called even if MosaicFrameProcessor is not initialized.
+        // Only counters will be changed.
+        mTotalFrameCount = 0;
+        mFillIn = 0;
+        mLastProcessedFrameTimestamp = 0;
+        mLastProcessFrameIdx = -1;
+        mCurrProcessFrameIdx = -1;
+        mMosaicer.reset();
     }
 
     public void createMosaic(boolean highRes) {
@@ -114,6 +125,12 @@ public class MosaicFrameProcessor {
     // updates the UI to show progress.
     // When done, processes and displays the final mosaic.
     public void processFrame(byte[] data) {
+        if (mFrames[mFillIn] == null) {
+            // clear() is called and buffers are cleared, stop computation.
+            // This can happen when the onPause() is called in the activity, but still some frames
+            // are not processed yet and thus the callback may be invoked.
+            return;
+        }
         long t1 = System.currentTimeMillis();
         mFrameTimestamp[mFillIn] = t1;
         System.arraycopy(data, 0, mFrames[mFillIn], 0, data.length);

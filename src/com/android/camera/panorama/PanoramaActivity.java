@@ -28,6 +28,8 @@ import com.android.camera.Util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
@@ -39,7 +41,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -48,7 +49,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
@@ -64,13 +64,16 @@ public class PanoramaActivity extends Activity implements
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
 
     private static final int MSG_FINAL_MOSAIC_READY = 1;
+    private static final int MSG_RESET_TO_PREVIEW = 2;
 
     private static final String TAG = "PanoramaActivity";
     private static final int PREVIEW_STOPPED = 0;
     private static final int PREVIEW_ACTIVE = 1;
-
     // Ratio of nanosecond to second
     private static final float NS2S = 1.0f / 1000000000.0f;
+
+    private boolean mPausing;
+
     private View mPanoControlLayout;
     private View mCaptureLayout;
     private View mReviewLayout;
@@ -78,9 +81,10 @@ public class PanoramaActivity extends Activity implements
     private ImageView mReview;
     private CaptureView mCaptureView;
     private MosaicRendererSurfaceView mRealTimeMosaicView;
-
     private ShutterButton mShutterButton;
-    private Button mStopButton;
+
+    private byte[] mFinalJpegData;
+
     private int mPreviewWidth;
     private int mPreviewHeight;
     private Camera mCameraDevice;
@@ -93,6 +97,8 @@ public class PanoramaActivity extends Activity implements
     private long mTimeTaken;
     private Handler mMainHandler;
     private SurfaceHolder mSurfaceHolder;
+
+    private boolean mThreadRunning;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -114,9 +120,15 @@ public class PanoramaActivity extends Activity implements
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case MSG_FINAL_MOSAIC_READY:
-                        Uri uri = (Uri) msg.obj;
-                        showFinalMosaic(uri);
+                        mThreadRunning = false;
+                        showFinalMosaic((Bitmap) msg.obj);
+                        break;
+                    case MSG_RESET_TO_PREVIEW:
+                        mThreadRunning = false;
+                        resetToPreview();
+                        break;
                 }
+                clearMosaicFrameProcessorIfNeeded();
             }
         };
     }
@@ -130,6 +142,7 @@ public class PanoramaActivity extends Activity implements
 
     private void releaseCamera() {
         if (mCameraDevice != null) {
+            mCameraDevice.setPreviewCallbackWithBuffer(null);
             CameraHolder.instance().release();
             mCameraDevice = null;
             mCameraState = PREVIEW_STOPPED;
@@ -267,23 +280,25 @@ public class PanoramaActivity extends Activity implements
         });
 
         mCaptureLayout.setVisibility(View.VISIBLE);
-        mPreview.setVisibility(View.GONE);
+        mPreview.setVisibility(View.INVISIBLE);  // will be re-used, invisible is better than gone.
         mRealTimeMosaicView.setVisibility(View.VISIBLE);
         mPanoControlLayout.setVisibility(View.GONE);
     }
 
     private void stopCapture() {
         mMosaicFrameProcessor.setProgressListener(null);
-        mCameraDevice.stopPreview();
-        mCameraDevice.setPreviewCallbackWithBuffer(null);
+        stopPreview();
         // TODO: show some dialog for long computation.
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                generateAndStoreFinalMosaic(false);
-            }
-        };
-        t.start();
+        if (!mThreadRunning) {
+            mThreadRunning = true;
+            Thread t = new Thread() {
+                @Override
+                public void run() {
+                    generateAndStoreFinalMosaic(false);
+                }
+            };
+            t.start();
+        }
     }
 
     private void updateProgress(float translationRate, int traversedAngleX, int traversedAngleY) {
@@ -323,14 +338,8 @@ public class PanoramaActivity extends Activity implements
         mShutterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mPausing || mThreadRunning) return;
                 startCapture();
-            }
-        });
-        mStopButton = (Button) findViewById(R.id.pano_capture_stop_button);
-        mStopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopCapture();
             }
         });
 
@@ -342,23 +351,85 @@ public class PanoramaActivity extends Activity implements
         mModePicker.setCurrentMode(ModePicker.MODE_PANORAMA);
     }
 
-    private void showFinalMosaic(Uri uri) {
-        mReview.setImageURI(uri);
-        mCaptureLayout.setVisibility(View.INVISIBLE);
-        mPreview.setVisibility(View.INVISIBLE);
-        mReviewLayout.setVisibility(View.VISIBLE);
-        mCaptureView.setStatusText("");
-        mCaptureView.setSweepAngle(0);
+    @OnClickAttr
+    public void onStopButtonClicked(View v) {
+        if (mPausing || mThreadRunning) return;
+        stopCapture();
+    }
+
+    @OnClickAttr
+    public void onOkButtonClicked(View v) {
+        if (mPausing || mThreadRunning) return;
+        mThreadRunning = true;
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                saveFinalMosaic();
+            }
+        };
+        t.start();
+    }
+
+    @OnClickAttr
+    public void onRetakeButtonClicked(View v) {
+        if (mPausing || mThreadRunning) return;
+        resetToPreview();
+    }
+
+    private void resetToPreview() {
+        mPreview.setVisibility(View.VISIBLE);
+        mPanoControlLayout.setVisibility(View.VISIBLE);
+        mRealTimeMosaicView.setVisibility(View.GONE);
+        mCaptureLayout.setVisibility(View.GONE);
+        mReviewLayout.setVisibility(View.GONE);
+        mMosaicFrameProcessor.reset();
+        if (!mPausing) startPreview();
+    }
+
+    private void showFinalMosaic(Bitmap bitmap) {
+        if (bitmap != null) {
+            mReview.setImageBitmap(bitmap);
+            mCaptureLayout.setVisibility(View.GONE);
+            mPreview.setVisibility(View.INVISIBLE);
+            mReviewLayout.setVisibility(View.VISIBLE);
+            mCaptureView.setStatusText("");
+            mCaptureView.setSweepAngle(0);
+        }
+    }
+
+    private void saveFinalMosaic() {
+        if (mFinalJpegData != null) {
+            Storage.addImage(getContentResolver(), mCurrentImagePath, mTimeTaken, null, 0,
+                    mFinalJpegData);
+            mFinalJpegData = null;
+        }
+        mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW));
+    }
+
+    private void clearMosaicFrameProcessorIfNeeded() {
+        if (!mPausing || mThreadRunning) return;
+        mMosaicFrameProcessor.clear();
+    }
+
+    private void initMosaicFrameProcessorIfNeeded() {
+        if (mPausing || mThreadRunning) return;
+        if (mMosaicFrameProcessor == null) {
+            // Start the activity for the first time.
+            mMosaicFrameProcessor = new MosaicFrameProcessor(DEFAULT_SWEEP_ANGLE - 5,
+                    mPreviewWidth, mPreviewHeight, getPreviewBufSize());
+        }
+        mMosaicFrameProcessor.initialize();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         releaseCamera();
-        mMosaicFrameProcessor.onPause();
+        mPausing = true;
         mCaptureView.onPause();
         mRealTimeMosaicView.onPause();
         mSensorManager.unregisterListener(mListener);
+        clearMosaicFrameProcessorIfNeeded();
         System.gc();
     }
 
@@ -366,6 +437,7 @@ public class PanoramaActivity extends Activity implements
     protected void onResume() {
         super.onResume();
 
+        mPausing = false;
         /*
          * It is not necessary to get accelerometer events at a very high rate,
          * by using a slower rate (SENSOR_DELAY_UI), we get an automatic
@@ -376,16 +448,10 @@ public class PanoramaActivity extends Activity implements
         mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
 
         setupCamera();
+        // Camera must be initialized before MosaicFrameProcessor is initialized. The preview size
+        // has to be decided by camera device.
+        initMosaicFrameProcessorIfNeeded();
         startPreview();
-
-        if (mMosaicFrameProcessor == null) {
-            // Start the activity for the first time.
-            mMosaicFrameProcessor = new MosaicFrameProcessor(DEFAULT_SWEEP_ANGLE - 5,
-                    mPreviewWidth, mPreviewHeight, getPreviewBufSize());
-            mMosaicFrameProcessor.onResume();
-        } else {
-            mMosaicFrameProcessor.onResume();
-        }
         mCaptureView.onResume();
         mRealTimeMosaicView.onResume();
     }
@@ -449,11 +515,10 @@ public class PanoramaActivity extends Activity implements
                 Log.e(TAG, "Exception in storing final mosaic", e);
                 return;
             }
-            Uri uri = Storage.addImage(
-                    getContentResolver(), mCurrentImagePath, mTimeTaken, null, 0,
-                    out.toByteArray());
 
-            mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_FINAL_MOSAIC_READY, uri));
+            mFinalJpegData = out.toByteArray();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(mFinalJpegData, 0, mFinalJpegData.length);
+            mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_FINAL_MOSAIC_READY, bitmap));
             // Now's a good time to run the GC. Since we won't do any explicit
             // allocation during the test, the GC should stay dormant and not
             // influence our results.

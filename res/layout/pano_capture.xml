@@ -41,6 +41,7 @@
 
         <Button android:id="@+id/pano_capture_stop_button"
                 android:text="@string/pano_capture_stop"
+                android:onClick="onStopButtonClicked"
                 android:textSize="24dp"
                 android:layout_width="180dp"
                 android:layout_height="180dp" />
