@@ -201,8 +201,11 @@ public abstract class BaseCamera extends NoSearchActivity
     }
 
     protected void clearTouchFocusAEC() {
-        if (mParameters.get("touch-aec") != null && CameraSettings.getTouchFocusParameterName() != null) {
+        if (mParameters.get("touch-aec") != null) {
             mParameters.set("touch-aec", "off");
+        }
+
+        if (CameraSettings.getTouchFocusParameterName() != null) {
             mParameters.set(CameraSettings.getTouchFocusParameterName(), "");
         }
     }

@@ -273,10 +273,14 @@ public class CameraSettings {
     }
 
     private boolean checkTouchFocus() {
-        if (mParameters.get("taking-picture-zoom") != null) {
+        if (mParameters.get("taking-picture-zoom") != null ||
+            mParameters.get("touch-focus") != null) {
             /* HTC camera, which always have touch-to-focus support. Unfortunately
              * the touch-to-focus parameter 'touch-focus' is not present at initialization
              * time, which is why we need to resort to another HTC specific parameter
+             *
+             * The 'touch-focus' parameter is checked anyway so that libcamera.so wrappers
+             * may implement the HTC's inteface without implenting its quirk.
              */
             sTouchFocusParameter = "touch-focus";
             sTouchFocusNeedsRect = false;
