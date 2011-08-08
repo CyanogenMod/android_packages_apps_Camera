@@ -16,10 +16,6 @@
 
 package com.android.camera.panorama;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Matrix;
-
 import android.util.Log;
 
 public class MosaicFrameProcessor {
@@ -27,7 +23,6 @@ public class MosaicFrameProcessor {
     private static final String TAG = "MosaicFrameProcessor";
     private static final int NUM_FRAMES_IN_BUFFER = 2;
     private static final int MAX_NUMBER_OF_FRAMES = 100;
-    private static final int DOWN_SAMPLE_FACTOR = 4;
     private static final int FRAME_COUNT_INDEX = 9;
     private static final int X_COORD_INDEX = 2;
     private static final int Y_COORD_INDEX = 5;
@@ -35,14 +30,11 @@ public class MosaicFrameProcessor {
     private Mosaic mMosaicer;
     private final byte[][] mFrames = new byte[NUM_FRAMES_IN_BUFFER][];  // Space for N frames
     private final long [] mFrameTimestamp = new long[NUM_FRAMES_IN_BUFFER];
-    private Bitmap mLRBitmapAlpha = null;
-    private Matrix mTransformationMatrix = null;
     private float mTranslationLastX;
     private float mTranslationLastY;
 
     private int mFillIn = 0;
     private int mTotalFrameCount = 0;
-    private int[] mColors = null;
     private long mLastProcessedFrameTimestamp = 0;
     private int mLastProcessFrameIdx = -1;
     private int mCurrProcessFrameIdx = -1;
@@ -65,8 +57,7 @@ public class MosaicFrameProcessor {
 
     public interface ProgressListener {
         public void onProgress(boolean isFinished, float translationRate,
-                int traversedAngleX, int traversedAngleY,
-                Bitmap lowResBitmapAlpha, Matrix transformaMatrix);
+                int traversedAngleX, int traversedAngleY);
     }
 
     public MosaicFrameProcessor(int sweepAngle, int previewWidth, int previewHeight, int bufSize) {
@@ -83,12 +74,10 @@ public class MosaicFrameProcessor {
 
     public void onResume() {
         setupMosaicer(mPreviewWidth, mPreviewHeight, mPreviewBufferSize);
-        setupAlphaBlendBitmap(mPreviewWidth, mPreviewHeight);
     }
 
     public void onPause() {
         releaseMosaicer();
-        releaseAlphaBlendBitmap();
     }
 
     private void setupMosaicer(int previewWidth, int previewHeight, int bufSize) {
@@ -113,22 +102,6 @@ public class MosaicFrameProcessor {
         }
     }
 
-    private void setupAlphaBlendBitmap(int width, int height) {
-        int downSizedW = width / DOWN_SAMPLE_FACTOR;
-        int downSizedH = height / DOWN_SAMPLE_FACTOR;
-        mColors = new int[downSizedW * downSizedH];
-        mLRBitmapAlpha = Bitmap.createBitmap(downSizedW, downSizedH, Config.ARGB_8888);
-        mTransformationMatrix = new Matrix();
-    }
-
-    private void releaseAlphaBlendBitmap() {
-        mColors = null;
-        if (mLRBitmapAlpha != null) {
-            mLRBitmapAlpha.recycle();
-            mLRBitmapAlpha = null;
-        }
-    }
-
     public void createMosaic(boolean highRes) {
         mMosaicer.createMosaic(highRes);
     }
@@ -140,7 +113,7 @@ public class MosaicFrameProcessor {
     // Processes the last filled image frame through the mosaicer and
     // updates the UI to show progress.
     // When done, processes and displays the final mosaic.
-    public void processFrame(byte[] data, int width, int height) {
+    public void processFrame(byte[] data) {
         long t1 = System.currentTimeMillis();
         mFrameTimestamp[mFillIn] = t1;
         System.arraycopy(data, 0, mFrames[mFillIn], 0, data.length);
@@ -174,39 +147,30 @@ public class MosaicFrameProcessor {
                 && mTraversedAngleY < mCompassThreshold) {
                 // If we are still collecting new frames for the current mosaic,
                 // process the new frame.
-                translateFrame(currentFrame, width, height, timestamp);
+                translateFrame(currentFrame, timestamp);
 
                 // Publish progress of the ongoing processing
                 if (mProgressListener != null) {
-                    mProgressListener.onProgress(
-                            false, mTranslationRate, mTraversedAngleX, mTraversedAngleY,
-                            mLRBitmapAlpha, mTransformationMatrix);
+                    mProgressListener.onProgress(false, mTranslationRate,
+                            mTraversedAngleX, mTraversedAngleY);
                 }
             } else {
                 if (mProgressListener != null) {
-                    mProgressListener.onProgress(
-                            true, mTranslationRate, mTraversedAngleX, mTraversedAngleY,
-                            mLRBitmapAlpha, mTransformationMatrix);
+                    mProgressListener.onProgress(true, mTranslationRate,
+                            mTraversedAngleX, mTraversedAngleY);
                 }
             }
         }
     }
 
-    public void translateFrame(final byte[] data, int width, int height, long now) {
-        float deltaTime = (float) (now - mLastProcessedFrameTimestamp) / 1000.0f;
+    public void translateFrame(final byte[] data, long now) {
+        float deltaTime = (now - mLastProcessedFrameTimestamp) / 1000.0f;
         mLastProcessedFrameTimestamp = now;
 
         float[] frameData = mMosaicer.setSourceImage(data);
         mTotalFrameCount  = (int) frameData[FRAME_COUNT_INDEX];
         float translationCurrX = frameData[X_COORD_INDEX];
         float translationCurrY = frameData[Y_COORD_INDEX];
-        mTransformationMatrix.setValues(frameData);
-
-        int outw = width / DOWN_SAMPLE_FACTOR;
-        int outh = height / DOWN_SAMPLE_FACTOR;
-
-        PanoUtil.decodeYUV420SPQuarterRes(mColors, data, width, height);
-        mLRBitmapAlpha.setPixels(mColors, 0, outw, 0, 0, outw, outh);
 
         mTranslationRate  = Math.max(Math.abs(translationCurrX - mTranslationLastX),
                 Math.abs(translationCurrY - mTranslationLastY)) / deltaTime;

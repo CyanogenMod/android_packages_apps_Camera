@@ -28,9 +28,7 @@ import com.android.camera.Util;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
-import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
@@ -249,12 +247,11 @@ public class PanoramaActivity extends Activity implements
         mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
             @Override
             public void onProgress(boolean isFinished, float translationRate, int traversedAngleX,
-                    int traversedAngleY, Bitmap lowResBitmapAlpha, Matrix transformaMatrix) {
+                    int traversedAngleY) {
                 if (isFinished) {
                     stopCapture();
                 } else {
-                    updateProgress(translationRate, traversedAngleX, traversedAngleY,
-                            lowResBitmapAlpha, transformaMatrix);
+                    updateProgress(translationRate, traversedAngleX, traversedAngleY);
                 }
             }
         });
@@ -263,7 +260,7 @@ public class PanoramaActivity extends Activity implements
         mCameraDevice.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
             @Override
             public void onPreviewFrame(final byte[] data, Camera camera) {
-                mMosaicFrameProcessor.processFrame(data, mPreviewWidth, mPreviewHeight);
+                mMosaicFrameProcessor.processFrame(data);
                 // The returned buffer needs be added back to callback buffer
                 // again.
                 camera.addCallbackBuffer(data);
@@ -290,8 +287,7 @@ public class PanoramaActivity extends Activity implements
         t.start();
     }
 
-    private void updateProgress(float translationRate, int traversedAngleX, int traversedAngleY,
-            Bitmap lowResBitmapAlpha, Matrix transformationMatrix) {
+    private void updateProgress(float translationRate, int traversedAngleX, int traversedAngleY) {
 
         mRealTimeMosaicView.setReady();
         mRealTimeMosaicView.requestRender();
