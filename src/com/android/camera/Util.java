@@ -34,10 +34,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -62,16 +64,27 @@ public class Util {
             "android.intent.extras.CAMERA_FACING";
 
     private static boolean sIsTabletUI;
+    private static float sPixelDensity = 1;
 
     private Util() {
     }
 
     public static void initialize(Context context) {
         sIsTabletUI = (context.getResources().getConfiguration().screenWidthDp >= 1024);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager)
+                context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(metrics);
+        sPixelDensity = metrics.density;
     }
 
     public static boolean isTabletUI() {
         return sIsTabletUI;
+    }
+
+    public static int dpToPixel(int dp) {
+        return Math.round(sPixelDensity * dp);
     }
 
     // Rotates the bitmap by the specified degree.

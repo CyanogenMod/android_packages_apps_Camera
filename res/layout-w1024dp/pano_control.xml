@@ -14,10 +14,11 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.ControlPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="@dimen/camera_control_width"
-        android:layout_alignParentRight="true">
+        android:minWidth="260dp"
+        android:background="@drawable/bg_camera_pattern">
 
     <include layout="@layout/review_thumbnail"/>
 
@@ -26,12 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="32dp"
-            android:scaleType="center"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/btn_ic_camera_shutter"
             android:background="@drawable/btn_shutter"/>
 
     <include layout="@layout/mode_picker"/>
-</RelativeLayout>
+</com.android.camera.ui.ControlPanelLayout>

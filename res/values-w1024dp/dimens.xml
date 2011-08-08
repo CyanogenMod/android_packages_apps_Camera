@@ -18,7 +18,6 @@
 */
 -->
 <resources>
-    <dimen name="camera_control_width">245dp</dimen>
     <dimen name="thumbnail_margin_top">8dp</dimen>
     <dimen name="thumbnail_margin_right">28dp</dimen>
     <dimen name="mode_switcher_margin_right">5dp</dimen>

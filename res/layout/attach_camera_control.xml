@@ -14,14 +14,15 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.ControlPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_panel"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_width="76dp"
+        android:minWidth="76dp"
         android:paddingTop="13dp"
         android:paddingBottom="3dp"
-        android:layout_alignParentRight="true">
+        android:background="@drawable/bg_camera_pattern">
     <LinearLayout android:orientation="vertical"
             android:id="@+id/review_control"
             android:gravity="top|center_horizontal"
@@ -61,10 +62,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:scaleType="center"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/btn_ic_camera_shutter"
             android:background="@drawable/btn_shutter"/>
     <LinearLayout style="@style/ReviewControlGroup"
             android:visibility="invisible"
@@ -76,4 +75,4 @@
         <TextView style="@style/ReviewControlText"
                 android:text="@string/review_ok" />
     </LinearLayout>
-</RelativeLayout>
+</com.android.camera.ui.ControlPanelLayout>

@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/app_root"
         android:orientation="horizontal"
@@ -23,4 +23,4 @@
 
     <include layout="@layout/preview_frame"/>
     <include layout="@layout/attach_camera_control"/>
-</RelativeLayout>
+</LinearLayout>

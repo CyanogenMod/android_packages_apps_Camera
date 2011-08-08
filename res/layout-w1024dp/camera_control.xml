@@ -14,12 +14,13 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.ControlPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/control_panel"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_width="@dimen/camera_control_width"
-        android:layout_alignParentRight="true">
+        android:minWidth="260dp"
+        android:background="@drawable/bg_camera_pattern">
         <!-- The width is determined by IndicatorWheel so we should set
              layout_width as wrap_contant but RelativeLayout Javadoc says that
              this is circular dependency and is not allowed so it's very
@@ -38,7 +39,6 @@
                         android:scaleType="center"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/btn_ic_camera_shutter"
                         android:background="@drawable/btn_shutter" />
             <com.android.camera.ui.RotateImageView android:id="@+id/zoom_increment"
                     android:clickable="true"
@@ -61,5 +61,5 @@
         </com.android.camera.ui.IndicatorWheel>
 
         <include layout="@layout/mode_picker"/>
-</RelativeLayout>
+</com.android.camera.ui.ControlPanelLayout>
 

@@ -15,8 +15,6 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/pano_preview_layout"
-        android:layout_gravity="right"
         android:orientation="horizontal"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -24,10 +22,10 @@
         android:layout_marginRight="2dp">
 
     <FrameLayout
-            android:layout_weight="1"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
         <SurfaceView
                 android:id="@+id/pano_preview_view"
                 android:layout_gravity="center"

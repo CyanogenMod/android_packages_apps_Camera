@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import com.android.camera.R;
+import com.android.camera.Util;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -79,39 +80,27 @@ public class IndicatorWheel extends IndicatorControl {
         mBackgroundRect = new RectF();
     }
 
-    private boolean isInsideShutterButton(MotionEvent ev) {
-        float x = ev.getX();
-        float y = ev.getY();
-        float shutterButtonX = mShutterButton.getX();
-        float shutterButtonY = mShutterButton.getY();
-        if (x >= shutterButtonX && y >= shutterButtonY
-                && (x < shutterButtonX + mShutterButton.getWidth())
-                && (y < shutterButtonY + mShutterButton.getHeight())) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (!onFilterTouchEventForSecurity(event)) return false;
 
         int action = event.getAction();
 
+        double dx = event.getX() - mCenterX;
+        double dy = mCenterY - event.getY();
+        double radius = Math.sqrt(dx * dx + dy * dy);
+
         // Check if the event should be dispatched to the shutter button.
-        if (isInsideShutterButton(event)) {
+        if (radius <= mShutterButtonRadius) {
             if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
                 return mShutterButton.dispatchTouchEvent(event);
             }
             return false;
         }
 
-        double dx = event.getX() - mCenterX;
-        double dy = mCenterY - event.getY();
-        double radius = Math.sqrt(dx * dx + dy * dy);
         // Ignore the event if it's too near to the shutter button or too far
         // from the shutter button.
-        if (radius >= mShutterButtonRadius && radius <= mWheelRadius + mStrokeWidth) {
+        if (radius <= mWheelRadius + mStrokeWidth) {
             double delta = Math.atan2(dy, dx);
             if (delta < 0) delta += Math.PI * 2;
             // Check which sector is pressed.
@@ -195,9 +184,9 @@ public class IndicatorWheel extends IndicatorControl {
             getChildAt(i).measure(freeSpec, freeSpec);
         }
 
-        // Measure myself.
-        int desiredWidth = mShutterButton.getMeasuredWidth() * 3;
-        int desiredHeight = (int)(mShutterButton.getMeasuredHeight() * 4.5) + 2;
+        // Measure myself. Add some buffer for highlight arc.
+        int desiredWidth = mShutterButton.getMeasuredWidth() + HIGHLIGHT_WIDTH * 4;
+        int desiredHeight = mShutterButton.getMeasuredHeight() + HIGHLIGHT_WIDTH * 4;
         int widthMode = MeasureSpec.getMode(widthSpec);
         int heightMode = MeasureSpec.getMode(heightSpec);
         int measuredWidth, measuredHeight;
@@ -226,24 +215,21 @@ public class IndicatorWheel extends IndicatorControl {
 
         // Layout the shutter button.
         int shutterButtonWidth = mShutterButton.getMeasuredWidth();
-        mShutterButtonRadius = shutterButtonWidth / 2.0;
         int shutterButtonHeight = mShutterButton.getMeasuredHeight();
-        mStrokeWidth = (int) (mShutterButtonRadius * 1.05);
-        int innerRadius = (int) (mShutterButtonRadius + mStrokeWidth * 0.84);
-        // 64 is the requirement by UI design. The distance between the center
-        // and the border is 64 pixels. This has to be consistent with the
-        // background.
-        mCenterX = right - left - 64;
+        // These numbers have to sync with the background of the shutter button.
+        mShutterButtonRadius = Util.dpToPixel(74);
+        mStrokeWidth = Util.dpToPixel(87);
+        mCenterX = right - left - Util.dpToPixel(93);
         mCenterY = (bottom - top) / 2;
-        mShutterButton.layout(mCenterX - shutterButtonWidth / 2,
+        mShutterButton.layout(right - left - shutterButtonWidth,
                 mCenterY - shutterButtonHeight / 2,
-                mCenterX + shutterButtonWidth / 2,
-                mCenterY + shutterButtonHeight / 2);
+                right - left,
+                mCenterY + shutterButtonHeight - shutterButtonHeight / 2);
 
         // Layout the settings. The icons are spreaded on the left side of the
         // shutter button. So the angle starts from 90 to 270 degrees.
         if (count == 1) return;
-        mWheelRadius = innerRadius + mStrokeWidth * 0.5;
+        mWheelRadius = mShutterButtonRadius + mStrokeWidth * 0.5;
         double intervalDegrees = (count == 2) ? 90.0 : 180.0 / (count - 2);
         double initialDegrees = 90.0;
         int index = 0;

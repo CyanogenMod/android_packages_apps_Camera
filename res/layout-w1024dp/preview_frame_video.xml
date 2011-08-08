@@ -18,7 +18,7 @@
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toLeftOf="@id/control_panel">
+        android:layout_weight="1">
     <RelativeLayout android:id="@+id/frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

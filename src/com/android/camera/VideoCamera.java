@@ -60,7 +60,6 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -428,7 +427,7 @@ public class VideoCamera extends ActivityBase
         mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
 
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
-        mShutterButton.setImageResource(R.drawable.btn_ic_video_record);
+        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
@@ -1414,9 +1413,7 @@ public class VideoCamera extends ActivityBase
 
     private void showRecordingUI(boolean recording) {
         if (recording) {
-            mShutterButton.setImageDrawable(getResources().getDrawable(
-                    R.drawable.btn_ic_video_record_stop));
-            mShutterButton.setBackgroundResource(R.drawable.btn_shutter_recording);
+            mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
@@ -1428,9 +1425,7 @@ public class VideoCamera extends ActivityBase
                 }
             }
         } else {
-            mShutterButton.setImageDrawable(getResources().getDrawable(
-                    R.drawable.btn_ic_video_record));
-            mShutterButton.setBackgroundResource(R.drawable.btn_shutter);
+            mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video);
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
