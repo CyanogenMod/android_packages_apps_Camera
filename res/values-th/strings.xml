@@ -124,4 +124,6 @@
     <string name="share_video_via" msgid="5152302809166549015">"แบ่งปันวิดีโอทาง"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"ไม่มีภาพที่จะแบ่งปัน"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"ไม่มีวิดีโอที่จะแบ่งปัน"</string>
+    <!-- no translation found for pano_capture_stop (8122941670229992464) -->
+    <skip />
 </resources>

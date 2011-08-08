@@ -124,4 +124,6 @@
     <string name="share_video_via" msgid="5152302809166549015">"Udostępnij film za pomocą"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Brak zdjęcia do udostępnienia"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Brak filmu do udostępnienia"</string>
+    <!-- no translation found for pano_capture_stop (8122941670229992464) -->
+    <skip />
 </resources>
