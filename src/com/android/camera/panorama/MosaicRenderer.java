@@ -30,9 +30,12 @@ public class MosaicRenderer
      /**
       * Function to be called in onSurfaceCreated() to initialize
       * the GL context, load and link the shaders and create the
-      * program.
+      * program. Returns a texture ID to be used for SurfaceTexture.
+      *
+      * @return textureID the texture ID of the newly generated texture to
+      *          be assigned to the SurfaceTexture object.
       */
-     public static native void init();
+     public static native int init();
 
      /**
       * Pass the drawing surface's width and height to initialize the
@@ -42,6 +45,23 @@ public class MosaicRenderer
       * @param height height of the drawing surface in pixels.
       */
      public static native void reset(int width, int height);
+
+     /**
+      * Calling this function will render the SurfaceTexture to a new 2D texture
+      * using the provided STMatrix and then call glReadPixels to fill the data
+      * array that will be processed by the mosaicing thread.
+      *
+      * @param stMatrix texture coordinate transform matrix obtained from the
+      *        Surface texture
+      */
+     public static native void preprocess(float[] stMatrix);
+
+     /**
+      * This function calls glReadPixels to transfer both the low-res and high-res
+      * data from the GPU memory to the CPU memory for further processing by the
+      * mosaicing library.
+      */
+     public static native void transferGPUtoCPU();
 
      /**
       * Function to be called in onDrawFrame() to update the screen with
@@ -59,9 +79,11 @@ public class MosaicRenderer
 
      /**
       * This function allows toggling between showing the input image data
-      * (without applying any warp) and the warped image data. This is more
-      * for debugging purposes to see if the image data is being updated
-      * correctly or not.
+      * (without applying any warp) and the warped image data. For running
+      * the renderer as a viewfinder, we set the flag to false. To see the
+      * preview mosaic, we set the flag to true.
+      *
+      * @param flag boolean flag to set the warping to true or false.
       */
-     public static native void togglewarping();
+     public static native void setWarping(boolean flag);
 }

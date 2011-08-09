@@ -1,37 +1,34 @@
-#include "WarpRenderer.h"
+#include "SurfaceTextureRenderer.h"
 
 #include <GLES2/gl2ext.h>
 
 #include <android/log.h>
-#define  LOG_TAG    "WarpRenderer"
+#define  LOG_TAG    "SurfaceTextureRenderer"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
-
 static const char gVertexShader[] =
-"uniform mat4 u_affinetrans;  \n"
-"uniform mat4 u_viewporttrans;  \n"
+"uniform mat4 uSTMatrix;\n"
 "uniform mat4 u_scalingtrans;  \n"
-"attribute vec4 a_position;   \n"
-"attribute vec2 a_texCoord;   \n"
-"varying vec2 v_texCoord;     \n"
-"void main()                  \n"
-"{                            \n"
-"   gl_Position = u_scalingtrans * u_viewporttrans * u_affinetrans * a_position; \n"
-"   v_texCoord = a_texCoord;  \n"
-"}                            \n";
+"attribute vec4 aPosition;\n"
+"attribute vec4 aTextureCoord;\n"
+"varying vec2 vTextureCoord;\n"
+"varying vec2 vTextureNormCoord;\n"
+"void main() {\n"
+"  gl_Position = u_scalingtrans * aPosition;\n"
+"  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n"
+"  vTextureNormCoord = aTextureCoord.xy;\n"
+"}\n";
 
 static const char gFragmentShader[] =
-"precision mediump float;                            \n"
-"varying vec2 v_texCoord;                            \n"
-"uniform sampler2D s_texture;                        \n"
-"void main()                                         \n"
-"{                                                   \n"
-"  vec4 color;                                       \n"
-"  color = texture2D(s_texture, v_texCoord);       \n"
-"  gl_FragColor = color;                             \n"
-"}                                                   \n";
-
+"#extension GL_OES_EGL_image_external : require\n"
+"precision mediump float;\n"
+"varying vec2 vTextureCoord;\n"
+"varying vec2 vTextureNormCoord;\n"
+"uniform samplerExternalOES sTexture;\n"
+"void main() {\n"
+"  gl_FragColor = texture2D(sTexture, vTextureNormCoord);\n"
+"}\n";
 
 const GLfloat g_vVertices[] = {
     -1.f, -1.f, 0.0f, 1.0f,  // Position 0
@@ -43,26 +40,38 @@ const GLfloat g_vVertices[] = {
     1.f,   1.f, 0.0f, 1.0f, // Position 3
     1.0f,  0.0f          // TexCoord 3
 };
+GLushort g_iIndices2[] = { 0, 1, 2, 3 };
+
+const int GL_TEXTURE_EXTERNAL_OES_ENUM = 0x8D65;
 
 const int VERTEX_STRIDE = 6 * sizeof(GLfloat);
 
-GLushort g_iIndices[] = { 0, 1, 2, 3 };
-
-WarpRenderer::WarpRenderer()
+SurfaceTextureRenderer::SurfaceTextureRenderer()
       : mGlProgram(0),
         mInputTextureName(-1),
         mInputTextureWidth(0),
         mInputTextureHeight(0),
         mSurfaceWidth(0),
         mSurfaceHeight(0)
-                    {
+{
+    memset(mSTMatrix, 0.0, 16*sizeof(float));
+    mSTMatrix[0] = 1.0f;
+    mSTMatrix[5] = 1.0f;
+    mSTMatrix[10] = 1.0f;
+    mSTMatrix[15] = 1.0f;
+
     InitializeGLContext();
 }
 
-WarpRenderer::~WarpRenderer() {
+SurfaceTextureRenderer::~SurfaceTextureRenderer() {
 }
 
-GLuint WarpRenderer::loadShader(GLenum shaderType, const char* pSource) {
+void SurfaceTextureRenderer::SetSTMatrix(float *stmat)
+{
+    memcpy(mSTMatrix, stmat, 16*sizeof(float));
+}
+
+GLuint SurfaceTextureRenderer::loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
     if (shader) {
         glShaderSource(shader, 1, &pSource, NULL);
@@ -88,7 +97,7 @@ GLuint WarpRenderer::loadShader(GLenum shaderType, const char* pSource) {
     return shader;
 }
 
-GLuint WarpRenderer::createProgram(const char* pVertexSource, const char* pFragmentSource)
+GLuint SurfaceTextureRenderer::createProgram(const char* pVertexSource, const char* pFragmentSource)
 {
     GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     if (!vertexShader)
@@ -141,7 +150,7 @@ GLuint WarpRenderer::createProgram(const char* pVertexSource, const char* pFragm
     return program;
 }
 
-bool WarpRenderer::InitializeGLProgram()
+bool SurfaceTextureRenderer::InitializeGLProgram()
 {
     bool succeeded = false;
     do {
@@ -155,16 +164,15 @@ bool WarpRenderer::InitializeGLProgram()
         glUseProgram(glProgram);
         if (!checkGlError("glUseProgram")) break;
 
-        // Get attribute locations
-        mPositionLoc     = glGetAttribLocation(glProgram, "a_position");
-        mAffinetransLoc  = glGetUniformLocation(glProgram, "u_affinetrans");
-        mViewporttransLoc = glGetUniformLocation(glProgram, "u_viewporttrans");
+        maPositionHandle = glGetAttribLocation(glProgram, "aPosition");
+        checkGlError("glGetAttribLocation aPosition");
+        maTextureHandle = glGetAttribLocation(glProgram, "aTextureCoord");
+        checkGlError("glGetAttribLocation aTextureCoord");
+        muSTMatrixHandle = glGetUniformLocation(glProgram, "uSTMatrix");
+        checkGlError("glGetUniformLocation uSTMatrix");
         mScalingtransLoc = glGetUniformLocation(glProgram, "u_scalingtrans");
-        mTexCoordLoc     = glGetAttribLocation(glProgram, "a_texCoord");
 
-        // Get sampler location
-        mSamplerLoc      = glGetUniformLocation(glProgram, "s_texture");
-
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         mGlProgram = glProgram;
         succeeded = true;
     } while (false);
@@ -178,7 +186,7 @@ bool WarpRenderer::InitializeGLProgram()
     return succeeded;
 }
 
-void WarpRenderer::SetViewportMatrix(int w, int h, int W, int H)
+void SurfaceTextureRenderer::SetViewportMatrix(int w, int h, int W, int H)
 {
     for(int i=0; i<16; i++)
     {
@@ -193,7 +201,7 @@ void WarpRenderer::SetViewportMatrix(int w, int h, int W, int H)
     mViewportMatrix[15] = 1.0f;
 }
 
-void WarpRenderer::SetScalingMatrix(float xscale, float yscale)
+void SurfaceTextureRenderer::SetScalingMatrix(float xscale, float yscale)
 {
     for(int i=0; i<16; i++)
     {
@@ -208,7 +216,7 @@ void WarpRenderer::SetScalingMatrix(float xscale, float yscale)
 
 // Set this renderer to use the default frame-buffer (screen) and
 // set the viewport size to be the given width and height (pixels).
-bool WarpRenderer::SetupGraphics(int width, int height)
+bool SurfaceTextureRenderer::SetupGraphics(int width, int height)
 {
     bool succeeded = false;
     do {
@@ -239,7 +247,7 @@ bool WarpRenderer::SetupGraphics(int width, int height)
 
 // Set this renderer to use the specified FBO and
 // set the viewport size to be the width and height of this FBO.
-bool WarpRenderer::SetupGraphics(FrameBuffer* buffer)
+bool SurfaceTextureRenderer::SetupGraphics(FrameBuffer* buffer)
 {
     bool succeeded = false;
     do {
@@ -267,7 +275,7 @@ bool WarpRenderer::SetupGraphics(FrameBuffer* buffer)
     return succeeded;
 }
 
-bool WarpRenderer::Clear(float r, float g, float b, float a)
+bool SurfaceTextureRenderer::Clear(float r, float g, float b, float a)
 {
     bool succeeded = false;
     do {
@@ -287,13 +295,13 @@ bool WarpRenderer::Clear(float r, float g, float b, float a)
 
 }
 
-bool WarpRenderer::DrawTexture(GLfloat *affine)
+bool SurfaceTextureRenderer::DrawTexture(GLfloat *affine)
 {
     bool succeeded = false;
     do {
         bool rt = (mFrameBuffer == NULL)?
-                SetupGraphics(mSurfaceWidth, mSurfaceHeight) :
-                SetupGraphics(mFrameBuffer);
+            SetupGraphics(mSurfaceWidth, mSurfaceHeight) :
+            SetupGraphics(mFrameBuffer);
 
         if(!rt)
             break;
@@ -307,37 +315,28 @@ bool WarpRenderer::DrawTexture(GLfloat *affine)
         glBindTexture(texture_type, mInputTextureName);
         if (!checkGlError("glBindTexture")) break;
 
-        // Set the sampler texture unit to 0
-        glUniform1i(mSamplerLoc, 0);
-
-        // Load the vertex position
-        glVertexAttribPointer(mPositionLoc, 4, GL_FLOAT,
-                GL_FALSE, VERTEX_STRIDE, g_vVertices);
-
-        // Load the texture coordinate
-        glVertexAttribPointer(mTexCoordLoc, 2, GL_FLOAT,
-                GL_FALSE, VERTEX_STRIDE, &g_vVertices[4]);
-
-        glEnableVertexAttribArray(mPositionLoc);
-        glEnableVertexAttribArray(mTexCoordLoc);
-
-        // pass matrix information to the vertex shader
-        glUniformMatrix4fv(mAffinetransLoc, 1, GL_FALSE, affine);
-        glUniformMatrix4fv(mViewporttransLoc, 1, GL_FALSE, mViewportMatrix);
         glUniformMatrix4fv(mScalingtransLoc, 1, GL_FALSE, mScalingMatrix);
 
-        // And, finally, execute the GL draw command.
-        glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, g_iIndices);
+        // Load the vertex position
+        glVertexAttribPointer(maPositionHandle, 4, GL_FLOAT,
+                GL_FALSE, VERTEX_STRIDE, g_vVertices);
+        glEnableVertexAttribArray(maPositionHandle);
+        // Load the texture coordinate
+        glVertexAttribPointer(maTextureHandle, 2, GL_FLOAT,
+                GL_FALSE, VERTEX_STRIDE, &g_vVertices[4]);
+        glEnableVertexAttribArray(maTextureHandle);
 
-        checkGlError("glDrawElements");
+        // And, finally, execute the GL draw command.
+        glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, g_iIndices2);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glFinish();
         succeeded = true;
     } while (false);
     return succeeded;
 }
 
-void WarpRenderer::InitializeGLContext()
+void SurfaceTextureRenderer::InitializeGLContext()
 {
     if(mFrameBuffer != NULL)
     {
@@ -346,39 +345,38 @@ void WarpRenderer::InitializeGLContext()
     }
 
     mInputTextureName = -1;
-    mInputTextureType = GL_TEXTURE_2D;
+    mInputTextureType = GL_TEXTURE_EXTERNAL_OES_ENUM;
     mGlProgram = 0;
-    mTexHandle = 0;
 }
 
-int WarpRenderer::GetTextureName()
+int SurfaceTextureRenderer::GetTextureName()
 {
     return mInputTextureName;
 }
 
-void WarpRenderer::SetInputTextureName(GLuint textureName)
+void SurfaceTextureRenderer::SetInputTextureName(GLuint textureName)
 {
     mInputTextureName = textureName;
 }
 
-void WarpRenderer::SetInputTextureType(GLenum textureType)
+void SurfaceTextureRenderer::SetInputTextureType(GLenum textureType)
 {
     mInputTextureType = textureType;
 }
 
-void WarpRenderer::SetInputTextureDimensions(int width, int height)
+void SurfaceTextureRenderer::SetInputTextureDimensions(int width, int height)
 {
     mInputTextureWidth = width;
     mInputTextureHeight = height;
 }
 
 
-const char* WarpRenderer::VertexShaderSource() const
+const char* SurfaceTextureRenderer::VertexShaderSource() const
 {
     return gVertexShader;
 }
 
-const char* WarpRenderer::FragmentShaderSource() const
+const char* SurfaceTextureRenderer::FragmentShaderSource() const
 {
     return gFragmentShader;
 }

@@ -61,6 +61,8 @@ public:
    */
   static void rgb2yvu(ImageType out, ImageType in, int width, int height);
 
+  static void rgba2yvu(ImageType out, ImageType in, int width, int height);
+
   /**
    *  Convert image from YVU (non-interlaced) to BGR (interlaced)
    *

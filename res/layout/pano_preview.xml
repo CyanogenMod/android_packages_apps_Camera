@@ -29,8 +29,8 @@
         <SurfaceView
                 android:id="@+id/pano_preview_view"
                 android:layout_gravity="center"
-                android:layout_width="240dp"
-                android:layout_height="180dp"/>
+                android:layout_width="960dp"
+                android:layout_height="360dp"/>
     </FrameLayout>
 
     <include layout="@layout/pano_control" android:id="@+id/pano_control_layout" />

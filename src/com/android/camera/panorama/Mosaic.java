@@ -99,6 +99,20 @@ public class Mosaic {
     public native float[] setSourceImage(byte[] pixels);
 
     /**
+     * This is an alternative to the setSourceImage function above. This should
+     * be called when the image data is already on the native side in a fixed
+     * byte array. In implementation, this array is filled by the GL thread
+     * using glReadPixels directly from GPU memory (where it is accessed by
+     * an associated SurfaceTexture).
+     *
+     * @return Float array of length 10; first 9 entries correspond to the 3x3
+     *         transformation matrix between the first frame and the passed frame,
+     *         and the last entry is the number of the passed frame,
+     *         where the counting starts from 1.
+     */
+    public native float[] setSourceImageFromGPU();
+
+    /**
      * Set the type of blending.
      *
      * @param type the blending type defined in the class. {BLENDTYPE_FULL,

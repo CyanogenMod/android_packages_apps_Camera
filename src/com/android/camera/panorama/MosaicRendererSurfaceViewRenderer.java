@@ -19,37 +19,78 @@ package com.android.camera.panorama;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.app.Activity;
+import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
-
+import android.util.Log;
 
 public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 {
     @Override
-    public void onDrawFrame(GL10 gl)
-    {
+    public void onDrawFrame(GL10 gl) {
         MosaicRenderer.step();
     }
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height)
-    {
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        Log.i(TAG, "Renderer: onSurfaceChanged");
         MosaicRenderer.reset(width, height);
+        Log.i(TAG, "Renderer: onSurfaceChanged");
     }
 
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config)
-    {
-        MosaicRenderer.init();
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        mTextureID = MosaicRenderer.init();
+
+        mActivity.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                mActivity.createSurfaceTextureAndStartPreview(mTextureID);
+                setSurfaceTexture(mActivity.getSurfaceTexture());
+            }
+        });
     }
 
-    public void setReady()
-    {
+    public void setReady() {
         MosaicRenderer.ready();
     }
 
-    public void toggleWarping()
-    {
-        MosaicRenderer.togglewarping();
+    public void preprocess() {
+        MosaicRenderer.preprocess(mSTMatrix);
     }
 
+    public void transferGPUtoCPU() {
+        MosaicRenderer.transferGPUtoCPU();
+    }
+
+    public void setWarping(boolean flag) {
+        MosaicRenderer.setWarping(flag);
+    }
+
+    public void updateSurfaceTexture() {
+        mSurface.updateTexImage();
+        mSurface.getTransformMatrix(mSTMatrix);
+    }
+
+    public void setUIObject(Activity activity) {
+        mActivity = (PanoramaActivity)activity;
+    }
+
+    public int getTextureID() {
+        return mTextureID;
+    }
+
+    public void setSurfaceTexture(SurfaceTexture surface) {
+        mSurface = surface;
+    }
+
+    private float[] mSTMatrix = new float[16];
+    private int mTextureID;
+
+    private PanoramaActivity mActivity;
+
+    private static String TAG = "MosaicRendererSurfaceViewRenderer";
+
+    private SurfaceTexture mSurface;
 }

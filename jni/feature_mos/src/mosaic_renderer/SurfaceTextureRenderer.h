@@ -8,10 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-class WarpRenderer {
+//TODO: Add a base class Renderer for WarpRenderer and SurfaceTextureRenderer.
+class SurfaceTextureRenderer {
   public:
-    WarpRenderer();
-    virtual ~WarpRenderer();
+    SurfaceTextureRenderer();
+    virtual ~SurfaceTextureRenderer();
 
     // Initialize OpenGL resources
     // @return true if successful
@@ -33,6 +34,8 @@ class WarpRenderer {
 
     void InitializeGLContext();
 
+    void SetSTMatrix(float *stmat);
+
   protected:
 
     GLuint loadShader(GLenum shaderType, const char* pSource);
@@ -50,29 +53,21 @@ class WarpRenderer {
     // GL_TEXTURE_EXTERNAL_OES.
     virtual GLenum InputTextureType() const { return mInputTextureType; }
 
-
     GLuint mGlProgram;
     GLuint mInputTextureName;
     GLenum mInputTextureType;
     int mInputTextureWidth;
     int mInputTextureHeight;
 
-    GLuint mTexHandle;                  // Handle to s_texture.
-    GLuint mTexCoordHandle;             // Handle to a_texCoord.
-    GLuint mTriangleVerticesHandle;     // Handle to vPosition.
-
     // Attribute locations
-    GLint  mPositionLoc;
-    GLint  mAffinetransLoc;
-    GLint  mViewporttransLoc;
     GLint  mScalingtransLoc;
-    GLint  mTexCoordLoc;
+    GLint muSTMatrixHandle;
+    GLint maPositionHandle;
+    GLint maTextureHandle;
 
     GLfloat mViewportMatrix[16];
     GLfloat mScalingMatrix[16];
-
-    // Sampler location
-    GLint mSamplerLoc;
+    GLfloat mSTMatrix[16];
 
     int mSurfaceWidth;      // Width of target surface.
     int mSurfaceHeight;     // Height of target surface.

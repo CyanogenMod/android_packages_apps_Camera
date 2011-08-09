@@ -21,9 +21,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
+import android.os.ConditionVariable;
 import android.util.AttributeSet;
 import android.util.Log;
 
@@ -31,6 +34,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
     private static String TAG = "MosaicRendererSurfaceView";
     private static final boolean DEBUG = false;
     private MosaicRendererSurfaceViewRenderer mRenderer;
+    private ConditionVariable mPreviewFrameReadyForProcessing;
 
     public MosaicRendererSurfaceView(Context context) {
         super(context);
@@ -49,7 +53,6 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         init(translucent, depth, stencil);
         setZOrderMediaOverlay(true);
     }
-
 
     private void init(boolean translucent, int depth, int stencil) {
 
@@ -80,6 +83,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         mRenderer = new MosaicRendererSurfaceViewRenderer();
         setRenderer(mRenderer);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
+        mPreviewFrameReadyForProcessing = new ConditionVariable();
     }
 
     private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
@@ -298,6 +302,21 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         private int[] mValue = new int[1];
     }
 
+    public void lockPreviewReadyFlag()
+    {
+        mPreviewFrameReadyForProcessing.close();
+    }
+
+    private void unlockPreviewReadyFlag()
+    {
+        mPreviewFrameReadyForProcessing.open();
+    }
+
+    public void waitUntilPreviewReady()
+    {
+        mPreviewFrameReadyForProcessing.block();
+    }
+
     public void setReady()
     {
         queueEvent(new Runnable() {
@@ -309,14 +328,67 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         });
     }
 
-    public void toggleWarping()
+    public void preprocess()
     {
         queueEvent(new Runnable() {
 
             @Override
             public void run() {
-                mRenderer.toggleWarping();
+                mRenderer.preprocess();
             }
         });
     }
+
+    public void transferGPUtoCPU()
+    {
+        queueEvent(new Runnable() {
+
+            @Override
+            public void run() {
+                mRenderer.transferGPUtoCPU();
+                unlockPreviewReadyFlag();
+            }
+        });
+    }
+
+    public void setUIObject(final Activity activity)
+    {
+        queueEvent(new Runnable() {
+
+            @Override
+            public void run() {
+                mRenderer.setUIObject(activity);
+            }
+        });
+    }
+
+    public void setWarping(final boolean flag)
+    {
+        queueEvent(new Runnable() {
+
+            @Override
+            public void run() {
+                mRenderer.setWarping(flag);
+            }
+        });
+    }
+
+    public int getTextureID() {
+        return mRenderer.getTextureID();
+    }
+
+    public void setSurfaceTexture(SurfaceTexture surface) {
+        mRenderer.setSurfaceTexture(surface);
+    }
+
+    public void updateSurfaceTexture() {
+        queueEvent(new Runnable() {
+
+            @Override
+            public void run() {
+                mRenderer.updateSurfaceTexture();
+            }
+        });
+    }
+
 }

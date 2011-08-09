@@ -25,6 +25,51 @@
 
 #include "ImageUtils.h"
 
+void ImageUtils::rgba2yvu(ImageType out, ImageType in, int width, int height)
+{
+  int r,g,b, a;
+  ImageType yimg = out;
+  ImageType vimg = yimg + width*height;
+  ImageType uimg = vimg + width*height;
+  ImageType image = in;
+
+  for (int ii = 0; ii < height; ii++) {
+    for (int ij = 0; ij < width; ij++) {
+      r = (*image++);
+      g = (*image++);
+      b = (*image++);
+      a = (*image++);
+
+      if (r < 0) r = 0;
+      if (r > 255) r = 255;
+      if (g < 0) g = 0;
+      if (g > 255) g = 255;
+      if (b < 0) b = 0;
+      if (b > 255) b = 255;
+
+      int val = (int) (REDY * r + GREENY * g + BLUEY * b) / 1000 + 16;
+      if (val < 0) val = 0;
+      if (val > 255) val = 255;
+      *(yimg) = val;
+
+      val = (int) (REDV * r - GREENV * g - BLUEV * b) / 1000 + 128;
+      if (val < 0) val = 0;
+      if (val > 255) val = 255;
+      *(vimg) = val;
+
+      val = (int) (-REDU * r - GREENU * g + BLUEU * b) / 1000 + 128;
+      if (val < 0) val = 0;
+      if (val > 255) val = 255;
+      *(uimg) = val;
+
+      yimg++;
+      uimg++;
+      vimg++;
+    }
+  }
+}
+
+
 void ImageUtils::rgb2yvu(ImageType out, ImageType in, int width, int height)
 {
   int r,g,b;

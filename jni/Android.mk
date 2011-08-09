@@ -22,6 +22,7 @@ LOCAL_SRC_FILES := \
         feature_mos/src/mosaic/Mosaic.cpp \
         feature_mos/src/mosaic/Pyramid.cpp \
         feature_mos/src/mosaic_renderer/WarpRenderer.cpp \
+        feature_mos/src/mosaic_renderer/SurfaceTextureRenderer.cpp \
         feature_mos/src/mosaic_renderer/FrameBuffer.cpp \
         feature_stab/db_vlvm/db_feature_detection.cpp \
         feature_stab/db_vlvm/db_feature_matching.cpp \

@@ -59,7 +59,6 @@ const int MAX_FRAMES_LR = 200;
 
 static double mTx;
 
-enum { LR=0, HR, NR };
 int tWidth[NR];
 int tHeight[NR];
 int H2L_FACTOR = 4; // Can be 2
@@ -311,7 +310,7 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_allocateMosaicMem
                     ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
     }
 
-    AllocateTextureMemory(tWidth[LR], tHeight[LR]);
+    AllocateTextureMemory(tWidth[HR], tHeight[HR], tWidth[LR], tHeight[LR]);
 }
 
 JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_freeMosaicMemory(
@@ -366,6 +365,63 @@ void decodeYUV444SP(unsigned char* rgb, unsigned char* yuv420sp, int width,
     }
 }
 
+static int count = 0;
+
+JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceImageFromGPU(
+        JNIEnv* env, jobject thiz)
+{
+    double  t0, t1, time_c;
+    t0 = now_ms();
+
+    if(frame_number_HR<MAX_FRAMES_HR && frame_number_LR<MAX_FRAMES_LR)
+    {
+        double last_tx = mTx;
+
+        t0 = now_ms();
+
+        sem_wait(&gPreviewImageRGB_semaphore);
+        ImageUtils::rgba2yvu(tImage[LR][frame_number_LR], gPreviewImageRGB[LR],
+                tWidth[LR], tHeight[LR]);
+        sem_post(&gPreviewImageRGB_semaphore);
+
+        t1 = now_ms();
+        time_c = t1 - t0;
+        LOGV("[%d] RGB => YVU [%d]: %g ms", frame_number_HR, frame_number_LR,
+                time_c);
+
+        int ret_code = AddFrame(LR, frame_number_LR, gTRS);
+
+        if(ret_code == Mosaic::MOSAIC_RET_OK)
+        {
+            // Copy into HR buffer only if this is a valid frame
+            sem_wait(&gPreviewImageRGB_semaphore);
+            ImageUtils::rgba2yvu(tImage[HR][frame_number_HR], gPreviewImageRGB[HR],
+                    tWidth[HR], tHeight[HR]);
+            sem_post(&gPreviewImageRGB_semaphore);
+
+            frame_number_LR++;
+            frame_number_HR++;
+        }
+    }
+    else
+    {
+        gTRS[1] = gTRS[2] = gTRS[3] = gTRS[5] = gTRS[6] = gTRS[7] = 0.0f;
+        gTRS[0] = gTRS[4] = gTRS[8] = 1.0f;
+    }
+
+    UpdateWarpTransformation(gTRS);
+
+    gTRS[9] = frame_number_HR;
+
+    jfloatArray bytes = env->NewFloatArray(10);
+    if(bytes != 0)
+    {
+        env->SetFloatArrayRegion(bytes, 0, 10, (jfloat*) gTRS);
+    }
+    return bytes;
+}
+
+
 
 JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceImage(
         JNIEnv* env, jobject thiz, jbyteArray photo_data)
@@ -402,10 +458,9 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
 
 
         sem_wait(&gPreviewImageRGB_semaphore);
-        decodeYUV444SP(gPreviewImageRGB, tImage[LR][frame_number_LR],
-                gPreviewImageRGBWidth, gPreviewImageRGBHeight);
+        decodeYUV444SP(gPreviewImageRGB[LR], tImage[LR][frame_number_LR],
+                gPreviewImageRGBWidth[LR], gPreviewImageRGBHeight[LR]);
         sem_post(&gPreviewImageRGB_semaphore);
-
 
         t1 = now_ms();
         time_c = t1 - t0;
