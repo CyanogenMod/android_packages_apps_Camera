@@ -56,8 +56,8 @@ public class IndicatorWheel extends IndicatorControl {
     private double mSectorInitialRadians[];
     private Paint mBackgroundPaint;
     private RectF mBackgroundRect;
-    // The index of the indicator that is being pressed. This starts from 0.
-    // -1 means no indicator is being pressed.
+    // The index of the child that is being pressed. -1 means no child is being
+    // pressed.
     private int mPressedIndex = -1;
 
     // Time lapse recording variables.
@@ -93,9 +93,18 @@ public class IndicatorWheel extends IndicatorControl {
         // Check if the event should be dispatched to the shutter button.
         if (radius <= mShutterButtonRadius) {
             if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
+                mPressedIndex = (action == MotionEvent.ACTION_DOWN) ? 0 : -1;
                 return mShutterButton.dispatchTouchEvent(event);
             }
             return false;
+        }
+
+        // Send cancel to the shutter button if it was pressed.
+        if (mPressedIndex == 0) {
+            event.setAction(MotionEvent.ACTION_CANCEL);
+            mShutterButton.dispatchTouchEvent(event);
+            mPressedIndex = -1;
+            return true;
         }
 
         // Ignore the event if it's too near to the shutter button or too far
@@ -105,9 +114,9 @@ public class IndicatorWheel extends IndicatorControl {
             if (delta < 0) delta += Math.PI * 2;
             // Check which sector is pressed.
             if (delta > mSectorInitialRadians[0]) {
-                for (int i = 0; i < getChildCount() - 1; i++) {
-                    if (delta < mSectorInitialRadians[i + 1]) {
-                        View child = getChildAt(i + 1);
+                for (int i = 1; i < getChildCount(); i++) {
+                    if (delta < mSectorInitialRadians[i]) {
+                        View child = getChildAt(i);
                         if (action == MotionEvent.ACTION_DOWN) {
                             if (child instanceof AbstractIndicatorButton) {
                                 AbstractIndicatorButton b = (AbstractIndicatorButton) child;
@@ -134,7 +143,7 @@ public class IndicatorWheel extends IndicatorControl {
                                 dismissSettingPopup();
                                 // Cancel the previous one.
                                 if (mPressedIndex != -1) {
-                                    View cancelChild = getChildAt(mPressedIndex + 1);
+                                    View cancelChild = getChildAt(mPressedIndex);
                                     event.setAction(MotionEvent.ACTION_CANCEL);
                                     cancelChild.dispatchTouchEvent(event);
                                     mPressedIndex = -1;
@@ -158,7 +167,7 @@ public class IndicatorWheel extends IndicatorControl {
         // The event is not on any of the child.
         dismissSettingPopup();
         if (mPressedIndex != -1) {
-            View cancelChild = getChildAt(mPressedIndex + 1);
+            View cancelChild = getChildAt(mPressedIndex);
             event.setAction(MotionEvent.ACTION_CANCEL);
             cancelChild.dispatchTouchEvent(event);
             mPressedIndex = -1;
@@ -290,7 +299,7 @@ public class IndicatorWheel extends IndicatorControl {
         int selectedIndex = getSelectedIndicatorIndex();
 
         // Draw the highlight arc if an indicator is selected or being pressed.
-        if (selectedIndex >= 0 || mPressedIndex >= 0) {
+        if (selectedIndex >= 0 || mPressedIndex > 0) {
             int count = getChildCount();
             float initialDegrees = 90.0f;
             float intervalDegrees = (count <= 2) ? 0.0f : 180.0f / (count - 2);
@@ -298,7 +307,7 @@ public class IndicatorWheel extends IndicatorControl {
             if (selectedIndex >= 0) {
                 degree = initialDegrees + intervalDegrees * (selectedIndex - 1);
             } else {
-                degree = initialDegrees + intervalDegrees * mPressedIndex;
+                degree = initialDegrees + intervalDegrees * (mPressedIndex - 1);
             }
             mBackgroundPaint.setStrokeWidth(HIGHLIGHT_WIDTH);
             mBackgroundPaint.setStrokeCap(Paint.Cap.ROUND);
