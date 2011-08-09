@@ -1885,8 +1885,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mParameters.setPreviewFrameRate(max);
         }
 
-        // TODO: use camera API after it is published.
-        mParameters.set("recording-hint", "false");
+        mParameters.setRecordingHint(false);
     }
 
     private void updateCameraParametersZoom() {

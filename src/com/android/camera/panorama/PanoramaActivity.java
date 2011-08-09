@@ -195,8 +195,7 @@ public class PanoramaActivity extends Activity implements
         parameters.setPreviewFpsRange(minFps, maxFps);
         Log.v(TAG, "preview fps: " + minFps + ", " + maxFps);
 
-        // TODO: use camera API after it is published.
-        parameters.set("recording-hint", "false");
+        parameters.setRecordingHint(false);
     }
 
     public int getPreviewBufSize() {

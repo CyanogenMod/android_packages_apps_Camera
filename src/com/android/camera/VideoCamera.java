@@ -1733,8 +1733,7 @@ public class VideoCamera extends ActivityBase
             mParameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         }
 
-        // TODO: use camera API after it is published.
-        mParameters.set("recording-hint", "true");
+        mParameters.setRecordingHint(true);
 
         mCameraDevice.setParameters(mParameters);
         // Keep preview size up to date.
