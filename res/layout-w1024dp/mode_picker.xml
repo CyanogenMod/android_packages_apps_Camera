@@ -20,7 +20,8 @@
             android:layout_marginBottom="72dp"
             android:layout_marginRight="72dp"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:visibility="gone">
         <com.android.camera.ui.RotateImageView android:id="@+id/current_mode"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
