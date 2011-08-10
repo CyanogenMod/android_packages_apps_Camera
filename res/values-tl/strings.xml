@@ -78,17 +78,6 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Liwanag ng araw"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescent"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Maulap"</string>
-    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Effect ng kulay"</string>
-    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Wala"</string>
-    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Mono"</string>
-    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"Sepia"</string>
-    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Negatibo"</string>
-    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"I-solarize"</string>
-    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"I-posterize"</string>
-    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Aqua"</string>
-    <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Pulang tint"</string>
-    <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Asul na tint."</string>
-    <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Berdeng tint"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Scene mode"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Auto"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Pagkilos"</string>

@@ -78,17 +78,6 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Φως ημέρας"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Λαμπτήρας φθορισμού"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Συννεφιά"</string>
-    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Εφέ χρώματος"</string>
-    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Κανένα"</string>
-    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Μονοφωνικό"</string>
-    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"Σέπια"</string>
-    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Αρνητικό"</string>
-    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Υπερφώτιση"</string>
-    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Ποστεροποίηση"</string>
-    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Γαλάζιο"</string>
-    <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Κόκκινη απόχρωση"</string>
-    <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Μπλε απόχρωση"</string>
-    <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Πράσινη απόχρωση"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Λειτουργία σκηνής"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Αυτόματο"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Ενέργεια"</string>

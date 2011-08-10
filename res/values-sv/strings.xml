@@ -78,17 +78,6 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Dagsljus"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescerande"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Molnigt"</string>
-    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Färgeffekt"</string>
-    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Inga"</string>
-    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Mono"</string>
-    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"Sepia"</string>
-    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Negativ"</string>
-    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Solarisera"</string>
-    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Färgreduktion"</string>
-    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Aqua"</string>
-    <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Röd ton"</string>
-    <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Blå ton"</string>
-    <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Grön ton"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Scenläge"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatiskt"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Åtgärd"</string>
