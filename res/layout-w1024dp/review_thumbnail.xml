@@ -14,10 +14,10 @@
      limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/share_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+<com.android.camera.ui.RotateImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/thumbnail"
+        android:layout_width="86dp"
+        android:layout_height="86dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/thumbnail_margin_top"
@@ -26,12 +26,4 @@
         android:clickable="true"
         android:focusable="false"
         android:background="@drawable/border_last_picture">
-    <com.android.camera.ui.RotateImageView android:id="@+id/share_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_viewfinder_share"
-            android:background="@android:color/black" />
-    <com.android.camera.ui.RotateImageView android:id="@+id/thumbnail"
-            android:layout_width="86dp"
-            android:layout_height="86dp"/>
-</LinearLayout>
+</com.android.camera.ui.RotateImageView>

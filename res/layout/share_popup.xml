@@ -79,12 +79,5 @@
                     android:scaleType="fitCenter"
                     android:background="@drawable/border_last_picture" />
         </com.android.camera.ui.RotateLayout>
-        <ImageView android:id="@+id/collapse_button"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/btn_ic_review_play"
-                android:scaleType="center" />
     </RelativeLayout>
 </FrameLayout>

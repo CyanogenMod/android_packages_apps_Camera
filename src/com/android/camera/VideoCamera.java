@@ -152,11 +152,8 @@ public class VideoCamera extends ActivityBase
     // The bitmap of the last captured video thumbnail and the URI of the
     // original video.
     private Thumbnail mThumbnail;
-    // A button that contains the thumbnail and the share icon.
-    private View mShareButton;
     // An imageview showing showing the last captured picture thumbnail.
     private RotateImageView mThumbnailView;
-    private RotateImageView mShareIcon;
     private ModePicker mModePicker;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
@@ -401,7 +398,6 @@ public class VideoCamera extends ActivityBase
             setContentView(R.layout.video_camera);
 
             initThumbnailButton();
-            mShareIcon = (RotateImageView) findViewById(R.id.share_icon);
             mModePicker = (ModePicker) findViewById(R.id.mode_picker);
             mModePicker.setVisibility(View.VISIBLE);
             mModePicker.setOnModeChangeListener(this);
@@ -412,8 +408,6 @@ public class VideoCamera extends ActivityBase
         mPreviewFrameLayout.setOnSizeChangedListener(this);
 
         mReviewImage = (ImageView) findViewById(R.id.review_image);
-        mShareButton = findViewById(R.id.share_button);
-        mShareIcon = (RotateImageView) findViewById(R.id.share_icon);
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
@@ -560,7 +554,6 @@ public class VideoCamera extends ActivityBase
 
     private void setOrientationIndicator(int degree) {
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
-        if (mShareIcon != null) mShareIcon.setDegree(degree);
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
@@ -579,7 +572,7 @@ public class VideoCamera extends ActivityBase
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.share_button:
+            case R.id.thumbnail:
                 if (!mMediaRecorderRecording && mThumbnail != null) {
                     showSharePopup();
                 }
@@ -1566,7 +1559,7 @@ public class VideoCamera extends ActivityBase
 
     private void initThumbnailButton() {
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
-        findViewById(R.id.share_button).setOnClickListener(this);
+        mThumbnailView.setOnClickListener(this);
         // Load the thumbnail from the disk.
         mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
     }
@@ -1847,7 +1840,7 @@ public class VideoCamera extends ActivityBase
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
-                    "video/*", mOrientationCompensation, mShareButton);
+                    "video/*", mOrientationCompensation, mThumbnailView);
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }

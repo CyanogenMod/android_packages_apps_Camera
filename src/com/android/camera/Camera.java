@@ -162,11 +162,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // The bitmap of the last captured picture thumbnail and the URI of the
     // original picture.
     private Thumbnail mThumbnail;
-    // A button that contains the thumbnail and the share icon.
-    private View mShareButton;
     // An imageview showing showing the last captured picture thumbnail.
     private RotateImageView mThumbnailView;
-    private RotateImageView mShareIcon;
     private ModePicker mModePicker;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
@@ -409,7 +406,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void initThumbnailButton() {
-        mShareButton.setOnClickListener(this);
+        mThumbnailView.setOnClickListener(this);
         // Load the thumbnail from the disk.
         mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
         updateThumbnailButton();
@@ -980,9 +977,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             setContentView(R.layout.camera);
         }
         mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
-        mShareButton = findViewById(R.id.share_button);
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
-        mShareIcon = (RotateImageView) findViewById(R.id.share_icon);
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
@@ -1174,7 +1169,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void setOrientationIndicator(int degree) {
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
-        if (mShareIcon != null) mShareIcon.setDegree(degree);
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
@@ -1201,7 +1195,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.share_button:
+            case R.id.thumbnail:
                 if (isCameraIdle() && mThumbnail != null) {
                     showSharePopup();
                 }
@@ -2365,7 +2359,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(), "image/jpeg",
-                    mOrientationCompensation, mShareButton);
+                    mOrientationCompensation, mThumbnailView);
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }

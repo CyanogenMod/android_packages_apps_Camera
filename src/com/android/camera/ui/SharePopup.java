@@ -101,7 +101,6 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mRootView = (ViewGroup) sharePopup.findViewById(R.id.root);
         mThumbnail.setImageBitmap(bitmap);
         mThumbnail.setOnClickListener(this);
-        sharePopup.findViewById(R.id.collapse_button).setOnClickListener(this);
         mBitmapWidth = bitmap.getWidth();
         mBitmapHeight = bitmap.getHeight();
         Resources res = mContext.getResources();
@@ -176,9 +175,6 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.thumbnail:
                 Util.viewUri(mUri, mContext);
-                break;
-            case R.id.collapse_button:
-                dismiss();
                 break;
         }
     }
