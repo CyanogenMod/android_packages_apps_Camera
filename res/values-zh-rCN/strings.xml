@@ -92,18 +92,9 @@
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"取景模式"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"自动"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"运动"</string>
-    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"纵向"</string>
-    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"横向"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"夜景"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"夜景人像"</string>
-    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"影院"</string>
-    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"海滩"</string>
-    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"雪景"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"日落"</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"防抖"</string>
-    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"烟火"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"派对"</string>
-    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"烛光"</string>
     <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"此设置在取景模式下不可选"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"相机设置"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"还原默认设置"</string>

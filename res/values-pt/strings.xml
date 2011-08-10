@@ -92,18 +92,9 @@
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modo de cena"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automático"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Ação"</string>
-    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Retrato"</string>
-    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"Paisagem"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Cena noturna"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"Retrato noturno"</string>
-    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"Teatro"</string>
-    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"Praia"</string>
-    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"Neve"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Pôr-do-sol"</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Foto nítida"</string>
-    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fogos de artifício"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Festa"</string>
-    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Luz de velas"</string>
     <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Isso não é selecionável no modo de cena"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Configurações da câmera"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar padrões"</string>

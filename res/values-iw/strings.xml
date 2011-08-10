@@ -92,18 +92,9 @@
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"מצב נוף"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"אוטומטי"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"פעולה"</string>
-    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"דיוקן"</string>
-    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"נוף"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"לילה"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"דיוקן בלילה"</string>
-    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"תיאטרון"</string>
-    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"חוף"</string>
-    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"שלג"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"שקיעה"</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"תמונה יציבה"</string>
-    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"זיקוקים"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"מסיבה"</string>
-    <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"אור נרות"</string>
     <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"אפשרות זו אינה ניתנת לבחירה במצב נוף"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"הגדרות מצלמה"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"שחזר ברירות מחדל"</string>

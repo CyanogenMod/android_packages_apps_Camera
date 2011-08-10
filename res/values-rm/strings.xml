@@ -96,19 +96,9 @@
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modus da scena"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatic"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Acziun"</string>
-    <string name="pref_camera_scenemode_entry_portrait" msgid="9140929538393384095">"Purtret"</string>
-    <string name="pref_camera_scenemode_entry_landscape" msgid="405417518823973264">"Cuntrada"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Notg"</string>
-    <string name="pref_camera_scenemode_entry_night_portrait" msgid="2643519475791545277">"Purtret da notg"</string>
-    <string name="pref_camera_scenemode_entry_theatre" msgid="3123861130799840901">"Teater"</string>
-    <string name="pref_camera_scenemode_entry_beach" msgid="5163939340224174481">"Riva"</string>
-    <string name="pref_camera_scenemode_entry_snow" msgid="2110494623725511788">"Naiv"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Rendida dal sulegl"</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Stabilisaziun"</string>
-    <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Fieu artifizial"</string>
     <!-- no translation found for pref_camera_scenemode_entry_party (907053529286788253) -->
-    <skip />
-    <!-- no translation found for pref_camera_scenemode_entry_candlelight (2066183182126946813) -->
     <skip />
     <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
     <skip />
