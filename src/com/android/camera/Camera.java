@@ -517,20 +517,18 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void startFaceDetection() {
-        if (mParameters.getMaxNumDetectedFaces(
-                android.hardware.Camera.CAMERA_FACE_DETECTION_HW) > 0) {
+        if (mParameters.getMaxNumDetectedFaces() > 0) {
             if (mFaceListener == null) {
                 mFaceListener = new FaceListener(this,
                     (ViewGroup) findViewById(R.id.frame), mDisplayOrientation);
             }
             mCameraDevice.setFaceDetectionListener(mFaceListener);
-            mCameraDevice.startFaceDetection(android.hardware.Camera.CAMERA_FACE_DETECTION_HW);
+            mCameraDevice.startFaceDetection();
         }
     }
 
     private void stopFaceDetection() {
-        if (mParameters.getMaxNumDetectedFaces(
-                android.hardware.Camera.CAMERA_FACE_DETECTION_HW) > 0) {
+        if (mParameters.getMaxNumDetectedFaces() > 0) {
             mCameraDevice.setFaceDetectionListener(null);
             mCameraDevice.stopFaceDetection();
         }
