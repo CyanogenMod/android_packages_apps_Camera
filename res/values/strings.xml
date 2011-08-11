@@ -507,10 +507,12 @@
      <string name="pref_camera_autoexposure_entry_frameaverage">Frame average</string>
      <string name="pref_camera_autoexposure_entry_centerweighted">Center weighted</string>
      <string name="pref_camera_autoexposure_entry_spotmetering">Spot metering</string>
+     <string name="pref_camera_autoexposure_entry_matrixmetering">Matrix metering</string>
 
      <!-- Auto exposure entry values. Do not translate. -->
      <string name="pref_camera_autoexposure_value_frameaverage" translatable="false">meter-average</string>
      <string name="pref_camera_autoexposure_value_centerweighted" translatable="false">meter-center</string>
      <string name="pref_camera_autoexposure_value_spotmetering" translatable="false">meter-spot</string>
+     <string name="pref_camera_autoexposure_value_matrixmetering" translatable="false">meter-matrix</string>
 
 </resources>
