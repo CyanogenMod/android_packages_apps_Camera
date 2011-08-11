@@ -519,6 +519,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 mFaceListener = new FaceListener(this,
                     (ViewGroup) findViewById(R.id.frame), mDisplayOrientation);
             }
+            CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+            mFaceListener.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
             mCameraDevice.setFaceDetectionListener(mFaceListener);
             mCameraDevice.startFaceDetection();
         }

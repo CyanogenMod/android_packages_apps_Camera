@@ -17,7 +17,8 @@
 package com.android.camera;
 
 import android.content.Context;
-import android.graphics.Rect;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.hardware.Camera.Face;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,7 +33,10 @@ class FaceListener implements android.hardware.Camera.FaceDetectionListener {
     private final Context mContext;
     private final ViewGroup mFrame;
     private int mDisplayOrientation;
+    private boolean mMirror;
     private View mFaces[] = new View[MAX_NUM_FACES];
+    private Matrix mMatrix = new Matrix();
+    private RectF mRect = new RectF();
 
     public FaceListener(Context context, ViewGroup frame, int orientation) {
         mContext = context;
@@ -44,8 +48,9 @@ class FaceListener implements android.hardware.Camera.FaceDetectionListener {
     public void onFaceDetection(Face[] faces, android.hardware.Camera camera) {
         if (LOGV) Log.v(TAG, "Num of faces=" + faces.length);
 
-        // Rotate the coordinates if necessary.
-        if (mDisplayOrientation != 0) rotateFaces(faces);
+        // Prepare the matrix.
+        Util.prepareMatrix(mMatrix, mMirror, mDisplayOrientation, mFrame.getWidth(),
+                mFrame.getHeight());
         showFaces(faces);
     }
 
@@ -54,41 +59,15 @@ class FaceListener implements android.hardware.Camera.FaceDetectionListener {
         if (LOGV) Log.v(TAG, "mDisplayOrientation=" + orientation);
     }
 
-    private void rotateFaces(Face[] faces) {
-        int tmp;
-        for (Face face: faces) {
-            Rect rect = face.rect;
-            if (LOGV) dumpRect(rect, "Original rect");
-            if (mDisplayOrientation== 90) {
-                tmp = rect.left;
-                rect.left = rect.top;  // x' = y
-                rect.top = -tmp;       // y' = -x
-                tmp = rect.right;
-                rect.right = rect.bottom;
-                rect.bottom = -tmp;
-            } else if (mDisplayOrientation == 180) {
-                rect.left *= -1;       // x' = -x
-                rect.top *= -1;        // y' = -y
-                rect.right *= -1;
-                rect.bottom *= -1;
-            } else if (mDisplayOrientation == 270) {
-                tmp = rect.left;
-                rect.left = -rect.top; // x' = -y
-                rect.top = tmp;        // y' = x
-                tmp = rect.right;
-                rect.right = -rect.bottom;
-                rect.bottom = tmp;
-            }
-            if (LOGV) dumpRect(rect, "Rotated rect");
-        }
+    public void setMirror(boolean mirror) {
+        mMirror = mirror;
+        if (LOGV) Log.v(TAG, "mMirror=" + mirror);
     }
 
     private void showFaces(Face[] faces) {
         // The range of the coordinates from the driver is -1000 to 1000.
         // So the maximum length of the width or height is 2000. We need to
         // convert them to UI layout size later.
-        double widthRatio = mFrame.getWidth() / 2000.0;
-        double heightRatio = mFrame.getHeight() / 2000.0;
         for (int i = 0; i < MAX_NUM_FACES; i++) {
             if (i < faces.length) {
                 // Inflate the view if it's not done yet.
@@ -99,22 +78,19 @@ class FaceListener implements android.hardware.Camera.FaceDetectionListener {
                     mFrame.addView(mFaces[i]);
                 }
 
-                // Set width and height.
-                Rect rect = faces[i].rect;
+                // Transform the coordinates.
+                mRect.set(faces[i].rect);
+                if (LOGV) dumpRect(mRect, "Original rect");
+                mMatrix.mapRect(mRect);
+                if (LOGV) dumpRect(mRect, "Transformed rect");
+
+                // Set width, height, and margin.
                 RelativeLayout.LayoutParams p =
                         (RelativeLayout.LayoutParams) mFaces[i].getLayoutParams();
-                p.width = (int) (rect.width() * widthRatio);
-                p.height = (int) (rect.height() * heightRatio);
-
-                // Set margins. Add 1000 so the range is 0 to 2000.
-                int left = (int) ((rect.left + 1000) * widthRatio);
-                int top = (int) ((rect.top + 1000) * heightRatio);
-                p.setMargins(left, top, 0, 0);
+                p.width = Math.round(mRect.width());
+                p.height = Math.round(mRect.height());
+                p.setMargins(Math.round(mRect.left), Math.round(mRect.top), 0, 0);
                 mFaces[i].setLayoutParams(p);
-                if (LOGV) {
-                    Log.v(TAG, "Face w="+p.width+".h="+p.height+".margin left="+left+".top="+top);
-                }
-
                 mFaces[i].setVisibility(View.VISIBLE);
                 mFaces[i].requestLayout();
             } else {
@@ -123,7 +99,7 @@ class FaceListener implements android.hardware.Camera.FaceDetectionListener {
         }
     }
 
-    private void dumpRect(Rect rect, String msg) {
+    private void dumpRect(RectF rect, String msg) {
         Log.v(TAG, msg + "=(" + rect.left + "," + rect.top
                 + "," + rect.right + "," + rect.bottom + ")");
     }
