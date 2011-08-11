@@ -60,7 +60,7 @@ import java.util.List;
 public class PanoramaActivity extends Activity implements
         ModePicker.OnModeChangeListener,
         SurfaceTexture.OnFrameAvailableListener {
-    public static final int DEFAULT_SWEEP_ANGLE = 60;
+    public static final int DEFAULT_SWEEP_ANGLE = 160;
     public static final int DEFAULT_BLEND_MODE = Mosaic.BLENDTYPE_HORIZONTAL;
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
 
@@ -86,8 +86,6 @@ public class PanoramaActivity extends Activity implements
     private CaptureView mCaptureView;
     private MosaicRendererSurfaceView mRealTimeMosaicView;
     private ShutterButton mShutterButton;
-
-    private byte[] mFinalJpegData;
 
     private int mPreviewWidth;
     private int mPreviewHeight;
@@ -372,7 +370,13 @@ public class PanoramaActivity extends Activity implements
             Thread t = new Thread() {
                 @Override
                 public void run() {
-                    generateAndStoreFinalMosaic(false);
+                    byte[] jpegData = generateFinalMosaic(false);
+                    Bitmap bitmap = null;
+                    if (jpegData != null) {
+                        bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length);
+                    }
+                    mMainHandler.sendMessage(mMainHandler.obtainMessage(
+                            MSG_FINAL_MOSAIC_READY, bitmap));
                 }
             };
             t.start();
@@ -446,7 +450,9 @@ public class PanoramaActivity extends Activity implements
         Thread t = new Thread() {
             @Override
             public void run() {
-                saveFinalMosaic();
+                byte[] jpegData = generateFinalMosaic(true);
+                savePanorama(jpegData);
+                mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW));
             }
         };
         t.start();
@@ -477,22 +483,21 @@ public class PanoramaActivity extends Activity implements
     private void showFinalMosaic(Bitmap bitmap) {
         if (bitmap != null) {
             mReview.setImageBitmap(bitmap);
-            mCaptureLayout.setVisibility(View.GONE);
-            mPreview.setVisibility(View.INVISIBLE);
-            mReviewLayout.setVisibility(View.VISIBLE);
-            mCaptureView.setStatusText("");
-            mCaptureView.setSweepAngle(0);
-            mCaptureView.invalidate();
         }
+        mCaptureLayout.setVisibility(View.GONE);
+        mPreview.setVisibility(View.INVISIBLE);
+        mReviewLayout.setVisibility(View.VISIBLE);
+        mCaptureView.setStatusText("");
+        mCaptureView.setSweepAngle(0);
     }
 
-    private void saveFinalMosaic() {
-        if (mFinalJpegData != null) {
-            Storage.addImage(getContentResolver(), mCurrentImagePath, mTimeTaken, null, 0,
-                    mFinalJpegData);
-            mFinalJpegData = null;
+    private void savePanorama(byte[] jpegData) {
+        if (jpegData != null) {
+            String imagePath = PanoUtil.createName(
+                    getResources().getString(R.string.pano_file_name_format), mTimeTaken);
+            Storage.addImage(getContentResolver(), imagePath, mTimeTaken, null, 0,
+                    jpegData);
         }
-        mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW));
     }
 
     private void clearMosaicFrameProcessorIfNeeded() {
@@ -575,45 +580,32 @@ public class PanoramaActivity extends Activity implements
         }
     };
 
-    public void generateAndStoreFinalMosaic(boolean highRes) {
+    public byte[] generateFinalMosaic(boolean highRes) {
         mMosaicFrameProcessor.createMosaic(highRes);
 
-        mCurrentImagePath = PanoUtil.createName(
-                getResources().getString(R.string.pano_file_name_format), mTimeTaken);
-
-        if (highRes) {
-            mCurrentImagePath += "_HR";
-        } else {
-            mCurrentImagePath += "_LR";
+        byte[] imageData = mMosaicFrameProcessor.getFinalMosaicNV21();
+        if (imageData == null) {
+            Log.e(TAG, "getFinalMosaicNV21() returned null.");
+            return null;
         }
 
-            byte[] imageData = mMosaicFrameProcessor.getFinalMosaicNV21();
-            int len = imageData.length - 8;
+        int len = imageData.length - 8;
+        int width = (imageData[len + 0] << 24) + ((imageData[len + 1] & 0xFF) << 16)
+                + ((imageData[len + 2] & 0xFF) << 8) + (imageData[len + 3] & 0xFF);
+        int height = (imageData[len + 4] << 24) + ((imageData[len + 5] & 0xFF) << 16)
+                + ((imageData[len + 6] & 0xFF) << 8) + (imageData[len + 7] & 0xFF);
+        Log.v(TAG, "ImLength = " + (len) + ", W = " + width + ", H = " + height);
 
-            int width = (imageData[len + 0] << 24) + ((imageData[len + 1] & 0xFF) << 16)
-                    + ((imageData[len + 2] & 0xFF) << 8) + (imageData[len + 3] & 0xFF);
-            int height = (imageData[len + 4] << 24) + ((imageData[len + 5] & 0xFF) << 16)
-                    + ((imageData[len + 6] & 0xFF) << 8) + (imageData[len + 7] & 0xFF);
-            Log.v(TAG, "ImLength = " + (len) + ", W = " + width + ", H = " + height);
-
-            YuvImage yuvimage = new YuvImage(imageData, ImageFormat.NV21, width, height, null);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            yuvimage.compressToJpeg(new Rect(0, 0, width, height), 100, out);
-            try {
-                out.close();
-            } catch (Exception e) {
-                Log.e(TAG, "Exception in storing final mosaic", e);
-                return;
-            }
-
-            mFinalJpegData = out.toByteArray();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(mFinalJpegData, 0, mFinalJpegData.length);
-            mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_FINAL_MOSAIC_READY, bitmap));
-            // Now's a good time to run the GC. Since we won't do any explicit
-            // allocation during the test, the GC should stay dormant and not
-            // influence our results.
-            System.runFinalization();
-            System.gc();
+        YuvImage yuvimage = new YuvImage(imageData, ImageFormat.NV21, width, height, null);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        yuvimage.compressToJpeg(new Rect(0, 0, width, height), 100, out);
+        try {
+            out.close();
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in storing final mosaic", e);
+            return null;
+        }
+        return out.toByteArray();
     }
 
     private void setPreviewTexture(SurfaceTexture surface) {
