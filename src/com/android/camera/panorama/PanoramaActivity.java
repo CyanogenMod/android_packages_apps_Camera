@@ -22,7 +22,6 @@ import com.android.camera.CameraHolder;
 import com.android.camera.MenuHelper;
 import com.android.camera.ModePicker;
 import com.android.camera.R;
-import com.android.camera.ShutterButton;
 import com.android.camera.Storage;
 import com.android.camera.Util;
 
@@ -85,7 +84,6 @@ public class PanoramaActivity extends Activity implements
     private ImageView mReview;
     private CaptureView mCaptureView;
     private MosaicRendererSurfaceView mRealTimeMosaicView;
-    private ShutterButton mShutterButton;
 
     private int mPreviewWidth;
     private int mPreviewHeight;
@@ -137,8 +135,7 @@ public class PanoramaActivity extends Activity implements
         };
     }
 
-    public void createSurfaceTextureAndStartPreview(int textureID)
-    {
+    public void createSurfaceTextureAndStartPreview(int textureID) {
         /*
          * Create the SurfaceTexture that will feed this textureID, and pass it to the camera
          */
@@ -148,8 +145,7 @@ public class PanoramaActivity extends Activity implements
         Log.i(TAG, "Created Surface Texture");
     }
 
-    public SurfaceTexture getSurfaceTexture()
-    {
+    public SurfaceTexture getSurfaceTexture() {
         return mSurface;
     }
 
@@ -303,7 +299,7 @@ public class PanoramaActivity extends Activity implements
         mMosaicFrameProcessor.processFrame(null);
     }
 
-    synchronized public void onFrameAvailable(SurfaceTexture surface) {
+    public synchronized void onFrameAvailable(SurfaceTexture surface) {
         /* For simplicity, SurfaceTexture calls here when it has new
          * data available.  Call may come in from some random thread,
          * so let's be safe and use synchronize. No OpenGL calls can be done here.
@@ -418,15 +414,6 @@ public class PanoramaActivity extends Activity implements
         mRealTimeMosaicView = (MosaicRendererSurfaceView) findViewById(R.id.pano_renderer);
         mRealTimeMosaicView.setUIObject(this);
 
-        mShutterButton = (ShutterButton) findViewById(R.id.pano_shutter_button);
-        mShutterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mPausing || mThreadRunning) return;
-                startCapture();
-            }
-        });
-
         mPanoControlLayout = (View) findViewById(R.id.pano_control_layout);
 
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
@@ -435,6 +422,12 @@ public class PanoramaActivity extends Activity implements
         mModePicker.setCurrentMode(ModePicker.MODE_PANORAMA);
 
         mRealTimeMosaicView.setVisibility(View.VISIBLE);
+    }
+
+    @OnClickAttr
+    public void onStartButtonClicked(View v) {
+        if (mPausing || mThreadRunning) return;
+        startCapture();
     }
 
     @OnClickAttr

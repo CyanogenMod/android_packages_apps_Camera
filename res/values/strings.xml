@@ -265,6 +265,9 @@
     <!-- Toast saying that there is no video to share. [CHAR LIMIT=30] -->
     <string name="no_video_to_share">No video to share</string>
 
-    <!-- The text shown for stopping panorama capturing [CHAR LIMIT=7] -->
+    <!-- The text shown on the button for stopping panorama capturing [CHAR LIMIT=7] -->
     <string name="pano_capture_stop">Stop</string>
+
+    <!-- The text shown on the button for starting panorama capturing [CHAR LIMIT=10] -->
+    <string name="pano_capture_start">Start</string>
 </resources>
