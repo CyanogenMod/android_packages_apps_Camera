@@ -78,17 +78,6 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Dienos šviesa"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescencinis"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Debesuota"</string>
-    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Spalvų efektai"</string>
-    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Nėra"</string>
-    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Mono"</string>
-    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"Sepija"</string>
-    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Neigiamas"</string>
-    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Soliarizuoti"</string>
-    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Mažinti spalvas"</string>
-    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Žydrai melsva"</string>
-    <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Raudonas atspalvis"</string>
-    <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Mėlynas atspalvis"</string>
-    <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Žalias atspalvis"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Scenų režimas"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatiškai"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Veiksmas"</string>

@@ -45,7 +45,6 @@ public class CameraSettings {
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
     public static final String KEY_VIDEOCAMERA_FLASH_MODE = "pref_camera_video_flashmode_key";
-    public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
     public static final String KEY_WHITE_BALANCE = "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
@@ -130,7 +129,6 @@ public class CameraSettings {
         ListPreference timeLapseInterval = group.findPreference(KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL);
         ListPreference pictureSize = group.findPreference(KEY_PICTURE_SIZE);
         ListPreference whiteBalance =  group.findPreference(KEY_WHITE_BALANCE);
-        ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
         ListPreference sceneMode = group.findPreference(KEY_SCENE_MODE);
         ListPreference flashMode = group.findPreference(KEY_FLASH_MODE);
         ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
@@ -153,10 +151,6 @@ public class CameraSettings {
         if (whiteBalance != null) {
             filterUnsupportedOptions(group,
                     whiteBalance, mParameters.getSupportedWhiteBalance());
-        }
-        if (colorEffect != null) {
-            filterUnsupportedOptions(group,
-                    colorEffect, mParameters.getSupportedColorEffects());
         }
         if (sceneMode != null) {
             filterUnsupportedOptions(group,

@@ -81,17 +81,6 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Emini"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Ukukhanya okumibalabala"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Kunamafu"</string>
-    <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Ukuguquka kombala"</string>
-    <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Lutho"</string>
-    <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Okukodwa"</string>
-    <string name="pref_camera_coloreffect_entry_sepia" msgid="7558624061140022613">"I-Sepia"</string>
-    <string name="pref_camera_coloreffect_entry_negative" msgid="1635477825533469324">"Akulungile"</string>
-    <string name="pref_camera_coloreffect_entry_solarize" msgid="7399297076108412329">"Buyisa ngengxenye umfanekiso"</string>
-    <string name="pref_camera_coloreffect_entry_posterize" msgid="8596847197608350695">"Ukumisaphuhle"</string>
-    <string name="pref_camera_coloreffect_entry_aqua" msgid="224075791902166343">"Samanzi olwandle"</string>
-    <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Umbalanda Ombomvu"</string>
-    <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Umbadlana oluhlaza okwesibhakabhaka"</string>
-    <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Umbadlana Oluhlaza"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Imodi yesigcawu"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Okuzenzakalelayo"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Isenzo"</string>
