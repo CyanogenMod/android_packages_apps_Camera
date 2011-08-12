@@ -64,10 +64,24 @@ class FaceListener implements android.hardware.Camera.FaceDetectionListener {
         if (LOGV) Log.v(TAG, "mMirror=" + mirror);
     }
 
+    public boolean faceExists() {
+        if (mFaces[0] == null) return false;
+        if (mFaces[0].getVisibility() == View.VISIBLE) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void clearFaces() {
+        for (int i = 0; i < MAX_NUM_FACES; i++) {
+            if (mFaces[i] == null) break;
+            if (mFaces[i].getVisibility() != View.VISIBLE) break;
+            mFaces[i].setVisibility(View.GONE);
+        }
+    }
+
     private void showFaces(Face[] faces) {
-        // The range of the coordinates from the driver is -1000 to 1000.
-        // So the maximum length of the width or height is 2000. We need to
-        // convert them to UI layout size later.
         for (int i = 0; i < MAX_NUM_FACES; i++) {
             if (i < faces.length) {
                 // Inflate the view if it's not done yet.
