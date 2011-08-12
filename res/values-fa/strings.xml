@@ -92,8 +92,6 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"حافظه USB پر است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا سایر فایل ها را حذف کنید."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"کارت SD شما پر شده است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا فایل های دیگر را حذف کنید."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"بیش از حداکثر مجاز."</string>
-    <string name="zoom_control_title" msgid="6532562653386981815">"بزرگنمایی"</string>
-    <string name="zoom_text" msgid="3450360177919418123">"بزرگنمایی <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
     <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
     <skip />
     <!-- no translation found for switch_to_video_label (1167994386902254398) -->

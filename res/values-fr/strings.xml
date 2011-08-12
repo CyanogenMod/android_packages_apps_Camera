@@ -92,8 +92,6 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"La mémoire de stockage USB est pleine. Définissez la qualité sur une valeur plus basse ou supprimez des images ou d\'autres types de fichiers."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Votre carte SD est pleine. Modifiez le paramètre de qualité ou supprimez des images ou des fichiers."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Taille maximale atteinte."</string>
-    <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
-    <string name="zoom_text" msgid="3450360177919418123">"Zoom <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
     <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
     <skip />
     <!-- no translation found for switch_to_video_label (1167994386902254398) -->

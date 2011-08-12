@@ -91,8 +91,6 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Lo spazio dell\'archivio USB si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite di dimensione raggiunto."</string>
-    <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
-    <string name="zoom_text" msgid="3450360177919418123">"Zoom <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
     <string name="switch_to_camera_label" msgid="9148663083850199582">"Passa a fotocamera"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"Passa a video"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Passa a panorama"</string>

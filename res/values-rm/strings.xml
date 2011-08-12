@@ -98,9 +98,6 @@
     <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Vossa carta SD è plaina. Modifitgai il parameter da qualitad u stizzai elements dal catalog."</string>
     <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Vossa carta SD è plaina. Modifitgai il parameter da qualitad u stizzai elements dal catalog."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Cuntanschì la grondezza maximala."</string>
-    <string name="zoom_control_title" msgid="6532562653386981815">"Zoom"</string>
-    <!-- no translation found for zoom_text (3450360177919418123) -->
-    <skip />
     <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
     <skip />
     <!-- no translation found for switch_to_video_label (1167994386902254398) -->

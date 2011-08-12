@@ -41,12 +41,6 @@
                     android:drawablePadding="5dp"
                     android:visibility="gone"/>
         </LinearLayout>
-        <TextView android:id="@+id/zoom_ratio"
-                style="@style/OnViewfinderLabel"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/labels"
-                android:layout_alignWithParentIfMissing="true"
-                android:visibility="gone"/>
         <include layout="@layout/review_control"/>
         <LinearLayout
                 android:layout_width="wrap_content"

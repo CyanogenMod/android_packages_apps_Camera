@@ -459,9 +459,8 @@ public class VideoCamera extends ActivityBase
     private void initializeZoomPicker() {
         View zoomIncrement = findViewById(R.id.zoom_increment);
         View zoomDecrement = findViewById(R.id.zoom_decrement);
-        TextView zoomRatio = (TextView) findViewById(R.id.zoom_ratio);
         if (zoomIncrement != null && zoomDecrement != null && mParameters.isZoomSupported()) {
-            mZoomPicker = new ZoomPicker(this, zoomIncrement, zoomDecrement, zoomRatio);
+            mZoomPicker = new ZoomPicker(this, zoomIncrement, zoomDecrement);
         }
     }
 
@@ -1894,7 +1893,7 @@ public class VideoCamera extends ActivityBase
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
         if (mZoomPicker != null) {
-            mZoomPicker.setZoomRatios(Util.convertZoomRatios(mParameters.getZoomRatios()));
+            mZoomPicker.setZoomMax(mZoomMax);
             mZoomPicker.setZoomIndex(mParameters.getZoom());
             mZoomPicker.setSmoothZoomSupported(mSmoothZoomSupported);
             mZoomPicker.setOnZoomChangeListener(

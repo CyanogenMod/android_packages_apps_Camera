@@ -16,15 +16,11 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-
 import android.content.Context;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.Button;
-import android.widget.TextView;
 
 import java.util.Formatter;
 
@@ -33,16 +29,13 @@ import java.util.Formatter;
  */
 public class ZoomPicker {
     private final String TAG = "ZoomPicker";
-    private TextView mZoomTextView;
     private int mZoomMax, mZoomIndex;
-    private float[] mZoomRatios;
     private boolean mSmoothZoomSupported;
     private OnZoomChangedListener mListener;
     private boolean mIncrement, mDecrement;
     private final StringBuilder mBuilder = new StringBuilder();
     private final Formatter mFormatter = new Formatter(mBuilder);
     private final Object[] mFormatterArgs = new Object[1];
-    private String mZoomText;
     private View mIncrementButton;
     private View mDecrementButton;
 
@@ -74,8 +67,7 @@ public class ZoomPicker {
         }
     };
 
-    public ZoomPicker(Context context, View increment, View decrement, TextView zoomText) {
-        mZoomText = context.getString(R.string.zoom_text);
+    public ZoomPicker(Context context, View increment, View decrement) {
         mHandler = new Handler();
 
         OnTouchListener incrementTouchListener = new OnTouchListener() {
@@ -126,7 +118,6 @@ public class ZoomPicker {
         mDecrementButton = decrement;
         mDecrementButton.setOnTouchListener(decrementTouchListener);
         mDecrementButton.setVisibility(View.VISIBLE);
-        mZoomTextView = zoomText;
     }
 
     public void setOnZoomChangeListener(OnZoomChangedListener listener) {
@@ -138,10 +129,8 @@ public class ZoomPicker {
         void onZoomStateChanged(int state);  // only for smooth zoom
     }
 
-    public void setZoomRatios(float[] zoomRatios) {
-        mZoomMax = zoomRatios.length - 1;
-        mZoomRatios = zoomRatios;
-        updateView();
+    public void setZoomMax(int zoomMax) {
+        mZoomMax = zoomMax;
     }
 
     public void setZoomIndex(int index) {
@@ -149,7 +138,6 @@ public class ZoomPicker {
             throw new IllegalArgumentException("Invalid zoom value:" + index);
         }
         mZoomIndex = index;
-        updateView();
     }
 
     public void setSmoothZoomSupported(boolean smoothZoomSupported) {
@@ -162,19 +150,7 @@ public class ZoomPicker {
         if (mListener != null) {
             mListener.onZoomValueChanged(mZoomIndex);
         }
-        updateView();
         return true;
-    }
-
-    private void updateView() {
-        if (mZoomTextView == null) return;
-
-        if (mZoomIndex == 0) {
-            mZoomTextView.setVisibility(View.INVISIBLE);
-        } else {
-            mZoomTextView.setText(String.format(mZoomText, formatZoomRatio(mZoomRatios[mZoomIndex])));
-            mZoomTextView.setVisibility(View.VISIBLE);
-        }
     }
 
     private String formatZoomRatio(float value) {

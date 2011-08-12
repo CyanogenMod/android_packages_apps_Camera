@@ -92,8 +92,6 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Ο διαθέσιμος χώρος USB είναι ελάχιστος. Αλλάξτε τη ρύθμιση της ποιότητας ή διαγράψτε κάποιες εικόνες ή άλλα αρχεία."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Ο διαθέσιμος χώρος στην κάρτα SD είναι ελάχιστος. Αλλάξτε τη ρύθμιση ποιότητας ή διαγράψτε κάποιες εικόνες ή άλλα αρχεία."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Συμπληρώθηκε το όριο μεγέθους."</string>
-    <string name="zoom_control_title" msgid="6532562653386981815">"Εστίαση"</string>
-    <string name="zoom_text" msgid="3450360177919418123">"Ζουμ <xliff:g id="ZOOM_TEXT">%s</xliff:g>"</string>
     <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
     <skip />
     <!-- no translation found for switch_to_video_label (1167994386902254398) -->
