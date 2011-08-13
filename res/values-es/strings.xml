@@ -59,8 +59,7 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"Píxeles de 5 M"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"Píxeles de 3 M"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"Píxeles de 2 M"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_1280x960 (1648390393603363042) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1,3 millones de píxeles"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"Píxeles de 1 M"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -92,16 +91,12 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"No queda espacio en el almacenamiento USB. Cambia la configuración de calidad o elimina algunas imágenes u otros archivos."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"No queda espacio en la tarjeta SD. Cambia la configuración de calidad o elimina algunas imágenes u otros archivos."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Se ha alcanzado el límite de tamaño."</string>
-    <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
-    <skip />
-    <!-- no translation found for switch_to_video_label (1167994386902254398) -->
-    <skip />
-    <!-- no translation found for switch_to_panorama_label (858801335653517864) -->
-    <skip />
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"Cambiar a cámara"</string>
+    <string name="switch_to_video_label" msgid="1167994386902254398">"Cambiar a vídeo"</string>
+    <string name="switch_to_panorama_label" msgid="858801335653517864">"Cambiar a modo panorámico"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Compartir imagen por"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Compartir vídeo por"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"No hay imágenes para compartir"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"No hay vídeos para compartir"</string>
-    <!-- no translation found for pano_capture_stop (8122941670229992464) -->
-    <skip />
+    <string name="pano_capture_stop" msgid="8122941670229992464">"Detener"</string>
 </resources>

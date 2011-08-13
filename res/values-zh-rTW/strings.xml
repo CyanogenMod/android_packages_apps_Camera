@@ -59,8 +59,7 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 百萬像素"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 百萬像素"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 百萬像素"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_1280x960 (1648390393603363042) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"130 萬像素"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 百萬像素"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -92,12 +91,9 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"您的 USB 儲存裝置的空間即將用盡，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"您 SD 卡的空間即將不足，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"已達大小上限。"</string>
-    <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
-    <skip />
-    <!-- no translation found for switch_to_video_label (1167994386902254398) -->
-    <skip />
-    <!-- no translation found for switch_to_panorama_label (858801335653517864) -->
-    <skip />
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"切換至相機"</string>
+    <string name="switch_to_video_label" msgid="1167994386902254398">"切換至影片"</string>
+    <string name="switch_to_panorama_label" msgid="858801335653517864">"切換至全景模式"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"相片分享方式"</string>
     <string name="share_video_via" msgid="5152302809166549015">"影片分享方式"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"沒有可分享的相片"</string>

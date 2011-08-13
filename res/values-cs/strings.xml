@@ -59,8 +59,7 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 megapixelů"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 megapixely"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 megapixely"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_1280x960 (1648390393603363042) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1,3 milionu pixelů"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 megapixel"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -92,16 +91,12 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"V úložišti USB je málo místa. Změňte nastavení kvality nebo smažte některé fotografie či jiné soubory."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Na kartě SD je málo místa. Změňte nastavení kvality nebo smažte některé obrázky či jiné soubory."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Bylo dosaženo limitu velikosti."</string>
-    <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
-    <skip />
-    <!-- no translation found for switch_to_video_label (1167994386902254398) -->
-    <skip />
-    <!-- no translation found for switch_to_panorama_label (858801335653517864) -->
-    <skip />
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"Přepnout do režimu fotoaparátu"</string>
+    <string name="switch_to_video_label" msgid="1167994386902254398">"Přepnout do režimu Video"</string>
+    <string name="switch_to_panorama_label" msgid="858801335653517864">"Přepnout do panoramatického režimu"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Sdílet fotografii pomocí"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Sdílet video pomocí"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Žádná fotka ke sdílení"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Žádné video ke sdílení"</string>
-    <!-- no translation found for pano_capture_stop (8122941670229992464) -->
-    <skip />
+    <string name="pano_capture_stop" msgid="8122941670229992464">"Stop"</string>
 </resources>
