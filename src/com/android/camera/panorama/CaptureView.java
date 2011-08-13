@@ -29,7 +29,6 @@ import android.view.View;
 
 class CaptureView extends View {
     private static final String TAG = "CaptureView";
-    private String mStatusText = "";
     private int mStartAngle = 0;
     private int mSweepAngle = 0;
     private int mWidth;
@@ -58,10 +57,6 @@ class CaptureView extends View {
         mSweepAngle = angle;
     }
 
-    public void setStatusText(String text) {
-        mStatusText = text;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         mWidth = getWidth();
@@ -69,7 +64,6 @@ class CaptureView extends View {
 
         RectF rect = new RectF(mWidth / 2 - 100, 3 * mHeight / 4,
                 mWidth / 2 + 100, 3 * mHeight / 4 + 200);
-        canvas.drawText(mStatusText, mWidth / 2, mHeight / 2, mPaint);
         canvas.drawArc(rect, -90 + mStartAngle, mSweepAngle, true, mPaint);
         canvas.drawArc(rect, -90 - mStartAngle, mSweepAngle > 0 ? 2 : 0, true, mPaint);
     }

@@ -49,6 +49,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -85,6 +86,7 @@ public class PanoramaActivity extends Activity implements
     private ImageView mReview;
     private CaptureView mCaptureView;
     private MosaicRendererSurfaceView mRealTimeMosaicView;
+    private TextView mTooFastPrompt;
 
     private int mPreviewWidth;
     private int mPreviewHeight;
@@ -298,6 +300,7 @@ public class PanoramaActivity extends Activity implements
         // Reset values so we can do this again.
         mTimeTaken = System.currentTimeMillis();
         mCaptureState = CAPTURE_MOSAIC;
+        mTooFastPrompt.setVisibility(View.GONE);
 
         mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
             @Override
@@ -351,13 +354,12 @@ public class PanoramaActivity extends Activity implements
         mRealTimeMosaicView.requestRender();
 
         if (translationRate > 150) {
-            // TODO: remove the text and draw implications according to the UI
-            // spec.
-            mCaptureView.setStatusText("S L O W   D O W N");
+            // TODO: draw speed indication according to the UI spec.
+            mTooFastPrompt.setVisibility(View.VISIBLE);
             mCaptureView.setSweepAngle(Math.max(traversedAngleX, traversedAngleY) + 1);
             mCaptureView.invalidate();
         } else {
-            mCaptureView.setStatusText("");
+            mTooFastPrompt.setVisibility(View.GONE);
             mCaptureView.setSweepAngle(Math.max(traversedAngleX, traversedAngleY) + 1);
             mCaptureView.invalidate();
         }
@@ -374,6 +376,7 @@ public class PanoramaActivity extends Activity implements
         mCaptureView = (CaptureView) findViewById(R.id.pano_capture_view);
         mCaptureView.setStartAngle(-DEFAULT_SWEEP_ANGLE / 2);
         mStopCaptureButton = (Button) findViewById(R.id.pano_capture_stop_button);
+        mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
 
         mReviewLayout = (View) findViewById(R.id.pano_review_layout);
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);

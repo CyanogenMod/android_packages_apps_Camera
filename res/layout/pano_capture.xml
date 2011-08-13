@@ -58,4 +58,8 @@
     </LinearLayout>
 
     <include layout="@layout/pano_control" android:id="@+id/pano_control_layout" />
+
+    <TextView android:id="@+id/pano_capture_too_fast_textview"
+        android:text="@string/pano_too_fast_prompt"
+        android:layout_centerInParent="true" />
 </RelativeLayout>
