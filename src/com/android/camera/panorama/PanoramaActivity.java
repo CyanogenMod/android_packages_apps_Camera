@@ -102,8 +102,6 @@ public class PanoramaActivity extends Activity implements
     private long mTimeTaken;
     private Handler mMainHandler;
     private SurfaceTexture mSurface;
-    private boolean mUseSurfaceTexture = true;
-
     private boolean mThreadRunning;
 
     @Override
@@ -244,19 +242,6 @@ public class PanoramaActivity extends Activity implements
         int orientation = Util.getDisplayOrientation(Util.getDisplayRotation(this),
                 CameraHolder.instance().getBackCameraId());
         mCameraDevice.setDisplayOrientation(orientation);
-
-        if(!mUseSurfaceTexture) {
-            int bufSize = getPreviewBufSize();
-            Log.v(TAG, "BufSize = " + bufSize);
-            for (int i = 0; i < 10; i++) {
-                try {
-                    mCameraDevice.addCallbackBuffer(new byte[bufSize]);
-                } catch (OutOfMemoryError e) {
-                    Log.v(TAG, "Buffer allocation failed: buffer " + i);
-                    break;
-                }
-            }
-        }
     }
 
     private boolean switchToOtherMode(int mode) {
@@ -302,7 +287,7 @@ public class PanoramaActivity extends Activity implements
         // Wait on the condition variable (will be opened when GPU->CPU transfer is done).
         mRealTimeMosaicView.waitUntilPreviewReady();
 
-        mMosaicFrameProcessor.processFrame(null);
+        mMosaicFrameProcessor.processFrame();
     }
 
     synchronized public void onFrameAvailable(SurfaceTexture surface) {
@@ -334,19 +319,6 @@ public class PanoramaActivity extends Activity implements
             }
         });
 
-        if (!mUseSurfaceTexture) {
-            // Preview callback used whenever new viewfinder frame is available
-            mCameraDevice.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
-                @Override
-                public void onPreviewFrame(final byte[] data, Camera camera) {
-                    mMosaicFrameProcessor.processFrame(data);
-                    // The returned buffer needs be added back to callback buffer
-                    // again.
-                    camera.addCallbackBuffer(data);
-                }
-            });
-        }
-
         mCaptureLayout.setVisibility(View.VISIBLE);
         mPreview.setVisibility(View.INVISIBLE);  // will be re-used, invisible is better than gone.
         mRealTimeMosaicView.setVisibility(View.VISIBLE);
@@ -359,10 +331,6 @@ public class PanoramaActivity extends Activity implements
 
         mMosaicFrameProcessor.setProgressListener(null);
         stopPreview();
-
-        if (!mUseSurfaceTexture) {
-            mCameraDevice.setPreviewCallbackWithBuffer(null);
-        }
 
         mSurface.setOnFrameAvailableListener(null);
 
@@ -505,7 +473,7 @@ public class PanoramaActivity extends Activity implements
         if (mMosaicFrameProcessor == null) {
             // Start the activity for the first time.
             mMosaicFrameProcessor = new MosaicFrameProcessor(DEFAULT_SWEEP_ANGLE - 5,
-                    mPreviewWidth, mPreviewHeight, getPreviewBufSize(), mUseSurfaceTexture);
+                    mPreviewWidth, mPreviewHeight, getPreviewBufSize());
         }
         mMosaicFrameProcessor.initialize();
     }
