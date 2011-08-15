@@ -24,6 +24,10 @@
         <SurfaceView android:id="@+id/camera_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+        <com.android.camera.ui.FaceView android:id="@+id/face_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
         <com.android.camera.ui.FocusRectangle
                 android:id="@+id/focus_rectangle"
                 android:layout_width="180dp"

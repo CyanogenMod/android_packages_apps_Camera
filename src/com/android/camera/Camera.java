@@ -17,6 +17,7 @@
 package com.android.camera;
 
 import com.android.camera.ui.CameraPicker;
+import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusRectangle;
 import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.RotateImageView;
@@ -35,6 +36,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.Camera.Area;
 import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.Face;
+import android.hardware.Camera.FaceDetectionListener;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
@@ -86,7 +89,8 @@ import java.util.List;
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements View.OnClickListener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
-        SurfaceHolder.Callback, ModePicker.OnModeChangeListener {
+        SurfaceHolder.Callback, ModePicker.OnModeChangeListener,
+        FaceDetectionListener {
 
     private static final String TAG = "camera";
 
@@ -164,6 +168,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     // An imageview showing showing the last captured picture thumbnail.
     private RotateImageView mThumbnailView;
     private ModePicker mModePicker;
+    private FaceView mFaceView;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -219,7 +224,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private final AutoFocusCallback mAutoFocusCallback =
             new AutoFocusCallback();
     private final ZoomListener mZoomListener = new ZoomListener();
-    private FaceListener mFaceListener;
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
     private long mFocusStartTime;
@@ -514,13 +518,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void startFaceDetection() {
         if (mParameters.getMaxNumDetectedFaces() > 0) {
-            if (mFaceListener == null) {
-                mFaceListener = new FaceListener(this,
-                    (ViewGroup) findViewById(R.id.frame), mDisplayOrientation);
-            }
+            mFaceView = (FaceView) findViewById(R.id.face_view);
+            mFaceView.setVisibility(View.VISIBLE);
+            mFaceView.setDisplayOrientation(mDisplayOrientation);
             CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-            mFaceListener.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
-            mCameraDevice.setFaceDetectionListener(mFaceListener);
+            mFaceView.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
+            mCameraDevice.setFaceDetectionListener(this);
             mCameraDevice.startFaceDetection();
         }
     }
@@ -529,7 +532,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mCameraDevice.setFaceDetectionListener(null);
             mCameraDevice.stopFaceDetection();
-            if (mFaceListener != null) mFaceListener.clearFaces();
+            if (mFaceView != null) mFaceView.clearFaces();
         }
     }
 
@@ -1522,7 +1525,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void updateFocusUI() {
         // Do not show focus rectangle if there is any face rectangle.
-        if (mFaceListener != null && mFaceListener.faceExists()) return;
+        if (mFaceView != null && mFaceView.faceExists()) return;
 
         if (mCameraState == FOCUSING || mCameraState == FOCUSING_SNAP_ON_FINISH) {
             mFocusRectangle.showStart();
@@ -1840,8 +1843,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mDisplayRotation = Util.getDisplayRotation(this);
         mDisplayOrientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
         mCameraDevice.setDisplayOrientation(mDisplayOrientation);
-        if (mFaceListener != null) {
-            mFaceListener.setDisplayOrientation(mDisplayOrientation);
+        if (mFaceView != null) {
+            mFaceView.setDisplayOrientation(mDisplayOrientation);
         }
         setCameraParameters(UPDATE_PARAM_ALL);
 
@@ -2376,5 +2379,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         public void onSharedPreferenceChanged() {
             Camera.this.onSharedPreferenceChanged();
         }
+    }
+
+    @Override
+    public void onFaceDetection(Face[] faces, android.hardware.Camera camera) {
+        mFaceView.setFaces(faces);
     }
 }
