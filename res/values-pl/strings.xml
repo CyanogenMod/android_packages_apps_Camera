@@ -59,8 +59,7 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 megapikseli"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 megapiksele"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 megapiksele"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_1280x960 (1648390393603363042) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1,3 mln pikseli"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 megapiksel"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -78,13 +77,13 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Światło dzienne"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescencja"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Zachmurzenie"</string>
-    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Tryb sceny"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Tryb scenerii"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatyczny"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Akcja"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Noc"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Zachód słońca"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Impreza"</string>
-    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Wybranie tego ustawienia nie jest możliwe w trybie scen"</string>
+    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Niedostępne w trybie scenerii"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Ustawienia aparatu"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Przywróć wartości domyślne"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Ekspozycja"</string>
@@ -92,16 +91,12 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Na nośniku USB kończy się miejsce. Zmień ustawienie jakości bądź usuń niektóre zdjęcia lub inne pliki."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Na karcie SD kończy się miejsce. Zmień ustawienie jakości bądź usuń niektóre zdjęcia lub inne pliki."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Osiągnięto limit rozmiaru."</string>
-    <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
-    <skip />
-    <!-- no translation found for switch_to_video_label (1167994386902254398) -->
-    <skip />
-    <!-- no translation found for switch_to_panorama_label (858801335653517864) -->
-    <skip />
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"Przełącz na aparat"</string>
+    <string name="switch_to_video_label" msgid="1167994386902254398">"Przełącz na wideo"</string>
+    <string name="switch_to_panorama_label" msgid="858801335653517864">"Przełącz na panoramę"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Udostępnij zdjęcie przez:"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Udostępnij film za pomocą"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Brak zdjęcia do udostępnienia"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Brak filmu do udostępnienia"</string>
-    <!-- no translation found for pano_capture_stop (8122941670229992464) -->
-    <skip />
+    <string name="pano_capture_stop" msgid="8122941670229992464">"Zakończ"</string>
 </resources>
