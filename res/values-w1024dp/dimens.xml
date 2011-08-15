@@ -30,4 +30,6 @@
     <dimen name="share_image_max_width_portrait">480dp</dimen>
     <dimen name="share_image_max_height_portrait">480dp</dimen>
     <dimen name="share_list_width_landscape">200dp</dimen>
+    <dimen name="pano_control_layout_min_width">260dp</dimen>
+    <dimen name="pano_control_start_button_size">180dp</dimen>
 </resources>
