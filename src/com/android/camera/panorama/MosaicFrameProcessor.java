@@ -31,7 +31,7 @@ public class MosaicFrameProcessor {
     private static final int Y_COORD_INDEX = 5;
 
     private Mosaic mMosaicer;
-    private final byte[][] mFrames = new byte[NUM_FRAMES_IN_BUFFER][];  // Space for N frames
+    private boolean mIsMosaicMemoryAllocated = false;
     private final long [] mFrameTimestamp = new long[NUM_FRAMES_IN_BUFFER];
     private float mTranslationLastX;
     private float mTranslationLastY;
@@ -56,20 +56,18 @@ public class MosaicFrameProcessor {
     private int mPreviewWidth;
     private int mPreviewHeight;
     private int mPreviewBufferSize;
-    private boolean mUseSurfaceTexture;
 
     public interface ProgressListener {
         public void onProgress(boolean isFinished, float translationRate,
                 int traversedAngleX, int traversedAngleY);
     }
 
-    public MosaicFrameProcessor(int sweepAngle, int previewWidth, int previewHeight, int bufSize, boolean useSurfaceTexture) {
+    public MosaicFrameProcessor(int sweepAngle, int previewWidth, int previewHeight, int bufSize) {
         mMosaicer = new Mosaic();
         mCompassThreshold = sweepAngle;
         mPreviewWidth = previewWidth;
         mPreviewHeight = previewHeight;
         mPreviewBufferSize = bufSize;
-        mUseSurfaceTexture = useSurfaceTexture;
     }
 
     public void setProgressListener(ProgressListener listener) {
@@ -77,25 +75,19 @@ public class MosaicFrameProcessor {
     }
 
     public void initialize() {
-        setupMosaicer(mPreviewWidth, mPreviewHeight, mPreviewBufferSize, mUseSurfaceTexture);
+        setupMosaicer(mPreviewWidth, mPreviewHeight, mPreviewBufferSize);
         reset();
     }
 
     public void clear() {
+        mIsMosaicMemoryAllocated = false;
         mMosaicer.freeMosaicMemory();
-
-        for (int i = 0; i < NUM_FRAMES_IN_BUFFER; i++) {
-            mFrames[i] = null;
-        }
     }
 
-    private void setupMosaicer(int previewWidth, int previewHeight, int bufSize, boolean useSurfaceTexture) {
+    private void setupMosaicer(int previewWidth, int previewHeight, int bufSize) {
         Log.v(TAG, "setupMosaicer w, h=" + previewWidth + ',' + previewHeight + ',' + bufSize);
         mMosaicer.allocateMosaicMemory(previewWidth, previewHeight);
-
-        for (int i = 0; i < NUM_FRAMES_IN_BUFFER; i++) {
-            mFrames[i] = new byte[bufSize];
-        }
+        mIsMosaicMemoryAllocated = true;
 
         mFillIn = 0;
         if  (mMosaicer != null) {
@@ -125,8 +117,8 @@ public class MosaicFrameProcessor {
     // Processes the last filled image frame through the mosaicer and
     // updates the UI to show progress.
     // When done, processes and displays the final mosaic.
-    public void processFrame(byte[] data) {
-        if (mFrames[mFillIn] == null) {
+    public void processFrame() {
+        if (!mIsMosaicMemoryAllocated) {
             // clear() is called and buffers are cleared, stop computation.
             // This can happen when the onPause() is called in the activity, but still some frames
             // are not processed yet and thus the callback may be invoked.
@@ -134,10 +126,6 @@ public class MosaicFrameProcessor {
         }
         long t1 = System.currentTimeMillis();
         mFrameTimestamp[mFillIn] = t1;
-
-        // TODO: Remove the case of byte data copy when SurfaceTexture is ready
-        if(!mUseSurfaceTexture)
-            System.arraycopy(data, 0, mFrames[mFillIn], 0, data.length);
 
         mCurrProcessFrameIdx = mFillIn;
         mFillIn = ((mFillIn + 1) % NUM_FRAMES_IN_BUFFER);
@@ -147,8 +135,7 @@ public class MosaicFrameProcessor {
         if (mCurrProcessFrameIdx != mLastProcessFrameIdx) {
             mLastProcessFrameIdx = mCurrProcessFrameIdx;
 
-            // Access the image data and the timestamp associated with it...
-            byte[] currentFrame = mFrames[mCurrProcessFrameIdx];
+            // Access the timestamp associated with it...
             long timestamp = mFrameTimestamp[mCurrProcessFrameIdx];
 
             // Keep track of what compass bearing we started at...
@@ -168,7 +155,7 @@ public class MosaicFrameProcessor {
                 && mTraversedAngleY < mCompassThreshold) {
                 // If we are still collecting new frames for the current mosaic,
                 // process the new frame.
-                translateFrame(currentFrame, timestamp);
+                calculateTranslationRate(timestamp);
 
                 // Publish progress of the ongoing processing
                 if (mProgressListener != null) {
@@ -184,13 +171,11 @@ public class MosaicFrameProcessor {
         }
     }
 
-    public void translateFrame(final byte[] data, long now) {
+    public void calculateTranslationRate(long now) {
         float deltaTime = (now - mLastProcessedFrameTimestamp) / 1000.0f;
         mLastProcessedFrameTimestamp = now;
 
-        float[] frameData = mUseSurfaceTexture ?
-                    mMosaicer.setSourceImageFromGPU() :
-                    mMosaicer.setSourceImage(data);
+        float[] frameData = mMosaicer.setSourceImageFromGPU();
         mTotalFrameCount  = (int) frameData[FRAME_COUNT_INDEX];
         float translationCurrX = frameData[X_COORD_INDEX];
         float translationCurrY = frameData[Y_COORD_INDEX];
