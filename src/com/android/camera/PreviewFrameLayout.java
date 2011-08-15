@@ -21,8 +21,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 /**
@@ -37,17 +35,12 @@ public class PreviewFrameLayout extends RelativeLayout {
     private double mAspectRatio = 4.0 / 3.0;
     private View mFrame;
     private View mBorderView;
-    private OnSizeChangedListener mSizeListener;
     private final DisplayMetrics mMetrics = new DisplayMetrics();
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         ((Activity) context).getWindowManager()
                 .getDefaultDisplay().getMetrics(mMetrics);
-    }
-
-    public void setOnSizeChangedListener(OnSizeChangedListener listener) {
-        mSizeListener = listener;
     }
 
     @Override
@@ -99,9 +92,5 @@ public class PreviewFrameLayout extends RelativeLayout {
                 MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
         mBorderView.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
-
-        if (mSizeListener != null) {
-            mSizeListener.onSizeChanged();
-        }
     }
 }

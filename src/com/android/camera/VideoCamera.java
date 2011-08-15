@@ -17,7 +17,6 @@
 package com.android.camera;
 
 import com.android.camera.ui.CameraPicker;
-import com.android.camera.ui.GLRootView;
 import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.IndicatorWheel;
 import com.android.camera.ui.RotateImageView;
@@ -85,7 +84,7 @@ public class VideoCamera extends ActivityBase
         implements View.OnClickListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        ModePicker.OnModeChangeListener, PreviewFrameLayout.OnSizeChangedListener {
+        ModePicker.OnModeChangeListener {
 
     private static final String TAG = "videocamera";
 
@@ -139,7 +138,6 @@ public class VideoCamera extends ActivityBase
 
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceHolder mSurfaceHolder = null;
-    private GLRootView mGLRootView;
     private IndicatorControl mIndicatorControl;
     private View mReviewControl;
 
@@ -405,7 +403,6 @@ public class VideoCamera extends ActivityBase
 
         mPreviewFrameLayout = (PreviewFrameLayout)
                 findViewById(R.id.frame_layout);
-        mPreviewFrameLayout.setOnSizeChangedListener(this);
 
         mReviewImage = (ImageView) findViewById(R.id.review_image);
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
@@ -1750,10 +1747,6 @@ public class VideoCamera extends ActivityBase
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
-    }
-
-    public void onSizeChanged() {
-        // TODO: update the content on GLRootView
     }
 
     private void onRestorePreferencesClicked() {
