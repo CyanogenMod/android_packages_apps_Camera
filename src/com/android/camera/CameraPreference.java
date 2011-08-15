@@ -33,6 +33,12 @@ public abstract class CameraPreference {
     private SharedPreferences mSharedPreferences;
     private final Context mContext;
 
+    static public interface OnPreferenceChangedListener {
+        public void onSharedPreferenceChanged();
+        public void onRestorePreferencesClicked();
+        public void onOverriddenPreferencesClicked();
+    }
+
     public CameraPreference(Context context, AttributeSet attrs) {
         mContext = context;
         TypedArray a = context.obtainStyledAttributes(

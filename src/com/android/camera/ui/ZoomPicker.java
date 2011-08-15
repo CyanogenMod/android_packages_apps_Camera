@@ -16,152 +16,81 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.R;
+
 import android.content.Context;
 import android.os.Handler;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-import java.util.Formatter;
-
 /**
  * A class to increase or decrease zoom
  */
-public class ZoomPicker {
+public class ZoomPicker extends ZoomControl {
     private final String TAG = "ZoomPicker";
-    private int mZoomMax, mZoomIndex;
-    private boolean mSmoothZoomSupported;
-    private OnZoomChangedListener mListener;
-    private boolean mIncrement, mDecrement;
-    private final StringBuilder mBuilder = new StringBuilder();
-    private final Formatter mFormatter = new Formatter(mBuilder);
-    private final Object[] mFormatterArgs = new Object[1];
+
     private View mIncrementButton;
     private View mDecrementButton;
-
-    // The state of zoom button.
-    public static final int ZOOM_IN = 0;
-    public static final int ZOOM_OUT = 1;
-    public static final int ZOOM_STOP = 2;
+    private int mState = ZOOM_STOP;
 
     private Handler mHandler;
+
+    public ZoomPicker(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     private final Runnable mRunnable = new Runnable() {
         public void run() {
-            if (mIncrement) {
-                if (mSmoothZoomSupported) {
-                    if (mZoomIndex != mZoomMax && mListener != null) {
-                        mListener.onZoomStateChanged(ZOOM_IN);
-                    }
-                } else if (changeZoomIndex(mZoomIndex + 1)) {
-                    mHandler.postDelayed(this, 65);
-                }
-            } else if (mDecrement) {
-                if (mSmoothZoomSupported) {
-                    if (mZoomIndex != 0 && mListener != null) {
-                        mListener.onZoomStateChanged(ZOOM_OUT);
-                    }
-                } else if (changeZoomIndex(mZoomIndex - 1)) {
-                    mHandler.postDelayed(this, 65);
-                }
-            }
+            if (zooming()) mHandler.postDelayed(this, 65);
         }
     };
 
-    public ZoomPicker(Context context, View increment, View decrement) {
+    private boolean zooming() {
+        switch (mState) {
+            case ZOOM_IN:
+                return zoomIn();
+            case ZOOM_OUT:
+                return zoomOut();
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void initialize(Context context) {
+        final View increment = getRootView().findViewById(R.id.zoom_increment);
+        final View decrement = getRootView().findViewById(R.id.zoom_decrement);
+
         mHandler = new Handler();
 
-        OnTouchListener incrementTouchListener = new OnTouchListener() {
+        OnTouchListener touchListener = new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) {
-                    if (!mIncrement && changeZoomIndex(mZoomIndex + 1)) {
-                        mIncrement = true;
-                        // Give bigger delay so users can tap to change only one
-                        // zoom step.
-                        mHandler.postDelayed(mRunnable, 300);
-                    }
+                    mState = (v == increment) ? ZOOM_IN : ZOOM_OUT;
+                    if (zooming()) mHandler.postDelayed(mRunnable, 300);
                 } else if (action == MotionEvent.ACTION_UP
                         || action == MotionEvent.ACTION_CANCEL) {
-                    mIncrement = false;
-                    if (mSmoothZoomSupported) {
-                        if (mListener != null) mListener.onZoomStateChanged(ZOOM_STOP);
-                    }
-                }
-                return false;
-            }
-        };
-
-        OnTouchListener decrementTouchListener = new OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                if (action == MotionEvent.ACTION_DOWN) {
-                    if (!mDecrement && changeZoomIndex(mZoomIndex - 1)) {
-                        mDecrement = true;
-                        // Give bigger delay so users can tap to change only one
-                        // zoom step.
-                        mHandler.postDelayed(mRunnable, 300);
-                    }
-                } else if (action == MotionEvent.ACTION_UP
-                        || action == MotionEvent.ACTION_CANCEL) {
-                    mDecrement = false;
-                    if (mSmoothZoomSupported) {
-                        if (mListener != null) mListener.onZoomStateChanged(ZOOM_STOP);
-                    }
+                    mState = ZOOM_STOP;
+                    stopZooming();
                 }
                 return false;
             }
         };
 
         mIncrementButton = increment;
-        mIncrementButton.setOnTouchListener(incrementTouchListener);
+        mIncrementButton.setOnTouchListener(touchListener);
         mIncrementButton.setVisibility(View.VISIBLE);
         mDecrementButton = decrement;
-        mDecrementButton.setOnTouchListener(decrementTouchListener);
+        mDecrementButton.setOnTouchListener(touchListener);
         mDecrementButton.setVisibility(View.VISIBLE);
-    }
-
-    public void setOnZoomChangeListener(OnZoomChangedListener listener) {
-        mListener = listener;
-    }
-
-    public interface OnZoomChangedListener {
-        void onZoomValueChanged(int index);  // only for immediate zoom
-        void onZoomStateChanged(int state);  // only for smooth zoom
-    }
-
-    public void setZoomMax(int zoomMax) {
-        mZoomMax = zoomMax;
-    }
-
-    public void setZoomIndex(int index) {
-        if (index < 0 || index > mZoomMax) {
-            throw new IllegalArgumentException("Invalid zoom value:" + index);
-        }
-        mZoomIndex = index;
-    }
-
-    public void setSmoothZoomSupported(boolean smoothZoomSupported) {
-        mSmoothZoomSupported = smoothZoomSupported;
-    }
-
-    private boolean changeZoomIndex(int index) {
-        if (index > mZoomMax || index < 0) return false;
-        mZoomIndex = index;
-        if (mListener != null) {
-            mListener.onZoomValueChanged(mZoomIndex);
-        }
-        return true;
-    }
-
-    private String formatZoomRatio(float value) {
-        mFormatterArgs[0] = value;
-        mBuilder.delete(0, mBuilder.length());
-        mFormatter.format("%2.1fx", mFormatterArgs);
-        return mFormatter.toString();
     }
 
     public void setEnabled(boolean enabled) {
         mIncrementButton.setEnabled(enabled);
         mDecrementButton.setEnabled(enabled);
     }
+
 }

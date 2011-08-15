@@ -49,11 +49,6 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"
                 android:background="@android:color/black" />
-        <com.android.camera.ui.IndicatorBar
-                android:id="@+id/indicator_control"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"/>
+        <include layout="@layout/indicator_bar" />
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>

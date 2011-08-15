@@ -16,19 +16,27 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.CameraPreference.OnPreferenceChangedListener;
+import com.android.camera.CameraSettings;
+import com.android.camera.PreferenceGroup;
+import com.android.camera.R;
+import com.android.camera.Util;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-
-import java.util.ArrayList;
+import android.view.View;
+import android.widget.ImageView;
 
 /**
- * A view that contains camera setting indicators which are spread over a
- * vertical bar in preview frame.
+ * A view that contains the top-level indicator control.
  */
-public class IndicatorBar extends IndicatorControl {
+public class IndicatorBar extends IndicatorControl implements
+        View.OnClickListener {
     private static final String TAG = "IndicatorBar";
-    int mSelectedIndex = -1;
+
+    private ImageView mZoomIcon;
+    private ImageView mSecondLevelIcon;
 
     public IndicatorBar(Context context) {
         super(context);
@@ -38,48 +46,50 @@ public class IndicatorBar extends IndicatorControl {
         super(context, attrs);
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        if (!onFilterTouchEventForSecurity(event)) return false;
+    public void initialize(Context context, PreferenceGroup group,
+            String flashSetting, boolean zoomSupported) {
+        // From UI spec, we have camera_flash setting on the first level.
+        super.initialize(context, group, new String[] {flashSetting}, null);
 
-        int action = event.getAction();
-
-        if (!isEnabled()) return false;
-
-        double x = (double) event.getX();
-        double y = (double) event.getY();
-        if (x > getWidth() || x < 0) return false;
-        if (y > getHeight() || y < 0) return false;
-
-        int index = (int) (y * getChildCount()) / getHeight();
-        AbstractIndicatorButton b = (AbstractIndicatorButton) getChildAt(index);
-        b.dispatchTouchEvent(event);
-        if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
-            AbstractIndicatorButton c = (AbstractIndicatorButton) getChildAt(mSelectedIndex);
-            event.setAction(MotionEvent.ACTION_CANCEL);
-            c.dispatchTouchEvent(event);
-            c.dismissPopup();
-
-            if (action == MotionEvent.ACTION_MOVE) {
-                event.setAction(MotionEvent.ACTION_DOWN);
-                b.dispatchTouchEvent(event);
-            }
+        // add Zoom Icon.
+        if (zoomSupported) {
+            mZoomIcon = (ImageView) findViewById(R.id.zoom_control_icon);
+            mZoomIcon.setOnClickListener(this);
+            mZoomIcon.setVisibility(View.VISIBLE);
         }
-        mSelectedIndex = index;
-        return true;
+
+        mSecondLevelIcon = (ImageView) findViewById(R.id.second_level_indicator_bar_icon);
+        mSecondLevelIcon.setOnClickListener(this);
+        requestLayout();
+    }
+
+    public void onClick(View view) {
+        dismissSettingPopup();
+        if (view == mZoomIcon) {
+            mOnIndicatorEventListener.onIndicatorEvent(
+                    OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL_BAR);
+        } else if (view == mSecondLevelIcon) {
+            mOnIndicatorEventListener.onIndicatorEvent(
+                    OnIndicatorEventListener.EVENT_ENTER_SECOND_LEVEL_INDICATOR_BAR);
+        }
     }
 
     @Override
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
+        // Layout the static components.
+        super.onLayout(changed, left, top, right, bottom);
+
         int count = getChildCount();
         if (count == 0) return;
         int width = right - left;
-        int height = bottom - top;
-        int h = height / count;
-        for (int i = 0; i < count; i++) {
-            getChildAt(i).layout(0, top + i * height / count, width,
-                    top + i * height / count + h);
+        View view;
+        for (int i = 0 ; i < count ; i++) {
+            view = getChildAt(i);
+            if (view instanceof IndicatorButton) {
+                view.layout(0, 0, width, width);
+                return;
+            }
         }
     }
 }

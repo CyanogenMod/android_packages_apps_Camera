@@ -40,6 +40,11 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:background="@drawable/btn_shutter" />
+            <com.android.camera.ui.ZoomPicker
+                    android:id="@+id/zoom_control"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
             <com.android.camera.ui.RotateImageView android:id="@+id/zoom_increment"
                     android:clickable="true"
                     android:layout_width="wrap_content"

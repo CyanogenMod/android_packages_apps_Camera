@@ -16,15 +16,18 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.CameraPreference.OnPreferenceChangedListener;
 import com.android.camera.IconListPreference;
+import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
+import com.android.camera.CameraSettings;
 import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -32,25 +35,21 @@ import java.util.ArrayList;
  * A view that contains camera setting indicators. The indicators are spreaded
  * differently based on the screen resolution.
  */
-public abstract class IndicatorControl extends ViewGroup implements
+public abstract class IndicatorControl extends RelativeLayout implements
         IndicatorButton.Listener, OtherSettingsPopup.Listener {
     private static final String TAG = "IndicatorControl";
 
     private Context mContext;
-    private Listener mListener;
+    private OnPreferenceChangedListener mListener;
+    protected OnIndicatorEventListener mOnIndicatorEventListener;
 
     private PreferenceGroup mPreferenceGroup;
+    private int mDegree = 0;
 
     ArrayList<AbstractIndicatorButton> mIndicators =
             new ArrayList<AbstractIndicatorButton>();
 
-    static public interface Listener {
-        public void onSharedPreferenceChanged();
-        public void onRestorePreferencesClicked();
-        public void onOverriddenPreferencesClicked();
-    }
-
-    public void setListener(Listener listener) {
+    public void setListener(OnPreferenceChangedListener listener) {
         mListener = listener;
     }
 
@@ -65,6 +64,7 @@ public abstract class IndicatorControl extends ViewGroup implements
     }
 
     public void setDegree(int degree) {
+        mDegree = degree;
         int count = getChildCount();
         for (int i = 0 ; i < count ; ++i) {
             View view = getChildAt(i);
@@ -72,6 +72,16 @@ public abstract class IndicatorControl extends ViewGroup implements
                 ((RotateImageView) view).setDegree(degree);
             }
         }
+    }
+
+    public void setOnIndicatorEventListener(OnIndicatorEventListener listener) {
+        mOnIndicatorEventListener = listener;
+    }
+
+    // For the initialization of first-level indicator bar.
+    public void initialize(Context context, PreferenceGroup group,
+            String flashSetting, String[] keys, String[] otherSettingKeys) {
+        initialize(context, group, keys, otherSettingKeys);
     }
 
     public void initialize(Context context, PreferenceGroup group,
@@ -93,7 +103,6 @@ public abstract class IndicatorControl extends ViewGroup implements
                 addIndicator(context, pref);
             }
         }
-
         requestLayout();
     }
 
