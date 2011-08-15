@@ -529,6 +529,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mCameraDevice.setFaceDetectionListener(null);
             mCameraDevice.stopFaceDetection();
+            if (mFaceListener != null) mFaceListener.clearFaces();
         }
     }
 
@@ -1520,6 +1521,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void updateFocusUI() {
+        // Do not show focus rectangle if there is any face rectangle.
+        if (mFaceListener != null && mFaceListener.faceExists()) return;
+
         if (mCameraState == FOCUSING || mCameraState == FOCUSING_SNAP_ON_FINISH) {
             mFocusRectangle.showStart();
         } else if (mCameraState == FOCUS_SUCCESS) {
