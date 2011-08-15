@@ -150,7 +150,9 @@ public class MosaicFrameProcessor {
             mTraversedAngleY = (int) PanoUtil.calculateDifferenceBetweenAngles(
                     mCompassValueY, mCompassValueYStart);
 
-            if (mTotalFrameCount <= MAX_NUMBER_OF_FRAMES
+            // TODO: make the termination condition regarding reaching
+            // MAX_NUMBER_OF_FRAMES solely determined in the library.
+            if (mTotalFrameCount < MAX_NUMBER_OF_FRAMES
                 && mTraversedAngleX < mCompassThreshold
                 && mTraversedAngleY < mCompassThreshold) {
                 // If we are still collecting new frames for the current mosaic,

@@ -48,8 +48,7 @@ public class MosaicRenderer
 
      /**
       * Calling this function will render the SurfaceTexture to a new 2D texture
-      * using the provided STMatrix and then call glReadPixels to fill the data
-      * array that will be processed by the mosaicing thread.
+      * using the provided STMatrix.
       *
       * @param stMatrix texture coordinate transform matrix obtained from the
       *        Surface texture
