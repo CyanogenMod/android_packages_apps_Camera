@@ -18,7 +18,6 @@ package com.android.camera;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 
@@ -76,7 +75,8 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
     private static boolean isGlobal(String key) {
         return key.equals(CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL)
                 || key.equals(CameraSettings.KEY_CAMERA_ID)
-                || key.equals(CameraSettings.KEY_RECORD_LOCATION);
+                || key.equals(CameraSettings.KEY_RECORD_LOCATION)
+                || key.equals(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN);
     }
 
     public String getString(String key, String defValue) {

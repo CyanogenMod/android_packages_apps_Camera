@@ -21,6 +21,7 @@ import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusRectangle;
 import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.RotateImageView;
+import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomPicker;
 
@@ -71,6 +72,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -103,6 +105,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
     private static final int CHECK_DISPLAY_ROTATION = 6;
     private static final int RESET_TOUCH_FOCUS = 7;
+    private static final int DISMISS_TAP_TO_FOCUS_TOAST = 8;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -319,6 +322,14 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     startFaceDetection();
                     break;
                 }
+
+                case DISMISS_TAP_TO_FOCUS_TOAST: {
+                    View v = findViewById(R.id.tap_to_focus_prompt);
+                    v.setVisibility(View.GONE);
+                    v.setAnimation(AnimationUtils.loadAnimation(Camera.this,
+                            R.anim.on_screen_hint_exit));
+                    break;
+                }
             }
         }
     }
@@ -394,6 +405,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         initializeFocusTone();
         initializeZoom();
         startFaceDetection();
+        showTapToFocusToastIfNeeded();
         mFirstTimeInitialized = true;
         addIdleHandler();
     }
@@ -2384,5 +2396,21 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     @Override
     public void onFaceDetection(Face[] faces, android.hardware.Camera camera) {
         mFaceView.setFaces(faces);
+    }
+
+    private void showTapToFocusToastIfNeeded() {
+        if (mParameters.getMaxNumFocusAreas() > 0 &&
+                mPreferences.getBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, true)) {
+            // Show the toast.
+            RotateLayout v = (RotateLayout) findViewById(R.id.tap_to_focus_prompt);
+            v.setOrientation(mOrientationCompensation);
+            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.on_screen_hint_enter));
+            v.setVisibility(View.VISIBLE);
+            mHandler.sendEmptyMessageDelayed(DISMISS_TAP_TO_FOCUS_TOAST, 5000);
+            // Clear the preference.
+            Editor editor = mPreferences.edit();
+            editor.putBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, false);
+            editor.apply();
+        }
     }
 }

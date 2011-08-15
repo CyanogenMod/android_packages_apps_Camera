@@ -59,5 +59,6 @@
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"/>
+        <include layout="@layout/tap_to_focus_toast"/>
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>

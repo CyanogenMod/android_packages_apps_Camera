@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 
 // A RotateLayout is designed to display a single item and provides the
 // capabilities to rotate the item.
-class RotateLayout extends ViewGroup {
+public class RotateLayout extends ViewGroup {
     private static final String TAG = "RotateLayout";
     private int mOrientation;
     private View mChild;

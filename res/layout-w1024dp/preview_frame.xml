@@ -48,6 +48,7 @@
                 android:layout_margin="15dp"
                 android:visibility="gone"/>
         <include layout="@layout/review_control"/>
+        <include layout="@layout/tap_to_focus_toast"/>
     </RelativeLayout>
     <!-- This is the border of preview and the corner is round. If it is the background,
          preview will be on top and the inner corner will be square, which looks bad.
