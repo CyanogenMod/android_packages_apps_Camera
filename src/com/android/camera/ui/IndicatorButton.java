@@ -110,8 +110,11 @@ public class IndicatorButton extends AbstractIndicatorButton implements BasicSet
         mPopup = popup;
     }
 
+    @Override
     public void onSettingChanged() {
         reloadPreference();
+        // Dismiss later so the activated state can be updated before dismiss.
+        dismissPopupDelayed();
         if (mListener != null) {
             mListener.onSettingChanged();
         }

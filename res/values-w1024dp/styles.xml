@@ -18,8 +18,6 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="ThemeCamera" parent="android:Theme.Holo.NoActionBar">
-    </style>
     <style name="ReviewControlGroup">
         <item name="android:orientation">horizontal</item>
         <item name="android:layout_height">wrap_content</item>
