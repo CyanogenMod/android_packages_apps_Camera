@@ -105,7 +105,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
     private static final int CHECK_DISPLAY_ROTATION = 6;
     private static final int RESET_TOUCH_FOCUS = 7;
-    private static final int DISMISS_TAP_TO_FOCUS_TOAST = 8;
+    private static final int SHOW_TAP_TO_FOCUS_TOAST = 8;
+    private static final int DISMISS_TAP_TO_FOCUS_TOAST = 9;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -323,6 +324,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     break;
                 }
 
+                case SHOW_TAP_TO_FOCUS_TOAST: {
+                    showTapToFocusToast();
+                    break;
+                }
+
                 case DISMISS_TAP_TO_FOCUS_TOAST: {
                     View v = findViewById(R.id.tap_to_focus_prompt);
                     v.setVisibility(View.GONE);
@@ -405,7 +411,13 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         initializeFocusTone();
         initializeZoom();
         startFaceDetection();
-        showTapToFocusToastIfNeeded();
+        // Show the tap to focus toast if this is the first start.
+        if (mParameters.getMaxNumFocusAreas() > 0 &&
+                mPreferences.getBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, true)) {
+            // Delay the toast for one second to wait for orientation.
+            mHandler.sendEmptyMessageDelayed(SHOW_TAP_TO_FOCUS_TOAST, 1000);
+        }
+
         mFirstTimeInitialized = true;
         addIdleHandler();
     }
@@ -1177,6 +1189,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
                 setOrientationIndicator(mOrientationCompensation);
+            }
+
+            // Show the toast after getting the first orientation changed.
+            if (mHandler.hasMessages(SHOW_TAP_TO_FOCUS_TOAST)) {
+                mHandler.removeMessages(SHOW_TAP_TO_FOCUS_TOAST);
+                showTapToFocusToast();
             }
         }
     }
@@ -2398,19 +2416,16 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mFaceView.setFaces(faces);
     }
 
-    private void showTapToFocusToastIfNeeded() {
-        if (mParameters.getMaxNumFocusAreas() > 0 &&
-                mPreferences.getBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, true)) {
-            // Show the toast.
-            RotateLayout v = (RotateLayout) findViewById(R.id.tap_to_focus_prompt);
-            v.setOrientation(mOrientationCompensation);
-            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.on_screen_hint_enter));
-            v.setVisibility(View.VISIBLE);
-            mHandler.sendEmptyMessageDelayed(DISMISS_TAP_TO_FOCUS_TOAST, 5000);
-            // Clear the preference.
-            Editor editor = mPreferences.edit();
-            editor.putBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, false);
-            editor.apply();
-        }
+    private void showTapToFocusToast() {
+        // Show the toast.
+        RotateLayout v = (RotateLayout) findViewById(R.id.tap_to_focus_prompt);
+        v.setOrientation(mOrientationCompensation);
+        v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.on_screen_hint_enter));
+        v.setVisibility(View.VISIBLE);
+        mHandler.sendEmptyMessageDelayed(DISMISS_TAP_TO_FOCUS_TOAST, 5000);
+        // Clear the preference.
+        Editor editor = mPreferences.edit();
+        editor.putBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, false);
+        editor.apply();
     }
 }
