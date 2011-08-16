@@ -543,6 +543,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private void startFaceDetection() {
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceView = (FaceView) findViewById(R.id.face_view);
+            mFaceView.clearFaces();
             mFaceView.setVisibility(View.VISIBLE);
             mFaceView.setDisplayOrientation(mDisplayOrientation);
             CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
@@ -555,7 +556,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private void stopFaceDetection() {
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mCameraDevice.setFaceDetectionListener(null);
-            mCameraDevice.stopFaceDetection();
+            if (mCameraState != PREVIEW_STOPPED) mCameraDevice.stopFaceDetection();
             if (mFaceView != null) mFaceView.clearFaces();
         }
     }
@@ -1459,6 +1460,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     protected void onPause() {
         mPausing = true;
         stopPreview();
+        stopFaceDetection();
         // Close the camera now because other activities may need to use it.
         closeCamera();
         resetScreenOn();
