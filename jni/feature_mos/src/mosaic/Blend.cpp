@@ -70,6 +70,25 @@ int Blend::initialize(int blendingType, int frame_width, int frame_height)
     return BLEND_RET_OK;
 }
 
+void Blend::AlignToMiddleFrame(MosaicFrame **frames, int frames_size)
+{
+    // Unwarp this frame and Warp the others to match
+    MosaicFrame *mb = NULL;
+    MosaicFrame *ref = frames[int(frames_size/2)];    // Middle frame
+
+    double invtrs[3][3];
+    inv33d(ref->trs, invtrs);
+
+    for(int mfit = 0; mfit < frames_size; mfit++)
+    {
+        mb = frames[mfit];
+        double temp[3][3];
+        mult33d(temp, invtrs, mb->trs);
+        memcpy(mb->trs, temp, sizeof(temp));
+        normProjMat33d(mb->trs);
+    }
+}
+
 int Blend::runBlend(MosaicFrame **frames, int frames_size, ImageType &imageMosaicYVU, int &mosaicWidth, int &mosaicHeight)
 {
     int ret;
@@ -872,8 +891,8 @@ void Blend::ComputeBlendParameters(MosaicFrame **frames, int frames_size, int is
     MosaicFrame *last = frames[frames_size-1];
     MosaicFrame *mb;
 
-    double lxpos = last->trs[0][2], lypos = last->trs[1][5];
-    double fxpos = first->trs[0][2], fypos = first->trs[1][5];
+    double lxpos = last->trs[0][2], lypos = last->trs[1][2];
+    double fxpos = first->trs[0][2], fypos = first->trs[1][2];
 
     // Calculate warp to produce proper stitching.
     // get x, y displacement

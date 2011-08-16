@@ -53,6 +53,7 @@ char buffer[1024];
 
 double g_dAffinetrans[16];
 double g_dAffinetransInv[16];
+double g_dTranslation[16];
 
 const int MAX_FRAMES_HR = 100;
 const int MAX_FRAMES_LR = 200;
@@ -367,6 +368,23 @@ void decodeYUV444SP(unsigned char* rgb, unsigned char* yuv420sp, int width,
 
 static int count = 0;
 
+void ConvertYVUAiToPlanarYVU(unsigned char *planar, unsigned char *in, int width,
+        int height)
+{
+    int planeSize = width * height;
+    unsigned char* Yptr = planar;
+    unsigned char* Vptr = planar + planeSize;
+    unsigned char* Uptr = Vptr + planeSize;
+
+    for (int i = 0; i < planeSize; i++)
+    {
+        *Yptr++ = *in++;
+        *Vptr++ = *in++;
+        *Uptr++ = *in++;
+        in++;   // Alpha
+    }
+}
+
 JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceImageFromGPU(
         JNIEnv* env, jobject thiz)
 {
@@ -379,25 +397,32 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
 
         t0 = now_ms();
 
-        sem_wait(&gPreviewImageRGB_semaphore);
-        ImageUtils::rgba2yvu(tImage[LR][frame_number_LR], gPreviewImageRGB[LR],
+        sem_wait(&gPreviewImage_semaphore);
+        ConvertYVUAiToPlanarYVU(tImage[LR][frame_number_LR], gPreviewImage[LR],
                 tWidth[LR], tHeight[LR]);
-        sem_post(&gPreviewImageRGB_semaphore);
+
+        sem_post(&gPreviewImage_semaphore);
 
         t1 = now_ms();
         time_c = t1 - t0;
-        LOGV("[%d] RGB => YVU [%d]: %g ms", frame_number_HR, frame_number_LR,
+        LOGV("[%d] RGB [LR] => YVU [LR] [%d]: %g ms", frame_number_HR, frame_number_LR,
                 time_c);
 
         int ret_code = AddFrame(LR, frame_number_LR, gTRS);
 
         if(ret_code == Mosaic::MOSAIC_RET_OK)
         {
+            t0 = now_ms();
             // Copy into HR buffer only if this is a valid frame
-            sem_wait(&gPreviewImageRGB_semaphore);
-            ImageUtils::rgba2yvu(tImage[HR][frame_number_HR], gPreviewImageRGB[HR],
+            sem_wait(&gPreviewImage_semaphore);
+            ConvertYVUAiToPlanarYVU(tImage[HR][frame_number_HR], gPreviewImage[HR],
                     tWidth[HR], tHeight[HR]);
-            sem_post(&gPreviewImageRGB_semaphore);
+            sem_post(&gPreviewImage_semaphore);
+
+            t1 = now_ms();
+            time_c = t1 - t0;
+            LOGV("[%d] RGB [HR] => YVU [HR] [%d]: %g ms", frame_number_HR, frame_number_LR,
+                    time_c);
 
             frame_number_LR++;
             frame_number_HR++;
@@ -457,10 +482,10 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
                 tHeight[HR], tImage[LR][frame_number_LR]);
 
 
-        sem_wait(&gPreviewImageRGB_semaphore);
-        decodeYUV444SP(gPreviewImageRGB[LR], tImage[LR][frame_number_LR],
-                gPreviewImageRGBWidth[LR], gPreviewImageRGBHeight[LR]);
-        sem_post(&gPreviewImageRGB_semaphore);
+        sem_wait(&gPreviewImage_semaphore);
+        decodeYUV444SP(gPreviewImage[LR], tImage[LR][frame_number_LR],
+                gPreviewImageWidth[LR], gPreviewImageHeight[LR]);
+        sem_post(&gPreviewImage_semaphore);
 
         t1 = now_ms();
         time_c = t1 - t0;
