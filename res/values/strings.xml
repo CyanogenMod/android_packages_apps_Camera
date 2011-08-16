@@ -270,4 +270,7 @@
 
     <!-- The text shown on the button for starting panorama capturing [CHAR LIMIT=10] -->
     <string name="pano_capture_start">Start</string>
+
+    <!-- Toast telling users tapping on the viewfinder will trigger autofocus [CHAR LIMIT=24] -->
+    <string name="tap_to_focus">Tap to focus</string>
 </resources>
