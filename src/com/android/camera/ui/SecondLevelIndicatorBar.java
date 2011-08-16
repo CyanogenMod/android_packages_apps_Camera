@@ -36,10 +36,6 @@ public class SecondLevelIndicatorBar extends IndicatorControl implements
     int mDegree = 0;
     int mSelectedIndex = -1;
 
-    public SecondLevelIndicatorBar(Context context) {
-        super(context);
-    }
-
     public SecondLevelIndicatorBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

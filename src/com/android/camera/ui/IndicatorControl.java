@@ -42,6 +42,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
     private Context mContext;
     private OnPreferenceChangedListener mListener;
     protected OnIndicatorEventListener mOnIndicatorEventListener;
+    protected CameraPicker mCameraPicker;
 
     private PreferenceGroup mPreferenceGroup;
     private int mDegree = 0;
@@ -51,11 +52,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
 
     public void setListener(OnPreferenceChangedListener listener) {
         mListener = listener;
-    }
-
-    public IndicatorControl(Context context) {
-        super(context);
-        mContext = context;
+        if (mCameraPicker != null) mCameraPicker.setListener(listener);
     }
 
     public IndicatorControl(Context context, AttributeSet attrs) {
@@ -78,7 +75,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
         mOnIndicatorEventListener = listener;
     }
 
-    // For the initialization of first-level indicator bar.
+    // For the initialization of first-level indicator control.
     public void initialize(Context context, PreferenceGroup group,
             String flashSetting, String[] keys, String[] otherSettingKeys) {
         initialize(context, group, keys, otherSettingKeys);
@@ -104,6 +101,16 @@ public abstract class IndicatorControl extends RelativeLayout implements
             }
         }
         requestLayout();
+    }
+
+    public void initializeCameraPicker(Context context, PreferenceGroup group) {
+        ListPreference pref = group.findPreference(
+                CameraSettings.KEY_CAMERA_ID);
+        if (pref == null) return;
+        mCameraPicker = new CameraPicker(context);
+        mCameraPicker.initialize(pref);
+        mCameraPicker.setCameraPickerIcon();
+        addView(mCameraPicker);
     }
 
     private void removeIndicators() {
@@ -196,5 +203,6 @@ public abstract class IndicatorControl extends RelativeLayout implements
                 v.setEnabled(enabled);
             }
         }
+        if (mCameraPicker != null) mCameraPicker.setEnabled(enabled);
     }
 }

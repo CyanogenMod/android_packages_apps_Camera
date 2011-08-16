@@ -20,7 +20,6 @@ import com.android.camera.CameraPreference.OnPreferenceChangedListener;
 import com.android.camera.CameraSettings;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
-import com.android.camera.Util;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -38,10 +37,6 @@ public class IndicatorBar extends IndicatorControl implements
     private ImageView mZoomIcon;
     private ImageView mSecondLevelIcon;
 
-    public IndicatorBar(Context context) {
-        super(context);
-    }
-
     public IndicatorBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -50,6 +45,9 @@ public class IndicatorBar extends IndicatorControl implements
             String flashSetting, boolean zoomSupported) {
         // From UI spec, we have camera_flash setting on the first level.
         super.initialize(context, group, new String[] {flashSetting}, null);
+
+        // Add CameraPicker control.
+        initializeCameraPicker(context, group);
 
         // add Zoom Icon.
         if (zoomSupported) {
@@ -83,13 +81,15 @@ public class IndicatorBar extends IndicatorControl implements
         int count = getChildCount();
         if (count == 0) return;
         int width = right - left;
-        View view;
+        int offset = 0;
+
         for (int i = 0 ; i < count ; i++) {
-            view = getChildAt(i);
+            View view = getChildAt(i);
             if (view instanceof IndicatorButton) {
-                view.layout(0, 0, width, width);
-                return;
+                view.layout(0, offset, width, offset + width);
+                offset += width;
             }
         }
+        if (mCameraPicker != null) mCameraPicker.layout(0, offset, width, offset + width);
     }
 }

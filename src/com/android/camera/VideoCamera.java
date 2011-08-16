@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.IndicatorWheel;
 import com.android.camera.ui.RotateImageView;
@@ -242,9 +241,6 @@ public class VideoCamera extends ActivityBase
     private ZoomControl mZoomControl;
     private final ZoomListener mZoomListener = new ZoomListener();
 
-    // front/back camera switch.
-    private CameraPicker mCameraPicker;
-
     // This Handler is used to post message back onto the main thread of the
     // application
     private class MainHandler extends Handler {
@@ -451,20 +447,6 @@ public class VideoCamera extends ActivityBase
         // Initialize after startPreview becuase this need mParameters.
         initializeZoomControl();
         initializeIndicatorControl();
-        initializeCameraPicker();
-    }
-
-    private void initializeCameraPicker() {
-        mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
-        if (mCameraPicker != null) {
-            ListPreference pref = mPreferenceGroup.findPreference(
-                    CameraSettings.KEY_CAMERA_ID);
-            if (pref != null) {
-                mCameraPicker.initialize(pref);
-                mCameraPicker.setListener(this);
-            }
-            mCameraPicker.setCameraPickerIcon();
-        }
     }
 
     private void loadCameraPreferences() {
@@ -483,7 +465,6 @@ public class VideoCamera extends ActivityBase
     private void enableCameraControls(boolean enable) {
         if (mIndicatorControl != null) mIndicatorControl.setEnabled(enable);
         if (mModePicker != null) mModePicker.setEnabled(enable);
-        if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
     }
 
     private void initializeIndicatorControl() {
@@ -547,7 +528,6 @@ public class VideoCamera extends ActivityBase
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
-        if (mCameraPicker != null) mCameraPicker.setDegree(degree);
     }
 
     private void startPlayVideoActivity() {

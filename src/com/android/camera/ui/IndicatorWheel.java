@@ -16,6 +16,7 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 import com.android.camera.Util;
 
@@ -78,6 +79,14 @@ public class IndicatorWheel extends IndicatorControl {
         mBackgroundPaint.setAntiAlias(true);
 
         mBackgroundRect = new RectF();
+    }
+
+    @Override
+    public void initialize(Context context, PreferenceGroup group,
+            String flashSetting, String[] keys, String[] otherSettingKeys) {
+        // Add CameraPicker control.
+        initializeCameraPicker(context, group);
+        super.initialize(context, group, flashSetting, keys, otherSettingKeys);
     }
 
     @Override
