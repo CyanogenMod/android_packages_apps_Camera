@@ -553,6 +553,13 @@ public class PanoramaActivity extends Activity implements
                 + ((imageData[len + 6] & 0xFF) << 8) + (imageData[len + 7] & 0xFF);
         Log.v(TAG, "ImLength = " + (len) + ", W = " + width + ", H = " + height);
 
+        if (width <= 0 || height <= 0) {
+            // TODO: pop up a error meesage indicating that the final result is not generated.
+            Log.e(TAG, "width|height <= 0!!, len = " + (len) + ", W = " + width + ", H = " +
+                    height);
+            return null;
+        }
+
         YuvImage yuvimage = new YuvImage(imageData, ImageFormat.NV21, width, height, null);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         yuvimage.compressToJpeg(new Rect(0, 0, width, height), 100, out);
