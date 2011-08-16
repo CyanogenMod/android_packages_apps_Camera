@@ -40,14 +40,14 @@
         <Button android:id="@+id/pano_review_retake_button"
                 android:text="@string/review_retake"
                 android:onClick="onRetakeButtonClicked"
-                android:textSize="24dp"
-                android:layout_width="180dp"
-                android:layout_height="180dp" />
+                android:textAppearance="?android:textAppearanceMedium"
+                android:layout_width="@dimen/pano_review_button_width"
+                android:layout_height="@dimen/pano_review_button_height" />
         <Button android:id="@+id/pano_review_ok_button"
                 android:text="@string/review_ok"
+                android:textAppearance="?android:textAppearanceMedium"
                 android:onClick="onOkButtonClicked"
-                android:textSize="24dp"
-                android:layout_width="180dp"
-                android:layout_height="180dp" />
+                android:layout_width="@dimen/pano_review_button_width"
+                android:layout_height="@dimen/pano_review_button_height" />
     </LinearLayout>
 </RelativeLayout>

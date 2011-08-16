@@ -48,6 +48,7 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
@@ -79,8 +80,8 @@ public class PanoramaActivity extends Activity implements
 
     private View mPanoControlLayout;
     private View mCaptureLayout;
+    private Button mStopCaptureButton;
     private View mReviewLayout;
-    private SurfaceView mPreview;
     private ImageView mReview;
     private CaptureView mCaptureView;
     private MosaicRendererSurfaceView mRealTimeMosaicView;
@@ -313,8 +314,7 @@ public class PanoramaActivity extends Activity implements
             }
         });
 
-        mCaptureLayout.setVisibility(View.VISIBLE);
-        mPreview.setVisibility(View.INVISIBLE);  // will be re-used, invisible is better than gone.
+        mStopCaptureButton.setVisibility(View.VISIBLE);
         mRealTimeMosaicView.setVisibility(View.VISIBLE);
         mPanoControlLayout.setVisibility(View.GONE);
 
@@ -371,9 +371,8 @@ public class PanoramaActivity extends Activity implements
         mCaptureState = CAPTURE_VIEWFINDER;
 
         mCaptureLayout = (View) findViewById(R.id.pano_capture_layout);
+        mStopCaptureButton = (Button) findViewById(R.id.pano_capture_stop_button);
         mReviewLayout = (View) findViewById(R.id.pano_review_layout);
-
-        mPreview = (SurfaceView) findViewById(R.id.pano_preview_view);
 
         mCaptureView = (CaptureView) findViewById(R.id.pano_capture_view);
         mCaptureView.setStartAngle(-DEFAULT_SWEEP_ANGLE / 2);
@@ -429,9 +428,9 @@ public class PanoramaActivity extends Activity implements
         mCaptureState = CAPTURE_VIEWFINDER;
 
         mReviewLayout.setVisibility(View.GONE);
-        mPreview.setVisibility(View.VISIBLE);
+        mStopCaptureButton.setVisibility(View.GONE);
         mPanoControlLayout.setVisibility(View.VISIBLE);
-        mCaptureLayout.setVisibility(View.GONE);
+        mCaptureLayout.setVisibility(View.VISIBLE);
         mMosaicFrameProcessor.reset();
 
         mSurface.setOnFrameAvailableListener(this);
@@ -446,7 +445,6 @@ public class PanoramaActivity extends Activity implements
             mReview.setImageBitmap(bitmap);
         }
         mCaptureLayout.setVisibility(View.GONE);
-        mPreview.setVisibility(View.INVISIBLE);
         mReviewLayout.setVisibility(View.VISIBLE);
         mCaptureView.setStatusText("");
         mCaptureView.setSweepAngle(0);

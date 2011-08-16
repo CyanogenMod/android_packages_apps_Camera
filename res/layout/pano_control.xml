@@ -18,17 +18,19 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:minWidth="@dimen/pano_control_layout_min_width"
+        android:layout_alignParentRight="true"
         android:background="@drawable/bg_camera_pattern">
 
     <include layout="@layout/review_thumbnail"/>
 
+    <include layout="@layout/mode_picker"/>
+
     <Button android:id="@+id/pano_start_button"
             android:text="@string/pano_capture_start"
             android:onClick="onStartButtonClicked"
-            android:textSize="24dp"
+            android:textAppearance="?android:textAppearanceMedium"
             android:layout_centerInParent="true"
             android:layout_width="@dimen/pano_control_start_button_size"
             android:layout_height="@dimen/pano_control_start_button_size" />
 
-    <include layout="@layout/mode_picker"/>
 </com.android.camera.ui.ControlPanelLayout>
