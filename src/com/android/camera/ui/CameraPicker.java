@@ -16,7 +16,9 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.CameraPreference.OnPreferenceChangedListener;
 import com.android.camera.ListPreference;
+import com.android.camera.R;
 
 import android.content.Context;
 import android.hardware.Camera.CameraInfo;
@@ -28,20 +30,20 @@ import android.widget.ImageView;
  * A view for switching the front/back camera.
  */
 public class CameraPicker extends RotateImageView implements View.OnClickListener {
-    private Listener mListener;
+    private OnPreferenceChangedListener mListener;
     private ListPreference mPreference;
     private CharSequence[] mCameras;
-    private int mCameraIndex;
+    private int mCameraFacing;
+
+    public CameraPicker(Context context) {
+        super(context);
+    }
 
     public CameraPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    static public interface Listener {
-        public void onSharedPreferenceChanged();
-    }
-
-    public void setListener(Listener listener) {
+    public void setListener(OnPreferenceChangedListener listener) {
         mListener = listener;
     }
 
@@ -53,20 +55,27 @@ public class CameraPicker extends RotateImageView implements View.OnClickListene
         String cameraId = pref.getValue();
         setVisibility(View.VISIBLE);
         if (mCameras[CameraInfo.CAMERA_FACING_FRONT].equals(cameraId)) {
-            mCameraIndex = CameraInfo.CAMERA_FACING_FRONT;
+            mCameraFacing = CameraInfo.CAMERA_FACING_FRONT;
         } else {
-            mCameraIndex = CameraInfo.CAMERA_FACING_BACK;
+            mCameraFacing = CameraInfo.CAMERA_FACING_BACK;
         }
+    }
+
+    public void setCameraPickerIcon() {
+        setImageResource((mCameraFacing == CameraInfo.CAMERA_FACING_BACK)
+                ? R.drawable.ic_rotate_camera_facing_back
+                : R.drawable.ic_rotate_camera_facing_forward);
     }
 
     @Override
     public void onClick(View v) {
         if (mCameras == null) return;
-        int newCameraIndex = (mCameraIndex == CameraInfo.CAMERA_FACING_BACK)
+        int newCameraIndex = (mCameraFacing == CameraInfo.CAMERA_FACING_BACK)
                 ? CameraInfo.CAMERA_FACING_FRONT
                 : CameraInfo.CAMERA_FACING_BACK;
-        mCameraIndex = newCameraIndex;
-        mPreference.setValue((String) mCameras[mCameraIndex]);
+        mCameraFacing = newCameraIndex;
+        setCameraPickerIcon();
+        mPreference.setValue((String) mCameras[mCameraFacing]);
         mListener.onSharedPreferenceChanged();
     }
 }

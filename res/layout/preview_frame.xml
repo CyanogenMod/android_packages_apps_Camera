@@ -53,12 +53,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_margin="5dp"
                 android:visibility="gone"/>
-        <com.android.camera.ui.IndicatorBar
-                android:id="@+id/indicator_control"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"/>
         <include layout="@layout/tap_to_focus_toast"/>
+        <include layout="@layout/indicator_bar" />
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>

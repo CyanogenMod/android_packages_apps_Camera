@@ -24,6 +24,7 @@ import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomPicker;
+import com.android.camera.ui.ZoomControl;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -92,7 +93,7 @@ import java.util.List;
 public class Camera extends ActivityBase implements View.OnClickListener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
         SurfaceHolder.Callback, ModePicker.OnModeChangeListener,
-        FaceDetectionListener {
+        FaceDetectionListener, CameraPreference.OnPreferenceChangedListener {
 
     private static final String TAG = "camera";
 
@@ -134,7 +135,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
     private int mTargetZoomValue;
-    private ZoomPicker mZoomPicker;
+    private ZoomControl mZoomControl;
 
     private Parameters mParameters;
     private Parameters mInitialParams;
@@ -477,17 +478,24 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
+    private void initializeZoomControl() {
+        mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
+        if (!mParameters.isZoomSupported()) {
+            mZoomControl.setZoomSupported(false);
+        }
+        mZoomControl.initialize(this);
+    }
+
     private void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;
-
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
-        if (mZoomPicker != null) {
-            mZoomPicker.setZoomMax(mZoomMax);
-            mZoomPicker.setZoomIndex(mParameters.getZoom());
-            mZoomPicker.setSmoothZoomSupported(mSmoothZoomSupported);
-            mZoomPicker.setOnZoomChangeListener(
-                    new ZoomPicker.OnZoomChangedListener() {
+        if (mZoomControl != null) {
+            mZoomControl.setZoomMax(mZoomMax);
+            mZoomControl.setZoomIndex(mParameters.getZoom());
+            mZoomControl.setSmoothZoomSupported(mSmoothZoomSupported);
+            mZoomControl.setOnZoomChangeListener(
+                    new ZoomControl.OnZoomChangedListener() {
                 // only for immediate zoom
                 @Override
                 public void onZoomValueChanged(int index) {
@@ -500,9 +508,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     if (mPausing) return;
 
                     Log.v(TAG, "zoom picker state=" + state);
-                    if (state == ZoomPicker.ZOOM_IN) {
+                    if (state == ZoomControl.ZOOM_IN) {
                         Camera.this.onZoomValueChanged(mZoomMax);
-                    } else if (state == ZoomPicker.ZOOM_OUT){
+                    } else if (state == ZoomControl.ZOOM_OUT){
                         Camera.this.onZoomValueChanged(0);
                     } else {
                         mTargetZoomValue = -1;
@@ -514,7 +522,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 }
             });
         }
-
         mCameraDevice.setZoomChangeListener(mZoomListener);
     }
 
@@ -617,21 +624,13 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private void initializeCameraPicker() {
         mCameraPicker = (CameraPicker) findViewById(R.id.camera_picker);
         if (mCameraPicker != null) {
-            mCameraPicker.setImageResource(R.drawable.camera_toggle);
             ListPreference pref = mPreferenceGroup.findPreference(
                     CameraSettings.KEY_CAMERA_ID);
             if (pref != null) {
                 mCameraPicker.initialize(pref);
-                mCameraPicker.setListener(new MyCameraPickerListener());
+                mCameraPicker.setListener(this);
             }
-        }
-    }
-
-    private void initializeZoomPicker() {
-        View zoomIncrement = findViewById(R.id.zoom_increment);
-        View zoomDecrement = findViewById(R.id.zoom_decrement);
-        if (zoomIncrement != null && zoomDecrement != null && mParameters.isZoomSupported()) {
-            mZoomPicker = new ZoomPicker(this, zoomIncrement, zoomDecrement);
+            mCameraPicker.setCameraPickerIcon();
         }
     }
 
@@ -856,7 +855,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mZoomValue = value;
 
             // Update the UI when we get zoom value.
-            if (mZoomPicker != null) mZoomPicker.setZoomIndex(value);
+            if (mZoomControl != null) mZoomControl.setZoomIndex(value);
 
             // Keep mParameters up to date. We do not getParameter again in
             // takePicture. If we do not do this, wrong zoom value will be set.
@@ -1087,8 +1086,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
         // Do this after starting preview because it depends on camera
         // parameters.
+        initializeZoomControl();
         initializeIndicatorControl();
-        initializeZoomPicker();
         initializeCameraPicker();
     }
 
@@ -1137,18 +1136,17 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     CameraSettings.KEY_PICTURE_SIZE};
         } else {
             SETTING_KEYS = new String[] {
-                    CameraSettings.KEY_FLASH_MODE,
-                    CameraSettings.KEY_WHITE_BALANCE};
+                    CameraSettings.KEY_WHITE_BALANCE,
+                    CameraSettings.KEY_SCENE_MODE};
             OTHER_SETTING_KEYS = new String[] {
-                    CameraSettings.KEY_FOCUS_MODE,
                     CameraSettings.KEY_EXPOSURE,
-                    CameraSettings.KEY_SCENE_MODE,
+                    CameraSettings.KEY_FOCUS_MODE,
                     CameraSettings.KEY_PICTURE_SIZE,
                     CameraSettings.KEY_RECORD_LOCATION};
         }
-        mIndicatorControl.initialize(this, mPreferenceGroup, SETTING_KEYS,
-                OTHER_SETTING_KEYS);
-        mIndicatorControl.setListener(new MyIndicatorControlListener());
+        mIndicatorControl.initialize(this, mPreferenceGroup,
+                CameraSettings.KEY_FLASH_MODE, SETTING_KEYS, OTHER_SETTING_KEYS);
+        mIndicatorControl.setListener(this);
     }
 
     private boolean collapseCameraControls() {
@@ -1161,8 +1159,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private void enableCameraControls(boolean enable) {
         if (mIndicatorControl != null) mIndicatorControl.setEnabled(enable);
         if (mCameraPicker != null) mCameraPicker.setEnabled(enable);
-        if (mZoomPicker != null) mZoomPicker.setEnabled(enable);
         if (mModePicker != null) mModePicker.setEnabled(enable);
+        if (mZoomControl != null) mZoomControl.setEnabled(enable);
     }
 
     public static int roundOrientation(int orientation) {
@@ -1205,6 +1203,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
         if (mCameraPicker != null) mCameraPicker.setDegree(degree);
+        if (mZoomControl != null) mZoomControl.setDegree(degree);
     }
 
     @Override
@@ -2292,7 +2291,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
-    private void onSharedPreferenceChanged() {
+    public void onSharedPreferenceChanged() {
         // ignore the events after "onPause()"
         if (mPausing) return;
 
@@ -2344,7 +2343,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
     }
 
-    protected void onRestorePreferencesClicked() {
+    public void onRestorePreferencesClicked() {
         if (mPausing) return;
         Runnable runnable = new Runnable() {
             public void run() {
@@ -2362,7 +2361,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mParameters.isZoomSupported()) {
             mZoomValue = 0;
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
-            if (mZoomPicker != null) mZoomPicker.setZoomIndex(0);
+            if (mZoomControl != null) mZoomControl.setZoomIndex(0);
         }
         if (mIndicatorControl != null) {
             mIndicatorControl.dismissSettingPopup();
@@ -2373,7 +2372,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
-    protected void onOverriddenPreferencesClicked() {
+    public void onOverriddenPreferencesClicked() {
         if (mPausing) return;
         if (mNotSelectableToast == null) {
             String str = getResources().getString(R.string.not_selectable_in_scene_mode);
@@ -2389,26 +2388,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     mOrientationCompensation, mThumbnailView);
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
-    }
-
-    private class MyIndicatorControlListener implements IndicatorControl.Listener {
-        public void onSharedPreferenceChanged() {
-            Camera.this.onSharedPreferenceChanged();
-        }
-
-        public void onRestorePreferencesClicked() {
-            Camera.this.onRestorePreferencesClicked();
-        }
-
-        public void onOverriddenPreferencesClicked() {
-            Camera.this.onOverriddenPreferencesClicked();
-        }
-    }
-
-    private class MyCameraPickerListener implements CameraPicker.Listener {
-        public void onSharedPreferenceChanged() {
-            Camera.this.onSharedPreferenceChanged();
-        }
     }
 
     @Override
