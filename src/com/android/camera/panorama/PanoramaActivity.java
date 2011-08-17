@@ -287,8 +287,7 @@ public class PanoramaActivity extends Activity implements
     }
 
     public synchronized void onFrameAvailable(SurfaceTexture surface) {
-        /* For simplicity, SurfaceTexture calls here when it has new
-         * data available.  Call may come in from some random thread,
+        /* This function may be called by some random thread,
          * so let's be safe and use synchronize. No OpenGL calls can be done here.
          */
         // Updating the texture should be done in the GL thread which mMosaicView is attached.
@@ -488,10 +487,9 @@ public class PanoramaActivity extends Activity implements
     @Override
     protected void onPause() {
         super.onPause();
-        mSurfaceTexture.setOnFrameAvailableListener(null);
+
         releaseCamera();
         mPausing = true;
-
         mMosaicView.onPause();
         mSensorManager.unregisterListener(mListener);
         clearMosaicFrameProcessorIfNeeded();
@@ -513,6 +511,10 @@ public class PanoramaActivity extends Activity implements
         mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
         mCaptureState = CAPTURE_VIEWFINDER;
         setupCamera();
+        if (mSurfaceTexture != null) {
+            mSurfaceTexture.setOnFrameAvailableListener(this);
+            startCameraPreview();
+        }
         // Camera must be initialized before MosaicFrameProcessor is initialized. The preview size
         // has to be decided by camera device.
         initMosaicFrameProcessorIfNeeded();
