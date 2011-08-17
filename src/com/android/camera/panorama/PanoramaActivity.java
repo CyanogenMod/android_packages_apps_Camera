@@ -312,6 +312,7 @@ public class PanoramaActivity extends Activity implements
         });
 
         mStopCaptureButton.setVisibility(View.VISIBLE);
+        mCaptureView.setVisibility(View.VISIBLE);
         mRealTimeMosaicView.setVisibility(View.VISIBLE);
         mPanoControlLayout.setVisibility(View.GONE);
 
@@ -368,24 +369,20 @@ public class PanoramaActivity extends Activity implements
         mCaptureState = CAPTURE_VIEWFINDER;
 
         mCaptureLayout = (View) findViewById(R.id.pano_capture_layout);
-        mStopCaptureButton = (Button) findViewById(R.id.pano_capture_stop_button);
-        mReviewLayout = (View) findViewById(R.id.pano_review_layout);
-
-        mCaptureView = (CaptureView) findViewById(R.id.pano_capture_view);
-        mCaptureView.setStartAngle(-DEFAULT_SWEEP_ANGLE / 2);
-        mReview = (ImageView) findViewById(R.id.pano_reviewarea);
-
         mRealTimeMosaicView = (MosaicRendererSurfaceView) findViewById(R.id.pano_renderer);
         mRealTimeMosaicView.getRenderer().setMosaicSurfaceCreateListener(this);
+        mCaptureView = (CaptureView) findViewById(R.id.pano_capture_view);
+        mCaptureView.setStartAngle(-DEFAULT_SWEEP_ANGLE / 2);
+        mStopCaptureButton = (Button) findViewById(R.id.pano_capture_stop_button);
+
+        mReviewLayout = (View) findViewById(R.id.pano_review_layout);
+        mReview = (ImageView) findViewById(R.id.pano_reviewarea);
 
         mPanoControlLayout = (View) findViewById(R.id.pano_control_layout);
-
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
         mModePicker.setVisibility(View.VISIBLE);
         mModePicker.setOnModeChangeListener(this);
         mModePicker.setCurrentMode(ModePicker.MODE_PANORAMA);
-
-        mRealTimeMosaicView.setVisibility(View.VISIBLE);
     }
 
     @OnClickAttr
@@ -427,6 +424,7 @@ public class PanoramaActivity extends Activity implements
 
         mReviewLayout.setVisibility(View.GONE);
         mStopCaptureButton.setVisibility(View.GONE);
+        mCaptureView.setVisibility(View.GONE);
         mPanoControlLayout.setVisibility(View.VISIBLE);
         mCaptureLayout.setVisibility(View.VISIBLE);
         mMosaicFrameProcessor.reset();
@@ -480,7 +478,6 @@ public class PanoramaActivity extends Activity implements
         mPausing = true;
 
         mRealTimeMosaicView.onPause();
-        mCaptureView.onPause();
         mSensorManager.unregisterListener(mListener);
         clearMosaicFrameProcessorIfNeeded();
         System.gc();
@@ -504,7 +501,6 @@ public class PanoramaActivity extends Activity implements
         // Camera must be initialized before MosaicFrameProcessor is initialized. The preview size
         // has to be decided by camera device.
         initMosaicFrameProcessorIfNeeded();
-        mCaptureView.onResume();
         mRealTimeMosaicView.onResume();
     }
 

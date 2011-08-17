@@ -50,12 +50,6 @@ class CaptureView extends View {
         Log.v(TAG, "onSizeChanged: W = " + w + ", H = " + h);
     }
 
-    public void onResume() {
-    }
-
-    public void onPause() {
-    }
-
     public void setStartAngle(int angle) {
         mStartAngle = angle;
     }
