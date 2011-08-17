@@ -35,17 +35,16 @@ import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.hardware.Camera.Parameters;
-import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -59,7 +58,8 @@ import java.util.List;
  */
 public class PanoramaActivity extends Activity implements
         ModePicker.OnModeChangeListener,
-        SurfaceTexture.OnFrameAvailableListener {
+        SurfaceTexture.OnFrameAvailableListener,
+        MosaicRendererSurfaceViewRenderer.MosaicSurfaceCreateListener {
     public static final int DEFAULT_SWEEP_ANGLE = 160;
     public static final int DEFAULT_BLEND_MODE = Mosaic.BLENDTYPE_HORIZONTAL;
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
@@ -132,20 +132,6 @@ public class PanoramaActivity extends Activity implements
                 clearMosaicFrameProcessorIfNeeded();
             }
         };
-    }
-
-    public void createSurfaceTextureAndStartPreview(int textureID) {
-        /*
-         * Create the SurfaceTexture that will feed this textureID, and pass it to the camera
-         */
-        mSurface = new SurfaceTexture(textureID);
-        mSurface.setOnFrameAvailableListener(this);
-        startPreview();
-        Log.i(TAG, "Created Surface Texture");
-    }
-
-    public SurfaceTexture getSurfaceTexture() {
-        return mSurface;
     }
 
     private void setupCamera() {
@@ -256,6 +242,17 @@ public class PanoramaActivity extends Activity implements
         }
     }
 
+    public void onMosaicSurfaceCreated(final SurfaceTexture surface) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSurface = surface;
+                mSurface.setOnFrameAvailableListener(PanoramaActivity.this);
+                startCameraPreview();
+            }
+        });
+    }
+
     public void runViewFinder() {
         mRealTimeMosaicView.setWarping(false);
 
@@ -324,7 +321,7 @@ public class PanoramaActivity extends Activity implements
         mCaptureState = CAPTURE_VIEWFINDER;
 
         mMosaicFrameProcessor.setProgressListener(null);
-        stopPreview();
+        stopCameraPreview();
 
         mSurface.setOnFrameAvailableListener(null);
 
@@ -379,7 +376,7 @@ public class PanoramaActivity extends Activity implements
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
 
         mRealTimeMosaicView = (MosaicRendererSurfaceView) findViewById(R.id.pano_renderer);
-        mRealTimeMosaicView.setUIObject(this);
+        mRealTimeMosaicView.getRenderer().setMosaicSurfaceCreateListener(this);
 
         mPanoControlLayout = (View) findViewById(R.id.pano_control_layout);
 
@@ -393,19 +390,20 @@ public class PanoramaActivity extends Activity implements
 
     @OnClickAttr
     public void onStartButtonClicked(View v) {
-        if (mPausing || mThreadRunning) return;
+        // If mSurface == null then GL setup is not finished yet. All buttons cannot be pressed.
+        if (mPausing || mThreadRunning || mSurface == null) return;
         startCapture();
     }
 
     @OnClickAttr
     public void onStopButtonClicked(View v) {
-        if (mPausing || mThreadRunning) return;
+        if (mPausing || mThreadRunning || mSurface == null) return;
         stopCapture();
     }
 
     @OnClickAttr
     public void onOkButtonClicked(View v) {
-        if (mPausing || mThreadRunning) return;
+        if (mPausing || mThreadRunning || mSurface == null) return;
         mThreadRunning = true;
         Thread t = new Thread() {
             @Override
@@ -435,7 +433,7 @@ public class PanoramaActivity extends Activity implements
 
         mSurface.setOnFrameAvailableListener(this);
 
-        if (!mPausing) startPreview();
+        if (!mPausing) startCameraPreview();
 
         mRealTimeMosaicView.setVisibility(View.VISIBLE);
     }
@@ -576,10 +574,10 @@ public class PanoramaActivity extends Activity implements
         }
     }
 
-    private void startPreview() {
+    private void startCameraPreview() {
         // If we're previewing already, stop the preview first (this will blank
         // the screen).
-        if (mCameraState != PREVIEW_STOPPED) stopPreview();
+        if (mCameraState != PREVIEW_STOPPED) stopCameraPreview();
 
         setPreviewTexture(mSurface);
 
@@ -593,7 +591,7 @@ public class PanoramaActivity extends Activity implements
         mCameraState = PREVIEW_ACTIVE;
     }
 
-    private void stopPreview() {
+    private void stopCameraPreview() {
         if (mCameraDevice != null && mCameraState != PREVIEW_STOPPED) {
             Log.v(TAG, "stopPreview");
             mCameraDevice.stopPreview();

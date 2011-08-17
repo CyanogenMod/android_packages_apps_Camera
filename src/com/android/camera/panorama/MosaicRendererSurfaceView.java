@@ -16,22 +16,20 @@
 
 package com.android.camera.panorama;
 
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
-import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
 import android.os.ConditionVariable;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+
 public class MosaicRendererSurfaceView extends GLSurfaceView {
-    private static String TAG = "MosaicRendererSurfaceView";
+    private static final String TAG = "MosaicRendererSurfaceView";
     private static final boolean DEBUG = false;
     private MosaicRendererSurfaceViewRenderer mRenderer;
     private ConditionVariable mPreviewFrameReadyForProcessing;
@@ -75,9 +73,9 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
          * custom config chooser. See ConfigChooser class definition
          * below.
          */
-        setEGLConfigChooser( translucent ?
-                             new ConfigChooser(8, 8, 8, 8, depth, stencil) :
-                             new ConfigChooser(5, 6, 5, 0, depth, stencil) );
+        setEGLConfigChooser(
+            translucent ? new ConfigChooser(8, 8, 8, 8, depth, stencil) :
+            new ConfigChooser(5, 6, 5, 0, depth, stencil));
 
         /* Set the renderer responsible for frame rendering */
         mRenderer = new MosaicRendererSurfaceViewRenderer();
@@ -91,8 +89,9 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
             Log.w(TAG, "creating OpenGL ES 2.0 context");
             checkEglError("Before eglCreateContext", egl);
-            int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE };
-            EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
+            int[] attribList = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE };
+            EGLContext context = egl.eglCreateContext(
+                display, eglConfig, EGL10.EGL_NO_CONTEXT, attribList);
             checkEglError("After eglCreateContext", egl);
             return context;
         }
@@ -138,10 +137,10 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
 
             /* Get the number of minimally matching EGL configurations
              */
-            int[] num_config = new int[1];
-            egl.eglChooseConfig(display, CONFIG_ATTRIBUTES, null, 0, num_config);
+            int[] numConfig = new int[1];
+            egl.eglChooseConfig(display, CONFIG_ATTRIBUTES, null, 0, numConfig);
 
-            int numConfigs = num_config[0];
+            int numConfigs = numConfig[0];
 
             if (numConfigs <= 0) {
                 throw new IllegalArgumentException("No configs match configSpec");
@@ -150,7 +149,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
             /* Allocate then read the array of minimally matching EGL configs
              */
             EGLConfig[] configs = new EGLConfig[numConfigs];
-            egl.eglChooseConfig(display, CONFIG_ATTRIBUTES, configs, numConfigs, num_config);
+            egl.eglChooseConfig(display, CONFIG_ATTRIBUTES, configs, numConfigs, numConfig);
 
             if (DEBUG) {
                  printConfigs(egl, display, configs);
@@ -162,7 +161,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
 
         public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display,
                 EGLConfig[] configs) {
-            for(EGLConfig config : configs) {
+            for (EGLConfig config : configs) {
                 int d = findConfigAttrib(egl, display, config,
                         EGL10.EGL_DEPTH_SIZE, 0);
                 int s = findConfigAttrib(egl, display, config,
@@ -283,7 +282,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
             for (int i = 0; i < attributes.length; i++) {
                 int attribute = attributes[i];
                 String name = names[i];
-                if ( egl.eglGetConfigAttrib(display, config, attribute, value)) {
+                if (egl.eglGetConfigAttrib(display, config, attribute, value)) {
                     Log.w(TAG, String.format("  %s: %d\n", name, value[0]));
                 } else {
                     // Log.w(TAG, String.format("  %s: failed\n", name));
@@ -302,23 +301,19 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         private int[] mValue = new int[1];
     }
 
-    public void lockPreviewReadyFlag()
-    {
+    public void lockPreviewReadyFlag() {
         mPreviewFrameReadyForProcessing.close();
     }
 
-    private void unlockPreviewReadyFlag()
-    {
+    private void unlockPreviewReadyFlag() {
         mPreviewFrameReadyForProcessing.open();
     }
 
-    public void waitUntilPreviewReady()
-    {
+    public void waitUntilPreviewReady() {
         mPreviewFrameReadyForProcessing.block();
     }
 
-    public void setReady()
-    {
+    public void setReady() {
         queueEvent(new Runnable() {
 
             @Override
@@ -328,8 +323,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         });
     }
 
-    public void preprocess()
-    {
+    public void preprocess() {
         queueEvent(new Runnable() {
 
             @Override
@@ -339,8 +333,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         });
     }
 
-    public void transferGPUtoCPU()
-    {
+    public void transferGPUtoCPU() {
         queueEvent(new Runnable() {
 
             @Override
@@ -351,19 +344,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         });
     }
 
-    public void setUIObject(final Activity activity)
-    {
-        queueEvent(new Runnable() {
-
-            @Override
-            public void run() {
-                mRenderer.setUIObject(activity);
-            }
-        });
-    }
-
-    public void setWarping(final boolean flag)
-    {
+    public void setWarping(final boolean flag) {
         queueEvent(new Runnable() {
 
             @Override
@@ -371,14 +352,6 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
                 mRenderer.setWarping(flag);
             }
         });
-    }
-
-    public int getTextureID() {
-        return mRenderer.getTextureID();
-    }
-
-    public void setSurfaceTexture(SurfaceTexture surface) {
-        mRenderer.setSurfaceTexture(surface);
     }
 
     public void updateSurfaceTexture() {
@@ -389,6 +362,10 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
                 mRenderer.updateSurfaceTexture();
             }
         });
+    }
+
+    public MosaicRendererSurfaceViewRenderer getRenderer() {
+        return mRenderer;
     }
 
 }

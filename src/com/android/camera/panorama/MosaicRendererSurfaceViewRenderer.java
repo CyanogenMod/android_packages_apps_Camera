@@ -16,16 +16,26 @@
 
 package com.android.camera.panorama;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
-import android.app.Activity;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
 public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 {
+    private static final String TAG = "MosaicRendererSurfaceViewRenderer";
+
+    private float[] mSTMatrix = new float[16];
+    private SurfaceTexture mSurface;
+    private MosaicSurfaceCreateListener mSurfaceCreateListener;
+
+    /** A callback to be called when the surface is created */
+    public interface MosaicSurfaceCreateListener {
+        public void onMosaicSurfaceCreated(final SurfaceTexture surface);
+    }
+
     @Override
     public void onDrawFrame(GL10 gl) {
         MosaicRenderer.step();
@@ -33,23 +43,21 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        Log.i(TAG, "Renderer: onSurfaceChanged");
         MosaicRenderer.reset(width, height);
         Log.i(TAG, "Renderer: onSurfaceChanged");
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        mTextureID = MosaicRenderer.init();
+        mSurface = new SurfaceTexture(MosaicRenderer.init());
 
-        mActivity.runOnUiThread(new Runnable() {
+        if (mSurfaceCreateListener != null) {
+            mSurfaceCreateListener.onMosaicSurfaceCreated(mSurface);
+        }
+    }
 
-            @Override
-            public void run() {
-                mActivity.createSurfaceTextureAndStartPreview(mTextureID);
-                setSurfaceTexture(mActivity.getSurfaceTexture());
-            }
-        });
+    public void setMosaicSurfaceCreateListener(MosaicSurfaceCreateListener listener) {
+        mSurfaceCreateListener = listener;
     }
 
     public void setReady() {
@@ -72,25 +80,4 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
         mSurface.updateTexImage();
         mSurface.getTransformMatrix(mSTMatrix);
     }
-
-    public void setUIObject(Activity activity) {
-        mActivity = (PanoramaActivity)activity;
-    }
-
-    public int getTextureID() {
-        return mTextureID;
-    }
-
-    public void setSurfaceTexture(SurfaceTexture surface) {
-        mSurface = surface;
-    }
-
-    private float[] mSTMatrix = new float[16];
-    private int mTextureID;
-
-    private PanoramaActivity mActivity;
-
-    private static String TAG = "MosaicRendererSurfaceViewRenderer";
-
-    private SurfaceTexture mSurface;
 }
