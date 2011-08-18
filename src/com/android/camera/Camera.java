@@ -546,6 +546,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private void startFaceDetection() {
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceView = (FaceView) findViewById(R.id.face_view);
+            mFaceView.clearFaces();
             mFaceView.setVisibility(View.VISIBLE);
             mFaceView.setDisplayOrientation(mDisplayOrientation);
             CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
@@ -1441,7 +1442,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // Close the camera now because other activities may need to use it.
         closeCamera();
         resetScreenOn();
+
+        // Clear UI.
         collapseCameraControls();
+        if (mSharePopup != null) mSharePopup.dismiss();
+        if (mFaceView != null) mFaceView.clearFaces();
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -1452,8 +1457,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             }
             hidePostCaptureAlert();
         }
-
-        if (mSharePopup != null) mSharePopup.dismiss();
 
         if (mDidRegister) {
             unregisterReceiver(mReceiver);
@@ -1823,6 +1826,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mCameraDevice != null) {
             CameraHolder.instance().release();
             mCameraDevice.setZoomChangeListener(null);
+            mCameraDevice.setFaceDetectionListener(null);
             mCameraDevice = null;
             mCameraState = PREVIEW_STOPPED;
         }
