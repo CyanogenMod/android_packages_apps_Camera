@@ -13,14 +13,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.camera.ui.IndicatorControlContainer xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.IndicatorControlBarContainer xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/indicator_control"
         android:layout_width="48dp"
         android:layout_height="match_parent"
         android:layout_marginRight="6dp"
         android:clickable="true"
         android:layout_alignParentRight="true">
-    <com.android.camera.ui.IndicatorBar
+    <com.android.camera.ui.IndicatorControlBar
             android:id="@+id/indicator_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -37,16 +37,16 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:src="@drawable/ic_settings_holo_light" />
-    </com.android.camera.ui.IndicatorBar>
+    </com.android.camera.ui.IndicatorControlBar>
 
     <com.android.camera.ui.ZoomControlBar
             android:id="@+id/zoom_control"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
-    <com.android.camera.ui.SecondLevelIndicatorBar
+    <com.android.camera.ui.SecondLevelIndicatorControlBar
             android:id="@+id/second_level_indicator_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
-</com.android.camera.ui.IndicatorControlContainer>
+</com.android.camera.ui.IndicatorControlBarContainer>

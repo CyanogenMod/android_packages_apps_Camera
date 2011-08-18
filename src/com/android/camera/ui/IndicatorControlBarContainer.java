@@ -30,16 +30,16 @@ import android.view.animation.AnimationUtils;
  * A view contains indicator control bar, second-level indicator bar and
  * zoom control.
  */
-public class IndicatorControlContainer extends IndicatorControl implements
+public class IndicatorControlBarContainer extends IndicatorControl implements
         OnIndicatorEventListener {
-    private static final String TAG = "IndicatorControlContainer";
+    private static final String TAG = "IndicatorControlBarContainer";
 
     private Animation mFadeIn, mFadeOut;
-    private IndicatorBar mIndicatorBar;
+    private IndicatorControlBar mIndicatorControlBar;
     private ZoomControlBar mZoomControlBar;
-    private SecondLevelIndicatorBar mSecondLevelIndicatorBar;
+    private SecondLevelIndicatorControlBar mSecondLevelIndicatorControlBar;
 
-    public IndicatorControlContainer(Context context, AttributeSet attrs) {
+    public IndicatorControlBarContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -47,7 +47,7 @@ public class IndicatorControlContainer extends IndicatorControl implements
     public void initialize(Context context, PreferenceGroup group,
             String flashSetting, String[] secondLevelKeys,
             String[] secondLevelOtherSettingKeys) {
-        mIndicatorBar = (IndicatorBar)
+        mIndicatorControlBar = (IndicatorControlBar)
                 findViewById(R.id.indicator_bar);
 
         mZoomControlBar = (ZoomControlBar)
@@ -56,15 +56,15 @@ public class IndicatorControlContainer extends IndicatorControl implements
 
         // We need to show/hide the zoom slider icon accordingly.
         // From UI spec, we have camera_flash setting on the first level.
-        mIndicatorBar.initialize(context, group, flashSetting,
+        mIndicatorControlBar.initialize(context, group, flashSetting,
                 mZoomControlBar.isZoomSupported());
-        mIndicatorBar.setOnIndicatorEventListener(this);
+        mIndicatorControlBar.setOnIndicatorEventListener(this);
 
-        mSecondLevelIndicatorBar = (SecondLevelIndicatorBar)
+        mSecondLevelIndicatorControlBar = (SecondLevelIndicatorControlBar)
                 findViewById(R.id.second_level_indicator_bar);
-        mSecondLevelIndicatorBar.initialize(context, group, secondLevelKeys,
+        mSecondLevelIndicatorControlBar.initialize(context, group, secondLevelKeys,
                 secondLevelOtherSettingKeys);
-        mSecondLevelIndicatorBar.setOnIndicatorEventListener(this);
+        mSecondLevelIndicatorControlBar.setOnIndicatorEventListener(this);
 
         mFadeIn = AnimationUtils.loadAnimation(
                 context, R.anim.grow_fade_in_from_bottom);
@@ -73,63 +73,70 @@ public class IndicatorControlContainer extends IndicatorControl implements
     }
 
     public void setDegree(int degree) {
-        mIndicatorBar.setDegree(degree);
-        mSecondLevelIndicatorBar.setDegree(degree);
+        mIndicatorControlBar.setDegree(degree);
+        mSecondLevelIndicatorControlBar.setDegree(degree);
         mZoomControlBar.setDegree(degree);
     }
 
     public void onIndicatorEvent(int event) {
         switch (event) {
             case OnIndicatorEventListener.EVENT_ENTER_SECOND_LEVEL_INDICATOR_BAR:
-                mIndicatorBar.setVisibility(View.GONE);
-                mSecondLevelIndicatorBar.startAnimation(mFadeIn);
-                mSecondLevelIndicatorBar.setVisibility(View.VISIBLE);
+                mIndicatorControlBar.setVisibility(View.GONE);
+                mSecondLevelIndicatorControlBar.startAnimation(mFadeIn);
+                mSecondLevelIndicatorControlBar.setVisibility(View.VISIBLE);
                 break;
 
             case OnIndicatorEventListener.EVENT_LEAVE_SECOND_LEVEL_INDICATOR_BAR:
-                mSecondLevelIndicatorBar.startAnimation(mFadeOut);
-                mSecondLevelIndicatorBar.setVisibility(View.GONE);
-                mIndicatorBar.setVisibility(View.VISIBLE);
+                mSecondLevelIndicatorControlBar.startAnimation(mFadeOut);
+                mSecondLevelIndicatorControlBar.setVisibility(View.GONE);
+                mIndicatorControlBar.setVisibility(View.VISIBLE);
                 break;
 
             case OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL_BAR:
-                mIndicatorBar.setVisibility(View.GONE);
+                mIndicatorControlBar.setVisibility(View.GONE);
                 mZoomControlBar.setVisibility(View.VISIBLE);
                 break;
 
             case OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL_BAR:
                 mZoomControlBar.setVisibility(View.GONE);
-                mIndicatorBar.setVisibility(View.VISIBLE);
+                mIndicatorControlBar.setVisibility(View.VISIBLE);
                 break;
         }
     }
 
     public void reloadPreferences() {
-        mIndicatorBar.reloadPreferences();
-        mSecondLevelIndicatorBar.reloadPreferences();
+        mIndicatorControlBar.reloadPreferences();
+        mSecondLevelIndicatorControlBar.reloadPreferences();
     }
 
     public void setListener(OnPreferenceChangedListener listener) {
-        mIndicatorBar.setListener(listener);
-        mSecondLevelIndicatorBar.setListener(listener);
+        mIndicatorControlBar.setListener(listener);
+        mSecondLevelIndicatorControlBar.setListener(listener);
     }
 
     @Override
     public View getActiveSettingPopup() {
-        if (mIndicatorBar.getVisibility() == View.VISIBLE) {
-            return mIndicatorBar.getActiveSettingPopup();
-        } else if (mSecondLevelIndicatorBar.getVisibility() == View.VISIBLE) {
-            return mSecondLevelIndicatorBar.getActiveSettingPopup();
+        if (mIndicatorControlBar.getVisibility() == View.VISIBLE) {
+            return mIndicatorControlBar.getActiveSettingPopup();
+        } else if (mSecondLevelIndicatorControlBar.getVisibility() == View.VISIBLE) {
+            return mSecondLevelIndicatorControlBar.getActiveSettingPopup();
         }
         return null;
     }
 
     public boolean dismissSettingPopup() {
-        if (mIndicatorBar.getVisibility() == View.VISIBLE) {
-            return mIndicatorBar.dismissSettingPopup();
-        } else if (mSecondLevelIndicatorBar.getVisibility() == View.VISIBLE) {
-            return mSecondLevelIndicatorBar.dismissSettingPopup();
+        if (mIndicatorControlBar.getVisibility() == View.VISIBLE) {
+            return mIndicatorControlBar.dismissSettingPopup();
+        } else if (mSecondLevelIndicatorControlBar.getVisibility() == View.VISIBLE) {
+            return mSecondLevelIndicatorControlBar.dismissSettingPopup();
         }
         return false;
+    }
+
+    @Override
+    public void overrideSettings(final String ... keyvalues) {
+        if (mSecondLevelIndicatorControlBar.getVisibility() == View.VISIBLE) {
+            mSecondLevelIndicatorControlBar.overrideSettings(keyvalues);
+        }
     }
 }

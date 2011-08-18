@@ -73,8 +73,12 @@ public class ZoomPicker extends ZoomControl {
                     if (zooming()) mHandler.postDelayed(mRunnable, 300);
                 } else if (action == MotionEvent.ACTION_UP
                         || action == MotionEvent.ACTION_CANCEL) {
-                    mState = ZOOM_STOP;
-                    stopZooming();
+                    int eventState = (v == increment) ? ZOOM_IN : ZOOM_OUT;
+                    // Ignore the event if the current state does not match.
+                    if (eventState == mState) {
+                        stopZooming();
+                        mState = ZOOM_STOP;
+                    }
                 }
                 return false;
             }

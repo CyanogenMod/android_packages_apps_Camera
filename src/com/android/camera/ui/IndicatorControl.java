@@ -106,7 +106,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
     public void initializeCameraPicker(Context context, PreferenceGroup group) {
         ListPreference pref = group.findPreference(
                 CameraSettings.KEY_CAMERA_ID);
-        if (pref == null) return;
+        if ((pref == null) || (mCameraPicker != null)) return;
         mCameraPicker = new CameraPicker(context);
         mCameraPicker.initialize(pref);
         addView(mCameraPicker);

@@ -27,14 +27,14 @@ import android.widget.ImageView;
 /**
  * A view that contains the top-level indicator control.
  */
-public class IndicatorBar extends IndicatorControl implements
+public class IndicatorControlBar extends IndicatorControl implements
         View.OnClickListener {
-    private static final String TAG = "IndicatorBar";
+    private static final String TAG = "IndicatorControlBar";
 
     private ImageView mZoomIcon;
     private ImageView mSecondLevelIcon;
 
-    public IndicatorBar(Context context, AttributeSet attrs) {
+    public IndicatorControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

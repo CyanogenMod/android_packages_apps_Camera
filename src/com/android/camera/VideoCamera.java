@@ -17,7 +17,7 @@
 package com.android.camera;
 
 import com.android.camera.ui.IndicatorControl;
-import com.android.camera.ui.IndicatorWheel;
+import com.android.camera.ui.IndicatorControlWheelContainer;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomControl;
@@ -1381,7 +1381,7 @@ public class VideoCamera extends ActivityBase
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
             if (mCaptureTimeLapse) {
                 if (Util.isTabletUI()) {
-                    ((IndicatorWheel) mIndicatorControl).startTimeLapseAnimation(
+                    ((IndicatorControlWheelContainer) mIndicatorControl).startTimeLapseAnimation(
                             mTimeBetweenTimeLapseFrameCaptureMs,
                             mRecordingStartTime);
                 }
@@ -1392,7 +1392,7 @@ public class VideoCamera extends ActivityBase
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
                 if (Util.isTabletUI()) {
-                    ((IndicatorWheel) mIndicatorControl).stopTimeLapseAnimation();
+                    ((IndicatorControlWheelContainer) mIndicatorControl).stopTimeLapseAnimation();
                 }
             }
         }

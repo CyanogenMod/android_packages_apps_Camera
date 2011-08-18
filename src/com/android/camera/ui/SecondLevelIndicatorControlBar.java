@@ -29,14 +29,14 @@ import android.widget.ImageView;
  * A view that contains camera setting indicators which are spread over a
  * vertical bar in preview frame.
  */
-public class SecondLevelIndicatorBar extends IndicatorControl implements
+public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         View.OnClickListener {
-    private static final String TAG = "SecondLevelIndicatorBar";
+    private static final String TAG = "SecondLevelIndicatorControlBar";
     private ImageView mCloseIcon;
     int mDegree = 0;
     int mSelectedIndex = -1;
 
-    public SecondLevelIndicatorBar(Context context, AttributeSet attrs) {
+    public SecondLevelIndicatorControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

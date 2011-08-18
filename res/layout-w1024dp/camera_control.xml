@@ -28,33 +28,35 @@
 
         <include layout="@layout/review_thumbnail" />
 
-        <com.android.camera.ui.IndicatorWheel android:id="@+id/indicator_control"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true">
+        <com.android.camera.ui.IndicatorControlWheelContainer android:id="@+id/indicator_control"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true">
             <com.android.camera.ShutterButton android:id="@+id/shutter_button"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:scaleType="center"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:scaleType="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="@drawable/btn_shutter" />
+            <com.android.camera.ui.IndicatorControlWheel android:id="@+id/indicator_control_wheel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <com.android.camera.ui.RotateImageView android:id="@+id/zoom_increment"
                         android:clickable="true"
-                        android:focusable="true"
-                        android:background="@drawable/btn_shutter" />
-            <com.android.camera.ui.RotateImageView android:id="@+id/zoom_increment"
-                    android:clickable="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/btn_zoom_in"
-                    android:visibility="gone" />
-
-            <com.android.camera.ui.RotateImageView android:id="@+id/zoom_decrement"
-                    android:clickable="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/btn_zoom_out"
-                    android:visibility="gone" />
-        </com.android.camera.ui.IndicatorWheel>
-
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/btn_zoom_in"
+                        android:visibility="gone" />
+                <com.android.camera.ui.RotateImageView android:id="@+id/zoom_decrement"
+                        android:clickable="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/btn_zoom_out"
+                        android:visibility="gone" />
+            </com.android.camera.ui.IndicatorControlWheel>
+        </com.android.camera.ui.IndicatorControlWheelContainer>
         <com.android.camera.ui.ZoomPicker
                 android:id="@+id/zoom_control"
                 android:layout_width="wrap_content"
