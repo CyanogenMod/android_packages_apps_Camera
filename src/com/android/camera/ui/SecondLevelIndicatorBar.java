@@ -68,10 +68,11 @@ public class SecondLevelIndicatorBar extends IndicatorControl implements
 
         double x = (double) event.getX();
         double y = (double) event.getY();
+        int height = getHeight();
         if (x > getWidth()) x = getWidth();
-        if (y > getHeight()) y = getHeight();
+        if (y >= height) y = height - 1;
 
-        int index = (int) (y * getChildCount()) / getHeight();
+        int index = (int) (y * getChildCount()) / height;
         View b = getChildAt(index);
         b.dispatchTouchEvent(event);
         if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
