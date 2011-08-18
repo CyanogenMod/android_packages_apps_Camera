@@ -323,12 +323,12 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         });
     }
 
-    public void preprocess() {
+    public void preprocess(final float[] transformMatrix) {
         queueEvent(new Runnable() {
 
             @Override
             public void run() {
-                mRenderer.preprocess();
+                mRenderer.preprocess(transformMatrix);
             }
         });
     }
@@ -350,16 +350,6 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
             @Override
             public void run() {
                 mRenderer.setWarping(flag);
-            }
-        });
-    }
-
-    public void updateSurfaceTexture() {
-        queueEvent(new Runnable() {
-
-            @Override
-            public void run() {
-                mRenderer.updateSurfaceTexture();
             }
         });
     }

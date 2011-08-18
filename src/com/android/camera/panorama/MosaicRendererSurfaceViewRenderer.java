@@ -16,7 +16,6 @@
 
 package com.android.camera.panorama;
 
-import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -27,13 +26,11 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 {
     private static final String TAG = "MosaicRendererSurfaceViewRenderer";
 
-    private float[] mSTMatrix = new float[16];
-    private SurfaceTexture mSurface;
     private MosaicSurfaceCreateListener mSurfaceCreateListener;
 
     /** A callback to be called when the surface is created */
     public interface MosaicSurfaceCreateListener {
-        public void onMosaicSurfaceCreated(final SurfaceTexture surface);
+        public void onMosaicSurfaceCreated(final int surface);
     }
 
     @Override
@@ -49,10 +46,9 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        mSurface = new SurfaceTexture(MosaicRenderer.init());
-
+        Log.i(TAG, "onSurfaceCreated");
         if (mSurfaceCreateListener != null) {
-            mSurfaceCreateListener.onMosaicSurfaceCreated(mSurface);
+            mSurfaceCreateListener.onMosaicSurfaceCreated(MosaicRenderer.init());
         }
     }
 
@@ -64,8 +60,8 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
         MosaicRenderer.ready();
     }
 
-    public void preprocess() {
-        MosaicRenderer.preprocess(mSTMatrix);
+    public void preprocess(float[] transformMatrix) {
+        MosaicRenderer.preprocess(transformMatrix);
     }
 
     public void transferGPUtoCPU() {
@@ -74,10 +70,5 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 
     public void setWarping(boolean flag) {
         MosaicRenderer.setWarping(flag);
-    }
-
-    public void updateSurfaceTexture() {
-        mSurface.updateTexImage();
-        mSurface.getTransformMatrix(mSTMatrix);
     }
 }
