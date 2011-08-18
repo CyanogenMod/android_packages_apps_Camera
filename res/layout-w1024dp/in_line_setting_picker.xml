@@ -30,7 +30,7 @@
 
         <Button android:id="@+id/decrement"
                 android:layout_width="72dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
                 android:text="@string/setting_decrement"
@@ -46,11 +46,11 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
-                android:textSize="20dp" />
+                android:textSize="21dp" />
 
         <Button android:id="@+id/increment"
                 android:layout_width="72dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
                 android:text="@string/setting_increment"
@@ -62,7 +62,8 @@
     <!--  To have the same View(InLineSettingPicker) as the listview's components and also show the restore setting line, we have the relativelayout and control the visibilities of the restore and the setting_item component to achieve the goal. -->
     <TextView android:id="@+id/restore"
             android:gravity="center"
-            android:textSize="22dp"
+            android:textSize="21dp"
+            android:textColor="@android:color/white"
             style="@style/SettingRow">
     </TextView>
 </com.android.camera.ui.InLineSettingPicker>
