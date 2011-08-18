@@ -124,15 +124,15 @@
     </string-array>
 
     <array name="camera_flashmode_icons" translatable="false">
-        <item>@drawable/ic_menuselect_flash_auto</item>
-        <item>@drawable/ic_menuselect_flash_on</item>
-        <item>@drawable/ic_menuselect_flash_off</item>
+        <item>@drawable/ic_flash_auto_holo_light</item>
+        <item>@drawable/ic_flash_on_holo_light</item>
+        <item>@drawable/ic_flash_off_holo_light</item>
     </array>
 
     <array name="camera_flashmode_largeicons" translatable="false">
-        <item>@drawable/ic_viewfinder_flash_auto</item>
-        <item>@drawable/ic_viewfinder_flash_on</item>
-        <item>@drawable/ic_viewfinder_flash_off</item>
+        <item>@drawable/ic_flash_auto_holo_light</item>
+        <item>@drawable/ic_flash_on_holo_light</item>
+        <item>@drawable/ic_flash_off_holo_light</item>
     </array>
 
     <!-- Videocamera Preferences flash mode dialog box entries -->
@@ -147,13 +147,13 @@
     </string-array>
 
     <array name="video_flashmode_icons" translatable="false">
-        <item>@drawable/ic_menuselect_flash_on</item>
-        <item>@drawable/ic_menuselect_flash_off</item>
+        <item>@drawable/ic_flash_on_holo_light</item>
+        <item>@drawable/ic_flash_off_holo_light</item>
     </array>
 
     <array name="video_flashmode_largeicons" translatable="false">
-        <item>@drawable/ic_viewfinder_flash_on</item>
-        <item>@drawable/ic_viewfinder_flash_off</item>
+        <item>@drawable/ic_flash_on_holo_light</item>
+        <item>@drawable/ic_flash_off_holo_light</item>
     </array>
 
     <string-array name="pref_camera_recordlocation_entryvalues" translatable="false">
