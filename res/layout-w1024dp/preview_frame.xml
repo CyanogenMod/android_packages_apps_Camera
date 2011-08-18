@@ -28,25 +28,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"/>
-        <com.android.camera.ui.FocusRectangle
-                android:id="@+id/focus_rectangle"
+        <com.android.camera.ui.FocusRectangle android:id="@+id/focus_rectangle"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
                 android:layout_centerInParent="true"/>
-        <ImageView style="@style/OnScreenGpsIndicator"
-                android:id="@+id/onscreen_gps_indicator_no_signal"
-                android:src="@drawable/ic_viewfinder_gps_no_signal"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="15dp"
-                android:visibility="gone"/>
-        <ImageView style="@style/OnScreenGpsIndicator"
-                android:id="@+id/onscreen_gps_indicator_on"
-                android:src="@drawable/ic_viewfinder_gps_on"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="15dp"
-                android:visibility="gone"/>
+        <include layout="@layout/priority_indicators"/>
         <include layout="@layout/review_control"/>
         <include layout="@layout/tap_to_focus_toast"/>
     </RelativeLayout>

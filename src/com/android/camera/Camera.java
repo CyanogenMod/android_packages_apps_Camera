@@ -74,6 +74,7 @@ import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -85,6 +86,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
@@ -177,9 +179,14 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private String mCropValue;
     private Uri mSaveUri;
 
-    // GPS on-screen indicator
-    private View mGpsNoSignalView;
-    private View mGpsHasSignalView;
+    // On-screen indicator
+    private View mGpsNoSignalIndicator;
+    private View mGpsHasSignalIndicator;
+    private TextView mExposureIndicator;
+
+    private final StringBuilder mBuilder = new StringBuilder();
+    private final Formatter mFormatter = new Formatter(mBuilder);
+    private final Object[] mFormatterArgs = new Object[1];
 
     /**
      * An unpublished intent flag requesting to return as soon as capturing
@@ -375,7 +382,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 getSystemService(Context.LOCATION_SERVICE);
         mRecordLocation = RecordLocationPreference.get(
                 mPreferences, getContentResolver());
-        initGpsOnScreenIndicator();
+        initOnScreenIndicator();
         if (mRecordLocation) startReceivingLocationUpdates();
 
         keepMediaProviderInstance();
@@ -617,24 +624,50 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     };
 
-    private void initGpsOnScreenIndicator() {
-        mGpsNoSignalView = findViewById(R.id.onscreen_gps_indicator_no_signal);
-        mGpsHasSignalView = findViewById(R.id.onscreen_gps_indicator_on);
+    private void initOnScreenIndicator() {
+        mGpsNoSignalIndicator = findViewById(R.id.onscreen_gps_indicator_no_signal);
+        mGpsHasSignalIndicator = findViewById(R.id.onscreen_gps_indicator_on);
+        mExposureIndicator = (TextView) findViewById(R.id.onscreen_exposure_indicator);
     }
 
     private void showGpsOnScreenIndicator(boolean hasSignal) {
         if (hasSignal) {
-            if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.GONE);
-            if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.VISIBLE);
+            if (mGpsNoSignalIndicator != null) {
+                mGpsNoSignalIndicator.setVisibility(View.GONE);
+            }
+            if (mGpsHasSignalIndicator != null) {
+                mGpsHasSignalIndicator.setVisibility(View.VISIBLE);
+            }
         } else {
-            if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.VISIBLE);
-            if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.GONE);
+            if (mGpsNoSignalIndicator != null) {
+                mGpsNoSignalIndicator.setVisibility(View.VISIBLE);
+            }
+            if (mGpsHasSignalIndicator != null) {
+                mGpsHasSignalIndicator.setVisibility(View.GONE);
+            }
         }
     }
 
     private void hideGpsOnScreenIndicator() {
-        if (mGpsNoSignalView != null) mGpsNoSignalView.setVisibility(View.GONE);
-        if (mGpsHasSignalView != null) mGpsHasSignalView.setVisibility(View.GONE);
+        if (mGpsNoSignalIndicator != null) mGpsNoSignalIndicator.setVisibility(View.GONE);
+        if (mGpsHasSignalIndicator != null) mGpsHasSignalIndicator.setVisibility(View.GONE);
+    }
+
+    private void updateExposureOnScreenIndicator(int value) {
+        if (mExposureIndicator == null) return;
+
+        if (value == 0) {
+            mExposureIndicator.setText("");
+            mExposureIndicator.setVisibility(View.GONE);
+        } else {
+            float step = mParameters.getExposureCompensationStep();
+            mFormatterArgs[0] = value * step;
+            mBuilder.delete(0, mBuilder.length());
+            mFormatter.format("%+1.1f", mFormatterArgs);
+            String exposure = mFormatter.toString();
+            mExposureIndicator.setText(exposure);
+            mExposureIndicator.setVisibility(View.VISIBLE);
+        }
     }
 
     private class LocationListener
@@ -1462,6 +1495,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mDidRegister = false;
         }
         stopReceivingLocationUpdates();
+        updateExposureOnScreenIndicator(0);
 
         if (mFocusToneGenerator != null) {
             mFocusToneGenerator.release();
@@ -1979,20 +2013,13 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // still supported by latest driver, if not, ignore the settings.
 
         // Set exposure compensation
-        String exposure = mPreferences.getString(
-                CameraSettings.KEY_EXPOSURE,
-                getString(R.string.pref_exposure_default));
-        try {
-            int value = Integer.parseInt(exposure);
-            int max = mParameters.getMaxExposureCompensation();
-            int min = mParameters.getMinExposureCompensation();
-            if (value >= min && value <= max) {
-                mParameters.setExposureCompensation(value);
-            } else {
-                Log.w(TAG, "invalid exposure range: " + exposure);
-            }
-        } catch (NumberFormatException e) {
-            Log.w(TAG, "invalid exposure: " + exposure);
+        int value = CameraSettings.readExposure(mPreferences);
+        int max = mParameters.getMaxExposureCompensation();
+        int min = mParameters.getMinExposureCompensation();
+        if (value >= min && value <= max) {
+            mParameters.setExposureCompensation(value);
+        } else {
+            Log.w(TAG, "invalid exposure range: " + value);
         }
 
         if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
@@ -2307,6 +2334,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         } else {
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
         }
+
+        int exposureValue = CameraSettings.readExposure(mPreferences);
+        updateExposureOnScreenIndicator(exposureValue);
     }
 
     @Override

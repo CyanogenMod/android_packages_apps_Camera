@@ -364,6 +364,17 @@ public class CameraSettings {
         editor.apply();
     }
 
+    public static int readExposure(ComboPreferences preferences) {
+        String exposure = preferences.getString(
+                CameraSettings.KEY_EXPOSURE,
+                EXPOSURE_DEFAULT_VALUE);
+        try {
+            return Integer.parseInt(exposure);
+        } catch (Exception ex) {
+            Log.e(TAG, "Invalid exposure: " + exposure);
+        }
+        return 0;
+    }
 
     public static void restorePreferences(Context context,
             ComboPreferences preferences, Parameters parameters) {

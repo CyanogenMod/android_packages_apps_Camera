@@ -39,20 +39,7 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_centerInParent="true"/>
-        <ImageView style="@style/OnScreenGpsIndicator"
-                android:id="@+id/onscreen_gps_indicator_no_signal"
-                android:src="@drawable/ic_viewfinder_gps_no_signal"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="5dp"
-                android:visibility="gone"/>
-        <ImageView style="@style/OnScreenGpsIndicator"
-                android:id="@+id/onscreen_gps_indicator_on"
-                android:src="@drawable/ic_viewfinder_gps_on"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="5dp"
-                android:visibility="gone"/>
+        <include layout="@layout/priority_indicators"/>
         <include layout="@layout/tap_to_focus_toast"/>
         <include layout="@layout/indicator_bar" />
     </RelativeLayout>
