@@ -31,7 +31,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 
-import java.io.Closeable;
 
 /**
  * A utility class to handle various kinds of menu operations.

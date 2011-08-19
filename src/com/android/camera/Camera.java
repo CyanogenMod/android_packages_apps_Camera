@@ -22,7 +22,6 @@ import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.SharePopup;
-import com.android.camera.ui.ZoomPicker;
 import com.android.camera.ui.ZoomControl;
 
 import android.app.Activity;

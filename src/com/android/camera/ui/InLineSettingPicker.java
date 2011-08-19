@@ -17,12 +17,10 @@
 package com.android.camera.ui;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
@@ -32,7 +30,6 @@ import android.widget.TextView;
 import com.android.camera.R;
 import com.android.camera.ListPreference;
 
-import java.util.Formatter;
 
 /* A one-line camera setting that includes a title (ex: Picture size), a
    previous button, the current value (ex: 5MP), and a next button. Other

@@ -16,14 +16,11 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.CameraPreference.OnPreferenceChangedListener;
-import com.android.camera.CameraSettings;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 

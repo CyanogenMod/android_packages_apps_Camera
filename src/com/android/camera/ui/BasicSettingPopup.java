@@ -20,14 +20,11 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.android.camera.IconListPreference;
 import com.android.camera.R;
-import com.android.camera.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
