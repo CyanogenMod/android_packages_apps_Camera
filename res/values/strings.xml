@@ -56,9 +56,9 @@
     <string name="preparing_sd" product="default">Preparing SD card\u2026</string>
 
     <!-- alert to the user that the camera fails to read or write the USB storage. [CHAR LIMIT=NONE] -->
-    <string name="access_sd_fail" product="nosdcard">Failed to access USB storage.</string>
+    <string name="access_sd_fail" product="nosdcard">Couldn\'t access USB storage.</string>
     <!-- alert to the user that the camera fails to read or write the SD card. -->
-    <string name="access_sd_fail" product="default">Fail to access SD card.</string>
+    <string name="access_sd_fail" product="default">Couldn\'t access SD card.</string>
 
     <!-- Confirmation dialog when restoring settings -->
     <string name="confirm_restore_title">Restore defaults</string>
