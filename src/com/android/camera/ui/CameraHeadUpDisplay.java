@@ -54,6 +54,7 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         super.initializeIndicatorBar(context, group, params);
 
         ListPreference prefs[] = getListPreferences(group,
+                CameraSettings.KEY_CAPTURE_MODE,
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_SCENE_MODE,
