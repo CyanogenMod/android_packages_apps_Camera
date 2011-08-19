@@ -45,6 +45,7 @@ public abstract class BaseCamera extends NoSearchActivity
 
     protected FocusRectangle mFocusRectangle;
     protected String mFocusMode;
+    protected String mCaptureMode;
     protected GestureDetector mFocusGestureDetector;
 
     private PreviewFrameLayout mPreviewFrameLayout;

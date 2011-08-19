@@ -71,4 +71,15 @@
                     android:summary="@string/pref_camera_settings_long_focus_summary"
                     android:persistent="true" />
 
+    <PreferenceCategory
+            android:title="@string/pref_camera_other_settings_title"
+            />
+            <ListPreference
+                    android:key="timer_duration"
+                    android:title="@string/pref_camera_timer_duration"
+                    android:summary="@string/pref_camera_timer_duration_summary"
+                    android:entries="@array/pref_camera_timer_duration_entries"
+                    android:entryValues="@array/pref_camera_timer_duration_values"
+                    android:defaultValue="10"/>
+
 </PreferenceScreen>
