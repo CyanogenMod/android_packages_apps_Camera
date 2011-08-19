@@ -75,6 +75,12 @@
                 camera:title="@string/pref_camera_focusmode_title"
                 camera:entries="@array/pref_camera_focusmode_entries"
                 camera:entryValues="@array/pref_camera_focusmode_entryvalues" />
+        <ListPreference
+                camera:key="pref_camera_capturemode_key"
+                camera:defaultValue="@string/pref_camera_capturemode_entry_default"
+                camera:title="@string/pref_camera_capturemode_title"
+                camera:entries="@array/pref_camera_capturemode_entries"
+                camera:entryValues="@array/pref_camera_capturemode_entries" />
         <IconListPreference
                 camera:key="pref_camera_id_key"
                 camera:defaultValue="@string/pref_camera_id_default"
