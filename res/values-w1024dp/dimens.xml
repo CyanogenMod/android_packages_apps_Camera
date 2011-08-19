@@ -39,4 +39,5 @@
     <dimen name="pano_capture_stop_button_height">160dp</dimen>
     <dimen name="pano_review_button_width">180dp</dimen>
     <dimen name="pano_review_button_height">180dp</dimen>
+    <dimen name="pano_capture_too_fast_text_height">160dp</dimen>
 </resources>

@@ -61,5 +61,9 @@
 
     <TextView android:id="@+id/pano_capture_too_fast_textview"
         android:text="@string/pano_too_fast_prompt"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:layout_height="@dimen/pano_capture_too_fast_text_height"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_centerInParent="true" />
 </RelativeLayout>
