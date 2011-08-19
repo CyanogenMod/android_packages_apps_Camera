@@ -51,10 +51,6 @@ extern "C" {
 
 char buffer[1024];
 
-double g_dAffinetrans[16];
-double g_dAffinetransInv[16];
-double g_dTranslation[16];
-
 const int MAX_FRAMES_HR = 100;
 const int MAX_FRAMES_LR = 200;
 
@@ -541,12 +537,19 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(
 
     if(high_res)
     {
+        double  t0, t1, time_c;
+
+        t0 = now_ms();
+
         Init(HR, frame_number_HR);
         for(int k = 0; k < frame_number_HR; k++)
         {
             AddFrame(HR, k, NULL);
-            LOGV("Added Frame [%d]", k);
         }
+
+        t1 = now_ms();
+        time_c = t1 - t0;
+        LOGV("AlignAll [HR]: %g ms",time_c);
 
         Finalize(HR);
         high_res = false;

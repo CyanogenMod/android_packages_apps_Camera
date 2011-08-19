@@ -42,6 +42,15 @@ int gPreviewFBOWidth;
 // preview mosaic).
 int gPreviewFBOHeight;
 
+// gK is the transformation to map the canonical {-1,1} vertex coordinate system
+// to the {0,gPreviewImageWidth[LR]} input image frame coordinate system before
+// applying the given affine transformation trs. gKm is the corresponding
+// transformation for going to the {0,gPreviewFBOWidth}.
+double gK[9];
+double gKinv[9];
+double gKm[9];
+double gKminv[9];
+
 // Shader to copy input SurfaceTexture into and RGBA FBO. The two shaders
 // render to the textures with dimensions corresponding to the low-res and
 // high-res image frames.
@@ -68,10 +77,20 @@ WarpRenderer gPreview;
 // Index of the gBuffer FBO gWarper1 is going to write into
 int gCurrentFBOIndex = 0;
 
-// Variables to represent the present top-left corner of the first frame
-// in the previewFBO
-double gOriginX = 0.0f;
-double gOriginY = 0.0f;
+// 3x3 Matrices holding the transformation of this frame (gThisH1t) and of
+// the last frame (gLastH1t) w.r.t the first frame.
+double gThisH1t[9];
+double gLastH1t[9];
+
+// Variables to represent the fixed position of the top-left corner of the
+// current frame in the previewFBO
+double gCenterOffsetX = 0.0f;
+double gCenterOffsetY = 0.0f;
+
+// X-Offset of the viewfinder (current frame) w.r.t
+// (gCenterOffsetX, gCenterOffsetY). This offset varies with time and is
+// used to pan the viewfinder across the UI layout.
+double gPanOffset = 0.0f;
 
 // Variables tracking the translation value for the current frame and the
 // last frame (both w.r.t the first frame). The difference between these
@@ -80,17 +99,29 @@ double gOriginY = 0.0f;
 double gThisTx = 0.0f;
 double gLastTx = 0.0f;
 
+// These are the scale factors used by the gPreview shader to ensure that
+// the image frame is correctly scaled to the full UI layout height while
+// maintaining its aspect ratio
+double gUILayoutScalingX = 1.0f;
+double gUILayoutScalingY = 1.0f;
+
+// State of the viewfinder. Set to false when the viewfinder hits the UI edge.
+bool gPanViewfinder = true;
+
 // Affine transformation in GL 4x4 format (column-major) to warp the
-// current frame into the first frame coordinate system.
+// last frame mosaic into the current frame coordinate system.
 GLfloat g_dAffinetransGL[16];
+double g_dAffinetrans[16];
 
-// Affine transformation in GL 4x4 format (column-major) to warp the
-// preview FBO into the current frame coordinate system.
-GLfloat g_dAffinetransInvGL[16];
+// Affine transformation in GL 4x4 format (column-major) to translate the
+// preview FBO across the screen (viewfinder panning).
+GLfloat g_dAffinetransPanGL[16];
+double g_dAffinetransPan[16];
 
-// XY translation in GL 4x4 format (column-major) to slide the preview
-// viewfinder across the preview FBO
-GLfloat g_dTranslationGL[16];
+// XY translation in GL 4x4 format (column-major) to center the current
+// preview mosaic in the preview FBO
+GLfloat g_dTranslationToFBOCenterGL[16];
+double g_dTranslationToFBOCenter[16];
 
 // GL 4x4 Identity transformation
 GLfloat g_dAffinetransIdent[] = {
@@ -176,119 +207,96 @@ void ConvertAffine3x3toGL4x4(double *matGL44, double *mat33)
 }
 
 // This function computes fills the 4x4 matrices g_dAffinetrans,
-// g_dAffinetransInv and g_dTranslation using the specified 3x3 affine
+// and g_dAffinetransPan using the specified 3x3 affine
 // transformation between the first captured frame and the current frame.
-// The computed g_dAffinetrans is such that it warps the current frame into the
-// coordinate system of the first frame. Thus, applying this transformation
-// to each successive frame builds up the preview mosaic in the first frame
-// coordinate system. Then the computed g_dAffinetransInv is such that it
-// warps the computed preview mosaic into the coordinate system of the
-// original (as captured) current frame. This has the effect of showing
-// the current frame as is (without warping) but warping the rest of the
-// mosaic data to still be in alignment with this frame.
+// The computed g_dAffinetrans is such that it warps the preview mosaic in
+// the last frame's coordinate system into the coordinate system of the
+// current frame. Thus, applying this transformation will create the current
+// frame mosaic but with the current frame missing. This frame will then be
+// pasted in by gWarper2 after translating it by g_dTranslationToFBOCenter.
+// The computed g_dAffinetransPan is such that it offsets the computed preview
+// mosaic horizontally to make the viewfinder pan within the UI layout.
 void UpdateWarpTransformation(float *trs)
 {
-    double H[9], Hinv[9], Hp[9], Htemp[9], T[9], Tp[9], Ttemp[9];
-    double K[9], Kinv[9];
+    double H[9], Hp[9], Htemp1[9], Htemp2[9], T[9];
 
-    int w = gPreviewImageWidth[LR];
-    int h = gPreviewImageHeight[LR];
-
-    // K is the transformation to map the canonical [-1,1] vertex coordinate
-    // system to the [0,w] image coordinate system before applying the given
-    // affine transformation trs.
-    K[0] = w / 2.0 - 0.5;
-    K[1] = 0.0;
-    K[2] = w / 2.0 - 0.5;
-    K[3] = 0.0;
-    K[4] = h / 2.0 - 0.5;
-    K[5] = h / 2.0 - 0.5;
-    K[6] = 0.0;
-    K[7] = 0.0;
-    K[8] = 1.0;
-
-    db_Identity3x3(Kinv);
-    db_InvertCalibrationMatrix(Kinv, K);
-
-    for(int i=0; i<9; i++)
+    for(int i = 0; i < 9; i++)
     {
-        H[i] = trs[i];
+        gThisH1t[i] = trs[i];
     }
 
-    gThisTx = trs[2];
+    db_Identity3x3(T);
+    T[2] = -gCenterOffsetX;
+    T[5] = -gCenterOffsetY;
+
+    // H = ( inv(gThisH1t) * gLastH1t ) * T
+    db_Identity3x3(Htemp1);
+    db_Identity3x3(Htemp2);
+    db_Identity3x3(H);
+    db_InvertAffineTransform(Htemp1, gThisH1t);
+    db_Multiply3x3_3x3(Htemp2, Htemp1, gLastH1t);
+    db_Multiply3x3_3x3(H, Htemp2, T);
+
+    for(int i = 0; i < 9; i++)
+    {
+        gLastH1t[i] = gThisH1t[i];
+    }
 
     // Move the origin such that the frame is centered in the previewFBO
-    H[2] += gOriginX;
-    H[5] += gOriginY;
+    // i.e. H = inv(T) * H
+    H[2] += gCenterOffsetX;
+    H[5] += gCenterOffsetY;
 
     // Hp = inv(K) * H * K
     // K moves the coordinate system from openGL to image pixels so
     // that the alignment transform H can be applied to them.
     // inv(K) moves the coordinate system back to openGL normalized
     // coordinates so that the shader can correctly render it.
-    db_Identity3x3(Htemp);
-    db_Multiply3x3_3x3(Htemp, H, K);
-    db_Multiply3x3_3x3(Hp, Kinv, Htemp);
+    db_Identity3x3(Htemp1);
+    db_Multiply3x3_3x3(Htemp1, H, gKm);
+    db_Multiply3x3_3x3(Hp, gKminv, Htemp1);
 
     ConvertAffine3x3toGL4x4(g_dAffinetrans, Hp);
 
-    ////////////////////////////////////////////////////////////////
-    ////// Compute g_Translation & g_dAffinetransInv now...   //////
-    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////// Compute g_dAffinetransPan now...   //////
+    ////////////////////////////////////////////////
 
-    w = gPreviewFBOWidth;
-    h = gPreviewFBOHeight;
+    gThisTx = trs[2];
 
-    K[0] = w / 2.0 - 0.5;
-    K[1] = 0.0;
-    K[2] = w / 2.0 - 0.5;
-    K[3] = 0.0;
-    K[4] = h / 2.0 - 0.5;
-    K[5] = h / 2.0 - 0.5;
-    K[6] = 0.0;
-    K[7] = 0.0;
-    K[8] = 1.0;
-
-    db_Identity3x3(Kinv);
-    db_InvertCalibrationMatrix(Kinv, K);
-
-    // T only has a fraction of the x-translation of this frame relative
-    // to the last frame.
-    db_Identity3x3(T);
-    T[2] = (gThisTx - gLastTx) * VIEWFINDER_PAN_FACTOR_HORZ;
-    T[5] = 0;
+    if(gPanViewfinder)
+    {
+        gPanOffset += (gThisTx - gLastTx) * VIEWFINDER_PAN_FACTOR_HORZ;
+    }
 
     gLastTx = gThisTx;
 
-    db_Identity3x3(Hinv);
-    db_InvertAffineTransform(Hinv, H);
+    // Compute the position of the current frame in the screen coordinate system
+    // and stop the viewfinder panning if we hit the maximum border allowed for
+    // this UI layout
+    double normalizedXPositionOnScreenLeft = (2 *
+            (gCenterOffsetX + gPanOffset) / gPreviewFBOWidth - 1.0) *
+            gUILayoutScalingX;
+    double normalizedScreenLimitLeft = -1.0 + VIEWPORT_BORDER_FACTOR_HORZ * 2.0;
 
-    Hinv[2] += gOriginX;
-    Hinv[5] += gOriginY;
+    double normalizedXPositionOnScreenRight = (2 *
+            ((gCenterOffsetX + gPanOffset) + gPreviewImageWidth[LR]) /
+            gPreviewFBOWidth - 1.0) * gUILayoutScalingX;
+    double normalizedScreenLimitRight = 1.0 - VIEWPORT_BORDER_FACTOR_HORZ * 2.0;
 
-    // We update the origin of where the first frame is laid out in the
-    // previewFBO to reflect that we have panned the entire preview mosaic
-    // inside the previewFBO by translation T. This is needed to ensure
-    // that the next frame can be correctly rendered aligned with the existing
-    // mosaic.
-    gOriginX += T[2];
-    gOriginY += T[5];
+    if(normalizedXPositionOnScreenRight > normalizedScreenLimitRight ||
+            normalizedXPositionOnScreenLeft < normalizedScreenLimitLeft)
+        gPanViewfinder = false;
 
+    db_Identity3x3(H);
+    H[2] = gPanOffset;
 
-    // Hp = inv(K) * Hinv * K
-    db_Identity3x3(Htemp);
-    db_Multiply3x3_3x3(Htemp, Hinv, K);
-    db_Multiply3x3_3x3(Hp, Kinv, Htemp);
+    // Hp = inv(K) * H * K
+    db_Identity3x3(Htemp1);
+    db_Multiply3x3_3x3(Htemp1, H, gKm);
+    db_Multiply3x3_3x3(Hp, gKminv, Htemp1);
 
-    ConvertAffine3x3toGL4x4(g_dAffinetransInv, Hp);
-
-    // Tp = inv(K) * T * K
-    db_Identity3x3(Ttemp);
-    db_Multiply3x3_3x3(Ttemp, T, K);
-    db_Multiply3x3_3x3(Tp, Kinv, Ttemp);
-
-    ConvertAffine3x3toGL4x4(g_dTranslation, Tp);
-
+    ConvertAffine3x3toGL4x4(g_dAffinetransPan, Hp);
 }
 
 void AllocateTextureMemory(int widthHR, int heightHR, int widthLR, int heightLR)
@@ -313,8 +321,68 @@ void AllocateTextureMemory(int widthHR, int heightHR, int widthLR, int heightLR)
     gPreviewFBOWidth = PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[LR];
     gPreviewFBOHeight = PREVIEW_FBO_HEIGHT_SCALE * gPreviewImageHeight[LR];
 
-    gOriginX = (gPreviewFBOWidth / 2 - gPreviewImageWidth[LR] / 2);
-    gOriginY = (gPreviewFBOHeight / 2 - gPreviewImageHeight[LR] / 2);
+    // The origin is such that the current frame will sit with its center
+    // at the center of the previewFBO
+    gCenterOffsetX = (gPreviewFBOWidth / 2 - gPreviewImageWidth[LR] / 2);
+    gCenterOffsetY = (gPreviewFBOHeight / 2 - gPreviewImageHeight[LR] / 2);
+
+    gPanOffset = 0.0f;
+
+    db_Identity3x3(gThisH1t);
+    db_Identity3x3(gLastH1t);
+
+    gPanViewfinder = true;
+
+    int w = gPreviewImageWidth[LR];
+    int h = gPreviewImageHeight[LR];
+
+    int wm = gPreviewFBOWidth;
+    int hm = gPreviewFBOHeight;
+
+    // K is the transformation to map the canonical [-1,1] vertex coordinate
+    // system to the [0,w] image coordinate system before applying the given
+    // affine transformation trs.
+    gKm[0] = wm / 2.0 - 0.5;
+    gKm[1] = 0.0;
+    gKm[2] = wm / 2.0 - 0.5;
+    gKm[3] = 0.0;
+    gKm[4] = hm / 2.0 - 0.5;
+    gKm[5] = hm / 2.0 - 0.5;
+    gKm[6] = 0.0;
+    gKm[7] = 0.0;
+    gKm[8] = 1.0;
+
+    gK[0] = w / 2.0 - 0.5;
+    gK[1] = 0.0;
+    gK[2] = w / 2.0 - 0.5;
+    gK[3] = 0.0;
+    gK[4] = h / 2.0 - 0.5;
+    gK[5] = h / 2.0 - 0.5;
+    gK[6] = 0.0;
+    gK[7] = 0.0;
+    gK[8] = 1.0;
+
+    db_Identity3x3(gKinv);
+    db_InvertCalibrationMatrix(gKinv, gK);
+
+    db_Identity3x3(gKminv);
+    db_InvertCalibrationMatrix(gKminv, gKm);
+
+    //////////////////////////////////////////
+    ////// Compute g_Translation now... //////
+    //////////////////////////////////////////
+    double T[9], Tp[9], Ttemp[9];
+
+    db_Identity3x3(T);
+    T[2] = gCenterOffsetX;
+    T[5] = gCenterOffsetY;
+
+    // Tp = inv(K) * T * K
+    db_Identity3x3(Ttemp);
+    db_Multiply3x3_3x3(Ttemp, T, gK);
+    db_Multiply3x3_3x3(Tp, gKinv, Ttemp);
+
+    ConvertAffine3x3toGL4x4(g_dTranslationToFBOCenter, Tp);
 
     UpdateWarpTransformation(g_dIdent3x3);
 }
@@ -377,6 +445,11 @@ JNIEXPORT jint JNICALL Java_com_android_camera_panorama_MosaicRenderer_init(
 JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
         JNIEnv * env, jobject obj,  jint width, jint height)
 {
+    gUILayoutScalingX = (PREVIEW_FBO_WIDTH_SCALE / PREVIEW_FBO_HEIGHT_SCALE) *
+        (gPreviewImageWidth[LR] / gPreviewImageHeight[LR]) / (width / height) *
+        PREVIEW_FBO_HEIGHT_SCALE;
+    gUILayoutScalingY = PREVIEW_FBO_HEIGHT_SCALE;
+
     gBuffer[0].Init(gPreviewFBOWidth, gPreviewFBOHeight, GL_RGBA);
     gBuffer[1].Init(gPreviewFBOWidth, gPreviewFBOHeight, GL_RGBA);
 
@@ -424,22 +497,22 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
     gYVURenderer[HR].SetInputTextureName(gBufferInput[HR].GetTextureName());
     gYVURenderer[HR].SetInputTextureType(GL_TEXTURE_2D);
 
-    // gBufferInput[LR] --> gWarper1 --> gBuffer[gCurrentFBOIndex]
+    // gBuffer[1-gCurrentFBOIndex] --> gWarper1 --> gBuffer[gCurrentFBOIndex]
     gWarper1.SetupGraphics(&gBuffer[gCurrentFBOIndex]);
     gWarper1.Clear(0.0, 0.0, 0.0, 1.0);
-    gWarper1.SetViewportMatrix(gPreviewImageWidth[LR],
-            gPreviewImageHeight[LR], gBuffer[gCurrentFBOIndex].GetWidth(),
-            gBuffer[gCurrentFBOIndex].GetHeight());
+    gWarper1.SetViewportMatrix(1, 1, 1, 1);
     gWarper1.SetScalingMatrix(1.0f, 1.0f);
-    gWarper1.SetInputTextureName(gBufferInput[LR].GetTextureName());
+    gWarper1.SetInputTextureName(gBuffer[1 - gCurrentFBOIndex].GetTextureName());
     gWarper1.SetInputTextureType(GL_TEXTURE_2D);
 
-    // gBuffer[gCurrentFBOIndex] --> gWarper2 --> gBuffer[1-gCurrentFBOIndex]
-    gWarper2.SetupGraphics(&gBuffer[1-gCurrentFBOIndex]);
+    // gBufferInput[LR] --> gWarper2 --> gBuffer[gCurrentFBOIndex]
+    gWarper2.SetupGraphics(&gBuffer[gCurrentFBOIndex]);
     gWarper2.Clear(0.0, 0.0, 0.0, 1.0);
-    gWarper2.SetViewportMatrix(1, 1, 1, 1);
+    gWarper2.SetViewportMatrix(gPreviewImageWidth[LR],
+            gPreviewImageHeight[LR], gBuffer[gCurrentFBOIndex].GetWidth(),
+            gBuffer[gCurrentFBOIndex].GetHeight());
     gWarper2.SetScalingMatrix(1.0f, 1.0f);
-    gWarper2.SetInputTextureName(gBuffer[gCurrentFBOIndex].GetTextureName());
+    gWarper2.SetInputTextureName(gBufferInput[LR].GetTextureName());
     gWarper2.SetInputTextureType(GL_TEXTURE_2D);
 
     gPreview.SetupGraphics(width, height);
@@ -447,10 +520,8 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
     gPreview.SetViewportMatrix(1, 1, 1, 1);
     // Scale the previewFBO so that the viewfinder window fills the layout height
     // while maintaining the image aspect ratio
-    gPreview.SetScalingMatrix((PREVIEW_FBO_WIDTH_SCALE / PREVIEW_FBO_HEIGHT_SCALE) *
-        (gPreviewImageWidth[LR] / gPreviewImageHeight[LR]) / (width / height) *
-        PREVIEW_FBO_HEIGHT_SCALE, -1.0f*PREVIEW_FBO_HEIGHT_SCALE);
-    gPreview.SetInputTextureName(gBuffer[1-gCurrentFBOIndex].GetTextureName());
+    gPreview.SetScalingMatrix(gUILayoutScalingX, -1.0f * gUILayoutScalingY);
+    gPreview.SetInputTextureName(gBuffer[gCurrentFBOIndex].GetTextureName());
     gPreview.SetInputTextureType(GL_TEXTURE_2D);
 }
 
@@ -536,37 +607,27 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_transferG
 JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_step(
         JNIEnv * env, jobject obj)
 {
-    if(!gWarpImage)
+    if(!gWarpImage) // ViewFinder
     {
-        gWarper1.SetupGraphics(&gBuffer[gCurrentFBOIndex]);
+        gWarper2.SetupGraphics(&gBuffer[gCurrentFBOIndex]);
         gPreview.SetInputTextureName(gBuffer[gCurrentFBOIndex].GetTextureName());
 
-        // Use gWarper1 shader to apply the current frame transformation to the
-        // current frame and then add it to the gBuffer FBO.
-        gWarper1.DrawTexture(g_dAffinetransGL);
-
-        // Use the gPreview shader to apply the inverse of the current frame
-        // transformation to the gBuffer FBO and render it to the screen.
-        gPreview.DrawTexture(g_dAffinetransInvGL);
+        gWarper2.DrawTexture(g_dTranslationToFBOCenterGL);
+        gPreview.DrawTexture(g_dAffinetransIdent);
     }
     else
     {
         gWarper1.SetupGraphics(&gBuffer[gCurrentFBOIndex]);
-        gWarper2.SetupGraphics(&gBuffer[1-gCurrentFBOIndex]);
-        gWarper2.SetInputTextureName(gBuffer[gCurrentFBOIndex].GetTextureName());
-        gPreview.SetInputTextureName(gBuffer[1-gCurrentFBOIndex].GetTextureName());
+        // Clear the destination so that we can paint on it afresh
+        gWarper1.Clear(0.0, 0.0, 0.0, 1.0);
+        gWarper1.SetInputTextureName(
+                gBuffer[1 - gCurrentFBOIndex].GetTextureName());
+        gWarper2.SetupGraphics(&gBuffer[gCurrentFBOIndex]);
+        gPreview.SetInputTextureName(gBuffer[gCurrentFBOIndex].GetTextureName());
 
-        // Use gWarper1 shader to apply the current frame transformation to the
-        // current frame and then add it to the gBuffer FBO.
         gWarper1.DrawTexture(g_dAffinetransGL);
-
-        // Use gWarper2 to translate the contents of the gBuffer FBO and copy
-        // it into the second gBuffer FBO
-        gWarper2.DrawTexture(g_dTranslationGL);
-
-        // Use the gPreview shader to apply the inverse of the current frame
-        // transformation to the gBuffer FBO and render it to the screen.
-        gPreview.DrawTexture(g_dAffinetransInvGL);
+        gWarper2.DrawTexture(g_dTranslationToFBOCenterGL);
+        gPreview.DrawTexture(g_dAffinetransPanGL);
 
         gCurrentFBOIndex = 1 - gCurrentFBOIndex;
     }
@@ -578,14 +639,23 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_setWarpin
     // TODO: Review this logic
     if(gWarpImage != (bool) flag) //switching from viewfinder to capture or vice-versa
     {
+        // Clear gBuffer[0]
+        gWarper1.SetupGraphics(&gBuffer[0]);
         gWarper1.Clear(0.0, 0.0, 0.0, 1.0);
-        gWarper2.Clear(0.0, 0.0, 0.0, 1.0);
-        gPreview.Clear(0.0, 0.0, 0.0, 1.0);
+        // Clear gBuffer[1]
+        gWarper1.SetupGraphics(&gBuffer[1]);
+        gWarper1.Clear(0.0, 0.0, 0.0, 1.0);
         // Clear the screen to black.
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        gPreview.Clear(0.0, 0.0, 0.0, 1.0);
+
+        gLastTx = 0.0f;
+        gPanOffset = 0.0f;
+        gPanViewfinder = true;
+
+        db_Identity3x3(gThisH1t);
+        db_Identity3x3(gLastH1t);
     }
+
     gWarpImage = (bool)flag;
 }
 
@@ -593,20 +663,10 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_setWarpin
 JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_ready(
         JNIEnv * env, jobject obj)
 {
-    if(!gWarpImage)
-    {
-        UpdateWarpTransformation(g_dIdent3x3);
-
-        for(int i=0; i<16; i++)
-        {
-            g_dAffinetransInv[i] = g_dAffinetransIdent[i];
-        }
-    }
-
     for(int i=0; i<16; i++)
     {
         g_dAffinetransGL[i] = g_dAffinetrans[i];
-        g_dAffinetransInvGL[i] = g_dAffinetransInv[i];
-        g_dTranslationGL[i] = g_dTranslation[i];
+        g_dAffinetransPanGL[i] = g_dAffinetransPan[i];
+        g_dTranslationToFBOCenterGL[i] = g_dTranslationToFBOCenter[i];
     }
 }

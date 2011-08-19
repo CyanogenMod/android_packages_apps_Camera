@@ -139,7 +139,6 @@ bool SurfaceTextureRenderer::DrawTexture(GLfloat *affine)
         glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, g_iIndices2);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glFinish();
         succeeded = true;
     } while (false);
     return succeeded;

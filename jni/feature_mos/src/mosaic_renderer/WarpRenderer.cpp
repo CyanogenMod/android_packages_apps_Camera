@@ -23,7 +23,7 @@ const int VERTEX_STRIDE = 6 * sizeof(GLfloat);
 GLushort g_iIndices[] = { 0, 1, 2, 3 };
 
 WarpRenderer::WarpRenderer() : Renderer()
-                   {
+{
 }
 
 WarpRenderer::~WarpRenderer() {

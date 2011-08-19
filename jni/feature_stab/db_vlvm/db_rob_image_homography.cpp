@@ -567,7 +567,8 @@ inline void db_ImageHomographyUpdateGeneric(double H_p_dx[9],double H[9],double 
 void db_RobCamRotation_Polish_Generic(double H[9],int point_count,int homography_type,double *x_i,double *xp_i,double one_over_scale2,
                                int max_iterations,double improvement_requirement)
 {
-    int i,update,stop,frozen_coord,n;
+    int i,update,stop,n;
+    int frozen_coord = 0;
     double lambda,cost,current_cost;
     double JtJ[72],min_Jtf[9],dx[8],H_p_dx[9];
     double *JtJ_ref[9],d[8];

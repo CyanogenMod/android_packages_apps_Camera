@@ -80,7 +80,8 @@ subdiagonal part in A and diagonal in d, which is n-dimensional*/
 void db_CholeskyDecompSeparateDiagonal(double **A,double *d,int n)
 {
     int i,j,k;
-    double s,temp;
+    double s;
+    double temp = 0.0;
 
     for(i=0;i<n;i++) for(j=i;j<n;j++)
     {
