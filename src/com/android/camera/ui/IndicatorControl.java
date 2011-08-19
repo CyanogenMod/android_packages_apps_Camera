@@ -109,7 +109,6 @@ public abstract class IndicatorControl extends RelativeLayout implements
         if (pref == null) return;
         mCameraPicker = new CameraPicker(context);
         mCameraPicker.initialize(pref);
-        mCameraPicker.setCameraPickerIcon();
         addView(mCameraPicker);
     }
 

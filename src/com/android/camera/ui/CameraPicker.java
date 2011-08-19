@@ -37,10 +37,7 @@ public class CameraPicker extends RotateImageView implements View.OnClickListene
 
     public CameraPicker(Context context) {
         super(context);
-    }
-
-    public CameraPicker(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        setImageResource(R.drawable.ic_switch_camera_facing_holo_light);
     }
 
     public void setListener(OnPreferenceChangedListener listener) {
@@ -61,12 +58,6 @@ public class CameraPicker extends RotateImageView implements View.OnClickListene
         }
     }
 
-    public void setCameraPickerIcon() {
-        setImageResource((mCameraFacing == CameraInfo.CAMERA_FACING_BACK)
-                ? R.drawable.ic_rotate_camera_facing_back
-                : R.drawable.ic_rotate_camera_facing_forward);
-    }
-
     @Override
     public void onClick(View v) {
         if (mCameras == null) return;
@@ -74,7 +65,6 @@ public class CameraPicker extends RotateImageView implements View.OnClickListene
                 ? CameraInfo.CAMERA_FACING_FRONT
                 : CameraInfo.CAMERA_FACING_BACK;
         mCameraFacing = newCameraIndex;
-        setCameraPickerIcon();
         mPreference.setValue((String) mCameras[mCameraFacing]);
         mListener.onSharedPreferenceChanged();
     }
