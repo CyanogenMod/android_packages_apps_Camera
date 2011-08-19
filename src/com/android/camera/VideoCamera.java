@@ -39,6 +39,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.media.AudioManager;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
@@ -113,6 +114,11 @@ public class VideoCamera extends BaseCamera
     private static final int STORAGE_STATUS_NONE = 2;
     private static final int STORAGE_STATUS_FAIL = 3;
 
+    private static final int PORTRAIT = 0;
+    private static final int LANDSCAPE = 90;
+    private static final int PORTRAIT_REVERSE = 180;
+    private static final int LANDSCAPE_REVERSE = 270;
+
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
 
@@ -155,6 +161,8 @@ public class VideoCamera extends BaseCamera
     // (or is recording into.)
     private String mVideoFilename;
     private ParcelFileDescriptor mVideoFileDescriptor;
+
+    private AudioManager mAudioManager;
 
     // The video file that has already been recorded, and that is being
     // examined by the user.
@@ -326,6 +334,8 @@ public class VideoCamera extends BaseCamera
         startPreviewThread.start();
 
         mContentResolver = getContentResolver();
+
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         requestWindowFeature(Window.FEATURE_PROGRESS);
 
@@ -1314,10 +1324,13 @@ public class VideoCamera extends BaseCamera
 
         pauseAudioPlayback();
 
+        mAudioManager.setParameters("active_ap=Camcorder;sound_effect_enable=off");
+
         try {
             mMediaRecorder.start(); // Recording is now started
         } catch (RuntimeException e) {
             Log.e(TAG, "Could not start media recorder. ", e);
+            mAudioManager.setParameters("active_ap=Music;sound_effect_enable=off");
             releaseMediaRecorder();
             return;
         }
@@ -1332,6 +1345,18 @@ public class VideoCamera extends BaseCamera
         mRecordingTimeView.setText("");
         mRecordingTimeView.setVisibility(View.VISIBLE);
         updateRecordingTime();
+
+        switch (mOrientation) {
+            case PORTRAIT:
+            case PORTRAIT_REVERSE:
+                mAudioManager.setParameters("active_ap=Camcorder;dolby_srs_eq=Portrait;sound_effect_enable=on");
+                break;
+            case LANDSCAPE:
+            case LANDSCAPE_REVERSE:
+                mAudioManager.setParameters("active_ap=Camcorder;dolby_srs_eq=Landscape;sound_effect_enable=on");
+                break;
+        }
+
         keepScreenOn();
     }
 
@@ -1430,6 +1455,9 @@ public class VideoCamera extends BaseCamera
 
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
+
+        mAudioManager.setParameters("active_ap=Music;sound_effect_enable=off");
+
         if (mMediaRecorderRecording) {
             boolean needToRegisterRecording = false;
             mMediaRecorder.setOnErrorListener(null);
