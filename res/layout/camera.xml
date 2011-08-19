@@ -38,6 +38,32 @@
                     android:layout_width="100dip"
                     android:layout_height="100dip"
                     android:layout_gravity="center" />
+           <com.android.camera.ui.RotateRecordingTime android:id="@+id/recording_time_rect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|bottom"
+                    android:layout_marginBottom="14dp"
+                    android:layout_marginLeft="14dp">
+           <!-- Note: In this TextView the paddingRight="2"
+                    attribute is required because otherwise the
+                    text's drop shadow will be clipped. -->
+                    <TextView android:id="@+id/recording_time"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:layout_gravity="center"
+                        android:paddingRight="2dp"
+                        android:drawablePadding="8dp"
+                        android:drawableLeft="@drawable/ic_recording_indicator"
+                        android:shadowColor="#c0000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1"
+                        android:gravity="left|center_vertical"
+                        android:textColor="@color/recording_time_elapsed_text"
+                        android:textSize="23dp"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
+           </com.android.camera.ui.RotateRecordingTime>
         </FrameLayout>
     </com.android.camera.PreviewFrameLayout>
 </LinearLayout>
