@@ -74,6 +74,9 @@ public class PanoramaActivity extends Activity implements
     private static final int CAPTURE_VIEWFINDER = 0;
     private static final int CAPTURE_MOSAIC = 1;
 
+    // Speed is in unit of deg/sec
+    private static final float PANNING_SPEED_THRESHOLD = 30f;
+
     // Ratio of nanosecond to second
     private static final float NS2S = 1.0f / 1000000000.0f;
 
@@ -103,6 +106,8 @@ public class PanoramaActivity extends Activity implements
     private SurfaceTexture mSurfaceTexture;
     private boolean mThreadRunning;
     private float[] mTransformMatrix;
+    private float mHorizontalViewAngle;
+    private float mVerticalViewAngle;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -213,6 +218,9 @@ public class PanoramaActivity extends Activity implements
         Log.v(TAG, "preview fps: " + minFps + ", " + maxFps);
 
         parameters.setRecordingHint(false);
+
+        mHorizontalViewAngle = parameters.getHorizontalViewAngle();
+        mVerticalViewAngle = parameters.getVerticalViewAngle();
     }
 
     public int getPreviewBufSize() {
@@ -314,12 +322,12 @@ public class PanoramaActivity extends Activity implements
 
         mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
             @Override
-            public void onProgress(boolean isFinished, float translationRate, int traversedAngleX,
-                    int traversedAngleY) {
+            public void onProgress(boolean isFinished, float panningRateX, float panningRateY,
+                    int traversedAngleX, int traversedAngleY) {
                 if (isFinished) {
                     stopCapture();
                 } else {
-                    updateProgress(translationRate, traversedAngleX, traversedAngleY);
+                    updateProgress(panningRateX, panningRateY, traversedAngleX, traversedAngleY);
                 }
             }
         });
@@ -358,12 +366,17 @@ public class PanoramaActivity extends Activity implements
         }
     }
 
-    private void updateProgress(float translationRate, int traversedAngleX, int traversedAngleY) {
+    private void updateProgress(float panningRateX, float panningRateY,
+            int traversedAngleX, int traversedAngleY) {
 
         mMosaicView.setReady();
         mMosaicView.requestRender();
 
-        if (translationRate > 150) {
+        // TODO: Now we just display warning message by the panning speed.
+        // Since we only support horizontal panning, we should display a warning message
+        // in UI when there're significant vertical movements.
+        if ((panningRateX * mHorizontalViewAngle > PANNING_SPEED_THRESHOLD)
+                || (panningRateY * mVerticalViewAngle > PANNING_SPEED_THRESHOLD)) {
             // TODO: draw speed indication according to the UI spec.
             mTooFastPrompt.setVisibility(View.VISIBLE);
             mCaptureView.setSweepAngle(Math.max(traversedAngleX, traversedAngleY) + 1);

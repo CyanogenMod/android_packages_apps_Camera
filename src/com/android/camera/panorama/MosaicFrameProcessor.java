@@ -29,6 +29,7 @@ public class MosaicFrameProcessor {
     private static final int FRAME_COUNT_INDEX = 9;
     private static final int X_COORD_INDEX = 2;
     private static final int Y_COORD_INDEX = 5;
+    private static final int HR_TO_LR_DOWNSAMPLE_FACTOR = 4;
 
     private Mosaic mMosaicer;
     private boolean mIsMosaicMemoryAllocated = false;
@@ -51,14 +52,17 @@ public class MosaicFrameProcessor {
     private int mCompassThreshold;
     private int mTraversedAngleX;
     private int mTraversedAngleY;
-    private float mTranslationRate;
+
+    // Panning rate is in unit of percentage of image content translation / second.
+    private float mPanningRateX;
+    private float mPanningRateY;
 
     private int mPreviewWidth;
     private int mPreviewHeight;
     private int mPreviewBufferSize;
 
     public interface ProgressListener {
-        public void onProgress(boolean isFinished, float translationRate,
+        public void onProgress(boolean isFinished, float panningRateX, float panningRateY,
                 int traversedAngleX, int traversedAngleY);
     }
 
@@ -161,12 +165,12 @@ public class MosaicFrameProcessor {
 
                 // Publish progress of the ongoing processing
                 if (mProgressListener != null) {
-                    mProgressListener.onProgress(false, mTranslationRate,
+                    mProgressListener.onProgress(false, mPanningRateX, mPanningRateY,
                             mTraversedAngleX, mTraversedAngleY);
                 }
             } else {
                 if (mProgressListener != null) {
-                    mProgressListener.onProgress(true, mTranslationRate,
+                    mProgressListener.onProgress(true, mPanningRateX, mPanningRateY,
                             mTraversedAngleX, mTraversedAngleY);
                 }
             }
@@ -181,8 +185,18 @@ public class MosaicFrameProcessor {
         mTotalFrameCount  = (int) frameData[FRAME_COUNT_INDEX];
         float translationCurrX = frameData[X_COORD_INDEX];
         float translationCurrY = frameData[Y_COORD_INDEX];
-        mTranslationRate  = Math.max(Math.abs(translationCurrX - mTranslationLastX),
-                Math.abs(translationCurrY - mTranslationLastY)) / deltaTime;
+
+        // The panning rate is measured as the rate of the translation percentage in
+        // image width/height. Take the horizontal panning rate for example, the image width
+        // used in finding the translation is (PreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR).
+        // To get the horizontal translation percentage, the horizontal translation,
+        // (translationCurrX - mTranslationLastX), is divided by the
+        // image width. We then get the rate by dividing the translation percentage with deltaTime.
+        mPanningRateX = Math.abs(translationCurrX - mTranslationLastX)
+                / (mPreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR) / deltaTime;
+        mPanningRateY = Math.abs(translationCurrY - mTranslationLastY)
+                / (mPreviewHeight / HR_TO_LR_DOWNSAMPLE_FACTOR) / deltaTime;
+
         mTranslationLastX = translationCurrX;
         mTranslationLastY = translationCurrY;
     }
