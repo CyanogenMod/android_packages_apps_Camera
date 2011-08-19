@@ -144,6 +144,31 @@
         <item>facedetect</item>
     </string-array>
 
+    <!-- Camera Preferences capture dialog box entries -->
+    <string-array name="pref_camera_capturemode_entries" translatable="false">
+        <item>@string/pref_camera_capturemode_entry_default</item>
+        <item>@string/pref_camera_capturemode_entry_timer</item>
+    </string-array>
+
+    <!-- Camera Preferences for timer duration -->
+    <string-array name="pref_camera_timer_duration_entries" translatable="false">
+        <item>@string/pref_camera_capturemode_entry_10</item>
+        <item>@string/pref_camera_capturemode_entry_20</item>
+        <item>@string/pref_camera_capturemode_entry_30</item>
+        <item>@string/pref_camera_capturemode_entry_40</item>
+        <item>@string/pref_camera_capturemode_entry_50</item>
+        <item>@string/pref_camera_capturemode_entry_60</item>
+    </string-array>
+
+    <string-array name="pref_camera_timer_duration_values" translatable="false">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+    </string-array>
+
     <!-- Camera Preferences flash mode dialog box entries -->
     <string-array name="pref_camera_flashmode_entries" translatable="false">
         <item>@string/pref_camera_flashmode_entry_auto</item>

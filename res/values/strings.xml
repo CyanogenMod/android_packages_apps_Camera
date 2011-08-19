@@ -202,6 +202,11 @@
     <string name="pref_camera_vol_zoom">Volume Buttons Zoom</string>
     <string name="pref_camera_vol_zoom_summary">Volume up/down zoom in/out respectively</string>
 
+    <!-- Other settings -->
+    <string name="pref_camera_other_settings_title">Other settings</string>
+    <string name="pref_camera_timer_duration">Timer duration</string>
+    <string name="pref_camera_timer_duration_summary">Select duration for camera timer</string>
+
     <!-- More Settings screen, search button title -->
     <string name="pref_camera_search_shutter_title">Search Shutter</string>
 
@@ -233,7 +238,7 @@
     <!-- Settings screen, Focus mode title -->
     <string name="pref_camera_focusmode_title">Focus mode</string>
 
-    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <!-- Settings screen, Focus mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_auto">Auto</string>
     <string name="pref_camera_focusmode_entry_normal">Normal</string>
     <string name="pref_camera_focusmode_entry_macro">Macro</string>
@@ -250,6 +255,21 @@
 
     <!-- Value for flash off setting-->
     <string name="pref_camera_flashmode_no_flash" translatable="false">no_flash</string>
+
+    <!-- Settings screen, Capture mode title -->
+    <string name="pref_camera_capturemode_title">Capture mode</string>
+
+    <!-- Settings screen, Capture mode dialog radio button choices -->
+    <string name="pref_camera_capturemode_entry_default">Immediate</string>
+    <string name="pref_camera_capturemode_entry_timer">Timer</string>
+
+    <!-- Settings screen, Capture mode dialog entries -->
+    <string name="pref_camera_capturemode_entry_10">10 seconds</string>
+    <string name="pref_camera_capturemode_entry_20">20 seconds</string>
+    <string name="pref_camera_capturemode_entry_30">30 seconds</string>
+    <string name="pref_camera_capturemode_entry_40">40 seconds</string>
+    <string name="pref_camera_capturemode_entry_50">50 seconds</string>
+    <string name="pref_camera_capturemode_entry_60">60 seconds</string>
 
     <!-- Settings screen, Flash mode title -->
     <string name="pref_camera_flashmode_title">Flash mode</string>
