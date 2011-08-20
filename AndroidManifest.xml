@@ -23,6 +23,7 @@
             android:taskAffinity=""
             android:theme="@style/ThemeCamera"
             android:hardwareAccelerated="true">
+        <uses-library android:name="com.google.android.media.effects" android:required="false" />
         <receiver android:name="com.android.camera.CameraButtonIntentReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.CAMERA_BUTTON"/>

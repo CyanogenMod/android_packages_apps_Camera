@@ -57,5 +57,15 @@
                 android:visibility="gone"
                 android:background="@android:color/black"/>
         <include layout="@layout/indicator_bar"/>
+        <TextView android:id="@+id/bg_replace_message"
+                  android:layout_width="300dp"
+                  android:layout_height="wrap_content"
+                  android:layout_centerInParent="true"
+                  android:padding="32dp"
+                  android:layout_margin="24dp"
+                  android:textAppearance="?android:attr/textAppearanceMedium"
+                  android:background="@drawable/bg_text_on_preview"
+                  android:visibility="gone"
+                  android:text="@string/bg_replacement_message" />
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>
