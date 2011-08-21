@@ -274,6 +274,12 @@
     <!-- The text shown when the panorama panning speed is to fast [CHAR LIMIT=12] -->
     <string name="pano_too_fast_prompt">Too Fast</string>
 
+    <!-- The text shown in the progress dialog when panorama preview is generating in the background [CHAR LIMIT=30] -->
+    <string name="pano_dialog_prepare_preview">Preparing preview...</string>
+
+    <!-- The text shown in the progress dialog when generating the final panorama result in the background [CHAR LIMIT=30] -->
+    <string name="pano_dialog_generate_panorama">Generating panorama...</string>
+
     <!-- Toast telling users tapping on the viewfinder will trigger autofocus [CHAR LIMIT=24] -->
     <string name="tap_to_focus">Tap to focus</string>
 </resources>

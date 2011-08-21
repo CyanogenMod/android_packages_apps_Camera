@@ -26,6 +26,7 @@ import com.android.camera.Storage;
 import com.android.camera.Util;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -91,6 +92,10 @@ public class PanoramaActivity extends Activity implements
     private MosaicRendererSurfaceView mMosaicView;
     private TextView mTooFastPrompt;
 
+    private ProgressDialog mProgressDialog;
+    private String mPreparePreviewString;
+    private String mGeneratePanoramaString;
+
     private int mPreviewWidth;
     private int mPreviewHeight;
     private Camera mCameraDevice;
@@ -126,16 +131,21 @@ public class PanoramaActivity extends Activity implements
 
         mTransformMatrix = new float[16];
 
+        mPreparePreviewString =
+                getResources().getString(R.string.pano_dialog_prepare_preview);
+        mGeneratePanoramaString =
+                getResources().getString(R.string.pano_dialog_generate_panorama);
+
         mMainHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case MSG_FINAL_MOSAIC_READY:
-                        mThreadRunning = false;
+                        onBackgroundThreadFinished();
                         showFinalMosaic((Bitmap) msg.obj);
                         break;
                     case MSG_RESET_TO_PREVIEW:
-                        mThreadRunning = false;
+                        onBackgroundThreadFinished();
                         resetToPreview();
                         break;
                 }
@@ -349,8 +359,7 @@ public class PanoramaActivity extends Activity implements
 
         // TODO: show some dialog for long computation.
         if (!mThreadRunning) {
-            mThreadRunning = true;
-            Thread t = new Thread() {
+            runBackgroundThread(mPreparePreviewString, new Thread() {
                 @Override
                 public void run() {
                     byte[] jpegData = generateFinalMosaic(false);
@@ -361,8 +370,7 @@ public class PanoramaActivity extends Activity implements
                     mMainHandler.sendMessage(mMainHandler.obtainMessage(
                             MSG_FINAL_MOSAIC_READY, bitmap));
                 }
-            };
-            t.start();
+            });
         }
     }
 
@@ -429,16 +437,26 @@ public class PanoramaActivity extends Activity implements
     @OnClickAttr
     public void onOkButtonClicked(View v) {
         if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
-        mThreadRunning = true;
-        Thread t = new Thread() {
+        runBackgroundThread(mGeneratePanoramaString, new Thread() {
             @Override
             public void run() {
                 byte[] jpegData = generateFinalMosaic(true);
                 savePanorama(jpegData);
                 mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW));
             }
-        };
-        t.start();
+        });
+    }
+
+    private void runBackgroundThread(String str, Thread thread) {
+        mThreadRunning = true;
+        mProgressDialog = ProgressDialog.show(this, "", str);
+        thread.start();
+    }
+
+    private void onBackgroundThreadFinished() {
+        mThreadRunning = false;
+        mProgressDialog.dismiss();
+        mProgressDialog = null;
     }
 
     @OnClickAttr
