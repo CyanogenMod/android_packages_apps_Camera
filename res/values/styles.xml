@@ -125,4 +125,10 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">@dimen/pano_gray_bar_height</item>
     </style>
+    <style name="ReviewThumbnail">
+        <item name="android:layout_width">52dp</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
 </resources>

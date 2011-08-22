@@ -81,10 +81,10 @@ import java.util.List;
  * The Camcorder activity.
  */
 public class VideoCamera extends ActivityBase
-        implements View.OnClickListener,
+        implements CameraPreference.OnPreferenceChangedListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        ModePicker.OnModeChangeListener, CameraPreference.OnPreferenceChangedListener {
+        ModePicker.OnModeChangeListener {
 
     private static final String TAG = "videocamera";
 
@@ -378,11 +378,7 @@ public class VideoCamera extends ActivityBase
 
             mReviewControl = findViewById(R.id.review_control);
             mReviewControl.setVisibility(View.VISIBLE);
-            findViewById(R.id.btn_cancel).setOnClickListener(this);
-            findViewById(R.id.btn_done).setOnClickListener(this);
-            findViewById(R.id.btn_play).setOnClickListener(this);
             View retake = findViewById(R.id.btn_retake);
-            retake.setOnClickListener(this);
             if (retake instanceof ImageView) {
                 ((ImageView) retake).setImageResource(R.drawable.btn_ic_review_retake_video);
             } else {
@@ -539,29 +535,33 @@ public class VideoCamera extends ActivityBase
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.thumbnail:
-                if (!mMediaRecorderRecording && mThumbnail != null) {
-                    showSharePopup();
-                }
-                break;
-            case R.id.btn_retake:
-                deleteCurrentVideo();
-                hideAlert();
-                break;
-            case R.id.btn_play:
-                startPlayVideoActivity();
-                break;
-            case R.id.btn_done:
-                doReturnToCaller(true);
-                break;
-            case R.id.btn_cancel:
-                stopVideoRecording();
-                doReturnToCaller(false);
-                break;
+    @OnClickAttr
+    public void onThumbnailClicked(View v) {
+        if (!mMediaRecorderRecording && mThumbnail != null) {
+            showSharePopup();
         }
+    }
+
+    @OnClickAttr
+    public void onRetakeButtonClicked(View v) {
+        deleteCurrentVideo();
+        hideAlert();
+    }
+
+    @OnClickAttr
+    public void onPlayButtonClicked(View v) {
+        startPlayVideoActivity();
+    }
+
+    @OnClickAttr
+    public void onDoneButtonClicked(View v) {
+        doReturnToCaller(true);
+    }
+
+    @OnClickAttr
+    public void onCancelButtonClicked(View v) {
+        stopVideoRecording();
+        doReturnToCaller(false);
     }
 
     public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
@@ -1528,7 +1528,6 @@ public class VideoCamera extends ActivityBase
 
     private void initThumbnailButton() {
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
-        mThumbnailView.setOnClickListener(this);
         // Load the thumbnail from the disk.
         mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
     }

@@ -13,5 +13,5 @@
 }
 
 -keep class * extends android.app.Activity {
-  @com.android.camera.panorama.OnClickAttr <methods>;
+  @com.android.camera.OnClickAttr <methods>;
 }

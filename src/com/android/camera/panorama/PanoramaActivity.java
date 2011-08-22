@@ -19,11 +19,16 @@ package com.android.camera.panorama;
 import com.android.camera.CameraDisabledException;
 import com.android.camera.CameraHardwareException;
 import com.android.camera.CameraHolder;
+import com.android.camera.Exif;
 import com.android.camera.MenuHelper;
 import com.android.camera.ModePicker;
+import com.android.camera.OnClickAttr;
 import com.android.camera.R;
 import com.android.camera.Storage;
+import com.android.camera.Thumbnail;
 import com.android.camera.Util;
+import com.android.camera.ui.RotateImageView;
+import com.android.camera.ui.SharePopup;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -42,10 +47,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -70,7 +77,7 @@ public class PanoramaActivity extends Activity implements
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
 
     private static final int MSG_FINAL_MOSAIC_READY = 1;
-    private static final int MSG_RESET_TO_PREVIEW = 2;
+    private static final int MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL = 2;
 
     private static final String TAG = "PanoramaActivity";
     private static final int PREVIEW_STOPPED = 0;
@@ -99,6 +106,10 @@ public class PanoramaActivity extends Activity implements
     private ProgressDialog mProgressDialog;
     private String mPreparePreviewString;
     private String mGeneratePanoramaString;
+
+    private RotateImageView mThumbnailView;
+    private Thumbnail mThumbnail;
+    private SharePopup mSharePopup;
 
     private int mPreviewWidth;
     private int mPreviewHeight;
@@ -152,8 +163,13 @@ public class PanoramaActivity extends Activity implements
                         onBackgroundThreadFinished();
                         showFinalMosaic((Bitmap) msg.obj);
                         break;
-                    case MSG_RESET_TO_PREVIEW:
+                    case MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL:
                         onBackgroundThreadFinished();
+                        // Set the thumbnail bitmap here because mThumbnailView must be accessed
+                        // from the UI thread.
+                        if (mThumbnail != null) {
+                            mThumbnailView.setBitmap(mThumbnail.getBitmap());
+                        }
                         resetToPreview();
                         break;
                 }
@@ -417,6 +433,8 @@ public class PanoramaActivity extends Activity implements
         mStopCaptureButton = (Button) findViewById(R.id.pano_capture_stop_button);
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
 
+        mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+
         mReviewLayout = (View) findViewById(R.id.pano_review_layout);
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
         mMosaicView = (MosaicRendererSurfaceView) findViewById(R.id.pano_renderer);
@@ -478,8 +496,17 @@ public class PanoramaActivity extends Activity implements
             @Override
             public void run() {
                 byte[] jpegData = generateFinalMosaic(true);
-                savePanorama(jpegData);
-                mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW));
+                int orientation = Exif.getOrientation(jpegData);
+                Uri uri = savePanorama(jpegData, orientation);
+                if (uri != null) {
+                    // Create a thumbnail whose size is smaller than 480.
+                    int ratio = (int) Math.ceil((double) 480 / mPreviewHeight);
+                    int inSampleSize = Util.nextPowerOf2(ratio);
+                    mThumbnail = Thumbnail.createThumbnail(
+                            jpegData, orientation, inSampleSize, uri);
+                }
+                mMainHandler.sendMessage(
+                        mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL));
             }
         });
         reportProgress(true);
@@ -501,6 +528,23 @@ public class PanoramaActivity extends Activity implements
     public void onRetakeButtonClicked(View v) {
         if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
         resetToPreview();
+    }
+
+    @OnClickAttr
+    public void onThumbnailClicked(View v) {
+        if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
+        showSharePopup();
+    }
+
+    private void showSharePopup() {
+        if (mThumbnail == null) return;
+        Uri uri = mThumbnail.getUri();
+        if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
+            // The orientation compensation is set to 0 here because we only support landscape.
+            mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(), "image/jpeg",
+                    0, mThumbnailView);
+        }
+        mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
 
     private void resetToPreview() {
@@ -530,13 +574,14 @@ public class PanoramaActivity extends Activity implements
         mCaptureView.setSweepAngle(0);
     }
 
-    private void savePanorama(byte[] jpegData) {
+    private Uri savePanorama(byte[] jpegData, int orientation) {
         if (jpegData != null) {
             String imagePath = PanoUtil.createName(
                     getResources().getString(R.string.pano_file_name_format), mTimeTaken);
-            Storage.addImage(getContentResolver(), imagePath, mTimeTaken, null, 0,
-                    jpegData);
+            return Storage.addImage(getContentResolver(), imagePath, mTimeTaken, null,
+                    orientation, jpegData);
         }
+        return null;
     }
 
     private void clearMosaicFrameProcessorIfNeeded() {

@@ -34,6 +34,7 @@
                 android:layout_marginBottom="15dp">
             <ImageView style="@style/ReviewControlIcon"
                     android:id="@+id/btn_cancel"
+                    android:onClick="onCancelButtonClicked"
                     android:src="@drawable/btn_ic_review_cancel"/>
             <TextView style="@style/ReviewControlText"
                     android:text="@string/review_cancel" />
@@ -43,6 +44,7 @@
                 android:layout_marginBottom="15dp">
             <ImageView style="@style/ReviewControlIcon"
                     android:id="@+id/btn_retake"
+                    android:onClick="onRetakeButtonClicked"
                     android:src="@drawable/btn_ic_review_retake_photo"/>
             <TextView style="@style/ReviewControlText"
                     android:text="@string/review_retake" />
@@ -52,6 +54,7 @@
                 android:layout_marginBottom="15dp">
             <ImageView style="@style/ReviewControlIcon"
                     android:id="@+id/btn_play"
+                    android:onClick="onPlayButtonClicked"
                     android:src="@drawable/btn_ic_review_play"/>
             <TextView style="@style/ReviewControlText"
                     android:text="@string/review_play" />
@@ -71,6 +74,7 @@
             android:layout_centerHorizontal="true">
         <ImageView style="@style/ReviewControlIcon"
                 android:id="@+id/btn_done"
+                android:onClick="onDoneButtonClicked"
                 android:src="@drawable/btn_ic_review_done"/>
         <TextView style="@style/ReviewControlText"
                 android:text="@string/review_ok" />

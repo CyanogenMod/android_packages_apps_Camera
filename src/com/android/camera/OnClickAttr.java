@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.camera.panorama;
+package com.android.camera;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

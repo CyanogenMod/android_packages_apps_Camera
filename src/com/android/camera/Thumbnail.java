@@ -40,7 +40,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.IllegalArgumentException;
 
-class Thumbnail {
+public class Thumbnail {
     private static final String TAG = "Thumbnail";
 
     private static final int BUFSIZE = 4096;

@@ -18,7 +18,7 @@ package com.android.camera;
 
 import android.util.Log;
 
-class Exif {
+public class Exif {
     private static final String TAG = "CameraExif";
 
     public static int getOrientation(byte[] jpeg) {

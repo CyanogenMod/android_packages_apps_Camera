@@ -90,11 +90,10 @@ import java.util.Formatter;
 import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
-public class Camera extends ActivityBase implements View.OnClickListener,
+public class Camera extends ActivityBase implements FocusManager.Listener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
         SurfaceHolder.Callback, ModePicker.OnModeChangeListener,
-        FaceDetectionListener, CameraPreference.OnPreferenceChangedListener,
-        FocusManager.Listener {
+        FaceDetectionListener, CameraPreference.OnPreferenceChangedListener {
 
     private static final String TAG = "camera";
 
@@ -419,7 +418,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void initThumbnailButton() {
-        mThumbnailView.setOnClickListener(this);
         // Load the thumbnail from the disk.
         mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
         updateThumbnailButton();
@@ -1038,9 +1036,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             setupCaptureParams();
 
             findViewById(R.id.review_control).setVisibility(View.VISIBLE);
-            findViewById(R.id.btn_cancel).setOnClickListener(this);
-            findViewById(R.id.btn_retake).setOnClickListener(this);
-            findViewById(R.id.btn_done).setOnClickListener(this);
         } else {
             mModePicker = (ModePicker) findViewById(R.id.mode_picker);
             mModePicker.setVisibility(View.VISIBLE);
@@ -1201,25 +1196,27 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         updateStorageHint();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.thumbnail:
-                if (isCameraIdle() && mThumbnail != null) {
-                    showSharePopup();
-                }
-                break;
-            case R.id.btn_retake:
-                hidePostCaptureAlert();
-                startPreview();
-                break;
-            case R.id.btn_done:
-                doAttach();
-                break;
-            case R.id.btn_cancel:
-                doCancel();
-                break;
+    @OnClickAttr
+    public void onThumbnailClicked(View v) {
+        if (isCameraIdle() && mThumbnail != null) {
+            showSharePopup();
         }
+    }
+
+    @OnClickAttr
+    public void onRetakeButtonClicked(View v) {
+        hidePostCaptureAlert();
+        startPreview();
+    }
+
+    @OnClickAttr
+    public void onDoneButtonClicked(View v) {
+        doAttach();
+    }
+
+    @OnClickAttr
+    public void onCancelButtonClicked(View v) {
+        doCancel();
     }
 
     private void doAttach() {

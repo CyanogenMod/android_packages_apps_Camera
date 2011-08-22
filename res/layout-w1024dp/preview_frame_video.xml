@@ -50,6 +50,7 @@
                 android:visibility="gone">
             <ImageView style="@style/ReviewControlIcon"
                     android:id="@+id/btn_play"
+                    android:onClick="onPlayButtonClicked"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:src="@drawable/btn_ic_review_play"/>

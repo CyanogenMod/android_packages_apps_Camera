@@ -16,11 +16,8 @@
 
 <com.android.camera.ui.RotateImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/thumbnail"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:orientation="vertical"
+        style="@style/ReviewThumbnail"
+        android:onClick="onThumbnailClicked"
         android:clickable="true"
         android:focusable="false"
         android:background="@drawable/border_last_picture">
