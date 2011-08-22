@@ -153,7 +153,7 @@
     <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
 
     <!-- Default focus mode setting.-->
-    <string name="pref_camera_focusmode_default" translatable="false">auto</string>
+    <string name="pref_camera_focusmode_default" translatable="false">continuous-picture</string>
 
     <!-- Settings screen, Focus mode title -->
     <string name="pref_camera_focusmode_title">Focus mode</string>
