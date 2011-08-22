@@ -93,7 +93,8 @@ import java.util.List;
 public class Camera extends ActivityBase implements View.OnClickListener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
         SurfaceHolder.Callback, ModePicker.OnModeChangeListener,
-        FaceDetectionListener, CameraPreference.OnPreferenceChangedListener {
+        FaceDetectionListener, CameraPreference.OnPreferenceChangedListener,
+        FocusManager.Listener {
 
     private static final String TAG = "camera";
 
@@ -105,9 +106,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
     private static final int CHECK_DISPLAY_ROTATION = 6;
-    private static final int RESET_TOUCH_FOCUS = 7;
-    private static final int SHOW_TAP_TO_FOCUS_TOAST = 8;
-    private static final int DISMISS_TAP_TO_FOCUS_TOAST = 9;
+    private static final int SHOW_TAP_TO_FOCUS_TOAST = 7;
+    private static final int DISMISS_TAP_TO_FOCUS_TOAST = 8;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -124,7 +124,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
-    private static final int FOCUS_BEEP_VOLUME = 100;
 
     private static final int ZOOM_STOPPED = 0;
     private static final int ZOOM_START = 1;
@@ -156,16 +155,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private ContentProviderClient mMediaProviderClient;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
-    private ToneGenerator mFocusToneGenerator;
     private GestureDetector mPopupGestureDetector;
     private boolean mOpenCameraFail = false;
     private boolean mCameraDisabled = false;
 
     private View mPreviewFrame;  // Preview frame area.
     private View mPreviewBorder;
-    private FocusRectangle mFocusRectangle;
-    private List<Area> mFocusArea;  // focus area in driver format
-    private static final int RESET_TOUCH_FOCUS_DELAY = 3000;
 
     // A popup window that contains a bigger thumbnail and a list of apps to share.
     private SharePopup mSharePopup;
@@ -211,11 +206,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private static final int PREVIEW_STOPPED = 0;
     private static final int IDLE = 1;  // preview is active
+    // Focus is in progress. The exact focus state is in Focus.java.
     private static final int FOCUSING = 2;
-    private static final int FOCUSING_SNAP_ON_FINISH = 3;
-    private static final int FOCUS_SUCCESS = 4;
-    private static final int FOCUS_FAIL = 5;
-    private static final int SNAPSHOT_IN_PROGRESS = 6;
+    private static final int SNAPSHOT_IN_PROGRESS = 3;
     private int mCameraState = PREVIEW_STOPPED;
 
     private ContentResolver mContentResolver;
@@ -236,7 +229,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
     private long mFocusStartTime;
-    private long mFocusCallbackTime;
     private long mCaptureStartTime;
     private long mShutterCallbackTime;
     private long mPostViewPictureCallbackTime;
@@ -253,9 +245,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     public long mPictureDisplayedToJpegCallbackTime;
     public long mJpegCallbackFinishTime;
 
-    // Focus mode. Options are pref_camera_focusmode_entryvalues.
-    private String mFocusMode;
-    private boolean mContinuousFocusFail;
+    // This handles everything about focus.
+    private FocusManager mFocusManager;
     private String mSceneMode;
     private Toast mNotSelectableToast;
     private Toast mNoShareToast;
@@ -321,12 +312,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                     if (SystemClock.uptimeMillis() - mOnResumeTime < 5000) {
                         mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
                     }
-                    break;
-                }
-
-                case RESET_TOUCH_FOCUS: {
-                    cancelAutoFocus();
-                    startFaceDetection();
                     break;
                 }
 
@@ -406,15 +391,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
         mPreviewBorder = findViewById(R.id.preview_border);
-        // Set the length of focus rectangle according to preview frame size.
-        int len = Math.min(mPreviewFrame.getWidth(), mPreviewFrame.getHeight()) / 4;
-        ViewGroup.LayoutParams layout = mFocusRectangle.getLayoutParams();
-        layout.width = len;
-        layout.height = len;
-
+        mFocusManager.initialize((FocusRectangle) findViewById(R.id.focus_rectangle),
+                mPreviewFrame, mFaceView, this);
+        mFocusManager.initializeToneGenerator();
         initializeScreenBrightness();
         installIntentFilter();
-        initializeFocusTone();
         initializeZoom();
         // Show the tap to focus toast if this is the first start.
         if (mFocusAreaSupported &&
@@ -470,7 +451,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         if (mRecordLocation) startReceivingLocationUpdates();
 
         installIntentFilter();
-        initializeFocusTone();
+        mFocusManager.initializeToneGenerator();
         initializeZoom();
         keepMediaProviderInstance();
         checkStorage();
@@ -550,7 +531,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
-    private void startFaceDetection() {
+    @Override
+    public void startFaceDetection() {
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceView = (FaceView) findViewById(R.id.face_view);
             mFaceView.clearFaces();
@@ -558,12 +540,14 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mFaceView.setDisplayOrientation(mDisplayOrientation);
             CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
             mFaceView.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
+            mFaceView.resume();
             mCameraDevice.setFaceDetectionListener(this);
             mCameraDevice.startFaceDetection();
         }
     }
 
-    private void stopFaceDetection() {
+    @Override
+    public void stopFaceDetection() {
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mCameraDevice.setFaceDetectionListener(null);
             mCameraDevice.stopFaceDetection();
@@ -734,7 +718,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mShutterCallbackTime = System.currentTimeMillis();
             mShutterLag = mShutterCallbackTime - mCaptureStartTime;
             Log.v(TAG, "mShutterLag = " + mShutterLag + "ms");
-            updateFocusUI();
+            mFocusManager.onShutter();
         }
     }
 
@@ -822,49 +806,15 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             implements android.hardware.Camera.AutoFocusCallback {
         public void onAutoFocus(
                 boolean focused, android.hardware.Camera camera) {
-            mFocusCallbackTime = System.currentTimeMillis();
-            mAutoFocusTime = mFocusCallbackTime - mFocusStartTime;
+            if (mPausing) return;
+
+            mAutoFocusTime = System.currentTimeMillis() - mFocusStartTime;
             Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
-            // Do a full autofocus if the scene is not focused in continuous
-            // focus mode,
-            if (mFocusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE) && !focused) {
-                mContinuousFocusFail = true;
-                setCameraParameters(UPDATE_PARAM_PREFERENCE);
-                autoFocus();
-                mContinuousFocusFail = false;
-            } else if (mCameraState == FOCUSING_SNAP_ON_FINISH) {
-                // Take the picture no matter focus succeeds or fails. No need
-                // to play the AF sound if we're about to play the shutter
-                // sound.
-                if (focused) {
-                    mCameraState = FOCUS_SUCCESS;
-                } else {
-                    mCameraState = FOCUS_FAIL;
-                }
-                updateFocusUI();
-                capture();
-            } else if (mCameraState == FOCUSING) {
-                // This happens when (1) user is half-pressing the focus key or
-                // (2) touch focus is triggered. Play the focus tone. Do not
-                // take the picture now.
-                if (focused) {
-                    mCameraState = FOCUS_SUCCESS;
-                    if (mFocusToneGenerator != null) {
-                        mFocusToneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2);
-                    }
-                } else {
-                    mCameraState = FOCUS_FAIL;
-                }
-                updateFocusUI();
+            mFocusManager.onAutoFocus(focused);
+            // If focus completes and the snapshot is not started, enable the
+            // controls.
+            if (mFocusManager.isFocusCompleted()) {
                 enableCameraControls(true);
-                // If this is triggered by touch focus, cancel focus after a
-                // while.
-                if (mFocusArea != null) {
-                    mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
-                }
-            } else if (mCameraState == IDLE) {
-                // User has released the focus key before focus completes.
-                // Do nothing.
             }
         }
     }
@@ -927,10 +877,11 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         }
     }
 
-    private void capture() {
+    @Override
+    public boolean capture() {
         // If we are already in the middle of taking a snapshot then ignore.
-        if (mPausing || mCameraState == SNAPSHOT_IN_PROGRESS || mCameraDevice == null) {
-            return;
+        if (mCameraState == SNAPSHOT_IN_PROGRESS || mCameraDevice == null) {
+            return false;
         }
         mCaptureStartTime = System.currentTimeMillis();
         mPostViewPictureCallbackTime = 0;
@@ -992,7 +943,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         mCameraState = SNAPSHOT_IN_PROGRESS;
-        mHandler.removeMessages(RESET_TOUCH_FOCUS);
+        return true;
+    }
+
+    @Override
+    public void setFocusParameters() {
+        setCameraParameters(UPDATE_PARAM_PREFERENCE);
     }
 
     private boolean saveDataToFile(String filePath, byte[] data) {
@@ -1026,7 +982,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         } else {
             setContentView(R.layout.camera);
         }
-        mFocusRectangle = (FocusRectangle) findViewById(R.id.focus_rectangle);
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
 
         mPreferences = new ComboPreferences(this);
@@ -1058,6 +1013,9 @@ public class Camera extends ActivityBase implements View.OnClickListener,
                 try {
                     mCameraDevice = Util.openCamera(Camera.this, mCameraId);
                     initializeCapabilities();
+                    mFocusManager = new FocusManager(mPreferences,
+                            getString(R.string.pref_camera_focusmode_default),
+                            mInitialParams);
                     startPreview();
                 } catch (CameraHardwareException e) {
                     mOpenCameraFail = true;
@@ -1346,9 +1304,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
-        if (mPausing) {
-            return;
-        }
         switch (button.getId()) {
             case R.id.shutter_button:
                 doFocus(pressed);
@@ -1357,9 +1312,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     public void onShutterButtonClick(ShutterButton button) {
-        if (mPausing) {
-            return;
-        }
         switch (button.getId()) {
             case R.id.shutter_button:
                 doSnap();
@@ -1405,17 +1357,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         intentFilter.addDataScheme("file");
         registerReceiver(mReceiver, intentFilter);
         mDidRegister = true;
-    }
-
-    private void initializeFocusTone() {
-        // Initialize focus tone generator.
-        try {
-            mFocusToneGenerator = new ToneGenerator(
-                    AudioManager.STREAM_SYSTEM, FOCUS_BEEP_VOLUME);
-        } catch (Throwable ex) {
-            Log.w(TAG, "Exception caught while creating tone generator: ", ex);
-            mFocusToneGenerator = null;
-        }
     }
 
     private void initializeScreenBrightness() {
@@ -1504,10 +1445,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         stopReceivingLocationUpdates();
         updateExposureOnScreenIndicator(0);
 
-        if (mFocusToneGenerator != null) {
-            mFocusToneGenerator.release();
-            mFocusToneGenerator = null;
-        }
+        mFocusManager.releaseToneGenerator();
 
         if (mStorageHint != null) {
             mStorageHint.cancel();
@@ -1522,7 +1460,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
-        mHandler.removeMessages(RESET_TOUCH_FOCUS);
+        mFocusManager.removeMessages();
 
         super.onPause();
     }
@@ -1554,51 +1492,26 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         return isCameraIdle() && (mPicturesRemaining > 0);
     }
 
-    private void autoFocus() {
-        Log.v(TAG, "Start autofocus.");
+    @Override
+    public void autoFocus() {
         mFocusStartTime = System.currentTimeMillis();
         mCameraDevice.autoFocus(mAutoFocusCallback);
         mCameraState = FOCUSING;
         enableCameraControls(false);
-        updateFocusUI();
-        mHandler.removeMessages(RESET_TOUCH_FOCUS);
     }
 
-    private void cancelAutoFocus() {
-        Log.v(TAG, "Cancel autofocus.");
+    @Override
+    public void cancelAutoFocus() {
         mCameraDevice.cancelAutoFocus();
         mCameraState = IDLE;
         enableCameraControls(true);
-        resetTouchFocus();
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
-        updateFocusUI();
-        mHandler.removeMessages(RESET_TOUCH_FOCUS);
-    }
-
-    private void updateFocusUI() {
-        // Do not show focus rectangle if there is any face rectangle.
-        if (mFaceView != null && mFaceView.faceExists()) return;
-
-        if (mCameraState == FOCUSING || mCameraState == FOCUSING_SNAP_ON_FINISH) {
-            mFocusRectangle.showStart();
-        } else if (mCameraState == FOCUS_SUCCESS) {
-            mFocusRectangle.showSuccess();
-        } else if (mCameraState == FOCUS_FAIL) {
-            mFocusRectangle.showFail();
-        } else if (mCameraState == IDLE && mFocusArea != null) {
-            // Users touch on the preview and the rectangle indicates the metering area.
-            // Either focus area is not supported or autoFocus call is not required.
-            mFocusRectangle.showStart();
-        } else {
-            mFocusRectangle.clear();
-        }
     }
 
     // Preview area is touched. Handle touch focus.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
-        if (mPausing || !mFirstTimeInitialized || mCameraState == SNAPSHOT_IN_PROGRESS
-                || mCameraState == FOCUSING_SNAP_ON_FINISH) {
+        if (mPausing || !mFirstTimeInitialized || mCameraState == SNAPSHOT_IN_PROGRESS) {
             return false;
         }
 
@@ -1608,81 +1521,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         // Check if metering area or focus area is supported.
         if (!mFocusAreaSupported && !mMeteringAreaSupported) return false;
 
-        // Let users be able to cancel previous touch focus.
-        if ((mFocusArea != null) && (e.getAction() == MotionEvent.ACTION_DOWN)
-                && (mCameraState == FOCUSING || mCameraState == FOCUS_SUCCESS ||
-                    mCameraState == FOCUS_FAIL)) {
-            cancelAutoFocus();
-        }
-
-        // Initialize variables.
-        int x = Math.round(e.getX());
-        int y = Math.round(e.getY());
-        int focusWidth = mFocusRectangle.getWidth();
-        int focusHeight = mFocusRectangle.getHeight();
-        int previewWidth = mPreviewFrame.getWidth();
-        int previewHeight = mPreviewFrame.getHeight();
-        if (mFocusArea == null) {
-            mFocusArea = new ArrayList<Area>();
-            mFocusArea.add(new Area(new Rect(), 1));
-        }
-
-        // Convert the coordinates to driver format. The actual focus area is two times bigger than
-        // UI because a huge rectangle looks strange.
-        int areaWidth = focusWidth * 2;
-        int areaHeight = focusHeight * 2;
-        int areaLeft = Util.clamp(x - areaWidth / 2, 0, previewWidth - areaWidth);
-        int areaTop = Util.clamp(y - areaHeight / 2, 0, previewHeight - areaHeight);
-        Rect rect = mFocusArea.get(0).rect;
-        convertToFocusArea(areaLeft, areaTop, areaWidth, areaHeight, previewWidth, previewHeight,
-                mFocusArea.get(0).rect);
-
-        // Use margin to set the focus rectangle to the touched area.
-        RelativeLayout.LayoutParams p =
-                (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
-        int left = Util.clamp(x - focusWidth / 2, 0, previewWidth - focusWidth);
-        int top = Util.clamp(y - focusHeight / 2, 0, previewHeight - focusHeight);
-        p.setMargins(left, top, 0, 0);
-        // Disable "center" rule because we no longer want to put it in the center.
-        int[] rules = p.getRules();
-        rules[RelativeLayout.CENTER_IN_PARENT] = 0;
-        mFocusRectangle.requestLayout();
-
-        // Stop face detection because we want to specify focus and metering area.
-        stopFaceDetection();
-
-        // Set the focus area and metering area.
-        setCameraParameters(UPDATE_PARAM_PREFERENCE);
-        if (mFocusAreaSupported && (e.getAction() == MotionEvent.ACTION_UP)) {
-            autoFocus();
-        } else {  // Just show the rectangle in all other cases.
-            updateFocusUI();
-            // Reset the metering area in 3 seconds.
-            mHandler.removeMessages(RESET_TOUCH_FOCUS);
-            mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
-        }
-
-        return true;
-    }
-
-    // Convert the touch point to the focus area in driver format.
-    public static void convertToFocusArea(int left, int top, int focusWidth, int focusHeight,
-            int previewWidth, int previewHeight, Rect rect) {
-        rect.left = Math.round((float) left / previewWidth * 2000 - 1000);
-        rect.top = Math.round((float) top / previewHeight * 2000 - 1000);
-        rect.right = Math.round((float) (left + focusWidth) / previewWidth * 2000 - 1000);
-        rect.bottom = Math.round((float) (top + focusHeight) / previewHeight * 2000 - 1000);
-    }
-
-    void resetTouchFocus() {
-        // Put focus rectangle to the center.
-        RelativeLayout.LayoutParams p =
-                (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
-        int[] rules = p.getRules();
-        rules[RelativeLayout.CENTER_IN_PARENT] = RelativeLayout.TRUE;
-        p.setMargins(0, 0, 0, 0);
-
-        mFocusArea = null;
+        return mFocusManager.onTouch(e);
     }
 
     @Override
@@ -1743,50 +1582,19 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private void doSnap() {
-        if (collapseCameraControls()) return;
+        if (mPausing || collapseCameraControls()) return;
 
         Log.v(TAG, "doSnap: mCameraState=" + mCameraState);
-        // If the user has half-pressed the shutter and focus is completed, we
-        // can take the photo right away. If the focus mode is infinity, we can
-        // also take the photo.
-        if (mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
-                || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
-                || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF)
-                || (mCameraState == FOCUS_SUCCESS
-                || mCameraState == FOCUS_FAIL)) {
-            capture();
-        } else if (mCameraState == FOCUSING) {
-            // Half pressing the shutter (i.e. the focus button event) will
-            // already have requested AF for us, so just request capture on
-            // focus here.
-            mCameraState = FOCUSING_SNAP_ON_FINISH;
-        } else if (mCameraState == IDLE) {
-            // Focus key down event is dropped for some reasons. Just ignore.
-        }
+        mFocusManager.doSnap();
     }
 
     private void doFocus(boolean pressed) {
-        // Do the focus if the mode is not infinity.
-        if (collapseCameraControls()) return;
-        if (!(mFocusMode.equals(Parameters.FOCUS_MODE_INFINITY)
-                  || mFocusMode.equals(Parameters.FOCUS_MODE_FIXED)
-                  || mFocusMode.equals(Parameters.FOCUS_MODE_EDOF))) {
-            if (pressed) {  // Focus key down.
-                // Do not do focus if there is not enoguh storage. Do not focus
-                // if touch focus has been triggered, that is, camera state is
-                // FOCUS_SUCCESS or FOCUS_FAIL.
-                if (canTakePicture() && mCameraState != FOCUS_SUCCESS
-                        && mCameraState != FOCUS_FAIL) {
-                    autoFocus();
-                }
-            } else {  // Focus key up.
-                // User releases half-pressed focus key.
-                if (mCameraState == FOCUSING || mCameraState == FOCUS_SUCCESS
-                        || mCameraState == FOCUS_FAIL) {
-                    cancelAutoFocus();
-                }
-            }
-        }
+        if (mPausing || collapseCameraControls()) return;
+
+        // Do not do focus if there is not enough storage.
+        if (pressed && !canTakePicture()) return;
+
+        mFocusManager.doFocus(pressed);
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -1857,6 +1665,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mCameraDevice.setFaceDetectionListener(null);
             mCameraDevice = null;
             mCameraState = PREVIEW_STOPPED;
+            mFocusManager.onCameraReleased();
         }
     }
 
@@ -1872,7 +1681,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private void startPreview() {
         if (mPausing || isFinishing()) return;
 
-        resetTouchFocus();
+        mFocusManager.resetTouchFocus();
 
         mCameraDevice.setErrorCallback(mErrorCallback);
 
@@ -1900,6 +1709,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         startFaceDetection();
         mZoomState = ZOOM_STOPPED;
         mCameraState = IDLE;
+        mFocusManager.onPreviewStarted();
     }
 
     private void stopPreview() {
@@ -1908,8 +1718,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mCameraDevice.stopPreview();
         }
         mCameraState = PREVIEW_STOPPED;
-        // If auto focus was in progress, it would have been canceled.
-        updateFocusUI();
+        mFocusManager.onPreviewStopped();
     }
 
     private static boolean isSupported(String value, List<String> supported) {
@@ -1937,13 +1746,12 @@ public class Camera extends ActivityBase implements View.OnClickListener,
 
     private void updateCameraParametersPreference() {
         if (mFocusAreaSupported) {
-            mParameters.setFocusAreas(mFocusArea);
-            Log.d(TAG, "Parameter focus areas=" + mParameters.get("focus-areas"));
+            mParameters.setFocusAreas(mFocusManager.getTapArea());
         }
 
         if (mMeteringAreaSupported) {
             // Use the same area for focus and metering.
-            mParameters.setMeteringAreas(mFocusArea);
+            mParameters.setMeteringAreas(mFocusManager.getTapArea());
         }
 
         // Set picture size.
@@ -2050,28 +1858,10 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             }
 
             // Set focus mode.
-            if ((mFocusAreaSupported && mFocusArea != null) || mContinuousFocusFail) {
-                // Always use autofocus in tap-to-focus or when continuous focus fails.
-                mFocusMode = Parameters.FOCUS_MODE_AUTO;
-            } else {
-                // The default is continuous autofocus.
-                mFocusMode = mPreferences.getString(
-                        CameraSettings.KEY_FOCUS_MODE,
-                        getString(R.string.pref_camera_focusmode_default));
-            }
-            if (!isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
-                // For some reasons, the driver does not support the current
-                // focus mode. Fall back to auto.
-                if (isSupported(Parameters.FOCUS_MODE_AUTO,
-                        mParameters.getSupportedFocusModes())) {
-                    mFocusMode = Parameters.FOCUS_MODE_AUTO;
-                } else {
-                    mFocusMode = mParameters.getFocusMode();
-                }
-            }
-            mParameters.setFocusMode(mFocusMode);
+            mFocusManager.overrideFocusMode(null);
+            mParameters.setFocusMode(mFocusManager.getFocusMode());
         } else {
-            mFocusMode = mParameters.getFocusMode();
+            mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
     }
 
@@ -2175,7 +1965,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     }
 
     private boolean isCameraIdle() {
-        return mCameraState == IDLE || mCameraState == FOCUS_SUCCESS || mCameraState == FOCUS_FAIL;
+        return (mCameraState == IDLE) || (mFocusManager.isFocusCompleted());
     }
 
     private boolean isImageCaptureIntent() {

@@ -34,6 +34,7 @@ public class FaceView extends View {
     private final boolean LOGV = false;
     private int mDisplayOrientation;
     private boolean mMirror;
+    private boolean mPause;
     private Matrix mMatrix = new Matrix();
     private RectF mRect = new RectF();
     private Face[] mFaces;
@@ -46,6 +47,7 @@ public class FaceView extends View {
 
     public void setFaces(Face[] faces) {
         if (LOGV) Log.v(TAG, "Num of faces=" + faces.length);
+        if (mPause) return;
         mFaces = faces;
         invalidate();
     }
@@ -67,6 +69,14 @@ public class FaceView extends View {
     public void clearFaces() {
         mFaces = null;
         invalidate();
+    }
+
+    public void pause() {
+        mPause = true;
+    }
+
+    public void resume() {
+        mPause = false;
     }
 
     private void dumpRect(RectF rect, String msg) {
