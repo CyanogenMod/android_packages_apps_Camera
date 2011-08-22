@@ -30,8 +30,8 @@
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD kartınız dolu."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USB deplm birimi hazırlanıyor…"</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"SD kart hazırlanıyor..."</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"USB depolama birimine erişilemedi."</string>
-    <string name="access_sd_fail" product="default" msgid="4427585260986849912">"SD karta erişilemiyor."</string>
+    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"USB depolama birimine erişilemedi."</string>
+    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"USB depolama birimine erişilemedi."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Varsayılanları geri yükle"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Kamera ayarlarının varsayılan değerleri geri yüklenecek."</string>
     <string name="review_play" msgid="6378271587740884696">"Oynat"</string>
@@ -98,6 +98,11 @@
     <string name="share_video_via" msgid="5152302809166549015">"Videoyu şunun üzerndn  paylaş:"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Paylaşılacak resim yok"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Paylaşılacak video yok"</string>
-    <!-- no translation found for pano_capture_stop (8122941670229992464) -->
+    <string name="pano_capture_stop" msgid="8122941670229992464">"Durdur"</string>
+    <!-- no translation found for pano_capture_start (2163632725789917725) -->
+    <skip />
+    <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
+    <skip />
+    <!-- no translation found for tap_to_focus (6417403734418828035) -->
     <skip />
 </resources>

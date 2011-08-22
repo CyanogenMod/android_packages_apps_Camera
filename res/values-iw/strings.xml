@@ -22,16 +22,16 @@
     <string name="camera_label" msgid="6346560772074764302">"מצלמה"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"מצלמת וידאו"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"תמונות מצלמה"</string>
-    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"סרטונים של המצלמה"</string>
-    <string name="wait" msgid="8600187532323801552">"נא המתן…"</string>
+    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">" סרטוני וידאו של המצלמה"</string>
+    <string name="wait" msgid="8600187532323801552">"המתן..."</string>
     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"טען אמצעי אחסון מסוג USB לפני השימוש במצלמה."</string>
-    <string name="no_storage" product="default" msgid="820691042667338625">"הכנס כרטיס SD לפני השימוש במצלמה."</string>
+    <string name="no_storage" product="default" msgid="820691042667338625">"הכנס כרטיס SD לפני שתשתמש במצלמה."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"אמצעי האחסון מסוג USB מלא."</string>
-    <string name="not_enough_space" product="default" msgid="6655334407957844653">"כרטיס ה-SD מלא."</string>
+    <string name="not_enough_space" product="default" msgid="6655334407957844653">"כרטיס SD מלא."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"מכין אמצעי אחסון מסוג USB..."</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"מכין את כרטיס ה-SD…"</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"נכשלה גישה לאמצעי אחסון מסוג USB."</string>
-    <string name="access_sd_fail" product="default" msgid="4427585260986849912">"נכשלה גישה לכרטיס SD."</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"מכין כרטיס SD..."</string>
+    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"הגישה לאמצעי אחסון מסוג USB נכשלה."</string>
+    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"הגישה לאמצעי אחסון מסוג USB נכשלה."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"שחזר ברירות מחדל"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"הגדרות מצלמה ישוחזרו לברירות המחדל."</string>
     <string name="review_play" msgid="6378271587740884696">"הפעל"</string>
@@ -46,16 +46,16 @@
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"חזיתית"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"מיקום אחסון"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"כבוי"</string>
-    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"ב-"</string>
-    <string name="pref_video_quality_title" msgid="8245379279801096922">"איכות סרטון וידאו"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"מופעל"</string>
+    <string name="pref_video_quality_title" msgid="8245379279801096922">"איכות סרטון"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"גבוהה"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"נמוכה"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (נמוכה, ‎30s)"</string>
+    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (נמוכה, ‎30 שניות)"</string>
     <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (גבוהה , ‎15 דק\')"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"מרווח של מעבר זמן"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"הגדרות מצלמה"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"הגדרות מצלמת וידאו"</string>
-    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"גודל התמונה"</string>
+    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"גודל תמונה"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 מגה פיקסלים"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 מגה פיקסלים"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 מגה פיקסלים"</string>
@@ -67,15 +67,15 @@
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"אוטומטי"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"אינסוף"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"מאקרו"</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"מצב הבזק"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"מצב Flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"אוטומטי"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"ב-"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"מופעל"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"כבוי"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"איזון לבן"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"אוטומטי"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"זוהר"</string>
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"אור יום"</string>
-    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"פלורוסנט"</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"פלואורסנט"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"מעונן"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"מצב נוף"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"אוטומטי"</string>
@@ -88,8 +88,8 @@
     <string name="pref_restore_detail" msgid="5732490002291044791">"שחזר ברירות מחדל"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"חשיפה"</string>
     <string name="details_ok" msgid="6848594369924424312">"אישור"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"אוזל המקום באמצעי האחסון מסוג USB. שנה את הגדרת האיכות או מחק חלק מהתמונות או קבצים אחרים."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"אוזל המקום בכרטיס ה-SD. שנה את הגדרת האיכות או מחק חלק מהתמונות או קבצים אחרים."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"אוזל המקום באמצעי האחסון מסוג USB. שנה את הגדרת האיכות או מחק כמה תמונות או קבצים אחרים."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"השטח בכרטיס SD אוזל. שנה את הגדרת האיכות או מחק חלק מהתמונות או קבצים אחרים."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"הגעת למגבלת הגודל."</string>
     <string name="switch_to_camera_label" msgid="9148663083850199582">"עבור למצלמה"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"עבור לווידאו"</string>
@@ -98,6 +98,11 @@
     <string name="share_video_via" msgid="5152302809166549015">"שתף סרטון באמצעות"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"אין תמונה לשיתוף"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"אין סרטון וידאו לשיתוף"</string>
-    <!-- no translation found for pano_capture_stop (8122941670229992464) -->
+    <string name="pano_capture_stop" msgid="8122941670229992464">"עצור"</string>
+    <!-- no translation found for pano_capture_start (2163632725789917725) -->
+    <skip />
+    <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
+    <skip />
+    <!-- no translation found for tap_to_focus (6417403734418828035) -->
     <skip />
 </resources>
