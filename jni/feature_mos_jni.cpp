@@ -65,6 +65,8 @@ Mosaic *mosaic[NR] = {NULL,NULL};
 ImageType resultYVU = ImageUtils::IMAGE_TYPE_NOIMAGE;
 ImageType resultBGR = ImageUtils::IMAGE_TYPE_NOIMAGE;
 float gTRS[10];
+// Variables to keep track of the mosaic computation progress for both LR & HR.
+float gProgress[NR];
 
 int c;
 int ret;
@@ -211,7 +213,7 @@ void Finalize(int mID)
 
     t0 = now_ms();
     // Create the mosaic
-    ret = mosaic[mID]->createMosaic();
+    ret = mosaic[mID]->createMosaic(gProgress[mID]);
     t1 = now_ms();
     time_c = t1 - t0;
     LOGV("CreateMosaic: %g ms",time_c);
@@ -527,7 +529,19 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_reset(
     frame_number_HR = 0;
     frame_number_LR = 0;
 
+    gProgress[LR] = 0.0;
+    gProgress[HR] = 0.0;
+
     Init(LR,MAX_FRAMES_LR);
+}
+
+JNIEXPORT jint JNICALL Java_com_android_camera_panorama_Mosaic_reportProgress(
+        JNIEnv* env, jobject thiz, jboolean hires)
+{
+    if(bool(hires))
+        return (jint) gProgress[HR];
+    else
+        return (jint) gProgress[LR];
 }
 
 JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(
@@ -539,24 +553,34 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(
     {
         double  t0, t1, time_c;
 
+        gProgress[HR] = 0.0;
         t0 = now_ms();
 
         Init(HR, frame_number_HR);
+
         for(int k = 0; k < frame_number_HR; k++)
         {
             AddFrame(HR, k, NULL);
+            gProgress[HR] += TIME_PERCENT_ALIGN/frame_number_HR;
         }
+
+        gProgress[HR] = TIME_PERCENT_ALIGN;
 
         t1 = now_ms();
         time_c = t1 - t0;
         LOGV("AlignAll [HR]: %g ms",time_c);
 
         Finalize(HR);
+
+        gProgress[HR] = 100.0;
+
         high_res = false;
     }
     else
     {
+        gProgress[LR] = TIME_PERCENT_ALIGN;
         Finalize(LR);
+        gProgress[LR] = 100.0;
     }
 }
 

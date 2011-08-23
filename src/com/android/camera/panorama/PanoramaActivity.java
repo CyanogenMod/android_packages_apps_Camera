@@ -36,12 +36,12 @@ import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
-import android.hardware.Camera.Size;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -52,6 +52,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -379,6 +380,7 @@ public class PanoramaActivity extends Activity implements
                             MSG_FINAL_MOSAIC_READY, bitmap));
                 }
             });
+            reportProgress(false);
         }
     }
 
@@ -442,6 +444,33 @@ public class PanoramaActivity extends Activity implements
         stopCapture();
     }
 
+    public void reportProgress(final boolean highRes) {
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                while(true)
+                {
+                    final int progress = mMosaicFrameProcessor.reportProgress(highRes);
+
+                    try{
+                        Thread.sleep(50);
+                    }catch(Exception e) {}
+
+                     // Update the progress bar
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            //TODO: Set the the progress-bar progress update here...
+                        }
+                    });
+
+                    if(progress>=100)
+                        break;
+                }
+            }
+        };
+        t.start();
+    }
+
     @OnClickAttr
     public void onOkButtonClicked(View v) {
         if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
@@ -453,6 +482,7 @@ public class PanoramaActivity extends Activity implements
                 mMainHandler.sendMessage(mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW));
             }
         });
+        reportProgress(true);
     }
 
     private void runBackgroundThread(String str, Thread thread) {

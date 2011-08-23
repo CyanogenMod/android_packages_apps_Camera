@@ -156,4 +156,13 @@ public class Mosaic {
      * Also re-initializes the native mosaic object to make it ready for capturing a new mosaic.
      */
     public native void reset();
+
+    /**
+     * Get the progress status of the mosaic computation process.
+     * @param hires Boolean flag to select whether to report progress of the
+     *              low-res or high-res mosaicer.
+     * @return Returns a number from 0-100 where 50 denotes that the mosaic
+     *          computation is 50% done.
+     */
+    public native int reportProgress(boolean hires);
 }

@@ -29,6 +29,11 @@
 #define BLEND_RANGE_DEFAULT 6
 #define BORDER 8
 
+// Percent of total mosaicing time spent on each of the following operations
+const float TIME_PERCENT_ALIGN = 20.0;
+const float TIME_PERCENT_BLEND = 75.0;
+const float TIME_PERCENT_FINAL = 5.0;
+
 //#define LINEAR_INTERP
 
 //#define LOGII(...) //
@@ -69,7 +74,8 @@ public:
 
   int initialize(int blendingType, int frame_width, int frame_height);
 
-  int runBlend(MosaicFrame **frames, int frames_size, ImageType &imageMosaicYVU, int &mosaicWidth, int &mosaicHeight);
+  int runBlend(MosaicFrame **frames, int frames_size, ImageType &imageMosaicYVU,
+        int &mosaicWidth, int &mosaicHeight, float &progress);
 
 protected:
 
@@ -99,7 +105,7 @@ protected:
   void ClipBlendRect(CSite *csite, BlendRect &brect);
   void AlignToMiddleFrame(MosaicFrame **frames, int frames_size);
 
-  int  DoMergeAndBlend(MosaicFrame **frames, int nsite,  int width, int height, YUVinfo &imgMos, MosaicRect &rect, MosaicRect &cropping_rect);
+  int  DoMergeAndBlend(MosaicFrame **frames, int nsite,  int width, int height, YUVinfo &imgMos, MosaicRect &rect, MosaicRect &cropping_rect, float &progress);
   void ComputeMask(CSite *csite, BlendRect &vcrect, BlendRect &brect, MosaicRect &rect, YUVinfo &imgMos, int site_idx);
   void ProcessPyramidForThisFrame(CSite *csite, BlendRect &vcrect, BlendRect &brect, MosaicRect &rect, YUVinfo &imgMos, double trs[3][3], int site_idx);
 

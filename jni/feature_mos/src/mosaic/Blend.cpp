@@ -89,7 +89,9 @@ void Blend::AlignToMiddleFrame(MosaicFrame **frames, int frames_size)
     }
 }
 
-int Blend::runBlend(MosaicFrame **frames, int frames_size, ImageType &imageMosaicYVU, int &mosaicWidth, int &mosaicHeight)
+int Blend::runBlend(MosaicFrame **frames, int frames_size,
+        ImageType &imageMosaicYVU, int &mosaicWidth, int &mosaicHeight,
+        float &progress)
 {
     int ret;
     int numCenters;
@@ -182,7 +184,8 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size, ImageType &imageMosai
     MosaicRect cropping_rect;
 
     // Do merging and blending :
-    ret = DoMergeAndBlend(frames, numCenters, width, height, *imgMos, fullRect, cropping_rect);
+    ret = DoMergeAndBlend(frames, numCenters, width, height, *imgMos, fullRect,
+            cropping_rect, progress);
 
     if (m_wb.blendingType == BLEND_TYPE_HORZ)
         CropFinalMosaic(*imgMos, cropping_rect);
@@ -252,7 +255,8 @@ int Blend::FillFramePyramid(MosaicFrame *mb)
 }
 
 int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
-             int width, int height, YUVinfo &imgMos, MosaicRect &rect, MosaicRect &cropping_rect)
+             int width, int height, YUVinfo &imgMos, MosaicRect &rect,
+             MosaicRect &cropping_rect, float &progress)
 {
     m_pMosaicYPyr = NULL;
     m_pMosaicUPyr = NULL;
@@ -298,6 +302,8 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
 
         ProcessPyramidForThisFrame(csite, mb->vcrect, mb->brect, rect, imgMos, mb->trs, site_idx);
 
+        progress += TIME_PERCENT_BLEND/nsite;
+
         site_idx++;
     }
 
@@ -308,6 +314,8 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
     if (m_pMosaicVPyr) free(m_pMosaicVPyr);
     if (m_pMosaicUPyr) free(m_pMosaicUPyr);
     if (m_pMosaicYPyr) free(m_pMosaicYPyr);
+
+    progress += TIME_PERCENT_FINAL;
 
     return BLEND_RET_OK;
 }

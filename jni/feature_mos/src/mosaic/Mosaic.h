@@ -109,9 +109,10 @@ public:
 
    /*!
     *   After adding all frames, call this function to perform the final blending.
+    *   \param progress     Variable to set the current progress in.
     *   \return             Return code signifying success or failure.
     */
-  int createMosaic();
+  int createMosaic(float &progress);
 
     /*!
     *   Obtains the resulting mosaic and its dimensions.

@@ -78,6 +78,10 @@ public class MosaicFrameProcessor {
         mProgressListener = listener;
     }
 
+    public int reportProgress(boolean hires) {
+        return mMosaicer.reportProgress(hires);
+    }
+
     public void initialize() {
         setupMosaicer(mPreviewWidth, mPreviewHeight, mPreviewBufferSize);
         reset();

@@ -153,7 +153,7 @@ int Mosaic::addFrame(ImageType imageYVU)
 }
 
 
-int Mosaic::createMosaic()
+int Mosaic::createMosaic(float &progress)
 {
     printf("Creating mosaic\n");
 
@@ -167,7 +167,8 @@ int Mosaic::createMosaic()
     // Blend the mosaic (alignment has already been done)
     if (blender != NULL)
     {
-        blender->runBlend((MosaicFrame **) frames, frames_size, imageMosaicYVU, mosaicWidth, mosaicHeight);
+        blender->runBlend((MosaicFrame **) frames, frames_size, imageMosaicYVU,
+                mosaicWidth, mosaicHeight, progress);
     }
 
     return MOSAIC_RET_OK;
