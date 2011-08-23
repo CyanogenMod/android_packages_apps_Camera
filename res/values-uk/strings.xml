@@ -79,6 +79,9 @@
     <string name="pref_camera_search_shutter_title">Керування зачином кнопкою “Пошук”</string>
     <string name="pref_camera_search_shutter">Кн. “Пошук”</string>
     <string name="pref_camera_search_shutter_summary">За натисканням кнопки “Пошук” буде зроблений знімок</string>
+    <string name="pref_camera_power_shutter_title">Керування зачином кнопкою живлення</string>
+    <string name="pref_camera_power_shutter">Кнопка живлення</string>
+    <string name="pref_camera_power_shutter_summary">За натисканням кнопки живлення буде зроблений знімок (розпочнеться зйомка відео)</string>
     <string name="pref_camera_settings_focus_title">Фокус</string>
     <string name="pref_camera_settings_focus">Попереднє фокусування</string>
     <string name="pref_camera_settings_focus_summary">Перш ніж буде зроблений знімок відбуватиметься фокусування</string>
@@ -89,6 +92,10 @@
     <string name="pref_camera_focusmode_entry_normal">Звичайне</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Макро"</string>
     <string name="pref_camera_focusmode_entry_infinity">Вимкнуте</string>
+    <string name="pref_camera_focusmode_entry_touch">Дотиком</string>
+    <string name="pref_camera_focusmode_entry_fixed">Фіксоване</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Пошук обличчя</string>
+    <string name="touch_focus_enabled">Щоб сфокусувати камеру доторкніться до екрана.</string>
     <string name="pref_camera_flashmode_title">Спалах</string>
     <string name="pref_camera_flashmode_entry_auto">Автоматичний</string>
     <string name="pref_camera_flashmode_entry_on">Увімкнутий</string>
@@ -155,6 +162,9 @@
     <string name="pref_camera_scenemode_entry_candlelight">Штучне освітлення</string>
     <string name="pref_camera_scenemode_entry_backlight">Підсвічування</string>
     <string name="pref_camera_scenemode_entry_flowers">Квіти</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Сутінки</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Осінні кольори</string>
+    <string name="pref_camera_scenemode_entry_text">Текст</string>
     <string name="pref_restore_title">Налаштування камери</string>
     <string name="pref_restore_detail">Відновити типові</string>
     <string name="pref_exposure_title">Експозиція</string>
@@ -176,7 +186,8 @@
     <string name="pref_camera_antibanding_entry_2">60 Гц</string>
     <string name="pref_camera_antibanding_entry_3">Автоматичне</string>
     <string name="pref_camera_autoexposure_title">Вимір експозиції</string>
-    <string name="pref_camera_autoexposure_entry_frameaverage">Матричний</string>
+    <string name="pref_camera_autoexposure_entry_frameaverage">Посередені кадру</string>
     <string name="pref_camera_autoexposure_entry_centerweighted">Центрально-зважений</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">Точковий</string>
+    <string name="pref_camera_autoexposure_entry_matrixmetering">Матричний</string>
 </resources>
