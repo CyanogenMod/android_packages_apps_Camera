@@ -240,6 +240,8 @@
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"無限遠"</string>
     <string name="pref_camera_focusmode_entry_touch">觸控</string>
+    <string name="pref_camera_focusmode_entry_fixed">固定</string>
+    <string name="pref_camera_focusmode_entry_facedetect">臉部檢測</string>
 
     <!-- Toast shown when touch-to-focus is enabled -->
     <string name="touch_focus_enabled">輕觸螢幕以使相機對焦。</string>
@@ -273,6 +275,7 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"日光"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"螢光燈"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"陰天"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">陰天的日光</string>
 
     <!-- Default color effect setting. -->
     <!-- skipping untranslatable /resources:0/string:name=pref_camera_coloreffect_default -->
@@ -373,6 +376,12 @@
     <string name="pref_camera_scenemode_entry_backlight">背光</string>
     <!-- Scene mode optimized for taking images of flowers. -->
     <string name="pref_camera_scenemode_entry_flowers">花卉</string>
+    <!-- Scene mode optimized for taking images on Dusk. -->
+    <string name="pref_camera_scenemode_entry_duskdawn">黃昏</string>
+    <!-- Scene mode optimized for taking images on Fall. -->
+    <string name="pref_camera_scenemode_entry_fallcolor">秋色</string>
+    <!-- Scene mode optimized for taking images of Texts. -->
+    <string name="pref_camera_scenemode_entry_text">文字</string>
 
     <!-- Restore settings item in preference -->
     <string name="pref_restore_title" msgid="6479274979730178961">"相機設定"</string>
@@ -499,10 +508,12 @@
      <string name="pref_camera_autoexposure_entry_frameaverage">平均</string>
      <string name="pref_camera_autoexposure_entry_centerweighted">中央</string>
      <string name="pref_camera_autoexposure_entry_spotmetering">焦點</string>
+     <string name="pref_camera_autoexposure_entry_matrixmetering">矩陣</string>
 
      <!-- Auto exposure entry values. Do not translate. -->
      <!-- skipping untranslatable /resources:0/string:name=pref_camera_autoexposure_value_frameaverage -->
      <!-- skipping untranslatable /resources:0/string:name=pref_camera_autoexposure_value_centerweighted -->
      <!-- skipping untranslatable /resources:0/string:name=pref_camera_autoexposure_value_spotmetering -->
+     <!-- skipping untranslatable /resources:0/string:name=pref_camera_autoexposure_value_matrixmetering -->
 
 </resources>
