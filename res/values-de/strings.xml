@@ -85,6 +85,11 @@
     <string name="pref_camera_vol_down_shutter">Leiser-Taste</string>
     <string name="pref_camera_vol_down_shutter_summary">Leiser-Taste zum Aufnehmen eines Bildes drücken</string>
 
+    <!-- Other settings -->
+    <string name="pref_camera_other_settings_title">Sonstige Optionen</string>
+    <string name="pref_camera_timer_duration">Selbstauslöser</string>
+    <string name="pref_camera_timer_duration_summary">Zeitverzögerung für Selbstauslöser</string>
+
     <!-- More Settings screen, zoom button title -->
     <string name="pref_camera_vol_zoom_title">Lautstärke als Zoom</string>
     <string name="pref_camera_vol_zoom">Lautstärketasten als Zoomsteuerung</string>
@@ -112,6 +117,21 @@
     <string name="pref_camera_focusmode_entry_normal">Normal</string>
     <string name="pref_camera_focusmode_entry_macro">Makro</string>
     <string name="pref_camera_focusmode_entry_infinity">Unendlich</string>
+
+    <!-- Settings screen, Capture mode title -->
+    <string name="pref_camera_capturemode_title">Aufnahmemodus</string>
+
+    <!-- Settings screen, Capture mode dialog radio button choices -->
+    <string name="pref_camera_capturemode_entry_default">Sofort</string>
+    <string name="pref_camera_capturemode_entry_timer">Selbstauslöser</string>
+
+    <!-- Settings screen, Capture mode dialog entries -->
+    <string name="pref_camera_capturemode_entry_10">10 Sekunden</string>
+    <string name="pref_camera_capturemode_entry_20">20 Sekunden</string>
+    <string name="pref_camera_capturemode_entry_30">30 Sekunden</string>
+    <string name="pref_camera_capturemode_entry_40">40 Sekunden</string>
+    <string name="pref_camera_capturemode_entry_50">50 Sekunden</string>
+    <string name="pref_camera_capturemode_entry_60">60 Sekunden</string>
 
     <string name="pref_camera_flashmode_title">Blitzmodus</string>
     <string name="pref_camera_flashmode_entry_auto">Automatisch</string>
