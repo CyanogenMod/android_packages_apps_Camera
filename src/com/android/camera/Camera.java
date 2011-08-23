@@ -2129,7 +2129,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
             // Set capture mode.
             mCaptureMode = mPreferences.getString(
                     CameraSettings.KEY_CAPTURE_MODE,
-                    getString(R.string.pref_camera_capturemode_entry_timer));
+                    getString(R.string.pref_camera_capturemode_entry_default));
 
             if (isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
                 mParameters.setFocusMode(mFocusMode);
