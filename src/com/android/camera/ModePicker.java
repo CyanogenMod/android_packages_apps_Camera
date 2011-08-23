@@ -19,6 +19,7 @@ package com.android.camera;
 import com.android.camera.ui.RotateImageView;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -35,6 +36,9 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     public static final int MODE_VIDEO = 1;
     public static final int MODE_CAMERA = 2;
 
+    // Total mode number
+    private static final int MODE_NUM = 3;
+
     /** A callback to be called when the user wants to switch activity. */
     public interface OnModeChangeListener {
         // Returns true if the listener agrees that the mode can be changed.
@@ -42,9 +46,10 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     }
 
     private final int DISABLED_COLOR;
+    private final int CURRENT_MODE_BACKGROUND;
 
     private OnModeChangeListener mListener;
-    private View mModeIcons[] = new View[3];
+    private View mModeIcons[] = new View[MODE_NUM];
     private View mCurrentModeIcon;
     private View mModeSelection;
     private int mCurrentMode = MODE_CAMERA;
@@ -54,6 +59,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
         super(context, attrs);
         mContext = context;
         DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
+        CURRENT_MODE_BACKGROUND = R.drawable.btn_mode_background;
     }
 
     protected void onFinishInflate() {
@@ -63,6 +69,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
 
         mCurrentModeIcon = findViewById(R.id.current_mode);
         mCurrentModeIcon.setOnClickListener(this);
+        mCurrentModeIcon.setBackgroundResource(CURRENT_MODE_BACKGROUND);
 
         mModeIcons[MODE_PANORAMA] = findViewById(R.id.mode_panorama);
         mModeIcons[MODE_VIDEO] = findViewById(R.id.mode_video);
@@ -73,14 +80,14 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
         mCurrentModeIcon.setVisibility(enabled ? View.GONE : View.VISIBLE);
         mCurrentModeIcon.setOnClickListener(enabled ? null : this);
         mModeSelection.setVisibility(enabled ? View.VISIBLE : View.GONE);
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < MODE_NUM; ++i) {
             mModeIcons[i].setOnClickListener(enabled ? this : null);
-            highlightCurrentMode(mModeIcons[i], (i == mCurrentMode));
+            highlightView(mModeIcons[i], (i == mCurrentMode));
         }
     }
 
     public void onClick(View view) {
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < MODE_NUM; ++i) {
             if (view == mModeIcons[i]) {
                 setCurrentMode(i);
                 enableModeSelection(false);
@@ -91,7 +98,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     }
 
     private void setMode(int mode) {
-        for (int i = 0; i < 3; ++i) mModeIcons[i].setSelected(mode == i);
+        for (int i = 0; i < MODE_NUM; ++i) mModeIcons[i].setSelected(mode == i);
     }
 
     public void setOnModeChangeListener(OnModeChangeListener listener) {
@@ -121,7 +128,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     }
 
     public void setDegree(int degree) {
-        for (int i = 0 ; i < 3 ; ++i) {
+        for (int i = 0; i < MODE_NUM; ++i) {
             ((RotateImageView) mModeIcons[i]).setDegree(degree);
         }
         ((RotateImageView) mCurrentModeIcon).setDegree(degree);
@@ -130,23 +137,22 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-    }
 
-    private void highlightCurrentMode(View view, boolean enabled) {
-        Drawable drawable = ((ImageView) view).getDrawable();
+        mCurrentModeIcon.setEnabled(enabled);
+        highlightView(mCurrentModeIcon, enabled);
         if (enabled) {
-            drawable.clearColorFilter();
+            mCurrentModeIcon.setBackgroundResource(CURRENT_MODE_BACKGROUND);
         } else {
-            drawable.setColorFilter(DISABLED_COLOR, PorterDuff.Mode.SRC_ATOP);
+            mCurrentModeIcon.setBackgroundColor(Color.BLACK);
+        }
+
+        mModeSelection.setEnabled(enabled);
+        for (int i = 0; i < MODE_NUM; ++i) {
+            mModeIcons[i].setEnabled(enabled);
         }
     }
 
-    public void setEnabled(View view, boolean enabled) {
-        view.setEnabled(enabled);
-
-        // render disabled effect for tablet only.
-        if (!Util.isTabletUI()) return;
-
+    private void highlightView(View view, boolean enabled) {
         Drawable drawable = ((ImageView) view).getDrawable();
         if (enabled) {
             drawable.clearColorFilter();
