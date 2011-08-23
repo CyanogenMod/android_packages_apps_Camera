@@ -95,6 +95,11 @@
     <string name="pref_camera_search_shutter">Suchen-Taste</string>
     <string name="pref_camera_search_shutter_summary">Suchen-Taste zum Aufnehmen eines Bildes drücken</string>
 
+    <!-- More Settings screen, power button -->
+    <string name="pref_camera_power_shutter_title">Ein-Aus als Auslöser</string>
+    <string name="pref_camera_power_shutter">Ein-Aus-Taste</string>
+    <string name="pref_camera_power_shutter_summary">Ein-Aus-Taste zum Aufnehmen eines Bildes\/Videos drücken</string>
+
     <!-- Settings screen, custom focus -->
     <string name="pref_camera_settings_focus_title">Fokus</string>
     <string name="pref_camera_settings_focus">Vor-Fokus</string>
@@ -119,12 +124,13 @@
     <string name="pref_camera_whitebalance_entry_daylight">Tageslicht</string>
     <string name="pref_camera_whitebalance_entry_fluorescent">Neonlicht</string>
     <string name="pref_camera_whitebalance_entry_cloudy">Bewölkt</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Bewölkt-Tageslicht</string>
 
     <string name="pref_camera_coloreffect_title">Farbeffekt</string>
     <string name="pref_camera_coloreffect_entry_none">Keiner</string>
     <string name="pref_camera_coloreffect_entry_mono">Schwarz-weiß</string>
     <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
-    <string name="pref_camera_coloreffect_entry_negative">Negativ</string>
+    <string name="pref_camera_coloreffect_entry_negative">Invertiert</string>
     <string name="pref_camera_coloreffect_entry_solarize">Solarisieren</string>
     <string name="pref_camera_coloreffect_entry_posterize">Tontrennung</string>
     <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
@@ -133,6 +139,12 @@
     <string name="pref_camera_coloreffect_entry_redtint">Rottöne</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Blautöne</string>
     <string name="pref_camera_coloreffect_entry_greentint">Grüntöne</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Prägung</string>
+    <string name="pref_camera_coloreffect_entry_vivid">Lebendig</string>
+    <string name="pref_camera_coloreffect_entry_blue">Blau</string>
+    <string name="pref_camera_coloreffect_entry_negative_sepia">Sepia invertiert</string>
+
+
 
     <!-- Settings screen, Multiple levels entries -->
     <string name="pref_camera_sharpness_entry_level0">Stufe 0</string>
@@ -181,6 +193,8 @@
     <string name="pref_camera_scenemode_entry_candlelight">Kerzenlicht</string>
     <string name="pref_camera_scenemode_entry_backlight">Hintergrundlicht</string>
     <string name="pref_camera_scenemode_entry_flowers">Blumen</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Dämmerung</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Herbst</string>
 
     <string name="pref_restore_title">Kameraeinstellungen</string>
     <string name="pref_restore_detail">Standard wiederherstellen</string>
