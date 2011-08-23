@@ -29,6 +29,8 @@ import android.widget.ImageView;
  * A view for switching the front/back camera.
  */
 public class CameraPicker extends RotateImageView implements View.OnClickListener {
+    private static int mImageResource;
+
     private OnPreferenceChangedListener mListener;
     private ListPreference mPreference;
     private CharSequence[] mCameras;
@@ -36,7 +38,11 @@ public class CameraPicker extends RotateImageView implements View.OnClickListene
 
     public CameraPicker(Context context) {
         super(context);
-        setImageResource(R.drawable.ic_switch_camera_facing_holo_light);
+        setImageResource(mImageResource);
+    }
+
+    public static void setImageResourceId(int imageResource) {
+        mImageResource = imageResource;
     }
 
     public void setListener(OnPreferenceChangedListener listener) {
