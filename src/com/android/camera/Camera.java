@@ -419,7 +419,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-        startFaceDetection();
         // Show the tap to focus toast if this is the first start.
         if (mFocusAreaSupported &&
                 mPreferences.getBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, true)) {
@@ -476,7 +475,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         installIntentFilter();
         initializeFocusTone();
         initializeZoom();
-        startFaceDetection();
         keepMediaProviderInstance();
         checkStorage();
 
@@ -1901,6 +1899,8 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
         }
+
+        startFaceDetection();
         mZoomState = ZOOM_STOPPED;
         mCameraState = IDLE;
     }
