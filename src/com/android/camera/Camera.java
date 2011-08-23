@@ -115,9 +115,6 @@ public class Camera extends ActivityBase implements View.OnClickListener,
     private static final int UPDATE_PARAM_PREFERENCE = 4;
     private static final int UPDATE_PARAM_ALL = -1;
 
-    // TODO: use public API after it is unhidden.
-    public static final String FOCUS_MODE_CONTINUOUS_PICTURE = "continuous-picture";
-
     // When setCameraParametersWhenIdle() is called, we accumulate the subsets
     // needed to be updated in mUpdateSet.
     private int mUpdateSet;
@@ -830,7 +827,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
             // Do a full autofocus if the scene is not focused in continuous
             // focus mode,
-            if (mFocusMode.equals(FOCUS_MODE_CONTINUOUS_PICTURE) && !focused) {
+            if (mFocusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE) && !focused) {
                 mContinuousFocusFail = true;
                 setCameraParameters(UPDATE_PARAM_PREFERENCE);
                 autoFocus();
