@@ -106,6 +106,8 @@
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Oändligt"</string>
     <string name="pref_camera_focusmode_entry_touch">Touch</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fast</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Ansiktsigenkänning</string>
     <string name="touch_focus_enabled">Tryck på skärmen för att fokusera kameran.</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Blixtläge"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatiskt"</string>
@@ -117,6 +119,7 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Dagsljus"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescerande"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Molnigt"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Molnigt, Dagsljus</string>
     <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Färgeffekt"</string>
     <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Inga"</string>
     <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Mono"</string>
@@ -173,6 +176,9 @@
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Stearinljus"</string>
     <string name="pref_camera_scenemode_entry_backlight">Bakljus</string>
     <string name="pref_camera_scenemode_entry_flowers">Blommor</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Skymning</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Höstfärg</string>
+    <string name="pref_camera_scenemode_entry_text">Text</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Kamerainställningar"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Återställ standardinställningar"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exponering"</string>
@@ -191,6 +197,7 @@
     <string name="pref_camera_iso_entry_iso400">ISO400</string>
     <string name="pref_camera_iso_entry_iso800">ISO800</string>
     <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
+    <string name="pref_camera_lensshading_title">Linsskuggning</string>
     <string name="pref_camera_lensshading_entry_enable">Aktivera</string>
     <string name="pref_camera_lensshading_entry_disable">Inaktivera</string>
     <string name="pref_camera_antibanding_title">Reducering av flimmer</string>
