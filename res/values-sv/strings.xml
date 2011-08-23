@@ -89,6 +89,9 @@
     <string name="pref_camera_vol_zoom_title">Volym-zoom</string>
     <string name="pref_camera_vol_zoom">Zoom med volymknappar</string>
     <string name="pref_camera_vol_zoom_summary">Volym upp/ner zoomar in/ut, respektive</string>
+    <string name="pref_camera_other_settings_title">Övriga inställningar</string>
+    <string name="pref_camera_timer_duration">Tid för självutlösare</string>
+    <string name="pref_camera_timer_duration_summary">Välj fördröjning för självutlösaren</string>
     <string name="pref_camera_search_shutter_title">Sök-slutare</string>
     <string name="pref_camera_search_shutter">Sök-knapp</string>
     <string name="pref_camera_search_shutter_summary">Sök-knappen tar en bild</string>
@@ -109,6 +112,15 @@
     <string name="pref_camera_focusmode_entry_fixed">Fast</string>
     <string name="pref_camera_focusmode_entry_facedetect">Ansiktsigenkänning</string>
     <string name="touch_focus_enabled">Tryck på skärmen för att fokusera kameran.</string>
+    <string name="pref_camera_capturemode_title">Bildtagningsläge</string>
+    <string name="pref_camera_capturemode_entry_default">Omedelbar</string>
+    <string name="pref_camera_capturemode_entry_timer">Självutlösare</string>
+    <string name="pref_camera_capturemode_entry_10">10 sekunder</string>
+    <string name="pref_camera_capturemode_entry_20">20 sekunder</string>
+    <string name="pref_camera_capturemode_entry_30">30 sekunder</string>
+    <string name="pref_camera_capturemode_entry_40">40 sekunder</string>
+    <string name="pref_camera_capturemode_entry_50">50 sekunder</string>
+    <string name="pref_camera_capturemode_entry_60">60 sekunder</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Blixtläge"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatiskt"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"På"</string>
@@ -209,4 +221,5 @@
     <string name="pref_camera_autoexposure_entry_frameaverage">Genomsnitt</string>
     <string name="pref_camera_autoexposure_entry_centerweighted">Centrumvägd</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">Punktmätning</string>
+    <string name="pref_camera_autoexposure_entry_matrixmetering">Matrixmätning</string>
 </resources>
