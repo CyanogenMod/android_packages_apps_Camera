@@ -53,10 +53,15 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"카메라 설정"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"캠코더 설정"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"사진 크기"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5M 픽셀"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M 픽셀"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2M 픽셀"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M 픽셀"</string>
+    <string name="pref_camera_picturesize_entry_3264x2448">8M 픽셀</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6M 픽셀 (와이드)</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5M 픽셀</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4M 픽셀 (와이드)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4M 픽셀</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4M 픽셀</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3M 픽셀</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2.5M 픽셀 (와이드)</string>
+
     <string name="pref_camera_jpegquality_title" msgid="6074540285403193970">"사진 품질"</string>
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"최고급"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"고급"</string>
@@ -65,6 +70,11 @@
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"자동"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"무한"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"매크로"</string>
+    <string name="pref_camera_focusmode_entry_normal">일반</string>
+    <string name="pref_camera_focusmode_entry_touch">터치</string>
+    <string name="pref_camera_focusmode_entry_fixed">고정</string>
+    <string name="pref_camera_focusmode_entry_facedetect">얼굴 인식</string>
+
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"플래시 모드"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"자동"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"사용"</string>
@@ -113,4 +123,22 @@
     <string name="zoom_control_title" msgid="6532562653386981815">"확대/축소"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"카메라로 전환"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"동영상으로 전환"</string>
+    <string name="pref_camera_iso_entry_auto">자동</string>
+    <string name="pref_camera_iso_entry_isodeblur">흐림제거</string>
+
+     <string name="pref_camera_autoexposure_title">측광 방식</string>
+
+     <!-- Settings screen, auto exposure dialog radio button choices -->
+     <string name="pref_camera_autoexposure_entry_frameaverage">프레임 평균</string>
+     <string name="pref_camera_autoexposure_entry_centerweighted">중앙 중점</string>
+     <string name="pref_camera_autoexposure_entry_spotmetering">스팟 측광</string>
+     <string name="pref_camera_autoexposure_entry_matrixmetering">분할 측광</string>
+
+     <string name="pref_camera_antibanding_title">깜빡임 제거</string>
+
+     <string name="pref_camera_antibanding_entry_0">끔</string>
+     <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+     <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+     <string name="pref_camera_antibanding_entry_3">자동</string>
+
 </resources>
