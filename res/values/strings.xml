@@ -280,6 +280,6 @@
     <!-- The text shown in the progress dialog when generating the final panorama result in the background [CHAR LIMIT=30] -->
     <string name="pano_dialog_generate_panorama">Generating panorama...</string>
 
-    <!-- Toast telling users tapping on the viewfinder will trigger autofocus [CHAR LIMIT=24] -->
+    <!-- Toast telling users tapping on the viewfinder will trigger autofocus [CHAR LIMIT=28] -->
     <string name="tap_to_focus">Tap to focus</string>
 </resources>
