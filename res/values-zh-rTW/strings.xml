@@ -203,6 +203,11 @@
     <string name="pref_camera_vol_zoom">音量鍵縮放</string>
     <string name="pref_camera_vol_zoom_summary">按提升／降低音量鍵來放大／縮小</string>
 
+    <!-- Other settings -->
+    <string name="pref_camera_other_settings_title">其他設定</string>
+    <string name="pref_camera_timer_duration">拍攝計時長度</string>
+    <string name="pref_camera_timer_duration_summary">選擇計時拍攝的倒數時間長度</string>
+
     <!-- More Settings screen, search button title -->
     <string name="pref_camera_search_shutter_title">搜尋鍵快門</string>
 
@@ -234,7 +239,7 @@
     <!-- Settings screen, Focus mode title -->
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"對焦模式"</string>
 
-    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <!-- Settings screen, Focus mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自動"</string>
     <string name="pref_camera_focusmode_entry_normal">正常</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
@@ -251,6 +256,21 @@
 
     <!-- Value for flash off setting-->
     <!-- skipping untranslatable /resources:0/string:name=pref_camera_flashmode_no_flash -->
+
+    <!-- Settings screen, Capture mode title -->
+    <string name="pref_camera_capturemode_title">拍攝方式</string>
+
+    <!-- Settings screen, Capture mode dialog radio button choices -->
+    <string name="pref_camera_capturemode_entry_default">立即</string>
+    <string name="pref_camera_capturemode_entry_timer">計時</string>
+
+    <!-- Settings screen, Capture mode dialog entries -->
+    <string name="pref_camera_capturemode_entry_10">10 秒</string>
+    <string name="pref_camera_capturemode_entry_20">20 秒</string>
+    <string name="pref_camera_capturemode_entry_30">30 秒</string>
+    <string name="pref_camera_capturemode_entry_40">40 秒</string>
+    <string name="pref_camera_capturemode_entry_50">50 秒</string>
+    <string name="pref_camera_capturemode_entry_60">60 秒</string>
 
     <!-- Settings screen, Flash mode title -->
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"閃光模式"</string>
