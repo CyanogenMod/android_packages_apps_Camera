@@ -32,8 +32,7 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 
 /**
- * A view that contains camera setting indicators. The indicators are spreaded
- * differently based on the screen resolution.
+ * A view that contains camera setting indicators.
  */
 public abstract class IndicatorControl extends RelativeLayout implements
         IndicatorButton.Listener, OtherSettingsPopup.Listener {
@@ -83,40 +82,37 @@ public abstract class IndicatorControl extends RelativeLayout implements
 
     public void initialize(Context context, PreferenceGroup group,
             String[] keys, String[] otherSettingKeys) {
-        // Reset the variables and states.
-        dismissSettingPopup();
-        removeIndicators();
-
         // Initialize all variables and icons.
         mPreferenceGroup = group;
-        // Add other settings indicator.
-        if (otherSettingKeys != null) {
-            addOtherSettingIndicator(context, R.drawable.ic_settings_holo_light, otherSettingKeys);
-        }
-
-        for (int i = 0; i < keys.length; i++) {
-            IconListPreference pref = (IconListPreference) group.findPreference(keys[i]);
-            if (pref != null) {
-                addIndicator(context, pref);
-            }
-        }
+        addControls(keys, otherSettingKeys);
         requestLayout();
     }
 
-    public void initializeCameraPicker(Context context, PreferenceGroup group) {
-        ListPreference pref = group.findPreference(
-                CameraSettings.KEY_CAMERA_ID);
-        if ((pref == null) || (mCameraPicker != null)) return;
-        mCameraPicker = new CameraPicker(context);
-        mCameraPicker.initialize(pref);
-        addView(mCameraPicker);
+    protected void addControls(String[] keys, String[] otherSettingKeys) {
+        if (keys != null) {
+            for (int i = 0; i < keys.length; i++) {
+                IconListPreference pref =
+                        (IconListPreference) mPreferenceGroup.findPreference(keys[i]);
+                if (pref != null) {
+                    addIndicator(mContext, pref);
+                }
+            }
+        }
+
+        // Add other settings indicator.
+        if (otherSettingKeys != null) {
+            addOtherSettingIndicator(mContext,
+                    R.drawable.ic_settings_holo_light, otherSettingKeys);
+        }
     }
 
-    private void removeIndicators() {
-        for (View v: mIndicators) {
-            removeView(v);
-        }
-        mIndicators.clear();
+    protected void initializeCameraPicker() {
+        ListPreference pref = mPreferenceGroup.findPreference(
+                CameraSettings.KEY_CAMERA_ID);
+        if (pref == null) return;
+        mCameraPicker = new CameraPicker(mContext);
+        mCameraPicker.initialize(pref);
+        addView(mCameraPicker);
     }
 
     @Override

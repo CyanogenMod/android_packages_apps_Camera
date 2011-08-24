@@ -44,7 +44,6 @@ import android.hardware.Camera.Size;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.media.AudioManager;
 import android.media.CameraProfile;
 import android.media.ToneGenerator;
 import android.net.Uri;
@@ -68,12 +67,10 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1103,27 +1100,14 @@ public class Camera extends ActivityBase implements View.OnClickListener,
         mIndicatorControl = (IndicatorControl) findViewById(R.id.indicator_control);
         if (mIndicatorControl == null) return;
         loadCameraPreferences();
-        final String[] SETTING_KEYS, OTHER_SETTING_KEYS;
-        if (Util.isTabletUI()) {
-            SETTING_KEYS = new String[] {
-                    CameraSettings.KEY_FLASH_MODE,
-                    CameraSettings.KEY_WHITE_BALANCE};
-            OTHER_SETTING_KEYS = new String[] {
-                    CameraSettings.KEY_SCENE_MODE,
-                    CameraSettings.KEY_RECORD_LOCATION,
-                    CameraSettings.KEY_FOCUS_MODE,
-                    CameraSettings.KEY_EXPOSURE,
-                    CameraSettings.KEY_PICTURE_SIZE};
-        } else {
-            SETTING_KEYS = new String[] {
-                    CameraSettings.KEY_WHITE_BALANCE,
-                    CameraSettings.KEY_SCENE_MODE};
-            OTHER_SETTING_KEYS = new String[] {
-                    CameraSettings.KEY_EXPOSURE,
-                    CameraSettings.KEY_FOCUS_MODE,
-                    CameraSettings.KEY_PICTURE_SIZE,
-                    CameraSettings.KEY_RECORD_LOCATION};
-        }
+        final String[] SETTING_KEYS = {
+                CameraSettings.KEY_WHITE_BALANCE,
+                CameraSettings.KEY_SCENE_MODE};
+        final String[] OTHER_SETTING_KEYS = {
+                CameraSettings.KEY_RECORD_LOCATION,
+                CameraSettings.KEY_FOCUS_MODE,
+                CameraSettings.KEY_EXPOSURE,
+                CameraSettings.KEY_PICTURE_SIZE};
         mIndicatorControl.initialize(this, mPreferenceGroup,
                 CameraSettings.KEY_FLASH_MODE, SETTING_KEYS, OTHER_SETTING_KEYS);
         mIndicatorControl.setListener(this);
@@ -2176,7 +2160,7 @@ public class Camera extends ActivityBase implements View.OnClickListener,
             mIndicatorControl.dismissSettingPopup();
             CameraSettings.restorePreferences(Camera.this, mPreferences,
                     mParameters);
-            initializeIndicatorControl();
+            mIndicatorControl.reloadPreferences();
             onSharedPreferenceChanged();
         }
     }

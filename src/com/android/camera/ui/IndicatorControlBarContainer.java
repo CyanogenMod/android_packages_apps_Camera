@@ -27,8 +27,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 /**
- * A view contains indicator control bar, second-level indicator bar and
- * zoom control.
+ * The IndicatorControlBarContainer is a IndicatorControl containing
+ * IndicatorControlBar, SecondIndicatorControlBar and ZoomControlBar for Phone UI.
  */
 public class IndicatorControlBarContainer extends IndicatorControl implements
         OnIndicatorEventListener {
