@@ -40,7 +40,6 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         super(context, attrs);
     }
 
-    @Override
     public void initialize(Context context, PreferenceGroup group,
             String[] keys, String[] otherSettingKeys) {
         if (mCloseIcon == null) {
@@ -49,7 +48,8 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
             mCloseIcon.setOnClickListener(this);
             addView(mCloseIcon);
         }
-        super.initialize(context, group, keys, otherSettingKeys);
+        setPreferenceGroup(group);
+        addControls(keys, otherSettingKeys);
         if (mDegree != 0) setDegree(mDegree);
     }
 

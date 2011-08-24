@@ -19,38 +19,16 @@ package com.android.camera.ui;
 import com.android.camera.R;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 
 /**
  * A view that contains camera zoom control and its layout.
  */
 public class ZoomControlBar extends ZoomControl {
     private static final String TAG = "ZoomControlBar";
-
-    private static final int ZOOMING_INTERVAL = 300; // milliseconds
-
-    private ImageView mZoomIn;
-    private ImageView mZoomOut;
-    private ImageView mZoomSlider;
     private View mBar;
-    private int mSliderPosition = 0;
-    private Handler mHandler;
-    private int mDegree;
-
-    private final Runnable mRunnable = new Runnable() {
-        public void run() {
-            if (mSliderPosition < 0) {
-                zoomIn();
-            } else if (mSliderPosition > 0) {
-                zoomOut();
-            }
-            if (mSliderPosition != 0) mHandler.postDelayed(mRunnable, ZOOMING_INTERVAL);
-        }
-    };
 
     public ZoomControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -58,28 +36,10 @@ public class ZoomControlBar extends ZoomControl {
 
     @Override
     public void initialize(Context context) {
-        mZoomIn = addImageView(context, R.drawable.ic_zoom_in_holo_light);
+        super.initialize(context);
         mBar = new View(context);
         mBar.setBackgroundResource(R.drawable.ic_zoom_big);
         addView(mBar);
-        mZoomSlider = addImageView(context, R.drawable.btn_zoom_slider);
-        mZoomOut = addImageView(context, R.drawable.ic_zoom_out_holo_light);
-        mHandler = new Handler();
-    }
-
-    ImageView addImageView(Context context, int iconResourceId) {
-        ImageView image = new RotateImageView(context);
-        image.setImageResource(iconResourceId);
-        addView(image);
-        return image;
-    }
-
-    private void closeControl() {
-        mHandler.removeCallbacks(mRunnable);
-        mSliderPosition = 0;
-        stopZooming();
-        mOnIndicatorEventListener.onIndicatorEvent(
-                    OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL_BAR);
     }
 
     @Override
@@ -104,15 +64,10 @@ public class ZoomControlBar extends ZoomControl {
         // TODO: add fast zoom change here
 
         switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                mHandler.postDelayed(mRunnable, ZOOMING_INTERVAL);
-                mZoomSlider.setPressed(true);
-                break;
             case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                mZoomSlider.setPressed(false);
-                closeControl();
+                closeZoomControl();
                 break;
             default:
                 requestLayout();
@@ -124,7 +79,6 @@ public class ZoomControlBar extends ZoomControl {
     public void setDegree(int degree) {
         // layout for the left-hand camera control
         if ((degree == 180) || (mDegree == 180)) requestLayout();
-        mDegree = degree;
         super.setDegree(degree);
     }
 

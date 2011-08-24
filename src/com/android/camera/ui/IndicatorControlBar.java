@@ -21,6 +21,7 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -28,7 +29,7 @@ import android.widget.ImageView;
  * A view that contains the top-level indicator control.
  */
 public class IndicatorControlBar extends IndicatorControl implements
-        View.OnClickListener {
+        View.OnClickListener, View.OnTouchListener {
     private static final String TAG = "IndicatorControlBar";
 
     private ImageView mZoomIcon;
@@ -41,7 +42,8 @@ public class IndicatorControlBar extends IndicatorControl implements
     public void initialize(Context context, PreferenceGroup group,
             String flashSetting, boolean zoomSupported) {
         // From UI spec, we have camera_flash setting on the first level.
-        super.initialize(context, group, new String[] {flashSetting}, null);
+        setPreferenceGroup(group);
+        addControls(new String[] {flashSetting}, null);
 
         // Add CameraPicker control.
         initializeCameraPicker();
@@ -49,7 +51,7 @@ public class IndicatorControlBar extends IndicatorControl implements
         // add Zoom Icon.
         if (zoomSupported) {
             mZoomIcon = (ImageView) findViewById(R.id.zoom_control_icon);
-            mZoomIcon.setOnClickListener(this);
+            mZoomIcon.setOnTouchListener(this);
             mZoomIcon.setVisibility(View.VISIBLE);
         }
 
@@ -58,15 +60,21 @@ public class IndicatorControlBar extends IndicatorControl implements
         requestLayout();
     }
 
+    public boolean onTouch(View v, MotionEvent event) {
+        dismissSettingPopup();
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            mOnIndicatorEventListener.onIndicatorEvent(
+                    OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL);
+            return true;
+        }
+        return false;
+    }
+
     public void onClick(View view) {
         dismissSettingPopup();
-        if (view == mZoomIcon) {
-            mOnIndicatorEventListener.onIndicatorEvent(
-                    OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL_BAR);
-        } else if (view == mSecondLevelIcon) {
-            mOnIndicatorEventListener.onIndicatorEvent(
-                    OnIndicatorEventListener.EVENT_ENTER_SECOND_LEVEL_INDICATOR_BAR);
-        }
+        // Only for the click on mSecondLevelIcon.
+        mOnIndicatorEventListener.onIndicatorEvent(
+                OnIndicatorEventListener.EVENT_ENTER_SECOND_LEVEL_INDICATOR_BAR);
     }
 
     @Override
