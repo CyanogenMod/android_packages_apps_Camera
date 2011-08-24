@@ -119,10 +119,6 @@
         <item name="android:textSize">16dp</item>
         <item name="android:background">@drawable/bg_text_on_preview</item>
     </style>
-    <style name="AnimationPopup" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/grow_fade_in_from_top_right</item>
-        <item name="android:windowExitAnimation">@anim/shrink_fade_out_from_top_right</item>
-    </style>
     <style name="PanoViewHorizontalGrayBar">
         <item name="android:background">#444444</item>
         <item name="android:alpha">0.5</item>

@@ -117,7 +117,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         setContentView(sharePopup);
         setOrientation(orientation);
         setFocusable(true);
-        setAnimationStyle(R.style.AnimationPopup);
+        setAnimationStyle(android.R.style.Animation_Dialog);
 
         initializeLocation(activity, anchor);
 
