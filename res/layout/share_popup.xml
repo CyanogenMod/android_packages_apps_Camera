@@ -20,7 +20,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/dim_background">
     <!-- Need a relative layout here because collapse button does not rotate and
          it is not in the thumbnail. -->
     <RelativeLayout android:id="@+id/root"
