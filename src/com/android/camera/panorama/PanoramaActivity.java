@@ -48,6 +48,8 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -91,6 +93,7 @@ public class PanoramaActivity extends Activity implements
     private CaptureView mCaptureView;
     private MosaicRendererSurfaceView mMosaicView;
     private TextView mTooFastPrompt;
+    private Animation mSlideIn, mSlideOut;
 
     private ProgressDialog mProgressDialog;
     private String mPreparePreviewString;
@@ -135,6 +138,10 @@ public class PanoramaActivity extends Activity implements
                 getResources().getString(R.string.pano_dialog_prepare_preview);
         mGeneratePanoramaString =
                 getResources().getString(R.string.pano_dialog_generate_panorama);
+
+        Context context = getApplicationContext();
+        mSlideIn = AnimationUtils.loadAnimation(context, R.anim.slide_in_from_right);
+        mSlideOut = AnimationUtils.loadAnimation(context, R.anim.slide_out_to_right);
 
         mMainHandler = new Handler() {
             @Override
@@ -345,6 +352,7 @@ public class PanoramaActivity extends Activity implements
         mStopCaptureButton.setVisibility(View.VISIBLE);
         mCaptureView.setVisibility(View.VISIBLE);
         mMosaicView.setVisibility(View.VISIBLE);
+        mPanoControlLayout.startAnimation(mSlideOut);
         mPanoControlLayout.setVisibility(View.GONE);
 
     }
@@ -472,6 +480,7 @@ public class PanoramaActivity extends Activity implements
         mStopCaptureButton.setVisibility(View.GONE);
         mCaptureView.setVisibility(View.GONE);
         mPanoControlLayout.setVisibility(View.VISIBLE);
+        mPanoControlLayout.startAnimation(mSlideIn);
         mCaptureLayout.setVisibility(View.VISIBLE);
         mMosaicFrameProcessor.reset();
 
