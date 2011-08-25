@@ -130,6 +130,8 @@
     <string name="pref_camera_picturesize_entry_2304x1728">4メガピクセル</string>
     <string name="pref_camera_picturesize_entry_2048x1216">2.5メガピクセル(ワイド)</string>
     <string name="pref_camera_focusmode_entry_normal">ノーマル</string>
+    <string name="pref_camera_focusmode_entry_fixed">固定</string>
+    <string name="pref_camera_focusmode_entry_facedetect">顔認識</string>
 
     <string name="pref_camera_sharpness_entry_level0">レベル 0</string>
     <string name="pref_camera_sharpness_entry_level1">レベル 1</string>
@@ -159,6 +161,10 @@
     <string name="pref_camera_scenemode_entry_sports">スポーツ</string>
     <string name="pref_camera_scenemode_entry_backlight">バックライト</string>
     <string name="pref_camera_scenemode_entry_flowers">花</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">夕暮れ</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">秋色</string>
+    <string name="pref_camera_scenemode_entry_text">テキスト</string>
+
 
     <string name="pref_camera_iso_title">ISO選択</string>
     <string name="pref_camera_iso_entry_auto">オート</string>
@@ -173,12 +179,19 @@
     <string name="pref_camera_antibanding_entry_3">オート</string>
 
     <string name="pref_camera_autoexposure_title">自動測光(AE)モード</string>
-    <string name="pref_camera_autoexposure_entry_frameaverage">多分割測光</string>
+    <string name="pref_camera_autoexposure_entry_frameaverage">フレーム平均</string>
     <string name="pref_camera_autoexposure_entry_centerweighted">中央部重点測光</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">スポット測光</string>
+     <string name="pref_camera_autoexposure_entry_matrixmetering">分割測光</string>
+
 
     <!-- Advanced options label -->
     <string name="advanced_options_label">追加オプション</string>
+
+    <!-- Other settings -->
+    <string name="pref_camera_other_settings_title">その他の設定</string>
+    <string name="pref_camera_timer_duration">タイマー時間</string>
+    <string name="pref_camera_timer_duration_summary">カメラタイマーの時間を選択</string>
 
     <!-- More Settings screen, volume buttons title -->
     <string name="pref_camera_vol_shutter_title">ボリュームシャッター</string>
@@ -198,6 +211,29 @@
     <!-- More Settings screen, search button -->
     <string name="pref_camera_search_shutter">検索キー</string>
     <string name="pref_camera_search_shutter_summary">検索キーで撮影する</string>
+
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">電源ボタンシャッター</string>
+
+    <!-- More Settings screen, power button -->
+    <string name="pref_camera_power_shutter">電源ボタン</string>
+    <string name="pref_camera_power_shutter_summary">電源ボタンで撮影する</string>
+
+    <!-- Settings screen, Capture mode title -->
+    <string name="pref_camera_capturemode_title">撮影モード</string>
+
+    <!-- Settings screen, Capture mode dialog radio button choices -->
+    <string name="pref_camera_capturemode_entry_default">即時</string>
+    <string name="pref_camera_capturemode_entry_timer">タイマー</string>
+
+    <!-- Settings screen, Capture mode dialog entries -->
+    <string name="pref_camera_capturemode_entry_10">10秒</string>
+    <string name="pref_camera_capturemode_entry_20">20秒</string>
+    <string name="pref_camera_capturemode_entry_30">30秒</string>
+    <string name="pref_camera_capturemode_entry_40">40秒</string>
+    <string name="pref_camera_capturemode_entry_50">50秒</string>
+    <string name="pref_camera_capturemode_entry_60">60秒</string>
+
     <!-- Settings screen, custom focus title -->
     <string name="pref_camera_settings_focus_title">フォーカス</string>
 
@@ -206,4 +242,7 @@
     <string name="pref_camera_settings_focus_summary">撮影前にフォーカスする</string>
     <string name="pref_camera_settings_long_focus">ロングフォーカス</string>
     <string name="pref_camera_settings_long_focus_summary">ボタンを長押しでフォーカスし、ボタンを離して撮影する</string>
+
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">曇り</string>
+
 </resources>
