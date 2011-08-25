@@ -38,7 +38,7 @@ import java.util.List;
 // A class that handles everything about focus in still picture mode.
 // This also handles the metering area because it is the same as focus area.
 public class FocusManager {
-    private static final String TAG = "Focus";
+    private static final String TAG = "FocusManager";
 
     private static final int RESET_TOUCH_FOCUS = 0;
     private static final int FOCUS_BEEP_VOLUME = 100;
@@ -90,9 +90,14 @@ public class FocusManager {
         }
     }
 
-    public FocusManager(ComboPreferences preferences, String defaultFocusMode, Parameters parameters) {
+    public FocusManager(ComboPreferences preferences, String defaultFocusMode) {
         mPreferences = preferences;
         mDefaultFocusMode = defaultFocusMode;
+        mHandler = new MainHandler();
+    }
+
+    // This has to be initialized before initialize().
+    public void initializeParameters(Parameters parameters) {
         mParameters = parameters;
         mFocusAreaSupported = (mParameters.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
@@ -105,8 +110,11 @@ public class FocusManager {
         mPreviewFrame = previewFrame;
         mFaceView = faceView;
         mListener = listener;
-        mHandler = new MainHandler();
-        mInitialized = true;
+        if (mParameters != null) {
+            mInitialized = true;
+        } else {
+            Log.e(TAG, "mParameters is not initialized.");
+        }
     }
 
     public void doFocus(boolean pressed) {
@@ -322,6 +330,7 @@ public class FocusManager {
         }
     }
 
+    // This can only be called after mParameters is initialized.
     public String getFocusMode() {
         if (mOverrideFocusMode != null) return mOverrideFocusMode;
 

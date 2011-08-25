@@ -981,6 +981,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
+        mFocusManager = new FocusManager(mPreferences,
+                getString(R.string.pref_camera_focusmode_default));
 
         mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
 
@@ -1008,9 +1010,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 try {
                     mCameraDevice = Util.openCamera(Camera.this, mCameraId);
                     initializeCapabilities();
-                    mFocusManager = new FocusManager(mPreferences,
-                            getString(R.string.pref_camera_focusmode_default),
-                            mInitialParams);
                     startPreview();
                 } catch (CameraHardwareException e) {
                     mOpenCameraFail = true;
@@ -2200,6 +2199,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void initializeCapabilities() {
         mInitialParams = mCameraDevice.getParameters();
+        mFocusManager.initializeParameters(mInitialParams);
         mFocusAreaSupported = (mInitialParams.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mInitialParams.getSupportedFocusModes()));
