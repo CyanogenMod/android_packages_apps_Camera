@@ -21,10 +21,6 @@
         android:layout_alignParentRight="true"
         android:background="@drawable/bg_camera_pattern">
 
-    <include layout="@layout/review_thumbnail"/>
-
-    <include layout="@layout/mode_picker"/>
-
     <Button android:id="@+id/pano_start_button"
             android:text="@string/pano_capture_start"
             android:onClick="onStartButtonClicked"
@@ -32,5 +28,9 @@
             android:layout_centerInParent="true"
             android:layout_width="@dimen/pano_control_start_button_size"
             android:layout_height="@dimen/pano_control_start_button_size" />
+
+    <include layout="@layout/review_thumbnail"/>
+
+    <include layout="@layout/mode_picker"/>
 
 </com.android.camera.ui.ControlPanelLayout>
