@@ -353,6 +353,8 @@ public class PanoramaActivity extends Activity implements
         mTimeTaken = System.currentTimeMillis();
         mCaptureState = CAPTURE_MOSAIC;
         mTooFastPrompt.setVisibility(View.GONE);
+        mPanoControlLayout.startAnimation(mSlideOut);
+        mPanoControlLayout.setVisibility(View.GONE);
 
         mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
             @Override
@@ -369,9 +371,6 @@ public class PanoramaActivity extends Activity implements
         mStopCaptureButton.setVisibility(View.VISIBLE);
         mCaptureView.setVisibility(View.VISIBLE);
         mMosaicView.setVisibility(View.VISIBLE);
-        mPanoControlLayout.startAnimation(mSlideOut);
-        mPanoControlLayout.setVisibility(View.GONE);
-
     }
 
     private void stopCapture() {
