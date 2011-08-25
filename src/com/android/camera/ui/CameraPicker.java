@@ -22,7 +22,6 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.hardware.Camera.CameraInfo;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 

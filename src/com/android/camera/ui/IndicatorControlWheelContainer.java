@@ -27,8 +27,9 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * A view that contains shutter button and indicator control wheel
- * and zoom control wheel.
+ * On the tablet UI, we have IndicatorControlWheelContainer which contains a
+ * ShutterButton, a IndicatorControlWheel (which combines first-level and
+ * second-level indicators) and a ZoomControlWheel.
  */
 public class IndicatorControlWheelContainer extends IndicatorControl {
     public static final int STROKE_WIDTH = 87;

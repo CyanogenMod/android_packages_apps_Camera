@@ -468,20 +468,11 @@ public class VideoCamera extends ActivityBase
         if (mIndicatorControl == null) return;
         loadCameraPreferences();
 
-        final String[] SETTING_KEYS, OTHER_SETTING_KEYS;
-        if (Util.isTabletUI()) {
-            SETTING_KEYS = new String[] {CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE};
-            OTHER_SETTING_KEYS = new String[] {
-                    CameraSettings.KEY_VIDEO_QUALITY,
-                    CameraSettings.KEY_WHITE_BALANCE,
-                    CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
-        } else {
-            SETTING_KEYS = new String[] {
+        final String[] SETTING_KEYS = {
                     CameraSettings.KEY_WHITE_BALANCE,
                     CameraSettings.KEY_VIDEO_QUALITY};
-            OTHER_SETTING_KEYS = new String[] {
+        final String[] OTHER_SETTING_KEYS = {
                     CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
-        }
         mIndicatorControl.initialize(this, mPreferenceGroup,
                 CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
                 SETTING_KEYS, OTHER_SETTING_KEYS);
@@ -1748,7 +1739,7 @@ public class VideoCamera extends ActivityBase
             mIndicatorControl.dismissSettingPopup();
             CameraSettings.restorePreferences(VideoCamera.this, mPreferences,
                     mParameters);
-            initializeIndicatorControl();
+            mIndicatorControl.reloadPreferences();
             onSharedPreferenceChanged();
         }
     }

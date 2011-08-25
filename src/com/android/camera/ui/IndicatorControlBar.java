@@ -44,7 +44,7 @@ public class IndicatorControlBar extends IndicatorControl implements
         super.initialize(context, group, new String[] {flashSetting}, null);
 
         // Add CameraPicker control.
-        initializeCameraPicker(context, group);
+        initializeCameraPicker();
 
         // add Zoom Icon.
         if (zoomSupported) {
