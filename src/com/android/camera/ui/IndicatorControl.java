@@ -183,7 +183,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
     public void reloadPreferences() {
         mPreferenceGroup.reloadValue();
         for (AbstractIndicatorButton b: mIndicators) {
-            b.reloadPreferences();
+            b.reloadPreference();
         }
     }
 
