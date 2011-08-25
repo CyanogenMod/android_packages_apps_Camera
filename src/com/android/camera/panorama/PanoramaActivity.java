@@ -351,7 +351,6 @@ public class PanoramaActivity extends Activity implements
         // Reset values so we can do this again.
         mTimeTaken = System.currentTimeMillis();
         mCaptureState = CAPTURE_MOSAIC;
-        mTooFastPrompt.setVisibility(View.GONE);
         mPanoControlLayout.startAnimation(mSlideOut);
         mPanoControlLayout.setVisibility(View.GONE);
 
@@ -374,6 +373,7 @@ public class PanoramaActivity extends Activity implements
 
     private void stopCapture() {
         mCaptureState = CAPTURE_VIEWFINDER;
+        mTooFastPrompt.setVisibility(View.GONE);
 
         mMosaicFrameProcessor.setProgressListener(null);
         stopCameraPreview();
