@@ -47,6 +47,7 @@ public class IndicatorButton extends AbstractIndicatorButton implements BasicSet
         reloadPreference();
     }
 
+    @Override
     public void reloadPreference() {
         int[] iconIds = mPreference.getLargeIconIds();
         if (iconIds != null) {
@@ -68,6 +69,7 @@ public class IndicatorButton extends AbstractIndicatorButton implements BasicSet
             // The preference only has a single icon to represent it.
             setImageResource(mPreference.getSingleIcon());
         }
+        super.reloadPreference();
     }
 
     public String getKey() {

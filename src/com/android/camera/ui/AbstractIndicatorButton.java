@@ -130,7 +130,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
         }
     }
 
-    public void reloadPreferences() {
+    public void reloadPreference() {
         if (mPopup != null) mPopup.reloadPreference();
     }
 }
