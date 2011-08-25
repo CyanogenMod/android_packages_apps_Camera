@@ -41,12 +41,12 @@ import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.hardware.Camera.Parameters;
-import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,7 +59,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -381,9 +380,8 @@ public class PanoramaActivity extends Activity implements
 
         mSurfaceTexture.setOnFrameAvailableListener(null);
 
-        // TODO: show some dialog for long computation.
         if (!mThreadRunning) {
-            runBackgroundThread(mPreparePreviewString, new Thread() {
+            runBackgroundThreadAndShowDialog(mPreparePreviewString, false, new Thread() {
                 @Override
                 public void run() {
                     byte[] jpegData = generateFinalMosaic(false);
@@ -465,23 +463,24 @@ public class PanoramaActivity extends Activity implements
         Thread t = new Thread() {
             @Override
             public void run() {
-                while(true)
-                {
+                while (mThreadRunning) {
                     final int progress = mMosaicFrameProcessor.reportProgress(highRes);
 
-                    try{
+                    try {
                         Thread.sleep(50);
-                    }catch(Exception e) {}
-
-                     // Update the progress bar
+                    } catch (Exception e) {
+                        throw new RuntimeException("Panorama reportProgress failed", e);
+                    }
+                    // Update the progress bar
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            //TODO: Set the the progress-bar progress update here...
+                            // Check if mProgressDialog is null because the background thread
+                            // finished.
+                            if (mProgressDialog != null) {
+                                mProgressDialog.setProgress(progress);
+                            }
                         }
                     });
-
-                    if(progress>=100)
-                        break;
                 }
             }
         };
@@ -491,7 +490,7 @@ public class PanoramaActivity extends Activity implements
     @OnClickAttr
     public void onOkButtonClicked(View v) {
         if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
-        runBackgroundThread(mGeneratePanoramaString, new Thread() {
+        runBackgroundThreadAndShowDialog(mGeneratePanoramaString, true, new Thread() {
             @Override
             public void run() {
                 byte[] jpegData = generateFinalMosaic(true);
@@ -511,9 +510,19 @@ public class PanoramaActivity extends Activity implements
         reportProgress(true);
     }
 
-    private void runBackgroundThread(String str, Thread thread) {
+    /**
+     * If the style is horizontal one, the maximum progress is assumed to be 100.
+     */
+    private void runBackgroundThreadAndShowDialog(
+            String str, boolean showPercentageProgress, Thread thread) {
         mThreadRunning = true;
-        mProgressDialog = ProgressDialog.show(this, "", str);
+        mProgressDialog = new ProgressDialog(this);
+        if (showPercentageProgress) {
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setMax(100);
+        }
+        mProgressDialog.setMessage(str);
+        mProgressDialog.show();
         thread.start();
     }
 
