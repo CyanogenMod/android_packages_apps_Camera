@@ -297,10 +297,14 @@ public class FocusManager {
 
     private void cancelAutoFocus() {
         Log.v(TAG, "Cancel autofocus.");
+
+        // Reset the tap area before calling mListener.cancelAutofocus.
+        // Otherwise, focus mode stays at auto and the tap area passed to the
+        // driver is not reset.
+        resetTouchFocus();
         mListener.cancelAutoFocus();
         if (mFaceView != null) mFaceView.resume();
         mState = STATE_IDLE;
-        resetTouchFocus();
         updateFocusUI();
         mHandler.removeMessages(RESET_TOUCH_FOCUS);
     }
