@@ -30,8 +30,8 @@
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"La targeta SD és plena."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Prep. l\'emmagatzematge USB..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"S\'està preparant la targeta SD…"</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"S\'ha produït un error en accedir a l\'emmagatzematge USB."</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"S\'ha produït un error en accedir a l\'emmagatzematge USB."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"No s\'ha pogut accedir a l\'emmagatzematge USB."</string>
+    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"No s\'ha pogut accedir a la targeta SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restauració del valors predeterminats"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"La configuració de la càmera es restaurarà als valors predeterminats."</string>
     <string name="review_play" msgid="6378271587740884696">"Reprodueix"</string>
@@ -99,10 +99,11 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"Cap imatge per compartir"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Cap vídeo per compartir"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Atura"</string>
-    <!-- no translation found for pano_capture_start (2163632725789917725) -->
+    <string name="pano_capture_start" msgid="2163632725789917725">"Comença"</string>
+    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Massa ràpid"</string>
+    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
     <skip />
-    <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
+    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
     <skip />
-    <!-- no translation found for tap_to_focus (6417403734418828035) -->
-    <skip />
+    <string name="tap_to_focus" msgid="6417403734418828035">"Pica per enfocar"</string>
 </resources>

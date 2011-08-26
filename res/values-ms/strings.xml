@@ -30,8 +30,8 @@
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Kad SD anda penuh."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Menyediakan storan USB..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Menyediakan kad SD..."</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Gagal mengakses storan USB."</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Gagal mengakses storan USB."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Tidak dapat mengakses storan USB."</string>
+    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Tidak dapat mengakses kad SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Pulihkan lalai"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Tetapan kamera akan dipulihkan kepada lalai."</string>
     <string name="review_play" msgid="6378271587740884696">"Main"</string>
@@ -100,7 +100,8 @@
     <string name="no_video_to_share" msgid="3775826212074938990">"Tiada video untuk dikongsi"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Henti"</string>
     <string name="pano_capture_start" msgid="2163632725789917725">"Mula"</string>
-    <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
-    <skip />
+    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Terlalu Cepat"</string>
+    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Menyediakan previu..."</string>
+    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Menjana panorama..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Ketik untuk memfokus"</string>
 </resources>

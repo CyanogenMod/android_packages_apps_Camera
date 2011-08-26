@@ -91,18 +91,20 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Na vašem pomnilniku USB zmanjkuje prostora. Spremenite nastavitev kakovosti ali izbrišite nekaj slik ali drugih datotek."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Na kartici SD zmanjkuje prostora. Spremenite nastavitev kakovosti ali izbrišite nekaj slik ali drugih datotek."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Dosežena je omejitev velikosti."</string>
-    <string name="switch_to_camera_label" msgid="9148663083850199582">"Preklop na fotoaparat"</string>
-    <string name="switch_to_video_label" msgid="1167994386902254398">"Preklop na videoposnetek"</string>
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"Preklopi na fotoaparat"</string>
+    <string name="switch_to_video_label" msgid="1167994386902254398">"Preklopi na video"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Preklop na panoramo"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Skupna raba slike:"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Skupna raba videa:"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Ni slik za skupno rabo"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Ni videov za skupno rabo"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Ustavi"</string>
-    <!-- no translation found for pano_capture_start (2163632725789917725) -->
-    <skip />
+    <string name="pano_capture_start" msgid="2163632725789917725">"Začni"</string>
     <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
     <skip />
-    <!-- no translation found for tap_to_focus (6417403734418828035) -->
+    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
     <skip />
+    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <skip />
+    <string name="tap_to_focus" msgid="6417403734418828035">"Tapnite za ostrenje"</string>
 </resources>

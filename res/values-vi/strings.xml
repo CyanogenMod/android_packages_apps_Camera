@@ -30,8 +30,8 @@
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Thẻ SD của bạn đã đầy."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Đang chuẩn bị bộ nhớ USB…"</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Đang chuẩn bị thẻ SD…"</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Không thể truy cập bộ nhớ USB."</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Không thể truy cập bộ nhớ USB."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Không thể truy cập bộ nhớ USB."</string>
+    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Không thể truy cập thẻ SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Khôi phục mặc định"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Cài đặt máy ảnh sẽ được khôi phục về mặc định."</string>
     <string name="review_play" msgid="6378271587740884696">"Phát"</string>
@@ -59,7 +59,7 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5M Pixel"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M Pixel"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2M Pixel"</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1.3M Pixel"</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1,3M Pixel"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M Pixel"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -99,10 +99,11 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"Không có ảnh nào để chia sẻ"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Không có video nào để chia sẻ"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Dừng"</string>
-    <!-- no translation found for pano_capture_start (2163632725789917725) -->
+    <string name="pano_capture_start" msgid="2163632725789917725">"B.đầu"</string>
+    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Quá nhanh"</string>
+    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
     <skip />
-    <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
+    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
     <skip />
-    <!-- no translation found for tap_to_focus (6417403734418828035) -->
-    <skip />
+    <string name="tap_to_focus" msgid="6417403734418828035">"Chạm để lấy tiêu điểm"</string>
 </resources>

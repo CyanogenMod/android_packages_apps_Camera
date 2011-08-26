@@ -99,10 +99,12 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"لا توجد صورة لمشاركتها"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"لا يوجد فيديو لمشاركته"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"إيقاف"</string>
-    <!-- no translation found for pano_capture_start (2163632725789917725) -->
-    <skip />
+    <string name="pano_capture_start" msgid="2163632725789917725">"البدء"</string>
     <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
     <skip />
-    <!-- no translation found for tap_to_focus (6417403734418828035) -->
+    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
     <skip />
+    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <skip />
+    <string name="tap_to_focus" msgid="6417403734418828035">"انقر للتركيز"</string>
 </resources>

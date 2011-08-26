@@ -59,7 +59,7 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5М пиксела"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3М пиксела"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2М пиксела"</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1,3 М пиксела"</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1,3 мегапиксела"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M пиксела"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -99,10 +99,12 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"Няма снимка за споделяне"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Няма видеоклип за споделяне"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Стоп"</string>
-    <!-- no translation found for pano_capture_start (2163632725789917725) -->
-    <skip />
+    <string name="pano_capture_start" msgid="2163632725789917725">"Начало"</string>
     <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
     <skip />
-    <!-- no translation found for tap_to_focus (6417403734418828035) -->
+    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
     <skip />
+    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <skip />
+    <string name="tap_to_focus" msgid="6417403734418828035">"Докоснете за фокусиране"</string>
 </resources>
