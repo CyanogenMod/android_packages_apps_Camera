@@ -451,7 +451,7 @@ public class VideoCamera extends BaseCamera
         if (mParameters.isZoomSupported()) {
             mHeadUpDisplay.setZoomIndex(mZoomValue);
         }
-        FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
+        FrameLayout frame = (FrameLayout) findViewById(R.id.framegl);
         mGLRootView = new GLRootView(this);
         frame.addView(mGLRootView);
         mGLRootView.setContentPane(mHeadUpDisplay);
@@ -634,8 +634,7 @@ public class VideoCamera extends BaseCamera
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
             videoQuality =
                     intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-            if (videoQuality < CamcorderProfile.QUALITY_LOW ||
-                    videoQuality > CamcorderProfile.QUALITY_HD) {
+            if (videoQuality < 0 || videoQuality > CamcorderProfile.QUALITY_WIDE) {
                 videoQuality = CamcorderProfile.QUALITY_HIGH;
             }
         }
@@ -656,7 +655,13 @@ public class VideoCamera extends BaseCamera
             mMaxVideoDurationInMs =
                     CameraSettings.getVidoeDurationInMillis(quality);
         }
-        mProfile = CamcorderProfile.get(mCameraId, videoQuality);
+        try {
+           mProfile = CamcorderProfile.get(mCameraId, videoQuality);
+        }
+        catch (RuntimeException e) {
+           Log.e(TAG, "Unable to get video profile " + videoQuality, e);
+           mProfile = CamcorderProfile.get(mCameraId, 0);
+        }
     }
 
     private void resizeForPreviewAspectRatio() {
