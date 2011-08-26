@@ -38,6 +38,7 @@ public class PreviewFrameLayout extends ViewGroup {
         public void onSizeChanged(Rect newRect);
     }
 
+    private static final int SIZE = 50;
     private double mAspectRatio = 4.0 / 3.0;
     private FrameLayout mFrame;
     private FocusRectangle mFocus;
@@ -99,9 +100,9 @@ public class PreviewFrameLayout extends ViewGroup {
         actualWidth = frameWidth;
         actualHeight = frameHeight;
 
-        int hSpace = ((r - l) - frameWidth) / 2;
+        int hSpace = ((r - l) - frameWidth);
         int vSpace = ((b - t) - frameHeight) / 2;
-        Rect rect = new Rect(l + hSpace, t + vSpace, r - hSpace, b - vSpace);
+        Rect rect = new Rect(l, t + vSpace, r - hSpace, b - vSpace);
 
         mFrame.measure(
                 MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
