@@ -155,7 +155,10 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
         // Add first-level controls.
         super.initialize(context, group, new String[] {flashSetting}, null);
+
+        // Add CameraPicker control.
         initializeCameraPicker();
+
         // Add second-level Indicator Icon.
         mSecondLevelIcon = addImageButton(context, R.drawable.ic_settings_holo_light, true);
         mSecondLevelStartIndex = getChildCount();

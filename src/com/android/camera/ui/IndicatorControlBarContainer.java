@@ -47,15 +47,14 @@ public class IndicatorControlBarContainer extends IndicatorControl implements
     public void initialize(Context context, PreferenceGroup group,
             String flashSetting, String[] secondLevelKeys,
             String[] secondLevelOtherSettingKeys) {
-        mIndicatorControlBar = (IndicatorControlBar)
-                findViewById(R.id.indicator_bar);
-
         mZoomControlBar = (ZoomControlBar)
                 findViewById(R.id.zoom_control);
         mZoomControlBar.setOnIndicatorEventListener(this);
 
         // We need to show/hide the zoom slider icon accordingly.
         // From UI spec, we have camera_flash setting on the first level.
+        mIndicatorControlBar = (IndicatorControlBar)
+                findViewById(R.id.indicator_bar);
         mIndicatorControlBar.initialize(context, group, flashSetting,
                 mZoomControlBar.isZoomSupported());
         mIndicatorControlBar.setOnIndicatorEventListener(this);

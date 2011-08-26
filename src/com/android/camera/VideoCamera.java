@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.IndicatorControl;
 import com.android.camera.ui.IndicatorControlWheelContainer;
 import com.android.camera.ui.RotateImageView;
@@ -473,6 +474,8 @@ public class VideoCamera extends ActivityBase
                     CameraSettings.KEY_VIDEO_QUALITY};
         final String[] OTHER_SETTING_KEYS = {
                     CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
+
+        CameraPicker.setImageResourceId(R.drawable.ic_switch_video_facing_holo_light);
         mIndicatorControl.initialize(this, mPreferenceGroup,
                 CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
                 SETTING_KEYS, OTHER_SETTING_KEYS);

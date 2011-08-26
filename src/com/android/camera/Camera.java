@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusRectangle;
 import com.android.camera.ui.IndicatorControl;
@@ -1102,6 +1103,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_PICTURE_SIZE};
+
+        CameraPicker.setImageResourceId(R.drawable.ic_switch_photo_facing_holo_light);
         mIndicatorControl.initialize(this, mPreferenceGroup,
                 CameraSettings.KEY_FLASH_MODE, SETTING_KEYS, OTHER_SETTING_KEYS);
         mIndicatorControl.setListener(this);
