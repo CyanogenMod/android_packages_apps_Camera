@@ -136,6 +136,7 @@
     <string name="pref_video_quality_title">Video quality</string>
     <string name="pref_video_quality_default" translatable="false">hd</string>
     <string name="pref_video_quality_entry_hd">HD (30m)</string>
+    <string name="pref_video_quality_entry_wide">Wide (30m)</string>
     <string name="pref_video_quality_entry_high">High (30m)</string>
     <string name="pref_video_quality_entry_low">Low (30m)</string>
     <string name="pref_video_quality_entry_mms">MMS (Low, 30s)</string>
