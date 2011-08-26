@@ -19,14 +19,10 @@
 
 <com.android.camera.ui.OtherSettingsPopup xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/indicator_control"
-        android:visibility="gone">
+        style="@style/SettingPopupWindow">
 
     <LinearLayout android:orientation="vertical"
-        android:layout_width="320dp"
+        android:layout_width="@dimen/other_setting_popup_window_width"
         android:layout_height="wrap_content">
 
         <FrameLayout
@@ -35,9 +31,7 @@
                 android:background="@drawable/dialog_top_holo_dark">
             <TextView android:id="@+id/title"
                     android:text="@string/pref_camera_settings_category"
-                    style="@style/SettingTitleText"
-                    android:textSize="18dp"
-                    android:layout_height="32dp"/>
+                    style="@style/PopupTitleText" />
         </FrameLayout>
 
         <FrameLayout
@@ -45,13 +39,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/dialog_bottom_holo_dark">
             <ListView android:id="@+id/settingList"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginRight="6dp"
-                    android:paddingBottom="3dp"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    style="@style/SettingItemList" />
         </FrameLayout>
     </LinearLayout>
 </com.android.camera.ui.OtherSettingsPopup>
