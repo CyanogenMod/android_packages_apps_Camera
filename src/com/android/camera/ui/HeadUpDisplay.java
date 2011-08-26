@@ -47,7 +47,7 @@ import com.android.camera.R;
 public class HeadUpDisplay extends GLView {
     private static final int INDICATOR_BAR_TIMEOUT = 5500;
     private static final int POPUP_WINDOW_TIMEOUT = 5000;
-    private static final int INDICATOR_BAR_RIGHT_MARGIN = 10;
+    private static final int INDICATOR_BAR_RIGHT_MARGIN = 100;
     private static final int POPUP_WINDOW_OVERLAP = 20;
     private static final int POPUP_TRIANGLE_OFFSET = 16;
 
