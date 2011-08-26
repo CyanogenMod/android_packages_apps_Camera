@@ -14,22 +14,20 @@
      limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/video_camera"
-        android:background="@drawable/camera_background"
+        android:background="@drawable/ic_ce_bg_n"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <com.android.camera.PreviewFrameLayout android:id="@+id/frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="2dip"
             android:layout_weight="1">
         <FrameLayout android:id="@+id/frame"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/border_view_finder">
+                android:layout_height="match_parent">
             <SurfaceView android:id="@+id/camera_preview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
@@ -65,4 +63,4 @@
             </com.android.camera.ui.RotateRecordingTime>
         </FrameLayout>
     </com.android.camera.PreviewFrameLayout>
-</LinearLayout>
+</FrameLayout>
