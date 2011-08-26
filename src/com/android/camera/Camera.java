@@ -2177,7 +2177,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(), "image/jpeg",
-                    mOrientationCompensation, mThumbnailView);
+                    mOrientationCompensation, findViewById(R.id.frame));
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }

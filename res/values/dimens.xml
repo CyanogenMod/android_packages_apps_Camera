@@ -19,10 +19,6 @@
 -->
 <resources>
     <dimen name="hint_y_offset">64dp</dimen>
-    <dimen name="share_image_max_width_landscape">400dp</dimen>
-    <dimen name="share_image_max_height_landscape">300dp</dimen>
-    <dimen name="share_image_max_width_portrait">300dp</dimen>
-    <dimen name="share_image_max_height_portrait">400dp</dimen>
     <dimen name="share_icon_length">36dp</dimen>
     <dimen name="share_item_width">54dp</dimen>
     <dimen name="share_item_height">60dp</dimen>

@@ -22,34 +22,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/dim_background">
-    <FrameLayout android:id="@+id/share_view"
+    <FrameLayout android:id="@+id/root"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@drawable/border_last_picture">
-        <com.android.camera.ui.RotateLayout
-                android:id="@+id/thumbnail_rotate_layout"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center">
+        <FrameLayout android:id="@+id/share_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
-            <!-- The size of the thumbnail is calculated in SharePopup.java -->
-            <ImageView android:id="@+id/thumbnail"
+                android:layout_gravity="center"
+                android:background="@drawable/border_last_picture">
+            <com.android.camera.ui.RotateLayout
+                    android:id="@+id/thumbnail_rotate_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"/>
-        </com.android.camera.ui.RotateLayout>
-        <FrameLayout
-                android:layout_width="@dimen/share_item_width"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:background="@color/dim_background">
-            <ListView android:id="@+id/share_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:choiceMode="singleChoice"
-                    style="@android:style/Widget.Holo.ListView" />
+                    android:layout_gravity="center">
+                <!-- The size of the thumbnail is calculated in SharePopup.java -->
+                <ImageView android:id="@+id/thumbnail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"/>
+            </com.android.camera.ui.RotateLayout>
+            <FrameLayout
+                    android:layout_width="@dimen/share_item_width"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:background="@color/dim_background">
+                <ListView android:id="@+id/share_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:choiceMode="singleChoice"
+                        style="@android:style/Widget.Holo.ListView" />
+            </FrameLayout>
         </FrameLayout>
     </FrameLayout>
 </FrameLayout>

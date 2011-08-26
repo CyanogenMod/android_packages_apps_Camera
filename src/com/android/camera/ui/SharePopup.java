@@ -30,7 +30,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,16 +65,8 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
     private ListView mShareList;
     // A rotated view that contains the thumbnail.
     private RotateLayout mThumbnailRotateLayout;
+    private View mPreviewFrame;
     private ArrayList<ComponentName> mComponent = new ArrayList<ComponentName>();
-
-    // The maximum width of the thumbnail in landscape orientation.
-    private final float mImageMaxWidthLandscape;
-    // The maximum height of the thumbnail in landscape orientation.
-    private final float mImageMaxHeightLandscape;
-    // The maximum width of the thumbnail in portrait orientation.
-    private final float mImageMaxWidthPortrait;
-    // The maximum height of the thumbnail in portrait orientation.
-    private final float mImageMaxHeightPortrait;
 
     private class MySimpleAdapter extends SimpleAdapter {
         public MySimpleAdapter(Context context, List<? extends Map<String, ?>> data,
@@ -106,13 +97,14 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         };
 
     public SharePopup(Activity activity, Uri uri, Bitmap bitmap, String mimeType, int orientation,
-            View anchor) {
+            View previewFrame) {
         super(activity);
 
         // Initialize variables
         mContext = activity;
         mUri = uri;
         mMimeType = mimeType;
+        mPreviewFrame = previewFrame;
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         ViewGroup sharePopup = (ViewGroup) inflater.inflate(R.layout.share_popup, null, false);
@@ -127,12 +119,15 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mBitmapWidth = bitmap.getWidth();
         mBitmapHeight = bitmap.getHeight();
         Resources res = mContext.getResources();
-        mImageMaxWidthLandscape = res.getDimension(R.dimen.share_image_max_width_landscape);
-        mImageMaxHeightLandscape = res.getDimension(R.dimen.share_image_max_height_landscape);
-        mImageMaxWidthPortrait = res.getDimension(R.dimen.share_image_max_width_portrait);
-        mImageMaxHeightPortrait = res.getDimension(R.dimen.share_image_max_height_portrait);
 
-        // Initialize popup window
+        // Initialize popup window size.
+        View rootView = (View) sharePopup.findViewById(R.id.root);
+        LayoutParams params = rootView.getLayoutParams();
+        params.width = previewFrame.getWidth();
+        params.height = previewFrame.getHeight();
+        rootView.setLayoutParams(params);
+
+        // Initialize popup window.
         setWidth(WindowManager.LayoutParams.MATCH_PARENT);
         setHeight(WindowManager.LayoutParams.MATCH_PARENT);
         setBackgroundDrawable(new ColorDrawable());
@@ -140,29 +135,21 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         setOrientation(orientation);
         setFocusable(true);
         setAnimationStyle(android.R.style.Animation_Dialog);
-
-        initializeLocation(activity, anchor);
-
         createShareMenu();
-    }
-
-    private void initializeLocation(Activity activity, View anchor) {
-        int location[] = new int[2];
-        anchor.getLocationOnScreen(location);
-        DisplayMetrics metrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
     }
 
     public void setOrientation(int orientation) {
         mOrientation = orientation;
+        int hPadding = mShareView.getPaddingLeft() + mShareView.getPaddingRight();
+        int vPadding = mShareView.getPaddingTop() + mShareView.getPaddingBottom();
         // Calculate the width and the height of the thumbnail.
         float maxWidth, maxHeight;
         if (orientation == 90 || orientation == 270) {
-            maxWidth = mImageMaxWidthPortrait;
-            maxHeight = mImageMaxHeightPortrait;
+            maxWidth = mPreviewFrame.getHeight() - hPadding;
+            maxHeight = mPreviewFrame.getWidth() - vPadding;
         } else {
-            maxWidth = mImageMaxWidthLandscape;
-            maxHeight = mImageMaxHeightLandscape;
+            maxWidth = mPreviewFrame.getWidth() - hPadding;
+            maxHeight = mPreviewFrame.getHeight() - vPadding;
         }
         float actualAspect = maxWidth / maxHeight;
         float desiredAspect = (float) mBitmapWidth / mBitmapHeight;
@@ -178,8 +165,8 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mThumbnail.setLayoutParams(params);
 
         // Calculate the width and the height of the share view.
-        int width = params.width + mShareView.getPaddingLeft() + mShareView.getPaddingRight();
-        int height = params.height + mShareView.getPaddingTop() + mShareView.getPaddingBottom();
+        int width = params.width + hPadding;
+        int height = params.height + vPadding;
         LayoutParams rootParams = mShareView.getLayoutParams();
         if (orientation == 90 || orientation == 270) {
             rootParams.width = height;

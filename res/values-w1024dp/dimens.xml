@@ -23,10 +23,6 @@
     <dimen name="mode_switcher_inner_margin">10dp</dimen>
     <dimen name="camera_switcher_margin_right">16dp</dimen>
     <dimen name="camera_switcher_margin_bottom">24dp</dimen>
-    <dimen name="share_image_max_width_landscape">960dp</dimen>
-    <dimen name="share_image_max_height_landscape">720dp</dimen>
-    <dimen name="share_image_max_width_portrait">720dp</dimen>
-    <dimen name="share_image_max_height_portrait">960dp</dimen>
     <dimen name="share_icon_length">48dp</dimen>
     <dimen name="share_item_width">60dp</dimen>
     <dimen name="share_item_height">90dp</dimen>
