@@ -35,7 +35,7 @@
     <string name="confirm_restore_title" msgid="1229914538263792180">"שחזר ברירות מחדל"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"הגדרות מצלמה ישוחזרו לברירות המחדל."</string>
     <string name="review_play" msgid="6378271587740884696">"הפעל"</string>
-    <string name="review_cancel" msgid="7842670783357645942">"ביטול"</string>
+    <string name="review_cancel" msgid="7842670783357645942">"בטל"</string>
     <string name="review_ok" msgid="4750691949877864726">"אישור"</string>
     <string name="review_retake" msgid="7776579640762112761">"צלם שוב"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"גלריה"</string>
@@ -83,7 +83,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"לילה"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"שקיעה"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"מסיבה"</string>
-    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"אפשרות זו אינה ניתנת לבחירה במצב נוף"</string>
+    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"לא ניתן לבחור זאת במצב נוף"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"הגדרות מצלמה"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"שחזר ברירות מחדל"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"חשיפה"</string>
@@ -99,10 +99,12 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"אין תמונה לשיתוף"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"אין סרטון וידאו לשיתוף"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"עצור"</string>
-    <!-- no translation found for pano_capture_start (2163632725789917725) -->
-    <skip />
+    <string name="pano_capture_start" msgid="2163632725789917725">"התחל"</string>
     <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
     <skip />
-    <!-- no translation found for tap_to_focus (6417403734418828035) -->
+    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
     <skip />
+    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <skip />
+    <string name="tap_to_focus" msgid="6417403734418828035">"הקש כדי להתמקד"</string>
 </resources>

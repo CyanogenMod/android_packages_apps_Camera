@@ -91,18 +91,20 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Na vašoj USB memoriji ponestaje prostora. Primijenite postavku kvalitete ili izbrišite neke slike ili druge datoteke."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Na vašoj kartici SD ponestaje prostora. Primijenite postavku kvalitete ili izbrišite neke slike ili druge datoteke."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Dostignuto je ograničenje veličine."</string>
-    <string name="switch_to_camera_label" msgid="9148663083850199582">"Prebaci na kameru"</string>
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"Prebaci na fotoaparat"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"Prebaci na videozapis"</string>
-    <string name="switch_to_panorama_label" msgid="858801335653517864">"Prebaci na panoramski način"</string>
+    <string name="switch_to_panorama_label" msgid="858801335653517864">"Prebaci na način Panorama"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Dijeljenje slike putem"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Dijeljenje videozapisa putem"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Nema slike za dijeljenje"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Nema videozapisa za dijeljenje"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Zaustavi"</string>
-    <!-- no translation found for pano_capture_start (2163632725789917725) -->
-    <skip />
+    <string name="pano_capture_start" msgid="2163632725789917725">"Pokreni"</string>
     <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
     <skip />
-    <!-- no translation found for tap_to_focus (6417403734418828035) -->
+    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
     <skip />
+    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <skip />
+    <string name="tap_to_focus" msgid="6417403734418828035">"Dotaknite za fokus"</string>
 </resources>
