@@ -48,12 +48,16 @@ public class IndicatorControlWheelContainer extends IndicatorControl {
     }
 
     @Override
-    public void initialize(Context context, PreferenceGroup group,
-            String flashSetting, String[] keys, String[] otherSettingKeys) {
+    protected void onFinishInflate() {
         mShutterButton = findViewById(R.id.shutter_button);
         mShutterButtonRadius = Util.dpToPixel(SHUTTER_BUTTON_RADIUS);
         mIndicatorControlWheel = (IndicatorControlWheel) findViewById(
                 R.id.indicator_control_wheel);
+    }
+
+    @Override
+    public void initialize(Context context, PreferenceGroup group,
+            String flashSetting, String[] keys, String[] otherSettingKeys) {
         mIndicatorControlWheel.initialize(context, group,
                 flashSetting, keys, otherSettingKeys);
         // TODO: add ZoomControlWheel here.
