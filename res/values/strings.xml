@@ -282,4 +282,25 @@
 
     <!-- Toast telling users tapping on the viewfinder will trigger autofocus [CHAR LIMIT=28] -->
     <string name="tap_to_focus">Tap to focus</string>
+
+    <!-- Default effect setting that clears the effect. -->
+    <string name="pref_video_effect_default" translatable="false">-1</string>
+
+    <!-- Title of video effect setting popup window -->
+    <string name="pref_video_effect_title">Effects</string>
+
+    <!-- Effect setting item that clear the effect. [CHAR LIMIT=14] -->
+    <string name="effect_none">None</string>
+    <!-- Effect setting item that squeezes the face. [CHAR LIMIT=14] -->
+    <string name="effect_goofy_face_squeeze">Squeeze</string>
+    <!-- Effect setting item that makes eyes big. [CHAR LIMIT=14] -->
+    <string name="effect_goofy_face_big_eyes">Big Eyes</string>
+    <!-- Effect setting item that makes mouth big. [CHAR LIMIT=14] -->
+    <string name="effect_goofy_face_big_mouth">Big Mouth</string>
+    <!-- Effect setting item that makes mouth small. [CHAR LIMIT=14] -->
+    <string name="effect_goofy_face_small_mouth">Small Mouth</string>
+    <!-- Effect setting item that makes nose big. [CHAR LIMIT=14] -->
+    <string name="effect_goofy_face_big_nose">Big Nose</string>
+    <!-- Effect setting item that makes eyes small. [CHAR LIMIT=14] -->
+    <string name="effect_goofy_face_small_eyes">Small Eyes</string>
 </resources>

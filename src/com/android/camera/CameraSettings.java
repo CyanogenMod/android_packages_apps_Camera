@@ -48,6 +48,7 @@ public class CameraSettings {
     public static final String KEY_WHITE_BALANCE = "pref_camera_whitebalance_key";
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
+    public static final String KEY_VIDEO_EFFECT = "pref_video_effect_key";
     public static final String KEY_CAMERA_ID = "pref_camera_id_key";
     public static final String KEY_TAP_TO_FOCUS_PROMPT_SHOWN = "pref_tap_to_focus_prompt_shown_key";
 
@@ -138,6 +139,7 @@ public class CameraSettings {
                 (IconListPreference)group.findPreference(KEY_CAMERA_ID);
         ListPreference videoFlashMode =
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
+        ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -178,6 +180,7 @@ public class CameraSettings {
         if (cameraIdPref != null) buildCameraId(group, cameraIdPref);
 
         if (timeLapseInterval != null) resetIfInvalid(timeLapseInterval);
+        if (videoEffect != null) resetIfInvalid(videoEffect);
     }
 
     private void buildExposureCompensation(

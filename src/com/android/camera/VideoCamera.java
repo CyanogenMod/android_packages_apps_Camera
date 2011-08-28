@@ -470,6 +470,7 @@ public class VideoCamera extends ActivityBase
         loadCameraPreferences();
 
         final String[] SETTING_KEYS = {
+                    CameraSettings.KEY_VIDEO_EFFECT,
                     CameraSettings.KEY_WHITE_BALANCE,
                     CameraSettings.KEY_VIDEO_QUALITY};
         final String[] OTHER_SETTING_KEYS = {
@@ -1754,6 +1755,8 @@ public class VideoCamera extends ActivityBase
             // If mCameraDevice is not ready then we can set the parameter in
             // startPreview().
             if (mCameraDevice == null) return;
+
+            // TODO: apply goofy face effect here.
 
             // Check if camera id is changed.
             int cameraId = CameraSettings.readPreferredCameraId(mPreferences);

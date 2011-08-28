@@ -55,5 +55,12 @@
                 camera:icons="@array/camera_id_icons"
                 camera:entries="@array/camera_id_entries"
                 camera:largeIcons="@array/camera_id_largeicons"/>
+        <IconListPreference
+                camera:key="pref_video_effect_key"
+                camera:defaultValue="@string/pref_video_effect_default"
+                camera:title="@string/pref_video_effect_title"
+                camera:singleIcon="@drawable/ic_effects_holo_light"
+                camera:entries="@array/pref_video_effect_entries"
+                camera:entryValues="@array/pref_video_effect_entryvalues" />
     </PreferenceGroup>
 </PreferenceGroup>

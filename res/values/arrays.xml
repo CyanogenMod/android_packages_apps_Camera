@@ -240,4 +240,24 @@
         <item>@drawable/ic_viewfinder_camera_facing_back</item>
         <item>@drawable/ic_viewfinder_camera_facing_front</item>
     </array>
+
+    <string-array name="pref_video_effect_entries" translatable="false">
+        <item>@string/effect_none</item>
+        <item>@string/effect_goofy_face_squeeze</item>
+        <item>@string/effect_goofy_face_big_eyes</item>
+        <item>@string/effect_goofy_face_big_mouth</item>
+        <item>@string/effect_goofy_face_small_mouth</item>
+        <item>@string/effect_goofy_face_big_nose</item>
+        <item>@string/effect_goofy_face_small_eyes</item>
+    </string-array>
+
+    <string-array name="pref_video_effect_entryvalues" translatable="false">
+        <item>-1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 </resources>
