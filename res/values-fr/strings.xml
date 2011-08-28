@@ -202,4 +202,25 @@
     <string name="pref_camera_autoexposure_entry_frameaverage">Multizone</string>
     <string name="pref_camera_autoexposure_entry_centerweighted">Pondéré</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">Spot</string>
+
+    <!-- Other settings -->
+    <string name="pref_camera_other_settings_title">Autres paramètres</string>
+    <string name="pref_camera_timer_duration">Durée retardateur</string>
+    <string name="pref_camera_timer_duration_summary">Durée pour retarder la prise de vue des photos</string>
+
+    <!-- Settings screen, Capture mode title -->
+    <string name="pref_camera_capturemode_title">Prise de vue</string>
+
+    <!-- Settings screen, Capture mode dialog radio button choices -->
+    <string name="pref_camera_capturemode_entry_default">Immédiat</string>
+    <string name="pref_camera_capturemode_entry_timer">Retardateur</string>
+
+    <!-- Settings screen, Capture mode dialog entries -->
+    <string name="pref_camera_capturemode_entry_10">10 secondes</string>
+    <string name="pref_camera_capturemode_entry_20">20 secondes</string>
+    <string name="pref_camera_capturemode_entry_30">30 secondes</string>
+    <string name="pref_camera_capturemode_entry_40">40 secondes</string>
+    <string name="pref_camera_capturemode_entry_50">50 secondes</string>
+    <string name="pref_camera_capturemode_entry_60">60 secondes</string>
+
 </resources>
