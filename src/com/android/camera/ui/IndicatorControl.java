@@ -92,7 +92,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
         // Add other settings indicator.
         if (otherSettingKeys != null) {
             addOtherSettingIndicator(mContext,
-                    R.drawable.ic_settings_holo_light, otherSettingKeys);
+                    R.drawable.ic_menu_overflow, otherSettingKeys);
         }
     }
 
