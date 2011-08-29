@@ -56,6 +56,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private static final int SECOND_LEVEL_START_DEGREES = 60;
     private static final int SECOND_LEVEL_END_DEGREES = 300;
     private static final int CLOSE_ICON_DEFAULT_DEGREES = 315;
+    private static final int ZOOM_ICON_DEFAULT_DEGREES = 180;
 
     private static final int ANIMATION_TIME = 300; // milliseconds
 
@@ -109,9 +110,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private double mSectorRadians[] = new double[2];
     private double mTouchSectorRadians[] = new double[2];
 
-    // TODO: we won't need these buttons later once we switch to new zoom control.
-    private View mZoomIn;
-    private View mZoomOut;
+    private View mZoomIcon;
 
     public IndicatorControlWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -140,6 +139,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
     @Override
     public void onClick(View view) {
+        if (view == mZoomIcon) return;
         mPressedIndex = -1;
         dismissSettingPopup();
         mInAnimation = true;
@@ -148,15 +148,23 @@ public class IndicatorControlWheel extends IndicatorControl implements
     }
 
     public void initialize(Context context, PreferenceGroup group,
-            String flashSetting, String[] keys, String[] otherSettingKeys) {
+            String flashSetting, boolean isZoomSupported, String[] keys,
+            String[] otherSettingKeys) {
         mShutterButtonRadius = IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS;
         mStrokeWidth = Util.dpToPixel(IndicatorControlWheelContainer.STROKE_WIDTH);
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 0.5;
 
-        // Add first-level controls.
-        super.initialize(context, group, new String[] {flashSetting}, null);
+        setPreferenceGroup(group);
 
-        // Add CameraPicker control.
+        // Add first-level controls.
+        addControls(new String[] {flashSetting}, null);
+
+        // Add Zoom Icon.
+        if (isZoomSupported) {
+            mZoomIcon = (ImageView) addImageButton(context, R.drawable.ic_zoom_holo_light, false);
+        }
+
+        // Add CameraPicker.
         initializeCameraPicker();
 
         // Add second-level Indicator Icon.
@@ -245,7 +253,16 @@ public class IndicatorControlWheel extends IndicatorControl implements
                 }
             }
             if ((index != -1) && (action != MotionEvent.ACTION_MOVE)) {
-                getChildAt(index).dispatchTouchEvent(event);
+                View view = getChildAt(index);
+                // Switch to zoom control only if a touch down event is received.
+                if ((view == mZoomIcon) && (action == MotionEvent.ACTION_DOWN)) {
+                    mPressedIndex = -1;
+                    mOnIndicatorEventListener.onIndicatorEvent(
+                            OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL);
+                    return true;
+                } else {
+                    getChildAt(index).dispatchTouchEvent(event);
+                }
             }
             // Once the button is up, reset the press index.
             mPressedIndex = (action == MotionEvent.ACTION_UP) ? -1 : index;
@@ -319,7 +336,18 @@ public class IndicatorControlWheel extends IndicatorControl implements
         int sectors = (count <= 1) ? 0 : (count - 1);
         double sectorDegrees = FIRST_LEVEL_SECTOR_DEGREES;
         mSectorRadians[0] = Math.toRadians(sectorDegrees);
-        double degrees = (FIRST_LEVEL_END_DEGREES - sectors * sectorDegrees);
+        int zoomIndex = indexOfChild(mZoomIcon);
+        double degrees;
+
+        // Make sure the zoom button is located at 180 degrees. If there are
+        // more buttons than we could show in the visible angle from 90 degrees
+        // to 270 degrees, the modification of FIRST_LEVEL_SECTOR_DEGREES is
+        // required then.
+        if (zoomIndex >= 0) {
+            degrees = ZOOM_ICON_DEFAULT_DEGREES - (zoomIndex * sectorDegrees);
+        }  else {
+            degrees = FIRST_LEVEL_END_DEGREES - (sectors * sectorDegrees);
+        }
         mStartVisibleRadians[0] = Math.toRadians(degrees);
 
         int startIndex = 0;

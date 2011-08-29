@@ -74,18 +74,8 @@ public abstract class IndicatorControl extends RelativeLayout implements
         mOnIndicatorEventListener = listener;
     }
 
-    // For the initialization of first-level indicator control.
-    public void initialize(Context context, PreferenceGroup group,
-            String flashSetting, String[] keys, String[] otherSettingKeys) {
-        initialize(context, group, keys, otherSettingKeys);
-    }
-
-    public void initialize(Context context, PreferenceGroup group,
-            String[] keys, String[] otherSettingKeys) {
-        // Initialize all variables and icons.
+    public void setPreferenceGroup(PreferenceGroup group) {
         mPreferenceGroup = group;
-        addControls(keys, otherSettingKeys);
-        requestLayout();
     }
 
     protected void addControls(String[] keys, String[] otherSettingKeys) {

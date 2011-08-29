@@ -19,8 +19,10 @@ package com.android.camera.ui;
 import com.android.camera.R;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 /**
@@ -30,15 +32,23 @@ import android.widget.RelativeLayout;
 public abstract class ZoomControl extends RelativeLayout {
     private static final String TAG = "ZoomControl";
 
+    public static final int ZOOMING_INTERVAL = 300; // milliseconds
+
+    protected ImageView mZoomIn;
+    protected ImageView mZoomOut;
+    protected ImageView mZoomSlider;
+    protected int mSliderPosition = 0;
+    protected int mDegree;
+    protected Handler mHandler;
+
     public interface OnZoomChangedListener {
         void onZoomValueChanged(int index);  // only for immediate zoom
         void onZoomStateChanged(int state);  // only for smooth zoom
     }
 
-    private int mZoomMax, mZoomIndex;
+    protected int mZoomMax, mZoomIndex;
     private boolean mSmoothZoomSupported;
     private OnZoomChangedListener mListener;
-    private boolean mZoomSupported = true;
 
     // The state of zoom button.
     public static final int ZOOM_IN = 0;
@@ -47,22 +57,53 @@ public abstract class ZoomControl extends RelativeLayout {
 
     protected OnIndicatorEventListener mOnIndicatorEventListener;
 
+    protected final Runnable mRunnable = new Runnable() {
+        public void run() {
+            if (mSliderPosition < 0) {
+                zoomIn();
+            } else if (mSliderPosition > 0) {
+                zoomOut();
+            } else {
+                stopZooming();
+            }
+            mHandler.postDelayed(mRunnable, ZOOMING_INTERVAL);
+        }
+    };
+
     public ZoomControl(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public abstract void initialize(Context context);
+    public void initialize(Context context) {
+        mZoomIn = addImageView(context, R.drawable.ic_zoom_in_holo_light);
+        mZoomSlider = addImageView(context, R.drawable.btn_zoom_slider);
+        mZoomOut = addImageView(context, R.drawable.ic_zoom_out_holo_light);
+        mHandler = new Handler();
+    }
+
+    public void startZoomControl() {
+        mZoomSlider.setPressed(true);
+        mHandler.postDelayed(mRunnable, ZOOMING_INTERVAL);
+    }
+
+    protected ImageView addImageView(Context context, int iconResourceId) {
+        ImageView image = new RotateImageView(context);
+        image.setImageResource(iconResourceId);
+        addView(image);
+        return image;
+    }
+
+    public void closeZoomControl() {
+        mHandler.removeCallbacks(mRunnable);
+        mSliderPosition = 0;
+        mZoomSlider.setPressed(false);
+        stopZooming();
+        mOnIndicatorEventListener.onIndicatorEvent(
+                OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL);
+    }
 
     public void setZoomMax(int zoomMax) {
         mZoomMax = zoomMax;
-    }
-
-    public void setZoomSupported(boolean supported) {
-        mZoomSupported = supported;
-    }
-
-    public boolean isZoomSupported() {
-        return mZoomSupported;
     }
 
     public void setOnZoomChangeListener(OnZoomChangedListener listener) {
@@ -78,6 +119,7 @@ public abstract class ZoomControl extends RelativeLayout {
             throw new IllegalArgumentException("Invalid zoom value:" + index);
         }
         mZoomIndex = index;
+        invalidate();
     }
 
     public void setSmoothZoomSupported(boolean smoothZoomSupported) {
@@ -108,13 +150,15 @@ public abstract class ZoomControl extends RelativeLayout {
                 }
             } else {
                 mListener.onZoomStateChanged(index);
+                mZoomIndex = index;
+                invalidate();
             }
-            mZoomIndex = index;
         }
         return true;
     }
 
     public void setDegree(int degree) {
+        mDegree = degree;
         int count = getChildCount();
         for (int i = 0 ; i < count ; ++i) {
             View view = getChildAt(i);
@@ -122,9 +166,5 @@ public abstract class ZoomControl extends RelativeLayout {
                 ((RotateImageView) view).setDegree(degree);
             }
         }
-    }
-
-    protected int getZoomIndex() {
-        return mZoomIndex;
     }
 }

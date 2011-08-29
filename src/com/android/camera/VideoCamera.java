@@ -17,12 +17,11 @@
 package com.android.camera;
 
 import com.android.camera.ui.CameraPicker;
-import com.android.camera.ui.IndicatorControl;
+import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.IndicatorControlWheelContainer;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomControl;
-import com.android.camera.ui.ZoomPicker;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -139,7 +138,7 @@ public class VideoCamera extends ActivityBase
 
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceHolder mSurfaceHolder = null;
-    private IndicatorControl mIndicatorControl;
+    private IndicatorControlContainer mIndicatorControlContainer;
     private View mReviewControl;
 
     private Toast mNoShareToast;
@@ -453,20 +452,24 @@ public class VideoCamera extends ActivityBase
     }
 
     private boolean collapseCameraControls() {
-        if (mIndicatorControl != null && mIndicatorControl.dismissSettingPopup()) {
+        if ((mIndicatorControlContainer != null)
+                && mIndicatorControlContainer.dismissSettingPopup()) {
             return true;
         }
         return false;
     }
 
     private void enableCameraControls(boolean enable) {
-        if (mIndicatorControl != null) mIndicatorControl.setEnabled(enable);
+        if (mIndicatorControlContainer != null) {
+            mIndicatorControlContainer.setEnabled(enable);
+        }
         if (mModePicker != null) mModePicker.setEnabled(enable);
     }
 
     private void initializeIndicatorControl() {
-        mIndicatorControl = (IndicatorControl) findViewById(R.id.indicator_control);
-        if (mIndicatorControl == null) return;
+        mIndicatorControlContainer =
+                (IndicatorControlContainer) findViewById(R.id.indicator_control);
+        if (mIndicatorControlContainer == null) return;
         loadCameraPreferences();
 
         final String[] SETTING_KEYS = {
@@ -477,10 +480,10 @@ public class VideoCamera extends ActivityBase
                     CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_video_facing_holo_light);
-        mIndicatorControl.initialize(this, mPreferenceGroup,
+        mIndicatorControlContainer.initialize(this, mPreferenceGroup,
                 CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
-                SETTING_KEYS, OTHER_SETTING_KEYS);
-        mIndicatorControl.setListener(this);
+                mParameters.isZoomSupported(), SETTING_KEYS, OTHER_SETTING_KEYS);
+        mIndicatorControlContainer.setListener(this);
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());
     }
@@ -518,7 +521,7 @@ public class VideoCamera extends ActivityBase
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
-        if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
+        if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
     }
 
     private void startPlayVideoActivity() {
@@ -877,7 +880,9 @@ public class VideoCamera extends ActivityBase
         super.onPause();
         mPausing = true;
 
-        if (mIndicatorControl != null) mIndicatorControl.dismissSettingPopup();
+        if (mIndicatorControlContainer != null) {
+            mIndicatorControlContainer.dismissSettingPopup();
+        }
 
         finishRecorderAndCloseCamera();
 
@@ -1376,9 +1381,10 @@ public class VideoCamera extends ActivityBase
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
             if (mCaptureTimeLapse) {
                 if (Util.isTabletUI()) {
-                    ((IndicatorControlWheelContainer) mIndicatorControl).startTimeLapseAnimation(
-                            mTimeBetweenTimeLapseFrameCaptureMs,
-                            mRecordingStartTime);
+                    ((IndicatorControlWheelContainer) mIndicatorControlContainer)
+                            .startTimeLapseAnimation(
+                                    mTimeBetweenTimeLapseFrameCaptureMs,
+                                    mRecordingStartTime);
                 }
             }
         } else {
@@ -1387,7 +1393,8 @@ public class VideoCamera extends ActivityBase
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
                 if (Util.isTabletUI()) {
-                    ((IndicatorControlWheelContainer) mIndicatorControl).stopTimeLapseAnimation();
+                    ((IndicatorControlWheelContainer) mIndicatorControlContainer)
+                            .stopTimeLapseAnimation();
                 }
             }
         }
@@ -1736,14 +1743,14 @@ public class VideoCamera extends ActivityBase
         if (mParameters.isZoomSupported()) {
             mZoomValue = 0;
             setCameraParameters();
-            if (mZoomControl != null) mZoomControl.setZoomIndex(0);
+            mZoomControl.setZoomIndex(0);
         }
 
-        if (mIndicatorControl != null) {
-            mIndicatorControl.dismissSettingPopup();
+        if (mIndicatorControlContainer != null) {
+            mIndicatorControlContainer.dismissSettingPopup();
             CameraSettings.restorePreferences(VideoCamera.this, mPreferences,
                     mParameters);
-            mIndicatorControl.reloadPreferences();
+            mIndicatorControlContainer.reloadPreferences();
             onSharedPreferenceChanged();
         }
     }
@@ -1824,65 +1831,59 @@ public class VideoCamera extends ActivityBase
         @Override
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
-            View popup = mIndicatorControl.getActiveSettingPopup();
+            View popup = mIndicatorControlContainer.getActiveSettingPopup();
             if (popup == null) return false;
 
             // Let popup window or indicator wheel handle the event by
             // themselves. Dismiss the popup window if users touch on other
             // areas.
             if (!Util.pointInView(e.getX(), e.getY(), popup)
-                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorControl)) {
-                mIndicatorControl.dismissSettingPopup();
+                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorControlContainer)) {
+                mIndicatorControlContainer.dismissSettingPopup();
                 // Let event fall through.
             }
             return false;
         }
     }
 
+    private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
+        // only for immediate zoom
+        @Override
+        public void onZoomValueChanged(int index) {
+            VideoCamera.this.onZoomValueChanged(index);
+        }
+
+        // only for smooth zoom
+        @Override
+        public void onZoomStateChanged(int state) {
+            if (mPausing) return;
+
+            Log.v(TAG, "zoom picker state=" + state);
+            if (state == ZoomControl.ZOOM_IN) {
+                VideoCamera.this.onZoomValueChanged(mZoomMax);
+            } else if (state == ZoomControl.ZOOM_OUT){
+                VideoCamera.this.onZoomValueChanged(0);
+            } else {
+                mTargetZoomValue = -1;
+                if (mZoomState == ZOOM_START) {
+                    mZoomState = ZOOM_STOPPING;
+                    mCameraDevice.stopSmoothZoom();
+                }
+            }
+        }
+    }
+
     private void initializeZoomControl() {
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
-        if (!mParameters.isZoomSupported()) {
-            mZoomControl.setZoomSupported(false);
-            return;
-        }
+        if (!mParameters.isZoomSupported()) return;
         mZoomControl.initialize(this);
 
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
-        if (mZoomControl != null) {
-            if (Util.isTabletUI()) ((ZoomPicker) mZoomControl).initialize(this);
-            mZoomControl.setZoomMax(mZoomMax);
-            mZoomControl.setZoomIndex(mParameters.getZoom());
-            mZoomControl.setSmoothZoomSupported(mSmoothZoomSupported);
-            mZoomControl.setOnZoomChangeListener(
-                    new ZoomPicker.OnZoomChangedListener() {
-                // only for immediate zoom
-                @Override
-                public void onZoomValueChanged(int index) {
-                    VideoCamera.this.onZoomValueChanged(index);
-                }
-
-                // only for smooth zoom
-                @Override
-                public void onZoomStateChanged(int state) {
-                    if (mPausing) return;
-
-                    Log.v(TAG, "zoom picker state=" + state);
-                    if (state == ZoomPicker.ZOOM_IN) {
-                        VideoCamera.this.onZoomValueChanged(mZoomMax);
-                    } else if (state == ZoomPicker.ZOOM_OUT){
-                        VideoCamera.this.onZoomValueChanged(0);
-                    } else {
-                        mTargetZoomValue = -1;
-                        if (mZoomState == ZOOM_START) {
-                            mZoomState = ZOOM_STOPPING;
-                            mCameraDevice.stopSmoothZoom();
-                        }
-                    }
-                }
-            });
-        }
-
+        mZoomControl.setZoomMax(mZoomMax);
+        mZoomControl.setZoomIndex(mParameters.getZoom());
+        mZoomControl.setSmoothZoomSupported(mSmoothZoomSupported);
+        mZoomControl.setOnZoomChangeListener(new ZoomChangeListener()   );
         mCameraDevice.setZoomChangeListener(mZoomListener);
     }
 
@@ -1894,7 +1895,7 @@ public class VideoCamera extends ActivityBase
             mZoomValue = value;
 
             // Update the UI when we get zoom value.
-            if (mZoomControl != null) mZoomControl.setZoomIndex(value);
+            mZoomControl.setZoomIndex(value);
 
             // Keep mParameters up to date. We do not getParameter again in
             // takePicture. If we do not do this, wrong zoom value will be set.

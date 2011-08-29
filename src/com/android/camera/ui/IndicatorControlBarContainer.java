@@ -22,6 +22,7 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,8 +31,8 @@ import android.view.animation.AnimationUtils;
  * The IndicatorControlBarContainer is a IndicatorControl containing
  * IndicatorControlBar, SecondIndicatorControlBar and ZoomControlBar for Phone UI.
  */
-public class IndicatorControlBarContainer extends IndicatorControl implements
-        OnIndicatorEventListener {
+public class IndicatorControlBarContainer extends IndicatorControlContainer
+        implements OnIndicatorEventListener {
     private static final String TAG = "IndicatorControlBarContainer";
 
     private Animation mFadeIn, mFadeOut;
@@ -45,8 +46,8 @@ public class IndicatorControlBarContainer extends IndicatorControl implements
 
     @Override
     public void initialize(Context context, PreferenceGroup group,
-            String flashSetting, String[] secondLevelKeys,
-            String[] secondLevelOtherSettingKeys) {
+            String flashSetting, boolean isZoomSupported,
+            String[] secondLevelKeys, String[] secondLevelOtherSettingKeys) {
         mZoomControlBar = (ZoomControlBar)
                 findViewById(R.id.zoom_control);
         mZoomControlBar.setOnIndicatorEventListener(this);
@@ -56,7 +57,7 @@ public class IndicatorControlBarContainer extends IndicatorControl implements
         mIndicatorControlBar = (IndicatorControlBar)
                 findViewById(R.id.indicator_bar);
         mIndicatorControlBar.initialize(context, group, flashSetting,
-                mZoomControlBar.isZoomSupported());
+                isZoomSupported);
         mIndicatorControlBar.setOnIndicatorEventListener(this);
 
         mSecondLevelIndicatorControlBar = (SecondLevelIndicatorControlBar)
@@ -77,6 +78,18 @@ public class IndicatorControlBarContainer extends IndicatorControl implements
         mZoomControlBar.setDegree(degree);
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (mIndicatorControlBar.getVisibility() == View.VISIBLE) {
+            return mIndicatorControlBar.dispatchTouchEvent(event);
+        } else if (mSecondLevelIndicatorControlBar.getVisibility() == View.VISIBLE) {
+            return mSecondLevelIndicatorControlBar.dispatchTouchEvent(event);
+        } else if (mZoomControlBar.getVisibility() == View.VISIBLE) {
+            return mZoomControlBar.dispatchTouchEvent(event);
+        }
+        return false;
+    }
+
     public void onIndicatorEvent(int event) {
         switch (event) {
             case OnIndicatorEventListener.EVENT_ENTER_SECOND_LEVEL_INDICATOR_BAR:
@@ -91,12 +104,13 @@ public class IndicatorControlBarContainer extends IndicatorControl implements
                 mIndicatorControlBar.setVisibility(View.VISIBLE);
                 break;
 
-            case OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL_BAR:
+            case OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL:
                 mIndicatorControlBar.setVisibility(View.GONE);
                 mZoomControlBar.setVisibility(View.VISIBLE);
+                mZoomControlBar.startZoomControl();
                 break;
 
-            case OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL_BAR:
+            case OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL:
                 mZoomControlBar.setVisibility(View.GONE);
                 mIndicatorControlBar.setVisibility(View.VISIBLE);
                 break;

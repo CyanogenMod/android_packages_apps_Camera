@@ -19,7 +19,7 @@ package com.android.camera;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusRectangle;
-import com.android.camera.ui.IndicatorControl;
+import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.SharePopup;
@@ -249,7 +249,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private Toast mNoShareToast;
 
     private final Handler mHandler = new MainHandler();
-    private IndicatorControl mIndicatorControl;
+    private IndicatorControlContainer mIndicatorControlContainer;
     private PreferenceGroup mPreferenceGroup;
 
     // multiple cameras support
@@ -335,8 +335,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Editor editor = mPreferences.edit();
             editor.putString(CameraSettings.KEY_EXPOSURE, "0");
             editor.apply();
-            if (mIndicatorControl != null) {
-                mIndicatorControl.reloadPreferences();
+            if (mIndicatorControlContainer != null) {
+                mIndicatorControlContainer.reloadPreferences();
             }
         }
     }
@@ -460,48 +460,45 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void initializeZoomControl() {
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
-        if (!mParameters.isZoomSupported()) {
-            mZoomControl.setZoomSupported(false);
-        }
+        if (!mParameters.isZoomSupported()) return;
         mZoomControl.initialize(this);
+    }
+
+    private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
+        // only for immediate zoom
+        @Override
+        public void onZoomValueChanged(int index) {
+            Camera.this.onZoomValueChanged(index);
+        }
+
+        // only for smooth zoom
+        @Override
+        public void onZoomStateChanged(int state) {
+            if (mPausing) return;
+
+            Log.v(TAG, "zoom picker state=" + state);
+            if (state == ZoomControl.ZOOM_IN) {
+                Camera.this.onZoomValueChanged(mZoomMax);
+            } else if (state == ZoomControl.ZOOM_OUT) {
+                Camera.this.onZoomValueChanged(0);
+            } else {
+                mTargetZoomValue = -1;
+                if (mZoomState == ZOOM_START) {
+                    mZoomState = ZOOM_STOPPING;
+                    mCameraDevice.stopSmoothZoom();
+                }
+            }
+        }
     }
 
     private void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
-        if (mZoomControl != null) {
-            mZoomControl.setZoomMax(mZoomMax);
-            mZoomControl.setZoomIndex(mParameters.getZoom());
-            mZoomControl.setSmoothZoomSupported(mSmoothZoomSupported);
-            mZoomControl.setOnZoomChangeListener(
-                    new ZoomControl.OnZoomChangedListener() {
-                // only for immediate zoom
-                @Override
-                public void onZoomValueChanged(int index) {
-                    Camera.this.onZoomValueChanged(index);
-                }
-
-                // only for smooth zoom
-                @Override
-                public void onZoomStateChanged(int state) {
-                    if (mPausing) return;
-
-                    Log.v(TAG, "zoom picker state=" + state);
-                    if (state == ZoomControl.ZOOM_IN) {
-                        Camera.this.onZoomValueChanged(mZoomMax);
-                    } else if (state == ZoomControl.ZOOM_OUT){
-                        Camera.this.onZoomValueChanged(0);
-                    } else {
-                        mTargetZoomValue = -1;
-                        if (mZoomState == ZOOM_START) {
-                            mZoomState = ZOOM_STOPPING;
-                            mCameraDevice.stopSmoothZoom();
-                        }
-                    }
-                }
-            });
-        }
+        mZoomControl.setZoomMax(mZoomMax);
+        mZoomControl.setZoomIndex(mParameters.getZoom());
+        mZoomControl.setSmoothZoomSupported(mSmoothZoomSupported);
+        mZoomControl.setOnZoomChangeListener(new ZoomChangeListener());
         mCameraDevice.setZoomChangeListener(mZoomListener);
     }
 
@@ -556,7 +553,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         @Override
         public boolean onDown(MotionEvent e) {
             // Check if the popup window is visible.
-            View popup = mIndicatorControl.getActiveSettingPopup();
+            View popup = mIndicatorControlContainer.getActiveSettingPopup();
             if (popup == null) return false;
 
 
@@ -564,9 +561,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // event by themselves. Dismiss the popup window if users touch on
             // other areas.
             if (!Util.pointInView(e.getX(), e.getY(), popup)
-                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorControl)
+                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorControlContainer)
                     && !Util.pointInView(e.getX(), e.getY(), mPreviewFrame)) {
-                mIndicatorControl.dismissSettingPopup();
+                mIndicatorControlContainer.dismissSettingPopup();
                 // Let event fall through.
             }
             return false;
@@ -824,7 +821,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mZoomValue = value;
 
             // Update the UI when we get zoom value.
-            if (mZoomControl != null) mZoomControl.setZoomIndex(value);
+            mZoomControl.setZoomIndex(value);
 
             // Keep mParameters up to date. We do not getParameter again in
             // takePicture. If we do not do this, wrong zoom value will be set.
@@ -1065,8 +1062,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void overrideCameraSettings(final String flashMode,
             final String whiteBalance, final String focusMode) {
-        if (mIndicatorControl != null) {
-            mIndicatorControl.overrideSettings(
+        if (mIndicatorControlContainer != null) {
+            mIndicatorControlContainer.overrideSettings(
                     CameraSettings.KEY_FLASH_MODE, flashMode,
                     CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
                     CameraSettings.KEY_FOCUS_MODE, focusMode);
@@ -1092,8 +1089,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void initializeIndicatorControl() {
         // setting the indicator buttons.
-        mIndicatorControl = (IndicatorControl) findViewById(R.id.indicator_control);
-        if (mIndicatorControl == null) return;
+        mIndicatorControlContainer =
+                (IndicatorControlContainer) findViewById(R.id.indicator_control);
+        if (mIndicatorControlContainer == null) return;
         loadCameraPreferences();
         final String[] SETTING_KEYS = {
                 CameraSettings.KEY_WHITE_BALANCE,
@@ -1105,20 +1103,24 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 CameraSettings.KEY_PICTURE_SIZE};
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_photo_facing_holo_light);
-        mIndicatorControl.initialize(this, mPreferenceGroup,
-                CameraSettings.KEY_FLASH_MODE, SETTING_KEYS, OTHER_SETTING_KEYS);
-        mIndicatorControl.setListener(this);
+        mIndicatorControlContainer.initialize(this, mPreferenceGroup,
+                CameraSettings.KEY_FLASH_MODE, mParameters.isZoomSupported(),
+                SETTING_KEYS, OTHER_SETTING_KEYS);
+        mIndicatorControlContainer.setListener(this);
     }
 
     private boolean collapseCameraControls() {
-        if (mIndicatorControl != null && mIndicatorControl.dismissSettingPopup()) {
+        if ((mIndicatorControlContainer != null)
+                && mIndicatorControlContainer.dismissSettingPopup()) {
             return true;
         }
         return false;
     }
 
     private void enableCameraControls(boolean enable) {
-        if (mIndicatorControl != null) mIndicatorControl.setEnabled(enable);
+        if (mIndicatorControlContainer != null) {
+            mIndicatorControlContainer.setEnabled(enable);
+        }
         if (mModePicker != null) mModePicker.setEnabled(enable);
         if (mZoomControl != null) mZoomControl.setEnabled(enable);
     }
@@ -1161,7 +1163,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
-        if (mIndicatorControl != null) mIndicatorControl.setDegree(degree);
+        if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
         if (mZoomControl != null) mZoomControl.setDegree(degree);
     }
 
@@ -2153,13 +2155,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mParameters.isZoomSupported()) {
             mZoomValue = 0;
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
-            if (mZoomControl != null) mZoomControl.setZoomIndex(0);
+            mZoomControl.setZoomIndex(0);
         }
-        if (mIndicatorControl != null) {
-            mIndicatorControl.dismissSettingPopup();
+        if (mIndicatorControlContainer != null) {
+            mIndicatorControlContainer.dismissSettingPopup();
             CameraSettings.restorePreferences(Camera.this, mPreferences,
                     mParameters);
-            mIndicatorControl.reloadPreferences();
+            mIndicatorControlContainer.reloadPreferences();
             onSharedPreferenceChanged();
         }
     }
