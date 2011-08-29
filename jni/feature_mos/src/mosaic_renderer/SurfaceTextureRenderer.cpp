@@ -9,13 +9,13 @@
 
 const GLfloat g_vVertices[] = {
     -1.f, -1.f, 0.0f, 1.0f,  // Position 0
-    0.0f,  1.0f,         // TexCoord 0
+    0.0f,  0.0f,         // TexCoord 0
      1.f, -1.f, 0.0f, 1.0f, // Position 1
-    1.0f,  1.0f,         // TexCoord 1
+    1.0f,  0.0f,         // TexCoord 1
     -1.f,  1.f, 0.0f, 1.0f, // Position 2
-    0.0f,  0.0f,         // TexCoord 2
+    0.0f,  1.0f,         // TexCoord 2
     1.f,   1.f, 0.0f, 1.0f, // Position 3
-    1.0f,  0.0f          // TexCoord 3
+    1.0f,  1.0f          // TexCoord 3
 };
 GLushort g_iIndices2[] = { 0, 1, 2, 3 };
 
@@ -125,6 +125,7 @@ bool SurfaceTextureRenderer::DrawTexture(GLfloat *affine)
         if (!checkGlError("glBindTexture")) break;
 
         glUniformMatrix4fv(mScalingtransLoc, 1, GL_FALSE, mScalingMatrix);
+        glUniformMatrix4fv(muSTMatrixHandle, 1, GL_FALSE, mSTMatrix);
 
         // Load the vertex position
         glVertexAttribPointer(maPositionHandle, 4, GL_FLOAT,
@@ -151,12 +152,10 @@ const char* SurfaceTextureRenderer::VertexShaderSource() const
         "uniform mat4 u_scalingtrans;  \n"
         "attribute vec4 aPosition;\n"
         "attribute vec4 aTextureCoord;\n"
-        "varying vec2 vTextureCoord;\n"
         "varying vec2 vTextureNormCoord;\n"
         "void main() {\n"
         "  gl_Position = u_scalingtrans * aPosition;\n"
-        "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n"
-        "  vTextureNormCoord = aTextureCoord.xy;\n"
+        "  vTextureNormCoord = (uSTMatrix * aTextureCoord).xy;\n"
         "}\n";
 
     return gVertexShader;
@@ -167,7 +166,6 @@ const char* SurfaceTextureRenderer::FragmentShaderSource() const
     static const char gFragmentShader[] =
         "#extension GL_OES_EGL_image_external : require\n"
         "precision mediump float;\n"
-        "varying vec2 vTextureCoord;\n"
         "varying vec2 vTextureNormCoord;\n"
         "uniform samplerExternalOES sTexture;\n"
         "void main() {\n"
