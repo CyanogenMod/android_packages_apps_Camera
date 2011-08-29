@@ -34,8 +34,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.hardware.Camera.Area;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Face;
 import android.hardware.Camera.FaceDetectionListener;
@@ -46,7 +44,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.CameraProfile;
-import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -156,6 +153,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private boolean mOpenCameraFail = false;
     private boolean mCameraDisabled = false;
 
+    private PreviewFrameLayout mPreviewFrameLayout;
     private View mPreviewFrame;  // Preview frame area.
     private View mPreviewBorder;
 
@@ -847,10 +845,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
                     loc, orientation, data);
             if (uri != null) {
-                // Create a thumbnail whose size is smaller than half of the surface view.
+                // Create a thumbnail whose width is equal or bigger than that of the preview.
                 int ratio = (int) Math.ceil((double) mParameters.getPictureSize().width
-                        / (mPreviewFrame.getWidth() / 2));
-                int inSampleSize = Util.nextPowerOf2(ratio);
+                        / mPreviewFrameLayout.getWidth());
+                int inSampleSize = Integer.highestOneBit(ratio);
                 mThumbnail = Thumbnail.createThumbnail(data, orientation, inSampleSize, uri);
                 if (mThumbnail != null) {
                     mThumbnailView.setBitmap(mThumbnail.getBitmap());
@@ -1752,9 +1750,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Set the preview frame aspect ratio according to the picture size.
         Size size = mParameters.getPictureSize();
-        PreviewFrameLayout frameLayout =
-                (PreviewFrameLayout) findViewById(R.id.frame_layout);
-        frameLayout.setAspectRatio((double) size.width / size.height);
+
+        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame_layout);
+        mPreviewFrameLayout.setAspectRatio((double) size.width / size.height);
 
         // Set a preview size that is closest to the viewfinder height and has
         // the right aspect ratio.
@@ -2179,7 +2177,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(), "image/jpeg",
-                    mOrientationCompensation, findViewById(R.id.frame));
+                    mOrientationCompensation, mPreviewFrameLayout);
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }

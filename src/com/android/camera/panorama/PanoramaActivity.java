@@ -93,6 +93,7 @@ public class PanoramaActivity extends Activity implements
     private boolean mPausing;
 
     private View mPanoControlLayout;
+    private View mPanoLayout;
     private View mCaptureLayout;
     private Button mStopCaptureButton;
     private View mReviewLayout;
@@ -127,6 +128,18 @@ public class PanoramaActivity extends Activity implements
     private float[] mTransformMatrix;
     private float mHorizontalViewAngle;
     private float mVerticalViewAngle;
+
+    private class MosaicJpeg {
+        public MosaicJpeg(byte[] data, int width, int height) {
+            this.data = data;
+            this.width = width;
+            this.height = height;
+        }
+
+        public final byte[] data;
+        public final int width;
+        public final int height;
+    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -384,10 +397,10 @@ public class PanoramaActivity extends Activity implements
             runBackgroundThreadAndShowDialog(mPreparePreviewString, false, new Thread() {
                 @Override
                 public void run() {
-                    byte[] jpegData = generateFinalMosaic(false);
+                    MosaicJpeg jpeg = generateFinalMosaic(false);
                     Bitmap bitmap = null;
-                    if (jpegData != null) {
-                        bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length);
+                    if (jpeg != null) {
+                        bitmap = BitmapFactory.decodeByteArray(jpeg.data, 0, jpeg.data.length);
                     }
                     mMainHandler.sendMessage(mMainHandler.obtainMessage(
                             MSG_FINAL_MOSAIC_READY, bitmap));
@@ -443,6 +456,8 @@ public class PanoramaActivity extends Activity implements
         mModePicker.setVisibility(View.VISIBLE);
         mModePicker.setOnModeChangeListener(this);
         mModePicker.setCurrentMode(ModePicker.MODE_PANORAMA);
+
+        mPanoLayout = findViewById(R.id.pano_layout);
     }
 
     @OnClickAttr
@@ -493,15 +508,15 @@ public class PanoramaActivity extends Activity implements
         runBackgroundThreadAndShowDialog(mGeneratePanoramaString, true, new Thread() {
             @Override
             public void run() {
-                byte[] jpegData = generateFinalMosaic(true);
-                int orientation = Exif.getOrientation(jpegData);
-                Uri uri = savePanorama(jpegData, orientation);
+                MosaicJpeg jpeg = generateFinalMosaic(true);
+                int orientation = Exif.getOrientation(jpeg.data);
+                Uri uri = savePanorama(jpeg.data, orientation);
                 if (uri != null) {
-                    // Create a thumbnail whose size is smaller than 480.
-                    int ratio = (int) Math.ceil((double) 480 / mPreviewHeight);
-                    int inSampleSize = Util.nextPowerOf2(ratio);
+                    // Create a thumbnail whose width is equal or bigger than the entire screen.
+                    int ratio = (int) Math.ceil((double) jpeg.width / mPanoLayout.getWidth());
+                    int inSampleSize = Integer.highestOneBit(ratio);
                     mThumbnail = Thumbnail.createThumbnail(
-                            jpegData, orientation, inSampleSize, uri);
+                            jpeg.data, orientation, inSampleSize, uri);
                 }
                 mMainHandler.sendMessage(
                         mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL));
@@ -674,7 +689,7 @@ public class PanoramaActivity extends Activity implements
         }
     };
 
-    public byte[] generateFinalMosaic(boolean highRes) {
+    public MosaicJpeg generateFinalMosaic(boolean highRes) {
         mMosaicFrameProcessor.createMosaic(highRes);
 
         byte[] imageData = mMosaicFrameProcessor.getFinalMosaicNV21();
@@ -706,7 +721,7 @@ public class PanoramaActivity extends Activity implements
             Log.e(TAG, "Exception in storing final mosaic", e);
             return null;
         }
-        return out.toByteArray();
+        return new MosaicJpeg(out.toByteArray(), width, height);
     }
 
     private void setPreviewTexture(SurfaceTexture surface) {
