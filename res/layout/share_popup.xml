@@ -21,7 +21,7 @@
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/dim_background">
+        android:background="@color/share_popup_background">
     <FrameLayout android:id="@+id/root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                     android:layout_width="@dimen/share_item_width"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:background="@color/dim_background">
+                    android:background="@color/share_icon_background">
                 <ListView android:id="@+id/share_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
