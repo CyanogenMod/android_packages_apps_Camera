@@ -15,38 +15,62 @@
 -->
 <com.android.camera.ui.IndicatorControlBarContainer xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/indicator_control"
-        android:layout_width="48dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginRight="6dp"
         android:clickable="true"
         android:layout_alignParentRight="true">
-    <com.android.camera.ui.IndicatorControlBar
-            android:id="@+id/indicator_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <ImageView
-                android:id="@+id/zoom_control_icon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/btn_zoom_control"
-                android:visibility="gone" />
-        <com.android.camera.ui.RotateImageView
-                android:id="@+id/second_level_indicator_bar_icon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:src="@drawable/ic_settings_holo_light" />
-    </com.android.camera.ui.IndicatorControlBar>
 
-    <com.android.camera.ui.ZoomControlBar
-            android:id="@+id/zoom_control"
-            android:layout_width="match_parent"
+    <com.android.camera.ui.ZoomIndexBar
+            android:id="@+id/zoom_index_bar"
+            android:layout_width="5dp"
             android:layout_height="match_parent"
-            android:visibility="gone" />
-    <com.android.camera.ui.SecondLevelIndicatorControlBar
-            android:id="@+id/second_level_indicator_bar"
-            android:layout_width="match_parent"
+            android:background="@android:color/transparent"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone">
+        <View android:id="@+id/zoom_index"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/review_control_pressed_color"/>
+    </com.android.camera.ui.ZoomIndexBar>
+
+    <RelativeLayout
+            android:id="@+id/control_bars"
+            android:layout_toRightOf="@+id/zoom_index_bar"
+            android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:background="@color/indicator_background">
+        <com.android.camera.ui.IndicatorControlBar
+                android:id="@+id/indicator_bar"
+                android:layout_centerHorizontal="true"
+                android:layout_width="48dp"
+                android:layout_height="match_parent">
+            <ImageView
+                    android:id="@+id/zoom_control_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/btn_zoom_control"
+                    android:visibility="gone" />
+            <com.android.camera.ui.RotateImageView
+                    android:id="@+id/second_level_indicator_bar_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:src="@drawable/ic_settings_holo_light" />
+        </com.android.camera.ui.IndicatorControlBar>
+
+        <com.android.camera.ui.ZoomControlBar
+                android:id="@+id/zoom_control"
+                android:layout_width="48dp"
+                android:layout_centerHorizontal="true"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        <com.android.camera.ui.SecondLevelIndicatorControlBar
+                android:id="@+id/second_level_indicator_bar"
+                android:layout_width="48dp"
+                android:layout_centerHorizontal="true"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+    </RelativeLayout>
 </com.android.camera.ui.IndicatorControlBarContainer>

@@ -166,8 +166,7 @@ public class ZoomControlWheel extends ZoomControl {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Draw slider highlight.
-        float delta = mStrokeWidth * 0.5f;
+        // Draw zoom index highlight.
         float radius = (float) (mWheelRadius + mStrokeWidth * 0.5 + EDGE_STROKE_WIDTH);
         int degree = (int) Math.toDegrees(getZoomIndexAngle());
         drawArc(canvas, (-degree - HIGHLIGHT_DEGREES / 2), HIGHLIGHT_DEGREES,
