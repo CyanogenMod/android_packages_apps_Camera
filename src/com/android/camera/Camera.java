@@ -769,8 +769,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 enableCameraControls(true);
 
                 // We want to show the taken picture for a while, so we wait
-                // for at least 1.2 second before restarting the preview.
-                long delay = 1200 - mPictureDisplayedToJpegCallbackTime;
+                // for at least 0.5 second before restarting the preview.
+                long delay = 500 - mPictureDisplayedToJpegCallbackTime;
                 if (delay < 0) {
                     startPreview();
                 } else {
