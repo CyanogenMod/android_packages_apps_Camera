@@ -157,6 +157,14 @@ int Mosaic::createMosaic(float &progress)
 {
     printf("Creating mosaic\n");
 
+    if (frames_size <= 0)
+    {
+        // Haven't accepted any frame in aligner. No need to do blending.
+        progress = TIME_PERCENT_ALIGN + TIME_PERCENT_BLEND
+                + TIME_PERCENT_FINAL;
+        return MOSAIC_RET_OK;
+    }
+
     if (blendingType == Blend::BLEND_TYPE_PAN)
     {
 
