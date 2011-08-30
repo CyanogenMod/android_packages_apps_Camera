@@ -151,7 +151,7 @@
 
     <!-- More Settings screen, power button -->
     <string name="pref_camera_power_shutter">Tasto accensione</string>
-    <string name="pref_camera_power_shutter_summary">Utilizza il tasto accensione per scattare le foto o riprender i video</string>
+    <string name="pref_camera_power_shutter_summary">Utilizza il tasto accensione per scattare le foto o fare video</string>
 
     <!-- Settings screen, custom focus title -->
     <string name="pref_camera_settings_focus_title">Focus</string>
