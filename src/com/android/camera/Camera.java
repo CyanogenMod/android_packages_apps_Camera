@@ -593,7 +593,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 checkStorage();
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
                 checkStorage();
-                if (!mIsImageCaptureIntent)  {
+                if (!mIsImageCaptureIntent) {
                     updateThumbnailButton();
                 }
             }
@@ -972,8 +972,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             setContentView(R.layout.camera_attach);
         } else {
             setContentView(R.layout.camera);
+            mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+            mThumbnailView.setVisibility(View.VISIBLE);
         }
-        mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
@@ -1026,7 +1027,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (mIsImageCaptureIntent) {
             setupCaptureParams();
-
             findViewById(R.id.review_control).setVisibility(View.VISIBLE);
         } else {
             mModePicker = (ModePicker) findViewById(R.id.mode_picker);
