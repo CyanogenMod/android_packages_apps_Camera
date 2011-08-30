@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
@@ -38,7 +39,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.IllegalArgumentException;
 
 public class Thumbnail {
     private static final String TAG = "Thumbnail";
@@ -93,7 +93,7 @@ public class Thumbnail {
             b = new BufferedOutputStream(f, BUFSIZE);
             d = new DataOutputStream(b);
             d.writeUTF(mUri.toString());
-            mBitmap.compress(Bitmap.CompressFormat.PNG, 100, d);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, d);
             d.close();
         } catch (IOException e) {
             Log.e(TAG, "Fail to store bitmap. path=" + file.getPath(), e);
@@ -198,6 +198,37 @@ public class Thumbnail {
         options.inSampleSize = inSampleSize;
         Bitmap bitmap = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length, options);
         return createThumbnail(uri, bitmap, orientation);
+    }
+
+    public static Bitmap createVideoThumbnail(String filePath, int targetWidth) {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(filePath);
+            bitmap = retriever.getFrameAtTime(-1);
+        } catch (IllegalArgumentException ex) {
+            // Assume this is a corrupt video file
+        } catch (RuntimeException ex) {
+            // Assume this is a corrupt video file.
+        } finally {
+            try {
+                retriever.release();
+            } catch (RuntimeException ex) {
+                // Ignore failures while cleaning up.
+            }
+        }
+        if (bitmap == null) return null;
+
+        // Scale down the bitmap if it is bigger than we need.
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        if (width > targetWidth) {
+            float scale = (float) targetWidth / width;
+            int w = Math.round(scale * width);
+            int h = Math.round(scale * height);
+            bitmap = Bitmap.createScaledBitmap(bitmap, w, h, true);
+        }
+        return bitmap;
     }
 
     private static Thumbnail createThumbnail(Uri uri, Bitmap bitmap, int orientation) {

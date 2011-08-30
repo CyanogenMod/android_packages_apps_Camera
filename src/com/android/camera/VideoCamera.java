@@ -37,7 +37,6 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -1402,8 +1401,8 @@ public class VideoCamera extends ActivityBase
 
     private void getThumbnail() {
         if (mCurrentVideoUri != null) {
-            Bitmap videoFrame = ThumbnailUtils.createVideoThumbnail(
-                    mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
+            Bitmap videoFrame = Thumbnail.createVideoThumbnail(mCurrentVideoFilename,
+                    mPreviewFrameLayout.getWidth());
             if (videoFrame != null) {
                 mThumbnail = new Thumbnail(mCurrentVideoUri, videoFrame, 0);
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
@@ -1416,8 +1415,8 @@ public class VideoCamera extends ActivityBase
             fadeOut(findViewById(R.id.shutter_button));
         }
         if (mCurrentVideoFilename != null) {
-            Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(
-                    mCurrentVideoFilename, Video.Thumbnails.MINI_KIND);
+            Bitmap bitmap = Thumbnail.createVideoThumbnail(mCurrentVideoFilename,
+                    mPreviewFrameLayout.getWidth());
             if (bitmap != null) {
                 // MetadataRetriever already rotates the thumbnail. We should rotate
                 // it back (and mirror if it is front-facing camera).
@@ -1811,7 +1810,7 @@ public class VideoCamera extends ActivityBase
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
-                    "video/*", mOrientationCompensation, findViewById(R.id.frame));
+                    "video/*", mOrientationCompensation, mPreviewFrameLayout);
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
