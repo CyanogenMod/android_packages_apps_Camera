@@ -33,15 +33,15 @@ public class FocusRectangle extends View {
     }
 
     public void showStart() {
-        setDrawable(R.drawable.focus_focusing);
+        setDrawable(R.drawable.ic_focus_focusing);
     }
 
     public void showSuccess() {
-        setDrawable(R.drawable.focus_focused);
+        setDrawable(R.drawable.ic_focus_focused);
     }
 
     public void showFail() {
-        setDrawable(R.drawable.focus_focus_failed);
+        setDrawable(R.drawable.ic_focus_failed);
     }
 
     public void clear() {

@@ -42,7 +42,7 @@ public class FaceView extends View {
 
     public FaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mFaceRect = getResources().getDrawable(R.drawable.focus_focused);
+        mFaceRect = getResources().getDrawable(R.drawable.ic_focus_focusing);
     }
 
     public void setFaces(Face[] faces) {
