@@ -955,10 +955,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         super.onCreate(icicle);
 
         mIsImageCaptureIntent = isImageCaptureIntent();
+        setContentView(R.layout.camera);
         if (mIsImageCaptureIntent) {
-            setContentView(R.layout.camera_attach);
+            findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
         } else {
-            setContentView(R.layout.camera);
             mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
             mThumbnailView.setVisibility(View.VISIBLE);
         }
@@ -1014,7 +1014,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (mIsImageCaptureIntent) {
             setupCaptureParams();
-            findViewById(R.id.review_control).setVisibility(View.VISIBLE);
         } else {
             mModePicker = (ModePicker) findViewById(R.id.mode_picker);
             mModePicker.setVisibility(View.VISIBLE);
@@ -1954,42 +1953,27 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void showPostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            if (Util.isTabletUI()) {
-                mShutterButton.setEnabled(false);
-            } else {
-                mShutterButton.setVisibility(View.GONE);
-            }
+            mShutterButton.setVisibility(View.GONE);
+            mIndicatorControlContainer.setVisibility(View.GONE);
+
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
-                View button = findViewById(id);
-                ((View) button.getParent()).setVisibility(View.VISIBLE);
+                Util.fadeIn(findViewById(id));
             }
-
-            // Remove the text of the cancel button
-            View view = findViewById(R.id.btn_cancel);
-            if (view instanceof Button) ((Button) view).setText("");
         }
     }
 
     private void hidePostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            if (Util.isTabletUI()) {
-                mShutterButton.setEnabled(true);
-            } else {
-                mShutterButton.setVisibility(View.VISIBLE);
-            }
-            int[] pickIds = {R.id.btn_retake, R.id.btn_done};
-            for (int id : pickIds) {
-                View button = findViewById(id);
-                ((View) button.getParent()).setVisibility(View.GONE);
-            }
             enableCameraControls(true);
 
-            // Restore the text of the cancel button
-            View view = findViewById(R.id.btn_cancel);
-            if (view instanceof Button) {
-                ((Button) view).setText(R.string.review_cancel);
+            int[] pickIds = {R.id.btn_retake, R.id.btn_done};
+            for (int id : pickIds) {
+                (findViewById(id)).setVisibility(View.GONE);
             }
+
+            Util.fadeIn(mShutterButton);
+            Util.fadeIn(mIndicatorControlContainer);
         }
     }
 

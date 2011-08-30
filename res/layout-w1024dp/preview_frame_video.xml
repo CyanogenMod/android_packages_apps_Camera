@@ -41,20 +41,12 @@
                     android:drawablePadding="5dp"
                     android:visibility="gone"/>
         </LinearLayout>
-        <include layout="@layout/review_control"/>
-        <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        <ImageButton android:id="@+id/btn_play"
+                style="@style/ReviewControlIcon"
                 android:layout_centerInParent="true"
-                android:background="@drawable/bg_text_on_preview"
-                android:visibility="gone">
-            <ImageView style="@style/ReviewControlIcon"
-                    android:id="@+id/btn_play"
-                    android:onClick="onPlayButtonClicked"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/btn_ic_review_play"/>
-        </LinearLayout>
+                android:src="@drawable/btn_ic_review_play"
+                android:visibility="gone"
+                android:onClick="onPlayButtonClicked"/>
         <ImageView android:id="@+id/review_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

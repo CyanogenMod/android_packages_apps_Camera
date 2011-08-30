@@ -31,7 +31,6 @@
                 android:visibility="gone"/>
         <include layout="@layout/focus_rect"/>
         <include layout="@layout/priority_indicators"/>
-        <include layout="@layout/review_control"/>
         <include layout="@layout/tap_to_focus_toast"/>
     </RelativeLayout>
     <!-- This is the border of preview and the corner is round. If it is the background,

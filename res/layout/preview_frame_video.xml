@@ -13,6 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
 <com.android.camera.PreviewFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
@@ -43,12 +44,18 @@
                 android:layout_marginBottom="13dp"
                 android:layout_marginLeft="17dp"
                 android:paddingRight="2dp"
-                android:visibility="gone" />
+                android:visibility="gone"/>
+        <ImageButton android:id="@+id/btn_play"
+                style="@style/ReviewControlIcon"
+                android:layout_centerInParent="true"
+                android:src="@drawable/btn_ic_review_play"
+                android:visibility="gone"
+                android:onClick="onPlayButtonClicked"/>
         <ImageView android:id="@+id/review_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
-                android:background="@android:color/black" />
-        <include layout="@layout/indicator_bar" />
+                android:background="@android:color/black"/>
+        <include layout="@layout/indicator_bar"/>
     </RelativeLayout>
 </com.android.camera.PreviewFrameLayout>

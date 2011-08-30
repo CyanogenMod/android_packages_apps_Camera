@@ -40,6 +40,8 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -509,5 +511,12 @@ public class Util {
         context.sendBroadcast(new Intent(android.hardware.Camera.ACTION_NEW_PICTURE, uri));
         // Keep compatibility
         context.sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", uri));
+    }
+
+    public static void fadeIn(View view) {
+        view.setVisibility(View.VISIBLE);
+        Animation animation = new AlphaAnimation(0F, 1F);
+        animation.setDuration(500);
+        view.startAnimation(animation);
     }
 }

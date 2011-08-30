@@ -68,13 +68,13 @@
     <string name="review_play">Play</string>
 
     <!-- button in review mode indicating that the photo taking/video recording session should be canceled [CHAR LIMIT=10] -->
-    <string name="review_cancel">Cancel</string>
+    <string name="review_cancel">CANCEL</string>
 
     <!-- button in review mode indicating that the taken photo/video is OK to be attached/uploaded [CHAR LIMIT=10] -->
-    <string name="review_ok">Ok</string>
+    <string name="review_ok">OK</string>
 
     <!-- button in review mode indicate the user want to retake another photo/video for attachment [CHAR LIMIT=10] -->
-    <string name="review_retake">Retake</string>
+    <string name="review_retake">RETAKE</string>
 
     <!-- Button indicating to go to the image gallery -->
     <string name="camera_gallery_photos_text">Gallery</string>

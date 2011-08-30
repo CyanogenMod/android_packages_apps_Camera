@@ -27,6 +27,7 @@
              unfortunate that we have to hardcode the width here. -->
 
         <include layout="@layout/review_thumbnail" />
+        <include layout="@layout/review_control" />
 
         <com.android.camera.ui.IndicatorControlWheelContainer android:id="@+id/indicator_control"
                 android:layout_width="wrap_content"

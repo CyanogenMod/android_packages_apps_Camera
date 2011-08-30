@@ -16,44 +16,25 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/review_control"
-        style="@style/ReviewControlGroup"
-        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bg_text_on_preview">
-
-    <LinearLayout style="@style/ReviewControlGroup"
-            android:visibility="gone">
-        <Button android:id="@+id/btn_done"
-                style="@style/ReviewControlIcon"
-                android:onClick="onDoneButtonClicked"
-                android:drawableLeft="@drawable/ic_menu_done_holo_light"
-                android:text="@string/review_ok"/>
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_menu_divider"/>
-    </LinearLayout>
-    <LinearLayout style="@style/ReviewControlGroup"
-            android:visibility="gone">
-        <Button android:id="@+id/btn_retake"
-                style="@style/ReviewControlIcon"
-                android:scaleType="center"
-                android:clickable="true"
-                android:onClick="onRetakeButtonClicked"
-                android:drawableLeft="@drawable/ic_switch_camera_holo_dark"/>
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_menu_divider"/>
-    </LinearLayout>
-    <LinearLayout style="@style/ReviewControlGroup">
-        <Button android:id="@+id/btn_cancel"
-                android:onClick="onCancelButtonClicked"
-                style="@style/ReviewControlIcon"
-                android:drawableLeft="@drawable/ic_menu_cancel_holo_light"
-                android:text="@string/review_cancel"/>
-    </LinearLayout>
+        android:gravity="center_horizontal"
+        android:layout_marginTop="30dp">
+    <Button android:id="@+id/btn_cancel"
+            android:text="@string/review_cancel"
+            style="@style/ReviewControlIcon"
+            android:visibility="gone"
+            android:onClick="onCancelButtonClicked" />
+    <Button android:id="@+id/btn_retake"
+            android:text="@string/review_retake"
+            style="@style/ReviewControlIcon"
+            android:visibility="gone"
+            android:onClick="onRetakeButtonClicked" />
+    <ImageButton android:id="@+id/btn_done"
+            android:src="@drawable/ic_menu_done_holo_light"
+            style="@style/ReviewControlIcon"
+            android:visibility="gone"
+            android:onClick="onDoneButtonClicked" />
 </LinearLayout>

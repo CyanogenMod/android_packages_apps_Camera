@@ -63,8 +63,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -378,21 +376,10 @@ public class VideoCamera extends ActivityBase
 
         requestWindowFeature(Window.FEATURE_PROGRESS);
         mIsVideoCaptureIntent = isVideoCaptureIntent();
+        setContentView(R.layout.video_camera);
         if (mIsVideoCaptureIntent) {
-            setContentView(R.layout.video_camera_attach);
-
-            mReviewControl = findViewById(R.id.review_control);
-            mReviewControl.setVisibility(View.VISIBLE);
-            View retake = findViewById(R.id.btn_retake);
-            if (retake instanceof ImageView) {
-                ((ImageView) retake).setImageResource(R.drawable.btn_ic_review_retake_video);
-            } else {
-                ((Button) retake).setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_switch_video_holo_dark, 0, 0, 0);
-            }
+            findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
         } else {
-            setContentView(R.layout.video_camera);
-
             initThumbnailButton();
             mModePicker = (ModePicker) findViewById(R.id.mode_picker);
             mModePicker.setVisibility(View.VISIBLE);
@@ -1421,9 +1408,6 @@ public class VideoCamera extends ActivityBase
     }
 
     private void showAlert() {
-        if (!Util.isTabletUI()) {
-            fadeOut(findViewById(R.id.shutter_button));
-        }
         if (mCurrentVideoFilename != null) {
             Bitmap bitmap = Thumbnail.createVideoThumbnail(mCurrentVideoFilename,
                     mPreviewFrameLayout.getWidth());
@@ -1440,52 +1424,30 @@ public class VideoCamera extends ActivityBase
                 mReviewImage.setVisibility(View.VISIBLE);
             }
         }
+
+        mShutterButton.setVisibility(View.GONE);
+        mIndicatorControlContainer.setVisibility(View.GONE);
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
         for (int id : pickIds) {
-            View button = findViewById(id);
-            fadeIn(((View) button.getParent()));
+            Util.fadeIn(findViewById(id));
         }
-
-        // Remove the text of the cancel button
-        View view = findViewById(R.id.btn_cancel);
-        if (view instanceof Button) ((Button) view).setText("");
-        showTimeLapseUI(false);
     }
 
     private void hideAlert() {
         mReviewImage.setVisibility(View.INVISIBLE);
-        fadeIn(findViewById(R.id.shutter_button));
         mShutterButton.setEnabled(true);
         enableCameraControls(true);
 
-        // Restore the text of the cancel button
-        View view = findViewById(R.id.btn_cancel);
-        if (view instanceof Button) {
-            ((Button) view).setText(R.string.review_cancel);
-        }
-
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
         for (int id : pickIds) {
-            View button = findViewById(id);
-            ((View) button.getParent()).setVisibility(View.GONE);
+            (findViewById(id)).setVisibility(View.GONE);
         }
+        Util.fadeIn(mShutterButton);
+        Util.fadeIn(mIndicatorControlContainer);
+
         if (mCaptureTimeLapse) {
             showTimeLapseUI(true);
         }
-    }
-
-    private static void fadeIn(View view) {
-        view.setVisibility(View.VISIBLE);
-        Animation animation = new AlphaAnimation(0F, 1F);
-        animation.setDuration(500);
-        view.startAnimation(animation);
-    }
-
-    private static void fadeOut(View view) {
-        view.setVisibility(View.INVISIBLE);
-        Animation animation = new AlphaAnimation(1F, 0F);
-        animation.setDuration(500);
-        view.startAnimation(animation);
     }
 
     private boolean isAlertVisible() {

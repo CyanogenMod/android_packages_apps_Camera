@@ -37,21 +37,13 @@
         <item name="android:windowEnterAnimation">@anim/on_screen_hint_enter</item>
         <item name="android:windowExitAnimation">@anim/on_screen_hint_exit</item>
     </style>
-    <style name="ReviewControlText">
-        <item name="android:textSize">12sp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">2</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
     <style name="ReviewControlIcon">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:scaleType">center</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:background">@drawable/btn_camera_review</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">95dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:textSize">12sp</item>
     </style>
     <style name="ReviewControlGroup">
         <item name="android:orientation">vertical</item>
