@@ -30,6 +30,11 @@ public class RotateLayout extends ViewGroup {
 
     public RotateLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        // The transparent background here is a workaround of the render issue
+        // happened when the view is rotated as the device's orientation
+        // changed. The view looks fine in landscape. After rotation, the view
+        // is invisible.
+        setBackgroundResource(android.R.color.transparent);
     }
 
     @Override

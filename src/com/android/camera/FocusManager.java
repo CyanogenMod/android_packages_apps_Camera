@@ -16,8 +16,8 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.FocusRectangle;
 import com.android.camera.ui.FaceView;
+import com.android.camera.ui.FocusRectangle;
 
 import android.graphics.Rect;
 import android.hardware.Camera.Area;
@@ -56,6 +56,7 @@ public class FocusManager {
     private boolean mFocusAreaSupported;
     private boolean mContinuousFocusFail;
     private ToneGenerator mFocusToneGenerator;
+    private View mFocusRectangleRotateLayout;
     private FocusRectangle mFocusRectangle;
     private View mPreviewFrame;
     private FaceView mFaceView;
@@ -104,9 +105,10 @@ public class FocusManager {
                         mParameters.getSupportedFocusModes()));
     }
 
-    public void initialize(FocusRectangle focusRectangle, View previewFrame,
+    public void initialize(View focusRectangleRotate, View previewFrame,
             FaceView faceView, Listener listener) {
-        mFocusRectangle = focusRectangle;
+        mFocusRectangleRotateLayout = focusRectangleRotate;
+        mFocusRectangle = (FocusRectangle) focusRectangleRotate.findViewById(R.id.focus_rect);
         mPreviewFrame = previewFrame;
         mFaceView = faceView;
         mListener = listener;
@@ -222,8 +224,8 @@ public class FocusManager {
         // Initialize variables.
         int x = Math.round(e.getX());
         int y = Math.round(e.getY());
-        int focusWidth = mFocusRectangle.getWidth();
-        int focusHeight = mFocusRectangle.getHeight();
+        int focusWidth = mFocusRectangleRotateLayout.getWidth();
+        int focusHeight = mFocusRectangleRotateLayout.getHeight();
         int previewWidth = mPreviewFrame.getWidth();
         int previewHeight = mPreviewFrame.getHeight();
         if (mTapArea == null) {
@@ -243,14 +245,14 @@ public class FocusManager {
 
         // Use margin to set the focus rectangle to the touched area.
         RelativeLayout.LayoutParams p =
-                (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
+                (RelativeLayout.LayoutParams) mFocusRectangleRotateLayout.getLayoutParams();
         int left = Util.clamp(x - focusWidth / 2, 0, previewWidth - focusWidth);
         int top = Util.clamp(y - focusHeight / 2, 0, previewHeight - focusHeight);
         p.setMargins(left, top, 0, 0);
         // Disable "center" rule because we no longer want to put it in the center.
         int[] rules = p.getRules();
         rules[RelativeLayout.CENTER_IN_PARENT] = 0;
-        mFocusRectangle.requestLayout();
+        mFocusRectangleRotateLayout.requestLayout();
 
         // Stop face detection because we want to specify focus and metering area.
         mListener.stopFaceDetection();
@@ -368,7 +370,7 @@ public class FocusManager {
 
         // Set the length of focus rectangle according to preview frame size.
         int len = Math.min(mPreviewFrame.getWidth(), mPreviewFrame.getHeight()) / 4;
-        ViewGroup.LayoutParams layout = mFocusRectangle.getLayoutParams();
+        ViewGroup.LayoutParams layout = mFocusRectangleRotateLayout.getLayoutParams();
         layout.width = len;
         layout.height = len;
 
@@ -401,7 +403,7 @@ public class FocusManager {
 
         // Put focus rectangle to the center.
         RelativeLayout.LayoutParams p =
-                (RelativeLayout.LayoutParams) mFocusRectangle.getLayoutParams();
+                (RelativeLayout.LayoutParams) mFocusRectangleRotateLayout.getLayoutParams();
         int[] rules = p.getRules();
         rules[RelativeLayout.CENTER_IN_PARENT] = RelativeLayout.TRUE;
         p.setMargins(0, 0, 0, 0);

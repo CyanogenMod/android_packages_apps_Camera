@@ -18,7 +18,6 @@ package com.android.camera;
 
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.FaceView;
-import com.android.camera.ui.FocusRectangle;
 import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
@@ -166,6 +165,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private RotateImageView mThumbnailView;
     private ModePicker mModePicker;
     private FaceView mFaceView;
+    private RotateLayout mFocusRectangleRotateLayout;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -386,8 +386,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
         mPreviewBorder = findViewById(R.id.preview_border);
-        mFocusManager.initialize((FocusRectangle) findViewById(R.id.focus_rectangle),
-                mPreviewFrame, mFaceView, this);
+        mFocusRectangleRotateLayout = (RotateLayout) findViewById(R.id.focus_rect_rotate_layout);
+        mFocusManager.initialize(mFocusRectangleRotateLayout, mPreviewFrame, mFaceView, this);
         mFocusManager.initializeToneGenerator();
         initializeScreenBrightness();
         installIntentFilter();
@@ -1163,6 +1163,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
         if (mZoomControl != null) mZoomControl.setDegree(degree);
+        if (mFocusRectangleRotateLayout != null) mFocusRectangleRotateLayout.setOrientation(degree);
     }
 
     @Override

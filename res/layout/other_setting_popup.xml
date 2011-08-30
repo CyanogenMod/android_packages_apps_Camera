@@ -23,12 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/indicator_control"
-        android:visibility="gone"
-        android:background="@android:color/transparent">
-    <!-- the transparent background here is a workaround of the render issue
-        happened when the popup window is rotated as the device's orientation
-        changed. The view looks fine in landscape. After rotation, only center
-        part of the view is visible. -->
+        android:visibility="gone">
 
     <LinearLayout android:orientation="vertical"
         android:layout_width="320dp"
