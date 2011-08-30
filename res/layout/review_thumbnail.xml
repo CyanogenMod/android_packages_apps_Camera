@@ -20,5 +20,6 @@
         android:onClick="onThumbnailClicked"
         android:clickable="true"
         android:focusable="false"
+        android:visibility="gone"
         android:background="@drawable/border_last_picture">
 </com.android.camera.ui.RotateImageView>

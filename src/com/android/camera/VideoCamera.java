@@ -1529,6 +1529,7 @@ public class VideoCamera extends ActivityBase
 
     private void initThumbnailButton() {
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+        mThumbnailView.setVisibility(View.VISIBLE);
         // Load the thumbnail from the disk.
         mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
     }
