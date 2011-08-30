@@ -45,14 +45,6 @@ public class MosaicFrameProcessor {
 
     private ProgressListener mProgressListener;
 
-    private float mCompassValueX;
-    private float mCompassValueY;
-    private float mCompassValueXStart;
-    private float mCompassValueYStart;
-    private int mCompassThreshold;
-    private int mTraversedAngleX;
-    private int mTraversedAngleY;
-
     // Panning rate is in unit of percentage of image content translation / second.
     private float mPanningRateX;
     private float mPanningRateY;
@@ -62,13 +54,11 @@ public class MosaicFrameProcessor {
     private int mPreviewBufferSize;
 
     public interface ProgressListener {
-        public void onProgress(boolean isFinished, float panningRateX, float panningRateY,
-                int traversedAngleX, int traversedAngleY);
+        public void onProgress(boolean isFinished, float panningRateX, float panningRateY);
     }
 
-    public MosaicFrameProcessor(int sweepAngle, int previewWidth, int previewHeight, int bufSize) {
+    public MosaicFrameProcessor(int previewWidth, int previewHeight, int bufSize) {
         mMosaicer = new Mosaic();
-        mCompassThreshold = sweepAngle;
         mPreviewWidth = previewWidth;
         mPreviewHeight = previewHeight;
         mPreviewBufferSize = bufSize;
@@ -146,36 +136,20 @@ public class MosaicFrameProcessor {
             // Access the timestamp associated with it...
             long timestamp = mFrameTimestamp[mCurrProcessFrameIdx];
 
-            // Keep track of what compass bearing we started at...
-            if (mTotalFrameCount == 0) { // First frame
-                mCompassValueXStart = mCompassValueX;
-                mCompassValueYStart = mCompassValueY;
-            }
-
-            // By what angle has the camera moved since start of capture?
-            mTraversedAngleX = (int) PanoUtil.calculateDifferenceBetweenAngles(
-                    mCompassValueX, mCompassValueXStart);
-            mTraversedAngleY = (int) PanoUtil.calculateDifferenceBetweenAngles(
-                    mCompassValueY, mCompassValueYStart);
-
             // TODO: make the termination condition regarding reaching
             // MAX_NUMBER_OF_FRAMES solely determined in the library.
-            if (mTotalFrameCount < MAX_NUMBER_OF_FRAMES
-                && mTraversedAngleX < mCompassThreshold
-                && mTraversedAngleY < mCompassThreshold) {
+            if (mTotalFrameCount < MAX_NUMBER_OF_FRAMES) {
                 // If we are still collecting new frames for the current mosaic,
                 // process the new frame.
                 calculateTranslationRate(timestamp);
 
                 // Publish progress of the ongoing processing
                 if (mProgressListener != null) {
-                    mProgressListener.onProgress(false, mPanningRateX, mPanningRateY,
-                            mTraversedAngleX, mTraversedAngleY);
+                    mProgressListener.onProgress(false, mPanningRateX, mPanningRateY);
                 }
             } else {
                 if (mProgressListener != null) {
-                    mProgressListener.onProgress(true, mPanningRateX, mPanningRateY,
-                            mTraversedAngleX, mTraversedAngleY);
+                    mProgressListener.onProgress(true, mPanningRateX, mPanningRateY);
                 }
             }
         }
@@ -203,10 +177,5 @@ public class MosaicFrameProcessor {
 
         mTranslationLastX = translationCurrX;
         mTranslationLastY = translationCurrY;
-    }
-
-    public void updateCompassValue(float valueX, float valueY) {
-        mCompassValueX = valueX;
-        mCompassValueY = valueY;
     }
 }

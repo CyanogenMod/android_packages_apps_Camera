@@ -32,4 +32,6 @@
     <dimen name="pano_review_button_width">70dp</dimen>
     <dimen name="pano_review_button_height">70dp</dimen>
     <dimen name="pano_capture_too_fast_text_height">70dp</dimen>
+    <dimen name="pano_indication_width">150dp</dimen>
+    <dimen name="pano_indication_height">75dp</dimen>
 </resources>

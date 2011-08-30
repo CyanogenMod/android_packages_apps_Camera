@@ -55,6 +55,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -102,7 +103,7 @@ public class PanoramaActivity extends Activity implements
     private Button mStopCaptureButton;
     private View mReviewLayout;
     private ImageView mReview;
-    private CaptureView mCaptureView;
+    private IndicationView mIndicationView;
     private MosaicRendererSurfaceView mMosaicView;
     private TextView mTooFastPrompt;
     private Animation mSlideIn, mSlideOut;
@@ -113,6 +114,22 @@ public class PanoramaActivity extends Activity implements
     private String mDialogTitle;
     private String mDialogOk;
     private AlertDialog mAlertDialog;
+
+    private float mCompassValueX;
+    private float mCompassValueY;
+    private float mCompassValueXStart;
+    private float mCompassValueYStart;
+    private float mCompassValueXStartBuffer;
+    private float mCompassValueYStartBuffer;
+    private int mCompassThreshold;
+    private int mTraversedAngleX;
+    private int mTraversedAngleY;
+    private long mTimestamp;
+    // Control variables for the terminate condition.
+    private int mMinAngleX;
+    private int mMaxAngleX;
+    private int mMinAngleY;
+    private int mMaxAngleY;
 
     private RotateImageView mThumbnailView;
     private Thumbnail mThumbnail;
@@ -127,14 +144,17 @@ public class PanoramaActivity extends Activity implements
     private Sensor mSensor;
     private ModePicker mModePicker;
     private MosaicFrameProcessor mMosaicFrameProcessor;
-    private String mCurrentImagePath = null;
     private long mTimeTaken;
     private Handler mMainHandler;
     private SurfaceTexture mSurfaceTexture;
     private boolean mThreadRunning;
     private float[] mTransformMatrix;
     private float mHorizontalViewAngle;
-    private float mVerticalViewAngle;
+
+    private PanoOrientationEventListener mOrientationEventListener;
+    // The value could be 0, 1, 2, 3 for the 4 different orientations measured in clockwise
+    // respectively.
+    private int mDeviceOrientation;
 
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
@@ -146,6 +166,19 @@ public class PanoramaActivity extends Activity implements
         public final byte[] data;
         public final int width;
         public final int height;
+    }
+
+    private class PanoOrientationEventListener extends OrientationEventListener {
+        public PanoOrientationEventListener(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onOrientationChanged(int orientation) {
+            // Default to the last known orientation.
+            if (orientation == ORIENTATION_UNKNOWN) return;
+            mDeviceOrientation = ((orientation + 45) / 90) % 4;
+        }
     }
 
     @Override
@@ -162,6 +195,8 @@ public class PanoramaActivity extends Activity implements
         if (mSensor == null) {
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         }
+
+        mOrientationEventListener = new PanoOrientationEventListener(this);
 
         mTransformMatrix = new float[16];
 
@@ -289,8 +324,8 @@ public class PanoramaActivity extends Activity implements
 
         parameters.setRecordingHint(false);
 
-        mHorizontalViewAngle = parameters.getHorizontalViewAngle();
-        mVerticalViewAngle = parameters.getVerticalViewAngle();
+        mHorizontalViewAngle = ((mDeviceOrientation % 2) == 0) ?
+                parameters.getHorizontalViewAngle() : parameters.getVerticalViewAngle();
     }
 
     public int getPreviewBufSize() {
@@ -391,20 +426,30 @@ public class PanoramaActivity extends Activity implements
         mPanoControlLayout.startAnimation(mSlideOut);
         mPanoControlLayout.setVisibility(View.GONE);
 
+        mCompassValueXStart = mCompassValueXStartBuffer;
+        mCompassValueYStart = mCompassValueYStartBuffer;
+        mMinAngleX = 0;
+        mMaxAngleX = 0;
+        mMinAngleY = 0;
+        mMaxAngleY = 0;
+        mTimestamp = 0;
+
         mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
             @Override
-            public void onProgress(boolean isFinished, float panningRateX, float panningRateY,
-                    int traversedAngleX, int traversedAngleY) {
-                if (isFinished) {
+            public void onProgress(boolean isFinished, float panningRateX, float panningRateY) {
+                if (isFinished
+                        || (mMaxAngleX - mMinAngleX >= DEFAULT_SWEEP_ANGLE)
+                        || (mMaxAngleY - mMinAngleY >= DEFAULT_SWEEP_ANGLE)) {
                     stopCapture();
                 } else {
-                    updateProgress(panningRateX, panningRateY, traversedAngleX, traversedAngleY);
+                    updateProgress(panningRateX);
                 }
             }
         });
 
         mStopCaptureButton.setVisibility(View.VISIBLE);
-        mCaptureView.setVisibility(View.VISIBLE);
+        mIndicationView.resetAngles();
+        mIndicationView.setVisibility(View.VISIBLE);
         mMosaicView.setVisibility(View.VISIBLE);
     }
 
@@ -434,25 +479,18 @@ public class PanoramaActivity extends Activity implements
         }
     }
 
-    private void updateProgress(float panningRateX, float panningRateY,
-            int traversedAngleX, int traversedAngleY) {
-
+    private void updateProgress(float panningRate) {
         mMosaicView.setReady();
         mMosaicView.requestRender();
 
         // TODO: Now we just display warning message by the panning speed.
         // Since we only support horizontal panning, we should display a warning message
         // in UI when there're significant vertical movements.
-        if ((panningRateX * mHorizontalViewAngle > PANNING_SPEED_THRESHOLD)
-                || (panningRateY * mVerticalViewAngle > PANNING_SPEED_THRESHOLD)) {
+        if (Math.abs(panningRate * mHorizontalViewAngle) > PANNING_SPEED_THRESHOLD) {
             // TODO: draw speed indication according to the UI spec.
             mTooFastPrompt.setVisibility(View.VISIBLE);
-            mCaptureView.setSweepAngle(Math.max(traversedAngleX, traversedAngleY) + 1);
-            mCaptureView.invalidate();
         } else {
             mTooFastPrompt.setVisibility(View.GONE);
-            mCaptureView.setSweepAngle(Math.max(traversedAngleX, traversedAngleY) + 1);
-            mCaptureView.invalidate();
         }
     }
 
@@ -462,8 +500,8 @@ public class PanoramaActivity extends Activity implements
         mCaptureState = CAPTURE_VIEWFINDER;
 
         mCaptureLayout = (View) findViewById(R.id.pano_capture_layout);
-        mCaptureView = (CaptureView) findViewById(R.id.pano_capture_view);
-        mCaptureView.setStartAngle(-DEFAULT_SWEEP_ANGLE / 2);
+        mIndicationView = (IndicationView) findViewById(R.id.pano_capture_view);
+        mIndicationView.setMaxSweepAngle(DEFAULT_SWEEP_ANGLE);
         mStopCaptureButton = (Button) findViewById(R.id.pano_capture_stop_button);
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
 
@@ -604,7 +642,7 @@ public class PanoramaActivity extends Activity implements
 
         mReviewLayout.setVisibility(View.GONE);
         mStopCaptureButton.setVisibility(View.GONE);
-        mCaptureView.setVisibility(View.GONE);
+        mIndicationView.setVisibility(View.GONE);
         mPanoControlLayout.setVisibility(View.VISIBLE);
         mPanoControlLayout.startAnimation(mSlideIn);
         mCaptureLayout.setVisibility(View.VISIBLE);
@@ -623,7 +661,6 @@ public class PanoramaActivity extends Activity implements
         }
         mCaptureLayout.setVisibility(View.GONE);
         mReviewLayout.setVisibility(View.VISIBLE);
-        mCaptureView.setSweepAngle(0);
     }
 
     private Uri savePanorama(byte[] jpegData, int orientation) {
@@ -645,7 +682,7 @@ public class PanoramaActivity extends Activity implements
         if (mPausing || mThreadRunning) return;
         if (mMosaicFrameProcessor == null) {
             // Start the activity for the first time.
-            mMosaicFrameProcessor = new MosaicFrameProcessor(DEFAULT_SWEEP_ANGLE - 5,
+            mMosaicFrameProcessor = new MosaicFrameProcessor(
                     mPreviewWidth, mPreviewHeight, getPreviewBufSize());
         }
         mMosaicFrameProcessor.initialize();
@@ -660,6 +697,7 @@ public class PanoramaActivity extends Activity implements
         mMosaicView.onPause();
         mSensorManager.unregisterListener(mListener);
         clearMosaicFrameProcessorIfNeeded();
+        mOrientationEventListener.disable();
         System.gc();
     }
 
@@ -668,9 +706,10 @@ public class PanoramaActivity extends Activity implements
         super.onResume();
 
         mPausing = false;
+        mOrientationEventListener.enable();
         /*
          * It is not necessary to get accelerometer events at a very high rate,
-         * by using a slower rate (SENSOR_DELAY_UI), we get an automatic
+         * by using a game rate (SENSOR_DELAY_UI), we get an automatic
          * low-pass filter, which "extracts" the gravity component of the
          * acceleration. As an added benefit, we use less power and CPU
          * resources.
@@ -688,27 +727,46 @@ public class PanoramaActivity extends Activity implements
         mMosaicView.onResume();
     }
 
-    private final SensorEventListener mListener = new SensorEventListener() {
-        private float mCompassCurrX; // degrees
-        private float mCompassCurrY; // degrees
-        private float mTimestamp;
+    private void updateCompassValue() {
+        // By what angle has the camera moved since start of capture?
+        mTraversedAngleX = (int) (mCompassValueX - mCompassValueXStart);
+        mTraversedAngleY = (int) (mCompassValueY - mCompassValueYStart);
+        mMinAngleX = Math.min(mMinAngleX, mTraversedAngleX);
+        mMaxAngleX = Math.max(mMaxAngleX, mTraversedAngleX);
+        mMinAngleY = Math.min(mMinAngleY, mTraversedAngleY);
+        mMaxAngleY = Math.max(mMaxAngleY, mTraversedAngleY);
 
+        // Use orientation to identify if the user is panning to the right or the left.
+        switch (mDeviceOrientation) {
+            case 0:
+                mIndicationView.setSweepAngle(-mTraversedAngleX);
+                break;
+            case 1:
+                mIndicationView.setSweepAngle(mTraversedAngleY);
+                break;
+            case 2:
+                mIndicationView.setSweepAngle(mTraversedAngleX);
+                break;
+            case 3:
+                mIndicationView.setSweepAngle(-mTraversedAngleY);
+                break;
+        }
+        mIndicationView.invalidate();
+    }
+
+    private final SensorEventListener mListener = new SensorEventListener() {
         public void onSensorChanged(SensorEvent event) {
             if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
                 if (mTimestamp != 0) {
                     final float dT = (event.timestamp - mTimestamp) * NS2S;
-                    mCompassCurrX += event.values[1] * dT * 180.0f / Math.PI;
-                    mCompassCurrY += event.values[0] * dT * 180.0f / Math.PI;
+                    mCompassValueX += event.values[1] * dT * 180.0f / Math.PI;
+                    mCompassValueY += event.values[0] * dT * 180.0f / Math.PI;
+                    mCompassValueXStartBuffer = mCompassValueX;
+                    mCompassValueYStartBuffer = mCompassValueY;
+                    updateCompassValue();
                 }
                 mTimestamp = event.timestamp;
 
-            } else if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-                mCompassCurrX = event.values[0];
-                mCompassCurrY = event.values[1];
-            }
-
-            if (mMosaicFrameProcessor != null) {
-                mMosaicFrameProcessor.updateCompassValue(mCompassCurrX, mCompassCurrY);
             }
         }
 

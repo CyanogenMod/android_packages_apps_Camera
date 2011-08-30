@@ -17,7 +17,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pano_capture_layout"
         android:visibility="visible"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -29,11 +28,6 @@
                 android:layout_gravity="center"
                 android:layout_width="@dimen/pano_mosaic_surface_width"
                 android:layout_height="@dimen/pano_mosaic_surface_height" />
-        <com.android.camera.panorama.CaptureView
-                android:id="@+id/pano_capture_view"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
     </FrameLayout>
 
     <ImageView style="@style/PanoViewHorizontalGrayBar"
@@ -56,6 +50,14 @@
                 android:layout_width="@dimen/pano_capture_stop_button_width"
                 android:layout_height="@dimen/pano_capture_stop_button_width" />
     </LinearLayout>
+
+    <com.android.camera.panorama.IndicationView
+            android:id="@+id/pano_capture_view"
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="@dimen/pano_indication_width"
+            android:layout_height="@dimen/pano_indication_height" />
 
     <include layout="@layout/pano_control" android:id="@+id/pano_control_layout" />
 
