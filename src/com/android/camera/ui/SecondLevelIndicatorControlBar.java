@@ -43,7 +43,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     public void initialize(Context context, PreferenceGroup group,
             String[] keys, String[] otherSettingKeys) {
         if (mCloseIcon == null) {
-            mCloseIcon = new ImageView(context);
+            mCloseIcon = new ColorFilterImageView(context);
             mCloseIcon.setImageResource(R.drawable.btn_close_settings);
             mCloseIcon.setOnClickListener(this);
             addView(mCloseIcon);
@@ -111,5 +111,14 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
             getChildAt(i).layout(0, top + i * height / count, width,
                     top + i * height / count + h);
         }
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (mCurrentMode == MODE_VIDEO) {
+            mCloseIcon.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+        }
+        mCloseIcon.setEnabled(enabled);
     }
 }

@@ -45,7 +45,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_width="48dp"
                 android:layout_height="match_parent">
-            <ImageView
+            <com.android.camera.ui.ColorFilterImageView
                     android:id="@+id/zoom_control_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
