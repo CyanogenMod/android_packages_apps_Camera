@@ -87,7 +87,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Camera settings"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restore defaults"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposure"</string>
-    <string name="details_ok" msgid="6848594369924424312">"OK"</string>
+    <string name="dialog_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Your USB storage is running out of space. Change the quality setting or delete some images or other files."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Your SD card is running out of space. Change the quality setting or delete some images or other files."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Size limit reached."</string>

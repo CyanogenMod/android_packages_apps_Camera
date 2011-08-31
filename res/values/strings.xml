@@ -221,8 +221,8 @@
     <string name="pref_exposure_title">Exposure</string>
     <string name="pref_exposure_default" translatable="false">0</string>
 
-    <!-- Details dialog "OK" button. Dismisses dialog. -->
-    <string name="details_ok">OK</string>
+    <!-- Dialog "OK" button. Dismisses dialog. -->
+    <string name="dialog_ok">OK</string>
 
     <!-- Low-memory dialog message [CHAR LIMT=NONE] -->
     <string name="spaceIsLow_content" product="nosdcard">Your USB storage is running out of space. Change the quality setting or delete some images or other files.</string>
@@ -279,6 +279,12 @@
 
     <!-- The text shown in the progress dialog when generating the final panorama result in the background [CHAR LIMIT=30] -->
     <string name="pano_dialog_generate_panorama">Generating panorama...</string>
+
+    <!-- The text shown in the dialog when panorama saving failed [CHAR LIMIT=40] -->
+    <string name="pano_dialog_panorama_failed">Failed to save panorama</string>
+
+    <!-- The text shown on the dialog title in the dialogs for Panorama [CHAR LIMIT=12] -->
+    <string name="pano_dialog_title">Panorama</string>
 
     <!-- Toast telling users tapping on the viewfinder will trigger autofocus [CHAR LIMIT=28] -->
     <string name="tap_to_focus">Tap to focus</string>

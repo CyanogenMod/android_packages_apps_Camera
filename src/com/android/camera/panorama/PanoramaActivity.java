@@ -31,8 +31,10 @@ import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.SharePopup;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -77,6 +79,8 @@ public class PanoramaActivity extends Activity implements
 
     private static final int MSG_FINAL_MOSAIC_READY = 1;
     private static final int MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL = 2;
+    private static final int MSG_GENERATE_FINAL_MOSAIC_ERROR = 3;
+    private static final int MSG_DISMISS_ALERT_DIALOG_AND_RESET_TO_PREVIEW = 4;
 
     private static final String TAG = "PanoramaActivity";
     private static final int PREVIEW_STOPPED = 0;
@@ -106,6 +110,9 @@ public class PanoramaActivity extends Activity implements
     private ProgressDialog mProgressDialog;
     private String mPreparePreviewString;
     private String mGeneratePanoramaString;
+    private String mDialogTitle;
+    private String mDialogOk;
+    private AlertDialog mAlertDialog;
 
     private RotateImageView mThumbnailView;
     private Thumbnail mThumbnail;
@@ -162,6 +169,8 @@ public class PanoramaActivity extends Activity implements
                 getResources().getString(R.string.pano_dialog_prepare_preview);
         mGeneratePanoramaString =
                 getResources().getString(R.string.pano_dialog_generate_panorama);
+        mDialogTitle = getResources().getString(R.string.pano_dialog_title);
+        mDialogOk = getResources().getString(R.string.dialog_ok);
 
         Context context = getApplicationContext();
         mSlideIn = AnimationUtils.loadAnimation(context, R.anim.slide_in_from_right);
@@ -182,6 +191,21 @@ public class PanoramaActivity extends Activity implements
                         if (mThumbnail != null) {
                             mThumbnailView.setBitmap(mThumbnail.getBitmap());
                         }
+                        resetToPreview();
+                        break;
+                    case MSG_GENERATE_FINAL_MOSAIC_ERROR:
+                        onBackgroundThreadFinished();
+                        mAlertDialog = (new AlertDialog.Builder(PanoramaActivity.this))
+                                .setTitle(mDialogTitle)
+                                .setMessage(R.string.pano_dialog_panorama_failed)
+                                .create();
+                        mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, mDialogOk,
+                                obtainMessage(MSG_DISMISS_ALERT_DIALOG_AND_RESET_TO_PREVIEW));
+                        mAlertDialog.show();
+                        break;
+                    case MSG_DISMISS_ALERT_DIALOG_AND_RESET_TO_PREVIEW:
+                        mAlertDialog.dismiss();
+                        mAlertDialog = null;
                         resetToPreview();
                         break;
                 }
@@ -509,17 +533,21 @@ public class PanoramaActivity extends Activity implements
             @Override
             public void run() {
                 MosaicJpeg jpeg = generateFinalMosaic(true);
-                int orientation = Exif.getOrientation(jpeg.data);
-                Uri uri = savePanorama(jpeg.data, orientation);
-                if (uri != null) {
-                    // Create a thumbnail whose width is equal or bigger than the entire screen.
-                    int ratio = (int) Math.ceil((double) jpeg.width / mPanoLayout.getWidth());
-                    int inSampleSize = Integer.highestOneBit(ratio);
-                    mThumbnail = Thumbnail.createThumbnail(
-                            jpeg.data, orientation, inSampleSize, uri);
+                if (jpeg == null) {
+                    mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_ERROR);
+                } else {
+                    int orientation = Exif.getOrientation(jpeg.data);
+                    Uri uri = savePanorama(jpeg.data, orientation);
+                    if (uri != null) {
+                        // Create a thumbnail whose width is equal or bigger than the entire screen.
+                        int ratio = (int) Math.ceil((double) jpeg.width / mPanoLayout.getWidth());
+                        int inSampleSize = Integer.highestOneBit(ratio);
+                        mThumbnail = Thumbnail.createThumbnail(
+                                jpeg.data, orientation, inSampleSize, uri);
+                    }
+                    mMainHandler.sendMessage(
+                            mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL));
                 }
-                mMainHandler.sendMessage(
-                        mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL));
             }
         });
         reportProgress(true);

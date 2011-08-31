@@ -87,7 +87,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Configuración de cámara"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar valores predeterminados"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposición"</string>
-    <string name="details_ok" msgid="6848594369924424312">"Aceptar"</string>
+    <string name="dialog_ok" msgid="6848594369924424312">"Aceptar"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"No queda espacio en el almacenamiento USB. Cambia la configuración de calidad o elimina algunas imágenes u otros archivos."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"No queda espacio en la tarjeta SD. Cambia la configuración de calidad o elimina algunas imágenes u otros archivos."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Se ha alcanzado el límite de tamaño."</string>

@@ -87,7 +87,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Tetapan kamera"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Pulihkan lalai"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Dedahan"</string>
-    <string name="details_ok" msgid="6848594369924424312">"OK"</string>
+    <string name="dialog_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Storan USB anda kehabisan ruang. Tukar tetapan mutu atau padamkan beberapa imej atau fail lain."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Kad SD anda kehabisan ruang. Tukar tetapan mutu atau padamkan beberapa imej atau fail lain."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Had saiz dicapai."</string>

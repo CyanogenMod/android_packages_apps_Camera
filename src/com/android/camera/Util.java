@@ -261,7 +261,7 @@ public class Util {
                 .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setTitle(R.string.camera_error_title)
                 .setMessage(msgId)
-                .setNeutralButton(R.string.details_ok, buttonListener)
+                .setNeutralButton(R.string.dialog_ok, buttonListener)
                 .show();
     }
 
