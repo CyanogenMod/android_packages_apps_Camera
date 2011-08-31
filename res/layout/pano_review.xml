@@ -14,21 +14,20 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pano_review_layout"
         android:visibility="invisible"
         android:orientation="vertical"
-        android:gravity="fill_horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ImageView android:id="@+id/pano_reviewarea"
-            android:scaleType="center"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <View style="@style/PanoViewHorizontalGrayBar"/>
 
-    <View style="@style/PanoViewHorizontalGrayBar"
-            android:layout_alignParentTop="true" />
+    <ImageView android:id="@+id/pano_reviewarea"
+            android:scaleType="fitCenter"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
     <LinearLayout android:id="@+id/pano_review_control"
             style="@style/PanoViewHorizontalGrayBar"
@@ -52,4 +51,4 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/pano_review_button_height" />
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
