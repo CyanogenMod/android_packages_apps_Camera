@@ -44,6 +44,8 @@ import android.view.WindowManager;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -65,6 +67,7 @@ public class Util {
 
     private static boolean sIsTabletUI;
     private static float sPixelDensity = 1;
+    private static String sImageFileNameFormat;
 
     private Util() {
     }
@@ -77,6 +80,8 @@ public class Util {
                 context.getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics(metrics);
         sPixelDensity = metrics.density;
+
+        sImageFileNameFormat = context.getString(R.string.image_file_name_format);
     }
 
     public static boolean isTabletUI() {
@@ -492,5 +497,17 @@ public class Util {
         // UI coordinates range from (0, 0) to (width, height).
         matrix.postScale(viewWidth / 2000f, viewHeight / 2000f);
         matrix.postTranslate(viewWidth / 2f, viewHeight / 2f);
+    }
+
+    public static String createJpegName(long dateTaken) {
+        Date date = new Date(dateTaken);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(sImageFileNameFormat);
+        return dateFormat.format(date);
+    }
+
+    public static void broadcastNewPicture(Context context, Uri uri) {
+        context.sendBroadcast(new Intent(android.hardware.Camera.ACTION_NEW_PICTURE, uri));
+        // Keep compatibility
+        context.sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", uri));
     }
 }

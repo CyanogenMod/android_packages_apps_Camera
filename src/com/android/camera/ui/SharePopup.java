@@ -96,14 +96,14 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
             }
         };
 
-    public SharePopup(Activity activity, Uri uri, Bitmap bitmap, String mimeType, int orientation,
+    public SharePopup(Activity activity, Uri uri, Bitmap bitmap, int orientation,
             View previewFrame) {
         super(activity);
 
         // Initialize variables
         mContext = activity;
         mUri = uri;
-        mMimeType = mimeType;
+        mMimeType = mContext.getContentResolver().getType(mUri);
         mPreviewFrame = previewFrame;
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);

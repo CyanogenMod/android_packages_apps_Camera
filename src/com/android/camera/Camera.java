@@ -76,10 +76,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 
@@ -775,7 +773,17 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, delay);
                 }
             }
-            storeImage(jpegData, camera, mLocation);
+
+            if (!mIsImageCaptureIntent) {
+                storeImage(jpegData, mLocation);
+            } else {
+                mJpegImageData = jpegData;
+                if (!mQuickCapture) {
+                    showPostCaptureAlert();
+                } else {
+                    doAttach();
+                }
+            }
 
             // Check this in advance of each shot so we don't add to shutter
             // latency. It's true that someone else could write to the SD card in
@@ -836,35 +844,22 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    public void storeImage(final byte[] data,
-            android.hardware.Camera camera, Location loc) {
-        if (!mIsImageCaptureIntent) {
-            long dateTaken = System.currentTimeMillis();
-            String title = createName(dateTaken);
-            int orientation = Exif.getOrientation(data);
-            Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
-                    loc, orientation, data);
-            if (uri != null) {
-                // Create a thumbnail whose width is equal or bigger than that of the preview.
-                int ratio = (int) Math.ceil((double) mParameters.getPictureSize().width
-                        / mPreviewFrameLayout.getWidth());
-                int inSampleSize = Integer.highestOneBit(ratio);
-                mThumbnail = Thumbnail.createThumbnail(data, orientation, inSampleSize, uri);
-                if (mThumbnail != null) {
-                    mThumbnailView.setBitmap(mThumbnail.getBitmap());
-                }
-
-                sendBroadcast(new Intent(android.hardware.Camera.ACTION_NEW_PICTURE, uri));
-                // Keep compatibility
-                sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", uri));
+    private void storeImage(final byte[] data, Location loc) {
+        long dateTaken = System.currentTimeMillis();
+        String title = Util.createJpegName(dateTaken);
+        int orientation = Exif.getOrientation(data);
+        Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
+                loc, orientation, data);
+        if (uri != null) {
+            // Create a thumbnail whose width is equal or bigger than that of the preview.
+            int ratio = (int) Math.ceil((double) mParameters.getPictureSize().width
+                    / mPreviewFrameLayout.getWidth());
+            int inSampleSize = Integer.highestOneBit(ratio);
+            mThumbnail = Thumbnail.createThumbnail(data, orientation, inSampleSize, uri);
+            if (mThumbnail != null) {
+                mThumbnailView.setBitmap(mThumbnail.getBitmap());
             }
-        } else {
-            mJpegImageData = data;
-            if (!mQuickCapture) {
-                showPostCaptureAlert();
-            } else {
-                doAttach();
-            }
+            Util.broadcastNewPicture(this, uri);
         }
     }
 
@@ -953,14 +948,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Util.closeSilently(f);
         }
         return true;
-    }
-
-    private String createName(long dateTaken) {
-        Date date = new Date(dateTaken);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                getString(R.string.image_file_name_format));
-
-        return dateFormat.format(date);
     }
 
     @Override
@@ -2177,7 +2164,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void showSharePopup() {
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
-            mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(), "image/jpeg",
+            mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
                     mOrientationCompensation, mPreviewFrameLayout);
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);

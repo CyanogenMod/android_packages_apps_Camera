@@ -34,8 +34,11 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
+import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
+import android.location.Location;
 import android.media.CamcorderProfile;
+import android.media.CameraProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -83,7 +86,7 @@ public class VideoCamera extends ActivityBase
         implements CameraPreference.OnPreferenceChangedListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        ModePicker.OnModeChangeListener {
+        ModePicker.OnModeChangeListener, View.OnTouchListener {
 
     private static final String TAG = "videocamera";
 
@@ -128,6 +131,9 @@ public class VideoCamera extends ActivityBase
      */
     private final static String EXTRA_QUICK_CAPTURE =
             "android.intent.extra.quickCapture";
+
+    private boolean mSnapshotInProgress = false;
+    private PictureCallback mJpegPictureCallback;
 
     private android.hardware.Camera mCameraDevice;
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
@@ -395,7 +401,6 @@ public class VideoCamera extends ActivityBase
 
         mPreviewFrameLayout = (PreviewFrameLayout)
                 findViewById(R.id.frame_layout);
-
         mReviewImage = (ImageView) findViewById(R.id.review_image);
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
 
@@ -442,6 +447,11 @@ public class VideoCamera extends ActivityBase
         // Initialize after startPreview becuase this need mParameters.
         initializeZoomControl();
         initializeIndicatorControl();
+        if ("true".equals(mParameters.get("video-snapshot-supported")) &&
+                !mIsVideoCaptureIntent) {
+            preview.setOnTouchListener(this);
+            mJpegPictureCallback = new JpegPictureCallback();
+        }
     }
 
     private void loadCameraPreferences() {
@@ -1698,6 +1708,11 @@ public class VideoCamera extends ActivityBase
 
         mParameters.setRecordingHint(true);
 
+        // Set JPEG quality.
+        int jpegQuality = CameraProfile.getJpegEncodingQualityParameter(mCameraId,
+                CameraProfile.QUALITY_HIGH);
+        mParameters.setJpegQuality(jpegQuality);
+
         mCameraDevice.setParameters(mParameters);
         // Keep preview size up to date.
         mParameters = mCameraDevice.getParameters();
@@ -1811,7 +1826,7 @@ public class VideoCamera extends ActivityBase
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
-                    "video/*", mOrientationCompensation, mPreviewFrameLayout);
+                    mOrientationCompensation, mPreviewFrameLayout);
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
@@ -1931,6 +1946,47 @@ public class VideoCamera extends ActivityBase
         } else {
             mZoomValue = index;
             setCameraParameters();
+        }
+    }
+
+    // Preview area is touched. Take a picture.
+    @Override
+    public boolean onTouch(View v, MotionEvent e) {
+        if (mPausing || mSnapshotInProgress || !mMediaRecorderRecording) {
+            return false;
+        }
+
+        Log.v(TAG, "Video snapshot start");
+        mCameraDevice.takePicture(null, null, null, mJpegPictureCallback);
+        mSnapshotInProgress = true;
+        return true;
+    }
+
+    private final class JpegPictureCallback implements PictureCallback {
+        @Override
+        public void onPictureTaken(byte [] jpegData, android.hardware.Camera camera) {
+            Log.v(TAG, "onPictureTaken");
+            mSnapshotInProgress = false;
+            storeImage(jpegData, null);
+        }
+    }
+
+    private void storeImage(final byte[] data, Location loc) {
+        long dateTaken = System.currentTimeMillis();
+        String title = Util.createJpegName(dateTaken);
+        int orientation = Exif.getOrientation(data);
+        Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
+                loc, orientation, data);
+        if (uri != null) {
+            // Create a thumbnail whose width is equal or bigger than that of the preview.
+            int ratio = (int) Math.ceil((double) mParameters.getPictureSize().width
+                    / mPreviewFrameLayout.getWidth());
+            int inSampleSize = Integer.highestOneBit(ratio);
+            mThumbnail = Thumbnail.createThumbnail(data, orientation, inSampleSize, uri);
+            if (mThumbnail != null) {
+                mThumbnailView.setBitmap(mThumbnail.getBitmap());
+            }
+            Util.broadcastNewPicture(this, uri);
         }
     }
 }
