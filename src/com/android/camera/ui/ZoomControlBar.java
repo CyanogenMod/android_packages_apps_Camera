@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import com.android.camera.R;
+import com.android.camera.Util;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -28,6 +29,8 @@ import android.view.View;
  */
 public class ZoomControlBar extends ZoomControl {
     private static final String TAG = "ZoomControlBar";
+    private static final int STOP_ZOOM_BUFFER = Util.dpToPixel(30);
+
     private View mBar;
 
     public ZoomControlBar(Context context, AttributeSet attrs) {
@@ -56,11 +59,15 @@ public class ZoomControlBar extends ZoomControl {
         // For left-hand users, as the device is rotated for 180 degree for
         // landscape mode, the zoom-in bottom should be on the top, so the
         // position should be reversed.
+        int delta;
         if (mDegree == 180) {
-            mSliderPosition = offset - (int) y;
+            delta = offset - (int) y;
         } else {
-            mSliderPosition = (int) y - offset;
+            delta = (int) y - offset;
         }
+        // We need some space to stop zooming.
+        mSliderPosition = (Math.abs(delta) < STOP_ZOOM_BUFFER) ? 0 : delta;
+
         // TODO: add fast zoom change here
 
         switch (action) {
@@ -102,11 +109,13 @@ public class ZoomControlBar extends ZoomControl {
             mZoomOut.layout(0, bottom - width, width, bottom);
         }
         mBar.layout(0, top + width, width, bottom - width);
-        if (pos < width) {
-            pos = width;
-        } else if (pos > (height - 2 * width)) {
-            pos = height - 2 * width;
+
+        // TODO: fix the pos once we have correct zoom_big asset.
+        if (pos < 3 * width / 4) {
+            pos = 3 * width / 4;
+        } else if (pos > (height - (7 * width / 4))) {
+            pos = height - (7 * width / 4);
         }
         mZoomSlider.layout(0, pos, width, pos + width);
-   }
+    }
 }

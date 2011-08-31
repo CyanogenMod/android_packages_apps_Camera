@@ -46,9 +46,17 @@ public abstract class ZoomControl extends RelativeLayout {
         void onZoomStateChanged(int state);  // only for smooth zoom
     }
 
+    // The interface OnZoomIndexChangedListener is used to inform the
+    // ZoomIndexBar about the zoom index change. The index position is between
+    // 0 (the index is zero) and 1.0 (the index is mZoomMax).
+    public interface OnZoomIndexChangedListener {
+        void onZoomIndexChanged(double indexPosition);
+    }
+
     protected int mZoomMax, mZoomIndex;
     private boolean mSmoothZoomSupported;
     private OnZoomChangedListener mListener;
+    private OnZoomIndexChangedListener mIndexListener;
 
     // The state of zoom button.
     public static final int ZOOM_IN = 0;
@@ -84,6 +92,7 @@ public abstract class ZoomControl extends RelativeLayout {
     public void startZoomControl() {
         mZoomSlider.setPressed(true);
         mHandler.postDelayed(mRunnable, ZOOMING_INTERVAL);
+        setZoomIndex(mZoomIndex); // Update the zoom index bar.
     }
 
     protected ImageView addImageView(Context context, int iconResourceId) {
@@ -110,6 +119,10 @@ public abstract class ZoomControl extends RelativeLayout {
         mListener = listener;
     }
 
+    public void setOnZoomIndexChangeListener(OnZoomIndexChangedListener listener) {
+        mIndexListener = listener;
+    }
+
     public void setOnIndicatorEventListener(OnIndicatorEventListener listener) {
         mOnIndicatorEventListener = listener;
     }
@@ -119,6 +132,9 @@ public abstract class ZoomControl extends RelativeLayout {
             throw new IllegalArgumentException("Invalid zoom value:" + index);
         }
         mZoomIndex = index;
+        if (mIndexListener != null) {
+            mIndexListener.onZoomIndexChanged(1.0d * mZoomIndex / mZoomMax);
+        }
         invalidate();
     }
 
@@ -150,8 +166,7 @@ public abstract class ZoomControl extends RelativeLayout {
                 }
             } else {
                 mListener.onZoomStateChanged(index);
-                mZoomIndex = index;
-                invalidate();
+                setZoomIndex(index);
             }
         }
         return true;

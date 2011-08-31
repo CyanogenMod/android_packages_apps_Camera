@@ -60,14 +60,20 @@ public class IndicatorControlBar extends IndicatorControl implements
         requestLayout();
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        super.dispatchTouchEvent(event);
+        // We need to consume the event, or it will trigger tap-to-focus.
+        return true;
+    }
+
     public boolean onTouch(View v, MotionEvent event) {
         dismissSettingPopup();
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             mOnIndicatorEventListener.onIndicatorEvent(
                     OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL);
-            return true;
         }
-        return false;
+        return true;
     }
 
     public void onClick(View view) {

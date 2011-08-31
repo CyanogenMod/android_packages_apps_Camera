@@ -38,6 +38,7 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
     private Animation mFadeIn, mFadeOut;
     private IndicatorControlBar mIndicatorControlBar;
     private ZoomControlBar mZoomControlBar;
+    private ZoomIndexBar mZoomIndexBar;
     private SecondLevelIndicatorControlBar mSecondLevelIndicatorControlBar;
 
     public IndicatorControlBarContainer(Context context, AttributeSet attrs) {
@@ -51,6 +52,8 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
         mZoomControlBar = (ZoomControlBar)
                 findViewById(R.id.zoom_control);
         mZoomControlBar.setOnIndicatorEventListener(this);
+        mZoomIndexBar = (ZoomIndexBar) findViewById(R.id.zoom_index_bar);
+        mZoomControlBar.setOnZoomIndexChangeListener(mZoomIndexBar);
 
         // We need to show/hide the zoom slider icon accordingly.
         // From UI spec, we have camera_flash setting on the first level.
@@ -76,6 +79,7 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
         mIndicatorControlBar.setDegree(degree);
         mSecondLevelIndicatorControlBar.setDegree(degree);
         mZoomControlBar.setDegree(degree);
+        mZoomIndexBar.setDegree(degree);
     }
 
     @Override
@@ -87,7 +91,7 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
         } else if (mZoomControlBar.getVisibility() == View.VISIBLE) {
             return mZoomControlBar.dispatchTouchEvent(event);
         }
-        return false;
+        return true;
     }
 
     public void onIndicatorEvent(int event) {
@@ -107,11 +111,13 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
             case OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL:
                 mIndicatorControlBar.setVisibility(View.GONE);
                 mZoomControlBar.setVisibility(View.VISIBLE);
+                mZoomIndexBar.setVisibility(View.VISIBLE);
                 mZoomControlBar.startZoomControl();
                 break;
 
             case OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL:
                 mZoomControlBar.setVisibility(View.GONE);
+                mZoomIndexBar.setVisibility(View.GONE);
                 mIndicatorControlBar.setVisibility(View.VISIBLE);
                 break;
         }
