@@ -96,7 +96,7 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
     int ret;
     int numCenters;
 
-    ComputeBlendParameters(frames, frames_size, false);
+    ComputeBlendParameters(frames, frames_size, true);
     numCenters = frames_size;
 
     if (numCenters == 0)

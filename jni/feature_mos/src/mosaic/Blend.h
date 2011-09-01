@@ -110,6 +110,8 @@ protected:
   void ProcessPyramidForThisFrame(CSite *csite, BlendRect &vcrect, BlendRect &brect, MosaicRect &rect, YUVinfo &imgMos, double trs[3][3], int site_idx);
 
   int  FillFramePyramid(MosaicFrame *mb);
+
+  // TODO: need to add documentation about the parameters
   void ComputeBlendParameters(MosaicFrame **frames, int frames_size, int is360);
 
   int  PerformFinalBlending(YUVinfo &imgMos, MosaicRect &cropping_rect);
