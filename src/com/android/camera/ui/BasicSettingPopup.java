@@ -16,15 +16,15 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.IconListPreference;
+import com.android.camera.R;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-
-import com.android.camera.IconListPreference;
-import com.android.camera.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +72,6 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
                 new int[] {R.id.text, R.id.image});
         ((ListView) mSettingList).setAdapter(listItemAdapter);
         ((ListView) mSettingList).setOnItemClickListener(this);
-        ((ListView) mSettingList).setSelector(android.R.color.transparent);
         reloadPreference();
     }
 
@@ -93,14 +92,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view,
             int index, long id) {
-        // If popup window is dismissed, ignore the event. This may happen when
-        // users press home and then select a setting immediately.
-        if (getVisibility() != View.VISIBLE) return;
-
-        int oldIndex = mPreference.findIndexOfValue(mPreference.getValue());
-        if (oldIndex != index) {
-            mPreference.setValueIndex(index);
-            if (mListener != null) mListener.onSettingChanged();
-        }
+        mPreference.setValueIndex(index);
+        if (mListener != null) mListener.onSettingChanged();
     }
 }

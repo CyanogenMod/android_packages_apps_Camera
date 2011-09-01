@@ -19,6 +19,8 @@ package com.android.camera.ui;
 import com.android.camera.R;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -33,6 +35,8 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
     protected final int HIGHLIGHT_COLOR;
     protected final int DISABLED_COLOR;
     protected AbstractSettingPopup mPopup;
+    protected Handler mHandler = new MainHandler();
+    private final int MSG_DISMISS_POPUP = 0;
 
     public AbstractIndicatorButton(Context context) {
         super(context);
@@ -101,6 +105,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
     abstract protected void initializePopup();
 
     private void showPopup() {
+        mHandler.removeMessages(MSG_DISMISS_POPUP);
         if (mPopup == null) initializePopup();
 
         mPopup.setVisibility(View.VISIBLE);
@@ -111,12 +116,16 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
     }
 
     public boolean dismissPopup() {
+        mHandler.removeMessages(MSG_DISMISS_POPUP);
         if (mPopup != null && mPopup.getVisibility() == View.VISIBLE) {
             mPopup.clearAnimation();
             mPopup.startAnimation(mFadeOut);
             mPopup.setVisibility(View.GONE);
             clearColorFilter();
             invalidate();
+            // Indicator wheel needs to update the highlight indicator if this
+            // is dismissed by MSG_DISMISS_POPUP.
+            ((View) getParent()).invalidate();
             return true;
         }
         return false;
@@ -132,5 +141,22 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
 
     public void reloadPreference() {
         if (mPopup != null) mPopup.reloadPreference();
+    }
+
+    protected void dismissPopupDelayed() {
+        if (!mHandler.hasMessages(MSG_DISMISS_POPUP)) {
+            mHandler.sendEmptyMessage(MSG_DISMISS_POPUP);
+        }
+    }
+
+    private class MainHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_DISMISS_POPUP:
+                    dismissPopup();
+                    break;
+            }
+        }
     }
 }
