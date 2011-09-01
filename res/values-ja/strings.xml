@@ -87,7 +87,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"カメラ設定"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"初期設定に戻す"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"露出"</string>
-    <string name="details_ok" msgid="6848594369924424312">"OK"</string>
+    <string name="dialog_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USBストレージの空き領域が少なくなっています。画質設定を変更するか、画像など一部のファイルを削除してください。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SDカードの空き領域が少なくなっています。画質設定を変更するか、画像などのファイルを一部削除してください。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"サイズ制限に達しました。"</string>

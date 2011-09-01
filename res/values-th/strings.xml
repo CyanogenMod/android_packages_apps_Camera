@@ -87,7 +87,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"การตั้งค่ากล้องถ่ายรูป"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"คืนค่าเริ่มต้น"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"การรับแสง"</string>
-    <string name="details_ok" msgid="6848594369924424312">"ตกลง"</string>
+    <string name="dialog_ok" msgid="6848594369924424312">"ตกลง"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"ที่เก็บข้อมูล USB ของคุณไม่มีพื้นที่เหลือ ให้เปลี่ยนการตั้งค่าคุณภาพหรือลบบางภาพหรือไฟล์อื่นๆ"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"การ์ด SD ของคุณไม่มีพื้นที่เหลือ ให้เปลี่ยนการตั้งค่าคุณภาพหรือลบบางภาพหรือไฟล์อื่นๆ"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"ขนาดถึงขีดจำกัดแล้ว"</string>
