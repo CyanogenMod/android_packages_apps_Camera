@@ -165,7 +165,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private RotateImageView mThumbnailView;
     private ModePicker mModePicker;
     private FaceView mFaceView;
-    private RotateLayout mFocusRectangleRotateLayout;
+    private RotateLayout mFocusIndicator;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -386,8 +386,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
         mPreviewBorder = findViewById(R.id.preview_border);
-        mFocusRectangleRotateLayout = (RotateLayout) findViewById(R.id.focus_rect_rotate_layout);
-        mFocusManager.initialize(mFocusRectangleRotateLayout, mPreviewFrame, mFaceView, this);
+        mFocusIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
+        mFocusManager.initialize(mFocusIndicator, mPreviewFrame, mFaceView, this);
         mFocusManager.initializeToneGenerator();
         initializeScreenBrightness();
         installIntentFilter();
@@ -526,7 +526,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     public void startFaceDetection() {
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceView = (FaceView) findViewById(R.id.face_view);
-            mFaceView.clearFaces();
+            mFaceView.clear();
             mFaceView.setVisibility(View.VISIBLE);
             mFaceView.setDisplayOrientation(mDisplayOrientation);
             CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
@@ -542,7 +542,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mCameraDevice.setFaceDetectionListener(null);
             mCameraDevice.stopFaceDetection();
-            if (mFaceView != null) mFaceView.clearFaces();
+            if (mFaceView != null) mFaceView.clear();
         }
     }
 
@@ -1163,7 +1163,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
         if (mZoomControl != null) mZoomControl.setDegree(degree);
-        if (mFocusRectangleRotateLayout != null) mFocusRectangleRotateLayout.setOrientation(degree);
+        if (mFocusIndicator != null) mFocusIndicator.setOrientation(degree);
     }
 
     @Override
@@ -1410,7 +1410,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Clear UI.
         collapseCameraControls();
         if (mSharePopup != null) mSharePopup.dismiss();
-        if (mFaceView != null) mFaceView.clearFaces();
+        if (mFaceView != null) mFaceView.clear();
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();

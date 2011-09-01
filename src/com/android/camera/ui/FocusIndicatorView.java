@@ -22,9 +22,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-// A square that indicates the focus area or the metering area.
-public class FocusRectangle extends View {
-    public FocusRectangle(Context context, AttributeSet attrs) {
+// A view that indicates the focus area or the metering area.
+public class FocusIndicatorView extends View implements FocusIndicator {
+    public FocusIndicatorView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -32,18 +32,22 @@ public class FocusRectangle extends View {
         setBackgroundDrawable(getResources().getDrawable(resid));
     }
 
+    @Override
     public void showStart() {
         setDrawable(R.drawable.ic_focus_focusing);
     }
 
+    @Override
     public void showSuccess() {
         setDrawable(R.drawable.ic_focus_focused);
     }
 
+    @Override
     public void showFail() {
         setDrawable(R.drawable.ic_focus_failed);
     }
 
+    @Override
     public void clear() {
         setBackgroundDrawable(null);
     }
