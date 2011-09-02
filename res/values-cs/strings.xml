@@ -35,9 +35,9 @@
     <string name="confirm_restore_title" msgid="1229914538263792180">"Obnovit výchozí nastavení"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Bude obnoveno výchozí nastavení fotoaparátu."</string>
     <string name="review_play" msgid="6378271587740884696">"Přehrát"</string>
-    <string name="review_cancel" msgid="7842670783357645942">"Zrušit"</string>
-    <string name="review_ok" msgid="4750691949877864726">"OK"</string>
-    <string name="review_retake" msgid="7776579640762112761">"Pořídit další"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"ZRUŠIT"</string>
+    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_retake" msgid="7804864054896088338">"Pořídit další"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Přepnout fotoaparát"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Časosběrný záznam"</string>
@@ -87,7 +87,8 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Nastavení fotoaparátu"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Obnovit výchozí nastavení"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Expozice"</string>
-    <string name="dialog_ok" msgid="6848594369924424312">"OK"</string>
+    <!-- no translation found for dialog_ok (6263301364153382152) -->
+    <skip />
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"V úložišti USB je málo místa. Změňte nastavení kvality nebo smažte některé fotografie či jiné soubory."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Na kartě SD je málo místa. Změňte nastavení kvality nebo smažte některé obrázky či jiné soubory."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Bylo dosaženo limitu velikosti."</string>
@@ -101,9 +102,19 @@
     <string name="pano_capture_stop" msgid="8122941670229992464">"Stop"</string>
     <string name="pano_capture_start" msgid="2163632725789917725">"Spustit"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Příliš rychle"</string>
-    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
+    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Příprava náhledu..."</string>
+    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Generování panoramatu..."</string>
+    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
     <skip />
-    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
     <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"Klepnutím zaostříte"</string>
+    <string name="pref_video_effect_title" msgid="8243182968457289488">"Efekty"</string>
+    <string name="effect_none" msgid="3601545724573307541">"Žádný"</string>
+    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Zmáčknout"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"Velké oči"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"Velká ústa"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Malá ústa"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Velký nos"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Malé oči"</string>
 </resources>

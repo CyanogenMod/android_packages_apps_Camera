@@ -38,9 +38,9 @@
     <string name="confirm_restore_title" msgid="1229914538263792180">"Stel verstek instellings terug"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Kamera-instellings sal na verstek instellings teruggestel word."</string>
     <string name="review_play" msgid="6378271587740884696">"Speel"</string>
-    <string name="review_cancel" msgid="7842670783357645942">"Kanselleer"</string>
-    <string name="review_ok" msgid="4750691949877864726">"Ok"</string>
-    <string name="review_retake" msgid="7776579640762112761">"Neem weer"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"KANSELLEER"</string>
+    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_retake" msgid="7804864054896088338">"HERNEEM"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galery"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Wissel kamera"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Tydsverloop-opname"</string>
@@ -90,7 +90,8 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Kamera-instellings"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Laai verstek instellings terug"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Blootstelling"</string>
-    <string name="dialog_ok" msgid="6848594369924424312">"OK"</string>
+    <!-- no translation found for dialog_ok (6263301364153382152) -->
+    <skip />
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Jou USB-berging se stoorspasie raak min. Verander die gehalte-instelling of vee \'n paar prente of ander lêers uit."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Jou SD-kaart raak vol. Verander die gehalte-instelling of vee \'n paar prente of ander lêers uit."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Groottebeperking bereik."</string>
@@ -108,9 +109,19 @@
     <string name="pano_capture_stop" msgid="8122941670229992464">"Stop"</string>
     <string name="pano_capture_start" msgid="2163632725789917725">"Begin"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Te vinnig"</string>
-    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
+    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Berei tans voorskou voor..."</string>
+    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Genereer tans panorama..."</string>
+    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
     <skip />
-    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
     <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"Tik om te fokus"</string>
+    <string name="pref_video_effect_title" msgid="8243182968457289488">"Effekte"</string>
+    <string name="effect_none" msgid="3601545724573307541">"Geen"</string>
+    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Druk"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"Groot oë"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"Groot mond"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Klein mond"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Groot neus"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Klein oë"</string>
 </resources>

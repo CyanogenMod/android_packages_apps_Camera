@@ -30,14 +30,14 @@
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD kartica je puna."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Pripremanje USB memorije..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Priprema SD kartice…"</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Pristup USB memoriji nije uspio."</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Pristup USB memoriji nije uspio."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Nije moguć pristup USB pohrani."</string>
+    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Nije moguć pristup SD kartici."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Vrati zadano"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Postavke fotoaparata bit će vraćene na zadane."</string>
     <string name="review_play" msgid="6378271587740884696">"Reproduk."</string>
-    <string name="review_cancel" msgid="7842670783357645942">"Odustani"</string>
-    <string name="review_ok" msgid="4750691949877864726">"U redu"</string>
-    <string name="review_retake" msgid="7776579640762112761">"Snimi opet"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"ODUSTANI"</string>
+    <string name="review_ok" msgid="5305096180300056529">"U redu"</string>
+    <string name="review_retake" msgid="7804864054896088338">"PONOVNO SNIMANJE"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerija"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Promijeni kameru"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Snimanje s vremenskim odmakom"</string>
@@ -87,7 +87,8 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Postavke fotoaparata"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Vrati zadano"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Ekspozicija"</string>
-    <string name="dialog_ok" msgid="6848594369924424312">"U redu"</string>
+    <!-- no translation found for dialog_ok (6263301364153382152) -->
+    <skip />
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Na vašoj USB memoriji ponestaje prostora. Primijenite postavku kvalitete ili izbrišite neke slike ili druge datoteke."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Na vašoj kartici SD ponestaje prostora. Primijenite postavku kvalitete ili izbrišite neke slike ili druge datoteke."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Dostignuto je ograničenje veličine."</string>
@@ -100,11 +101,20 @@
     <string name="no_video_to_share" msgid="3775826212074938990">"Nema videozapisa za dijeljenje"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Zaustavi"</string>
     <string name="pano_capture_start" msgid="2163632725789917725">"Pokreni"</string>
-    <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
+    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Prebrzo"</string>
+    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Priprema pregleda"</string>
+    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Generiranje panorame..."</string>
+    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
     <skip />
-    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
-    <skip />
-    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
     <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"Dotaknite za fokus"</string>
+    <string name="pref_video_effect_title" msgid="8243182968457289488">"Efekti"</string>
+    <string name="effect_none" msgid="3601545724573307541">"Ništa"</string>
+    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Stisnuto"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"Velike oči"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"Velika usta"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Mala usta"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Veliki nos"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Male oči"</string>
 </resources>

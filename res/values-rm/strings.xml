@@ -36,9 +36,9 @@
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restaurar ils parameters predefinids"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Ils parameters predefinids da la camera vegnan restaurads."</string>
     <!-- outdated translation 6015456244323302817 -->     <string name="review_play" msgid="6378271587740884696">"REPRODUCIR"</string>
-    <!-- outdated translation 8188009385853399254 -->     <string name="review_cancel" msgid="7842670783357645942">"INTERRUMPER"</string>
-    <!-- outdated translation 5305096180300056529 -->     <string name="review_ok" msgid="4750691949877864726">"OK"</string>
-    <!-- outdated translation 7804864054896088338 -->     <string name="review_retake" msgid="7776579640762112761">"AUTRA FOTO"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"INTERRUMPER"</string>
+    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_retake" msgid="7804864054896088338">"AUTRA FOTO"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Catalog"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Midar la camera"</string>
     <!-- no translation found for time_lapse_title (4360632427760662691) -->
@@ -94,7 +94,8 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Parameters da la camera"</string>
     <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar ils parameters predefinids"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposiziun"</string>
-    <string name="dialog_ok" msgid="6848594369924424312">"OK"</string>
+    <!-- no translation found for dialog_ok (6263301364153382152) -->
+    <skip />
     <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Vossa carta SD è plaina. Modifitgai il parameter da qualitad u stizzai elements dal catalog."</string>
     <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Vossa carta SD è plaina. Modifitgai il parameter da qualitad u stizzai elements dal catalog."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Cuntanschì la grondezza maximala."</string>
@@ -122,6 +123,26 @@
     <skip />
     <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
     <skip />
+    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
+    <skip />
+    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
+    <skip />
     <!-- no translation found for tap_to_focus (6417403734418828035) -->
+    <skip />
+    <!-- no translation found for pref_video_effect_title (8243182968457289488) -->
+    <skip />
+    <!-- no translation found for effect_none (3601545724573307541) -->
+    <skip />
+    <!-- no translation found for effect_goofy_face_squeeze (1207235692524289171) -->
+    <skip />
+    <!-- no translation found for effect_goofy_face_big_eyes (1942377617761116861) -->
+    <skip />
+    <!-- no translation found for effect_goofy_face_big_mouth (2342636750478741367) -->
+    <skip />
+    <!-- no translation found for effect_goofy_face_small_mouth (4424498213697804087) -->
+    <skip />
+    <!-- no translation found for effect_goofy_face_big_nose (5738964679340745774) -->
+    <skip />
+    <!-- no translation found for effect_goofy_face_small_eyes (8007886544327361111) -->
     <skip />
 </resources>
