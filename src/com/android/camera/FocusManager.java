@@ -17,7 +17,8 @@
 package com.android.camera;
 
 import com.android.camera.ui.FaceView;
-import com.android.camera.ui.FocusRectangle;
+import com.android.camera.ui.FocusIndicator;
+import com.android.camera.ui.FocusIndicatorView;
 
 import android.graphics.Rect;
 import android.hardware.Camera.Area;
@@ -56,8 +57,8 @@ public class FocusManager {
     private boolean mFocusAreaSupported;
     private boolean mContinuousFocusFail;
     private ToneGenerator mFocusToneGenerator;
-    private View mFocusRectangleRotateLayout;
-    private FocusRectangle mFocusRectangle;
+    private View mFocusIndicatorRotateLayout;
+    private FocusIndicatorView mFocusIndicator;
     private View mPreviewFrame;
     private FaceView mFaceView;
     private List<Area> mTapArea;  // focus area in driver format
@@ -105,10 +106,11 @@ public class FocusManager {
                         mParameters.getSupportedFocusModes()));
     }
 
-    public void initialize(View focusRectangleRotate, View previewFrame,
+    public void initialize(View focusIndicatorRotate, View previewFrame,
             FaceView faceView, Listener listener) {
-        mFocusRectangleRotateLayout = focusRectangleRotate;
-        mFocusRectangle = (FocusRectangle) focusRectangleRotate.findViewById(R.id.focus_rect);
+        mFocusIndicatorRotateLayout = focusIndicatorRotate;
+        mFocusIndicator = (FocusIndicatorView) focusIndicatorRotate.findViewById(
+                R.id.focus_indicator);
         mPreviewFrame = previewFrame;
         mFaceView = faceView;
         mListener = listener;
@@ -165,7 +167,6 @@ public class FocusManager {
     public void onShutter() {
         resetTouchFocus();
         updateFocusUI();
-        if (mFaceView != null) mFaceView.clearFaces();
     }
 
     public void onAutoFocus(boolean focused) {
@@ -224,8 +225,8 @@ public class FocusManager {
         // Initialize variables.
         int x = Math.round(e.getX());
         int y = Math.round(e.getY());
-        int focusWidth = mFocusRectangleRotateLayout.getWidth();
-        int focusHeight = mFocusRectangleRotateLayout.getHeight();
+        int focusWidth = mFocusIndicatorRotateLayout.getWidth();
+        int focusHeight = mFocusIndicatorRotateLayout.getHeight();
         int previewWidth = mPreviewFrame.getWidth();
         int previewHeight = mPreviewFrame.getHeight();
         if (mTapArea == null) {
@@ -234,7 +235,7 @@ public class FocusManager {
         }
 
         // Convert the coordinates to driver format. The actual focus area is two times bigger than
-        // UI because a huge rectangle looks strange.
+        // UI because a huge indicator looks strange.
         int areaWidth = focusWidth * 2;
         int areaHeight = focusHeight * 2;
         int areaLeft = Util.clamp(x - areaWidth / 2, 0, previewWidth - areaWidth);
@@ -243,16 +244,16 @@ public class FocusManager {
         convertToFocusArea(areaLeft, areaTop, areaWidth, areaHeight, previewWidth, previewHeight,
                 mTapArea.get(0).rect);
 
-        // Use margin to set the focus rectangle to the touched area.
+        // Use margin to set the focus indicator to the touched area.
         RelativeLayout.LayoutParams p =
-                (RelativeLayout.LayoutParams) mFocusRectangleRotateLayout.getLayoutParams();
+                (RelativeLayout.LayoutParams) mFocusIndicatorRotateLayout.getLayoutParams();
         int left = Util.clamp(x - focusWidth / 2, 0, previewWidth - focusWidth);
         int top = Util.clamp(y - focusHeight / 2, 0, previewHeight - focusHeight);
         p.setMargins(left, top, 0, 0);
         // Disable "center" rule because we no longer want to put it in the center.
         int[] rules = p.getRules();
         rules[RelativeLayout.CENTER_IN_PARENT] = 0;
-        mFocusRectangleRotateLayout.requestLayout();
+        mFocusIndicatorRotateLayout.requestLayout();
 
         // Stop face detection because we want to specify focus and metering area.
         mListener.stopFaceDetection();
@@ -261,7 +262,7 @@ public class FocusManager {
         mListener.setFocusParameters();
         if (mFocusAreaSupported && (e.getAction() == MotionEvent.ACTION_UP)) {
             autoFocus();
-        } else {  // Just show the rectangle in all other cases.
+        } else {  // Just show the indicator in all other cases.
             updateFocusUI();
             // Reset the metering area in 3 seconds.
             mHandler.removeMessages(RESET_TOUCH_FOCUS);
@@ -368,42 +369,40 @@ public class FocusManager {
     public void updateFocusUI() {
         if (!mInitialized) return;
 
-        // Set the length of focus rectangle according to preview frame size.
+        // Set the length of focus indicator according to preview frame size.
         int len = Math.min(mPreviewFrame.getWidth(), mPreviewFrame.getHeight()) / 4;
-        ViewGroup.LayoutParams layout = mFocusRectangleRotateLayout.getLayoutParams();
+        ViewGroup.LayoutParams layout = mFocusIndicatorRotateLayout.getLayoutParams();
         layout.width = len;
         layout.height = len;
 
+        // Show only focus indicator or face indicator.
+        boolean faceExists = (mFaceView != null && mFaceView.faceExists());
+        FocusIndicator focusIndicator = (faceExists) ? mFaceView : mFocusIndicator;
+
         if (mState == STATE_IDLE) {
             if (mTapArea == null) {
-                mFocusRectangle.clear();
+                focusIndicator.clear();
             } else {
-                // Users touch on the preview and the rectangle indicates the
+                // Users touch on the preview and the indicator represents the
                 // metering area. Either focus area is not supported or
                 // autoFocus call is not required.
-                mFocusRectangle.showStart();
+                focusIndicator.showStart();
             }
-            return;
-        }
-
-        // Do not show focus rectangle if there is any face rectangle.
-        if (mFaceView != null && mFaceView.faceExists()) return;
-
-        if (mState == STATE_FOCUSING || mState == STATE_FOCUSING_SNAP_ON_FINISH) {
-            mFocusRectangle.showStart();
+        } else if (mState == STATE_FOCUSING || mState == STATE_FOCUSING_SNAP_ON_FINISH) {
+            focusIndicator.showStart();
         } else if (mState == STATE_SUCCESS) {
-            mFocusRectangle.showSuccess();
+            focusIndicator.showSuccess();
         } else if (mState == STATE_FAIL) {
-            mFocusRectangle.showFail();
+            focusIndicator.showFail();
         }
     }
 
     public void resetTouchFocus() {
         if (!mInitialized) return;
 
-        // Put focus rectangle to the center.
+        // Put focus indicator to the center.
         RelativeLayout.LayoutParams p =
-                (RelativeLayout.LayoutParams) mFocusRectangleRotateLayout.getLayoutParams();
+                (RelativeLayout.LayoutParams) mFocusIndicatorRotateLayout.getLayoutParams();
         int[] rules = p.getRules();
         rules[RelativeLayout.CENTER_IN_PARENT] = RelativeLayout.TRUE;
         p.setMargins(0, 0, 0, 0);

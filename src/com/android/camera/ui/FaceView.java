@@ -29,7 +29,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-public class FaceView extends View {
+public class FaceView extends View implements FocusIndicator {
     private final String TAG = "FaceView";
     private final boolean LOGV = false;
     private int mDisplayOrientation;
@@ -38,11 +38,17 @@ public class FaceView extends View {
     private Matrix mMatrix = new Matrix();
     private RectF mRect = new RectF();
     private Face[] mFaces;
-    private Drawable mFaceRect;
+    private Drawable mFaceIndicator;
+    private final Drawable mDrawableFocusing;
+    private final Drawable mDrawableFocused;
+    private final Drawable mDrawableFocusFailed;
 
     public FaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mFaceRect = getResources().getDrawable(R.drawable.ic_focus_focusing);
+        mDrawableFocusing = getResources().getDrawable(R.drawable.ic_focus_focusing);
+        mDrawableFocused = getResources().getDrawable(R.drawable.ic_focus_face_focused);
+        mDrawableFocusFailed = getResources().getDrawable(R.drawable.ic_focus_failed);
+        mFaceIndicator = mDrawableFocusing;
     }
 
     public void setFaces(Face[] faces) {
@@ -66,7 +72,29 @@ public class FaceView extends View {
         return (mFaces != null && mFaces.length > 0);
     }
 
-    public void clearFaces() {
+    @Override
+    public void showStart() {
+        mFaceIndicator = mDrawableFocusing;
+        invalidate();
+    }
+
+    @Override
+    public void showSuccess() {
+        mFaceIndicator = mDrawableFocused;
+        invalidate();
+    }
+
+    @Override
+    public void showFail() {
+        mFaceIndicator = mDrawableFocusFailed;
+        invalidate();
+    }
+
+    @Override
+    public void clear() {
+        // Face indicator is displayed during preview. Do not clear the
+        // drawable.
+        mFaceIndicator = mDrawableFocusing;
         mFaces = null;
         invalidate();
     }
@@ -98,9 +126,9 @@ public class FaceView extends View {
                 mMatrix.mapRect(mRect);
                 if (LOGV) dumpRect(mRect, "Transformed rect");
 
-                mFaceRect.setBounds(Math.round(mRect.left), Math.round(mRect.top),
+                mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
                         Math.round(mRect.right), Math.round(mRect.bottom));
-                mFaceRect.draw(canvas);
+                mFaceIndicator.draw(canvas);
             }
         }
         super.onDraw(canvas);
