@@ -69,6 +69,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         double x = (double) event.getX();
         double y = (double) event.getY();
         int height = getHeight();
+        if (height == 0) return false; // the event is sent before onMeasure()
         if (x > getWidth()) x = getWidth();
         if (y >= height) y = height - 1;
 
