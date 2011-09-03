@@ -1853,7 +1853,6 @@ public class VideoCamera extends ActivityBase
     private void initializeZoomControl() {
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
         if (!mParameters.isZoomSupported()) return;
-        mZoomControl.initialize(this);
 
         mZoomMax = mParameters.getMaxZoom();
         mSmoothZoomSupported = mParameters.isSmoothZoomSupported();

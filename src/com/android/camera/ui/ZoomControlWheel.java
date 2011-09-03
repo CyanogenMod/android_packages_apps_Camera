@@ -71,15 +71,10 @@ public class ZoomControlWheel extends ZoomControl {
         Resources resources = context.getResources();
         HIGHLIGHT_COLOR = resources.getColor(R.color.review_control_pressed_color);
         TRAIL_COLOR = resources.getColor(R.color.icon_disabled_color);
-    }
 
-    @Override
-    public void initialize(Context context) {
-        super.initialize(context);
         mShutterButtonRadius = IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS;
         mStrokeWidth = Util.dpToPixel(IndicatorControlWheelContainer.STROKE_WIDTH);
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 0.5;
-        requestLayout();
     }
 
     @Override

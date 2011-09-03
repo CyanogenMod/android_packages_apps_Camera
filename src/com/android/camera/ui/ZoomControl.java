@@ -80,9 +80,6 @@ public abstract class ZoomControl extends RelativeLayout {
 
     public ZoomControl(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public void initialize(Context context) {
         mZoomIn = addImageView(context, R.drawable.ic_zoom_in_holo_light);
         mZoomSlider = addImageView(context, R.drawable.btn_zoom_slider);
         mZoomOut = addImageView(context, R.drawable.ic_zoom_out_holo_light);

@@ -35,11 +35,6 @@ public class ZoomControlBar extends ZoomControl {
 
     public ZoomControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    @Override
-    public void initialize(Context context) {
-        super.initialize(context);
         mBar = new View(context);
         mBar.setBackgroundResource(R.drawable.ic_zoom_big);
         addView(mBar);

@@ -454,12 +454,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void initializeZoomControl() {
-        mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
-        if (!mParameters.isZoomSupported()) return;
-        mZoomControl.initialize(this);
-    }
-
     private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
         // only for immediate zoom
         @Override
@@ -1021,6 +1015,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
         }
 
+        mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
+
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -1040,7 +1036,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Do this after starting preview because it depends on camera
         // parameters.
-        initializeZoomControl();
         initializeIndicatorControl();
     }
 
