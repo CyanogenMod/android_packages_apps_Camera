@@ -158,4 +158,10 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
             mSecondLevelIndicatorControlBar.overrideSettings(keyvalues);
         }
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        mIndicatorControlBar.setEnabled(enabled);
+        mSecondLevelIndicatorControlBar.setEnabled(enabled);
+    }
 }

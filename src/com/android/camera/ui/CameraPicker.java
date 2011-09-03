@@ -34,11 +34,9 @@ public class CameraPicker extends RotateImageView implements View.OnClickListene
     private ListPreference mPreference;
     private CharSequence[] mCameras;
     private int mCameraFacing;
-    private final int DISABLED_COLOR;
 
     public CameraPicker(Context context) {
         super(context);
-        DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
         setImageResource(mImageResource);
     }
 
@@ -73,15 +71,5 @@ public class CameraPicker extends RotateImageView implements View.OnClickListene
         mCameraFacing = newCameraIndex;
         mPreference.setValue((String) mCameras[mCameraFacing]);
         mListener.onSharedPreferenceChanged();
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        if (enabled) {
-            clearColorFilter();
-        } else {
-            setColorFilter(DISABLED_COLOR);
-        }
     }
 }

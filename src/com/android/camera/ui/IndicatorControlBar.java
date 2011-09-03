@@ -103,4 +103,16 @@ public class IndicatorControlBar extends IndicatorControl implements
         }
         if (mCameraPicker != null) mCameraPicker.layout(0, offset, width, offset + width);
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (mCurrentMode == MODE_VIDEO) {
+            mSecondLevelIcon.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+        } else {
+            // We also disable the zoom button during snapshot.
+            if (mZoomIcon != null) mZoomIcon.setEnabled(enabled);
+        }
+        mSecondLevelIcon.setEnabled(enabled);
+    }
 }

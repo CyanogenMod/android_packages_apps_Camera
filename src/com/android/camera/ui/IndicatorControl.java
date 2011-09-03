@@ -37,6 +37,8 @@ import java.util.ArrayList;
 public abstract class IndicatorControl extends RelativeLayout implements
         IndicatorButton.Listener, OtherSettingsPopup.Listener {
     private static final String TAG = "IndicatorControl";
+    public static final int MODE_CAMERA = 0;
+    public static final int MODE_VIDEO = 1;
 
     private Context mContext;
     private OnPreferenceChangedListener mListener;
@@ -45,6 +47,8 @@ public abstract class IndicatorControl extends RelativeLayout implements
 
     private PreferenceGroup mPreferenceGroup;
     private int mDegree = 0;
+
+    protected int mCurrentMode = MODE_CAMERA;
 
     ArrayList<AbstractIndicatorButton> mIndicators =
             new ArrayList<AbstractIndicatorButton>();
@@ -76,6 +80,12 @@ public abstract class IndicatorControl extends RelativeLayout implements
 
     public void setPreferenceGroup(PreferenceGroup group) {
         mPreferenceGroup = group;
+        // Preset the current mode from the title of preference group.
+        String title = group.getTitle();
+        if (title.equals(mContext.getString(
+                R.string.pref_camcorder_settings_category))) {
+            mCurrentMode = MODE_VIDEO;
+        }
     }
 
     protected void addControls(String[] keys, String[] otherSettingKeys) {
@@ -186,8 +196,17 @@ public abstract class IndicatorControl extends RelativeLayout implements
             // Zoom buttons and shutter button are controlled by the activity.
             if (v instanceof AbstractIndicatorButton) {
                 v.setEnabled(enabled);
+                // Show or hide the indicator buttons during recording.
+                if (mCurrentMode == MODE_VIDEO) {
+                    v.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+                }
             }
         }
-        if (mCameraPicker != null) mCameraPicker.setEnabled(enabled);
+        if (mCameraPicker != null) {
+            mCameraPicker.setEnabled(enabled);
+            if (mCurrentMode == MODE_VIDEO) {
+                mCameraPicker.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+            }
+        }
     }
 }

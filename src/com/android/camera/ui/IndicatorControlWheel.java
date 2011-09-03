@@ -88,7 +88,6 @@ public class IndicatorControlWheel extends IndicatorControl implements
     // Remember the last event for event cancelling if out of bound.
     private MotionEvent mLastMotionEvent;
 
-    protected final int DISABLED_COLOR;
     private ImageView mSecondLevelIcon;
     private ImageView mCloseIcon;
 
@@ -110,7 +109,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private double mSectorRadians[] = new double[2];
     private double mTouchSectorRadians[] = new double[2];
 
-    private View mZoomIcon;
+    private ImageView mZoomIcon;
 
     public IndicatorControlWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -125,7 +124,6 @@ public class IndicatorControlWheel extends IndicatorControl implements
         mBackgroundPaint.setAntiAlias(true);
 
         mBackgroundRect = new RectF();
-        DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
     }
 
     private int getChildCountByLevel(int level) {
@@ -182,7 +180,12 @@ public class IndicatorControlWheel extends IndicatorControl implements
     }
 
     private ImageView addImageButton(Context context, int resourceId, boolean rotatable) {
-        ImageView view = rotatable ? new RotateImageView(context) : new ImageView(context);
+        ImageView view;
+        if (rotatable) {
+            view = new RotateImageView(context);
+        } else {
+            view = new ColorFilterImageView(context);
+        }
         view.setImageResource(resourceId);
         view.setOnClickListener(this);
         addView(view);
@@ -309,6 +312,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
         // The icons are spreaded on the left side of the shutter button.
         for (int i = 0; i < getChildCount(); ++i) {
             View view = getChildAt(i);
+            if (!view.isEnabled()) continue;
             double radian = mChildRadians[i];
             double startVisibleRadians = mInAnimation
                     ? mStartVisibleRadians[1]
@@ -467,12 +471,13 @@ public class IndicatorControlWheel extends IndicatorControl implements
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        if (enabled) {
-            mSecondLevelIcon.clearColorFilter();
-            mCloseIcon.clearColorFilter();
+        if (mCurrentMode == MODE_VIDEO) {
+            mSecondLevelIcon.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+            mCloseIcon.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+            requestLayout();
         } else {
-            mSecondLevelIcon.setColorFilter(DISABLED_COLOR);
-            mCloseIcon.setColorFilter(DISABLED_COLOR);
+            // We also disable the zoom button during snapshot.
+            if (mZoomIcon != null)  mZoomIcon.setEnabled(enabled);
         }
         mSecondLevelIcon.setEnabled(enabled);
         mCloseIcon.setEnabled(enabled);

@@ -33,7 +33,6 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
     protected Context mContext;
     protected Animation mFadeIn, mFadeOut;
     protected final int HIGHLIGHT_COLOR;
-    protected final int DISABLED_COLOR;
     protected AbstractSettingPopup mPopup;
     protected Handler mHandler = new MainHandler();
     private final int MSG_DISMISS_POPUP = 0;
@@ -44,7 +43,6 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
         mFadeIn = AnimationUtils.loadAnimation(mContext, R.anim.grow_fade_in_from_right);
         mFadeOut = AnimationUtils.loadAnimation(mContext, R.anim.shrink_fade_out_from_right);
         HIGHLIGHT_COLOR = mContext.getResources().getColor(R.color.review_control_pressed_color);
-        DISABLED_COLOR = mContext.getResources().getColor(R.color.icon_disabled_color);
         setScaleType(ImageView.ScaleType.CENTER);
     }
 
@@ -86,11 +84,6 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
         // the "highlight" state.
         if (isEnabled() ^ enabled) {
             super.setEnabled(enabled);
-            if (enabled) {
-                clearColorFilter();
-            } else {
-                setColorFilter(DISABLED_COLOR);
-            }
         }
     }
 
