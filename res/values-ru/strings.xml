@@ -92,7 +92,6 @@
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Бесконечность"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Макро"</string>
     <string name="pref_camera_focusmode_entry_touch">Прикосновение</string>
-    <string name="touch_focus_enabled">Прикоснитесь к экрану чтобы сфокусировать камеру.</string>
 
     <!-- Settings screen, Capture mode title -->
     <string name="pref_camera_capturemode_title">Режим съёмки</string>
