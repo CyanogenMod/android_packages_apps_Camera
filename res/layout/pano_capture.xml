@@ -20,33 +20,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <LinearLayout android:id="@+id/pano_capture_preview"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-        <ImageView style="@style/PanoViewHorizontalGrayBar"/>
+        <LinearLayout android:id="@+id/pano_capture_preview"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <com.android.camera.panorama.MosaicRendererSurfaceView
-                android:id="@+id/pano_renderer"
-                android:layout_gravity="center"
-                android:layout_width="@dimen/pano_mosaic_surface_width"
-                android:layout_height="@dimen/pano_mosaic_surface_height" />
+            <ImageView style="@style/PanoViewHorizontalGrayBar"/>
 
-        <LinearLayout android:id="@+id/pano_capture_control"
-                style="@style/PanoViewHorizontalGrayBar"
-                android:gravity="right"
-                android:visibility="visible"
-                android:orientation="horizontal">
+            <com.android.camera.panorama.MosaicRendererSurfaceView
+                    android:id="@+id/pano_renderer"
+                    android:layout_gravity="center"
+                    android:layout_width="@dimen/pano_mosaic_surface_width"
+                    android:layout_height="@dimen/pano_mosaic_surface_height" />
 
-            <Button android:id="@+id/pano_capture_stop_button"
-                    android:text="@string/pano_capture_stop"
-                    android:onClick="onStopButtonClicked"
-                    android:visibility="gone"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:layout_width="@dimen/pano_capture_stop_button_width"
-                    android:layout_height="@dimen/pano_capture_stop_button_width" />
+            <LinearLayout android:id="@+id/pano_capture_control"
+                    style="@style/PanoViewHorizontalGrayBar"
+                    android:gravity="right"
+                    android:visibility="visible"
+                    android:orientation="horizontal">
+
+                <Button android:id="@+id/pano_capture_stop_button"
+                        android:text="@string/pano_capture_stop"
+                        android:onClick="onStopButtonClicked"
+                        android:visibility="gone"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:layout_width="@dimen/pano_capture_stop_button_width"
+                        android:layout_height="@dimen/pano_capture_stop_button_width" />
+            </LinearLayout>
         </LinearLayout>
+        <include layout="@layout/pano_control" />
+
     </LinearLayout>
 
     <com.android.camera.panorama.IndicationView
@@ -56,8 +65,6 @@
             android:layout_alignParentBottom="true"
             android:layout_width="@dimen/pano_indication_width"
             android:layout_height="@dimen/pano_indication_height" />
-
-    <include layout="@layout/pano_control" android:id="@+id/pano_control_layout" />
 
     <TextView android:id="@+id/pano_capture_too_fast_textview"
         android:text="@string/pano_too_fast_prompt"
