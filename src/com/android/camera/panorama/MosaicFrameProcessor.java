@@ -30,6 +30,7 @@ public class MosaicFrameProcessor {
     private static final int X_COORD_INDEX = 2;
     private static final int Y_COORD_INDEX = 5;
     private static final int HR_TO_LR_DOWNSAMPLE_FACTOR = 4;
+    private static final int WINDOW_SIZE = 3;
 
     private Mosaic mMosaicer;
     private boolean mIsMosaicMemoryAllocated = false;
@@ -43,11 +44,20 @@ public class MosaicFrameProcessor {
     private int mLastProcessFrameIdx = -1;
     private int mCurrProcessFrameIdx = -1;
 
-    private ProgressListener mProgressListener;
-
     // Panning rate is in unit of percentage of image content translation / second.
+    // Use the moving average to calculate the panning rate.
     private float mPanningRateX;
     private float mPanningRateY;
+
+    private float[] mDeltaX = new float[WINDOW_SIZE];
+    private float[] mDeltaY = new float[WINDOW_SIZE];
+    private float[] mDeltaTime = new float[WINDOW_SIZE];
+    private int mOldestIdx = 0;
+    private float mTotalTranslationX = 0f;
+    private float mTotalTranslationY = 0f;
+    private float mTotalDeltaTime = 0f;
+
+    private ProgressListener mProgressListener;
 
     private int mPreviewWidth;
     private int mPreviewHeight;
@@ -99,8 +109,20 @@ public class MosaicFrameProcessor {
         mTotalFrameCount = 0;
         mFillIn = 0;
         mLastProcessedFrameTimestamp = 0;
+        mTotalTranslationX = 0;
+        mTranslationLastX = 0;
+        mTotalTranslationY = 0;
+        mTranslationLastY = 0;
+        mTotalDeltaTime = 0;
+        mPanningRateX = 0;
+        mPanningRateY = 0;
         mLastProcessFrameIdx = -1;
         mCurrProcessFrameIdx = -1;
+        for (int i = 0; i < WINDOW_SIZE; ++i) {
+            mDeltaX[i] = 0f;
+            mDeltaY[i] = 0f;
+            mDeltaTime[i] = 0f;
+        }
         mMosaicer.reset();
     }
 
@@ -156,13 +178,36 @@ public class MosaicFrameProcessor {
     }
 
     public void calculateTranslationRate(long now) {
-        float deltaTime = (now - mLastProcessedFrameTimestamp) / 1000.0f;
-        mLastProcessedFrameTimestamp = now;
-
         float[] frameData = mMosaicer.setSourceImageFromGPU();
         mTotalFrameCount  = (int) frameData[FRAME_COUNT_INDEX];
         float translationCurrX = frameData[X_COORD_INDEX];
         float translationCurrY = frameData[Y_COORD_INDEX];
+
+        if (mLastProcessedFrameTimestamp == 0f) {
+            // First time: no need to update delta values.
+            mTranslationLastX = translationCurrX;
+            mTranslationLastY = translationCurrY;
+            mLastProcessedFrameTimestamp = now;
+            return;
+        }
+
+        // Moving average: remove the oldest translation/deltaTime and
+        // add the newest translation/deltaTime in
+        int idx = mOldestIdx;
+        mTotalTranslationX -= mDeltaX[idx];
+        mTotalTranslationY -= mDeltaY[idx];
+        mTotalDeltaTime -= mDeltaTime[idx];
+        mDeltaX[idx] = Math.abs(translationCurrX - mTranslationLastX);
+        mDeltaY[idx] = Math.abs(translationCurrY - mTranslationLastY);
+        mDeltaTime[idx] = (now - mLastProcessedFrameTimestamp) / 1000.0f;
+        mTotalTranslationX += mDeltaX[idx];
+        mTotalTranslationY += mDeltaY[idx];
+        mTotalDeltaTime += mDeltaTime[idx];
+
+        mTranslationLastX = translationCurrX;
+        mTranslationLastY = translationCurrY;
+        mLastProcessedFrameTimestamp = now;
+        mOldestIdx = (mOldestIdx + 1) % WINDOW_SIZE;
 
         // The panning rate is measured as the rate of the translation percentage in
         // image width/height. Take the horizontal panning rate for example, the image width
@@ -170,12 +215,9 @@ public class MosaicFrameProcessor {
         // To get the horizontal translation percentage, the horizontal translation,
         // (translationCurrX - mTranslationLastX), is divided by the
         // image width. We then get the rate by dividing the translation percentage with deltaTime.
-        mPanningRateX = Math.abs(translationCurrX - mTranslationLastX)
-                / (mPreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR) / deltaTime;
-        mPanningRateY = Math.abs(translationCurrY - mTranslationLastY)
-                / (mPreviewHeight / HR_TO_LR_DOWNSAMPLE_FACTOR) / deltaTime;
-
-        mTranslationLastX = translationCurrX;
-        mTranslationLastY = translationCurrY;
+        mPanningRateX = mTotalTranslationX / (mPreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR)
+                / mTotalDeltaTime;
+        mPanningRateY = mTotalTranslationY / (mPreviewHeight / HR_TO_LR_DOWNSAMPLE_FACTOR)
+                / mTotalDeltaTime;
     }
 }

@@ -90,7 +90,7 @@ public class PanoramaActivity extends Activity implements
     private static final int CAPTURE_MOSAIC = 1;
 
     // Speed is in unit of deg/sec
-    private static final float PANNING_SPEED_THRESHOLD = 30f;
+    private static final float PANNING_SPEED_THRESHOLD = 20f;
 
     // Ratio of nanosecond to second
     private static final float NS2S = 1.0f / 1000000000.0f;
@@ -489,8 +489,10 @@ public class PanoramaActivity extends Activity implements
         if (Math.abs(panningRate * mHorizontalViewAngle) > PANNING_SPEED_THRESHOLD) {
             // TODO: draw speed indication according to the UI spec.
             mTooFastPrompt.setVisibility(View.VISIBLE);
+            mTooFastPrompt.invalidate();
         } else {
             mTooFastPrompt.setVisibility(View.GONE);
+            mTooFastPrompt.invalidate();
         }
     }
 
