@@ -40,8 +40,6 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.location.Location;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.media.CameraProfile;
 import android.net.Uri;
 import android.os.Bundle;
@@ -84,7 +82,8 @@ import java.util.List;
 public class Camera extends ActivityBase implements FocusManager.Listener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
         SurfaceHolder.Callback, ModePicker.OnModeChangeListener,
-        FaceDetectionListener, CameraPreference.OnPreferenceChangedListener {
+        FaceDetectionListener, CameraPreference.OnPreferenceChangedListener,
+        LocationManager.Listener {
 
     private static final String TAG = "camera";
 
@@ -358,12 +357,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mOrientationListener.enable();
 
         // Initialize location sevice.
-        mLocationManager = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
         mRecordLocation = RecordLocationPreference.get(
                 mPreferences, getContentResolver());
         initOnScreenIndicator();
-        if (mRecordLocation) startReceivingLocationUpdates();
+        if (mRecordLocation) mLocationManager.startReceivingLocationUpdates();
 
         keepMediaProviderInstance();
         checkStorage();
@@ -439,7 +436,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Start location update if needed.
         mRecordLocation = RecordLocationPreference.get(
                 mPreferences, getContentResolver());
-        if (mRecordLocation) startReceivingLocationUpdates();
+        if (mRecordLocation) mLocationManager.startReceivingLocationUpdates();
 
         installIntentFilter();
         mFocusManager.initializeToneGenerator();
@@ -569,11 +566,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         return super.dispatchTouchEvent(m);
     }
 
-    LocationListener [] mLocationListeners = new LocationListener[] {
-            new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
-    };
-
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -597,7 +589,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mExposureIndicator = (TextView) findViewById(R.id.onscreen_exposure_indicator);
     }
 
-    private void showGpsOnScreenIndicator(boolean hasSignal) {
+    @Override
+    public void showGpsOnScreenIndicator(boolean hasSignal) {
         if (hasSignal) {
             if (mGpsNoSignalIndicator != null) {
                 mGpsNoSignalIndicator.setVisibility(View.GONE);
@@ -615,7 +608,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void hideGpsOnScreenIndicator() {
+    @Override
+    public void hideGpsOnScreenIndicator() {
         if (mGpsNoSignalIndicator != null) mGpsNoSignalIndicator.setVisibility(View.GONE);
         if (mGpsHasSignalIndicator != null) mGpsHasSignalIndicator.setVisibility(View.GONE);
     }
@@ -634,63 +628,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             String exposure = mFormatter.toString();
             mExposureIndicator.setText(exposure);
             mExposureIndicator.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private class LocationListener
-            implements android.location.LocationListener {
-        Location mLastLocation;
-        boolean mValid = false;
-        String mProvider;
-
-        public LocationListener(String provider) {
-            mProvider = provider;
-            mLastLocation = new Location(mProvider);
-        }
-
-        public void onLocationChanged(Location newLocation) {
-            if (newLocation.getLatitude() == 0.0
-                    && newLocation.getLongitude() == 0.0) {
-                // Hack to filter out 0.0,0.0 locations
-                return;
-            }
-            // If GPS is available before start camera, we won't get status
-            // update so update GPS indicator when we receive data.
-            if (mRecordLocation
-                    && LocationManager.GPS_PROVIDER.equals(mProvider)) {
-                showGpsOnScreenIndicator(true);
-            }
-            if (!mValid) {
-                Log.d(TAG, "Got first location.");
-            }
-            mLastLocation.set(newLocation);
-            mValid = true;
-        }
-
-        public void onProviderEnabled(String provider) {
-        }
-
-        public void onProviderDisabled(String provider) {
-            mValid = false;
-        }
-
-        public void onStatusChanged(
-                String provider, int status, Bundle extras) {
-            switch(status) {
-                case LocationProvider.OUT_OF_SERVICE:
-                case LocationProvider.TEMPORARILY_UNAVAILABLE: {
-                    mValid = false;
-                    if (mRecordLocation &&
-                            LocationManager.GPS_PROVIDER.equals(provider)) {
-                        showGpsOnScreenIndicator(false);
-                    }
-                    break;
-                }
-            }
-        }
-
-        public Location current() {
-            return mValid ? mLastLocation : null;
         }
     }
 
@@ -887,7 +824,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mParameters.setGpsTimestamp(System.currentTimeMillis() / 1000);
 
         // Set GPS location.
-        Location loc = mRecordLocation ? getCurrentLocation() : null;
+        Location loc = mRecordLocation ? mLocationManager.getCurrentLocation() : null;
         if (loc != null) {
             double lat = loc.getLatitude();
             double lon = loc.getLongitude();
@@ -1015,6 +952,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
+        mLocationManager = new LocationManager(this, this);
 
         // Make sure preview is started.
         try {
@@ -1407,7 +1345,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             unregisterReceiver(mReceiver);
             mDidRegister = false;
         }
-        stopReceivingLocationUpdates();
+        mLocationManager.stopReceivingLocationUpdates();
         updateExposureOnScreenIndicator(0);
 
         mFocusManager.releaseToneGenerator();
@@ -1876,59 +1814,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         MenuHelper.gotoCameraImageGallery(this);
     }
 
-    private void startReceivingLocationUpdates() {
-        if (mLocationManager != null) {
-            try {
-                mLocationManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER,
-                        1000,
-                        0F,
-                        mLocationListeners[1]);
-            } catch (SecurityException ex) {
-                Log.i(TAG, "fail to request location update, ignore", ex);
-            } catch (IllegalArgumentException ex) {
-                Log.d(TAG, "provider does not exist " + ex.getMessage());
-            }
-            try {
-                mLocationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER,
-                        1000,
-                        0F,
-                        mLocationListeners[0]);
-                showGpsOnScreenIndicator(false);
-            } catch (SecurityException ex) {
-                Log.i(TAG, "fail to request location update, ignore", ex);
-            } catch (IllegalArgumentException ex) {
-                Log.d(TAG, "provider does not exist " + ex.getMessage());
-            }
-            Log.d(TAG, "startReceivingLocationUpdates");
-        }
-    }
-
-    private void stopReceivingLocationUpdates() {
-        if (mLocationManager != null) {
-            for (int i = 0; i < mLocationListeners.length; i++) {
-                try {
-                    mLocationManager.removeUpdates(mLocationListeners[i]);
-                } catch (Exception ex) {
-                    Log.i(TAG, "fail to remove location listners, ignore", ex);
-                }
-            }
-            Log.d(TAG, "stopReceivingLocationUpdates");
-        }
-        hideGpsOnScreenIndicator();
-    }
-
-    private Location getCurrentLocation() {
-        // go in best to worst order
-        for (int i = 0; i < mLocationListeners.length; i++) {
-            Location l = mLocationListeners[i].current();
-            if (l != null) return l;
-        }
-        Log.d(TAG, "No location received yet.");
-        return null;
-    }
-
     private boolean isCameraIdle() {
         return (mCameraState == IDLE) || (mFocusManager.isFocusCompleted());
     }
@@ -2059,9 +1944,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mRecordLocation != recordLocation) {
             mRecordLocation = recordLocation;
             if (mRecordLocation) {
-                startReceivingLocationUpdates();
+                mLocationManager.startReceivingLocationUpdates();
             } else {
-                stopReceivingLocationUpdates();
+                mLocationManager.stopReceivingLocationUpdates();
             }
         }
         int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
