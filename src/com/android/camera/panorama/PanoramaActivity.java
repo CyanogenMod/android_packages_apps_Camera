@@ -86,8 +86,8 @@ public class PanoramaActivity extends Activity implements
     private static final String TAG = "PanoramaActivity";
     private static final int PREVIEW_STOPPED = 0;
     private static final int PREVIEW_ACTIVE = 1;
-    private static final int CAPTURE_VIEWFINDER = 0;
-    private static final int CAPTURE_MOSAIC = 1;
+    private static final int CAPTURE_STATE_VIEWFINDER = 0;
+    private static final int CAPTURE_STATE_MOSAIC = 1;
 
     // Speed is in unit of deg/sec
     private static final float PANNING_SPEED_THRESHOLD = 20f;
@@ -97,7 +97,6 @@ public class PanoramaActivity extends Activity implements
 
     private boolean mPausing;
 
-    private View mPanoControlLayout;
     private View mPanoLayout;
     private View mCaptureLayout;
     private Button mStopCaptureButton;
@@ -106,7 +105,6 @@ public class PanoramaActivity extends Activity implements
     private IndicationView mIndicationView;
     private MosaicRendererSurfaceView mMosaicView;
     private TextView mTooFastPrompt;
-    private Animation mSlideIn, mSlideOut;
 
     private ProgressDialog mProgressDialog;
     private String mPreparePreviewString;
@@ -208,8 +206,6 @@ public class PanoramaActivity extends Activity implements
         mDialogOk = getResources().getString(R.string.dialog_ok);
 
         Context context = getApplicationContext();
-        mSlideIn = AnimationUtils.loadAnimation(context, R.anim.slide_in_from_right);
-        mSlideOut = AnimationUtils.loadAnimation(context, R.anim.slide_out_to_right);
 
         mMainHandler = new Handler() {
             @Override
@@ -412,7 +408,7 @@ public class PanoramaActivity extends Activity implements
             }
         });
         // Update the transformation matrix for mosaic pre-process.
-        if (mCaptureState == CAPTURE_VIEWFINDER) {
+        if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
             runViewFinder();
         } else {
             runMosaicCapture();
@@ -422,9 +418,7 @@ public class PanoramaActivity extends Activity implements
     public void startCapture() {
         // Reset values so we can do this again.
         mTimeTaken = System.currentTimeMillis();
-        mCaptureState = CAPTURE_MOSAIC;
-        mPanoControlLayout.startAnimation(mSlideOut);
-        mPanoControlLayout.setVisibility(View.GONE);
+        mCaptureState = CAPTURE_STATE_MOSAIC;
 
         mCompassValueXStart = mCompassValueXStartBuffer;
         mCompassValueYStart = mCompassValueYStartBuffer;
@@ -454,7 +448,7 @@ public class PanoramaActivity extends Activity implements
     }
 
     private void stopCapture() {
-        mCaptureState = CAPTURE_VIEWFINDER;
+        mCaptureState = CAPTURE_STATE_VIEWFINDER;
         mTooFastPrompt.setVisibility(View.GONE);
 
         mMosaicFrameProcessor.setProgressListener(null);
@@ -499,7 +493,7 @@ public class PanoramaActivity extends Activity implements
     private void createContentView() {
         setContentView(R.layout.panorama);
 
-        mCaptureState = CAPTURE_VIEWFINDER;
+        mCaptureState = CAPTURE_STATE_VIEWFINDER;
 
         mCaptureLayout = (View) findViewById(R.id.pano_capture_layout);
         mIndicationView = (IndicationView) findViewById(R.id.pano_capture_view);
@@ -515,7 +509,6 @@ public class PanoramaActivity extends Activity implements
         mMosaicView.getRenderer().setMosaicSurfaceCreateListener(this);
         mMosaicView.setVisibility(View.VISIBLE);
 
-        mPanoControlLayout = (View) findViewById(R.id.pano_control_layout);
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
         mModePicker.setVisibility(View.VISIBLE);
         mModePicker.setOnModeChangeListener(this);
@@ -529,7 +522,11 @@ public class PanoramaActivity extends Activity implements
         // If mSurfaceTexture == null then GL setup is not finished yet.
         // No buttons can be pressed.
         if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
-        startCapture();
+        // Since this button will stay on the screen when capturing, we need to check the state
+        // right now.
+        if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
+            startCapture();
+        }
     }
 
     @OnClickAttr
@@ -640,13 +637,11 @@ public class PanoramaActivity extends Activity implements
     }
 
     private void resetToPreview() {
-        mCaptureState = CAPTURE_VIEWFINDER;
+        mCaptureState = CAPTURE_STATE_VIEWFINDER;
 
         mReviewLayout.setVisibility(View.GONE);
         mStopCaptureButton.setVisibility(View.GONE);
         mIndicationView.setVisibility(View.GONE);
-        mPanoControlLayout.setVisibility(View.VISIBLE);
-        mPanoControlLayout.startAnimation(mSlideIn);
         mCaptureLayout.setVisibility(View.VISIBLE);
         mMosaicFrameProcessor.reset();
 
@@ -717,7 +712,7 @@ public class PanoramaActivity extends Activity implements
          * resources.
          */
         mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
-        mCaptureState = CAPTURE_VIEWFINDER;
+        mCaptureState = CAPTURE_STATE_VIEWFINDER;
         setupCamera();
         if (mSurfaceTexture != null) {
             mSurfaceTexture.setOnFrameAvailableListener(this);
