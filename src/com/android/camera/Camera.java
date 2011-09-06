@@ -460,7 +460,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;
         mZoomMax = mParameters.getMaxZoom();
-        mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
+        // Currently we use immediate zoom for fast zooming to get better UX and
+        // there is no plan to take advantage of the smooth zoom.
         mZoomControl.setZoomMax(mZoomMax);
         mZoomControl.setZoomIndex(mParameters.getZoom());
         mZoomControl.setSmoothZoomSupported(mSmoothZoomSupported);
@@ -938,6 +939,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mIndicatorControlContainer == null) return;
         loadCameraPreferences();
         final String[] SETTING_KEYS = {
+                CameraSettings.KEY_FLASH_MODE,
                 CameraSettings.KEY_WHITE_BALANCE,
                 CameraSettings.KEY_SCENE_MODE};
         final String[] OTHER_SETTING_KEYS = {
@@ -948,7 +950,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_photo_facing_holo_light);
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
-                CameraSettings.KEY_FLASH_MODE, mParameters.isZoomSupported(),
+                mParameters.isZoomSupported(),
                 SETTING_KEYS, OTHER_SETTING_KEYS);
         mIndicatorControlContainer.setListener(this);
     }

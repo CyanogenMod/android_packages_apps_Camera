@@ -75,6 +75,17 @@ public class ZoomControlWheel extends ZoomControl {
         mShutterButtonRadius = IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS;
         mStrokeWidth = Util.dpToPixel(IndicatorControlWheelContainer.STROKE_WIDTH);
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 0.5;
+        super.setZoomStep(1); // one zoom level at a time
+    }
+
+    private void performZoom() {
+        if (mSliderRadians > (Math.PI + BUFFER_RADIANS)) {
+            super.performZoom(ZOOM_OUT);
+        } else if (mSliderRadians < (Math.PI - BUFFER_RADIANS)) {
+            super.performZoom(ZOOM_IN);
+        } else {
+            super.performZoom(ZOOM_STOP);
+        }
     }
 
     @Override
@@ -102,7 +113,8 @@ public class ZoomControlWheel extends ZoomControl {
             case MotionEvent.ACTION_CANCEL:
                 closeZoomControl();
                 break;
-            default:
+            case MotionEvent.ACTION_MOVE:
+                performZoom();
                 requestLayout();
         }
         return true;

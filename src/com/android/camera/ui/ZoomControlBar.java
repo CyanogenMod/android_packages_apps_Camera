@@ -20,6 +20,7 @@ import com.android.camera.R;
 import com.android.camera.Util;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,9 +30,9 @@ import android.view.View;
  */
 public class ZoomControlBar extends ZoomControl {
     private static final String TAG = "ZoomControlBar";
-    private static final int STOP_ZOOM_BUFFER = Util.dpToPixel(30);
-
+    private static int THRESHOLD_FIRST_MOVE = Util.dpToPixel(10); // pixels
     private View mBar;
+    private boolean mStartChanging;
 
     public ZoomControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -49,29 +50,42 @@ public class ZoomControlBar extends ZoomControl {
         if (!isEnabled()) return false;
 
         double y = (double) event.getY();
-        int offset = getHeight() / 2;
 
+        // Calculate the absolute offset of the slider in the zoom control bar.
         // For left-hand users, as the device is rotated for 180 degree for
         // landscape mode, the zoom-in bottom should be on the top, so the
         // position should be reversed.
-        int delta;
+        int offset = 5 * getWidth() / 4; // the padding and the icon height
+        int height = getHeight();
+        int range = height - 2 * offset; // the range of the zoom slider
+        int pos; // the relative position in the zoom slider bar
         if (mDegree == 180) {
-            delta = offset - (int) y;
+            pos = (int) y - offset;
         } else {
-            delta = (int) y - offset;
+            pos = height - (int) y - offset;
         }
-        // We need some space to stop zooming.
-        mSliderPosition = (Math.abs(delta) < STOP_ZOOM_BUFFER) ? 0 : delta;
-
-        // TODO: add fast zoom change here
+        if (pos < 0) pos = 0;
+        if (pos > range) pos = range;
 
         switch (action) {
             case MotionEvent.ACTION_OUTSIDE:
-            case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 closeZoomControl();
                 break;
-            default:
+
+            case MotionEvent.ACTION_DOWN:
+                mStartChanging = false;
+            case MotionEvent.ACTION_MOVE:
+                // Make sure the movement is large enough before we start
+                // changing the zoom.
+                if (!mStartChanging && (Math.abs(mSliderPosition - pos)
+                        > THRESHOLD_FIRST_MOVE)) {
+                    mStartChanging = true;
+                }
+                if (mStartChanging) {
+                    performZoom(1.0d * pos / range);
+                    mSliderPosition = pos;
+                }
                 requestLayout();
         }
         return true;
@@ -87,30 +101,29 @@ public class ZoomControlBar extends ZoomControl {
     @Override
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
+        if (mZoomMax == 0) return;
+
         int width = right - left;
         int height = bottom - top;
-        int h = height / 2;
+        int range = height - 10 * width / 4;
         int pos;
+
+        // TODO: remove offset once we have correct ic_zoom_big.9.png.
+        int offset = 3 * width / 4;
 
         // For left-hand users, as the device is rotated for 180 degree,
         // the zoom-in button should be on the top.
         if (mDegree == 180) {
-            pos = h - mSliderPosition - width / 2;
             mZoomOut.layout(0, 0, width, width);
             mZoomIn.layout(0, height - width, width, height);
+            pos = offset + mZoomIndex * range / mZoomMax;
+            mZoomSlider.layout(0, pos, width, pos + width);
         } else {
-            pos = h + mSliderPosition - width / 2;
             mZoomIn.layout(0, 0, width, width);
             mZoomOut.layout(0, height - width, width, height);
+            pos = offset + (mZoomMax - mZoomIndex) * range / mZoomMax;
+            mZoomSlider.layout(0, pos, width, pos + width);
         }
-        mBar.layout(0, width, width, height - width);
-
-        // TODO: fix the pos once we have correct zoom_big asset.
-        if (pos < 3 * width / 4) {
-            pos = 3 * width / 4;
-        } else if (pos > (height - (7 * width / 4))) {
-            pos = height - (7 * width / 4);
-        }
-        mZoomSlider.layout(0, pos, width, pos + width);
+        mBar.layout(0, width, width, bottom - top - width);
     }
 }

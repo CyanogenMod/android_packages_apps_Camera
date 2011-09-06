@@ -39,8 +39,6 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
     private Animation mFadeIn, mFadeOut;
     private Animation mSecondLevelFadeIn, mSecondLevelFadeOut;
     private IndicatorControlBar mIndicatorControlBar;
-    private ZoomControlBar mZoomControlBar;
-    private ZoomIndexBar mZoomIndexBar;
     private SecondLevelIndicatorControlBar mSecondLevelIndicatorControlBar;
 
     public IndicatorControlBarContainer(Context context, AttributeSet attrs) {
@@ -59,10 +57,6 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
 
     @Override
     protected void onFinishInflate() {
-        mZoomControlBar = (ZoomControlBar) findViewById(R.id.zoom_control);
-        mZoomControlBar.setOnIndicatorEventListener(this);
-        mZoomIndexBar = (ZoomIndexBar) findViewById(R.id.zoom_index_bar);
-        mZoomControlBar.setOnZoomIndexChangeListener(mZoomIndexBar);
         mIndicatorControlBar = (IndicatorControlBar)
                 findViewById(R.id.indicator_bar);
         mIndicatorControlBar.setOnIndicatorEventListener(this);
@@ -73,13 +67,10 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
 
     @Override
     public void initialize(Context context, PreferenceGroup group,
-            String flashSetting, boolean isZoomSupported,
-            String[] secondLevelKeys, String[] secondLevelOtherSettingKeys) {
+            boolean isZoomSupported, String[] secondLevelKeys,
+            String[] secondLevelOtherSettingKeys) {
 
-        // We need to show/hide the zoom slider icon accordingly.
-        // From UI spec, we have camera_flash setting on the first level.
-        mIndicatorControlBar.initialize(context, group, flashSetting,
-                isZoomSupported);
+        mIndicatorControlBar.initialize(context, group, isZoomSupported);
 
         mSecondLevelIndicatorControlBar.initialize(context, group,
                 secondLevelKeys, secondLevelOtherSettingKeys);
@@ -88,8 +79,6 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
     public void setDegree(int degree) {
         mIndicatorControlBar.setDegree(degree);
         mSecondLevelIndicatorControlBar.setDegree(degree);
-        mZoomControlBar.setDegree(degree);
-        mZoomIndexBar.setDegree(degree);
     }
 
     @Override
@@ -98,8 +87,6 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
             return mIndicatorControlBar.dispatchTouchEvent(event);
         } else if (mSecondLevelIndicatorControlBar.getVisibility() == View.VISIBLE) {
             return mSecondLevelIndicatorControlBar.dispatchTouchEvent(event);
-        } else if (mZoomControlBar.getVisibility() == View.VISIBLE) {
-            return mZoomControlBar.dispatchTouchEvent(event);
         }
         return true;
     }
@@ -132,19 +119,6 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
                 mIndicatorControlBar.startAnimation(mFadeIn);
                 mIndicatorControlBar.setVisibility(View.VISIBLE);
                 mSecondLevelIndicatorControlBar.startAnimation(mSecondLevelFadeOut);
-                break;
-
-            case OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL:
-                mIndicatorControlBar.setVisibility(View.GONE);
-                mZoomControlBar.setVisibility(View.VISIBLE);
-                mZoomIndexBar.setVisibility(View.VISIBLE);
-                mZoomControlBar.startZoomControl();
-                break;
-
-            case OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL:
-                mZoomControlBar.setVisibility(View.GONE);
-                mZoomIndexBar.setVisibility(View.GONE);
-                mIndicatorControlBar.setVisibility(View.VISIBLE);
                 break;
         }
     }
