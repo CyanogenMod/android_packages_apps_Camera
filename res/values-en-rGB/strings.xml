@@ -35,9 +35,9 @@
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restore defaults"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"Camera settings will be restored to defaults."</string>
     <string name="review_play" msgid="6378271587740884696">"Play"</string>
-    <string name="review_cancel" msgid="7842670783357645942">"Cancel"</string>
-    <string name="review_ok" msgid="4750691949877864726">"OK"</string>
-    <string name="review_retake" msgid="7776579640762112761">"Retake"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"CANCEL"</string>
+    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_retake" msgid="7804864054896088338">"RETAKE"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Gallery"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Switch Camera"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Time lapse recording"</string>
@@ -87,7 +87,8 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Camera settings"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restore defaults"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposure"</string>
-    <string name="dialog_ok" msgid="6848594369924424312">"OK"</string>
+    <!-- no translation found for dialog_ok (6263301364153382152) -->
+    <skip />
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Your USB storage is running out of space. Change the quality setting or delete some images or other files."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Your SD card is running out of space. Change the quality setting or delete some images or other files."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Size limit reached."</string>
@@ -103,5 +104,17 @@
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Too Fast"</string>
     <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Preparing preview..."</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Generating panorama..."</string>
+    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
+    <skip />
+    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
+    <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"Tap to focus"</string>
+    <string name="pref_video_effect_title" msgid="8243182968457289488">"Effects"</string>
+    <string name="effect_none" msgid="3601545724573307541">"None"</string>
+    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Squeeze"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"Big Eyes"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"Big Mouth"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Small Mouth"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Big Nose"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Small Eyes"</string>
 </resources>

@@ -30,14 +30,14 @@
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SDカードがいっぱいです。"</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USBストレージの準備中..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"SDカードの準備中..."</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"USBストレージにアクセスできませんでした。"</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"USBストレージにアクセスできませんでした。"</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"USBストレージにアクセスできませんでした。"</string>
+    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"SDカードにアクセスできませんでした。"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"初期設定に戻す"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"カメラを初期設定に戻します。"</string>
     <string name="review_play" msgid="6378271587740884696">"再生"</string>
-    <string name="review_cancel" msgid="7842670783357645942">"キャンセル"</string>
-    <string name="review_ok" msgid="4750691949877864726">"OK"</string>
-    <string name="review_retake" msgid="7776579640762112761">"撮り直し"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"キャンセル"</string>
+    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_retake" msgid="7804864054896088338">"撮り直し"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"ギャラリー"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"カメラを切り替え"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"低速度撮影"</string>
@@ -87,7 +87,8 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"カメラ設定"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"初期設定に戻す"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"露出"</string>
-    <string name="dialog_ok" msgid="6848594369924424312">"OK"</string>
+    <!-- no translation found for dialog_ok (6263301364153382152) -->
+    <skip />
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USBストレージの空き領域が少なくなっています。画質設定を変更するか、画像など一部のファイルを削除してください。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SDカードの空き領域が少なくなっています。画質設定を変更するか、画像などのファイルを一部削除してください。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"サイズ制限に達しました。"</string>
@@ -100,11 +101,20 @@
     <string name="no_video_to_share" msgid="3775826212074938990">"共有する動画はありません"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"中止"</string>
     <string name="pano_capture_start" msgid="2163632725789917725">"開始"</string>
-    <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
+    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"速すぎます"</string>
+    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"プレビューを準備しています..."</string>
+    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"パノラマを作成しています..."</string>
+    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
     <skip />
-    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
-    <skip />
-    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
     <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"タップしてフォーカス"</string>
+    <string name="pref_video_effect_title" msgid="8243182968457289488">"効果"</string>
+    <string name="effect_none" msgid="3601545724573307541">"なし"</string>
+    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"スクイーズ"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"大きな目"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"大きな口"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"小さな口"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"大きな鼻"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"小さな目"</string>
 </resources>

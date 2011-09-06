@@ -30,14 +30,14 @@
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"כרטיס SD מלא."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"מכין אמצעי אחסון מסוג USB..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"מכין כרטיס SD..."</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"הגישה לאמצעי אחסון מסוג USB נכשלה."</string>
-    <!-- outdated translation 7361816489339518850 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"הגישה לאמצעי אחסון מסוג USB נכשלה."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"לא ניתן לגשת לאחסון ה-USB."</string>
+    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"לא ניתן לגשת לכרטיס ה-SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"שחזר ברירות מחדל"</string>
     <string name="confirm_restore_message" msgid="5239464943578877295">"הגדרות מצלמה ישוחזרו לברירות המחדל."</string>
     <string name="review_play" msgid="6378271587740884696">"הפעל"</string>
-    <string name="review_cancel" msgid="7842670783357645942">"בטל"</string>
-    <string name="review_ok" msgid="4750691949877864726">"אישור"</string>
-    <string name="review_retake" msgid="7776579640762112761">"צלם שוב"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"ביטול"</string>
+    <string name="review_ok" msgid="5305096180300056529">"אישור"</string>
+    <string name="review_retake" msgid="7804864054896088338">"צלם שוב"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"גלריה"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"החלף מצלמה"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"הקלטה של מעבר זמן"</string>
@@ -87,7 +87,8 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"הגדרות מצלמה"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"שחזר ברירות מחדל"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"חשיפה"</string>
-    <string name="dialog_ok" msgid="6848594369924424312">"אישור"</string>
+    <!-- no translation found for dialog_ok (6263301364153382152) -->
+    <skip />
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"אוזל המקום באמצעי האחסון מסוג USB. שנה את הגדרת האיכות או מחק כמה תמונות או קבצים אחרים."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"השטח בכרטיס SD אוזל. שנה את הגדרת האיכות או מחק חלק מהתמונות או קבצים אחרים."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"הגעת למגבלת הגודל."</string>
@@ -95,16 +96,25 @@
     <string name="switch_to_video_label" msgid="1167994386902254398">"עבור לווידאו"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"עבור לפנורמה"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"שתף תמונה באמצעות"</string>
-    <string name="share_video_via" msgid="5152302809166549015">"שתף סרטון באמצעות"</string>
+    <string name="share_video_via" msgid="5152302809166549015">"שתף סרטון וידאו באמצעות"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"אין תמונה לשיתוף"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"אין סרטון וידאו לשיתוף"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"עצור"</string>
     <string name="pano_capture_start" msgid="2163632725789917725">"התחל"</string>
-    <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
+    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"מהר מדי"</string>
+    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"מכין תצוגה מקדימה..."</string>
+    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"יצירת מראה פנורמי..."</string>
+    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
     <skip />
-    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
-    <skip />
-    <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
+    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
     <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"הקש כדי להתמקד"</string>
+    <string name="pref_video_effect_title" msgid="8243182968457289488">"אפקטים"</string>
+    <string name="effect_none" msgid="3601545724573307541">"ללא"</string>
+    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"כיווץ"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"עיניים גדולות"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"פה גדול"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"פה קטן"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"אף גדול"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"עיניים קטנות"</string>
 </resources>
