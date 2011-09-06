@@ -32,7 +32,12 @@ import android.view.View;
 public class FaceView extends View implements FocusIndicator {
     private final String TAG = "FaceView";
     private final boolean LOGV = false;
+    // The value for android.hardware.Camera.setDisplayOrientation.
     private int mDisplayOrientation;
+    // The orientation compensation for the face indicator to make it look
+    // correctly in all device orientations. Ex: if the value is 90, the
+    // indicator should be rotated 90 degrees counter-clockwise.
+    private int mOrientation;
     private boolean mMirror;
     private boolean mPause;
     private Matrix mMatrix = new Matrix();
@@ -61,6 +66,11 @@ public class FaceView extends View implements FocusIndicator {
     public void setDisplayOrientation(int orientation) {
         mDisplayOrientation = orientation;
         if (LOGV) Log.v(TAG, "mDisplayOrientation=" + orientation);
+    }
+
+    public void setOrientation(int orientation) {
+        mOrientation = orientation;
+        invalidate();
     }
 
     public void setMirror(boolean mirror) {
@@ -119,6 +129,11 @@ public class FaceView extends View implements FocusIndicator {
             Util.prepareMatrix(mMatrix, mMirror, mDisplayOrientation, getWidth(),
                     getHeight());
 
+            // Focus indicator is directional. Rotate the matrix and the canvas
+            // so it looks correctly in all orientations.
+            canvas.save();
+            mMatrix.postRotate(mOrientation); // postRotate is clockwise
+            canvas.rotate(-mOrientation); // rotate is counter-clockwise (for canvas)
             for (int i = 0; i < mFaces.length; i++) {
                 // Transform the coordinates.
                 mRect.set(mFaces[i].rect);
@@ -130,6 +145,7 @@ public class FaceView extends View implements FocusIndicator {
                         Math.round(mRect.right), Math.round(mRect.bottom));
                 mFaceIndicator.draw(canvas);
             }
+            canvas.restore();
         }
         super.onDraw(canvas);
     }
