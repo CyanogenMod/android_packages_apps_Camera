@@ -17,37 +17,26 @@
 */
 -->
 <com.android.camera.ui.BasicSettingPopup xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/indicator_control"
-        android:visibility="gone">
+        style="@style/SettingPopupWindow">
 
     <LinearLayout android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:layout_width="240dp">
+        android:layout_width="@dimen/setting_popup_window_width">
 
         <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/dialog_top_holo_dark">
+                android:background="@drawable/dialog_top_holo_dark"
+                android:minHeight="@dimen/popup_title_frame_min_height">
             <TextView android:id="@+id/title"
-                    style="@style/SettingTitleText"
-                    android:textSize="18dp"
-                    android:layout_height="32dp" />
+                    style="@style/PopupTitleText" />
         </FrameLayout>
+
         <FrameLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/dialog_bottom_holo_dark">
             <ListView android:id="@+id/settingList"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginRight="6dp"
-                    android:paddingBottom="3dp"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/SettingItemList"
                     android:choiceMode="singleChoice" />
         </FrameLayout>
     </LinearLayout>
