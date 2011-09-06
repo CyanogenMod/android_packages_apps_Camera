@@ -100,7 +100,6 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"Walang larawang ibabahagi"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Walang video na ibabahagi"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Ihinto"</string>
-    <string name="pano_capture_start" msgid="2163632725789917725">"Magsimula"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Msyado Bilis"</string>
     <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Ihinahanda ang preview..."</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Bumubuo ng panorama..."</string>

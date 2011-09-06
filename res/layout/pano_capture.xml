@@ -39,22 +39,9 @@
                     android:layout_width="@dimen/pano_mosaic_surface_width"
                     android:layout_height="@dimen/pano_mosaic_surface_height" />
 
-            <LinearLayout android:id="@+id/pano_capture_control"
-                    style="@style/PanoViewHorizontalGrayBar"
-                    android:gravity="right"
-                    android:visibility="visible"
-                    android:orientation="horizontal">
-
-                <Button android:id="@+id/pano_capture_stop_button"
-                        android:text="@string/pano_capture_stop"
-                        android:onClick="onStopButtonClicked"
-                        android:visibility="gone"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:layout_width="@dimen/pano_capture_stop_button_width"
-                        android:layout_height="@dimen/pano_capture_stop_button_width" />
-            </LinearLayout>
+            <ImageView style="@style/PanoViewHorizontalGrayBar"/>
         </LinearLayout>
-        <include layout="@layout/pano_control" />
+        <include layout="@layout/camera_control" />
 
     </LinearLayout>
 

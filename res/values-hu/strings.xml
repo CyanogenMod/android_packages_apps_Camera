@@ -100,7 +100,6 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"Nincs megosztható kép"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Nincs megosztható videó"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Leáll."</string>
-    <string name="pano_capture_start" msgid="2163632725789917725">"Indítás"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Túl gyors"</string>
     <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Előnézet előkészítése..."</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Panoráma létrehozása..."</string>
