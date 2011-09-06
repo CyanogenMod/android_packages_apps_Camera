@@ -67,7 +67,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1145,6 +1144,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
         if (mZoomControl != null) mZoomControl.setDegree(degree);
         if (mFocusIndicator != null) mFocusIndicator.setOrientation(degree);
+        if (mFaceView != null) mFaceView.setOrientation(degree);
     }
 
     @Override
