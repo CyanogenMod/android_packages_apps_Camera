@@ -48,8 +48,30 @@ public class LocationManager {
         mListener = listener;
     }
 
-    public void startReceivingLocationUpdates() {
-        mRecordLocation = true;
+    public Location getCurrentLocation() {
+        if (!mRecordLocation) return null;
+
+        // go in best to worst order
+        for (int i = 0; i < mLocationListeners.length; i++) {
+            Location l = mLocationListeners[i].current();
+            if (l != null) return l;
+        }
+        Log.d(TAG, "No location received yet.");
+        return null;
+    }
+
+    public void recordLocation(boolean recordLocation) {
+        if (mRecordLocation != recordLocation) {
+            mRecordLocation = recordLocation;
+            if (recordLocation) {
+                startReceivingLocationUpdates();
+            } else {
+                stopReceivingLocationUpdates();
+            }
+        }
+    }
+
+    private void startReceivingLocationUpdates() {
         if (mLocationManager == null) {
             mLocationManager = (android.location.LocationManager)
                     mContext.getSystemService(Context.LOCATION_SERVICE);
@@ -72,7 +94,7 @@ public class LocationManager {
                         1000,
                         0F,
                         mLocationListeners[0]);
-                mListener.showGpsOnScreenIndicator(false);
+                if (mListener != null) mListener.showGpsOnScreenIndicator(false);
             } catch (SecurityException ex) {
                 Log.i(TAG, "fail to request location update, ignore", ex);
             } catch (IllegalArgumentException ex) {
@@ -82,8 +104,7 @@ public class LocationManager {
         }
     }
 
-    public void stopReceivingLocationUpdates() {
-        mRecordLocation = false;
+    private void stopReceivingLocationUpdates() {
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
                 try {
@@ -94,17 +115,7 @@ public class LocationManager {
             }
             Log.d(TAG, "stopReceivingLocationUpdates");
         }
-        mListener.hideGpsOnScreenIndicator();
-    }
-
-    public Location getCurrentLocation() {
-        // go in best to worst order
-        for (int i = 0; i < mLocationListeners.length; i++) {
-            Location l = mLocationListeners[i].current();
-            if (l != null) return l;
-        }
-        Log.d(TAG, "No location received yet.");
-        return null;
+        if (mListener != null) mListener.hideGpsOnScreenIndicator();
     }
 
     private class LocationListener
@@ -127,7 +138,7 @@ public class LocationManager {
             }
             // If GPS is available before start camera, we won't get status
             // update so update GPS indicator when we receive data.
-            if (mRecordLocation &&
+            if (mListener != null && mRecordLocation &&
                     android.location.LocationManager.GPS_PROVIDER.equals(mProvider)) {
                 mListener.showGpsOnScreenIndicator(true);
             }
@@ -154,7 +165,7 @@ public class LocationManager {
                 case LocationProvider.OUT_OF_SERVICE:
                 case LocationProvider.TEMPORARILY_UNAVAILABLE: {
                     mValid = false;
-                    if (mRecordLocation &&
+                    if (mListener != null && mRecordLocation &&
                             android.location.LocationManager.GPS_PROVIDER.equals(provider)) {
                         mListener.showGpsOnScreenIndicator(false);
                     }

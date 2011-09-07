@@ -193,7 +193,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private boolean mPausing;
     private boolean mFirstTimeInitialized;
     private boolean mIsImageCaptureIntent;
-    private boolean mRecordLocation;
 
     private static final int PREVIEW_STOPPED = 0;
     private static final int IDLE = 1;  // preview is active
@@ -207,7 +206,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
-    private LocationManager mLocationManager = null;
+    private LocationManager mLocationManager;
 
     private final ShutterCallback mShutterCallback = new ShutterCallback();
     private final PostViewPictureCallback mPostViewPictureCallback =
@@ -357,10 +356,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mOrientationListener.enable();
 
         // Initialize location sevice.
-        mRecordLocation = RecordLocationPreference.get(
+        boolean recordLocation = RecordLocationPreference.get(
                 mPreferences, getContentResolver());
         initOnScreenIndicator();
-        if (mRecordLocation) mLocationManager.startReceivingLocationUpdates();
+        mLocationManager.recordLocation(recordLocation);
 
         keepMediaProviderInstance();
         checkStorage();
@@ -434,9 +433,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mOrientationListener.enable();
 
         // Start location update if needed.
-        mRecordLocation = RecordLocationPreference.get(
+        boolean recordLocation = RecordLocationPreference.get(
                 mPreferences, getContentResolver());
-        if (mRecordLocation) mLocationManager.startReceivingLocationUpdates();
+        mLocationManager.recordLocation(recordLocation);
 
         installIntentFilter();
         mFocusManager.initializeToneGenerator();
@@ -804,56 +803,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         enableCameraControls(false);
         mJpegImageData = null;
 
-        // See android.hardware.Camera.Parameters.setRotation for
-        // documentation.
-        int rotation = 0;
-        if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
-            CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-            if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-                rotation = (info.orientation - mOrientation + 360) % 360;
-            } else {  // back-facing camera
-                rotation = (info.orientation + mOrientation) % 360;
-            }
-        }
-        mParameters.setRotation(rotation);
-
-        // Clear previous GPS location from the parameters.
-        mParameters.removeGpsData();
-
-        // We always encode GpsTimeStamp
-        mParameters.setGpsTimestamp(System.currentTimeMillis() / 1000);
-
-        // Set GPS location.
-        Location loc = mRecordLocation ? mLocationManager.getCurrentLocation() : null;
-        if (loc != null) {
-            double lat = loc.getLatitude();
-            double lon = loc.getLongitude();
-            boolean hasLatLon = (lat != 0.0d) || (lon != 0.0d);
-
-            if (hasLatLon) {
-                Log.d(TAG, "Set gps location");
-                mParameters.setGpsLatitude(lat);
-                mParameters.setGpsLongitude(lon);
-                mParameters.setGpsProcessingMethod(loc.getProvider().toUpperCase());
-                if (loc.hasAltitude()) {
-                    mParameters.setGpsAltitude(loc.getAltitude());
-                } else {
-                    // for NETWORK_PROVIDER location provider, we may have
-                    // no altitude information, but the driver needs it, so
-                    // we fake one.
-                    mParameters.setGpsAltitude(0);
-                }
-                if (loc.getTime() != 0) {
-                    // Location.getTime() is UTC in milliseconds.
-                    // gps-timestamp is UTC in seconds.
-                    long utcTimeSeconds = loc.getTime() / 1000;
-                    mParameters.setGpsTimestamp(utcTimeSeconds);
-                }
-            } else {
-                loc = null;
-            }
-        }
-
+        // Set rotation and gps data.
+        Util.setRotationParameter(mParameters, mCameraId, mOrientation);
+        Location loc = mLocationManager.getCurrentLocation();
+        Util.setGpsParameters(mParameters, loc);
         mCameraDevice.setParameters(mParameters);
 
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
@@ -1345,7 +1298,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             unregisterReceiver(mReceiver);
             mDidRegister = false;
         }
-        mLocationManager.stopReceivingLocationUpdates();
+        mLocationManager.recordLocation(false);
         updateExposureOnScreenIndicator(0);
 
         mFocusManager.releaseToneGenerator();
@@ -1936,19 +1889,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // ignore the events after "onPause()"
         if (mPausing) return;
 
-        boolean recordLocation;
-
-        recordLocation = RecordLocationPreference.get(
+        boolean recordLocation = RecordLocationPreference.get(
                 mPreferences, getContentResolver());
+        mLocationManager.recordLocation(recordLocation);
 
-        if (mRecordLocation != recordLocation) {
-            mRecordLocation = recordLocation;
-            if (mRecordLocation) {
-                mLocationManager.startReceivingLocationUpdates();
-            } else {
-                mLocationManager.stopReceivingLocationUpdates();
-            }
-        }
         int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
         if (mCameraId != cameraId) {
             // Restart the activity to have a crossfade animation.

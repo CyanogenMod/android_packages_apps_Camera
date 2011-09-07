@@ -28,8 +28,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
@@ -37,6 +39,7 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
@@ -518,5 +521,58 @@ public class Util {
         Animation animation = new AlphaAnimation(0F, 1F);
         animation.setDuration(500);
         view.startAnimation(animation);
+    }
+
+    public static void setRotationParameter(Parameters parameters, int cameraId, int orientation) {
+        // See android.hardware.Camera.Parameters.setRotation for
+        // documentation.
+        int rotation = 0;
+        if (orientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
+            CameraInfo info = CameraHolder.instance().getCameraInfo()[cameraId];
+            if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
+                rotation = (info.orientation - orientation + 360) % 360;
+            } else {  // back-facing camera
+                rotation = (info.orientation + orientation) % 360;
+            }
+        }
+        parameters.setRotation(rotation);
+    }
+
+    public static void setGpsParameters(Parameters parameters, Location loc) {
+        // Clear previous GPS location from the parameters.
+        parameters.removeGpsData();
+
+        // We always encode GpsTimeStamp
+        parameters.setGpsTimestamp(System.currentTimeMillis() / 1000);
+
+        // Set GPS location.
+        if (loc != null) {
+            double lat = loc.getLatitude();
+            double lon = loc.getLongitude();
+            boolean hasLatLon = (lat != 0.0d) || (lon != 0.0d);
+
+            if (hasLatLon) {
+                Log.d(TAG, "Set gps location");
+                parameters.setGpsLatitude(lat);
+                parameters.setGpsLongitude(lon);
+                parameters.setGpsProcessingMethod(loc.getProvider().toUpperCase());
+                if (loc.hasAltitude()) {
+                    parameters.setGpsAltitude(loc.getAltitude());
+                } else {
+                    // for NETWORK_PROVIDER location provider, we may have
+                    // no altitude information, but the driver needs it, so
+                    // we fake one.
+                    parameters.setGpsAltitude(0);
+                }
+                if (loc.getTime() != 0) {
+                    // Location.getTime() is UTC in milliseconds.
+                    // gps-timestamp is UTC in seconds.
+                    long utcTimeSeconds = loc.getTime() / 1000;
+                    parameters.setGpsTimestamp(utcTimeSeconds);
+                }
+            } else {
+                loc = null;
+            }
+        }
     }
 }

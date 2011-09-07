@@ -63,7 +63,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -132,7 +131,6 @@ public class VideoCamera extends ActivityBase
             "android.intent.extra.quickCapture";
 
     private boolean mSnapshotInProgress = false;
-    private PictureCallback mJpegPictureCallback;
 
     private final static String EFFECT_BG_FROM_GALLERY =
             "gallery";
@@ -223,6 +221,8 @@ public class VideoCamera extends ActivityBase
     private int mDisplayRotation;
 
     private ContentResolver mContentResolver;
+
+    private LocationManager mLocationManager;
 
     private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
@@ -426,6 +426,8 @@ public class VideoCamera extends ActivityBase
 
         mBgLearningMessage = (TextView) findViewById(R.id.bg_replace_message);
 
+        mLocationManager = new LocationManager(this, null);
+
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -452,7 +454,6 @@ public class VideoCamera extends ActivityBase
         if ("true".equals(mParameters.get("video-snapshot-supported")) &&
                 !mIsVideoCaptureIntent) {
             preview.setOnTouchListener(this);
-            mJpegPictureCallback = new JpegPictureCallback();
         }
     }
 
@@ -511,7 +512,6 @@ public class VideoCamera extends ActivityBase
 
         @Override
         public void onOrientationChanged(int orientation) {
-            if (mMediaRecorderRecording) return;
             // We keep the last known orientation. So if the user first orient
             // the camera then point the camera to floor or sky, we still have
             // the correct orientation.
@@ -521,9 +521,14 @@ public class VideoCamera extends ActivityBase
             // calculate the up-to-date orientationCompensation.
             int orientationCompensation = mOrientation
                     + Util.getDisplayRotation(VideoCamera.this);
+
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
-                setOrientationIndicator(mOrientationCompensation);
+                // Do not rotate the icons during recording because the video
+                // orientation is fixed after recording.
+                if (!mMediaRecorderRecording) {
+                    setOrientationIndicator(mOrientationCompensation);
+                }
             }
         }
     }
@@ -836,6 +841,11 @@ public class VideoCamera extends ActivityBase
             }
         }, 200);
 
+        // Initialize location sevice.
+        boolean recordLocation = RecordLocationPreference.get(
+                mPreferences, getContentResolver());
+        mLocationManager.recordLocation(recordLocation);
+
         if (!mIsVideoCaptureIntent) {
             updateThumbnailButton();  // Update the last video thumbnail.
             mModePicker.setCurrentMode(ModePicker.MODE_VIDEO);
@@ -960,6 +970,7 @@ public class VideoCamera extends ActivityBase
         }
 
         mOrientationListener.disable();
+        mLocationManager.recordLocation(false);
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
     }
@@ -1942,6 +1953,10 @@ public class VideoCamera extends ActivityBase
             // startPreview().
             if (mCameraDevice == null) return;
 
+            boolean recordLocation = RecordLocationPreference.get(
+                    mPreferences, getContentResolver());
+            mLocationManager.recordLocation(recordLocation);
+
             // Check if the current effects selection has changed
             if (updateEffectSelection()) return;
 
@@ -2160,18 +2175,30 @@ public class VideoCamera extends ActivityBase
             return false;
         }
 
+        // Set rotation and gps data.
+        Util.setRotationParameter(mParameters, mCameraId, mOrientation);
+        Location loc = mLocationManager.getCurrentLocation();
+        Util.setGpsParameters(mParameters, loc);
+        mCameraDevice.setParameters(mParameters);
+
         Log.v(TAG, "Video snapshot start");
-        mCameraDevice.takePicture(null, null, null, mJpegPictureCallback);
+        mCameraDevice.takePicture(null, null, null, new JpegPictureCallback(loc));
         mSnapshotInProgress = true;
         return true;
     }
 
     private final class JpegPictureCallback implements PictureCallback {
+        Location mLocation;
+
+        public JpegPictureCallback(Location loc) {
+            mLocation = loc;
+        }
+
         @Override
         public void onPictureTaken(byte [] jpegData, android.hardware.Camera camera) {
             Log.v(TAG, "onPictureTaken");
             mSnapshotInProgress = false;
-            storeImage(jpegData, null);
+            storeImage(jpegData, mLocation);
         }
     }
 
