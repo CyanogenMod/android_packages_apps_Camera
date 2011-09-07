@@ -84,7 +84,8 @@ public class VideoCamera extends ActivityBase
         implements CameraPreference.OnPreferenceChangedListener,
         ShutterButton.OnShutterButtonListener, SurfaceHolder.Callback,
         MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        ModePicker.OnModeChangeListener, View.OnTouchListener {
+        ModePicker.OnModeChangeListener, View.OnTouchListener,
+        EffectsRecorder.EffectsListener {
 
     private static final String TAG = "videocamera";
 
@@ -133,6 +134,9 @@ public class VideoCamera extends ActivityBase
     private boolean mSnapshotInProgress = false;
     private PictureCallback mJpegPictureCallback;
 
+    private final static String EFFECT_BG_FROM_GALLERY =
+            "gallery";
+
     private android.hardware.Camera mCameraDevice;
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
@@ -142,6 +146,8 @@ public class VideoCamera extends ActivityBase
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceHolder mSurfaceHolder = null;
     private IndicatorControlContainer mIndicatorControlContainer;
+    private int mSurfaceWidth;
+    private int mSurfaceHeight;
     private View mReviewControl;
 
     private Toast mNoShareToast;
@@ -158,6 +164,7 @@ public class VideoCamera extends ActivityBase
     private ModePicker mModePicker;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
+    private TextView mBgLearningMessage;
 
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
@@ -168,6 +175,12 @@ public class VideoCamera extends ActivityBase
     private long mStorageSpace;
 
     private MediaRecorder mMediaRecorder;
+    private EffectsRecorder mEffectsRecorder;
+
+    private int mEffectType = EffectsRecorder.EFFECT_NONE;
+    private Object mEffectParameter = null;
+    private String mEffectUriFromGallery = null;
+
     private boolean mMediaRecorderRecording = false;
     private long mRecordingStartTime;
     private boolean mRecordingTimeCountsDown = false;
@@ -410,6 +423,8 @@ public class VideoCamera extends ActivityBase
         mOrientationListener = new MyOrientationEventListener(VideoCamera.this);
         mTimeLapseLabel = findViewById(R.id.time_lapse_label);
         mPreviewBorder = findViewById(R.id.preview_border);
+
+        mBgLearningMessage = (TextView) findViewById(R.id.bg_replace_message);
 
         // Make sure preview is started.
         try {
@@ -671,6 +686,28 @@ public class VideoCamera extends ActivityBase
         int profileQuality = getProfileQuality(mCameraId, quality, mCaptureTimeLapse);
         mProfile = CamcorderProfile.get(mCameraId, profileQuality);
         getDesiredPreviewSize();
+
+        // Set effect
+        mEffectType = CameraSettings.readEffectType(mPreferences);
+        if (mEffectType != EffectsRecorder.EFFECT_NONE) {
+            mEffectParameter = CameraSettings.readEffectParameter(mPreferences);
+            // When picking from gallery, mEffectParameter should have been
+            // initialized in onActivityResult. If not, fall back to no effect
+            if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER &&
+                ((String)mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {
+                if (mEffectUriFromGallery == null) {
+                    Log.w(TAG, "No URI from gallery, resetting to no effect");
+                    mEffectType = EffectsRecorder.EFFECT_NONE;
+                    mEffectParameter = null;
+                    ComboPreferences.Editor editor = mPreferences.edit();
+                    editor.putString(CameraSettings.KEY_VIDEO_EFFECT, "none");
+                    editor.apply();
+                }
+            }
+        } else {
+            mEffectParameter = null;
+        }
+
     }
 
     int getProfileQuality(int cameraId, String quality, boolean captureTimeLapse) {
@@ -812,7 +849,14 @@ public class VideoCamera extends ActivityBase
 
     private void setPreviewDisplay(SurfaceHolder holder) {
         try {
-            mCameraDevice.setPreviewDisplay(holder);
+            if (effectsActive() && mPreviewing) {
+                mEffectsRecorder.setPreviewDisplay(
+                        mSurfaceHolder,
+                        mSurfaceWidth,
+                        mSurfaceHeight);
+            } else {
+                mCameraDevice.setPreviewDisplay(holder);
+            }
         } catch (Throwable ex) {
             closeCamera();
             throw new RuntimeException("setPreviewDisplay failed", ex);
@@ -821,24 +865,36 @@ public class VideoCamera extends ActivityBase
 
     private void startPreview() {
         Log.v(TAG, "startPreview");
-        mCameraDevice.setErrorCallback(mErrorCallback);
 
+        mCameraDevice.setErrorCallback(mErrorCallback);
         if (mPreviewing == true) {
             mCameraDevice.stopPreview();
+            if (effectsActive() && mEffectsRecorder != null) {
+                mEffectsRecorder.release();
+            }
             mPreviewing = false;
         }
-        setPreviewDisplay(mSurfaceHolder);
-        mDisplayRotation = Util.getDisplayRotation(this);
-        int orientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
-        mCameraDevice.setDisplayOrientation(orientation);
-        setCameraParameters();
+        if (!effectsActive()) {
+            setPreviewDisplay(mSurfaceHolder);
+            mDisplayRotation = Util.getDisplayRotation(this);
+            int orientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
+            mCameraDevice.setDisplayOrientation(orientation);
+            setCameraParameters();
 
-        try {
-            mCameraDevice.startPreview();
-        } catch (Throwable ex) {
-            closeCamera();
-            throw new RuntimeException("startPreview failed", ex);
+            try {
+                mCameraDevice.startPreview();
+            } catch (Throwable ex) {
+                closeCamera();
+                throw new RuntimeException("startPreview failed", ex);
+            }
+        } else {
+            setCameraParameters();
+
+            initializeEffectsPreview();
+            Log.v(TAG, "effectsStartPreview");
+            mEffectsRecorder.startPreview();
         }
+
         mZoomState = ZOOM_STOPPED;
         mPreviewing = true;
     }
@@ -849,6 +905,10 @@ public class VideoCamera extends ActivityBase
             Log.d(TAG, "already stopped.");
             return;
         }
+        if (mEffectsRecorder != null) {
+            mEffectsRecorder.release();
+        }
+        mEffectType = EffectsRecorder.EFFECT_NONE;
         CameraHolder.instance().release();
         mCameraDevice = null;
         mPreviewing = false;
@@ -968,6 +1028,8 @@ public class VideoCamera extends ActivityBase
         Log.v(TAG, "surfaceChanged. w=" + w + ". h=" + h);
 
         mSurfaceHolder = holder;
+        mSurfaceWidth = w;
+        mSurfaceHeight = h;
 
         if (mPausing) {
             // We're pausing, the screen is off and we already stopped
@@ -1150,6 +1212,73 @@ public class VideoCamera extends ActivityBase
         mMediaRecorder.setOnInfoListener(this);
     }
 
+    private void initializeEffectsPreview() {
+        Log.v(TAG, "initializeEffectsPreview");
+        // If the mCameraDevice is null, then this activity is going to finish
+        if (mCameraDevice == null) return;
+
+        mEffectsRecorder = new EffectsRecorder(this);
+
+        mEffectsRecorder.setCamera(mCameraDevice);
+        mEffectsRecorder.setProfile(mProfile);
+        mEffectsRecorder.setEffectsListener(this);
+        mEffectsRecorder.setOnInfoListener(this);
+        mEffectsRecorder.setOnErrorListener(this);
+
+        // See android.hardware.Camera.Parameters.setRotation for
+        // documentation.
+        int rotation = 0;
+        if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
+            CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+            if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
+                rotation = (info.orientation - mOrientation + 360) % 360;
+            } else {  // back-facing camera
+                rotation = (info.orientation + mOrientation) % 360;
+            }
+        }
+        mEffectsRecorder.setOrientationHint(rotation);
+        mOrientationHint = rotation;
+
+        mEffectsRecorder.setPreviewDisplay(
+                mSurfaceHolder,
+                mSurfaceWidth,
+                mSurfaceHeight);
+
+        if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER &&
+            ((String)mEffectParameter).equals(EFFECT_BG_FROM_GALLERY) ) {
+            mEffectsRecorder.setEffect(mEffectType, mEffectUriFromGallery);
+        } else {
+            mEffectsRecorder.setEffect(mEffectType, mEffectParameter);
+        }
+    }
+
+    private void initializeEffectsRecording() {
+        Log.v(TAG, "initializeEffectsRecording");
+
+        Intent intent = getIntent();
+        Bundle myExtras = intent.getExtras();
+
+        if (mIsVideoCaptureIntent && myExtras != null) {
+            Uri saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
+            if (saveUri != null) {
+                mVideoFilename = saveUri.toString();
+            } else {
+                mVideoFilename = null;
+            }
+        } else {
+            mVideoFilename = null;
+        }
+
+        // TODO: Timelapse
+
+        // Set output file
+        if (mVideoFilename == null) {
+            generateVideoFilename(mProfile.fileFormat);
+        }
+        mEffectsRecorder.setOutputFile(mVideoFilename);
+    }
+
+
     private void releaseMediaRecorder() {
         Log.v(TAG, "Releasing media recorder.");
         if (mMediaRecorder != null) {
@@ -1167,6 +1296,16 @@ public class VideoCamera extends ActivityBase
             }
             mVideoFileDescriptor = null;
         }
+    }
+
+    private void releaseEffectsRecorder() {
+        Log.v(TAG, "Releasing effects recorder.");
+        if (mEffectsRecorder != null) {
+            cleanupEmptyFile();
+            mEffectsRecorder.release();
+            mEffectsRecorder = null;
+        }
+        mVideoFilename = null;
     }
 
     private void generateVideoFilename(int outputFileFormat) {
@@ -1342,23 +1481,42 @@ public class VideoCamera extends ActivityBase
             return;
         }
 
-        initializeRecorder();
-        if (mMediaRecorder == null) {
-            Log.e(TAG, "Fail to initialize media recorder");
-            return;
+        if (effectsActive()) {
+            initializeEffectsRecording();
+            if (mEffectsRecorder == null) {
+                Log.e(TAG, "Fail to initialize effect recorder");
+                return;
+            }
+        } else {
+            initializeRecorder();
+            if (mMediaRecorder == null) {
+                Log.e(TAG, "Fail to initialize media recorder");
+                return;
+            }
         }
 
         pauseAudioPlayback();
 
-        try {
-            mMediaRecorder.start(); // Recording is now started
-        } catch (RuntimeException e) {
-            Log.e(TAG, "Could not start media recorder. ", e);
-            releaseMediaRecorder();
-            // If start fails, frameworks will not lock the camera for us.
-            mCameraDevice.lock();
-            return;
+        if (effectsActive()) {
+            try {
+                mEffectsRecorder.startRecording();
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Could not start effects recorder. ", e);
+                releaseEffectsRecorder();
+                return;
+            }
+        } else {
+            try {
+                mMediaRecorder.start(); // Recording is now started
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Could not start media recorder. ", e);
+                releaseMediaRecorder();
+                // If start fails, frameworks will not lock the camera for us.
+                mCameraDevice.lock();
+                return;
+            }
         }
+
         enableCameraControls(false);
 
         mMediaRecorderRecording = true;
@@ -1458,10 +1616,15 @@ public class VideoCamera extends ActivityBase
         Log.v(TAG, "stopVideoRecording");
         if (mMediaRecorderRecording) {
             boolean shouldAddToMediaStore = false;
-            mMediaRecorder.setOnErrorListener(null);
-            mMediaRecorder.setOnInfoListener(null);
+
             try {
-                mMediaRecorder.stop();
+                if (effectsActive()) {
+                    mEffectsRecorder.stopRecording();
+                } else {
+                    mMediaRecorder.setOnErrorListener(null);
+                    mMediaRecorder.setOnInfoListener(null);
+                    mMediaRecorder.stop();
+                }
                 mCurrentVideoFilename = mVideoFilename;
                 Log.v(TAG, "Setting current video filename: "
                         + mCurrentVideoFilename);
@@ -1470,6 +1633,7 @@ public class VideoCamera extends ActivityBase
                 Log.e(TAG, "stop fail",  e);
                 if (mVideoFilename != null) deleteVideoFile(mVideoFilename);
             }
+
             mMediaRecorderRecording = false;
             showRecordingUI(false);
             if (!mIsVideoCaptureIntent) {
@@ -1480,7 +1644,10 @@ public class VideoCamera extends ActivityBase
                 addVideoToMediaStore();
             }
         }
-        releaseMediaRecorder();  // always release media recorder
+        // always release media recorder
+        if (!effectsActive()) {
+            releaseMediaRecorder();
+        }
     }
 
     private void resetScreenOn() {
@@ -1696,6 +1863,37 @@ public class VideoCamera extends ActivityBase
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case EffectsRecorder.EFFECT_BACKDROPPER:
+                if (resultCode == RESULT_OK) {
+                    // onActivityResult() runs before onResume(), so this parameter will be
+                    // seen by startPreview from onResume()
+                    mEffectUriFromGallery = ((Uri)data.getData()).toString();
+                    Log.v(TAG, "Received URI from gallery: " + mEffectUriFromGallery);
+                }
+                break;
+            default:
+                Log.e(TAG, "Unknown activity result sent to Camera!");
+                break;
+        }
+    }
+
+    public void onEffectsUpdate(int effectId, int effectMsg) {
+        if (effectId == EffectsRecorder.EFFECT_BACKDROPPER) {
+            switch (effectMsg) {
+                case EffectsRecorder.EFFECT_MSG_STARTED_LEARNING:
+                    mBgLearningMessage.setVisibility(View.VISIBLE);
+                    break;
+                case EffectsRecorder.EFFECT_MSG_DONE_LEARNING:
+                case EffectsRecorder.EFFECT_MSG_STOPPING_EFFECT:
+                    mBgLearningMessage.setVisibility(View.GONE);
+                    break;
+            }
+        }
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
     }
@@ -1732,6 +1930,10 @@ public class VideoCamera extends ActivityBase
         }
     }
 
+    private boolean effectsActive() {
+        return (mEffectType != EffectsRecorder.EFFECT_NONE);
+    }
+
     public void onSharedPreferenceChanged() {
         // ignore the events after "onPause()" or preview has not started yet
         if (mPausing) return;
@@ -1740,7 +1942,8 @@ public class VideoCamera extends ActivityBase
             // startPreview().
             if (mCameraDevice == null) return;
 
-            // TODO: apply goofy face effect here.
+            // Check if the current effects selection has changed
+            if (updateEffectSelection()) return;
 
             // Check if camera id is changed.
             int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
@@ -1761,7 +1964,11 @@ public class VideoCamera extends ActivityBase
                 Size size = mParameters.getPreviewSize();
                 if (size.width != mDesiredPreviewWidth
                         || size.height != mDesiredPreviewHeight) {
-                    mCameraDevice.stopPreview();
+                    if (!effectsActive()) {
+                        mCameraDevice.stopPreview();
+                    } else {
+                        mEffectsRecorder.release();
+                    }
                     resizeForPreviewAspectRatio();
                     startPreview(); // Parameters will be set in startPreview().
                 } else {
@@ -1770,6 +1977,42 @@ public class VideoCamera extends ActivityBase
             }
             showTimeLapseUI(mCaptureTimeLapse);
         }
+    }
+
+    private boolean updateEffectSelection() {
+        int currentEffectType = mEffectType;
+        Object currentEffectParameter = mEffectParameter;
+        mEffectType = CameraSettings.readEffectType(mPreferences);
+        mEffectParameter = CameraSettings.readEffectParameter(mPreferences);
+
+        if (mEffectType == currentEffectType) {
+            if (mEffectType == EffectsRecorder.EFFECT_NONE) return false;
+            if (mEffectParameter.equals(currentEffectParameter)) return false;
+        }
+        Log.v(TAG, "New effect selection: " + mPreferences.getString(CameraSettings.KEY_VIDEO_EFFECT, "none") );
+
+        if ( mEffectType == EffectsRecorder.EFFECT_NONE ) {
+            // Stop effects and return to normal preview
+            mEffectsRecorder.stopPreview();
+            return true;
+        }
+        if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER &&
+            ((String)mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {
+            // Request video from gallery to use for background
+            Intent i = new Intent(Intent.ACTION_PICK);
+            i.setDataAndType(Video.Media.EXTERNAL_CONTENT_URI,
+                             "video/*");
+            startActivityForResult(i, EffectsRecorder.EFFECT_BACKDROPPER);
+            return true;
+        }
+        if (currentEffectType == EffectsRecorder.EFFECT_NONE) {
+            // Start up effects
+            startPreview();
+        } else {
+            // Switch currently running effect
+            mEffectsRecorder.setEffect(mEffectType, mEffectParameter);
+        }
+        return true;
     }
 
     private void showTimeLapseUI(boolean enable) {

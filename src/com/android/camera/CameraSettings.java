@@ -180,7 +180,10 @@ public class CameraSettings {
         if (cameraIdPref != null) buildCameraId(group, cameraIdPref);
 
         if (timeLapseInterval != null) resetIfInvalid(timeLapseInterval);
-        if (videoEffect != null) resetIfInvalid(videoEffect);
+        if (videoEffect != null) {
+            initVideoEffect(group, videoEffect);
+            resetIfInvalid(videoEffect);
+        }
     }
 
     private void buildExposureCompensation(
@@ -379,6 +382,52 @@ public class CameraSettings {
         return 0;
     }
 
+    public static int readEffectType(SharedPreferences pref) {
+        String effectSelection = pref.getString(KEY_VIDEO_EFFECT, "none");
+        if (effectSelection.equals("none")) {
+            return EffectsRecorder.EFFECT_NONE;
+        } else if (effectSelection.startsWith("goofy_face")) {
+            return EffectsRecorder.EFFECT_GOOFY_FACE;
+        } else if (effectSelection.startsWith("backdropper")) {
+            return EffectsRecorder.EFFECT_BACKDROPPER;
+        }
+        Log.e(TAG, "Invalid effect selection: " + effectSelection);
+        return EffectsRecorder.EFFECT_NONE;
+    }
+
+    public static Object readEffectParameter(SharedPreferences pref) {
+        String effectSelection = pref.getString(KEY_VIDEO_EFFECT, "none");
+        if (effectSelection.equals("none")) {
+            return null;
+        }
+        int separatorIndex = effectSelection.indexOf('/');
+        String effectParameter =
+                effectSelection.substring(separatorIndex + 1);
+        if (effectSelection.startsWith("goofy_face")) {
+            if (effectParameter.equals("squeeze")) {
+                return EffectsRecorder.EFFECT_GF_SQUEEZE;
+            } else if (effectParameter.equals("big_eyes")) {
+                return EffectsRecorder.EFFECT_GF_BIG_EYES;
+            } else if (effectParameter.equals("big_mouth")) {
+                return EffectsRecorder.EFFECT_GF_BIG_MOUTH;
+            } else if (effectParameter.equals("small_mouth")) {
+                return EffectsRecorder.EFFECT_GF_SMALL_MOUTH;
+            } else if (effectParameter.equals("big_nose")) {
+                return EffectsRecorder.EFFECT_GF_BIG_NOSE;
+            } else if (effectParameter.equals("small_eyes")) {
+                return EffectsRecorder.EFFECT_GF_SMALL_EYES;
+            }
+        } else if (effectSelection.startsWith("backdropper")) {
+            // Parameter is a string that either encodes the URI to use,
+            // or specifies 'gallery'.
+            return effectParameter;
+        }
+
+        Log.e(TAG, "Invalid effect selection: " + effectSelection);
+        return null;
+    }
+
+
     public static void restorePreferences(Context context,
             ComboPreferences preferences, Parameters parameters) {
         int currentCameraId = readPreferredCameraId(preferences);
@@ -439,5 +488,25 @@ public class CameraSettings {
             }
             videoQuality.filterUnsupported(supported);
         }
+    }
+
+    private void initVideoEffect(PreferenceGroup group, ListPreference videoEffect) {
+        CharSequence[] values = videoEffect.getEntryValues();
+
+        boolean goofyFaceSupported = EffectsRecorder.isEffectSupported(EffectsRecorder.EFFECT_GOOFY_FACE);
+        boolean backdropperSupported =
+                EffectsRecorder.isEffectSupported(EffectsRecorder.EFFECT_BACKDROPPER) &&
+                mParameters.isAutoExposureLockSupported() &&
+                mParameters.isAutoWhiteBalanceLockSupported();
+
+        ArrayList<String> supported = new ArrayList<String>();
+        for (CharSequence value : values) {
+            String effectSelection = value.toString();
+            if (!goofyFaceSupported && effectSelection.startsWith("goofy_face")) continue;
+            if (!backdropperSupported && effectSelection.startsWith("backdropper")) continue;
+            supported.add(effectSelection);
+        }
+
+        filterUnsupportedOptions(group, videoEffect, supported);
     }
 }

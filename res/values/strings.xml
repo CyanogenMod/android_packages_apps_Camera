@@ -306,4 +306,14 @@
     <string name="effect_goofy_face_big_nose">Big Nose</string>
     <!-- Effect setting item that makes eyes small. [CHAR LIMIT=14] -->
     <string name="effect_goofy_face_small_eyes">Small Eyes</string>
+    <!-- Effect setting item that replaces background with space. [CHAR LIMIT=14] -->
+    <string name="effect_backdropper_space">In Space</string>
+    <!-- Effect setting item that replaces background with the beach. [CHAR LIMIT=14] -->
+    <string name="effect_backdropper_beach">On the Beach</string>
+    <!-- Effect setting item that replaces background with video from gallery. [CHAR LIMIT=14] -->
+    <string name="effect_backdropper_gallery">Pick your own</string>
+
+    <!-- Message displayed in overlay during background replacement training [CHAR LIMIT=180]-->
+    <string name="bg_replacement_message">Place your device on a steady surface and be sure there\'s no movement behind you.\n\nThen step out of the camera\'s view.</string>
+
 </resources>

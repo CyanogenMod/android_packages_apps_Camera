@@ -249,15 +249,21 @@
         <item>@string/effect_goofy_face_small_mouth</item>
         <item>@string/effect_goofy_face_big_nose</item>
         <item>@string/effect_goofy_face_small_eyes</item>
+        <item>@string/effect_backdropper_space</item>
+        <item>@string/effect_backdropper_beach</item>
+        <item>@string/effect_backdropper_gallery</item>
     </string-array>
 
     <string-array name="pref_video_effect_entryvalues" translatable="false">
-        <item>-1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
+        <item>none</item>
+        <item>goofy_face/squeeze</item>
+        <item>goofy_face/big_eyes</item>
+        <item>goofy_face/big_mouth</item>
+        <item>goofy_face/small_mouth</item>
+        <item>goofy_face/big_nose</item>
+        <item>goofy_face/small_eyes</item>
+        <item>backdropper/file:///system/media/video/AndroidinSpace15s100.mp4</item>
+        <item>backdropper/file:///system/media/video/beach_100k.mp4</item>
+        <item>backdropper/gallery</item>
     </string-array>
 </resources>
