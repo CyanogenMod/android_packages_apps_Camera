@@ -55,7 +55,6 @@ public class FocusManager {
 
     private boolean mInitialized;
     private boolean mFocusAreaSupported;
-    private boolean mContinuousFocusFail;
     private ToneGenerator mFocusToneGenerator;
     private View mFocusIndicatorRotateLayout;
     private FocusIndicatorView mFocusIndicator;
@@ -170,14 +169,7 @@ public class FocusManager {
     }
 
     public void onAutoFocus(boolean focused) {
-        // Do a full autofocus if the scene is not focused in continuous
-        // focus mode,
-        if (getFocusMode().equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE) && !focused) {
-            mContinuousFocusFail = true;
-            mListener.setFocusParameters();
-            autoFocus();
-            mContinuousFocusFail = false;
-        } else if (mState == STATE_FOCUSING_SNAP_ON_FINISH) {
+        if (mState == STATE_FOCUSING_SNAP_ON_FINISH) {
             // Take the picture no matter focus succeeds or fails. No need
             // to play the AF sound if we're about to play the shutter
             // sound.
@@ -341,8 +333,8 @@ public class FocusManager {
     public String getFocusMode() {
         if (mOverrideFocusMode != null) return mOverrideFocusMode;
 
-        if ((mFocusAreaSupported && mTapArea != null) || mContinuousFocusFail) {
-            // Always use autofocus in tap-to-focus or when continuous focus fails.
+        if (mFocusAreaSupported && mTapArea != null) {
+            // Always use autofocus in tap-to-focus.
             mFocusMode = Parameters.FOCUS_MODE_AUTO;
         } else {
             // The default is continuous autofocus.
