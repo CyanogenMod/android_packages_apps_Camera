@@ -87,8 +87,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private static final String TAG = "camera";
 
-    private static final String LAST_THUMB_FILENAME = "image_last_thumb";
-
     private static final int CROP_MSG = 1;
     private static final int FIRST_TIME_INIT = 2;
     private static final int RESTART_PREVIEW = 3;
@@ -408,7 +406,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void initThumbnailButton() {
         // Load the thumbnail from the disk.
-        mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
+        mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
         updateThumbnailButton();
     }
 
@@ -1288,7 +1286,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mOrientationListener.disable();
             if (!mIsImageCaptureIntent) {
                 if (mThumbnail != null) {
-                    mThumbnail.saveTo(new File(getFilesDir(), LAST_THUMB_FILENAME));
+                    mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
                 }
             }
             hidePostCaptureAlert();

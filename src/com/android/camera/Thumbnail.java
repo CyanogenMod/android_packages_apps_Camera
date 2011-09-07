@@ -43,6 +43,7 @@ import java.io.IOException;
 public class Thumbnail {
     private static final String TAG = "Thumbnail";
 
+    public static final String LAST_THUMB_FILENAME = "last_thumb";
     private static final int BUFSIZE = 4096;
 
     private Uri mUri;

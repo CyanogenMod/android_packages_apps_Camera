@@ -88,8 +88,6 @@ public class VideoCamera extends ActivityBase
 
     private static final String TAG = "videocamera";
 
-    private static final String LAST_THUMB_FILENAME = "video_last_thumb";
-
     private static final int CHECK_DISPLAY_ROTATION = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
@@ -964,7 +962,7 @@ public class VideoCamera extends ActivityBase
         resetScreenOn();
 
         if (!mIsVideoCaptureIntent && mThumbnail != null) {
-            mThumbnail.saveTo(new File(getFilesDir(), LAST_THUMB_FILENAME));
+            mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
         }
 
         if (mStorageHint != null) {
@@ -1684,7 +1682,7 @@ public class VideoCamera extends ActivityBase
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
         mThumbnailView.setVisibility(View.VISIBLE);
         // Load the thumbnail from the disk.
-        mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), LAST_THUMB_FILENAME));
+        mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
     }
 
     private void updateThumbnailButton() {
