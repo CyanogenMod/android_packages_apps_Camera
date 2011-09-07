@@ -24,6 +24,7 @@ import com.android.camera.MenuHelper;
 import com.android.camera.ModePicker;
 import com.android.camera.OnClickAttr;
 import com.android.camera.R;
+import com.android.camera.ShutterButton;
 import com.android.camera.Storage;
 import com.android.camera.Thumbnail;
 import com.android.camera.Util;
@@ -60,7 +61,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -71,8 +71,8 @@ import java.util.List;
  * Activity to handle panorama capturing.
  */
 public class PanoramaActivity extends Activity implements
-        ModePicker.OnModeChangeListener,
-        SurfaceTexture.OnFrameAvailableListener,
+        ModePicker.OnModeChangeListener, SurfaceTexture.OnFrameAvailableListener,
+        ShutterButton.OnShutterButtonListener,
         MosaicRendererSurfaceViewRenderer.MosaicSurfaceCreateListener {
     public static final int DEFAULT_SWEEP_ANGLE = 160;
     public static final int DEFAULT_BLEND_MODE = Mosaic.BLENDTYPE_HORIZONTAL;
@@ -99,12 +99,12 @@ public class PanoramaActivity extends Activity implements
 
     private View mPanoLayout;
     private View mCaptureLayout;
-    private Button mStopCaptureButton;
     private View mReviewLayout;
     private ImageView mReview;
     private IndicationView mIndicationView;
     private MosaicRendererSurfaceView mMosaicView;
     private TextView mTooFastPrompt;
+    private ShutterButton mShutterButton;
 
     private ProgressDialog mProgressDialog;
     private String mPreparePreviewString;
@@ -419,6 +419,7 @@ public class PanoramaActivity extends Activity implements
         // Reset values so we can do this again.
         mTimeTaken = System.currentTimeMillis();
         mCaptureState = CAPTURE_STATE_MOSAIC;
+        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan_recording);
 
         mCompassValueXStart = mCompassValueXStartBuffer;
         mCompassValueYStart = mCompassValueYStartBuffer;
@@ -441,7 +442,6 @@ public class PanoramaActivity extends Activity implements
             }
         });
 
-        mStopCaptureButton.setVisibility(View.VISIBLE);
         mIndicationView.resetAngles();
         mIndicationView.setVisibility(View.VISIBLE);
         mMosaicView.setVisibility(View.VISIBLE);
@@ -498,7 +498,6 @@ public class PanoramaActivity extends Activity implements
         mCaptureLayout = (View) findViewById(R.id.pano_capture_layout);
         mIndicationView = (IndicationView) findViewById(R.id.pano_capture_view);
         mIndicationView.setMaxSweepAngle(DEFAULT_SWEEP_ANGLE);
-        mStopCaptureButton = (Button) findViewById(R.id.pano_capture_stop_button);
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
 
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
@@ -514,25 +513,31 @@ public class PanoramaActivity extends Activity implements
         mModePicker.setOnModeChangeListener(this);
         mModePicker.setCurrentMode(ModePicker.MODE_PANORAMA);
 
+        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
+        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
+        mShutterButton.setOnShutterButtonListener(this);
+
         mPanoLayout = findViewById(R.id.pano_layout);
     }
 
-    @OnClickAttr
-    public void onStartButtonClicked(View v) {
+    @Override
+    public void onShutterButtonClick(ShutterButton b) {
         // If mSurfaceTexture == null then GL setup is not finished yet.
         // No buttons can be pressed.
         if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
         // Since this button will stay on the screen when capturing, we need to check the state
         // right now.
-        if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
-            startCapture();
+        switch (mCaptureState) {
+            case CAPTURE_STATE_VIEWFINDER:
+                startCapture();
+                break;
+            case CAPTURE_STATE_MOSAIC:
+                stopCapture();
         }
     }
 
-    @OnClickAttr
-    public void onStopButtonClicked(View v) {
-        if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
-        stopCapture();
+    @Override
+    public void onShutterButtonFocus(ShutterButton b, boolean pressed) {
     }
 
     public void reportProgress(final boolean highRes) {
@@ -640,7 +645,7 @@ public class PanoramaActivity extends Activity implements
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
 
         mReviewLayout.setVisibility(View.GONE);
-        mStopCaptureButton.setVisibility(View.GONE);
+        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
         mIndicationView.setVisibility(View.GONE);
         mCaptureLayout.setVisibility(View.VISIBLE);
         mMosaicFrameProcessor.reset();

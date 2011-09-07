@@ -100,7 +100,6 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"Nėra bendrinamo paveikslėlio"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Nėra bendrinamo vaizdo įrašo"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Sustab."</string>
-    <string name="pano_capture_start" msgid="2163632725789917725">"Pradėti"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Per greitai"</string>
     <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Ruošiama peržiūra..."</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Generuojama panorama..."</string>
