@@ -145,6 +145,7 @@ public class ZoomControlWheel extends ZoomControl {
    }
 
     private double getZoomIndexAngle() {
+        if (mZoomMax == 0) return Math.PI;
         return Math.toRadians(MAX_SLIDER_ANGLE -
                 (MAX_SLIDER_ANGLE - MIN_SLIDER_ANGLE) * mZoomIndex / mZoomMax);
     }
