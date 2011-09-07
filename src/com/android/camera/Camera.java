@@ -885,6 +885,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         });
         startPreviewThread.start();
 
+        Util.enterLightsOutMode(getWindow());
+
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceChanged / surfaceDestroyed, other parts of the code
         // assume that when it is set, the surface is also set.

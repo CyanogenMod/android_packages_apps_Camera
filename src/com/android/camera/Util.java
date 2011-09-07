@@ -42,6 +42,7 @@ import android.view.Display;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -574,5 +575,11 @@ public class Util {
                 loc = null;
             }
         }
+    }
+
+    public static void enterLightsOutMode(Window window) {
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE;
+        window.setAttributes(params);
     }
 }

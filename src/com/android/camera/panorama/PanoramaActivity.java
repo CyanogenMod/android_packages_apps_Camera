@@ -59,8 +59,6 @@ import android.view.Gravity;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -185,6 +183,7 @@ public class PanoramaActivity extends Activity implements
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        Util.enterLightsOutMode(getWindow());
 
         createContentView();
 

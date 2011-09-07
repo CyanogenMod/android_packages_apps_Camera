@@ -383,6 +383,8 @@ public class VideoCamera extends ActivityBase
         });
         startPreviewThread.start();
 
+        Util.enterLightsOutMode(getWindow());
+
         mContentResolver = getContentResolver();
 
         requestWindowFeature(Window.FEATURE_PROGRESS);
