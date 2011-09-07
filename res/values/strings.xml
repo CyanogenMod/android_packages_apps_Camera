@@ -272,7 +272,7 @@
     <string name="pano_too_fast_prompt">Too Fast</string>
 
     <!-- The text shown in the progress dialog when panorama preview is generating in the background [CHAR LIMIT=30] -->
-    <string name="pano_dialog_prepare_preview">Preparing preview...</string>
+    <string name="pano_dialog_prepare_preview">Preparing panorama</string>
 
     <!-- The text shown in the progress dialog when generating the final panorama result in the background [CHAR LIMIT=30] -->
     <string name="pano_dialog_generate_panorama">Generating panorama...</string>

@@ -60,4 +60,6 @@
         android:layout_width="wrap_content"
         android:visibility="gone"
         android:layout_centerInParent="true" />
+
+    <include layout="@layout/pano_dialog_view" />
 </RelativeLayout>
