@@ -78,6 +78,17 @@
   oheight = $previewHeight;
 }
 
+// Orientation rotation filter
+@filter FixedRotationFilter rotate {
+    rotation = 0;
+}
+
+// Orientation rotation filter for facemeta data
+@filter FaceMetaFixedRotationFilter metarotate {
+    rotation = 0;
+}
+
+
 // Recording output
 @filter MediaEncoderFilter recorder {
   audioSource = $audioSource;
@@ -88,12 +99,14 @@
 
 // Connections -----------------------------------------------
 // camera -> faceTracker
-@connect source[video] => toPackedGray[image];
+@connect source[video] => rotate[image];
+@connect rotate[image] => toPackedGray[image];
 @connect toPackedGray[image] => faceTracker[image];
 // camera -> goofy
 @connect source[video] => goofyrenderer[image];
-// faceTracker -> goofy
-@connect faceTracker[faces] => goofyrenderer[faces];
+// faceTracker -> metarotate -> goofy
+@connect faceTracker[faces] => metarotate[faces];
+@connect metarotate[faces] => goofyrenderer[faces];
 // goofy -> display out
 @connect goofyrenderer[outimage] => display[frame];
 // goofy -> record

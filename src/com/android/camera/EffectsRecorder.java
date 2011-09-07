@@ -84,7 +84,7 @@ public class EffectsRecorder {
 
     private GraphEnvironment mGraphEnv;
     private int mGraphId;
-    private GraphRunner mRunner;
+    private GraphRunner mRunner = null;
 
     private SurfaceTexture mTextureSource;
 
@@ -214,17 +214,27 @@ public class EffectsRecorder {
         mEffectsListener = listener;
     }
 
+    private void setFaceDetectOrientation(int degrees) {
+        if (mCurrentEffect == EFFECT_GOOFY_FACE) {
+            Filter rotateFilter = mRunner.getGraph().getFilter("rotate");
+            Filter metaRotateFilter = mRunner.getGraph().getFilter("metarotate");
+            rotateFilter.setInputValue("rotation", degrees);
+            int reverseDegrees = (360 - degrees) % 360;
+            metaRotateFilter.setInputValue("rotation", reverseDegrees);
+        }
+    }
+
     public void setOrientationHint(int degrees) {
         switch (mState) {
-            case STATE_RECORD:
-                throw new RuntimeException("setEffect cannot be called while recording!");
             case STATE_RELEASED:
-                throw new RuntimeException("setEffect called on an already released recorder!");
+                throw new RuntimeException(
+                        "setOrientationHint called on an already released recorder!");
             default:
                 break;
         }
 
         mOrientationHint = degrees;
+        setFaceDetectOrientation(degrees);
     }
 
     public void setOnInfoListener(MediaRecorder.OnInfoListener infoListener) {
@@ -314,7 +324,7 @@ public class EffectsRecorder {
             default:
                 break;
         }
-
+        setFaceDetectOrientation(mOrientationHint);
     }
 
     public void startPreview() {

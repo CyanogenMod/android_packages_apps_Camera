@@ -524,6 +524,9 @@ public class VideoCamera extends ActivityBase
 
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
+                if (effectsActive()) {
+                    mEffectsRecorder.setOrientationHint(orientationCompensation);
+                }
                 // Do not rotate the icons during recording because the video
                 // orientation is fixed after recording.
                 if (!mMediaRecorderRecording) {
