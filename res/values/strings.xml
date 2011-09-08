@@ -122,6 +122,8 @@
     <string name="pref_camera_id_entry_back">Back</string>
     <!-- In select camera setting, front-facing camera. [CHAR LIMIT=14] -->
     <string name="pref_camera_id_entry_front">Front</string>
+    <!-- In select camera setting, dual camera. [CHAR LIMIT=14] -->
+    <string name="pref_camera_id_entry_dual">3D</string>
 
     <!-- Settings screen, setting title text -->
     <string name="pref_camera_recordlocation_title">Store location</string>
