@@ -34,7 +34,7 @@ public class PreviewFrameLayout extends RelativeLayout {
 
     private double mAspectRatio = 4.0 / 3.0;
     private View mFrame;
-    private View mBorderView;
+    private View mPreviewBorder;
     private final DisplayMetrics mMetrics = new DisplayMetrics();
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
@@ -47,7 +47,7 @@ public class PreviewFrameLayout extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mFrame = (View) findViewById(R.id.frame);
-        mBorderView = (View) findViewById(R.id.preview_border);
+        mPreviewBorder = (View) findViewById(R.id.preview_border);
     }
 
     public void setAspectRatio(double ratio) {
@@ -64,11 +64,14 @@ public class PreviewFrameLayout extends RelativeLayout {
         // Calculate the width and the height of preview frame.
         int frameWidth = getWidth();
         int frameHeight = getHeight();
-        View f = mBorderView;
-        int horizontalPadding = f.getPaddingLeft() + f.getPaddingRight();
-        int verticalPadding = f.getPaddingBottom() + f.getPaddingTop();
-        int previewHeight = frameHeight - verticalPadding;
-        int previewWidth = frameWidth - horizontalPadding;
+        int hPadding = 0;
+        int vPadding = 0;
+        if (mPreviewBorder != null) {
+            hPadding = mPreviewBorder.getPaddingLeft() + mPreviewBorder.getPaddingRight();
+            vPadding = mPreviewBorder.getPaddingBottom() + mPreviewBorder.getPaddingTop();
+        }
+        int previewHeight = frameHeight - vPadding;
+        int previewWidth = frameWidth - hPadding;
         if (previewWidth > previewHeight * mAspectRatio) {
             previewWidth = (int) (previewHeight * mAspectRatio + .5);
         } else {
@@ -84,13 +87,15 @@ public class PreviewFrameLayout extends RelativeLayout {
         mFrame.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
 
         // Measure and layout the border of preview frame.
-        frameWidth = previewWidth + horizontalPadding;
-        frameHeight = previewHeight + verticalPadding;
-        hSpace = ((r - l) - frameWidth) / 2;
-        vSpace = ((b - t) - frameHeight) / 2;
-        mBorderView.measure(
-                MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
-        mBorderView.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
+        if (mPreviewBorder != null) {
+            frameWidth = previewWidth + hPadding;
+            frameHeight = previewHeight + vPadding;
+            hSpace = ((r - l) - frameWidth) / 2;
+            vSpace = ((b - t) - frameHeight) / 2;
+            mPreviewBorder.measure(
+                    MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
+            mPreviewBorder.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
+        }
     }
 }

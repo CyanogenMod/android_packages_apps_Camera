@@ -33,11 +33,4 @@
         <include layout="@layout/priority_indicators"/>
         <include layout="@layout/tap_to_focus_toast"/>
     </RelativeLayout>
-    <!-- This is the border of preview and the corner is round. If it is the background,
-         preview will be on top and the inner corner will be square, which looks bad.
-         So this is put in the end of layout to keep corner round. -->
-    <ImageView android:id="@+id/preview_border"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/border_preview"/>
 </com.android.camera.PreviewFrameLayout>
