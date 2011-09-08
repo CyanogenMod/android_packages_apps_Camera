@@ -31,6 +31,9 @@ import com.android.camera.Util;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.SharePopup;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -60,6 +63,7 @@ import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -76,7 +80,7 @@ public class PanoramaActivity extends Activity implements
     public static final int DEFAULT_BLEND_MODE = Mosaic.BLENDTYPE_HORIZONTAL;
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
 
-    private static final int MSG_FINAL_MOSAIC_READY = 1;
+    private static final int MSG_LOW_RES_FINAL_MOSAIC_READY = 1;
     private static final int MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL = 2;
     private static final int MSG_GENERATE_FINAL_MOSAIC_ERROR = 3;
     private static final int MSG_DISMISS_ALERT_DIALOG_AND_RESET_TO_PREVIEW = 4;
@@ -107,9 +111,16 @@ public class PanoramaActivity extends Activity implements
     private ProgressDialog mProgressDialog;
     private String mPreparePreviewString;
     private String mGeneratePanoramaString;
+    private AlertDialog mAlertDialog;
     private String mDialogTitle;
     private String mDialogOk;
-    private AlertDialog mAlertDialog;
+
+    // This custom dialog is to follow the UI spec to produce a dialog with a spinner in the top
+    // center part and a text view in the bottom part. The background is a rounded rectangle. The
+    // system dialog cannot be used because there will be a rectangle with 3D-like edges.
+    private RelativeLayout mPanoramaPrepareDialog;
+    private Animator mPanoramaPrepareDialogFadeIn;
+    private Animator mPanoramaPrepareDialogFadeOut;
 
     private float mCompassValueX;
     private float mCompassValueY;
@@ -204,13 +215,11 @@ public class PanoramaActivity extends Activity implements
         mDialogTitle = getResources().getString(R.string.pano_dialog_title);
         mDialogOk = getResources().getString(R.string.dialog_ok);
 
-        Context context = getApplicationContext();
-
         mMainHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
-                    case MSG_FINAL_MOSAIC_READY:
+                    case MSG_LOW_RES_FINAL_MOSAIC_READY:
                         onBackgroundThreadFinished();
                         showFinalMosaic((Bitmap) msg.obj);
                         break;
@@ -465,7 +474,7 @@ public class PanoramaActivity extends Activity implements
                         bitmap = BitmapFactory.decodeByteArray(jpeg.data, 0, jpeg.data.length);
                     }
                     mMainHandler.sendMessage(mMainHandler.obtainMessage(
-                            MSG_FINAL_MOSAIC_READY, bitmap));
+                            MSG_LOW_RES_FINAL_MOSAIC_READY, bitmap));
                 }
             });
             reportProgress(false);
@@ -515,6 +524,14 @@ public class PanoramaActivity extends Activity implements
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
         mShutterButton.setOnShutterButtonListener(this);
+
+        mPanoramaPrepareDialog = (RelativeLayout)
+                findViewById(R.id.pano_preview_progress_dialog);
+
+        mPanoramaPrepareDialogFadeIn = AnimatorInflater.loadAnimator(this, R.anim.fade_in_quick);
+        mPanoramaPrepareDialogFadeIn.setTarget(mPanoramaPrepareDialog);
+        mPanoramaPrepareDialogFadeOut = AnimatorInflater.loadAnimator(this, R.anim.fade_out_quick);
+        mPanoramaPrepareDialogFadeOut.setTarget(mPanoramaPrepareDialog);
 
         mPanoLayout = findViewById(R.id.pano_layout);
     }
@@ -600,20 +617,30 @@ public class PanoramaActivity extends Activity implements
     private void runBackgroundThreadAndShowDialog(
             String str, boolean showPercentageProgress, Thread thread) {
         mThreadRunning = true;
-        mProgressDialog = new ProgressDialog(this);
         if (showPercentageProgress) {
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMax(100);
+            mProgressDialog.setMessage(str);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);  // Don't allow back key to dismiss this dialog.
+            mProgressDialog.show();
+        } else {
+            mPanoramaPrepareDialogFadeIn.start();
+            mPanoramaPrepareDialog.setVisibility(View.VISIBLE);
         }
-        mProgressDialog.setMessage(str);
-        mProgressDialog.show();
         thread.start();
     }
 
     private void onBackgroundThreadFinished() {
         mThreadRunning = false;
-        mProgressDialog.dismiss();
-        mProgressDialog = null;
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
+        if (mPanoramaPrepareDialog.getVisibility() == View.VISIBLE) {
+            mPanoramaPrepareDialogFadeOut.start();
+            mPanoramaPrepareDialog.setVisibility(View.GONE);
+        }
     }
 
     @OnClickAttr

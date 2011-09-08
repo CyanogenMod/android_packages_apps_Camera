@@ -45,4 +45,7 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:visibility">gone</item>
     </style>
+    <style name="PanoCustomDialogText">
+        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+    </style>
 </resources>

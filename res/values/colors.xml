@@ -28,4 +28,5 @@
     <color name="share_popup_background">#B0000000</color>
     <color name="share_icon_background">#40000000</color>
     <color name="indicator_background">#40000000</color>
+    <color name="pano_custom_dialog_background">#FF666666</color>
 </resources>
