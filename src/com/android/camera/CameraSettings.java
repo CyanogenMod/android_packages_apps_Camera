@@ -90,7 +90,7 @@ public class CameraSettings {
     private final int mCameraId;
 
     private static String sTouchFocusParameter;
-    private static boolean sTouchFocusNeedsRect;
+    private static boolean sTouchFocusNeedsRect = false;
 
     // Nvidia 1080p high framerate
     private static boolean mSupportsNvHFR;
@@ -298,6 +298,17 @@ public class CameraSettings {
             sTouchFocusParameter = "mot-areas-to-focus";
             sTouchFocusNeedsRect = true;
             return true;
+        }
+        if (mParameters.get("camera-name") != null &&
+            mParameters.get("s3d-supported") != null) {
+            /* Similar hack to HTC, for OMAP4. These do export the
+             * "touch" focus mode, but they don't have the param
+             * listed until it's used */
+            sTouchFocusParameter = "touch-position";
+            sTouchFocusNeedsRect = false;
+            /* yes, false. If it isn't listed in the focus modes, it
+             * isn't supported */
+            return false;
         }
 
         return false;
