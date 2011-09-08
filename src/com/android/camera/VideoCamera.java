@@ -1848,6 +1848,17 @@ public class VideoCamera extends ActivityBase
 
         mParameters.setRecordingHint(true);
 
+        // Set picture size.
+        String pictureSize = mPreferences.getString(
+                CameraSettings.KEY_PICTURE_SIZE, null);
+        if (pictureSize == null) {
+            CameraSettings.initialCameraPictureSize(this, mParameters);
+        } else {
+            List<Size> supported = mParameters.getSupportedPictureSizes();
+            CameraSettings.setCameraPictureSize(
+                    pictureSize, supported, mParameters);
+        }
+
         // Set JPEG quality.
         int jpegQuality = CameraProfile.getJpegEncodingQualityParameter(mCameraId,
                 CameraProfile.QUALITY_HIGH);
@@ -2163,16 +2174,14 @@ public class VideoCamera extends ActivityBase
     }
 
     private void initializeVideoSnapshot() {
-        if ("true".equals(mParameters.get("video-snapshot-supported")) &&
-                !mIsVideoCaptureIntent) {
+        if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
             findViewById(R.id.camera_preview).setOnTouchListener(this);
             mPreviewBorder.setBackgroundResource(R.drawable.ic_snapshot_border);
         }
     }
 
     void showVideoSnapshotUI(boolean enable) {
-        if ("true".equals(mParameters.get("video-snapshot-supported")) &&
-                !mIsVideoCaptureIntent) {
+        if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
             mPreviewBorder.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
         }
     }
