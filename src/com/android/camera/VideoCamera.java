@@ -1593,8 +1593,8 @@ public class VideoCamera extends ActivityBase
             }
         }
 
-        mShutterButton.setVisibility(View.GONE);
-        mIndicatorControlContainer.setVisibility(View.GONE);
+        Util.fadeOut(mShutterButton);
+        Util.fadeOut(mIndicatorControlContainer);
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
         for (int id : pickIds) {
             Util.fadeIn(findViewById(id));
@@ -1608,7 +1608,7 @@ public class VideoCamera extends ActivityBase
 
         int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
         for (int id : pickIds) {
-            (findViewById(id)).setVisibility(View.GONE);
+            Util.fadeOut(findViewById(id));
         }
         Util.fadeIn(mShutterButton);
         Util.fadeIn(mIndicatorControlContainer);

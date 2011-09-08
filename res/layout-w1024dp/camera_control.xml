@@ -28,7 +28,6 @@
 
         <include layout="@layout/review_thumbnail" />
         <include layout="@layout/review_control" />
-
         <com.android.camera.ui.IndicatorControlWheelContainer android:id="@+id/indicator_control"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,6 +50,6 @@
                     android:layout_height="match_parent"
                     android:visibility="gone" />
         </com.android.camera.ui.IndicatorControlWheelContainer>
-        <include layout="@layout/mode_picker"/>
+        <include layout="@layout/mode_picker" />
 </com.android.camera.ui.ControlPanelLayout>
 

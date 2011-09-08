@@ -518,10 +518,21 @@ public class Util {
     }
 
     public static void fadeIn(View view) {
+        if (view.getVisibility() == View.VISIBLE) return;
+
         view.setVisibility(View.VISIBLE);
         Animation animation = new AlphaAnimation(0F, 1F);
-        animation.setDuration(500);
+        animation.setDuration(400);
         view.startAnimation(animation);
+    }
+
+    public static void fadeOut(View view) {
+        if (view.getVisibility() != View.VISIBLE) return;
+
+        Animation animation = new AlphaAnimation(1F, 0F);
+        animation.setDuration(400);
+        view.startAnimation(animation);
+        view.setVisibility(View.GONE);
     }
 
     public static void setRotationParameter(Parameters parameters, int cameraId, int orientation) {

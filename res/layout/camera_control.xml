@@ -20,16 +20,8 @@
         android:layout_height="match_parent"
         android:minWidth="76dp"
         android:background="@drawable/bg_camera_pattern">
-
-    <include layout="@layout/review_thumbnail"/>
-    <ImageButton android:id="@+id/btn_done"
-            style="@style/ReviewControlIcon"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/ic_menu_done_holo_light"
-            android:visibility="gone"
-            android:onClick="onDoneButtonClicked"/>
+    <include layout="@layout/review_thumbnail" />
+    <include layout="@layout/review_control" />
     <com.android.camera.ShutterButton android:id="@+id/shutter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,25 +29,6 @@
             android:scaleType="center"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/btn_shutter"/>
-
-    <include layout="@layout/mode_picker"/>
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="10dp">
-        <Button android:id="@+id/btn_retake"
-                android:text="@string/review_retake"
-                style="@style/ReviewControlIcon"
-                android:visibility="gone"
-                android:onClick="onRetakeButtonClicked" />
-        <Button android:id="@+id/btn_cancel"
-                android:text="@string/review_cancel"
-                style="@style/ReviewControlIcon"
-                android:visibility="gone"
-                android:onClick="onCancelButtonClicked" />
-    </LinearLayout>
+            android:background="@drawable/btn_shutter" />
+    <include layout="@layout/mode_picker" />
 </com.android.camera.ui.ControlPanelLayout>
