@@ -45,7 +45,6 @@ static double mTx;
 
 int tWidth[NR];
 int tHeight[NR];
-int H2L_FACTOR = 4; // Can be 2
 
 ImageType tImage[NR][MAX_FRAMES_LR];// = {{ImageUtils::IMAGE_TYPE_NOIMAGE}}; // YVU24 format image
 Mosaic *mosaic[NR] = {NULL,NULL};
