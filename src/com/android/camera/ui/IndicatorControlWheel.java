@@ -367,7 +367,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
     private void presetSecondLevelChildRadians() {
         int count = getChildCountByLevel(1);
-        int sectors = (count <= 1) ? 0 : (count - 1);
+        int sectors = (count <= 1) ? 1 : (count - 1);
         double sectorDegrees =
                 ((SECOND_LEVEL_END_DEGREES - SECOND_LEVEL_START_DEGREES) / sectors);
         mSectorRadians[1] = Math.toRadians(sectorDegrees);

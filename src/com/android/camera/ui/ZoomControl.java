@@ -130,7 +130,11 @@ public abstract class ZoomControl extends RelativeLayout {
         }
         mZoomIndex = index;
         if (mIndexListener != null) {
-            mIndexListener.onZoomIndexChanged(1.0d * mZoomIndex / mZoomMax);
+            if (mZoomMax == 0) {
+                mIndexListener.onZoomIndexChanged(0.0d);
+            } else {
+                mIndexListener.onZoomIndexChanged(1.0d * mZoomIndex / mZoomMax);
+            }
         }
         invalidate();
     }
