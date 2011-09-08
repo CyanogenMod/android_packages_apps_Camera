@@ -443,18 +443,14 @@ public class VideoCamera extends ActivityBase
         }
 
         showTimeLapseUI(mCaptureTimeLapse);
+        initializeVideoSnapshot();
         resizeForPreviewAspectRatio();
 
         mBackCameraId = CameraHolder.instance().getBackCameraId();
         mFrontCameraId = CameraHolder.instance().getFrontCameraId();
 
-        // Initialize after startPreview becuase this need mParameters.
         initializeZoomControl();
         initializeIndicatorControl();
-        if ("true".equals(mParameters.get("video-snapshot-supported")) &&
-                !mIsVideoCaptureIntent) {
-            preview.setOnTouchListener(this);
-        }
     }
 
     private void loadCameraPreferences() {
@@ -806,6 +802,7 @@ public class VideoCamera extends ActivityBase
         mZoomValue = 0;
 
         mReviewImage.setVisibility(View.GONE);
+        showVideoSnapshotUI(false);
 
         // Start orientation listener as soon as possible because it takes
         // some time to get first orientation.
@@ -2037,12 +2034,6 @@ public class VideoCamera extends ActivityBase
         if (mTimeLapseLabel != null) {
             mTimeLapseLabel.setVisibility(enable ? View.VISIBLE : View.GONE);
         }
-        if (mPreviewBorder != null) {
-            mPreviewBorder.setBackgroundResource(enable
-                    ? R.drawable.border_preview_time_lapse
-                    : R.drawable.border_preview);
-        }
-
     }
 
     private void showSharePopup() {
@@ -2171,6 +2162,21 @@ public class VideoCamera extends ActivityBase
         }
     }
 
+    private void initializeVideoSnapshot() {
+        if ("true".equals(mParameters.get("video-snapshot-supported")) &&
+                !mIsVideoCaptureIntent) {
+            findViewById(R.id.camera_preview).setOnTouchListener(this);
+            mPreviewBorder.setBackgroundResource(R.drawable.ic_snapshot_border);
+        }
+    }
+
+    void showVideoSnapshotUI(boolean enable) {
+        if ("true".equals(mParameters.get("video-snapshot-supported")) &&
+                !mIsVideoCaptureIntent) {
+            mPreviewBorder.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+        }
+    }
+
     // Preview area is touched. Take a picture.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
@@ -2186,6 +2192,7 @@ public class VideoCamera extends ActivityBase
 
         Log.v(TAG, "Video snapshot start");
         mCameraDevice.takePicture(null, null, null, new JpegPictureCallback(loc));
+        showVideoSnapshotUI(true);
         mSnapshotInProgress = true;
         return true;
     }
@@ -2201,6 +2208,7 @@ public class VideoCamera extends ActivityBase
         public void onPictureTaken(byte [] jpegData, android.hardware.Camera camera) {
             Log.v(TAG, "onPictureTaken");
             mSnapshotInProgress = false;
+            showVideoSnapshotUI(false);
             storeImage(jpegData, mLocation);
         }
     }

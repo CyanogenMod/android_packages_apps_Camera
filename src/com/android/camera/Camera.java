@@ -148,7 +148,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private PreviewFrameLayout mPreviewFrameLayout;
     private View mPreviewFrame;  // Preview frame area.
-    private View mPreviewBorder;
 
     // A popup window that contains a bigger thumbnail and a list of apps to share.
     private SharePopup mSharePopup;
@@ -376,7 +375,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Initialize focus UI.
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
-        mPreviewBorder = findViewById(R.id.preview_border);
         mFocusIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
         mFocusManager.initialize(mFocusIndicator, mPreviewFrame, mFaceView, this);
         mFocusManager.initializeToneGenerator();
