@@ -306,10 +306,10 @@
     <string name="effect_goofy_face_big_nose">Big Nose</string>
     <!-- Effect setting item that makes eyes small. [CHAR LIMIT=14] -->
     <string name="effect_goofy_face_small_eyes">Small Eyes</string>
-    <!-- Effect setting item that replaces background with space. [CHAR LIMIT=14] -->
+    <!-- Effect setting item that replaces background with Android in Space. [CHAR LIMIT=14] -->
     <string name="effect_backdropper_space">In Space</string>
-    <!-- Effect setting item that replaces background with the beach. [CHAR LIMIT=14] -->
-    <string name="effect_backdropper_beach">On the Beach</string>
+    <!-- Effect setting item that replaces background with a sunset. [CHAR LIMIT=14] -->
+    <string name="effect_backdropper_sunset">Sunset</string>
     <!-- Effect setting item that replaces background with video from gallery. [CHAR LIMIT=14] -->
     <string name="effect_backdropper_gallery">Pick your own</string>
 
