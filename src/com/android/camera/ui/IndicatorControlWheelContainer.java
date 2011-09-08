@@ -214,6 +214,11 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer
     }
 
     @Override
+    public void enableZoom(boolean enabled) {
+        mIndicatorControlWheel.enableZoom(enabled);
+    }
+
+    @Override
     public void overrideSettings(final String ... keyvalues) {
         mIndicatorControlWheel.overrideSettings(keyvalues);
     }

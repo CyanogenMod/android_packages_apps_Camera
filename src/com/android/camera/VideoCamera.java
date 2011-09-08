@@ -922,6 +922,7 @@ public class VideoCamera extends ActivityBase
         CameraHolder.instance().release();
         mCameraDevice = null;
         mPreviewing = false;
+        mSnapshotInProgress = false;
     }
 
     private void finishRecorderAndCloseCamera() {
@@ -2180,9 +2181,11 @@ public class VideoCamera extends ActivityBase
         }
     }
 
-    void showVideoSnapshotUI(boolean enable) {
+    void showVideoSnapshotUI(boolean enabled) {
         if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
-            mPreviewBorder.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+            mPreviewBorder.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+            mIndicatorControlContainer.enableZoom(!enabled);
+            mShutterButton.setEnabled(!enabled);
         }
     }
 
