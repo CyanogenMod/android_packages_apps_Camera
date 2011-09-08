@@ -51,6 +51,7 @@
 @filter ToPackedGrayFilter toPackedGray {
   owidth = 320;
   oheight = 240;
+  keepAspectRatio = true;
 }
 
 @filter MultiFaceTrackerFilter faceTracker {
