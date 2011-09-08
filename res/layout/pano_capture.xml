@@ -16,7 +16,6 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pano_capture_layout"
-        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -39,19 +38,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pano_mosaic_surface_height" />
 
-            <ImageView style="@style/PanoViewHorizontalGrayBar"/>
+            <RelativeLayout style="@style/PanoViewHorizontalGrayBar">
+                <com.android.camera.panorama.PanoProgressBar
+                        android:id="@+id/pano_capture_view"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_pan_progression"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+            </RelativeLayout>
+
         </LinearLayout>
         <include layout="@layout/camera_control" />
 
     </LinearLayout>
-
-    <com.android.camera.panorama.IndicationView
-            android:id="@+id/pano_capture_view"
-            android:visibility="gone"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_width="@dimen/pano_indication_width"
-            android:layout_height="@dimen/pano_indication_height" />
 
     <TextView android:id="@+id/pano_capture_too_fast_textview"
         android:text="@string/pano_too_fast_prompt"
