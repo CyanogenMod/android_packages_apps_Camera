@@ -53,6 +53,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -62,6 +64,7 @@ import android.view.Gravity;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -84,6 +87,7 @@ public class PanoramaActivity extends Activity implements
     private static final int MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL = 2;
     private static final int MSG_GENERATE_FINAL_MOSAIC_ERROR = 3;
     private static final int MSG_DISMISS_ALERT_DIALOG_AND_RESET_TO_PREVIEW = 4;
+    private static final int MSG_GENERATE_FINAL_MOSAIC_CANCELLED = 5;
 
     private static final String TAG = "PanoramaActivity";
     private static final int PREVIEW_STOPPED = 0;
@@ -155,6 +159,8 @@ public class PanoramaActivity extends Activity implements
     private Handler mMainHandler;
     private SurfaceTexture mSurfaceTexture;
     private boolean mThreadRunning;
+    private boolean mCancelComputation;
+    private int mMosaicComputationStatus;
     private float[] mTransformMatrix;
     private float mHorizontalViewAngle;
 
@@ -247,6 +253,9 @@ public class PanoramaActivity extends Activity implements
                         mAlertDialog = null;
                         resetToPreview();
                         break;
+                    case MSG_GENERATE_FINAL_MOSAIC_CANCELLED:
+                        onBackgroundThreadFinished();
+                        resetToPreview();
                 }
                 clearMosaicFrameProcessorIfNeeded();
             }
@@ -469,12 +478,15 @@ public class PanoramaActivity extends Activity implements
                 @Override
                 public void run() {
                     MosaicJpeg jpeg = generateFinalMosaic(false);
-                    Bitmap bitmap = null;
-                    if (jpeg != null) {
-                        bitmap = BitmapFactory.decodeByteArray(jpeg.data, 0, jpeg.data.length);
+
+                    if (mMosaicComputationStatus == Mosaic.MOSAIC_RET_OK) {
+                        Bitmap bitmap = null;
+                        if (jpeg != null) {
+                            bitmap = BitmapFactory.decodeByteArray(jpeg.data, 0, jpeg.data.length);
+                        }
+                        mMainHandler.sendMessage(mMainHandler.obtainMessage(
+                                MSG_LOW_RES_FINAL_MOSAIC_READY, bitmap));
                     }
-                    mMainHandler.sendMessage(mMainHandler.obtainMessage(
-                            MSG_LOW_RES_FINAL_MOSAIC_READY, bitmap));
                 }
             });
             reportProgress(false);
@@ -561,7 +573,8 @@ public class PanoramaActivity extends Activity implements
             @Override
             public void run() {
                 while (mThreadRunning) {
-                    final int progress = mMosaicFrameProcessor.reportProgress(highRes);
+                    final int progress = mMosaicFrameProcessor.reportProgress(
+                            highRes, mCancelComputation);
 
                     try {
                         Thread.sleep(50);
@@ -591,20 +604,27 @@ public class PanoramaActivity extends Activity implements
             @Override
             public void run() {
                 MosaicJpeg jpeg = generateFinalMosaic(true);
-                if (jpeg == null) {
-                    mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_ERROR);
+
+                if (mMosaicComputationStatus == Mosaic.MOSAIC_RET_CANCELLED) {
+                    mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_CANCELLED);
                 } else {
-                    int orientation = Exif.getOrientation(jpeg.data);
-                    Uri uri = savePanorama(jpeg.data, orientation);
-                    if (uri != null) {
-                        // Create a thumbnail whose width is equal or bigger than the entire screen.
-                        int ratio = (int) Math.ceil((double) jpeg.width / mPanoLayout.getWidth());
-                        int inSampleSize = Integer.highestOneBit(ratio);
-                        mThumbnail = Thumbnail.createThumbnail(
-                                jpeg.data, orientation, inSampleSize, uri);
+                    if (jpeg == null) {
+                        mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_ERROR);
+                    } else {
+                        int orientation = Exif.getOrientation(jpeg.data);
+                        Uri uri = savePanorama(jpeg.data, orientation);
+                        if (uri != null) {
+                            // Create a thumbnail whose width is equal or bigger
+                            // than the entire screen.
+                            int ratio = (int) Math.ceil((double) jpeg.width /
+                                    mPanoLayout.getWidth());
+                            int inSampleSize = Integer.highestOneBit(ratio);
+                            mThumbnail = Thumbnail.createThumbnail(
+                                    jpeg.data, orientation, inSampleSize, uri);
+                        }
+                        mMainHandler.sendMessage(
+                                mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL));
                     }
-                    mMainHandler.sendMessage(
-                            mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL));
                 }
             }
         });
@@ -622,7 +642,17 @@ public class PanoramaActivity extends Activity implements
             mProgressDialog.setMax(100);
             mProgressDialog.setMessage(str);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setCancelable(false);  // Don't allow back key to dismiss this dialog.
+            // TODO: update the UI according to specs.
+//            mProgressDialog.setCancelable(false);  // Don't allow back key to dismiss this dialog.
+            mProgressDialog.setCancelable(true);
+
+            mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                int whichButton) {
+                            mCancelComputation = true;
+                        }
+                    });
             mProgressDialog.show();
         } else {
             mPanoramaPrepareDialogFadeIn.start();
@@ -669,6 +699,7 @@ public class PanoramaActivity extends Activity implements
 
     private void resetToPreview() {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
+        mCancelComputation = false;
 
         mReviewLayout.setVisibility(View.GONE);
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
@@ -804,7 +835,12 @@ public class PanoramaActivity extends Activity implements
     };
 
     public MosaicJpeg generateFinalMosaic(boolean highRes) {
-        mMosaicFrameProcessor.createMosaic(highRes);
+        int ret = mMosaicFrameProcessor.createMosaic(highRes);
+
+        mMosaicComputationStatus = ret;
+
+        if (ret == Mosaic.MOSAIC_RET_CANCELLED)
+            return null;
 
         byte[] imageData = mMosaicFrameProcessor.getFinalMosaicNV21();
         if (imageData == null) {

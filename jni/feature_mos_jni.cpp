@@ -67,9 +67,10 @@ ImageType resultBGR = ImageUtils::IMAGE_TYPE_NOIMAGE;
 float gTRS[10];
 // Variables to keep track of the mosaic computation progress for both LR & HR.
 float gProgress[NR];
+// Variables to be able to cancel the mosaic computation when the GUI says so.
+bool gCancelComputation[NR];
 
 int c;
-int ret;
 int width=0, height=0;
 int mosaicWidth=0, mosaicHeight=0;
 
@@ -207,19 +208,21 @@ int AddFrame(int mID, int k, float* trs1d)
     return ret_code;
 }
 
-void Finalize(int mID)
+int Finalize(int mID)
 {
     double  t0, t1, time_c;
 
     t0 = now_ms();
     // Create the mosaic
-    ret = mosaic[mID]->createMosaic(gProgress[mID]);
+    int ret = mosaic[mID]->createMosaic(gProgress[mID], gCancelComputation[mID]);
     t1 = now_ms();
     time_c = t1 - t0;
     LOGV("CreateMosaic: %g ms",time_c);
 
     // Get back the result
     resultYVU = mosaic[mID]->getMosaic(mosaicWidth, mosaicHeight);
+
+    return ret;
 }
 
 void YUV420toYVU24(ImageType yvu24, ImageType yuv420sp, int width, int height)
@@ -532,22 +535,32 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_reset(
     gProgress[LR] = 0.0;
     gProgress[HR] = 0.0;
 
+    gCancelComputation[LR] = false;
+    gCancelComputation[HR] = false;
+
     Init(LR,MAX_FRAMES_LR);
 }
 
 JNIEXPORT jint JNICALL Java_com_android_camera_panorama_Mosaic_reportProgress(
-        JNIEnv* env, jobject thiz, jboolean hires)
+        JNIEnv* env, jobject thiz, jboolean hires, jboolean cancel_computation)
 {
+    if(bool(hires))
+        gCancelComputation[HR] = cancel_computation;
+    else
+        gCancelComputation[LR] = cancel_computation;
+
     if(bool(hires))
         return (jint) gProgress[HR];
     else
         return (jint) gProgress[LR];
 }
 
-JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(
+JNIEXPORT jint JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(
         JNIEnv* env, jobject thiz, jboolean value)
 {
     high_res = bool(value);
+
+    int ret;
 
     if(high_res)
     {
@@ -560,28 +573,41 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(
 
         for(int k = 0; k < frame_number_HR; k++)
         {
+            if (gCancelComputation[HR])
+                break;
             AddFrame(HR, k, NULL);
             gProgress[HR] += TIME_PERCENT_ALIGN/frame_number_HR;
         }
 
-        gProgress[HR] = TIME_PERCENT_ALIGN;
+        if (gCancelComputation[HR])
+        {
+            ret = Mosaic::MOSAIC_RET_CANCELLED;
+        }
+        else
+        {
+            gProgress[HR] = TIME_PERCENT_ALIGN;
 
-        t1 = now_ms();
-        time_c = t1 - t0;
-        LOGV("AlignAll [HR]: %g ms",time_c);
+            t1 = now_ms();
+            time_c = t1 - t0;
+            LOGV("AlignAll [HR]: %g ms",time_c);
 
-        Finalize(HR);
+            ret = Finalize(HR);
 
-        gProgress[HR] = 100.0;
+            gProgress[HR] = 100.0;
+        }
 
         high_res = false;
     }
     else
     {
         gProgress[LR] = TIME_PERCENT_ALIGN;
-        Finalize(LR);
+
+        ret = Finalize(LR);
+
         gProgress[LR] = 100.0;
     }
+
+    return (jint) ret;
 }
 
 JNIEXPORT jintArray JNICALL Java_com_android_camera_panorama_Mosaic_getFinalMosaic(

@@ -112,7 +112,7 @@ public:
     *   \param progress     Variable to set the current progress in.
     *   \return             Return code signifying success or failure.
     */
-  int createMosaic(float &progress);
+  int createMosaic(float &progress, bool &cancelComputation);
 
     /*!
     *   Obtains the resulting mosaic and its dimensions.
@@ -141,6 +141,7 @@ public:
    */
   static const int MOSAIC_RET_OK    = 1;
   static const int MOSAIC_RET_ERROR = -1;
+  static const int MOSAIC_RET_CANCELLED = -2;
 
 protected:
 

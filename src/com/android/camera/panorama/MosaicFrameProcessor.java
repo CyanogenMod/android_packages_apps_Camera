@@ -78,8 +78,8 @@ public class MosaicFrameProcessor {
         mProgressListener = listener;
     }
 
-    public int reportProgress(boolean hires) {
-        return mMosaicer.reportProgress(hires);
+    public int reportProgress(boolean hires, boolean cancel) {
+        return mMosaicer.reportProgress(hires, cancel);
     }
 
     public void initialize() {
@@ -126,8 +126,8 @@ public class MosaicFrameProcessor {
         mMosaicer.reset();
     }
 
-    public void createMosaic(boolean highRes) {
-        mMosaicer.createMosaic(highRes);
+    public int createMosaic(boolean highRes) {
+        return mMosaicer.createMosaic(highRes);
     }
 
     public byte[] getFinalMosaicNV21() {

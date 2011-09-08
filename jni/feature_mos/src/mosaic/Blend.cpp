@@ -91,7 +91,7 @@ void Blend::AlignToMiddleFrame(MosaicFrame **frames, int frames_size)
 
 int Blend::runBlend(MosaicFrame **frames, int frames_size,
         ImageType &imageMosaicYVU, int &mosaicWidth, int &mosaicHeight,
-        float &progress)
+        float &progress, bool &cancelComputation)
 {
     int ret;
     int numCenters;
@@ -185,7 +185,7 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
 
     // Do merging and blending :
     ret = DoMergeAndBlend(frames, numCenters, width, height, *imgMos, fullRect,
-            cropping_rect, progress);
+            cropping_rect, progress, cancelComputation);
 
     if (m_wb.blendingType == BLEND_TYPE_HORZ)
         CropFinalMosaic(*imgMos, cropping_rect);
@@ -207,7 +207,7 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
         mosaicHeight = Mheight;
     }
 
-    return BLEND_RET_OK;
+    return ret;
 }
 
 
@@ -256,7 +256,7 @@ int Blend::FillFramePyramid(MosaicFrame *mb)
 
 int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
              int width, int height, YUVinfo &imgMos, MosaicRect &rect,
-             MosaicRect &cropping_rect, float &progress)
+             MosaicRect &cropping_rect, float &progress, bool &cancelComputation)
 {
     m_pMosaicYPyr = NULL;
     m_pMosaicUPyr = NULL;
@@ -280,6 +280,14 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
     site_idx = 0;
     for(CSite *csite = m_AllSites; csite < esite; csite++)
     {
+        if(cancelComputation)
+        {
+            if (m_pMosaicVPyr) free(m_pMosaicVPyr);
+            if (m_pMosaicUPyr) free(m_pMosaicUPyr);
+            if (m_pMosaicYPyr) free(m_pMosaicYPyr);
+            return BLEND_RET_CANCELLED;
+        }
+
         mb = csite->getMb();
 
         mb->vcrect = mb->brect;
@@ -294,6 +302,14 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
     site_idx = 0;
     for(CSite *csite = m_AllSites; csite < esite; csite++)
     {
+        if(cancelComputation)
+        {
+            if (m_pMosaicVPyr) free(m_pMosaicVPyr);
+            if (m_pMosaicUPyr) free(m_pMosaicUPyr);
+            if (m_pMosaicYPyr) free(m_pMosaicYPyr);
+            return BLEND_RET_CANCELLED;
+        }
+
         mb = csite->getMb();
 
 

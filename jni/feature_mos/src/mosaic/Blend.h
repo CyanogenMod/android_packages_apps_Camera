@@ -68,6 +68,7 @@ public:
   static const int BLEND_RET_ERROR        = -1;
   static const int BLEND_RET_OK           = 0;
   static const int BLEND_RET_ERROR_MEMORY = 1;
+  static const int BLEND_RET_CANCELLED    = -2;
 
   Blend();
   ~Blend();
@@ -75,7 +76,7 @@ public:
   int initialize(int blendingType, int frame_width, int frame_height);
 
   int runBlend(MosaicFrame **frames, int frames_size, ImageType &imageMosaicYVU,
-        int &mosaicWidth, int &mosaicHeight, float &progress);
+        int &mosaicWidth, int &mosaicHeight, float &progress, bool &cancelComputation);
 
 protected:
 
@@ -105,7 +106,7 @@ protected:
   void ClipBlendRect(CSite *csite, BlendRect &brect);
   void AlignToMiddleFrame(MosaicFrame **frames, int frames_size);
 
-  int  DoMergeAndBlend(MosaicFrame **frames, int nsite,  int width, int height, YUVinfo &imgMos, MosaicRect &rect, MosaicRect &cropping_rect, float &progress);
+  int  DoMergeAndBlend(MosaicFrame **frames, int nsite,  int width, int height, YUVinfo &imgMos, MosaicRect &rect, MosaicRect &cropping_rect, float &progress, bool &cancelComputation);
   void ComputeMask(CSite *csite, BlendRect &vcrect, BlendRect &brect, MosaicRect &rect, YUVinfo &imgMos, int site_idx);
   void ProcessPyramidForThisFrame(CSite *csite, BlendRect &vcrect, BlendRect &brect, MosaicRect &rect, YUVinfo &imgMos, double trs[3][3], int site_idx);
 

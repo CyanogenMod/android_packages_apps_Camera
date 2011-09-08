@@ -67,6 +67,13 @@ public class Mosaic {
      */
     public static final int BLENDTYPE_HORIZONTAL =3;
 
+    /**
+     * Return flags returned by createMosaic() are one of the following.
+     */
+    public static final int MOSAIC_RET_OK = 1;
+    public static final int MOSAIC_RET_ERROR = -1;
+    public static final int MOSAIC_RET_CANCELLED = -2;
+
     static {
         System.loadLibrary("jni_mosaic");
     }
@@ -129,8 +136,10 @@ public class Mosaic {
      *        which is based on the original images set in setSourceImage().
      *        False means generating a low-resolution version -
      *        which is based on 1/4 downscaled images from the original images.
+     * @return Returns a status code suggesting if the mosaic building was
+     *        successful, in error, or was cancelled by the user.
      */
-    public native void createMosaic(boolean value);
+    public native int createMosaic(boolean value);
 
     /**
      * Get the data for the created mosaic.
@@ -161,8 +170,10 @@ public class Mosaic {
      * Get the progress status of the mosaic computation process.
      * @param hires Boolean flag to select whether to report progress of the
      *              low-res or high-res mosaicer.
+     * @param cancelComputation Boolean flag to allow cancelling the
+     *              mosaic computation when needed from the GUI end.
      * @return Returns a number from 0-100 where 50 denotes that the mosaic
      *          computation is 50% done.
      */
-    public native int reportProgress(boolean hires);
+    public native int reportProgress(boolean hires, boolean cancelComputation);
 }
