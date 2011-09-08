@@ -99,6 +99,7 @@ public class CameraSettings {
     private static boolean mSamsungCamMode; // camcorder mode
     private static boolean mSamsungContinuousAf;
     private static boolean mSamsungSpecialSettings; // slow_ae and video_recording_gamma
+    private static boolean mIsOMAP4Camera;
 
     public static final String FOCUS_MODE_TOUCH = "touch";
 
@@ -382,6 +383,7 @@ public class CameraSettings {
         mSamsungCamMode = mContext.getResources().getBoolean(R.bool.needsSamsungCamMode);
         mSamsungContinuousAf = mContext.getResources().getBoolean(R.bool.needsSamsungContinuousAf);
         mSamsungSpecialSettings = mContext.getResources().getBoolean(R.bool.needsSamsungSpecialSettings);
+        mIsOMAP4Camera = mContext.getResources().getBoolean(R.bool.isOMAP4Camera);
     }
 
     private static boolean removePreference(PreferenceGroup group, String key) {
@@ -581,11 +583,18 @@ public class CameraSettings {
             params.set("nv-mode-hint", on ? "video" : "still");
         } else if (mSamsungCamMode) {
             params.set("cam_mode", on ? "1" : "0");
+        } else if (mIsOMAP4Camera) {
+            params.set("mode", on ? "video-mode" : "high-quality");
         }
 
         if (on && params.get("focus-mode-values").indexOf("continuous-video") != -1) {
             // Galaxy S2
             params.set("focus-mode", "continuous-video");
+        }
+
+        if (on && params.get("focus-mode-values").indexOf("caf") != -1) {
+            // OMAP4
+            params.set("focus-mode", "caf");
         }
 
         if (mSamsungSpecialSettings) {
