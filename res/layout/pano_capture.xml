@@ -36,7 +36,7 @@
             <com.android.camera.panorama.MosaicRendererSurfaceView
                     android:id="@+id/pano_renderer"
                     android:layout_gravity="center"
-                    android:layout_width="@dimen/pano_mosaic_surface_width"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/pano_mosaic_surface_height" />
 
             <ImageView style="@style/PanoViewHorizontalGrayBar"/>

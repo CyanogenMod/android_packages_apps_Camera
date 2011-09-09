@@ -445,10 +445,16 @@ JNIEXPORT jint JNICALL Java_com_android_camera_panorama_MosaicRenderer_init(
 JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
         JNIEnv * env, jobject obj,  jint width, jint height)
 {
-    gUILayoutScalingX = (PREVIEW_FBO_WIDTH_SCALE / PREVIEW_FBO_HEIGHT_SCALE) *
-        (gPreviewImageWidth[LR] / gPreviewImageHeight[LR]) / (width / height) *
-        PREVIEW_FBO_HEIGHT_SCALE;
+    // Scale the current frame's height to the height of view and
+    // maintain the aspect ratio of the current frame on the screen.
     gUILayoutScalingY = PREVIEW_FBO_HEIGHT_SCALE;
+
+    // Note that OpenGL scales a texture to view's width and height automatically.
+    // The "width / height" inverts the scaling, so as to maintain the aspect ratio
+    // of the current frame.
+    gUILayoutScalingX = ((float) (PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[LR])
+            / (PREVIEW_FBO_HEIGHT_SCALE * gPreviewImageHeight[LR]) *  PREVIEW_FBO_HEIGHT_SCALE)
+            / ((float) width / height);
 
     gBuffer[0].Init(gPreviewFBOWidth, gPreviewFBOHeight, GL_RGBA);
     gBuffer[1].Init(gPreviewFBOWidth, gPreviewFBOHeight, GL_RGBA);

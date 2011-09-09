@@ -24,7 +24,6 @@
     <dimen name="share_item_height">60dp</dimen>
     <dimen name="pano_control_layout_min_width">76dp</dimen>
     <dimen name="pano_control_start_button_size">70dp</dimen>
-    <dimen name="pano_mosaic_surface_width">640dp</dimen>
     <dimen name="pano_mosaic_surface_height">240dp</dimen>
     <dimen name="pano_review_button_width">70dp</dimen>
     <dimen name="pano_review_button_height">70dp</dimen>
