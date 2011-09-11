@@ -1,11 +1,25 @@
+/*
+ * Copyright (C) 2011 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "Renderer.h"
 
-#include <GLES2/gl2ext.h>
+#include "mosaic/Log.h"
+#define LOG_TAG "Renderer"
 
-#include <android/log.h>
-#define  LOG_TAG    "Renderer"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#include <GLES2/gl2ext.h>
 
 Renderer::Renderer()
       : mGlProgram(0),
@@ -54,14 +68,12 @@ GLuint Renderer::createProgram(const char* pVertexSource, const char* pFragmentS
     {
         return 0;
     }
-    LOGI("VertexShader Loaded!");
 
     GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
     if (!pixelShader)
     {
         return 0;
     }
-    LOGI("FragmentShader Loaded!");
 
     GLuint program = glCreateProgram();
     if (program)
@@ -70,8 +82,6 @@ GLuint Renderer::createProgram(const char* pVertexSource, const char* pFragmentS
         checkGlError("glAttachShader");
         glAttachShader(program, pixelShader);
         checkGlError("glAttachShader");
-
-        LOGI("Shaders Attached!");
 
         glLinkProgram(program);
         GLint linkStatus = GL_FALSE;

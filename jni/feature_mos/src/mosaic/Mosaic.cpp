@@ -26,6 +26,9 @@
 #include "Mosaic.h"
 #include "trsMatrix.h"
 
+#include "Log.h"
+#define LOG_TAG "MOSAIC"
+
 Mosaic::Mosaic()
 {
     initialized = false;
@@ -77,12 +80,12 @@ int Mosaic::initialize(int blendingType, int width, int height, int nframes, boo
 
     }
 
-    LOGIE("Initialize %d %d\n", width, height);
-    LOGIE("Frame width %d,%d\n", width, height);
-    LOGIE("Max num frames %d\n", max_frames);
+    LOGV("Initialize %d %d", width, height);
+    LOGV("Frame width %d,%d", width, height);
+    LOGV("Max num frames %d", max_frames);
 
-        aligner = new Align();
-        aligner->initialize(width, height,quarter_res,thresh_still);
+    aligner = new Align();
+    aligner->initialize(width, height,quarter_res,thresh_still);
 
     if (blendingType == Blend::BLEND_TYPE_FULL ||
             blendingType == Blend::BLEND_TYPE_PAN ||
@@ -92,7 +95,7 @@ int Mosaic::initialize(int blendingType, int width, int height, int nframes, boo
         blender->initialize(blendingType, width, height);
     } else {
         blender = NULL;
-        LOGIE("Error: Unknown blending type %d\n",blendingType);
+        LOGE("Error: Unknown blending type %d",blendingType);
         return MOSAIC_RET_ERROR;
     }
 
@@ -172,7 +175,7 @@ int Mosaic::createMosaic(float &progress, bool &cancelComputation)
 
     }
 
-    int ret;
+    int ret = Blend::BLEND_RET_ERROR;
 
     // Blend the mosaic (alignment has already been done)
     if (blender != NULL)
