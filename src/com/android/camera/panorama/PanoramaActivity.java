@@ -41,6 +41,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -55,8 +56,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.hardware.Camera.Parameters;
-import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -67,7 +66,6 @@ import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -110,7 +108,7 @@ public class PanoramaActivity extends Activity implements
     private View mCaptureLayout;
     private View mReviewLayout;
     private ImageView mReview;
-    private IndicationView mIndicationView;
+    private PanoProgressBar mPanoProgressBar;
     private MosaicRendererSurfaceView mMosaicView;
     private TextView mTooFastPrompt;
     private ShutterButton mShutterButton;
@@ -489,8 +487,12 @@ public class PanoramaActivity extends Activity implements
             }
         });
 
-        mIndicationView.resetAngles();
-        mIndicationView.setVisibility(View.VISIBLE);
+        mPanoProgressBar.reset();
+        // TODO: calculate the indicator width according to different devices to reflect the actual
+        // angle of view of the camera device.
+        mPanoProgressBar.setIndicatorWidth(20);
+        mPanoProgressBar.setMaxProgress(DEFAULT_SWEEP_ANGLE);
+        mPanoProgressBar.setVisibility(View.VISIBLE);
         mMosaicView.setVisibility(View.VISIBLE);
     }
 
@@ -546,9 +548,13 @@ public class PanoramaActivity extends Activity implements
 
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
 
+        Resources appRes = getResources();
+
         mCaptureLayout = (View) findViewById(R.id.pano_capture_layout);
-        mIndicationView = (IndicationView) findViewById(R.id.pano_capture_view);
-        mIndicationView.setMaxSweepAngle(DEFAULT_SWEEP_ANGLE);
+        mPanoProgressBar = (PanoProgressBar) findViewById(R.id.pano_capture_view);
+        mPanoProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
+        mPanoProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_done));
+        mPanoProgressBar.setIndicatorColor(appRes.getColor(R.color.pano_progress_indication));
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
 
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
@@ -674,8 +680,7 @@ public class PanoramaActivity extends Activity implements
             mProgressDialog.setMessage(str);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             // TODO: update the UI according to specs.
-//            mProgressDialog.setCancelable(false);  // Don't allow back key to dismiss this dialog.
-            mProgressDialog.setCancelable(true);
+            mProgressDialog.setCancelable(false);  // Don't allow back key to dismiss this dialog.
 
             mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
                     new DialogInterface.OnClickListener() {
@@ -734,7 +739,7 @@ public class PanoramaActivity extends Activity implements
 
         mReviewLayout.setVisibility(View.GONE);
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
-        mIndicationView.setVisibility(View.GONE);
+        mPanoProgressBar.setVisibility(View.GONE);
         mCaptureLayout.setVisibility(View.VISIBLE);
         mMosaicFrameProcessor.reset();
 
@@ -829,19 +834,19 @@ public class PanoramaActivity extends Activity implements
         // Use orientation to identify if the user is panning to the right or the left.
         switch (mDeviceOrientation) {
             case 0:
-                mIndicationView.setSweepAngle(-mTraversedAngleX);
+                mPanoProgressBar.setProgress(-mTraversedAngleX);
                 break;
             case 1:
-                mIndicationView.setSweepAngle(mTraversedAngleY);
+                mPanoProgressBar.setProgress(mTraversedAngleY);
                 break;
             case 2:
-                mIndicationView.setSweepAngle(mTraversedAngleX);
+                mPanoProgressBar.setProgress(mTraversedAngleX);
                 break;
             case 3:
-                mIndicationView.setSweepAngle(-mTraversedAngleY);
+                mPanoProgressBar.setProgress(-mTraversedAngleY);
                 break;
         }
-        mIndicationView.invalidate();
+        mPanoProgressBar.invalidate();
     }
 
     private final SensorEventListener mListener = new SensorEventListener() {
