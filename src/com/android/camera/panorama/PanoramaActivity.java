@@ -120,13 +120,6 @@ public class PanoramaActivity extends Activity implements
     private String mDialogTitle;
     private String mDialogOk;
 
-    // This custom dialog is to follow the UI spec to produce a dialog with a spinner in the top
-    // center part and a text view in the bottom part. The background is a rounded rectangle. The
-    // system dialog cannot be used because there will be a rectangle with 3D-like edges.
-    private RelativeLayout mPanoramaPrepareDialog;
-    private Animator mPanoramaPrepareDialogFadeIn;
-    private Animator mPanoramaPrepareDialogFadeOut;
-
     private float mCompassValueX;
     private float mCompassValueY;
     private float mCompassValueXStart;
@@ -574,14 +567,6 @@ public class PanoramaActivity extends Activity implements
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
         mShutterButton.setOnShutterButtonListener(this);
 
-        mPanoramaPrepareDialog = (RelativeLayout)
-                findViewById(R.id.pano_preview_progress_dialog);
-
-        mPanoramaPrepareDialogFadeIn = AnimatorInflater.loadAnimator(this, R.anim.fade_in_quick);
-        mPanoramaPrepareDialogFadeIn.setTarget(mPanoramaPrepareDialog);
-        mPanoramaPrepareDialogFadeOut = AnimatorInflater.loadAnimator(this, R.anim.fade_out_quick);
-        mPanoramaPrepareDialogFadeOut.setTarget(mPanoramaPrepareDialog);
-
         mPanoLayout = findViewById(R.id.pano_layout);
     }
 
@@ -674,13 +659,13 @@ public class PanoramaActivity extends Activity implements
     private void runBackgroundThreadAndShowDialog(
             String str, boolean showPercentageProgress, Thread thread) {
         mThreadRunning = true;
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(str);
+        mProgressDialog.setCancelable(false);  // Don't allow back key to dismiss this dialog.
         if (showPercentageProgress) {
-            mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMax(100);
-            mProgressDialog.setMessage(str);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             // TODO: update the UI according to specs.
-            mProgressDialog.setCancelable(false);  // Don't allow back key to dismiss this dialog.
 
             mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
                     new DialogInterface.OnClickListener() {
@@ -689,24 +674,17 @@ public class PanoramaActivity extends Activity implements
                             mCancelComputation = true;
                         }
                     });
-            mProgressDialog.show();
         } else {
-            mPanoramaPrepareDialogFadeIn.start();
-            mPanoramaPrepareDialog.setVisibility(View.VISIBLE);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         }
+        mProgressDialog.show();
         thread.start();
     }
 
     private void onBackgroundThreadFinished() {
         mThreadRunning = false;
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
-        if (mPanoramaPrepareDialog.getVisibility() == View.VISIBLE) {
-            mPanoramaPrepareDialogFadeOut.start();
-            mPanoramaPrepareDialog.setVisibility(View.GONE);
-        }
+        mProgressDialog.dismiss();
+        mProgressDialog = null;
     }
 
     @OnClickAttr
