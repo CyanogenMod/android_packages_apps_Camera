@@ -30,11 +30,6 @@
     <dimen name="pano_capture_too_fast_text_height">70dp</dimen>
     <dimen name="pano_indication_width">150dp</dimen>
     <dimen name="pano_indication_height">75dp</dimen>
-    <dimen name="pano_custom_dialog_corner_radius">15dp</dimen>
-    <dimen name="pano_custom_dialog_width">320dp</dimen>
-    <dimen name="pano_custom_dialog_height">120dp</dimen>
-    <dimen name="pano_custom_dialog_textview_top_padding">15dp</dimen>
-    <dimen name="pano_custom_dialog_spinner_height">40dp</dimen>
     <dimen name="setting_row_height">42dp</dimen>
     <dimen name="setting_item_text_size">16dp</dimen>
     <dimen name="setting_knob_width">36dp</dimen>
