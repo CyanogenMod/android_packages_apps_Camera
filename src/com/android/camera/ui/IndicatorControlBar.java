@@ -111,8 +111,12 @@ public class IndicatorControlBar extends IndicatorControl implements
             mSecondLevelIcon.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
         } else {
             // We also disable the zoom button during snapshot.
-            if (mZoomIcon != null) mZoomIcon.setEnabled(enabled);
+            enableZoom(enabled);
         }
         mSecondLevelIcon.setEnabled(enabled);
+    }
+
+    public void enableZoom(boolean enabled) {
+        if (mZoomIcon != null)  mZoomIcon.setEnabled(enabled);
     }
 }

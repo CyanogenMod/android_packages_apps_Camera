@@ -164,4 +164,9 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
         mIndicatorControlBar.setEnabled(enabled);
         mSecondLevelIndicatorControlBar.setEnabled(enabled);
     }
+
+    @Override
+    public void enableZoom(boolean enabled) {
+        mIndicatorControlBar.enableZoom(enabled);
+    }
 }

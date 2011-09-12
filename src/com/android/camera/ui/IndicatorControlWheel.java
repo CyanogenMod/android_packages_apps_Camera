@@ -258,7 +258,8 @@ public class IndicatorControlWheel extends IndicatorControl implements
             if ((index != -1) && (action != MotionEvent.ACTION_MOVE)) {
                 View view = getChildAt(index);
                 // Switch to zoom control only if a touch down event is received.
-                if ((view == mZoomIcon) && (action == MotionEvent.ACTION_DOWN)) {
+                if ((view == mZoomIcon) && (action == MotionEvent.ACTION_DOWN)
+                        && mZoomIcon.isEnabled()) {
                     mPressedIndex = -1;
                     mOnIndicatorEventListener.onIndicatorEvent(
                             OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL);
@@ -477,10 +478,14 @@ public class IndicatorControlWheel extends IndicatorControl implements
             requestLayout();
         } else {
             // We also disable the zoom button during snapshot.
-            if (mZoomIcon != null)  mZoomIcon.setEnabled(enabled);
+            enableZoom(enabled);
         }
         mSecondLevelIcon.setEnabled(enabled);
         mCloseIcon.setEnabled(enabled);
+    }
+
+    public void enableZoom(boolean enabled) {
+        if (mZoomIcon != null)  mZoomIcon.setEnabled(enabled);
     }
 
     public void onTouchOutBound() {

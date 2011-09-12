@@ -30,4 +30,5 @@ public abstract class IndicatorControlContainer extends IndicatorControl {
         super(context, attrs);
     }
 
+    public abstract void enableZoom(boolean enabled);
 }
