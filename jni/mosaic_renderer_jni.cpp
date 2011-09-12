@@ -77,9 +77,9 @@ YVURenderer gYVURenderer[NR];
 // Off-screen FBOs to store the low-res and high-res YVU textures for processing
 FrameBuffer gBufferInputYVU[NR];
 
-// Shader to add warped current frame to the preview FBO
+// Shader to translate the flip-flop FBO - gBuffer[1-current] -> gBuffer[current]
 WarpRenderer gWarper1;
-// Shader to translate the preview FBO
+// Shader to add warped current frame to the flip-flop FBO - gBuffer[current]
 WarpRenderer gWarper2;
 // Off-screen FBOs (flip-flop) to store the result of gWarper1 & gWarper2
 FrameBuffer gBuffer[2];
@@ -238,6 +238,12 @@ void UpdateWarpTransformation(float *trs)
         gThisH1t[i] = trs[i];
     }
 
+    // Alignment is done based on low-res data.
+    // To render the preview mosaic, the translation of the high-res mosaic is estimated to
+    // H2L_FACTOR x low-res-based tranlation.
+    gThisH1t[2] *= H2L_FACTOR;
+    gThisH1t[5] *= H2L_FACTOR;
+
     db_Identity3x3(T);
     T[2] = -gCenterOffsetX;
     T[5] = -gCenterOffsetY;
@@ -260,10 +266,10 @@ void UpdateWarpTransformation(float *trs)
     H[2] += gCenterOffsetX;
     H[5] += gCenterOffsetY;
 
-    // Hp = inv(K) * H * K
-    // K moves the coordinate system from openGL to image pixels so
+    // Hp = inv(Km) * H * Km
+    // Km moves the coordinate system from openGL to image pixels so
     // that the alignment transform H can be applied to them.
-    // inv(K) moves the coordinate system back to openGL normalized
+    // inv(Km) moves the coordinate system back to openGL normalized
     // coordinates so that the shader can correctly render it.
     db_Identity3x3(Htemp1);
     db_Multiply3x3_3x3(Htemp1, H, gKm);
@@ -287,13 +293,13 @@ void UpdateWarpTransformation(float *trs)
     // Compute the position of the current frame in the screen coordinate system
     // and stop the viewfinder panning if we hit the maximum border allowed for
     // this UI layout
-    double normalizedXPositionOnScreenLeft = (2 *
+    double normalizedXPositionOnScreenLeft = (2.0 *
             (gCenterOffsetX + gPanOffset) / gPreviewFBOWidth - 1.0) *
             gUILayoutScalingX;
     double normalizedScreenLimitLeft = -1.0 + VIEWPORT_BORDER_FACTOR_HORZ * 2.0;
 
-    double normalizedXPositionOnScreenRight = (2 *
-            ((gCenterOffsetX + gPanOffset) + gPreviewImageWidth[LR]) /
+    double normalizedXPositionOnScreenRight = (2.0 *
+            ((gCenterOffsetX + gPanOffset) + gPreviewImageWidth[HR]) /
             gPreviewFBOWidth - 1.0) * gUILayoutScalingX;
     double normalizedScreenLimitRight = 1.0 - VIEWPORT_BORDER_FACTOR_HORZ * 2.0;
 
@@ -304,7 +310,7 @@ void UpdateWarpTransformation(float *trs)
     db_Identity3x3(H);
     H[2] = gPanOffset;
 
-    // Hp = inv(K) * H * K
+    // Hp = inv(Km) * H * Km
     db_Identity3x3(Htemp1);
     db_Multiply3x3_3x3(Htemp1, H, gKm);
     db_Multiply3x3_3x3(Hp, gKminv, Htemp1);
@@ -331,13 +337,13 @@ void AllocateTextureMemory(int widthHR, int heightHR, int widthLR, int heightLR)
     ClearPreviewImage(HR);
     sem_post(&gPreviewImage_semaphore);
 
-    gPreviewFBOWidth = PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[LR];
-    gPreviewFBOHeight = PREVIEW_FBO_HEIGHT_SCALE * gPreviewImageHeight[LR];
+    gPreviewFBOWidth = PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[HR];
+    gPreviewFBOHeight = PREVIEW_FBO_HEIGHT_SCALE * gPreviewImageHeight[HR];
 
     // The origin is such that the current frame will sit with its center
     // at the center of the previewFBO
-    gCenterOffsetX = (gPreviewFBOWidth / 2 - gPreviewImageWidth[LR] / 2);
-    gCenterOffsetY = (gPreviewFBOHeight / 2 - gPreviewImageHeight[LR] / 2);
+    gCenterOffsetX = (gPreviewFBOWidth / 2 - gPreviewImageWidth[HR] / 2);
+    gCenterOffsetY = (gPreviewFBOHeight / 2 - gPreviewImageHeight[HR] / 2);
 
     gPanOffset = 0.0f;
 
@@ -346,8 +352,8 @@ void AllocateTextureMemory(int widthHR, int heightHR, int widthLR, int heightLR)
 
     gPanViewfinder = true;
 
-    int w = gPreviewImageWidth[LR];
-    int h = gPreviewImageHeight[LR];
+    int w = gPreviewImageWidth[HR];
+    int h = gPreviewImageHeight[HR];
 
     int wm = gPreviewFBOWidth;
     int hm = gPreviewFBOHeight;
@@ -524,14 +530,14 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
     gWarper1.SetInputTextureName(gBuffer[1 - gCurrentFBOIndex].GetTextureName());
     gWarper1.SetInputTextureType(GL_TEXTURE_2D);
 
-    // gBufferInput[LR] --> gWarper2 --> gBuffer[gCurrentFBOIndex]
+    // gBufferInput[HR] --> gWarper2 --> gBuffer[gCurrentFBOIndex]
     gWarper2.SetupGraphics(&gBuffer[gCurrentFBOIndex]);
     gWarper2.Clear(0.0, 0.0, 0.0, 1.0);
-    gWarper2.SetViewportMatrix(gPreviewImageWidth[LR],
-            gPreviewImageHeight[LR], gBuffer[gCurrentFBOIndex].GetWidth(),
+    gWarper2.SetViewportMatrix(gPreviewImageWidth[HR],
+            gPreviewImageHeight[HR], gBuffer[gCurrentFBOIndex].GetWidth(),
             gBuffer[gCurrentFBOIndex].GetHeight());
     gWarper2.SetScalingMatrix(1.0f, 1.0f);
-    gWarper2.SetInputTextureName(gBufferInput[LR].GetTextureName());
+    gWarper2.SetInputTextureName(gBufferInput[HR].GetTextureName());
     gWarper2.SetInputTextureType(GL_TEXTURE_2D);
 
     gPreview.SetupGraphics(width, height);
