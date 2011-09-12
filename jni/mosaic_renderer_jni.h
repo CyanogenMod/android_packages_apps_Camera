@@ -1,6 +1,4 @@
 #pragma once
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
 #include <semaphore.h>
 
 // The Preview FBO dimensions are determined from the low-res

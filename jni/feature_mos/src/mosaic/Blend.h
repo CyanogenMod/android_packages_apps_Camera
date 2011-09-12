@@ -23,7 +23,6 @@
 
 #include "MosaicTypes.h"
 #include "Pyramid.h"
-
 #include "Delaunay.h"
 
 #define BLEND_RANGE_DEFAULT 6
@@ -33,24 +32,6 @@
 const float TIME_PERCENT_ALIGN = 20.0;
 const float TIME_PERCENT_BLEND = 75.0;
 const float TIME_PERCENT_FINAL = 5.0;
-
-//#define LINEAR_INTERP
-
-//#define LOGII(...) //
-//#define LOGIE(...) //
-#if 1
-#ifdef ANDROID
-#include <android/log.h>
-#define ANDROID_LOG_VERBOSE ANDROID_LOG_DEBUG
-#define LOG_TAG "CVJNI"
-#define LOGII(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define LOGIE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-#else
-#define LOGII printf
-#define LOGIE printf
-#endif
-#endif
-
 
 /**
  *  Class for pyramid blending a mosaic.

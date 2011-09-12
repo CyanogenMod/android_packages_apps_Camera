@@ -24,24 +24,11 @@
 #include <time.h>
 #include <db_utilities_camera.h>
 
-
-#ifdef TURN_ON_DEBUG
-#include <android/log.h>
-#define ANDROID_LOG_VERBOSE ANDROID_LOG_DEBUG
-#define LOG_TAG "CVJNI"
-#define LOGV(...) __android_log_print(ANDROID_LOG_SILENT, LOG_TAG, __VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-#else
-#define LOGI(...) //
-#define LOGE(...) //
-#define LOGV(...) //
-#endif
-
-#include "mosaic/ImageUtils.h"
 #include "mosaic/AlignFeatures.h"
 #include "mosaic/Blend.h"
 #include "mosaic/Mosaic.h"
+#include "mosaic/Log.h"
+#define LOG_TAG "FEATURE_MOS_JNI"
 
 #ifdef __cplusplus
 extern "C" {
@@ -129,7 +116,7 @@ int Init(int mID, int nmax)
         t1 = now_ms();
         time_c = t1 - t0;
         LOGV("Init[%d]: %g ms [%d frames]",mID,time_c,nmax);
-                return 1;
+        return 1;
 }
 
 void GenerateQuarterResImagePlanar(ImageType im, int input_w, int input_h,
@@ -182,14 +169,9 @@ int AddFrame(int mID, int k, float* trs1d)
     double  t0, t1, time_c;
     double trs[3][3];
 
-    t0 = now_ms();
     int ret_code = mosaic[mID]->addFrame(tImage[mID][k]);
 
     mosaic[mID]->getAligner()->getLastTRS(trs);
-
-    t1 = now_ms();
-    time_c = t1 - t0;
-    LOGV("Align: %g ms",time_c);
 
     if(trs1d!=NULL)
     {
@@ -396,34 +378,21 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
     {
         double last_tx = mTx;
 
-        t0 = now_ms();
-
         sem_wait(&gPreviewImage_semaphore);
         ConvertYVUAiToPlanarYVU(tImage[LR][frame_number_LR], gPreviewImage[LR],
                 tWidth[LR], tHeight[LR]);
 
         sem_post(&gPreviewImage_semaphore);
 
-        t1 = now_ms();
-        time_c = t1 - t0;
-        LOGV("[%d] RGB [LR] => YVU [LR] [%d]: %g ms", frame_number_HR, frame_number_LR,
-                time_c);
-
         int ret_code = AddFrame(LR, frame_number_LR, gTRS);
 
         if(ret_code == Mosaic::MOSAIC_RET_OK)
         {
-            t0 = now_ms();
             // Copy into HR buffer only if this is a valid frame
             sem_wait(&gPreviewImage_semaphore);
             ConvertYVUAiToPlanarYVU(tImage[HR][frame_number_HR], gPreviewImage[HR],
                     tWidth[HR], tHeight[HR]);
             sem_post(&gPreviewImage_semaphore);
-
-            t1 = now_ms();
-            time_c = t1 - t0;
-            LOGV("[%d] RGB [HR] => YVU [HR] [%d]: %g ms", frame_number_HR, frame_number_LR,
-                    time_c);
 
             frame_number_LR++;
             frame_number_HR++;
@@ -459,22 +428,10 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
     {
         jbyte *pixels = env->GetByteArrayElements(photo_data, 0);
 
-        t1 = now_ms();
-        time_c = t1 - t0;
-        LOGV("[%d] GetByteArray: %g ms",frame_number_HR,time_c);
-
         YUV420toYVU24_NEW(tImage[HR][frame_number_HR], (ImageType)pixels,
                 tWidth[HR], tHeight[HR]);
 
-        time_c = now_ms() - t1;
-        LOGV("[%d] 420to24_NEW: %g ms",frame_number_HR,time_c);
-
         env->ReleaseByteArrayElements(photo_data, pixels, 0);
-
-        t1 = now_ms();
-        time_c = t1 - t0;
-        LOGV("[%d] ReadImage [GetByteArray+420to24+ReleaseByteArray]: %g ms",
-               frame_number_HR, time_c);
 
         double last_tx = mTx;
 
@@ -487,11 +444,6 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
         decodeYUV444SP(gPreviewImage[LR], tImage[LR][frame_number_LR],
                 gPreviewImageWidth[LR], gPreviewImageHeight[LR]);
         sem_post(&gPreviewImage_semaphore);
-
-        t1 = now_ms();
-        time_c = t1 - t0;
-        LOGV("[%d] HR->LR [%d]: %g ms", frame_number_HR, frame_number_LR,
-                time_c);
 
         int ret_code = AddFrame(LR, frame_number_LR, gTRS);
 
@@ -564,6 +516,7 @@ JNIEXPORT jint JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(
 
     if(high_res)
     {
+        LOGV("createMosaic() - High-Res Mode");
         double  t0, t1, time_c;
 
         gProgress[HR] = 0.0;
@@ -589,7 +542,7 @@ JNIEXPORT jint JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(
 
             t1 = now_ms();
             time_c = t1 - t0;
-            LOGV("AlignAll [HR]: %g ms",time_c);
+            LOGV("AlignAll - %d frames [HR]: %g ms", frame_number_HR, time_c);
 
             ret = Finalize(HR);
 
@@ -600,6 +553,7 @@ JNIEXPORT jint JNICALL Java_com_android_camera_panorama_Mosaic_createMosaic(
     }
     else
     {
+        LOGV("createMosaic() - Low-Res Mode");
         gProgress[LR] = TIME_PERCENT_ALIGN;
 
         ret = Finalize(LR);

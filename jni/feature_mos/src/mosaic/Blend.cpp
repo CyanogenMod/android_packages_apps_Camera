@@ -26,6 +26,9 @@
 #include "Geometry.h"
 #include "trsMatrix.h"
 
+#include "Log.h"
+#define LOG_TAG "BLEND"
+
 Blend::Blend()
 {
   m_wb.blendingType = BLEND_TYPE_NONE;
@@ -63,7 +66,7 @@ int Blend::initialize(int blendingType, int frame_width, int frame_height)
 
     if (!m_pFrameYPyr || !m_pFrameUPyr || !m_pFrameVPyr)
     {
-        LOGIE("Error: Could not allocate pyramids for blending\n");
+        LOGE("Error: Could not allocate pyramids for blending");
         return BLEND_RET_ERROR_MEMORY;
     }
 
@@ -101,7 +104,7 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
 
     if (numCenters == 0)
     {
-        LOGIE("Error: No frames to blend\n");
+        LOGE("Error: No frames to blend");
         return BLEND_RET_ERROR;
     }
 
@@ -160,14 +163,14 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
 
     if (Mwidth < width || Mheight < height)
     {
-        LOGIE("RunBlend: aborting - consistency check failed, w=%d, h=%d\n", Mwidth, Mheight);
+        LOGE("RunBlend: aborting - consistency check failed, w=%d, h=%d", Mwidth, Mheight);
         return BLEND_RET_ERROR;
     }
 
     YUVinfo *imgMos = YUVinfo::allocateImage(Mwidth, Mheight);
     if (imgMos == NULL)
     {
-        LOGIE("RunBlend: aborting - couldn't alloc %d x %d mosaic image\n", Mwidth, Mheight);
+        LOGE("RunBlend: aborting - couldn't alloc %d x %d mosaic image", Mwidth, Mheight);
         return BLEND_RET_ERROR_MEMORY;
     }
 
@@ -245,7 +248,7 @@ int Blend::FillFramePyramid(MosaicFrame *mb)
             !PyramidShort::BorderReduce(m_pFrameUPyr, m_wb.nlevsC) || !PyramidShort::BorderExpand(m_pFrameUPyr, m_wb.nlevsC, -1) ||
             !PyramidShort::BorderReduce(m_pFrameVPyr, m_wb.nlevsC) || !PyramidShort::BorderExpand(m_pFrameVPyr, m_wb.nlevsC, -1))
     {
-        LOGIE("Error: Could not generate Laplacian pyramids\n");
+        LOGE("Error: Could not generate Laplacian pyramids");
         return BLEND_RET_ERROR;
     }
     else
@@ -267,7 +270,7 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
     m_pMosaicVPyr = PyramidShort::allocatePyramidPacked(m_wb.nlevsC,(unsigned short)rect.Width(),(unsigned short)rect.Height(),BORDER);
     if (!m_pMosaicYPyr || !m_pMosaicUPyr || !m_pMosaicVPyr)
     {
-      LOGIE("Error: Could not allocate pyramids for blending\n");
+      LOGE("Error: Could not allocate pyramids for blending");
       return BLEND_RET_ERROR_MEMORY;
     }
 
@@ -380,7 +383,7 @@ int Blend::PerformFinalBlending(YUVinfo &imgMos, MosaicRect &cropping_rect)
     if (!PyramidShort::BorderExpand(m_pMosaicYPyr, m_wb.nlevs, 1) || !PyramidShort::BorderExpand(m_pMosaicUPyr, m_wb.nlevsC, 1) ||
         !PyramidShort::BorderExpand(m_pMosaicVPyr, m_wb.nlevsC, 1))
     {
-      LOGIE("Error: Could not BorderExpand!\n");
+      LOGE("Error: Could not BorderExpand!");
       return BLEND_RET_ERROR;
     }
 

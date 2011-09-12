@@ -1,23 +1,36 @@
-// OpenGL ES 2.0 code
-#include <jni.h>
-#include <android/log.h>
+/*
+ * Copyright (C) 2011 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-#include <db_utilities_camera.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include <jni.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "db_utilities_camera.h"
 #include "mosaic/ImageUtils.h"
 #include "mosaic_renderer/FrameBuffer.h"
 #include "mosaic_renderer/WarpRenderer.h"
 #include "mosaic_renderer/SurfaceTextureRenderer.h"
 #include "mosaic_renderer/YVURenderer.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+
+#include "mosaic/Log.h"
+#define LOG_TAG "MosaicRenderer"
 
 #include "mosaic_renderer_jni.h"
-
-#define  LOG_TAG    "MosaicRenderer"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGV(...)  __android_log_print(ANDROID_LOG_VERBOSE,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 // Texture handle
 GLuint gSurfaceTextureID[1];
@@ -139,14 +152,14 @@ const int GL_TEXTURE_EXTERNAL_OES_ENUM = 0x8D65;
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
-    LOGI("GL %s = %s\n", name, v);
+    LOGI("GL %s = %s", name, v);
 }
 
 // @return false if there was an error
 bool checkGlError(const char* op) {
     GLint error = glGetError();
     if (error != 0) {
-        LOGE("after %s() glError (0x%x)\n", op, error);
+        LOGE("after %s() glError (0x%x)", op, error);
         return false;
     }
     return true;
@@ -565,14 +578,8 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_transferG
 {
     double t0, t1, time_c;
 
-    t0 = now_ms();
-
     gYVURenderer[LR].DrawTexture();
     gYVURenderer[HR].DrawTexture();
-
-    t1 = now_ms();
-    time_c = t1 - t0;
-    LOGV("YVU Rendering: %g ms", time_c);
 
     sem_wait(&gPreviewImage_semaphore);
     // Bind to the input LR FBO and read the Low-Res data from there...
@@ -587,9 +594,6 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_transferG
                  gPreviewImage[LR]);
 
     checkGlError("glReadPixels LR");
-    t1 = now_ms();
-    time_c = t1 - t0;
-    LOGV("glReadPixels LR: %g ms", time_c);
 
     // Bind to the input HR FBO and read the high-res data from there...
     glBindFramebuffer(GL_FRAMEBUFFER, gBufferInputYVU[HR].GetFrameBufferName());
@@ -603,9 +607,6 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_transferG
                  gPreviewImage[HR]);
 
     checkGlError("glReadPixels HR");
-    t1 = now_ms();
-    time_c = t1 - t0;
-    LOGV("glReadPixels HR: %g ms", time_c);
 
     sem_post(&gPreviewImage_semaphore);
 }
