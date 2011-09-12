@@ -1541,6 +1541,7 @@ public class VideoCamera extends ActivityBase
 
     private void showRecordingUI(boolean recording) {
         if (recording) {
+            mThumbnailView.setEnabled(false);
             mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video_recording);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
@@ -1554,6 +1555,7 @@ public class VideoCamera extends ActivityBase
                 }
             }
         } else {
+            mThumbnailView.setEnabled(true);
             mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video);
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
@@ -1680,6 +1682,7 @@ public class VideoCamera extends ActivityBase
 
     private void initThumbnailButton() {
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+        mThumbnailView.enableFilter(false);
         mThumbnailView.setVisibility(View.VISIBLE);
         // Load the thumbnail from the disk.
         mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
