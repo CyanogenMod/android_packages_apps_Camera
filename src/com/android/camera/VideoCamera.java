@@ -1541,7 +1541,7 @@ public class VideoCamera extends ActivityBase
 
     private void showRecordingUI(boolean recording) {
         if (recording) {
-            mThumbnailView.setEnabled(false);
+            if (mThumbnailView != null) mThumbnailView.setEnabled(false);
             mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video_recording);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
@@ -1555,7 +1555,7 @@ public class VideoCamera extends ActivityBase
                 }
             }
         } else {
-            mThumbnailView.setEnabled(true);
+            if (mThumbnailView != null) mThumbnailView.setEnabled(true);
             mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video);
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
