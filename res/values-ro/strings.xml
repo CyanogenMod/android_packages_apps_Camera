@@ -101,7 +101,7 @@
     <string name="no_video_to_share" msgid="3775826212074938990">"Nu există video. de distribuit"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Opriţi"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Prea repede"</string>
-    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Se preg. previzualizarea..."</string>
+    <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Se preg. previzualizarea..."</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Se generează panorama..."</string>
     <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
     <skip />
@@ -116,4 +116,12 @@
     <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Gură mică"</string>
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Nas mare"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Ochi mici"</string>
+    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
+    <skip />
 </resources>

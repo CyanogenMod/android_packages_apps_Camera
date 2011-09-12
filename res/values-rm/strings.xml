@@ -117,7 +117,7 @@
     <skip />
     <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
     <skip />
-    <!-- no translation found for pano_dialog_prepare_preview (8485307771397200861) -->
+    <!-- no translation found for pano_dialog_prepare_preview (4788441554128083543) -->
     <skip />
     <!-- no translation found for pano_dialog_generate_panorama (3982298994354021383) -->
     <skip />
@@ -142,5 +142,13 @@
     <!-- no translation found for effect_goofy_face_big_nose (5738964679340745774) -->
     <skip />
     <!-- no translation found for effect_goofy_face_small_eyes (8007886544327361111) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
     <skip />
 </resources>
