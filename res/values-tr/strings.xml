@@ -101,27 +101,27 @@
     <string name="no_video_to_share" msgid="3775826212074938990">"Paylaşılacak video yok"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Durdur"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Çok Hızlı"</string>
-    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Önizleme hazırlanıyor..."</string>
+    <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Önizleme hazırlanıyor..."</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Panorama oluşturuluyor..."</string>
     <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
     <skip />
     <!-- no translation found for pano_dialog_title (5755531234434437697) -->
     <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"Odaklmk içn hafifç vurun"</string>
-    <!-- no translation found for pref_video_effect_title (8243182968457289488) -->
+    <string name="pref_video_effect_title" msgid="8243182968457289488">"Efektler"</string>
+    <string name="effect_none" msgid="3601545724573307541">"Yok"</string>
+    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Sıkıştır"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"Büyük Gözler"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"Büyük Ağız"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Küçük Ağız"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Büyük Burun"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Küçük Gözler"</string>
+    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
     <skip />
-    <!-- no translation found for effect_none (3601545724573307541) -->
+    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
     <skip />
-    <!-- no translation found for effect_goofy_face_squeeze (1207235692524289171) -->
+    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
     <skip />
-    <!-- no translation found for effect_goofy_face_big_eyes (1942377617761116861) -->
-    <skip />
-    <!-- no translation found for effect_goofy_face_big_mouth (2342636750478741367) -->
-    <skip />
-    <!-- no translation found for effect_goofy_face_small_mouth (4424498213697804087) -->
-    <skip />
-    <!-- no translation found for effect_goofy_face_big_nose (5738964679340745774) -->
-    <skip />
-    <!-- no translation found for effect_goofy_face_small_eyes (8007886544327361111) -->
+    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
     <skip />
 </resources>

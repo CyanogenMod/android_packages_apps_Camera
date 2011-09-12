@@ -90,8 +90,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"የካሜራ ቅንብሮች"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"ወደ ነባሪዎች  እነበረበት መልስ"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"የተጋለጠ"</string>
-    <!-- no translation found for dialog_ok (6263301364153382152) -->
-    <skip />
+    <string name="dialog_ok" msgid="6263301364153382152">"እሺ"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"የUSB  ማከማቻዎቦታ እየሞላበት ነው።የጥራት ቅንብር ይለውጡ ወይም አንዳንድ ምስሎችን ወይም ሌላ ፋይሎች ይሰርዙ።"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"የSD ካርድዎ ቦታ እያለቀበት ነው። የጥራት ቅንብሩን ይልወጡ ወይም አንዳንድ ምስሎችንወይም ሌሎች ፋይሎችን ይሰርዙ።"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"መጠኑ ላይ ደርሷል፡፡"</string>
@@ -108,12 +107,10 @@
     <skip />
     <string name="pano_capture_stop" msgid="8122941670229992464">"ቁም"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"በጣም ፈጥኖዋል"</string>
-    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"ቅድመእይታ በማዘጋጀት ላይ..."</string>
+    <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"ቅድመእይታ በማዘጋጀት ላይ..."</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"ፓኖራማ በማስጀመር ላይ..."</string>
-    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
-    <skip />
-    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
-    <skip />
+    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"ፓኖራማ ለማስቀመጥ ተስኗል"</string>
+    <string name="pano_dialog_title" msgid="5755531234434437697">"ፓኖራማ"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"ለማተኮር ሁለቴ ንካ"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"ማሳመሪያዎች"</string>
     <string name="effect_none" msgid="3601545724573307541">"ምንም የለም"</string>
@@ -123,4 +120,12 @@
     <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"ትንሽ አፍ"</string>
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"ትልቅ አፍንጫ"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"ትናንሽ ዓይኖች"</string>
+    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
+    <skip />
 </resources>

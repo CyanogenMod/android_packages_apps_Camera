@@ -87,8 +87,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Mga setting ng kamera"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Ibalik ang Mga default"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Pagkakalantad"</string>
-    <!-- no translation found for dialog_ok (6263301364153382152) -->
-    <skip />
+    <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Nauubusan na ng puwang ang iyong imbakan na USB. Baguhin ang setting ng kalidad o tanggalin ang ilan sa mga larawan o ibang mga file."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Nauubusan na ng puwang ang SD card. Baguhin ang setting ng kalidad o tanggalin ang ilan sa mga larawan o ibang mga file."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Naabot ang limitasyon ng laki."</string>
@@ -101,12 +100,10 @@
     <string name="no_video_to_share" msgid="3775826212074938990">"Walang video na ibabahagi"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Ihinto"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Msyado Bilis"</string>
-    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Ihinahanda ang preview..."</string>
+    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Ihinahanda ang panorama"</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Bumubuo ng panorama..."</string>
-    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
-    <skip />
-    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
-    <skip />
+    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Nabigong i-save ang panorama"</string>
+    <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Tapikin upang ituon"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Mga Effect"</string>
     <string name="effect_none" msgid="3601545724573307541">"Wala"</string>
@@ -116,4 +113,9 @@
     <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Maliit Bibig"</string>
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Malaking Ilong"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Maliit na Mata"</string>
+    <string name="effect_backdropper_space" msgid="1381012939195370792">"Sa Kalawakan"</string>
+    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
+    <skip />
+    <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Pumili ng sa iyo"</string>
+    <string name="bg_replacement_message" msgid="7540788298745332389">"Ipatong ang iyong device sa isang matatag na bagay at tiyaking walang kumikilos sa iyong likuran."\n\n"Pagkatapos ay umalis sa view ng camera."</string>
 </resources>

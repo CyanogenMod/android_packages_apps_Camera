@@ -87,8 +87,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Camera-instellingen"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Standaardwaarden herstellen"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Belichting"</string>
-    <!-- no translation found for dialog_ok (6263301364153382152) -->
-    <skip />
+    <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Uw USB-opslag is bijna vol. Wijzig de kwaliteitsinstelling of verwijder enkele afbeeldingen of andere bestanden."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Uw SD-kaart is bijna vol. Wijzig de kwaliteitsinstelling of verwijder enkele afbeeldingen of andere bestanden."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Maximale grootte bereikt"</string>
@@ -101,12 +100,10 @@
     <string name="no_video_to_share" msgid="3775826212074938990">"Geen video om te delen"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Stoppen"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Te snel"</string>
-    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Voorbeeld voorbereiden..."</string>
+    <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Voorbeeld voorbereiden..."</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Panorama genereren..."</string>
-    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
-    <skip />
-    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
-    <skip />
+    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Kan panorama niet opslaan"</string>
+    <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Tikken voor autofocus"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Effecten"</string>
     <string name="effect_none" msgid="3601545724573307541">"Geen"</string>
@@ -116,4 +113,12 @@
     <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Kleine mond"</string>
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Grote neus"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Kleine ogen"</string>
+    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
+    <skip />
 </resources>

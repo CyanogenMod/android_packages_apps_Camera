@@ -87,8 +87,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Kameraeinstellungen"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Standard wiederherstellen"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Belichtung"</string>
-    <!-- no translation found for dialog_ok (6263301364153382152) -->
-    <skip />
+    <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Ihr USB-Speicher bietet nicht mehr genug Speicherplatz. Ändern Sie die Qualitätseinstellung oder löschen Sie Bilder oder andere Dateien."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Auf Ihrer SD-Karte ist nicht mehr genügend Speicherplatz vorhanden. Ändern Sie die Qualitätseinstellung oder löschen Sie Bilder oder andere Dateien."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Maximale Größe erreicht"</string>
@@ -101,19 +100,25 @@
     <string name="no_video_to_share" msgid="3775826212074938990">"Kein Video für Weiterleitung"</string>
     <string name="pano_capture_stop" msgid="8122941670229992464">"Stopp"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Zu schnell"</string>
-    <string name="pano_dialog_prepare_preview" msgid="8485307771397200861">"Vorschau wird vorbereitet..."</string>
+    <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Vorschau wird vorbereitet..."</string>
     <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Panorama wird generiert..."</string>
-    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
-    <skip />
-    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
-    <skip />
+    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Panorama konnte nicht gespeichert werden"</string>
+    <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Zum Fokussieren tippen"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Effekte"</string>
-    <string name="effect_none" msgid="3601545724573307541">"Ohne"</string>
+    <string name="effect_none" msgid="3601545724573307541">"Effekt löschen"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Quetschen"</string>
     <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"Große Augen"</string>
     <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"Großer Mund"</string>
     <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Kleiner Mund"</string>
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Große Nase"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Kleine Augen"</string>
+    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
+    <skip />
+    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
+    <skip />
 </resources>
