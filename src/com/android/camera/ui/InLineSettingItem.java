@@ -16,12 +16,11 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
 import com.android.camera.ListPreference;
+import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -66,6 +65,7 @@ public abstract class InLineSettingItem extends LinearLayout {
     protected abstract void updateView();
 
     protected boolean changeIndex(int index) {
+        if (index >= mPreference.getEntryValues().length || index < 0) return false;
         mIndex = index;
         mPreference.setValueIndex(mIndex);
         if (mListener != null) {
