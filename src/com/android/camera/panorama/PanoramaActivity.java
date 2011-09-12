@@ -109,14 +109,15 @@ public class PanoramaActivity extends Activity implements
     private View mReviewLayout;
     private ImageView mReview;
     private PanoProgressBar mPanoProgressBar;
+    private PanoProgressBar mSavingProgressBar;
     private MosaicRendererSurfaceView mMosaicView;
     private TextView mTooFastPrompt;
     private ShutterButton mShutterButton;
+    private Object mWaitObject = new Object();
 
-    private ProgressDialog mProgressDialog;
     private String mPreparePreviewString;
-    private String mGeneratePanoramaString;
     private AlertDialog mAlertDialog;
+    private ProgressDialog mProgressDialog;
     private String mDialogTitle;
     private String mDialogOk;
 
@@ -221,8 +222,6 @@ public class PanoramaActivity extends Activity implements
 
         mPreparePreviewString =
                 getResources().getString(R.string.pano_dialog_prepare_preview);
-        mGeneratePanoramaString =
-                getResources().getString(R.string.pano_dialog_generate_panorama);
         mDialogTitle = getResources().getString(R.string.pano_dialog_title);
         mDialogOk = getResources().getString(R.string.dialog_ok);
 
@@ -233,6 +232,7 @@ public class PanoramaActivity extends Activity implements
                     case MSG_LOW_RES_FINAL_MOSAIC_READY:
                         onBackgroundThreadFinished();
                         showFinalMosaic((Bitmap) msg.obj);
+                        saveHighResMosaic();
                         break;
                     case MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL:
                         onBackgroundThreadFinished();
@@ -495,12 +495,13 @@ public class PanoramaActivity extends Activity implements
         mPanoProgressBar.setIndicatorWidth(20);
         mPanoProgressBar.setMaxProgress(DEFAULT_SWEEP_ANGLE);
         mPanoProgressBar.setVisibility(View.VISIBLE);
-        mMosaicView.setVisibility(View.VISIBLE);
+        mPanoProgressBar.setEnabled(true);
     }
 
     private void stopCapture() {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
         mTooFastPrompt.setVisibility(View.GONE);
+        mPanoProgressBar.setEnabled(false);
 
         mMosaicFrameProcessor.setProgressListener(null);
         stopCameraPreview();
@@ -508,7 +509,8 @@ public class PanoramaActivity extends Activity implements
         mSurfaceTexture.setOnFrameAvailableListener(null);
 
         if (!mThreadRunning) {
-            runBackgroundThreadAndShowDialog(mPreparePreviewString, false, new Thread() {
+            showDialog(mPreparePreviewString);
+            runBackgroundThread(new Thread() {
                 @Override
                 public void run() {
                     MosaicJpeg jpeg = generateFinalMosaic(false);
@@ -524,7 +526,6 @@ public class PanoramaActivity extends Activity implements
                     }
                 }
             });
-            reportProgress(false);
         }
         mThumbnailViewAndModePickerIn.start();
     }
@@ -554,11 +555,18 @@ public class PanoramaActivity extends Activity implements
         Resources appRes = getResources();
 
         mCaptureLayout = (View) findViewById(R.id.pano_capture_layout);
-        mPanoProgressBar = (PanoProgressBar) findViewById(R.id.pano_capture_view);
+        mPanoProgressBar = (PanoProgressBar) findViewById(R.id.pano_pan_progress_bar);
         mPanoProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
         mPanoProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_done));
         mPanoProgressBar.setIndicatorColor(appRes.getColor(R.color.pano_progress_indication));
+        mPanoProgressBar.setEnabled(false);
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
+
+        mSavingProgressBar = (PanoProgressBar) findViewById(R.id.pano_saving_progress_bar);
+        mSavingProgressBar.setIndicatorWidth(0);
+        mSavingProgressBar.setMaxProgress(100);
+        mSavingProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
+        mSavingProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_indication));
 
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
 
@@ -566,7 +574,6 @@ public class PanoramaActivity extends Activity implements
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
         mMosaicView = (MosaicRendererSurfaceView) findViewById(R.id.pano_renderer);
         mMosaicView.getRenderer().setMosaicSurfaceCreateListener(this);
-        mMosaicView.setVisibility(View.VISIBLE);
 
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
         mModePicker.setVisibility(View.VISIBLE);
@@ -600,39 +607,39 @@ public class PanoramaActivity extends Activity implements
     public void onShutterButtonFocus(ShutterButton b, boolean pressed) {
     }
 
-    public void reportProgress(final boolean highRes) {
+    public void reportProgress() {
+        mSavingProgressBar.reset();
+        mSavingProgressBar.setRightIncreasing(true);
+        mSavingProgressBar.setEnabled(true);
         Thread t = new Thread() {
             @Override
             public void run() {
                 while (mThreadRunning) {
                     final int progress = mMosaicFrameProcessor.reportProgress(
-                            highRes, mCancelComputation);
+                            true, mCancelComputation);
 
                     try {
-                        Thread.sleep(50);
-                    } catch (Exception e) {
+                        synchronized (mWaitObject) {
+                            mWaitObject.wait(50);
+                        }
+                    } catch (InterruptedException e) {
                         throw new RuntimeException("Panorama reportProgress failed", e);
                     }
                     // Update the progress bar
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            // Check if mProgressDialog is null because the background thread
-                            // finished.
-                            if (mProgressDialog != null) {
-                                mProgressDialog.setProgress(progress);
-                            }
+                            mSavingProgressBar.setProgress(progress);
                         }
                     });
                 }
+                mSavingProgressBar.setEnabled(false);
             }
         };
         t.start();
     }
 
-    @OnClickAttr
-    public void onOkButtonClicked(View v) {
-        if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
-        runBackgroundThreadAndShowDialog(mGeneratePanoramaString, true, new Thread() {
+    public void saveHighResMosaic() {
+        runBackgroundThread(new Thread() {
             @Override
             public void run() {
                 MosaicJpeg jpeg = generateFinalMosaic(true);
@@ -658,47 +665,35 @@ public class PanoramaActivity extends Activity implements
                 }
             }
         });
-        reportProgress(true);
+        reportProgress();
     }
 
-    /**
-     * If the style is horizontal one, the maximum progress is assumed to be 100.
-     */
-    private void runBackgroundThreadAndShowDialog(
-            String str, boolean showPercentageProgress, Thread thread) {
-        mThreadRunning = true;
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage(str);
-        mProgressDialog.setCancelable(false);  // Don't allow back key to dismiss this dialog.
-        if (showPercentageProgress) {
-            mProgressDialog.setMax(100);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            // TODO: update the UI according to specs.
+    private void showDialog(String str) {
+          mProgressDialog = new ProgressDialog(this);
+          mProgressDialog.setMessage(str);
+          mProgressDialog.show();
+    }
 
-            mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
-                                int whichButton) {
-                            mCancelComputation = true;
-                        }
-                    });
-        } else {
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        }
-        mProgressDialog.show();
+    private void runBackgroundThread(Thread thread) {
+        mThreadRunning = true;
         thread.start();
     }
 
     private void onBackgroundThreadFinished() {
         mThreadRunning = false;
-        mProgressDialog.dismiss();
-        mProgressDialog = null;
+        if (mProgressDialog != null ) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
     }
 
     @OnClickAttr
-    public void onRetakeButtonClicked(View v) {
-        if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
-        resetToPreview();
+    public void onCancelButtonClicked(View v) {
+        if (mPausing || mSurfaceTexture == null) return;
+        mCancelComputation = true;
+        synchronized (mWaitObject) {
+            mWaitObject.notify();
+        }
     }
 
     @OnClickAttr
@@ -731,8 +726,6 @@ public class PanoramaActivity extends Activity implements
         mSurfaceTexture.setOnFrameAvailableListener(this);
 
         if (!mPausing) startCameraPreview();
-
-        mMosaicView.setVisibility(View.VISIBLE);
     }
 
     private void showFinalMosaic(Bitmap bitmap) {
@@ -775,8 +768,8 @@ public class PanoramaActivity extends Activity implements
         releaseCamera();
         mPausing = true;
         mMosaicView.onPause();
-        mSensorManager.unregisterListener(mListener);
         clearMosaicFrameProcessorIfNeeded();
+        mSensorManager.unregisterListener(mListener);
         mOrientationEventListener.disable();
         System.gc();
     }
@@ -795,6 +788,7 @@ public class PanoramaActivity extends Activity implements
          * resources.
          */
         mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
+
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
         setupCamera();
         if (mSurfaceTexture != null) {
