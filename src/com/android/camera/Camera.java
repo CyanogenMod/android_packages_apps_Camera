@@ -565,6 +565,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Log.d(TAG, "Received intent action=" + action);
             if (action.equals(Intent.ACTION_MEDIA_MOUNTED)
                     || action.equals(Intent.ACTION_MEDIA_UNMOUNTED)
                     || action.equals(Intent.ACTION_MEDIA_CHECKING)) {
@@ -1437,6 +1438,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void doSnap() {
         if (mPausing || collapseCameraControls()) return;
+
+        // Do not take the picture if there is not enough storage.
+        if (mPicturesRemaining <= 0) {
+            Log.i(TAG, "Not enough space or storage not ready. remaining=" + mPicturesRemaining);
+            return;
+        }
 
         Log.v(TAG, "doSnap: mCameraState=" + mCameraState);
         mFocusManager.doSnap();

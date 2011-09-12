@@ -90,6 +90,7 @@ public class Storage {
 
     public static long getAvailableSpace() {
         String state = Environment.getExternalStorageState();
+        Log.d(TAG, "External storage state=" + state);
         if (Environment.MEDIA_CHECKING.equals(state)) {
             return PREPARING;
         }
