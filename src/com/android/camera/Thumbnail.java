@@ -131,11 +131,52 @@ public class Thumbnail {
         return createThumbnail(uri, bitmap, 0);
     }
 
-    public static Thumbnail getLastImageThumbnail(ContentResolver resolver) {
+    public static Thumbnail getLastThumbnail(ContentResolver resolver) {
+        Media image = getLastImageThumbnail(resolver);
+        Media video = getLastVideoThumbnail(resolver);
+        if (image == null && video == null) return null;
+
+        Bitmap bitmap = null;
+        Media lastMedia;
+        // If there is only image or video, get its thumbnail. If both exist,
+        // get the thumbnail of the one that is newer.
+        if (image != null && (video == null || image.dateTaken >= video.dateTaken)) {
+            bitmap = Images.Thumbnails.getThumbnail(resolver, image.id,
+                    Images.Thumbnails.MINI_KIND, null);
+            lastMedia = image;
+        } else {
+            bitmap = Video.Thumbnails.getThumbnail(resolver, video.id,
+                    Video.Thumbnails.MINI_KIND, null);
+            lastMedia = video;
+        }
+
+        // Ensure database and storage are in sync.
+        if (Util.isUriValid(lastMedia.uri, resolver)) {
+            return createThumbnail(lastMedia.uri, bitmap, lastMedia.orientation);
+        }
+        return null;
+    }
+
+    private static class Media {
+        public Media(long id, int orientation, long dateTaken, Uri uri) {
+            this.id = id;
+            this.orientation = orientation;
+            this.dateTaken = dateTaken;
+            this.uri = uri;
+        }
+
+        public final long id;
+        public final int orientation;
+        public final long dateTaken;
+        public final Uri uri;
+    }
+
+    public static Media getLastImageThumbnail(ContentResolver resolver) {
         Uri baseUri = Images.Media.EXTERNAL_CONTENT_URI;
 
         Uri query = baseUri.buildUpon().appendQueryParameter("limit", "1").build();
-        String[] projection = new String[] {ImageColumns._ID, ImageColumns.ORIENTATION};
+        String[] projection = new String[] {ImageColumns._ID, ImageColumns.ORIENTATION,
+                ImageColumns.DATE_TAKEN};
         String selection = ImageColumns.MIME_TYPE + "='image/jpeg' AND " +
                 ImageColumns.BUCKET_ID + '=' + Storage.BUCKET_ID;
         String order = ImageColumns.DATE_TAKEN + " DESC," + ImageColumns._ID + " DESC";
@@ -145,14 +186,8 @@ public class Thumbnail {
             cursor = resolver.query(query, projection, selection, null, order);
             if (cursor != null && cursor.moveToFirst()) {
                 long id = cursor.getLong(0);
-                int orientation = cursor.getInt(1);
-                Bitmap bitmap = Images.Thumbnails.getThumbnail(resolver, id,
-                        Images.Thumbnails.MINI_KIND, null);
-                Uri uri = ContentUris.withAppendedId(baseUri, id);
-                // Ensure there's no OOM. Ensure database and storage are in sync.
-                if (Util.isUriValid(uri, resolver)) {
-                    return createThumbnail(uri, bitmap, orientation);
-                }
+                return new Media(id, cursor.getInt(1), cursor.getLong(2),
+                        ContentUris.withAppendedId(baseUri, id));
             }
         } finally {
             if (cursor != null) {
@@ -162,11 +197,12 @@ public class Thumbnail {
         return null;
     }
 
-    public static Thumbnail getLastVideoThumbnail(ContentResolver resolver) {
+    private static Media getLastVideoThumbnail(ContentResolver resolver) {
         Uri baseUri = Video.Media.EXTERNAL_CONTENT_URI;
 
         Uri query = baseUri.buildUpon().appendQueryParameter("limit", "1").build();
-        String[] projection = new String[] {VideoColumns._ID, MediaColumns.DATA};
+        String[] projection = new String[] {VideoColumns._ID, MediaColumns.DATA,
+                VideoColumns.DATE_TAKEN};
         String selection = VideoColumns.BUCKET_ID + '=' + Storage.BUCKET_ID;
         String order = VideoColumns.DATE_TAKEN + " DESC," + VideoColumns._ID + " DESC";
 
@@ -176,13 +212,8 @@ public class Thumbnail {
             if (cursor != null && cursor.moveToFirst()) {
                 Log.d(TAG, "getLastVideoThumbnail: " + cursor.getString(1));
                 long id = cursor.getLong(0);
-                Bitmap bitmap = Video.Thumbnails.getThumbnail(resolver, id,
-                        Video.Thumbnails.MINI_KIND, null);
-                Uri uri = ContentUris.withAppendedId(baseUri, id);
-                // Ensure there's no OOM. Ensure database and storage are in sync.
-                if (Util.isUriValid(uri, resolver)) {
-                    return createThumbnail(uri, bitmap, 0);
-                }
+                return new Media(id, 0, cursor.getLong(2),
+                        ContentUris.withAppendedId(baseUri, id));
             }
         } finally {
             if (cursor != null) {

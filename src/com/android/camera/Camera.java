@@ -412,7 +412,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Update last image if URI is invalid and the storage is ready.
         if ((mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), mContentResolver))
                 && mPicturesRemaining >= 0) {
-            mThumbnail = Thumbnail.getLastImageThumbnail(mContentResolver);
+            mThumbnail = Thumbnail.getLastThumbnail(mContentResolver);
         }
         if (mThumbnail != null) {
             mThumbnailView.setBitmap(mThumbnail.getBitmap());

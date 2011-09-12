@@ -1686,7 +1686,7 @@ public class VideoCamera extends ActivityBase
 
     private void updateThumbnailButton() {
         if (mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), mContentResolver)) {
-            mThumbnail = Thumbnail.getLastVideoThumbnail(mContentResolver);
+            mThumbnail = Thumbnail.getLastThumbnail(mContentResolver);
         }
         if (mThumbnail != null) {
             mThumbnailView.setBitmap(mThumbnail.getBitmap());
