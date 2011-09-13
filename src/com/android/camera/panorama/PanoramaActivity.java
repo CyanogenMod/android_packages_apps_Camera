@@ -495,13 +495,11 @@ public class PanoramaActivity extends Activity implements
         mPanoProgressBar.setIndicatorWidth(20);
         mPanoProgressBar.setMaxProgress(DEFAULT_SWEEP_ANGLE);
         mPanoProgressBar.setVisibility(View.VISIBLE);
-        mPanoProgressBar.setEnabled(true);
     }
 
     private void stopCapture() {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
         mTooFastPrompt.setVisibility(View.GONE);
-        mPanoProgressBar.setEnabled(false);
 
         mMosaicFrameProcessor.setProgressListener(null);
         stopCameraPreview();
@@ -559,7 +557,6 @@ public class PanoramaActivity extends Activity implements
         mPanoProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
         mPanoProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_done));
         mPanoProgressBar.setIndicatorColor(appRes.getColor(R.color.pano_progress_indication));
-        mPanoProgressBar.setEnabled(false);
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
 
         mSavingProgressBar = (PanoProgressBar) findViewById(R.id.pano_saving_progress_bar);
@@ -610,7 +607,6 @@ public class PanoramaActivity extends Activity implements
     public void reportProgress() {
         mSavingProgressBar.reset();
         mSavingProgressBar.setRightIncreasing(true);
-        mSavingProgressBar.setEnabled(true);
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -632,7 +628,6 @@ public class PanoramaActivity extends Activity implements
                         }
                     });
                 }
-                mSavingProgressBar.setEnabled(false);
             }
         };
         t.start();
@@ -802,6 +797,7 @@ public class PanoramaActivity extends Activity implements
     }
 
     private void updateCompassValue() {
+        if (mCaptureState == CAPTURE_STATE_VIEWFINDER) return;
         // By what angle has the camera moved since start of capture?
         mTraversedAngleX = (int) (mCompassValueX - mCompassValueXStart);
         mTraversedAngleY = (int) (mCompassValueY - mCompassValueYStart);

@@ -98,7 +98,6 @@ class PanoProgressBar extends ImageView {
     }
 
     public void setProgress(int progress) {
-        if (!isEnabled()) return;
         // The panning direction will be decided after user pan more than 10 degrees in one
         // direction.
         if (mDirection == DIRECTION_NONE) {
