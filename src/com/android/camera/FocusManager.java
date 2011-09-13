@@ -208,9 +208,8 @@ public class FocusManager {
         if (!mInitialized || mState == STATE_FOCUSING_SNAP_ON_FINISH) return false;
 
         // Let users be able to cancel previous touch focus.
-        if ((mTapArea != null) && (e.getAction() == MotionEvent.ACTION_DOWN)
-                && (mState == STATE_FOCUSING || mState == STATE_SUCCESS ||
-                    mState == STATE_FAIL)) {
+        if ((mTapArea != null) && (mState == STATE_FOCUSING ||
+                    mState == STATE_SUCCESS || mState == STATE_FAIL)) {
             cancelAutoFocus();
         }
 
