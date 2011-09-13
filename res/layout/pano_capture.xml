@@ -30,6 +30,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+            <!-- The top bar with capture indication -->
             <FrameLayout android:id="@+id/pano_capture_indicator_layout"
                     style="@style/PanoViewHorizontalBar">
 
@@ -53,16 +54,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pano_mosaic_surface_height" />
 
-            <FrameLayout
+            <!-- The bottom bar with progress bar and direction indicators -->
+            <RelativeLayout
                 style="@style/PanoViewHorizontalBar">
                 <com.android.camera.panorama.PanoProgressBar
                         android:id="@+id/pano_pan_progress_bar"
                         android:visibility="gone"
                         android:src="@drawable/ic_pan_progression"
-                        android:layout_gravity="center"
+                        android:layout_centerInParent="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-            </FrameLayout>
+                <ImageView
+                        android:id="@+id/pano_pan_left_indicator"
+                        android:src="@drawable/ic_pan_left_indicator"
+                        android:visibility="gone"
+                        android:layout_marginRight="5dp"
+                        android:layout_toLeftOf="@id/pano_pan_progress_bar"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                <ImageView
+                        android:id="@+id/pano_pan_right_indicator"
+                        android:src="@drawable/ic_pan_right_indicator"
+                        android:visibility="gone"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@id/pano_pan_progress_bar"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+            </RelativeLayout>
 
         </LinearLayout>
 
