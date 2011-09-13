@@ -108,6 +108,7 @@ public class PanoramaActivity extends Activity implements
     private View mCaptureLayout;
     private View mReviewLayout;
     private ImageView mReview;
+    private TextView mCaptureIndicator;
     private PanoProgressBar mPanoProgressBar;
     private PanoProgressBar mSavingProgressBar;
     private MosaicRendererSurfaceView mMosaicView;
@@ -443,6 +444,7 @@ public class PanoramaActivity extends Activity implements
         mTimeTaken = System.currentTimeMillis();
         mCaptureState = CAPTURE_STATE_MOSAIC;
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan_recording);
+        mCaptureIndicator.setVisibility(View.VISIBLE);
 
         // XML-style animations can not be used here. The Y position has to be calculated runtime.
         float ystart = mThumbnailView.getY();
@@ -500,6 +502,7 @@ public class PanoramaActivity extends Activity implements
     private void stopCapture() {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
         mTooFastPrompt.setVisibility(View.GONE);
+        mCaptureIndicator.setVisibility(View.GONE);
 
         mMosaicFrameProcessor.setProgressListener(null);
         stopCameraPreview();
@@ -564,6 +567,8 @@ public class PanoramaActivity extends Activity implements
         mSavingProgressBar.setMaxProgress(100);
         mSavingProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
         mSavingProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_indication));
+
+        mCaptureIndicator = (TextView) findViewById(R.id.pano_capture_indicator);
 
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
 

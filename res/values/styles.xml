@@ -148,7 +148,7 @@
         <item name="android:textSize">16dp</item>
         <item name="android:background">@drawable/bg_text_on_preview</item>
     </style>
-    <style name="PanoViewHorizontalGrayBar">
+    <style name="PanoViewHorizontalBar">
         <item name="android:background">#000000</item>
         <item name="android:alpha">1.0</item>
         <item name="android:layout_width">match_parent</item>
