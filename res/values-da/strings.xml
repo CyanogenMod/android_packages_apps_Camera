@@ -98,10 +98,8 @@
     <string name="share_video_via" msgid="5152302809166549015">"Del video via"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Intet billede at dele"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Ingen video at dele"</string>
-    <string name="pano_capture_stop" msgid="8122941670229992464">"Stop"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"For hurtig"</string>
     <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Forbereder eksempel..."</string>
-    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Genererer panorama..."</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Panorama kunne ikke gemmes"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Tryk for at fokusere"</string>

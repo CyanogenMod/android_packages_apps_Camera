@@ -98,10 +98,8 @@
     <string name="share_video_via" msgid="5152302809166549015">"Kopīgot videoklipu, izmantojot"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Nav kopīgojamu attēlu."</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Nav kopīgojamu videoklipu."</string>
-    <string name="pano_capture_stop" msgid="8122941670229992464">"Aptur."</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Pārāk ātri"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Notiek panorāmas sagatavošana"</string>
-    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Notiek panorāmas izveide..."</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Neizdevās saglabāt panorāmu."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorāma"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Pieskarieties, lai fokusētu."</string>

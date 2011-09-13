@@ -105,10 +105,8 @@
     <skip />
     <!-- no translation found for no_video_to_share (3775826212074938990) -->
     <skip />
-    <string name="pano_capture_stop" msgid="8122941670229992464">"Komesha"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Haraka Zaidi"</string>
     <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Kuandaa hakikisho ..."</string>
-    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Kuzalisha panorana ..."</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Imeshindwa kuhifadhi mandhari"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Mandhari"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Gonga kuzingatia"</string>

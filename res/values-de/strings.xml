@@ -98,10 +98,8 @@
     <string name="share_video_via" msgid="5152302809166549015">"Video weiterleiten über"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Kein Bild für Weiterleitung"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Kein Video für Weiterleitung"</string>
-    <string name="pano_capture_stop" msgid="8122941670229992464">"Stopp"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Zu schnell"</string>
     <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Vorschau wird vorbereitet..."</string>
-    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Panorama wird generiert..."</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Panorama konnte nicht gespeichert werden"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Zum Fokussieren tippen"</string>

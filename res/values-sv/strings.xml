@@ -98,10 +98,8 @@
     <string name="share_video_via" msgid="5152302809166549015">"Dela video via"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Det finns ingen bild att dela"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Det finns ingen video att dela"</string>
-    <string name="pano_capture_stop" msgid="8122941670229992464">"Avbryt"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"För snabbt"</string>
     <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Förbereder förhandsvisning ..."</string>
-    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Skapar panorama ..."</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Det gick inte att spara panorama"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Knacka lätt för fokus"</string>

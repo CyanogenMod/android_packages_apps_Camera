@@ -98,10 +98,8 @@
     <string name="share_video_via" msgid="5152302809166549015">"แบ่งปันวิดีโอทาง"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"ไม่มีภาพที่จะแบ่งปัน"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"ไม่มีวิดีโอที่จะแบ่งปัน"</string>
-    <string name="pano_capture_stop" msgid="8122941670229992464">"หยุด"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"เร็วเกินไป"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"กำลังสร้างพาโนรามา"</string>
-    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"กำลังสร้างภาพพาโนรามา..."</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"ไม่สามารถบันทึกภาพพาโนรามา"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"พาโนรามา"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"แตะเพื่อโฟกัส"</string>

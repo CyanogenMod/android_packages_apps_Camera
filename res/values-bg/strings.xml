@@ -99,10 +99,8 @@
     <string name="share_video_via" msgid="5152302809166549015">"Споделяне на видеоклипа чрез"</string>
     <string name="no_picture_to_share" msgid="7700541451734517445">"Няма снимка за споделяне"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Няма видеоклип за споделяне"</string>
-    <string name="pano_capture_stop" msgid="8122941670229992464">"Стоп"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Твърде бързо"</string>
     <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Визуализацията се подготвя..."</string>
-    <string name="pano_dialog_generate_panorama" msgid="3982298994354021383">"Панорамата се генерира..."</string>
     <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
     <skip />
     <!-- no translation found for pano_dialog_title (5755531234434437697) -->
