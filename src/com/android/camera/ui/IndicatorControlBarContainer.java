@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 
 /**
@@ -36,6 +37,7 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
     private static final String TAG = "IndicatorControlBarContainer";
 
     private Animation mFadeIn, mFadeOut;
+    private Animation mSecondLevelFadeIn, mSecondLevelFadeOut;
     private IndicatorControlBar mIndicatorControlBar;
     private ZoomControlBar mZoomControlBar;
     private ZoomIndexBar mZoomIndexBar;
@@ -44,9 +46,15 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
     public IndicatorControlBarContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
         mFadeIn = AnimationUtils.loadAnimation(
-                context, R.anim.grow_fade_in_from_bottom);
+                context, R.anim.grow_fade_in_from_top);
         mFadeOut = AnimationUtils.loadAnimation(
+                context, R.anim.shrink_fade_out_from_bottom);
+        mFadeOut.setAnimationListener(mAnimationListener);
+        mSecondLevelFadeIn = AnimationUtils.loadAnimation(
+                context, R.anim.grow_fade_in_from_bottom);
+        mSecondLevelFadeOut = AnimationUtils.loadAnimation(
                 context, R.anim.shrink_fade_out_from_top);
+        mSecondLevelFadeOut.setAnimationListener(mAnimationListener);
     }
 
     @Override
@@ -96,18 +104,34 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
         return true;
     }
 
+    private AnimationListener mAnimationListener = new AnimationListener() {
+        public void onAnimationEnd(Animation animation) {
+            if (animation == mSecondLevelFadeOut) {
+                mSecondLevelIndicatorControlBar.setVisibility(View.GONE);
+            } else if (animation == mFadeOut) {
+                mIndicatorControlBar.setVisibility(View.GONE);
+            }
+        }
+
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        public void onAnimationStart(Animation animation) {
+        }
+    };
+
     public void onIndicatorEvent(int event) {
         switch (event) {
             case OnIndicatorEventListener.EVENT_ENTER_SECOND_LEVEL_INDICATOR_BAR:
-                mIndicatorControlBar.setVisibility(View.GONE);
-                mSecondLevelIndicatorControlBar.startAnimation(mFadeIn);
+                mIndicatorControlBar.startAnimation(mFadeOut);
+                mSecondLevelIndicatorControlBar.startAnimation(mSecondLevelFadeIn);
                 mSecondLevelIndicatorControlBar.setVisibility(View.VISIBLE);
                 break;
 
             case OnIndicatorEventListener.EVENT_LEAVE_SECOND_LEVEL_INDICATOR_BAR:
-                mSecondLevelIndicatorControlBar.startAnimation(mFadeOut);
-                mSecondLevelIndicatorControlBar.setVisibility(View.GONE);
+                mIndicatorControlBar.startAnimation(mFadeIn);
                 mIndicatorControlBar.setVisibility(View.VISIBLE);
+                mSecondLevelIndicatorControlBar.startAnimation(mSecondLevelFadeOut);
                 break;
 
             case OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL:
