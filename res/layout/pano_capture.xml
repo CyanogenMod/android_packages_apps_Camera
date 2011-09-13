@@ -30,7 +30,22 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-            <ImageView style="@style/PanoViewHorizontalGrayBar"/>
+            <FrameLayout android:id="@+id/pano_capture_indicator_layout"
+                    style="@style/PanoViewHorizontalBar">
+
+                <TextView
+                        android:id="@+id/pano_capture_indicator"
+                        android:text="@string/pano_capture_indication"
+                        android:paddingTop="0dp"
+                        android:drawablePadding="5sp"
+                        android:drawableLeft="@drawable/ic_pan_recording_indicator"
+                        android:visibility="gone"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_gravity="top|left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+            </FrameLayout>
 
             <com.android.camera.panorama.MosaicRendererSurfaceView
                     android:id="@+id/pano_renderer"
@@ -39,7 +54,7 @@
                     android:layout_height="@dimen/pano_mosaic_surface_height" />
 
             <FrameLayout
-                style="@style/PanoViewHorizontalGrayBar">
+                style="@style/PanoViewHorizontalBar">
                 <com.android.camera.panorama.PanoProgressBar
                         android:id="@+id/pano_pan_progress_bar"
                         android:visibility="gone"

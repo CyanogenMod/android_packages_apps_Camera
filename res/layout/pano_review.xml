@@ -22,7 +22,7 @@
         android:layout_height="match_parent">
 
     <LinearLayout android:id="@+id/pano_review_control"
-            style="@style/PanoViewHorizontalGrayBar"
+            style="@style/PanoViewHorizontalBar"
             android:gravity="right"
             android:orientation="horizontal"
             android:layout_alignParentBottom="true"
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/pano_mosaic_surface_height" />
 
-    <RelativeLayout style="@style/PanoViewHorizontalGrayBar">
+    <RelativeLayout style="@style/PanoViewHorizontalBar">
         <com.android.camera.panorama.PanoProgressBar
                 android:id="@+id/pano_saving_progress_bar"
                 android:src="@drawable/ic_pan_progression"
