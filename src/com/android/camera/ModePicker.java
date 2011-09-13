@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import com.android.camera.Util;
 import com.android.camera.ui.RotateImageView;
 
 import android.content.Context;
@@ -24,6 +25,9 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -32,9 +36,9 @@ import android.widget.RelativeLayout;
  * a current mode indicator.
  */
 public class ModePicker extends RelativeLayout implements View.OnClickListener {
-    public static final int MODE_PANORAMA = 0;
+    public static final int MODE_CAMERA = 0;
     public static final int MODE_VIDEO = 1;
-    public static final int MODE_CAMERA = 2;
+    public static final int MODE_PANORAMA = 2;
 
     // Total mode number
     private static final int MODE_NUM = 3;
@@ -49,56 +53,111 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     private final int CURRENT_MODE_BACKGROUND;
 
     private OnModeChangeListener mListener;
-    private View mModeIcons[] = new View[MODE_NUM];
-    private View mCurrentModeIcon;
-    private View mModeSelection;
-    private int mCurrentMode = MODE_CAMERA;
-    private Context mContext;
+    private View mModeSelectionFrame;
+    private RotateImageView mModeSelectionIcon[];
+    private View mCurrentModeFrame;
+    private RotateImageView mCurrentModeIcon[];
+    private View mCurrentModeBar;
+    private View mSelectedView;
+
+    private int mCurrentMode = -1;
+    private Animation mFadeIn, mFadeOut;
 
     public ModePicker(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
         DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
         CURRENT_MODE_BACKGROUND = R.drawable.btn_mode_background;
+        mFadeIn = AnimationUtils.loadAnimation(
+                context, R.anim.mode_selection_fade_in);
+        mFadeOut = AnimationUtils.loadAnimation(
+                context, R.anim.mode_selection_fade_out);
+        mFadeOut.setAnimationListener(mAnimationListener);
     }
 
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mModeSelection = findViewById(R.id.mode_selection);
+        mModeSelectionFrame = findViewById(R.id.mode_selection);
+        mModeSelectionIcon = new RotateImageView[MODE_NUM];
+        mModeSelectionIcon[MODE_PANORAMA] =
+                (RotateImageView) findViewById(R.id.mode_panorama);
+        mModeSelectionIcon[MODE_VIDEO] =
+                (RotateImageView) findViewById(R.id.mode_video);
+        mModeSelectionIcon[MODE_CAMERA] =
+                (RotateImageView) findViewById(R.id.mode_camera);
 
-        mCurrentModeIcon = findViewById(R.id.current_mode);
-        mCurrentModeIcon.setOnClickListener(this);
-        mCurrentModeIcon.setBackgroundResource(CURRENT_MODE_BACKGROUND);
-
-        mModeIcons[MODE_PANORAMA] = findViewById(R.id.mode_panorama);
-        mModeIcons[MODE_VIDEO] = findViewById(R.id.mode_video);
-        mModeIcons[MODE_CAMERA] = findViewById(R.id.mode_camera);
+        // The current mode frame is for Phone UI only.
+        mCurrentModeFrame = findViewById(R.id.current_mode);
+        if (mCurrentModeFrame != null) {
+            mCurrentModeFrame.setOnClickListener(this);
+            mCurrentModeIcon = new RotateImageView[MODE_NUM];
+            mCurrentModeIcon[0] = (RotateImageView) findViewById(R.id.mode_0);
+            mCurrentModeIcon[1] = (RotateImageView) findViewById(R.id.mode_1);
+            mCurrentModeIcon[2] = (RotateImageView) findViewById(R.id.mode_2);
+        } else {
+            // current_mode_bar is only for tablet.
+            mCurrentModeBar = findViewById(R.id.current_mode_bar);
+            enableModeSelection(true);
+        }
     }
 
+    private AnimationListener mAnimationListener = new AnimationListener() {
+        public void onAnimationEnd(Animation animation) {
+            changeToSelectedMode();
+            mCurrentModeFrame.setVisibility(View.VISIBLE);
+            mModeSelectionFrame.setVisibility(View.GONE);
+        }
+
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        public void onAnimationStart(Animation animation) {
+        }
+    };
+
     private void enableModeSelection(boolean enabled) {
-        mCurrentModeIcon.setVisibility(enabled ? View.GONE : View.VISIBLE);
-        mCurrentModeIcon.setOnClickListener(enabled ? null : this);
-        mModeSelection.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        if (mCurrentModeFrame != null) {
+            // Animation Effect is applied on Phone UI only.
+            mModeSelectionFrame.startAnimation(enabled ? mFadeIn : mFadeOut);
+            if (enabled) {
+                mModeSelectionFrame.setVisibility(View.VISIBLE);
+                mCurrentModeFrame.setVisibility(View.GONE);
+            }
+            mCurrentModeFrame.setOnClickListener(enabled ? null : this);
+        }
         for (int i = 0; i < MODE_NUM; ++i) {
-            mModeIcons[i].setOnClickListener(enabled ? this : null);
-            highlightView(mModeIcons[i], (i == mCurrentMode));
+            mModeSelectionIcon[i].setOnClickListener(enabled ? this : null);
+        }
+        updateModeState();
+    }
+
+    private void changeToSelectedMode() {
+        for (int i = 0; i < MODE_NUM; ++i) {
+            if (mSelectedView == mModeSelectionIcon[i]) {
+                setCurrentMode(i);
+                return;
+            }
         }
     }
 
     public void onClick(View view) {
-        for (int i = 0; i < MODE_NUM; ++i) {
-            if (view == mModeIcons[i]) {
-                setCurrentMode(i);
+        if (view == mCurrentModeFrame) {
+            enableModeSelection(true);
+        } else {
+            // The view in selection menu is clicked.
+            mSelectedView = view;
+            if (mCurrentModeBar == null) {
                 enableModeSelection(false);
-                return;
+            } else {
+                changeToSelectedMode();
             }
         }
-        if (view == mCurrentModeIcon) enableModeSelection(true);
     }
 
     private void setMode(int mode) {
-        for (int i = 0; i < MODE_NUM; ++i) mModeIcons[i].setSelected(mode == i);
+        for (int i = 0; i < MODE_NUM; ++i) {
+            mModeSelectionIcon[i].setSelected(mode == i);
+        }
     }
 
     public void setOnModeChangeListener(OnModeChangeListener listener) {
@@ -106,6 +165,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     }
 
     public void setCurrentMode(int mode) {
+        if (mCurrentMode == mode) return;
         setMode(mode);
         tryToSetMode(mode);
     }
@@ -117,9 +177,8 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
                 return;
             }
         }
-        ((RotateImageView) mCurrentModeIcon).setImageDrawable(
-                ((RotateImageView) mModeIcons[mode]).getDrawable());
         mCurrentMode = mode;
+        updateModeState();
     }
 
     public boolean onModeChanged(int mode) {
@@ -129,27 +188,27 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
 
     public void setDegree(int degree) {
         for (int i = 0; i < MODE_NUM; ++i) {
-            ((RotateImageView) mModeIcons[i]).setDegree(degree);
+            mModeSelectionIcon[i].setDegree(degree);
+            if (mCurrentModeFrame != null) {
+                mCurrentModeIcon[i].setDegree(degree);
+            }
         }
-        ((RotateImageView) mCurrentModeIcon).setDegree(degree);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
 
-        mCurrentModeIcon.setEnabled(enabled);
-        highlightView(mCurrentModeIcon, enabled);
-        if (enabled) {
-            mCurrentModeIcon.setBackgroundResource(CURRENT_MODE_BACKGROUND);
-        } else {
-            mCurrentModeIcon.setBackgroundColor(Color.BLACK);
-        }
+        // Enable or disable the frames.
+        if (mCurrentModeFrame != null) mCurrentModeFrame.setEnabled(enabled);
+        mModeSelectionFrame.setEnabled(enabled);
 
-        mModeSelection.setEnabled(enabled);
+        // Enable or disable the icons.
         for (int i = 0; i < MODE_NUM; ++i) {
-            mModeIcons[i].setEnabled(enabled);
+            mModeSelectionIcon[i].setEnabled(enabled);
+            if (mCurrentModeFrame != null) mCurrentModeIcon[i].setEnabled(enabled);
         }
+        if (enabled) updateModeState();
     }
 
     private void highlightView(View view, boolean enabled) {
@@ -158,6 +217,49 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
             drawable.clearColorFilter();
         } else {
             drawable.setColorFilter(DISABLED_COLOR, PorterDuff.Mode.SRC_ATOP);
+        }
+        requestLayout();
+    }
+
+    private void updateModeState() {
+        // Grey-out the unselected icons.
+        for (int i = 0; i < MODE_NUM; ++i) {
+            highlightView(mModeSelectionIcon[i], (i == mCurrentMode));
+        }
+        // Update the current mode icons on the Phone UI. The selected mode
+        // should be in the center of the current mode icon bar.
+        if (mCurrentModeFrame != null) {
+            for (int i = 0, j = 0; i < MODE_NUM; ++i) {
+                int target;
+                if (i == 1) {
+                    // The second icon is always the selected mode.
+                    target = mCurrentMode;
+                } else {
+                    // Set the icons in order of camera, video and panorama.
+                    if (j == mCurrentMode) j++;
+                    target = j++;
+                }
+                mCurrentModeIcon[i].setImageDrawable(
+                        mModeSelectionIcon[target].getDrawable());
+            }
+        }
+    }
+
+    @Override
+    protected void onLayout(
+            boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        // Layout the current mode indicator bar.
+        if (mCurrentModeBar != null) {
+            int viewWidth = mModeSelectionIcon[MODE_CAMERA].getWidth();
+            int iconWidth = ((ImageView) mModeSelectionIcon[MODE_CAMERA])
+                    .getDrawable().getIntrinsicWidth();
+            int padding = (viewWidth - iconWidth) / 2;
+            int l = mModeSelectionFrame.getLeft() + mCurrentMode * viewWidth;
+            mCurrentModeBar.layout((l + padding),
+                    (bottom - top - mCurrentModeBar.getHeight()),
+                    (l + padding + iconWidth),
+                    (bottom - top));
         }
     }
 }
