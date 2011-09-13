@@ -43,36 +43,38 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
 
     public IndicatorControlBarContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mFadeIn = AnimationUtils.loadAnimation(
+                context, R.anim.grow_fade_in_from_bottom);
+        mFadeOut = AnimationUtils.loadAnimation(
+                context, R.anim.shrink_fade_out_from_top);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        mZoomControlBar = (ZoomControlBar) findViewById(R.id.zoom_control);
+        mZoomControlBar.setOnIndicatorEventListener(this);
+        mZoomIndexBar = (ZoomIndexBar) findViewById(R.id.zoom_index_bar);
+        mZoomControlBar.setOnZoomIndexChangeListener(mZoomIndexBar);
+        mIndicatorControlBar = (IndicatorControlBar)
+                findViewById(R.id.indicator_bar);
+        mIndicatorControlBar.setOnIndicatorEventListener(this);
+        mSecondLevelIndicatorControlBar = (SecondLevelIndicatorControlBar)
+                findViewById(R.id.second_level_indicator_bar);
+        mSecondLevelIndicatorControlBar.setOnIndicatorEventListener(this);
     }
 
     @Override
     public void initialize(Context context, PreferenceGroup group,
             String flashSetting, boolean isZoomSupported,
             String[] secondLevelKeys, String[] secondLevelOtherSettingKeys) {
-        mZoomControlBar = (ZoomControlBar)
-                findViewById(R.id.zoom_control);
-        mZoomControlBar.setOnIndicatorEventListener(this);
-        mZoomIndexBar = (ZoomIndexBar) findViewById(R.id.zoom_index_bar);
-        mZoomControlBar.setOnZoomIndexChangeListener(mZoomIndexBar);
 
         // We need to show/hide the zoom slider icon accordingly.
         // From UI spec, we have camera_flash setting on the first level.
-        mIndicatorControlBar = (IndicatorControlBar)
-                findViewById(R.id.indicator_bar);
         mIndicatorControlBar.initialize(context, group, flashSetting,
                 isZoomSupported);
-        mIndicatorControlBar.setOnIndicatorEventListener(this);
 
-        mSecondLevelIndicatorControlBar = (SecondLevelIndicatorControlBar)
-                findViewById(R.id.second_level_indicator_bar);
-        mSecondLevelIndicatorControlBar.initialize(context, group, secondLevelKeys,
-                secondLevelOtherSettingKeys);
-        mSecondLevelIndicatorControlBar.setOnIndicatorEventListener(this);
-
-        mFadeIn = AnimationUtils.loadAnimation(
-                context, R.anim.grow_fade_in_from_bottom);
-        mFadeOut = AnimationUtils.loadAnimation(
-                context, R.anim.shrink_fade_out_from_top);
+        mSecondLevelIndicatorControlBar.initialize(context, group,
+                secondLevelKeys, secondLevelOtherSettingKeys);
     }
 
     public void setDegree(int degree) {

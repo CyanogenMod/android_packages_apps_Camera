@@ -39,6 +39,14 @@ public class IndicatorControlBar extends IndicatorControl implements
         super(context, attrs);
     }
 
+    @Override
+    protected void onFinishInflate() {
+        mZoomIcon = (ImageView) findViewById(R.id.zoom_control_icon);
+        mSecondLevelIcon = (ImageView)
+                findViewById(R.id.second_level_indicator_bar_icon);
+        mSecondLevelIcon.setOnClickListener(this);
+    }
+
     public void initialize(Context context, PreferenceGroup group,
             String flashSetting, boolean zoomSupported) {
         // From UI spec, we have camera_flash setting on the first level.
@@ -50,13 +58,10 @@ public class IndicatorControlBar extends IndicatorControl implements
 
         // add Zoom Icon.
         if (zoomSupported) {
-            mZoomIcon = (ImageView) findViewById(R.id.zoom_control_icon);
             mZoomIcon.setOnTouchListener(this);
             mZoomIcon.setVisibility(View.VISIBLE);
         }
 
-        mSecondLevelIcon = (ImageView) findViewById(R.id.second_level_indicator_bar_icon);
-        mSecondLevelIcon.setOnClickListener(this);
         requestLayout();
     }
 
