@@ -14,20 +14,20 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pano_capture_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <LinearLayout
-            android:layout_width="match_parent"
+    <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_weight="1">
 
         <LinearLayout android:id="@+id/pano_capture_preview"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:orientation="vertical">
 
             <ImageView style="@style/PanoViewHorizontalGrayBar"/>
@@ -38,27 +38,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pano_mosaic_surface_height" />
 
-            <RelativeLayout style="@style/PanoViewHorizontalGrayBar">
+            <FrameLayout
+                style="@style/PanoViewHorizontalGrayBar">
                 <com.android.camera.panorama.PanoProgressBar
-                        android:id="@+id/pano_capture_view"
+                        android:id="@+id/pano_pan_progress_bar"
                         android:visibility="gone"
                         android:src="@drawable/ic_pan_progression"
-                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-            </RelativeLayout>
+            </FrameLayout>
 
         </LinearLayout>
-        <include layout="@layout/camera_control" />
 
-    </LinearLayout>
+        <!-- The hint for "Too fast" text view-->
+        <TextView android:id="@+id/pano_capture_too_fast_textview"
+                android:text="@string/pano_too_fast_prompt"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:layout_height="@dimen/pano_capture_too_fast_text_height"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                android:layout_centerInParent="true" />
+    </RelativeLayout>
 
-    <TextView android:id="@+id/pano_capture_too_fast_textview"
-        android:text="@string/pano_too_fast_prompt"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:layout_height="@dimen/pano_capture_too_fast_text_height"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_centerInParent="true" />
+    <include layout="@layout/camera_control" />
 
-</RelativeLayout>
+</LinearLayout>

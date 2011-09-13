@@ -67,7 +67,7 @@
     <!-- button in review mode indicating that the video just taken should be played [CHAR LIMIT=10] -->
     <string name="review_play">Play</string>
 
-    <!-- button in review mode indicating that the photo taking/video recording session should be canceled [CHAR LIMIT=10] -->
+    <!-- button in review mode indicating that the photo taking, video recording, and panorama saving session should be canceled [CHAR LIMIT=10] -->
     <string name="review_cancel">CANCEL</string>
 
     <!-- button in review mode indicating that the taken photo/video is OK to be attached/uploaded [CHAR LIMIT=10] -->
@@ -265,17 +265,11 @@
     <!-- Toast saying that there is no video to share. [CHAR LIMIT=30] -->
     <string name="no_video_to_share">No video to share</string>
 
-    <!-- The text shown on the button for stopping panorama capturing [CHAR LIMIT=7] -->
-    <string name="pano_capture_stop">Stop</string>
-
     <!-- The text shown when the panorama panning speed is to fast [CHAR LIMIT=12] -->
     <string name="pano_too_fast_prompt">Too Fast</string>
 
     <!-- The text shown in the progress dialog when panorama preview is generating in the background [CHAR LIMIT=30] -->
     <string name="pano_dialog_prepare_preview">Preparing panorama</string>
-
-    <!-- The text shown in the progress dialog when generating the final panorama result in the background [CHAR LIMIT=30] -->
-    <string name="pano_dialog_generate_panorama">Generating panorama...</string>
 
     <!-- The text shown in the dialog when panorama saving failed [CHAR LIMIT=40] -->
     <string name="pano_dialog_panorama_failed">Failed to save panorama</string>

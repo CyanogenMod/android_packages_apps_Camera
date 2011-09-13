@@ -21,14 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <View style="@style/PanoViewHorizontalGrayBar"/>
-
-    <ImageView android:id="@+id/pano_reviewarea"
-            android:scaleType="fitCenter"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
     <LinearLayout android:id="@+id/pano_review_control"
             style="@style/PanoViewHorizontalGrayBar"
             android:gravity="right"
@@ -36,19 +28,26 @@
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent">
 
-        <Button android:id="@+id/pano_review_retake_button"
-                android:text="@string/review_retake"
-                android:onClick="onRetakeButtonClicked"
+        <Button android:id="@+id/pano_review_cancel_button"
+                android:text="@string/review_cancel"
+                android:onClick="onCancelButtonClicked"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:minWidth="@dimen/pano_review_button_width"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/pano_review_button_height" />
-        <Button android:id="@+id/pano_review_ok_button"
-                android:text="@string/review_ok"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:onClick="onOkButtonClicked"
                 android:minWidth="@dimen/pano_review_button_width"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/pano_review_button_height" />
     </LinearLayout>
+
+    <ImageView android:id="@+id/pano_reviewarea"
+            android:scaleType="fitCenter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pano_mosaic_surface_height" />
+
+    <RelativeLayout style="@style/PanoViewHorizontalGrayBar">
+        <com.android.camera.panorama.PanoProgressBar
+                android:id="@+id/pano_saving_progress_bar"
+                android:src="@drawable/ic_pan_progression"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+    </RelativeLayout>
 </LinearLayout>
