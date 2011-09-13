@@ -89,12 +89,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private static final int CROP_MSG = 1;
     private static final int FIRST_TIME_INIT = 2;
-    private static final int RESTART_PREVIEW = 3;
-    private static final int CLEAR_SCREEN_DELAY = 4;
-    private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 5;
-    private static final int CHECK_DISPLAY_ROTATION = 6;
-    private static final int SHOW_TAP_TO_FOCUS_TOAST = 7;
-    private static final int DISMISS_TAP_TO_FOCUS_TOAST = 8;
+    private static final int CLEAR_SCREEN_DELAY = 3;
+    private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 4;
+    private static final int CHECK_DISPLAY_ROTATION = 5;
+    private static final int SHOW_TAP_TO_FOCUS_TOAST = 6;
+    private static final int DISMISS_TAP_TO_FOCUS_TOAST = 7;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -258,18 +257,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case RESTART_PREVIEW: {
-                    startPreview();
-                    if (mJpegPictureCallbackTime != 0) {
-                        long now = System.currentTimeMillis();
-                        mJpegCallbackFinishTime = now - mJpegPictureCallbackTime;
-                        Log.v(TAG, "mJpegCallbackFinishTime = "
-                                + mJpegCallbackFinishTime + "ms");
-                        mJpegPictureCallbackTime = 0;
-                    }
-                    break;
-                }
-
                 case CLEAR_SCREEN_DELAY: {
                     getWindow().clearFlags(
                             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -690,14 +677,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             if (!mIsImageCaptureIntent) {
                 enableCameraControls(true);
 
-                // We want to show the taken picture for a while, so we wait
-                // for at least 0.5 second before restarting the preview.
-                long delay = 500 - mPictureDisplayedToJpegCallbackTime;
-                if (delay < 0) {
-                    startPreview();
-                } else {
-                    mHandler.sendEmptyMessageDelayed(RESTART_PREVIEW, delay);
-                }
+                startPreview();
             }
 
             if (!mIsImageCaptureIntent) {
@@ -717,13 +697,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // shutter press and saving the JPEG too.
             checkStorage();
 
-            if (!mHandler.hasMessages(RESTART_PREVIEW)) {
-                long now = System.currentTimeMillis();
-                mJpegCallbackFinishTime = now - mJpegPictureCallbackTime;
-                Log.v(TAG, "mJpegCallbackFinishTime = "
-                        + mJpegCallbackFinishTime + "ms");
-                mJpegPictureCallbackTime = 0;
-            }
+            long now = System.currentTimeMillis();
+            mJpegCallbackFinishTime = now - mJpegPictureCallbackTime;
+            Log.v(TAG, "mJpegCallbackFinishTime = "
+                    + mJpegCallbackFinishTime + "ms");
+            mJpegPictureCallbackTime = 0;
         }
     }
 
@@ -1312,7 +1290,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mJpegImageData = null;
 
         // Remove the messages in the event queue.
-        mHandler.removeMessages(RESTART_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mFocusManager.removeMessages();
