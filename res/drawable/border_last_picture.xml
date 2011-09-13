@@ -15,7 +15,7 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/border_last_picture_pressed" />
+    <item android:state_pressed="true" android:drawable="@drawable/ic_highlight" />
     <item android:drawable="@drawable/border_last_picture_normal" />
 </selector>
 
