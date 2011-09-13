@@ -48,11 +48,22 @@
                         android:layout_height="wrap_content" />
             </FrameLayout>
 
-            <com.android.camera.panorama.MosaicRendererSurfaceView
-                    android:id="@+id/pano_renderer"
+            <RelativeLayout
                     android:layout_gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/pano_mosaic_surface_height" />
+                    android:layout_height="@dimen/pano_mosaic_surface_height">
+                <com.android.camera.panorama.MosaicRendererSurfaceView
+                        android:id="@+id/pano_renderer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                <View
+                        android:id="@+id/pano_speed_indication_border"
+                        android:visibility="gone"
+                        android:background="@drawable/ic_pan_border_fast"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+            </RelativeLayout>
 
             <!-- The bottom bar with progress bar and direction indicators -->
             <RelativeLayout
@@ -66,7 +77,7 @@
                         android:layout_height="wrap_content" />
                 <ImageView
                         android:id="@+id/pano_pan_left_indicator"
-                        android:src="@drawable/ic_pan_left_indicator"
+                        android:src="@drawable/pano_direction_left_indicator"
                         android:visibility="gone"
                         android:layout_marginRight="5dp"
                         android:layout_toLeftOf="@id/pano_pan_progress_bar"
@@ -76,7 +87,7 @@
 
                 <ImageView
                         android:id="@+id/pano_pan_right_indicator"
-                        android:src="@drawable/ic_pan_right_indicator"
+                        android:src="@drawable/pano_direction_right_indicator"
                         android:visibility="gone"
                         android:layout_marginLeft="5dp"
                         android:layout_toRightOf="@id/pano_pan_progress_bar"

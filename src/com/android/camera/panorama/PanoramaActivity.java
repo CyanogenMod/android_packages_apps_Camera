@@ -31,8 +31,6 @@ import com.android.camera.Util;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.SharePopup;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -67,7 +65,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -111,6 +108,7 @@ public class PanoramaActivity extends Activity implements
     private TextView mCaptureIndicator;
     private PanoProgressBar mPanoProgressBar;
     private PanoProgressBar mSavingProgressBar;
+    private View mFastIndicationBorder;
     private View mLeftIndicator;
     private View mRightIndicator;
     private MosaicRendererSurfaceView mMosaicView;
@@ -526,8 +524,8 @@ public class PanoramaActivity extends Activity implements
 
     private void stopCapture() {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
-        mTooFastPrompt.setVisibility(View.GONE);
         mCaptureIndicator.setVisibility(View.GONE);
+        hideTooFastIndication();
         hideDirectionIndicators();
 
         mMosaicFrameProcessor.setProgressListener(null);
@@ -557,6 +555,20 @@ public class PanoramaActivity extends Activity implements
         mThumbnailViewAndModePickerIn.start();
     }
 
+    private void showTooFastIndication() {
+        mTooFastPrompt.setVisibility(View.VISIBLE);
+        mFastIndicationBorder.setVisibility(View.VISIBLE);
+        mLeftIndicator.setEnabled(true);
+        mRightIndicator.setEnabled(true);
+    }
+
+    private void hideTooFastIndication() {
+        mTooFastPrompt.setVisibility(View.GONE);
+        mFastIndicationBorder.setVisibility(View.GONE);
+        mLeftIndicator.setEnabled(false);
+        mRightIndicator.setEnabled(false);
+    }
+
     private void updateProgress(float panningRate) {
         mMosaicView.setReady();
         mMosaicView.requestRender();
@@ -565,12 +577,9 @@ public class PanoramaActivity extends Activity implements
         // Since we only support horizontal panning, we should display a warning message
         // in UI when there're significant vertical movements.
         if (Math.abs(panningRate * mHorizontalViewAngle) > PANNING_SPEED_THRESHOLD) {
-            // TODO: draw speed indication according to the UI spec.
-            mTooFastPrompt.setVisibility(View.VISIBLE);
-            mTooFastPrompt.invalidate();
+            showTooFastIndication();
         } else {
-            mTooFastPrompt.setVisibility(View.GONE);
-            mTooFastPrompt.invalidate();
+            hideTooFastIndication();
         }
     }
 
@@ -598,7 +607,10 @@ public class PanoramaActivity extends Activity implements
 
         mLeftIndicator = (ImageView) findViewById(R.id.pano_pan_left_indicator);
         mRightIndicator = (ImageView) findViewById(R.id.pano_pan_right_indicator);
+        mLeftIndicator.setEnabled(false);
+        mRightIndicator.setEnabled(false);
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
+        mFastIndicationBorder = (View) findViewById(R.id.pano_speed_indication_border);
 
         mSavingProgressBar = (PanoProgressBar) findViewById(R.id.pano_saving_progress_bar);
         mSavingProgressBar.setIndicatorWidth(0);
