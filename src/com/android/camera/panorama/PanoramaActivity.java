@@ -111,6 +111,8 @@ public class PanoramaActivity extends Activity implements
     private TextView mCaptureIndicator;
     private PanoProgressBar mPanoProgressBar;
     private PanoProgressBar mSavingProgressBar;
+    private View mLeftIndicator;
+    private View mRightIndicator;
     private MosaicRendererSurfaceView mMosaicView;
     private TextView mTooFastPrompt;
     private ShutterButton mShutterButton;
@@ -438,6 +440,28 @@ public class PanoramaActivity extends Activity implements
         }
     }
 
+    private void hideDirectionIndicators() {
+        mLeftIndicator.setVisibility(View.GONE);
+        mRightIndicator.setVisibility(View.GONE);
+    }
+
+    private void showDirectionIndicators(int direction) {
+        switch (direction) {
+            case PanoProgressBar.DIRECTION_NONE:
+                mLeftIndicator.setVisibility(View.VISIBLE);
+                mRightIndicator.setVisibility(View.VISIBLE);
+                break;
+            case PanoProgressBar.DIRECTION_LEFT:
+                mLeftIndicator.setVisibility(View.VISIBLE);
+                mRightIndicator.setVisibility(View.GONE);
+                break;
+            case PanoProgressBar.DIRECTION_RIGHT:
+                mLeftIndicator.setVisibility(View.GONE);
+                mRightIndicator.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
     public void startCapture() {
         // Reset values so we can do this again.
         mCancelComputation = false;
@@ -445,6 +469,7 @@ public class PanoramaActivity extends Activity implements
         mCaptureState = CAPTURE_STATE_MOSAIC;
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan_recording);
         mCaptureIndicator.setVisibility(View.VISIBLE);
+        showDirectionIndicators(PanoProgressBar.DIRECTION_NONE);
 
         // XML-style animations can not be used here. The Y position has to be calculated runtime.
         float ystart = mThumbnailView.getY();
@@ -503,6 +528,7 @@ public class PanoramaActivity extends Activity implements
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
         mTooFastPrompt.setVisibility(View.GONE);
         mCaptureIndicator.setVisibility(View.GONE);
+        hideDirectionIndicators();
 
         mMosaicFrameProcessor.setProgressListener(null);
         stopCameraPreview();
@@ -560,6 +586,18 @@ public class PanoramaActivity extends Activity implements
         mPanoProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
         mPanoProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_done));
         mPanoProgressBar.setIndicatorColor(appRes.getColor(R.color.pano_progress_indication));
+        mPanoProgressBar.setOnDirectionChangeListener(
+                new PanoProgressBar.OnDirectionChangeListener () {
+                    @Override
+                    public void onDirectionChange(int direction) {
+                        if (mCaptureState == CAPTURE_STATE_MOSAIC) {
+                            showDirectionIndicators(direction);
+                        }
+                    }
+                });
+
+        mLeftIndicator = (ImageView) findViewById(R.id.pano_pan_left_indicator);
+        mRightIndicator = (ImageView) findViewById(R.id.pano_pan_right_indicator);
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
 
         mSavingProgressBar = (PanoProgressBar) findViewById(R.id.pano_saving_progress_bar);
