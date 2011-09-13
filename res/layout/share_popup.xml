@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:layout_gravity="left|center">
-        <FrameLayout android:id="@+id/share_view"
+        <RelativeLayout android:id="@+id/share_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -36,7 +36,8 @@
                     android:id="@+id/thumbnail_rotate_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true">
                 <!-- The size of the thumbnail is calculated in SharePopup.java -->
                 <ImageView android:id="@+id/thumbnail"
                         android:layout_width="wrap_content"
@@ -44,7 +45,13 @@
                         android:adjustViewBounds="true"
                         android:scaleType="fitCenter"/>
             </com.android.camera.ui.RotateLayout>
-        </FrameLayout>
+            <ImageView android:id="@+id/arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_switch_arrow"/>
+        </RelativeLayout>
         <FrameLayout
                 android:layout_width="@dimen/share_item_width"
                 android:layout_height="match_parent"

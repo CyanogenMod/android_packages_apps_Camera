@@ -59,8 +59,10 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
     private int mBitmapWidth;
     private int mBitmapHeight;
     private int mOrientation;
-    // A view that contains a thumbnail and a list of application icons.
+    // A view that contains a thumbnail and an back arrow icon.
     private ViewGroup mShareView;
+    // A view that contains a list of application icons and the share view.
+    private View mRootView;
     // The list of the application icons.
     private ListView mShareList;
     // A rotated view that contains the thumbnail.
@@ -116,16 +118,17 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mThumbnail.setImageBitmap(bitmap);
         mShareView = (ViewGroup) sharePopup.findViewById(R.id.share_view);
         mShareView.setOnClickListener(this);
+        sharePopup.findViewById(R.id.arrow).setOnClickListener(this);
         mBitmapWidth = bitmap.getWidth();
         mBitmapHeight = bitmap.getHeight();
         Resources res = mContext.getResources();
 
         // Initialize popup window size.
-        View rootView = (View) sharePopup.findViewById(R.id.root);
-        LayoutParams params = rootView.getLayoutParams();
+        mRootView = (View) sharePopup.findViewById(R.id.root);
+        LayoutParams params = mRootView.getLayoutParams();
         params.width = previewFrame.getWidth();
         params.height = previewFrame.getHeight();
-        rootView.setLayoutParams(params);
+        mRootView.setLayoutParams(params);
 
         // Initialize popup window.
         setWidth(WindowManager.LayoutParams.MATCH_PARENT);
@@ -140,20 +143,24 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
 
     public void setOrientation(int orientation) {
         mOrientation = orientation;
+
+        int hPaddingRootView = mRootView.getPaddingLeft() + mRootView.getPaddingRight();
+        int vPaddingRootView = mRootView.getPaddingTop() + mRootView.getPaddingBottom();
         int hPadding = mShareView.getPaddingLeft() + mShareView.getPaddingRight();
         int vPadding = mShareView.getPaddingTop() + mShareView.getPaddingBottom();
-        // Calculate the width and the height of the thumbnail.
-        float maxWidth, maxHeight;
+
+        // Calculate the width and the height of the thumbnail. Reserve the
+        // space for paddings.
+        float maxWidth = mPreviewFrame.getWidth() - hPadding - hPaddingRootView;
+        float maxHeight = mPreviewFrame.getHeight() - vPadding - vPaddingRootView;
+        // Swap the width and height if it is portrait mode.
         if (orientation == 90 || orientation == 270) {
-            maxWidth = mPreviewFrame.getHeight() - hPadding;
-            maxHeight = mPreviewFrame.getWidth() - vPadding;
-        } else {
-            maxWidth = mPreviewFrame.getWidth() - hPadding;
-            maxHeight = mPreviewFrame.getHeight() - vPadding;
+            float temp = maxWidth;
+            maxWidth = maxHeight;
+            maxHeight = temp;
         }
         float actualAspect = maxWidth / maxHeight;
         float desiredAspect = (float) mBitmapWidth / mBitmapHeight;
-
         LayoutParams params = mThumbnail.getLayoutParams();
         if (actualAspect > desiredAspect) {
             params.width = Math.round(maxHeight * desiredAspect);
@@ -167,15 +174,15 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         // Calculate the width and the height of the share view.
         int width = params.width + hPadding;
         int height = params.height + vPadding;
-        LayoutParams rootParams = mShareView.getLayoutParams();
+        LayoutParams shareViewParams = mShareView.getLayoutParams();
         if (orientation == 90 || orientation == 270) {
-            rootParams.width = height;
-            rootParams.height = width;
+            shareViewParams.width = height;
+            shareViewParams.height = width;
         } else {
-            rootParams.width = width;
-            rootParams.height = height;
+            shareViewParams.width = width;
+            shareViewParams.height = height;
         }
-        mShareView.setLayoutParams(rootParams);
+        mShareView.setLayoutParams(shareViewParams);
 
         if (mThumbnailRotateLayout != null) mThumbnailRotateLayout.setOrientation(orientation);
 
@@ -192,6 +199,9 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.share_view:
                 Util.viewUri(mUri, mContext);
+                break;
+            case R.id.arrow:
+                dismiss();
                 break;
         }
     }
