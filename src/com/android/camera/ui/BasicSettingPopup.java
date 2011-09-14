@@ -21,6 +21,7 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -34,6 +35,7 @@ import java.util.HashMap;
 // daylight, incandescent, etc).
 public class BasicSettingPopup extends AbstractSettingPopup implements
         AdapterView.OnItemClickListener {
+    private final String TAG = "BasicSettingPopup";
     private IconListPreference mPreference;
     private Listener mListener;
 
@@ -81,8 +83,10 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
         int index = mPreference.findIndexOfValue(mPreference.getValue());
         if (index != -1) {
             ((ListView) mSettingList).setItemChecked(index, true);
+        } else {
+            Log.e(TAG, "Invalid preference value.");
+            mPreference.print();
         }
-
     }
 
     public void setSettingChangedListener(Listener listener) {
