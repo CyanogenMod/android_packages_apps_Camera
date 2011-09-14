@@ -232,6 +232,7 @@ public class EffectsRecorder {
             default:
                 break;
         }
+        if (mLogVerbose) Log.v(TAG, "Setting orientation hint to: " + degrees);
 
         mOrientationHint = degrees;
         setFaceDetectOrientation(degrees);

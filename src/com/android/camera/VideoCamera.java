@@ -520,7 +520,9 @@ public class VideoCamera extends ActivityBase
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
                 if (effectsActive()) {
-                    mEffectsRecorder.setOrientationHint(orientationCompensation);
+                    CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+                    int rotation = (info.orientation + mOrientation) % 360;;
+                    mEffectsRecorder.setOrientationHint(rotation);
                 }
                 // Do not rotate the icons during recording because the video
                 // orientation is fixed after recording.
@@ -883,13 +885,14 @@ public class VideoCamera extends ActivityBase
             }
             mPreviewing = false;
         }
+
+        mDisplayRotation = Util.getDisplayRotation(this);
+        int orientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
+        mCameraDevice.setDisplayOrientation(orientation);
+        setCameraParameters();
+
         if (!effectsActive()) {
             setPreviewDisplay(mSurfaceHolder);
-            mDisplayRotation = Util.getDisplayRotation(this);
-            int orientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
-            mCameraDevice.setDisplayOrientation(orientation);
-            setCameraParameters();
-
             try {
                 mCameraDevice.startPreview();
             } catch (Throwable ex) {
@@ -897,8 +900,6 @@ public class VideoCamera extends ActivityBase
                 throw new RuntimeException("startPreview failed", ex);
             }
         } else {
-            setCameraParameters();
-
             initializeEffectsPreview();
             Log.v(TAG, "effectsStartPreview");
             mEffectsRecorder.startPreview();
@@ -1241,11 +1242,7 @@ public class VideoCamera extends ActivityBase
         int rotation = 0;
         if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
             CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-            if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-                rotation = (info.orientation - mOrientation + 360) % 360;
-            } else {  // back-facing camera
-                rotation = (info.orientation + mOrientation) % 360;
-            }
+            rotation = (info.orientation + mOrientation) % 360;
         }
         mEffectsRecorder.setOrientationHint(rotation);
         mOrientationHint = rotation;
