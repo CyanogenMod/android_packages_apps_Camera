@@ -287,7 +287,7 @@
     <string name="tap_to_focus">Tap to focus</string>
 
     <!-- Default effect setting that clears the effect. -->
-    <string name="pref_video_effect_default" translatable="false">-1</string>
+    <string name="pref_video_effect_default" translatable="false">none</string>
 
     <!-- Title of video effect setting popup window -->
     <string name="pref_video_effect_title">Effects</string>

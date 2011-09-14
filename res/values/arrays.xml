@@ -255,7 +255,7 @@
     </string-array>
 
     <string-array name="pref_video_effect_entryvalues" translatable="false">
-        <item>none</item>
+        <item>@string/pref_video_effect_default</item>
         <item>goofy_face/squeeze</item>
         <item>goofy_face/big_eyes</item>
         <item>goofy_face/big_mouth</item>
