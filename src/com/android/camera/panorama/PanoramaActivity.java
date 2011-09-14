@@ -84,8 +84,7 @@ public class PanoramaActivity extends Activity implements
     private static final int MSG_LOW_RES_FINAL_MOSAIC_READY = 1;
     private static final int MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL = 2;
     private static final int MSG_GENERATE_FINAL_MOSAIC_ERROR = 3;
-    private static final int MSG_DISMISS_ALERT_DIALOG_AND_RESET_TO_PREVIEW = 4;
-    private static final int MSG_RESET_TO_PREVIEW = 5;
+    private static final int MSG_RESET_TO_PREVIEW = 4;
 
     private static final String TAG = "PanoramaActivity";
     private static final int PREVIEW_STOPPED = 0;
@@ -246,18 +245,7 @@ public class PanoramaActivity extends Activity implements
                         break;
                     case MSG_GENERATE_FINAL_MOSAIC_ERROR:
                         onBackgroundThreadFinished();
-                        mAlertDialog = (new AlertDialog.Builder(PanoramaActivity.this))
-                                .setTitle(mDialogTitle)
-                                .setMessage(R.string.pano_dialog_panorama_failed)
-                                .create();
-                        mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, mDialogOk,
-                                obtainMessage(MSG_DISMISS_ALERT_DIALOG_AND_RESET_TO_PREVIEW));
                         mAlertDialog.show();
-                        break;
-                    case MSG_DISMISS_ALERT_DIALOG_AND_RESET_TO_PREVIEW:
-                        mAlertDialog.dismiss();
-                        mAlertDialog = null;
-                        resetToPreview();
                         break;
                     case MSG_RESET_TO_PREVIEW:
                         onBackgroundThreadFinished();
@@ -266,6 +254,20 @@ public class PanoramaActivity extends Activity implements
                 clearMosaicFrameProcessorIfNeeded();
             }
         };
+
+        mAlertDialog = (new AlertDialog.Builder(this))
+                .setTitle(mDialogTitle)
+                .setMessage(R.string.pano_dialog_panorama_failed)
+                .create();
+        mAlertDialog.setCancelable(false);
+        mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, mDialogOk,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        resetToPreview();
+                    }
+                });
     }
 
     private void setupCamera() {
