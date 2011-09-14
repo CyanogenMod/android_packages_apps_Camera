@@ -164,4 +164,8 @@
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_centerHorizontal">true</item>
     </style>
+    <style name="AnimationPopup" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/share_popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/share_popup_exit</item>
+    </style>
 </resources>

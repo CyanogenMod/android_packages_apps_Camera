@@ -59,7 +59,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
     private int mBitmapWidth;
     private int mBitmapHeight;
     private int mOrientation;
-    // A view that contains a thumbnail and an back arrow icon.
+    // A view that contains a thumbnail and an arrow icon.
     private ViewGroup mShareView;
     // A view that contains a list of application icons and the share view.
     private View mRootView;
@@ -114,11 +114,11 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         sharePopup.setOnTouchListener(this);
         mThumbnailRotateLayout = (RotateLayout) sharePopup.findViewById(R.id.thumbnail_rotate_layout);
         mShareList = (ListView) sharePopup.findViewById(R.id.share_list);
+        mShareList.setDivider(null);
         mThumbnail = (ImageView) sharePopup.findViewById(R.id.thumbnail);
         mThumbnail.setImageBitmap(bitmap);
         mShareView = (ViewGroup) sharePopup.findViewById(R.id.share_view);
         mShareView.setOnClickListener(this);
-        sharePopup.findViewById(R.id.arrow).setOnClickListener(this);
         mBitmapWidth = bitmap.getWidth();
         mBitmapHeight = bitmap.getHeight();
         Resources res = mContext.getResources();
@@ -137,7 +137,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         setContentView(sharePopup);
         setOrientation(orientation);
         setFocusable(true);
-        setAnimationStyle(android.R.style.Animation_Dialog);
+        setAnimationStyle(R.style.AnimationPopup);
         createShareMenu();
     }
 
@@ -199,9 +199,6 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.share_view:
                 Util.viewUri(mUri, mContext);
-                break;
-            case R.id.arrow:
-                dismiss();
                 break;
         }
     }
