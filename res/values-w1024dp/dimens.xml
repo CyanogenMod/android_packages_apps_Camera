@@ -24,8 +24,8 @@
     <dimen name="camera_switcher_margin_right">16dp</dimen>
     <dimen name="camera_switcher_margin_bottom">24dp</dimen>
     <dimen name="share_icon_length">48dp</dimen>
-    <dimen name="share_item_width">60dp</dimen>
-    <dimen name="share_item_height">90dp</dimen>
+    <dimen name="share_item_width">70dp</dimen>
+    <dimen name="share_item_height">70dp</dimen>
     <dimen name="pano_control_layout_min_width">260dp</dimen>
     <dimen name="pano_control_start_button_size">180dp</dimen>
     <dimen name="pano_mosaic_surface_height">480dp</dimen>

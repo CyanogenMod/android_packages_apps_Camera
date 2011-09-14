@@ -757,9 +757,8 @@ public class PanoramaActivity extends Activity implements
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             // The orientation compensation is set to 0 here because we only support landscape.
-            // Panorama picture is long. Use pano_layout so the share popup can be full-screen.
             mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(), 0,
-                    findViewById(R.id.pano_layout));
+                    findViewById(R.id.frame_layout));
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
