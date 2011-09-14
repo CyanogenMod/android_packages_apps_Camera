@@ -509,7 +509,7 @@ public class PanoramaActivity extends Activity implements
                 if (isFinished
                         || (mMaxAngleX - mMinAngleX >= DEFAULT_SWEEP_ANGLE)
                         || (mMaxAngleY - mMinAngleY >= DEFAULT_SWEEP_ANGLE)) {
-                    stopCapture();
+                    stopCapture(false);
                 } else {
                     updateProgress(panningRateX);
                 }
@@ -524,7 +524,7 @@ public class PanoramaActivity extends Activity implements
         mPanoProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void stopCapture() {
+    private void stopCapture(boolean aborted) {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
         mTooFastPrompt.setVisibility(View.GONE);
         mCaptureIndicator.setVisibility(View.GONE);
@@ -535,7 +535,7 @@ public class PanoramaActivity extends Activity implements
 
         mSurfaceTexture.setOnFrameAvailableListener(null);
 
-        if (!mThreadRunning) {
+        if (!aborted && !mThreadRunning) {
             showDialog(mPreparePreviewString);
             runBackgroundThread(new Thread() {
                 @Override
@@ -639,7 +639,7 @@ public class PanoramaActivity extends Activity implements
                 startCapture();
                 break;
             case CAPTURE_STATE_MOSAIC:
-                stopCapture();
+                stopCapture(false);
         }
     }
 
@@ -752,7 +752,7 @@ public class PanoramaActivity extends Activity implements
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
 
-    private void resetToPreview() {
+    private void reset() {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
 
         mReviewLayout.setVisibility(View.GONE);
@@ -762,7 +762,10 @@ public class PanoramaActivity extends Activity implements
         mMosaicFrameProcessor.reset();
 
         mSurfaceTexture.setOnFrameAvailableListener(this);
+    }
 
+    private void resetToPreview() {
+        reset();
         if (!mPausing) startCameraPreview();
     }
 
@@ -803,8 +806,13 @@ public class PanoramaActivity extends Activity implements
     protected void onPause() {
         super.onPause();
 
-        releaseCamera();
         mPausing = true;
+        // Stop the capturing first.
+        if (mCaptureState == CAPTURE_STATE_MOSAIC) {
+            stopCapture(true);
+            reset();
+        }
+        releaseCamera();
         mMosaicView.onPause();
         clearMosaicFrameProcessorIfNeeded();
         mSensorManager.unregisterListener(mListener);
