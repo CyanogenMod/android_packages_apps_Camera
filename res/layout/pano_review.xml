@@ -43,6 +43,15 @@
             android:layout_height="@dimen/pano_mosaic_surface_height" />
 
     <RelativeLayout style="@style/PanoViewHorizontalBar">
+        <TextView android:id="@+id/pano_review_saving_indication"
+                android:text="@string/pano_review_saving_indication_str"
+                android:textSize="@dimen/pano_review_saving_indication_size"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
         <com.android.camera.panorama.PanoProgressBar
                 android:id="@+id/pano_saving_progress_bar"
                 android:src="@drawable/ic_pan_progression"
