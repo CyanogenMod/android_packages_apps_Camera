@@ -402,7 +402,6 @@ public class VideoCamera extends ActivityBase
         mPreviewFrameLayout = (PreviewFrameLayout)
                 findViewById(R.id.frame_layout);
         mReviewImage = (ImageView) findViewById(R.id.review_image);
-        mModePicker = (ModePicker) findViewById(R.id.mode_picker);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
