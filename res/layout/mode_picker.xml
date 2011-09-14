@@ -24,7 +24,7 @@
             android:layout_alignBottom="@+id/mode_selection"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:background="@color/mode_picker_background">
+            android:background="@drawable/bg_switcher">
         <View android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/white"/>
@@ -60,7 +60,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="198dp"
-            android:background="@color/mode_picker_background"
+            android:background="@drawable/bg_switcher"
             android:visibility="gone">
         <View android:layout_width="match_parent"
                 android:layout_height="1dp"
