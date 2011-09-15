@@ -18,6 +18,7 @@ package com.android.camera.ui;
 
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
+import com.android.camera.Util;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -32,12 +33,19 @@ import android.widget.ImageView;
 public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         View.OnClickListener {
     private static final String TAG = "SecondLevelIndicatorControlBar";
+    private static int ICON_SPACING = Util.dpToPixel(32);
     private ImageView mCloseIcon;
+    private View mDivider; // the divider line
     int mDegree = 0;
     int mSelectedIndex = -1;
 
     public SecondLevelIndicatorControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        mDivider = findViewById(R.id.divider);
     }
 
     public void initialize(Context context, PreferenceGroup group,
@@ -59,6 +67,23 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
                     OnIndicatorEventListener.EVENT_LEAVE_SECOND_LEVEL_INDICATOR_BAR);
     }
 
+    private int getTouchViewIndex(int y, int height) {
+        int padding = getPaddingTop();
+        int iconHeight = mCloseIcon.getMeasuredHeight();
+        int totalIconHeight = iconHeight + ICON_SPACING;
+        // If the current touch location is on close icon and above.
+        if (y < padding + totalIconHeight) return indexOfChild(mCloseIcon);
+
+        // The first two views are close icon and divider line, we have to
+        // calculate if the touch event is on the rest indicator buttons.
+        int count = getChildCount();
+        if (count < 3) return -1;
+        int selectionHeight = (count - 2) * totalIconHeight - (ICON_SPACING / 2);
+        int selectionY = height - padding - selectionHeight;
+        if (y < selectionY) return -1;
+        return (2 + (y - selectionY) / totalIconHeight);
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (!onFilterTouchEventForSecurity(event)) return false;
@@ -73,7 +98,8 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         if (x > getWidth()) x = getWidth();
         if (y >= height) y = height - 1;
 
-        int index = (int) (y * getChildCount()) / height;
+        int index = getTouchViewIndex((int) y, height);
+        if (index == -1) return true;
         View b = getChildAt(index);
         b.dispatchTouchEvent(event);
         if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
@@ -107,12 +133,21 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         if (count == 0) return;
         int width = right - left;
         int height = bottom - top;
-        int h = height / count;
+        int iconHeight = mCloseIcon.getMeasuredHeight();
+        int padding = getPaddingTop();
 
-        // TODO: follow the redlines of UI design in next change. The icons are
-        // simply distributed on the bar equally with current implmentation.
-        for (int i = 0; i < count; i++) {
-            getChildAt(i).layout(0, i * h,  width, (i + 1) * h);
+        // The first icon is close button.
+        mCloseIcon.layout(0, padding, width, (padding + iconHeight));
+        // And layout the divider line.
+        mDivider.layout(0, (padding + iconHeight),
+                width, (padding + iconHeight + mDivider.getMeasuredHeight()));
+
+        // Layout from the last icon up.
+        int startY = height - iconHeight - padding;
+        int decrement = iconHeight + ICON_SPACING;
+        for (int i = count - 1; i > 1; --i) {
+            getChildAt(i).layout(0, startY, width, startY + iconHeight);
+            startY -= decrement;
         }
     }
 

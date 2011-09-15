@@ -18,6 +18,7 @@ package com.android.camera.ui;
 
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
+import com.android.camera.Util;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -31,6 +32,9 @@ import android.widget.ImageView;
 public class IndicatorControlBar extends IndicatorControl implements
         View.OnClickListener, View.OnTouchListener {
     private static final String TAG = "IndicatorControlBar";
+
+    // Space between indicator icons.
+    public static final int ICON_SPACING = Util.dpToPixel(16);
 
     private ImageView mZoomIcon;
     private ImageView mSecondLevelIcon;
@@ -103,7 +107,7 @@ public class IndicatorControlBar extends IndicatorControl implements
             View view = getChildAt(i);
             if (view instanceof IndicatorButton) {
                 view.layout(0, offset, width, offset + width);
-                offset += width;
+                offset += (width + ICON_SPACING);
             }
         }
         if (mCameraPicker != null) mCameraPicker.layout(0, offset, width, offset + width);
