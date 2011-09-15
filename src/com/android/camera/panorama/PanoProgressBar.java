@@ -66,10 +66,12 @@ class PanoProgressBar extends ImageView {
     }
 
     private void setDirection(int direction) {
-        int prev = mDirection;
-        mDirection = direction;
-        if (prev != mDirection && mListener != null) {
-            mListener.onDirectionChange(mDirection);
+        if (mDirection != direction) {
+            mDirection = direction;
+            if (mListener != null) {
+                mListener.onDirectionChange(mDirection);
+            }
+            invalidate();
         }
     }
 
@@ -79,14 +81,17 @@ class PanoProgressBar extends ImageView {
 
     public void setBackgroundColor(int color) {
         mBackgroundPaint.setColor(color);
+        invalidate();
     }
 
     public void setDoneColor(int color) {
         mDoneAreaPaint.setColor(color);
+        invalidate();
     }
 
     public void setIndicatorColor(int color) {
         mIndicatorPaint.setColor(color);
+        invalidate();
     }
 
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -101,6 +106,7 @@ class PanoProgressBar extends ImageView {
 
     public void setIndicatorWidth(float w) {
         mIndicatorWidth = w;
+        invalidate();
     }
 
     public void setRightIncreasing(boolean rightIncreasing) {

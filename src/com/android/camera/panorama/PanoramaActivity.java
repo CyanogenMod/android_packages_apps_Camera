@@ -121,6 +121,9 @@ public class PanoramaActivity extends Activity implements
     private String mDialogTitle;
     private String mDialogOk;
 
+    private int mIndicatorColor;
+    private int mIndicatorColorFast;
+
     private float mCompassValueX;
     private float mCompassValueY;
     private float mCompassValueXStart;
@@ -560,6 +563,7 @@ public class PanoramaActivity extends Activity implements
     private void showTooFastIndication() {
         mTooFastPrompt.setVisibility(View.VISIBLE);
         mFastIndicationBorder.setVisibility(View.VISIBLE);
+        mPanoProgressBar.setIndicatorColor(mIndicatorColorFast);
         mLeftIndicator.setEnabled(true);
         mRightIndicator.setEnabled(true);
     }
@@ -567,6 +571,7 @@ public class PanoramaActivity extends Activity implements
     private void hideTooFastIndication() {
         mTooFastPrompt.setVisibility(View.GONE);
         mFastIndicationBorder.setVisibility(View.GONE);
+        mPanoProgressBar.setIndicatorColor(mIndicatorColor);
         mLeftIndicator.setEnabled(false);
         mRightIndicator.setEnabled(false);
     }
@@ -596,7 +601,9 @@ public class PanoramaActivity extends Activity implements
         mPanoProgressBar = (PanoProgressBar) findViewById(R.id.pano_pan_progress_bar);
         mPanoProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
         mPanoProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_done));
-        mPanoProgressBar.setIndicatorColor(appRes.getColor(R.color.pano_progress_indication));
+        mIndicatorColor = appRes.getColor(R.color.pano_progress_indication);
+        mIndicatorColorFast = appRes.getColor(R.color.pano_progress_indication_fast);
+        mPanoProgressBar.setIndicatorColor(mIndicatorColor);
         mPanoProgressBar.setOnDirectionChangeListener(
                 new PanoProgressBar.OnDirectionChangeListener () {
                     @Override
