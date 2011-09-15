@@ -73,6 +73,9 @@ int Blend::initialize(int blendingType, int frame_width, int frame_height)
     return BLEND_RET_OK;
 }
 
+inline double max(double a, double b) { return a > b ? a : b; }
+inline double min(double a, double b) { return a < b ? a : b; }
+
 void Blend::AlignToMiddleFrame(MosaicFrame **frames, int frames_size)
 {
     // Unwarp this frame and Warp the others to match
@@ -113,6 +116,8 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
         return BLEND_RET_ERROR_MEMORY;
     }
 
+    // Bounding rectangle (real numbers) of the final mosaic computed by projecting
+    // each input frame into the mosaic coordinate system.
     BlendRect global_rect;
 
     global_rect.lft = global_rect.bot = 2e30; // min values
@@ -122,6 +127,10 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
     double halfheight = height / 2.0;
 
     double z, x0, y0, x1, y1, x2, y2, x3, y3;
+
+    // Corners of the first and last frames in mosaic coordinate system
+    double xf[4] = {0.0, 0.0, 0.0, 0.0};
+    double xl[4] = {0.0, 0.0, 0.0, 0.0};
 
     // Determine the extents of the final mosaic
     CSite *csite = m_AllSites ;
@@ -140,6 +149,22 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
         FrameToMosaic(mb->trs, mb->width-1.0,   mb->height-1.0, x2, y2);
         FrameToMosaic(mb->trs, mb->width-1.0,   0.0,            x3, y3);
 
+        if(mfit == 0)
+        {
+            xf[0] = x0;
+            xf[1] = x1;
+            xf[2] = x3;
+            xf[3] = x2;
+        }
+
+        if(mfit==frames_size-1)
+        {
+            xl[0] = x0;
+            xl[1] = x1;
+            xl[2] = x3;
+            xl[3] = x2;
+        }
+
         // Compute the centroid of the warped region
         FindQuadCentroid(x0, y0, x1, y1, x2, y2, x3, y3, csite->getVCenter().x, csite->getVCenter().y);
 
@@ -148,6 +173,9 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
     }
 
     // Get origin and sizes
+
+    // Bounding rectangle (int numbers) of the final mosaic computed by projecting
+    // each input frame into the mosaic coordinate system.
     MosaicRect fullRect;
 
     fullRect.left = (int) floor(global_rect.lft); // min-x
@@ -156,6 +184,20 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
     fullRect.bottom = (int) ceil(global_rect.top);// max-y
     Mwidth = (unsigned short) (fullRect.right - fullRect.left + 1);
     Mheight = (unsigned short) (fullRect.bottom - fullRect.top + 1);
+
+    int xlt, xrt;
+
+    if(frames[0]->trs[0][2] < frames[frames_size-1]->trs[0][2]) //left->right mosaic
+    {
+        xlt = max(xf[0],xf[1]) - fullRect.left;
+        xrt = min(xl[2],xl[3]) - fullRect.left;
+    }
+    else
+    {
+        xlt = max(xl[0],xl[1]) - fullRect.left;
+        xrt = min(xf[2],xf[3]) - fullRect.left;
+    }
+
 
     // Make sure image width is multiple of 4
     Mwidth = (unsigned short) ((Mwidth + 3) & ~3);
@@ -184,7 +226,12 @@ int Blend::runBlend(MosaicFrame **frames, int frames_size,
     int n = m_Triangulator.triangulate(&edge, numCenters, width, height);
     m_Triangulator.linkNeighbors(edge, n, numCenters);
 
+    // Bounding rectangle that determines the positioning of the rectangle that is
+    // cropped out of the computed mosaic to get rid of the gray borders.
     MosaicRect cropping_rect;
+
+    cropping_rect.left = xlt;
+    cropping_rect.right = xrt;
 
     // Do merging and blending :
     ret = DoMergeAndBlend(frames, numCenters, width, height, *imgMos, fullRect,
@@ -397,10 +444,14 @@ int Blend::PerformFinalBlending(YUVinfo &imgMos, MosaicRect &cropping_rect)
     int cx = (int)imgMos.Y.width/2;
     int cy = (int)imgMos.Y.height/2;
 
-    cropping_rect.left    = 0;
-    cropping_rect.right   = imgMos.Y.width-1;
-    cropping_rect.top     = 0;
-    cropping_rect.bottom  = imgMos.Y.height-1;
+    // 2D boolean array that contains true wherever the mosaic image data is
+    // invalid (i.e. in the gray border).
+    bool **b = new bool*[imgMos.Y.height];
+
+    for(int j=0; j<imgMos.Y.height; j++)
+    {
+        b[j] = new bool[imgMos.Y.width];
+    }
 
     // Copy the resulting image into the full image using the mask
     int i, j;
@@ -415,7 +466,7 @@ int Blend::PerformFinalBlending(YUVinfo &imgMos, MosaicRect &cropping_rect)
         muimg = m_pMosaicUPyr->ptr[j];
         mvimg = m_pMosaicVPyr->ptr[j];
 
-        for (i = imgMos.Y.width; i--;)
+        for (i = 0; i<imgMos.Y.width; i++)
         {
             // A final mask was set up previously,
             // if the value is zero skip it, otherwise replace it.
@@ -436,10 +487,16 @@ int Blend::PerformFinalBlending(YUVinfo &imgMos, MosaicRect &cropping_rect)
                 else if (value > 255) value = 255;
                 *vimg = (unsigned char) value;
 
+                b[j][i] = false;
+
             }
             else
             {   // set border color in here
                 *yimg = (unsigned char) 96;
+                *uimg = (unsigned char) 128;
+                *vimg = (unsigned char) 128;
+
+                b[j][i] = true;
             }
 
             yimg++;
@@ -451,102 +508,48 @@ int Blend::PerformFinalBlending(YUVinfo &imgMos, MosaicRect &cropping_rect)
         }
     }
 
-    yimg = imgMos.Y.ptr[0];
-    uimg = imgMos.U.ptr[0];
-    vimg = imgMos.V.ptr[0];
-
-    int mincol = 0;
-    int maxcol = imgMos.Y.width-1;
-
-    const int MIN_X_FS = width*1/8;
-    const int MAX_X_FS = imgMos.Y.width - width*1/8;
-
+    //Scan through each row and increment top if the row contains any gray
     for (j = 0; j < imgMos.Y.height; j++)
     {
-        int minx = MIN_X_FS;
-        int maxx = MAX_X_FS;
-
-        for (i = 0; i < imgMos.Y.width; i++)
+        for (i = cropping_rect.left; i < cropping_rect.right; i++)
         {
-            if(*yimg == 96 && *uimg == 128 && *vimg == 128)
+            if (b[j][i])
             {
+                break; // to next row
             }
-            else
-            {
-                if(i<minx)
-                    minx = i;
-                if(i>maxx)
-                    maxx = i;
-            }
-
-            yimg++;
-            uimg++;
-            vimg++;
         }
 
-        // If we never touched the values, reset them to the image limits
-        if(minx == MIN_X_FS)
-            minx = 0;
-        if(maxx == MAX_X_FS)
-            maxx = imgMos.Y.width-1;
-
-        if(minx>mincol)
-            mincol = minx;
-        if(maxx<maxcol)
-            maxcol = maxx;
+        if (i == cropping_rect.right)   //no gray pixel in this row!
+        {
+            cropping_rect.top = j;
+            break;
+        }
     }
 
-    cropping_rect.left = mincol;
-    cropping_rect.right = maxcol;
-
-    // Crop rows
-    yimg = imgMos.Y.ptr[0];
-    uimg = imgMos.U.ptr[0];
-    vimg = imgMos.V.ptr[0];
-
-    int minrow = 0;
-    int maxrow = imgMos.Y.height-1;
-
-    const int MIN_Y_FS = height*1/8;
-    const int MAX_Y_FS = imgMos.Y.height - height*1/8;
-
-    for (i = 0; i < imgMos.Y.width; i++)
+    //Scan through each row and decrement bottom if the row contains any gray
+    for (j = imgMos.Y.height-1; j >= 0; j--)
     {
-        int miny = MIN_Y_FS;
-        int maxy = MAX_Y_FS;
-
-        for (j = 0; j < imgMos.Y.height; j++)
+        for (i = cropping_rect.left; i < cropping_rect.right; i++)
         {
-            if(*yimg == 96 && *uimg == 128 && *vimg == 128)
+            if (b[j][i])
             {
+                break; // to next row
             }
-            else
-            {
-                if(j<miny)
-                    miny = j;
-                if(j>maxy)
-                    maxy = j;
-            }
-
-            yimg++;
-            uimg++;
-            vimg++;
         }
 
-        // If we never touched the values, reset them to the image limits
-        if(miny == MIN_Y_FS)
-            miny = 0;
-        if(maxy == MAX_Y_FS)
-            maxy = imgMos.Y.height-1;
-
-        if(miny>minrow)
-            minrow = miny;
-        if(maxy<maxrow)
-            maxrow = maxy;
+        if (i == cropping_rect.right)   //no gray pixel in this row!
+        {
+            cropping_rect.bottom = j;
+            break;
+        }
     }
 
-    cropping_rect.top = minrow;
-    cropping_rect.bottom = maxrow;
+    for(int j=0; j<imgMos.Y.height; j++)
+    {
+        delete b[j];
+    }
+
+    delete b;
 
     return BLEND_RET_OK;
 }
@@ -908,6 +911,8 @@ void Blend::FrameToMosaicRect(int width, int height, double trs[3][3], BlendRect
 
 void Blend::ComputeBlendParameters(MosaicFrame **frames, int frames_size, int is360)
 {
+    // For FULL and PAN modes, we do not unwarp the mosaic into a rectangular coordinate system
+    // and so we set the theta to 0 and return.
     if (m_wb.blendingType != BLEND_TYPE_CYLPAN && m_wb.blendingType != BLEND_TYPE_HORZ)
     {
         m_wb.theta = 0.0;
@@ -932,6 +937,9 @@ void Blend::ComputeBlendParameters(MosaicFrame **frames, int frames_size, int is
 
     double arcLength, lastTheta;
     m_wb.theta = lastTheta = arcLength = 0.0;
+
+    // Step through all the frames to compute the total arc-length of the cone
+    // swept while capturing the mosaic (in the original conical coordinate system).
     for (int i = 0; i < frames_size; i++)
     {
         mb = frames[i];
@@ -941,18 +949,25 @@ void Blend::ComputeBlendParameters(MosaicFrame **frames, int frames_size, int is
         currY = ProjY(mb->trs, midX, midY, z, 1.0);
         double deltaX = currX - prevX;
         double deltaY = currY - prevY;
+
+        // The arcLength is computed by summing the lengths of the chords
+        // connecting the pairwise projected image centers of the input image frames.
         arcLength += sqrt(deltaY * deltaY + deltaX * deltaX);
+
         if (!is360)
         {
             double thisTheta = asin(mb->trs[1][0]);
             m_wb.theta += thisTheta - lastTheta;
             lastTheta = thisTheta;
         }
+
         prevX = currX;
         prevY = currY;
     }
 
-    // In case of BMP output, stretch this to end at the proper alignment
+    // Stretch this to end at the proper alignment i.e. the width of the
+    // rectangle is determined by the arcLength computed above and the cone
+    // sector angle is determined using the rotation of the last frame.
     m_wb.width = arcLength;
     if (is360) m_wb.theta = asin(last->trs[1][0]);
 
@@ -961,6 +976,8 @@ void Blend::ComputeBlendParameters(MosaicFrame **frames, int frames_size, int is
     {
         double dx = prevX - firstX;
         double dy = prevY - firstY;
+
+        // If the mosaic was captured by sweeping horizontally
         if (abs(lxpos - fxpos) > abs(lypos - fypos))
         {
             m_wb.horizontal = 1;
@@ -982,6 +999,7 @@ void Blend::ComputeBlendParameters(MosaicFrame **frames, int frames_size, int is
         if (m_wb.horizontal)
         {
             // Horizontal strip
+            // m_wb.x,y record the origin of the rectangle coordinate system.
             if (is360) m_wb.x = firstX;
             else
             {
