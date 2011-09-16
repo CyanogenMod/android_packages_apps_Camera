@@ -102,6 +102,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Preparazione panoramica"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Impossibile salvare la panoramica"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panoramica"</string>
+    <string name="pano_capture_indication" msgid="7431983072966619171">"Acquisizione panorama"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Salvataggio..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Tocca per mettere a fuoco"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Effetti"</string>
     <string name="effect_none" msgid="3601545724573307541">"Nessuno"</string>
@@ -112,8 +114,10 @@
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Naso grande"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Occhi piccoli"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"Nello spazio"</string>
-    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
-    <skip />
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Tramonto"</string>
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Scegli il tuo"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Posiziona il dispositivo su una superficie stabile e assicurati che non ci sia qualcosa in movimento dietro di te."\n\n"Dopodiché esci dall\'inquadratura della fotocamera."</string>
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Non selezionabile quando l\'effetto è attivo."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Scatta una foto durante il video toccando lo schermo di anteprima."</string>
 </resources>

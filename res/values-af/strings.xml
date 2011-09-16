@@ -18,19 +18,16 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Kamerafout"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Kan nie aan kamera koppel nie."</string>
-    <!-- no translation found for camera_disabled (8923911090533439312) -->
-    <skip />
-    <!-- no translation found for camera_label (6346560772074764302) -->
-    <skip />
+    <string name="camera_disabled" msgid="8923911090533439312">"Kamera is gedeaktiveer weens sekuriteitsbeleide."</string>
+    <string name="camera_label" msgid="6346560772074764302">"Kamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videokamera"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Kameraprente"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Kameravideo\'s"</string>
-    <!-- no translation found for wait (8600187532323801552) -->
-    <skip />
+    <string name="wait" msgid="8600187532323801552">"Wag asseblief…"</string>
     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Heg asseblief USB-berging voordat kamera gebruik word."</string>
-    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="820691042667338625">"Heg asseblief USB-berging voordat kamera gebruik word."</string>
+    <string name="no_storage" product="default" msgid="820691042667338625">"Sit asseblief \'n SD-kaart in voor jy die kamera gebruik."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Jou USB-berging is vol."</string>
-    <!-- outdated translation 6452370395538050134 -->     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Jou USB-berging is vol."</string>
+    <string name="not_enough_space" product="default" msgid="6655334407957844653">"Jou SD-kaart is vol."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Berei tans USB-berging voor…"</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Berei tans SD-kaart voor..."</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Kon nie toegang tot USB-berging kry nie."</string>
@@ -97,18 +94,16 @@
     <string name="switch_to_camera_label" msgid="9148663083850199582">"Skakel oor na kamera"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"Skakel oor na video"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Skakel oor na panorama"</string>
-    <!-- no translation found for share_picture_via (1375127849431890447) -->
-    <skip />
-    <!-- no translation found for share_video_via (5152302809166549015) -->
-    <skip />
-    <!-- no translation found for no_picture_to_share (7700541451734517445) -->
-    <skip />
-    <!-- no translation found for no_video_to_share (3775826212074938990) -->
-    <skip />
+    <string name="share_picture_via" msgid="1375127849431890447">"Deel prent via"</string>
+    <string name="share_video_via" msgid="5152302809166549015">"Deel video via"</string>
+    <string name="no_picture_to_share" msgid="7700541451734517445">"Geen prent om te deel nie"</string>
+    <string name="no_video_to_share" msgid="3775826212074938990">"Geen video om te deel nie"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Te vinnig"</string>
-    <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Berei tans voorskou voor..."</string>
+    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Berei panorame voor"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Kon nie panorama stoor nie"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
+    <string name="pano_capture_indication" msgid="7431983072966619171">"Lê panorama vas"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Stoor tans…"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Tik om te fokus"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Effekte"</string>
     <string name="effect_none" msgid="3601545724573307541">"Geen"</string>
@@ -118,12 +113,11 @@
     <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Klein mond"</string>
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Groot neus"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Klein oë"</string>
-    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
-    <skip />
-    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
-    <skip />
-    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
-    <skip />
-    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
-    <skip />
+    <string name="effect_backdropper_space" msgid="1381012939195370792">"In die ruimte"</string>
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Sonsondergang"</string>
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
+    <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Kies jou eie"</string>
+    <string name="bg_replacement_message" msgid="7540788298745332389">"Plaas jou toestel op \'n stewige oppervlak en maak seker daar is geen beweging agter jou nie. "\n\n"Stap dan uit die kamera se sigveld."</string>
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Dit kan nie gekies word nie as die effek aan is."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Neem \'n foto tydens video-opname deur op die voorskou-skerm te tik."</string>
 </resources>
