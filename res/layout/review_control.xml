@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2010 The Android Open Source Project
+<!-- Copyright (C) 2011 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -18,34 +18,27 @@
         android:id="@+id/review_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <LinearLayout style="@style/ReviewControlGroup"
-            android:id="@+id/btn_cancel"
-            android:onClick="onCancelButtonClicked"
+    <ImageView android:id="@+id/btn_cancel"
+            style="@style/ReviewControlIcon"
+            android:visibility="gone"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="36dp">
-        <ImageView style="@style/ReviewControlIcon"
-                android:src="@drawable/ic_menu_cancel_holo_light" />
-        <TextView style="@style/ReviewControlText"
-                android:text="@string/review_cancel" />
-    </LinearLayout>
+            android:layout_marginTop="20dp"
+            android:onClick="onCancelButtonClicked"
+            android:src="@drawable/ic_menu_cancel_holo_light" />
     <ImageView android:id="@+id/btn_retake"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone"
             android:onClick="onRetakeButtonClicked"
             android:background="@drawable/btn_shutter_retake" />
-    <LinearLayout style="@style/ReviewControlGroup"
-            android:id="@+id/btn_done"
-            android:onClick="onDoneButtonClicked"
+    <ImageView android:id="@+id/btn_done"
+            style="@style/ReviewControlIcon"
+            android:visibility="gone"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="36dp">
-        <ImageView style="@style/ReviewControlIcon"
-                android:src="@drawable/ic_menu_done_holo_light" />
-        <TextView style="@style/ReviewControlText"
-                android:text="@string/review_ok" />
-    </LinearLayout>
+            android:layout_marginBottom="20dp"
+            android:onClick="onDoneButtonClicked"
+            android:src="@drawable/ic_menu_done_holo_light" />
 </RelativeLayout>

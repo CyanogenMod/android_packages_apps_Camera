@@ -38,18 +38,19 @@
         <item name="android:windowExitAnimation">@anim/on_screen_hint_exit</item>
     </style>
     <style name="ReviewControlIcon">
-        <item name="android:layout_height">60dp</item>
-        <item name="android:layout_width">95dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">75dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:layout_marginBottom">10dp</item>
-        <item name="android:padding">2dp</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/bg_review_control</item>
     </style>
-    <style name="ReviewControlGroup">
-        <item name="android:orientation">vertical</item>
-        <item name="android:gravity">top|center_horizontal</item>
+    <style name="ReviewPlayIcon">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:visibility">gone</item>
     </style>
     <style name="RecordingTime">
         <item name="android:layout_width">wrap_content</item>
