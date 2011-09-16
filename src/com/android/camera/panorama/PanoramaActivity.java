@@ -164,6 +164,10 @@ public class PanoramaActivity extends Activity implements
     private float[] mTransformMatrix;
     private float mHorizontalViewAngle;
 
+    // Prefer FOCUS_MODE_INFINITY to FOCUS_MODE_CONTINUOUS_VIDEO because of
+    // getting a better image quality by the former.
+    private String mTargetFocusMode = Parameters.FOCUS_MODE_INFINITY;
+
     private PanoOrientationEventListener mOrientationEventListener;
     // The value could be 0, 1, 2, 3 for the 4 different orientations measured in clockwise
     // respectively.
@@ -345,6 +349,15 @@ public class PanoramaActivity extends Activity implements
         int maxFps = (frameRates.get(last))[Parameters.PREVIEW_FPS_MAX_INDEX];
         parameters.setPreviewFpsRange(minFps, maxFps);
         Log.v(TAG, "preview fps: " + minFps + ", " + maxFps);
+
+        List<String> supportedFocusModes = parameters.getSupportedFocusModes();
+        if (supportedFocusModes.indexOf(mTargetFocusMode) >= 0) {
+            parameters.setFocusMode(mTargetFocusMode);
+        } else {
+            // Use the default focus mode and log a message
+            Log.w(TAG, "Cannot set the focus mode to " + mTargetFocusMode +
+                  " becuase the mode is not supported.");
+        }
 
         parameters.setRecordingHint(false);
 
