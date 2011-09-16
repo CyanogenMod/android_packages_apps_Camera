@@ -41,10 +41,8 @@
                 android:paddingRight="2dp"
                 android:visibility="gone"/>
         <ImageButton android:id="@+id/btn_play"
-                style="@style/ReviewControlIcon"
-                android:layout_centerInParent="true"
+                style="@style/ReviewPlayIcon"
                 android:src="@drawable/btn_ic_review_play"
-                android:visibility="gone"
                 android:onClick="onPlayButtonClicked"/>
         <ImageView android:id="@+id/review_image"
                 android:layout_width="match_parent"

@@ -1268,7 +1268,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
                 }
             }
-            hidePostCaptureAlert();
         }
 
         if (mDidRegister) {
@@ -1768,8 +1767,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void showPostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            mShutterButton.setVisibility(View.GONE);
-            mIndicatorControlContainer.setVisibility(View.GONE);
+            Util.fadeOut(mIndicatorControlContainer);
+            Util.fadeOut(mShutterButton);
 
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
@@ -1784,7 +1783,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
-                (findViewById(id)).setVisibility(View.GONE);
+                Util.fadeOut(findViewById(id));
             }
 
             Util.fadeIn(mShutterButton);

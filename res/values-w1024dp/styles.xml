@@ -23,12 +23,23 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:gravity">center</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_marginLeft">50dp</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/bg_review_control</item>
     </style>
     <style name="ReviewControlIcon">
-        <item name="android:layout_height">90dp</item>
-        <item name="android:layout_width">140dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">60dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+    <style name="ReviewControlText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:textSize">16sp</item>
     </style>
     <style name="ReviewThumbnail">
         <item name="android:layout_width">86dp</item>
