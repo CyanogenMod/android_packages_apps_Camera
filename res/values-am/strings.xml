@@ -18,19 +18,16 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"ካሜራ ስህተት"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"ከካሜራ ጋር ማገናኘት አልተቻለም።"</string>
-    <!-- no translation found for camera_disabled (8923911090533439312) -->
-    <skip />
-    <!-- no translation found for camera_label (6346560772074764302) -->
-    <skip />
+    <string name="camera_disabled" msgid="8923911090533439312">"በደህንነት ፖሊሲዎች ምክንያት ካሜራ ቦዝኗል።"</string>
+    <string name="camera_label" msgid="6346560772074764302">"ካሜራ"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"ካምኮርድ"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"የካሜራ ምስሎች"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"የካሜራ ቫዲዮዎች"</string>
-    <!-- no translation found for wait (8600187532323801552) -->
-    <skip />
+    <string name="wait" msgid="8600187532323801552">"እባክዎ ይጠብቁ…"</string>
     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"እባክዎካሜራ ከመጠቀምዎ በፊት USB ይሰኩ።"</string>
-    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="820691042667338625">"እባክዎካሜራ ከመጠቀምዎ በፊት USB ይሰኩ።"</string>
+    <string name="no_storage" product="default" msgid="820691042667338625">"እባክዎ ካሜራውን ከመጠቀምዎ በፊት የSD ካርድ ያስገቡ።"</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"የUSB  ማከማቻዎ ሙሉ ነው።"</string>
-    <!-- outdated translation 6452370395538050134 -->     <string name="not_enough_space" product="default" msgid="6655334407957844653">"የUSB  ማከማቻዎ ሙሉ ነው።"</string>
+    <string name="not_enough_space" product="default" msgid="6655334407957844653">"የSD ካርድዎ ሙሉ ነው።"</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"የUSB ማከማቻ በማዘጋጀት ላይ..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"የ SD  ካርድ በማዘጋጀት ላይ..."</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"USB ማከማችን መድረስ አልተቻለም፡፡"</string>
@@ -97,18 +94,18 @@
     <string name="switch_to_camera_label" msgid="9148663083850199582">"ወደ ካሜራ ቀይር"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"ወደ ቪዲዮ ቀይር"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"ወደ ፓኖራማ ቀይር"</string>
-    <!-- no translation found for share_picture_via (1375127849431890447) -->
-    <skip />
-    <!-- no translation found for share_video_via (5152302809166549015) -->
-    <skip />
-    <!-- no translation found for no_picture_to_share (7700541451734517445) -->
-    <skip />
-    <!-- no translation found for no_video_to_share (3775826212074938990) -->
-    <skip />
+    <string name="share_picture_via" msgid="1375127849431890447">"ፎቶ  አጋራ  በ"</string>
+    <string name="share_video_via" msgid="5152302809166549015">"ይህን ቪዲዮ አጋራ  በ"</string>
+    <string name="no_picture_to_share" msgid="7700541451734517445">"ለማጋራት ምንም  ፎቶ የለም"</string>
+    <string name="no_video_to_share" msgid="3775826212074938990">"ለማጋራት ምንም ቪዲዮ የለም"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"በጣም ፈጥኖዋል"</string>
-    <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"ቅድመእይታ በማዘጋጀት ላይ..."</string>
+    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"ፓናሮማ በማዘጋጀት ላይ"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"ፓኖራማ ለማስቀመጥ ተስኗል"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"ፓኖራማ"</string>
+    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
+    <skip />
+    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
+    <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"ለማተኮር ሁለቴ ንካ"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"ማሳመሪያዎች"</string>
     <string name="effect_none" msgid="3601545724573307541">"ምንም የለም"</string>
@@ -118,12 +115,14 @@
     <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"ትንሽ አፍ"</string>
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"ትልቅ አፍንጫ"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"ትናንሽ ዓይኖች"</string>
-    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
+    <string name="effect_backdropper_space" msgid="1381012939195370792">"In Space"</string>
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"ፀሀይ ስትጠልቅ"</string>
+    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
     <skip />
-    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
+    <string name="effect_backdropper_gallery" msgid="1393338187462207584">"የራስህን ምረጥ"</string>
+    <string name="bg_replacement_message" msgid="7540788298745332389">"መሳሪያዎን በዝርግ ስፍራ ላይ ያስቀምጡ እና ከእርስዎ ጀርባ ምንም ዓይነት መነቃነቅ እንደሌለ እርግጠኛ ሁን፡፡"\n\n" ከዛ በኋላ ከካሜራው እይታ ለቀው ይውጡ፡፡"</string>
+    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
     <skip />
-    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
-    <skip />
-    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
+    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
     <skip />
 </resources>
