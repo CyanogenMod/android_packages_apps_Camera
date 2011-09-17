@@ -62,6 +62,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.OrientationEventListener;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -207,9 +208,11 @@ public class PanoramaActivity extends Activity implements
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+        Window window = getWindow();
+        window.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        Util.enterLightsOutMode(getWindow());
+        Util.enterLightsOutMode(window);
+        Util.initializeScreenBrightness(window, getContentResolver());
 
         createContentView();
 

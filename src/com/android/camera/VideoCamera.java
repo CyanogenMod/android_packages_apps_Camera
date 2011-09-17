@@ -336,18 +336,7 @@ public class VideoCamera extends ActivityBase
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        Window win = getWindow();
-
-        // Overright the brightness settings if it is automatic
-        int mode = Settings.System.getInt(
-                getContentResolver(),
-                Settings.System.SCREEN_BRIGHTNESS_MODE,
-                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-        if (mode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
-            WindowManager.LayoutParams winParams = win.getAttributes();
-            winParams.screenBrightness = DEFAULT_CAMERA_BRIGHTNESS;
-            win.setAttributes(winParams);
-        }
+        Util.initializeScreenBrightness(getWindow(), getContentResolver());
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());

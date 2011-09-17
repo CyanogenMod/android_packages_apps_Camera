@@ -105,10 +105,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // needed to be updated in mUpdateSet.
     private int mUpdateSet;
 
-    // The brightness settings used when it is set to automatic in the system.
-    // The reason why it is set to 0.7 is just because 1.0 is too bright.
-    private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
-
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
     private static final int ZOOM_STOPPED = 0;
@@ -365,7 +361,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mFocusIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
         mFocusManager.initialize(mFocusIndicator, mPreviewFrame, mFaceView, this);
         mFocusManager.initializeToneGenerator();
-        initializeScreenBrightness();
+        Util.initializeScreenBrightness(getWindow(), getContentResolver());
         installIntentFilter();
         initializeZoom();
         // Show the tap to focus toast if this is the first start.
@@ -1190,20 +1186,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         intentFilter.addDataScheme("file");
         registerReceiver(mReceiver, intentFilter);
         mDidRegister = true;
-    }
-
-    private void initializeScreenBrightness() {
-        Window win = getWindow();
-        // Overright the brightness settings if it is automatic
-        int mode = Settings.System.getInt(
-                getContentResolver(),
-                Settings.System.SCREEN_BRIGHTNESS_MODE,
-                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-        if (mode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
-            WindowManager.LayoutParams winParams = win.getAttributes();
-            winParams.screenBrightness = DEFAULT_CAMERA_BRIGHTNESS;
-            win.setAttributes(winParams);
-        }
     }
 
     @Override
