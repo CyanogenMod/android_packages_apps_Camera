@@ -164,7 +164,7 @@
     <string name="pref_camera_scenemode_entry_backlight">Contre-jour</string>
     <string name="pref_camera_scenemode_entry_flowers">Fleurs</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Paramètres de l\'appareil photo"</string>
-    <string name="pref_restore_detail" msgid="5732490002291044791">"Rétablir les paramètres par défaut"</string>
+    <string name="pref_restore_detail">Paramètres d\'origine</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposition"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"La mémoire de stockage USB est pleine. Définissez la qualité sur une valeur plus basse ou supprimez des images ou d\'autres types de fichiers."</string>
@@ -219,6 +219,42 @@
     <string name="pref_camera_capturemode_entry_60">60 secondes</string>
 
 <!-- ********************** -->
+
+    <!-- More Settings screen, volume buttons title -->
+    <string name="pref_camera_vol_shutter_title">Déclencheur sur Volume</string>
+    <string name="pref_camera_vol_up_shutter">Volume Haut</string>
+    <string name="pref_camera_vol_up_shutter_summary">Le bouton Volume Haut prend une photo</string>
+    <string name="pref_camera_vol_down_shutter">Volume Bas</string>
+    <string name="pref_camera_vol_down_shutter_summary">Le bouton Volume Bas prend une photo</string>
+
+    <!-- More Settings screen, search button title -->
+    <string name="pref_camera_search_shutter_title">Déclencheur sur Recherche</string>
+
+    <!-- More Settings screen, search button -->
+    <string name="pref_camera_search_shutter">Bouton Recherche</string>
+    <string name="pref_camera_search_shutter_summary">Le bouton Recherche prend une photo</string>
+
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">Déclencheur sur Power</string>
+
+    <!-- More Settings screen, power button -->
+    <string name="pref_camera_power_shutter">Bouton Power</string>
+    <string name="pref_camera_power_shutter_summary">Le bouton Power prend une photo</string>
+
+    <!-- More Settings screen, zoom button title -->
+    <string name="pref_camera_vol_zoom_title">Zoom avec boutons volume</string>
+    <string name="pref_camera_vol_zoom">Zoomer avec Volume</string>
+    <string name="pref_camera_vol_zoom_summary">Les boutons volume paramètrent le zoom</string>
+
+    <!-- Settings screen, custom focus title -->
+    <string name="pref_camera_settings_focus_title">Focus</string>
+
+    <!-- Settings screen, focus settings -->
+    <string name="pref_camera_settings_focus">Préfocus</string>
+    <string name="pref_camera_settings_focus_summary">Adapter le focus avant de prendre la photo</string>
+    <string name="pref_camera_settings_long_focus">Focus Long</string>
+    <string name="pref_camera_settings_long_focus_summary">Laisser le bouton enfoncé pour adapter le focus, relâcher pour prendre la photo</string>
+
     <!-- Advanced options label -->
     <string name="advanced_options_label">Options avancées</string>
 
