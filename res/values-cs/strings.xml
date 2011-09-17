@@ -37,7 +37,6 @@
   <string name="confirm_restore_message">Obnoví výchozí nastavení fotoaparátu.</string>
   <string name="review_play">PŘEHRÁT</string>
   <string name="review_cancel">ZRUŠIT</string>
-  <string name="review_ok">OK</string>
   <string name="review_retake">POŘÍDIT DALŠÍ</string>
   <string name="camera_gallery_photos_text">Galerie</string>
   <string name="switch_camera_id">Přepnout fotoaparát</string>
@@ -51,11 +50,9 @@
   <string name="pref_camera_recordlocation_entry_on">Zapnuto</string>
 
   <string name="pref_video_quality_title">Kvalita videa</string>
-  <string name="pref_video_quality_entry_hd">HD (30m)</string>
   <string name="pref_video_quality_entry_high">Vysoká (30m)</string>
   <string name="pref_video_quality_entry_low">Nízká (30m)</string>
   <string name="pref_video_quality_entry_mms">MMS (nízká, 30s)</string>
-  <string name="pref_video_quality_entry_youtubehd">YouTube (HD, 15m)</string>
   <string name="pref_video_quality_entry_youtube">YouTube (vysoká, 15m)</string>
   <string name="pref_camera_settings_category">Nastavení fotoaparátu</string>
   <string name="pref_camcorder_settings_category">Nastavení videokamery</string>
@@ -98,12 +95,25 @@
   <!-- Settings screen, Focus mode dialog radio button choices -->
   <string name="pref_camera_focusmode_title">Režim ostření</string>
   <string name="pref_camera_focusmode_entry_auto">Automaticky</string>
-  <string name="pref_camera_focusmode_entry_normal">Normal</string>
+  <string name="pref_camera_focusmode_entry_normal">Normální</string>
   <string name="pref_camera_focusmode_entry_macro">Makro</string>
   <string name="pref_camera_focusmode_entry_infinity">Nekonečno</string>
   <string name="pref_camera_focusmode_entry_touch">Dotykem</string>
   <string name="pref_camera_focusmode_entry_fixed">Pevný</string>
   <string name="pref_camera_focusmode_entry_facedetect">Detekce obličeje</string>
+
+  <!-- Settings screen, Capture mode title -->
+  <string name="pref_camera_capturemode_title">Režim snímání</string>
+  <string name="pref_camera_capturemode_entry_default">Okamžitě</string>
+  <string name="pref_camera_capturemode_entry_timer">Časová spoušť</string>
+
+  <!-- Settings screen, Capture mode dialog entries -->
+  <string name="pref_camera_capturemode_entry_10">10 vteřin</string>
+  <string name="pref_camera_capturemode_entry_20">20 vteřin</string>
+  <string name="pref_camera_capturemode_entry_30">30 vteřin</string>
+  <string name="pref_camera_capturemode_entry_40">40 vteřin</string>
+  <string name="pref_camera_capturemode_entry_50">50 vteřin</string>
+  <string name="pref_camera_capturemode_entry_60">60 vteřin</string>
 
   <string name="pref_camera_flashmode_title">Režim blesku</string>
   <string name="pref_camera_flashmode_entry_auto">Automaticky</string>
@@ -180,13 +190,10 @@
   <string name="pref_camera_scenemode_entry_flowers">Květiny</string>
   <string name="pref_camera_scenemode_entry_duskdawn">Soumrak</string>
   <string name="pref_camera_scenemode_entry_fallcolor">Podzim</string>
-  <string name="pref_camera_scenemode_entry_text">Text</string>
 
   <string name="pref_restore_title">Nastavení fotoaparátu</string>
   <string name="pref_restore_detail">Obnovit výchozí nastavení</string>
   <string name="pref_exposure_title">Expozice</string>
-
-  <string name="details_ok">OK</string>
 
   <string name="spaceIsLow_content" product="nosdcard">Na úložišti USB je málo místa. Změňte nastavení kvality nebo smažte některé fotografie či jiné soubory.</string>
   <string name="spaceIsLow_content" product="default">Na kartě SD je málo místa. Změňte nastavení kvality nebo smažte některé fotografie či jiné soubory.</string>
