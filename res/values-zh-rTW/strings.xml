@@ -248,9 +248,6 @@
     <string name="pref_camera_focusmode_entry_fixed">固定</string>
     <string name="pref_camera_focusmode_entry_facedetect">臉部檢測</string>
 
-    <!-- Toast shown when touch-to-focus is enabled -->
-    <string name="touch_focus_enabled">輕觸螢幕以使相機對焦。</string>
-
     <!-- Default flash mode setting.-->
     <!-- skipping untranslatable /resources:0/string:name=pref_camera_flashmode_default -->
 

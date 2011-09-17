@@ -95,7 +95,6 @@
     <string name="pref_camera_focusmode_entry_touch">Дотиком</string>
     <string name="pref_camera_focusmode_entry_fixed">Фіксоване</string>
     <string name="pref_camera_focusmode_entry_facedetect">Пошук обличчя</string>
-    <string name="touch_focus_enabled">Щоб сфокусувати камеру доторкніться до екрана.</string>
     <string name="pref_camera_flashmode_title">Спалах</string>
     <string name="pref_camera_flashmode_entry_auto">Автоматичний</string>
     <string name="pref_camera_flashmode_entry_on">Увімкнутий</string>
