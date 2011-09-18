@@ -2028,6 +2028,7 @@ public class VideoCamera extends ActivityBase
             Intent i = new Intent(Intent.ACTION_PICK);
             i.setDataAndType(Video.Media.EXTERNAL_CONTENT_URI,
                              "video/*");
+            i.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
             startActivityForResult(i, EffectsRecorder.EFFECT_BACKDROPPER);
             return true;
         }
