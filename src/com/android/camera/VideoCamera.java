@@ -448,7 +448,6 @@ public class VideoCamera extends ActivityBase
         mBackCameraId = CameraHolder.instance().getBackCameraId();
         mFrontCameraId = CameraHolder.instance().getFrontCameraId();
 
-        initializeZoomControl();
         initializeIndicatorControl();
     }
 
@@ -822,6 +821,10 @@ public class VideoCamera extends ActivityBase
                 return;
             }
         }
+
+        // Initializing it here after the preview is started.
+        initializeZoomControl();
+
         keepScreenOnAwhile();
 
         // install an intent filter to receive SD card related events.
