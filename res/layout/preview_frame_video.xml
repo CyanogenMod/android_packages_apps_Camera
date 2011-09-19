@@ -14,15 +14,16 @@
      limitations under the License.
 -->
 
-<com.android.camera.PreviewFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginLeft="2dip">
-    <RelativeLayout android:id="@+id/frame"
+        android:layout_weight="1">
+    <com.android.camera.PreviewFrameLayout android:id="@+id/frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/border_preview">
         <SurfaceView android:id="@+id/camera_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
@@ -49,21 +50,18 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"
                 android:background="@android:color/black"/>
-        <include layout="@layout/indicator_bar"/>
         <TextView android:id="@+id/bg_replace_message"
-                  android:layout_width="300dp"
-                  android:layout_height="wrap_content"
-                  android:layout_centerInParent="true"
-                  android:padding="32dp"
-                  android:layout_margin="24dp"
-                  android:textAppearance="?android:attr/textAppearanceMedium"
-                  android:background="@drawable/bg_text_on_preview"
-                  android:visibility="gone"
-                  android:text="@string/bg_replacement_message" />
-    </RelativeLayout>
-    <!-- Border for video snapshot. -->
-    <View android:id="@+id/preview_border"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
-</com.android.camera.PreviewFrameLayout>
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:padding="32dp"
+                android:layout_margin="24dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:background="@drawable/bg_text_on_preview"
+                android:visibility="gone"
+                android:text="@string/bg_replacement_message" />
+    </com.android.camera.PreviewFrameLayout>
+    <!-- Indicator control and popup window frame. -->
+    <include layout="@layout/indicator_bar" />
+</RelativeLayout>
+

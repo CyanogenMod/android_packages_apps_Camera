@@ -14,13 +14,13 @@
      limitations under the License.
 -->
 
-<com.android.camera.PreviewFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginLeft="2dp">
-    <RelativeLayout android:id="@+id/frame"
+        android:layout_weight="1">
+    <com.android.camera.PreviewFrameLayout android:id="@+id/frame"
+            android:layout_centerInParent="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         <SurfaceView android:id="@+id/camera_preview"
@@ -33,6 +33,7 @@
         <include layout="@layout/focus_indicator"/>
         <include layout="@layout/priority_indicators"/>
         <include layout="@layout/tap_to_focus_toast"/>
-        <include layout="@layout/indicator_bar" />
-    </RelativeLayout>
-</com.android.camera.PreviewFrameLayout>
+    </com.android.camera.PreviewFrameLayout>
+    <include layout="@layout/indicator_bar" />
+</RelativeLayout>
+
