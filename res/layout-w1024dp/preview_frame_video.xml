@@ -14,14 +14,16 @@
      limitations under the License.
 -->
 
-<com.android.camera.PreviewFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
-    <RelativeLayout android:id="@+id/frame"
+    <com.android.camera.PreviewFrameLayout android:id="@+id/frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/border_preview">
         <SurfaceView android:id="@+id/camera_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -59,11 +61,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
-                android:background="@android:color/black" />
-    </RelativeLayout>
-    <!-- Border for video snapshot. -->
-    <View android:id="@+id/preview_border"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-</com.android.camera.PreviewFrameLayout>
+                android:background="@android:color/black"/>
+    </com.android.camera.PreviewFrameLayout>
+</RelativeLayout>
