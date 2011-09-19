@@ -425,6 +425,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         initializeZoom();
         keepMediaProviderInstance();
         checkStorage();
+        hidePostCaptureAlert();
 
         if (!mIsImageCaptureIntent) {
             updateThumbnailButton();

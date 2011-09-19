@@ -802,7 +802,7 @@ public class VideoCamera extends ActivityBase
         if (mOpenCameraFail || mCameraDisabled) return;
         mZoomValue = 0;
 
-        mReviewImage.setVisibility(View.GONE);
+        hideAlert();
         showVideoSnapshotUI(false);
 
         // Start orientation listener as soon as possible because it takes
@@ -1602,7 +1602,7 @@ public class VideoCamera extends ActivityBase
     }
 
     private void hideAlert() {
-        mReviewImage.setVisibility(View.INVISIBLE);
+        mReviewImage.setVisibility(View.GONE);
         mShutterButton.setEnabled(true);
         enableCameraControls(true);
 
@@ -1616,10 +1616,6 @@ public class VideoCamera extends ActivityBase
         if (mCaptureTimeLapse) {
             showTimeLapseUI(true);
         }
-    }
-
-    private boolean isAlertVisible() {
-        return this.mReviewImage.getVisibility() == View.VISIBLE;
     }
 
     private void stopVideoRecording() {
