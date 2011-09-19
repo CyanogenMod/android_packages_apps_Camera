@@ -1342,7 +1342,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // Preview area is touched. Handle touch focus.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
-        if (mPausing || !mFirstTimeInitialized || mCameraState == SNAPSHOT_IN_PROGRESS) {
+        if (mPausing || mCameraDevice == null || !mFirstTimeInitialized
+                || mCameraState == SNAPSHOT_IN_PROGRESS) {
             return false;
         }
 
