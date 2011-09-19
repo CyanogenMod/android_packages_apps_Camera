@@ -16,13 +16,12 @@
 
 package com.android.camera;
 
-import android.app.Activity;
-import android.content.Context;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.view.View;
-import android.widget.RelativeLayout;
+import com.android.camera.R;
 
+import android.content.Context;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.widget.RelativeLayout;
 /**
  * A layout which handles the preview aspect ratio.
  */
@@ -33,69 +32,48 @@ public class PreviewFrameLayout extends RelativeLayout {
     }
 
     private double mAspectRatio = 4.0 / 3.0;
-    private View mFrame;
-    private View mPreviewBorder;
-    private final DisplayMetrics mMetrics = new DisplayMetrics();
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getMetrics(mMetrics);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mFrame = (View) findViewById(R.id.frame);
-        mPreviewBorder = (View) findViewById(R.id.preview_border);
     }
 
     public void setAspectRatio(double ratio) {
         if (ratio <= 0.0) throw new IllegalArgumentException();
-
         if (mAspectRatio != ratio) {
             mAspectRatio = ratio;
             requestLayout();
         }
     }
 
+    public void showBorder(boolean enabled) {
+        setActivated(enabled);
+    }
+
+
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        // Calculate the width and the height of preview frame.
-        int frameWidth = getWidth();
-        int frameHeight = getHeight();
-        int hPadding = 0;
-        int vPadding = 0;
-        if (mPreviewBorder != null) {
-            hPadding = mPreviewBorder.getPaddingLeft() + mPreviewBorder.getPaddingRight();
-            vPadding = mPreviewBorder.getPaddingBottom() + mPreviewBorder.getPaddingTop();
-        }
-        int previewHeight = frameHeight - vPadding;
-        int previewWidth = frameWidth - hPadding;
+    protected void onMeasure(int widthSpec, int heightSpec) {
+        int previewWidth = MeasureSpec.getSize(widthSpec);
+        int previewHeight = MeasureSpec.getSize(heightSpec);
+
+        // Get the padding of the border background.
+        int hPadding = mPaddingLeft + mPaddingRight;
+        int vPadding = mPaddingTop + mPaddingBottom;
+
+        // Resize the preview frame with correct aspect ratio.
+        previewWidth -= hPadding;
+        previewHeight -= vPadding;
         if (previewWidth > previewHeight * mAspectRatio) {
             previewWidth = (int) (previewHeight * mAspectRatio + .5);
         } else {
             previewHeight = (int) (previewWidth / mAspectRatio + .5);
         }
 
-        // Measure and layout preview frame.
-        int hSpace = ((r - l) - previewWidth) / 2;
-        int vSpace = ((b - t) - previewHeight) / 2;
-        mFrame.measure(
-                MeasureSpec.makeMeasureSpec(previewWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(previewHeight, MeasureSpec.EXACTLY));
-        mFrame.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
+        // Add the padding of the border.
+        previewWidth += hPadding;
+        previewHeight += vPadding;
 
-        // Measure and layout the border of preview frame.
-        if (mPreviewBorder != null) {
-            frameWidth = previewWidth + hPadding;
-            frameHeight = previewHeight + vPadding;
-            hSpace = ((r - l) - frameWidth) / 2;
-            vSpace = ((b - t) - frameHeight) / 2;
-            mPreviewBorder.measure(
-                    MeasureSpec.makeMeasureSpec(frameWidth, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(frameHeight, MeasureSpec.EXACTLY));
-            mPreviewBorder.layout(hSpace, vSpace, frameWidth + hSpace, frameHeight + vSpace);
-        }
+        // Ask children to follow the new preview dimension.
+        super.onMeasure(MeasureSpec.makeMeasureSpec(previewWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(previewHeight, MeasureSpec.EXACTLY));
     }
 }

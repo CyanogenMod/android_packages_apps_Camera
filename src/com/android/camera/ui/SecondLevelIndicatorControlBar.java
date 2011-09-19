@@ -108,9 +108,11 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         int width = right - left;
         int height = bottom - top;
         int h = height / count;
+
+        // TODO: follow the redlines of UI design in next change. The icons are
+        // simply distributed on the bar equally with current implmentation.
         for (int i = 0; i < count; i++) {
-            getChildAt(i).layout(0, top + i * height / count, width,
-                    top + i * height / count + h);
+            getChildAt(i).layout(0, i * h,  width, (i + 1) * h);
         }
     }
 

@@ -139,6 +139,7 @@ public class VideoCamera extends ActivityBase
     private ComboPreferences mPreferences;
     private PreferenceGroup mPreferenceGroup;
 
+    private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceHolder mSurfaceHolder = null;
     private IndicatorControlContainer mIndicatorControlContainer;
@@ -207,7 +208,6 @@ public class VideoCamera extends ActivityBase
     // Default 0. If it is larger than 0, the camcorder is in time lapse mode.
     private int mTimeBetweenTimeLapseFrameCaptureMs = 0;
     private View mTimeLapseLabel;
-    private View mPreviewBorder;
 
     private int mDesiredPreviewWidth;
     private int mDesiredPreviewHeight;
@@ -399,8 +399,8 @@ public class VideoCamera extends ActivityBase
             mModePicker.setOnModeChangeListener(this);
         }
 
-        mPreviewFrameLayout = (PreviewFrameLayout)
-                findViewById(R.id.frame_layout);
+        mPreviewPanel = findViewById(R.id.frame_layout);
+        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
         mReviewImage = (ImageView) findViewById(R.id.review_image);
 
         // don't set mSurfaceHolder here. We have it set ONLY within
@@ -421,7 +421,6 @@ public class VideoCamera extends ActivityBase
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mOrientationListener = new MyOrientationEventListener(VideoCamera.this);
         mTimeLapseLabel = findViewById(R.id.time_lapse_label);
-        mPreviewBorder = findViewById(R.id.preview_border);
 
         mBgLearningMessage = (TextView) findViewById(R.id.bg_replace_message);
 
@@ -2055,7 +2054,7 @@ public class VideoCamera extends ActivityBase
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
-                    mOrientationCompensation, mPreviewFrameLayout);
+                    mOrientationCompensation, mPreviewPanel);
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
@@ -2180,13 +2179,12 @@ public class VideoCamera extends ActivityBase
     private void initializeVideoSnapshot() {
         if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
             findViewById(R.id.camera_preview).setOnTouchListener(this);
-            mPreviewBorder.setBackgroundResource(R.drawable.ic_snapshot_border);
         }
     }
 
     void showVideoSnapshotUI(boolean enabled) {
         if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
-            mPreviewBorder.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+            mPreviewFrameLayout.showBorder(enabled);
             mIndicatorControlContainer.enableZoom(!enabled);
             mShutterButton.setEnabled(!enabled);
         }
