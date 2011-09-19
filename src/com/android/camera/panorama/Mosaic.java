@@ -68,6 +68,21 @@ public class Mosaic {
     public static final int BLENDTYPE_HORIZONTAL =3;
 
     /**
+     * This strip type will use the default thin strips where the strips are
+     * spaced according to the image capture rate.
+     */
+    public static final int STRIPTYPE_THIN = 0;
+
+    /**
+     * This strip type will use wider strips for blending. The strip separation
+     * is controlled by a threshold on the native side. Since the strips are
+     * wider, there is an additional cross-fade blending step to make the seam
+     * boundaries smoother. Since this mode uses lesser image frames, it is
+     * computationally more efficient than the thin strip mode.
+     */
+    public static final int STRIPTYPE_WIDE = 1;
+
+    /**
      * Return flags returned by createMosaic() are one of the following.
      */
     public static final int MOSAIC_RET_OK = 1;
@@ -126,6 +141,13 @@ public class Mosaic {
      *        BLENDTYPE_PAN, BLENDTYPE_CYLINDERPAN, BLENDTYPE_HORIZONTAL}
      */
     public native void setBlendingType(int type);
+
+    /**
+     * Set the type of strips to use for blending.
+     * @param type the blending strip type to use {STRIPTYPE_THIN,
+     * STRIPTYPE_WIDE}.
+     */
+    public native void setStripType(int type);
 
     /**
      * Tell the native layer to create the final mosaic after all the input frame

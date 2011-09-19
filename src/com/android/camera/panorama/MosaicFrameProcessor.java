@@ -84,12 +84,17 @@ public class MosaicFrameProcessor {
 
     public void initialize() {
         setupMosaicer(mPreviewWidth, mPreviewHeight, mPreviewBufferSize);
+        setStripType(Mosaic.STRIPTYPE_WIDE);
         reset();
     }
 
     public void clear() {
         mIsMosaicMemoryAllocated = false;
         mMosaicer.freeMosaicMemory();
+    }
+
+    public void setStripType(int type) {
+        mMosaicer.setStripType(type);
     }
 
     private void setupMosaicer(int previewWidth, int previewHeight, int bufSize) {

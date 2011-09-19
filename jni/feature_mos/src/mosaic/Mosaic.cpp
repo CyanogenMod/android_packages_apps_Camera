@@ -45,6 +45,7 @@ Mosaic::~Mosaic()
             delete frames[i];
     }
     delete frames;
+    delete rframes;
 
     if (aligner != NULL)
         delete aligner;
@@ -52,16 +53,27 @@ Mosaic::~Mosaic()
         delete blender;
 }
 
-int Mosaic::initialize(int blendingType, int width, int height, int nframes, bool quarter_res, float thresh_still)
+int Mosaic::initialize(int blendingType, int stripType, int width, int height, int nframes, bool quarter_res, float thresh_still)
 {
     this->blendingType = blendingType;
+
+    // TODO: Review this logic if enabling FULL or PAN mode
+    if (blendingType == Blend::BLEND_TYPE_FULL ||
+            blendingType == Blend::BLEND_TYPE_PAN)
+    {
+        stripType = Blend::STRIP_TYPE_THIN;
+    }
+
+    this->stripType = stripType;
     this->width = width;
     this->height = height;
+
 
     mosaicWidth = mosaicHeight = 0;
     imageMosaicYVU = NULL;
 
     frames = new MosaicFrame *[max_frames];
+    rframes = new MosaicFrame *[max_frames];
 
     if(nframes>-1)
     {
@@ -92,7 +104,7 @@ int Mosaic::initialize(int blendingType, int width, int height, int nframes, boo
             blendingType == Blend::BLEND_TYPE_CYLPAN ||
             blendingType == Blend::BLEND_TYPE_HORZ) {
         blender = new Blend();
-        blender->initialize(blendingType, width, height);
+        blender->initialize(blendingType, stripType, width, height);
     } else {
         blender = NULL;
         LOGE("Error: Unknown blending type %d",blendingType);
@@ -180,7 +192,8 @@ int Mosaic::createMosaic(float &progress, bool &cancelComputation)
     // Blend the mosaic (alignment has already been done)
     if (blender != NULL)
     {
-        ret = blender->runBlend((MosaicFrame **) frames, frames_size, imageMosaicYVU,
+        ret = blender->runBlend((MosaicFrame **) frames, (MosaicFrame **) rframes, 
+                frames_size, imageMosaicYVU,
                 mosaicWidth, mosaicHeight, progress, cancelComputation);
     }
 
