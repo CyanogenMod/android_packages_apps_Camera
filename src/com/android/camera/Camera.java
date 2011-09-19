@@ -145,6 +145,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private boolean mOpenCameraFail = false;
     private boolean mCameraDisabled = false;
 
+    private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
     private View mPreviewFrame;  // Preview frame area.
 
@@ -1605,7 +1606,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Set the preview frame aspect ratio according to the picture size.
         Size size = mParameters.getPictureSize();
 
-        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame_layout);
+        mPreviewPanel = findViewById(R.id.frame_layout);
+        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
         mPreviewFrameLayout.setAspectRatio((double) size.width / size.height);
 
         // Set a preview size that is closest to the viewfinder height and has
@@ -1953,8 +1955,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void showSharePopup() {
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
+            // SharePopup window takes the mPreviewPanel as its size reference.
             mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
-                    mOrientationCompensation, mPreviewFrameLayout);
+                    mOrientationCompensation, mPreviewPanel);
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
