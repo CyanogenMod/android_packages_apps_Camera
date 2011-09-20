@@ -51,6 +51,8 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:src="@drawable/ic_switch_arrow"/>
+            <ImageView android:id="@+id/play"
+                    style="@style/ReviewPlayIcon"/>
         </RelativeLayout>
         <FrameLayout
                 android:layout_width="@dimen/share_item_width"
