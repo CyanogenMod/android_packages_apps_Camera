@@ -96,14 +96,14 @@ public class ZoomControlBar extends ZoomControl {
         // the zoom-in button should be on the top.
         if (mDegree == 180) {
             pos = h - mSliderPosition - width / 2;
-            mZoomOut.layout(0, top, width, top + width);
-            mZoomIn.layout(0, bottom - width, width, bottom);
+            mZoomOut.layout(0, 0, width, width);
+            mZoomIn.layout(0, height - width, width, height);
         } else {
             pos = h + mSliderPosition - width / 2;
-            mZoomIn.layout(0, top, width, top + width);
-            mZoomOut.layout(0, bottom - width, width, bottom);
+            mZoomIn.layout(0, 0, width, width);
+            mZoomOut.layout(0, height - width, width, height);
         }
-        mBar.layout(0, top + width, width, bottom - width);
+        mBar.layout(0, width, width, height - width);
 
         // TODO: fix the pos once we have correct zoom_big asset.
         if (pos < 3 * width / 4) {
