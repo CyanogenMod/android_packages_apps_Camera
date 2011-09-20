@@ -146,16 +146,12 @@ public class IndicatorControlWheel extends IndicatorControl implements
     }
 
     public void initialize(Context context, PreferenceGroup group,
-            String flashSetting, boolean isZoomSupported, String[] keys,
-            String[] otherSettingKeys) {
+            boolean isZoomSupported, String[] keys, String[] otherSettingKeys) {
         mShutterButtonRadius = IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS;
         mStrokeWidth = Util.dpToPixel(IndicatorControlWheelContainer.STROKE_WIDTH);
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 0.5;
 
         setPreferenceGroup(group);
-
-        // Add first-level controls.
-        addControls(new String[] {flashSetting}, null);
 
         // Add Zoom Icon.
         if (isZoomSupported) {

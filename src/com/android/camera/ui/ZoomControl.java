@@ -20,6 +20,7 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,16 +31,20 @@ import android.widget.RelativeLayout;
  * if the camera supports zooming.
  */
 public abstract class ZoomControl extends RelativeLayout {
-    private static final String TAG = "ZoomControl";
+    // The states of zoom button.
+    public static final int ZOOM_IN = 0;
+    public static final int ZOOM_OUT = 1;
+    public static final int ZOOM_STOP = 2;
 
-    public static final int ZOOMING_INTERVAL = 300; // milliseconds
+    private static final String TAG = "ZoomControl";
+    private static final int ZOOMING_INTERVAL = 1000; // milliseconds
 
     protected ImageView mZoomIn;
     protected ImageView mZoomOut;
     protected ImageView mZoomSlider;
     protected int mSliderPosition = 0;
     protected int mDegree;
-    protected Handler mHandler;
+    private Handler mHandler;
 
     public interface OnZoomChangedListener {
         void onZoomValueChanged(int index);  // only for immediate zoom
@@ -58,23 +63,13 @@ public abstract class ZoomControl extends RelativeLayout {
     private OnZoomChangedListener mListener;
     private OnZoomIndexChangedListener mIndexListener;
 
-    // The state of zoom button.
-    public static final int ZOOM_IN = 0;
-    public static final int ZOOM_OUT = 1;
-    public static final int ZOOM_STOP = 2;
-
     protected OnIndicatorEventListener mOnIndicatorEventListener;
+    private int mState;
+    private int mStep;
 
     protected final Runnable mRunnable = new Runnable() {
         public void run() {
-            if (mSliderPosition < 0) {
-                zoomIn();
-            } else if (mSliderPosition > 0) {
-                zoomOut();
-            } else {
-                stopZooming();
-            }
-            mHandler.postDelayed(mRunnable, ZOOMING_INTERVAL);
+            performZoom(mState, false);
         }
     };
 
@@ -88,7 +83,6 @@ public abstract class ZoomControl extends RelativeLayout {
 
     public void startZoomControl() {
         mZoomSlider.setPressed(true);
-        mHandler.postDelayed(mRunnable, ZOOMING_INTERVAL);
         setZoomIndex(mZoomIndex); // Update the zoom index bar.
     }
 
@@ -100,12 +94,13 @@ public abstract class ZoomControl extends RelativeLayout {
     }
 
     public void closeZoomControl() {
-        mHandler.removeCallbacks(mRunnable);
-        mSliderPosition = 0;
         mZoomSlider.setPressed(false);
         stopZooming();
-        mOnIndicatorEventListener.onIndicatorEvent(
-                OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL);
+        if (!mSmoothZoomSupported) mHandler.removeCallbacks(mRunnable);
+        if (mOnIndicatorEventListener != null) {
+            mOnIndicatorEventListener.onIndicatorEvent(
+                    OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL);
+        }
     }
 
     public void setZoomMax(int zoomMax) {
@@ -143,30 +138,71 @@ public abstract class ZoomControl extends RelativeLayout {
         mSmoothZoomSupported = smoothZoomSupported;
     }
 
-    public boolean zoomIn() {
-        return (mZoomIndex == mZoomMax) ? false : changeZoomIndex(mZoomIndex + 1);
+    private boolean zoomIn() {
+        return (mZoomIndex == mZoomMax) ? false : changeZoomIndex(mZoomIndex + mStep);
     }
 
-    public boolean zoomOut() {
-        return (mZoomIndex == 0) ? false : changeZoomIndex(mZoomIndex - 1);
+    private boolean zoomOut() {
+        return (mZoomIndex == 0) ? false : changeZoomIndex(mZoomIndex - mStep);
     }
 
-    public void stopZooming() {
+    protected void setZoomStep(int step) {
+        mStep = step;
+    }
+
+    private void stopZooming() {
         if (mSmoothZoomSupported) {
             if (mListener != null) mListener.onZoomStateChanged(ZOOM_STOP);
         }
     }
 
+    // Called from ZoomControlWheel to change the zoom level.
+    // TODO: merge the zoom control for both platforms.
+    protected void performZoom(int state) {
+        performZoom(state, true);
+    }
+
+    private void performZoom(int state, boolean fromUser) {
+        if ((mState == state) && fromUser) return;
+        if (fromUser) mHandler.removeCallbacks(mRunnable);
+        mState = state;
+        switch (state) {
+            case ZOOM_IN:
+                zoomIn();
+                break;
+            case ZOOM_OUT:
+                zoomOut();
+                break;
+            case ZOOM_STOP:
+                stopZooming();
+                break;
+        }
+        if (!mSmoothZoomSupported) {
+            // Repeat the zoom action on tablet as the user is still holding
+            // the zoom slider.
+            mHandler.postDelayed(mRunnable, ZOOMING_INTERVAL / mZoomMax);
+        }
+    }
+
+    // Called from ZoomControlBar to change the zoom level.
+    protected void performZoom(double zoomPercentage) {
+        int index = (int) (mZoomMax * zoomPercentage);
+        if (mZoomIndex == index) return;
+        changeZoomIndex(index);
+   }
+
     private boolean changeZoomIndex(int index) {
-        int zoomType = (index < mZoomIndex) ? ZOOM_OUT : ZOOM_IN;
         if (mListener != null) {
             if (mSmoothZoomSupported) {
+                int zoomType = (index < mZoomIndex) ? ZOOM_OUT : ZOOM_IN;
                 if (((zoomType == ZOOM_IN) && (mZoomIndex != mZoomMax)) ||
                         ((zoomType == ZOOM_OUT) && (mZoomIndex != 0))) {
                     mListener.onZoomStateChanged(zoomType);
                 }
             } else {
-                mListener.onZoomStateChanged(index);
+                if (index > mZoomMax) index = mZoomMax;
+                if (index < 0) index = 0;
+                mListener.onZoomValueChanged(index);
                 setZoomIndex(index);
             }
         }

@@ -70,6 +70,8 @@ public abstract class IndicatorControl extends RelativeLayout implements
             View view = getChildAt(i);
             if (view instanceof RotateImageView) {
                 ((RotateImageView) view).setDegree(degree);
+            } else if (view instanceof ZoomControl) {
+                ((ZoomControl) view).setDegree(degree);
             }
         }
     }
