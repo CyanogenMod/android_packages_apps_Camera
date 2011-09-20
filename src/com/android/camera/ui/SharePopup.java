@@ -119,6 +119,10 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mThumbnail.setImageBitmap(bitmap);
         mShareView = (ViewGroup) sharePopup.findViewById(R.id.share_view);
         mShareView.setOnClickListener(this);
+        // Show play button if this is a video thumbnail.
+        if (mMimeType.startsWith("video/")) {
+            sharePopup.findViewById(R.id.play).setVisibility(View.VISIBLE);
+        }
         mBitmapWidth = bitmap.getWidth();
         mBitmapHeight = bitmap.getHeight();
         Resources res = mContext.getResources();
