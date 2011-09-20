@@ -87,8 +87,7 @@
     <string name="pref_restore_title" msgid="6479274979730178961">"Setările camerei foto"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restabiliţi valorile prestabilite"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Expunere"</string>
-    <!-- no translation found for dialog_ok (6263301364153382152) -->
-    <skip />
+    <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Spaţiul de stocare USB este aproape ocupat. Editaţi setarea de calitate sau ştergeţi câteva imagini ori alte fişiere."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Cardul SD rămâne fără spaţiu de stocare. Editaţi setarea de calitate sau ştergeţi câteva imagini sau alte fişiere."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Dimensiune limită depăşită."</string>
@@ -100,10 +99,12 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"Nu există imag. de distribuit"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Nu există video. de distribuit"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Prea repede"</string>
-    <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Se preg. previzualizarea..."</string>
-    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
+    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Se pregăteşte panorama"</string>
+    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Salvarea panoramei a eşuat"</string>
+    <string name="pano_dialog_title" msgid="5755531234434437697">"Panoramă"</string>
+    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
     <skip />
-    <!-- no translation found for pano_dialog_title (5755531234434437697) -->
+    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
     <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"Apăsaţi pt. a focaliza"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efecte"</string>
@@ -114,12 +115,15 @@
     <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Gură mică"</string>
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Nas mare"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Ochi mici"</string>
-    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
-    <skip />
+    <string name="effect_backdropper_space" msgid="1381012939195370792">"În spaţiu"</string>
     <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
     <skip />
-    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
+    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
     <skip />
-    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
+    <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Alegeţi unul"</string>
+    <string name="bg_replacement_message" msgid="7540788298745332389">"Aşezaţi dispozitivul pe o suprafaţă stabilă şi asiguraţi-vă că nu există mişcare în spatele dvs."\n\n"Apoi, ieşiţi din vizorul camerei foto."</string>
+    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
+    <skip />
+    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
     <skip />
 </resources>
