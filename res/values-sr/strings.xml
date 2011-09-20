@@ -102,10 +102,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Припремање панораме"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Чување панораме није успело"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Панорама"</string>
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
-    <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
-    <skip />
+    <string name="pano_capture_indication" msgid="7431983072966619171">"Снимање панораме"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Чување..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Додирните за фокусирање"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Ефекти"</string>
     <string name="effect_none" msgid="3601545724573307541">"Ништа"</string>
@@ -117,12 +115,9 @@
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Мале очи"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"У свемиру"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Залазак сунца"</string>
-    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
-    <skip />
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Диско"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Изаберите свој"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Поставите уређај на стабилну површину и уверите се да се иза вас ништа не помера."\n\n"Затим изађите из кадра камере."</string>
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
-    <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
-    <skip />
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Ово није могуће изабрати када је ефекат укључен."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Снимите слику током видео снимања додиривањем екрана за преглед."</string>
 </resources>

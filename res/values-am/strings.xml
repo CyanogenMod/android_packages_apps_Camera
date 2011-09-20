@@ -102,10 +102,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"ፓናሮማ በማዘጋጀት ላይ"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"ፓኖራማ ለማስቀመጥ ተስኗል"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"ፓኖራማ"</string>
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
-    <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
-    <skip />
+    <string name="pano_capture_indication" msgid="7431983072966619171">"ፓኖራማ በማንሳት ላይ"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"በማስቀመጥ ላይ…"</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"ለማተኮር ሁለቴ ንካ"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"ማሳመሪያዎች"</string>
     <string name="effect_none" msgid="3601545724573307541">"ምንም የለም"</string>
@@ -117,12 +115,9 @@
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"ትናንሽ ዓይኖች"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"In Space"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"ፀሀይ ስትጠልቅ"</string>
-    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
-    <skip />
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"ዲስኮ"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"የራስህን ምረጥ"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"መሳሪያዎን በዝርግ ስፍራ ላይ ያስቀምጡ እና ከእርስዎ ጀርባ ምንም ዓይነት መነቃነቅ እንደሌለ እርግጠኛ ሁን፡፡"\n\n" ከዛ በኋላ ከካሜራው እይታ ለቀው ይውጡ፡፡"</string>
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
-    <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
-    <skip />
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"ተፅዕኖ ሲበራ ይህ መመረጥ አይችልም።"</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"የቅድመ ዕይታ ማያን ነካ በማድረግ በቪዲዮ ቀረፃ ጊዜ ፎቶ አንሳ።"</string>
 </resources>

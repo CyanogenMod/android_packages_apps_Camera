@@ -102,10 +102,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Панорамата се подготвя"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Запазването на панорамата не бе успешно"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Панорама"</string>
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
-    <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
-    <skip />
+    <string name="pano_capture_indication" msgid="7431983072966619171">"Панорамата се заснема"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Запазва се..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Докоснете за фокусиране"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Ефекти"</string>
     <string name="effect_none" msgid="3601545724573307541">"Без ефекти"</string>
@@ -116,14 +114,10 @@
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Голям нос"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Малки очи"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"В космоса"</string>
-    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
-    <skip />
-    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
-    <skip />
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Залез"</string>
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Диско"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Изберете свой"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Поставете устройството си върху стабилна повърхност и се уверете, че зад вас нищо не се движи."\n\n"След което се отдръпнете от зрителното поле на камерата."</string>
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
-    <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
-    <skip />
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Това не може да се избира при включен ефект."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Напр. снимка по време на видеозапис, докосвайки екрана за визуал."</string>
 </resources>

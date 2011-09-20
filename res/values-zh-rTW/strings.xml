@@ -102,10 +102,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"正在準備全景預覽"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"無法儲存全景"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"全景"</string>
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
-    <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
-    <skip />
+    <string name="pano_capture_indication" msgid="7431983072966619171">"全景拍攝中"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"儲存中..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"輕按即可聚焦"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"效果"</string>
     <string name="effect_none" msgid="3601545724573307541">"無"</string>
@@ -116,14 +114,10 @@
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"大鼻子"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"小眼睛"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"太空"</string>
-    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
-    <skip />
-    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
-    <skip />
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"黃昏"</string>
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"迪斯可"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"自行挑選"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"將您的裝置放在平穩的表面上，確定自己身後沒有移動的物體。"\n\n"然後離開相機鏡頭的視野範圍。"</string>
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
-    <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
-    <skip />
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"效果啟用時無法選取這項設定。"</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"影片錄製期間，只要輕按預覽畫面即可拍攝相片。"</string>
 </resources>

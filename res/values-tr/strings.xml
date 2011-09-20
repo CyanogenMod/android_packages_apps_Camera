@@ -116,8 +116,7 @@
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Büyük Burun"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Küçük Gözler"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"Uzayda"</string>
-    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
-    <skip />
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Gün Batımı"</string>
     <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
     <skip />
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Kendiniz seçin"</string>
