@@ -102,10 +102,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"파노라마 준비 중"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"파노라마를 저장하지 못했습니다."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"파노라마"</string>
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
-    <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
-    <skip />
+    <string name="pano_capture_indication" msgid="7431983072966619171">"파노라마 캡처 중"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"저장 중..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"탭하여 초점 맞추기"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"효과"</string>
     <string name="effect_none" msgid="3601545724573307541">"없음"</string>
@@ -117,12 +115,9 @@
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"눈 작게"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"우주"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"일몰"</string>
-    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
-    <skip />
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"디스코"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"직접 선택"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"기기를 평평한 바닥에 올려놓고 뒤에 움직이는 물체가 없는지 확인합니다. "\n\n"그런 다음 카메라 뷰 밖으로 비켜섭니다."</string>
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
-    <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
-    <skip />
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"효과를 사용 중일 때는 선택할 수 없습니다."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"동영상을 녹화하는 동안 미리보기 화면을 탭하여 사진을 찍을 수 있습니다."</string>
 </resources>

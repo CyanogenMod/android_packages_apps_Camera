@@ -102,10 +102,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Đang tạo xem trước toàn cảnh"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Không thể lưu toàn cảnh"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Toàn cảnh"</string>
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
-    <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
-    <skip />
+    <string name="pano_capture_indication" msgid="7431983072966619171">"Đang chụp toàn cảnh"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Đang lưu..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Chạm để lấy tiêu điểm"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Hiệu ứng"</string>
     <string name="effect_none" msgid="3601545724573307541">"Bỏ chọn tất cả"</string>
@@ -117,12 +115,9 @@
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Đôi mắt nhỏ"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"Trong dấu cách"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Hoàng hôn"</string>
-    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
-    <skip />
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Chọn video của riêng bạn"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Đặt thiết bị của bạn lên bề mặt chắc chắn và đảm bảo không có chuyển động nào phía sau bạn."\n\n"Sau đó, thoát khỏi chế độ xem của máy ảnh."</string>
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
-    <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
-    <skip />
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Không thể chọn cài đặt này khi hiệu ứng này được bật."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Chụp ảnh khi đang quay video bằng cách bấm vào màn hình xem trước."</string>
 </resources>
