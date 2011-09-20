@@ -30,7 +30,7 @@ import android.widget.ImageView;
  * A view that contains the top-level indicator control.
  */
 public class IndicatorControlBar extends IndicatorControl implements
-        View.OnClickListener, View.OnTouchListener {
+        View.OnClickListener {
     private static final String TAG = "IndicatorControlBar";
 
     // Space between indicator icons.
@@ -38,6 +38,7 @@ public class IndicatorControlBar extends IndicatorControl implements
 
     private ImageView mZoomIcon;
     private ImageView mSecondLevelIcon;
+    private ZoomControlBar mZoomControl;
 
     public IndicatorControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,27 +46,23 @@ public class IndicatorControlBar extends IndicatorControl implements
 
     @Override
     protected void onFinishInflate() {
-        mZoomIcon = (ImageView) findViewById(R.id.zoom_control_icon);
         mSecondLevelIcon = (ImageView)
                 findViewById(R.id.second_level_indicator_bar_icon);
         mSecondLevelIcon.setOnClickListener(this);
     }
 
     public void initialize(Context context, PreferenceGroup group,
-            String flashSetting, boolean zoomSupported) {
-        // From UI spec, we have camera_flash setting on the first level.
+            boolean zoomSupported) {
         setPreferenceGroup(group);
-        addControls(new String[] {flashSetting}, null);
 
         // Add CameraPicker control.
         initializeCameraPicker();
 
-        // add Zoom Icon.
+        // Add the ZoomControl if supported.
         if (zoomSupported) {
-            mZoomIcon.setOnTouchListener(this);
-            mZoomIcon.setVisibility(View.VISIBLE);
+            mZoomControl = (ZoomControlBar) findViewById(R.id.zoom_control);
+            mZoomControl.setVisibility(View.VISIBLE);
         }
-
         requestLayout();
     }
 
@@ -73,15 +70,6 @@ public class IndicatorControlBar extends IndicatorControl implements
     public boolean dispatchTouchEvent(MotionEvent event) {
         super.dispatchTouchEvent(event);
         // We need to consume the event, or it will trigger tap-to-focus.
-        return true;
-    }
-
-    public boolean onTouch(View v, MotionEvent event) {
-        dismissSettingPopup();
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            mOnIndicatorEventListener.onIndicatorEvent(
-                    OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL);
-        }
         return true;
     }
 
@@ -96,21 +84,25 @@ public class IndicatorControlBar extends IndicatorControl implements
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
         // Layout the static components.
+        int padding = getPaddingTop();
         super.onLayout(changed, left, top, right, bottom);
 
         int count = getChildCount();
         if (count == 0) return;
         int width = right - left;
-        int offset = 0;
 
-        for (int i = 0 ; i < count ; i++) {
-            View view = getChildAt(i);
-            if (view instanceof IndicatorButton) {
-                view.layout(0, offset, width, offset + width);
-                offset += (width + ICON_SPACING);
-            }
+        // First indicator will be CameraPicker if exists.
+        if (mCameraPicker != null) {
+            mCameraPicker.layout(0, padding, width, padding + width);
         }
-        if (mCameraPicker != null) mCameraPicker.layout(0, offset, width, offset + width);
+
+        // Layout the zoom control if required.
+        int offset = padding + width; // the padding and the icon height
+        if (mZoomControl != null)  {
+            mZoomControl.layout(0, offset, width, bottom - top - offset);
+        }
+
+        mSecondLevelIcon.layout(0, bottom - top - offset, width, bottom - top);
     }
 
     @Override
@@ -126,6 +118,6 @@ public class IndicatorControlBar extends IndicatorControl implements
     }
 
     public void enableZoom(boolean enabled) {
-        if (mZoomIcon != null)  mZoomIcon.setEnabled(enabled);
+        if (mZoomControl != null)  mZoomControl.setEnabled(enabled);
     }
 }

@@ -469,6 +469,7 @@ public class VideoCamera extends ActivityBase
         loadCameraPreferences();
 
         final String[] SETTING_KEYS = {
+                    CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
                     CameraSettings.KEY_VIDEO_EFFECT,
                     CameraSettings.KEY_WHITE_BALANCE,
                     CameraSettings.KEY_VIDEO_QUALITY};
@@ -477,7 +478,6 @@ public class VideoCamera extends ActivityBase
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_video_facing_holo_light);
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
-                CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
                 mParameters.isZoomSupported(), SETTING_KEYS, OTHER_SETTING_KEYS);
         mIndicatorControlContainer.setListener(this);
         mPopupGestureDetector = new GestureDetector(this,
@@ -2108,7 +2108,8 @@ public class VideoCamera extends ActivityBase
         if (!mParameters.isZoomSupported()) return;
 
         mZoomMax = mParameters.getMaxZoom();
-        mSmoothZoomSupported = mParameters.isSmoothZoomSupported();
+        // Currently we use immediate zoom for fast zooming to get better UX and
+        // there is no plan to take advantage of the smooth zoom.
         mZoomControl.setZoomMax(mZoomMax);
         mZoomControl.setZoomIndex(mParameters.getZoom());
         mZoomControl.setSmoothZoomSupported(mSmoothZoomSupported);
