@@ -111,6 +111,7 @@ public class VideoCamera extends ActivityBase
             CamcorderProfile.QUALITY_TIME_LAPSE_720P,
             CamcorderProfile.QUALITY_TIME_LAPSE_480P,
             CamcorderProfile.QUALITY_TIME_LAPSE_CIF,
+            CamcorderProfile.QUALITY_TIME_LAPSE_QVGA,
             CamcorderProfile.QUALITY_TIME_LAPSE_QCIF};
 
     private static final int[] VIDEO_QUALITY = {
@@ -118,6 +119,7 @@ public class VideoCamera extends ActivityBase
             CamcorderProfile.QUALITY_720P,
             CamcorderProfile.QUALITY_480P,
             CamcorderProfile.QUALITY_CIF,
+            CamcorderProfile.QUALITY_QVGA,
             CamcorderProfile.QUALITY_QCIF};
 
     /**
