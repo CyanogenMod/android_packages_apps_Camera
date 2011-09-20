@@ -41,5 +41,5 @@
     <dimen name="popup_title_text_size">18dp</dimen>
     <dimen name="popup_title_frame_min_height">32dp</dimen>
     <dimen name="other_setting_popup_window_width">320dp</dimen>
-    <dimen name="setting_item_icon_width">20dp</dimen>
+    <dimen name="setting_item_icon_width">28dp</dimen>
 </resources>
