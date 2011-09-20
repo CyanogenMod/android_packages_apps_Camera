@@ -25,8 +25,8 @@
     <FrameLayout android:id="@+id/root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_gravity="left|center">
+            android:layout_gravity="left|center"
+            android:background="@android:color/black">
         <RelativeLayout android:id="@+id/share_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
