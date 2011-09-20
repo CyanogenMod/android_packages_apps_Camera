@@ -63,6 +63,7 @@ int mosaicWidth=0, mosaicHeight=0;
 //int blendingType = Blend::BLEND_TYPE_FULL;
 //int blendingType = Blend::BLEND_TYPE_CYLPAN;
 int blendingType = Blend::BLEND_TYPE_HORZ;
+int stripType = Blend::STRIP_TYPE_THIN;
 bool high_res = false;
 bool quarter_res[NR] = {false,false};
 float thresh_still[NR] = {5.0f,0.0f};
@@ -108,7 +109,7 @@ int Init(int mID, int nmax)
         // Check for initialization and if not, initialize
         if (!mosaic[mID]->isInitialized())
         {
-                mosaic[mID]->initialize(blendingType, tWidth[mID], tHeight[mID],
+                mosaic[mID]->initialize(blendingType, stripType, tWidth[mID], tHeight[mID],
                         nmax, quarter_res[mID], thresh_still[mID]);
         }
 
@@ -475,6 +476,12 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_setBlendingType(
         JNIEnv* env, jobject thiz, jint type)
 {
     blendingType = int(type);
+}
+
+JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_setStripType(
+        JNIEnv* env, jobject thiz, jint type)
+{
+    stripType = int(type);
 }
 
 JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_reset(

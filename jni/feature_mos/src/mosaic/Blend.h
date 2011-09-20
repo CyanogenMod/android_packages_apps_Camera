@@ -33,6 +33,16 @@ const float TIME_PERCENT_ALIGN = 20.0;
 const float TIME_PERCENT_BLEND = 75.0;
 const float TIME_PERCENT_FINAL = 5.0;
 
+// This threshold determines the minimum separation between the image centers
+// of the input image frames for them to be accepted for blending in the
+// STRIP_TYPE_WIDE mode. This threshold is specified as a fraction of the
+// input image frame width.
+const float STRIP_SEPARATION_THRESHOLD = 0.10;
+
+// This threshold determines the number of pixels on either side of the strip
+// to cross-fade using the images contributing to each seam. This threshold
+// is specified as a fraction of the input image frame width.
+const float STRIP_CROSS_FADE_WIDTH = 0.02;
 /**
  *  Class for pyramid blending a mosaic.
  */
@@ -46,6 +56,9 @@ public:
   static const int BLEND_TYPE_CYLPAN  = 2;
   static const int BLEND_TYPE_HORZ   = 3;
 
+  static const int STRIP_TYPE_THIN      = 0;
+  static const int STRIP_TYPE_WIDE      = 1;
+
   static const int BLEND_RET_ERROR        = -1;
   static const int BLEND_RET_OK           = 0;
   static const int BLEND_RET_ERROR_MEMORY = 1;
@@ -54,9 +67,9 @@ public:
   Blend();
   ~Blend();
 
-  int initialize(int blendingType, int frame_width, int frame_height);
+  int initialize(int blendingType, int stripType, int frame_width, int frame_height);
 
-  int runBlend(MosaicFrame **frames, int frames_size, ImageType &imageMosaicYVU,
+  int runBlend(MosaicFrame **frames, MosaicFrame **rframes, int frames_size, ImageType &imageMosaicYVU,
         int &mosaicWidth, int &mosaicHeight, float &progress, bool &cancelComputation);
 
 protected:
@@ -95,6 +108,8 @@ protected:
 
   // TODO: need to add documentation about the parameters
   void ComputeBlendParameters(MosaicFrame **frames, int frames_size, int is360);
+  void SelectRelevantFrames(MosaicFrame **frames, int frames_size,
+        MosaicFrame **relevant_frames, int &relevant_frames_size);
 
   int  PerformFinalBlending(YUVinfo &imgMos, MosaicRect &cropping_rect);
   void CropFinalMosaic(YUVinfo &imgMos, MosaicRect &cropping_rect);

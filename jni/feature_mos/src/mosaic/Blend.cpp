@@ -41,11 +41,12 @@ Blend::~Blend()
     if (m_pFrameYPyr) free(m_pFrameYPyr);
 }
 
-int Blend::initialize(int blendingType, int frame_width, int frame_height)
+int Blend::initialize(int blendingType, int stripType, int frame_width, int frame_height)
 {
     this->width = frame_width;
     this->height = frame_height;
     this->m_wb.blendingType = blendingType;
+    this->m_wb.stripType = stripType;
 
     m_wb.blendRange = m_wb.blendRangeUV = BLEND_RANGE_DEFAULT;
     m_wb.nlevs = m_wb.blendRange;
@@ -95,12 +96,26 @@ void Blend::AlignToMiddleFrame(MosaicFrame **frames, int frames_size)
     }
 }
 
-int Blend::runBlend(MosaicFrame **frames, int frames_size,
+int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
+        int frames_size,
         ImageType &imageMosaicYVU, int &mosaicWidth, int &mosaicHeight,
         float &progress, bool &cancelComputation)
 {
     int ret;
     int numCenters;
+
+    MosaicFrame **frames;
+
+    // For THIN strip mode, accept all frames for blending
+    if (m_wb.stripType == STRIP_TYPE_THIN)
+    {
+        frames = oframes;
+    }
+    else // For WIDE strip mode, first select the relevant frames to blend.
+    {
+        SelectRelevantFrames(oframes, frames_size, rframes, frames_size);
+        frames = rframes;
+    }
 
     ComputeBlendParameters(frames, frames_size, true);
     numCenters = frames_size;
@@ -346,6 +361,75 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
         ComputeMask(csite, mb->vcrect, mb->brect, rect, imgMos, site_idx);
 
         site_idx++;
+    }
+
+    ////////// imgMos.Y, imgMos.V, imgMos.U are used as follows //////////////
+    ////////////////////// THIN STRIP MODE ///////////////////////////////////
+
+    // imgMos.Y is used to store the index of the image from which each pixel
+    // in the output mosaic can be read out for the thin-strip mode. Thus,
+    // there is no special handling for pixels around the seam. Also, imgMos.Y
+    // is set to 255 wherever we can't get its value from any input image e.g.
+    // in the gray border areas. imgMos.V and imgMos.U are set to 128 for the
+    // thin-strip mode.
+
+    ////////////////////// WIDE STRIP MODE ///////////////////////////////////
+
+    // imgMos.Y is used the same way as the thin-strip mode.
+    // imgMos.V is used to store the index of the neighboring image which
+    // should contribute to the color of an output pixel in a band around
+    // the seam. Thus, in this band, we will crossfade between the color values
+    // from the image index imgMos.Y and image index imgMos.V. imgMos.U is
+    // used to store the weight (multiplied by 100) that each image will
+    // contribute to the blending process. Thus, we start at 99% contribution
+    // from the first image, then go to 50% contribution from each image at
+    // the seam. Then, the contribution from the second image goes up to 99%.
+
+    // For WIDE mode, set the pixel masks to guide the blender to cross-fade
+    // between the images on either side of each seam:
+    if (m_wb.stripType == STRIP_TYPE_WIDE)
+    {
+        // Set the number of pixels around the seam to cross-fade between
+        // the two component images,
+        int tw = STRIP_CROSS_FADE_WIDTH * width;
+
+        for(int y = 0; y < imgMos.Y.height; y++)
+        {
+            for(int x = tw; x < imgMos.Y.width - tw + 1; )
+            {
+                // Determine where the seam is...
+                if (imgMos.Y.ptr[y][x] != imgMos.Y.ptr[y][x+1] &&
+                        imgMos.Y.ptr[y][x] != 255 &&
+                        imgMos.Y.ptr[y][x+1] != 255)
+                {
+                    // Find the image indices on both sides of the seam
+                    unsigned char idx1 = imgMos.Y.ptr[y][x];
+                    unsigned char idx2 = imgMos.Y.ptr[y][x+1];
+
+                    for (int o = tw; o >= 0; o--)
+                    {
+                        // Set the image index to use for cross-fading
+                        imgMos.V.ptr[y][x - o] = idx2;
+                        // Set the intensity weights to use for cross-fading
+                        imgMos.U.ptr[y][x - o] = 50 + (99 - 50) * o / tw;
+                    }
+
+                    for (int o = 1; o <= tw; o++)
+                    {
+                        // Set the image index to use for cross-fading
+                        imgMos.V.ptr[y][x + o] = idx1;
+                        // Set the intensity weights to use for cross-fading
+                        imgMos.U.ptr[y][x + o] = imgMos.U.ptr[y][x - o];
+                    }
+
+                    x += (tw + 1);
+                }
+                else
+                {
+                    x++;
+                }
+            }
+        }
     }
 
     // Now perform the actual blending using the frame assignment determined above
@@ -683,8 +767,35 @@ void Blend::ProcessPyramidForThisFrame(CSite *csite, BlendRect &vcrect, BlendRec
                 int inMask = ((unsigned) ii < imgMos.Y.width &&
                         (unsigned) jj < imgMos.Y.height) ? 1 : 0;
 
-                if(inMask && imgMos.Y.ptr[jj][ii]!=site_idx && imgMos.Y.ptr[jj][ii]!=255)
+                if(inMask && imgMos.Y.ptr[jj][ii] != site_idx &&
+                        imgMos.V.ptr[jj][ii] != site_idx &&
+                        imgMos.Y.ptr[jj][ii] != 255)
                     continue;
+
+                // Setup weights for cross-fading
+                // Weight of the intensity already in the output pixel
+                double wt0 = 0.0;
+                // Weight of the intensity from the input pixel (current frame)
+                double wt1 = 1.0;
+
+                if (m_wb.stripType == STRIP_TYPE_WIDE)
+                {
+                    if(inMask && imgMos.Y.ptr[jj][ii] != 255)
+                    {
+                        if(imgMos.V.ptr[jj][ii] == 128) // Not on a seam
+                        {
+                            wt0 = 0.0;
+                            wt1 = 1.0;
+                        }
+                        else
+                        {
+                            wt0 = 1.0;
+                            wt1 = ((imgMos.Y.ptr[jj][ii] == site_idx) ?
+                                    (double)imgMos.U.ptr[jj][ii] / 100.0 :
+                                    1.0 - (double)imgMos.U.ptr[jj][ii] / 100.0);
+                        }
+                    }
+                }
 
                 // Project this mosaic point into the original frame coordinate space
                 double xx, yy;
@@ -696,6 +807,8 @@ void Blend::ProcessPyramidForThisFrame(CSite *csite, BlendRect &vcrect, BlendRec
                     if(inMask)
                     {
                         imgMos.Y.ptr[jj][ii] = 255;
+                        wt0 = 0.0f;
+                        wt1 = 1.0f;
                     }
                 }
 
@@ -708,15 +821,19 @@ void Blend::ProcessPyramidForThisFrame(CSite *csite, BlendRect &vcrect, BlendRec
 
                 // Final destination in extended pyramid
 #ifndef LINEAR_INTERP
-                if(inSegment(x1, sptr->width, BORDER-1) && inSegment(y1, sptr->height, BORDER-1))
+                if(inSegment(x1, sptr->width, BORDER-1) &&
+                        inSegment(y1, sptr->height, BORDER-1))
                 {
                     double xfrac = xx - x1;
                     double yfrac = yy - y1;
-                    dptr->ptr[j][i] = (short) (.5 + ciCalc(sptr, x1, y1, xfrac, yfrac));
+                    dptr->ptr[j][i] = (short) (wt0 * dptr->ptr[j][i] + .5 +
+                            wt1 * ciCalc(sptr, x1, y1, xfrac, yfrac));
                     if (dvptr >= m_pMosaicVPyr && nC > 0)
                     {
-                        duptr->ptr[j][i] = (short) (.5 + ciCalc(suptr, x1, y1, xfrac, yfrac));
-                        dvptr->ptr[j][i] = (short) (.5 + ciCalc(svptr, x1, y1, xfrac, yfrac));
+                        duptr->ptr[j][i] = (short) (wt0 * duptr->ptr[j][i] + .5 +
+                                wt1 * ciCalc(suptr, x1, y1, xfrac, yfrac));
+                        dvptr->ptr[j][i] = (short) (wt0 * dvptr->ptr[j][i] + .5 +
+                                wt1 * ciCalc(svptr, x1, y1, xfrac, yfrac));
                     }
                 }
 #else
@@ -755,11 +872,14 @@ void Blend::ProcessPyramidForThisFrame(CSite *csite, BlendRect &vcrect, BlendRec
                     clipToSegment(x1, sptr->width, BORDER);
                     clipToSegment(y1, sptr->height, BORDER);
 
-                    dptr->ptr[j][i] = sptr->ptr[y1][x1];
+                    dptr->ptr[j][i] = (short) (wt0 * dptr->ptr[j][i] + 0.5 +
+                            wt1 * sptr->ptr[y1][x1] );
                     if (dvptr >= m_pMosaicVPyr && nC > 0)
                     {
-                        dvptr->ptr[j][i] = svptr->ptr[y1][x1];
-                        duptr->ptr[j][i] = suptr->ptr[y1][x1];
+                        dvptr->ptr[j][i] = (short) (wt0 * dvptr->ptr[j][i] +
+                                0.5 + wt1 * svptr->ptr[y1][x1] );
+                        duptr->ptr[j][i] = (short) (wt0 * duptr->ptr[j][i] +
+                                0.5 + wt1 * suptr->ptr[y1][x1] );
                     }
                 }
             }
@@ -907,7 +1027,50 @@ void Blend::FrameToMosaicRect(int width, int height, double trs[3][3], BlendRect
     }
 }
 
+void Blend::SelectRelevantFrames(MosaicFrame **frames, int frames_size,
+        MosaicFrame **relevant_frames, int &relevant_frames_size)
+{
+    MosaicFrame *first = frames[0];
+    MosaicFrame *last = frames[frames_size-1];
+    MosaicFrame *mb;
 
+    double fxpos = first->trs[0][2], fypos = first->trs[1][2];
+
+    double midX = last->width / 2.0;
+    double midY = last->height / 2.0;
+    double z = ProjZ(first->trs, midX, midY, 1.0);
+    double firstX, firstY;
+    double prevX = firstX = ProjX(first->trs, midX, midY, z, 1.0);
+    double prevY = firstY = ProjY(first->trs, midX, midY, z, 1.0);
+
+    relevant_frames[0] = first; // Add first frame by default
+    relevant_frames_size = 1;
+
+    for (int i = 0; i < frames_size - 1; i++)
+    {
+        mb = frames[i];
+        double currX, currY;
+        z = ProjZ(mb->trs, midX, midY, 1.0);
+        currX = ProjX(mb->trs, midX, midY, z, 1.0);
+        currY = ProjY(mb->trs, midX, midY, z, 1.0);
+        double deltaX = currX - prevX;
+        double deltaY = currY - prevY;
+        double center2centerDist = sqrt(deltaY * deltaY + deltaX * deltaX);
+
+        if (fabs(deltaX) > STRIP_SEPARATION_THRESHOLD * last->width)
+        {
+            relevant_frames[relevant_frames_size] = mb;
+            relevant_frames_size++;
+
+            prevX = currX;
+            prevY = currY;
+        }
+    }
+
+    // Add last frame by default
+    relevant_frames[relevant_frames_size] = last;
+    relevant_frames_size++;
+}
 
 void Blend::ComputeBlendParameters(MosaicFrame **frames, int frames_size, int is360)
 {

@@ -145,6 +145,7 @@ typedef struct {
   int nlevs;
   int nlevsC;
   int blendingType;
+  int stripType;
   // Add an overlap to prevent a gap between pictures due to roundoffs
   double roundoffOverlap;// 1.5
 
