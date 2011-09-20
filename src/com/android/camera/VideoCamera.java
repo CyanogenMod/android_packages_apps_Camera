@@ -478,6 +478,12 @@ public class VideoCamera extends ActivityBase
         mIndicatorControlContainer.setListener(this);
         mPopupGestureDetector = new GestureDetector(this,
                 new PopupGestureListener());
+
+        if (effectsActive()) {
+            mIndicatorControlContainer.overrideSettings(
+                    CameraSettings.KEY_VIDEO_QUALITY,
+                    Integer.toString(CamcorderProfile.QUALITY_480P) );
+        }
     }
 
     public static int roundOrientation(int orientation) {
@@ -637,14 +643,23 @@ public class VideoCamera extends ActivityBase
     }
 
     private void readVideoPreferences() {
-        CameraSettings settings = new CameraSettings(this, mParameters,
-                mCameraId, CameraHolder.instance().getCameraInfo());
         // The preference stores values from ListPreference and is thus string type for all values.
         // We need to convert it to int manually.
-        int quality = Integer.valueOf(mPreferences.getString(
-                CameraSettings.KEY_VIDEO_QUALITY,
-                settings.getDefaultVideoQuality(
-                        getResources().getString(R.string.pref_video_quality_default))));
+        String defaultQuality = CameraSettings.getDefaultVideoQuality(mCameraId,
+                getResources().getString(R.string.pref_video_quality_default) );
+        String videoQuality =
+                mPreferences.getString(CameraSettings.KEY_VIDEO_QUALITY,
+                        defaultQuality);
+        int quality = 0;
+        try {
+            quality = Integer.valueOf(videoQuality);
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Cannot convert quality setting '"
+                    + videoQuality + "' into CamcorderProfile quality."
+                    + " Reverting to default.");
+            // Conversion guaranteed by getDefaultVideoQuality
+            quality = Integer.valueOf(defaultQuality);
+        }
 
         // Set video quality.
         Intent intent = getIntent();
@@ -668,6 +683,45 @@ public class VideoCamera extends ActivityBase
             mMaxVideoDurationInMs = CameraSettings.DEFAULT_VIDEO_DURATION;
         }
 
+        // Set effect
+        mEffectType = CameraSettings.readEffectType(mPreferences);
+        if (mEffectType != EffectsRecorder.EFFECT_NONE) {
+            mEffectParameter = CameraSettings.readEffectParameter(mPreferences);
+            // When picking from gallery, mEffectParameter should have been
+            // initialized in onActivityResult. If not, fall back to no effect
+            if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER
+                    && ((String)mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)
+                    && mEffectUriFromGallery == null) {
+                Log.w(TAG, "No URI from gallery, resetting to no effect");
+                mEffectType = EffectsRecorder.EFFECT_NONE;
+                mEffectParameter = null;
+                ComboPreferences.Editor editor = mPreferences.edit();
+                editor.putString(CameraSettings.KEY_VIDEO_EFFECT,
+                        getString(R.string.pref_video_effect_default));
+                editor.apply();
+                mIndicatorControlContainer.overrideSettings(
+                    CameraSettings.KEY_VIDEO_QUALITY,
+                    null );
+            } else {
+                // Set quality to 480p for effects
+                quality = CamcorderProfile.QUALITY_480P;
+                // On initial startup, can get here before indicator control is
+                // enabled. In that case, UI quality override handled in
+                // initializeIndicatorControl.
+                if (mIndicatorControlContainer != null) {
+                    mIndicatorControlContainer.overrideSettings(
+                            CameraSettings.KEY_VIDEO_QUALITY,
+                            Integer.toString(CamcorderProfile.QUALITY_480P) );
+                }
+            }
+        } else {
+            mEffectParameter = null;
+            if (mIndicatorControlContainer != null) {
+                mIndicatorControlContainer.overrideSettings(
+                        CameraSettings.KEY_VIDEO_QUALITY,
+                        null );
+            }
+        }
         // Read time lapse recording interval.
         String frameIntervalStr = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
@@ -679,33 +733,11 @@ public class VideoCamera extends ActivityBase
         if (mCaptureTimeLapse) quality += 1000;
         mProfile = CamcorderProfile.get(mCameraId, quality);
         getDesiredPreviewSize();
-
-        // Set effect
-        mEffectType = CameraSettings.readEffectType(mPreferences);
-        if (mEffectType != EffectsRecorder.EFFECT_NONE) {
-            mEffectParameter = CameraSettings.readEffectParameter(mPreferences);
-            // When picking from gallery, mEffectParameter should have been
-            // initialized in onActivityResult. If not, fall back to no effect
-            if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER &&
-                ((String)mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {
-                if (mEffectUriFromGallery == null) {
-                    Log.w(TAG, "No URI from gallery, resetting to no effect");
-                    mEffectType = EffectsRecorder.EFFECT_NONE;
-                    mEffectParameter = null;
-                    ComboPreferences.Editor editor = mPreferences.edit();
-                    editor.putString(CameraSettings.KEY_VIDEO_EFFECT, "none");
-                    editor.apply();
-                }
-            }
-        } else {
-            mEffectParameter = null;
-        }
-
     }
 
     private void getDesiredPreviewSize() {
         mParameters = mCameraDevice.getParameters();
-        if (mParameters.getSupportedVideoSizes() == null) {
+        if (mParameters.getSupportedVideoSizes() == null || effectsActive()) {
             mDesiredPreviewWidth = mProfile.videoFrameWidth;
             mDesiredPreviewHeight = mProfile.videoFrameHeight;
         } else {  // Driver supports separates outputs for preview and video.
@@ -802,7 +834,7 @@ public class VideoCamera extends ActivityBase
 
     private void setPreviewDisplay(SurfaceHolder holder) {
         try {
-            if (effectsActive() && mPreviewing) {
+            if (effectsActive() ) {
                 mEffectsRecorder.setPreviewDisplay(
                         mSurfaceHolder,
                         mSurfaceWidth,
@@ -1842,13 +1874,18 @@ public class VideoCamera extends ActivityBase
     }
 
     public void onEffectsUpdate(int effectId, int effectMsg) {
-        if (effectId == EffectsRecorder.EFFECT_BACKDROPPER) {
+        if (effectMsg == EffectsRecorder.EFFECT_MSG_EFFECTS_STOPPED) {
+            // Effects have shut down. Hide learning message if any,
+            // and restart regular preview.
+            mBgLearningMessage.setVisibility(View.GONE);
+            checkQualityAndStartPreview();
+        } else if (effectId == EffectsRecorder.EFFECT_BACKDROPPER) {
             switch (effectMsg) {
                 case EffectsRecorder.EFFECT_MSG_STARTED_LEARNING:
                     mBgLearningMessage.setVisibility(View.VISIBLE);
                     break;
                 case EffectsRecorder.EFFECT_MSG_DONE_LEARNING:
-                case EffectsRecorder.EFFECT_MSG_STOPPING_EFFECT:
+                case EffectsRecorder.EFFECT_MSG_SWITCHING_EFFECT:
                     mBgLearningMessage.setVisibility(View.GONE);
                     break;
             }
@@ -1946,14 +1983,14 @@ public class VideoCamera extends ActivityBase
     }
 
     private boolean updateEffectSelection() {
-        int currentEffectType = mEffectType;
-        Object currentEffectParameter = mEffectParameter;
+        int previousEffectType = mEffectType;
+        Object previousEffectParameter = mEffectParameter;
         mEffectType = CameraSettings.readEffectType(mPreferences);
         mEffectParameter = CameraSettings.readEffectParameter(mPreferences);
 
-        if (mEffectType == currentEffectType) {
+        if (mEffectType == previousEffectType) {
             if (mEffectType == EffectsRecorder.EFFECT_NONE) return false;
-            if (mEffectParameter.equals(currentEffectParameter)) return false;
+            if (mEffectParameter.equals(previousEffectParameter)) return false;
         }
         Log.v(TAG, "New effect selection: " + mPreferences.getString(CameraSettings.KEY_VIDEO_EFFECT, "none"));
 
@@ -1972,14 +2009,29 @@ public class VideoCamera extends ActivityBase
             startActivityForResult(i, EffectsRecorder.EFFECT_BACKDROPPER);
             return true;
         }
-        if (currentEffectType == EffectsRecorder.EFFECT_NONE) {
-            // Start up effects
-            startPreview();
+        if (previousEffectType == EffectsRecorder.EFFECT_NONE) {
+            // Stop regular preview and start effects.
+            mCameraDevice.stopPreview();
+            checkQualityAndStartPreview();
         } else {
             // Switch currently running effect
             mEffectsRecorder.setEffect(mEffectType, mEffectParameter);
         }
         return true;
+    }
+
+    // Verifies that the current preview view size is correct before starting
+    // preview. If not, resets the surface holder and resizes the view.
+    private void checkQualityAndStartPreview() {
+        readVideoPreferences();
+        Size size = mParameters.getPreviewSize();
+        if (size.width != mDesiredPreviewWidth
+                || size.height != mDesiredPreviewHeight) {
+            resizeForPreviewAspectRatio();
+        } else {
+            // Start up preview again
+            startPreview();
+        }
     }
 
     private void showTimeLapseUI(boolean enable) {
