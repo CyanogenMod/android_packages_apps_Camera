@@ -40,6 +40,7 @@
     Mosaic mosaic;
     // Define blending types to use, and the frame dimensions
     int blendingType = Blend::BLEND_TYPE_CYLPAN;
+    int stripType = Blend::STRIP_TYPE_THIN;
     int width = 640;
     int height = 480;
 
@@ -49,7 +50,7 @@
         if (!mosaic.isInitialized())
         {
           // Initialize mosaic processing
-          mosaic.initialize(blendingType, width, height, -1, false, 5.0f);
+          mosaic.initialize(blendingType, stripType, width, height, -1, false, 5.0f);
         }
 
         // Add to list of frames
@@ -84,6 +85,9 @@ public:
    /*!
     *   Creates the aligner and blender and initializes state.
     *   \param blendingType Type of blending to perform
+    *   \param stripType    Type of strip to use. 0: thin, 1: wide. stripType
+    *                       is effective only when blendingType is CylPan or
+    *                       Horz. Otherwise, it is set to thin irrespective of the input.
     *   \param width        Width of input images (note: all images must be same size)
     *   \param height       Height of input images (note: all images must be same size)
     *   \param nframes      Number of frames to pre-allocate; default value -1 will allocate each frame as it comes
@@ -91,7 +95,7 @@ public:
     *   \param thresh_still Minimum number of pixels of translation detected between the new frame and the last frame before this frame is added to be mosaiced. For the low-res processing at 320x180 resolution input, we set this to 5 pixels. To reject no frames, set this to 0.0 (default value).
     *   \return             Return code signifying success or failure.
     */
-  int initialize(int blendingType, int width, int height, int nframes = -1, bool quarter_res = false, float thresh_still = 0.0);
+  int initialize(int blendingType, int stripType, int width, int height, int nframes = -1, bool quarter_res = false, float thresh_still = 0.0);
 
    /*!
     *   Adds a YVU frame to the mosaic.
@@ -166,6 +170,12 @@ protected:
    * Collection of frames that will make up mosaic.
    */
   MosaicFrame **frames;
+
+  /**
+    * Subset of frames that are considered as relevant.
+    */
+  MosaicFrame **rframes;
+
   int frames_size;
   int max_frames;
 
@@ -178,6 +188,11 @@ protected:
    *  Type of blending to perform.
    */
   int blendingType;
+
+  /**
+    * Type of strip to use. 0: thin (default), 1: wide
+    */
+  int stripType;
 
   /**
    *  Pointer to aligner.
