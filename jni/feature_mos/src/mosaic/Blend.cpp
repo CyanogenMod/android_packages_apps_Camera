@@ -143,9 +143,10 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
 
     double z, x0, y0, x1, y1, x2, y2, x3, y3;
 
-    // Corners of the first and last frames in mosaic coordinate system
-    double xf[4] = {0.0, 0.0, 0.0, 0.0};
-    double xl[4] = {0.0, 0.0, 0.0, 0.0};
+    // Corners of the left-most and right-most frames respectively in the
+    // mosaic coordinate system.
+    double xLeftCorners[2] = {2e30, 2e30};
+    double xRightCorners[2] = {-2e30, -2e30};
 
     // Determine the extents of the final mosaic
     CSite *csite = m_AllSites ;
@@ -164,20 +165,16 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
         FrameToMosaic(mb->trs, mb->width-1.0,   mb->height-1.0, x2, y2);
         FrameToMosaic(mb->trs, mb->width-1.0,   0.0,            x3, y3);
 
-        if(mfit == 0)
+        if(x0 < xLeftCorners[0] || x1 < xLeftCorners[1])    // If either of the left corners is lower
         {
-            xf[0] = x0;
-            xf[1] = x1;
-            xf[2] = x3;
-            xf[3] = x2;
+            xLeftCorners[0] = x0;
+            xLeftCorners[1] = x1;
         }
 
-        if(mfit==frames_size-1)
+        if(x3 > xRightCorners[0] || x2 > xRightCorners[1])    // If either of the right corners is higher
         {
-            xl[0] = x0;
-            xl[1] = x1;
-            xl[2] = x3;
-            xl[3] = x2;
+            xRightCorners[0] = x3;
+            xRightCorners[1] = x2;
         }
 
         // Compute the centroid of the warped region
@@ -200,27 +197,19 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
     Mwidth = (unsigned short) (fullRect.right - fullRect.left + 1);
     Mheight = (unsigned short) (fullRect.bottom - fullRect.top + 1);
 
-    int xlt, xrt;
+    int xLeftMost, xRightMost;
 
-    if(frames[0]->trs[0][2] < frames[frames_size-1]->trs[0][2]) //left->right mosaic
-    {
-        xlt = max(xf[0],xf[1]) - fullRect.left;
-        xrt = min(xl[2],xl[3]) - fullRect.left;
-    }
-    else
-    {
-        xlt = max(xl[0],xl[1]) - fullRect.left;
-        xrt = min(xf[2],xf[3]) - fullRect.left;
-    }
-
+    // Rounding up, so that we don't include the gray border.
+    xLeftMost = max(0, max(xLeftCorners[0], xLeftCorners[1]) - fullRect.left + 1);
+    xRightMost = min(Mwidth - 1, min(xRightCorners[0], xRightCorners[1]) - fullRect.left - 1);
 
     // Make sure image width is multiple of 4
     Mwidth = (unsigned short) ((Mwidth + 3) & ~3);
     Mheight = (unsigned short) ((Mheight + 3) & ~3);    // Round up.
 
-    if (Mwidth < width || Mheight < height)
+    if (Mwidth < width || Mheight < height || xRightMost <= xLeftMost)
     {
-        LOGE("RunBlend: aborting - consistency check failed, w=%d, h=%d", Mwidth, Mheight);
+        LOGE("RunBlend: aborting - consistency check failed, w=%d, h=%d, xLeftMost=%d, xRightMost=%d", Mwidth, Mheight, xLeftMost, xRightMost);
         return BLEND_RET_ERROR;
     }
 
@@ -245,8 +234,8 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
     // cropped out of the computed mosaic to get rid of the gray borders.
     MosaicRect cropping_rect;
 
-    cropping_rect.left = xlt;
-    cropping_rect.right = xrt;
+    cropping_rect.left = xLeftMost;
+    cropping_rect.right = xRightMost;
 
     // Do merging and blending :
     ret = DoMergeAndBlend(frames, numCenters, width, height, *imgMos, fullRect,
