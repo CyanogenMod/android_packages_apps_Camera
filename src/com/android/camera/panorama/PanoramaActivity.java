@@ -255,7 +255,11 @@ public class PanoramaActivity extends Activity implements
                         break;
                     case MSG_GENERATE_FINAL_MOSAIC_ERROR:
                         onBackgroundThreadFinished();
-                        mAlertDialog.show();
+                        if (mPausing) {
+                            resetToPreview();
+                        } else {
+                            mAlertDialog.show();
+                        }
                         break;
                     case MSG_RESET_TO_PREVIEW:
                         onBackgroundThreadFinished();
