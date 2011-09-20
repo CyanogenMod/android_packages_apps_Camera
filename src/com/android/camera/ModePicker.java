@@ -16,11 +16,9 @@
 
 package com.android.camera;
 
-import com.android.camera.Util;
 import com.android.camera.ui.RotateImageView;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -60,7 +58,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     private View mCurrentModeBar;
     private View mSelectedView;
 
-    private int mCurrentMode = -1;
+    private int mCurrentMode = 0;
     private Animation mFadeIn, mFadeOut;
 
     public ModePicker(Context context, AttributeSet attrs) {
