@@ -23,8 +23,7 @@ import android.util.AttributeSet;
 
 public abstract class IndicatorControlContainer extends IndicatorControl {
     public abstract void initialize(Context context, PreferenceGroup group,
-            String flashSetting, boolean isZoomSupported,
-            String[] keys, String[] otherSettingKeys);
+            boolean isZoomSupported, String[] keys, String[] otherSettingKeys);
 
     public IndicatorControlContainer(Context context, AttributeSet attrs) {
         super(context, attrs);

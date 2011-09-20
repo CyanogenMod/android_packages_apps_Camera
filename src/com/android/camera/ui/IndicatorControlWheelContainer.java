@@ -62,10 +62,9 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer
     }
 
     public void initialize(Context context, PreferenceGroup group,
-            String flashSetting, boolean isZoomSupported,
-            String[] keys, String[] otherSettingKeys) {
-        mIndicatorControlWheel.initialize(context, group, flashSetting,
-                isZoomSupported, keys, otherSettingKeys);
+            boolean isZoomSupported, String[] keys, String[] otherSettingKeys) {
+        mIndicatorControlWheel.initialize(context, group, isZoomSupported,
+                keys, otherSettingKeys);
         mIndicatorControlWheel.setOnIndicatorEventListener(this);
     }
 
