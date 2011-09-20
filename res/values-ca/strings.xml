@@ -102,6 +102,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"S\'està preparant el panorama"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"S\'ha produït un error en desar panorama"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
+    <string name="pano_capture_indication" msgid="7431983072966619171">"S\'està capturant un panorama"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"S\'està desant..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Pica per enfocar"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efectes"</string>
     <string name="effect_none" msgid="3601545724573307541">"Cap"</string>
@@ -112,8 +114,10 @@
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Nas gran"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Ulls petits"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"A l\'espai"</string>
-    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
-    <skip />
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Posta del sol"</string>
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Tria\'n un"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Col·loca el dispositiu sobre una superfície estable i assegura\'t que no hi hagi res que es mogui darrere teu."\n\n"A continuació, surt del davant de la càmera."</string>
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Aquest opció no es pot seleccionar quan l\'efecte està activat."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Per fer una foto durant l\'enregistrament de vídeo, pica la pantalla de visualització prèvia."</string>
 </resources>

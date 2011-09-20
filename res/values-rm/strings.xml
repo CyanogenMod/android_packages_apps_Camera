@@ -121,6 +121,10 @@
     <skip />
     <!-- no translation found for pano_dialog_title (5755531234434437697) -->
     <skip />
+    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
+    <skip />
+    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
+    <skip />
     <!-- no translation found for tap_to_focus (6417403734418828035) -->
     <skip />
     <!-- no translation found for pref_video_effect_title (8243182968457289488) -->
@@ -143,8 +147,14 @@
     <skip />
     <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
     <skip />
+    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
+    <skip />
     <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
     <skip />
     <!-- no translation found for bg_replacement_message (7540788298745332389) -->
+    <skip />
+    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
+    <skip />
+    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
     <skip />
 </resources>
