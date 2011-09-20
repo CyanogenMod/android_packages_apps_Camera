@@ -99,9 +99,13 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"No hay imágenes para compartir"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"No hay vídeos para compartir"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Demasiado rápido"</string>
-    <!-- outdated translation 8485307771397200861 -->     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Preparando vista previa..."</string>
-    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Error al guardar modo panorámico"</string>
+    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Preparando modo panorámico"</string>
+    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Error al guardar en modo panorámico"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorámico"</string>
+    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
+    <skip />
+    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
+    <skip />
     <string name="tap_to_focus" msgid="6417403734418828035">"Tocar para enfocar"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efectos"</string>
     <string name="effect_none" msgid="3601545724573307541">"Ninguno"</string>
@@ -111,12 +115,14 @@
     <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Boca pequeña"</string>
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Nariz grande"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Ojos pequeños"</string>
-    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
+    <string name="effect_backdropper_space" msgid="1381012939195370792">"En el espacio"</string>
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Atardecer"</string>
+    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
     <skip />
-    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
+    <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Personalizado"</string>
+    <string name="bg_replacement_message" msgid="7540788298745332389">"Coloca el dispositivo en una superficie plana y comprueba que no se produzca ningún movimiento detrás."\n\n"A continuación, colócate fuera de la vista de la cámara."</string>
+    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
     <skip />
-    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
-    <skip />
-    <!-- no translation found for bg_replacement_message (7540788298745332389) -->
+    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
     <skip />
 </resources>
