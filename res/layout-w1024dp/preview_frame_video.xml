@@ -55,7 +55,6 @@
                 android:text="@string/bg_replacement_message" />
         <ImageButton android:id="@+id/btn_play"
                 style="@style/ReviewPlayIcon"
-                android:src="@drawable/btn_ic_review_play"
                 android:onClick="onPlayButtonClicked" />
         <ImageView android:id="@+id/review_image"
                 android:layout_width="match_parent"
