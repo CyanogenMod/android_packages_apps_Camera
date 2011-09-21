@@ -444,7 +444,9 @@ public class VideoCamera extends ActivityBase
     private void loadCameraPreferences() {
         CameraSettings settings = new CameraSettings(this, mParameters,
                 mCameraId, CameraHolder.instance().getCameraInfo());
-        mPreferenceGroup = settings.getPreferenceGroup(R.xml.video_preferences);
+        // Remove the video quality preference setting when the quality is given in the intent.
+        mPreferenceGroup = filterPreferenceScreenByIntent(
+                settings.getPreferenceGroup(R.xml.video_preferences));
     }
 
     private boolean collapseCameraControls() {
