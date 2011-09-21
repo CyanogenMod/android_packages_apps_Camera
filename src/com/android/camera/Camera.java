@@ -49,7 +49,6 @@ import android.os.Message;
 import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -62,7 +61,6 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -952,6 +950,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
                 mParameters.isZoomSupported(),
                 SETTING_KEYS, OTHER_SETTING_KEYS);
+        updateSceneModeUI();
         mIndicatorControlContainer.setListener(this);
     }
 
