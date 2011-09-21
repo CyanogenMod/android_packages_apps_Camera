@@ -635,7 +635,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_android_camera_panorama_Mosaic_getFinalMos
         for(int i=0; i<mosaicWidth; i+=2)
         {
             V[j*mosaicWidth+i] = V[(2*j)*mosaicWidth+i];        // V
-            V[j*mosaicWidth+i+1] = U[(2*j)*mosaicWidth+i+1];        // U
+            V[j*mosaicWidth+i+1] = U[(2*j)*mosaicWidth+i];        // U
         }
     }
 
