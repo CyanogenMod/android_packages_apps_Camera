@@ -85,6 +85,7 @@ public class EffectsRecorder {
     private GraphEnvironment mGraphEnv;
     private int mGraphId;
     private GraphRunner mRunner = null;
+    private GraphRunner mOldRunner = null;
 
     private SurfaceTexture mTextureSource;
 
@@ -262,7 +263,7 @@ public class EffectsRecorder {
         mErrorListener = errorListener;
     }
 
-    public void initializeFilterFramework() {
+    private void initializeFilterFramework() {
         mGraphEnv = new GraphEnvironment();
         mGraphEnv.createGLEnvironment();
 
@@ -279,7 +280,7 @@ public class EffectsRecorder {
         mCurrentEffect = EFFECT_NONE;
     }
 
-    public synchronized void initializeEffect(boolean forceReset) {
+    private synchronized void initializeEffect(boolean forceReset) {
         if (forceReset ||
             mCurrentEffect != mEffect ||
             mCurrentEffect == EFFECT_BACKDROPPER) {
@@ -287,13 +288,11 @@ public class EffectsRecorder {
                     "previewSurface", mPreviewSurfaceHolder.getSurface(),
                     "previewWidth", mPreviewWidth,
                     "previewHeight", mPreviewHeight);
-
             if (mState == STATE_PREVIEW) {
-                // Switching effects while running. Stop existing runner.
-                // The stop callback will take care of starting new runner.
+                // Switching effects while running. Inform video camera.
                 sendMessage(mCurrentEffect, EFFECT_MSG_STOPPING_EFFECT);
-                mRunner.stop();
             }
+
             switch (mEffect) {
                 case EFFECT_GOOFY_FACE:
                     mGraphId = mGraphEnv.loadGraph(mContext, R.raw.goofy_face);
@@ -307,8 +306,21 @@ public class EffectsRecorder {
             }
             mCurrentEffect = mEffect;
 
+            mOldRunner = mRunner;
             mRunner = mGraphEnv.getRunner(mGraphId, GraphEnvironment.MODE_ASYNCHRONOUS);
             mRunner.setDoneCallback(mRunnerDoneCallback);
+
+            if (mState == STATE_PREVIEW) {
+                // Switching effects while running. Stop existing runner.
+                // The stop callback will take care of starting new runner.
+                mCameraDevice.stopPreview();
+                try {
+                    mCameraDevice.setPreviewTexture(null);
+                } catch(IOException e) {
+                    throw new RuntimeException("Unable to connect camera to effect input", e);
+                }
+                mOldRunner.stop();
+            }
         }
 
         switch (mCurrentEffect) {
@@ -328,7 +340,7 @@ public class EffectsRecorder {
         setFaceDetectOrientation(mOrientationHint);
     }
 
-    public void startPreview() {
+    public synchronized void startPreview() {
         if (mLogVerbose) Log.v(TAG, "Starting preview (" + this + ")");
 
         switch (mState) {
@@ -421,7 +433,7 @@ public class EffectsRecorder {
         }
     };
 
-    public void startRecording() {
+    public synchronized void startRecording() {
         if (mLogVerbose) Log.v(TAG, "Starting recording (" + this + ")");
 
         switch (mState) {
@@ -453,7 +465,7 @@ public class EffectsRecorder {
         mState = STATE_RECORD;
     }
 
-    public void stopRecording() {
+    public synchronized void stopRecording() {
         if (mLogVerbose) Log.v(TAG, "Stop recording (" + this + ")");
 
         switch (mState) {
@@ -472,7 +484,7 @@ public class EffectsRecorder {
     }
 
     // Stop and release effect resources
-    public void stopPreview() {
+    public synchronized void stopPreview() {
         if (mLogVerbose) Log.v(TAG, "Stopping preview (" + this + ")");
 
         switch (mState) {
@@ -493,7 +505,15 @@ public class EffectsRecorder {
 
         mCurrentEffect = EFFECT_NONE;
 
+        mCameraDevice.stopPreview();
+        try {
+            mCameraDevice.setPreviewTexture(null);
+        } catch(IOException e) {
+            throw new RuntimeException("Unable to connect camera to effect input", e);
+        }
+
         mState = STATE_CONFIGURE;
+        mOldRunner = mRunner;
         mRunner.stop();
 
         // Rest of stop and release handled in mRunnerDoneCallback
@@ -525,6 +545,11 @@ public class EffectsRecorder {
             new OnRunnerDoneListener() {
         public void onRunnerDone(int result) {
             synchronized(EffectsRecorder.this) {
+                if (mOldRunner != null) {
+                    if (mLogVerbose) Log.v(TAG, "Tearing down old graph.");
+                    mOldRunner.getGraph().tearDown(mGraphEnv.getContext());
+                    mOldRunner = null;
+                }
                 if (mState == STATE_PREVIEW) {
                     // Switching effects, start up the new runner
                     if (mLogVerbose) Log.v(TAG, "Previous effect halted, starting new effect.");
@@ -533,7 +558,6 @@ public class EffectsRecorder {
                 } else if (mState != STATE_RELEASED) {
                     // Shutting down effects
                     if (mLogVerbose) Log.v(TAG, "Runner halted, restoring direct preview");
-                    mCameraDevice.stopPreview();
                     try {
                         mCameraDevice.setPreviewDisplay(mPreviewSurfaceHolder);
                     } catch(IOException e) {
@@ -555,7 +579,6 @@ public class EffectsRecorder {
             case STATE_RECORD:
             case STATE_PREVIEW:
                 stopPreview();
-                mCameraDevice.stopPreview();
                 // Fall-through
             default:
                 mState = STATE_RELEASED;
