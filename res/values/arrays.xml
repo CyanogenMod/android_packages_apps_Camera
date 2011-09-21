@@ -20,21 +20,18 @@
     <string-array name="pref_video_quality_entries" translatable="false">
         <item>@string/pref_video_quality_entry_high</item>
         <item>@string/pref_video_quality_entry_low</item>
-        <item>@string/pref_video_quality_entry_mms</item>
         <item>@string/pref_video_quality_entry_youtube</item>
     </string-array>
 
     <string-array name="pref_video_quality_entryvalues" translatable="false">
         <item>@string/pref_video_quality_high</item>
         <item>@string/pref_video_quality_low</item>
-        <item>@string/pref_video_quality_mms</item>
         <item>@string/pref_video_quality_youtube</item>
     </string-array>
 
     <array name="video_quality_largeicons" translatable="false">
         <item>@drawable/ic_viewfinder_video_quality_high</item>
         <item>@drawable/ic_viewfinder_video_quality_low</item>
-        <item>@drawable/ic_viewfinder_video_quality_mms</item>
         <item>@drawable/ic_viewfinder_video_quality_youtube</item>
     </array>
 
