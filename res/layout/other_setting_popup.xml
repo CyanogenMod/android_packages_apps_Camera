@@ -22,7 +22,7 @@
         style="@style/SettingPopupWindow">
 
     <LinearLayout android:orientation="vertical"
-        android:layout_width="@dimen/other_setting_popup_window_width"
+        android:layout_width="@dimen/big_setting_popup_window_width"
         android:layout_height="wrap_content">
 
         <FrameLayout

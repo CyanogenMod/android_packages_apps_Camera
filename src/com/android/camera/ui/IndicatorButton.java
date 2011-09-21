@@ -16,6 +16,7 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.CameraSettings;
 import com.android.camera.IconListPreference;
 import com.android.camera.R;
 
@@ -102,10 +103,17 @@ public class IndicatorButton extends AbstractIndicatorButton implements BasicSet
                 Context.LAYOUT_INFLATER_SERVICE);
         ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.frame_layout);
 
-        BasicSettingPopup popup = (BasicSettingPopup) inflater.inflate(
-                R.layout.basic_setting_popup, root, false);
+        BasicSettingPopup popup;
+        if (CameraSettings.KEY_VIDEO_EFFECT.equals(getKey())) {
+            popup = (BasicSettingPopup) inflater.inflate(
+                    R.layout.effect_setting_popup, root, false);
+            popup.initialize(mPreference, R.layout.effect_setting_item);
+        } else {
+            popup = (BasicSettingPopup) inflater.inflate(
+                    R.layout.basic_setting_popup, root, false);
+            popup.initialize(mPreference, R.layout.setting_item);
+        }
         popup.setSettingChangedListener(this);
-        popup.initialize(mPreference);
         root.addView(popup);
         mPopup = popup;
     }
