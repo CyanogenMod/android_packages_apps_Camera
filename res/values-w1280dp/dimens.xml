@@ -33,6 +33,6 @@
     <dimen name="setting_item_list_margin">16dp</dimen>
     <dimen name="popup_title_text_size">22dp</dimen>
     <dimen name="popup_title_frame_min_height">48dp</dimen>
-    <dimen name="other_setting_popup_window_width">590dp</dimen>
+    <dimen name="big_setting_popup_window_width">590dp</dimen>
     <dimen name="setting_item_icon_width">35dp</dimen>
 </resources>
