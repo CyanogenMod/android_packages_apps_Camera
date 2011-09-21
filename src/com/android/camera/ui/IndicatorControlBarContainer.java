@@ -154,9 +154,7 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
 
     @Override
     public void overrideSettings(final String ... keyvalues) {
-        if (mSecondLevelIndicatorControlBar.getVisibility() == View.VISIBLE) {
-            mSecondLevelIndicatorControlBar.overrideSettings(keyvalues);
-        }
+        mSecondLevelIndicatorControlBar.overrideSettings(keyvalues);
     }
 
     @Override
