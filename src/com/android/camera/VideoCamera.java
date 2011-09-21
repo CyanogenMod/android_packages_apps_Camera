@@ -2183,7 +2183,8 @@ public class VideoCamera extends ActivityBase
     // Preview area is touched. Take a picture.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
-        if (mPausing || mSnapshotInProgress || !mMediaRecorderRecording) {
+        if (mPausing || mSnapshotInProgress
+                || !mMediaRecorderRecording || effectsActive()) {
             return false;
         }
 
