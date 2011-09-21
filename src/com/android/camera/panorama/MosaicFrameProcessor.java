@@ -26,6 +26,7 @@ public class MosaicFrameProcessor {
     private static final String TAG = "MosaicFrameProcessor";
     private static final int NUM_FRAMES_IN_BUFFER = 2;
     private static final int MAX_NUMBER_OF_FRAMES = 100;
+    private static final int MOSAIC_RET_CODE_INDEX = 10;
     private static final int FRAME_COUNT_INDEX = 9;
     private static final int X_COORD_INDEX = 2;
     private static final int Y_COORD_INDEX = 5;
@@ -184,6 +185,7 @@ public class MosaicFrameProcessor {
 
     public void calculateTranslationRate(long now) {
         float[] frameData = mMosaicer.setSourceImageFromGPU();
+        int ret_code = (int) frameData[MOSAIC_RET_CODE_INDEX];
         mTotalFrameCount  = (int) frameData[FRAME_COUNT_INDEX];
         float translationCurrX = frameData[X_COORD_INDEX];
         float translationCurrY = frameData[Y_COORD_INDEX];

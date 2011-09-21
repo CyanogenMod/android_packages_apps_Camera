@@ -36,8 +36,10 @@ public:
   static const int ALIGN_TYPE_PAN    = 1;
 
   // Return codes
+  static const int ALIGN_RET_LOW_TEXTURE  = -2;
   static const int ALIGN_RET_ERROR        = -1;
   static const int ALIGN_RET_OK           = 0;
+  static const int ALIGN_RET_FEW_INLIERS  = 1;
 
   ///// Settings for feature-based alignment
   // Number of features to use from corner detection
@@ -48,6 +50,9 @@ public:
 // static const int DEFAULT_MOTION_MODEL=DB_HOMOGRAPHY_TYPE_PROJECTIVE;
 //  static const int DEFAULT_MOTION_MODEL=DB_HOMOGRAPHY_TYPE_AFFINE;
   static const unsigned int DEFAULT_REFERENCE_UPDATE_PERIOD=1500; //  Manual reference frame update so set this to a large number
+
+  static const int MIN_NR_REF_CORNERS = 25;
+  static const int MIN_NR_INLIERS = 10;
 
   Align();
   ~Align();
@@ -69,10 +74,13 @@ protected:
   db_FrameToReferenceRegistration reg;
 
   int frame_number;
-  double Happly[9];  // Homography to apply
-  double Hcurr[9];   // Homography from last frame
-                     // (right now same as above)
-  double Hprev[9];   // Homography up until the last frame
+
+  double Hcurr[9];   // Homography from the alignment reference to the frame-t
+  double Hprev[9];   // Homography from frame-0 to the frame-(t-1)
+
+  int reference_frame_index; // Index of the reference frame from all captured frames
+  int num_frames_captured; // Total number of frames captured (different from frame_number)
+  double average_tx_per_frame; // Average pixel translation per captured frame
 
   int width,height;
 

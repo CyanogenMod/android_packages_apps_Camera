@@ -146,6 +146,8 @@ public:
   static const int MOSAIC_RET_OK    = 1;
   static const int MOSAIC_RET_ERROR = -1;
   static const int MOSAIC_RET_CANCELLED = -2;
+  static const int MOSAIC_RET_LOW_TEXTURE = -3;
+  static const int MOSAIC_RET_FEW_INLIERS = 2;
 
 protected:
 

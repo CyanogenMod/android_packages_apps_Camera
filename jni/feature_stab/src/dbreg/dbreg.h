@@ -222,6 +222,11 @@ public:
     int GetNrMatches() { return m_nr_matches; }
 
     /*!
+     * Returns the number of corners detected in the current reference image.
+    */
+    int GetNrRefCorners() { return m_nr_corners_ref; }
+
+    /*!
      * Returns the pointer to an array of indices that were found to be RANSAC inliers from the matched corner lists.
     */
     int* GetInliers() { return m_inlier_indices; }
