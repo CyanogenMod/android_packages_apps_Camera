@@ -54,6 +54,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">@dimen/setting_popup_right_margin</item>
         <item name="android:visibility">gone</item>
     </style>
     <style name="PanoCustomDialogText">
