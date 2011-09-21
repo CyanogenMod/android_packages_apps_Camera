@@ -23,8 +23,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
         super(context, attrs);
     }
 
-    public void initialize(IconListPreference preference) {
+    public void initialize(IconListPreference preference, int settingItemLayoutId) {
         mPreference = preference;
         Context context = getContext();
         CharSequence[] entries = mPreference.getEntries();
@@ -69,11 +69,11 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
             listItem.add(map);
         }
         SimpleAdapter listItemAdapter = new SimpleAdapter(context, listItem,
-                R.layout.setting_item,
+                settingItemLayoutId,
                 new String[] {"text", "image"},
                 new int[] {R.id.text, R.id.image});
-        ((ListView) mSettingList).setAdapter(listItemAdapter);
-        ((ListView) mSettingList).setOnItemClickListener(this);
+        ((AbsListView) mSettingList).setAdapter(listItemAdapter);
+        ((AbsListView) mSettingList).setOnItemClickListener(this);
         reloadPreference();
     }
 
@@ -82,7 +82,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
     public void reloadPreference() {
         int index = mPreference.findIndexOfValue(mPreference.getValue());
         if (index != -1) {
-            ((ListView) mSettingList).setItemChecked(index, true);
+            ((AbsListView) mSettingList).setItemChecked(index, true);
         } else {
             Log.e(TAG, "Invalid preference value.");
             mPreference.print();
