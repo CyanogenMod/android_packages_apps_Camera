@@ -20,7 +20,6 @@ import com.android.camera.R;
 import com.android.camera.Util;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,15 +29,46 @@ import android.view.View;
  */
 public class ZoomControlBar extends ZoomControl {
     private static final String TAG = "ZoomControlBar";
-    private static int THRESHOLD_FIRST_MOVE = Util.dpToPixel(10); // pixels
+    private static final int THRESHOLD_FIRST_MOVE = Util.dpToPixel(10); // pixels
+    // Space between indicator icon and the zoom-in/out icon.
+    private static final int ICON_SPACING = Util.dpToPixel(12);
+
     private View mBar;
     private boolean mStartChanging;
+    private int mSliderLength;
 
     public ZoomControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         mBar = new View(context);
-        mBar.setBackgroundResource(R.drawable.ic_zoom_big);
+        mBar.setBackgroundResource(R.drawable.zoom_slider_bar);
         addView(mBar);
+    }
+
+    @Override
+    public void setActivated(boolean activated) {
+        super.setActivated(activated);
+        mBar.setActivated(activated);
+    }
+
+    private int getSliderPosition(int y) {
+        // Calculate the absolute offset of the slider in the zoom control bar.
+        // For left-hand users, as the device is rotated for 180 degree for
+        // landscape mode, the zoom-in bottom should be on the top, so the
+        // position should be reversed.
+        int totalIconHeight = mZoomIn.getHeight() + ICON_SPACING;
+        int height = getHeight();
+        int pos; // the relative position in the zoom slider bar
+        if (mDegree == 180) {
+            pos = y - totalIconHeight;
+        } else {
+            pos = height - totalIconHeight - y;
+        }
+        if (mSliderLength == 0) {
+            mSliderLength = height - (2 * totalIconHeight);
+        }
+        if (pos < 0) pos = 0;
+        if (pos > mSliderLength) pos = mSliderLength;
+        return pos;
     }
 
     @Override
@@ -46,44 +76,29 @@ public class ZoomControlBar extends ZoomControl {
         if (!onFilterTouchEventForSecurity(event)) return false;
 
         int action = event.getAction();
-
-        if (!isEnabled()) return false;
-
-        double y = (double) event.getY();
-
-        // Calculate the absolute offset of the slider in the zoom control bar.
-        // For left-hand users, as the device is rotated for 180 degree for
-        // landscape mode, the zoom-in bottom should be on the top, so the
-        // position should be reversed.
-        int offset = 5 * getWidth() / 4; // the padding and the icon height
-        int height = getHeight();
-        int range = height - 2 * offset; // the range of the zoom slider
-        int pos; // the relative position in the zoom slider bar
-        if (mDegree == 180) {
-            pos = (int) y - offset;
-        } else {
-            pos = height - (int) y - offset;
-        }
-        if (pos < 0) pos = 0;
-        if (pos > range) pos = range;
+        if (!isEnabled() || (getHeight() == 0)) return false;
 
         switch (action) {
             case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                setActivated(false);
                 closeZoomControl();
                 break;
 
             case MotionEvent.ACTION_DOWN:
+                setActivated(true);
                 mStartChanging = false;
             case MotionEvent.ACTION_MOVE:
                 // Make sure the movement is large enough before we start
                 // changing the zoom.
+                int pos = getSliderPosition((int) event.getY());
                 if (!mStartChanging && (Math.abs(mSliderPosition - pos)
                         > THRESHOLD_FIRST_MOVE)) {
                     mStartChanging = true;
                 }
                 if (mStartChanging) {
-                    performZoom(1.0d * pos / range);
+                    performZoom(1.0d * pos / mSliderLength);
                     mSliderPosition = pos;
                 }
                 requestLayout();
@@ -102,28 +117,25 @@ public class ZoomControlBar extends ZoomControl {
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
         if (mZoomMax == 0) return;
-
         int width = right - left;
         int height = bottom - top;
-        int range = height - 10 * width / 4;
-        int pos;
-
-        // TODO: remove offset once we have correct ic_zoom_big.9.png.
-        int offset = 3 * width / 4;
-
+        int iconHeight = mZoomIn.getMeasuredHeight();
+        mBar.layout(0, iconHeight + ICON_SPACING,
+                width, height - iconHeight - ICON_SPACING);
         // For left-hand users, as the device is rotated for 180 degree,
         // the zoom-in button should be on the top.
+        int pos; // slider position
         if (mDegree == 180) {
-            mZoomOut.layout(0, 0, width, width);
-            mZoomIn.layout(0, height - width, width, height);
-            pos = offset + mZoomIndex * range / mZoomMax;
-            mZoomSlider.layout(0, pos, width, pos + width);
+            mZoomOut.layout(0, 0, width, iconHeight);
+            mZoomIn.layout(0, height - iconHeight, width, height);
+            pos = mBar.getTop() + mSliderPosition;
         } else {
-            mZoomIn.layout(0, 0, width, width);
-            mZoomOut.layout(0, height - width, width, height);
-            pos = offset + (mZoomMax - mZoomIndex) * range / mZoomMax;
-            mZoomSlider.layout(0, pos, width, pos + width);
+            mZoomIn.layout(0, 0, width, iconHeight);
+            mZoomOut.layout(0, height - iconHeight, width, height);
+            pos = mBar.getBottom() - mSliderPosition;
         }
-        mBar.layout(0, width, width, bottom - top - width);
+        int sliderHeight = mZoomSlider.getMeasuredHeight();
+        mZoomSlider.layout(0, (pos - sliderHeight / 2),
+                width, (pos + sliderHeight / 2));
     }
 }
