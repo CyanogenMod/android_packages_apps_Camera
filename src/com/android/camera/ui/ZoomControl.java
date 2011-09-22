@@ -20,7 +20,6 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -75,9 +74,9 @@ public abstract class ZoomControl extends RelativeLayout {
 
     public ZoomControl(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mZoomIn = addImageView(context, R.drawable.ic_zoom_in_holo_light);
-        mZoomSlider = addImageView(context, R.drawable.btn_zoom_slider);
-        mZoomOut = addImageView(context, R.drawable.ic_zoom_out_holo_light);
+        mZoomIn = addImageView(context, R.drawable.ic_zoom_in);
+        mZoomSlider = addImageView(context, R.drawable.ic_zoom_slider);
+        mZoomOut = addImageView(context, R.drawable.ic_zoom_out);
         mHandler = new Handler();
     }
 
@@ -105,6 +104,10 @@ public abstract class ZoomControl extends RelativeLayout {
 
     public void setZoomMax(int zoomMax) {
         mZoomMax = zoomMax;
+
+        // Layout should be requested as the maximum zoom level is the key to
+        // show the correct zoom slider position.
+        requestLayout();
     }
 
     public void setOnZoomChangeListener(OnZoomChangedListener listener) {
@@ -218,5 +221,12 @@ public abstract class ZoomControl extends RelativeLayout {
                 ((RotateImageView) view).setDegree(degree);
             }
         }
+    }
+
+    @Override
+    public void setActivated(boolean activated) {
+        super.setActivated(activated);
+        mZoomIn.setActivated(activated);
+        mZoomOut.setActivated(activated);
     }
 }
