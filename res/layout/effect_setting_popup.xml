@@ -17,21 +17,22 @@
         style="@style/SettingPopupWindow">
 
     <LinearLayout android:orientation="vertical"
+        android:background="@color/popup_background"
         android:layout_height="wrap_content"
         android:layout_width="@dimen/big_setting_popup_window_width">
 
         <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/dialog_top_holo_dark"
                 android:minHeight="@dimen/popup_title_frame_min_height">
             <TextView android:id="@+id/title"
                     style="@style/PopupTitleText" />
         </FrameLayout>
 
+        <View style="@style/PopupTitleSeperator" />
+
         <FrameLayout android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/dialog_bottom_holo_dark">
+                android:layout_height="wrap_content">
             <GridView android:id="@+id/settingList"
                     style="@style/EffectSettingGrid"
                     android:choiceMode="singleChoice" />
