@@ -44,7 +44,7 @@
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
-        <item name="android:background">@drawable/bg_review_control</item>
+        <item name="android:background">@drawable/bg_pressed</item>
     </style>
     <style name="ReviewPlayIcon">
         <item name="android:layout_height">wrap_content</item>
@@ -85,8 +85,6 @@
     <style name="PopupTitleSeperator">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">2dp</item>
-        <item name="android:layout_marginLeft">@dimen/setting_item_list_margin</item>
-        <item name="android:layout_marginRight">@dimen/setting_item_list_margin</item>
         <item name="android:background">@color/popup_title_color</item>
     </style>
     <style name="SettingItemList">
@@ -187,6 +185,7 @@
         <item name="android:numColumns">3</item>
         <item name="android:verticalSpacing">3dp</item>
         <item name="android:horizontalSpacing">3dp</item>
+        <item name="android:choiceMode">singleChoice</item>
     </style>
     <style name="EffectSettingItem">
         <item name="android:orientation">vertical</item>
@@ -206,5 +205,21 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">1dp</item>
+    </style>
+    <style name="EffectSettingTypeTitle">
+        <item name="android:textSize">@dimen/effect_setting_type_text_size</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/effect_setting_type_text_min_height</item>
+        <item name="android:paddingLeft">@dimen/effect_setting_type_text_left_padding</item>
+    </style>
+    <style name="EffectTitleSeparator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:background">@android:drawable/divider_horizontal_dark</item>
     </style>
 </resources>

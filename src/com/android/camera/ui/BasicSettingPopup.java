@@ -47,7 +47,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
         super(context, attrs);
     }
 
-    public void initialize(IconListPreference preference, int settingItemLayoutId) {
+    public void initialize(IconListPreference preference) {
         mPreference = preference;
         Context context = getContext();
         CharSequence[] entries = mPreference.getEntries();
@@ -69,7 +69,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
             listItem.add(map);
         }
         SimpleAdapter listItemAdapter = new SimpleAdapter(context, listItem,
-                settingItemLayoutId,
+                R.layout.setting_item,
                 new String[] {"text", "image"},
                 new int[] {R.id.text, R.id.image});
         ((AbsListView) mSettingList).setAdapter(listItemAdapter);

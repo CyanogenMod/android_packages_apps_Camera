@@ -47,4 +47,9 @@
     <dimen name="setting_item_icon_width">35dp</dimen>
     <dimen name="effect_setting_item_icon_width">54dp</dimen>
     <dimen name="effect_setting_item_text_size">21dp</dimen>
+    <dimen name="effect_setting_type_text_size">21dp</dimen>
+    <dimen name="effect_setting_type_text_min_height">34dp</dimen>
+    <dimen name="effect_setting_clear_text_size">23dp</dimen>
+    <dimen name="effect_setting_clear_text_min_height">44dp</dimen>
+    <dimen name="effect_setting_type_text_left_padding">26dp</dimen>
 </resources>
