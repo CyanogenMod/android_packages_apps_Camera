@@ -60,5 +60,11 @@
         <ListPreference
                 camera:key="pref_camera_saturation_key"
                 camera:title="@string/pref_camera_saturation_title" />
+        <ListPreference
+                camera:key="pref_camera_stabilization_key"
+                camera:defaultValue="@string/pref_camera_stabilization_default"
+                camera:title="@string/pref_camera_stabilization_title"
+                camera:entries="@array/pref_camera_stabilization_entries"
+                camera:entryValues="@array/pref_camera_stabilization_entryvalues" />
     </PreferenceGroup>
 </PreferenceGroup>
