@@ -124,19 +124,22 @@ public abstract class IndicatorControl extends RelativeLayout implements
         return false;
     }
 
-    public void addIndicator(Context context, IconListPreference pref) {
+    public IndicatorButton addIndicator(Context context, IconListPreference pref) {
         IndicatorButton b = new IndicatorButton(context, pref);
         b.setSettingChangedListener(this);
         addView(b);
         mIndicators.add(b);
+        return b;
     }
 
-    public void addOtherSettingIndicator(Context context, int resId, String[] keys) {
-        OtherSettingIndicatorButton b = new OtherSettingIndicatorButton(context, resId,
-                mPreferenceGroup, keys);
+    public OtherSettingIndicatorButton addOtherSettingIndicator(Context context,
+            int resId, String[] keys) {
+        OtherSettingIndicatorButton b = new OtherSettingIndicatorButton(
+                context, resId, mPreferenceGroup, keys);
         b.setSettingChangedListener(this);
         addView(b);
         mIndicators.add(b);
+        return b;
     }
 
     @Override
