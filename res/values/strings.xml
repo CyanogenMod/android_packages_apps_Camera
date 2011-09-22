@@ -532,4 +532,14 @@
      <string name="pref_camera_autoexposure_value_spotmetering" translatable="false">meter-spot</string>
      <string name="pref_camera_autoexposure_value_matrixmetering" translatable="false">meter-matrix</string>
 
+     <string name="pref_camera_stabilization_title">Image Stabilization</string>
+
+     <!-- Stabilization entry titles -->
+     <string name="pref_camera_stabilization_title_enabled">Enabled</string>
+     <string name="pref_camera_stabilization_title_disabled">Disabled</string>
+
+     <!-- Stabilization entry values. Do not translate -->
+     <string name="pref_camera_stabilization_value_enabled" translatable="false">on</string>
+     <string name="pref_camera_stabilization_value_disabled" translatable="false">off</string>
+     <string name="pref_camera_stabilization_default" translatable="false">on</string>
 </resources>
