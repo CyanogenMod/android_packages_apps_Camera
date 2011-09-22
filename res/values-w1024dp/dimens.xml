@@ -35,14 +35,14 @@
     <dimen name="pano_capture_too_fast_text_height">160dp</dimen>
     <dimen name="pano_indication_width">300dp</dimen>
     <dimen name="pano_indication_height">150dp</dimen>
-    <dimen name="setting_row_height">48dp</dimen>
+    <dimen name="setting_row_height">50dp</dimen>
     <dimen name="setting_item_text_size">21dp</dimen>
-    <dimen name="setting_knob_width">72dp</dimen>
+    <dimen name="setting_knob_width">50dp</dimen>
     <dimen name="setting_item_text_width">130dp</dimen>
     <dimen name="setting_popup_window_width">410dp</dimen>
     <dimen name="setting_item_list_margin">16dp</dimen>
     <dimen name="popup_title_text_size">22dp</dimen>
-    <dimen name="popup_title_frame_min_height">48dp</dimen>
+    <dimen name="popup_title_frame_min_height">60dp</dimen>
     <dimen name="big_setting_popup_window_width">590dp</dimen>
     <dimen name="setting_item_icon_width">35dp</dimen>
     <dimen name="effect_setting_item_icon_width">54dp</dimen>
