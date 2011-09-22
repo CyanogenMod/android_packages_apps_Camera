@@ -48,6 +48,8 @@ public class Thumbnail {
 
     private Uri mUri;
     private Bitmap mBitmap;
+    // whether this thumbnail is read from file
+    private boolean mFromFile = false;
 
     public Thumbnail(Uri uri, Bitmap bitmap, int orientation) {
         mUri = uri;
@@ -61,6 +63,14 @@ public class Thumbnail {
 
     public Bitmap getBitmap() {
         return mBitmap;
+    }
+
+    public void setFromFile(boolean fromFile) {
+        mFromFile = fromFile;
+    }
+
+    public boolean fromFile() {
+        return mFromFile;
     }
 
     private static Bitmap rotateImage(Bitmap bitmap, int orientation) {
@@ -128,7 +138,9 @@ public class Thumbnail {
             Util.closeSilently(b);
             Util.closeSilently(d);
         }
-        return createThumbnail(uri, bitmap, 0);
+        Thumbnail thumbnail = createThumbnail(uri, bitmap, 0);
+        if (thumbnail != null) thumbnail.setFromFile(true);
+        return thumbnail;
     }
 
     public static Thumbnail getLastThumbnail(ContentResolver resolver) {
