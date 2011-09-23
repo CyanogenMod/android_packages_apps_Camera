@@ -48,7 +48,6 @@ import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -196,11 +195,6 @@ public class VideoCamera extends ActivityBase
     private ContentValues mCurrentVideoValues;
 
     private CamcorderProfile mProfile;
-    // The array of video quality profiles supported by each camera(s). Here the
-    // cameraId is the index of the array to get the profile map which contain
-    // the set of quality string and its real quality of a camera.
-    private HashMap<String, Integer>[] mProfileQuality;
-    private HashMap<String, Integer>[] mTimeLapseProfileQuality;
 
     // The video duration limit. 0 menas no limit.
     private int mMaxVideoDurationInMs;
@@ -365,9 +359,9 @@ public class VideoCamera extends ActivityBase
                     mCameraDevice = Util.openCamera(VideoCamera.this, mCameraId);
                     readVideoPreferences();
                     startPreview();
-                } catch(CameraHardwareException e) {
+                } catch (CameraHardwareException e) {
                     mOpenCameraFail = true;
-                } catch(CameraDisabledException e) {
+                } catch (CameraDisabledException e) {
                     mCameraDisabled = true;
                 }
             }
@@ -643,11 +637,14 @@ public class VideoCamera extends ActivityBase
     }
 
     private void readVideoPreferences() {
-        String quality = mPreferences.getString(
+        CameraSettings settings = new CameraSettings(this, mParameters,
+                mCameraId, CameraHolder.instance().getCameraInfo());
+        // The preference stores values from ListPreference and is thus string type for all values.
+        // We need to convert it to int manually.
+        int quality = Integer.valueOf(mPreferences.getString(
                 CameraSettings.KEY_VIDEO_QUALITY,
-                CameraSettings.DEFAULT_VIDEO_QUALITY_VALUE);
-        boolean videoQualityHigh =
-                CameraSettings.getVideoQuality(this, quality);
+                settings.getDefaultVideoQuality(
+                        getResources().getString(R.string.pref_video_quality_default))));
 
         // Set video quality.
         Intent intent = getIntent();
@@ -655,9 +652,9 @@ public class VideoCamera extends ActivityBase
             int extraVideoQuality =
                     intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
             if (extraVideoQuality > 0) {
-                quality = getString(R.string.pref_video_quality_high);
+                quality = CamcorderProfile.QUALITY_HIGH;
             } else {  // 0 is mms.
-                quality = getString(R.string.pref_video_quality_mms);
+                quality = CamcorderProfile.QUALITY_LOW;
             }
         }
 
@@ -668,8 +665,7 @@ public class VideoCamera extends ActivityBase
                     intent.getIntExtra(MediaStore.EXTRA_DURATION_LIMIT, 0);
             mMaxVideoDurationInMs = 1000 * seconds;
         } else {
-            mMaxVideoDurationInMs =
-                    CameraSettings.getVideoDurationInMillis(this, quality, mCameraId);
+            mMaxVideoDurationInMs = CameraSettings.DEFAULT_VIDEO_DURATION;
         }
 
         // Read time lapse recording interval.
@@ -679,8 +675,9 @@ public class VideoCamera extends ActivityBase
         mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
 
         mCaptureTimeLapse = (mTimeBetweenTimeLapseFrameCaptureMs != 0);
-        int profileQuality = getProfileQuality(mCameraId, quality, mCaptureTimeLapse);
-        mProfile = CamcorderProfile.get(mCameraId, profileQuality);
+        // TODO: This should be checked instead directly +1000.
+        if (mCaptureTimeLapse) quality += 1000;
+        mProfile = CamcorderProfile.get(mCameraId, quality);
         getDesiredPreviewSize();
 
         // Set effect
@@ -704,55 +701,6 @@ public class VideoCamera extends ActivityBase
             mEffectParameter = null;
         }
 
-    }
-
-    int getProfileQuality(int cameraId, String quality, boolean captureTimeLapse) {
-        HashMap<String, Integer>[] qualityMap;
-        if (captureTimeLapse) {
-            if (mTimeLapseProfileQuality == null) {
-                mTimeLapseProfileQuality = new HashMap[
-                        CameraHolder.instance().getNumberOfCameras()];
-            }
-            qualityMap = mTimeLapseProfileQuality;
-            if (qualityMap[cameraId] == null) {
-                qualityMap[cameraId] = buildProfileQuality(cameraId, TIME_LAPSE_VIDEO_QUALITY);
-            }
-        } else {
-            if (mProfileQuality == null) {
-                mProfileQuality = new HashMap[
-                        CameraHolder.instance().getNumberOfCameras()];
-            }
-            qualityMap = mProfileQuality;
-            if (qualityMap[cameraId] == null) {
-                qualityMap[cameraId] = buildProfileQuality(cameraId, VIDEO_QUALITY);
-            }
-        }
-        return qualityMap[cameraId].get(quality);
-    }
-
-    HashMap<String, Integer> buildProfileQuality(int cameraId,
-            int qualityList[]) {
-        HashMap<String, Integer> qualityMap = new HashMap<String, Integer>();
-        int highestQuality = -1, secondHighestQuality = -1,
-                lastEffectiveQuality = -1;
-        for (int i = 0; i < qualityList.length; i++) {
-            if (CamcorderProfile.hasProfile(cameraId, qualityList[i])) {
-                if (highestQuality == -1) {
-                    highestQuality = qualityList[i];
-                } else if (secondHighestQuality == -1) {
-                    secondHighestQuality = qualityList[i];
-                }
-                lastEffectiveQuality = qualityList[i];
-            }
-        }
-        if (secondHighestQuality == -1) {
-            secondHighestQuality = highestQuality;
-        }
-        qualityMap.put(getString(R.string.pref_video_quality_high), highestQuality);
-        qualityMap.put(getString(R.string.pref_video_quality_low), secondHighestQuality);
-        qualityMap.put(getString(R.string.pref_video_quality_youtube), highestQuality);
-        qualityMap.put(getString(R.string.pref_video_quality_mms), lastEffectiveQuality);
-        return qualityMap;
     }
 
     private void getDesiredPreviewSize() {
@@ -804,10 +752,10 @@ public class VideoCamera extends ActivityBase
                 readVideoPreferences();
                 resizeForPreviewAspectRatio();
                 startPreview();
-            } catch(CameraHardwareException e) {
+            } catch (CameraHardwareException e) {
                 Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
                 return;
-            } catch(CameraDisabledException e) {
+            } catch (CameraDisabledException e) {
                 Util.showErrorAndFinish(this, R.string.camera_disabled);
                 return;
             }
@@ -1249,7 +1197,7 @@ public class VideoCamera extends ActivityBase
                 mSurfaceHeight);
 
         if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER &&
-            ((String)mEffectParameter).equals(EFFECT_BG_FROM_GALLERY) ) {
+            ((String) mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {
             mEffectsRecorder.setEffect(mEffectType, mEffectUriFromGallery);
         } else {
             mEffectsRecorder.setEffect(mEffectType, mEffectParameter);
@@ -1883,7 +1831,7 @@ public class VideoCamera extends ActivityBase
                 if (resultCode == RESULT_OK) {
                     // onActivityResult() runs before onResume(), so this parameter will be
                     // seen by startPreview from onResume()
-                    mEffectUriFromGallery = ((Uri)data.getData()).toString();
+                    mEffectUriFromGallery = ((Uri) data.getData()).toString();
                     Log.v(TAG, "Received URI from gallery: " + mEffectUriFromGallery);
                 }
                 break;
@@ -2007,15 +1955,15 @@ public class VideoCamera extends ActivityBase
             if (mEffectType == EffectsRecorder.EFFECT_NONE) return false;
             if (mEffectParameter.equals(currentEffectParameter)) return false;
         }
-        Log.v(TAG, "New effect selection: " + mPreferences.getString(CameraSettings.KEY_VIDEO_EFFECT, "none") );
+        Log.v(TAG, "New effect selection: " + mPreferences.getString(CameraSettings.KEY_VIDEO_EFFECT, "none"));
 
-        if ( mEffectType == EffectsRecorder.EFFECT_NONE ) {
+        if (mEffectType == EffectsRecorder.EFFECT_NONE) {
             // Stop effects and return to normal preview
             mEffectsRecorder.stopPreview();
             return true;
         }
         if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER &&
-            ((String)mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {
+            ((String) mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {
             // Request video from gallery to use for background
             Intent i = new Intent(Intent.ACTION_PICK);
             i.setDataAndType(Video.Media.EXTERNAL_CONTENT_URI,
@@ -2124,7 +2072,7 @@ public class VideoCamera extends ActivityBase
             implements android.hardware.Camera.OnZoomChangeListener {
         @Override
         public void onZoomChange(int value, boolean stopped, android.hardware.Camera camera) {
-            Log.v(TAG, "Zoom changed: value=" + value + ". stopped="+ stopped);
+            Log.v(TAG, "Zoom changed: value=" + value + ". stopped=" + stopped);
             mZoomValue = value;
 
             // Update the UI when we get zoom value.
