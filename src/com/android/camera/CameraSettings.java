@@ -284,49 +284,14 @@ public class CameraSettings {
     }
 
     private boolean checkTouchFocus() {
-        if (mParameters.get("taking-picture-zoom") != null ||
-            mParameters.get("touch-focus") != null) {
-            /* HTC camera, which always have touch-to-focus support. Unfortunately
-             * the touch-to-focus parameter 'touch-focus' is not present at initialization
-             * time, which is why we need to resort to another HTC specific parameter
-             *
-             * The 'touch-focus' parameter is checked anyway so that libcamera.so wrappers
-             * may implement the HTC's inteface without implenting its quirk.
-             */
-            sTouchFocusParameter = "touch-focus";
-            sTouchFocusNeedsRect = false;
+        sTouchFocusParameter = mContext.getResources().getString(R.string.touchFocusParameter);
+        sTouchFocusNeedsRect = mContext.getResources().getBoolean(R.bool.touchFocusNeedsRect);
+
+        if (sTouchFocusParameter != null) {
             return true;
-        }
-        if (mParameters.get("nv-areas-to-focus") != null) {
-            /* Nvidia camera with touch-to-focus support */
-            sTouchFocusParameter = "nv-areas-to-focus";
-            sTouchFocusNeedsRect = true;
-            return true;
-        }
-        if (mParameters.get("mot-areas-to-focus") != null ||
-            mParameters.get("mot-max-burst-size") != null) {
-            /* Motorola camera with touch-to-focus support.
-             * Here we also check for Motorola-specific mot-max-burst-size, because
-             * on some of their libcameras, something similar to the HTC situation
-             * explained earlier happens too.
-             */
-            sTouchFocusParameter = "mot-areas-to-focus";
-            sTouchFocusNeedsRect = true;
-            return true;
-        }
-        if (mParameters.get("camera-name") != null &&
-            mParameters.get("s3d-supported") != null) {
-            /* Similar hack to HTC, for OMAP4. These do export the
-             * "touch" focus mode, but they don't have the param
-             * listed until it's used */
-            sTouchFocusParameter = "touch-position";
-            sTouchFocusNeedsRect = false;
-            /* yes, false. If it isn't listed in the focus modes, it
-             * isn't supported */
+        } else {
             return false;
         }
-
-        return false;
     }
 
     public static String getTouchFocusParameterName() {
