@@ -68,7 +68,7 @@
 }
 
 // Goofyface
-@filter GoofyRenderFilter goofyrenderer {
+@filter GoofyFastRenderFilter goofyrenderer {
   distortionAmount = 1.0;
 }
 
