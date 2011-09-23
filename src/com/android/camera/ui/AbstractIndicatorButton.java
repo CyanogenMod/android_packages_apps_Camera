@@ -36,6 +36,11 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
     protected AbstractSettingPopup mPopup;
     protected Handler mHandler = new MainHandler();
     private final int MSG_DISMISS_POPUP = 0;
+    private PopupChangeListener mListener;
+
+    public static interface PopupChangeListener {
+        public void onShowPopup(View view, boolean showed);
+    }
 
     public AbstractIndicatorButton(Context context) {
         super(context);
@@ -44,6 +49,10 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
         mFadeOut = AnimationUtils.loadAnimation(mContext, R.anim.shrink_fade_out_from_right);
         HIGHLIGHT_COLOR = mContext.getResources().getColor(R.color.review_control_pressed_color);
         setScaleType(ImageView.ScaleType.CENTER);
+    }
+
+    public void setPopupChangeListener(PopupChangeListener listener) {
+        mListener = listener;
     }
 
     // Whether scene mode affects this indicator and it cannot be changed.
@@ -105,7 +114,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
         mPopup.setOrientation(getDegree());
         mPopup.clearAnimation();
         mPopup.startAnimation(mFadeIn);
-        setColorFilter(HIGHLIGHT_COLOR);
+        if (mListener != null) mListener.onShowPopup(this, true);
     }
 
     public boolean dismissPopup() {
@@ -114,7 +123,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
             mPopup.clearAnimation();
             mPopup.startAnimation(mFadeOut);
             mPopup.setVisibility(View.GONE);
-            clearColorFilter();
+            if (mListener != null) mListener.onShowPopup(this, false);
             invalidate();
             // Indicator wheel needs to update the highlight indicator if this
             // is dismissed by MSG_DISMISS_POPUP.
