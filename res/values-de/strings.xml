@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Aus"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"An"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Videoqualität"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Hoch"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Niedrig"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (niedrig, 30s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (hoch, 15 min)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Zeitrafferintervall"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameraeinstellungen"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcordereinstellungen"</string>
@@ -102,7 +98,7 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Panorama wird vorbereitet..."</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Panorama konnte nicht gespeichert werden."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
-    <string name="pano_capture_indication" msgid="7431983072966619171">"Panorama wird aufgenommen."</string>
+    <string name="pano_capture_indication" msgid="7431983072966619171">"Panorama wird aufgenommen..."</string>
     <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Speichern..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Zum Fokussieren tippen"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Effekte"</string>
@@ -120,4 +116,10 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Legen Sie Ihr Gerät auf eine stabile Oberfläche und achten Sie darauf, dass sich hinter Ihnen nichts bewegt."\n\n"Treten Sie anschließend aus dem Bild."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Einstellung nicht wählbar, wenn Effekt aktiviert"</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Durch Tippen Foto während Videoaufzeichnung aufnehmen"</string>
+    <!-- no translation found for clear_effects (5485339175014139481) -->
+    <skip />
+    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
+    <skip />
+    <!-- no translation found for effect_background (6909716214852487679) -->
+    <skip />
 </resources>

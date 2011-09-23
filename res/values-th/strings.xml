@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"ปิด"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"เปิด"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"คุณภาพวิดีโอ"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"สูง"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"ต่ำ"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (ต่ำ, 30 วินาที)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (สูง, 15 นาที)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"ช่วงระยะเวลา"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"การตั้งค่ากล้องถ่ายรูป"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"การตั้งค่ากล้องวิดีโอ"</string>
@@ -119,5 +115,11 @@
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"เลือกเอง"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"วางอุปกรณ์ของคุณบนพื้นผิวที่มั่นคงและแน่ใจว่าไม่มีการเคลื่อนไหวด้านหลังคุณ"\n\n"จากนั้นออกจากมุมมองของกล้อง"</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"เลือกการตั้งค่านี้ไม่ได้หากเปิดใช้เอฟเฟ็กต์อยู่"</string>
-    <string name="video_snapshot_hint" msgid="6479115859014094906">"ถ่ายภาพระหว่างการบันทึกวิดีโอโดยการแตะบนหน้าจอหน้าตัวอย่าง"</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"ถ่ายภาพระหว่างการบันทึกวิดีโอโดยการแตะบนหน้าจอดูตัวอย่าง"</string>
+    <!-- no translation found for clear_effects (5485339175014139481) -->
+    <skip />
+    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
+    <skip />
+    <!-- no translation found for effect_background (6909716214852487679) -->
+    <skip />
 </resources>

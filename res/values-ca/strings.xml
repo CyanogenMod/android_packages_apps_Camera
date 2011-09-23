@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Desactivat"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"A"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualitat de vídeo"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Alta"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Baixa"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (baixa, 30 s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (alta, 15 m)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Interval del lapse de temps"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuració de la càmera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuració de la càmera de vídeo"</string>
@@ -120,4 +116,10 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Col·loca el dispositiu sobre una superfície estable i assegura\'t que no hi hagi res que es mogui darrere teu."\n\n"A continuació, surt del davant de la càmera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Aquesta opció no es pot seleccionar quan l\'efecte està activat."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Per fer una foto durant l\'enregistrament de vídeo, pica la pantalla de visualització prèvia."</string>
+    <!-- no translation found for clear_effects (5485339175014139481) -->
+    <skip />
+    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
+    <skip />
+    <!-- no translation found for effect_background (6909716214852487679) -->
+    <skip />
 </resources>

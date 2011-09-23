@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Izključeno"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Vključeno"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Kakovost videoposnetka"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Visoka"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Nizka"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (nizko, 30 s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (visoka, 15 m)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Interval časovnega zamika"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Nastavitve fotoaparata"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Nastavitve kamere"</string>
@@ -120,4 +116,10 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Postavite napravo na stabilno površino in se prepričajte, da za vami ni gibanja."\n\n"Nato se umaknite iz prizora."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Tega ni mogoče izbrati, ko je vklopljen učinek."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Če želite med snemanjem videa fotografirati, tapnite  predogled."</string>
+    <!-- no translation found for clear_effects (5485339175014139481) -->
+    <skip />
+    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
+    <skip />
+    <!-- no translation found for effect_background (6909716214852487679) -->
+    <skip />
 </resources>
