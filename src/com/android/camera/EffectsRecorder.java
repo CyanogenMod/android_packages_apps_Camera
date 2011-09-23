@@ -56,6 +56,7 @@ public class EffectsRecorder {
     public static final int  EFFECT_GF_SMALL_MOUTH = 3;
     public static final int  EFFECT_GF_BIG_NOSE    = 4;
     public static final int  EFFECT_GF_SMALL_EYES  = 5;
+    public static final int  NUM_OF_GF_EFFECTS = EFFECT_GF_SMALL_EYES + 1;
 
     public static final int  EFFECT_MSG_STARTED_LEARNING = 0;
     public static final int  EFFECT_MSG_DONE_LEARNING    = 1;
