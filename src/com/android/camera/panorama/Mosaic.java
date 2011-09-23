@@ -88,6 +88,9 @@ public class Mosaic {
     public static final int MOSAIC_RET_OK = 1;
     public static final int MOSAIC_RET_ERROR = -1;
     public static final int MOSAIC_RET_CANCELLED = -2;
+    public static final int MOSAIC_RET_LOW_TEXTURE = -3;
+    public static final int MOSAIC_RET_FEW_INLIERS = 2;
+
 
     static {
         System.loadLibrary("jni_mosaic");
@@ -113,10 +116,11 @@ public class Mosaic {
      * image to t is computed and returned.
      *
      * @param pixels source image of NV21 format.
-     * @return Float array of length 10; first 9 entries correspond to the 3x3
-     *         transformation matrix between the first frame and the passed frame,
-     *         and the last entry is the number of the passed frame,
-     *         where the counting starts from 1.
+     * @return Float array of length 11; first 9 entries correspond to the 3x3
+     *         transformation matrix between the first frame and the passed frame;
+     *         the 10th entry is the number of the passed frame, where the counting
+     *         starts from 1; and the 11th entry is the returning code, whose value
+     *         is one of those MOSAIC_RET_* returning flags defined above.
      */
     public native float[] setSourceImage(byte[] pixels);
 
@@ -127,10 +131,11 @@ public class Mosaic {
      * using glReadPixels directly from GPU memory (where it is accessed by
      * an associated SurfaceTexture).
      *
-     * @return Float array of length 10; first 9 entries correspond to the 3x3
-     *         transformation matrix between the first frame and the passed frame,
-     *         and the last entry is the number of the passed frame,
-     *         where the counting starts from 1.
+     * @return Float array of length 11; first 9 entries correspond to the 3x3
+     *         transformation matrix between the first frame and the passed frame;
+     *         the 10th entry is the number of the passed frame, where the counting
+     *         starts from 1; and the 11th entry is the returning code, whose value
+     *         is one of those MOSAIC_RET_* returning flags defined above.
      */
     public native float[] setSourceImageFromGPU();
 

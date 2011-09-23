@@ -344,7 +344,7 @@ bool db_FrameToReferenceRegistration::NeedReferenceUpdate()
 int db_FrameToReferenceRegistration::AddFrame(const unsigned char * const * im, double H[9],bool force_reference,bool prewarp)
 {
   m_current_is_reference = false;
-  if(!m_reference_set)
+  if(!m_reference_set || force_reference)
     {
       db_Identity3x3(m_H_ref_to_ins);
       db_Copy9(H,m_H_ref_to_ins);
