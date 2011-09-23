@@ -22,8 +22,6 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.android.camera.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
