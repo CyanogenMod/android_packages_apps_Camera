@@ -24,6 +24,10 @@
 	     library is for some reason unavailable -->
 	<bool name="softwareGLOnly">false</bool>
 
+        <!-- Autofocus parameters -->
+        <string name="touchFocusParameter"></string>
+        <bool name="touchFocusNeedsRect">false</bool>
+
 	<!-- FFC parameter filtering -->
 	<bool name="ffc_canFocus">true</bool>
 	<bool name="ffc_canZoom">true</bool>
