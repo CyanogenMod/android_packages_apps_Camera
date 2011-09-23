@@ -152,31 +152,22 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
         }
     }
 
-    private void setMode(int mode) {
-        for (int i = 0; i < MODE_NUM; ++i) {
-            mModeSelectionIcon[i].setSelected(mode == i);
-        }
-    }
-
     public void setOnModeChangeListener(OnModeChangeListener listener) {
         mListener = listener;
     }
 
     public void setCurrentMode(int mode) {
-        if (mCurrentMode == mode) return;
-        setMode(mode);
         tryToSetMode(mode);
+        updateModeState();
     }
 
     private void tryToSetMode(int mode) {
         if (mListener != null) {
             if (!mListener.onModeChanged(mode)) {
-                setMode(mCurrentMode);
                 return;
             }
         }
         mCurrentMode = mode;
-        updateModeState();
     }
 
     public boolean onModeChanged(int mode) {
