@@ -28,7 +28,7 @@
         <item name="android:visibility">gone</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
-        <item name="android:background">@drawable/bg_review_control</item>
+        <item name="android:background">@drawable/bg_pressed</item>
     </style>
     <style name="ReviewControlIcon">
         <item name="android:layout_height">60dp</item>

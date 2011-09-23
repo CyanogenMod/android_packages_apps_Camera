@@ -317,4 +317,13 @@
 
     <!-- Toast telling users tapping on the viewfinder will take a picture [CHAR LIMIT=65] -->
     <string name="video_snapshot_hint">Take a photo during video recording by tapping on the preview screen.</string>
+
+    <!-- A button in effect setting popup to clear the effect. [CHAR LIMIT=26] -->
+    <string name="clear_effects">Clear effects</string>
+
+    <!-- Title of category for silly face effects. [CHAR LIMIT=26] -->
+    <string name="effect_silly_faces">Silly faces</string>
+
+    <!-- Title of category for background replacement effects. [CHAR LIMIT=26] -->
+    <string name="effect_background">Background</string>
 </resources>
