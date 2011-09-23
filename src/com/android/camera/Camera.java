@@ -1415,7 +1415,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void doFocus(boolean pressed) {
-        if (mPausing || collapseCameraControls()) return;
+        if (mPausing || collapseCameraControls() || mCameraState == SNAPSHOT_IN_PROGRESS) return;
 
         // Do not do focus if there is not enough storage.
         if (pressed && !canTakePicture()) return;
