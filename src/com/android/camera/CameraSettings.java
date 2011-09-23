@@ -54,14 +54,10 @@ public class CameraSettings {
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
-    public static final int CURRENT_VERSION = 4;
+    public static final int CURRENT_VERSION = 5;
     public static final int CURRENT_LOCAL_VERSION = 1;
 
-    // max video duration in seconds for youtube.
-    private static final int YOUTUBE_VIDEO_DURATION = 15 * 60; // 15 mins
-    private static final int DEFAULT_VIDEO_DURATION = 0; // no limit
-
-    public static final String DEFAULT_VIDEO_QUALITY_VALUE = "high";
+    public static final int DEFAULT_VIDEO_DURATION = 0; // no limit
 
     private static final String TAG = "CameraSettings";
 
@@ -84,6 +80,14 @@ public class CameraSettings {
                 (PreferenceGroup) inflater.inflate(preferenceRes);
         initPreference(group);
         return group;
+    }
+
+    public String getDefaultVideoQuality(String defaultQuality) {
+        int quality = Integer.valueOf(defaultQuality);
+        if (CamcorderProfile.hasProfile(mCameraId, quality)) {
+            return defaultQuality;
+        }
+        return Integer.toString(CamcorderProfile.QUALITY_HIGH);
     }
 
     public static void initialCameraPictureSize(
@@ -117,7 +121,7 @@ public class CameraSettings {
         if (index == NOT_FOUND) return false;
         int width = Integer.parseInt(candidate.substring(0, index));
         int height = Integer.parseInt(candidate.substring(index + 1));
-        for (Size size: supported) {
+        for (Size size : supported) {
             if (size.width == width && size.height == height) {
                 parameters.setPictureSize(width, height);
                 return true;
@@ -136,7 +140,7 @@ public class CameraSettings {
         ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
         ListPreference exposure = group.findPreference(KEY_EXPOSURE);
         IconListPreference cameraIdPref =
-                (IconListPreference)group.findPreference(KEY_CAMERA_ID);
+                (IconListPreference) group.findPreference(KEY_CAMERA_ID);
         ListPreference videoFlashMode =
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
         ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
@@ -144,7 +148,7 @@ public class CameraSettings {
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
         if (videoQuality != null) {
-            initVideoQuality(videoQuality);
+            filterUnsupportedOptions(group, videoQuality, getSupportedVideoQuality());
         }
 
         if (pictureSize != null) {
@@ -220,7 +224,7 @@ public class CameraSettings {
         }
 
         CharSequence[] entryValues = new CharSequence[2];
-        for (int i = 0 ; i < mCameraInfo.length ; ++i) {
+        for (int i = 0; i < mCameraInfo.length; ++i) {
             int index =
                     (mCameraInfo[i].facing == CameraInfo.CAMERA_FACING_FRONT)
                     ? CameraInfo.CAMERA_FACING_FRONT
@@ -338,25 +342,16 @@ public class CameraSettings {
             // ignore the current settings.
             editor.remove("pref_camera_videoquality_key");
             editor.remove("pref_camera_video_duration_key");
+            version = 4;
         }
+        if (version == 4) {
+            // We use numbers to represent the quality now. The quality definition is identical to
+            // that of CamcorderProfile.java.
+            editor.remove("pref_video_quality_key");
+        }
+
         editor.putInt(KEY_VERSION, CURRENT_VERSION);
         editor.apply();
-    }
-
-    public static boolean getVideoQuality(Context context, String quality) {
-        return context.getString(R.string.pref_video_quality_youtube).equals(quality)
-                || context.getString(R.string.pref_video_quality_high).equals(quality);
-    }
-
-    public static int getVideoDurationInMillis(Context context, String quality, int cameraId) {
-        if (context.getString(R.string.pref_video_quality_mms).equals(quality)) {
-            int mmsVideoDuration = CamcorderProfile.get(cameraId,
-                    CamcorderProfile.QUALITY_LOW).duration;
-            return mmsVideoDuration * 1000;
-        } else if (context.getString(R.string.pref_video_quality_youtube).equals(quality)) {
-            return YOUTUBE_VIDEO_DURATION * 1000;
-        }
-        return DEFAULT_VIDEO_DURATION;
     }
 
     public static int readPreferredCameraId(SharedPreferences pref) {
@@ -462,38 +457,27 @@ public class CameraSettings {
         writePreferredCameraId(preferences, currentCameraId);
     }
 
-    private void initVideoQuality(ListPreference videoQuality) {
-        CharSequence[] entries = videoQuality.getEntries();
-        CharSequence[] values = videoQuality.getEntryValues();
-        if (Util.isMmsCapable(mContext)) {
-            int mmsVideoDuration = CamcorderProfile.get(mCameraId,
-                    CamcorderProfile.QUALITY_LOW).duration;
-            // We need to fill in the device-dependent value (in seconds).
-            for (int i = 0; i < entries.length; ++i) {
-                if (mContext.getString(R.string.pref_video_quality_mms).equals(values[i])) {
-                    entries[i] = entries[i].toString().replace(
-                            "30", Integer.toString(mmsVideoDuration));
-                    break;
-                }
-            }
-        } else {
-            // The device does not support mms. Remove it. Using
-            // filterUnsupported is not efficient but adding a new method
-            // for remove is not worth it.
-            ArrayList<String> supported = new ArrayList<String>();
-            for (int i = 0; i < entries.length; ++i) {
-                if (!mContext.getString(R.string.pref_video_quality_mms).equals(values[i])) {
-                    supported.add(values[i].toString());
-                }
-            }
-            videoQuality.filterUnsupported(supported);
+    private ArrayList<String> getSupportedVideoQuality() {
+        ArrayList<String> supported = new ArrayList<String>();
+        // Check for supported quality
+        if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_1080P)) {
+            supported.add(Integer.toString(CamcorderProfile.QUALITY_1080P));
         }
+        if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_720P)) {
+            supported.add(Integer.toString(CamcorderProfile.QUALITY_720P));
+        }
+        if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_480P)) {
+            supported.add(Integer.toString(CamcorderProfile.QUALITY_480P));
+        }
+
+        return supported;
     }
 
     private void initVideoEffect(PreferenceGroup group, ListPreference videoEffect) {
         CharSequence[] values = videoEffect.getEntryValues();
 
-        boolean goofyFaceSupported = EffectsRecorder.isEffectSupported(EffectsRecorder.EFFECT_GOOFY_FACE);
+        boolean goofyFaceSupported =
+                EffectsRecorder.isEffectSupported(EffectsRecorder.EFFECT_GOOFY_FACE);
         boolean backdropperSupported =
                 EffectsRecorder.isEffectSupported(EffectsRecorder.EFFECT_BACKDROPPER) &&
                 mParameters.isAutoExposureLockSupported() &&
