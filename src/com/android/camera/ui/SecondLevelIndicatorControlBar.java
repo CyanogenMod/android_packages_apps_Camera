@@ -16,6 +16,7 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.IconListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 import com.android.camera.Util;
@@ -31,13 +32,19 @@ import android.widget.ImageView;
  * vertical bar in preview frame.
  */
 public class SecondLevelIndicatorControlBar extends IndicatorControl implements
-        View.OnClickListener {
+        View.OnClickListener, AbstractIndicatorButton.PopupChangeListener {
     private static final String TAG = "SecondLevelIndicatorControlBar";
     private static int ICON_SPACING = Util.dpToPixel(24);
     private ImageView mCloseIcon;
     private View mDivider; // the divider line
+    private View mIndicatorHighlight; // the side highlight bar
+    private View mPopupedIndicator;
     int mDegree = 0;
     int mSelectedIndex = -1;
+    // There are some views in the ViewGroup before adding the indicator buttons,
+    // such as Close icon, divider line and the hightlight bar, we need to
+    // remember the count of the non-indicator buttons for getTouchViewIndex().
+    int mNonIndicatorButtonCount;
 
     public SecondLevelIndicatorControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -46,6 +53,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     @Override
     protected void onFinishInflate() {
         mDivider = findViewById(R.id.divider);
+        mIndicatorHighlight = findViewById(R.id.indicator_highlight);
     }
 
     public void initialize(Context context, PreferenceGroup group,
@@ -57,6 +65,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
             addView(mCloseIcon);
         }
         setPreferenceGroup(group);
+        mNonIndicatorButtonCount = getChildCount();
         addControls(keys, otherSettingKeys);
         if (mDegree != 0) setDegree(mDegree);
     }
@@ -68,20 +77,19 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     }
 
     private int getTouchViewIndex(int y, int height) {
-        int padding = getPaddingTop();
-        int iconHeight = mCloseIcon.getMeasuredHeight();
-        int totalIconHeight = iconHeight + ICON_SPACING;
         // If the current touch location is on close icon and above.
-        if (y < padding + totalIconHeight) return indexOfChild(mCloseIcon);
+        if (y < mCloseIcon.getBottom()) return indexOfChild(mCloseIcon);
 
-        // The first two views are close icon and divider line, we have to
-        // calculate if the touch event is on the rest indicator buttons.
+        // Calculate if the touch event is on the indicator buttons.
         int count = getChildCount();
-        if (count < 3) return -1;
-        int selectionHeight = (count - 2) * totalIconHeight - (ICON_SPACING / 2);
-        int selectionY = height - padding - selectionHeight;
-        if (y < selectionY) return -1;
-        return (2 + (y - selectionY) / totalIconHeight);
+        if (count == mNonIndicatorButtonCount) return -1;
+        // The baseline will be the first indicator button's top minus spacing.
+        View firstIndicatorButton = getChildAt(mNonIndicatorButtonCount);
+        int baselineY = firstIndicatorButton.getTop() - (ICON_SPACING / 2);
+        if (y < baselineY) return -1;
+        int iconHeight = firstIndicatorButton.getMeasuredHeight();
+        int buttonRange = iconHeight + ICON_SPACING;
+        return (mNonIndicatorButtonCount + (y - baselineY) / buttonRange);
     }
 
     @Override
@@ -121,6 +129,31 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     }
 
     @Override
+    public IndicatorButton addIndicator(Context context, IconListPreference pref) {
+        IndicatorButton b = super.addIndicator(context, pref);
+        b.setPopupChangeListener(this);
+        return b;
+    }
+
+    @Override
+    public OtherSettingIndicatorButton addOtherSettingIndicator(Context context,
+            int resId, String[] keys) {
+        OtherSettingIndicatorButton b =
+                super.addOtherSettingIndicator(context, resId, keys);
+        b.setPopupChangeListener(this);
+        return b;
+    }
+
+    @Override
+    public void onShowPopup(View view, boolean showed) {
+        // Ignore those events if not current popup.
+        if (!showed && (mPopupedIndicator != view)) return;
+        mPopupedIndicator = (showed ? view : null);
+        // Show or dismiss the side indicator highlight.
+        requestLayout();
+    }
+
+    @Override
     public void setDegree(int degree) {
         mDegree = degree;
         super.setDegree(degree);
@@ -137,19 +170,34 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         int padding = getPaddingTop();
 
         // The first icon is close button.
+        int offsetY = padding;
         mCloseIcon.layout(0, padding, width, (padding + iconHeight));
+
         // And layout the divider line.
-        mDivider.layout(0, (padding + iconHeight),
-                width, (padding + iconHeight + mDivider.getMeasuredHeight()));
+        offsetY += (iconHeight + padding);
+        mDivider.layout(padding, offsetY,
+                (width - padding), (offsetY + mDivider.getMeasuredHeight()));
 
         // Layout from the last icon up.
         int startY = height - iconHeight - padding;
         int decrement = iconHeight + ICON_SPACING;
-        for (int i = count - 1; i > 1; --i) {
+        for (int i = count - 1; i >= mNonIndicatorButtonCount; --i) {
             getChildAt(i).layout(0, startY, width, startY + iconHeight);
             startY -= decrement;
         }
-    }
+
+        // Hightlight the selected indicator if exists.
+        if (mPopupedIndicator == null) {
+            mIndicatorHighlight.setVisibility(View.GONE);
+        } else {
+            mIndicatorHighlight.setVisibility(View.VISIBLE);
+            // Keep the top and bottom of the hightlight the same as
+            // the 'active' indicator button.
+            mIndicatorHighlight.layout(0, mPopupedIndicator.getTop(),
+                    mIndicatorHighlight.getLayoutParams().width,
+                    mPopupedIndicator.getBottom());
+        }
+   }
 
     @Override
     public void setEnabled(boolean enabled) {
