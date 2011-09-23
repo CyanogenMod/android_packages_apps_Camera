@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Izslēgt"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Ieslēgts"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Video kvalitāte"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Augsta"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Zema"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"Multiziņa (zema, 30 s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (augsta, 15 min)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Laika intervāls"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameras iestatījumi"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videokameras iestatījumi"</string>
@@ -115,9 +111,15 @@
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Mazas acis"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"Kosmosā"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Saulriets"</string>
-    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Diskotēka"</string>
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Izvēlēties"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Novietojiet ierīci uz stabilas virsmas un pārliecinieties, ka aiz jums nenotiek nekāda kustība."\n\n"Pēc tam izejiet no kameras skata."</string>
-    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Šo iest. nevar atlasīt, kad ir ieslēgts efekts."</string>
-    <string name="video_snapshot_hint" msgid="6479115859014094906">"Fotografējiet video ierakst. laikā, pieskaroties priekšsk. ekr."</string>
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Šo iestatījumu nevar atlasīt, kad ieslēgts efekts."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Fotografējiet videoieraksta laikā, pieskaroties priekšskat. ekr."</string>
+    <!-- no translation found for clear_effects (5485339175014139481) -->
+    <skip />
+    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
+    <skip />
+    <!-- no translation found for effect_background (6909716214852487679) -->
+    <skip />
 </resources>

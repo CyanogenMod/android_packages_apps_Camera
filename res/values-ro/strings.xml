@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Dezactivat"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activat"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Calitate video"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Ridicată"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Redusă"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (Redusă, 30 s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (ridicată, 15 m)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Interval filmare lentă"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Setările camerei foto"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Setările camerei video"</string>
@@ -103,7 +99,7 @@
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Salvarea panoramei a eşuat"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panoramă"</string>
     <string name="pano_capture_indication" msgid="7431983072966619171">"Se capturează panorama"</string>
-    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Salvare..."</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Se salvează.."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Apăsaţi pt. a focaliza"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efecte"</string>
     <string name="effect_none" msgid="3601545724573307541">"Niciunul"</string>
@@ -120,4 +116,10 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Aşezaţi dispozitivul pe o suprafaţă stabilă şi asiguraţi-vă că nu există mişcare în spatele dvs."\n\n"Apoi, ieşiţi din vizorul camerei foto."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Setarea nu poate fi selectată cu efectul activat."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Fotogr. în timpul înregistr. video apăsând pe ecranul de previz."</string>
+    <!-- no translation found for clear_effects (5485339175014139481) -->
+    <skip />
+    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
+    <skip />
+    <!-- no translation found for effect_background (6909716214852487679) -->
+    <skip />
 </resources>

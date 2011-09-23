@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Выкл."</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Вкл."</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Качество видео"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Высокое качество"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Низкое качество"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (низкое, 30 с.)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (выс., 15 мин.)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Интервал замедленной съемки"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Настройки камеры"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Настройки видеокамеры"</string>
@@ -120,4 +116,10 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Поставьте устройство на твердую поверхность и убедитесь, что позади вас нет движущихся предметов или людей."\n\n"Затем отойдите от камеры."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Недоступно при использовании этого эффекта."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Чтобы сделать снимок при видеосъемке, нажмите на экран просмотра."</string>
+    <!-- no translation found for clear_effects (5485339175014139481) -->
+    <skip />
+    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
+    <skip />
+    <!-- no translation found for effect_background (6909716214852487679) -->
+    <skip />
 </resources>

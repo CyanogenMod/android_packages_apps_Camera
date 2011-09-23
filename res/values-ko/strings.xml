@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"사용 안함"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"사용"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"동영상 화질"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"고화질"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"저화질"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"멀티미디어 메시지(낮음, 30초)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube(고화질, 15분)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"시간 경과 간격"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"카메라 설정"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"캠코더 설정"</string>
@@ -119,5 +115,11 @@
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"직접 선택"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"기기를 평평한 바닥에 올려놓고 뒤에 움직이는 물체가 없는지 확인합니다. "\n\n"그런 다음 카메라 뷰 밖으로 비켜섭니다."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"효과를 사용 중일 때는 선택할 수 없습니다."</string>
-    <string name="video_snapshot_hint" msgid="6479115859014094906">"동영상을 녹화하는 동안 미리보기 화면을 탭하여 사진을 찍을 수 있습니다."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"동영상을 촬영하는 동안 미리보기 화면을 탭하여 사진을 찍을 수 있습니다."</string>
+    <!-- no translation found for clear_effects (5485339175014139481) -->
+    <skip />
+    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
+    <skip />
+    <!-- no translation found for effect_background (6909716214852487679) -->
+    <skip />
 </resources>
