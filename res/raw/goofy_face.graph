@@ -68,7 +68,7 @@
 }
 
 // Goofyface
-@filter GoofyFastRenderFilter goofyrenderer {
+@filter GoofyRenderFilter goofyrenderer {
   distortionAmount = 1.0;
 }
 
@@ -88,6 +88,7 @@
 @filter FaceMetaFixedRotationFilter metarotate {
     rotation = 0;
 }
+
 
 // Recording output
 @filter MediaEncoderFilter recorder {
