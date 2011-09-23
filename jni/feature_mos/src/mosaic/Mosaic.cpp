@@ -135,43 +135,49 @@ int Mosaic::addFrame(ImageType imageYVU)
 
     frame->image = imageYVU;
 
-    int align_flag = Align::ALIGN_RET_OK;
-
     // Add frame to aligner
+    int ret = MOSAIC_RET_ERROR;
     if (aligner != NULL)
     {
         // Note aligner takes in RGB images
-        printf("Adding frame to aligner...\n");
+        int align_flag = Align::ALIGN_RET_OK;
         align_flag = aligner->addFrame(frame->image);
         aligner->getLastTRS(frame->trs);
 
-        printf("Frame width %d,%d\n", frame->width, frame->height);
         if (frames_size >= max_frames)
         {
-            fprintf(stderr, "WARNING: More frames than preallocated, ignoring.  Increase maximum number of frames (-f <max_frames>) to avoid this\n");
+            LOGV("WARNING: More frames than preallocated, ignoring."
+                 "Increase maximum number of frames (-f <max_frames>) to avoid this");
             return MOSAIC_RET_ERROR;
         }
-        else if(align_flag == Align::ALIGN_RET_OK)
+
+        switch (align_flag)
         {
-            frames_size++;
-            return MOSAIC_RET_OK;
-        }
-        else
-        {
-            return MOSAIC_RET_ERROR;
+            case Align::ALIGN_RET_OK:
+                frames_size++;
+                ret = MOSAIC_RET_OK;
+                break;
+            case Align::ALIGN_RET_FEW_INLIERS:
+                frames_size++;
+                ret = MOSAIC_RET_FEW_INLIERS;
+                break;
+            case Align::ALIGN_RET_LOW_TEXTURE:
+                ret = MOSAIC_RET_LOW_TEXTURE;
+                break;
+            case Align::ALIGN_RET_ERROR:
+                ret = MOSAIC_RET_ERROR;
+                break;
+            default:
+                break;
         }
     }
-    else
-    {
-        return MOSAIC_RET_ERROR;
-    }
+
+    return ret;
 }
 
 
 int Mosaic::createMosaic(float &progress, bool &cancelComputation)
 {
-    printf("Creating mosaic\n");
-
     if (frames_size <= 0)
     {
         // Haven't accepted any frame in aligner. No need to do blending.

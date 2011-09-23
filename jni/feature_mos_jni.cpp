@@ -50,7 +50,7 @@ ImageType tImage[NR][MAX_FRAMES_LR];// = {{ImageUtils::IMAGE_TYPE_NOIMAGE}}; // 
 Mosaic *mosaic[NR] = {NULL,NULL};
 ImageType resultYVU = ImageUtils::IMAGE_TYPE_NOIMAGE;
 ImageType resultBGR = ImageUtils::IMAGE_TYPE_NOIMAGE;
-float gTRS[10];
+float gTRS[11]; // 9 elements of the transformation, 1 for frame-number, 1 for alignment error code.
 // Variables to keep track of the mosaic computation progress for both LR & HR.
 float gProgress[NR];
 // Variables to be able to cancel the mosaic computation when the GUI says so.
@@ -373,6 +373,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
 {
     double  t0, t1, time_c;
     t0 = now_ms();
+    int ret_code;
 
     if(frame_number_HR<MAX_FRAMES_HR && frame_number_LR<MAX_FRAMES_LR)
     {
@@ -384,9 +385,9 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
 
         sem_post(&gPreviewImage_semaphore);
 
-        int ret_code = AddFrame(LR, frame_number_LR, gTRS);
+        ret_code = AddFrame(LR, frame_number_LR, gTRS);
 
-        if(ret_code == Mosaic::MOSAIC_RET_OK)
+        if(ret_code == Mosaic::MOSAIC_RET_OK || ret_code == Mosaic::MOSAIC_RET_FEW_INLIERS)
         {
             // Copy into HR buffer only if this is a valid frame
             sem_wait(&gPreviewImage_semaphore);
@@ -407,11 +408,12 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
     UpdateWarpTransformation(gTRS);
 
     gTRS[9] = frame_number_HR;
+    gTRS[10] = ret_code;
 
-    jfloatArray bytes = env->NewFloatArray(10);
+    jfloatArray bytes = env->NewFloatArray(11);
     if(bytes != 0)
     {
-        env->SetFloatArrayRegion(bytes, 0, 10, (jfloat*) gTRS);
+        env->SetFloatArrayRegion(bytes, 0, 11, (jfloat*) gTRS);
     }
     return bytes;
 }
@@ -423,6 +425,8 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
 {
     double  t0, t1, time_c;
     t0 = now_ms();
+
+    int ret_code;
 
     if(frame_number_HR<MAX_FRAMES_HR && frame_number_LR<MAX_FRAMES_LR)
     {
@@ -445,9 +449,9 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
                 gPreviewImageWidth[LR], gPreviewImageHeight[LR]);
         sem_post(&gPreviewImage_semaphore);
 
-        int ret_code = AddFrame(LR, frame_number_LR, gTRS);
+        ret_code = AddFrame(LR, frame_number_LR, gTRS);
 
-        if(ret_code == Mosaic::MOSAIC_RET_OK)
+        if(ret_code == Mosaic::MOSAIC_RET_OK || ret_code == Mosaic::MOSAIC_RET_FEW_INLIERS)
         {
             frame_number_LR++;
             frame_number_HR++;
@@ -463,11 +467,12 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
     UpdateWarpTransformation(gTRS);
 
     gTRS[9] = frame_number_HR;
+    gTRS[10] = ret_code;
 
-    jfloatArray bytes = env->NewFloatArray(10);
+    jfloatArray bytes = env->NewFloatArray(11);
     if(bytes != 0)
     {
-        env->SetFloatArrayRegion(bytes, 0, 10, (jfloat*) gTRS);
+        env->SetFloatArrayRegion(bytes, 0, 11, (jfloat*) gTRS);
     }
     return bytes;
 }
