@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.camera.ui.BasicSettingPopup xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.EffectSettingPopup xmlns:android="http://schemas.android.com/apk/res/android"
         style="@style/SettingPopupWindow">
 
     <LinearLayout android:orientation="vertical"
@@ -30,12 +30,36 @@
         </FrameLayout>
 
         <View style="@style/PopupTitleSeperator" />
-
-        <FrameLayout android:layout_width="match_parent"
+        <ScrollView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <GridView android:id="@+id/settingList"
-                    style="@style/EffectSettingGrid"
-                    android:choiceMode="singleChoice" />
-        </FrameLayout>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <TextView android:id="@+id/clear_effects"
+                        android:text="@string/clear_effects"
+                        style="@style/EffectSettingTypeTitle"
+                        android:textSize="@dimen/effect_setting_clear_text_size"
+                        android:minHeight="@dimen/effect_setting_clear_text_min_height"
+                        android:background="@drawable/bg_pressed"/>
+                <View style="@style/EffectTitleSeparator"/>
+                <TextView
+                        android:text="@string/effect_silly_faces"
+                        style="@style/EffectSettingTypeTitle"/>
+                <com.android.camera.ui.ExpandedGridView android:id="@+id/effect_silly_faces"
+                        style="@style/EffectSettingGrid"/>
+                <View android:id="@+id/effect_background_separator"
+                        android:visibility="gone"
+                        style="@style/EffectTitleSeparator"/>
+                <TextView android:id="@+id/effect_background_title"
+                        android:text="@string/effect_background"
+                        android:visibility="gone"
+                        style="@style/EffectSettingTypeTitle"/>
+                <com.android.camera.ui.ExpandedGridView android:id="@+id/effect_background"
+                        android:visibility="gone"
+                        style="@style/EffectSettingGrid"/>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
-</com.android.camera.ui.BasicSettingPopup>
+</com.android.camera.ui.EffectSettingPopup>

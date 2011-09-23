@@ -27,7 +27,8 @@ import android.view.ViewGroup;
 
 // An indicator button that represents one camera setting. Ex: flash. Pressing it opens a popup
 // window.
-public class IndicatorButton extends AbstractIndicatorButton implements BasicSettingPopup.Listener {
+public class IndicatorButton extends AbstractIndicatorButton implements BasicSettingPopup.Listener,
+        EffectSettingPopup.Listener{
     private final String TAG = "IndicatorButton";
     private IconListPreference mPreference;
     // Scene mode can override the original preference value.
@@ -103,19 +104,21 @@ public class IndicatorButton extends AbstractIndicatorButton implements BasicSet
                 Context.LAYOUT_INFLATER_SERVICE);
         ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.frame_layout);
 
-        BasicSettingPopup popup;
+        AbstractSettingPopup popup;
         if (CameraSettings.KEY_VIDEO_EFFECT.equals(getKey())) {
-            popup = (BasicSettingPopup) inflater.inflate(
+            EffectSettingPopup effect = (EffectSettingPopup) inflater.inflate(
                     R.layout.effect_setting_popup, root, false);
-            popup.initialize(mPreference, R.layout.effect_setting_item);
+            effect.initialize(mPreference);
+            effect.setSettingChangedListener(this);
+            mPopup = effect;
         } else {
-            popup = (BasicSettingPopup) inflater.inflate(
+            BasicSettingPopup basic = (BasicSettingPopup) inflater.inflate(
                     R.layout.basic_setting_popup, root, false);
-            popup.initialize(mPreference, R.layout.setting_item);
+            basic.initialize(mPreference);
+            basic.setSettingChangedListener(this);
+            mPopup = basic;
         }
-        popup.setSettingChangedListener(this);
-        root.addView(popup);
-        mPopup = popup;
+        root.addView(mPopup);
     }
 
     @Override
