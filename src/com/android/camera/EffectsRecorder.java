@@ -60,7 +60,8 @@ public class EffectsRecorder {
 
     public static final int  EFFECT_MSG_STARTED_LEARNING = 0;
     public static final int  EFFECT_MSG_DONE_LEARNING    = 1;
-    public static final int  EFFECT_MSG_STOPPING_EFFECT  = 2;
+    public static final int  EFFECT_MSG_SWITCHING_EFFECT = 2;
+    public static final int  EFFECT_MSG_EFFECTS_STOPPED  = 3;
 
     private Context mContext;
     private Handler mHandler;
@@ -189,8 +190,8 @@ public class EffectsRecorder {
 
     public void setEffect(int effect, Object effectParameter) {
         if (mLogVerbose) Log.v(TAG,
-                               "Setting effect ID to " + effect +
-                               ", parameter to " + effectParameter.toString() );
+                               "setEffect: effect ID " + effect +
+                               ", parameter " + effectParameter.toString() );
         switch (mState) {
             case STATE_RECORD:
                 throw new RuntimeException("setEffect cannot be called while recording!");
@@ -268,6 +269,11 @@ public class EffectsRecorder {
         mGraphEnv = new GraphEnvironment();
         mGraphEnv.createGLEnvironment();
 
+        if (mLogVerbose) {
+            Log.v(TAG, "Effects framework initializing. Recording size "
+                  + mProfile.videoFrameWidth + ", " + mProfile.videoFrameHeight);
+        }
+
         mGraphEnv.addReferences(
                 "textureSourceCallback", mSourceReadyCallback,
                 "recordingWidth", mProfile.videoFrameWidth,
@@ -285,13 +291,17 @@ public class EffectsRecorder {
         if (forceReset ||
             mCurrentEffect != mEffect ||
             mCurrentEffect == EFFECT_BACKDROPPER) {
+            if (mLogVerbose) {
+                Log.v(TAG, "Effect initializing. Preview size "
+                       + mPreviewWidth + ", " + mPreviewHeight);
+            }
             mGraphEnv.addReferences(
                     "previewSurface", mPreviewSurfaceHolder.getSurface(),
                     "previewWidth", mPreviewWidth,
                     "previewHeight", mPreviewHeight);
             if (mState == STATE_PREVIEW) {
                 // Switching effects while running. Inform video camera.
-                sendMessage(mCurrentEffect, EFFECT_MSG_STOPPING_EFFECT);
+                sendMessage(mCurrentEffect, EFFECT_MSG_SWITCHING_EFFECT);
             }
 
             switch (mEffect) {
@@ -410,7 +420,6 @@ public class EffectsRecorder {
 
                 // Lock AE/AWB to reduce transition flicker
                 tryEnable3ALocks(true);
-
                 mCameraDevice.startPreview();
 
                 // Unlock AE/AWB after preview started
@@ -502,8 +511,6 @@ public class EffectsRecorder {
             stopRecording();
         }
 
-        sendMessage(mCurrentEffect, EFFECT_MSG_STOPPING_EFFECT);
-
         mCurrentEffect = EFFECT_NONE;
 
         mCameraDevice.stopPreview();
@@ -559,12 +566,7 @@ public class EffectsRecorder {
                 } else if (mState != STATE_RELEASED) {
                     // Shutting down effects
                     if (mLogVerbose) Log.v(TAG, "Runner halted, restoring direct preview");
-                    try {
-                        mCameraDevice.setPreviewDisplay(mPreviewSurfaceHolder);
-                    } catch(IOException e) {
-                        throw new RuntimeException("Unable to connect camera to preview display", e);
-                    }
-                    mCameraDevice.startPreview();
+                    sendMessage(EFFECT_NONE, EFFECT_MSG_EFFECTS_STOPPED);
                 } else {
                     // STATE_RELEASED - camera will be/has been released as well, do nothing.
                 }

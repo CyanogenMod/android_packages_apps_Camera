@@ -82,9 +82,17 @@ public class CameraSettings {
         return group;
     }
 
-    public String getDefaultVideoQuality(String defaultQuality) {
-        int quality = Integer.valueOf(defaultQuality);
-        if (CamcorderProfile.hasProfile(mCameraId, quality)) {
+    public static String getDefaultVideoQuality(int cameraId,
+            String defaultQuality) {
+        int quality = -1;
+        try {
+            quality = Integer.valueOf(defaultQuality);
+        } catch(NumberFormatException e) {
+            Log.e(TAG, "Cannot convert default quality setting '"
+                    + defaultQuality
+                    + "' into CamcorderProfile quality. Using fallback");
+        }
+        if (CamcorderProfile.hasProfile(cameraId, quality)) {
             return defaultQuality;
         }
         return Integer.toString(CamcorderProfile.QUALITY_HIGH);
