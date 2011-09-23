@@ -793,7 +793,6 @@ public class VideoCamera extends ActivityBase
         if (mOpenCameraFail || mCameraDisabled) return;
         mZoomValue = 0;
 
-        hideAlert();
         showVideoSnapshotUI(false);
 
         // Start orientation listener as soon as possible because it takes
