@@ -20,20 +20,6 @@
         android:clickable="true"
         android:layout_alignParentRight="true">
 
-    <com.android.camera.ui.ZoomIndexBar
-            android:id="@+id/zoom_index_bar"
-            android:layout_width="5dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:layout_alignParentLeft="true"
-            android:visibility="gone">
-        <View android:id="@+id/zoom_index"
-                android:scaleType="fitXY"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/review_control_pressed_color"/>
-    </com.android.camera.ui.ZoomIndexBar>
-
     <RelativeLayout
             android:id="@+id/control_bars"
             android:layout_toRightOf="@+id/zoom_index_bar"
@@ -60,17 +46,23 @@
 
         <com.android.camera.ui.SecondLevelIndicatorControlBar
                 android:id="@+id/second_level_indicator_bar"
-                android:padding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_centerHorizontal="true"
                 android:background="@color/indicator_background"
                 android:visibility="gone">
             <View android:id="@+id/divider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@android:color/white"/>
+                    android:background="@android:color/white" />
+            <View android:id="@+id/indicator_highlight"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="3dp"
+                    android:layout_height="0dp"
+                    android:background="@color/mode_selection_border"
+                    android:visibility="gone" />
         </com.android.camera.ui.SecondLevelIndicatorControlBar>
 
     </RelativeLayout>
