@@ -19,14 +19,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <LinearLayout style="@style/ReviewControlGroup"
-            android:id="@+id/btn_cancel"
-            android:onClick="onCancelButtonClicked"
+            android:id="@+id/btn_done"
+            android:onClick="onDoneButtonClicked"
             android:layout_alignParentTop="true"
             android:layout_marginTop="36dp">
         <ImageView style="@style/ReviewControlIcon"
-                android:src="@drawable/ic_menu_cancel_holo_light" />
+                android:src="@drawable/ic_menu_done_holo_light" />
         <TextView style="@style/ReviewControlText"
-                android:text="@string/review_cancel" />
+                android:text="@string/review_ok" />
     </LinearLayout>
     <ImageView android:id="@+id/btn_retake"
             android:layout_width="wrap_content"
@@ -39,13 +39,13 @@
             android:onClick="onRetakeButtonClicked"
             android:background="@drawable/btn_shutter_retake" />
     <LinearLayout style="@style/ReviewControlGroup"
-            android:id="@+id/btn_done"
-            android:onClick="onDoneButtonClicked"
+            android:id="@+id/btn_cancel"
+            android:onClick="onCancelButtonClicked"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="36dp">
         <ImageView style="@style/ReviewControlIcon"
-                android:src="@drawable/ic_menu_done_holo_light" />
+                android:src="@drawable/ic_menu_cancel_holo_light" />
         <TextView style="@style/ReviewControlText"
-                android:text="@string/review_ok" />
+                android:text="@string/review_cancel" />
     </LinearLayout>
 </RelativeLayout>
