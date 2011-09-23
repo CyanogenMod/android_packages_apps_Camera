@@ -914,6 +914,8 @@ public class VideoCamera extends ActivityBase
         }
         mEffectType = EffectsRecorder.EFFECT_NONE;
         CameraHolder.instance().release();
+        mCameraDevice.setZoomChangeListener(null);
+        mCameraDevice.setErrorCallback(null);
         mCameraDevice = null;
         mPreviewing = false;
         mSnapshotInProgress = false;
@@ -2114,7 +2116,7 @@ public class VideoCamera extends ActivityBase
         mZoomControl.setZoomMax(mZoomMax);
         mZoomControl.setZoomIndex(mParameters.getZoom());
         mZoomControl.setSmoothZoomSupported(mSmoothZoomSupported);
-        mZoomControl.setOnZoomChangeListener(new ZoomChangeListener()   );
+        mZoomControl.setOnZoomChangeListener(new ZoomChangeListener());
         mCameraDevice.setZoomChangeListener(mZoomListener);
     }
 

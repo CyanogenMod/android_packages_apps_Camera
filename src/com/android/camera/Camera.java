@@ -1492,6 +1492,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             CameraHolder.instance().release();
             mCameraDevice.setZoomChangeListener(null);
             mCameraDevice.setFaceDetectionListener(null);
+            mCameraDevice.setErrorCallback(null);
             mCameraDevice = null;
             mCameraState = PREVIEW_STOPPED;
             mFocusManager.onCameraReleased();
