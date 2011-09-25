@@ -118,6 +118,8 @@ public class VideoCamera extends BaseCamera
 
     private static final long SHUTTER_BUTTON_TIMEOUT = 500L; // 500ms
 
+    private static final long LAST_CAMCORDER_QUALITY = CamcorderProfile.QUALITY_HD;
+
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
     private GestureDetector mGestureDetector;
@@ -634,8 +636,7 @@ public class VideoCamera extends BaseCamera
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
             videoQuality =
                     intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-            if (videoQuality < CamcorderProfile.QUALITY_LOW ||
-                    videoQuality > CamcorderProfile.QUALITY_HD) {
+            if (videoQuality < 0 || videoQuality > LAST_CAMCORDER_QUALITY) {
                 videoQuality = CamcorderProfile.QUALITY_HIGH;
             }
         }
@@ -656,7 +657,14 @@ public class VideoCamera extends BaseCamera
             mMaxVideoDurationInMs =
                     CameraSettings.getVidoeDurationInMillis(quality);
         }
-        mProfile = CamcorderProfile.get(mCameraId, videoQuality);
+        try {
+            mProfile = CamcorderProfile.get(mCameraId, videoQuality);
+        }
+        catch (RuntimeException e) {
+            Log.e(TAG, "Unable to get video profile " + videoQuality, e);
+            // Fall back to lowest quality if media profile is wrong
+            mProfile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_LOW);
+        }
     }
 
     private void resizeForPreviewAspectRatio() {
