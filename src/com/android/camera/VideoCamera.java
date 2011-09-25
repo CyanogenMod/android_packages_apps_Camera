@@ -199,6 +199,9 @@ public class VideoCamera extends BaseCamera
     // for general zoom support check mParameters.isZoomSupported()
     private boolean mZoomSupported = false;
 
+    // Last quality enum, defined in frameworks mediaprofile
+    private int mMaxCamcorderQuality = CamcorderProfile.QUALITY_HD;
+
     // This Handler is used to post message back onto the main thread of the
     // application
     private class MainHandler extends Handler {
@@ -634,8 +637,7 @@ public class VideoCamera extends BaseCamera
         if (intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
             videoQuality =
                     intent.getIntExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-            if (videoQuality < CamcorderProfile.QUALITY_LOW ||
-                    videoQuality > CamcorderProfile.QUALITY_HD) {
+            if (videoQuality < 0 || videoQuality > mMaxCamcorderQuality) {
                 videoQuality = CamcorderProfile.QUALITY_HIGH;
             }
         }
@@ -656,7 +658,14 @@ public class VideoCamera extends BaseCamera
             mMaxVideoDurationInMs =
                     CameraSettings.getVidoeDurationInMillis(quality);
         }
-        mProfile = CamcorderProfile.get(mCameraId, videoQuality);
+        try {
+            mProfile = CamcorderProfile.get(mCameraId, videoQuality);
+        }
+        catch (RuntimeException e) {
+            Log.e(TAG, "Unable to get video profile " + videoQuality, e);
+            // Fall back to lowest quality if media profile is wrong
+            mProfile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_LOW);
+        }
     }
 
     private void resizeForPreviewAspectRatio() {
