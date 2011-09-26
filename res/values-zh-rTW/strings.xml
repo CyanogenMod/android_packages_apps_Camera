@@ -137,6 +137,7 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"影片品質"</string>
     <!-- skipping untranslatable /resources:0/string:name=pref_video_quality_default -->
     <string name="pref_video_quality_entry_hd">HD (30 分鐘)</string>
+    <string name="pref_video_quality_entry_wide">寬闊 (30 分鐘)</string>
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"高 (30 分鐘)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"低 (30 分鐘)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (低，30 秒)"</string>
