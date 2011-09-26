@@ -235,7 +235,8 @@ public class VideoCamera extends ActivityBase
     // The orientation compensation for icons and thumbnails. Ex: if the value
     // is 90, the UI components should be rotated 90 degrees counter-clockwise.
     private int mOrientationCompensation = 0;
-    private int mOrientationHint; // the orientation hint for video playback
+    // The orientation compenstaion when we start recording.
+    private int mOrientationCompensationAtRecordStart;
 
     private static final int ZOOM_STOPPED = 0;
     private static final int ZOOM_START = 1;
@@ -511,7 +512,7 @@ public class VideoCamera extends ActivityBase
                 mOrientationCompensation = orientationCompensation;
                 if (effectsActive()) {
                     CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-                    int rotation = (info.orientation + mOrientation) % 360;;
+                    int rotation = (info.orientation + mOrientation) % 360;
                     mEffectsRecorder.setOrientationHint(rotation);
                 }
                 // Do not rotate the icons during recording because the video
@@ -1169,6 +1170,9 @@ public class VideoCamera extends ActivityBase
 
         // See android.hardware.Camera.Parameters.setRotation for
         // documentation.
+        // Note that mOrientation here is the device orientation, which is the opposite of
+        // what activity.getWindowManager().getDefaultDisplay().getRotation() would return,
+        // which is the orientation the graphics need to rotate in order to render correctly.
         int rotation = 0;
         if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
             CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
@@ -1179,7 +1183,7 @@ public class VideoCamera extends ActivityBase
             }
         }
         mMediaRecorder.setOrientationHint(rotation);
-        mOrientationHint = rotation;
+        mOrientationCompensationAtRecordStart = mOrientationCompensation;
 
         try {
             mMediaRecorder.prepare();
@@ -1214,7 +1218,7 @@ public class VideoCamera extends ActivityBase
             rotation = (info.orientation + mOrientation) % 360;
         }
         mEffectsRecorder.setOrientationHint(rotation);
-        mOrientationHint = rotation;
+        mOrientationCompensationAtRecordStart = mOrientationCompensation;
 
         mEffectsRecorder.setPreviewDisplay(
                 mSurfaceHolder,
@@ -1546,13 +1550,11 @@ public class VideoCamera extends ActivityBase
                     mPreviewFrameLayout.getWidth());
             if (bitmap != null) {
                 // MetadataRetriever already rotates the thumbnail. We should rotate
-                // it back (and mirror if it is front-facing camera).
+                // it to match the UI orientation (and mirror if it is front-facing camera).
                 CameraInfo[] info = CameraHolder.instance().getCameraInfo();
-                if (info[mCameraId].facing == CameraInfo.CAMERA_FACING_BACK) {
-                    bitmap = Util.rotateAndMirror(bitmap, -mOrientationHint, false);
-                } else {
-                    bitmap = Util.rotateAndMirror(bitmap, -mOrientationHint, true);
-                }
+                boolean mirror = (info[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT);
+                bitmap = Util.rotateAndMirror(bitmap, -mOrientationCompensationAtRecordStart,
+                        mirror);
                 mReviewImage.setImageBitmap(bitmap);
                 mReviewImage.setVisibility(View.VISIBLE);
             }
