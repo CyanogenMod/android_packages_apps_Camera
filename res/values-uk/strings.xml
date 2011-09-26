@@ -116,10 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Покладіть свій пристрій на нерухому поверхню та переконайтеся, що за вами немає жодного руху."\n\n"Потім вийдіть із поля зору камери."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Це не можна вибрати, якщо ввімкнено ефект."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Зробіть фото під час відеозйомки, торкнувшись екрана перегляду."</string>
-    <!-- no translation found for clear_effects (5485339175014139481) -->
-    <skip />
-    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
-    <skip />
-    <!-- no translation found for effect_background (6909716214852487679) -->
-    <skip />
+    <string name="clear_effects" msgid="5485339175014139481">"Очистити ефекти"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Кумедні обличчя"</string>
+    <string name="effect_background" msgid="6909716214852487679">"Фон"</string>
 </resources>

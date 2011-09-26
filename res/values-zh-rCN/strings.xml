@@ -116,10 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"将您的设备放置在一个平稳的表面上，并确保您的身后没有任何移动的物体。"\n\n"然后走出摄像头的取景范围。"</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"无法在效果开启时选择此设置。"</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"录制视频时点按预览屏幕可拍摄照片。"</string>
-    <!-- no translation found for clear_effects (5485339175014139481) -->
-    <skip />
-    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
-    <skip />
-    <!-- no translation found for effect_background (6909716214852487679) -->
-    <skip />
+    <string name="clear_effects" msgid="5485339175014139481">"清除效果"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"趣味表情"</string>
+    <string name="effect_background" msgid="6909716214852487679">"背景"</string>
 </resources>

@@ -116,10 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Coloque o aparelho numa superfície estável e certifique-se de que não existe movimento atrás de si."\n\n"Em seguida, saia do alcance visual da câmara."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Isto não é selecionável quando o efeito está ativado."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Tire uma fotografia durante a gravação de vídeo tocando no ecrã de pré-visualização."</string>
-    <!-- no translation found for clear_effects (5485339175014139481) -->
-    <skip />
-    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
-    <skip />
-    <!-- no translation found for effect_background (6909716214852487679) -->
-    <skip />
+    <string name="clear_effects" msgid="5485339175014139481">"Limpar efeitos"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Caretas"</string>
+    <string name="effect_background" msgid="6909716214852487679">"Fundo"</string>
 </resources>

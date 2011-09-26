@@ -110,16 +110,13 @@
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Hidung Besar"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Mata Kecil"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"Luar Angkasa"</string>
-    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Matahari terbenam"</string>
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Mthari trbenam"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Pilih sendiri"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Tempatkan perangkat pada permukaan yang stabil dan pastikan tidak ada gerakan di belakang Anda."\n\n"Setelah itu keluarlah dari pandangan kamera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Setelan ini tidak dapat dipilih jika efek aktif."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Mengambil foto saat merekam video dengan mengetuk layar pratinjau."</string>
-    <!-- no translation found for clear_effects (5485339175014139481) -->
-    <skip />
-    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
-    <skip />
-    <!-- no translation found for effect_background (6909716214852487679) -->
-    <skip />
+    <string name="clear_effects" msgid="5485339175014139481">"Hapus efek"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Wajah konyol"</string>
+    <string name="effect_background" msgid="6909716214852487679">"Latar belakang"</string>
 </resources>

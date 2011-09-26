@@ -116,10 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Placer enheden på en jævn overflade, og sørg for, at der ikke er noget i baggrunden, der bevæger sig."\n\n"Gå derefter ud af billedet."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Dette kan ikke vælges, når effekten er slået til."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Tryk på eksempelskærmen for at tage et foto under videooptagelse."</string>
-    <!-- no translation found for clear_effects (5485339175014139481) -->
-    <skip />
-    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
-    <skip />
-    <!-- no translation found for effect_background (6909716214852487679) -->
-    <skip />
+    <string name="clear_effects" msgid="5485339175014139481">"Ryd effekter"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Skøre ansigter"</string>
+    <string name="effect_background" msgid="6909716214852487679">"Baggrund"</string>
 </resources>

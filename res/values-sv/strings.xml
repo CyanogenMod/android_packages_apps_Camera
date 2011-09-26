@@ -116,10 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Placera enheten på en stadig yta och se till att det är lugnt bakom dig."\n\n"Gå åt sidan så du inte syns på bilden."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Det går inte att välja detta när effekten är på."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Knacka lätt på skärmen om du vill fota under inspelningen."</string>
-    <!-- no translation found for clear_effects (5485339175014139481) -->
-    <skip />
-    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
-    <skip />
-    <!-- no translation found for effect_background (6909716214852487679) -->
-    <skip />
+    <string name="clear_effects" msgid="5485339175014139481">"Ta bort effekter"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Roliga grimaser"</string>
+    <string name="effect_background" msgid="6909716214852487679">"Bakgrund"</string>
 </resources>

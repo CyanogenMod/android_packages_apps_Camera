@@ -116,10 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Col·loca el dispositiu sobre una superfície estable i assegura\'t que no hi hagi res que es mogui darrere teu."\n\n"A continuació, surt del davant de la càmera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Aquesta opció no es pot seleccionar quan l\'efecte està activat."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Per fer una foto durant l\'enregistrament de vídeo, pica la pantalla de visualització prèvia."</string>
-    <!-- no translation found for clear_effects (5485339175014139481) -->
-    <skip />
-    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
-    <skip />
-    <!-- no translation found for effect_background (6909716214852487679) -->
-    <skip />
+    <string name="clear_effects" msgid="5485339175014139481">"Esborra efectes"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Ganyotes"</string>
+    <string name="effect_background" msgid="6909716214852487679">"Fons"</string>
 </resources>

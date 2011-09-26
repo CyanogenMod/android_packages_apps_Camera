@@ -116,10 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Novietojiet ierīci uz stabilas virsmas un pārliecinieties, ka aiz jums nenotiek nekāda kustība."\n\n"Pēc tam izejiet no kameras skata."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Šo iestatījumu nevar atlasīt, kad ieslēgts efekts."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Fotografējiet videoieraksta laikā, pieskaroties priekšskat. ekr."</string>
-    <!-- no translation found for clear_effects (5485339175014139481) -->
-    <skip />
-    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
-    <skip />
-    <!-- no translation found for effect_background (6909716214852487679) -->
-    <skip />
+    <string name="clear_effects" msgid="5485339175014139481">"Noņemt efektus"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Smieklīgas sejas izt."</string>
+    <string name="effect_background" msgid="6909716214852487679">"Fons"</string>
 </resources>

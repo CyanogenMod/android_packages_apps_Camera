@@ -116,10 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Placez l\'appareil sur une surface stable, et assurez-vous qu\'il n\'y a pas de mouvement derrière vous."\n\n"Sortez ensuite du champ de vision de l\'appareil photo."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Sélection impossible lorsque l\'effet est activé."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Appuyez sur écran prévis. pour prendre photo pendant enreg. vidéo"</string>
-    <!-- no translation found for clear_effects (5485339175014139481) -->
-    <skip />
-    <!-- no translation found for effect_silly_faces (3214174716769421248) -->
-    <skip />
-    <!-- no translation found for effect_background (6909716214852487679) -->
-    <skip />
+    <string name="clear_effects" msgid="5485339175014139481">"Effacer les effets"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Expressions amusantes"</string>
+    <string name="effect_background" msgid="6909716214852487679">"Arrière-plan"</string>
 </resources>
