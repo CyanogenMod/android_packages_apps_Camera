@@ -25,7 +25,7 @@
     <color name="icon_disabled_color">#DD777777</color>
     <color name="time_lapse_arc">#FFC5C5C5</color>
     <color name="dark_gray">#151515</color>
-    <color name="share_popup_background">#B0000000</color>
+    <color name="share_popup_background">#DA000000</color>
     <color name="share_icon_background">#40000000</color>
     <color name="indicator_background">#40000000</color>
     <color name="popup_title_color">#ff33b5e5</color>
