@@ -650,16 +650,7 @@ public class VideoCamera extends ActivityBase
         String videoQuality =
                 mPreferences.getString(CameraSettings.KEY_VIDEO_QUALITY,
                         defaultQuality);
-        int quality = 0;
-        try {
-            quality = Integer.valueOf(videoQuality);
-        } catch (NumberFormatException e) {
-            Log.e(TAG, "Cannot convert quality setting '"
-                    + videoQuality + "' into CamcorderProfile quality."
-                    + " Reverting to default.");
-            // Conversion guaranteed by getDefaultVideoQuality
-            quality = Integer.valueOf(defaultQuality);
-        }
+        int quality = Integer.valueOf(videoQuality);
 
         // Set video quality.
         Intent intent = getIntent();

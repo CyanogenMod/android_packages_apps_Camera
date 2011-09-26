@@ -55,7 +55,7 @@ public class CameraSettings {
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
     public static final int CURRENT_VERSION = 5;
-    public static final int CURRENT_LOCAL_VERSION = 1;
+    public static final int CURRENT_LOCAL_VERSION = 2;
 
     public static final int DEFAULT_VIDEO_DURATION = 0; // no limit
 
@@ -84,14 +84,7 @@ public class CameraSettings {
 
     public static String getDefaultVideoQuality(int cameraId,
             String defaultQuality) {
-        int quality = -1;
-        try {
-            quality = Integer.valueOf(defaultQuality);
-        } catch(NumberFormatException e) {
-            Log.e(TAG, "Cannot convert default quality setting '"
-                    + defaultQuality
-                    + "' into CamcorderProfile quality. Using fallback");
-        }
+        int quality = Integer.valueOf(defaultQuality);
         if (CamcorderProfile.hasProfile(cameraId, quality)) {
             return defaultQuality;
         }
@@ -305,7 +298,13 @@ public class CameraSettings {
             version = 0;
         }
         if (version == CURRENT_LOCAL_VERSION) return;
+
         SharedPreferences.Editor editor = pref.edit();
+        if (version == 1) {
+            // We use numbers to represent the quality now. The quality definition is identical to
+            // that of CamcorderProfile.java.
+            editor.remove("pref_video_quality_key");
+        }
         editor.putInt(KEY_LOCAL_VERSION, CURRENT_LOCAL_VERSION);
         editor.apply();
     }
@@ -350,12 +349,6 @@ public class CameraSettings {
             // ignore the current settings.
             editor.remove("pref_camera_videoquality_key");
             editor.remove("pref_camera_video_duration_key");
-            version = 4;
-        }
-        if (version == 4) {
-            // We use numbers to represent the quality now. The quality definition is identical to
-            // that of CamcorderProfile.java.
-            editor.remove("pref_video_quality_key");
         }
 
         editor.putInt(KEY_VERSION, CURRENT_VERSION);
