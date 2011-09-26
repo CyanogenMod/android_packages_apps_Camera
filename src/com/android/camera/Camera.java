@@ -1489,6 +1489,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void closeCamera() {
         if (mCameraDevice != null) {
+            mCameraDevice.cancelAutoFocus(); // Reset the focus.
             CameraHolder.instance().release();
             mCameraDevice.setZoomChangeListener(null);
             mCameraDevice.setFaceDetectionListener(null);
@@ -1528,6 +1529,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
         mAeAwbLock = false; // Always unlock AE and AWB before start.
         setCameraParameters(UPDATE_PARAM_ALL);
+        // If the focus mode is continuous autofocus, call cancelAutoFocus to
+        // resume it because it may have been paused by autoFocus call.
+        if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mParameters.getFocusMode())) {
+            mCameraDevice.cancelAutoFocus();
+        }
 
         try {
             Log.v(TAG, "startPreview");
