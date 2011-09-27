@@ -117,6 +117,6 @@
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Setarea nu poate fi selectată cu efectul activat."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Fotogr. în timpul înregistr. video apăsând pe ecranul de previz."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Ştergeţi efectul"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Feţe prostuțe"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Feţe stupide"</string>
     <string name="effect_background" msgid="6909716214852487679">"Fundal"</string>
 </resources>
