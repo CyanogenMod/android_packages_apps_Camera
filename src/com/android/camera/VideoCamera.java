@@ -1537,6 +1537,8 @@ public class VideoCamera extends ActivityBase
             if (videoFrame != null) {
                 mThumbnail = new Thumbnail(mCurrentVideoUri, videoFrame, 0);
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
+                // Share popup may still have the reference to the old thumbnail. Clear it.
+                mSharePopup = null;
             }
         }
     }
@@ -2223,6 +2225,8 @@ public class VideoCamera extends ActivityBase
             if (mThumbnail != null) {
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
             }
+            // Share popup may still have the reference to the old thumbnail. Clear it.
+            mSharePopup = null;
             Util.broadcastNewPicture(this, uri);
         }
     }
