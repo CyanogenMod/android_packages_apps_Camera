@@ -137,7 +137,7 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"影片品質"</string>
     <!-- skipping untranslatable /resources:0/string:name=pref_video_quality_default -->
     <string name="pref_video_quality_entry_hd">HD (30 分鐘)</string>
-    <string name="pref_video_quality_entry_wide">寬闊 (30 分鐘)</string>
+    <string name="pref_video_quality_entry_wide">寬螢幕 (30 分鐘)</string>
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"高 (30 分鐘)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"低 (30 分鐘)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (低，30 秒)"</string>
@@ -155,15 +155,16 @@
 
     <!-- Settings screen, Picture size dialog radio button choices -->
     <string name="pref_camera_picturesize_entry_3264x2448">8 百萬像素</string>
-    <string name="pref_camera_picturesize_entry_3264x1952">6 百萬像素 (闊屏幕)</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6 百萬像素 (寬螢幕)</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 百萬像素"</string>
-    <string name="pref_camera_picturesize_entry_2592x1552">4 百萬像素 (闊屏幕)</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4 百萬像素 (寬螢幕)</string>
     <string name="pref_camera_picturesize_entry_2560x1712">4 百萬像素</string>
     <string name="pref_camera_picturesize_entry_2304x1728">4 百萬像素</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 百萬像素"</string>
-    <string name="pref_camera_picturesize_entry_2048x1216">2.5 百萬像素 (闊屏幕)</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2.5 百萬像素 (寬螢幕)</string>
     <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 百萬像素"</string>
+    <string name="pref_camera_picturesize_entry_1600x960">1.5 百萬像素 (寬螢幕)</string>
     <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
     <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
     <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
