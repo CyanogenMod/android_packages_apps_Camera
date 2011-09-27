@@ -763,6 +763,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             if (mThumbnail != null) {
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
             }
+            // Share popup may still have the reference to the old thumbnail. Clear it.
+            mSharePopup = null;
             Util.broadcastNewPicture(this, uri);
         }
     }
