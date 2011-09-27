@@ -251,6 +251,8 @@ public class PanoramaActivity extends Activity implements
                         if (mThumbnail != null) {
                             mThumbnailView.setBitmap(mThumbnail.getBitmap());
                         }
+                        // Share popup may still have the reference to the old thumbnail. Clear it.
+                        mSharePopup = null;
                         resetToPreview();
                         break;
                     case MSG_GENERATE_FINAL_MOSAIC_ERROR:
