@@ -67,7 +67,7 @@ public class MenuHelper {
             .show();
     }
 
-    static void addSwitchModeMenuItem(Menu menu, int mode,
+    public static void addSwitchModeMenuItem(Menu menu, int mode,
             final Runnable r) {
         int labelId, iconId;
         switch(mode) {

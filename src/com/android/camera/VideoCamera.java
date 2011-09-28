@@ -69,7 +69,6 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -125,7 +124,7 @@ public class VideoCamera extends ActivityBase
      * and return as soon as recording is stopped.
      * TODO: consider publishing by moving into MediaStore.
      */
-    private final static String EXTRA_QUICK_CAPTURE =
+    private static final String EXTRA_QUICK_CAPTURE =
             "android.intent.extra.quickCapture";
 
     private boolean mSnapshotInProgress = false;
@@ -216,8 +215,6 @@ public class VideoCamera extends ActivityBase
     private ContentResolver mContentResolver;
 
     private LocationManager mLocationManager;
-
-    private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private final Handler mHandler = new MainHandler();
     private Parameters mParameters;
@@ -481,7 +478,7 @@ public class VideoCamera extends ActivityBase
         if (effectsActive()) {
             mIndicatorControlContainer.overrideSettings(
                     CameraSettings.KEY_VIDEO_QUALITY,
-                    Integer.toString(CamcorderProfile.QUALITY_480P) );
+                    Integer.toString(CamcorderProfile.QUALITY_480P));
         }
     }
 
@@ -645,7 +642,7 @@ public class VideoCamera extends ActivityBase
         // The preference stores values from ListPreference and is thus string type for all values.
         // We need to convert it to int manually.
         String defaultQuality = CameraSettings.getDefaultVideoQuality(mCameraId,
-                getResources().getString(R.string.pref_video_quality_default) );
+                getResources().getString(R.string.pref_video_quality_default));
         String videoQuality =
                 mPreferences.getString(CameraSettings.KEY_VIDEO_QUALITY,
                         defaultQuality);
@@ -680,7 +677,7 @@ public class VideoCamera extends ActivityBase
             // When picking from gallery, mEffectParameter should have been
             // initialized in onActivityResult. If not, fall back to no effect
             if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER
-                    && ((String)mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)
+                    && ((String) mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)
                     && mEffectUriFromGallery == null) {
                 Log.w(TAG, "No URI from gallery, resetting to no effect");
                 mEffectType = EffectsRecorder.EFFECT_NONE;
@@ -692,7 +689,7 @@ public class VideoCamera extends ActivityBase
                 if (mIndicatorControlContainer != null) {
                     mIndicatorControlContainer.overrideSettings(
                         CameraSettings.KEY_VIDEO_QUALITY,
-                        null );
+                        null);
                 }
             } else {
                 // Set quality to 480p for effects
@@ -703,7 +700,7 @@ public class VideoCamera extends ActivityBase
                 if (mIndicatorControlContainer != null) {
                     mIndicatorControlContainer.overrideSettings(
                             CameraSettings.KEY_VIDEO_QUALITY,
-                            Integer.toString(CamcorderProfile.QUALITY_480P) );
+                            Integer.toString(CamcorderProfile.QUALITY_480P));
                 }
             }
         } else {
@@ -711,7 +708,7 @@ public class VideoCamera extends ActivityBase
             if (mIndicatorControlContainer != null) {
                 mIndicatorControlContainer.overrideSettings(
                         CameraSettings.KEY_VIDEO_QUALITY,
-                        null );
+                        null);
             }
         }
         // Read time lapse recording interval.
@@ -826,7 +823,7 @@ public class VideoCamera extends ActivityBase
 
     private void setPreviewDisplay(SurfaceHolder holder) {
         try {
-            if (effectsActive() ) {
+            if (effectsActive()) {
                 mEffectsRecorder.setPreviewDisplay(
                         mSurfaceHolder,
                         mSurfaceWidth,
@@ -1366,16 +1363,6 @@ public class VideoCamera extends ActivityBase
                 switchToOtherMode(ModePicker.MODE_PANORAMA);
             }
         });
-        MenuItem gallery = menu.add(R.string.camera_gallery_photos_text)
-                .setOnMenuItemClickListener(
-                    new OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            gotoGallery();
-                            return true;
-                        }
-                    });
-        gallery.setIcon(android.R.drawable.ic_menu_gallery);
-        mGalleryItems.add(gallery);
 
         if (mNumberOfCameras > 1) {
             menu.add(R.string.switch_camera_id)
@@ -1986,7 +1973,8 @@ public class VideoCamera extends ActivityBase
             if (mEffectType == EffectsRecorder.EFFECT_NONE) return false;
             if (mEffectParameter.equals(previousEffectParameter)) return false;
         }
-        Log.v(TAG, "New effect selection: " + mPreferences.getString(CameraSettings.KEY_VIDEO_EFFECT, "none"));
+        Log.v(TAG, "New effect selection: " + mPreferences.getString(
+                CameraSettings.KEY_VIDEO_EFFECT, "none"));
 
         if (mEffectType == EffectsRecorder.EFFECT_NONE) {
             // Stop effects and return to normal preview
