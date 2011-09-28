@@ -689,9 +689,11 @@ public class VideoCamera extends ActivityBase
                 editor.putString(CameraSettings.KEY_VIDEO_EFFECT,
                         getString(R.string.pref_video_effect_default));
                 editor.apply();
-                mIndicatorControlContainer.overrideSettings(
-                    CameraSettings.KEY_VIDEO_QUALITY,
-                    null );
+                if (mIndicatorControlContainer != null) {
+                    mIndicatorControlContainer.overrideSettings(
+                        CameraSettings.KEY_VIDEO_QUALITY,
+                        null );
+                }
             } else {
                 // Set quality to 480p for effects
                 quality = CamcorderProfile.QUALITY_480P;
