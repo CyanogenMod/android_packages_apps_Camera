@@ -20,6 +20,7 @@ import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.IndicatorControlWheelContainer;
 import com.android.camera.ui.RotateImageView;
+import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomControl;
 
@@ -180,6 +181,7 @@ public class VideoCamera extends ActivityBase
     private boolean mMediaRecorderRecording = false;
     private long mRecordingStartTime;
     private boolean mRecordingTimeCountsDown = false;
+    private RotateLayout mRecordingTimeRect;
     private long mOnResumeTime;
     // The video file that the hardware camera is about to record into
     // (or is recording into.)
@@ -400,6 +402,7 @@ public class VideoCamera extends ActivityBase
         mShutterButton.requestFocus();
 
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
+        mRecordingTimeRect = (RotateLayout) findViewById(R.id.recording_time_rect);
         mOrientationListener = new MyOrientationEventListener(VideoCamera.this);
         mTimeLapseLabel = findViewById(R.id.time_lapse_label);
 
@@ -525,6 +528,7 @@ public class VideoCamera extends ActivityBase
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
+        mRecordingTimeRect.setOrientation(mOrientationCompensation);
     }
 
     private void startPlayVideoActivity() {
