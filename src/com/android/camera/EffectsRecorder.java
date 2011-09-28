@@ -19,6 +19,7 @@ package com.android.camera;
 import android.content.Context;
 import android.filterfw.GraphEnvironment;
 import android.filterfw.core.Filter;
+import android.filterfw.core.GLEnvironment;
 import android.filterfw.core.GraphRunner;
 import android.filterfw.core.GraphRunner.OnRunnerDoneListener;
 import android.filterpacks.videosrc.SurfaceTextureSource.SurfaceTextureSourceListener;
@@ -555,7 +556,14 @@ public class EffectsRecorder {
             synchronized(EffectsRecorder.this) {
                 if (mOldRunner != null) {
                     if (mLogVerbose) Log.v(TAG, "Tearing down old graph.");
+                    GLEnvironment glEnv = mGraphEnv.getContext().getGLEnvironment();
+                    if (glEnv != null && !glEnv.isActive()) {
+                        glEnv.activate();
+                    }
                     mOldRunner.getGraph().tearDown(mGraphEnv.getContext());
+                    if (glEnv != null && glEnv.isActive()) {
+                        glEnv.deactivate();
+                    }
                     mOldRunner = null;
                 }
                 if (mState == STATE_PREVIEW) {
