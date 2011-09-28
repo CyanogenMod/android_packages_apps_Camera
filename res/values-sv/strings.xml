@@ -47,6 +47,7 @@
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"På"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Videokvalitet"</string>
     <string name="pref_video_quality_entry_hd">HD (30m)</string>
+    <string name="pref_video_quality_entry_wide">Wide (30m)</string>
     <string name="pref_video_quality_entry_high" msgid="2874184763684055612">"Hög (30 m)"</string>
     <string name="pref_video_quality_entry_low" msgid="5282945640948667598">"Låg (30 m)"</string>
     <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (Låg, 30 s)"</string>
@@ -65,6 +66,7 @@
     <string name="pref_camera_picturesize_entry_2048x1216">2.5 Megapixlar (wide)</string>
     <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
     <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1600x960">1.5 Megapixlar (wide)</string>
     <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
     <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
     <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
