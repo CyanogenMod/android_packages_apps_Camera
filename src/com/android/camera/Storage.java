@@ -47,8 +47,8 @@ public class Storage {
 
     private static final int BUFSIZE = 4096;
 
-    public static Uri addImage(ContentResolver resolver, String title,
-            long date, Location location, int orientation, byte[] jpeg) {
+    public static Uri addImage(ContentResolver resolver, String title, long date,
+                Location location, int orientation, byte[] jpeg, int width, int height) {
         // Save the image.
         String path = DIRECTORY + '/' + title + ".jpg";
         FileOutputStream out = null;
@@ -74,6 +74,8 @@ public class Storage {
         values.put(ImageColumns.ORIENTATION, orientation);
         values.put(ImageColumns.DATA, path);
         values.put(ImageColumns.SIZE, jpeg.length);
+        values.put(ImageColumns.WIDTH, width);
+        values.put(ImageColumns.HEIGHT, height);
 
         if (location != null) {
             values.put(ImageColumns.LATITUDE, location.getLatitude());
