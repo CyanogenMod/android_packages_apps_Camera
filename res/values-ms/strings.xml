@@ -121,7 +121,7 @@
     <skip />
     <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
     <skip />
-    <string name="clear_effects" msgid="5485339175014139481">"Padam kesan"</string>
+    <string name="clear_effects" msgid="5485339175014139481">"Padamkan kesan"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Muka bodoh"</string>
     <string name="effect_background" msgid="6909716214852487679">"Latar belakang"</string>
 </resources>

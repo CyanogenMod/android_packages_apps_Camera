@@ -98,8 +98,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Notiek panorāmas sagatavošana"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Neizdevās saglabāt panorāmu."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorāma"</string>
-    <string name="pano_capture_indication" msgid="7431983072966619171">"Notiek panorāmas tveršana"</string>
-    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Saglabā..."</string>
+    <string name="pano_capture_indication" msgid="7431983072966619171">"Tiek tverta panorāma"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Tiek saglab."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Pieskarieties, lai fokusētu."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efekti"</string>
     <string name="effect_none" msgid="3601545724573307541">"Nav"</string>
@@ -114,7 +114,7 @@
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Izvēlēties"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Novietojiet ierīci uz stabilas virsmas un pārliecinieties, ka aiz jums nenotiek nekāda kustība."\n\n"Pēc tam izejiet no kameras skata."</string>
-    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Šo iestatījumu nevar atlasīt, kad ieslēgts efekts."</string>
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Šo iestat. nevar atlasīt, kad ir ieslēgts efekts."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Fotografējiet videoieraksta laikā, pieskaroties priekšskat. ekr."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Noņemt efektus"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Smieklīgas sejas izt."</string>
