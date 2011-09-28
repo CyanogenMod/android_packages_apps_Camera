@@ -114,7 +114,7 @@
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Kies jou eie"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Plaas jou toestel op \'n stewige oppervlak en maak seker daar is geen beweging agter jou nie. "\n\n"Stap dan uit die kamera se sigveld."</string>
-    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Dit kan nie gekies word nie as die effek aan is."</string>
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Dit kan nie gekies word as die effek aan is nie."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Neem \'n foto tydens video-opname deur op die voorskou-skerm te tik."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Vee effekte uit"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Lawwe gesigte"</string>

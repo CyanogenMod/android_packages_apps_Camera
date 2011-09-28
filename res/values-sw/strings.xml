@@ -98,7 +98,7 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Panorama inaandaliwa"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Imeshindwa kuhifadhi mandhari"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Mandhari"</string>
-    <string name="pano_capture_indication" msgid="7431983072966619171">"Kunasa Panorama"</string>
+    <string name="pano_capture_indication" msgid="7431983072966619171">"Nasa Panorama"</string>
     <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Inahifadhi..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Gonga kuzingatia"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Athari"</string>
@@ -114,8 +114,8 @@
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Chagua yako mwenyewe"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Weka kifaa chako sehemu imara isiyoyumba na hakikisha hakuna harakati zozote nyuma yako."\n" "\n" Kisha toka mbele ya kamera."</string>
-    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Hii si haiwezi kuchagulika  wakati athari imewashwa."</string>
-    <string name="video_snapshot_hint" msgid="6479115859014094906">"Kupiga picha wakati wa kurekodi video kwa kugusa kwenye onyesho la awali la skrini."</string>
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Hii haiwezi kuchagulika  wakati athari imewashwa."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Piga picha wakati video inarekodi kwa kugusa kwenye skrini ya onyesho la awali."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Athari Wazi"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Sura pumbavu"</string>
     <string name="effect_background" msgid="6909716214852487679">"Mandhari nyuma"</string>
