@@ -24,7 +24,7 @@
             android:layout_alignBottom="@+id/mode_selection"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:background="@drawable/bg_switcher">
+            android:background="@drawable/bg_mode_picker">
         <View android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/white"/>
