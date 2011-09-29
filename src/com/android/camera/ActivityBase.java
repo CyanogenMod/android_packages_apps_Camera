@@ -16,6 +16,8 @@
 
 package com.android.camera;
 
+import com.android.camera.ui.PopupManager;
+
 import android.app.Activity;
 import android.view.KeyEvent;
 import android.content.Intent;
@@ -60,5 +62,11 @@ public class ActivityBase extends Activity {
 
     public Intent getResultData() {
         return mResultDataForTesting;
+    }
+
+    @Override
+    protected void onDestroy() {
+        PopupManager.removeInstance(this);
+        super.onDestroy();
     }
 }
