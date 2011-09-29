@@ -753,7 +753,7 @@ public class PanoramaActivity extends Activity implements
                     mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_ERROR);
                 } else {
                     int orientation = Exif.getOrientation(jpeg.data);
-                    Uri uri = savePanorama(jpeg.data, orientation);
+                    Uri uri = savePanorama(jpeg.data, jpeg.width, jpeg.height, orientation);
                     if (uri != null) {
                         // Create a thumbnail whose width is equal or bigger
                         // than the entire screen.
@@ -841,12 +841,12 @@ public class PanoramaActivity extends Activity implements
         mReviewLayout.setVisibility(View.VISIBLE);
     }
 
-    private Uri savePanorama(byte[] jpegData, int orientation) {
+    private Uri savePanorama(byte[] jpegData, int width, int height, int orientation) {
         if (jpegData != null) {
             String imagePath = PanoUtil.createName(
                     getResources().getString(R.string.pano_file_name_format), mTimeTaken);
             return Storage.addImage(getContentResolver(), imagePath, mTimeTaken, null,
-                    orientation, jpegData);
+                    orientation, jpegData, width, height);
         }
         return null;
     }
