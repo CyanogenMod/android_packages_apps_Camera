@@ -1826,7 +1826,7 @@ public class VideoCamera extends ActivityBase
     }
 
     private boolean switchToOtherMode(int mode) {
-        if (isFinishing() || mMediaRecorderRecording) return false;
+        if (isFinishing()) return false;
         MenuHelper.gotoMode(mode, VideoCamera.this);
         finish();
         return true;

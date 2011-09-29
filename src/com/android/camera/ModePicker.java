@@ -22,6 +22,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -38,6 +39,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     public static final int MODE_VIDEO = 1;
     public static final int MODE_PANORAMA = 2;
 
+    private static final String TAG = "ModePicker";
     // Total mode number
     private static final int MODE_NUM = 3;
 
@@ -56,7 +58,6 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     private View mCurrentModeFrame;
     private RotateImageView mCurrentModeIcon[];
     private View mCurrentModeBar;
-    private View mSelectedView;
 
     private int mCurrentMode = 0;
     private Animation mFadeIn, mFadeOut;
@@ -87,7 +88,6 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
         // The current mode frame is for Phone UI only.
         mCurrentModeFrame = findViewById(R.id.current_mode);
         if (mCurrentModeFrame != null) {
-            mCurrentModeFrame.setOnClickListener(this);
             mCurrentModeIcon = new RotateImageView[MODE_NUM];
             mCurrentModeIcon[0] = (RotateImageView) findViewById(R.id.mode_0);
             mCurrentModeIcon[1] = (RotateImageView) findViewById(R.id.mode_1);
@@ -96,6 +96,16 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
             // current_mode_bar is only for tablet.
             mCurrentModeBar = findViewById(R.id.current_mode_bar);
             enableModeSelection(true);
+        }
+        registerOnClickListener();
+    }
+
+    private void registerOnClickListener() {
+        if (mCurrentModeFrame != null) {
+            mCurrentModeFrame.setOnClickListener(this);
+        }
+        for (int i = 0; i < MODE_NUM; ++i) {
+            mModeSelectionIcon[i].setOnClickListener(this);
         }
     }
 
@@ -121,19 +131,14 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
                 mModeSelectionFrame.setVisibility(View.VISIBLE);
                 mCurrentModeFrame.setVisibility(View.GONE);
             }
-            mCurrentModeFrame.setOnClickListener(enabled ? null : this);
-        }
-        for (int i = 0; i < MODE_NUM; ++i) {
-            mModeSelectionIcon[i].setOnClickListener(enabled ? this : null);
         }
         updateModeState();
     }
 
     private void changeToSelectedMode() {
-        for (int i = 0; i < MODE_NUM; ++i) {
-            if (mSelectedView == mModeSelectionIcon[i]) {
-                setCurrentMode(i);
-                return;
+        if (mListener != null) {
+            if (mListener.onModeChanged(mCurrentMode)) {
+                Log.e(TAG, "failed:onModeChanged:" + mCurrentMode);
             }
         }
     }
@@ -142,8 +147,13 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
         if (view == mCurrentModeFrame) {
             enableModeSelection(true);
         } else {
-            // The view in selection menu is clicked.
-            mSelectedView = view;
+            // Set the selected mode as the current one and switch to it.
+            for (int i = 0; i < MODE_NUM; ++i) {
+                if (view == mModeSelectionIcon[i] && (mCurrentMode != i)) {
+                    setCurrentMode(i);
+                    break;
+                }
+            }
             if (mCurrentModeBar == null) {
                 enableModeSelection(false);
             } else {
@@ -157,17 +167,8 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     }
 
     public void setCurrentMode(int mode) {
-        tryToSetMode(mode);
-        updateModeState();
-    }
-
-    private void tryToSetMode(int mode) {
-        if (mListener != null) {
-            if (!mListener.onModeChanged(mode)) {
-                return;
-            }
-        }
         mCurrentMode = mode;
+        updateModeState();
     }
 
     public boolean onModeChanged(int mode) {
@@ -200,14 +201,12 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
         if (enabled) updateModeState();
     }
 
-    private void highlightView(View view, boolean enabled) {
-        Drawable drawable = ((ImageView) view).getDrawable();
+    private void highlightView(ImageView view, boolean enabled) {
         if (enabled) {
-            drawable.clearColorFilter();
+            view.clearColorFilter();
         } else {
-            drawable.setColorFilter(DISABLED_COLOR, PorterDuff.Mode.SRC_ATOP);
+            view.setColorFilter(DISABLED_COLOR, PorterDuff.Mode.SRC_ATOP);
         }
-        requestLayout();
     }
 
     private void updateModeState() {
