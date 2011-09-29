@@ -1849,7 +1849,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private boolean switchToOtherMode(int mode) {
-        if (isFinishing() || !isCameraIdle()) return false;
+        if (isFinishing()) return false;
         MenuHelper.gotoMode(mode, Camera.this);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
