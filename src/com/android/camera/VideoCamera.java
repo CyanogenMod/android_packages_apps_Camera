@@ -1297,6 +1297,9 @@ public class VideoCamera extends ActivityBase
         mCurrentVideoValues.put(Video.Media.DATE_TAKEN, dateTaken);
         mCurrentVideoValues.put(Video.Media.MIME_TYPE, mime);
         mCurrentVideoValues.put(Video.Media.DATA, mVideoFilename);
+        mCurrentVideoValues.put(Video.Media.RESOLUTION,
+                Integer.toString(mProfile.videoFrameWidth) + "x" +
+                Integer.toString(mProfile.videoFrameHeight));
         Log.v(TAG, "New video filename: " + mVideoFilename);
     }
 
@@ -2204,8 +2207,9 @@ public class VideoCamera extends ActivityBase
         long dateTaken = System.currentTimeMillis();
         String title = Util.createJpegName(dateTaken);
         int orientation = Exif.getOrientation(data);
-        Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
-                loc, orientation, data);
+        Size s = mParameters.getPictureSize();
+        Uri uri = Storage.addImage(mContentResolver, title, dateTaken, loc, orientation, data,
+                s.width, s.height);
         if (uri != null) {
             // Create a thumbnail whose width is equal or bigger than that of the preview.
             int ratio = (int) Math.ceil((double) mParameters.getPictureSize().width

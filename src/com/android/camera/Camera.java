@@ -678,7 +678,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             }
 
             if (!mIsImageCaptureIntent) {
-                storeImage(jpegData, mLocation);
+                Size s = mParameters.getPictureSize();
+                storeImage(jpegData, mLocation, s.width, s.height);
             } else {
                 mJpegImageData = jpegData;
                 if (!mQuickCapture) {
@@ -745,12 +746,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void storeImage(final byte[] data, Location loc) {
+    private void storeImage(final byte[] data, Location loc, int width, int height) {
         long dateTaken = System.currentTimeMillis();
         String title = Util.createJpegName(dateTaken);
         int orientation = Exif.getOrientation(data);
         Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
-                loc, orientation, data);
+                loc, orientation, data, width, height);
         if (uri != null) {
             // Create a thumbnail whose width is equal or bigger than that of the preview.
             int ratio = (int) Math.ceil((double) mParameters.getPictureSize().width
