@@ -60,6 +60,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.Window;
@@ -206,6 +207,27 @@ public class PanoramaActivity extends Activity implements
             if (orientation == ORIENTATION_UNKNOWN) return;
             mDeviceOrientation = ((orientation + 45) / 90) % 4;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        addBaseMenuItems(menu);
+        return true;
+    }
+
+    private void addBaseMenuItems(Menu menu) {
+        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_CAMERA, new Runnable() {
+            public void run() {
+                switchToOtherMode(ModePicker.MODE_CAMERA);
+            }
+        });
+        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_VIDEO, new Runnable() {
+            public void run() {
+                switchToOtherMode(ModePicker.MODE_VIDEO);
+            }
+        });
     }
 
     @Override
@@ -762,7 +784,7 @@ public class PanoramaActivity extends Activity implements
 
     private void onBackgroundThreadFinished() {
         mThreadRunning = false;
-        if (mProgressDialog != null ) {
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
             mProgressDialog = null;
         }

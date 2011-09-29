@@ -71,7 +71,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.List;
@@ -197,8 +196,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private ContentResolver mContentResolver;
     private boolean mDidRegister = false;
-
-    private final ArrayList<MenuItem> mGalleryItems = new ArrayList<MenuItem>();
 
     private LocationManager mLocationManager;
 
@@ -727,7 +724,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         @Override
         public void onZoomChange(
                 int value, boolean stopped, android.hardware.Camera camera) {
-            Log.v(TAG, "Zoom changed: value=" + value + ". stopped="+ stopped);
+            Log.v(TAG, "Zoom changed: value=" + value + ". stopped=" + stopped);
             mZoomValue = value;
 
             // Update the UI when we get zoom value.
@@ -1212,10 +1209,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 initializeCapabilities();
                 resetExposureCompensation();
                 startPreview();
-            } catch(CameraHardwareException e) {
+            } catch (CameraHardwareException e) {
                 Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
                 return;
-            } catch(CameraDisabledException e) {
+            } catch (CameraDisabledException e) {
                 Util.showErrorAndFinish(this, R.string.camera_disabled);
                 return;
             }
@@ -1835,15 +1832,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 switchToOtherMode(ModePicker.MODE_PANORAMA);
             }
         });
-        MenuItem gallery = menu.add(R.string.camera_gallery_photos_text)
-                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                gotoGallery();
-                return true;
-            }
-        });
-        gallery.setIcon(android.R.drawable.ic_menu_gallery);
-        mGalleryItems.add(gallery);
 
         if (mNumberOfCameras > 1) {
             menu.add(R.string.switch_camera_id)
