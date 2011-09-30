@@ -51,7 +51,7 @@ public class OtherSettingIndicatorButton extends AbstractIndicatorButton {
 
     @Override
     protected void initializePopup() {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.frame_layout);
 

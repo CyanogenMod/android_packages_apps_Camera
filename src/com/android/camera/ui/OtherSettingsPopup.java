@@ -40,7 +40,6 @@ public class OtherSettingsPopup extends AbstractSettingPopup
         AdapterView.OnItemClickListener {
     private static final String TAG = "OtherSettingsPopup";
 
-    private Context mContext;
     private Listener mListener;
     private ArrayList<ListPreference> mListItem = new ArrayList<ListPreference>();
 
@@ -53,8 +52,8 @@ public class OtherSettingsPopup extends AbstractSettingPopup
         LayoutInflater mInflater;
 
         OtherSettingsAdapter() {
-            super(mContext, 0, mListItem);
-            mInflater = LayoutInflater.from(mContext);
+            super(OtherSettingsPopup.this.getContext(), 0, mListItem);
+            mInflater = LayoutInflater.from(getContext());
         }
 
         private int getSettingLayoutId(ListPreference pref) {
@@ -92,7 +91,6 @@ public class OtherSettingsPopup extends AbstractSettingPopup
 
     public OtherSettingsPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
     }
 
     public void initialize(PreferenceGroup group, String[] keys) {
