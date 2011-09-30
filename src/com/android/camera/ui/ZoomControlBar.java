@@ -125,17 +125,30 @@ public class ZoomControlBar extends ZoomControl {
         // For left-hand users, as the device is rotated for 180 degree,
         // the zoom-in button should be on the top.
         int pos; // slider position
+        int sliderPosition;
+        if (mSliderPosition != -1) { // -1 means invalid
+            sliderPosition = mSliderPosition;
+        } else {
+            sliderPosition = (int) ((double) mSliderLength * mZoomIndex / mZoomMax);
+        }
         if (mDegree == 180) {
             mZoomOut.layout(0, 0, width, iconHeight);
             mZoomIn.layout(0, height - iconHeight, width, height);
-            pos = mBar.getTop() + mSliderPosition;
+            pos = mBar.getTop() + sliderPosition;
         } else {
             mZoomIn.layout(0, 0, width, iconHeight);
             mZoomOut.layout(0, height - iconHeight, width, height);
-            pos = mBar.getBottom() - mSliderPosition;
+            pos = mBar.getBottom() - sliderPosition;
         }
         int sliderHeight = mZoomSlider.getMeasuredHeight();
         mZoomSlider.layout(0, (pos - sliderHeight / 2),
                 width, (pos + sliderHeight / 2));
+    }
+
+    @Override
+    public void setZoomIndex(int index) {
+        super.setZoomIndex(index);
+        mSliderPosition = -1; // -1 means invalid
+        requestLayout();
     }
 }

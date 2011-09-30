@@ -114,10 +114,6 @@ public abstract class ZoomControl extends RelativeLayout {
         mListener = listener;
     }
 
-    public void setOnZoomIndexChangeListener(OnZoomIndexChangedListener listener) {
-        mIndexListener = listener;
-    }
-
     public void setOnIndicatorEventListener(OnIndicatorEventListener listener) {
         mOnIndicatorEventListener = listener;
     }
@@ -127,13 +123,6 @@ public abstract class ZoomControl extends RelativeLayout {
             throw new IllegalArgumentException("Invalid zoom value:" + index);
         }
         mZoomIndex = index;
-        if (mIndexListener != null) {
-            if (mZoomMax == 0) {
-                mIndexListener.onZoomIndexChanged(0.0d);
-            } else {
-                mIndexListener.onZoomIndexChanged(1.0d * mZoomIndex / mZoomMax);
-            }
-        }
         invalidate();
     }
 
@@ -206,7 +195,7 @@ public abstract class ZoomControl extends RelativeLayout {
                 if (index > mZoomMax) index = mZoomMax;
                 if (index < 0) index = 0;
                 mListener.onZoomValueChanged(index);
-                setZoomIndex(index);
+                mZoomIndex = index;
             }
         }
         return true;

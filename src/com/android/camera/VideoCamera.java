@@ -783,7 +783,7 @@ public class VideoCamera extends ActivityBase
         }
 
         // Initializing it here after the preview is started.
-        initializeZoomControl();
+        initializeZoom();
 
         keepScreenOnAwhile();
 
@@ -2091,8 +2091,10 @@ public class VideoCamera extends ActivityBase
         }
     }
 
-    private void initializeZoomControl() {
+    private void initializeZoom() {
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
+        // Get the parameter to make sure we have the up-to-date zoom value.
+        mParameters = mCameraDevice.getParameters();
         if (!mParameters.isZoomSupported()) return;
 
         mZoomMax = mParameters.getMaxZoom();
