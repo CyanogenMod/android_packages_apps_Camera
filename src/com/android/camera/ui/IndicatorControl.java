@@ -40,7 +40,6 @@ public abstract class IndicatorControl extends RelativeLayout implements
     public static final int MODE_CAMERA = 0;
     public static final int MODE_VIDEO = 1;
 
-    private Context mContext;
     private OnPreferenceChangedListener mListener;
     protected OnIndicatorEventListener mOnIndicatorEventListener;
     protected CameraPicker mCameraPicker;
@@ -60,7 +59,6 @@ public abstract class IndicatorControl extends RelativeLayout implements
 
     public IndicatorControl(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
     }
 
     public void setDegree(int degree) {
@@ -84,7 +82,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
         mPreferenceGroup = group;
         // Preset the current mode from the title of preference group.
         String title = group.getTitle();
-        if (title.equals(mContext.getString(
+        if (title.equals(getContext().getString(
                 R.string.pref_camcorder_settings_category))) {
             mCurrentMode = MODE_VIDEO;
         }
@@ -96,14 +94,14 @@ public abstract class IndicatorControl extends RelativeLayout implements
                 IconListPreference pref =
                         (IconListPreference) mPreferenceGroup.findPreference(keys[i]);
                 if (pref != null) {
-                    addIndicator(mContext, pref);
+                    addIndicator(getContext(), pref);
                 }
             }
         }
 
         // Add other settings indicator.
         if (otherSettingKeys != null) {
-            addOtherSettingIndicator(mContext,
+            addOtherSettingIndicator(getContext(),
                     R.drawable.ic_menu_overflow, otherSettingKeys);
         }
     }
@@ -112,7 +110,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
         ListPreference pref = mPreferenceGroup.findPreference(
                 CameraSettings.KEY_CAMERA_ID);
         if (pref == null) return;
-        mCameraPicker = new CameraPicker(mContext);
+        mCameraPicker = new CameraPicker(getContext());
         mCameraPicker.initialize(pref);
         addView(mCameraPicker);
     }
