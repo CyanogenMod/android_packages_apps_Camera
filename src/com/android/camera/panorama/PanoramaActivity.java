@@ -16,6 +16,7 @@
 
 package com.android.camera.panorama;
 
+import com.android.camera.ActivityBase;
 import com.android.camera.CameraDisabledException;
 import com.android.camera.CameraHardwareException;
 import com.android.camera.CameraHolder;
@@ -75,7 +76,7 @@ import java.util.List;
 /**
  * Activity to handle panorama capturing.
  */
-public class PanoramaActivity extends Activity implements
+public class PanoramaActivity extends ActivityBase implements
         ModePicker.OnModeChangeListener, SurfaceTexture.OnFrameAvailableListener,
         ShutterButton.OnShutterButtonListener,
         MosaicRendererSurfaceViewRenderer.MosaicSurfaceCreateListener {

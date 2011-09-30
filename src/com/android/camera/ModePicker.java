@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.RotateImageView;
 
 import android.content.Context;
@@ -34,7 +35,8 @@ import android.widget.RelativeLayout;
  * A widget that includes three mode selections {@code RotateImageView}'s and
  * a current mode indicator.
  */
-public class ModePicker extends RelativeLayout implements View.OnClickListener {
+public class ModePicker extends RelativeLayout implements View.OnClickListener,
+    PopupManager.OnOtherPopupShowedListener {
     public static final int MODE_CAMERA = 0;
     public static final int MODE_VIDEO = 1;
     public static final int MODE_PANORAMA = 2;
@@ -58,6 +60,8 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
     private View mCurrentModeFrame;
     private RotateImageView mCurrentModeIcon[];
     private View mCurrentModeBar;
+    private boolean mSelectionEnabled;
+
 
     private int mCurrentMode = 0;
     private Animation mFadeIn, mFadeOut;
@@ -71,6 +75,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
         mFadeOut = AnimationUtils.loadAnimation(
                 context, R.anim.mode_selection_fade_out);
         mFadeOut.setAnimationListener(mAnimationListener);
+        PopupManager.getInstance(context).setOnOtherPopupShowedListener(this);
     }
 
     protected void onFinishInflate() {
@@ -109,6 +114,11 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onOtherPopupShowed() {
+        if (mSelectionEnabled) enableModeSelection(false);
+    }
+
     private AnimationListener mAnimationListener = new AnimationListener() {
         public void onAnimationEnd(Animation animation) {
             changeToSelectedMode();
@@ -125,6 +135,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
 
     private void enableModeSelection(boolean enabled) {
         if (mCurrentModeFrame != null) {
+            mSelectionEnabled = enabled;
             // Animation Effect is applied on Phone UI only.
             mModeSelectionFrame.startAnimation(enabled ? mFadeIn : mFadeOut);
             if (enabled) {
@@ -145,6 +156,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener {
 
     public void onClick(View view) {
         if (view == mCurrentModeFrame) {
+            PopupManager.getInstance(getContext()).notifyShowPopup(this);
             enableModeSelection(true);
         } else {
             // Set the selected mode as the current one and switch to it.
