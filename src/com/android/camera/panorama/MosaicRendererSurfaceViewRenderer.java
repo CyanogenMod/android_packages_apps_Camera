@@ -31,6 +31,7 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
     /** A callback to be called when the surface is created */
     public interface MosaicSurfaceCreateListener {
         public void onMosaicSurfaceCreated(final int surface);
+        public void onMosaicSurfaceChanged();
     }
 
     @Override
@@ -42,6 +43,9 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         MosaicRenderer.reset(width, height);
         Log.i(TAG, "Renderer: onSurfaceChanged");
+        if (mSurfaceCreateListener != null) {
+            mSurfaceCreateListener.onMosaicSurfaceChanged();
+        }
     }
 
     @Override

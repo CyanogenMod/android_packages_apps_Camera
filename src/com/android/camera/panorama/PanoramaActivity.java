@@ -406,10 +406,6 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void configureCamera(Parameters parameters) {
         mCameraDevice.setParameters(parameters);
-
-        int orientation = Util.getDisplayOrientation(Util.getDisplayRotation(this),
-                CameraHolder.instance().getBackCameraId());
-        mCameraDevice.setDisplayOrientation(orientation);
     }
 
     private boolean switchToOtherMode(int mode) {
@@ -430,6 +426,18 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     @Override
+    public void onMosaicSurfaceChanged() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!mPausing) {
+                    startCameraPreview();
+                }
+            }
+        });
+    }
+
+    @Override
     public void onMosaicSurfaceCreated(final int textureID) {
         runOnUiThread(new Runnable() {
             @Override
@@ -440,7 +448,6 @@ public class PanoramaActivity extends ActivityBase implements
                 mSurfaceTexture = new SurfaceTexture(textureID);
                 if (!mPausing) {
                     mSurfaceTexture.setOnFrameAvailableListener(PanoramaActivity.this);
-                    startCameraPreview();
                 }
             }
         });
@@ -902,10 +909,7 @@ public class PanoramaActivity extends ActivityBase implements
 
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
         setupCamera();
-        if (mSurfaceTexture != null) {
-            mSurfaceTexture.setOnFrameAvailableListener(this);
-            startCameraPreview();
-        }
+
         // Camera must be initialized before MosaicFrameProcessor is initialized. The preview size
         // has to be decided by camera device.
         initMosaicFrameProcessorIfNeeded();
@@ -1011,6 +1015,10 @@ public class PanoramaActivity extends ActivityBase implements
         // If we're previewing already, stop the preview first (this will blank
         // the screen).
         if (mCameraState != PREVIEW_STOPPED) stopCameraPreview();
+
+        int orientation = Util.getDisplayOrientation(Util.getDisplayRotation(this),
+                CameraHolder.instance().getBackCameraId());
+        mCameraDevice.setDisplayOrientation(orientation);
 
         setPreviewTexture(mSurfaceTexture);
 
