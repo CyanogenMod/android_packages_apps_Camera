@@ -60,7 +60,8 @@ public class FocusManager {
     private FocusIndicatorView mFocusIndicator;
     private View mPreviewFrame;
     private FaceView mFaceView;
-    private List<Area> mTapArea;  // focus area in driver format
+    private List<Area> mFocusArea; // focus area in driver format
+    private List<Area> mMeteringArea; // metering area in driver format
     private String mFocusMode;
     private String mDefaultFocusMode;
     private String mOverrideFocusMode;
@@ -195,7 +196,7 @@ public class FocusManager {
             updateFocusUI();
             // If this is triggered by touch focus, cancel focus after a
             // while.
-            if (mTapArea != null) {
+            if (mFocusArea != null) {
                 mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
             }
         } else if (mState == STATE_IDLE) {
@@ -208,7 +209,7 @@ public class FocusManager {
         if (!mInitialized || mState == STATE_FOCUSING_SNAP_ON_FINISH) return false;
 
         // Let users be able to cancel previous touch focus.
-        if ((mTapArea != null) && (mState == STATE_FOCUSING ||
+        if ((mFocusArea != null) && (mState == STATE_FOCUSING ||
                     mState == STATE_SUCCESS || mState == STATE_FAIL)) {
             cancelAutoFocus();
         }
@@ -220,20 +221,20 @@ public class FocusManager {
         int focusHeight = mFocusIndicatorRotateLayout.getHeight();
         int previewWidth = mPreviewFrame.getWidth();
         int previewHeight = mPreviewFrame.getHeight();
-        if (mTapArea == null) {
-            mTapArea = new ArrayList<Area>();
-            mTapArea.add(new Area(new Rect(), 1));
+        if (mFocusArea == null) {
+            mFocusArea = new ArrayList<Area>();
+            mFocusArea.add(new Area(new Rect(), 1));
+            mMeteringArea = new ArrayList<Area>();
+            mMeteringArea.add(new Area(new Rect(), 1));
         }
 
-        // Convert the coordinates to driver format. The actual focus area is two times bigger than
-        // UI because a huge indicator looks strange.
-        int areaWidth = focusWidth * 2;
-        int areaHeight = focusHeight * 2;
-        int areaLeft = Util.clamp(x - areaWidth / 2, 0, previewWidth - areaWidth);
-        int areaTop = Util.clamp(y - areaHeight / 2, 0, previewHeight - areaHeight);
-        Rect rect = mTapArea.get(0).rect;
-        convertToFocusArea(areaLeft, areaTop, areaWidth, areaHeight, previewWidth, previewHeight,
-                mTapArea.get(0).rect);
+        // Convert the coordinates to driver format.
+        // AE area is bigger because exposure is sensitive and
+        // easy to over- or underexposure if area is too small.
+        calculateTapArea(focusWidth, focusHeight, 1, x, y, previewWidth, previewHeight,
+                mFocusArea.get(0).rect);
+        calculateTapArea(focusWidth, focusHeight, 1.5, x, y, previewWidth, previewHeight,
+                mMeteringArea.get(0).rect);
 
         // Use margin to set the focus indicator to the touched area.
         RelativeLayout.LayoutParams p =
@@ -332,7 +333,7 @@ public class FocusManager {
     public String getFocusMode() {
         if (mOverrideFocusMode != null) return mOverrideFocusMode;
 
-        if (mFocusAreaSupported && mTapArea != null) {
+        if (mFocusAreaSupported && mFocusArea != null) {
             // Always use autofocus in tap-to-focus.
             mFocusMode = Parameters.FOCUS_MODE_AUTO;
         } else {
@@ -353,8 +354,12 @@ public class FocusManager {
         return mFocusMode;
     }
 
-    public List<Area> getTapArea() {
-        return mTapArea;
+    public List<Area> getFocusAreas() {
+        return mFocusArea;
+    }
+
+    public List<Area> getMeteringAreas() {
+        return mMeteringArea;
     }
 
     public void updateFocusUI() {
@@ -362,7 +367,7 @@ public class FocusManager {
 
         // Set the length of focus indicator according to preview frame size.
         int len = Math.min(mPreviewFrame.getWidth(), mPreviewFrame.getHeight()) / 4;
-        ViewGroup.LayoutParams layout = mFocusIndicatorRotateLayout.getLayoutParams();
+        ViewGroup.LayoutParams layout = mFocusIndicator.getLayoutParams();
         layout.width = len;
         layout.height = len;
 
@@ -371,7 +376,7 @@ public class FocusManager {
         FocusIndicator focusIndicator = (faceExists) ? mFaceView : mFocusIndicator;
 
         if (mState == STATE_IDLE) {
-            if (mTapArea == null) {
+            if (mFocusArea == null) {
                 focusIndicator.clear();
             } else {
                 // Users touch on the preview and the indicator represents the
@@ -398,7 +403,18 @@ public class FocusManager {
         rules[RelativeLayout.CENTER_IN_PARENT] = RelativeLayout.TRUE;
         p.setMargins(0, 0, 0, 0);
 
-        mTapArea = null;
+        mFocusArea = null;
+        mMeteringArea = null;
+    }
+
+    public void calculateTapArea(int focusWidth, int focusHeight, double areaMultiple,
+            int x, int y, int previewWidth, int previewHeight, Rect rect) {
+        int areaWidth = (int)(focusWidth * areaMultiple);
+        int areaHeight = (int)(focusHeight * areaMultiple);
+        int areaLeft = Util.clamp(x - areaWidth / 2, 0, previewWidth - areaWidth);
+        int areaTop = Util.clamp(y - areaHeight / 2, 0, previewHeight - areaHeight);
+        convertToFocusArea(areaLeft, areaTop, areaWidth, areaHeight, previewWidth, previewHeight,
+                rect);
     }
 
     // Convert the touch point to the focus area in driver format.
