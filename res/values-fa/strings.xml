@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"خاموش"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"در"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"کیفیت ویدیو"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"بالا"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"کم"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (کم، 30 ثانیه)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (زیاد، 15 دقیقه)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"فاصله زمانی سپری شده"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"تنظیمات دوربین"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"تنظیمات دوربین فیلمبرداری"</string>
@@ -102,10 +98,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"تهیه پانوراما"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"ذخیره پانوراما انجام نشد"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"پانوراما"</string>
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
-    <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
-    <skip />
+    <string name="pano_capture_indication" msgid="7431983072966619171">"گرفتن عکس پانوراما"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"در حال ذخیره..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"برای فوکوس کردن ضربه بزنید"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"جلوه‌ها"</string>
     <string name="effect_none" msgid="3601545724573307541">"هیچکدام"</string>
@@ -117,12 +111,12 @@
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"چشمان کوچک"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"در فضا"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"غروب آفتاب"</string>
-    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
-    <skip />
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"دیسکو"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"انتخاب شما"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"دستگاه خود را بر روی یک سطح ثابت و محکم قرار دهید و مطمئن شوید هیچ حرکتی پشت سر شما وجود نداشته باشد."\n\n"سپس از نمای دوربین خارج شوید."</string>
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
-    <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
-    <skip />
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"هنگامی که جلوه روشن است قابل انتخاب نیست."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"هنگام ضبط ویدیو با ضربه زدن روی صفحه پیش نمایش عکس بگیرید."</string>
+    <string name="clear_effects" msgid="5485339175014139481">"پاک کردن جلوه‌ها"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"چهره‌های احمقانه"</string>
+    <string name="effect_background" msgid="6909716214852487679">"پس‌زمینه"</string>
 </resources>
