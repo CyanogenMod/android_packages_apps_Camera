@@ -80,6 +80,9 @@
   <string name="pref_camera_vol_zoom_title">Přibližování tlačítky hlasitosti</string>
   <string name="pref_camera_vol_zoom">Přibližování hlasitostí</string>
   <string name="pref_camera_vol_zoom_summary">Hlasitost zvýšit/snížit provede přiblížení/oddálení.</string>
+  <string name="pref_camera_other_settings_title">Další nastavení</string>
+  <string name="pref_camera_timer_duration">Časová spoušť</string>
+  <string name="pref_camera_timer_duration_summary">Zvolte časovou prodlevu spouště</string>
   <string name="pref_camera_search_shutter_title">Spoušť pomocí vyhledávání</string>
   <string name="pref_camera_search_shutter">Tlačítko vyhledávání</string>
   <string name="pref_camera_search_shutter_summary">Tlačítkem vyhledávání je pořízena fotografie</string>
