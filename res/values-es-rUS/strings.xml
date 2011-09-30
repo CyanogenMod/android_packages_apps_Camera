@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Apagado"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Encendido"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Calidad del video"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Alta"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Baja"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (Baja, 30 seg.)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (Alta, 15 min)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalo de tiempo"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuración de cámara"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuración de videocámara"</string>
@@ -102,10 +98,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Preparando el panorama"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Error al guardar panorama"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
-    <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
-    <skip />
+    <string name="pano_capture_indication" msgid="7431983072966619171">"Capturando panorama"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Guardando..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"Tocar para enfocar"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efectos"</string>
     <string name="effect_none" msgid="3601545724573307541">"Ninguno"</string>
@@ -116,14 +110,13 @@
     <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Nariz grande"</string>
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Ojos pequeños"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"En el espacio"</string>
-    <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
-    <skip />
-    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
-    <skip />
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Crepúsculo"</string>
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Elige el tuyo"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Coloca el dispositivo sobre una superficie firme y asegúrate de que no se produzca ningún movimiento detrás de ti."\n\n"Luego ubícate fuera del alcance de la cámara."</string>
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
-    <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
-    <skip />
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"No se puede elegir config. si el efecto está act."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Para tomar fotos en una grabación, toca la pant. de vista prev."</string>
+    <string name="clear_effects" msgid="5485339175014139481">"Borrar efectos"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Caras graciosas"</string>
+    <string name="effect_background" msgid="6909716214852487679">"Fondo"</string>
 </resources>

@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Off"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"On"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Video quality"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"High"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Low"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (Low, 30s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (High, 15 m)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Time lapse interval"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Camera settings"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcorder settings"</string>
@@ -120,4 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Place your device on a steady surface and make sure that there\'s no movement behind you."\n\n"Then move out of the camera\'s view."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"This is not selectable when the effect is on."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Take a photo during video recording by tapping the preview screen."</string>
+    <string name="clear_effects" msgid="5485339175014139481">"Clear effects"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Silly faces"</string>
+    <string name="effect_background" msgid="6909716214852487679">"Background"</string>
 </resources>

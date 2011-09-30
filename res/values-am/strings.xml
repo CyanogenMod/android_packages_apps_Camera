@@ -48,10 +48,6 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"ውጪ"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"በ"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"ቪዲዮ ጥራት"</string>
-    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"ከፍ ያለ"</string>
-    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"ዝቅ ያለ"</string>
-    <string name="pref_video_quality_entry_mms" msgid="2271260293894247704">"MMS (ዝቅተኛ, 30s)"</string>
-    <string name="pref_video_quality_entry_youtube" msgid="2805908340434005541">"YouTube (ከፍተኛ, 15 ሜትር)"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"በየመሀሉ የሚፈጀው ጊዜ"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"የካሜራ ቅንብሮች"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"የካምኮርድ ቅንብሮች"</string>
@@ -102,10 +98,8 @@
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"ፓናሮማ በማዘጋጀት ላይ"</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"ፓኖራማ ለማስቀመጥ ተስኗል"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"ፓኖራማ"</string>
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
-    <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
-    <skip />
+    <string name="pano_capture_indication" msgid="7431983072966619171">"ፓኖራማ በማንሳት ላይ"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"በማስቀመጥ ላይ..."</string>
     <string name="tap_to_focus" msgid="6417403734418828035">"ለማተኮር ሁለቴ ንካ"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"ማሳመሪያዎች"</string>
     <string name="effect_none" msgid="3601545724573307541">"ምንም የለም"</string>
@@ -117,12 +111,12 @@
     <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"ትናንሽ ዓይኖች"</string>
     <string name="effect_backdropper_space" msgid="1381012939195370792">"In Space"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"ፀሀይ ስትጠልቅ"</string>
-    <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
-    <skip />
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"ዲስኮ"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"የራስህን ምረጥ"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"መሳሪያዎን በዝርግ ስፍራ ላይ ያስቀምጡ እና ከእርስዎ ጀርባ ምንም ዓይነት መነቃነቅ እንደሌለ እርግጠኛ ሁን፡፡"\n\n" ከዛ በኋላ ከካሜራው እይታ ለቀው ይውጡ፡፡"</string>
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
-    <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
-    <skip />
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"ማሳመሪያው ሲበራ ይህ ሊመረጥ አይችልም::"</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"የቅድመ ዕይታ ማያን ነካ በማድረግ በቪዲዮ ቀረፃ ጊዜ ፎቶ አንሳ።"</string>
+    <string name="clear_effects" msgid="5485339175014139481">"ማሳመሪያዎች አጽዳ"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"ሞኛሞኝ ፊቶች"</string>
+    <string name="effect_background" msgid="6909716214852487679">"ዳራ"</string>
 </resources>
