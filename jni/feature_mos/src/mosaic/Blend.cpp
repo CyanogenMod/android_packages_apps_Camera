@@ -148,6 +148,12 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
     double xLeftCorners[2] = {2e30, 2e30};
     double xRightCorners[2] = {-2e30, -2e30};
 
+    // Corners of the top-most and bottom-most frames respectively in the
+    // mosaic coordinate system.
+    double yTopCorners[2] = {2e30, 2e30};
+    double yBottomCorners[2] = {-2e30, -2e30};
+
+
     // Determine the extents of the final mosaic
     CSite *csite = m_AllSites ;
     for(int mfit = 0; mfit < frames_size; mfit++)
@@ -177,6 +183,19 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
             xRightCorners[1] = x2;
         }
 
+        if(y0 < yTopCorners[0] || y3 < yTopCorners[1])    // If either of the top corners is lower
+        {
+            yTopCorners[0] = y0;
+            yTopCorners[1] = y3;
+        }
+
+        if(y1 > yBottomCorners[0] || y2 > yBottomCorners[1])    // If either of the bottom corners is higher
+        {
+            yBottomCorners[0] = y1;
+            yBottomCorners[1] = y2;
+        }
+
+
         // Compute the centroid of the warped region
         FindQuadCentroid(x0, y0, x1, y1, x2, y2, x3, y3, csite->getVCenter().x, csite->getVCenter().y);
 
@@ -198,10 +217,14 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
     Mheight = (unsigned short) (fullRect.bottom - fullRect.top + 1);
 
     int xLeftMost, xRightMost;
+    int yTopMost, yBottomMost;
 
     // Rounding up, so that we don't include the gray border.
     xLeftMost = max(0, max(xLeftCorners[0], xLeftCorners[1]) - fullRect.left + 1);
     xRightMost = min(Mwidth - 1, min(xRightCorners[0], xRightCorners[1]) - fullRect.left - 1);
+
+    yTopMost = max(0, max(yTopCorners[0], yTopCorners[1]) - fullRect.top + 1);
+    yBottomMost = min(Mheight - 1, min(yBottomCorners[0], yBottomCorners[1]) - fullRect.top - 1);
 
     // Make sure image width is multiple of 4
     Mwidth = (unsigned short) ((Mwidth + 3) & ~3);
@@ -234,8 +257,16 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
     // cropped out of the computed mosaic to get rid of the gray borders.
     MosaicRect cropping_rect;
 
-    cropping_rect.left = xLeftMost;
-    cropping_rect.right = xRightMost;
+    if (m_wb.horizontal)
+    {
+        cropping_rect.left = xLeftMost;
+        cropping_rect.right = xRightMost;
+    }
+    else
+    {
+        cropping_rect.top = yTopMost;
+        cropping_rect.bottom = yBottomMost;
+    }
 
     // Do merging and blending :
     ret = DoMergeAndBlend(frames, numCenters, width, height, *imgMos, fullRect,
@@ -378,47 +409,95 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
     // between the images on either side of each seam:
     if (m_wb.stripType == STRIP_TYPE_WIDE)
     {
-        // Set the number of pixels around the seam to cross-fade between
-        // the two component images,
-        int tw = STRIP_CROSS_FADE_WIDTH * width;
-
-        for(int y = 0; y < imgMos.Y.height; y++)
+        if(m_wb.horizontal)
         {
-            for(int x = tw; x < imgMos.Y.width - tw + 1; )
+            // Set the number of pixels around the seam to cross-fade between
+            // the two component images,
+            int tw = STRIP_CROSS_FADE_WIDTH * width;
+
+            for(int y = 0; y < imgMos.Y.height; y++)
             {
-                // Determine where the seam is...
-                if (imgMos.Y.ptr[y][x] != imgMos.Y.ptr[y][x+1] &&
-                        imgMos.Y.ptr[y][x] != 255 &&
-                        imgMos.Y.ptr[y][x+1] != 255)
+                for(int x = tw; x < imgMos.Y.width - tw + 1; )
                 {
-                    // Find the image indices on both sides of the seam
-                    unsigned char idx1 = imgMos.Y.ptr[y][x];
-                    unsigned char idx2 = imgMos.Y.ptr[y][x+1];
-
-                    for (int o = tw; o >= 0; o--)
+                    // Determine where the seam is...
+                    if (imgMos.Y.ptr[y][x] != imgMos.Y.ptr[y][x+1] &&
+                            imgMos.Y.ptr[y][x] != 255 &&
+                            imgMos.Y.ptr[y][x+1] != 255)
                     {
-                        // Set the image index to use for cross-fading
-                        imgMos.V.ptr[y][x - o] = idx2;
-                        // Set the intensity weights to use for cross-fading
-                        imgMos.U.ptr[y][x - o] = 50 + (99 - 50) * o / tw;
-                    }
+                        // Find the image indices on both sides of the seam
+                        unsigned char idx1 = imgMos.Y.ptr[y][x];
+                        unsigned char idx2 = imgMos.Y.ptr[y][x+1];
 
-                    for (int o = 1; o <= tw; o++)
+                        for (int o = tw; o >= 0; o--)
+                        {
+                            // Set the image index to use for cross-fading
+                            imgMos.V.ptr[y][x - o] = idx2;
+                            // Set the intensity weights to use for cross-fading
+                            imgMos.U.ptr[y][x - o] = 50 + (99 - 50) * o / tw;
+                        }
+
+                        for (int o = 1; o <= tw; o++)
+                        {
+                            // Set the image index to use for cross-fading
+                            imgMos.V.ptr[y][x + o] = idx1;
+                            // Set the intensity weights to use for cross-fading
+                            imgMos.U.ptr[y][x + o] = imgMos.U.ptr[y][x - o];
+                        }
+
+                        x += (tw + 1);
+                    }
+                    else
                     {
-                        // Set the image index to use for cross-fading
-                        imgMos.V.ptr[y][x + o] = idx1;
-                        // Set the intensity weights to use for cross-fading
-                        imgMos.U.ptr[y][x + o] = imgMos.U.ptr[y][x - o];
+                        x++;
                     }
-
-                    x += (tw + 1);
-                }
-                else
-                {
-                    x++;
                 }
             }
         }
+        else
+        {
+            // Set the number of pixels around the seam to cross-fade between
+            // the two component images,
+            int tw = STRIP_CROSS_FADE_WIDTH * height;
+
+            for(int x = 0; x < imgMos.Y.width; x++)
+            {
+                for(int y = tw; y < imgMos.Y.height - tw + 1; )
+                {
+                    // Determine where the seam is...
+                    if (imgMos.Y.ptr[y][x] != imgMos.Y.ptr[y+1][x] &&
+                            imgMos.Y.ptr[y][x] != 255 &&
+                            imgMos.Y.ptr[y+1][x] != 255)
+                    {
+                        // Find the image indices on both sides of the seam
+                        unsigned char idx1 = imgMos.Y.ptr[y][x];
+                        unsigned char idx2 = imgMos.Y.ptr[y+1][x];
+
+                        for (int o = tw; o >= 0; o--)
+                        {
+                            // Set the image index to use for cross-fading
+                            imgMos.V.ptr[y - o][x] = idx2;
+                            // Set the intensity weights to use for cross-fading
+                            imgMos.U.ptr[y - o][x] = 50 + (99 - 50) * o / tw;
+                        }
+
+                        for (int o = 1; o <= tw; o++)
+                        {
+                            // Set the image index to use for cross-fading
+                            imgMos.V.ptr[y + o][x] = idx1;
+                            // Set the intensity weights to use for cross-fading
+                            imgMos.U.ptr[y + o][x] = imgMos.U.ptr[y - o][x];
+                        }
+
+                        y += (tw + 1);
+                    }
+                    else
+                    {
+                        y++;
+                    }
+                }
+            }
+        }
+
     }
 
     // Now perform the actual blending using the frame assignment determined above
@@ -581,39 +660,80 @@ int Blend::PerformFinalBlending(YUVinfo &imgMos, MosaicRect &cropping_rect)
         }
     }
 
-    //Scan through each row and increment top if the row contains any gray
-    for (j = 0; j < imgMos.Y.height; j++)
+    if(m_wb.horizontal)
     {
-        for (i = cropping_rect.left; i < cropping_rect.right; i++)
+        //Scan through each row and increment top if the row contains any gray
+        for (j = 0; j < imgMos.Y.height; j++)
         {
-            if (b[j][i])
+            for (i = cropping_rect.left; i < cropping_rect.right; i++)
             {
-                break; // to next row
+                if (b[j][i])
+                {
+                    break; // to next row
+                }
+            }
+
+            if (i == cropping_rect.right)   //no gray pixel in this row!
+            {
+                cropping_rect.top = j;
+                break;
             }
         }
 
-        if (i == cropping_rect.right)   //no gray pixel in this row!
+        //Scan through each row and decrement bottom if the row contains any gray
+        for (j = imgMos.Y.height-1; j >= 0; j--)
         {
-            cropping_rect.top = j;
-            break;
+            for (i = cropping_rect.left; i < cropping_rect.right; i++)
+            {
+                if (b[j][i])
+                {
+                    break; // to next row
+                }
+            }
+
+            if (i == cropping_rect.right)   //no gray pixel in this row!
+            {
+                cropping_rect.bottom = j;
+                break;
+            }
         }
     }
-
-    //Scan through each row and decrement bottom if the row contains any gray
-    for (j = imgMos.Y.height-1; j >= 0; j--)
+    else // Vertical Mosaic
     {
-        for (i = cropping_rect.left; i < cropping_rect.right; i++)
+        //Scan through each column and increment left if the column contains any gray
+        for (i = 0; i < imgMos.Y.width; i++)
         {
-            if (b[j][i])
+            for (j = cropping_rect.top; j < cropping_rect.bottom; j++)
             {
-                break; // to next row
+                if (b[j][i])
+                {
+                    break; // to next column
+                }
+            }
+
+            if (j == cropping_rect.bottom)   //no gray pixel in this column!
+            {
+                cropping_rect.left = i;
+                break;
             }
         }
 
-        if (i == cropping_rect.right)   //no gray pixel in this row!
+        //Scan through each column and decrement right if the column contains any gray
+        for (i = imgMos.Y.width-1; i >= 0; i--)
         {
-            cropping_rect.bottom = j;
-            break;
+            for (j = cropping_rect.top; j < cropping_rect.bottom; j++)
+            {
+                if (b[j][i])
+                {
+                    break; // to next column
+                }
+            }
+
+            if (j == cropping_rect.bottom)   //no gray pixel in this column!
+            {
+                cropping_rect.right = i;
+                break;
+            }
         }
     }
 
@@ -1046,7 +1166,8 @@ void Blend::SelectRelevantFrames(MosaicFrame **frames, int frames_size,
         double deltaY = currY - prevY;
         double center2centerDist = sqrt(deltaY * deltaY + deltaX * deltaX);
 
-        if (fabs(deltaX) > STRIP_SEPARATION_THRESHOLD * last->width)
+        if (fabs(deltaX) > STRIP_SEPARATION_THRESHOLD * last->width ||
+                fabs(deltaY) > STRIP_SEPARATION_THRESHOLD * last->height)
         {
             relevant_frames[relevant_frames_size] = mb;
             relevant_frames_size++;
