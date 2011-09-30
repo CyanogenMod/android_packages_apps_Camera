@@ -199,6 +199,13 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
     }
 
     @Override
+    public void showAtLocation(View parent, int gravity, int x, int y) {
+        super.showAtLocation(parent, gravity, x, y);
+        // Inform other popup to dismiss if exit
+        PopupManager.getInstance(mContext).notifyShowPopup(null);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.share_view:

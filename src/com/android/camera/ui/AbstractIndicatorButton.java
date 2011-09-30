@@ -28,30 +28,36 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 // This is an indicator button and pressing it opens a popup window. Ex: flash or other settings.
-public abstract class AbstractIndicatorButton extends RotateImageView {
+public abstract class AbstractIndicatorButton extends RotateImageView implements
+        PopupManager.OnOtherPopupShowedListener {
     private final String TAG = "AbstractIndicatorButton";
-    protected Context mContext;
     protected Animation mFadeIn, mFadeOut;
     protected final int HIGHLIGHT_COLOR;
     protected AbstractSettingPopup mPopup;
     protected Handler mHandler = new MainHandler();
     private final int MSG_DISMISS_POPUP = 0;
-    private PopupChangeListener mListener;
+    private IndicatorChangeListener mListener;
 
-    public static interface PopupChangeListener {
-        public void onShowPopup(View view, boolean showed);
+
+    public static interface IndicatorChangeListener {
+        public void onShowIndicator(View view, boolean showed);
     }
 
     public AbstractIndicatorButton(Context context) {
         super(context);
-        mContext = context;
-        mFadeIn = AnimationUtils.loadAnimation(mContext, R.anim.grow_fade_in_from_right);
-        mFadeOut = AnimationUtils.loadAnimation(mContext, R.anim.shrink_fade_out_from_right);
-        HIGHLIGHT_COLOR = mContext.getResources().getColor(R.color.review_control_pressed_color);
+        mFadeIn = AnimationUtils.loadAnimation(context, R.anim.grow_fade_in_from_right);
+        mFadeOut = AnimationUtils.loadAnimation(context, R.anim.shrink_fade_out_from_right);
+        HIGHLIGHT_COLOR = context.getResources().getColor(R.color.review_control_pressed_color);
         setScaleType(ImageView.ScaleType.CENTER);
+        PopupManager.getInstance(context).setOnOtherPopupShowedListener(this);
     }
 
-    public void setPopupChangeListener(PopupChangeListener listener) {
+    @Override
+    public void onOtherPopupShowed() {
+        dismissPopup();
+    }
+
+    public void setIndicatorChangeListener(IndicatorChangeListener listener) {
         mListener = listener;
     }
 
@@ -71,6 +77,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
         if (action == MotionEvent.ACTION_DOWN && !isOverridden()) {
             if (mPopup == null || mPopup.getVisibility() != View.VISIBLE) {
                 showPopup();
+                PopupManager.getInstance(getContext()).notifyShowPopup(this);
             } else {
                 dismissPopup();
             }
@@ -114,7 +121,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
         mPopup.setOrientation(getDegree());
         mPopup.clearAnimation();
         mPopup.startAnimation(mFadeIn);
-        if (mListener != null) mListener.onShowPopup(this, true);
+        if (mListener != null) mListener.onShowIndicator(this, true);
     }
 
     public boolean dismissPopup() {
@@ -123,7 +130,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView {
             mPopup.clearAnimation();
             mPopup.startAnimation(mFadeOut);
             mPopup.setVisibility(View.GONE);
-            if (mListener != null) mListener.onShowPopup(this, false);
+            if (mListener != null) mListener.onShowIndicator(this, false);
             invalidate();
             // Indicator wheel needs to update the highlight indicator if this
             // is dismissed by MSG_DISMISS_POPUP.

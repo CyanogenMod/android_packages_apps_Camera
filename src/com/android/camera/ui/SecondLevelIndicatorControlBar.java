@@ -32,7 +32,7 @@ import android.widget.ImageView;
  * vertical bar in preview frame.
  */
 public class SecondLevelIndicatorControlBar extends IndicatorControl implements
-        View.OnClickListener, AbstractIndicatorButton.PopupChangeListener {
+        View.OnClickListener, AbstractIndicatorButton.IndicatorChangeListener {
     private static final String TAG = "SecondLevelIndicatorControlBar";
     private static int ICON_SPACING = Util.dpToPixel(24);
     private ImageView mCloseIcon;
@@ -131,7 +131,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     @Override
     public IndicatorButton addIndicator(Context context, IconListPreference pref) {
         IndicatorButton b = super.addIndicator(context, pref);
-        b.setPopupChangeListener(this);
+        b.setIndicatorChangeListener(this);
         return b;
     }
 
@@ -140,12 +140,12 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
             int resId, String[] keys) {
         OtherSettingIndicatorButton b =
                 super.addOtherSettingIndicator(context, resId, keys);
-        b.setPopupChangeListener(this);
+        b.setIndicatorChangeListener(this);
         return b;
     }
 
     @Override
-    public void onShowPopup(View view, boolean showed) {
+    public void onShowIndicator(View view, boolean showed) {
         // Ignore those events if not current popup.
         if (!showed && (mPopupedIndicator != view)) return;
         mPopupedIndicator = (showed ? view : null);
