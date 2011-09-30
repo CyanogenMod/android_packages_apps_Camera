@@ -33,7 +33,7 @@ public class InLineSettingRestore extends InLineSettingItem {
     @Override
     protected void setTitle(ListPreference preference) {
         ((TextView) findViewById(R.id.title)).setText(
-                mContext.getString(R.string.pref_restore_detail));
+                getContext().getString(R.string.pref_restore_detail));
     }
 
     protected void updateView() { }

@@ -35,7 +35,6 @@ import android.widget.TextView;
  * different types if possible.
  */
 public abstract class InLineSettingItem extends LinearLayout {
-    protected Context mContext;
     private Listener mListener;
     protected ListPreference mPreference;
     protected int mIndex;
@@ -48,7 +47,6 @@ public abstract class InLineSettingItem extends LinearLayout {
 
     public InLineSettingItem(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
     }
 
     protected void setTitle(ListPreference preference) {
