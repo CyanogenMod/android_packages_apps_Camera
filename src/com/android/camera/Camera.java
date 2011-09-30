@@ -1591,12 +1591,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         if (mFocusAreaSupported) {
-            mParameters.setFocusAreas(mFocusManager.getTapArea());
+            mParameters.setFocusAreas(mFocusManager.getFocusAreas());
         }
 
         if (mMeteringAreaSupported) {
             // Use the same area for focus and metering.
-            mParameters.setMeteringAreas(mFocusManager.getTapArea());
+            mParameters.setMeteringAreas(mFocusManager.getMeteringAreas());
         }
 
         // Set picture size.
