@@ -37,6 +37,10 @@
 @external previewWidth;
 @external previewHeight;
 
+// Not used by this graph, but simplifies higher-level
+// graph initialization code.
+@external orientation;
+
 // Filters ---------------------------------------------------
 
 // Camera input
