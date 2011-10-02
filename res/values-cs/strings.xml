@@ -32,12 +32,12 @@
   <string name="access_sd_fail" product="nosdcard">Přístup do úložiště USB se nezdařil.</string>
   <string name="access_sd_fail" product="default">Přístup ke kartě SD se nezdařil.</string>
 
-  <!-- Settings stuff -->
   <string name="confirm_restore_title">Obnovit výchozí nastavení</string>
   <string name="confirm_restore_message">Obnoví výchozí nastavení fotoaparátu.</string>
   <string name="review_play">PŘEHRÁT</string>
   <string name="review_cancel">ZRUŠIT</string>
   <string name="review_retake">POŘÍDIT DALŠÍ</string>
+
   <string name="camera_gallery_photos_text">Galerie</string>
   <string name="switch_camera_id">Přepnout fotoaparát</string>
 
@@ -50,21 +50,40 @@
   <string name="pref_camera_recordlocation_entry_on">Zapnuto</string>
 
   <string name="pref_video_quality_title">Kvalita videa</string>
+  <skip />
+  <string name="pref_video_quality_entry_wide">Široké (30m)</string>
   <string name="pref_video_quality_entry_high">Vysoká (30m)</string>
   <string name="pref_video_quality_entry_low">Nízká (30m)</string>
   <string name="pref_video_quality_entry_mms">MMS (nízká, 30s)</string>
+  <skip />
   <string name="pref_video_quality_entry_youtube">YouTube (vysoká, 15m)</string>
+
   <string name="pref_camera_settings_category">Nastavení fotoaparátu</string>
   <string name="pref_camcorder_settings_category">Nastavení videokamery</string>
   <string name="pref_camera_picturesize_title">Velikost fotografií</string>
   <string name="pref_camera_picturesize_entry_3264x2448">8Mpx</string>
-  <string name="pref_camera_picturesize_entry_3264x1952">6Mpx (širokoúhlé)</string>
+  <string name="pref_camera_picturesize_entry_3264x1952">6Mpx (široké)</string>
   <string name="pref_camera_picturesize_entry_2592x1936">5Mpx</string>
-  <string name="pref_camera_picturesize_entry_2592x1552">4Mpx (širokoúhlé)</string>
+  <string name="pref_camera_picturesize_entry_2592x1552">4Mpx (široké)</string>
   <string name="pref_camera_picturesize_entry_2560x1712">4Mpx</string>
   <string name="pref_camera_picturesize_entry_2304x1728">4Mpx</string>
   <string name="pref_camera_picturesize_entry_2048x1536">3Mpx</string>
-  <string name="pref_camera_picturesize_entry_2048x1216">2.5Mpx (širokoúhlé)</string>
+  <string name="pref_camera_picturesize_entry_2048x1216">2.5Mpx (široké)</string>
+  <skip />
+  <skip />
+  <string name="pref_camera_picturesize_entry_1600x960">1.5Mpx (široké)</string>
+  <skip />
+  <skip />
+  <skip />
+  <skip />
+  <skip />
+  <skip />
+  <skip />
+  <skip />
+  <skip />
+  <skip />
+  <skip />
+
   <string name="pref_camera_jpegquality_title">Kvalita fotografií</string>
   <string name="pref_camera_jpegquality_entry_superfine">Velmi jemná</string>
   <string name="pref_camera_jpegquality_entry_fine">Jemná</string>
@@ -80,6 +99,9 @@
   <string name="pref_camera_vol_zoom_title">Přibližování tlačítky hlasitosti</string>
   <string name="pref_camera_vol_zoom">Přibližování hlasitostí</string>
   <string name="pref_camera_vol_zoom_summary">Hlasitost zvýšit/snížit provede přiblížení/oddálení.</string>
+  <string name="pref_camera_other_settings_title">Další nastavení</string>
+  <string name="pref_camera_timer_duration">Časová spoušť</string>
+  <string name="pref_camera_timer_duration_summary">Zvolte časovou prodlevu spouště</string>
   <string name="pref_camera_search_shutter_title">Spoušť pomocí vyhledávání</string>
   <string name="pref_camera_search_shutter">Tlačítko vyhledávání</string>
   <string name="pref_camera_search_shutter_summary">Tlačítkem vyhledávání je pořízena fotografie</string>
@@ -190,21 +212,31 @@
   <string name="pref_camera_scenemode_entry_flowers">Květiny</string>
   <string name="pref_camera_scenemode_entry_duskdawn">Soumrak</string>
   <string name="pref_camera_scenemode_entry_fallcolor">Podzim</string>
+  <skip />
 
   <string name="pref_restore_title">Nastavení fotoaparátu</string>
   <string name="pref_restore_detail">Obnovit výchozí nastavení</string>
   <string name="pref_exposure_title">Expozice</string>
 
+  <skip />
+
   <string name="spaceIsLow_content" product="nosdcard">Na úložišti USB je málo místa. Změňte nastavení kvality nebo smažte některé fotografie či jiné soubory.</string>
   <string name="spaceIsLow_content" product="default">Na kartě SD je málo místa. Změňte nastavení kvality nebo smažte některé fotografie či jiné soubory.</string>
+
   <string name="video_reach_size_limit">Bylo dosaženo limitu velikosti.</string>
   <string name="zoom_control_title">Přibližování</string>
 
   <string name="switch_to_camera_lable">Přepnout na fotoaparát</string>
   <string name="switch_to_video_lable">Přepnout na videokameru</string>
 
+  <skip />
   <string name="pref_camera_iso_entry_auto">Automaticky</string>
   <string name="pref_camera_iso_entry_isodeblur">Odstranit rozmazání</string>
+  <skip />
+  <skip />
+  <skip />
+  <skip />
+  <skip />
 
   <string name="pref_camera_lensshading_title">Korekce vinětace</string>
   <string name="pref_camera_lensshading_entry_enable">Povolit</string>
@@ -212,6 +244,8 @@
 
   <string name="pref_camera_antibanding_title">Redukce blikání</string>
   <string name="pref_camera_antibanding_entry_0">Vypnuto</string>
+  <skip />
+  <skip />
   <string name="pref_camera_antibanding_entry_3">Automaticky</string>
 
   <string name="pref_camera_autoexposure_title">Režim měření</string>
