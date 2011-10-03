@@ -99,7 +99,7 @@ public class EffectsRecorder {
     private static final int STATE_RELEASED               = 4;
     private int mState = STATE_CONFIGURE;
 
-    private boolean mLogVerbose = Log.isLoggable(TAG, Log.VERBOSE);
+    private boolean mLogVerbose = true; //Log.isLoggable(TAG, Log.VERBOSE);
     private static final String TAG = "effectsrecorder";
 
     /** Determine if a given effect is supported at runtime
@@ -322,7 +322,10 @@ public class EffectsRecorder {
             mOldRunner = mRunner;
             mRunner = mGraphEnv.getRunner(mGraphId, GraphEnvironment.MODE_ASYNCHRONOUS);
             mRunner.setDoneCallback(mRunnerDoneCallback);
-
+            if (mLogVerbose) {
+                Log.v(TAG, "New runner: " + mRunner
+                      + ". Old runner: " + mOldRunner);
+            }
             if (mState == STATE_PREVIEW) {
                 // Switching effects while running. Stop existing runner.
                 // The stop callback will take care of starting new runner.
@@ -525,7 +528,7 @@ public class EffectsRecorder {
         mState = STATE_CONFIGURE;
         mOldRunner = mRunner;
         mRunner.stop();
-
+        mRunner = null;
         // Rest of stop and release handled in mRunnerDoneCallback
     }
 
@@ -555,9 +558,15 @@ public class EffectsRecorder {
             new OnRunnerDoneListener() {
         public void onRunnerDone(int result) {
             synchronized(EffectsRecorder.this) {
+                if (mLogVerbose) {
+                    Log.v(TAG,
+                          "Graph runner done (" + EffectsRecorder.this
+                          + ", mRunner " + mRunner
+                          + ", mOldRunner " + mOldRunner + ")");
+                }
                 if (result == GraphRunner.RESULT_ERROR) {
                     // Handle error case
-                    Filter recorder = mRunner.getGraph().getFilter("recorder");
+                    Log.e(TAG, "Error running filter graph!");
                     raiseError(mRunner == null ? null : mRunner.getError());
                 }
                 if (mOldRunner != null) {
