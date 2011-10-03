@@ -31,8 +31,7 @@ import android.view.View;
  * ShutterButton, a IndicatorControlWheel (which combines first-level and
  * second-level indicators) and a ZoomControlWheel.
  */
-public class IndicatorControlWheelContainer extends IndicatorControlContainer
-        implements OnIndicatorEventListener {
+public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     public static final int STROKE_WIDTH = 87;
     public static final int SHUTTER_BUTTON_RADIUS = 74;
     public static final int FULL_WHEEL_RADIUS = 93;
@@ -220,5 +219,10 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer
     @Override
     public void overrideSettings(final String ... keyvalues) {
         mIndicatorControlWheel.overrideSettings(keyvalues);
+    }
+
+    @Override
+    public void dismissSecondLevelIndicator() {
+        // TODO: back to first-level indicator set.
     }
 }

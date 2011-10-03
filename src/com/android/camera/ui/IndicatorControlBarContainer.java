@@ -32,8 +32,7 @@ import android.view.animation.AnimationUtils;
  * The IndicatorControlBarContainer is a IndicatorControl containing
  * IndicatorControlBar, SecondIndicatorControlBar and ZoomControlBar for Phone UI.
  */
-public class IndicatorControlBarContainer extends IndicatorControlContainer
-        implements OnIndicatorEventListener {
+public class IndicatorControlBarContainer extends IndicatorControlContainer {
     private static final String TAG = "IndicatorControlBarContainer";
 
     private Animation mFadeIn, mFadeOut;
@@ -107,6 +106,12 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
         }
     };
 
+    private void leaveSecondLevelIndicator() {
+        mIndicatorControlBar.startAnimation(mFadeIn);
+        mIndicatorControlBar.setVisibility(View.VISIBLE);
+        mSecondLevelIndicatorControlBar.startAnimation(mSecondLevelFadeOut);
+    }
+
     public void onIndicatorEvent(int event) {
         switch (event) {
             case OnIndicatorEventListener.EVENT_ENTER_SECOND_LEVEL_INDICATOR_BAR:
@@ -116,9 +121,7 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
                 break;
 
             case OnIndicatorEventListener.EVENT_LEAVE_SECOND_LEVEL_INDICATOR_BAR:
-                mIndicatorControlBar.startAnimation(mFadeIn);
-                mIndicatorControlBar.setVisibility(View.VISIBLE);
-                mSecondLevelIndicatorControlBar.startAnimation(mSecondLevelFadeOut);
+                leaveSecondLevelIndicator();
                 break;
         }
     }
@@ -166,5 +169,12 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer
     @Override
     public void enableZoom(boolean enabled) {
         mIndicatorControlBar.enableZoom(enabled);
+    }
+
+    @Override
+    public void dismissSecondLevelIndicator() {
+        if (mSecondLevelIndicatorControlBar.getVisibility() == View.VISIBLE) {
+            leaveSecondLevelIndicator();
+        }
     }
 }
