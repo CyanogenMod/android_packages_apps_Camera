@@ -212,6 +212,7 @@ public class EffectsRecorder {
 
     public interface EffectsListener {
         public void onEffectsUpdate(int effectId, int effectMsg);
+        public void onEffectsError(Exception exception, String filePath);
     }
 
     public void setEffectsListener(EffectsListener listener) {
@@ -554,7 +555,13 @@ public class EffectsRecorder {
             new OnRunnerDoneListener() {
         public void onRunnerDone(int result) {
             synchronized(EffectsRecorder.this) {
+                if (result == GraphRunner.RESULT_ERROR) {
+                    // Handle error case
+                    Filter recorder = mRunner.getGraph().getFilter("recorder");
+                    raiseError(mRunner == null ? null : mRunner.getError());
+                }
                 if (mOldRunner != null) {
+                    // Tear down old graph if available
                     if (mLogVerbose) Log.v(TAG, "Tearing down old graph.");
                     GLEnvironment glEnv = mGraphEnv.getContext().getGLEnvironment();
                     if (glEnv != null && !glEnv.isActive()) {
@@ -601,8 +608,17 @@ public class EffectsRecorder {
         if (mEffectsListener != null) {
             mHandler.post(new Runnable() {
                 public void run() {
-                    mEffectsListener.onEffectsUpdate(effect,
-                                                     msg);
+                    mEffectsListener.onEffectsUpdate(effect, msg);
+                }
+            });
+        }
+    }
+
+    private void raiseError(final Exception exception) {
+        if (mEffectsListener != null) {
+            mHandler.post(new Runnable() {
+                public void run() {
+                    mEffectsListener.onEffectsError(exception, mOutputFile);
                 }
             });
         }

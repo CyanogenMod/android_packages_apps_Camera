@@ -1862,6 +1862,7 @@ public class VideoCamera extends ActivityBase
         }
     }
 
+    @Override
     public void onEffectsUpdate(int effectId, int effectMsg) {
         if (effectMsg == EffectsRecorder.EFFECT_MSG_EFFECTS_STOPPED) {
             // Effects have shut down. Hide learning message if any,
@@ -1879,6 +1880,16 @@ public class VideoCamera extends ActivityBase
                     break;
             }
         }
+    }
+
+    @Override
+    public synchronized void onEffectsError(Exception exception, String fileName) {
+        // TODO: Eventually we may want to show the user an error dialog, and then restart the
+        // camera and encoder gracefully. For now, we just delete the file and bail out.
+        if (fileName != null && new File(fileName).exists()) {
+            deleteVideoFile(fileName);
+        }
+        throw new RuntimeException("Error during recording!", exception);
     }
 
     @Override
