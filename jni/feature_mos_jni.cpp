@@ -38,15 +38,14 @@ extern "C" {
 
 char buffer[1024];
 
-const int MAX_FRAMES_HR = 100;
-const int MAX_FRAMES_LR = 200;
+const int MAX_FRAMES = 100;
 
 static double mTx;
 
 int tWidth[NR];
 int tHeight[NR];
 
-ImageType tImage[NR][MAX_FRAMES_LR];// = {{ImageUtils::IMAGE_TYPE_NOIMAGE}}; // YVU24 format image
+ImageType tImage[NR][MAX_FRAMES];// = {{ImageUtils::IMAGE_TYPE_NOIMAGE}}; // YVU24 format image
 Mosaic *mosaic[NR] = {NULL,NULL};
 ImageType resultYVU = ImageUtils::IMAGE_TYPE_NOIMAGE;
 ImageType resultBGR = ImageUtils::IMAGE_TYPE_NOIMAGE;
@@ -283,13 +282,10 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_allocateMosaicMem
     tWidth[LR] = int(width / H2L_FACTOR);
     tHeight[LR] = int(height / H2L_FACTOR);
 
-    for(int i=0; i<MAX_FRAMES_LR; i++)
+    for(int i=0; i<MAX_FRAMES; i++)
     {
             tImage[LR][i] = ImageUtils::allocateImage(tWidth[LR], tHeight[LR],
                     ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
-    }
-    for(int i=0; i<MAX_FRAMES_HR; i++)
-    {
             tImage[HR][i] = ImageUtils::allocateImage(tWidth[HR], tHeight[HR],
                     ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
     }
@@ -300,12 +296,9 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_allocateMosaicMem
 JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_freeMosaicMemory(
         JNIEnv* env, jobject thiz)
 {
-    for(int i = 0; i < MAX_FRAMES_LR; i++)
+    for(int i = 0; i < MAX_FRAMES; i++)
     {
         ImageUtils::freeImage(tImage[LR][i]);
-    }
-    for(int i = 0; i < MAX_FRAMES_HR; i++)
-    {
         ImageUtils::freeImage(tImage[HR][i]);
     }
 
@@ -375,7 +368,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
     t0 = now_ms();
     int ret_code;
 
-    if(frame_number_HR<MAX_FRAMES_HR && frame_number_LR<MAX_FRAMES_LR)
+    if(frame_number_HR<MAX_FRAMES && frame_number_LR<MAX_FRAMES)
     {
         double last_tx = mTx;
 
@@ -428,7 +421,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_android_camera_panorama_Mosaic_setSourceI
 
     int ret_code;
 
-    if(frame_number_HR<MAX_FRAMES_HR && frame_number_LR<MAX_FRAMES_LR)
+    if(frame_number_HR<MAX_FRAMES && frame_number_LR<MAX_FRAMES)
     {
         jbyte *pixels = env->GetByteArrayElements(photo_data, 0);
 
@@ -501,7 +494,7 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_Mosaic_reset(
     gCancelComputation[LR] = false;
     gCancelComputation[HR] = false;
 
-    Init(LR,MAX_FRAMES_LR);
+    Init(LR,MAX_FRAMES);
 }
 
 JNIEXPORT jint JNICALL Java_com_android_camera_panorama_Mosaic_reportProgress(
