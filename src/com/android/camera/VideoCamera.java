@@ -1495,6 +1495,7 @@ public class VideoCamera extends ActivityBase
 
     private void showRecordingUI(boolean recording) {
         if (recording) {
+            mIndicatorControlContainer.dismissSecondLevelIndicator();
             if (mThumbnailView != null) mThumbnailView.setEnabled(false);
             mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video_recording);
             mRecordingTimeView.setText("");
