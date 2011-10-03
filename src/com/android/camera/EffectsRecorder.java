@@ -99,7 +99,7 @@ public class EffectsRecorder {
     private static final int STATE_RELEASED               = 4;
     private int mState = STATE_CONFIGURE;
 
-    private boolean mLogVerbose = true; //Log.isLoggable(TAG, Log.VERBOSE);
+    private boolean mLogVerbose = Log.isLoggable(TAG, Log.VERBOSE);
     private static final String TAG = "effectsrecorder";
 
     /** Determine if a given effect is supported at runtime
