@@ -119,9 +119,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private Parameters mInitialParams;
     private boolean mFocusAreaSupported;
     private boolean mMeteringAreaSupported;
-    private boolean mAwbLockSupported;
-    private boolean mAeLockSupported;
-    private boolean mAeAwbLock;
 
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
@@ -1420,9 +1417,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Do not do focus if there is not enough storage.
         if (pressed && !canTakePicture()) return;
 
-        // Lock AE and AWB so users can half-press shutter and recompose.
-        mAeAwbLock = pressed;
-        setCameraParameters(UPDATE_PARAM_PREFERENCE);
         mFocusManager.doFocus(pressed);
     }
 
@@ -1527,7 +1521,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mFaceView != null) {
             mFaceView.setDisplayOrientation(mDisplayOrientation);
         }
-        mAeAwbLock = false; // Always unlock AE and AWB before start.
         setCameraParameters(UPDATE_PARAM_ALL);
         // If the focus mode is continuous autofocus, call cancelAutoFocus to
         // resume it because it may have been paused by autoFocus call.
@@ -1582,14 +1575,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void updateCameraParametersPreference() {
-        if (mAwbLockSupported) {
-            mParameters.setAutoWhiteBalanceLock(mAeAwbLock);
-        }
-
-        if (mAeLockSupported) {
-            mParameters.setAutoExposureLock(mAeAwbLock);
-        }
-
         if (mFocusAreaSupported) {
             mParameters.setFocusAreas(mFocusManager.getFocusAreas());
         }
@@ -1985,7 +1970,5 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mInitialParams.getSupportedFocusModes()));
         mMeteringAreaSupported = (mInitialParams.getMaxNumMeteringAreas() > 0);
-        mAwbLockSupported = mInitialParams.isAutoWhiteBalanceLockSupported();
-        mAeLockSupported = mInitialParams.isAutoExposureLockSupported();
     }
 }
