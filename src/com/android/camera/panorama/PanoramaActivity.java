@@ -147,9 +147,6 @@ public class PanoramaActivity extends ActivityBase implements
     private Thumbnail mThumbnail;
     private SharePopup mSharePopup;
 
-    private AnimatorSet mThumbnailViewAndModePickerOut;
-    private AnimatorSet mThumbnailViewAndModePickerIn;
-
     private int mPreviewWidth;
     private int mPreviewHeight;
     private Camera mCameraDevice;
@@ -526,30 +523,6 @@ public class PanoramaActivity extends ActivityBase implements
         mCaptureIndicator.setVisibility(View.VISIBLE);
         showDirectionIndicators(PanoProgressBar.DIRECTION_NONE);
 
-        // XML-style animations can not be used here. The Y position has to be calculated runtime.
-        float ystart = mThumbnailView.getY();
-        ValueAnimator va1 = ObjectAnimator.ofFloat(
-                mThumbnailView, "y", ystart, -mThumbnailView.getHeight());
-        ValueAnimator va1Reverse = ObjectAnimator.ofFloat(
-                mThumbnailView, "y", -mThumbnailView.getHeight(), ystart);
-        ystart = mModePicker.getY();
-        float height = mCaptureLayout.getHeight();
-        ValueAnimator va2 = ObjectAnimator.ofFloat(
-                mModePicker, "y", ystart, height + 1);
-        ValueAnimator va2Reverse = ObjectAnimator.ofFloat(
-                mModePicker, "y", height + 1, ystart);
-        LinearInterpolator li = new LinearInterpolator();
-        mThumbnailViewAndModePickerOut = new AnimatorSet();
-        mThumbnailViewAndModePickerOut.play(va1).with(va2);
-        mThumbnailViewAndModePickerOut.setDuration(500);
-        mThumbnailViewAndModePickerOut.setInterpolator(li);
-        mThumbnailViewAndModePickerIn = new AnimatorSet();
-        mThumbnailViewAndModePickerIn.play(va1Reverse).with(va2Reverse);
-        mThumbnailViewAndModePickerIn.setDuration(500);
-        mThumbnailViewAndModePickerIn.setInterpolator(li);
-
-        mThumbnailViewAndModePickerOut.start();
-
         mCompassValueXStart = mCompassValueXStartBuffer;
         mCompassValueYStart = mCompassValueYStartBuffer;
         mMinAngleX = 0;
@@ -570,6 +543,8 @@ public class PanoramaActivity extends ActivityBase implements
                 }
             }
         });
+
+        if (mModePicker != null) mModePicker.setEnabled(false);
 
         mPanoProgressBar.reset();
         // TODO: calculate the indicator width according to different devices to reflect the actual
@@ -609,7 +584,8 @@ public class PanoramaActivity extends ActivityBase implements
                 }
             });
         }
-        mThumbnailViewAndModePickerIn.start();
+        // do we have to wait for the thread to complete before enabling this?
+        if (mModePicker != null) mModePicker.setEnabled(true);
     }
 
     private void showTooFastIndication() {
