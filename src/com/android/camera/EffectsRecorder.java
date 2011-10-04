@@ -300,7 +300,8 @@ public class EffectsRecorder {
             mGraphEnv.addReferences(
                     "previewSurface", mPreviewSurfaceHolder.getSurface(),
                     "previewWidth", mPreviewWidth,
-                    "previewHeight", mPreviewHeight);
+                    "previewHeight", mPreviewHeight,
+                    "orientation", mOrientationHint);
             if (mState == STATE_PREVIEW) {
                 // Switching effects while running. Inform video camera.
                 sendMessage(mCurrentEffect, EFFECT_MSG_SWITCHING_EFFECT);
