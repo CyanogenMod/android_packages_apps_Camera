@@ -75,7 +75,8 @@
   audioSource = $audioSource;
   recordingProfile = $recordingProfile;
   recording = false;
-  // outputFile, orientationHint, listeners will be set when recording starts
+  // outputFile, orientationHint, inputRegion, listeners
+  // will be set when recording starts
 }
 
 // Connections -----------------------------------------------
