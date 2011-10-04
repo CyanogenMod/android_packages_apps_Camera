@@ -35,6 +35,8 @@
 @external previewWidth;
 @external previewHeight;
 
+@external orientation;
+
 @external learningDoneListener;
 
 // Filters ---------------------------------------------------
@@ -52,6 +54,7 @@
   sourceUrl = "no_file_specified";
   waitForNewFrame = false;
   sourceIsUrl = true;
+  orientation = $orientation;
 }
 
 // Background replacer
