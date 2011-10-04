@@ -65,6 +65,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.android.camera.panorama.PanoramaActivity"
+                android:label="@string/pano_dialog_title"
                 android:configChanges="orientation|screenSize|keyboardHidden"
                 android:screenOrientation="landscape"
                 android:clearTaskOnLaunch="true"

@@ -125,6 +125,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
     public IndicatorButton addIndicator(Context context, IconListPreference pref) {
         IndicatorButton b = new IndicatorButton(context, pref);
         b.setSettingChangedListener(this);
+        b.setContentDescription(pref.getTitle());
         addView(b);
         mIndicators.add(b);
         return b;
@@ -135,6 +136,8 @@ public abstract class IndicatorControl extends RelativeLayout implements
         OtherSettingIndicatorButton b = new OtherSettingIndicatorButton(
                 context, resId, mPreferenceGroup, keys);
         b.setSettingChangedListener(this);
+        b.setContentDescription(getResources().getString(
+                R.string.pref_camera_settings_category));
         addView(b);
         mIndicators.add(b);
         return b;

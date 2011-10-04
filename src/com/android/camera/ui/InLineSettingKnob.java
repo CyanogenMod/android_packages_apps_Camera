@@ -16,6 +16,7 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.ListPreference;
 import com.android.camera.R;
 
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -100,6 +102,16 @@ public class InLineSettingKnob extends InLineSettingItem {
         mEntry = (TextView) findViewById(R.id.current_setting);
     }
 
+    @Override
+    public void initialize(ListPreference preference) {
+        super.initialize(preference);
+        // Add content descriptions for the increment and decrement buttons.
+        mNextButton.setContentDescription(getResources().getString(
+                R.string.accessibility_increment, mPreference.getTitle()));
+        mPrevButton.setContentDescription(getResources().getString(
+                R.string.accessibility_decrement, mPreference.getTitle()));
+    }
+
     protected void updateView() {
         if (mOverrideValue == null) {
             mEntry.setText(mPreference.getEntry());
@@ -120,4 +132,15 @@ public class InLineSettingKnob extends InLineSettingItem {
         }
     }
 
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        onPopulateAccessibilityEvent(event);
+        return true;
+    }
+
+    @Override
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
+        event.getText().add(mPreference.getTitle() + mPreference.getEntry());
+    }
 }

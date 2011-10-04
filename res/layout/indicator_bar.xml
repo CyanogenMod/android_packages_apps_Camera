@@ -41,6 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
+                    android:contentDescription="@string/accessibility_second_level_indicators"
                     android:src="@drawable/ic_settings_holo_light" />
         </com.android.camera.ui.IndicatorControlBar>
 
@@ -63,6 +64,12 @@
                     android:layout_height="0dp"
                     android:background="@color/mode_selection_border"
                     android:visibility="gone" />
+            <com.android.camera.ui.ColorFilterImageView
+                    android:id="@+id/back_to_first_level"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/accessibility_back_to_first_level"
+                    android:src="@drawable/btn_close_settings" />
         </com.android.camera.ui.SecondLevelIndicatorControlBar>
 
     </RelativeLayout>

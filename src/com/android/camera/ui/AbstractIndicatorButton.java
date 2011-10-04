@@ -50,6 +50,8 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
         HIGHLIGHT_COLOR = context.getResources().getColor(R.color.review_control_pressed_color);
         setScaleType(ImageView.ScaleType.CENTER);
         PopupManager.getInstance(context).setOnOtherPopupShowedListener(this);
+        // Set the click listener to help the comprehension of the accessibility.
+        setClickable(true);
     }
 
     @Override

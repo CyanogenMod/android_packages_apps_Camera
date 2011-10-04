@@ -88,6 +88,13 @@ public abstract class ZoomControl extends RelativeLayout {
     protected ImageView addImageView(Context context, int iconResourceId) {
         ImageView image = new RotateImageView(context);
         image.setImageResource(iconResourceId);
+        if (iconResourceId == R.drawable.ic_zoom_slider) {
+            image.setContentDescription(getResources().getString(
+                    R.string.accessibility_zoom_control));
+        } else {
+            image.setContentDescription(getResources().getString(
+                    R.string.empty));
+        }
         addView(image);
         return image;
     }

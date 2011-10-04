@@ -35,7 +35,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         View.OnClickListener, AbstractIndicatorButton.IndicatorChangeListener {
     private static final String TAG = "SecondLevelIndicatorControlBar";
     private static int ICON_SPACING = Util.dpToPixel(16);
-    private ImageView mCloseIcon;
+    private View mCloseIcon;
     private View mDivider; // the divider line
     private View mIndicatorHighlight; // the side highlight bar
     private View mPopupedIndicator;
@@ -54,16 +54,13 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     protected void onFinishInflate() {
         mDivider = findViewById(R.id.divider);
         mIndicatorHighlight = findViewById(R.id.indicator_highlight);
+        mCloseIcon = findViewById(R.id.back_to_first_level);
+        mCloseIcon.setOnClickListener(this);
     }
 
     public void initialize(Context context, PreferenceGroup group,
             String[] keys, String[] otherSettingKeys) {
-        if (mCloseIcon == null) {
-            mCloseIcon = new ColorFilterImageView(context);
-            mCloseIcon.setImageResource(R.drawable.btn_close_settings);
-            mCloseIcon.setOnClickListener(this);
-            addView(mCloseIcon);
-        }
+
         setPreferenceGroup(group);
         mNonIndicatorButtonCount = getChildCount();
         addControls(keys, otherSettingKeys);

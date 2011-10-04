@@ -329,4 +329,28 @@
 
     <!-- Title of category for background replacement effects. [CHAR LIMIT=26] -->
     <string name="effect_background">Background</string>
+
+    <!-- The shutter button. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_shutter_button">Shutter button</string>
+    <!-- The button to review the thumbnail. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_review_thumbnail">Most recent photo</string>
+    <!-- The front/back camera switch. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_camera_picker">Front and back camera switch</string>
+    <!-- The mode picker to switch between camera, video and panorama. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_mode_picker">Camera, video or panorama selector</string>
+    <!-- The button to switch to the second-level indicators of the camera settings. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_second_level_indicators">More setting controls</string>
+    <!-- The button to back to the first-level indicators of the camera settings. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_back_to_first_level">Close setting controls</string>
+    <!-- The zoom control button. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_zoom_control">Zoom control</string>
+    <!-- The decrement button in camera preference such as exposure, picture size. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_decrement">Decrease %1$s</string>
+    <!-- The increment button in camera preference such as exposure, picture size. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_increment">Increase %1$s</string>
+    <!-- The on/off switch in camera settings, such as store location. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_switch">%1$s switch</string>
+
+    <!-- TODO: remove the string as it is a work-around solution to bypass the default speak of the element type. -->
+    <string name="empty" translatable="false">" "</string>
 </resources>
