@@ -904,6 +904,7 @@ public class PanoramaActivity extends ActivityBase implements
             stopCapture(true);
             reset();
         }
+        if (mSharePopup != null) mSharePopup.dismiss();
         releaseCamera();
         mMosaicView.onPause();
         clearMosaicFrameProcessorIfNeeded();
