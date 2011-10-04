@@ -38,6 +38,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -71,6 +72,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -268,9 +270,8 @@ public class PanoramaActivity extends ActivityBase implements
                         onBackgroundThreadFinished();
                         // Set the thumbnail bitmap here because mThumbnailView must be accessed
                         // from the UI thread.
-                        if (mThumbnail != null) {
-                            mThumbnailView.setBitmap(mThumbnail.getBitmap());
-                        }
+                        updateThumbnailButton();
+
                         // Share popup may still have the reference to the old thumbnail. Clear it.
                         mSharePopup = null;
                         resetToPreview();
@@ -304,6 +305,12 @@ public class PanoramaActivity extends ActivityBase implements
                         resetToPreview();
                     }
                 });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateThumbnailButton();
     }
 
     private void setupCamera() {
@@ -723,6 +730,19 @@ public class PanoramaActivity extends ActivityBase implements
             }
         };
         t.start();
+    }
+
+    private void updateThumbnailButton() {
+        // Update last image if URI is invalid and the storage is ready.
+        ContentResolver contentResolver = getContentResolver();
+        if ((mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), contentResolver))) {
+            mThumbnail = Thumbnail.getLastThumbnail(contentResolver);
+        }
+        if (mThumbnail != null) {
+            mThumbnailView.setBitmap(mThumbnail.getBitmap());
+        } else {
+            mThumbnailView.setBitmap(null);
+        }
     }
 
     public void saveHighResMosaic() {
