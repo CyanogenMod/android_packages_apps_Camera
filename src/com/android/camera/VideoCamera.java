@@ -466,11 +466,12 @@ public class VideoCamera extends ActivityBase
 
         final String[] SETTING_KEYS = {
                     CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
-                    CameraSettings.KEY_VIDEO_EFFECT,
                     CameraSettings.KEY_WHITE_BALANCE,
+                    CameraSettings.KEY_VIDEO_EFFECT,
+                    CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
                     CameraSettings.KEY_VIDEO_QUALITY};
         final String[] OTHER_SETTING_KEYS = {
-                    CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL};
+                    CameraSettings.KEY_RECORD_LOCATION};
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_video_facing_holo_light);
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
@@ -1137,6 +1138,13 @@ public class VideoCamera extends ActivityBase
         if (mCaptureTimeLapse) {
             mMediaRecorder.setCaptureRate((1000 / (double) mTimeBetweenTimeLapseFrameCaptureMs));
         }
+
+        Location loc = mLocationManager.getCurrentLocation();
+        if (loc != null) {
+            mMediaRecorder.setLocation((float) loc.getLatitude(),
+                    (float) loc.getLongitude());
+        }
+
 
         // Set output file.
         // Try Uri in the intent first. If it doesn't exist, use our own
