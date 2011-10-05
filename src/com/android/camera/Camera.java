@@ -941,12 +941,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         final String[] SETTING_KEYS = {
                 CameraSettings.KEY_FLASH_MODE,
                 CameraSettings.KEY_WHITE_BALANCE,
+                CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_SCENE_MODE};
         final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_RECORD_LOCATION,
-                CameraSettings.KEY_FOCUS_MODE,
-                CameraSettings.KEY_EXPOSURE,
-                CameraSettings.KEY_PICTURE_SIZE};
+                CameraSettings.KEY_PICTURE_SIZE,
+                CameraSettings.KEY_FOCUS_MODE};
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_photo_facing_holo_light);
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,

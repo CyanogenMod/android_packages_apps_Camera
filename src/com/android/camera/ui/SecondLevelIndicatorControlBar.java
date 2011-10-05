@@ -34,7 +34,7 @@ import android.widget.ImageView;
 public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         View.OnClickListener, AbstractIndicatorButton.IndicatorChangeListener {
     private static final String TAG = "SecondLevelIndicatorControlBar";
-    private static int ICON_SPACING = Util.dpToPixel(24);
+    private static int ICON_SPACING = Util.dpToPixel(16);
     private ImageView mCloseIcon;
     private View mDivider; // the divider line
     private View mIndicatorHighlight; // the side highlight bar
