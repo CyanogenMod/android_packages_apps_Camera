@@ -53,10 +53,15 @@
         <item name="android:visibility">gone</item>
         <item name="android:src">@drawable/ic_gallery_play</item>
     </style>
-    <style name="RecordingTime">
+    <style name="RecordingLabels">
+        <item name="android:background">@color/on_viewfinder_label_background_color</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">26dp</item>
         <item name="android:shadowColor">#c0000000</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
         <item name="android:shadowDx">1</item>
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">1</item>
@@ -140,6 +145,14 @@
         <item name="android:focusable">false</item>
         <item name="android:visibility">gone</item>
         <item name="android:layout_marginRight">8dp</item>
+    </style>
+    <style name="ViewfinderLableLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">13dp</item>
+        <item name="android:layout_marginBottom">13dp</item>
+        <item name="android:layout_marginLeft">13dp</item>
+        <item name="android:layout_marginRight">@dimen/indicator_bar_width</item>
     </style>
     <style name="OnViewfinderLabel">
         <item name="android:gravity">center</item>
