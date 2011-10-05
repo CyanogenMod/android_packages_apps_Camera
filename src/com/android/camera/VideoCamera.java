@@ -64,6 +64,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -130,8 +131,7 @@ public class VideoCamera extends ActivityBase
 
     private boolean mSnapshotInProgress = false;
 
-    private final static String EFFECT_BG_FROM_GALLERY =
-            "gallery";
+    private static final String EFFECT_BG_FROM_GALLERY = "gallery";
 
     private android.hardware.Camera mCameraDevice;
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
@@ -162,6 +162,7 @@ public class VideoCamera extends ActivityBase
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
     private TextView mBgLearningMessage;
+    private LinearLayout mLabelsLinearLayout;
 
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
@@ -405,6 +406,9 @@ public class VideoCamera extends ActivityBase
         mRecordingTimeRect = (RotateLayout) findViewById(R.id.recording_time_rect);
         mOrientationListener = new MyOrientationEventListener(VideoCamera.this);
         mTimeLapseLabel = findViewById(R.id.time_lapse_label);
+        // The R.id.labels can only be found in phone layout. For tablet, the id is
+        // R.id.labels_w1024. That is, mLabelsLinearLayout should be null in tablet layout.
+        mLabelsLinearLayout = (LinearLayout) findViewById(R.id.labels);
 
         mBgLearningMessage = (TextView) findViewById(R.id.bg_replace_message);
 
@@ -528,6 +532,15 @@ public class VideoCamera extends ActivityBase
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
+        // We change the orientation of the linearlayout only for phone UI because when in portrait
+        // the width is not enough.
+        if (mLabelsLinearLayout != null) {
+            if (((degree / 90) & 1) == 1) {
+                mLabelsLinearLayout.setOrientation(mLabelsLinearLayout.VERTICAL);
+            } else {
+                mLabelsLinearLayout.setOrientation(mLabelsLinearLayout.HORIZONTAL);
+            }
+        }
         mRecordingTimeRect.setOrientation(mOrientationCompensation);
     }
 

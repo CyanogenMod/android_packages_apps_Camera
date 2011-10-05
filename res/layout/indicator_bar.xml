@@ -23,7 +23,7 @@
     <RelativeLayout
             android:id="@+id/control_bars"
             android:layout_toRightOf="@+id/zoom_index_bar"
-            android:layout_width="48dp"
+            android:layout_width="@dimen/indicator_bar_width"
             android:layout_height="match_parent">
         <com.android.camera.ui.IndicatorControlBar
                 android:id="@+id/indicator_bar"
