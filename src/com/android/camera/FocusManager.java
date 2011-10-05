@@ -187,7 +187,11 @@ public class FocusManager {
             // take the picture now.
             if (focused) {
                 mState = STATE_SUCCESS;
-                if (mFocusToneGenerator != null) {
+                // Do not play the sound in continuous autofocus mode. It does
+                // not do a full scan. The focus callback arrives before doSnap
+                // so the state is always STATE_FOCUSING.
+                if (!Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)
+                        && mFocusToneGenerator != null) {
                     mFocusToneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2);
                 }
             } else {
@@ -386,10 +390,17 @@ public class FocusManager {
             }
         } else if (mState == STATE_FOCUSING || mState == STATE_FOCUSING_SNAP_ON_FINISH) {
             focusIndicator.showStart();
-        } else if (mState == STATE_SUCCESS) {
-            focusIndicator.showSuccess();
-        } else if (mState == STATE_FAIL) {
-            focusIndicator.showFail();
+        } else {
+            // In CAF, do not show success or failure because it only returns
+            // the focus status. It does not do a full scan. So the result is
+            // failure most of the time.
+            if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
+                focusIndicator.showStart();
+            } else if (mState == STATE_SUCCESS) {
+                focusIndicator.showSuccess();
+            } else if (mState == STATE_FAIL) {
+                focusIndicator.showFail();
+            }
         }
     }
 
