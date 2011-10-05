@@ -28,26 +28,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         <com.android.camera.ui.RotateLayout android:id="@+id/recording_time_rect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true">
+                style="@style/ViewfinderLableLayout">
 
-            <LinearLayout android:id="@+id/labels"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                <TextView android:id="@+id/time_lapse_label"
-                        android:text="@string/time_lapse_title"
-                        style="@style/OnViewfinderLabel"
-                        android:visibility="gone" />
-                <TextView android:id="@+id/recording_time"
-                        style="@style/OnViewfinderLabel"
-                        android:gravity="center"
-                        android:drawableLeft="@drawable/ic_recording_indicator_small"
-                        android:drawablePadding="5dp"
-                        android:visibility="gone"/>
-            </LinearLayout>
+            <include layout="@layout/viewfinder_labels_video" android:id="@+id/labels_w1024" />
         </com.android.camera.ui.RotateLayout>
         <ImageView android:id="@+id/review_image"
                 android:layout_width="match_parent"
