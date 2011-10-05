@@ -115,8 +115,8 @@ public class Util {
     public static Bitmap rotateAndMirror(Bitmap b, int degrees, boolean mirror) {
         if ((degrees != 0 || mirror) && b != null) {
             Matrix m = new Matrix();
-            m.setRotate(degrees,
-                    (float) b.getWidth() / 2, (float) b.getHeight() / 2);
+            // Mirror first.
+            // horizontal flip + rotation = -rotation + horizontal flip
             if (mirror) {
                 m.postScale(-1, 1);
                 degrees = (degrees + 360) % 360;
@@ -127,6 +127,11 @@ public class Util {
                 } else {
                     throw new IllegalArgumentException("Invalid degrees=" + degrees);
                 }
+            }
+            if (degrees != 0) {
+                // clockwise
+                m.postRotate(degrees,
+                        (float) b.getWidth() / 2, (float) b.getHeight() / 2);
             }
 
             try {
