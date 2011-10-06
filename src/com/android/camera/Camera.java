@@ -71,9 +71,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements FocusManager.Listener,
@@ -91,6 +93,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final int CHECK_DISPLAY_ROTATION = 5;
     private static final int SHOW_TAP_TO_FOCUS_TOAST = 6;
     private static final int DISMISS_TAP_TO_FOCUS_TOAST = 7;
+    private static final int UPDATE_THUMBNAIL = 8;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -161,6 +164,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private View mGpsNoSignalIndicator;
     private View mGpsHasSignalIndicator;
     private TextView mExposureIndicator;
+
+    // We put the work of saving images and generating thumbnails to the thread
+    // in ImageSaver.
+    private ImageSaver mImageSaver;
 
     private final StringBuilder mBuilder = new StringBuilder();
     private final Formatter mFormatter = new Formatter(mBuilder);
@@ -293,6 +300,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                             R.anim.on_screen_hint_exit));
                     break;
                 }
+
+                case UPDATE_THUMBNAIL: {
+                    mImageSaver.updateThumbnail();
+                    break;
+                }
             }
         }
     }
@@ -357,6 +369,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mFocusIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
         mFocusManager.initialize(mFocusIndicator, mPreviewFrame, mFaceView, this);
         mFocusManager.initializeSoundPlayer(getResources().openRawResourceFd(R.raw.camera_focus));
+        mImageSaver = new ImageSaver();
         Util.initializeScreenBrightness(getWindow(), getContentResolver());
         installIntentFilter();
         initializeZoom();
@@ -414,6 +427,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         installIntentFilter();
         mFocusManager.initializeSoundPlayer(getResources().openRawResourceFd(R.raw.camera_focus));
+        mImageSaver = new ImageSaver();
         initializeZoom();
         keepMediaProviderInstance();
         checkStorage();
@@ -678,7 +692,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
             if (!mIsImageCaptureIntent) {
                 Size s = mParameters.getPictureSize();
-                storeImage(jpegData, mLocation, s.width, s.height);
+                mImageSaver.addImage(jpegData, mLocation, s.width, s.height);
             } else {
                 mJpegImageData = jpegData;
                 if (!mQuickCapture) {
@@ -745,24 +759,132 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void storeImage(final byte[] data, Location loc, int width, int height) {
-        long dateTaken = System.currentTimeMillis();
-        String title = Util.createJpegName(dateTaken);
-        int orientation = Exif.getOrientation(data);
-        Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
-                loc, orientation, data, width, height);
-        if (uri != null) {
-            // Create a thumbnail whose width is equal or bigger than that of the preview.
-            int ratio = (int) Math.ceil((double) mParameters.getPictureSize().width
-                    / mPreviewFrameLayout.getWidth());
-            int inSampleSize = Integer.highestOneBit(ratio);
-            mThumbnail = Thumbnail.createThumbnail(data, orientation, inSampleSize, uri);
-            if (mThumbnail != null) {
+    private static class ImageInfo {
+        byte[] data;
+        Location loc;
+        int width, height;
+        long dateTaken;
+        int previewWidth;
+    }
+
+    private class ImageSaver extends Thread {
+        private ArrayList<ImageInfo> mQueue;
+        private AtomicReference<Thumbnail> mPendingThumbnail;
+        private boolean mStop;
+
+        // Runs in main thread
+        public ImageSaver() {
+            mQueue = new ArrayList<ImageInfo>();
+            mPendingThumbnail = new AtomicReference<Thumbnail>();
+            start();
+        }
+
+        // Runs in main thread
+        public void addImage(final byte[] data, Location loc, int width,
+                int height) {
+            ImageInfo i = new ImageInfo();
+            i.data = data;
+            i.loc = (loc == null) ? null : new Location(loc);  // make a copy
+            i.width = width;
+            i.height = height;
+            i.dateTaken = System.currentTimeMillis();
+            i.previewWidth = mPreviewFrameLayout.getWidth();
+            synchronized (this) {
+                mQueue.add(i);
+                notifyAll();
+            }
+        }
+
+        // Runs in keeper thread
+        @Override
+        public void run() {
+            while (true) {
+                ImageInfo i;
+                synchronized (this) {
+                    if (mQueue.isEmpty()) {
+                        notifyAll();  // for waitDone
+                        // Note that we can stop only after the queue is empty.
+                        if (mStop) break;
+                        try {
+                            wait();
+                        } catch (InterruptedException ex) {
+                            // ignore.
+                        }
+                        continue;
+                    }
+                    i = mQueue.get(0);
+                }
+                keepImage(i.data, i.loc, i.width, i.height, i.dateTaken,
+                        i.previewWidth);
+                synchronized(this) {
+                    mQueue.remove(0);
+                }
+            }
+        }
+
+        // Runs in main thread
+        public void waitDone() {
+            synchronized (this) {
+                while (!mQueue.isEmpty()) {
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                        // ignore.
+                    }
+                }
+            }
+            updateThumbnail();
+        }
+
+        // Runs in main thread
+        public void finish() {
+            waitDone();
+            synchronized (this) {
+                mStop = true;
+                notifyAll();
+            }
+            try {
+                join();
+            } catch (InterruptedException ex) {
+                // ignore.
+            }
+        }
+
+        // Runs in main thread
+        public void updateThumbnail() {
+            mHandler.removeMessages(UPDATE_THUMBNAIL);
+            Thumbnail t = mPendingThumbnail.getAndSet(null);
+            if (t != null) {
+                mThumbnail = t;
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
             }
             // Share popup may still have the reference to the old thumbnail. Clear it.
             mSharePopup = null;
-            Util.broadcastNewPicture(this, uri);
+        }
+
+        // Runs in keeper thread
+        private void keepImage(final byte[] data, Location loc, int width,
+                int height, long dateTaken, int previewWidth) {
+            String title = Util.createJpegName(dateTaken);
+            int orientation = Exif.getOrientation(data);
+            Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
+                    loc, orientation, data, width, height);
+            boolean needThumbnail;
+            if (uri != null) {
+                synchronized (this) {
+                    needThumbnail = (mQueue.size() == 1);
+                }
+                if (needThumbnail) {
+                    // Create a thumbnail whose width is equal or bigger than
+                    // that of the preview.
+                    int ratio = (int) Math.ceil((double) width / previewWidth);
+                    int inSampleSize = Integer.highestOneBit(ratio);
+                    mPendingThumbnail.set(Thumbnail.createThumbnail(
+                            data, orientation, inSampleSize, uri));
+                    mHandler.sendEmptyMessage(UPDATE_THUMBNAIL);
+                }
+                Util.broadcastNewPicture(Camera.this, uri);
+            }
         }
     }
 
@@ -1250,6 +1372,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
+            mImageSaver.finish();
+            mImageSaver = null;
             if (!mIsImageCaptureIntent && mThumbnail != null && !mThumbnail.fromFile()) {
                 mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
             }
@@ -1936,6 +2060,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void showSharePopup() {
+        mImageSaver.waitDone();
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             // SharePopup window takes the mPreviewPanel as its size reference.
