@@ -405,7 +405,7 @@ public class VideoCamera extends ActivityBase
 
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mRecordingTimeRect = (RotateLayout) findViewById(R.id.recording_time_rect);
-        mOrientationListener = new MyOrientationEventListener(VideoCamera.this);
+        mOrientationListener = new MyOrientationEventListener(this);
         mTimeLapseLabel = findViewById(R.id.time_lapse_label);
         // The R.id.labels can only be found in phone layout. For tablet, the id is
         // R.id.labels_w1024. That is, mLabelsLinearLayout should be null in tablet layout.
@@ -1444,7 +1444,7 @@ public class VideoCamera extends ActivityBase
             if (mMediaRecorderRecording) onStopVideoRecording(true);
 
             // Show the toast.
-            Toast.makeText(VideoCamera.this, R.string.video_reach_size_limit,
+            Toast.makeText(this, R.string.video_reach_size_limit,
                            Toast.LENGTH_LONG).show();
         }
     }
@@ -1855,7 +1855,7 @@ public class VideoCamera extends ActivityBase
 
     private boolean switchToOtherMode(int mode) {
         if (isFinishing()) return false;
-        MenuHelper.gotoMode(mode, VideoCamera.this);
+        MenuHelper.gotoMode(mode, this);
         finish();
         return true;
     }
@@ -1945,7 +1945,7 @@ public class VideoCamera extends ActivityBase
 
         if (mIndicatorControlContainer != null) {
             mIndicatorControlContainer.dismissSettingPopup();
-            CameraSettings.restorePreferences(VideoCamera.this, mPreferences,
+            CameraSettings.restorePreferences(this, mPreferences,
                     mParameters);
             mIndicatorControlContainer.reloadPreferences();
             onSharedPreferenceChanged();
@@ -2210,6 +2210,12 @@ public class VideoCamera extends ActivityBase
     // Preview area is touched. Take a picture.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
+        if (mMediaRecorderRecording && effectsActive()) {
+            Toast.makeText(this, getResources().getString(
+                    R.string.disable_video_snapshot_hint), Toast.LENGTH_LONG).show();
+            return false;
+        }
+
         if (mPausing || mSnapshotInProgress
                 || !mMediaRecorderRecording || effectsActive()) {
             return false;

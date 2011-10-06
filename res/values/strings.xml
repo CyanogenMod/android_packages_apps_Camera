@@ -318,6 +318,9 @@
     <!-- Toast telling users tapping on the viewfinder will take a picture [CHAR LIMIT=65] -->
     <string name="video_snapshot_hint">Take a photo during video recording by tapping on the preview screen.</string>
 
+    <!-- Toast telling users video snapshot is disabled when the effects are on and a user tries to tap on the viewfinder [CHAR LIMIT=65] -->
+    <string name="disable_video_snapshot_hint">Video snapshot is disabled when special effects are on.</string>
+
     <!-- A button in effect setting popup to clear the effect. [CHAR LIMIT=26] -->
     <string name="clear_effects">Clear effects</string>
 
