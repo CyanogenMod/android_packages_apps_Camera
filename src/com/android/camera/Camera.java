@@ -356,7 +356,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreviewFrame.setOnTouchListener(this);
         mFocusIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
         mFocusManager.initialize(mFocusIndicator, mPreviewFrame, mFaceView, this);
-        mFocusManager.initializeToneGenerator();
+        mFocusManager.initializeSoundPlayer(getResources().openRawResourceFd(R.raw.camera_focus));
         Util.initializeScreenBrightness(getWindow(), getContentResolver());
         installIntentFilter();
         initializeZoom();
@@ -413,7 +413,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mLocationManager.recordLocation(recordLocation);
 
         installIntentFilter();
-        mFocusManager.initializeToneGenerator();
+        mFocusManager.initializeSoundPlayer(getResources().openRawResourceFd(R.raw.camera_focus));
         initializeZoom();
         keepMediaProviderInstance();
         checkStorage();
@@ -1262,7 +1262,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mLocationManager.recordLocation(false);
         updateExposureOnScreenIndicator(0);
 
-        mFocusManager.releaseToneGenerator();
+        mFocusManager.releaseSoundPlayer();
 
         if (mStorageHint != null) {
             mStorageHint.cancel();

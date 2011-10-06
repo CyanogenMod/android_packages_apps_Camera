@@ -20,11 +20,10 @@ import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusIndicator;
 import com.android.camera.ui.FocusIndicatorView;
 
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Rect;
 import android.hardware.Camera.Area;
 import android.hardware.Camera.Parameters;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -55,7 +54,7 @@ public class FocusManager {
 
     private boolean mInitialized;
     private boolean mFocusAreaSupported;
-    private ToneGenerator mFocusToneGenerator;
+    private SoundPlayer mSoundPlayer;
     private View mFocusIndicatorRotateLayout;
     private FocusIndicatorView mFocusIndicator;
     private View mPreviewFrame;
@@ -191,8 +190,8 @@ public class FocusManager {
                 // not do a full scan. The focus callback arrives before doSnap
                 // so the state is always STATE_FOCUSING.
                 if (!Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)
-                        && mFocusToneGenerator != null) {
-                    mFocusToneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2);
+                        && mSoundPlayer != null) {
+                    mSoundPlayer.play();
                 }
             } else {
                 mState = STATE_FAIL;
@@ -315,23 +314,17 @@ public class FocusManager {
         }
     }
 
-    public void initializeToneGenerator() {
-        // Initialize focus tone generator.
-        try {
-            mFocusToneGenerator = new ToneGenerator(
-                    AudioManager.STREAM_SYSTEM, FOCUS_BEEP_VOLUME);
-        } catch (Throwable ex) {
-            Log.w(TAG, "Exception caught while creating tone generator: ", ex);
-            mFocusToneGenerator = null;
+    public void initializeSoundPlayer(AssetFileDescriptor fd) {
+        mSoundPlayer = new SoundPlayer(fd);
+    }
+
+    public void releaseSoundPlayer() {
+        if (mSoundPlayer != null) {
+            mSoundPlayer.release();
+            mSoundPlayer = null;
         }
     }
 
-    public void releaseToneGenerator() {
-        if (mFocusToneGenerator != null) {
-            mFocusToneGenerator.release();
-            mFocusToneGenerator = null;
-        }
-    }
 
     // This can only be called after mParameters is initialized.
     public String getFocusMode() {
