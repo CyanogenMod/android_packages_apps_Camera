@@ -22,6 +22,8 @@ import android.filterfw.core.Filter;
 import android.filterfw.core.GLEnvironment;
 import android.filterfw.core.GraphRunner;
 import android.filterfw.core.GraphRunner.OnRunnerDoneListener;
+import android.filterfw.geometry.Point;
+import android.filterfw.geometry.Quad;
 import android.filterpacks.videosrc.SurfaceTextureSource.SurfaceTextureSourceListener;
 import android.filterpacks.videoproc.BackDropperFilter;
 import android.filterpacks.videoproc.BackDropperFilter.LearningDoneListener;
@@ -78,6 +80,7 @@ public class EffectsRecorder {
 
     private String mOutputFile;
     private int mOrientationHint = 0;
+    private int mCameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     private int mEffect = EFFECT_NONE;
     private int mCurrentEffect = EFFECT_NONE;
@@ -229,6 +232,31 @@ public class EffectsRecorder {
         }
     }
 
+    private void setRecordingOrientation() {
+        if ( mState <= STATE_PREVIEW && mRunner != null ) {
+            Point bl = new Point(0, 0);
+            Point br = new Point(1, 0);
+            Point tl = new Point(0, 1);
+            Point tr = new Point(1, 1);
+            Quad recordingRegion;
+            if (mCameraFacing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                // The back camera is not mirrored, so use a identity transform
+                recordingRegion = new Quad(bl, br, tl, tr);
+            } else {
+                // Recording region needs to be tweaked for front cameras, since they
+                // mirror their preview
+                if (mOrientationHint == 0 || mOrientationHint == 180) {
+                    // Horizontal flip in landscape
+                    recordingRegion = new Quad(br, bl, tr, tl);
+                } else {
+                    // Horizontal flip in portrait
+                    recordingRegion = new Quad(tl, tr, bl, br);
+                }
+            }
+            Filter recorder = mRunner.getGraph().getFilter("recorder");
+            recorder.setInputValue("inputRegion", recordingRegion);
+        }
+    }
     public void setOrientationHint(int degrees) {
         switch (mState) {
             case STATE_RELEASED:
@@ -241,6 +269,19 @@ public class EffectsRecorder {
 
         mOrientationHint = degrees;
         setFaceDetectOrientation(degrees);
+        setRecordingOrientation();
+    }
+
+    public void setCameraFacing(int facing) {
+        switch (mState) {
+            case STATE_RELEASED:
+                throw new RuntimeException(
+                    "setCameraFacing called on alrady released recorder!");
+            default:
+                break;
+        }
+        mCameraFacing = facing;
+        setRecordingOrientation();
     }
 
     public void setOnInfoListener(MediaRecorder.OnInfoListener infoListener) {
@@ -297,6 +338,7 @@ public class EffectsRecorder {
                 Log.v(TAG, "Effect initializing. Preview size "
                        + mPreviewWidth + ", " + mPreviewHeight);
             }
+
             mGraphEnv.addReferences(
                     "previewSurface", mPreviewSurfaceHolder.getSurface(),
                     "previewWidth", mPreviewWidth,
@@ -355,6 +397,7 @@ public class EffectsRecorder {
                 break;
         }
         setFaceDetectOrientation(mOrientationHint);
+        setRecordingOrientation();
     }
 
     public synchronized void startPreview() {

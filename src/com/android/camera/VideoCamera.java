@@ -1223,9 +1223,12 @@ public class VideoCamera extends ActivityBase
         // If the mCameraDevice is null, then this activity is going to finish
         if (mCameraDevice == null) return;
 
+        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+
         mEffectsRecorder = new EffectsRecorder(this);
 
         mEffectsRecorder.setCamera(mCameraDevice);
+        mEffectsRecorder.setCameraFacing(info.facing);
         mEffectsRecorder.setProfile(mProfile);
         mEffectsRecorder.setEffectsListener(this);
         mEffectsRecorder.setOnInfoListener(this);
@@ -1235,7 +1238,6 @@ public class VideoCamera extends ActivityBase
         // documentation.
         int rotation = 0;
         if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
-            CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
             rotation = (info.orientation + mOrientation) % 360;
         }
         mEffectsRecorder.setOrientationHint(rotation);
