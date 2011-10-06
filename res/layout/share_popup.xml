@@ -25,12 +25,10 @@
     <FrameLayout android:id="@+id/root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:layout_gravity="left|center">
         <RelativeLayout android:id="@+id/share_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/border_last_picture">
             <com.android.camera.ui.RotateLayout
                     android:id="@+id/thumbnail_rotate_layout"
@@ -45,12 +43,6 @@
                         android:adjustViewBounds="true"
                         android:scaleType="fitCenter"/>
             </com.android.camera.ui.RotateLayout>
-            <ImageView android:id="@+id/arrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:src="@drawable/ic_switch_arrow"/>
             <ImageView android:id="@+id/play"
                     style="@style/ReviewPlayIcon"/>
         </RelativeLayout>

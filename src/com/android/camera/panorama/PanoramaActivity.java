@@ -174,6 +174,7 @@ public class PanoramaActivity extends ActivityBase implements
     // The value could be 0, 1, 2, 3 for the 4 different orientations measured in clockwise
     // respectively.
     private int mDeviceOrientation;
+    private int mOrientationCompensation;
 
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
@@ -196,6 +197,10 @@ public class PanoramaActivity extends ActivityBase implements
         public final boolean isValid;
     }
 
+    public static int roundOrientation(int orientation) {
+        return ((orientation + 45) / 90 * 90) % 360;
+    }
+
     private class PanoOrientationEventListener extends OrientationEventListener {
         public PanoOrientationEventListener(Context context) {
             super(context);
@@ -203,10 +208,24 @@ public class PanoramaActivity extends ActivityBase implements
 
         @Override
         public void onOrientationChanged(int orientation) {
-            // Default to the last known orientation.
+            // We keep the last known orientation. So if the user first orient
+            // the camera then point the camera to floor or sky, we still have
+            // the correct orientation.
             if (orientation == ORIENTATION_UNKNOWN) return;
-            mDeviceOrientation = ((orientation + 45) / 90) % 4;
+            mDeviceOrientation = roundOrientation(orientation);
+            // When the screen is unlocked, display rotation may change. Always
+            // calculate the up-to-date orientationCompensation.
+            int orientationCompensation = mDeviceOrientation
+                    + Util.getDisplayRotation(PanoramaActivity.this);
+            if (mOrientationCompensation != orientationCompensation) {
+                mOrientationCompensation = orientationCompensation;
+                setOrientationIndicator(mOrientationCompensation);
+            }
         }
+    }
+
+    private void setOrientationIndicator(int degree) {
+        if (mSharePopup != null) mSharePopup.setOrientation(degree);
     }
 
     @Override
@@ -814,7 +833,8 @@ public class PanoramaActivity extends ActivityBase implements
         Uri uri = mThumbnail.getUri();
         if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
             // The orientation compensation is set to 0 here because we only support landscape.
-            mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(), 0,
+            mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
+                    mOrientationCompensation,
                     findViewById(R.id.frame_layout));
         }
         mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
@@ -881,6 +901,11 @@ public class PanoramaActivity extends ActivityBase implements
             reset();
         }
         if (mSharePopup != null) mSharePopup.dismiss();
+
+        if (mThumbnail != null && !mThumbnail.fromFile()) {
+            mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
+        }
+
         releaseCamera();
         mMosaicView.onPause();
         clearMosaicFrameProcessorIfNeeded();
