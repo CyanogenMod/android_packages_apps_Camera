@@ -29,7 +29,6 @@
                 android:layout_height="match_parent" />
         <com.android.camera.ui.RotateLayout android:id="@+id/recording_time_rect"
                 style="@style/ViewfinderLableLayout">
-
             <include layout="@layout/viewfinder_labels_video" android:id="@+id/labels_w1024" />
         </com.android.camera.ui.RotateLayout>
         <ImageView android:id="@+id/review_image"
@@ -37,9 +36,14 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"
                 android:background="@android:color/black"/>
-        <ImageButton android:id="@+id/btn_play"
-                style="@style/ReviewPlayIcon"
-                android:onClick="onPlayButtonClicked" />
+        <com.android.camera.ui.RotateImageView
+                android:id="@+id/btn_play"
+                style="@style/ReviewControlIcon"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_gallery_play"
+                android:background="@drawable/bg_pressed"
+                android:visibility="gone"
+                android:onClick="onReviewPlayClicked" />
         <TextView android:id="@+id/bg_replace_message"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"

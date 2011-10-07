@@ -19,6 +19,7 @@ package com.android.camera;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.IndicatorControlContainer;
+import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.SharePopup;
@@ -155,6 +156,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private ModePicker mModePicker;
     private FaceView mFaceView;
     private RotateLayout mFocusIndicator;
+    private Rotatable mReviewCancelButton;
+    private Rotatable mReviewDoneButton;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -936,6 +939,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mIsImageCaptureIntent = isImageCaptureIntent();
         setContentView(R.layout.camera);
         if (mIsImageCaptureIntent) {
+            mReviewDoneButton = (Rotatable) findViewById(R.id.btn_done);
+            mReviewCancelButton = (Rotatable) findViewById(R.id.btn_cancel);
             findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
         } else {
             mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
@@ -1136,6 +1141,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mZoomControl != null) mZoomControl.setDegree(degree);
         if (mFocusIndicator != null) mFocusIndicator.setOrientation(degree);
         if (mFaceView != null) mFaceView.setOrientation(degree);
+        if (mReviewCancelButton != null) mReviewCancelButton.setOrientation(degree);
+        if (mReviewDoneButton != null) mReviewDoneButton.setOrientation(degree);
     }
 
     @Override
@@ -1163,18 +1170,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     @OnClickAttr
-    public void onRetakeButtonClicked(View v) {
+    public void onReviewRetakeClicked(View v) {
         hidePostCaptureAlert();
         startPreview();
     }
 
     @OnClickAttr
-    public void onDoneButtonClicked(View v) {
+    public void onReviewDoneClicked(View v) {
         doAttach();
     }
 
     @OnClickAttr
-    public void onCancelButtonClicked(View v) {
+    public void onReviewCancelClicked(View v) {
         doCancel();
     }
 

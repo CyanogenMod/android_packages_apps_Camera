@@ -18,16 +18,22 @@
         android:id="@+id/review_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <LinearLayout style="@style/ReviewControlGroup"
+    <com.android.camera.ui.RotateLayout
             android:id="@+id/btn_done"
-            android:onClick="onDoneButtonClicked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
             android:layout_marginTop="36dp">
-        <ImageView style="@style/ReviewControlIcon"
-                android:src="@drawable/ic_menu_done_holo_light" />
-        <TextView style="@style/ReviewControlText"
-                android:text="@string/review_ok" />
-    </LinearLayout>
+        <LinearLayout style="@style/ReviewControlGroup"
+                android:onClick="onReviewDoneClicked">
+            <ImageView style="@style/ReviewControlIcon"
+                    android:src="@drawable/ic_menu_done_holo_light" />
+            <TextView style="@style/ReviewControlText"
+                    android:text="@string/review_ok" />
+        </LinearLayout>
+    </com.android.camera.ui.RotateLayout>
     <ImageView android:id="@+id/btn_retake"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,16 +42,22 @@
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone"
-            android:onClick="onRetakeButtonClicked"
+            android:onClick="onReviewRetakeClicked"
             android:background="@drawable/btn_shutter_retake" />
-    <LinearLayout style="@style/ReviewControlGroup"
+    <com.android.camera.ui.RotateLayout
             android:id="@+id/btn_cancel"
-            android:onClick="onCancelButtonClicked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
             android:layout_marginBottom="36dp">
-        <ImageView style="@style/ReviewControlIcon"
-                android:src="@drawable/ic_menu_cancel_holo_light" />
-        <TextView style="@style/ReviewControlText"
-                android:text="@string/review_cancel" />
-    </LinearLayout>
+        <LinearLayout style="@style/ReviewControlGroup"
+                android:onClick="onReviewCancelClicked">
+            <ImageView style="@style/ReviewControlIcon"
+                    android:src="@drawable/ic_menu_cancel_holo_light" />
+            <TextView style="@style/ReviewControlText"
+                    android:text="@string/review_cancel" />
+        </LinearLayout>
+    </com.android.camera.ui.RotateLayout>
 </RelativeLayout>
