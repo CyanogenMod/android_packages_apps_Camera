@@ -116,6 +116,8 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"安定した平らな場所にデバイスを置き、後方に動いているものがないか確認します。"\n\n"次に、カメラの視野の外に出ます。"</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"効果がONのときは選択できません。"</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"動画の録画中にプレビュー画面をタップすると静止画を撮影できます。"</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"効果設定をクリア"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"変な顔"</string>
     <string name="effect_background" msgid="6909716214852487679">"背景"</string>

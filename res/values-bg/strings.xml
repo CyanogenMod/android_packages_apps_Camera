@@ -115,7 +115,9 @@
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Изберете свой"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Поставете устройството си върху стабилна повърхност и се уверете, че зад вас нищо не се движи."\n\n"След което се отдръпнете от зрителното поле на камерата."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Това не може да се избира при включен ефект."</string>
-    <string name="video_snapshot_hint" msgid="6479115859014094906">"Напр. снимка по време на видеозапис, докосвайки екрана за визуал."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"Напр. снимайте при видеозапис, докосвайки екрана за визуализация"</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"Изчистване на ефектите"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Смешни лица"</string>
     <string name="effect_background" msgid="6909716214852487679">"Фон"</string>
