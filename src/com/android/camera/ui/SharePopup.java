@@ -68,6 +68,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
     private ListView mShareList;
     // A rotated view that contains the thumbnail.
     private RotateLayout mThumbnailRotateLayout;
+    private RotateLayout mGotoGalleryRotate;
     private View mPreviewFrame;
     private ArrayList<ComponentName> mComponent = new ArrayList<ComponentName>();
 
@@ -119,6 +120,9 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mThumbnail.setImageBitmap(bitmap);
         mShareView = (ViewGroup) sharePopup.findViewById(R.id.share_view);
         mShareView.setOnClickListener(this);
+
+        mGotoGalleryRotate =(RotateLayout) sharePopup.findViewById(R.id.goto_gallery_button_rotate);
+        sharePopup.findViewById(R.id.goto_gallery_button).setOnClickListener(this);
 
         mBitmapWidth = bitmap.getWidth();
         mBitmapHeight = bitmap.getHeight();
@@ -258,6 +262,8 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
             r.setOrientation(orientation);
         }
 
+        mGotoGalleryRotate.setOrientation(orientation);
+
         adjustThumbnailPosition();
     }
 
@@ -271,6 +277,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.goto_gallery_button:
             case R.id.share_view:
                 Util.viewUri(mUri, mContext);
                 break;
