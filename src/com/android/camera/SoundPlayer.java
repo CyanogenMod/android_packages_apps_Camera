@@ -41,7 +41,7 @@ public class SoundPlayer implements Runnable {
             try {
                 if (mPlayer == null) {
                     MediaPlayer player = new MediaPlayer();
-                    player.setAudioStreamType(AudioManager.STREAM_SYSTEM);
+                    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     player.setDataSource(mAfd.getFileDescriptor(), mAfd.getStartOffset(),
                             mAfd.getLength());
                     player.setLooping(false);
