@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import com.android.camera.dcim.DCIMHelper;
 import com.android.camera.gallery.BaseImageList;
 import com.android.camera.gallery.IImage;
 import com.android.camera.gallery.IImageList;
@@ -127,12 +128,24 @@ public class ImageManager {
     public static final int SORT_ASCENDING = 1;
     public static final int SORT_DESCENDING = 2;
 
-    public static final String CAMERA_IMAGE_BUCKET_NAME =
-            Environment.getExternalStorageDirectory().toString()
-            + "/DCIM/Camera";
-    public static final String CAMERA_IMAGE_BUCKET_ID =
-            getBucketId(CAMERA_IMAGE_BUCKET_NAME);
+//    public static final String CAMERA_IMAGE_BUCKET_NAME =
+//            Environment.getExternalStorageDirectory().toString()
+//            + "/DCIM/Camera";
+//    public static final String CAMERA_IMAGE_BUCKET_ID =
+//            getBucketId(CAMERA_IMAGE_BUCKET_NAME);
+    /**
+     * DCIM standard compliant.
+     */
+    public static String CAMERA_IMAGE_BUCKET_NAME() {
+        return DCIMHelper.getCurrentDirectory();
+    }
 
+    /**
+     * DCIM standard compliant. We don't want to use a final variable for this, since CAMERA_IMAGE_BUCKET_NAME() returns a different value when the limit of images is reached.
+     */
+    public static String CAMERA_IMAGE_BUCKET_ID() {
+        return getBucketId(DCIMHelper.getCurrentDirectory());
+    }
     /**
      * Matches code in MediaProvider.computeBucketValues. Should be a common
      * function.
