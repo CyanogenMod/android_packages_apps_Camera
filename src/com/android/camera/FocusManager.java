@@ -159,7 +159,11 @@ public class FocusManager {
             // focus here.
             mState = STATE_FOCUSING_SNAP_ON_FINISH;
         } else if (mState == STATE_IDLE) {
-            // Focus key down event is dropped for some reasons. Just ignore.
+            // We didn't do focus. This can happen if the user press focus key
+            // while the snapshot is still in progress. The user probably wants
+            // the next snapshot as soon as possible, so we just do a snapshot
+            // without focusing again.
+            capture();
         }
     }
 

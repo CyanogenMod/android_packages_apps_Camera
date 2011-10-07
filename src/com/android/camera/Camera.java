@@ -171,6 +171,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // generating thumbnails. This reduces the shot-to-shot time.
     private ImageSaver mImageSaver;
 
+    private Runnable mDoSnapRunnable = new Runnable() {
+        public void run() {
+            doSnap();
+        }
+    };
+
     private final StringBuilder mBuilder = new StringBuilder();
     private final Formatter mFormatter = new Formatter(mBuilder);
     private final Object[] mFormatterArgs = new Object[1];
@@ -199,6 +205,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final int FOCUSING = 2;
     private static final int SNAPSHOT_IN_PROGRESS = 3;
     private int mCameraState = PREVIEW_STOPPED;
+    private boolean mSnapshotOnIdle = false;
 
     private ContentResolver mContentResolver;
     private boolean mDidRegister = false;
@@ -1584,6 +1591,16 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         Log.v(TAG, "doSnap: mCameraState=" + mCameraState);
+
+        // If the user wants to do a snapshot while the previous one is still
+        // in progress, remember the fact and do it after we finish the previous
+        // one and re-start the preview.
+        if (mCameraState == SNAPSHOT_IN_PROGRESS) {
+            mSnapshotOnIdle = true;
+            return;
+        }
+
+        mSnapshotOnIdle = false;
         mFocusManager.doSnap();
     }
 
@@ -1719,6 +1736,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mZoomState = ZOOM_STOPPED;
         mCameraState = IDLE;
         mFocusManager.onPreviewStarted();
+
+        if (mSnapshotOnIdle) {
+            mHandler.post(mDoSnapRunnable);
+        }
     }
 
     private void stopPreview() {
