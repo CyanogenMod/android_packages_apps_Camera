@@ -75,7 +75,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements FocusManager.Listener,
@@ -165,8 +164,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private View mGpsHasSignalIndicator;
     private TextView mExposureIndicator;
 
-    // We put the work of saving images and generating thumbnails to the thread
-    // in ImageSaver.
+    // We use a thread in ImageSaver to do the work of saving images and
+    // generating thumbnails. This reduces the shot-to-shot time.
     private ImageSaver mImageSaver;
 
     private final StringBuilder mBuilder = new StringBuilder();
@@ -759,7 +758,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private static class ImageInfo {
+    // Each SaveRequest remembers the data needed to save an image.
+    private static class SaveRequest {
         byte[] data;
         Location loc;
         int width, height;
@@ -767,44 +767,74 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         int previewWidth;
     }
 
+    // We use a queue to store the SaveRequests that have not been completed
+    // yet. The main thread puts the request into the queue. The saver thread
+    // gets it from the queue, does the work, and removes it from the queue.
+    //
+    // There are several cases the main thread needs to wait for the saver
+    // thread to finish all the work in the queue:
+    // (1) When the activity's onPause() is called, we need to finish all the
+    // work, so other programs (like Gallery) can see all the images.
+    // (2) When we need to show the SharePop, we need to finish all the work
+    // too, because we want to show the thumbnail of the last image taken.
+    //
+    // If the queue becomes too long, adding a new request will block the main
+    // thread until the queue length drops below the threshold (QUEUE_LIMIT).
+    // If we don't do this, we may face several problems: (1) We may OOM
+    // because we are holding all the jpeg data in memory. (2) We may ANR
+    // when we need to wait for saver thread finishing all the work (in
+    // onPause() or showSharePopup()) because the time to finishing a long queue
+    // of work may be too long.
     private class ImageSaver extends Thread {
-        private ArrayList<ImageInfo> mQueue;
-        private AtomicReference<Thumbnail> mPendingThumbnail;
+        private static final int QUEUE_LIMIT = 3;
+
+        private ArrayList<SaveRequest> mQueue;
+        private Thumbnail mPendingThumbnail;
+        private Object mUpdateThumbnailLock = new Object();
         private boolean mStop;
 
         // Runs in main thread
         public ImageSaver() {
-            mQueue = new ArrayList<ImageInfo>();
-            mPendingThumbnail = new AtomicReference<Thumbnail>();
+            mQueue = new ArrayList<SaveRequest>();
             start();
         }
 
         // Runs in main thread
         public void addImage(final byte[] data, Location loc, int width,
                 int height) {
-            ImageInfo i = new ImageInfo();
-            i.data = data;
-            i.loc = (loc == null) ? null : new Location(loc);  // make a copy
-            i.width = width;
-            i.height = height;
-            i.dateTaken = System.currentTimeMillis();
-            i.previewWidth = mPreviewFrameLayout.getWidth();
+            SaveRequest r = new SaveRequest();
+            r.data = data;
+            r.loc = (loc == null) ? null : new Location(loc);  // make a copy
+            r.width = width;
+            r.height = height;
+            r.dateTaken = System.currentTimeMillis();
+            r.previewWidth = mPreviewFrameLayout.getWidth();
             synchronized (this) {
-                mQueue.add(i);
-                notifyAll();
+                while (mQueue.size() >= QUEUE_LIMIT) {
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                        // ignore.
+                    }
+                }
+                mQueue.add(r);
+                notifyAll();  // Tell saver thread there is new work to do.
             }
         }
 
-        // Runs in keeper thread
+        // Runs in saver thread
         @Override
         public void run() {
             while (true) {
-                ImageInfo i;
+                SaveRequest r;
                 synchronized (this) {
                     if (mQueue.isEmpty()) {
-                        notifyAll();  // for waitDone
-                        // Note that we can stop only after the queue is empty.
+                        notifyAll();  // notify main thread in waitDone
+
+                        // Note that we can only stop after we saved all images
+                        // in the queue.
                         if (mStop) break;
+
                         try {
                             wait();
                         } catch (InterruptedException ex) {
@@ -812,12 +842,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                         }
                         continue;
                     }
-                    i = mQueue.get(0);
+                    r = mQueue.get(0);
                 }
-                keepImage(i.data, i.loc, i.width, i.height, i.dateTaken,
-                        i.previewWidth);
+                storeImage(r.data, r.loc, r.width, r.height, r.dateTaken,
+                        r.previewWidth);
                 synchronized(this) {
                     mQueue.remove(0);
+                    notifyAll();  // the main thread may wait in addImage
                 }
             }
         }
@@ -850,10 +881,16 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             }
         }
 
-        // Runs in main thread
+        // Runs in main thread (because we need to update mThumbnailView in the
+        // main thread)
         public void updateThumbnail() {
-            mHandler.removeMessages(UPDATE_THUMBNAIL);
-            Thumbnail t = mPendingThumbnail.getAndSet(null);
+            Thumbnail t;
+            synchronized (mUpdateThumbnailLock) {
+                mHandler.removeMessages(UPDATE_THUMBNAIL);
+                t = mPendingThumbnail;
+                mPendingThumbnail = null;
+            }
+
             if (t != null) {
                 mThumbnail = t;
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
@@ -862,26 +899,35 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mSharePopup = null;
         }
 
-        // Runs in keeper thread
-        private void keepImage(final byte[] data, Location loc, int width,
+        // Runs in saver thread
+        private void storeImage(final byte[] data, Location loc, int width,
                 int height, long dateTaken, int previewWidth) {
             String title = Util.createJpegName(dateTaken);
             int orientation = Exif.getOrientation(data);
             Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
                     loc, orientation, data, width, height);
-            boolean needThumbnail;
             if (uri != null) {
+                boolean needThumbnail;
                 synchronized (this) {
-                    needThumbnail = (mQueue.size() == 1);
+                    // If the number of requests in the queue (include the
+                    // current one) is greater than 1, we don't need to generate
+                    // thumbnail for this image. Because we'll soon replace it
+                    // with the thumbnail for some image later in the queue.
+                    needThumbnail = (mQueue.size() <= 1);
                 }
                 if (needThumbnail) {
                     // Create a thumbnail whose width is equal or bigger than
                     // that of the preview.
                     int ratio = (int) Math.ceil((double) width / previewWidth);
                     int inSampleSize = Integer.highestOneBit(ratio);
-                    mPendingThumbnail.set(Thumbnail.createThumbnail(
-                            data, orientation, inSampleSize, uri));
-                    mHandler.sendEmptyMessage(UPDATE_THUMBNAIL);
+                    Thumbnail t = Thumbnail.createThumbnail(
+                                data, orientation, inSampleSize, uri);
+                    synchronized (mUpdateThumbnailLock) {
+                        // We need to update the thumbnail in the main thread,
+                        // so send a message to run updateThumbnail().
+                        mPendingThumbnail = t;
+                        mHandler.sendEmptyMessage(UPDATE_THUMBNAIL);
+                    }
                 }
                 Util.broadcastNewPicture(Camera.this, uri);
             }
@@ -1961,6 +2007,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private boolean switchToOtherMode(int mode) {
         if (isFinishing()) return false;
+        mImageSaver.waitDone();
         MenuHelper.gotoMode(mode, Camera.this);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
