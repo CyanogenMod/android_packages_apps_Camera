@@ -29,7 +29,7 @@ import android.widget.RelativeLayout;
  * A view that contains camera zoom control which could adjust the zoom in/out
  * if the camera supports zooming.
  */
-public abstract class ZoomControl extends RelativeLayout {
+public abstract class ZoomControl extends RelativeLayout implements Rotatable {
     // The states of zoom button.
     public static final int ZOOM_IN = 0;
     public static final int ZOOM_OUT = 1;
@@ -42,7 +42,7 @@ public abstract class ZoomControl extends RelativeLayout {
     protected ImageView mZoomOut;
     protected ImageView mZoomSlider;
     protected int mSliderPosition = 0;
-    protected int mDegree;
+    protected int mOrientation;
     private Handler mHandler;
 
     public interface OnZoomChangedListener {
@@ -208,13 +208,13 @@ public abstract class ZoomControl extends RelativeLayout {
         return true;
     }
 
-    public void setDegree(int degree) {
-        mDegree = degree;
+    public void setOrientation(int orientation) {
+        mOrientation = orientation;
         int count = getChildCount();
         for (int i = 0 ; i < count ; ++i) {
             View view = getChildAt(i);
             if (view instanceof RotateImageView) {
-                ((RotateImageView) view).setDegree(degree);
+                ((RotateImageView) view).setOrientation(orientation);
             }
         }
     }

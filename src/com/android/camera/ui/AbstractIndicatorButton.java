@@ -106,10 +106,10 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
     }
 
     @Override
-    public void setDegree(int degree) {
-        super.setDegree(degree);
+    public void setOrientation(int orientation) {
+        super.setOrientation(orientation);
         if (mPopup != null) {
-            mPopup.setOrientation(degree);
+            mPopup.setOrientation(orientation);
         }
     }
 

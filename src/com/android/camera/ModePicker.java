@@ -17,6 +17,7 @@
 package com.android.camera;
 
 import com.android.camera.ui.PopupManager;
+import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 
 import android.content.Context;
@@ -36,7 +37,7 @@ import android.widget.RelativeLayout;
  * a current mode indicator.
  */
 public class ModePicker extends RelativeLayout implements View.OnClickListener,
-    PopupManager.OnOtherPopupShowedListener {
+    PopupManager.OnOtherPopupShowedListener, Rotatable {
     public static final int MODE_CAMERA = 0;
     public static final int MODE_VIDEO = 1;
     public static final int MODE_PANORAMA = 2;
@@ -188,11 +189,11 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         return true;
     }
 
-    public void setDegree(int degree) {
+    public void setOrientation(int orientation) {
         for (int i = 0; i < MODE_NUM; ++i) {
-            mModeSelectionIcon[i].setDegree(degree);
+            mModeSelectionIcon[i].setOrientation(orientation);
             if (mCurrentModeFrame != null) {
-                mCurrentModeIcon[i].setDegree(degree);
+                mCurrentModeIcon[i].setOrientation(orientation);
             }
         }
     }

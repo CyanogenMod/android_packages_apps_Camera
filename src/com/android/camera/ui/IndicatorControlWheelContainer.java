@@ -191,9 +191,9 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     }
 
     @Override
-    public void setDegree(int degree) {
-        mIndicatorControlWheel.setDegree(degree);
-        mZoomControlWheel.setDegree(degree);
+    public void setOrientation(int orientation) {
+        mIndicatorControlWheel.setOrientation(orientation);
+        mZoomControlWheel.setOrientation(orientation);
     }
 
     public void startTimeLapseAnimation(int timeLapseInterval, long startTime) {
