@@ -40,6 +40,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
@@ -107,8 +108,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mUri = uri;
         mMimeType = mContext.getContentResolver().getType(mUri);
         mPreviewFrame = previewFrame;
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = activity.getLayoutInflater();
         ViewGroup sharePopup = (ViewGroup) inflater.inflate(R.layout.share_popup, null, false);
         // This is required because popup window is full screen.
         sharePopup.setOnTouchListener(this);
@@ -119,16 +119,56 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mThumbnail.setImageBitmap(bitmap);
         mShareView = (ViewGroup) sharePopup.findViewById(R.id.share_view);
         mShareView.setOnClickListener(this);
+
+        mBitmapWidth = bitmap.getWidth();
+        mBitmapHeight = bitmap.getHeight();
+
         // Show play button if this is a video thumbnail.
         if (mMimeType.startsWith("video/")) {
             sharePopup.findViewById(R.id.play).setVisibility(View.VISIBLE);
+
+            // for some reason we want to show video thumbnail in a 4/3 ratio
+            // crop the image here, for dispaly, as necessary
+            final float targetRatio = 4F/3F;
+            final float existingRatio = (float)mBitmapWidth / (float)mBitmapHeight;
+
+            if (existingRatio > targetRatio) {
+                int newWidth = (int) ((float)mBitmapHeight * targetRatio);
+
+                // check if we end up with the same width due to rounding
+                if (newWidth != mBitmapWidth) {
+                    bitmap = Bitmap.createBitmap(
+                            bitmap,
+                            (mBitmapWidth - newWidth) / 2,
+                            0,        // yCoord
+                            newWidth,
+                            mBitmapHeight,
+                            null,
+                            false);
+                }
+            } else if (existingRatio < targetRatio) {
+                int newHeight = (int) ((float)mBitmapWidth * targetRatio);
+
+                // check if we end up with the same width due to rounding
+                if (newHeight != mBitmapHeight) {
+                    bitmap = Bitmap.createBitmap(
+                            bitmap,
+                            0,        // xCoord
+                            (mBitmapHeight - newHeight) / 2,
+                            mBitmapWidth,
+                            newHeight,
+                            null,
+                            false);
+                }
+            }
         }
         mBitmapWidth = bitmap.getWidth();
         mBitmapHeight = bitmap.getHeight();
+
         Resources res = mContext.getResources();
 
         // Initialize popup window size.
-        mRootView = (View) sharePopup.findViewById(R.id.root);
+        mRootView = sharePopup.findViewById(R.id.root);
         LayoutParams params = mRootView.getLayoutParams();
         params.width = previewFrame.getWidth();
         params.height = previewFrame.getHeight();
@@ -143,6 +183,40 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         setFocusable(true);
         setAnimationStyle(R.style.AnimationPopup);
         createShareMenu();
+
+        adjustThumbnailPosition();
+    }
+
+    private void adjustThumbnailPosition() {
+        RelativeLayout.LayoutParams lpOld =
+                (RelativeLayout.LayoutParams) mThumbnailRotateLayout.getLayoutParams();
+        RelativeLayout.LayoutParams lpNew =
+                new RelativeLayout.LayoutParams(lpOld.width, lpOld.height);
+
+        mRootView.setBackgroundDrawable(null);
+        if (mBitmapWidth > mBitmapHeight*2) {
+            // panorama image
+            lpNew.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lpNew.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            lpNew.addRule(RelativeLayout.CENTER_VERTICAL);
+
+            // panorama images block the preview from showing in the background
+            // use a special color here for that.
+            mRootView.setBackgroundColor(
+                    mContext.getResources().getColor(R.color.share_popup_blackout));
+        } else if (mBitmapWidth > mBitmapHeight) {
+            // landscape image
+            lpNew.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            lpNew.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            lpNew.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        } else {
+            // portrait image
+            lpNew.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            lpNew.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            lpNew.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
+
+        mThumbnailRotateLayout.setLayoutParams(lpNew);
     }
 
     public void setOrientation(int orientation) {
@@ -175,19 +249,6 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         }
         mThumbnail.setLayoutParams(params);
 
-        // Calculate the width and the height of the share view.
-        int width = params.width + hPadding;
-        int height = params.height + vPadding;
-        LayoutParams shareViewParams = mShareView.getLayoutParams();
-        if (orientation == 90 || orientation == 270) {
-            shareViewParams.width = height;
-            shareViewParams.height = width;
-        } else {
-            shareViewParams.width = width;
-            shareViewParams.height = height;
-        }
-        mShareView.setLayoutParams(shareViewParams);
-
         if (mThumbnailRotateLayout != null) mThumbnailRotateLayout.setOrientation(orientation);
 
         int count = mShareList.getChildCount();
@@ -196,6 +257,8 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
             RotateLayout r = (RotateLayout) f.findViewById(R.id.share_icon_rotate_layout);
             r.setOrientation(orientation);
         }
+
+        adjustThumbnailPosition();
     }
 
     @Override
@@ -225,21 +288,19 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
 
     public void createShareMenu() {
         PackageManager packageManager = mContext.getPackageManager();
-        List<ResolveInfo> infos;
-        infos = packageManager.queryIntentActivities(
+        List<ResolveInfo> infos = packageManager.queryIntentActivities(
                 new Intent(Intent.ACTION_SEND).setType(mMimeType), 0);
 
-        ArrayList<HashMap<String, Object>> listItem =
-                new ArrayList<HashMap<String, Object>>();
-        for(ResolveInfo info: infos) {
+        ArrayList<HashMap<String, Object>> items = new ArrayList<HashMap<String, Object>>();
+        for (ResolveInfo info: infos) {
             ComponentName component = new ComponentName(
                     info.activityInfo.packageName, info.activityInfo.name);
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put(ADAPTER_COLUMN_ICON, info.loadIcon(packageManager));
-            listItem.add(map);
+            items.add(map);
             mComponent.add(component);
         }
-        SimpleAdapter listItemAdapter = new MySimpleAdapter(mContext, listItem,
+        SimpleAdapter listItemAdapter = new MySimpleAdapter(mContext, items,
                 R.layout.share_icon,
                 new String[] {ADAPTER_COLUMN_ICON},
                 new int[] {R.id.icon});
