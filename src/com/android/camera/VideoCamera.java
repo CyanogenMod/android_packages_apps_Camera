@@ -19,6 +19,7 @@ package com.android.camera;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.IndicatorControlWheelContainer;
+import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.SharePopup;
@@ -158,6 +159,9 @@ public class VideoCamera extends ActivityBase
     private Thumbnail mThumbnail;
     // An imageview showing showing the last captured picture thumbnail.
     private RotateImageView mThumbnailView;
+    private Rotatable mReviewCancelButton;
+    private Rotatable mReviewDoneButton;
+    private Rotatable mReviewPlayButton;
     private ModePicker mModePicker;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
@@ -376,6 +380,9 @@ public class VideoCamera extends ActivityBase
         mIsVideoCaptureIntent = isVideoCaptureIntent();
         setContentView(R.layout.video_camera);
         if (mIsVideoCaptureIntent) {
+            mReviewDoneButton = (Rotatable) findViewById(R.id.btn_done);
+            mReviewPlayButton = (Rotatable) findViewById(R.id.btn_play);
+            mReviewCancelButton = (Rotatable) findViewById(R.id.btn_cancel);
             findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
         } else {
             initThumbnailButton();
@@ -534,6 +541,9 @@ public class VideoCamera extends ActivityBase
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
         if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
+        if (mReviewDoneButton != null) mReviewDoneButton.setOrientation(degree);
+        if (mReviewPlayButton != null) mReviewPlayButton.setOrientation(degree);
+        if (mReviewCancelButton!= null) mReviewCancelButton.setOrientation(degree);
         // We change the orientation of the linearlayout only for phone UI because when in portrait
         // the width is not enough.
         if (mLabelsLinearLayout != null) {
@@ -563,23 +573,23 @@ public class VideoCamera extends ActivityBase
     }
 
     @OnClickAttr
-    public void onRetakeButtonClicked(View v) {
+    public void onReviewRetakeClicked(View v) {
         deleteCurrentVideo();
         hideAlert();
     }
 
     @OnClickAttr
-    public void onPlayButtonClicked(View v) {
+    public void onReviewPlayClicked(View v) {
         startPlayVideoActivity();
     }
 
     @OnClickAttr
-    public void onDoneButtonClicked(View v) {
+    public void onReviewDoneClicked(View v) {
         doReturnToCaller(true);
     }
 
     @OnClickAttr
-    public void onCancelButtonClicked(View v) {
+    public void onReviewCancelClicked(View v) {
         stopVideoRecording();
         doReturnToCaller(false);
     }

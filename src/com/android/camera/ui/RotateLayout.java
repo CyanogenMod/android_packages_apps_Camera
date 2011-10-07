@@ -16,6 +16,8 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.ui.Rotatable;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -23,7 +25,7 @@ import android.view.ViewGroup;
 
 // A RotateLayout is designed to display a single item and provides the
 // capabilities to rotate the item.
-public class RotateLayout extends ViewGroup {
+public class RotateLayout extends ViewGroup implements Rotatable {
     private static final String TAG = "RotateLayout";
     private int mOrientation;
     private View mChild;
