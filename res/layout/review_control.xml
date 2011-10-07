@@ -18,12 +18,12 @@
         android:id="@+id/review_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <ImageView android:id="@+id/btn_done"
+    <com.android.camera.ui.RotateImageView android:id="@+id/btn_done"
             style="@style/ReviewControlIcon"
             android:visibility="gone"
             android:layout_alignParentTop="true"
             android:layout_marginTop="20dp"
-            android:onClick="onDoneButtonClicked"
+            android:onClick="onReviewDoneClicked"
             android:src="@drawable/ic_menu_done_holo_light" />
     <ImageView android:id="@+id/btn_retake"
             android:layout_width="wrap_content"
@@ -32,13 +32,13 @@
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone"
-            android:onClick="onRetakeButtonClicked"
+            android:onClick="onReviewRetakeClicked"
             android:background="@drawable/btn_shutter_retake" />
-    <ImageView android:id="@+id/btn_cancel"
+    <com.android.camera.ui.RotateImageView android:id="@+id/btn_cancel"
             style="@style/ReviewControlIcon"
             android:visibility="gone"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="20dp"
-            android:onClick="onCancelButtonClicked"
+            android:onClick="onReviewCancelClicked"
             android:src="@drawable/ic_menu_cancel_holo_light" />
 </RelativeLayout>
