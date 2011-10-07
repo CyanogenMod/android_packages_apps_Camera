@@ -40,7 +40,7 @@
     <dimen name="setting_knob_width">50dp</dimen>
     <dimen name="setting_item_text_width">130dp</dimen>
     <dimen name="setting_popup_window_width">410dp</dimen>
-    <dimen name="setting_item_list_margin">16dp</dimen>
+    <dimen name="setting_item_list_margin">24dp</dimen>
     <dimen name="indicator_bar_width">13dp</dimen>
     <dimen name="popup_title_text_size">22dp</dimen>
     <dimen name="popup_title_frame_min_height">60dp</dimen>

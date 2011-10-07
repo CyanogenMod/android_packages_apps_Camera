@@ -94,8 +94,6 @@
     </style>
     <style name="SettingItemList">
         <item name="android:orientation">vertical</item>
-        <item name="android:layout_marginLeft">@dimen/setting_item_list_margin</item>
-        <item name="android:layout_marginRight">@dimen/setting_item_list_margin</item>
         <item name="android:paddingBottom">3dp</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_width">match_parent</item>
@@ -124,8 +122,8 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/setting_row_height</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingLeft">@dimen/setting_item_list_margin</item>
+        <item name="android:paddingRight">@dimen/setting_item_list_margin</item>
         <item name="android:background">@drawable/setting_picker</item>
     </style>
     <style name="SettingKnob">
