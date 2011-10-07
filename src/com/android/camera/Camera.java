@@ -272,14 +272,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 }
 
                 case CHECK_DISPLAY_ROTATION: {
-                    // Restart the preview if display rotation has changed.
+                    // Set the display orientation if display rotation has changed.
                     // Sometimes this happens when the device is held upside
                     // down and camera app is opened. Rotation animation will
                     // take some time and the rotation value we have got may be
                     // wrong. Framework does not have a callback for this now.
-                    if (Util.getDisplayRotation(Camera.this) != mDisplayRotation
-                            && isCameraIdle()) {
-                        startPreview();
+                    if (Util.getDisplayRotation(Camera.this) != mDisplayRotation) {
+                        setDisplayOrientation();
                     }
                     if (SystemClock.uptimeMillis() - mOnResumeTime < 5000) {
                         mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
@@ -1618,19 +1617,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // changed. Sometimes this happens when the device is held in portrait
         // and camera app is opened. Rotation animation takes some time and
         // display rotation in onCreate may not be what we want.
-        if (mCameraState != PREVIEW_STOPPED
-                && (Util.getDisplayRotation(this) == mDisplayRotation)
-                && holder.isCreating()) {
-            // Set preview display if the surface is being created and preview
-            // was already started. That means preview display was set to null
-            // and we need to set it now.
-            setPreviewDisplay(holder);
-        } else {
-            // 1. Restart the preview if the size of surface was changed. The
-            // framework may not support changing preview display on the fly.
-            // 2. Start the preview now if surface was destroyed and preview
-            // stopped.
+        if (mCameraState == PREVIEW_STOPPED) {
             startPreview();
+        } else {
+            if (Util.getDisplayRotation(this) != mDisplayRotation) {
+                setDisplayOrientation();
+            }
+            if (holder.isCreating()) {
+                // Set preview display if the surface is being created and preview
+                // was already started. That means preview display was set to null
+                // and we need to set it now.
+                setPreviewDisplay(holder);
+            }
         }
 
         // If first time initialization is not finished, send a message to do
@@ -1673,6 +1671,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    private void setDisplayOrientation() {
+        mDisplayRotation = Util.getDisplayRotation(this);
+        mDisplayOrientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
+        mCameraDevice.setDisplayOrientation(mDisplayOrientation);
+        if (mFaceView != null) {
+            mFaceView.setDisplayOrientation(mDisplayOrientation);
+        }
+    }
+
     private void startPreview() {
         if (mPausing || isFinishing()) return;
 
@@ -1685,12 +1692,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mCameraState != PREVIEW_STOPPED) stopPreview();
 
         setPreviewDisplay(mSurfaceHolder);
-        mDisplayRotation = Util.getDisplayRotation(this);
-        mDisplayOrientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
-        mCameraDevice.setDisplayOrientation(mDisplayOrientation);
-        if (mFaceView != null) {
-            mFaceView.setDisplayOrientation(mDisplayOrientation);
-        }
+        setDisplayOrientation();
         setCameraParameters(UPDATE_PARAM_ALL);
         // If the focus mode is continuous autofocus, call cancelAutoFocus to
         // resume it because it may have been paused by autoFocus call.
