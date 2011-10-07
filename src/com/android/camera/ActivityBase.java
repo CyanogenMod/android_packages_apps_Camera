@@ -21,6 +21,8 @@ import com.android.camera.ui.PopupManager;
 import android.app.Activity;
 import android.view.KeyEvent;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.os.Bundle;
 
 /**
  * Superclass of Camera and VideoCamera activities.
@@ -28,6 +30,12 @@ import android.content.Intent;
 public class ActivityBase extends Activity {
     private int mResultCodeForTesting;
     private Intent mResultDataForTesting;
+
+    @Override
+    public void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
 
     @Override
     public boolean onSearchRequested() {
