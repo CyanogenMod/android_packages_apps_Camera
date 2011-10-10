@@ -51,7 +51,7 @@
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Интервал замедленной съемки"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Настройки камеры"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Настройки видеокамеры"</string>
-    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Размер фотографии"</string>
+    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Размер фото"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 мегапикселей"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 мегапикселя"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 мегапикселя"</string>
@@ -116,6 +116,8 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Поставьте устройство на твердую поверхность и убедитесь, что позади вас нет движущихся предметов или людей."\n\n"Затем отойдите от камеры."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Недоступно при использовании этого эффекта."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Чтобы сделать снимок при видеосъемке, нажмите на экран просмотра."</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"Убрать эффекты"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Смешные рожицы"</string>
     <string name="effect_background" msgid="6909716214852487679">"Фон"</string>

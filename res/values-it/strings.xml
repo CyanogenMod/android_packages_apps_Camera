@@ -18,7 +18,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Errore fotocamera"</string>
     <string name="cannot_connect_camera" msgid="8029009101380114174">"Impossibile collegarsi alla fotocamera."</string>
-    <string name="camera_disabled" msgid="8923911090533439312">"La fotocamera è stata disattivata a causa di criteri di protezione."</string>
+    <string name="camera_disabled" msgid="8923911090533439312">"La fotocamera è stata disattivata in base a norme di sicurezza."</string>
     <string name="camera_label" msgid="6346560772074764302">"Fotocamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videocamera"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Foto"</string>
@@ -116,6 +116,8 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Posiziona il dispositivo su una superficie stabile e assicurati che non ci sia qualcosa in movimento dietro di te."\n\n"Dopodiché esci dall\'inquadratura della fotocamera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Non selezionabile quando l\'effetto è attivo."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Scatta una foto durante il video toccando lo schermo di anteprima."</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"Cancella effetti"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Faccine"</string>
     <string name="effect_background" msgid="6909716214852487679">"Sfondo"</string>

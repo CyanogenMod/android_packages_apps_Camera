@@ -116,6 +116,8 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"הנח את המכשיר על גבי משטח יציב והקפד לוודא שאין תנועה מאחוריך."\n\n"לאחר מכן, צא מטווח הראייה של המצלמה."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"לא ניתן לבחור באפשרות זו כאשר האפקט מופעל."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"צלם תמונה במהלך הקלטת וידאו על ידי הקשה על מסך התצוגה המקדימה."</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"נקה אפקטים"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"פרצופים מצחיקים"</string>
     <string name="effect_background" msgid="6909716214852487679">"רקע"</string>

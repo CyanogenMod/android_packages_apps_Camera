@@ -116,6 +116,8 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Coloque o dispositivo sobre uma superfície estável sem movimento atrás de você."\n\n"Em seguida, saia do campo de visão da câmera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Não é possível selecionar com o efeito ativado."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Tire uma foto ao gravar um vídeo tocando na tela de visualização."</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"Clarear efeitos"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Caretas"</string>
     <string name="effect_background" msgid="6909716214852487679">"Plano de fundo"</string>

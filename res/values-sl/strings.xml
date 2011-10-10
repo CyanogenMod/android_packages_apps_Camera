@@ -116,6 +116,8 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Postavite napravo na stabilno površino in se prepričajte, da za vami ni gibanja."\n\n"Nato se umaknite iz prizora."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Tega ni mogoče izbrati, ko je vklopljen učinek."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Če želite med snemanjem videa fotografirati, tapnite zaslon za predogled."</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"Počisti učinke"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Norčavi obrazi"</string>
     <string name="effect_background" msgid="6909716214852487679">"Ozadje"</string>

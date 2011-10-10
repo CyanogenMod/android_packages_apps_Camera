@@ -116,6 +116,8 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Đặt thiết bị của bạn lên bề mặt chắc chắn và đảm bảo không có chuyển động nào phía sau bạn."\n\n"Sau đó, thoát khỏi chế độ xem của máy ảnh."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Không thể chọn cài đặt này khi hiệu ứng này bật."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Chụp ảnh khi đang quay video bằng cách bấm vào màn hình xem trước."</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"Xóa hiệu ứng"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Khuôn mặt ngớ ngẩn"</string>
     <string name="effect_background" msgid="6909716214852487679">"Nền"</string>
