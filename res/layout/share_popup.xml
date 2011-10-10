@@ -46,17 +46,38 @@
             <ImageView android:id="@+id/play"
                     style="@style/ReviewPlayIcon"/>
         </RelativeLayout>
-        <FrameLayout
+        <LinearLayout
                 android:layout_width="@dimen/share_item_width"
                 android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:layout_gravity="right"
                 android:background="@color/share_icon_background">
+            <com.android.camera.ui.RotateLayout
+                    android:layout_marginTop="8dip"
+                    android:id="@+id/goto_gallery_button_rotate"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+                <ImageButton
+                        android:id="@+id/goto_gallery_button"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_gallery" />
+            </com.android.camera.ui.RotateLayout>
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_margin="8dip"
+                    android:layout_height="1dp"
+                    android:background="#5affffff" />
+
             <ListView android:id="@+id/share_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:choiceMode="singleChoice"
                     style="@android:style/Widget.Holo.ListView" />
-        </FrameLayout>
+        </LinearLayout>
     </FrameLayout>
 </FrameLayout>
