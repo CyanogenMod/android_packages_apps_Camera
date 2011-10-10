@@ -478,4 +478,16 @@
          <item>@string/pref_camera_autoexposure_value_matrixmetering</item>
      </string-array>
 
+     <!-- Do not localize entries -->
+     <string-array name="pref_camera_stabilization_entries">
+         <item>@string/pref_camera_stabilization_title_enabled</item>
+         <item>@string/pref_camera_stabilization_title_disabled</item>
+     </string-array>
+
+     <!-- Do not localize entryvalues -->
+     <string-array name="pref_camera_stabilization_entryvalues">
+         <item>@string/pref_camera_stabilization_value_enabled</item>
+         <item>@string/pref_camera_stabilization_value_disabled</item>
+     </string-array>
+
 </resources>

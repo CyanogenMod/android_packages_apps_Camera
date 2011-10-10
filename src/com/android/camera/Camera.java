@@ -2073,6 +2073,15 @@ public class Camera extends BaseCamera implements View.OnClickListener,
              mParameters.setAntibanding(antiBanding);
          }
 
+         // Set stabilization parameter.
+	String stabilization = mPreferences.getString(
+		CameraSettings.KEY_STABILIZATION,
+		getString(R.string.pref_camera_stabilization_default));
+	mParameters.set("mot-image-stabilization", stabilization);
+	mParameters.set("mot-video-stabilization", stabilization);
+	mParameters.set("nv-image-stabilization", stabilization);
+	mParameters.set("nv-video-stabilization", stabilization);
+
          // Set exposure compensation
          String exposure = mPreferences.getString(CameraSettings.KEY_EXPOSURE,
                  CameraSettings.EXPOSURE_DEFAULT_VALUE);

@@ -62,6 +62,7 @@ public class CameraSettings {
     public static final String KEY_SHARPNESS = "pref_camera_sharpness_key";
     public static final String KEY_CONTRAST = "pref_camera_contrast_key";
     public static final String KEY_SATURATION = "pref_camera_saturation_key";
+    public static final String KEY_STABILIZATION = "pref_camera_stabilization_key";
 
     private static final String VIDEO_QUALITY_HD = "hd";
     private static final String VIDEO_QUALITY_WIDE = "wide";
@@ -176,6 +177,7 @@ public class CameraSettings {
         ListPreference lensShade = group.findPreference(KEY_LENSSHADING);
         ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
         ListPreference autoExposure = group.findPreference(KEY_AUTOEXPOSURE);
+        ListPreference stabilization = group.findPreference(KEY_STABILIZATION);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -280,6 +282,16 @@ public class CameraSettings {
          if (autoExposure != null) {
              filterUnsupportedOptions(group,
                      autoExposure, mParameters.getSupportedAutoexposure());
+         }
+         if (stabilization != null) {
+		/* The parameter might be initialized post-check, that's why we
+		 * check for a 3rd parameter these cameras have
+		 */
+             if (mParameters.get("mot-image-stabilization-values") == null &&
+                 mParameters.get("nv-image-stabilization-values") == null &&
+                 mParameters.get("mot-max-burst-size") == null) {
+                     filterUnsupportedOptions(group, stabilization, null);
+             }
          }
     }
 
