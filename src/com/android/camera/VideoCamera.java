@@ -165,7 +165,7 @@ public class VideoCamera extends ActivityBase
     private ModePicker mModePicker;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
-    private TextView mBgLearningMessage;
+    private RotateLayout mBgLearningMessage;
     private LinearLayout mLabelsLinearLayout;
 
     private boolean mIsVideoCaptureIntent;
@@ -418,7 +418,7 @@ public class VideoCamera extends ActivityBase
         // R.id.labels_w1024. That is, mLabelsLinearLayout should be null in tablet layout.
         mLabelsLinearLayout = (LinearLayout) findViewById(R.id.labels);
 
-        mBgLearningMessage = (TextView) findViewById(R.id.bg_replace_message);
+        mBgLearningMessage = (RotateLayout) findViewById(R.id.bg_replace_message);
 
         mLocationManager = new LocationManager(this, null);
 
@@ -540,6 +540,7 @@ public class VideoCamera extends ActivityBase
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
+        if (mBgLearningMessage != null) mBgLearningMessage.setOrientation(degree);
         if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
         if (mReviewDoneButton != null) mReviewDoneButton.setOrientation(degree);
         if (mReviewPlayButton != null) mReviewPlayButton.setOrientation(degree);
@@ -711,10 +712,7 @@ public class VideoCamera extends ActivityBase
                 Log.w(TAG, "No URI from gallery, resetting to no effect");
                 mEffectType = EffectsRecorder.EFFECT_NONE;
                 mEffectParameter = null;
-                ComboPreferences.Editor editor = mPreferences.edit();
-                editor.putString(CameraSettings.KEY_VIDEO_EFFECT,
-                        getString(R.string.pref_video_effect_default));
-                editor.apply();
+                writeDefaultEffectToPrefs();
                 if (mIndicatorControlContainer != null) {
                     mIndicatorControlContainer.overrideSettings(
                         CameraSettings.KEY_VIDEO_QUALITY,
@@ -751,6 +749,13 @@ public class VideoCamera extends ActivityBase
         if (mCaptureTimeLapse) quality += 1000;
         mProfile = CamcorderProfile.get(mCameraId, quality);
         getDesiredPreviewSize();
+    }
+
+    private void writeDefaultEffectToPrefs()  {
+        ComboPreferences.Editor editor = mPreferences.edit();
+        editor.putString(CameraSettings.KEY_VIDEO_EFFECT,
+                getString(R.string.pref_video_effect_default));
+        editor.apply();
     }
 
     private void getDesiredPreviewSize() {
@@ -1915,6 +1920,17 @@ public class VideoCamera extends ActivityBase
                     break;
             }
         }
+    }
+
+    public void onCancelBgTraining(View v) {
+        // Remove training message
+        mBgLearningMessage.setVisibility(View.GONE);
+        // Write default effect out to shared prefs
+        writeDefaultEffectToPrefs();
+        // Tell the indicator controller to redraw based on new shared pref values
+        mIndicatorControlContainer.reloadPreferences();
+        // Tell VideoCamer to re-init based on new shared pref values.
+        onSharedPreferenceChanged();
     }
 
     @Override
