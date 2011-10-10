@@ -326,12 +326,6 @@ public class PanoramaActivity extends ActivityBase implements
                 });
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateThumbnailButton();
-    }
-
     private void setupCamera() {
         openCamera();
         Parameters parameters = mCameraDevice.getParameters();
@@ -751,6 +745,14 @@ public class PanoramaActivity extends ActivityBase implements
         t.start();
     }
 
+    private void initThumbnailButton() {
+        // Load the thumbnail from the disk.
+        if (mThumbnail == null) {
+            mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
+        }
+        updateThumbnailButton();
+    }
+
     private void updateThumbnailButton() {
         // Update last image if URI is invalid and the storage is ready.
         ContentResolver contentResolver = getContentResolver();
@@ -936,6 +938,8 @@ public class PanoramaActivity extends ActivityBase implements
         // has to be decided by camera device.
         initMosaicFrameProcessorIfNeeded();
         mMosaicView.onResume();
+
+        initThumbnailButton();
     }
 
     private void updateCompassValue() {
