@@ -116,6 +116,8 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Поставите уређај на стабилну површину и уверите се да се иза вас ништа не помера."\n\n"Затим изађите из кадра камере."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Ово није могуће изабрати када је ефекат укључен."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Снимите слику током снимања видео снимка додиром на екран за преглед."</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"Обриши ефекте"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Смешна лица"</string>
     <string name="effect_background" msgid="6909716214852487679">"Позадина"</string>

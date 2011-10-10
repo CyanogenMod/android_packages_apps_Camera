@@ -116,6 +116,7 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Place your device on a steady surface and make sure that there\'s no movement behind you."\n\n"Then move out of the camera\'s view."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"This is not selectable when the effect is on."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Take a photo during video recording by tapping the preview screen."</string>
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Video snapshot is disabled when special effects are on."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Clear effects"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Silly faces"</string>
     <string name="effect_background" msgid="6909716214852487679">"Background"</string>

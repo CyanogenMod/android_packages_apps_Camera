@@ -116,6 +116,8 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Ipatong ang iyong device sa isang matatag na bagay at tiyaking walang kumikilos sa iyong likuran."\n\n"Pagkatapos ay umalis sa view ng camera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Hindi ito napipili kapag naka-on ang effect."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Kumuha ng larawan habang nagre-record ng video sa pamamagitan ng pagtapik sa screen ng preview."</string>
+    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
+    <skip />
     <string name="clear_effects" msgid="5485339175014139481">"Mga clear na effect"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Mga katawa-tawang mukha"</string>
     <string name="effect_background" msgid="6909716214852487679">"Background"</string>
