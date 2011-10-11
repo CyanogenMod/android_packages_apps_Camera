@@ -133,8 +133,8 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
     public void reloadPreference() {
         int index = mPreference.findIndexOfValue(mPreference.getValue());
         if (index >= 0) {
-            mBackgroundGrid.clearChoices();
-            mSillyFacesGrid.clearChoices();
+            mBackgroundGrid.setItemChecked(mBackgroundGrid.getCheckedItemPosition(), false);
+            mSillyFacesGrid.setItemChecked(mSillyFacesGrid.getCheckedItemPosition(), false);
             if (index >= 1 && index < EffectsRecorder.NUM_OF_GF_EFFECTS + 1) {
                 mSillyFacesGrid.setItemChecked(index - 1, true);
             } else if (index >= EffectsRecorder.NUM_OF_GF_EFFECTS + 1) {
