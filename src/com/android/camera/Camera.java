@@ -1675,7 +1675,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void closeCamera() {
         if (mCameraDevice != null) {
-            mCameraDevice.cancelAutoFocus(); // Reset the focus.
             CameraHolder.instance().release();
             mCameraDevice.setZoomChangeListener(null);
             mCameraDevice.setFaceDetectionListener(null);
@@ -1745,6 +1744,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void stopPreview() {
         if (mCameraDevice != null && mCameraState != PREVIEW_STOPPED) {
             Log.v(TAG, "stopPreview");
+            mCameraDevice.cancelAutoFocus(); // Reset the focus.
             mCameraDevice.stopPreview();
         }
         mCameraState = PREVIEW_STOPPED;
