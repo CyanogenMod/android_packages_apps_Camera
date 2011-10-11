@@ -165,7 +165,8 @@ public class VideoCamera extends ActivityBase
     private ModePicker mModePicker;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
-    private RotateLayout mBgLearningMessage;
+    private RotateLayout mBgLearningMessageRotater;
+    private View mBgLearningMessageFrame;
     private LinearLayout mLabelsLinearLayout;
 
     private boolean mIsVideoCaptureIntent;
@@ -418,7 +419,8 @@ public class VideoCamera extends ActivityBase
         // R.id.labels_w1024. That is, mLabelsLinearLayout should be null in tablet layout.
         mLabelsLinearLayout = (LinearLayout) findViewById(R.id.labels);
 
-        mBgLearningMessage = (RotateLayout) findViewById(R.id.bg_replace_message);
+        mBgLearningMessageRotater = (RotateLayout) findViewById(R.id.bg_replace_message);
+        mBgLearningMessageFrame = findViewById(R.id.bg_replace_message_frame);
 
         mLocationManager = new LocationManager(this, null);
 
@@ -540,7 +542,7 @@ public class VideoCamera extends ActivityBase
         if (mThumbnailView != null) mThumbnailView.setDegree(degree);
         if (mModePicker != null) mModePicker.setDegree(degree);
         if (mSharePopup != null) mSharePopup.setOrientation(degree);
-        if (mBgLearningMessage != null) mBgLearningMessage.setOrientation(degree);
+        if (mBgLearningMessageRotater != null) mBgLearningMessageRotater.setOrientation(degree);
         if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
         if (mReviewDoneButton != null) mReviewDoneButton.setOrientation(degree);
         if (mReviewPlayButton != null) mReviewPlayButton.setOrientation(degree);
@@ -610,6 +612,10 @@ public class VideoCamera extends ActivityBase
         } else {
             getThumbnail();
         }
+    }
+
+    public void onProtectiveCurtainClick(View v) {
+        // Consume clicks
     }
 
     public void onShutterButtonClick(ShutterButton button) {
@@ -1907,16 +1913,16 @@ public class VideoCamera extends ActivityBase
         if (effectMsg == EffectsRecorder.EFFECT_MSG_EFFECTS_STOPPED) {
             // Effects have shut down. Hide learning message if any,
             // and restart regular preview.
-            mBgLearningMessage.setVisibility(View.GONE);
+            mBgLearningMessageFrame.setVisibility(View.GONE);
             checkQualityAndStartPreview();
         } else if (effectId == EffectsRecorder.EFFECT_BACKDROPPER) {
             switch (effectMsg) {
                 case EffectsRecorder.EFFECT_MSG_STARTED_LEARNING:
-                    mBgLearningMessage.setVisibility(View.VISIBLE);
+                    mBgLearningMessageFrame.setVisibility(View.VISIBLE);
                     break;
                 case EffectsRecorder.EFFECT_MSG_DONE_LEARNING:
                 case EffectsRecorder.EFFECT_MSG_SWITCHING_EFFECT:
-                    mBgLearningMessage.setVisibility(View.GONE);
+                    mBgLearningMessageFrame.setVisibility(View.GONE);
                     break;
             }
         }
@@ -1924,7 +1930,7 @@ public class VideoCamera extends ActivityBase
 
     public void onCancelBgTraining(View v) {
         // Remove training message
-        mBgLearningMessage.setVisibility(View.GONE);
+        mBgLearningMessageFrame.setVisibility(View.GONE);
         // Write default effect out to shared prefs
         writeDefaultEffectToPrefs();
         // Tell the indicator controller to redraw based on new shared pref values
