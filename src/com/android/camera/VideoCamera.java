@@ -76,6 +76,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import android.filterpacks.videosink.MediaRecorderStopException;
+
 /**
  * The Camcorder activity.
  */
@@ -1923,6 +1925,10 @@ public class VideoCamera extends ActivityBase
         // camera and encoder gracefully. For now, we just delete the file and bail out.
         if (fileName != null && new File(fileName).exists()) {
             deleteVideoFile(fileName);
+        }
+        if (exception instanceof MediaRecorderStopException) {
+            Log.w(TAG, "Problem recoding video file. Removing incomplete file.");
+            return;
         }
         throw new RuntimeException("Error during recording!", exception);
     }
