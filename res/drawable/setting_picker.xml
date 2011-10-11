@@ -16,6 +16,6 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_activated="true"
-              android:drawable="@drawable/list_pressed_holo" />
+              android:drawable="@drawable/list_pressed_holo_light" />
     <item android:drawable="@android:color/transparent" />
 </selector>
