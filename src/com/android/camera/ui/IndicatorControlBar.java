@@ -83,9 +83,7 @@ public class IndicatorControlBar extends IndicatorControl implements
     @Override
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
-        // Layout the static components.
         int padding = getPaddingTop();
-        super.onLayout(changed, left, top, right, bottom);
 
         int count = getChildCount();
         if (count == 0) return;
