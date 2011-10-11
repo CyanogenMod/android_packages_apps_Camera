@@ -79,7 +79,7 @@ public class Util {
 
     private static boolean sIsTabletUI;
     private static float sPixelDensity = 1;
-    private static String sImageFileNameFormat;
+    private static ImageFileNamer sImageFileNamer;
 
     private Util() {
     }
@@ -92,8 +92,8 @@ public class Util {
                 context.getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics(metrics);
         sPixelDensity = metrics.density;
-
-        sImageFileNameFormat = context.getString(R.string.image_file_name_format);
+        sImageFileNamer = new ImageFileNamer(
+                context.getString(R.string.image_file_name_format));
     }
 
     public static boolean isTabletUI() {
@@ -517,9 +517,9 @@ public class Util {
     }
 
     public static String createJpegName(long dateTaken) {
-        Date date = new Date(dateTaken);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(sImageFileNameFormat);
-        return dateFormat.format(date);
+        synchronized (sImageFileNamer) {
+            return sImageFileNamer.generateName(dateTaken);
+        }
     }
 
     public static void broadcastNewPicture(Context context, Uri uri) {
@@ -613,6 +613,37 @@ public class Util {
             WindowManager.LayoutParams winParams = win.getAttributes();
             winParams.screenBrightness = DEFAULT_CAMERA_BRIGHTNESS;
             win.setAttributes(winParams);
+        }
+    }
+
+    private static class ImageFileNamer {
+        private SimpleDateFormat mFormat;
+
+        // The date (in milliseconds) used to generate the last name.
+        private long mLastDate;
+
+        // Number of names generated for the same second.
+        private int mSameSecondCount;
+
+        public ImageFileNamer(String format) {
+            mFormat = new SimpleDateFormat(format);
+        }
+
+        public String generateName(long dateTaken) {
+            Date date = new Date(dateTaken);
+            String result = mFormat.format(date);
+
+            // If the last name was generated for the same second,
+            // we append _1, _2, etc to the name.
+            if (dateTaken / 1000 == mLastDate / 1000) {
+                mSameSecondCount++;
+                result += "_" + mSameSecondCount;
+            } else {
+                mLastDate = dateTaken;
+                mSameSecondCount = 0;
+            }
+
+            return result;
         }
     }
 }
