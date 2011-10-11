@@ -21,5 +21,6 @@
         android:clickable="true"
         android:focusable="false"
         android:visibility="gone"
+        android:contentDescription="@string/accessibility_review_thumbnail"
         android:background="@drawable/border_last_picture">
 </com.android.camera.ui.RotateImageView>

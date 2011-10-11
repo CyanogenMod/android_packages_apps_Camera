@@ -16,11 +16,13 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.ListPreference;
 import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -47,6 +49,14 @@ public class InLineSettingSwitch extends InLineSettingItem {
         mSwitch.setOnCheckedChangeListener(mCheckedChangeListener);
     }
 
+    @Override
+    public void initialize(ListPreference preference) {
+        super.initialize(preference);
+        // Add content descriptions for the increment and decrement buttons.
+        mSwitch.setContentDescription(getContext().getResources().getString(
+                R.string.accessibility_switch, mPreference.getTitle()));
+    }
+
     protected void updateView() {
         if (mOverrideValue == null) {
             mSwitch.setChecked(mIndex == 1);
@@ -54,5 +64,17 @@ public class InLineSettingSwitch extends InLineSettingItem {
             int index = mPreference.findIndexOfValue(mOverrideValue);
             mSwitch.setChecked(index == 1);
         }
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        onPopulateAccessibilityEvent(event);
+        return true;
+    }
+
+    @Override
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
+        event.getText().add(mPreference.getTitle());
     }
 }

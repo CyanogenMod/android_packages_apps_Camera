@@ -21,6 +21,7 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -70,6 +71,7 @@ public abstract class InLineSettingItem extends LinearLayout {
             mListener.onSettingChanged();
         }
         updateView();
+        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
         return true;
     }
 
