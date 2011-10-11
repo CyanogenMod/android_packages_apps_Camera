@@ -36,6 +36,9 @@ public class ZoomControlBar extends ZoomControl {
     private View mBar;
     private boolean mStartChanging;
     private int mSliderLength;
+    private int mHeight;
+    private int mIconHeight;
+    private int mTotalIconHeight;
 
     public ZoomControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -55,16 +58,11 @@ public class ZoomControlBar extends ZoomControl {
         // For left-hand users, as the device is rotated for 180 degree for
         // landscape mode, the zoom-in bottom should be on the top, so the
         // position should be reversed.
-        int totalIconHeight = mZoomIn.getHeight() + ICON_SPACING;
-        int height = getHeight();
         int pos; // the relative position in the zoom slider bar
         if (mDegree == 180) {
-            pos = y - totalIconHeight;
+            pos = y - mTotalIconHeight;
         } else {
-            pos = height - totalIconHeight - y;
-        }
-        if (mSliderLength == 0) {
-            mSliderLength = height - (2 * totalIconHeight);
+            pos = mHeight - mTotalIconHeight - y;
         }
         if (pos < 0) pos = 0;
         if (pos > mSliderLength) pos = mSliderLength;
@@ -72,11 +70,17 @@ public class ZoomControlBar extends ZoomControl {
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        if (!onFilterTouchEventForSecurity(event)) return false;
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        mHeight = h;
+        mIconHeight = mZoomIn.getMeasuredHeight();
+        mTotalIconHeight = mIconHeight + ICON_SPACING;
+        mSliderLength = mHeight - (2 * mTotalIconHeight);
+    }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (!isEnabled() || (mHeight == 0)) return false;
         int action = event.getAction();
-        if (!isEnabled() || (getHeight() == 0)) return false;
 
         switch (action) {
             case MotionEvent.ACTION_OUTSIDE:
@@ -90,12 +94,15 @@ public class ZoomControlBar extends ZoomControl {
                 setActivated(true);
                 mStartChanging = false;
             case MotionEvent.ACTION_MOVE:
-                // Make sure the movement is large enough before we start
-                // changing the zoom.
                 int pos = getSliderPosition((int) event.getY());
-                if (!mStartChanging && (Math.abs(mSliderPosition - pos)
-                        > THRESHOLD_FIRST_MOVE)) {
-                    mStartChanging = true;
+                if (!mStartChanging) {
+                    // Make sure the movement is large enough before we start
+                    // changing the zoom.
+                    int delta = mSliderPosition - pos;
+                    if ((delta > THRESHOLD_FIRST_MOVE) ||
+                            (delta < -THRESHOLD_FIRST_MOVE)) {
+                        mStartChanging = true;
+                    }
                 }
                 if (mStartChanging) {
                     performZoom(1.0d * pos / mSliderLength);
@@ -118,10 +125,7 @@ public class ZoomControlBar extends ZoomControl {
             boolean changed, int left, int top, int right, int bottom) {
         if (mZoomMax == 0) return;
         int width = right - left;
-        int height = bottom - top;
-        int iconHeight = mZoomIn.getMeasuredHeight();
-        mBar.layout(0, iconHeight + ICON_SPACING,
-                width, height - iconHeight - ICON_SPACING);
+        mBar.layout(0, mTotalIconHeight, width, mHeight - mTotalIconHeight);
         // For left-hand users, as the device is rotated for 180 degree,
         // the zoom-in button should be on the top.
         int pos; // slider position
@@ -132,12 +136,12 @@ public class ZoomControlBar extends ZoomControl {
             sliderPosition = (int) ((double) mSliderLength * mZoomIndex / mZoomMax);
         }
         if (mDegree == 180) {
-            mZoomOut.layout(0, 0, width, iconHeight);
-            mZoomIn.layout(0, height - iconHeight, width, height);
+            mZoomOut.layout(0, 0, width, mIconHeight);
+            mZoomIn.layout(0, mHeight - mIconHeight, width, mHeight);
             pos = mBar.getTop() + sliderPosition;
         } else {
-            mZoomIn.layout(0, 0, width, iconHeight);
-            mZoomOut.layout(0, height - iconHeight, width, height);
+            mZoomIn.layout(0, 0, width, mIconHeight);
+            mZoomOut.layout(0, mHeight - mIconHeight, width, mHeight);
             pos = mBar.getBottom() - sliderPosition;
         }
         int sliderHeight = mZoomSlider.getMeasuredHeight();
