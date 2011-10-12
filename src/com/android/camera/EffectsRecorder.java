@@ -17,6 +17,7 @@
 package com.android.camera;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.filterfw.GraphEnvironment;
 import android.filterfw.core.Filter;
 import android.filterfw.core.GLEnvironment;
@@ -36,12 +37,16 @@ import android.os.ConditionVariable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
+import android.os.SystemProperties;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.File;
 import java.lang.Runnable;
+
 
 /**
  * Encapsulates the mobile filter framework components needed to record video with
@@ -95,6 +100,9 @@ public class EffectsRecorder {
 
     private SurfaceTexture mTextureSource;
 
+    private static final String mVideoRecordSound = "/system/media/audio/ui/VideoRecord.ogg";
+    private SoundPlayer mRecordSound;
+
     private static final int STATE_CONFIGURE              = 0;
     private static final int STATE_WAITING_FOR_SURFACE    = 1;
     private static final int STATE_PREVIEW                = 2;
@@ -123,6 +131,28 @@ public class EffectsRecorder {
         if (mLogVerbose) Log.v(TAG, "EffectsRecorder created (" + this + ")");
         mContext = context;
         mHandler = new Handler(Looper.getMainLooper());
+
+        // Construct sound player; use enforced sound output if necessary
+        File recordSoundFile = new File(mVideoRecordSound);
+        try {
+            ParcelFileDescriptor recordSoundParcel =
+                    ParcelFileDescriptor.open(recordSoundFile,
+                            ParcelFileDescriptor.MODE_READ_ONLY);
+            AssetFileDescriptor recordSoundAsset =
+                    new AssetFileDescriptor(recordSoundParcel, 0,
+                                            AssetFileDescriptor.UNKNOWN_LENGTH);
+            if (SystemProperties.get("ro.camera.sound.forced", "0").equals("0")) {
+                if (mLogVerbose) Log.v(TAG, "Standard recording sound");
+                mRecordSound = new SoundPlayer(recordSoundAsset, false);
+            } else {
+                if (mLogVerbose) Log.v(TAG, "Forced recording sound");
+                mRecordSound = new SoundPlayer(recordSoundAsset, true);
+            }
+        } catch (java.io.FileNotFoundException e) {
+            Log.e(TAG, "System video record sound not found");
+            mRecordSound = null;
+        }
+
     }
 
     public void setCamera(Camera cameraDevice) {
@@ -521,6 +551,7 @@ public class EffectsRecorder {
             recorder.setInputValue("errorListener", mErrorListener);
         }
         recorder.setInputValue("recording", true);
+        if (mRecordSound != null) mRecordSound.play();
         mState = STATE_RECORD;
     }
 
@@ -539,6 +570,7 @@ public class EffectsRecorder {
         }
         Filter recorder = mRunner.getGraph().getFilter("recorder");
         recorder.setInputValue("recording", false);
+        if (mRecordSound != null) mRecordSound.play();
         mState = STATE_PREVIEW;
     }
 
@@ -652,6 +684,7 @@ public class EffectsRecorder {
                 stopPreview();
                 // Fall-through
             default:
+                mRecordSound.release();
                 mState = STATE_RELEASED;
                 break;
         }
