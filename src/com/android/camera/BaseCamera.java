@@ -74,6 +74,11 @@ public abstract class BaseCamera extends NoSearchActivity
     }
 
     protected void setCommonParameters() {
+        // Set capture mode.
+        mCaptureMode = mPreferences.getString(
+                CameraSettings.KEY_CAPTURE_MODE,
+                getString(R.string.pref_camera_capturemode_entry_default));
+
         // Set color effect parameter.
         String colorEffect = mPreferences.getString(CameraSettings.KEY_COLOR_EFFECT,
                 getString(R.string.pref_camera_coloreffect_default));
