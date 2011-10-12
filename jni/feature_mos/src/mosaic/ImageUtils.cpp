@@ -360,7 +360,7 @@ YUVinfo *YUVinfo::allocateImage(unsigned short width, unsigned short height)
     heightUV = height;
 
     // figure out how much space to hold all pixels...
-    int size = (((width * height * 32) >> 3) + 8);
+    int size = ((width * height * 3) + 8);
     unsigned char *position = 0;
 
     // VC 8 does not like calling free on yuv->Y.ptr since it is in

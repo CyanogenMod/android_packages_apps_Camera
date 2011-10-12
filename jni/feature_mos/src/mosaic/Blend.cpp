@@ -236,6 +236,7 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
         return BLEND_RET_ERROR;
     }
 
+    LOGI("Allocate mosaic image for blending - size: %d x %d", Mwidth, Mheight);
     YUVinfo *imgMos = YUVinfo::allocateImage(Mwidth, Mheight);
     if (imgMos == NULL)
     {
