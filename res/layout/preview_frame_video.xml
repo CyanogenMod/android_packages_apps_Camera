@@ -44,39 +44,6 @@
                 android:src="@drawable/ic_gallery_play"
                 android:visibility="gone"
                 android:onClick="onReviewPlayClicked"/>
-        <com.android.camera.ui.RotateLayout android:id="@+id/bg_replace_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:layout_margin="24dp" >
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_text_on_preview">
-                <TextView
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/bg_replacement_message"
-                        android:padding="32dp" />
-
-                <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:background="#aaaaaa" />
-
-                <Button android:id="@+id/bg_replace_cancel_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dip"
-                        android:layout_gravity="center"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:text="@android:string/cancel"
-                        android:onClick="onCancelBgTraining"/>
-            </LinearLayout>
-        </com.android.camera.ui.RotateLayout>
     </com.android.camera.PreviewFrameLayout>
 
     <!-- Fill up the space below preview frame with black. -->
