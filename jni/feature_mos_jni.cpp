@@ -628,7 +628,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_android_camera_panorama_Mosaic_getFinalMos
     // Convert YVU to NV21 format in-place
     ImageType V = resultYVU+mosaicWidth*mosaicHeight;
     ImageType U = V+mosaicWidth*mosaicHeight;
-    for(int j=0; j<mosaicHeight; j++)
+    for(int j=0; j<mosaicHeight/2; j++)
     {
         for(int i=0; i<mosaicWidth; i+=2)
         {
