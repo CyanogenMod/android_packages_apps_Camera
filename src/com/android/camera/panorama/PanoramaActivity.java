@@ -171,7 +171,7 @@ public class PanoramaActivity extends ActivityBase implements
     private String mTargetFocusMode = Parameters.FOCUS_MODE_INFINITY;
 
     private PanoOrientationEventListener mOrientationEventListener;
-    // The value could be 0, 1, 2, 3 for the 4 different orientations measured in clockwise
+    // The value could be 0, 90, 180, 270 for the 4 different orientations measured in clockwise
     // respectively.
     private int mDeviceOrientation;
     private int mOrientationCompensation;
@@ -416,7 +416,7 @@ public class PanoramaActivity extends ActivityBase implements
 
         parameters.setRecordingHint(false);
 
-        mHorizontalViewAngle = ((mDeviceOrientation % 2) == 0) ?
+        mHorizontalViewAngle = (((mDeviceOrientation / 90) % 2) == 0) ?
                 parameters.getHorizontalViewAngle() : parameters.getVerticalViewAngle();
     }
 
@@ -953,13 +953,13 @@ public class PanoramaActivity extends ActivityBase implements
             case 0:
                 mPanoProgressBar.setProgress(-mTraversedAngleX);
                 break;
-            case 1:
+            case 90:
                 mPanoProgressBar.setProgress(mTraversedAngleY);
                 break;
-            case 2:
+            case 180:
                 mPanoProgressBar.setProgress(mTraversedAngleX);
                 break;
-            case 3:
+            case 270:
                 mPanoProgressBar.setProgress(-mTraversedAngleY);
                 break;
         }
