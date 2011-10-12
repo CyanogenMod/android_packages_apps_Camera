@@ -1610,6 +1610,8 @@ public class VideoCamera extends ActivityBase
         for (int id : pickIds) {
             Util.fadeIn(findViewById(id));
         }
+
+        showTimeLapseUI(false);
     }
 
     private void hideAlert() {
@@ -2020,6 +2022,7 @@ public class VideoCamera extends ActivityBase
                 finish();
             } else {
                 readVideoPreferences();
+                showTimeLapseUI(mCaptureTimeLapse);
                 // We need to restart the preview if preview size is changed.
                 Size size = mParameters.getPreviewSize();
                 if (size.width != mDesiredPreviewWidth
@@ -2035,7 +2038,6 @@ public class VideoCamera extends ActivityBase
                     setCameraParameters();
                 }
             }
-            showTimeLapseUI(mCaptureTimeLapse);
         }
     }
 
@@ -2082,6 +2084,7 @@ public class VideoCamera extends ActivityBase
     // preview. If not, resets the surface holder and resizes the view.
     private void checkQualityAndStartPreview() {
         readVideoPreferences();
+        showTimeLapseUI(mCaptureTimeLapse);
         Size size = mParameters.getPreviewSize();
         if (size.width != mDesiredPreviewWidth
                 || size.height != mDesiredPreviewHeight) {
