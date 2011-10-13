@@ -34,17 +34,17 @@ public class ShutterButton extends ImageView implements View.OnLongClickListener
         /**
          * Called when a ShutterButton has been pressed.
          *
-         * @param b The ShutterButton that was pressed.
+         * @param pressed The ShutterButton that was pressed.
          */
-        void onShutterButtonFocus(ShutterButton b, boolean pressed);
-        void onShutterButtonClick(ShutterButton b);
+        void onShutterButtonFocus(boolean pressed);
+        void onShutterButtonClick();
     }
 
     /**
      * A callback to be invoked when a ShutterButton's long pressed.
      */
     public interface OnShutterButtonLongPressListener {
-        void onShutterButtonLongPressed(ShutterButton b);
+        void onShutterButtonLongPressed();
     }
 
     private OnShutterButtonListener mListener;
@@ -110,7 +110,7 @@ public class ShutterButton extends ImageView implements View.OnLongClickListener
 
     private void callShutterButtonFocus(boolean pressed) {
         if (mListener != null) {
-            mListener.onShutterButtonFocus(this, pressed);
+            mListener.onShutterButtonFocus(pressed);
         }
     }
 
@@ -118,7 +118,7 @@ public class ShutterButton extends ImageView implements View.OnLongClickListener
     public boolean performClick() {
         boolean result = super.performClick();
         if (mListener != null) {
-            mListener.onShutterButtonClick(this);
+            mListener.onShutterButtonClick();
         }
         return result;
     }
@@ -126,7 +126,7 @@ public class ShutterButton extends ImageView implements View.OnLongClickListener
     @Override
     public boolean onLongClick(View v) {
         if (mLongPressListener != null) {
-            mLongPressListener.onShutterButtonLongPressed(this);
+            mLongPressListener.onShutterButtonLongPressed();
         }
         return false;
     }
