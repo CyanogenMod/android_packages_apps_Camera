@@ -384,11 +384,13 @@ public class EffectsRecorder {
 
         switch (mCurrentEffect) {
             case EFFECT_GOOFY_FACE:
+                tryEnableVideoStabilization(true);
                 Filter goofyFilter = mRunner.getGraph().getFilter("goofyrenderer");
                 goofyFilter.setInputValue("currentEffect",
                                           ((Integer)mEffectParameter).intValue());
                 break;
             case EFFECT_BACKDROPPER:
+                tryEnableVideoStabilization(false);
                 Filter backgroundSrc = mRunner.getGraph().getFilter("background");
                 backgroundSrc.setInputValue("sourceUrl",
                                             (String)mEffectParameter);
@@ -459,6 +461,9 @@ public class EffectsRecorder {
 
                 if (mState == STATE_RELEASED) return;
 
+                // Lock AE/AWB to reduce transition flicker
+                tryEnable3ALocks(true);
+
                 mCameraDevice.stopPreview();
                 if (mLogVerbose) Log.v(TAG, "Runner active, connecting effects preview");
                 try {
@@ -467,8 +472,6 @@ public class EffectsRecorder {
                     throw new RuntimeException("Unable to connect camera to effect input", e);
                 }
 
-                // Lock AE/AWB to reduce transition flicker
-                tryEnable3ALocks(true);
                 mCameraDevice.startPreview();
 
                 // Unlock AE/AWB after preview started
@@ -574,6 +577,21 @@ public class EffectsRecorder {
         mRunner.stop();
         mRunner = null;
         // Rest of stop and release handled in mRunnerDoneCallback
+    }
+
+    // Try to enable/disable video stabilization if supported; otherwise return false
+    boolean tryEnableVideoStabilization(boolean toggle) {
+        Camera.Parameters params = mCameraDevice.getParameters();
+
+        String vstabSupported = params.get("video-stabilization-supported");
+        if ("true".equals(vstabSupported)) {
+            if (mLogVerbose) Log.v(TAG, "Setting video stabilization to " + toggle);
+            params.set("video-stabilization", toggle ? "true" : "false");
+            mCameraDevice.setParameters(params);
+            return true;
+        }
+        if (mLogVerbose) Log.v(TAG, "Video stabilization not supported");
+        return false;
     }
 
     // Try to enable/disable 3A locks if supported; otherwise return false

@@ -1761,6 +1761,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         mParameters.setRecordingHint(false);
+
+        // Disable video stabilization. Convenience methods not available in API
+        // level <= 14
+        String vstabSupported = mParameters.get("video-stabilization-supported");
+        if ("true".equals(vstabSupported)) {
+            mParameters.set("video-stabilization", "false");
+        }
     }
 
     private void updateCameraParametersZoom() {
