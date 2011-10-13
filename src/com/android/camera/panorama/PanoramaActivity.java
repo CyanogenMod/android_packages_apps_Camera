@@ -815,13 +815,17 @@ public class PanoramaActivity extends ActivityBase implements
         }
     }
 
-    @OnClickAttr
-    public void onCancelButtonClicked(View v) {
-        if (mPausing || mSurfaceTexture == null) return;
+    private void cancelHighResComputation() {
         mCancelComputation = true;
         synchronized (mWaitObject) {
             mWaitObject.notify();
         }
+    }
+
+    @OnClickAttr
+    public void onCancelButtonClicked(View v) {
+        if (mPausing || mSurfaceTexture == null) return;
+        cancelHighResComputation();
     }
 
     @OnClickAttr
@@ -897,6 +901,7 @@ public class PanoramaActivity extends ActivityBase implements
         super.onPause();
 
         mPausing = true;
+        cancelHighResComputation();
         // Stop the capturing first.
         if (mCaptureState == CAPTURE_STATE_MOSAIC) {
             stopCapture(true);
