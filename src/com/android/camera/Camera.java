@@ -173,7 +173,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private Runnable mDoSnapRunnable = new Runnable() {
         public void run() {
-            doSnap();
+            onShutterButtonClick();
         }
     };
 
@@ -1320,25 +1320,41 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     @Override
-    public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
-        switch (button.getId()) {
-            case R.id.shutter_button:
-                doFocus(pressed);
-                break;
-        }
+    public void onShutterButtonFocus(boolean pressed) {
+        if (mPausing || collapseCameraControls() || mCameraState == SNAPSHOT_IN_PROGRESS) return;
+
+        // Do not do focus if there is not enough storage.
+        if (pressed && !canTakePicture()) return;
+
+        mFocusManager.doFocus(pressed);
     }
 
     @Override
-    public void onShutterButtonClick(ShutterButton button) {
-        switch (button.getId()) {
-            case R.id.shutter_button:
-                doSnap();
-                break;
+    public void onShutterButtonClick() {
+        if (mPausing || collapseCameraControls()) return;
+
+        // Do not take the picture if there is not enough storage.
+        if (mPicturesRemaining <= 0) {
+            Log.i(TAG, "Not enough space or storage not ready. remaining=" + mPicturesRemaining);
+            return;
         }
+
+        Log.v(TAG, "onShutterButtonClick: mCameraState=" + mCameraState);
+
+        // If the user wants to do a snapshot while the previous one is still
+        // in progress, remember the fact and do it after we finish the previous
+        // one and re-start the preview.
+        if (mCameraState == SNAPSHOT_IN_PROGRESS) {
+            mSnapshotOnIdle = true;
+            return;
+        }
+
+        mSnapshotOnIdle = false;
+        mFocusManager.doSnap();
     }
 
     @Override
-    public void onShutterButtonLongPressed(ShutterButton button) {
+    public void onShutterButtonLongPressed() {
         if (mPausing || mCameraState == SNAPSHOT_IN_PROGRESS
                 || mCameraDevice == null || mPicturesRemaining <= 0) return;
 
@@ -1551,12 +1567,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                    doFocus(true);
+                    onShutterButtonFocus(true);
                 }
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                    doSnap();
+                    onShutterButtonClick();
                 }
                 return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
@@ -1564,10 +1580,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 // the focus to the shutter button and press it.
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
                     // Start auto-focus immediately to reduce shutter lag. After
-                    // the shutter button gets the focus, doFocus() will be
-                    // called again but it is fine.
+                    // the shutter button gets the focus, onShutterButtonFocus()
+                    // will be called again but it is fine.
                     if (collapseCameraControls()) return true;
-                    doFocus(true);
+                    onShutterButtonFocus(true);
                     if (mShutterButton.isInTouchMode()) {
                         mShutterButton.requestFocusFromTouch();
                     } else {
@@ -1586,43 +1602,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized) {
-                    doFocus(false);
+                    onShutterButtonFocus(false);
                 }
                 return true;
         }
         return super.onKeyUp(keyCode, event);
-    }
-
-    private void doSnap() {
-        if (mPausing || collapseCameraControls()) return;
-
-        // Do not take the picture if there is not enough storage.
-        if (mPicturesRemaining <= 0) {
-            Log.i(TAG, "Not enough space or storage not ready. remaining=" + mPicturesRemaining);
-            return;
-        }
-
-        Log.v(TAG, "doSnap: mCameraState=" + mCameraState);
-
-        // If the user wants to do a snapshot while the previous one is still
-        // in progress, remember the fact and do it after we finish the previous
-        // one and re-start the preview.
-        if (mCameraState == SNAPSHOT_IN_PROGRESS) {
-            mSnapshotOnIdle = true;
-            return;
-        }
-
-        mSnapshotOnIdle = false;
-        mFocusManager.doSnap();
-    }
-
-    private void doFocus(boolean pressed) {
-        if (mPausing || collapseCameraControls() || mCameraState == SNAPSHOT_IN_PROGRESS) return;
-
-        // Do not do focus if there is not enough storage.
-        if (pressed && !canTakePicture()) return;
-
-        mFocusManager.doFocus(pressed);
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
