@@ -54,6 +54,7 @@ public class FocusManager {
 
     private boolean mInitialized;
     private boolean mFocusAreaSupported;
+    private boolean mInLongPress;
     private SoundPlayer mSoundPlayer;
     private View mFocusIndicatorRotateLayout;
     private FocusIndicatorView mFocusIndicator;
@@ -138,6 +139,22 @@ public class FocusManager {
                     cancelAutoFocus();
                 }
             }
+        }
+    }
+
+    public void shutterLongPressed() {
+        if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)
+                && isSupported(Parameters.FOCUS_MODE_AUTO, mParameters.getSupportedFocusModes())) {
+            if (mState == STATE_IDLE || mState == STATE_FOCUSING_SNAP_ON_FINISH) {
+                Log.e(TAG, "Invalid focus state=" + mState);
+            }
+            mInLongPress = true;
+            // Cancel any outstanding Auto focus requests. The auto focus mode
+            // will be changed from CAF to auto in cancelAutoFocus.
+            doFocus(false);
+            // Call Autofocus
+            doFocus(true);
+            mInLongPress = false;
         }
     }
 
@@ -334,7 +351,11 @@ public class FocusManager {
     public String getFocusMode() {
         if (mOverrideFocusMode != null) return mOverrideFocusMode;
 
-        if (mFocusAreaSupported && mFocusArea != null) {
+        if (mInLongPress) {
+            // Users long-press the shutter button in CAF. Change it to auto
+            // mode, so it will do a full scan.
+            mFocusMode = Parameters.FOCUS_MODE_AUTO;
+        } else if (mFocusAreaSupported && mFocusArea != null) {
             // Always use autofocus in tap-to-focus.
             mFocusMode = Parameters.FOCUS_MODE_AUTO;
         } else {
