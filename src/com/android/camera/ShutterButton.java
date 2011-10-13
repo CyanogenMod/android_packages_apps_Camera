@@ -18,6 +18,7 @@ package com.android.camera;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -25,7 +26,7 @@ import android.widget.ImageView;
  * It's currently an {@code ImageView} that can call a delegate when the
  * pressed state changes.
  */
-public class ShutterButton extends ImageView {
+public class ShutterButton extends ImageView implements View.OnLongClickListener {
     /**
      * A callback to be invoked when a ShutterButton's pressed state changes.
      */
@@ -39,23 +40,28 @@ public class ShutterButton extends ImageView {
         void onShutterButtonClick(ShutterButton b);
     }
 
-    private OnShutterButtonListener mListener;
-    private boolean mOldPressed;
-
-    public ShutterButton(Context context) {
-        super(context);
+    /**
+     * A callback to be invoked when a ShutterButton's long pressed.
+     */
+    public interface OnShutterButtonLongPressListener {
+        void onShutterButtonLongPressed(ShutterButton b);
     }
+
+    private OnShutterButtonListener mListener;
+    private OnShutterButtonLongPressListener mLongPressListener;
+    private boolean mOldPressed;
 
     public ShutterButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public ShutterButton(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+        setOnLongClickListener(this);
     }
 
     public void setOnShutterButtonListener(OnShutterButtonListener listener) {
         mListener = listener;
+    }
+
+    public void setOnShutterButtonLongPressListener(OnShutterButtonLongPressListener listener) {
+        mLongPressListener = listener;
     }
 
     /**
@@ -115,5 +121,13 @@ public class ShutterButton extends ImageView {
             mListener.onShutterButtonClick(this);
         }
         return result;
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (mLongPressListener != null) {
+            mLongPressListener.onShutterButtonLongPressed(this);
+        }
+        return false;
     }
 }
