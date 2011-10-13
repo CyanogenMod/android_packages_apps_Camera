@@ -599,10 +599,6 @@ public class VideoCamera extends ActivityBase
         doReturnToCaller(false);
     }
 
-    public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
-        // Do nothing (everything happens in onShutterButtonClick).
-    }
-
     private void onStopVideoRecording(boolean valid) {
         stopVideoRecording();
         if (mIsVideoCaptureIntent) {
@@ -620,28 +616,30 @@ public class VideoCamera extends ActivityBase
         // Consume clicks
     }
 
-    public void onShutterButtonClick(ShutterButton button) {
-        switch (button.getId()) {
-            case R.id.shutter_button:
-                if (collapseCameraControls()) return;
-                boolean stop = mMediaRecorderRecording;
+    @Override
+    public void onShutterButtonClick() {
+        if (collapseCameraControls()) return;
+        boolean stop = mMediaRecorderRecording;
 
-                if (stop) {
-                    onStopVideoRecording(true);
-                } else {
-                    startVideoRecording();
-                }
-                mShutterButton.setEnabled(false);
-
-                // Keep the shutter button disabled when in video capture intent
-                // mode and recording is stopped. It'll be re-enabled when
-                // re-take button is clicked.
-                if (!(mIsVideoCaptureIntent && stop)) {
-                    mHandler.sendEmptyMessageDelayed(
-                            ENABLE_SHUTTER_BUTTON, SHUTTER_BUTTON_TIMEOUT);
-                }
-                break;
+        if (stop) {
+            onStopVideoRecording(true);
+        } else {
+            startVideoRecording();
         }
+        mShutterButton.setEnabled(false);
+
+        // Keep the shutter button disabled when in video capture intent
+        // mode and recording is stopped. It'll be re-enabled when
+        // re-take button is clicked.
+        if (!(mIsVideoCaptureIntent && stop)) {
+            mHandler.sendEmptyMessageDelayed(
+                    ENABLE_SHUTTER_BUTTON, SHUTTER_BUTTON_TIMEOUT);
+        }
+    }
+
+    @Override
+    public void onShutterButtonFocus(boolean pressed) {
+        // Do nothing (everything happens in onShutterButtonClick).
     }
 
     private OnScreenHint mStorageHint;

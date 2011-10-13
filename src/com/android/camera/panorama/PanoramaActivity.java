@@ -32,10 +32,6 @@ import com.android.camera.Util;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.SharePopup;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -67,7 +63,6 @@ import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -703,7 +698,7 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     @Override
-    public void onShutterButtonClick(ShutterButton b) {
+    public void onShutterButtonClick() {
         // If mSurfaceTexture == null then GL setup is not finished yet.
         // No buttons can be pressed.
         if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
@@ -719,7 +714,7 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     @Override
-    public void onShutterButtonFocus(ShutterButton b, boolean pressed) {
+    public void onShutterButtonFocus(boolean pressed) {
     }
 
     public void reportProgress() {
