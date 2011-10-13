@@ -34,6 +34,7 @@ public class SoundPlayer implements Runnable {
     private int mPlayCount = 0;
     private boolean mExit;
     private AssetFileDescriptor mAfd;
+    private int mAudioStreamType;
 
     @Override
     public void run() {
@@ -41,7 +42,7 @@ public class SoundPlayer implements Runnable {
             try {
                 if (mPlayer == null) {
                     MediaPlayer player = new MediaPlayer();
-                    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    player.setAudioStreamType(mAudioStreamType);
                     player.setDataSource(mAfd.getFileDescriptor(), mAfd.getStartOffset(),
                             mAfd.getLength());
                     player.setLooping(false);
@@ -71,6 +72,16 @@ public class SoundPlayer implements Runnable {
 
     public SoundPlayer(AssetFileDescriptor afd) {
         mAfd = afd;
+        mAudioStreamType = AudioManager.STREAM_MUSIC;
+    }
+
+    public SoundPlayer(AssetFileDescriptor afd, boolean enforceAudible) {
+        mAfd = afd;
+        if (enforceAudible) {
+            mAudioStreamType = 7; // AudioManager.STREAM_SYSTEM_ENFORCED; currently hidden API.
+        } else {
+            mAudioStreamType = AudioManager.STREAM_MUSIC;
+        }
     }
 
     public void play() {
