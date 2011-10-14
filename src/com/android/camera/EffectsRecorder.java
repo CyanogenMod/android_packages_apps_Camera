@@ -707,6 +707,7 @@ public class EffectsRecorder {
                 } else if (mState != STATE_RELEASED) {
                     // Shutting down effects
                     if (mLogVerbose) Log.v(TAG, "Runner halted, restoring direct preview");
+                    tryEnable3ALocks(false);
                     sendMessage(EFFECT_NONE, EFFECT_MSG_EFFECTS_STOPPED);
                 } else {
                     // STATE_RELEASED - camera will be/has been released as well, do nothing.
