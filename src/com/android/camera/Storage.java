@@ -44,6 +44,8 @@ public class Storage {
     public static final long UNAVAILABLE = -1L;
     public static final long PREPARING = -2L;
     public static final long UNKNOWN_SIZE = -3L;
+    public static final long LOW_STORAGE_THRESHOLD= 50000000;
+    public static final long PICTURE_SIZE = 1500000;
 
     private static final int BUFSIZE = 4096;
 
