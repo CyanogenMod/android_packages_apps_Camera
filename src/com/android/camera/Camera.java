@@ -985,9 +985,49 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         return true;
     }
 
+    private void getPreferredCameraId() {
+        mPreferences = new ComboPreferences(this);
+        CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
+        mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
+
+        // Testing purpose. Launch a specific camera through the intent extras.
+        int intentCameraId = Util.getCameraFacingIntentExtras(this);
+        if (intentCameraId != -1) {
+            mCameraId = intentCameraId;
+        }
+    }
+
+    Thread mCameraOpenThread = new Thread(new Runnable() {
+        public void run() {
+            try {
+                mCameraDevice = Util.openCamera(Camera.this, mCameraId);
+            } catch (CameraHardwareException e) {
+                mOpenCameraFail = true;
+            } catch (CameraDisabledException e) {
+                mCameraDisabled = true;
+            }
+        }
+    });
+
+    Thread mCameraPreviewThread = new Thread(new Runnable() {
+        public void run() {
+            initializeCapabilities();
+            startPreview();
+        }
+    });
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        getPreferredCameraId();
+        mFocusManager = new FocusManager(mPreferences,
+                getString(R.string.pref_camera_focusmode_default));
+
+        /*
+         * To reduce startup time, we start the camera open and preview threads.
+         * We make sure the preview is started at the end of onCreate.
+         */
+        mCameraOpenThread.start();
 
         mIsImageCaptureIntent = isImageCaptureIntent();
         setContentView(R.layout.camera);
@@ -1000,19 +1040,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mThumbnailView.setVisibility(View.VISIBLE);
         }
 
-        mPreferences = new ComboPreferences(this);
-        CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
-        mFocusManager = new FocusManager(mPreferences,
-                getString(R.string.pref_camera_focusmode_default));
-
-        mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
-
-        // Testing purpose. Launch a specific camera through the intent extras.
-        int intentCameraId = Util.getCameraFacingIntentExtras(this);
-        if (intentCameraId != -1) {
-            mCameraId = intentCameraId;
-        }
-
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
@@ -1021,25 +1048,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // we need to reset exposure for the preview
         resetExposureCompensation();
-
-        /*
-         * To reduce startup time, we start the preview in another thread.
-         * We make sure the preview is started at the end of onCreate.
-         */
-        Thread startPreviewThread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    mCameraDevice = Util.openCamera(Camera.this, mCameraId);
-                    initializeCapabilities();
-                    startPreview();
-                } catch (CameraHardwareException e) {
-                    mOpenCameraFail = true;
-                } catch (CameraDisabledException e) {
-                    mCameraDisabled = true;
-                }
-            }
-        });
-        startPreviewThread.start();
 
         Util.enterLightsOutMode(getWindow());
 
@@ -1050,6 +1058,22 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         SurfaceHolder holder = preview.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        // Make sure camera device is opened.
+        try {
+            mCameraOpenThread.join();
+            mCameraOpenThread = null;
+            if (mOpenCameraFail) {
+                Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+                return;
+            } else if (mCameraDisabled) {
+                Util.showErrorAndFinish(this, R.string.camera_disabled);
+                return;
+            }
+        } catch (InterruptedException ex) {
+            // ignore
+        }
+        mCameraPreviewThread.start();
 
         if (mIsImageCaptureIntent) {
             setupCaptureParams();
@@ -1063,26 +1087,29 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
         mLocationManager = new LocationManager(this, this);
 
-        // Make sure preview is started.
-        try {
-            startPreviewThread.join();
-            if (mOpenCameraFail) {
-                Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
-                return;
-            } else if (mCameraDisabled) {
-                Util.showErrorAndFinish(this, R.string.camera_disabled);
-                return;
-            }
-        } catch (InterruptedException ex) {
-            // ignore
-        }
-
         mBackCameraId = CameraHolder.instance().getBackCameraId();
         mFrontCameraId = CameraHolder.instance().getFrontCameraId();
+
+        // Wait until the camera settings are retrieved.
+        synchronized (mCameraPreviewThread) {
+            try {
+                mCameraPreviewThread.wait();
+            } catch (InterruptedException ex) {
+                // ignore
+            }
+        }
 
         // Do this after starting preview because it depends on camera
         // parameters.
         initializeIndicatorControl();
+
+        // Make sure preview is started.
+        try {
+            mCameraPreviewThread.join();
+        } catch (InterruptedException ex) {
+            // ignore
+        }
+        mCameraPreviewThread = null;
     }
 
     private void overrideCameraSettings(final String flashMode,
@@ -1718,6 +1745,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // resume it because it may have been paused by autoFocus call.
         if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mParameters.getFocusMode())) {
             mCameraDevice.cancelAutoFocus();
+        }
+
+        // Inform the mainthread to go on the UI initialization.
+        if (mCameraPreviewThread != null) {
+            synchronized (mCameraPreviewThread) {
+                mCameraPreviewThread.notify();
+            }
         }
 
         try {
