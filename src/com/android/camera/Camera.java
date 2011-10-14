@@ -1206,9 +1206,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void checkStorage() {
         mPicturesRemaining = Storage.getAvailableSpace();
-        if (mPicturesRemaining > 0) {
-            mPicturesRemaining /= 1500000;
+        if (mPicturesRemaining > Storage.LOW_STORAGE_THRESHOLD) {
+            mPicturesRemaining = (mPicturesRemaining - Storage.LOW_STORAGE_THRESHOLD)
+                    / Storage.PICTURE_SIZE;
+        } else if (mPicturesRemaining > 0) {
+            mPicturesRemaining = 0;
         }
+
         updateStorageHint();
     }
 
