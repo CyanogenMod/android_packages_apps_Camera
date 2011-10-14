@@ -71,7 +71,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.FileDescriptor;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -1279,6 +1278,7 @@ public class VideoCamera extends ActivityBase
         Intent intent = getIntent();
         Bundle myExtras = intent.getExtras();
 
+        long requestedSizeLimit = 0;
         if (mIsVideoCaptureIntent && myExtras != null) {
             Uri saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
             if (saveUri != null) {
@@ -1291,6 +1291,7 @@ public class VideoCamera extends ActivityBase
                     Log.e(TAG, ex.toString());
                 }
             }
+            requestedSizeLimit = myExtras.getLong(MediaStore.EXTRA_SIZE_LIMIT);
         }
 
         // TODO: Timelapse
@@ -1302,6 +1303,13 @@ public class VideoCamera extends ActivityBase
             generateVideoFilename(mProfile.fileFormat);
             mEffectsRecorder.setOutputFile(mVideoFilename);
         }
+
+        // Set maximum file size.
+        long maxFileSize = mStorageSpace - Storage.LOW_STORAGE_THRESHOLD;
+        if (requestedSizeLimit > 0 && requestedSizeLimit < maxFileSize) {
+            maxFileSize = requestedSizeLimit;
+        }
+        mEffectsRecorder.setMaxFileSize(maxFileSize);
     }
 
 
