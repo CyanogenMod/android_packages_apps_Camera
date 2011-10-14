@@ -25,9 +25,10 @@ import android.filterfw.core.GraphRunner;
 import android.filterfw.core.GraphRunner.OnRunnerDoneListener;
 import android.filterfw.geometry.Point;
 import android.filterfw.geometry.Quad;
-import android.filterpacks.videosrc.SurfaceTextureSource.SurfaceTextureSourceListener;
 import android.filterpacks.videoproc.BackDropperFilter;
 import android.filterpacks.videoproc.BackDropperFilter.LearningDoneListener;
+import android.filterpacks.videosink.MediaEncoderFilter.OnRecordingDoneListener;
+import android.filterpacks.videosrc.SurfaceTextureSource.SurfaceTextureSourceListener;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
@@ -71,6 +72,7 @@ public class EffectsRecorder {
     public static final int  EFFECT_MSG_DONE_LEARNING    = 1;
     public static final int  EFFECT_MSG_SWITCHING_EFFECT = 2;
     public static final int  EFFECT_MSG_EFFECTS_STOPPED  = 3;
+    public static final int  EFFECT_MSG_RECORDING_DONE   = 4;
 
     private Context mContext;
     private Handler mHandler;
@@ -370,7 +372,8 @@ public class EffectsRecorder {
                 "recordingHeight", mProfile.videoFrameHeight,
                 "recordingProfile", mProfile,
                 "audioSource", MediaRecorder.AudioSource.CAMCORDER,
-                "learningDoneListener", mLearningDoneListener);
+                "learningDoneListener", mLearningDoneListener,
+                "recordingDoneListener", mRecordingDoneListener);
 
         mRunner = null;
         mGraphId = -1;
@@ -539,6 +542,16 @@ public class EffectsRecorder {
             // thread
             sendMessage(EFFECT_BACKDROPPER, EFFECT_MSG_DONE_LEARNING);
             enable3ALocks(true);
+        }
+    };
+
+    // A callback to finalize the media after the recording is done.
+    private OnRecordingDoneListener mRecordingDoneListener =
+            new OnRecordingDoneListener() {
+        // Forward the callback to the VideoCamera object (as an asynchronous event).
+        public void onRecordingDone() {
+            if (mLogVerbose) Log.v(TAG, "Recording done callback triggered");
+            sendMessage(EFFECT_NONE, EFFECT_MSG_RECORDING_DONE);
         }
     };
 
@@ -755,4 +768,5 @@ public class EffectsRecorder {
             });
         }
     }
+
 }

@@ -1362,6 +1362,10 @@ public class VideoCamera extends ActivityBase
     }
 
     private void addVideoToMediaStore() {
+        if (mStorageSpace < LOW_STORAGE_THRESHOLD) {
+            Log.e(TAG, "Space insufficient to add media: " + mStorageSpace);
+            return;
+        }
         if (mVideoFileDescriptor == null) {
             Uri videoTable = Uri.parse("content://media/external/video/media");
             mCurrentVideoValues.put(Video.Media.SIZE,
@@ -1640,20 +1644,24 @@ public class VideoCamera extends ActivityBase
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
         if (mMediaRecorderRecording) {
-            boolean shouldAddToMediaStore = false;
+            boolean shouldAddToMediaStoreNow = false;
 
             try {
                 if (effectsActive()) {
+                    // This is asynchronous, so we cant add to media store now because thumbnail
+                    // may not be ready. In such case addVideoToMediaStore is called later
+                    // through a callback from the MediaEncoderFilter to EffectsRecorder,
+                    // and then to the VideoCamera.
                     mEffectsRecorder.stopRecording();
                 } else {
                     mMediaRecorder.setOnErrorListener(null);
                     mMediaRecorder.setOnInfoListener(null);
                     mMediaRecorder.stop();
+                    shouldAddToMediaStoreNow = true;
                 }
                 mCurrentVideoFilename = mVideoFilename;
                 Log.v(TAG, "Setting current video filename: "
                         + mCurrentVideoFilename);
-                shouldAddToMediaStore = true;
             } catch (RuntimeException e) {
                 Log.e(TAG, "stop fail",  e);
                 if (mVideoFilename != null) deleteVideoFile(mVideoFilename);
@@ -1665,7 +1673,7 @@ public class VideoCamera extends ActivityBase
                 enableCameraControls(true);
             }
             keepScreenOnAwhile();
-            if (shouldAddToMediaStore && mStorageSpace >= LOW_STORAGE_THRESHOLD) {
+            if (shouldAddToMediaStoreNow) {
                 addVideoToMediaStore();
             }
         }
@@ -1930,6 +1938,9 @@ public class VideoCamera extends ActivityBase
             // and restart regular preview.
             mBgLearningMessageFrame.setVisibility(View.GONE);
             checkQualityAndStartPreview();
+        } else if (effectMsg == EffectsRecorder.EFFECT_MSG_RECORDING_DONE) {
+            addVideoToMediaStore();
+            getThumbnail();
         } else if (effectId == EffectsRecorder.EFFECT_BACKDROPPER) {
             switch (effectMsg) {
                 case EffectsRecorder.EFFECT_MSG_STARTED_LEARNING:
