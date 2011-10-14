@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.lang.Runnable;
+import java.io.FileDescriptor;
 
 
 /**
@@ -84,6 +85,7 @@ public class EffectsRecorder {
     private MediaRecorder.OnErrorListener mErrorListener;
 
     private String mOutputFile;
+    private FileDescriptor mFd;
     private int mOrientationHint = 0;
     private int mCameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
 
@@ -193,6 +195,21 @@ public class EffectsRecorder {
         }
 
         mOutputFile = outputFile;
+        mFd = null;
+    }
+
+    public void setOutputFile(FileDescriptor fd) {
+        switch (mState) {
+            case STATE_RECORD:
+                throw new RuntimeException("setOutputFile cannot be called while recording!");
+            case STATE_RELEASED:
+                throw new RuntimeException("setOutputFile called on an already released recorder!");
+            default:
+                break;
+        }
+
+        mOutputFile = null;
+        mFd = fd;
     }
 
     public void setPreviewDisplay(SurfaceHolder previewSurfaceHolder,
@@ -537,15 +554,21 @@ public class EffectsRecorder {
                 break;
         }
 
-        if (mOutputFile == null) {
-            throw new RuntimeException("No output file name provided!");
+        if ((mOutputFile == null) && (mFd == null)) {
+            throw new RuntimeException("No output file name or descriptor provided!");
         }
 
         if (mState == STATE_CONFIGURE) {
             startPreview();
         }
+
         Filter recorder = mRunner.getGraph().getFilter("recorder");
-        recorder.setInputValue("outputFile", mOutputFile);
+        if (mFd != null) {
+            recorder.setInputValue("outputFileDescriptor", mFd);
+        } else {
+            recorder.setInputValue("outputFile", mOutputFile);
+        }
+
         recorder.setInputValue("orientationHint", mOrientationHint);
         if (mInfoListener != null) {
             recorder.setInputValue("infoListener", mInfoListener);
@@ -722,7 +745,11 @@ public class EffectsRecorder {
         if (mEffectsListener != null) {
             mHandler.post(new Runnable() {
                 public void run() {
-                    mEffectsListener.onEffectsError(exception, mOutputFile);
+                    if (mFd != null) {
+                        mEffectsListener.onEffectsError(exception, null);
+                    } else {
+                        mEffectsListener.onEffectsError(exception, mOutputFile);
+                    }
                 }
             });
         }
