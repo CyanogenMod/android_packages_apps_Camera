@@ -102,8 +102,6 @@ public class VideoCamera extends ActivityBase
     // The reason why it is set to 0.7 is just because 1.0 is too bright.
     private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
-    private static final long LOW_STORAGE_THRESHOLD = 512L * 1024L;
-
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
 
@@ -658,7 +656,7 @@ public class VideoCamera extends ActivityBase
             errorMessage = getString(R.string.preparing_sd);
         } else if (mStorageSpace == Storage.UNKNOWN_SIZE) {
             errorMessage = getString(R.string.access_sd_fail);
-        } else if (mStorageSpace < LOW_STORAGE_THRESHOLD) {
+        } else if (mStorageSpace < Storage.LOW_STORAGE_THRESHOLD) {
             errorMessage = getString(R.string.spaceIsLow_content);
         }
 
@@ -1194,10 +1192,7 @@ public class VideoCamera extends ActivityBase
         mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
 
         // Set maximum file size.
-        // remaining >= LOW_STORAGE_THRESHOLD at this point, reserve a quarter
-        // of that to make it more likely that recording can complete
-        // successfully.
-        long maxFileSize = mStorageSpace - LOW_STORAGE_THRESHOLD / 4;
+        long maxFileSize = mStorageSpace - Storage.LOW_STORAGE_THRESHOLD;
         if (requestedSizeLimit > 0 && requestedSizeLimit < maxFileSize) {
             maxFileSize = requestedSizeLimit;
         }
@@ -1271,7 +1266,7 @@ public class VideoCamera extends ActivityBase
                 mSurfaceHeight);
 
         if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER &&
-            ((String) mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {
+                ((String) mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {
             mEffectsRecorder.setEffect(mEffectType, mEffectUriFromGallery);
         } else {
             mEffectsRecorder.setEffect(mEffectType, mEffectParameter);
@@ -1362,7 +1357,7 @@ public class VideoCamera extends ActivityBase
     }
 
     private void addVideoToMediaStore() {
-        if (mStorageSpace < LOW_STORAGE_THRESHOLD) {
+        if (mStorageSpace < Storage.LOW_STORAGE_THRESHOLD) {
             Log.e(TAG, "Space insufficient to add media: " + mStorageSpace);
             return;
         }
@@ -1472,13 +1467,12 @@ public class VideoCamera extends ActivityBase
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
             if (mMediaRecorderRecording) onStopVideoRecording(true);
-        } else if (what
-                == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
+        } else if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
             if (mMediaRecorderRecording) onStopVideoRecording(true);
 
             // Show the toast.
             Toast.makeText(this, R.string.video_reach_size_limit,
-                           Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1504,7 +1498,7 @@ public class VideoCamera extends ActivityBase
         Log.v(TAG, "startVideoRecording");
 
         updateAndShowStorageHint();
-        if (mStorageSpace < LOW_STORAGE_THRESHOLD) {
+        if (mStorageSpace < Storage.LOW_STORAGE_THRESHOLD) {
             Log.v(TAG, "Storage issue, ignore the start request");
             return;
         }
