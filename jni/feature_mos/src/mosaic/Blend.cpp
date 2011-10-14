@@ -416,40 +416,49 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
             // the two component images,
             int tw = STRIP_CROSS_FADE_WIDTH * width;
 
-            for(int y = 0; y < imgMos.Y.height; y++)
+            // Proceed with the image index calculation for cross-fading
+            // only if the cross-fading width is larger than 0
+            if (tw > 0)
             {
-                for(int x = tw; x < imgMos.Y.width - tw + 1; )
+                for(int y = 0; y < imgMos.Y.height; y++)
                 {
-                    // Determine where the seam is...
-                    if (imgMos.Y.ptr[y][x] != imgMos.Y.ptr[y][x+1] &&
-                            imgMos.Y.ptr[y][x] != 255 &&
-                            imgMos.Y.ptr[y][x+1] != 255)
+                    // Since we compare two adjecant pixels to determine
+                    // whether there is a seam, the termination condition of x
+                    // is set to imgMos.Y.width - tw, so that x+1 below
+                    // won't exceed the imgMos' boundary.
+                    for(int x = tw; x < imgMos.Y.width - tw; )
                     {
-                        // Find the image indices on both sides of the seam
-                        unsigned char idx1 = imgMos.Y.ptr[y][x];
-                        unsigned char idx2 = imgMos.Y.ptr[y][x+1];
-
-                        for (int o = tw; o >= 0; o--)
+                        // Determine where the seam is...
+                        if (imgMos.Y.ptr[y][x] != imgMos.Y.ptr[y][x+1] &&
+                                imgMos.Y.ptr[y][x] != 255 &&
+                                imgMos.Y.ptr[y][x+1] != 255)
                         {
-                            // Set the image index to use for cross-fading
-                            imgMos.V.ptr[y][x - o] = idx2;
-                            // Set the intensity weights to use for cross-fading
-                            imgMos.U.ptr[y][x - o] = 50 + (99 - 50) * o / tw;
-                        }
+                            // Find the image indices on both sides of the seam
+                            unsigned char idx1 = imgMos.Y.ptr[y][x];
+                            unsigned char idx2 = imgMos.Y.ptr[y][x+1];
 
-                        for (int o = 1; o <= tw; o++)
+                            for (int o = tw; o >= 0; o--)
+                            {
+                                // Set the image index to use for cross-fading
+                                imgMos.V.ptr[y][x - o] = idx2;
+                                // Set the intensity weights to use for cross-fading
+                                imgMos.U.ptr[y][x - o] = 50 + (99 - 50) * o / tw;
+                            }
+
+                            for (int o = 1; o <= tw; o++)
+                            {
+                                // Set the image index to use for cross-fading
+                                imgMos.V.ptr[y][x + o] = idx1;
+                                // Set the intensity weights to use for cross-fading
+                                imgMos.U.ptr[y][x + o] = imgMos.U.ptr[y][x - o];
+                            }
+
+                            x += (tw + 1);
+                        }
+                        else
                         {
-                            // Set the image index to use for cross-fading
-                            imgMos.V.ptr[y][x + o] = idx1;
-                            // Set the intensity weights to use for cross-fading
-                            imgMos.U.ptr[y][x + o] = imgMos.U.ptr[y][x - o];
+                            x++;
                         }
-
-                        x += (tw + 1);
-                    }
-                    else
-                    {
-                        x++;
                     }
                 }
             }
@@ -460,40 +469,49 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
             // the two component images,
             int tw = STRIP_CROSS_FADE_WIDTH * height;
 
-            for(int x = 0; x < imgMos.Y.width; x++)
+            // Proceed with the image index calculation for cross-fading
+            // only if the cross-fading width is larger than 0
+            if (tw > 0)
             {
-                for(int y = tw; y < imgMos.Y.height - tw + 1; )
+                for(int x = 0; x < imgMos.Y.width; x++)
                 {
-                    // Determine where the seam is...
-                    if (imgMos.Y.ptr[y][x] != imgMos.Y.ptr[y+1][x] &&
-                            imgMos.Y.ptr[y][x] != 255 &&
-                            imgMos.Y.ptr[y+1][x] != 255)
+                    // Since we compare two adjecant pixels to determine
+                    // whether there is a seam, the termination condition of y
+                    // is set to imgMos.Y.height - tw, so that y+1 below
+                    // won't exceed the imgMos' boundary.
+                    for(int y = tw; y < imgMos.Y.height - tw; )
                     {
-                        // Find the image indices on both sides of the seam
-                        unsigned char idx1 = imgMos.Y.ptr[y][x];
-                        unsigned char idx2 = imgMos.Y.ptr[y+1][x];
-
-                        for (int o = tw; o >= 0; o--)
+                        // Determine where the seam is...
+                        if (imgMos.Y.ptr[y][x] != imgMos.Y.ptr[y+1][x] &&
+                                imgMos.Y.ptr[y][x] != 255 &&
+                                imgMos.Y.ptr[y+1][x] != 255)
                         {
-                            // Set the image index to use for cross-fading
-                            imgMos.V.ptr[y - o][x] = idx2;
-                            // Set the intensity weights to use for cross-fading
-                            imgMos.U.ptr[y - o][x] = 50 + (99 - 50) * o / tw;
-                        }
+                            // Find the image indices on both sides of the seam
+                            unsigned char idx1 = imgMos.Y.ptr[y][x];
+                            unsigned char idx2 = imgMos.Y.ptr[y+1][x];
 
-                        for (int o = 1; o <= tw; o++)
+                            for (int o = tw; o >= 0; o--)
+                            {
+                                // Set the image index to use for cross-fading
+                                imgMos.V.ptr[y - o][x] = idx2;
+                                // Set the intensity weights to use for cross-fading
+                                imgMos.U.ptr[y - o][x] = 50 + (99 - 50) * o / tw;
+                            }
+
+                            for (int o = 1; o <= tw; o++)
+                            {
+                                // Set the image index to use for cross-fading
+                                imgMos.V.ptr[y + o][x] = idx1;
+                                // Set the intensity weights to use for cross-fading
+                                imgMos.U.ptr[y + o][x] = imgMos.U.ptr[y - o][x];
+                            }
+
+                            y += (tw + 1);
+                        }
+                        else
                         {
-                            // Set the image index to use for cross-fading
-                            imgMos.V.ptr[y + o][x] = idx1;
-                            // Set the intensity weights to use for cross-fading
-                            imgMos.U.ptr[y + o][x] = imgMos.U.ptr[y - o][x];
+                            y++;
                         }
-
-                        y += (tw + 1);
-                    }
-                    else
-                    {
-                        y++;
                     }
                 }
             }
