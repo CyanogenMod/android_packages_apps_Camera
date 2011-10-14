@@ -10,6 +10,8 @@
 
 -keep class com.android.camera.VideoCamera {
   public boolean isRecording();
+  public void onCancelBgTraining(...);
+  public void onProtectiveCurtainClick(...);
 }
 
 -keep class * extends android.app.Activity {
