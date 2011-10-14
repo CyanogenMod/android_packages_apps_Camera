@@ -71,6 +71,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.FileDescriptor;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -1286,21 +1287,26 @@ public class VideoCamera extends ActivityBase
         if (mIsVideoCaptureIntent && myExtras != null) {
             Uri saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
             if (saveUri != null) {
-                mVideoFilename = saveUri.toString();
-            } else {
-                mVideoFilename = null;
+                try {
+                    mVideoFileDescriptor =
+                            mContentResolver.openFileDescriptor(saveUri, "rw");
+                    mCurrentVideoUri = saveUri;
+                } catch (java.io.FileNotFoundException ex) {
+                    // invalid uri
+                    Log.e(TAG, ex.toString());
+                }
             }
-        } else {
-            mVideoFilename = null;
         }
 
         // TODO: Timelapse
 
         // Set output file
-        if (mVideoFilename == null) {
+        if (mVideoFileDescriptor != null) {
+            mEffectsRecorder.setOutputFile(mVideoFileDescriptor.getFileDescriptor());
+        } else {
             generateVideoFilename(mProfile.fileFormat);
+            mEffectsRecorder.setOutputFile(mVideoFilename);
         }
-        mEffectsRecorder.setOutputFile(mVideoFilename);
     }
 
 
