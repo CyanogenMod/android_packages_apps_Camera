@@ -59,7 +59,7 @@ public class ZoomControlBar extends ZoomControl {
         // landscape mode, the zoom-in bottom should be on the top, so the
         // position should be reversed.
         int pos; // the relative position in the zoom slider bar
-        if (mDegree == 180) {
+        if (mOrientation == 180) {
             pos = y - mTotalIconHeight;
         } else {
             pos = mHeight - mTotalIconHeight - y;
@@ -114,10 +114,10 @@ public class ZoomControlBar extends ZoomControl {
     }
 
     @Override
-    public void setDegree(int degree) {
+    public void setOrientation(int orientation) {
         // layout for the left-hand camera control
-        if ((degree == 180) || (mDegree == 180)) requestLayout();
-        super.setDegree(degree);
+        if ((orientation == 180) || (mOrientation == 180)) requestLayout();
+        super.setOrientation(orientation);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class ZoomControlBar extends ZoomControl {
         } else {
             sliderPosition = (int) ((double) mSliderLength * mZoomIndex / mZoomMax);
         }
-        if (mDegree == 180) {
+        if (mOrientation == 180) {
             mZoomOut.layout(0, 0, width, mIconHeight);
             mZoomIn.layout(0, mHeight - mIconHeight, width, mHeight);
             pos = mBar.getTop() + sliderPosition;

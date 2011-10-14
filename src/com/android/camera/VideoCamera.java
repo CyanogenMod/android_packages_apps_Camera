@@ -540,19 +540,18 @@ public class VideoCamera extends ActivityBase
         }
     }
 
-    private void setOrientationIndicator(int degree) {
-        if (mThumbnailView != null) mThumbnailView.setDegree(degree);
-        if (mModePicker != null) mModePicker.setDegree(degree);
-        if (mSharePopup != null) mSharePopup.setOrientation(degree);
-        if (mBgLearningMessageRotater != null) mBgLearningMessageRotater.setOrientation(degree);
-        if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
-        if (mReviewDoneButton != null) mReviewDoneButton.setOrientation(degree);
-        if (mReviewPlayButton != null) mReviewPlayButton.setOrientation(degree);
-        if (mReviewCancelButton!= null) mReviewCancelButton.setOrientation(degree);
+    private void setOrientationIndicator(int orientation) {
+        Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
+                mBgLearningMessageRotater, mIndicatorControlContainer,
+                mReviewDoneButton, mReviewPlayButton, mReviewCancelButton};
+        for (Rotatable indicator : indicators) {
+            if (indicator != null) indicator.setOrientation(orientation);
+        }
+
         // We change the orientation of the linearlayout only for phone UI because when in portrait
         // the width is not enough.
         if (mLabelsLinearLayout != null) {
-            if (((degree / 90) & 1) == 1) {
+            if (((orientation / 90) & 1) == 1) {
                 mLabelsLinearLayout.setOrientation(mLabelsLinearLayout.VERTICAL);
             } else {
                 mLabelsLinearLayout.setOrientation(mLabelsLinearLayout.HORIZONTAL);

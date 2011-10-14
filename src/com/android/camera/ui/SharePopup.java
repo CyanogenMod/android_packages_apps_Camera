@@ -50,7 +50,7 @@ import java.util.Map;
 
 // A popup window that contains a big thumbnail and a list of apps to share.
 public class SharePopup extends PopupWindow implements View.OnClickListener,
-        View.OnTouchListener, AdapterView.OnItemClickListener {
+        View.OnTouchListener, AdapterView.OnItemClickListener, Rotatable {
     private static final String TAG = "SharePopup";
     private static final String ADAPTER_COLUMN_ICON = "icon";
     private Context mContext;

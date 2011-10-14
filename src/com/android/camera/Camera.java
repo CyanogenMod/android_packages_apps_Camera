@@ -1186,16 +1186,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void setOrientationIndicator(int degree) {
-        if (mThumbnailView != null) mThumbnailView.setDegree(degree);
-        if (mModePicker != null) mModePicker.setDegree(degree);
-        if (mSharePopup != null) mSharePopup.setOrientation(degree);
-        if (mIndicatorControlContainer != null) mIndicatorControlContainer.setDegree(degree);
-        if (mZoomControl != null) mZoomControl.setDegree(degree);
-        if (mFocusIndicator != null) mFocusIndicator.setOrientation(degree);
-        if (mFaceView != null) mFaceView.setOrientation(degree);
-        if (mReviewCancelButton != null) mReviewCancelButton.setOrientation(degree);
-        if (mReviewDoneButton != null) mReviewDoneButton.setOrientation(degree);
+    private void setOrientationIndicator(int orientation) {
+        Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
+                mIndicatorControlContainer, mZoomControl, mFocusIndicator, mFaceView,
+                mReviewCancelButton, mReviewDoneButton};
+        for (Rotatable indicator : indicators) {
+            if (indicator != null) indicator.setOrientation(orientation);
+        }
     }
 
     @Override

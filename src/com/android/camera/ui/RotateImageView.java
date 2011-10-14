@@ -16,8 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.ui.Rotatable;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -66,12 +64,8 @@ public class RotateImageView extends ColorFilterImageView implements Rotatable {
         return mTargetDegree;
     }
 
-    public void setOrientation(int orientation) {
-        setDegree(orientation);
-    }
-
     // Rotate the view counter-clockwise
-    public void setDegree(int degree) {
+    public void setOrientation(int degree) {
         // make sure in the range of [0, 359]
         degree = degree >= 0 ? degree % 360 : degree % 360 + 360;
         if (degree == mTargetDegree) return;

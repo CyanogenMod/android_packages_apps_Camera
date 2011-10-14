@@ -39,7 +39,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     private View mDivider; // the divider line
     private View mIndicatorHighlight; // the side highlight bar
     private View mPopupedIndicator;
-    int mDegree = 0;
+    int mOrientation = 0;
     int mSelectedIndex = -1;
     // There are some views in the ViewGroup before adding the indicator buttons,
     // such as Close icon, divider line and the hightlight bar, we need to
@@ -64,7 +64,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         setPreferenceGroup(group);
         mNonIndicatorButtonCount = getChildCount();
         addControls(keys, otherSettingKeys);
-        if (mDegree != 0) setDegree(mDegree);
+        if (mOrientation != 0) setOrientation(mOrientation);
     }
 
     public void onClick(View view) {
@@ -151,9 +151,9 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     }
 
     @Override
-    public void setDegree(int degree) {
-        mDegree = degree;
-        super.setDegree(degree);
+    public void setOrientation(int orientation) {
+        mOrientation = orientation;
+        super.setOrientation(orientation);
     }
 
     @Override
