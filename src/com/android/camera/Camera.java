@@ -1712,6 +1712,13 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     }
 
     private void doFocus(boolean pressed) {
+
+        if (pressed && mCaptureMode == null) {
+             mCaptureMode = mPreferences.getString(
+                    CameraSettings.KEY_CAPTURE_MODE,
+                    getString(R.string.pref_camera_capturemode_entry_default));
+        }
+
         if (!mTimerMode && pressed) {
             if (mCaptureMode.equals(getResources().getString(
                     R.string.pref_camera_capturemode_entry_timer))) {
