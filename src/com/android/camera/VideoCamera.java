@@ -1356,6 +1356,10 @@ public class VideoCamera extends ActivityBase
     }
 
     private void addVideoToMediaStore() {
+        if (mStorageSpace < LOW_STORAGE_THRESHOLD) {
+            Log.e(TAG, "Space insufficient to add media: " + mStorageSpace);
+            return;
+        }
         if (mVideoFileDescriptor == null) {
             Uri videoTable = Uri.parse("content://media/external/video/media");
             mCurrentVideoValues.put(Video.Media.SIZE,
