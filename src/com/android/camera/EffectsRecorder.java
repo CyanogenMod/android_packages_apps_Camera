@@ -89,6 +89,7 @@ public class EffectsRecorder {
     private String mOutputFile;
     private FileDescriptor mFd;
     private int mOrientationHint = 0;
+    private long mMaxFileSize = 0;
     private int mCameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     private int mEffect = EFFECT_NONE;
@@ -212,6 +213,16 @@ public class EffectsRecorder {
 
         mOutputFile = null;
         mFd = fd;
+    }
+
+    /**
+     * Sets the maximum filesize (in bytes) of the recording session.
+     * This will be passed on to the MediaEncoderFilter and then to the
+     * MediaRecorder ultimately. If zero or negative, the MediaRecorder will
+     * disable the limit
+    */
+    public synchronized void setMaxFileSize(long maxFileSize) {
+        mMaxFileSize = maxFileSize;
     }
 
     public void setPreviewDisplay(SurfaceHolder previewSurfaceHolder,
@@ -591,6 +602,7 @@ public class EffectsRecorder {
         }
         recorder.setInputValue("recording", true);
         if (mRecordSound != null) mRecordSound.play();
+        recorder.setInputValue("maxFileSize", mMaxFileSize);
         mState = STATE_RECORD;
     }
 
