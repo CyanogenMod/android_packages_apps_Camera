@@ -97,10 +97,13 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
             for (int i=0; i< TOTAL_NUMBER_OF_SWITCHING; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setClass(getInstrumentation().getTargetContext(),
                         VideoCamera.class);
                 getActivity().startActivity(intent);
                 Thread.sleep(WAIT_FOR_PREVIEW);
+                intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setClass(getInstrumentation().getTargetContext(),
                         Camera.class);
                 getActivity().startActivity(intent);
