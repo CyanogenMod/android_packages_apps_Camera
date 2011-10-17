@@ -198,10 +198,9 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
                 new RelativeLayout.LayoutParams(lpOld.width, lpOld.height);
 
         mRootView.setBackgroundDrawable(null);
-        if (mBitmapWidth > mBitmapHeight*2) {
+        if (mBitmapWidth > mBitmapHeight * 2 || mBitmapHeight > mBitmapWidth * 2) {
             // panorama image
-            lpNew.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lpNew.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            lpNew.addRule(RelativeLayout.CENTER_HORIZONTAL);
             lpNew.addRule(RelativeLayout.CENTER_VERTICAL);
 
             // panorama images block the preview from showing in the background

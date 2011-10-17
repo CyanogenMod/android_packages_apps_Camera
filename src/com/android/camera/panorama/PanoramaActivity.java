@@ -776,11 +776,14 @@ public class PanoramaActivity extends ActivityBase implements
                     int orientation = Exif.getOrientation(jpeg.data);
                     Uri uri = savePanorama(jpeg.data, jpeg.width, jpeg.height, orientation);
                     if (uri != null) {
-                        // Create a thumbnail whose width is equal or bigger
-                        // than the entire screen.
-                        int ratio = (int) Math.ceil((double) jpeg.width /
-                                mPanoLayout.getWidth());
-                        int inSampleSize = Integer.highestOneBit(ratio);
+                        // Create a thumbnail whose width or height is equal or bigger
+                        // than the screen's width or height.
+                        int widthRatio = (int) Math.ceil((double) jpeg.width
+                                / mPanoLayout.getWidth());
+                        int heightRatio = (int) Math.ceil((double) jpeg.height
+                                / mPanoLayout.getHeight());
+                        int inSampleSize = Integer.highestOneBit(
+                                Math.max(widthRatio, heightRatio));
                         mThumbnail = Thumbnail.createThumbnail(
                                 jpeg.data, orientation, inSampleSize, uri);
                     }
