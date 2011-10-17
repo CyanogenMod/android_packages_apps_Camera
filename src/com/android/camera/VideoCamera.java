@@ -102,6 +102,8 @@ public class VideoCamera extends ActivityBase
     // The reason why it is set to 0.7 is just because 1.0 is too bright.
     private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
+    private static final long LOW_STORAGE_THRESHOLD = 512L * 1024L;
+
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
 
