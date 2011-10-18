@@ -95,8 +95,8 @@
     <string name="no_picture_to_share" msgid="7700541451734517445">"Нет картинок для отправки"</string>
     <string name="no_video_to_share" msgid="3775826212074938990">"Нет видео для отправки"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Очень быстро"</string>
-    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Подготовка панорамы..."</string>
-    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Не удалось сохранить панораму"</string>
+    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Обработка..."</string>
+    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Не удалось сохранить файл"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Панорама"</string>
     <string name="pano_capture_indication" msgid="7431983072966619171">"Создание панорамы..."</string>
     <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Сохранение..."</string>
@@ -113,12 +113,21 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Закат"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Диско"</string>
     <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Выбрать видео"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Поставьте устройство на твердую поверхность и убедитесь, что позади вас нет движущихся предметов или людей."\n\n"Затем отойдите от камеры."</string>
+    <string name="bg_replacement_message" msgid="7540788298745332389">"Установите устройство на твердой поверхности и убедитесь, что позади вас нет движущихся предметов или людей."\n\n"Затем отойдите, чтобы вас было видно в камеру."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Недоступно при использовании этого эффекта."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Чтобы сделать снимок при видеосъемке, нажмите на экран просмотра."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Невозможно сделать снимок при включенных спецэффектах."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Убрать эффекты"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Смешные рожицы"</string>
     <string name="effect_background" msgid="6909716214852487679">"Фон"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Кнопка \"Затвор\""</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Недавние фото"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Переключение на переднюю или заднюю камеру"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Переключатель между фото, видео и режимом панорамной съемки"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Дополнительные настройки"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Закрыть окно настроек"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Масштабирование"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Уменьшить %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Увеличить %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Переключить %1$s"</string>
 </resources>

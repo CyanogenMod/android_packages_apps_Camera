@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"將您的裝置放在平穩的表面上，確定自己身後沒有移動的物體。"\n\n"然後離開相機鏡頭的視野範圍。"</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"效果啟用時無法選取這項設定。"</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"影片錄製期間，只要輕按預覽畫面即可拍攝相片。"</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"特殊效果啟用時無法使用影片快照。"</string>
     <string name="clear_effects" msgid="5485339175014139481">"清除效果"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"耍笨臉"</string>
     <string name="effect_background" msgid="6909716214852487679">"背景"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"[快門] 按鈕"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"最近的相片"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"前置和後置鏡頭開關"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"相機、影片或全景選取工具"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"更多設定控制"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"關閉設定控制"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"縮放控制"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"縮小 %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"放大 %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s 開關"</string>
 </resources>

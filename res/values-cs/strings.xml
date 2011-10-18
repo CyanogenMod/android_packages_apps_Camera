@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Umístěte zařízení na pevný povrch a zkontrolujte, zda se za vámi nic nehýbe."\n\n"Poté ustupte ze záběru kamery."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Nastavení nelze vybrat, pokud je efekt zapnutý."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Během nahrávání videa lze fotit klepnutím na obrazovku náhledu."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Jsou-li zapnuty zvláštní efekty, jsou snímky videa zakázány."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Vymazat efekty"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Bláznivé tváře"</string>
     <string name="effect_background" msgid="6909716214852487679">"Pozadí"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Tlačítko závěrky"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Poslední fotografie"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Přepínač mezi předním a zadním fotoaparátem"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Přepínač mezi panoramatickým režimem a režimy fotoaparátu a videokamery"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Další ovládací prvky nastavení"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Zavřít ovládací prvky nastavení"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Ovládání přiblížení/oddálení"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Snížit %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Zvýšit %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Přepínač %1$s"</string>
 </resources>

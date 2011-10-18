@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Aşezaţi dispozitivul pe o suprafaţă stabilă şi asiguraţi-vă că nu există mişcare în spatele dvs."\n\n"Apoi, ieşiţi din vizorul camerei foto."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Setarea nu poate fi selectată cu efectul activat."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Fotografiaţi când înregistraţi video atingând ecranul."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Instant. video este dezact. când efectele speciale sunt pornite."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Ştergeţi efectul"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Feţe stupide"</string>
     <string name="effect_background" msgid="6909716214852487679">"Fundal"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Butonul Declanşaţi"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Cea mai recentă fotografie"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Comutator pentru camera foto din faţă şi din spate"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Selector pentru modurile cameră foto, cameră video sau panoramă"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Mai multe comenzi pentru setări"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Închideţi comenzile pentru setări"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Comandă mărire/micşorare"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Reduceţi %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Măriţi %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Comutator %1$s"</string>
 </resources>
