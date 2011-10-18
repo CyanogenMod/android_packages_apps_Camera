@@ -2078,7 +2078,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private boolean switchToOtherMode(int mode) {
         if (isFinishing()) return false;
-        mImageSaver.waitDone();
+        if (mImageSaver != null) mImageSaver.waitDone();
         MenuHelper.gotoMode(mode, Camera.this);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
