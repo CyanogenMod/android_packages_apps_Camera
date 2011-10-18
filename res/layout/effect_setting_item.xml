@@ -17,8 +17,8 @@
         style="@style/EffectSettingItem">
 
         <ImageView android:id="@+id/image"
-                android:layout_width="@dimen/effect_setting_item_icon_width"
                 android:layout_height="@dimen/effect_setting_item_icon_width"
+                android:layout_width="@dimen/effect_setting_item_icon_width"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true" />

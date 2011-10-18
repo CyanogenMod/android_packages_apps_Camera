@@ -17,12 +17,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         android:id="@+id/app_root"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
     <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:orientation="vertical"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
         <include layout="@layout/preview_frame_video"/>
         <include layout="@layout/camera_control"/>
     </LinearLayout>

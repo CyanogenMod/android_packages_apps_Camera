@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -38,7 +39,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.GridView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
@@ -65,7 +66,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
     // A view that contains a list of application icons and the share view.
     private View mRootView;
     // The list of the application icons.
-    private ListView mShareList;
+    private GridView mShareList;
     // A rotated view that contains the thumbnail.
     private RotateLayout mThumbnailRotateLayout;
     private RotateLayout mGotoGalleryRotate;
@@ -114,8 +115,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         // This is required because popup window is full screen.
         sharePopup.setOnTouchListener(this);
         mThumbnailRotateLayout = (RotateLayout) sharePopup.findViewById(R.id.thumbnail_rotate_layout);
-        mShareList = (ListView) sharePopup.findViewById(R.id.share_list);
-        mShareList.setDivider(null);
+        mShareList = (GridView) sharePopup.findViewById(R.id.share_list);
         mThumbnail = (ImageView) sharePopup.findViewById(R.id.thumbnail);
         mThumbnail.setImageBitmap(bitmap);
         mShareView = (ViewGroup) sharePopup.findViewById(R.id.share_view);
@@ -279,10 +279,19 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
             items.add(map);
             mComponent.add(component);
         }
+
+        // On phone UI, we have to know how many icons in the grid view before
+        // the view is measured.
+        if (((Activity) mContext).getRequestedOrientation()
+                == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            mShareList.setNumColumns(items.size());
+        }
+
         SimpleAdapter listItemAdapter = new MySimpleAdapter(mContext, items,
                 R.layout.share_icon,
                 new String[] {ADAPTER_COLUMN_ICON},
                 new int[] {R.id.icon});
+
         listItemAdapter.setViewBinder(mViewBinder);
         mShareList.setAdapter(listItemAdapter);
         mShareList.setOnItemClickListener(this);

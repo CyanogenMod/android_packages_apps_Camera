@@ -13,19 +13,22 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
-    <TextView android:id="@+id/recording_time"
-            style="@style/OnViewfinderLabel"
-            android:gravity="center"
-            android:drawableLeft="@drawable/ic_recording_indicator"
-            android:drawablePadding="5dp"
-            android:visibility="gone" />
-    <TextView android:id="@+id/time_lapse_label"
-            android:text="@string/time_lapse_title"
-            style="@style/OnViewfinderLabel"
-            android:visibility="gone" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+    <ImageView style="@style/OnScreenIndicator"
+            android:id="@+id/onscreen_gps_indicator_no_signal"
+            android:src="@drawable/ic_viewfinder_gps_no_signal"/>
+    <ImageView style="@style/OnScreenIndicator"
+            android:id="@+id/onscreen_gps_indicator_on"
+            android:src="@drawable/ic_viewfinder_gps_on"/>
+    <TextView style="@style/OnScreenIndicator"
+            android:id="@+id/onscreen_exposure_indicator"
+            android:gravity="center_vertical"
+            android:textSize="15dp"
+            android:textColor="@android:color/white"/>
 </LinearLayout>

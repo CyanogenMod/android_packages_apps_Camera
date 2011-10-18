@@ -87,20 +87,19 @@ public class IndicatorControlBar extends IndicatorControl implements
 
         int count = getChildCount();
         if (count == 0) return;
-        int width = right - left;
+        int height = bottom - top;
 
-        // First indicator will be CameraPicker if exists.
-        if (mCameraPicker != null) {
-            mCameraPicker.layout(0, padding, width, padding + width);
-        }
+        mSecondLevelIcon.layout(0, 0, height, height);
 
         // Layout the zoom control if required.
-        int offset = padding + width; // the padding and the icon height
+        int offset = padding + height; // the padding and the icon height
         if (mZoomControl != null)  {
-            mZoomControl.layout(0, offset, width, bottom - top - offset);
+            mZoomControl.layout(offset, 0, right - left - offset, height);
         }
 
-        mSecondLevelIcon.layout(0, bottom - top - offset, width, bottom - top);
+        if (mCameraPicker != null) {
+            mCameraPicker.layout(right - left - offset, 0, right - left, height);
+        }
     }
 
     @Override
