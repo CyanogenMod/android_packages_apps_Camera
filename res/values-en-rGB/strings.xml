@@ -120,4 +120,14 @@
     <string name="clear_effects" msgid="5485339175014139481">"Clear effects"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Silly faces"</string>
     <string name="effect_background" msgid="6909716214852487679">"Background"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Shutter button"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Most recent photo"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Front and back camera switch"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Camera, video or panorama selector"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"More settings controls"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Close settings controls"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Zoom control"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Decrease %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Increase %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s switch"</string>
 </resources>

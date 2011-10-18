@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Coloque o aparelho numa superfície estável e certifique-se de que não existe movimento atrás de si."\n\n"Em seguida, saia do alcance visual da câmara."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Isto não é selecionável com o efeito ativado."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Tire uma fotografia durante a gravação de vídeo tocando no ecrã de pré-visualização."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Instantâneo vídeo desat. quando efeitos especiais estão ativos."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Limpar efeitos"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Caretas"</string>
     <string name="effect_background" msgid="6909716214852487679">"Fundo"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Botão Obturador"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Fotografia mais recente"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Interruptor da câmara frontal e posterior"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Seletor de câmara, vídeo ou panorama"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Mais controlos de definições"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Fechar controlos de definições"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Controlo de zoom"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Diminuir %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Aumentar %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Interruptor %1$s"</string>
 </resources>

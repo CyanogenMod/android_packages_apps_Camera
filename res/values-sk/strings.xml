@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Umiestnite zariadenie na pevný povrch a uistite sa, že sa za vami nič nehýbe."\n\n"Potom ustúpte zo záberu fotoaparátu."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Nastavenie nie je možné vybrať pri zapnutom efekte."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Počas nahrávania videa môžete fotiť klepnutím na obrazovku ukážky."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Pri zapnutých špeciálnych efektoch je vytváranie snímok zakázané."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Vymazať efekty"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Bláznivé tváre"</string>
     <string name="effect_background" msgid="6909716214852487679">"Pozadie"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Tlačidlo uzávierky"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Posledná fotografia"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Prepínač medzi predným a zadným fotoaparátom"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Prepínač medzi panoramatickým režimom a režimami fotoaparátu a videokamery"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Ďalšie ovládacie prvky nastavenia"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Zavrieť ovládacie prvky nastavenia"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Ovládanie priblíženia/oddialenia"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Znížiť %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Zvýšiť %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Prepínač %1$s"</string>
 </resources>
