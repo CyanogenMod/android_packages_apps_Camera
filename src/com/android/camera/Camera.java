@@ -1040,6 +1040,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
         } else {
             mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+            mThumbnailView.enableFilter(false);
             mThumbnailView.setVisibility(View.VISIBLE);
         }
 
@@ -1180,6 +1181,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
         if (mModePicker != null) mModePicker.setEnabled(enable);
         if (mZoomControl != null) mZoomControl.setEnabled(enable);
+        if (mThumbnailView != null) mThumbnailView.setEnabled(enable);
     }
 
     public static int roundOrientation(int orientation) {

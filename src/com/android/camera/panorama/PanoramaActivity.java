@@ -535,6 +535,7 @@ public class PanoramaActivity extends ActivityBase implements
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan_recording);
         mCaptureIndicator.setVisibility(View.VISIBLE);
         showDirectionIndicators(PanoProgressBar.DIRECTION_NONE);
+        mThumbnailView.setEnabled(false);
 
         mCompassValueXStart = mCompassValueXStartBuffer;
         mCompassValueYStart = mCompassValueYStartBuffer;
@@ -573,6 +574,7 @@ public class PanoramaActivity extends ActivityBase implements
         mCaptureIndicator.setVisibility(View.GONE);
         hideTooFastIndication();
         hideDirectionIndicators();
+        mThumbnailView.setEnabled(true);
 
         mMosaicFrameProcessor.setProgressListener(null);
         stopCameraPreview();
@@ -673,6 +675,7 @@ public class PanoramaActivity extends ActivityBase implements
         mCaptureIndicator = (TextView) findViewById(R.id.pano_capture_indicator);
 
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+        mThumbnailView.enableFilter(false);
 
         mReviewLayout = (View) findViewById(R.id.pano_review_layout);
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
