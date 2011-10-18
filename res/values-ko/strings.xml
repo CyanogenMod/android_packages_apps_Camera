@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"기기를 평평한 바닥에 올려놓고 뒤에 움직이는 물체가 없는지 확인합니다. "\n\n"그런 다음 카메라 뷰 밖으로 비켜섭니다."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"효과를 사용 중일 때는 선택할 수 없습니다."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"동영상을 촬영하는 동안 미리보기 화면을 탭하여 사진을 찍을 수 있습니다."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"특수 효과가 설정되어 있으면 동영상 스냅샷이 사용 중지됩니다."</string>
     <string name="clear_effects" msgid="5485339175014139481">"효과 제거"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"웃긴 얼굴"</string>
     <string name="effect_background" msgid="6909716214852487679">"배경"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"셔터 버튼"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"최근 사진"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"전방 및 후방 카메라 사이를 전환"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"카메라, 동영상 또는 파노라마 선택기"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"설정 컨트롤 더보기"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"설정 컨트롤 닫기"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"확대/축소 컨트롤"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"%1$s 축소"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"%1$s 확대"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s 전환"</string>
 </resources>

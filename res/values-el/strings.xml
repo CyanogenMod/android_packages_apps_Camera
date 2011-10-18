@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Τοποθετήστε τη συσκευή σας σε μια σταθερή επιφάνεια και βεβαιωθείτε ότι δεν υπάρχουν κινήσεις πίσω σας."\n\n" Στη συνέχεια, απομακρυνθείτε από το οπτικό πεδίο της κάμερας."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Αδύνατη η επιλογή του όταν το εφέ είναι ενεργό."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Τραβ. μια φωτογρ. κατά την εγγρ. βίντεο πατώντας την οθ.προεπισκ."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Το στιγμιότυπο οθόνης βίντεο απενεργοποιείται με ενεργά τα εφέ."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Διαγραφή εφέ"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Αστεία πρόσωπα"</string>
     <string name="effect_background" msgid="6909716214852487679">"Φόντο"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Κουμπί κλείστρου"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Πιο πρόσφατη φωτογραφία"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Διακόπτης εμπρός και πίσω φωτογραφικής μηχανής"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Επιλογή φωτογραφικής μηχανής, βίντεο ή πανοραμικής εικόνας"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Περισσότερα στοιχεία ελέγχου ρυθμίσεων"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Κλείσιμο στοιχείων ελέγχου ρυθμίσεων"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Έλεγχος εστίασης"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Μείωση %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Αύξηση %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Διακόπτης %1$s"</string>
 </resources>

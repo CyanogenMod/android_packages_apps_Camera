@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Novietojiet ierīci uz stabilas virsmas un pārliecinieties, ka aiz jums nenotiek nekāda kustība."\n\n"Pēc tam izejiet no kameras skata."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Šo iestat. nevar atlasīt, kad ir ieslēgts efekts."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Fotografējiet videoieraksta laikā, pieskaroties priekšskat. ekr."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Video momentuzņēmums ir atspējots, ja ir ieslēgti specefekti."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Noņemt efektus"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Smieklīgas sejas izt."</string>
     <string name="effect_background" msgid="6909716214852487679">"Fons"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Slēdža poga"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Pēdējais fotoattēls"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Priekšējais un aizmugurējais kameras slēdzis"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Kameras, video vai panorāmas atlasītājs"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Vairāk iestatījumu vadīklu"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Aizvērt iestatījumu vadīklas"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Tālummaiņas vadība"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Samazināt %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Palielināt %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s slēdzis"</string>
 </resources>
