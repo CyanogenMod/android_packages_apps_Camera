@@ -36,12 +36,22 @@ import java.util.HashMap;
 // effects.
 public class EffectSettingPopup extends AbstractSettingPopup implements
         AdapterView.OnItemClickListener, View.OnClickListener {
-    private final String TAG = "EffectSettingPopup";
+    private static final String TAG = "EffectSettingPopup";
+    private String mNoEffect;
     private IconListPreference mPreference;
     private Listener mListener;
     private View mClearEffects;
     private GridView mSillyFacesGrid;
     private GridView mBackgroundGrid;
+
+    // Data for silly face items. (text, image, and preference value)
+    ArrayList<HashMap<String, Object>> mSillyFacesItem =
+            new ArrayList<HashMap<String, Object>>();
+
+    // Data for background replacer items. (text, image, and preference value)
+    ArrayList<HashMap<String, Object>> mBackgroundItem =
+            new ArrayList<HashMap<String, Object>>();
+
 
     static public interface Listener {
         public void onSettingChanged();
@@ -49,6 +59,7 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
 
     public EffectSettingPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mNoEffect = context.getString(R.string.pref_video_effect_default);
     }
 
     @Override
@@ -64,6 +75,7 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
         mPreference = preference;
         Context context = getContext();
         CharSequence[] entries = mPreference.getEntries();
+        CharSequence[] entryValues = mPreference.getEntryValues();
         int[] iconIds = mPreference.getImageIds();
         if (iconIds == null) {
             iconIds = mPreference.getLargeIconIds();
@@ -72,39 +84,45 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
         // Set title.
         mTitle.setText(mPreference.getTitle());
 
-        // Prepare goofy face GridView.
-        ArrayList<HashMap<String, Object>> sillyFacesItem =
-                new ArrayList<HashMap<String, Object>>();
-        // The first is clear effect. Skip it.
-        for(int i = 1; i < EffectsRecorder.NUM_OF_GF_EFFECTS + 1; ++i) {
+        for(int i = 0; i < entries.length; ++i) {
+            String value = entryValues[i].toString();
+            if (value.equals(mNoEffect)) continue;  // no effect, skip it.
             HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("value", value);
             map.put("text", entries[i].toString());
             if (iconIds != null) map.put("image", iconIds[i]);
-            sillyFacesItem.add(map);
+            if (value.startsWith("goofy_face")) {
+                mSillyFacesItem.add(map);
+            } else if (value.startsWith("backdropper")) {
+                mBackgroundItem.add(map);
+            }
         }
-        SimpleAdapter sillyFacesItemAdapter = new SimpleAdapter(context,
-                sillyFacesItem, R.layout.effect_setting_item,
-                new String[] {"text", "image"},
-                new int[] {R.id.text, R.id.image});
-        mSillyFacesGrid.setAdapter(sillyFacesItemAdapter);
-        mSillyFacesGrid.setOnItemClickListener(this);
 
-        // Prepare background replacer GridView.
-        ArrayList<HashMap<String, Object>> backgroundItem =
-                new ArrayList<HashMap<String, Object>>();
-        for(int i = EffectsRecorder.NUM_OF_GF_EFFECTS + 1; i < entries.length; ++i) {
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("text", entries[i].toString());
-            if (iconIds != null) map.put("image", iconIds[i]);
-            backgroundItem.add(map);
+        boolean hasSillyFaces = mSillyFacesItem.size() > 0;
+        boolean hasBackground = mBackgroundItem.size() > 0;
+
+        // Initialize goofy face if it is supported.
+        if (hasSillyFaces) {
+            findViewById(R.id.effect_silly_faces_title).setVisibility(View.VISIBLE);
+            mSillyFacesGrid.setVisibility(View.VISIBLE);
+            SimpleAdapter sillyFacesItemAdapter = new SimpleAdapter(context,
+                    mSillyFacesItem, R.layout.effect_setting_item,
+                    new String[] {"text", "image"},
+                    new int[] {R.id.text, R.id.image});
+            mSillyFacesGrid.setAdapter(sillyFacesItemAdapter);
+            mSillyFacesGrid.setOnItemClickListener(this);
         }
-        // Initialize background replacer if it is supported.
-        if (backgroundItem.size() > 0) {
+
+        if (hasSillyFaces && hasBackground) {
             findViewById(R.id.effect_background_separator).setVisibility(View.VISIBLE);
+        }
+
+        // Initialize background replacer if it is supported.
+        if (hasBackground) {
             findViewById(R.id.effect_background_title).setVisibility(View.VISIBLE);
             mBackgroundGrid.setVisibility(View.VISIBLE);
             SimpleAdapter backgroundItemAdapter = new SimpleAdapter(context,
-                    backgroundItem, R.layout.effect_setting_item,
+                    mBackgroundItem, R.layout.effect_setting_item,
                     new String[] {"text", "image"},
                     new int[] {R.id.text, R.id.image});
             mBackgroundGrid.setAdapter(backgroundItemAdapter);
@@ -120,8 +138,8 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
             if (getVisibility() != View.VISIBLE) {
                 // Do not show or hide "Clear effects" button when the popup
                 // is already visible. Otherwise it looks strange.
-                int index = mPreference.findIndexOfValue(mPreference.getValue());
-                mClearEffects.setVisibility((index <= 0) ? View.GONE : View.VISIBLE);
+                boolean noEffect = mPreference.getValue().equals(mNoEffect);
+                mClearEffects.setVisibility(noEffect ? View.GONE : View.VISIBLE);
             }
             reloadPreference();
         }
@@ -131,19 +149,28 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
     // The value of the preference may have changed. Update the UI.
     @Override
     public void reloadPreference() {
-        int index = mPreference.findIndexOfValue(mPreference.getValue());
-        if (index >= 0) {
-            mBackgroundGrid.setItemChecked(mBackgroundGrid.getCheckedItemPosition(), false);
-            mSillyFacesGrid.setItemChecked(mSillyFacesGrid.getCheckedItemPosition(), false);
-            if (index >= 1 && index < EffectsRecorder.NUM_OF_GF_EFFECTS + 1) {
-                mSillyFacesGrid.setItemChecked(index - 1, true);
-            } else if (index >= EffectsRecorder.NUM_OF_GF_EFFECTS + 1) {
-                mBackgroundGrid.setItemChecked(index - EffectsRecorder.NUM_OF_GF_EFFECTS - 1, true);
+        mBackgroundGrid.setItemChecked(mBackgroundGrid.getCheckedItemPosition(), false);
+        mSillyFacesGrid.setItemChecked(mSillyFacesGrid.getCheckedItemPosition(), false);
+
+        String value = mPreference.getValue();
+        if (value.equals(mNoEffect)) return;
+
+        for (int i = 0; i < mSillyFacesItem.size(); i++) {
+            if (value.equals(mSillyFacesItem.get(i).get("value"))) {
+                mSillyFacesGrid.setItemChecked(i, true);
+                return;
             }
-        } else {
-            Log.e(TAG, "Invalid preference value.");
-            mPreference.print();
         }
+
+        for (int i = 0; i < mBackgroundItem.size(); i++) {
+            if (value.equals(mBackgroundItem.get(i).get("value"))) {
+                mBackgroundGrid.setItemChecked(i, true);
+                return;
+            }
+        }
+
+        Log.e(TAG, "Invalid preference value: " + value);
+        mPreference.print();
     }
 
     public void setSettingChangedListener(Listener listener) {
@@ -154,10 +181,11 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
     public void onItemClick(AdapterView<?> parent, View view,
             int index, long id) {
         if (parent == mSillyFacesGrid) {
-            // The first one is clear effect.
-            mPreference.setValueIndex(index + 1);
-        } else { // Background replace grid.
-            mPreference.setValueIndex(index + EffectsRecorder.NUM_OF_GF_EFFECTS + 1);
+            String value = (String) mSillyFacesItem.get(index).get("value");
+            mPreference.setValue(value);
+        } else if (parent == mBackgroundGrid) {
+            String value = (String) mBackgroundItem.get(index).get("value");
+            mPreference.setValue(value);
         }
         reloadPreference();
         if (mListener != null) mListener.onSettingChanged();
@@ -166,7 +194,7 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
     @Override
     public void onClick(View v) {
         // Clear the effect.
-        mPreference.setValueIndex(0);
+        mPreference.setValue(mNoEffect);
         reloadPreference();
         if (mListener != null) mListener.onSettingChanged();
     }
