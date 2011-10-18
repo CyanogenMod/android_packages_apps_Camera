@@ -1501,7 +1501,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             unregisterReceiver(mReceiver);
             mDidRegister = false;
         }
-        mLocationManager.recordLocation(false);
+        if (mLocationManager != null) mLocationManager.recordLocation(false);
         updateExposureOnScreenIndicator(0);
 
         mFocusManager.releaseSoundPlayer();
