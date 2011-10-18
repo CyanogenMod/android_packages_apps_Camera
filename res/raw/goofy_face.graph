@@ -32,7 +32,6 @@
 @external recordingHeight;
 @external recordingProfile;
 @external recordingDoneListener;
-@external audioSource;
 
 @external previewSurface;
 @external previewWidth;
@@ -97,11 +96,11 @@
 
 // Recording output
 @filter MediaEncoderFilter recorder {
-  audioSource = $audioSource;
   recordingProfile = $recordingProfile;
   recordingDoneListener = $recordingDoneListener;
   recording = false;
-  // outputFile, orientationHint, inputRegion, listeners
+  // outputFile, orientationHint, inputRegion,
+  // audioSource, listeners, captureRate
   // will be set when recording starts
 }
 

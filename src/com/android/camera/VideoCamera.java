@@ -1242,6 +1242,8 @@ public class VideoCamera extends ActivityBase
 
         mEffectsRecorder = new EffectsRecorder(this);
 
+        // TODO: Confirm none of the foll need to go to initializeEffectsRecording()
+        // and none of these change even when the preview is not refreshed.
         mEffectsRecorder.setCamera(mCameraDevice);
         mEffectsRecorder.setCameraFacing(info.facing);
         mEffectsRecorder.setProfile(mProfile);
@@ -1293,7 +1295,15 @@ public class VideoCamera extends ActivityBase
             requestedSizeLimit = myExtras.getLong(MediaStore.EXTRA_SIZE_LIMIT);
         }
 
-        // TODO: Timelapse
+        mEffectsRecorder.setProfile(mProfile);
+        // important to set the capture rate to zero if not timelapsed, since the
+        // effectsrecorder object does not get created again for each recording
+        // session
+        if (mCaptureTimeLapse) {
+            mEffectsRecorder.setCaptureRate((1000 / (double) mTimeBetweenTimeLapseFrameCaptureMs));
+        } else {
+            mEffectsRecorder.setCaptureRate(0);
+        }
 
         // Set output file
         if (mVideoFileDescriptor != null) {

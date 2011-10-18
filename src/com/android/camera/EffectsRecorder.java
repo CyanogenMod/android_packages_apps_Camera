@@ -80,6 +80,7 @@ public class EffectsRecorder {
 
     private Camera mCameraDevice;
     private CamcorderProfile mProfile;
+    private double mCaptureRate = 0;
     private SurfaceHolder mPreviewSurfaceHolder;
     private int mPreviewWidth;
     private int mPreviewHeight;
@@ -222,7 +223,29 @@ public class EffectsRecorder {
      * disable the limit
     */
     public synchronized void setMaxFileSize(long maxFileSize) {
+        switch (mState) {
+            case STATE_RECORD:
+                throw new RuntimeException("setMaxFileSize cannot be called while recording!");
+            case STATE_RELEASED:
+                throw new RuntimeException("setMaxFileSize called on an already released recorder!");
+            default:
+                break;
+        }
         mMaxFileSize = maxFileSize;
+    }
+
+    public void setCaptureRate(double fps) {
+        switch (mState) {
+            case STATE_RECORD:
+                throw new RuntimeException("setCaptureRate cannot be called while recording!");
+            case STATE_RELEASED:
+                throw new RuntimeException("setCaptureRate called on an already released recorder!");
+            default:
+                break;
+        }
+
+        if (mLogVerbose) Log.v(TAG, "Setting time lapse capture rate to " + fps + " fps");
+        mCaptureRate = fps;
     }
 
     public void setPreviewDisplay(SurfaceHolder previewSurfaceHolder,
@@ -382,10 +405,8 @@ public class EffectsRecorder {
                 "recordingWidth", mProfile.videoFrameWidth,
                 "recordingHeight", mProfile.videoFrameHeight,
                 "recordingProfile", mProfile,
-                "audioSource", MediaRecorder.AudioSource.CAMCORDER,
                 "learningDoneListener", mLearningDoneListener,
                 "recordingDoneListener", mRecordingDoneListener);
-
         mRunner = null;
         mGraphId = -1;
         mCurrentEffect = EFFECT_NONE;
@@ -592,17 +613,34 @@ public class EffectsRecorder {
         } else {
             recorder.setInputValue("outputFile", mOutputFile);
         }
+        // It is ok to set the audiosource without checking for timelapse here
+        // since that check will be done in the MediaEncoderFilter itself
+        recorder.setInputValue("audioSource", MediaRecorder.AudioSource.CAMCORDER);
 
+        recorder.setInputValue("recordingProfile", mProfile);
         recorder.setInputValue("orientationHint", mOrientationHint);
+        // Important to set the timelapseinterval to 0 if the capture rate is not >0
+        // since the recorder does not get created every time the recording starts.
+        // The recorder infers whether the capture is timelapsed based on the value of
+        // this interval
+        boolean captureTimeLapse = mCaptureRate > 0;
+        if (captureTimeLapse) {
+            double timeBetweenFrameCapture = 1 / mCaptureRate;
+            recorder.setInputValue("timelapseRecordingIntervalUs",
+                    (long) (1000000 * timeBetweenFrameCapture));
+        } else {
+            recorder.setInputValue("timelapseRecordingIntervalUs", 0L);
+        }
+
         if (mInfoListener != null) {
             recorder.setInputValue("infoListener", mInfoListener);
         }
         if (mErrorListener != null) {
             recorder.setInputValue("errorListener", mErrorListener);
         }
+        recorder.setInputValue("maxFileSize", mMaxFileSize);
         recorder.setInputValue("recording", true);
         if (mRecordSound != null) mRecordSound.play();
-        recorder.setInputValue("maxFileSize", mMaxFileSize);
         mState = STATE_RECORD;
     }
 
