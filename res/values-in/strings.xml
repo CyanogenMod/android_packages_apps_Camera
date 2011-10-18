@@ -116,9 +116,28 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Tempatkan perangkat pada permukaan yang stabil dan pastikan tidak ada gerakan di belakang Anda."\n\n"Setelah itu keluarlah dari pandangan kamera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Setelan ini tidak dapat dipilih jika efek dihidupkan."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Mengambil foto saat merekam video dengan mengetuk layar pratinjau."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Cuplikan video dinonaktifkan bila efek khusus aktif."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Hapus efek"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Wajah konyol"</string>
     <string name="effect_background" msgid="6909716214852487679">"Latar belakang"</string>
+    <!-- no translation found for accessibility_shutter_button (2664037763232556307) -->
+    <skip />
+    <!-- no translation found for accessibility_review_thumbnail (8961275263537513017) -->
+    <skip />
+    <!-- no translation found for accessibility_camera_picker (8807945470215734566) -->
+    <skip />
+    <!-- no translation found for accessibility_mode_picker (3264968460835265505) -->
+    <skip />
+    <!-- no translation found for accessibility_second_level_indicators (3855951632917627620) -->
+    <skip />
+    <!-- no translation found for accessibility_back_to_first_level (5234411571109877131) -->
+    <skip />
+    <!-- no translation found for accessibility_zoom_control (1339909363226825709) -->
+    <skip />
+    <!-- no translation found for accessibility_decrement (1411194318538035666) -->
+    <skip />
+    <!-- no translation found for accessibility_increment (8447850530444401135) -->
+    <skip />
+    <!-- no translation found for accessibility_switch (6995966685498958895) -->
+    <skip />
 </resources>

@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nacht"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Zonsondergang"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Feest"</string>
-    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Dit kunt u niet selecteren in de scène-modus"</string>
+    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"Dit kunt u niet selecteren in de scènemodus"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Camera-instellingen"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Standaardwaarden herstellen"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Belichting"</string>
@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Plaats uw apparaat op een stevige ondergrond en zorg ervoor dat er geen beweging achter u te zien is."\n\n"Stap vervolgens uit beeld."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Dit kan niet worden geselecteerd wanneer het effect is ingeschakeld."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Tik voor een foto bij video-opnamen op het voorbeeldscherm."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Videosnapshot staat uit als speciale effecten zijn ingeschakeld."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Effecten wissen"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Gekke gezichten"</string>
     <string name="effect_background" msgid="6909716214852487679">"Achtergrond"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Sluiterknop"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Meest recente foto"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Schakelen tussen camera aan voorzijde en aan achterzijde"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Camera-, video- of panoramakiezer"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Meer instelopties"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Instelopties sluiten"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Zoomregeling"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"%1$s verlagen"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"%1$s verhogen"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s-schakelaar"</string>
 </resources>

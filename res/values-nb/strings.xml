@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Plassér enheten på et stødig underlag og sørg for at det ikke er noen bevegelser bak deg."\n\n"Deretter flytter du deg bort fra kamerabildet."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Du kan ikke velge dette når effekten er aktivert."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Ta bilde under videoopptaket ved å trykke på forhåndsvisningen."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Øyeblikksbilder er deaktivert når spesialeffekter er aktivert."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Fjern effekter"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Morsomme ansikter"</string>
     <string name="effect_background" msgid="6909716214852487679">"Bakgrunn"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Lukkerknapp"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Nyeste bilde"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Bryter for foran/bak"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Valg av kamera, video eller panorama"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Flere innstillingskontroller"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Lukk innstillingskontrollene"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Zoomkontroll"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Reduser %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Øk %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s-bryteren"</string>
 </resources>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="camera_error_title" msgid="6484667504938477337">"कैमरा त्रुटि"</string>
+    <string name="cannot_connect_camera" msgid="8029009101380114174">"कैमरे से कनेक्ट नहीं कर सकता."</string>
+    <string name="camera_disabled" msgid="8923911090533439312">"सुरक्षा नीतियों के कारण कैमरा अक्षम कर दिया गया है."</string>
+    <string name="camera_label" msgid="6346560772074764302">"कैमरा"</string>
+    <string name="video_camera_label" msgid="2899292505526427293">"कैमकॉर्डर"</string>
+    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"कैमरा चित्र"</string>
+    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"कैमरा वीडियो"</string>
+    <string name="wait" msgid="8600187532323801552">"कृपया प्रतीक्षा करें..."</string>
+    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"कृपया कैमरे का उपयोग करने से पहले USB संग्रहण माउंट करें."</string>
+    <string name="no_storage" product="default" msgid="820691042667338625">"कृपया कैमरे का उपयोग करने से पहले SD कार्ड डालें."</string>
+    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"आपका USB संग्रहण पूरा भर गया है."</string>
+    <string name="not_enough_space" product="default" msgid="6655334407957844653">"आपका SD कार्ड भरा हुआ है."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USB संग्रहण तैयार कर रहा है…"</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"SD कार्ड तैयार कर रहा है…"</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"USB संग्रहण में नहीं पहुंच सका."</string>
+    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"SD कार्ड में नहीं पहुंच सका."</string>
+    <string name="confirm_restore_title" msgid="1229914538263792180">"डिफ़ॉल्ट पुनर्स्थापित करें"</string>
+    <string name="confirm_restore_message" msgid="5239464943578877295">"कैमरा सेटिंग डिफ़ॉल्ट पर पुनर्स्थापित की जाएगी."</string>
+    <string name="review_play" msgid="6378271587740884696">"चलाएं"</string>
+    <string name="review_cancel" msgid="8188009385853399254">"रद्द करें"</string>
+    <string name="review_ok" msgid="5305096180300056529">"ठीक"</string>
+    <string name="review_retake" msgid="7804864054896088338">"रीटेक"</string>
+    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"गैलरी"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"कैमरा स्विच करें"</string>
+    <string name="time_lapse_title" msgid="4360632427760662691">"समय समाप्ति रिकॉर्डिंग"</string>
+    <string name="pref_camera_id_title" msgid="6023059405578511534">"कैमरा चयन करें"</string>
+    <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"वापस जाएं"</string>
+    <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"सामने"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"संग्रह स्थान"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"बंद"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"चालू"</string>
+    <string name="pref_video_quality_title" msgid="8245379279801096922">"वीडियो गुणवत्ता"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"समय समाप्ति अंतराल"</string>
+    <string name="pref_camera_settings_category" msgid="2576236450859613120">"कैमरा सेटिंग"</string>
+    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"कैमकॉर्डर सेटिंग"</string>
+    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"चित्र आकार"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5M पिक्सेल"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3M पिक्सेल"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2M पिक्सेल"</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1.3M पिक्‍सेल"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1M पिक्सेल"</string>
+    <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
+    <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
+    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"फ़ोकस मोड"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"स्वत:"</string>
+    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"अनंत"</string>
+    <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"मैक्रो"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"फ़्लैश मोड"</string>
+    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"स्वत:"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"चालू"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"बंद"</string>
+    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"श्वेत संतुलन"</string>
+    <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"स्वत:"</string>
+    <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"अत्यधिक चमकीला"</string>
+    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"दिन का प्रकाश"</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"फ़्लोरेसेंट"</string>
+    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"बदली"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"दृश्य मोड"</string>
+    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"स्वत:"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"कार्यवाही"</string>
+    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"रात्रि"</string>
+    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"सूर्यास्त"</string>
+    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"पार्टी"</string>
+    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"यह दृश्य मोड में चयन योग्‍य नहीं है"</string>
+    <string name="pref_restore_title" msgid="6479274979730178961">"कैमरा सेटिंग"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"डिफ़ॉल्ट पुनर्स्थापित करें"</string>
+    <string name="pref_exposure_title" msgid="1229093066434614811">"एक्स्पोजर"</string>
+    <string name="dialog_ok" msgid="6263301364153382152">"ठीक"</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"आपके USB संग्रहण में स्थान कम है. गुणवत्ता सेटिंग बदलें या कुछ छवियां या अन्य फ़ाइलें हटाएं."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"आपके SD कार्ड में स्थान कम है. गुणवत्ता सेटिंग बदलें या कुछ छवियां या अन्य फ़ाइलें हटाएं."</string>
+    <string name="video_reach_size_limit" msgid="6179877322015552390">"आकार सीमा पहुंची."</string>
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"कैमरे पर स्विच करें"</string>
+    <string name="switch_to_video_label" msgid="1167994386902254398">"वीडियो पर स्विच करें"</string>
+    <string name="switch_to_panorama_label" msgid="858801335653517864">"पैनोरमा पर स्विच करें"</string>
+    <string name="share_picture_via" msgid="1375127849431890447">"इससे चित्र साझा करें:"</string>
+    <string name="share_video_via" msgid="5152302809166549015">"इससे वीडियो साझा करें:"</string>
+    <string name="no_picture_to_share" msgid="7700541451734517445">"साझा करने के लिए कोई चित्र नहीं"</string>
+    <string name="no_video_to_share" msgid="3775826212074938990">"साझा करने के लिए कोई वीडियो नहीं"</string>
+    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"बहुत तेज़"</string>
+    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"पैनोरामा तैयार हो रहा है"</string>
+    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"पैनोरामा सहेजने में विफल"</string>
+    <string name="pano_dialog_title" msgid="5755531234434437697">"पैनोरामा"</string>
+    <string name="pano_capture_indication" msgid="7431983072966619171">"पैनोरामा कैप्चर हो रहा है"</string>
+    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"सहेजा जा रहा है..."</string>
+    <string name="tap_to_focus" msgid="6417403734418828035">"फ़ोकस करने के लि‍ए टैप करें"</string>
+    <string name="pref_video_effect_title" msgid="8243182968457289488">"प्रभाव"</string>
+    <string name="effect_none" msgid="3601545724573307541">"कोई नहीं"</string>
+    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"पिचका हुआ"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"बड़ी आंखें"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"बड़ा मुंह"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"छोटा मुंह"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"बड़ी नाक"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"छोटी आंखें"</string>
+    <string name="effect_backdropper_space" msgid="1381012939195370792">"अंतरिक्ष में"</string>
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"सूर्यास्त"</string>
+    <string name="effect_backdropper_disco" msgid="8494822051982972854">"डिस्को"</string>
+    <string name="effect_backdropper_gallery" msgid="1393338187462207584">"स्‍वयं का चुनें"</string>
+    <string name="bg_replacement_message" msgid="7540788298745332389">"अपना उपकरण किसी स्थिर सतह पर रखें और सुनिश्चित करें कि आपके पीछे कोई हलचल नहीं है."\n\n"फिर कैमरे के दृश्य से बाहर आ जाएं."</string>
+    <string name="not_selectable_in_effect" msgid="5093306709878914151">"प्रभाव के चालू रहने पर यह चयन योग्‍य नहीं होता."</string>
+    <string name="video_snapshot_hint" msgid="6479115859014094906">"वीडियो रिकॉर्डिंग के समय पूर्वावलोकन स्‍क्रीन पर टैप करके फ़ोटो लें."</string>
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"विशेष प्रभावों के चालू होने पर वीडियो स्‍नेपशॉट अक्षम हो जाता है."</string>
+    <string name="clear_effects" msgid="5485339175014139481">"प्रभाव साफ़ करें"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"मज़ाकिया चेहरे"</string>
+    <string name="effect_background" msgid="6909716214852487679">"पृष्ठभूमि"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"शटर बटन"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"हाल ही का फ़ोटो"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"अगला और पिछला कैमरा स्‍विच"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"कैमरा, वीडियो या पैनोरामा चयनकर्ता"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"अधिक सेटिंग नियंत्रण"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"सेटिंग नियंत्रण बंद करें"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"ज़ूम नियंत्रण"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"%1$s घटाएं"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"%1$s बढ़ाएं"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s स्‍विच"</string>
+</resources>

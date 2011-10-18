@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Įrenginį padėkite ant stabilaus paviršiaus ir įsitikinkite, kad už jūsų niekas nejuda."\n\n"Pasitraukite iš kameros regėjimo lauko."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Negalima pasirinkti, kai įjungtas efektas."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Kai įrašomas vaizdo įr., fotograf. paliesdami peržiūros ekraną."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Moment. vaizdo įrašo vaizdas neleidž., kai įjungti spec. efektai."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Išvalyti efektus"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Juokingi veidai"</string>
     <string name="effect_background" msgid="6909716214852487679">"Fonas"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Užrakto mygtukas"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Paskutinė nuotrauka"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Priekinis ir galinis fotoaparato jungikliai"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Fotoaparato, vaizdo įrašo ar panoramos parinkiklis"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Daugiau nustatymų valdiklių"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Uždaryti nustatymų valdiklius"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Mastelio keitimo valdymas"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Sumažinti %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Padidinti %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s jungiklis"</string>
 </resources>

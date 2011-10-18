@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Поставите уређај на стабилну површину и уверите се да се иза вас ништа не помера."\n\n"Затим изађите из кадра камере."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Ово није могуће изабрати када је ефекат укључен."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Снимите слику током снимања видео снимка додиром на екран за преглед."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Видео снимак је онемогућен када су специјални ефекти укључени."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Обриши ефекте"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Смешна лица"</string>
     <string name="effect_background" msgid="6909716214852487679">"Позадина"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Дугме затварача"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Новија фотографија"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Промена предње и задње камере"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Бирач камере, видео снимка или панораме"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Још контрола подешавања"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Затвори контроле подешавања"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Контрола зума"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Смањи %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Повећај %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Прекидач %1$s"</string>
 </resources>
