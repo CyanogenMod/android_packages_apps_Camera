@@ -65,7 +65,8 @@ public class MosaicFrameProcessor {
     private int mPreviewBufferSize;
 
     public interface ProgressListener {
-        public void onProgress(boolean isFinished, float panningRateX, float panningRateY);
+        public void onProgress(boolean isFinished, float panningRateX, float panningRateY,
+                float progressX, float progressY);
     }
 
     public MosaicFrameProcessor(int previewWidth, int previewHeight, int bufSize) {
@@ -173,11 +174,15 @@ public class MosaicFrameProcessor {
 
                 // Publish progress of the ongoing processing
                 if (mProgressListener != null) {
-                    mProgressListener.onProgress(false, mPanningRateX, mPanningRateY);
+                    mProgressListener.onProgress(false, mPanningRateX, mPanningRateY,
+                            mTranslationLastX * HR_TO_LR_DOWNSAMPLE_FACTOR / mPreviewWidth,
+                            mTranslationLastY * HR_TO_LR_DOWNSAMPLE_FACTOR / mPreviewHeight);
                 }
             } else {
                 if (mProgressListener != null) {
-                    mProgressListener.onProgress(true, mPanningRateX, mPanningRateY);
+                    mProgressListener.onProgress(true, mPanningRateX, mPanningRateY,
+                            mTranslationLastX * HR_TO_LR_DOWNSAMPLE_FACTOR / mPreviewWidth,
+                            mTranslationLastY * HR_TO_LR_DOWNSAMPLE_FACTOR / mPreviewHeight);
                 }
             }
         }
@@ -211,20 +216,20 @@ public class MosaicFrameProcessor {
         mTotalTranslationY += mDeltaY[idx];
         mTotalDeltaTime += mDeltaTime[idx];
 
-        mTranslationLastX = translationCurrX;
-        mTranslationLastY = translationCurrY;
-        mLastProcessedFrameTimestamp = now;
-        mOldestIdx = (mOldestIdx + 1) % WINDOW_SIZE;
-
         // The panning rate is measured as the rate of the translation percentage in
         // image width/height. Take the horizontal panning rate for example, the image width
         // used in finding the translation is (PreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR).
         // To get the horizontal translation percentage, the horizontal translation,
         // (translationCurrX - mTranslationLastX), is divided by the
         // image width. We then get the rate by dividing the translation percentage with deltaTime.
-        mPanningRateX = mTotalTranslationX / (mPreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR)
-                / mTotalDeltaTime;
-        mPanningRateY = mTotalTranslationY / (mPreviewHeight / HR_TO_LR_DOWNSAMPLE_FACTOR)
-                / mTotalDeltaTime;
+        mPanningRateX = mTotalTranslationX /
+                (mPreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR) / mTotalDeltaTime;
+        mPanningRateY = mTotalTranslationY /
+                (mPreviewHeight / HR_TO_LR_DOWNSAMPLE_FACTOR) / mTotalDeltaTime;
+
+        mTranslationLastX = translationCurrX;
+        mTranslationLastY = translationCurrY;
+        mLastProcessedFrameTimestamp = now;
+        mOldestIdx = (mOldestIdx + 1) % WINDOW_SIZE;
     }
 }
