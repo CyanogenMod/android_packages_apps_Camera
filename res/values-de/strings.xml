@@ -75,7 +75,7 @@
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Bewölkt"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Szenenmodus"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatisch"</string>
-    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Aktion"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Action"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nachtaufnahme"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Sonnenuntergang"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Party"</string>
@@ -90,10 +90,10 @@
     <string name="switch_to_camera_label" msgid="9148663083850199582">"Zu Kamera wechseln"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"Zu Video wechseln"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Zu Panorama wechseln"</string>
-    <string name="share_picture_via" msgid="1375127849431890447">"Bild weiterleiten über"</string>
-    <string name="share_video_via" msgid="5152302809166549015">"Video weiterleiten über"</string>
-    <string name="no_picture_to_share" msgid="7700541451734517445">"Kein Bild für Weiterleitung"</string>
-    <string name="no_video_to_share" msgid="3775826212074938990">"Kein Video für Weiterleitung"</string>
+    <string name="share_picture_via" msgid="1375127849431890447">"Bild teilen über"</string>
+    <string name="share_video_via" msgid="5152302809166549015">"Video teilen über"</string>
+    <string name="no_picture_to_share" msgid="7700541451734517445">"Kein Bild zum Teilen"</string>
+    <string name="no_video_to_share" msgid="3775826212074938990">"Kein Video zum Teilen"</string>
     <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Zu schnell"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Panorama wird vorbereitet..."</string>
     <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Panorama konnte nicht gespeichert werden."</string>
@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Legen Sie Ihr Gerät auf eine stabile Oberfläche und achten Sie darauf, dass sich hinter Ihnen nichts bewegt."\n\n"Treten Sie anschließend aus dem Bild."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Einstellung nicht wählbar, wenn Effekt aktiviert"</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Durch Tippen Foto während Videoaufzeichnung aufnehmen"</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Video-Schnappschuss ist bei Spezialeffekten deaktiviert."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Effekte löschen"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Lustige Gesichter"</string>
     <string name="effect_background" msgid="6909716214852487679">"Hintergrund"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Schaltfläche für Verschluss"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Neuestes Foto"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Zwischen Kamera auf der Vorder- und Rückseite wechseln"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Auswahl für Kamera, Video oder Panorama"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Weitere Einstellungen"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Einstellungen schließen"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Zoom-Steuerung"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Verkleinern %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Vergrößern %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Schalter %1$s"</string>
 </resources>

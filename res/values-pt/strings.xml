@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Coloque o dispositivo sobre uma superfície estável sem movimento atrás de você."\n\n"Em seguida, saia do campo de visão da câmera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Não é possível selecionar com o efeito ativado."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Tire uma foto ao gravar um vídeo tocando na tela de visualização."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"O instant. de vídeo é desat. quando os efeitos esp. estão ativad."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Clarear efeitos"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Caretas"</string>
     <string name="effect_background" msgid="6909716214852487679">"Plano de fundo"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Botão \"Tirar foto\""</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Foto mais recente"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Botão da câmera frontal e traseira"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Seletor de câmera, vídeo ou panorama"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Mais controles de ajuste"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Fechar controles de ajuste"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Controle de zoom"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Diminuir %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Aumentar %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Botão %1$s"</string>
 </resources>

@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Beka i-device yakho endaweni enganyakazi bese uqinisekisa ukuthi akukho ukunyakaza ngemuva kwakho."\n\n"Bese usuka lapho kubheke khona ikhamera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Lokhu akukhetheki uma isinandisi sisavulekile."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Thatha isithombe ngesikhathi sokuqoshwa kwevidyo ngokuchofoza eskrinini sokubuka ngaphambili kokudlala."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Umfanekiso wevidyo awusebenzi uma izinandisi ezikhethekile zivuliwe."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Izinandisi ezicacile"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Ubuso obungasile"</string>
     <string name="effect_background" msgid="6909716214852487679">"Ingemuva"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Inkinobho Yokuvala"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Isithombe sakamuva"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Iswishi yekhamera yangaphambili kanye nangemuva"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Ikhamera, ividiyo noma ukhetho lwe-panorama"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Okunye ukulawula kokuhlela"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Vala ukulawula kokuhlela"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Ukulawula i-Zumu"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Nciphisa %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Yandisa %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s iswishi"</string>
 </resources>

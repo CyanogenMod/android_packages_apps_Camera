@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Letakkan peranti anda di atas permukaan yang stabil dan pastikan tidak ada pergerakan di belakang anda."\n" "\n" Kemudian berjalan keluar dari pandangan kamera."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Ini tidak boleh dipilih apabila kesan dihidupkan."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Ambil gambar semasa rakaman video dengan mengetik pada skrin pratonton."</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Petikan video dilumpuhkan apabila kesan khas dihidupkan."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Padamkan kesan"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Muka bodoh"</string>
     <string name="effect_background" msgid="6909716214852487679">"Latar belakang"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Butang pengatup"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Foto paling terbaru"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Suis kamera depan dan belakang"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Pemilih kamera, video atau panorama"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Lebih banyak kawalan tetapan"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Tutup kawalan tetapan"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Kawalan zum"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Pengurangan %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Tingkatkan %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Suis %1$s"</string>
 </resources>

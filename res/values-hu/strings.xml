@@ -116,9 +116,18 @@
     <string name="bg_replacement_message" msgid="7540788298745332389">"Helyezze eszközét egy stabil felületre, és bizonyosodjon meg arról, hogy Ön mögött nincs mozgás."\n\n"Ezután lépjen ki a kamera látószögéből."</string>
     <string name="not_selectable_in_effect" msgid="5093306709878914151">"Ez nem választható, ha az effekt be van kapcsolva."</string>
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Képkészítés videofelvétel közben: előnézeti képernyő megérintése"</string>
-    <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
-    <skip />
+    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"A video-pillanatfelvétel letiltva speciális effektek esetén."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Effektek törlése"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Bolondos arcok"</string>
     <string name="effect_background" msgid="6909716214852487679">"Háttér"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Exponáló gomb"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Legutóbbi fotó"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Első és hátsó kamera kapcsolója"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Kamera, videó vagy panoráma választó"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"További beállításvezérlők"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Beállításvezérlők bezárása"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Nagyítás/kicsinyítés vezérlése"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Csökkentés: %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Növelés: %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s kapcsoló"</string>
 </resources>

@@ -161,4 +161,24 @@
     <skip />
     <!-- no translation found for effect_background (6909716214852487679) -->
     <skip />
+    <!-- no translation found for accessibility_shutter_button (2664037763232556307) -->
+    <skip />
+    <!-- no translation found for accessibility_review_thumbnail (8961275263537513017) -->
+    <skip />
+    <!-- no translation found for accessibility_camera_picker (8807945470215734566) -->
+    <skip />
+    <!-- no translation found for accessibility_mode_picker (3264968460835265505) -->
+    <skip />
+    <!-- no translation found for accessibility_second_level_indicators (3855951632917627620) -->
+    <skip />
+    <!-- no translation found for accessibility_back_to_first_level (5234411571109877131) -->
+    <skip />
+    <!-- no translation found for accessibility_zoom_control (1339909363226825709) -->
+    <skip />
+    <!-- no translation found for accessibility_decrement (1411194318538035666) -->
+    <skip />
+    <!-- no translation found for accessibility_increment (8447850530444401135) -->
+    <skip />
+    <!-- no translation found for accessibility_switch (6995966685498958895) -->
+    <skip />
 </resources>
