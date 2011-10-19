@@ -183,6 +183,9 @@ public class VideoCamera extends ActivityBase
     private int mEffectType = EffectsRecorder.EFFECT_NONE;
     private Object mEffectParameter = null;
     private String mEffectUriFromGallery = null;
+    private String mPrefVideoEffectDefault;
+    private boolean mResetEffect = true;
+    public static final String RESET_EFFECT_EXTRA = "reset_effect";
 
     private boolean mMediaRecorderRecording = false;
     private long mRecordingStartTime;
@@ -353,6 +356,11 @@ public class VideoCamera extends ActivityBase
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
         mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
+        mPrefVideoEffectDefault = getString(R.string.pref_video_effect_default);
+        // Do not reset the effect if users are switching between back and front
+        // cameras.
+        mResetEffect = getIntent().getBooleanExtra(RESET_EFFECT_EXTRA, true);
+        resetEffect();
 
         /*
          * To reduce startup time, we start the preview in another thread.
@@ -705,33 +713,17 @@ public class VideoCamera extends ActivityBase
         mEffectType = CameraSettings.readEffectType(mPreferences);
         if (mEffectType != EffectsRecorder.EFFECT_NONE) {
             mEffectParameter = CameraSettings.readEffectParameter(mPreferences);
-            // When picking from gallery, mEffectParameter should have been
-            // initialized in onActivityResult. If not, fall back to no effect
-            if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER
-                    && ((String) mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)
-                    && mEffectUriFromGallery == null) {
-                Log.w(TAG, "No URI from gallery, resetting to no effect");
-                mEffectType = EffectsRecorder.EFFECT_NONE;
-                mEffectParameter = null;
-                writeDefaultEffectToPrefs();
-                if (mIndicatorControlContainer != null) {
-                    mIndicatorControlContainer.overrideSettings(
+            // Set quality to 480p for effects, unless intent is overriding it
+            if (!intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
+                quality = CamcorderProfile.QUALITY_480P;
+            }
+            // On initial startup, can get here before indicator control is
+            // enabled. In that case, UI quality override handled in
+            // initializeIndicatorControl.
+            if (mIndicatorControlContainer != null) {
+                mIndicatorControlContainer.overrideSettings(
                         CameraSettings.KEY_VIDEO_QUALITY,
-                        null);
-                }
-            } else {
-                // Set quality to 480p for effects, unless intent is overriding it
-                if (!intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
-                    quality = CamcorderProfile.QUALITY_480P;
-                }
-                // On initial startup, can get here before indicator control is
-                // enabled. In that case, UI quality override handled in
-                // initializeIndicatorControl.
-                if (mIndicatorControlContainer != null) {
-                    mIndicatorControlContainer.overrideSettings(
-                            CameraSettings.KEY_VIDEO_QUALITY,
-                            Integer.toString(CamcorderProfile.QUALITY_480P));
-                }
+                        Integer.toString(CamcorderProfile.QUALITY_480P));
             }
         } else {
             mEffectParameter = null;
@@ -805,6 +797,10 @@ public class VideoCamera extends ActivityBase
         // some time to get first orientation.
         mOrientationListener.enable();
         if (!mPreviewing) {
+            if (resetEffect()) {
+                mBgLearningMessageFrame.setVisibility(View.GONE);
+                mIndicatorControlContainer.reloadPreferences();
+            }
             try {
                 mCameraDevice = Util.openCamera(this, mCameraId);
                 readVideoPreferences();
@@ -1933,6 +1929,11 @@ public class VideoCamera extends ActivityBase
                     // seen by startPreview from onResume()
                     mEffectUriFromGallery = ((Uri) data.getData()).toString();
                     Log.v(TAG, "Received URI from gallery: " + mEffectUriFromGallery);
+                    mResetEffect = false;
+                } else {
+                    mEffectUriFromGallery = null;
+                    Log.w(TAG, "No URI from gallery");
+                    mResetEffect = true;
                 }
                 break;
             default:
@@ -2053,9 +2054,11 @@ public class VideoCamera extends ActivityBase
                 // animation.
                 if (mIsVideoCaptureIntent) {
                     // If the intent is video capture, stay in video capture mode.
-                    MenuHelper.gotoVideoMode(this, getIntent());
+                    Intent intent = getIntent();
+                    intent.putExtra(RESET_EFFECT_EXTRA, false);
+                    MenuHelper.gotoVideoMode(this, intent);
                 } else {
-                    MenuHelper.gotoVideoMode(this);
+                    MenuHelper.gotoVideoMode(this, false);
                 }
                 finish();
             } else {
@@ -2345,5 +2348,18 @@ public class VideoCamera extends ActivityBase
             mSharePopup = null;
             Util.broadcastNewPicture(this, uri);
         }
+    }
+
+    private boolean resetEffect() {
+        if (mResetEffect) {
+            String value = mPreferences.getString(CameraSettings.KEY_VIDEO_EFFECT,
+                    mPrefVideoEffectDefault);
+            if (!mPrefVideoEffectDefault.equals(value)) {
+                writeDefaultEffectToPrefs();
+                return true;
+            }
+        }
+        mResetEffect = true;
+        return false;
     }
 }
