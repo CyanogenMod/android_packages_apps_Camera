@@ -983,9 +983,10 @@ public class PanoramaActivity extends ActivityBase implements
         // the screen).
         if (mCameraState != PREVIEW_STOPPED) stopCameraPreview();
 
-        int orientation = Util.getDisplayOrientation(Util.getDisplayRotation(this),
-                CameraHolder.instance().getBackCameraId());
-        mCameraDevice.setDisplayOrientation(orientation);
+        // Set the display orientation to 0, so that the underlying mosaic library
+        // can always get undistorted mPreviewWidth x mPreviewHeight image data
+        // from SurfaceTexture.
+        mCameraDevice.setDisplayOrientation(0);
 
         setPreviewTexture(mSurfaceTexture);
 
