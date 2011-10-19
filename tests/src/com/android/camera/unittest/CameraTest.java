@@ -30,19 +30,47 @@ import junit.framework.TestCase;
 @SmallTest
 public class CameraTest extends TestCase {
     public void testRoundOrientation() {
-        assertEquals(0, Camera.roundOrientation(0));
-        assertEquals(0, Camera.roundOrientation(0 + 44));
-        assertEquals(90, Camera.roundOrientation(0 + 45));
-        assertEquals(90, Camera.roundOrientation(90));
-        assertEquals(90, Camera.roundOrientation(90 + 44));
-        assertEquals(180, Camera.roundOrientation(90 + 45));
-        assertEquals(180, Camera.roundOrientation(180));
-        assertEquals(180, Camera.roundOrientation(180 + 44));
-        assertEquals(270, Camera.roundOrientation(180 + 45));
-        assertEquals(270, Camera.roundOrientation(270));
-        assertEquals(270, Camera.roundOrientation(270 + 44));
-        assertEquals(0, Camera.roundOrientation(270 + 45));
-        assertEquals(0, Camera.roundOrientation(359));
+        int h = Util.ORIENTATION_HYSTERESIS;
+        assertEquals(0, Util.roundOrientation(0, 0));
+        assertEquals(0, Util.roundOrientation(359, 0));
+        assertEquals(0, Util.roundOrientation(0 + 44 + h, 0));
+        assertEquals(90, Util.roundOrientation(0 + 45 + h, 0));
+        assertEquals(0, Util.roundOrientation(360 - 44 - h, 0));
+        assertEquals(270, Util.roundOrientation(360 - 45 - h, 0));
+
+        assertEquals(90, Util.roundOrientation(90, 90));
+        assertEquals(90, Util.roundOrientation(90 + 44 + h, 90));
+        assertEquals(180, Util.roundOrientation(90 + 45 + h, 90));
+        assertEquals(90, Util.roundOrientation(90 - 44 - h, 90));
+        assertEquals(0, Util.roundOrientation(90 - 45 - h, 90));
+
+        assertEquals(180, Util.roundOrientation(180, 180));
+        assertEquals(180, Util.roundOrientation(180 + 44 + h, 180));
+        assertEquals(270, Util.roundOrientation(180 + 45 + h, 180));
+        assertEquals(180, Util.roundOrientation(180 - 44 - h, 180));
+        assertEquals(90, Util.roundOrientation(180 - 45 - h, 180));
+
+        assertEquals(270, Util.roundOrientation(270, 270));
+        assertEquals(270, Util.roundOrientation(270 + 44 + h, 270));
+        assertEquals(0, Util.roundOrientation(270 + 45 + h, 270));
+        assertEquals(270, Util.roundOrientation(270 - 44 - h, 270));
+        assertEquals(180, Util.roundOrientation(270 - 45 - h, 270));
+
+        assertEquals(90, Util.roundOrientation(90, 0));
+        assertEquals(180, Util.roundOrientation(180, 0));
+        assertEquals(270, Util.roundOrientation(270, 0));
+
+        assertEquals(0, Util.roundOrientation(0, 90));
+        assertEquals(180, Util.roundOrientation(180, 90));
+        assertEquals(270, Util.roundOrientation(270, 90));
+
+        assertEquals(0, Util.roundOrientation(0, 180));
+        assertEquals(90, Util.roundOrientation(90, 180));
+        assertEquals(270, Util.roundOrientation(270, 180));
+
+        assertEquals(0, Util.roundOrientation(0, 270));
+        assertEquals(90, Util.roundOrientation(90, 270));
+        assertEquals(180, Util.roundOrientation(180, 270));
     }
 
     public void testConvertToFocusArea() {

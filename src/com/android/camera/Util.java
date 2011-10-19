@@ -71,6 +71,9 @@ public class Util {
     // Use the same setting among the Camera, VideoCamera and Panorama modes.
     private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
 
+    // Orientation hysteresis amount used in rounding, in degrees
+    public static final int ORIENTATION_HYSTERESIS = 5;
+
     public static final String REVIEW_ACTION = "com.android.camera.action.REVIEW";
 
     // Private intent extras. Test only.
@@ -343,6 +346,21 @@ public class Util {
             result = (info.orientation - degrees + 360) % 360;
         }
         return result;
+    }
+
+    public static int roundOrientation(int orientation, int orientationHistory) {
+        boolean changeOrientation = false;
+        if (orientationHistory == OrientationEventListener.ORIENTATION_UNKNOWN) {
+            changeOrientation = true;
+        } else {
+            int dist = Math.abs(orientation - orientationHistory);
+            dist = Math.min( dist, 360 - dist );
+            changeOrientation = ( dist >= 45 + ORIENTATION_HYSTERESIS );
+        }
+        if (changeOrientation) {
+            return ((orientation + 45) / 90 * 90) % 360;
+        }
+        return orientationHistory;
     }
 
     public static Size getOptimalPreviewSize(Activity currentActivity,

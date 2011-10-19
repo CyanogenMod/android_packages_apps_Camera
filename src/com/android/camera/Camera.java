@@ -1184,10 +1184,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mThumbnailView != null) mThumbnailView.setEnabled(enable);
     }
 
-    public static int roundOrientation(int orientation) {
-        return ((orientation + 45) / 90 * 90) % 360;
-    }
-
     private class MyOrientationEventListener
             extends OrientationEventListener {
         public MyOrientationEventListener(Context context) {
@@ -1200,7 +1196,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // the camera then point the camera to floor or sky, we still have
             // the correct orientation.
             if (orientation == ORIENTATION_UNKNOWN) return;
-            mOrientation = roundOrientation(orientation);
+            mOrientation = Util.roundOrientation(orientation, mOrientation);
             // When the screen is unlocked, display rotation may change. Always
             // calculate the up-to-date orientationCompensation.
             int orientationCompensation = mOrientation
