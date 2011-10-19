@@ -190,10 +190,6 @@ public class PanoramaActivity extends ActivityBase implements
         public final boolean isValid;
     }
 
-    public static int roundOrientation(int orientation) {
-        return ((orientation + 45) / 90 * 90) % 360;
-    }
-
     private class PanoOrientationEventListener extends OrientationEventListener {
         public PanoOrientationEventListener(Context context) {
             super(context);
@@ -205,7 +201,7 @@ public class PanoramaActivity extends ActivityBase implements
             // the camera then point the camera to floor or sky, we still have
             // the correct orientation.
             if (orientation == ORIENTATION_UNKNOWN) return;
-            mDeviceOrientation = roundOrientation(orientation);
+            mDeviceOrientation = Util.roundOrientation(orientation, mDeviceOrientation);
             // When the screen is unlocked, display rotation may change. Always
             // calculate the up-to-date orientationCompensation.
             int orientationCompensation = mDeviceOrientation
