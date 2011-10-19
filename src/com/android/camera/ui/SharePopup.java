@@ -130,41 +130,6 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         // Show play button if this is a video thumbnail.
         if (mMimeType.startsWith("video/")) {
             sharePopup.findViewById(R.id.play).setVisibility(View.VISIBLE);
-
-            // for some reason we want to show video thumbnail in a 4/3 ratio
-            // crop the image here, for dispaly, as necessary
-            final float targetRatio = 4F/3F;
-            final float existingRatio = (float)mBitmapWidth / (float)mBitmapHeight;
-
-            if (existingRatio > targetRatio) {
-                int newWidth = (int) ((float)mBitmapHeight * targetRatio);
-
-                // check if we end up with the same width due to rounding
-                if (newWidth != mBitmapWidth) {
-                    bitmap = Bitmap.createBitmap(
-                            bitmap,
-                            (mBitmapWidth - newWidth) / 2,
-                            0,        // yCoord
-                            newWidth,
-                            mBitmapHeight,
-                            null,
-                            false);
-                }
-            } else if (existingRatio < targetRatio) {
-                int newHeight = (int) ((float)mBitmapWidth * targetRatio);
-
-                // check if we end up with the same width due to rounding
-                if (newHeight != mBitmapHeight) {
-                    bitmap = Bitmap.createBitmap(
-                            bitmap,
-                            0,        // xCoord
-                            (mBitmapHeight - newHeight) / 2,
-                            mBitmapWidth,
-                            newHeight,
-                            null,
-                            false);
-                }
-            }
         }
         mBitmapWidth = bitmap.getWidth();
         mBitmapHeight = bitmap.getHeight();
@@ -242,6 +207,14 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         }
         float actualAspect = maxWidth / maxHeight;
         float desiredAspect = (float) mBitmapWidth / mBitmapHeight;
+
+        if (mMimeType.startsWith("video/")) {
+            desiredAspect = 4F/3F;
+            mThumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        } else {
+            mThumbnail.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        }
+
         LayoutParams params = mThumbnail.getLayoutParams();
         if (actualAspect > desiredAspect) {
             params.width = Math.round(maxHeight * desiredAspect);
