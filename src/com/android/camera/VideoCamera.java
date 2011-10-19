@@ -1680,6 +1680,9 @@ public class VideoCamera extends ActivityBase
             if (!mIsVideoCaptureIntent) {
                 enableCameraControls(true);
             }
+            // The orientation was fixed during video recording. Now make it
+            // reflect the device orientation as video recording is stopped.
+            setOrientationIndicator(mOrientationCompensation);
             keepScreenOnAwhile();
             if (shouldAddToMediaStoreNow) {
                 addVideoToMediaStore();
