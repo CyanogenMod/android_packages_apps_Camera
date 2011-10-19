@@ -723,8 +723,10 @@ public class VideoCamera extends ActivityBase
                         null);
                 }
             } else {
-                // Set quality to 480p for effects
-                quality = CamcorderProfile.QUALITY_480P;
+                // Set quality to 480p for effects, unless intent is overriding it
+                if (!intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
+                    quality = CamcorderProfile.QUALITY_480P;
+                }
                 // On initial startup, can get here before indicator control is
                 // enabled. In that case, UI quality override handled in
                 // initializeIndicatorControl.
