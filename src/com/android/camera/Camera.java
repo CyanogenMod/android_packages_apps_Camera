@@ -1503,8 +1503,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
-            mImageSaver.finish();
-            mImageSaver = null;
+            if (mImageSaver != null) {
+                mImageSaver.finish();
+                mImageSaver = null;
+            }
             if (!mIsImageCaptureIntent && mThumbnail != null && !mThumbnail.fromFile()) {
                 mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
             }
