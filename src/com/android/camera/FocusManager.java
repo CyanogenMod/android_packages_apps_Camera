@@ -55,6 +55,8 @@ public class FocusManager {
     private boolean mInitialized;
     private boolean mFocusAreaSupported;
     private boolean mInLongPress;
+    private boolean mLockAeAwbNeeded;
+    private boolean mAeAwbLock;
     private SoundPlayer mSoundPlayer;
     private View mFocusIndicatorRotateLayout;
     private FocusIndicatorView mFocusIndicator;
@@ -104,6 +106,8 @@ public class FocusManager {
         mFocusAreaSupported = (mParameters.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mParameters.getSupportedFocusModes()));
+        mLockAeAwbNeeded = (mParameters.isAutoExposureLockSupported() ||
+                mParameters.isAutoWhiteBalanceLockSupported());
     }
 
     public void initialize(View focusIndicatorRotate, View previewFrame,
@@ -121,24 +125,39 @@ public class FocusManager {
         }
     }
 
-    public void doFocus(boolean pressed) {
+    public void onShutterDown() {
         if (!mInitialized) return;
 
-        if (!(getFocusMode().equals(Parameters.FOCUS_MODE_INFINITY)
-                || getFocusMode().equals(Parameters.FOCUS_MODE_FIXED)
-                || getFocusMode().equals(Parameters.FOCUS_MODE_EDOF))) {
-            if (pressed) {  // Focus key down.
-                // Do not focus if touch focus has been triggered.
-                if (mState != STATE_SUCCESS && mState != STATE_FAIL) {
-                    autoFocus();
-                }
-            } else {  // Focus key up.
-                // User releases half-pressed focus key.
-                if (mState == STATE_FOCUSING || mState == STATE_SUCCESS
-                        || mState == STATE_FAIL) {
-                    cancelAutoFocus();
-                }
+        // Lock AE and AWB so users can half-press shutter and recompose.
+        if (mLockAeAwbNeeded && !mAeAwbLock) {
+            mAeAwbLock = true;
+            mListener.setFocusParameters();
+        }
+
+        if (needAutoFocusCall()) {
+            // Do not focus if touch focus has been triggered.
+            if (mState != STATE_SUCCESS && mState != STATE_FAIL) {
+                autoFocus();
             }
+        }
+    }
+
+    public void onShutterUp() {
+        if (!mInitialized) return;
+
+        if (needAutoFocusCall()) {
+            // User releases half-pressed focus key.
+            if (mState == STATE_FOCUSING || mState == STATE_SUCCESS
+                    || mState == STATE_FAIL) {
+                cancelAutoFocus();
+            }
+        }
+
+        // Unlock AE and AWB after cancelAutoFocus. Camera API does not
+        // guarantee setParameters can be called during autofocus.
+        if (mLockAeAwbNeeded && mAeAwbLock && (mState != STATE_FOCUSING_SNAP_ON_FINISH)) {
+            mAeAwbLock = false;
+            mListener.setFocusParameters();
         }
     }
 
@@ -151,9 +170,9 @@ public class FocusManager {
             mInLongPress = true;
             // Cancel any outstanding Auto focus requests. The auto focus mode
             // will be changed from CAF to auto in cancelAutoFocus.
-            doFocus(false);
+            onShutterUp();
             // Call Autofocus
-            doFocus(true);
+            onShutterDown();
             mInLongPress = false;
         }
     }
@@ -164,11 +183,7 @@ public class FocusManager {
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
-        if (getFocusMode().equals(Parameters.FOCUS_MODE_INFINITY)
-                || getFocusMode().equals(Parameters.FOCUS_MODE_FIXED)
-                || getFocusMode().equals(Parameters.FOCUS_MODE_EDOF)
-                || (mState == STATE_SUCCESS
-                || mState == STATE_FAIL)) {
+        if (!needAutoFocusCall() || (mState == STATE_SUCCESS || mState == STATE_FAIL)) {
             capture();
         } else if (mState == STATE_FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
@@ -467,7 +482,22 @@ public class FocusManager {
         mOverrideFocusMode = focusMode;
     }
 
+    public void setAeAwbLock(boolean lock) {
+        mAeAwbLock = lock;
+    }
+
+    public boolean getAeAwbLock() {
+        return mAeAwbLock;
+    }
+
     private static boolean isSupported(String value, List<String> supported) {
         return supported == null ? false : supported.indexOf(value) >= 0;
+    }
+
+    private boolean needAutoFocusCall() {
+        String focusMode = getFocusMode();
+        return !(focusMode.equals(Parameters.FOCUS_MODE_INFINITY)
+                || focusMode.equals(Parameters.FOCUS_MODE_FIXED)
+                || focusMode.equals(Parameters.FOCUS_MODE_EDOF));
     }
 }
