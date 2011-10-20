@@ -121,7 +121,7 @@
     <string name="effect_silly_faces" msgid="3214174716769421248">"Juokingi veidai"</string>
     <string name="effect_background" msgid="6909716214852487679">"Fonas"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Užrakto mygtukas"</string>
-    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Paskutinė nuotrauka"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Naujausia nuotrauka"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Priekinis ir galinis fotoaparato jungikliai"</string>
     <string name="accessibility_mode_picker" msgid="3264968460835265505">"Fotoaparato, vaizdo įrašo ar panoramos parinkiklis"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Daugiau nustatymų valdiklių"</string>

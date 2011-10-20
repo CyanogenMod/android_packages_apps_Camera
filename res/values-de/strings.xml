@@ -120,10 +120,10 @@
     <string name="clear_effects" msgid="5485339175014139481">"Effekte löschen"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Lustige Gesichter"</string>
     <string name="effect_background" msgid="6909716214852487679">"Hintergrund"</string>
-    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Schaltfläche für Verschluss"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Schaltfläche für Blende"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Neuestes Foto"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Zwischen Kamera auf der Vorder- und Rückseite wechseln"</string>
-    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Auswahl für Kamera, Video oder Panorama"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Auswahl: Kamera, Video oder Panorama"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Weitere Einstellungen"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Einstellungen schließen"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Zoom-Steuerung"</string>
