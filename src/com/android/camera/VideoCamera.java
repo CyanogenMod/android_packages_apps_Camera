@@ -565,7 +565,8 @@ public class VideoCamera extends ActivityBase
     }
 
     private void startPlayVideoActivity() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, mCurrentVideoUri);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(mCurrentVideoUri, convertOutputFormatToMimeType(mProfile.fileFormat));
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException ex) {
@@ -1350,12 +1351,9 @@ public class VideoCamera extends ActivityBase
     private void generateVideoFilename(int outputFileFormat) {
         long dateTaken = System.currentTimeMillis();
         String title = createName(dateTaken);
-        String filename = title + ".3gp"; // Used when emailing.
-        String mime = "video/3gpp";
-        if (outputFileFormat == MediaRecorder.OutputFormat.MPEG_4) {
-            filename = title + ".mp4";
-            mime = "video/mp4";
-        }
+        // Used when emailing.
+        String filename = title + convertOutputFormatToFileExt(outputFileFormat);
+        String mime = convertOutputFormatToMimeType(outputFileFormat);
         mVideoFilename = Storage.DIRECTORY + '/' + filename;
         mCurrentVideoValues = new ContentValues(7);
         mCurrentVideoValues.put(Video.Media.TITLE, title);
@@ -2361,5 +2359,19 @@ public class VideoCamera extends ActivityBase
         }
         mResetEffect = true;
         return false;
+    }
+
+    private String convertOutputFormatToMimeType(int outputFileFormat) {
+        if (outputFileFormat == MediaRecorder.OutputFormat.MPEG_4) {
+            return "video/mp4";
+        }
+        return "video/3gpp";
+    }
+
+    private String convertOutputFormatToFileExt(int outputFileFormat) {
+        if (outputFileFormat == MediaRecorder.OutputFormat.MPEG_4) {
+            return ".mp4";
+        }
+        return ".3gp";
     }
 }
