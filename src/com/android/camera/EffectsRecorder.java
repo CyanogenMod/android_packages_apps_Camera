@@ -91,6 +91,7 @@ public class EffectsRecorder {
     private FileDescriptor mFd;
     private int mOrientationHint = 0;
     private long mMaxFileSize = 0;
+    private int mMaxDurationMs = 0;
     private int mCameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     private int mEffect = EFFECT_NONE;
@@ -233,6 +234,23 @@ public class EffectsRecorder {
         }
         mMaxFileSize = maxFileSize;
     }
+
+    /**
+    * Sets the maximum recording duration (in ms) for the next recording session
+    * Setting it to zero (the default) disables the limit.
+    */
+    public synchronized void setMaxDuration(int maxDurationMs) {
+        switch (mState) {
+            case STATE_RECORD:
+                throw new RuntimeException("setMaxDuration cannot be called while recording!");
+            case STATE_RELEASED:
+                throw new RuntimeException("setMaxDuration called on an already released recorder!");
+            default:
+                break;
+        }
+        mMaxDurationMs = maxDurationMs;
+    }
+
 
     public void setCaptureRate(double fps) {
         switch (mState) {
@@ -639,6 +657,7 @@ public class EffectsRecorder {
             recorder.setInputValue("errorListener", mErrorListener);
         }
         recorder.setInputValue("maxFileSize", mMaxFileSize);
+        recorder.setInputValue("maxDurationMs", mMaxDurationMs);
         recorder.setInputValue("recording", true);
         if (mRecordSound != null) mRecordSound.play();
         mState = STATE_RECORD;
