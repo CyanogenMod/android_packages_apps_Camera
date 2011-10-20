@@ -305,12 +305,12 @@ public class EffectsRecorder {
         mEffectsListener = listener;
     }
 
-    private void setFaceDetectOrientation(int degrees) {
+    private void setFaceDetectOrientation() {
         if (mCurrentEffect == EFFECT_GOOFY_FACE) {
             Filter rotateFilter = mRunner.getGraph().getFilter("rotate");
             Filter metaRotateFilter = mRunner.getGraph().getFilter("metarotate");
-            rotateFilter.setInputValue("rotation", degrees);
-            int reverseDegrees = (360 - degrees) % 360;
+            rotateFilter.setInputValue("rotation", mOrientationHint);
+            int reverseDegrees = (360 - mOrientationHint) % 360;
             metaRotateFilter.setInputValue("rotation", reverseDegrees);
         }
     }
@@ -349,9 +349,8 @@ public class EffectsRecorder {
                 break;
         }
         if (mLogVerbose) Log.v(TAG, "Setting orientation hint to: " + degrees);
-
         mOrientationHint = degrees;
-        setFaceDetectOrientation(degrees);
+        setFaceDetectOrientation();
         setRecordingOrientation();
     }
 
@@ -480,7 +479,7 @@ public class EffectsRecorder {
             default:
                 break;
         }
-        setFaceDetectOrientation(mOrientationHint);
+        setFaceDetectOrientation();
         setRecordingOrientation();
     }
 
