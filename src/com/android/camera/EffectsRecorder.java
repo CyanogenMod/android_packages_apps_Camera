@@ -554,11 +554,24 @@ public class EffectsRecorder {
             synchronized(EffectsRecorder.this) {
                 mTextureSource = source;
 
-                // When shutting down a graph, we receive a null SurfaceTexture to
-                // indicate that. Don't want to connect up the camera in that case.
-                if (source == null) return;
-
                 if (mState == STATE_RELEASED) return;
+
+                if (source == null) {
+                    if (mState == STATE_PREVIEW ||
+                            mState == STATE_RECORD) {
+                        // A null source here means the graph is shutting down
+                        // unexpectedly, so we need to turn off preview before
+                        // the surface texture goes away.
+                        mCameraDevice.stopPreview();
+                        try {
+                            mCameraDevice.setPreviewTexture(null);
+                        } catch(IOException e) {
+                            throw new RuntimeException("Unable to disconnect " +
+                                    "camera from effect input", e);
+                        }
+                    }
+                    return;
+                }
 
                 // Lock AE/AWB to reduce transition flicker
                 tryEnable3ALocks(true);
