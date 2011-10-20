@@ -530,9 +530,8 @@ public class VideoCamera extends ActivityBase
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
                 if (effectsActive()) {
-                    CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-                    int rotation = (info.orientation + mOrientation) % 360;
-                    mEffectsRecorder.setOrientationHint(rotation);
+                    mEffectsRecorder.setOrientationHint(
+                            mOrientationCompensation % 360);
                 }
                 // Do not rotate the icons during recording because the video
                 // orientation is fixed after recording.
@@ -1252,9 +1251,10 @@ public class VideoCamera extends ActivityBase
         // documentation.
         int rotation = 0;
         if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
-            rotation = (info.orientation + mOrientation) % 360;
+            rotation = mOrientationCompensation % 360;
         }
         mEffectsRecorder.setOrientationHint(rotation);
+
         mOrientationCompensationAtRecordStart = mOrientationCompensation;
 
         mEffectsRecorder.setPreviewDisplay(
