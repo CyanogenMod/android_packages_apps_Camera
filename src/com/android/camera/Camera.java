@@ -385,6 +385,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         Util.initializeScreenBrightness(getWindow(), getContentResolver());
         installIntentFilter();
         initializeZoom();
+        startFaceDetection();
         // Show the tap to focus toast if this is the first start.
         if (mFocusAreaSupported &&
                 mPreferences.getBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, true)) {
@@ -700,6 +701,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 enableCameraControls(true);
 
                 startPreview();
+                startFaceDetection();
             }
 
             if (!mIsImageCaptureIntent) {
@@ -1258,6 +1260,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     public void onReviewRetakeClicked(View v) {
         hidePostCaptureAlert();
         startPreview();
+        startFaceDetection();
     }
 
     @OnClickAttr
@@ -1462,6 +1465,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 initializeCapabilities();
                 resetExposureCompensation();
                 startPreview();
+                startFaceDetection();
             } catch (CameraHardwareException e) {
                 Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
                 return;
@@ -1683,6 +1687,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // display rotation in onCreate may not be what we want.
         if (mCameraState == PREVIEW_STOPPED) {
             startPreview();
+            startFaceDetection();
         } else {
             if (Util.getDisplayRotation(this) != mDisplayRotation) {
                 setDisplayOrientation();
@@ -1779,7 +1784,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             throw new RuntimeException("startPreview failed", ex);
         }
 
-        startFaceDetection();
         mZoomState = ZOOM_STOPPED;
         mCameraState = IDLE;
         mFocusManager.onPreviewStarted();
