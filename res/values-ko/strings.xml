@@ -122,7 +122,7 @@
     <string name="effect_background" msgid="6909716214852487679">"배경"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"셔터 버튼"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"최근 사진"</string>
-    <string name="accessibility_camera_picker" msgid="8807945470215734566">"전방 및 후방 카메라 사이를 전환"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"전방 및 후방 카메라 전환"</string>
     <string name="accessibility_mode_picker" msgid="3264968460835265505">"카메라, 동영상 또는 파노라마 선택기"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"설정 컨트롤 더보기"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"설정 컨트롤 닫기"</string>

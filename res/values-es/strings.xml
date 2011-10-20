@@ -44,7 +44,7 @@
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Seleccionar cámara"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Trasera"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Delantera"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Guardar ubicación"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Añadir ubicación"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Desactivado"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activada"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Calidad de vídeo"</string>
@@ -52,15 +52,15 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuración de cámara"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuración de videocámara"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamaño imagen"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"Píxeles de 5 M"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"Píxeles de 3 M"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"Píxeles de 2 M"</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1,3 millones de píxeles"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"Píxeles de 1 M"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 Mpx"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 Mpx"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 Mpx"</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1,3 Mpx"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 Mpx"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modo de enfoque"</string>
-    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automático"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Auto"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Flash"</string>

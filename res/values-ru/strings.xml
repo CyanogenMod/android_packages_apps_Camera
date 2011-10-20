@@ -123,10 +123,10 @@
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Кнопка \"Затвор\""</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Недавние фото"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Переключение на переднюю или заднюю камеру"</string>
-    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Переключатель между фото, видео и режимом панорамной съемки"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Переключатель между режимами \"Фото\", \"Видео\" и \"Панорама\""</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Дополнительные настройки"</string>
-    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Закрыть окно настроек"</string>
-    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Масштабирование"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Закрыть"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Зум"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"Уменьшить %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Увеличить %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"Переключить %1$s"</string>

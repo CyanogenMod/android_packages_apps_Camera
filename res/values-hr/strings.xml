@@ -120,24 +120,14 @@
     <string name="clear_effects" msgid="5485339175014139481">"Obriši efekte"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Budalasta lica"</string>
     <string name="effect_background" msgid="6909716214852487679">"Pozadina"</string>
-    <!-- no translation found for accessibility_shutter_button (2664037763232556307) -->
-    <skip />
-    <!-- no translation found for accessibility_review_thumbnail (8961275263537513017) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_picker (8807945470215734566) -->
-    <skip />
-    <!-- no translation found for accessibility_mode_picker (3264968460835265505) -->
-    <skip />
-    <!-- no translation found for accessibility_second_level_indicators (3855951632917627620) -->
-    <skip />
-    <!-- no translation found for accessibility_back_to_first_level (5234411571109877131) -->
-    <skip />
-    <!-- no translation found for accessibility_zoom_control (1339909363226825709) -->
-    <skip />
-    <!-- no translation found for accessibility_decrement (1411194318538035666) -->
-    <skip />
-    <!-- no translation found for accessibility_increment (8447850530444401135) -->
-    <skip />
-    <!-- no translation found for accessibility_switch (6995966685498958895) -->
-    <skip />
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Gumb Okidač"</string>
+    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Najnovija fotografija"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Prednji i stražnji prekidač fotoaparata"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Birač fotoaparata, videozapisa ili panorame"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Više kontrola postavke"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Kontrole postavke zatvaranja"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Upravljanje povećavanjem/smanjivanjem"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"Smanjenje %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Povećanje %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Prekidač %1$s"</string>
 </resources>

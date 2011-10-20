@@ -59,7 +59,7 @@
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
-    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modalità messa a fuoco"</string>
+    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Messa a fuoco"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatica"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
@@ -124,8 +124,8 @@
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Foto più recente"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Interruttore fotocamera anteriore e posteriore"</string>
     <string name="accessibility_mode_picker" msgid="3264968460835265505">"Selettore fotocamera, video o panorama"</string>
-    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Altri controlli impostazioni"</string>
-    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Chiudi controlli impostazioni"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Altri controlli"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Chiudi controlli"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Controllo zoom"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"Riduci %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Aumenta %1$s"</string>
