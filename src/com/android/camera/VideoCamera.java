@@ -1316,6 +1316,7 @@ public class VideoCamera extends ActivityBase
             maxFileSize = requestedSizeLimit;
         }
         mEffectsRecorder.setMaxFileSize(maxFileSize);
+        mEffectsRecorder.setMaxDuration(mMaxVideoDurationInMs);
     }
 
 
