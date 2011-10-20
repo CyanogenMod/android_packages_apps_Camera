@@ -138,8 +138,9 @@ public class MenuHelper {
         startCameraActivity(activity, new Intent(action), className);
     }
 
-    public static void gotoVideoMode(Activity activity) {
+    public static void gotoVideoMode(Activity activity, boolean resetEffect) {
         Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
+        intent.putExtra(VideoCamera.RESET_EFFECT_EXTRA, resetEffect);
         startCameraActivity(activity, intent, VIDEO_CAMERA_CLASS);
     }
 
