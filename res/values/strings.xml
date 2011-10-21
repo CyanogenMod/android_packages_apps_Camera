@@ -20,7 +20,7 @@
     <string name="camera_error_title">Camera error</string>
 
     <!-- message for the dialog showing the error of camera hardware -->
-    <string name="cannot_connect_camera">Cannot connect to camera.</string>
+    <string name="cannot_connect_camera">Can\'t connect to the camera.</string>
 
     <!-- message for the dialog showing the camera is disabled because of security policies. Camera cannot be used. -->
     <string name="camera_disabled">Camera has been disabled because of security policies.</string>
@@ -41,9 +41,9 @@
     <string name="wait">Please wait\u2026</string>
 
     <!-- alert to the user that USB storage must be available before using the camera [CHAR LIMIT=NONE] -->
-    <string name="no_storage" product="nosdcard">Please mount USB storage before using the camera.</string>
+    <string name="no_storage" product="nosdcard">Mount USB storage before using the camera.</string>
     <!-- alert to the user that an SD card must be installed before using the camera -->
-    <string name="no_storage" product="default">Please insert an SD card before using the camera.</string>
+    <string name="no_storage" product="default">Insert an SD card before using the camera.</string>
 
     <!-- alert to the user that the USB storage is too full to complete the operation [CHAR LIMIT=NONE] -->
     <string name="not_enough_space" product="nosdcard">Your USB storage is full.</string>
@@ -62,7 +62,7 @@
 
     <!-- Confirmation dialog when restoring settings -->
     <string name="confirm_restore_title">Restore defaults</string>
-    <string name="confirm_restore_message">Camera settings will be restored to defaults.</string>
+    <string name="confirm_restore_message">Restore Camera default settings?</string>
 
     <!-- button in review mode indicating that the video just taken should be played [CHAR LIMIT=10] -->
     <string name="review_play">Play</string>
@@ -138,11 +138,11 @@
     <string name="pref_camera_picturesize_title">Picture size</string>
 
     <!-- Settings screen, Picture size dialog radio button choices -->
-    <string name="pref_camera_picturesize_entry_2592x1936">5M Pixels</string>
-    <string name="pref_camera_picturesize_entry_2048x1536">3M Pixels</string>
-    <string name="pref_camera_picturesize_entry_1600x1200">2M Pixels</string>
-    <string name="pref_camera_picturesize_entry_1280x960">1.3M Pixels</string>
-    <string name="pref_camera_picturesize_entry_1024x768">1M Pixels</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5M pixels</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3M pixels</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">2M pixels</string>
+    <string name="pref_camera_picturesize_entry_1280x960">1.3M pixels</string>
+    <string name="pref_camera_picturesize_entry_1024x768">1M pixels</string>
     <string name="pref_camera_picturesize_entry_640x480">VGA</string>
     <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
 
@@ -205,7 +205,7 @@
     <string name="pref_camera_scenemode_entry_party">Party</string>
 
     <!-- Toast after trying to select a setting that is not allowed to change in scene mode [CHAR LIMIT=NONE] -->
-    <string name="not_selectable_in_scene_mode">This is not selectable in scene mode</string>
+    <string name="not_selectable_in_scene_mode">Not selectable in scene mode.</string>
 
     <!-- Restore settings item in preference -->
     <string name="pref_restore_title">Camera settings</string>
@@ -254,31 +254,31 @@
     <string name="share_video_via">Share video via</string>
 
     <!-- Toast saying that there is no picture to share. [CHAR LIMIT=30] -->
-    <string name="no_picture_to_share">No picture to share</string>
+    <string name="no_picture_to_share">No picture to share.</string>
 
     <!-- Toast saying that there is no video to share. [CHAR LIMIT=30] -->
-    <string name="no_video_to_share">No video to share</string>
+    <string name="no_video_to_share">No video to share.</string>
 
     <!-- The text shown when the panorama panning speed is to fast [CHAR LIMIT=12] -->
-    <string name="pano_too_fast_prompt">Too Fast</string>
+    <string name="pano_too_fast_prompt">Too fast</string>
 
     <!-- The text shown in the progress dialog when panorama preview is generating in the background [CHAR LIMIT=30] -->
     <string name="pano_dialog_prepare_preview">Preparing panorama</string>
 
     <!-- The text shown in the dialog when panorama saving failed [CHAR LIMIT=40] -->
-    <string name="pano_dialog_panorama_failed">Failed to save panorama</string>
+    <string name="pano_dialog_panorama_failed">Couldn\'t save panorama.</string>
 
     <!-- The text shown on the dialog title in the dialogs for Panorama [CHAR LIMIT=12] -->
     <string name="pano_dialog_title">Panorama</string>
 
     <!-- The text shown on the top-left corner of the screen to indicate the capturing is on going [CHAR LIMIT=27] -->
-    <string name="pano_capture_indication">Capturing Panorama</string>
+    <string name="pano_capture_indication">Capturing panorama</string>
 
     <!-- The text shown on the bottom-left corner of the screen to indicate that the saving is in process [CHAR LIMIT=13] -->
-    <string name="pano_review_saving_indication_str">Saving...</string>
+    <string name="pano_review_saving_indication_str">Saving\u2026</string>
 
     <!-- Toast telling users tapping on the viewfinder will trigger autofocus [CHAR LIMIT=28] -->
-    <string name="tap_to_focus">Tap to focus</string>
+    <string name="tap_to_focus">Touch to focus.</string>
 
     <!-- Default effect setting that clears the effect. -->
     <string name="pref_video_effect_default" translatable="false">none</string>
@@ -291,32 +291,32 @@
     <!-- Effect setting item that squeezes the face. [CHAR LIMIT=14] -->
     <string name="effect_goofy_face_squeeze">Squeeze</string>
     <!-- Effect setting item that makes eyes big. [CHAR LIMIT=14] -->
-    <string name="effect_goofy_face_big_eyes">Big Eyes</string>
+    <string name="effect_goofy_face_big_eyes">Big eyes</string>
     <!-- Effect setting item that makes mouth big. [CHAR LIMIT=14] -->
-    <string name="effect_goofy_face_big_mouth">Big Mouth</string>
+    <string name="effect_goofy_face_big_mouth">Big mouth</string>
     <!-- Effect setting item that makes mouth small. [CHAR LIMIT=14] -->
-    <string name="effect_goofy_face_small_mouth">Small Mouth</string>
+    <string name="effect_goofy_face_small_mouth">Small mouth</string>
     <!-- Effect setting item that makes nose big. [CHAR LIMIT=14] -->
-    <string name="effect_goofy_face_big_nose">Big Nose</string>
+    <string name="effect_goofy_face_big_nose">Big nose</string>
     <!-- Effect setting item that makes eyes small. [CHAR LIMIT=14] -->
-    <string name="effect_goofy_face_small_eyes">Small Eyes</string>
+    <string name="effect_goofy_face_small_eyes">Small eyes</string>
     <!-- Effect setting item that replaces background with Android in Space. [CHAR LIMIT=14] -->
-    <string name="effect_backdropper_space">In Space</string>
+    <string name="effect_backdropper_space">In space</string>
     <!-- Effect setting item that replaces background with a sunset. [CHAR LIMIT=14] -->
     <string name="effect_backdropper_sunset">Sunset</string>
     <!-- Effect setting item that replaces background with a disco effect. [CHAR LIMIT=14] -->
     <string name="effect_backdropper_disco">Disco</string>
     <!-- Effect setting item that replaces background with video from gallery. [CHAR LIMIT=14] -->
-    <string name="effect_backdropper_gallery">Pick your own</string>
+    <string name="effect_backdropper_gallery">Choose your own</string>
 
     <!-- Message displayed in overlay during background replacement training [CHAR LIMIT=180]-->
     <string name="bg_replacement_message">Place your device on a steady surface and be sure there\'s no movement behind you.\n\nThen step out of the camera\'s view.</string>
 
     <!-- Toast after trying to select a setting that is not allowed to change in effect [CHAR LIMIT=50] -->
-    <string name="not_selectable_in_effect">This is not selectable when the effect is on.</string>
+    <string name="not_selectable_in_effect">Not selectable when the effect is on.</string>
 
     <!-- Toast telling users tapping on the viewfinder will take a picture [CHAR LIMIT=65] -->
-    <string name="video_snapshot_hint">Take a photo during video recording by tapping on the preview screen.</string>
+    <string name="video_snapshot_hint">Take a photo during video recording by touching the preview screen.</string>
 
     <!-- Toast telling users video snapshot is disabled when the effects are on and a user tries to tap on the viewfinder [CHAR LIMIT=65] -->
     <string name="disable_video_snapshot_hint">Video snapshot is disabled when special effects are on.</string>
@@ -337,7 +337,7 @@
     <!-- The front/back camera switch. [CHAR LIMIT = NONE] -->
     <string name="accessibility_camera_picker">Front and back camera switch</string>
     <!-- The mode picker to switch between camera, video and panorama. [CHAR LIMIT = NONE] -->
-    <string name="accessibility_mode_picker">Camera, video or panorama selector</string>
+    <string name="accessibility_mode_picker">Camera, video, or panorama selector</string>
     <!-- The button to switch to the second-level indicators of the camera settings. [CHAR LIMIT = NONE] -->
     <string name="accessibility_second_level_indicators">More setting controls</string>
     <!-- The button to back to the first-level indicators of the camera settings. [CHAR LIMIT = NONE] -->
