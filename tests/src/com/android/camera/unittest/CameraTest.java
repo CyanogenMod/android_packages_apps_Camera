@@ -73,22 +73,6 @@ public class CameraTest extends TestCase {
         assertEquals(180, Util.roundOrientation(180, 270));
     }
 
-    public void testConvertToFocusArea() {
-        Rect rect = new Rect();
-        FocusManager.convertToFocusArea(0, 0, 100, 100, 800, 480, rect);
-        assertEquals(new Rect(-1000, -1000, -750, -583), rect);
-        FocusManager.convertToFocusArea(0, 0, 400, 240, 800, 480, rect);
-        assertEquals(new Rect(-1000, -1000, 0, 0), rect);
-        FocusManager.convertToFocusArea(400, 240, 400, 240, 800, 480, rect);
-        assertEquals(new Rect(0, 0, 1000, 1000), rect);
-        FocusManager.convertToFocusArea(200, 120, 400, 240, 800, 480, rect);
-        assertEquals(new Rect(-500, -500, 500, 500), rect);
-        FocusManager.convertToFocusArea(0, 0, 800, 480, 800, 480, rect);
-        assertEquals(new Rect(-1000, -1000, 1000, 1000), rect);
-        FocusManager.convertToFocusArea(860, 620, 100, 100, 960, 720, rect);
-        assertEquals(new Rect(792, 722, 1000, 1000), rect);
-    }
-
     public void testPrepareMatrix() {
         Matrix matrix = new Matrix();
         float[] points;
