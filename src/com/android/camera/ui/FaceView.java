@@ -117,17 +117,11 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
         mPause = false;
     }
 
-    private void dumpRect(RectF rect, String msg) {
-        Log.v(TAG, msg + "=(" + rect.left + "," + rect.top
-                + "," + rect.right + "," + rect.bottom + ")");
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         if (mFaces != null && mFaces.length > 0) {
             // Prepare the matrix.
-            Util.prepareMatrix(mMatrix, mMirror, mDisplayOrientation, getWidth(),
-                    getHeight());
+            Util.prepareMatrix(mMatrix, mMirror, mDisplayOrientation, getWidth(), getHeight());
 
             // Focus indicator is directional. Rotate the matrix and the canvas
             // so it looks correctly in all orientations.
@@ -137,9 +131,9 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
             for (int i = 0; i < mFaces.length; i++) {
                 // Transform the coordinates.
                 mRect.set(mFaces[i].rect);
-                if (LOGV) dumpRect(mRect, "Original rect");
+                if (LOGV) Util.dumpRect(mRect, "Original rect");
                 mMatrix.mapRect(mRect);
-                if (LOGV) dumpRect(mRect, "Transformed rect");
+                if (LOGV) Util.dumpRect(mRect, "Transformed rect");
 
                 mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
                         Math.round(mRect.right), Math.round(mRect.bottom));
