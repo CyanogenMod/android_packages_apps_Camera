@@ -91,8 +91,10 @@ public class MosaicFrameProcessor {
     }
 
     public void clear() {
-        mIsMosaicMemoryAllocated = false;
-        mMosaicer.freeMosaicMemory();
+        if (mIsMosaicMemoryAllocated) {
+            mIsMosaicMemoryAllocated = false;
+            mMosaicer.freeMosaicMemory();
+        }
     }
 
     public void setStripType(int type) {
