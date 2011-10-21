@@ -122,8 +122,8 @@
     <string name="effect_background" msgid="6909716214852487679">"Arrière-plan"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Bouton de l\'obturateur"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Photo la plus récente"</string>
-    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Interrupteur des appareils photo avant et arrière"</string>
-    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Sélecteur du mode Appareil photo, Vidéo ou Panorama"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Interrupteur des caméras avant et arrière"</string>
+    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Sélecteur du mode Appareil photo, Vidéo ou Panoramique"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Plus de paramètres"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Fermer les paramètres"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Contrôle du zoom"</string>
