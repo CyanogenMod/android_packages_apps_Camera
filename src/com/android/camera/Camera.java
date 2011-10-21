@@ -135,7 +135,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private static final String sTempCropFilename = "crop-temp";
 
-    private android.hardware.Camera mCameraDevice;
     private ContentProviderClient mMediaProviderClient;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
@@ -1441,10 +1440,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mPausing = false;
+    protected void doOnResume() {
         if (mOpenCameraFail || mCameraDisabled) return;
+
+        mPausing = false;
 
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
