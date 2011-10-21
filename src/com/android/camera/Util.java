@@ -27,6 +27,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
@@ -520,6 +522,18 @@ public class Util {
                 Log.e(TAG, "review image fail. uri=" + uri, e);
             }
         }
+    }
+
+    public static void dumpRect(RectF rect, String msg) {
+        Log.v(TAG, msg + "=(" + rect.left + "," + rect.top
+                + "," + rect.right + "," + rect.bottom + ")");
+    }
+
+    public static void rectFToRect(RectF rectF, Rect rect) {
+        rect.left = Math.round(rectF.left);
+        rect.top = Math.round(rectF.top);
+        rect.right = Math.round(rectF.right);
+        rect.bottom = Math.round(rectF.bottom);
     }
 
     public static void prepareMatrix(Matrix matrix, boolean mirror, int displayOrientation,

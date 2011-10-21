@@ -377,7 +377,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
         mFocusIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
-        mFocusManager.initialize(mFocusIndicator, mPreviewFrame, mFaceView, this);
+        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+        boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
+        mFocusManager.initialize(mFocusIndicator, mPreviewFrame, mFaceView, this,
+                mirror, mDisplayOrientation);
         mFocusManager.initializeSoundPlayer(getResources().openRawResourceFd(R.raw.camera_focus));
         mImageSaver = new ImageSaver();
         Util.initializeScreenBrightness(getWindow(), getContentResolver());

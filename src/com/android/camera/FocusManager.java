@@ -21,7 +21,9 @@ import com.android.camera.ui.FocusIndicator;
 import com.android.camera.ui.FocusIndicatorView;
 
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.hardware.Camera.Area;
 import android.hardware.Camera.Parameters;
 import android.os.Handler;
@@ -57,6 +59,7 @@ public class FocusManager {
     private boolean mInLongPress;
     private boolean mLockAeAwbNeeded;
     private boolean mAeAwbLock;
+    private Matrix mMatrix;
     private SoundPlayer mSoundPlayer;
     private View mFocusIndicatorRotateLayout;
     private FocusIndicatorView mFocusIndicator;
@@ -98,6 +101,7 @@ public class FocusManager {
         mPreferences = preferences;
         mDefaultFocusMode = defaultFocusMode;
         mHandler = new MainHandler();
+        mMatrix = new Matrix();
     }
 
     // This has to be initialized before initialize().
@@ -111,13 +115,22 @@ public class FocusManager {
     }
 
     public void initialize(View focusIndicatorRotate, View previewFrame,
-            FaceView faceView, Listener listener) {
+            FaceView faceView, Listener listener, boolean mirror, int displayOrientation) {
         mFocusIndicatorRotateLayout = focusIndicatorRotate;
         mFocusIndicator = (FocusIndicatorView) focusIndicatorRotate.findViewById(
                 R.id.focus_indicator);
         mPreviewFrame = previewFrame;
         mFaceView = faceView;
         mListener = listener;
+
+        Matrix matrix = new Matrix();
+        Util.prepareMatrix(matrix, mirror, displayOrientation,
+                previewFrame.getWidth(), previewFrame.getHeight());
+        // In face detection, the matrix converts the driver coordinates to UI
+        // coordinates. In tap focus, the inverted matrix converts the UI
+        // coordinates to driver coordinates.
+        matrix.invert(mMatrix);
+
         if (mParameters != null) {
             mInitialized = true;
         } else {
@@ -270,9 +283,9 @@ public class FocusManager {
         // Convert the coordinates to driver format.
         // AE area is bigger because exposure is sensitive and
         // easy to over- or underexposure if area is too small.
-        calculateTapArea(focusWidth, focusHeight, 1, x, y, previewWidth, previewHeight,
+        calculateTapArea(focusWidth, focusHeight, 1f, x, y, previewWidth, previewHeight,
                 mFocusArea.get(0).rect);
-        calculateTapArea(focusWidth, focusHeight, 1.5, x, y, previewWidth, previewHeight,
+        calculateTapArea(focusWidth, focusHeight, 1.5f, x, y, previewWidth, previewHeight,
                 mMeteringArea.get(0).rect);
 
         // Use margin to set the focus indicator to the touched area.
@@ -451,23 +464,16 @@ public class FocusManager {
         mMeteringArea = null;
     }
 
-    public void calculateTapArea(int focusWidth, int focusHeight, double areaMultiple,
+    public void calculateTapArea(int focusWidth, int focusHeight, float areaMultiple,
             int x, int y, int previewWidth, int previewHeight, Rect rect) {
         int areaWidth = (int)(focusWidth * areaMultiple);
         int areaHeight = (int)(focusHeight * areaMultiple);
-        int areaLeft = Util.clamp(x - areaWidth / 2, 0, previewWidth - areaWidth);
-        int areaTop = Util.clamp(y - areaHeight / 2, 0, previewHeight - areaHeight);
-        convertToFocusArea(areaLeft, areaTop, areaWidth, areaHeight, previewWidth, previewHeight,
-                rect);
-    }
+        int left = Util.clamp(x - areaWidth / 2, 0, previewWidth - areaWidth);
+        int top = Util.clamp(y - areaHeight / 2, 0, previewHeight - areaHeight);
 
-    // Convert the touch point to the focus area in driver format.
-    public static void convertToFocusArea(int left, int top, int focusWidth, int focusHeight,
-            int previewWidth, int previewHeight, Rect rect) {
-        rect.left = Math.round((float) left / previewWidth * 2000 - 1000);
-        rect.top = Math.round((float) top / previewHeight * 2000 - 1000);
-        rect.right = Math.round((float) (left + focusWidth) / previewWidth * 2000 - 1000);
-        rect.bottom = Math.round((float) (top + focusHeight) / previewHeight * 2000 - 1000);
+        RectF rectF = new RectF(left, top, left + areaWidth, top + areaHeight);
+        mMatrix.mapRect(rectF);
+        Util.rectFToRect(rectF, rect);
     }
 
     public boolean isFocusCompleted() {
