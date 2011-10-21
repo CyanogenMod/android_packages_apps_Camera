@@ -134,7 +134,6 @@ public class VideoCamera extends ActivityBase
 
     private static final String EFFECT_BG_FROM_GALLERY = "gallery";
 
-    private android.hardware.Camera mCameraDevice;
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
     private ComboPreferences mPreferences;
@@ -784,10 +783,10 @@ public class VideoCamera extends ActivityBase
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mPausing = false;
+    protected void doOnResume() {
         if (mOpenCameraFail || mCameraDisabled) return;
+
+        mPausing = false;
         mZoomValue = 0;
 
         showVideoSnapshotUI(false);

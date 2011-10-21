@@ -144,7 +144,6 @@ public class PanoramaActivity extends ActivityBase implements
 
     private int mPreviewWidth;
     private int mPreviewHeight;
-    private Camera mCameraDevice;
     private int mCameraState;
     private int mCaptureState;
     private SensorManager mSensorManager;
@@ -918,9 +917,7 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
+    protected void doOnResume() {
         mPausing = false;
         mOrientationEventListener.enable();
 
