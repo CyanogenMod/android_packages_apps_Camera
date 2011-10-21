@@ -112,9 +112,10 @@ public class EffectsRecorder {
 
     private static final int STATE_CONFIGURE              = 0;
     private static final int STATE_WAITING_FOR_SURFACE    = 1;
-    private static final int STATE_PREVIEW                = 2;
-    private static final int STATE_RECORD                 = 3;
-    private static final int STATE_RELEASED               = 4;
+    private static final int STATE_STARTING_PREVIEW       = 2;
+    private static final int STATE_PREVIEW                = 3;
+    private static final int STATE_RECORD                 = 4;
+    private static final int STATE_RELEASED               = 5;
     private int mState = STATE_CONFIGURE;
 
     private boolean mLogVerbose = Log.isLoggable(TAG, Log.VERBOSE);
@@ -287,6 +288,7 @@ public class EffectsRecorder {
             case STATE_WAITING_FOR_SURFACE:
                 startPreview();
                 break;
+            case STATE_STARTING_PREVIEW:
             case STATE_PREVIEW:
                 initializeEffect(true);
                 break;
@@ -309,7 +311,8 @@ public class EffectsRecorder {
         mEffect = effect;
         mEffectParameter = effectParameter;
 
-        if (mState == STATE_PREVIEW) {
+        if (mState == STATE_PREVIEW ||
+                mState == STATE_STARTING_PREVIEW) {
             initializeEffect(false);
         }
     }
@@ -334,7 +337,8 @@ public class EffectsRecorder {
     }
 
     private void setRecordingOrientation() {
-        if ( mState <= STATE_PREVIEW && mRunner != null ) {
+        if ( (mState == STATE_CONFIGURE || mState == STATE_WAITING_FOR_SURFACE)
+                && mRunner != null ) {
             Point bl = new Point(0, 0);
             Point br = new Point(1, 0);
             Point tl = new Point(0, 1);
@@ -443,7 +447,8 @@ public class EffectsRecorder {
                     "previewWidth", mPreviewWidth,
                     "previewHeight", mPreviewHeight,
                     "orientation", mOrientationHint);
-            if (mState == STATE_PREVIEW) {
+            if (mState == STATE_PREVIEW ||
+                    mState == STATE_STARTING_PREVIEW) {
                 // Switching effects while running. Inform video camera.
                 sendMessage(mCurrentEffect, EFFECT_MSG_SWITCHING_EFFECT);
             }
@@ -468,7 +473,8 @@ public class EffectsRecorder {
                 Log.v(TAG, "New runner: " + mRunner
                       + ". Old runner: " + mOldRunner);
             }
-            if (mState == STATE_PREVIEW) {
+            if (mState == STATE_PREVIEW ||
+                    mState == STATE_STARTING_PREVIEW) {
                 // Switching effects while running. Stop existing runner.
                 // The stop callback will take care of starting new runner.
                 mCameraDevice.stopPreview();
@@ -505,6 +511,7 @@ public class EffectsRecorder {
         if (mLogVerbose) Log.v(TAG, "Starting preview (" + this + ")");
 
         switch (mState) {
+            case STATE_STARTING_PREVIEW:
             case STATE_PREVIEW:
                 // Already running preview
                 Log.w(TAG, "startPreview called when already running preview");
@@ -543,6 +550,7 @@ public class EffectsRecorder {
 
         if (mLogVerbose) Log.v(TAG, "Starting filter graph");
 
+        mState = STATE_STARTING_PREVIEW;
         mRunner.run();
         // Rest of preview startup handled in mSourceReadyCallback
     }
@@ -558,6 +566,7 @@ public class EffectsRecorder {
 
                 if (source == null) {
                     if (mState == STATE_PREVIEW ||
+                            mState == STATE_STARTING_PREVIEW ||
                             mState == STATE_RECORD) {
                         // A null source here means the graph is shutting down
                         // unexpectedly, so we need to turn off preview before
@@ -680,6 +689,7 @@ public class EffectsRecorder {
 
         switch (mState) {
             case STATE_CONFIGURE:
+            case STATE_STARTING_PREVIEW:
             case STATE_PREVIEW:
                 Log.w(TAG, "StopRecording called when recording not active!");
                 return;
@@ -793,7 +803,8 @@ public class EffectsRecorder {
                     }
                     mOldRunner = null;
                 }
-                if (mState == STATE_PREVIEW) {
+                if (mState == STATE_PREVIEW ||
+                        mState == STATE_STARTING_PREVIEW) {
                     // Switching effects, start up the new runner
                     if (mLogVerbose) Log.v(TAG, "Previous effect halted, starting new effect.");
                     tryEnable3ALocks(false);
@@ -816,6 +827,7 @@ public class EffectsRecorder {
 
         switch (mState) {
             case STATE_RECORD:
+            case STATE_STARTING_PREVIEW:
             case STATE_PREVIEW:
                 stopPreview();
                 // Fall-through
