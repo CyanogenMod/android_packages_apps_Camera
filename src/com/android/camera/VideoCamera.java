@@ -178,6 +178,7 @@ public class VideoCamera extends ActivityBase
 
     private MediaRecorder mMediaRecorder;
     private EffectsRecorder mEffectsRecorder;
+    private boolean mEffectsDisplayResult;
 
     private int mEffectType = EffectsRecorder.EFFECT_NONE;
     private Object mEffectParameter = null;
@@ -602,14 +603,15 @@ public class VideoCamera extends ActivityBase
     }
 
     private void onStopVideoRecording(boolean valid) {
+        mEffectsDisplayResult = true;
         stopVideoRecording();
         if (mIsVideoCaptureIntent) {
             if (mQuickCapture) {
                 doReturnToCaller(valid);
-            } else {
+            } else if (!effectsActive()) {
                 showAlert();
             }
-        } else {
+        } else if (!effectsActive()) {
             getThumbnail();
         }
     }
@@ -926,12 +928,13 @@ public class VideoCamera extends ActivityBase
         // This is similar to what mShutterButton.performClick() does,
         // but not quite the same.
         if (mMediaRecorderRecording) {
+            mEffectsDisplayResult = true;
             if (mIsVideoCaptureIntent) {
                 stopVideoRecording();
-                showAlert();
+                if (!effectsActive()) showAlert();
             } else {
                 stopVideoRecording();
-                getThumbnail();
+                if (!effectsActive()) getThumbnail();
             }
         } else {
             stopVideoRecording();
@@ -1237,6 +1240,7 @@ public class VideoCamera extends ActivityBase
 
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
 
+        mEffectsDisplayResult = false;
         mEffectsRecorder = new EffectsRecorder(this);
 
         // TODO: Confirm none of the foll need to go to initializeEffectsRecording()
@@ -1950,8 +1954,20 @@ public class VideoCamera extends ActivityBase
             mBgLearningMessageFrame.setVisibility(View.GONE);
             checkQualityAndStartPreview();
         } else if (effectMsg == EffectsRecorder.EFFECT_MSG_RECORDING_DONE) {
-            addVideoToMediaStore();
-            getThumbnail();
+            // TODO: This assumes the codepath from onStopVideoRecording.  It
+            // does not appear to cause problems for the other codepaths, but
+            // should be properly thought through.
+            if (mEffectsDisplayResult) {
+                addVideoToMediaStore();
+                if (mIsVideoCaptureIntent) {
+                    if (!mQuickCapture) {
+                        showAlert();
+                    }
+                } else {
+                    getThumbnail();
+                }
+            }
+            mEffectsDisplayResult = false;
         } else if (effectId == EffectsRecorder.EFFECT_BACKDROPPER) {
             switch (effectMsg) {
                 case EffectsRecorder.EFFECT_MSG_STARTED_LEARNING:
