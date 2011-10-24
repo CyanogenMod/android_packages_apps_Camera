@@ -1458,7 +1458,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 initializeCapabilities();
                 resetExposureCompensation();
                 startPreview();
-                startFaceDetection();
+                if (mFirstTimeInitialized) startFaceDetection();
             } catch (CameraHardwareException e) {
                 Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
                 return;
@@ -1682,7 +1682,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // display rotation in onCreate may not be what we want.
         if (mCameraState == PREVIEW_STOPPED) {
             startPreview();
-            startFaceDetection();
+            if (mFirstTimeInitialized) startFaceDetection();
         } else {
             if (Util.getDisplayRotation(this) != mDisplayRotation) {
                 setDisplayOrientation();
