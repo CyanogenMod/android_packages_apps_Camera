@@ -36,6 +36,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -244,11 +245,23 @@ public class Thumbnail {
         return createThumbnail(uri, bitmap, orientation);
     }
 
+    public static Bitmap createVideoThumbnail(FileDescriptor fd, int targetWidth) {
+        return createVideoThumbnail(null, fd, targetWidth);
+    }
+
     public static Bitmap createVideoThumbnail(String filePath, int targetWidth) {
+        return createVideoThumbnail(filePath, null, targetWidth);
+    }
+
+    private static Bitmap createVideoThumbnail(String filePath, FileDescriptor fd, int targetWidth) {
         Bitmap bitmap = null;
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
-            retriever.setDataSource(filePath);
+            if (filePath != null) {
+                retriever.setDataSource(filePath);
+            } else {
+                retriever.setDataSource(fd);
+            }
             bitmap = retriever.getFrameAtTime(-1);
         } catch (IllegalArgumentException ex) {
             // Assume this is a corrupt video file
