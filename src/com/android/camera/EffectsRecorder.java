@@ -562,8 +562,19 @@ public class EffectsRecorder {
             synchronized(EffectsRecorder.this) {
                 mTextureSource = source;
 
-                if (mState == STATE_RELEASED) return;
-
+                if (mState == STATE_CONFIGURE) {
+                    // Stop preview happened while the runner was doing startup tasks
+                    // Since we haven't started anything up, don't do anything
+                    // Rest of cleanup will happen in onRunnerDone
+                    if (mLogVerbose) Log.v(TAG, "Ready callback: Already stopped, skipping.");
+                    return;
+                }
+                if (mState == STATE_RELEASED) {
+                    // EffectsRecorder has been released, so don't touch the camera device
+                    // or anything else
+                    if (mLogVerbose) Log.v(TAG, "Ready callback: Already released, skipping.");
+                    return;
+                }
                 if (source == null) {
                     if (mState == STATE_PREVIEW ||
                             mState == STATE_STARTING_PREVIEW ||
