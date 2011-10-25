@@ -948,6 +948,7 @@ public class VideoCamera extends ActivityBase
         }
 
         finishRecorderAndCloseCamera();
+        closeVideoFileDescriptor();
 
         if (mSharePopup != null) mSharePopup.dismiss();
 
@@ -1135,6 +1136,7 @@ public class VideoCamera extends ActivityBase
         Bundle myExtras = intent.getExtras();
 
         long requestedSizeLimit = 0;
+        closeVideoFileDescriptor();
         if (mIsVideoCaptureIntent && myExtras != null) {
             Uri saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
             if (saveUri != null) {
@@ -1275,6 +1277,7 @@ public class VideoCamera extends ActivityBase
         Bundle myExtras = intent.getExtras();
 
         long requestedSizeLimit = 0;
+        closeVideoFileDescriptor();
         if (mIsVideoCaptureIntent && myExtras != null) {
             Uri saveUri = (Uri) myExtras.getParcelable(MediaStore.EXTRA_OUTPUT);
             if (saveUri != null) {
@@ -1327,14 +1330,6 @@ public class VideoCamera extends ActivityBase
             mMediaRecorder = null;
         }
         mVideoFilename = null;
-        if (mVideoFileDescriptor != null) {
-            try {
-                mVideoFileDescriptor.close();
-            } catch (IOException e) {
-                Log.e(TAG, "Fail to close fd", e);
-            }
-            mVideoFileDescriptor = null;
-        }
     }
 
     private void releaseEffectsRecorder() {
@@ -1599,19 +1594,23 @@ public class VideoCamera extends ActivityBase
     }
 
     private void showAlert() {
-        if (mCurrentVideoFilename != null) {
-            Bitmap bitmap = Thumbnail.createVideoThumbnail(mCurrentVideoFilename,
+        Bitmap bitmap = null;
+        if (mVideoFileDescriptor != null) {
+            bitmap = Thumbnail.createVideoThumbnail(mVideoFileDescriptor.getFileDescriptor(),
                     mPreviewFrameLayout.getWidth());
-            if (bitmap != null) {
-                // MetadataRetriever already rotates the thumbnail. We should rotate
-                // it to match the UI orientation (and mirror if it is front-facing camera).
-                CameraInfo[] info = CameraHolder.instance().getCameraInfo();
-                boolean mirror = (info[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT);
-                bitmap = Util.rotateAndMirror(bitmap, -mOrientationCompensationAtRecordStart,
-                        mirror);
-                mReviewImage.setImageBitmap(bitmap);
-                mReviewImage.setVisibility(View.VISIBLE);
-            }
+        } else if (mCurrentVideoFilename != null) {
+            bitmap = Thumbnail.createVideoThumbnail(mCurrentVideoFilename,
+                    mPreviewFrameLayout.getWidth());
+        }
+        if (bitmap != null) {
+            // MetadataRetriever already rotates the thumbnail. We should rotate
+            // it to match the UI orientation (and mirror if it is front-facing camera).
+            CameraInfo[] info = CameraHolder.instance().getCameraInfo();
+            boolean mirror = (info[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT);
+            bitmap = Util.rotateAndMirror(bitmap, -mOrientationCompensationAtRecordStart,
+                    mirror);
+            mReviewImage.setImageBitmap(bitmap);
+            mReviewImage.setVisibility(View.VISIBLE);
         }
 
         Util.fadeOut(mShutterButton);
@@ -1648,7 +1647,7 @@ public class VideoCamera extends ActivityBase
 
             try {
                 if (effectsActive()) {
-                    // This is asynchronous, so we cant add to media store now because thumbnail
+                    // This is asynchronous, so we can't add to media store now because thumbnail
                     // may not be ready. In such case addVideoToMediaStore is called later
                     // through a callback from the MediaEncoderFilter to EffectsRecorder,
                     // and then to the VideoCamera.
@@ -2372,5 +2371,16 @@ public class VideoCamera extends ActivityBase
             return ".mp4";
         }
         return ".3gp";
+    }
+
+    private void closeVideoFileDescriptor() {
+        if (mVideoFileDescriptor != null) {
+            try {
+                mVideoFileDescriptor.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Fail to close fd", e);
+            }
+            mVideoFileDescriptor = null;
+        }
     }
 }
