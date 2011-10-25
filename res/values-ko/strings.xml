@@ -39,7 +39,7 @@
     <string name="review_ok" msgid="5305096180300056529">"확인"</string>
     <string name="review_retake" msgid="7804864054896088338">"다시 촬영"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"갤러리"</string>
-    <string name="switch_camera_id" msgid="837545176602471325">"카메라 전환"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"카메라 방향 전환"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"저속 촬영"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"카메라 선택"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"후방"</string>
@@ -76,7 +76,7 @@
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"장면 모드"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"자동"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"동작"</string>
-    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"밤"</string>
+    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"야간"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"일몰"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"파티"</string>
     <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"장면 모드에서 선택할 수 없습니다."</string>
