@@ -17,15 +17,15 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"שגיאת מצלמה"</string>
-    <string name="cannot_connect_camera" msgid="8029009101380114174">"אין אפשרות להתחבר למצלמה."</string>
+    <!-- outdated translation 8029009101380114174 -->     <string name="cannot_connect_camera" msgid="955440687597185163">"אין אפשרות להתחבר למצלמה."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"המצלמה הושבתה בשל מדיניות אבטחה."</string>
     <string name="camera_label" msgid="6346560772074764302">"מצלמה"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"מצלמת וידאו"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"תמונות מצלמה"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">" סרטוני וידאו של המצלמה"</string>
     <string name="wait" msgid="8600187532323801552">"המתן..."</string>
-    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"טען אמצעי אחסון מסוג USB לפני השימוש במצלמה."</string>
-    <string name="no_storage" product="default" msgid="820691042667338625">"הכנס כרטיס SD לפני שתשתמש במצלמה."</string>
+    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"טען אמצעי אחסון מסוג USB לפני השימוש במצלמה."</string>
+    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="5137703033746873624">"טען אמצעי אחסון מסוג USB לפני השימוש במצלמה."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"אמצעי האחסון מסוג USB מלא."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"כרטיס SD מלא."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"מכין אמצעי אחסון מסוג USB..."</string>
@@ -33,7 +33,7 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"לא ניתן לגשת לאחסון ה-USB."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"לא ניתן לגשת לכרטיס ה-SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"שחזר ברירות מחדל"</string>
-    <string name="confirm_restore_message" msgid="5239464943578877295">"הגדרות מצלמה ישוחזרו לברירות המחדל."</string>
+    <!-- outdated translation 5239464943578877295 -->     <string name="confirm_restore_message" msgid="6649481842684452641">"הגדרות מצלמה ישוחזרו לברירות המחדל."</string>
     <string name="review_play" msgid="6378271587740884696">"הפעל"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ביטול"</string>
     <string name="review_ok" msgid="5305096180300056529">"אישור"</string>
@@ -52,11 +52,11 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"הגדרות מצלמה"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"הגדרות מצלמת וידאו"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"גודל תמונה"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 מגה פיקסלים"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 מגה פיקסלים"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 מגה פיקסלים"</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1.3 מיליון פיקסלים"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 מגה פיקסלים"</string>
+    <!-- outdated translation 1871154452633783418 -->     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 מגה פיקסלים"</string>
+    <!-- outdated translation 8763841848102861602 -->     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 מגה פיקסלים"</string>
+    <!-- outdated translation 3802531502504271124 -->     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 מגה פיקסלים"</string>
+    <!-- outdated translation 1648390393603363042 -->     <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1.3 מיליון פיקסלים"</string>
+    <!-- outdated translation 6557686202570581693 -->     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 מגה פיקסלים"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"מצב מיקוד"</string>
@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"לילה"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"שקיעה"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"מסיבה"</string>
-    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"לא ניתן לבחור זאת במצב נוף"</string>
+    <!-- outdated translation 2345574961174762643 -->     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"לא ניתן לבחור זאת במצב נוף"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"הגדרות מצלמה"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"שחזר ברירות מחדל"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"חשיפה"</string>
@@ -92,30 +92,30 @@
     <string name="switch_to_panorama_label" msgid="858801335653517864">"עבור לפנורמה"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"שתף תמונה באמצעות"</string>
     <string name="share_video_via" msgid="5152302809166549015">"שתף סרטון וידאו באמצעות"</string>
-    <string name="no_picture_to_share" msgid="7700541451734517445">"אין תמונה לשיתוף"</string>
-    <string name="no_video_to_share" msgid="3775826212074938990">"אין סרטון וידאו לשיתוף"</string>
-    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"מהר מדי"</string>
+    <!-- outdated translation 7700541451734517445 -->     <string name="no_picture_to_share" msgid="5352574090121328815">"אין תמונה לשיתוף"</string>
+    <!-- outdated translation 3775826212074938990 -->     <string name="no_video_to_share" msgid="7567298642707627096">"אין סרטון וידאו לשיתוף"</string>
+    <!-- outdated translation 3893565956616588385 -->     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"מהר מדי"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"מכין פנורמה"</string>
-    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"תקלה בשמירת פנורמה"</string>
+    <!-- outdated translation 6286761234243958706 -->     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"תקלה בשמירת פנורמה"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"פנורמה"</string>
-    <string name="pano_capture_indication" msgid="7431983072966619171">"מבצע צילום פנורמה"</string>
-    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"שומר..."</string>
-    <string name="tap_to_focus" msgid="6417403734418828035">"הקש כדי להתמקד"</string>
+    <!-- outdated translation 7431983072966619171 -->     <string name="pano_capture_indication" msgid="8248825828264374507">"מבצע צילום פנורמה"</string>
+    <!-- outdated translation 6239883905955317473 -->     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"שומר..."</string>
+    <!-- outdated translation 6417403734418828035 -->     <string name="tap_to_focus" msgid="8863427645591903760">"הקש כדי להתמקד"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"אפקטים"</string>
     <string name="effect_none" msgid="3601545724573307541">"ללא"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"כיווץ"</string>
-    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"עיניים גדולות"</string>
-    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"פה גדול"</string>
-    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"פה קטן"</string>
-    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"אף גדול"</string>
-    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"עיניים קטנות"</string>
-    <string name="effect_backdropper_space" msgid="1381012939195370792">"בחלל"</string>
+    <!-- outdated translation 1942377617761116861 -->     <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"עיניים גדולות"</string>
+    <!-- outdated translation 2342636750478741367 -->     <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"פה גדול"</string>
+    <!-- outdated translation 4424498213697804087 -->     <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"פה קטן"</string>
+    <!-- outdated translation 5738964679340745774 -->     <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"אף גדול"</string>
+    <!-- outdated translation 8007886544327361111 -->     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"עיניים קטנות"</string>
+    <!-- outdated translation 1381012939195370792 -->     <string name="effect_backdropper_space" msgid="7935661090723068402">"בחלל"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"שקיעה"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"דיסקו"</string>
-    <string name="effect_backdropper_gallery" msgid="1393338187462207584">"בחר סרטון משלך"</string>
+    <!-- outdated translation 1393338187462207584 -->     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"בחר סרטון משלך"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"הנח את המכשיר על גבי משטח יציב והקפד לוודא שאין תנועה מאחוריך."\n\n"לאחר מכן, צא מטווח הראייה של המצלמה."</string>
-    <string name="not_selectable_in_effect" msgid="5093306709878914151">"לא ניתן לבחור באפשרות זו כאשר האפקט מופעל."</string>
-    <string name="video_snapshot_hint" msgid="6479115859014094906">"צלם תמונה במהלך הקלטת וידאו על ידי הקשה על מסך התצוגה המקדימה."</string>
+    <!-- outdated translation 5093306709878914151 -->     <string name="not_selectable_in_effect" msgid="7967729203855039239">"לא ניתן לבחור באפשרות זו כאשר האפקט מופעל."</string>
+    <!-- outdated translation 6479115859014094906 -->     <string name="video_snapshot_hint" msgid="8159602664271448241">"צלם תמונה במהלך הקלטת וידאו על ידי הקשה על מסך התצוגה המקדימה."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"האפשרות לצילום תמונה מסרטון וידאו מושבתת כאשר אפקטים מיוחדים מופעלים."</string>
     <string name="clear_effects" msgid="5485339175014139481">"נקה אפקטים"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"פרצופים מצחיקים"</string>
@@ -123,7 +123,7 @@
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"לחצן הצמצם."</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"התמונה האחרונה"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"מתג המצלמה הקדמית והאחורית"</string>
-    <string name="accessibility_mode_picker" msgid="3264968460835265505">"בורר מצלמת וידאו או פנורמה"</string>
+    <!-- outdated translation 3264968460835265505 -->     <string name="accessibility_mode_picker" msgid="3278002189966833100">"בורר מצלמת וידאו או פנורמה"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"פקדי הגדרות נוספות"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"סגור פקדי הגדרה"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"פקד \'הגדל/הקטן\'"</string>
