@@ -17,7 +17,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Errur da la camera"</string>
-    <string name="cannot_connect_camera" msgid="8029009101380114174">"Impussibel da connectar cun la camera."</string>
+    <!-- outdated translation 8029009101380114174 -->     <string name="cannot_connect_camera" msgid="955440687597185163">"Impussibel da connectar cun la camera."</string>
     <!-- no translation found for camera_disabled (8923911090533439312) -->
     <skip />
     <string name="camera_label" msgid="6346560772074764302">"Camera"</string>
@@ -25,8 +25,8 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Fotos da la camera"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videos da la camera"</string>
     <string name="wait" msgid="8600187532323801552">"Spetgar..."</string>
-    <!-- outdated translation 820691042667338625 -->     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Inseri per plaschair ina carta SD avant che utilisar la camera."</string>
-    <string name="no_storage" product="default" msgid="820691042667338625">"Inseri per plaschair ina carta SD avant che utilisar la camera."</string>
+    <!-- outdated translation 820691042667338625 -->     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Inseri per plaschair ina carta SD avant che utilisar la camera."</string>
+    <!-- outdated translation 820691042667338625 -->     <string name="no_storage" product="default" msgid="5137703033746873624">"Inseri per plaschair ina carta SD avant che utilisar la camera."</string>
     <!-- outdated translation 6655334407957844653 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Vossa carta SD è plaina."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Vossa carta SD è plaina."</string>
     <!-- outdated translation 2914969119574812666 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Preparar la carta SD..."</string>
@@ -34,7 +34,7 @@
     <!-- outdated translation 4427585260986849912 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Impussibel d\'acceder a la carta SD."</string>
     <!-- outdated translation 4427585260986849912 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Impussibel d\'acceder a la carta SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restaurar ils parameters predefinids"</string>
-    <string name="confirm_restore_message" msgid="5239464943578877295">"Ils parameters predefinids da la camera vegnan restaurads."</string>
+    <!-- outdated translation 5239464943578877295 -->     <string name="confirm_restore_message" msgid="6649481842684452641">"Ils parameters predefinids da la camera vegnan restaurads."</string>
     <!-- outdated translation 6015456244323302817 -->     <string name="review_play" msgid="6378271587740884696">"REPRODUCIR"</string>
     <string name="review_cancel" msgid="8188009385853399254">"INTERRUMPER"</string>
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
@@ -55,12 +55,12 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Parameters da la camera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Parameters da la camera da video"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Grondezza dal maletg"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 milliuns pixels"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 milliuns pixels"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 milliuns pixels"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_1280x960 (1648390393603363042) -->
+    <!-- outdated translation 1871154452633783418 -->     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 milliuns pixels"</string>
+    <!-- outdated translation 8763841848102861602 -->     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 milliuns pixels"</string>
+    <!-- outdated translation 3802531502504271124 -->     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 milliuns pixels"</string>
+    <!-- no translation found for pref_camera_picturesize_entry_1280x960 (7820672028447972964) -->
     <skip />
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 milliun pixels"</string>
+    <!-- outdated translation 6557686202570581693 -->     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 milliun pixels"</string>
     <!-- no translation found for pref_camera_picturesize_entry_640x480 (5557572917973022995) -->
     <skip />
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -85,7 +85,7 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Rendida dal sulegl"</string>
     <!-- no translation found for pref_camera_scenemode_entry_party (907053529286788253) -->
     <skip />
-    <!-- no translation found for not_selectable_in_scene_mode (2345574961174762643) -->
+    <!-- no translation found for not_selectable_in_scene_mode (2970291701448555126) -->
     <skip />
     <string name="pref_restore_title" msgid="6479274979730178961">"Parameters da la camera"</string>
     <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar ils parameters predefinids"</string>
@@ -105,23 +105,23 @@
     <skip />
     <!-- no translation found for share_video_via (5152302809166549015) -->
     <skip />
-    <!-- no translation found for no_picture_to_share (7700541451734517445) -->
+    <!-- no translation found for no_picture_to_share (5352574090121328815) -->
     <skip />
-    <!-- no translation found for no_video_to_share (3775826212074938990) -->
+    <!-- no translation found for no_video_to_share (7567298642707627096) -->
     <skip />
-    <!-- no translation found for pano_too_fast_prompt (3893565956616588385) -->
+    <!-- no translation found for pano_too_fast_prompt (2823839093291374709) -->
     <skip />
     <!-- no translation found for pano_dialog_prepare_preview (4788441554128083543) -->
     <skip />
-    <!-- no translation found for pano_dialog_panorama_failed (6286761234243958706) -->
+    <!-- no translation found for pano_dialog_panorama_failed (2155692796549642116) -->
     <skip />
     <!-- no translation found for pano_dialog_title (5755531234434437697) -->
     <skip />
-    <!-- no translation found for pano_capture_indication (7431983072966619171) -->
+    <!-- no translation found for pano_capture_indication (8248825828264374507) -->
     <skip />
-    <!-- no translation found for pano_review_saving_indication_str (6239883905955317473) -->
+    <!-- no translation found for pano_review_saving_indication_str (2054886016665130188) -->
     <skip />
-    <!-- no translation found for tap_to_focus (6417403734418828035) -->
+    <!-- no translation found for tap_to_focus (8863427645591903760) -->
     <skip />
     <!-- no translation found for pref_video_effect_title (8243182968457289488) -->
     <skip />
@@ -129,29 +129,29 @@
     <skip />
     <!-- no translation found for effect_goofy_face_squeeze (1207235692524289171) -->
     <skip />
-    <!-- no translation found for effect_goofy_face_big_eyes (1942377617761116861) -->
+    <!-- no translation found for effect_goofy_face_big_eyes (3945182409691408412) -->
     <skip />
-    <!-- no translation found for effect_goofy_face_big_mouth (2342636750478741367) -->
+    <!-- no translation found for effect_goofy_face_big_mouth (7528748779754643144) -->
     <skip />
-    <!-- no translation found for effect_goofy_face_small_mouth (4424498213697804087) -->
+    <!-- no translation found for effect_goofy_face_small_mouth (3848209817806932565) -->
     <skip />
-    <!-- no translation found for effect_goofy_face_big_nose (5738964679340745774) -->
+    <!-- no translation found for effect_goofy_face_big_nose (5180533098740577137) -->
     <skip />
-    <!-- no translation found for effect_goofy_face_small_eyes (8007886544327361111) -->
+    <!-- no translation found for effect_goofy_face_small_eyes (1070355596290331271) -->
     <skip />
-    <!-- no translation found for effect_backdropper_space (1381012939195370792) -->
+    <!-- no translation found for effect_backdropper_space (7935661090723068402) -->
     <skip />
     <!-- no translation found for effect_backdropper_sunset (45198943771777870) -->
     <skip />
     <!-- no translation found for effect_backdropper_disco (8494822051982972854) -->
     <skip />
-    <!-- no translation found for effect_backdropper_gallery (1393338187462207584) -->
+    <!-- no translation found for effect_backdropper_gallery (3271387403091819540) -->
     <skip />
     <!-- no translation found for bg_replacement_message (7540788298745332389) -->
     <skip />
-    <!-- no translation found for not_selectable_in_effect (5093306709878914151) -->
+    <!-- no translation found for not_selectable_in_effect (7967729203855039239) -->
     <skip />
-    <!-- no translation found for video_snapshot_hint (6479115859014094906) -->
+    <!-- no translation found for video_snapshot_hint (8159602664271448241) -->
     <skip />
     <!-- no translation found for disable_video_snapshot_hint (4957723267826476079) -->
     <skip />
@@ -167,7 +167,7 @@
     <skip />
     <!-- no translation found for accessibility_camera_picker (8807945470215734566) -->
     <skip />
-    <!-- no translation found for accessibility_mode_picker (3264968460835265505) -->
+    <!-- no translation found for accessibility_mode_picker (3278002189966833100) -->
     <skip />
     <!-- no translation found for accessibility_second_level_indicators (3855951632917627620) -->
     <skip />

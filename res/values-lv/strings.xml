@@ -17,15 +17,15 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Kameras kļūda"</string>
-    <string name="cannot_connect_camera" msgid="8029009101380114174">"Nevar izveidot savienojumu ar kameru."</string>
+    <!-- outdated translation 8029009101380114174 -->     <string name="cannot_connect_camera" msgid="955440687597185163">"Nevar izveidot savienojumu ar kameru."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"Kamera ir atspējota drošības politiku dēļ."</string>
     <string name="camera_label" msgid="6346560772074764302">"Kamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videokamera"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Kameras attēli"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Kameras video"</string>
     <string name="wait" msgid="8600187532323801552">"Lūdzu, uzgaidiet…"</string>
-    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Pirms kameras lietošanas, lūdzu, uzstādiet USB atmiņu."</string>
-    <string name="no_storage" product="default" msgid="820691042667338625">"Lūdzu, pirms kameras izmantošanas ievietojiet SD karti."</string>
+    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Pirms kameras lietošanas, lūdzu, uzstādiet USB atmiņu."</string>
+    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="5137703033746873624">"Pirms kameras lietošanas, lūdzu, uzstādiet USB atmiņu."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"USB atmiņa ir pilna."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD karte ir pilna."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Notiek USB atm. sagatavošana"</string>
@@ -33,7 +33,7 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Nevarēja piekļūt USB atmiņai."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Nevarēja piekļūt SD kartei."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Atjaunot noklusējuma iestatījumus"</string>
-    <string name="confirm_restore_message" msgid="5239464943578877295">"Tiks atjaunoti kameras noklusējuma iestatījumi."</string>
+    <!-- outdated translation 5239464943578877295 -->     <string name="confirm_restore_message" msgid="6649481842684452641">"Tiks atjaunoti kameras noklusējuma iestatījumi."</string>
     <string name="review_play" msgid="6378271587740884696">"Atskaņot"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ATCELT"</string>
     <string name="review_ok" msgid="5305096180300056529">"Labi"</string>
@@ -52,11 +52,11 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameras iestatījumi"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videokameras iestatījumi"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Attēla izmērs"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 megapikseļi"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 megapikseļi"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 megapikseļi"</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"1,3 megapikseļi"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 megapikselis"</string>
+    <!-- outdated translation 1871154452633783418 -->     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 megapikseļi"</string>
+    <!-- outdated translation 8763841848102861602 -->     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 megapikseļi"</string>
+    <!-- outdated translation 3802531502504271124 -->     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 megapikseļi"</string>
+    <!-- outdated translation 1648390393603363042 -->     <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1,3 megapikseļi"</string>
+    <!-- outdated translation 6557686202570581693 -->     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 megapikselis"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fokusa režīms"</string>
@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nakts"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Saulriets"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Viesības"</string>
-    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"To nevar iestatīt profila režīmā."</string>
+    <!-- outdated translation 2345574961174762643 -->     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"To nevar iestatīt profila režīmā."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Kameras iestatījumi"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Atjaunot noklusējuma iestatījumus"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Ekspozīcija"</string>
@@ -92,30 +92,30 @@
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Pārslēgt uz panorāmas režīmu"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Kopīgot attēlu, izmantojot"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Kopīgot videoklipu, izmantojot"</string>
-    <string name="no_picture_to_share" msgid="7700541451734517445">"Nav kopīgojamu attēlu."</string>
-    <string name="no_video_to_share" msgid="3775826212074938990">"Nav kopīgojamu videoklipu."</string>
-    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"Pārāk ātri"</string>
+    <!-- outdated translation 7700541451734517445 -->     <string name="no_picture_to_share" msgid="5352574090121328815">"Nav kopīgojamu attēlu."</string>
+    <!-- outdated translation 3775826212074938990 -->     <string name="no_video_to_share" msgid="7567298642707627096">"Nav kopīgojamu videoklipu."</string>
+    <!-- outdated translation 3893565956616588385 -->     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Pārāk ātri"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Notiek panorāmas sagatavošana"</string>
-    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"Neizdevās saglabāt panorāmu."</string>
+    <!-- outdated translation 6286761234243958706 -->     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Neizdevās saglabāt panorāmu."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorāma"</string>
-    <string name="pano_capture_indication" msgid="7431983072966619171">"Tiek tverta panorāma"</string>
-    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"Saglabā"</string>
-    <string name="tap_to_focus" msgid="6417403734418828035">"Pieskarieties, lai fokusētu."</string>
+    <!-- outdated translation 7431983072966619171 -->     <string name="pano_capture_indication" msgid="8248825828264374507">"Tiek tverta panorāma"</string>
+    <!-- outdated translation 6239883905955317473 -->     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Saglabā"</string>
+    <!-- outdated translation 6417403734418828035 -->     <string name="tap_to_focus" msgid="8863427645591903760">"Pieskarieties, lai fokusētu."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efekti"</string>
     <string name="effect_none" msgid="3601545724573307541">"Nav"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Saspiest"</string>
-    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"Lielas acis"</string>
-    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"Liela mute"</string>
-    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"Maza mute"</string>
-    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"Liels deguns"</string>
-    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"Mazas acis"</string>
-    <string name="effect_backdropper_space" msgid="1381012939195370792">"Kosmosā"</string>
+    <!-- outdated translation 1942377617761116861 -->     <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"Lielas acis"</string>
+    <!-- outdated translation 2342636750478741367 -->     <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"Liela mute"</string>
+    <!-- outdated translation 4424498213697804087 -->     <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"Maza mute"</string>
+    <!-- outdated translation 5738964679340745774 -->     <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"Liels deguns"</string>
+    <!-- outdated translation 8007886544327361111 -->     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Mazas acis"</string>
+    <!-- outdated translation 1381012939195370792 -->     <string name="effect_backdropper_space" msgid="7935661090723068402">"Kosmosā"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Saulriets"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
-    <string name="effect_backdropper_gallery" msgid="1393338187462207584">"Izvēlēties"</string>
+    <!-- outdated translation 1393338187462207584 -->     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Izvēlēties"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Novietojiet ierīci uz stabilas virsmas un pārliecinieties, ka aiz jums nenotiek nekāda kustība."\n\n"Pēc tam izejiet no kameras skata."</string>
-    <string name="not_selectable_in_effect" msgid="5093306709878914151">"Šo iestat. nevar atlasīt, kad ir ieslēgts efekts."</string>
-    <string name="video_snapshot_hint" msgid="6479115859014094906">"Fotografējiet videoieraksta laikā, pieskaroties priekšskat. ekr."</string>
+    <!-- outdated translation 5093306709878914151 -->     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Šo iestat. nevar atlasīt, kad ir ieslēgts efekts."</string>
+    <!-- outdated translation 6479115859014094906 -->     <string name="video_snapshot_hint" msgid="8159602664271448241">"Fotografējiet videoieraksta laikā, pieskaroties priekšskat. ekr."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Video momentuzņēmums ir atspējots, ja ir ieslēgti specefekti."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Noņemt efektus"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Smieklīgas sejas izt."</string>
@@ -123,7 +123,7 @@
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Slēdža poga"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Pēdējais fotoattēls"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Priekšējais un aizmugurējais kameras slēdzis"</string>
-    <string name="accessibility_mode_picker" msgid="3264968460835265505">"Kameras, video vai panorāmas atlasītājs"</string>
+    <!-- outdated translation 3264968460835265505 -->     <string name="accessibility_mode_picker" msgid="3278002189966833100">"Kameras, video vai panorāmas atlasītājs"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Vairāk iestatījumu vadīklu"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Aizvērt iestatījumu vadīklas"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Tālummaiņas vadība"</string>
