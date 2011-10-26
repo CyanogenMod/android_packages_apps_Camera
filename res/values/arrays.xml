@@ -33,9 +33,9 @@
     </string-array>
 
     <array name="video_quality_largeicons" translatable="false">
-        <item>@drawable/ic_viewfinder_video_quality_1080p</item>
-        <item>@drawable/ic_viewfinder_video_quality_720p</item>
-        <item>@drawable/ic_viewfinder_video_quality_480p</item>
+        <item>@drawable/ic_quality_1080p</item>
+        <item>@drawable/ic_quality_720p</item>
+        <item>@drawable/ic_quality_480p</item>
     </array>
 
     <!-- Video Preferences Time Lapse Frame Interval icons -->
