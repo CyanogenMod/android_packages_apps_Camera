@@ -93,6 +93,7 @@ public class EffectsRecorder {
     private long mMaxFileSize = 0;
     private int mMaxDurationMs = 0;
     private int mCameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private boolean mAppIsLandscape;
 
     private int mEffect = EFFECT_NONE;
     private int mCurrentEffect = EFFECT_NONE;
@@ -376,6 +377,16 @@ public class EffectsRecorder {
         setRecordingOrientation();
     }
 
+    /** Passes the native orientation of the Camera app (device dependent)
+     * to allow for correct output aspect ratio. Defaults to portrait */
+    public void setAppToLandscape(boolean landscape) {
+        if (mState != STATE_CONFIGURE) {
+            throw new RuntimeException(
+                "setAppToLandscape called after configuration!");
+        }
+        mAppIsLandscape = landscape;
+    }
+
     public void setCameraFacing(int facing) {
         switch (mState) {
             case STATE_RELEASED:
@@ -420,7 +431,12 @@ public class EffectsRecorder {
             Log.v(TAG, "Effects framework initializing. Recording size "
                   + mProfile.videoFrameWidth + ", " + mProfile.videoFrameHeight);
         }
-
+        if (!mAppIsLandscape) {
+            int tmp;
+            tmp = mProfile.videoFrameWidth;
+            mProfile.videoFrameWidth = mProfile.videoFrameHeight;
+            mProfile.videoFrameHeight = tmp;
+        }
         mGraphEnv.addReferences(
                 "textureSourceCallback", mSourceReadyCallback,
                 "recordingWidth", mProfile.videoFrameWidth,
