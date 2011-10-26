@@ -33,6 +33,16 @@
 	<bool name="ffc_canZoom">true</bool>
 	<string name="ffc_supportedEffects"></string>
 
+	<!-- FFC capture orientation -->
+	<integer name="ffc_rotation_compensation">0</integer>
+
+	<!-- FFC capture partial orientation
+	     0 - always
+	     1 - portrait
+	     2 - landscape
+        -->
+	<integer name="ffc_rotation_compensation_partial">0</integer>
+
 	<!-- Resolution filtering -->
 	<string name="filtered_pictureSizes"></string>
 
