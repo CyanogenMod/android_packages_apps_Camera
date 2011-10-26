@@ -17,15 +17,15 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"相機發生錯誤"</string>
-    <string name="cannot_connect_camera" msgid="8029009101380114174">"無法連接相機。"</string>
+    <!-- outdated translation 8029009101380114174 -->     <string name="cannot_connect_camera" msgid="955440687597185163">"無法連接相機。"</string>
     <string name="camera_disabled" msgid="8923911090533439312">"由於安全性政策規定，相機已遭停用。"</string>
     <string name="camera_label" msgid="6346560772074764302">"相機"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"攝錄影機"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"相機圖片"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"相機影片"</string>
     <string name="wait" msgid="8600187532323801552">"請稍候…"</string>
-    <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"使用相機前，請先掛接 USB 儲存裝置。"</string>
-    <string name="no_storage" product="default" msgid="820691042667338625">"使用相機前請先插入 SD 卡。"</string>
+    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"使用相機前，請先掛接 USB 儲存裝置。"</string>
+    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="5137703033746873624">"使用相機前，請先掛接 USB 儲存裝置。"</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"您的 USB 儲存裝置已滿。"</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD 卡已滿。"</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"正在準備 USB 儲存裝置..."</string>
@@ -33,7 +33,7 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"無法存取 USB 儲存裝置。"</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"無法存取 SD 卡。"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"還原預設值"</string>
-    <string name="confirm_restore_message" msgid="5239464943578877295">"相機設定即將還原成預設值。"</string>
+    <!-- outdated translation 5239464943578877295 -->     <string name="confirm_restore_message" msgid="6649481842684452641">"相機設定即將還原成預設值。"</string>
     <string name="review_play" msgid="6378271587740884696">"播放"</string>
     <string name="review_cancel" msgid="8188009385853399254">"取消"</string>
     <string name="review_ok" msgid="5305096180300056529">"確定"</string>
@@ -52,11 +52,11 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"相機設定"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"攝錄影機設定"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"相片大小"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 百萬像素"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 百萬像素"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 百萬像素"</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="1648390393603363042">"130 萬像素"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 百萬像素"</string>
+    <!-- outdated translation 1871154452633783418 -->     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 百萬像素"</string>
+    <!-- outdated translation 8763841848102861602 -->     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 百萬像素"</string>
+    <!-- outdated translation 3802531502504271124 -->     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 百萬像素"</string>
+    <!-- outdated translation 1648390393603363042 -->     <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"130 萬像素"</string>
+    <!-- outdated translation 6557686202570581693 -->     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 百萬像素"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"對焦模式"</string>
@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"夜景"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"黃昏"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"派對模式"</string>
-    <string name="not_selectable_in_scene_mode" msgid="2345574961174762643">"無法在場景模式下選取此設定"</string>
+    <!-- outdated translation 2345574961174762643 -->     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"無法在場景模式下選取此設定"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"相機設定"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"還原預設值"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
@@ -92,30 +92,30 @@
     <string name="switch_to_panorama_label" msgid="858801335653517864">"切換至全景模式"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"相片分享方式"</string>
     <string name="share_video_via" msgid="5152302809166549015">"影片分享方式"</string>
-    <string name="no_picture_to_share" msgid="7700541451734517445">"沒有可分享的相片"</string>
-    <string name="no_video_to_share" msgid="3775826212074938990">"沒有可分享的影片"</string>
-    <string name="pano_too_fast_prompt" msgid="3893565956616588385">"速度過快"</string>
+    <!-- outdated translation 7700541451734517445 -->     <string name="no_picture_to_share" msgid="5352574090121328815">"沒有可分享的相片"</string>
+    <!-- outdated translation 3775826212074938990 -->     <string name="no_video_to_share" msgid="7567298642707627096">"沒有可分享的影片"</string>
+    <!-- outdated translation 3893565956616588385 -->     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"速度過快"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"正在準備全景預覽"</string>
-    <string name="pano_dialog_panorama_failed" msgid="6286761234243958706">"無法儲存全景"</string>
+    <!-- outdated translation 6286761234243958706 -->     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"無法儲存全景"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"全景"</string>
-    <string name="pano_capture_indication" msgid="7431983072966619171">"全景拍攝中"</string>
-    <string name="pano_review_saving_indication_str" msgid="6239883905955317473">"儲存中..."</string>
-    <string name="tap_to_focus" msgid="6417403734418828035">"輕按即可聚焦"</string>
+    <!-- outdated translation 7431983072966619171 -->     <string name="pano_capture_indication" msgid="8248825828264374507">"全景拍攝中"</string>
+    <!-- outdated translation 6239883905955317473 -->     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"儲存中..."</string>
+    <!-- outdated translation 6417403734418828035 -->     <string name="tap_to_focus" msgid="8863427645591903760">"輕按即可聚焦"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"效果"</string>
     <string name="effect_none" msgid="3601545724573307541">"無"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"擠眉弄眼"</string>
-    <string name="effect_goofy_face_big_eyes" msgid="1942377617761116861">"大眼睛"</string>
-    <string name="effect_goofy_face_big_mouth" msgid="2342636750478741367">"大嘴巴"</string>
-    <string name="effect_goofy_face_small_mouth" msgid="4424498213697804087">"小嘴巴"</string>
-    <string name="effect_goofy_face_big_nose" msgid="5738964679340745774">"大鼻子"</string>
-    <string name="effect_goofy_face_small_eyes" msgid="8007886544327361111">"小眼睛"</string>
-    <string name="effect_backdropper_space" msgid="1381012939195370792">"太空"</string>
+    <!-- outdated translation 1942377617761116861 -->     <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"大眼睛"</string>
+    <!-- outdated translation 2342636750478741367 -->     <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"大嘴巴"</string>
+    <!-- outdated translation 4424498213697804087 -->     <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"小嘴巴"</string>
+    <!-- outdated translation 5738964679340745774 -->     <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"大鼻子"</string>
+    <!-- outdated translation 8007886544327361111 -->     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"小眼睛"</string>
+    <!-- outdated translation 1381012939195370792 -->     <string name="effect_backdropper_space" msgid="7935661090723068402">"太空"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"黃昏"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"迪斯可"</string>
-    <string name="effect_backdropper_gallery" msgid="1393338187462207584">"自行挑選"</string>
+    <!-- outdated translation 1393338187462207584 -->     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"自行挑選"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"將您的裝置放在平穩的表面上，確定自己身後沒有移動的物體。"\n\n"然後離開相機鏡頭的視野範圍。"</string>
-    <string name="not_selectable_in_effect" msgid="5093306709878914151">"效果啟用時無法選取這項設定。"</string>
-    <string name="video_snapshot_hint" msgid="6479115859014094906">"影片錄製期間，只要輕按預覽畫面即可拍攝相片。"</string>
+    <!-- outdated translation 5093306709878914151 -->     <string name="not_selectable_in_effect" msgid="7967729203855039239">"效果啟用時無法選取這項設定。"</string>
+    <!-- outdated translation 6479115859014094906 -->     <string name="video_snapshot_hint" msgid="8159602664271448241">"影片錄製期間，只要輕按預覽畫面即可拍攝相片。"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"特殊效果啟用時無法使用影片快照。"</string>
     <string name="clear_effects" msgid="5485339175014139481">"清除效果"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"耍笨臉"</string>
@@ -123,7 +123,7 @@
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"[快門] 按鈕"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"最近的相片"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"前置和後置鏡頭開關"</string>
-    <string name="accessibility_mode_picker" msgid="3264968460835265505">"相機、影片或全景選取工具"</string>
+    <!-- outdated translation 3264968460835265505 -->     <string name="accessibility_mode_picker" msgid="3278002189966833100">"相機、影片或全景選取工具"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"更多設定控制"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"關閉設定控制"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"縮放控制"</string>
