@@ -140,6 +140,10 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     // The orientation compensation for icons and thumbnails.
     private int mOrientationCompensation = 0;
 
+    // FFC orientation compensation
+    private boolean mNeedsFFCRotationCompensation = false;
+    private int mFFCOrientationCompensation = 0;
+
     private static final int IDLE = 1;
     private static final int SNAPSHOT_IN_PROGRESS = 2;
 
@@ -802,9 +806,15 @@ public class Camera extends BaseCamera implements View.OnClickListener,
             int rotation = 0;
             if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
                 CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-                if (info.facing == CameraInfo.CAMERA_FACING_FRONT &&
-                        info.orientation != 90) {
-                    rotation = (info.orientation - mOrientation + 360) % 360;
+                if (info.facing == CameraInfo.CAMERA_FACING_FRONT && info.orientation != 90) {
+                    /* On some FFCs (*Cough* HTC 8660 *Cough*), the image gets flipped when taking portrait pictures.
+                       A resource config now exists so it can be overlayed on a device case basis.
+                     */
+                    if (mNeedsFFCRotationCompensation && (mOrientation == 0 || mOrientation == 180)) {
+                        rotation = ((info.orientation + mFFCOrientationCompensation) - mOrientation + 360) % 360;
+                    } else {
+                        rotation = (info.orientation - mOrientation + 360) % 360;
+                    }
                 } else {  // back-facing camera (or acting like it)
                     rotation = (info.orientation + mOrientation) % 360;
                 }
@@ -928,6 +938,10 @@ public class Camera extends BaseCamera implements View.OnClickListener,
 
         mShutterdownTime = 0;
         mShutterupTime = 0;
+
+        mFFCOrientationCompensation = getResources().getInteger(R.integer.ffc_rotation_compensation);
+        mNeedsFFCRotationCompensation = mFFCOrientationCompensation != 0;
+
 
         mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
 
