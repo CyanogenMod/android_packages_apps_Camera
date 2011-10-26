@@ -44,8 +44,8 @@
     <string name="pref_camera_id_title" msgid="6023059405578511534">"选择相机"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"背面相机"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"正面相机"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"存储相机位置"</string>
-    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"关"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"存储位置"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"关闭"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"开"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"视频画质"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"延时间隔"</string>
