@@ -310,7 +310,7 @@
     <string name="effect_backdropper_gallery">Choose your own</string>
 
     <!-- Message displayed in overlay during background replacement training [CHAR LIMIT=180]-->
-    <string name="bg_replacement_message">Place your device on a steady surface and be sure there\'s no movement behind you.\n\nThen step out of the camera\'s view.</string>
+    <string name="bg_replacement_message">Set your device down\nStep out of view for a moment</string>
 
     <!-- Toast after trying to select a setting that is not allowed to change in effect [CHAR LIMIT=50] -->
     <string name="not_selectable_in_effect">Not selectable when the effect is on.</string>
