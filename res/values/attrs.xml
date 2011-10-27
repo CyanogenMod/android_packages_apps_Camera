@@ -19,7 +19,7 @@
     </declare-styleable>
     <declare-styleable name="ListPreference">
         <attr name="key" format="string" />
-        <attr name="defaultValue" format="string" />
+        <attr name="defaultValue" format="string|reference" />
         <attr name="entryValues" format="reference" />
         <attr name="entries" format="reference" />
     </declare-styleable>
