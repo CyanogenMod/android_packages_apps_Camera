@@ -90,7 +90,7 @@ public class Util {
     }
 
     public static void initialize(Context context) {
-        sIsTabletUI = (context.getResources().getConfiguration().screenWidthDp >= 1024);
+        sIsTabletUI = (context.getResources().getConfiguration().smallestScreenWidthDp >= 600);
 
         DisplayMetrics metrics = new DisplayMetrics();
         WindowManager wm = (WindowManager)

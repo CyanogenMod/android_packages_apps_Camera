@@ -16,7 +16,9 @@
 
 package com.android.camera.ui;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.RelativeLayout;
@@ -25,8 +27,7 @@ import android.widget.RelativeLayout;
  * A layout which handles the the width of the control panel, which contains
  * the shutter button, thumbnail, front/back camera picker, and mode picker.
  * The purpose of this is to have a consistent width of control panel in camera,
- * camcorder, and panorama modes. The control panel can also be GONE and the
- * preview can expand to full-screen in panorama.
+ * camcorder, and panorama modes.
  */
 public class ControlPanelLayout extends RelativeLayout {
     private static final String TAG = "ControlPanelLayout";
@@ -39,29 +40,50 @@ public class ControlPanelLayout extends RelativeLayout {
     protected void onMeasure(int widthSpec, int heightSpec) {
         int widthSpecSize = MeasureSpec.getSize(widthSpec);
         int heightSpecSize = MeasureSpec.getSize(heightSpec);
-        int widthMode = MeasureSpec.getMode(widthSpec);
-        int measuredWidth = 0;
+        int measuredSize = 0;
+        int mode, longSideSize, shortSideSize, minSize, specSize;
 
-        if (widthSpecSize > 0 && heightSpecSize > 0 && widthMode == MeasureSpec.AT_MOST) {
-            // Calculate how big 4:3 preview occupies. Then deduct it from the
-            // width of the parent.
-            measuredWidth = (int) (widthSpecSize - heightSpecSize / 3.0 * 4.0 - 16);
+        boolean isLandscape = (((Activity) getContext()).getRequestedOrientation()
+                == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        if (isLandscape) {
+            mode = MeasureSpec.getMode(widthSpec);
+            longSideSize = widthSpecSize;
+            shortSideSize = heightSpecSize;
+            minSize = getSuggestedMinimumWidth();
+            specSize = widthSpecSize;
         } else {
-            Log.e(TAG, "layout_width of ControlPanelLayout should be wrap_content");
+            mode = MeasureSpec.getMode(heightSpec);
+            longSideSize = heightSpecSize;
+            shortSideSize = widthSpecSize;
+            minSize = getSuggestedMinimumHeight();
+            specSize = heightSpecSize;
         }
 
-        // Make sure the width is bigger than the minimum width.
-        int minWidth = getSuggestedMinimumWidth();
-        if (minWidth > measuredWidth) {
-            measuredWidth = minWidth;
+        if (widthSpecSize > 0 && heightSpecSize > 0 && mode == MeasureSpec.AT_MOST) {
+            // Calculate how big 4:3 preview occupies. Then deduct it from the
+            // width of the parent.
+            measuredSize = (int) (longSideSize - shortSideSize / 3.0 * 4.0);
+        } else {
+            Log.e(TAG, "layout_xxx of ControlPanelLayout should be wrap_content");
+        }
+
+        // Make sure the width is bigger than the minimum length.
+        if (minSize > measuredSize) {
+            measuredSize = minSize;
         }
 
         // The width cannot be bigger than the constraint.
-        if (widthMode == MeasureSpec.AT_MOST && measuredWidth > widthSpecSize) {
-            measuredWidth = widthSpecSize;
+        if (mode == MeasureSpec.AT_MOST && measuredSize > specSize) {
+            measuredSize = specSize;
         }
 
-        super.onMeasure(MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY),
-                heightSpec);
+        if (isLandscape) {
+            widthSpec = MeasureSpec.makeMeasureSpec(measuredSize, MeasureSpec.EXACTLY);
+        } else {
+            heightSpec = MeasureSpec.makeMeasureSpec(measuredSize, MeasureSpec.EXACTLY);
+        }
+
+        super.onMeasure(widthSpec, heightSpec);
     }
 }

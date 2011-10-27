@@ -20,13 +20,14 @@ import com.android.camera.ui.PopupManager;
 
 import android.app.Activity;
 import android.app.KeyguardManager;
-import android.view.KeyEvent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 
 /**
  * Superclass of Camera and VideoCamera activities.
@@ -41,6 +42,9 @@ abstract public class ActivityBase extends Activity {
 
     @Override
     public void onCreate(Bundle icicle) {
+        if (Util.isTabletUI()) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
         super.onCreate(icicle);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
