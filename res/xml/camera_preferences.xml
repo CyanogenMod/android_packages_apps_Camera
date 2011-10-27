@@ -34,7 +34,7 @@
             camera:key="pref_camera_scenemode_key"
             camera:defaultValue="@string/pref_camera_scenemode_default"
             camera:title="@string/pref_camera_scenemode_title"
-            camera:singleIcon="@drawable/ic_viewfinder_scene_mode"
+            camera:singleIcon="@drawable/ic_scn_holo_light"
             camera:entries="@array/pref_camera_scenemode_entries"
             camera:entryValues="@array/pref_camera_scenemode_entryvalues" />
     <IconListPreference
