@@ -39,17 +39,17 @@
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"AUTRE PHOTO"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
-    <string name="switch_camera_id" msgid="837545176602471325">"Changer d\'appareil photo"</string>
+    <string name="switch_camera_id" msgid="837545176602471325">"Changer de caméra"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Enregistrement mode time lapse"</string>
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Choisir appareil ph."</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Arrière"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Avant"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Enregistrer la position"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Enregist. position"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Désactivé"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activé"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualité vidéo"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalle time lapse"</string>
-    <string name="pref_camera_settings_category" msgid="2576236450859613120">"Paramètres de l\'appareil photo"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalle de temps"</string>
+    <string name="pref_camera_settings_category" msgid="2576236450859613120">"Paramètres appareil photo"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Mode Caméra"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Taille d\'image"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 M pixels"</string>
@@ -59,8 +59,8 @@
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 M pixels"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
-    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Mode de mise au point"</string>
-    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatique"</string>
+    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Mise au point"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Auto"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infini"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Mode Flash"</string>
@@ -87,7 +87,7 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"La mémoire de stockage USB est pleine. Définissez la qualité sur une valeur plus basse ou supprimez des images ou d\'autres types de fichiers."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Votre carte SD est pleine. Modifiez le paramètre de qualité ou supprimez des images ou des fichiers."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Taille maximale atteinte."</string>
-    <string name="switch_to_camera_label" msgid="9148663083850199582">"Passer en mode appareil photo"</string>
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"Passer en mode photo"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"Passer en mode vidéo"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Passer en mode panoramique"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Partager l\'image via"</string>
@@ -118,7 +118,7 @@
     <string name="video_snapshot_hint" msgid="6479115859014094906">"Appuyez sur écran aperçu pour prendre photo pendant enreg. vidéo"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Instantané vidéo désactivé en cas d\'activation des effets spéciaux."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Effacer les effets"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Expressions amusantes"</string>
+    <string name="effect_silly_faces" msgid="3214174716769421248">"Drôles de têtes"</string>
     <string name="effect_background" msgid="6909716214852487679">"Arrière-plan"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Bouton de l\'obturateur"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Photo la plus récente"</string>
