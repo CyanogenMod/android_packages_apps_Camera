@@ -17,15 +17,15 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"خطأ في الكاميرا"</string>
-    <!-- outdated translation 8029009101380114174 -->     <string name="cannot_connect_camera" msgid="955440687597185163">"لا يمكن الاتصال بالكاميرا."</string>
+    <string name="cannot_connect_camera" msgid="955440687597185163">"يتعذر الاتصال بالكاميرا."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"تم تعطيل الكاميرا بسبب سياسات الأمان."</string>
     <string name="camera_label" msgid="6346560772074764302">"الكاميرا"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"كاميرا فيديو"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"صور الكاميرا"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"مقاطع فيديو الكاميرا"</string>
     <string name="wait" msgid="8600187532323801552">"يرجى الانتظار…"</string>
-    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"الرجاء تركيب وحدة تخزين USB قبل استخدام الكاميرا."</string>
-    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="5137703033746873624">"الرجاء تركيب وحدة تخزين USB قبل استخدام الكاميرا."</string>
+    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"حمِّل وحدة تخزين USB قبل استخدام الكاميرا."</string>
+    <string name="no_storage" product="default" msgid="5137703033746873624">"أدرج بطاقة SD قبل استخدام الكاميرا."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"وحدة تخزين USB ممتلئة."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"بطاقة SD ممتلئة."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"جارٍ تحضير وحدة تخزين USB…"</string>
@@ -33,7 +33,7 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"تعذر الدخول إلى وحدة تخزين USB."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"تعذر الدخول إلى بطاقة SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"استعادة الإعدادات الافتراضية"</string>
-    <!-- outdated translation 5239464943578877295 -->     <string name="confirm_restore_message" msgid="6649481842684452641">"ستتم استعادة إعدادات الكاميرا إلى الإعدادات الافتراضية."</string>
+    <string name="confirm_restore_message" msgid="6649481842684452641">"هل تريد استعادة إعدادات الكاميرا الافتراضية؟"</string>
     <string name="review_play" msgid="6378271587740884696">"تشغيل"</string>
     <string name="review_cancel" msgid="8188009385853399254">"إلغاء"</string>
     <string name="review_ok" msgid="5305096180300056529">"موافق"</string>
@@ -52,11 +52,11 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"إعدادات الكاميرا"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"إعدادات كاميرا الفيديو"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"حجم الصورة"</string>
-    <!-- outdated translation 1871154452633783418 -->     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 ميغا بكسل"</string>
-    <!-- outdated translation 8763841848102861602 -->     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 ميغا بكسل"</string>
-    <!-- outdated translation 3802531502504271124 -->     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 ميغا بكسل"</string>
-    <!-- outdated translation 1648390393603363042 -->     <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1.3 ميغا بكسل"</string>
-    <!-- outdated translation 6557686202570581693 -->     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 ميغا بكسل"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 ميغا بكسل"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 ميغا بكسل"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 ميغا بكسل"</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1.3 ميغا بكسل"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 ميغا بكسل"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"وضع التركيز"</string>
@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"ليلي"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"الغروب"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"مجموعة"</string>
-    <!-- outdated translation 2345574961174762643 -->     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"لا يمكن تحديد هذا الإعداد في وضع المشهد."</string>
+    <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"لا يمكن تحديده في وضع المشهد."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"إعدادات الكاميرا"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"استعادة الإعدادات الافتراضية"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"التعرض"</string>
@@ -92,30 +92,30 @@
     <string name="switch_to_panorama_label" msgid="858801335653517864">"تبديل إلى بانوراما"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"مشاركة الصورة عبر"</string>
     <string name="share_video_via" msgid="5152302809166549015">"مشاركة الفيديو عبر"</string>
-    <!-- outdated translation 7700541451734517445 -->     <string name="no_picture_to_share" msgid="5352574090121328815">"لا توجد صورة لمشاركتها"</string>
-    <!-- outdated translation 3775826212074938990 -->     <string name="no_video_to_share" msgid="7567298642707627096">"لا يوجد فيديو لمشاركته"</string>
-    <!-- outdated translation 3893565956616588385 -->     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"سريع للغاية"</string>
+    <string name="no_picture_to_share" msgid="5352574090121328815">"لا تتوفر صورة لمشاركتها."</string>
+    <string name="no_video_to_share" msgid="7567298642707627096">"لا يتوفر فيديو لمشاركته."</string>
+    <string name="pano_too_fast_prompt" msgid="2823839093291374709">"سريع للغاية"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"جارٍ تحضير العرض البانورامي"</string>
-    <!-- outdated translation 6286761234243958706 -->     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"أخفق حفظ العرض البانورامي"</string>
+    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"تعذر حفظ بانوراما."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"عرض بانورامي"</string>
-    <!-- outdated translation 7431983072966619171 -->     <string name="pano_capture_indication" msgid="8248825828264374507">"جارٍ التقاط عرض بانورامي"</string>
-    <!-- outdated translation 6239883905955317473 -->     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"جارٍ الحفظ..."</string>
-    <!-- outdated translation 6417403734418828035 -->     <string name="tap_to_focus" msgid="8863427645591903760">"انقر للتركيز"</string>
+    <string name="pano_capture_indication" msgid="8248825828264374507">"جارٍ التقاط عرض بانورامي"</string>
+    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"جارٍ الحفظ..."</string>
+    <string name="tap_to_focus" msgid="8863427645591903760">"المس للتركيز."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"تأثيرات"</string>
     <string name="effect_none" msgid="3601545724573307541">"بلا"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"ضغط"</string>
-    <!-- outdated translation 1942377617761116861 -->     <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"عيون كبيرة"</string>
-    <!-- outdated translation 2342636750478741367 -->     <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"فم كبير"</string>
-    <!-- outdated translation 4424498213697804087 -->     <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"فم صغير"</string>
-    <!-- outdated translation 5738964679340745774 -->     <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"أنف كبير"</string>
-    <!-- outdated translation 8007886544327361111 -->     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"عيون صغيرة"</string>
-    <!-- outdated translation 1381012939195370792 -->     <string name="effect_backdropper_space" msgid="7935661090723068402">"في الفضاء"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"العيون الكبيرة."</string>
+    <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"الفم الكبير"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"الفم الصغير"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"الأنف الكبير"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"العيون الصغيرة"</string>
+    <string name="effect_backdropper_space" msgid="7935661090723068402">"في الفضاء"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"الغروب"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"ديسكو"</string>
-    <!-- outdated translation 1393338187462207584 -->     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"اختيارك الخاص"</string>
+    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"الاختيار الذاتي"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"ضع الجهاز على سطح ثابت وتأكد من عدم وجود حركة خلفك."\n\n"ثم انتقل إلى وضع الكاميرا."</string>
-    <!-- outdated translation 5093306709878914151 -->     <string name="not_selectable_in_effect" msgid="7967729203855039239">"هذا الإعداد غير قابل للتحديد عند تشغيل التأثير."</string>
-    <!-- outdated translation 6479115859014094906 -->     <string name="video_snapshot_hint" msgid="8159602664271448241">"التقاط صورة أثناء تسجيل الفيديو بالنقر على شاشة المعاينة."</string>
+    <string name="not_selectable_in_effect" msgid="7967729203855039239">"غير قابل للتحديد عند تشغيل التأثير."</string>
+    <string name="video_snapshot_hint" msgid="8159602664271448241">"يمكنك التقاط صورة أثناء تسجيل الفيديو من خلال لمس شاشة المعاينة."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"يتم تعطيل لقطة الفيديو عند تشغيل التأثيرات الخاصة."</string>
     <string name="clear_effects" msgid="5485339175014139481">"محو التأثيرات"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"وجوه مضحكة"</string>
@@ -123,7 +123,7 @@
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"زر المصراع"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"أحدث صورة"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"مفتاح التبديل بين الأمام والخلف"</string>
-    <!-- outdated translation 3264968460835265505 -->     <string name="accessibility_mode_picker" msgid="3278002189966833100">"محدّد الكاميرا أو الفيديو أو البانوراما"</string>
+    <string name="accessibility_mode_picker" msgid="3278002189966833100">"محدّد الكاميرا أو الفيديو أو البانوراما"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"مزيد من عناصر التحكم في الإعدادات"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"إغلاق عناصر التحكم في الإعدادات"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"التحكم في التكبير/التصغير"</string>
