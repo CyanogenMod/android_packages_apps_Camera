@@ -118,6 +118,10 @@ double gLastTx = 0.0f;
 double gUILayoutScalingX = 1.0f;
 double gUILayoutScalingY = 1.0f;
 
+// Whether the view that we will render preview FBO onto is in landscape or portrait
+// orientation.
+bool gIsLandscapeOrientation = true;
+
 // State of the viewfinder. Set to false when the viewfinder hits the UI edge.
 bool gPanViewfinder = true;
 
@@ -137,11 +141,25 @@ GLfloat g_dTranslationToFBOCenterGL[16];
 double g_dTranslationToFBOCenter[16];
 
 // GL 4x4 Identity transformation
-GLfloat g_dAffinetransIdent[] = {
+GLfloat g_dAffinetransIdentGL[] = {
     1., 0., 0., 0.,
     0., 1., 0., 0.,
     0., 0., 1., 0.,
     0., 0., 0., 1.};
+
+// GL 4x4 Rotation transformation (column-majored): 90 degree
+GLfloat g_dAffinetransRotation90GL[] = {
+    0., 1., 0., 0.,
+    -1., 0., 0., 0.,
+    0., 0., 1., 0.,
+    0., 0., 0., 1.};
+
+// 3x3 Rotation transformation (row-majored): 90 degree
+double gRotation90[] = {
+    0., -1., 0.,
+    1., 0., 0.,
+    0., 0., 1.,};
+
 
 float g_dIdent3x3[] = {
     1.0, 0.0, 0.0,
@@ -219,6 +237,39 @@ void ConvertAffine3x3toGL4x4(double *matGL44, double *mat33)
     matGL44[15] = mat33[8];
 }
 
+bool continuePanningFBO(double panOffset) {
+    double normalizedScreenLimitLeft = -1.0 + VIEWPORT_BORDER_FACTOR_HORZ * 2.0;
+    double normalizedScreenLimitRight = 1.0 - VIEWPORT_BORDER_FACTOR_HORZ * 2.0;
+    double normalizedXPositionOnScreenLeft;
+    double normalizedXPositionOnScreenRight;
+
+    // Compute the position of the current frame in the screen coordinate system
+    if (gIsLandscapeOrientation) {
+        normalizedXPositionOnScreenLeft = (2.0 *
+            (gCenterOffsetX + panOffset) / gPreviewFBOWidth - 1.0) *
+            gUILayoutScalingX;
+        normalizedXPositionOnScreenRight = (2.0 *
+            ((gCenterOffsetX + panOffset) + gPreviewImageWidth[HR]) /
+            gPreviewFBOWidth - 1.0) * gUILayoutScalingX;
+    } else {
+        normalizedXPositionOnScreenLeft = (2.0 *
+            (gCenterOffsetX + panOffset) / gPreviewFBOWidth - 1.0) *
+            gUILayoutScalingY;
+        normalizedXPositionOnScreenRight = (2.0 *
+            ((gCenterOffsetX + panOffset) + gPreviewImageWidth[HR]) /
+            gPreviewFBOWidth - 1.0) * gUILayoutScalingY;
+    }
+
+    // Stop the viewfinder panning if we hit the maximum border allowed for
+    // this UI layout
+    if (normalizedXPositionOnScreenRight > normalizedScreenLimitRight ||
+            normalizedXPositionOnScreenLeft < normalizedScreenLimitLeft) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 // This function computes fills the 4x4 matrices g_dAffinetrans,
 // and g_dAffinetransPan using the specified 3x3 affine
 // transformation between the first captured frame and the current frame.
@@ -289,23 +340,7 @@ void UpdateWarpTransformation(float *trs)
     }
 
     gLastTx = gThisTx;
-
-    // Compute the position of the current frame in the screen coordinate system
-    // and stop the viewfinder panning if we hit the maximum border allowed for
-    // this UI layout
-    double normalizedXPositionOnScreenLeft = (2.0 *
-            (gCenterOffsetX + gPanOffset) / gPreviewFBOWidth - 1.0) *
-            gUILayoutScalingX;
-    double normalizedScreenLimitLeft = -1.0 + VIEWPORT_BORDER_FACTOR_HORZ * 2.0;
-
-    double normalizedXPositionOnScreenRight = (2.0 *
-            ((gCenterOffsetX + gPanOffset) + gPreviewImageWidth[HR]) /
-            gPreviewFBOWidth - 1.0) * gUILayoutScalingX;
-    double normalizedScreenLimitRight = 1.0 - VIEWPORT_BORDER_FACTOR_HORZ * 2.0;
-
-    if(normalizedXPositionOnScreenRight > normalizedScreenLimitRight ||
-            normalizedXPositionOnScreenLeft < normalizedScreenLimitLeft)
-        gPanViewfinder = false;
+    gPanViewfinder = continuePanningFBO(gPanOffset);
 
     db_Identity3x3(H);
     H[2] = gPanOffset;
@@ -315,7 +350,13 @@ void UpdateWarpTransformation(float *trs)
     db_Multiply3x3_3x3(Htemp1, H, gKm);
     db_Multiply3x3_3x3(Hp, gKminv, Htemp1);
 
-    ConvertAffine3x3toGL4x4(g_dAffinetransPan, Hp);
+    if (gIsLandscapeOrientation) {
+        ConvertAffine3x3toGL4x4(g_dAffinetransPan, Hp);
+    } else {
+        // rotate Hp by 90 degress.
+        db_Multiply3x3_3x3(Htemp1, gRotation90, Hp);
+        ConvertAffine3x3toGL4x4(g_dAffinetransPan, Htemp1);
+    }
 }
 
 void AllocateTextureMemory(int widthHR, int heightHR, int widthLR, int heightLR)
@@ -421,7 +462,8 @@ extern "C"
     JNIEXPORT jint JNICALL Java_com_android_camera_panorama_MosaicRenderer_init(
             JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
-            JNIEnv * env, jobject obj,  jint width, jint height);
+            JNIEnv * env, jobject obj,  jint width, jint height,
+            jboolean isLandscapeOrientation);
     JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_preprocess(
             JNIEnv * env, jobject obj, jfloatArray stMatrix);
     JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_transferGPUtoCPU(
@@ -461,19 +503,48 @@ JNIEXPORT jint JNICALL Java_com_android_camera_panorama_MosaicRenderer_init(
 }
 
 
-JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
-        JNIEnv * env, jobject obj,  jint width, jint height)
-{
-    // Scale the current frame's height to the height of view and
-    // maintain the aspect ratio of the current frame on the screen.
-    gUILayoutScalingY = PREVIEW_FBO_HEIGHT_SCALE;
+void calculateUILayoutScaling(int width, int height, bool isLandscape) {
+    if (isLandscape) {
+        //  __________        ______
+        // |__________|  =>  |______|
+        // (Preview FBO)      (View)
+        //
+        // Scale the preview FBO's height to the height of view and
+        // maintain the aspect ratio of the current frame on the screen.
+        gUILayoutScalingY = PREVIEW_FBO_HEIGHT_SCALE;
 
-    // Note that OpenGL scales a texture to view's width and height automatically.
-    // The "width / height" inverts the scaling, so as to maintain the aspect ratio
-    // of the current frame.
-    gUILayoutScalingX = ((float) (PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[LR])
-            / (PREVIEW_FBO_HEIGHT_SCALE * gPreviewImageHeight[LR]) *  PREVIEW_FBO_HEIGHT_SCALE)
-            / ((float) width / height);
+        // Note that OpenGL scales a texture to view's width and height automatically.
+        // The "width / height" inverts the scaling, so as to maintain the aspect ratio
+        // of the current frame.
+        gUILayoutScalingX = ((float) (PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[LR])
+                / (PREVIEW_FBO_HEIGHT_SCALE * gPreviewImageHeight[LR]) *  PREVIEW_FBO_HEIGHT_SCALE)
+                / ((float) width / height);
+    } else {
+        //                     __
+        //  __________        |  |
+        // |__________|  =>   |  |
+        // (Preview FBO)      |  |
+        //                    |__|
+        //                   (View)
+        // Scale the preview FBO's height to the width of view and
+        // maintain the aspect ratio of the current frame on the screen.
+        gUILayoutScalingX = PREVIEW_FBO_HEIGHT_SCALE;
+
+        // Note that OpenGL scales a texture to view's width and height automatically.
+        // The "height / width" inverts the scaling, so as to maintain the aspect ratio
+        // of the current frame.
+        gUILayoutScalingY = ((float) (PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[LR])
+                / (PREVIEW_FBO_HEIGHT_SCALE * gPreviewImageHeight[LR]) *  PREVIEW_FBO_HEIGHT_SCALE)
+                / ((float) height / width);
+
+    }
+}
+
+JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
+        JNIEnv * env, jobject obj,  jint width, jint height, jboolean isLandscapeOrientation)
+{
+    gIsLandscapeOrientation = isLandscapeOrientation;
+    calculateUILayoutScaling(width, height, gIsLandscapeOrientation);
 
     gBuffer[0].Init(gPreviewFBOWidth, gPreviewFBOHeight, GL_RGBA);
     gBuffer[1].Init(gPreviewFBOWidth, gPreviewFBOHeight, GL_RGBA);
@@ -543,6 +614,7 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
     gPreview.SetupGraphics(width, height);
     gPreview.Clear(0.0, 0.0, 0.0, 1.0);
     gPreview.SetViewportMatrix(1, 1, 1, 1);
+
     // Scale the previewFBO so that the viewfinder window fills the layout height
     // while maintaining the image aspect ratio
     gPreview.SetScalingMatrix(gUILayoutScalingX, -1.0f * gUILayoutScalingY);
@@ -560,8 +632,8 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_preproces
 
     env->ReleaseFloatArrayElements(stMatrix, stmat, 0);
 
-    gSurfTexRenderer[LR].DrawTexture(g_dAffinetransIdent);
-    gSurfTexRenderer[HR].DrawTexture(g_dAffinetransIdent);
+    gSurfTexRenderer[LR].DrawTexture(g_dAffinetransIdentGL);
+    gSurfTexRenderer[HR].DrawTexture(g_dAffinetransIdentGL);
 }
 
 #ifndef now_ms
@@ -626,7 +698,12 @@ JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_step(
         gPreview.SetInputTextureName(gBuffer[gCurrentFBOIndex].GetTextureName());
 
         gWarper2.DrawTexture(g_dTranslationToFBOCenterGL);
-        gPreview.DrawTexture(g_dAffinetransIdent);
+
+        if (gIsLandscapeOrientation) {
+            gPreview.DrawTexture(g_dAffinetransIdentGL);
+        } else {
+            gPreview.DrawTexture(g_dAffinetransRotation90GL);
+        }
     }
     else
     {
