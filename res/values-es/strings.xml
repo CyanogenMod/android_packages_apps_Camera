@@ -17,7 +17,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Error de cámara"</string>
-    <string name="cannot_connect_camera" msgid="955440687597185163">"No se puede establecer conexión con la cámara."</string>
+    <string name="cannot_connect_camera" msgid="955440687597185163">"No se puede acceder a la cámara."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"Se ha inhabilitado la cámara debido a las políticas de seguridad."</string>
     <string name="camera_label" msgid="6346560772074764302">"Cámara"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videocámara"</string>
@@ -100,7 +100,7 @@
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorámico"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Capturando panorámica"</string>
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Guardando..."</string>
-    <string name="tap_to_focus" msgid="8863427645591903760">"Toca para enfocar."</string>
+    <string name="tap_to_focus" msgid="8863427645591903760">"Toca para enfocar"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efectos"</string>
     <string name="effect_none" msgid="3601545724573307541">"Ninguno"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Comprimir"</string>
@@ -115,7 +115,7 @@
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Personalizada"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Coloca el dispositivo en una superficie plana y comprueba que no se produzca ningún movimiento detrás."\n\n"A continuación, colócate fuera de la vista de la cámara."</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"No se puede seleccionar si el efecto está activado."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"Toca pantalla vista previa para hacer foto mientras grabas vídeo."</string>
+    <string name="video_snapshot_hint" msgid="8159602664271448241">"Toca la pantalla de vista previa para hacer una foto mientras grabas vídeo."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"La instantánea de vídeo se inhabilita al activar efectos especiales."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Borrar efectos"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Caras graciosas"</string>
