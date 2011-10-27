@@ -25,8 +25,13 @@ import javax.microedition.khronos.opengles.GL10;
 public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 {
     private static final String TAG = "MosaicRendererSurfaceViewRenderer";
+    private boolean mIsLandscapeOrientation;
 
     private MosaicSurfaceCreateListener mSurfaceCreateListener;
+
+    public MosaicRendererSurfaceViewRenderer(boolean isLandscapeOrientation) {
+        mIsLandscapeOrientation = isLandscapeOrientation;
+    }
 
     /** A callback to be called when the surface is created */
     public interface MosaicSurfaceCreateListener {
@@ -41,7 +46,7 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        MosaicRenderer.reset(width, height);
+        MosaicRenderer.reset(width, height, mIsLandscapeOrientation);
         Log.i(TAG, "Renderer: onSurfaceChanged");
         if (mSurfaceCreateListener != null) {
             mSurfaceCreateListener.onMosaicSurfaceChanged();

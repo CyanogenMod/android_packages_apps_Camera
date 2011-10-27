@@ -16,7 +16,9 @@
 
 package com.android.camera.panorama;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.ConditionVariable;
@@ -33,23 +35,34 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
     private static final boolean DEBUG = false;
     private MosaicRendererSurfaceViewRenderer mRenderer;
     private ConditionVariable mPreviewFrameReadyForProcessing;
+    private boolean mIsLandscapeOrientation = true;
 
     public MosaicRendererSurfaceView(Context context) {
         super(context);
-        init(false, 0, 0);
-        setZOrderMediaOverlay(true);
+        initialize(context, false, 0, 0);
     }
 
     public MosaicRendererSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(false, 0, 0);
+        initialize(context, false, 0, 0);
+    }
+
+    public MosaicRendererSurfaceView(Context context, boolean translucent,
+            int depth, int stencil) {
+        super(context);
+        initialize(context, translucent, depth, stencil);
+    }
+
+    private void initialize(Context context, boolean translucent, int depth, int stencil) {
+        getDisplayOrientation(context);
+        init(translucent, depth, stencil);
         setZOrderMediaOverlay(true);
     }
 
-    public MosaicRendererSurfaceView(Context context, boolean translucent, int depth, int stencil) {
-        super(context);
-        init(translucent, depth, stencil);
-        setZOrderMediaOverlay(true);
+    private void getDisplayOrientation(Context context) {
+        Activity activity = (PanoramaActivity) context;
+        mIsLandscapeOrientation = (activity.getRequestedOrientation()
+                == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
     }
 
     private void init(boolean translucent, int depth, int stencil) {
@@ -78,7 +91,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
             new ConfigChooser(5, 6, 5, 0, depth, stencil));
 
         /* Set the renderer responsible for frame rendering */
-        mRenderer = new MosaicRendererSurfaceViewRenderer();
+        mRenderer = new MosaicRendererSurfaceViewRenderer(mIsLandscapeOrientation);
         setRenderer(mRenderer);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
         mPreviewFrameReadyForProcessing = new ConditionVariable();

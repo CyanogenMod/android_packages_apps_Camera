@@ -43,8 +43,9 @@ public class MosaicRenderer
       *
       * @param width width of the drawing surface in pixels.
       * @param height height of the drawing surface in pixels.
+      * @param isLandscapeOrientation is the orientation of the activity layout in landscape.
       */
-     public static native void reset(int width, int height);
+     public static native void reset(int width, int height, boolean isLandscapeOrientation);
 
      /**
       * Calling this function will render the SurfaceTexture to a new 2D texture
