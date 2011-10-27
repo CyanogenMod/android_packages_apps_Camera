@@ -83,6 +83,9 @@ public class PanoramaActivity extends ActivityBase implements
     private static final int MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL = 2;
     private static final int MSG_GENERATE_FINAL_MOSAIC_ERROR = 3;
     private static final int MSG_RESET_TO_PREVIEW = 4;
+    private static final int MSG_CLEAR_SCREEN_DELAY = 5;
+
+    private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
     private static final String TAG = "PanoramaActivity";
     private static final int PREVIEW_STOPPED = 0;
@@ -242,8 +245,6 @@ public class PanoramaActivity extends ActivityBase implements
         super.onCreate(icicle);
 
         Window window = getWindow();
-        window.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Util.enterLightsOutMode(window);
         Util.initializeScreenBrightness(window, getContentResolver());
 
@@ -294,6 +295,11 @@ public class PanoramaActivity extends ActivityBase implements
                     case MSG_RESET_TO_PREVIEW:
                         onBackgroundThreadFinished();
                         resetToPreview();
+                        break;
+                    case MSG_CLEAR_SCREEN_DELAY:
+                        getWindow().clearFlags(WindowManager.LayoutParams.
+                                FLAG_KEEP_SCREEN_ON);
+                        break;
                 }
                 clearMosaicFrameProcessorIfNeeded();
             }
@@ -562,6 +568,7 @@ public class PanoramaActivity extends ActivityBase implements
         mPanoProgressBar.setIndicatorWidth(20);
         mPanoProgressBar.setMaxProgress(DEFAULT_SWEEP_ANGLE);
         mPanoProgressBar.setVisibility(View.VISIBLE);
+        keepScreenOn();
     }
 
     private void stopCapture(boolean aborted) {
@@ -597,6 +604,7 @@ public class PanoramaActivity extends ActivityBase implements
         }
         // do we have to wait for the thread to complete before enabling this?
         if (mModePicker != null) mModePicker.setEnabled(true);
+        keepScreenOnAwhile();
     }
 
     private void showTooFastIndication() {
@@ -913,6 +921,7 @@ public class PanoramaActivity extends ActivityBase implements
         mMosaicView.onPause();
         clearMosaicFrameProcessorIfNeeded();
         mOrientationEventListener.disable();
+        resetScreenOn();
         System.gc();
     }
 
@@ -930,6 +939,7 @@ public class PanoramaActivity extends ActivityBase implements
         mMosaicView.onResume();
 
         initThumbnailButton();
+        keepScreenOnAwhile();
     }
 
     public MosaicJpeg generateFinalMosaic(boolean highRes) {
@@ -1006,5 +1016,27 @@ public class PanoramaActivity extends ActivityBase implements
             mCameraDevice.stopPreview();
         }
         mCameraState = PREVIEW_STOPPED;
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        if (mCaptureState != CAPTURE_STATE_MOSAIC) keepScreenOnAwhile();
+    }
+
+    private void resetScreenOn() {
+        mMainHandler.removeMessages(MSG_CLEAR_SCREEN_DELAY);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    private void keepScreenOnAwhile() {
+        mMainHandler.removeMessages(MSG_CLEAR_SCREEN_DELAY);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mMainHandler.sendEmptyMessageDelayed(MSG_CLEAR_SCREEN_DELAY, SCREEN_DELAY);
+    }
+
+    private void keepScreenOn() {
+        mMainHandler.removeMessages(MSG_CLEAR_SCREEN_DELAY);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 }
