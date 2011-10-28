@@ -17,15 +17,15 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Pogreška fotoaparata"</string>
-    <!-- outdated translation 8029009101380114174 -->     <string name="cannot_connect_camera" msgid="955440687597185163">"Povezivanje s fotoaparatom nije moguće."</string>
+    <string name="cannot_connect_camera" msgid="955440687597185163">"Povezivanje s fotoaparatom nije moguće."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"Fotoaparat je onemogućen zbog sigurnosnih pravila."</string>
     <string name="camera_label" msgid="6346560772074764302">"Fotoaparat"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Kamera"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Slike fotoaparata"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videozapisi na fotoaparatu"</string>
     <string name="wait" msgid="8600187532323801552">"Pričekajte…"</string>
-    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Instalirajte USB memoriju prije upotrebe kamere."</string>
-    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="5137703033746873624">"Instalirajte USB memoriju prije upotrebe kamere."</string>
+    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Prije upotrebe fotoaparata instalirajte USB memoriju."</string>
+    <string name="no_storage" product="default" msgid="5137703033746873624">"Prije upotrebe fotoaparata umetnite SD karticu."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Vaša je USB memorija puna."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD kartica je puna."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Pripremanje USB memorije..."</string>
@@ -33,7 +33,7 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Nije moguć pristup USB pohrani."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Nije moguć pristup SD kartici."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Vrati zadano"</string>
-    <!-- outdated translation 5239464943578877295 -->     <string name="confirm_restore_message" msgid="6649481842684452641">"Postavke fotoaparata bit će vraćene na zadane."</string>
+    <string name="confirm_restore_message" msgid="6649481842684452641">"Vratiti zadane postavke fotoaparata?"</string>
     <string name="review_play" msgid="6378271587740884696">"Reproduk."</string>
     <string name="review_cancel" msgid="8188009385853399254">"ODUSTANI"</string>
     <string name="review_ok" msgid="5305096180300056529">"U redu"</string>
@@ -52,11 +52,11 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Postavke fotoaparata"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Postavke kamere"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Veličina slike"</string>
-    <!-- outdated translation 1871154452633783418 -->     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5M piksela"</string>
-    <!-- outdated translation 8763841848102861602 -->     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3M piksela"</string>
-    <!-- outdated translation 3802531502504271124 -->     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2M piksela"</string>
-    <!-- outdated translation 1648390393603363042 -->     <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1,3 M piksela"</string>
-    <!-- outdated translation 6557686202570581693 -->     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1M piksela"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 megapiksela"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 megapiksela"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 megapiksela"</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1,3 megapiksela"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 megapiksela"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Način fokusa"</string>
@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Noć"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Zalazak sunca"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Zabava"</string>
-    <!-- outdated translation 2345574961174762643 -->     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"To nije podesivo u načinu scene"</string>
+    <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"U načinu scene ne može se odabirati."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Postavke fotoaparata"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Vrati zadano"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Ekspozicija"</string>
@@ -92,30 +92,30 @@
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Prebaci na način Panorama"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Dijeljenje slike putem"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Dijeljenje videozapisa putem"</string>
-    <!-- outdated translation 7700541451734517445 -->     <string name="no_picture_to_share" msgid="5352574090121328815">"Nema slike za dijeljenje"</string>
-    <!-- outdated translation 3775826212074938990 -->     <string name="no_video_to_share" msgid="7567298642707627096">"Nema videozapisa za dijeljenje"</string>
-    <!-- outdated translation 3893565956616588385 -->     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Prebrzo"</string>
+    <string name="no_picture_to_share" msgid="5352574090121328815">"Nema slike za dijeljenje."</string>
+    <string name="no_video_to_share" msgid="7567298642707627096">"Nema videozapisa za dijeljenje."</string>
+    <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Prebrzo"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Priprema panorame"</string>
-    <!-- outdated translation 6286761234243958706 -->     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Spremanje panorame nije uspjelo"</string>
+    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Panoramu nije moguće spremiti."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
-    <!-- outdated translation 7431983072966619171 -->     <string name="pano_capture_indication" msgid="8248825828264374507">"Snimanje panorame"</string>
-    <!-- outdated translation 6239883905955317473 -->     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Spremanje..."</string>
-    <!-- outdated translation 6417403734418828035 -->     <string name="tap_to_focus" msgid="8863427645591903760">"Dotaknite za fokus"</string>
+    <string name="pano_capture_indication" msgid="8248825828264374507">"Snimanje panorame"</string>
+    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Spremanje..."</string>
+    <string name="tap_to_focus" msgid="8863427645591903760">"Dodirnite za fokus."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efekti"</string>
     <string name="effect_none" msgid="3601545724573307541">"Ništa"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Stisnuto"</string>
-    <!-- outdated translation 1942377617761116861 -->     <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"Velike oči"</string>
-    <!-- outdated translation 2342636750478741367 -->     <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"Velika usta"</string>
-    <!-- outdated translation 4424498213697804087 -->     <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"Mala usta"</string>
-    <!-- outdated translation 5738964679340745774 -->     <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"Veliki nos"</string>
-    <!-- outdated translation 8007886544327361111 -->     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Male oči"</string>
-    <!-- outdated translation 1381012939195370792 -->     <string name="effect_backdropper_space" msgid="7935661090723068402">"U svemiru"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"Velike oči"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"Velika usta"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"Mala usta"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"Veliki nos"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Male oči"</string>
+    <string name="effect_backdropper_space" msgid="7935661090723068402">"U svemiru"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Zalazak sunca"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
-    <!-- outdated translation 1393338187462207584 -->     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Izaberite svoj"</string>
+    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Odaberite svoj"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Postavite uređaj na stabilnu površinu i provjerite da nema kretanja iza vas."\n\n"Tada izađite iz vidokruga kamere."</string>
-    <!-- outdated translation 5093306709878914151 -->     <string name="not_selectable_in_effect" msgid="7967729203855039239">"To se ne može odabrati kada je efekt uključen."</string>
-    <!-- outdated translation 6479115859014094906 -->     <string name="video_snapshot_hint" msgid="8159602664271448241">"Dok snimate videozapis, fotografirajte doticanjem zaslona pregleda."</string>
+    <string name="not_selectable_in_effect" msgid="7967729203855039239">"Kada je efekt uključen ne može se odabirati."</string>
+    <string name="video_snapshot_hint" msgid="8159602664271448241">"Tijekom snimanja videozapisa dodirom zaslona pregleda snimite fotografiju."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Fotografiranje је onemogućeno kada su posebni efekti uključeni."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Obriši efekte"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Budalasta lica"</string>
@@ -123,7 +123,7 @@
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Gumb Okidač"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Najnovija fotografija"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Prednji i stražnji prekidač fotoaparata"</string>
-    <!-- outdated translation 3264968460835265505 -->     <string name="accessibility_mode_picker" msgid="3278002189966833100">"Birač fotoaparata, videozapisa ili panorame"</string>
+    <string name="accessibility_mode_picker" msgid="3278002189966833100">"Birač fotoaparata, videozapisa ili panorame"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Više kontrola postavke"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Kontrole postavke zatvaranja"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Upravljanje povećavanjem/smanjivanjem"</string>

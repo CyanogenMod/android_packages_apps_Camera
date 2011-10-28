@@ -112,10 +112,10 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Az űrben"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Napnyugta"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Diszkó"</string>
-    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Saját kivála."</string>
+    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Saját videó"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"Helyezze eszközét egy stabil felületre, és bizonyosodjon meg arról, hogy Ön mögött nincs mozgás."\n\n"Ezután lépjen ki a kamera látószögéből."</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Nem választható, ha a hatás be van kapcsolva."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"Az előnézeti képernyő megérint. videorögzítéskor fényképezhet."</string>
+    <string name="video_snapshot_hint" msgid="8159602664271448241">"Az előnézeti képernyő megérintésével fényképet készíthet."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"A video-pillanatfelvétel letiltva speciális effektek esetén."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Effektek törlése"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Bolondos arcok"</string>
