@@ -303,7 +303,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 }
 
                 case DISMISS_TAP_TO_FOCUS_TOAST: {
-                    View v = findViewById(R.id.tap_to_focus_prompt);
+                    View v = findViewById(R.id.first_use_hint);
                     v.setVisibility(View.GONE);
                     v.setAnimation(AnimationUtils.loadAnimation(Camera.this,
                             R.anim.on_screen_hint_exit));
@@ -389,7 +389,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         startFaceDetection();
         // Show the tap to focus toast if this is the first start.
         if (mFocusAreaSupported &&
-                mPreferences.getBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, true)) {
+                mPreferences.getBoolean(CameraSettings.KEY_CAMERA_FIRST_USE_HINT_SHOWN, true)) {
             // Delay the toast for one second to wait for orientation.
             mHandler.sendEmptyMessageDelayed(SHOW_TAP_TO_FOCUS_TOAST, 1000);
         }
@@ -2214,15 +2214,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void showTapToFocusToast() {
+        // Set the text of toast
+        TextView textView = (TextView) findViewById(R.id.toast_text);
+        textView.setText(R.string.tap_to_focus);
         // Show the toast.
-        RotateLayout v = (RotateLayout) findViewById(R.id.tap_to_focus_prompt);
+        RotateLayout v = (RotateLayout) findViewById(R.id.first_use_hint);
         v.setOrientation(mOrientationCompensation);
         v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.on_screen_hint_enter));
         v.setVisibility(View.VISIBLE);
         mHandler.sendEmptyMessageDelayed(DISMISS_TAP_TO_FOCUS_TOAST, 5000);
         // Clear the preference.
         Editor editor = mPreferences.edit();
-        editor.putBoolean(CameraSettings.KEY_TAP_TO_FOCUS_PROMPT_SHOWN, false);
+        editor.putBoolean(CameraSettings.KEY_CAMERA_FIRST_USE_HINT_SHOWN, false);
         editor.apply();
     }
 

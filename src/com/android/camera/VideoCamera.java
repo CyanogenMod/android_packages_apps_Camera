@@ -32,6 +32,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -65,6 +66,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -95,6 +97,8 @@ public class VideoCamera extends ActivityBase
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
     private static final int ENABLE_SHUTTER_BUTTON = 6;
+    private static final int SHOW_TAP_TO_SNAPSHOT_TOAST = 7;
+    private static final int DISMISS_TAP_TO_SNAPSHOT_TOAST = 8;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
@@ -295,6 +299,19 @@ public class VideoCamera extends ActivityBase
                     if (SystemClock.uptimeMillis() - mOnResumeTime < 5000) {
                         mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
                     }
+                    break;
+                }
+
+                case SHOW_TAP_TO_SNAPSHOT_TOAST: {
+                    showTapToSnapshotToast();
+                    break;
+                }
+
+                case DISMISS_TAP_TO_SNAPSHOT_TOAST: {
+                    View v = findViewById(R.id.first_use_hint);
+                    v.setVisibility(View.GONE);
+                    v.setAnimation(AnimationUtils.loadAnimation(VideoCamera.this,
+                            R.anim.on_screen_hint_exit));
                     break;
                 }
 
@@ -539,6 +556,12 @@ public class VideoCamera extends ActivityBase
                 if (!mMediaRecorderRecording) {
                     setOrientationIndicator(mOrientationCompensation);
                 }
+            }
+
+            // Show the toast after getting the first orientation changed.
+            if (mHandler.hasMessages(SHOW_TAP_TO_SNAPSHOT_TOAST)) {
+                mHandler.removeMessages(SHOW_TAP_TO_SNAPSHOT_TOAST);
+                showTapToSnapshotToast();
             }
         }
     }
@@ -2292,6 +2315,12 @@ public class VideoCamera extends ActivityBase
     private void initializeVideoSnapshot() {
         if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
             findViewById(R.id.camera_preview).setOnTouchListener(this);
+            // Show the tap to focus toast if this is the first start.
+            if (mPreferences.getBoolean(
+                        CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN, true)) {
+                // Delay the toast for one second to wait for orientation.
+                mHandler.sendEmptyMessageDelayed(SHOW_TAP_TO_SNAPSHOT_TOAST, 1000);
+            }
         }
     }
 
@@ -2404,5 +2433,21 @@ public class VideoCamera extends ActivityBase
             }
             mVideoFileDescriptor = null;
         }
+    }
+
+    private void showTapToSnapshotToast() {
+        // Set the text of toast
+        TextView textView = (TextView) findViewById(R.id.toast_text);
+        textView.setText(R.string.video_snapshot_hint);
+        // Show the toast.
+        RotateLayout v = (RotateLayout) findViewById(R.id.first_use_hint);
+        v.setOrientation(mOrientationCompensation);
+        v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.on_screen_hint_enter));
+        v.setVisibility(View.VISIBLE);
+        mHandler.sendEmptyMessageDelayed(DISMISS_TAP_TO_SNAPSHOT_TOAST, 5000);
+        // Clear the preference.
+        Editor editor = mPreferences.edit();
+        editor.putBoolean(CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN, false);
+        editor.apply();
     }
 }
