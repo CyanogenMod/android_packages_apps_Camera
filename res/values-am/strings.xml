@@ -17,15 +17,15 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"ካሜራ ስህተት"</string>
-    <!-- outdated translation 8029009101380114174 -->     <string name="cannot_connect_camera" msgid="955440687597185163">"ከካሜራ ጋር ማገናኘት አልተቻለም።"</string>
+    <string name="cannot_connect_camera" msgid="955440687597185163">"ከካሜራ ጋር ማገናኘት አልተቻለም።"</string>
     <string name="camera_disabled" msgid="8923911090533439312">"በደህንነት ፖሊሲዎች ምክንያት ካሜራ ቦዝኗል።"</string>
     <string name="camera_label" msgid="6346560772074764302">"ካሜራ"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"ካምኮርድ"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"የካሜራ ምስሎች"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"የካሜራ ቫዲዮዎች"</string>
     <string name="wait" msgid="8600187532323801552">"እባክዎ ይጠብቁ…"</string>
-    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"እባክዎካሜራ ከመጠቀምዎ በፊት USB ይሰኩ።"</string>
-    <!-- outdated translation 5876548364041592119 -->     <string name="no_storage" product="default" msgid="5137703033746873624">"እባክዎካሜራ ከመጠቀምዎ በፊት USB ይሰኩ።"</string>
+    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"እባክህ ካሜራ ከመጠቀምህ በፊት USB ሰካ።"</string>
+    <string name="no_storage" product="default" msgid="5137703033746873624">"እባክህ ካሜራውን ከመጠቀምህ በፊት የSD ካርድ አስገባ።"</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"የUSB  ማከማቻዎ ሙሉ ነው።"</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"የSD ካርድዎ ሙሉ ነው።"</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"የUSB ማከማቻ በማዘጋጀት ላይ..."</string>
@@ -33,7 +33,7 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"USB ማከማችን መድረስ አልተቻለም፡፡"</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"SD ካርድን መድረስ አልተቻለም፡፡"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"ወደ ነባሪዎች መልስ"</string>
-    <!-- outdated translation 5239464943578877295 -->     <string name="confirm_restore_message" msgid="6649481842684452641">"የካሜራ ቅንብሮች ወደ ነባሪ እነበረበት ይመለሳል።"</string>
+    <string name="confirm_restore_message" msgid="6649481842684452641">"የካሜራ ነባሪ ቅንጅቶችን እነበረበት መልስ?"</string>
     <string name="review_play" msgid="6378271587740884696">"ተጫወት"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ይቅር"</string>
     <string name="review_ok" msgid="5305096180300056529">"እሺ"</string>
@@ -52,11 +52,11 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"የካሜራ ቅንብሮች"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"የካምኮርድ ቅንብሮች"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"የምስል መጠን"</string>
-    <!-- outdated translation 1871154452633783418 -->     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5M ፒክስል"</string>
-    <!-- outdated translation 8763841848102861602 -->     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3M ፒክስል"</string>
-    <!-- outdated translation 3802531502504271124 -->     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2M ፒክስል"</string>
-    <!-- outdated translation 1648390393603363042 -->     <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1.3M Pixels"</string>
-    <!-- outdated translation 6557686202570581693 -->     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1M ፒክስል"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5M ፒክስል"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3M ፒክስል"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2M ፒክስል"</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1.3M ፒክሴል"</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1M ፒክስል"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"የማተኮር ሁነታ"</string>
@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"ማታ"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"ፀሀይ ስትጠልቅ"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"ፓርቲ"</string>
-    <!-- outdated translation 2345574961174762643 -->     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"ይህ በትዕይንት ሁነታ መመረጥ የሚችል አይደለም።"</string>
+    <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">" በትዕይንት ሁኔታ መመረጥ የሚችል አይደለም።"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"የካሜራ ቅንብሮች"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"ወደ ነባሪዎች  እነበረበት መልስ"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"የተጋለጠ"</string>
@@ -92,30 +92,30 @@
     <string name="switch_to_panorama_label" msgid="858801335653517864">"ወደ ፓኖራማ ቀይር"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"ፎቶ  አጋራ  በ"</string>
     <string name="share_video_via" msgid="5152302809166549015">"ይህን ቪዲዮ አጋራ  በ"</string>
-    <!-- outdated translation 7700541451734517445 -->     <string name="no_picture_to_share" msgid="5352574090121328815">"ለማጋራት ምንም  ፎቶ የለም"</string>
-    <!-- outdated translation 3775826212074938990 -->     <string name="no_video_to_share" msgid="7567298642707627096">"ለማጋራት ምንም ቪዲዮ የለም"</string>
-    <!-- outdated translation 3893565956616588385 -->     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"በጣም ፈጥኖዋል"</string>
+    <string name="no_picture_to_share" msgid="5352574090121328815">"ለማጋራት ምንም ፎቶ የለም"</string>
+    <string name="no_video_to_share" msgid="7567298642707627096">"ለማጋራት ምንም ቪዲዮ የለም"</string>
+    <string name="pano_too_fast_prompt" msgid="2823839093291374709">"በጣም ፈጥኖዋል"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"ፓናሮማ በማዘጋጀት ላይ"</string>
-    <!-- outdated translation 6286761234243958706 -->     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"ፓኖራማ ለማስቀመጥ ተስኗል"</string>
+    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"ፓኖራማ  ማስቀመጥ አልተቻለም::"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"ፓኖራማ"</string>
-    <!-- outdated translation 7431983072966619171 -->     <string name="pano_capture_indication" msgid="8248825828264374507">"ፓኖራማ በማንሳት ላይ"</string>
-    <!-- outdated translation 6239883905955317473 -->     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"በማስቀመጥ ላይ..."</string>
-    <!-- outdated translation 6417403734418828035 -->     <string name="tap_to_focus" msgid="8863427645591903760">"ለማተኮር ሁለቴ ንካ"</string>
+    <string name="pano_capture_indication" msgid="8248825828264374507">"ፓኖራማ በማንሳት ላይ"</string>
+    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"በማስቀመጥ ላይ&amp;hellip;"</string>
+    <string name="tap_to_focus" msgid="8863427645591903760">"ዳሰስ ለማተኮር፡፡"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"ማሳመሪያዎች"</string>
     <string name="effect_none" msgid="3601545724573307541">"ምንም የለም"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"ጭመቅ"</string>
-    <!-- outdated translation 1942377617761116861 -->     <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"ትላልቅ ዓይኖች"</string>
-    <!-- outdated translation 2342636750478741367 -->     <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"ትልቅ አፍ"</string>
-    <!-- outdated translation 4424498213697804087 -->     <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"ትንሽ አፍ"</string>
-    <!-- outdated translation 5738964679340745774 -->     <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"ትልቅ አፍንጫ"</string>
-    <!-- outdated translation 8007886544327361111 -->     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"ትናንሽ ዓይኖች"</string>
-    <!-- outdated translation 1381012939195370792 -->     <string name="effect_backdropper_space" msgid="7935661090723068402">"In Space"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"ትላልቅ ዓይኖች"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"ትልቅ አፍ"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"ትንሽ አፍ"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"ትልቅ አፍንጫ"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"ትናንሽ ዓይኖች"</string>
+    <string name="effect_backdropper_space" msgid="7935661090723068402">"ቦታ ውስጥ"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"ፀሀይ ስትጠልቅ"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"ዲስኮ"</string>
-    <!-- outdated translation 1393338187462207584 -->     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"የራስህን ምረጥ"</string>
+    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"የራስህን  ምረጥ"</string>
     <string name="bg_replacement_message" msgid="7540788298745332389">"መሳሪያዎን በዝርግ ስፍራ ላይ ያስቀምጡ እና ከእርስዎ ጀርባ ምንም ዓይነት መነቃነቅ እንደሌለ እርግጠኛ ሁን፡፡"\n\n" ከዛ በኋላ ከካሜራው እይታ ለቀው ይውጡ፡፡"</string>
-    <!-- outdated translation 5093306709878914151 -->     <string name="not_selectable_in_effect" msgid="7967729203855039239">"ማሳመሪያው ሲበራ ይህ ሊመረጥ አይችልም::"</string>
-    <!-- outdated translation 6479115859014094906 -->     <string name="video_snapshot_hint" msgid="8159602664271448241">"የቅድመ ዕይታ ማያን ነካ በማድረግ በቪዲዮ ቀረፃ ጊዜ ፎቶ አንሳ።"</string>
+    <string name="not_selectable_in_effect" msgid="7967729203855039239">"ማሳመሪያው ሲበራ  ሊመረጥ አይችልም::"</string>
+    <string name="video_snapshot_hint" msgid="8159602664271448241">"የቅድመ ዕይታ ማያን በመዳሰስ በማድረግ በቪዲዮ ቀረፃ ጊዜ ፎቶ አንሳ።"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"ቪዲዮ ማንሻ ልዩ ማሳመሪያዎች ሲበሩ ይቦዝናል::"</string>
     <string name="clear_effects" msgid="5485339175014139481">"ማሳመሪያዎች አጽዳ"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"ሞኛሞኝ ፊቶች"</string>
@@ -123,7 +123,7 @@
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"የካሜራ ሌንስ መከለያ አዝራር።"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"በጣም የቅርብ ፎቶ"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"የፊትና ኋላ ካሜራ ማብሪያና ማጥፊያ"</string>
-    <!-- outdated translation 3264968460835265505 -->     <string name="accessibility_mode_picker" msgid="3278002189966833100">"ካሜራ፣ቪድዮ ወይም ፓናሮማ መምረጫ"</string>
+    <string name="accessibility_mode_picker" msgid="3278002189966833100">"ካሜራ፣ቪድዮ ወይም ፓናሮማ መምረጫ"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"ተጨማሪ ቅንጅቶች መቈጣጠሪያ"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"የቅንጅት መቆጣጠሪያዎች ዝጋ"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"ኣጕላ  መቆጣጠሪያ"</string>
