@@ -1026,8 +1026,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         getPreferredCameraId();
-        mFocusManager = new FocusManager(mPreferences,
-                getString(R.string.pref_camera_focusmode_default));
+        String[] defaultFocusModes = getResources().getStringArray(
+                R.array.pref_camera_focusmode_default_array);
+        mFocusManager = new FocusManager(mPreferences, defaultFocusModes);
 
         /*
          * To reduce startup time, we start the camera open and preview threads.
