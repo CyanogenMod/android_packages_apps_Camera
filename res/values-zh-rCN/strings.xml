@@ -111,7 +111,9 @@
 
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"对焦方式"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自动"</string>
+    <string name="pref_camera_focusmode_entry_normal">正常</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"无限远"</string>
+    <string name="pref_camera_focusmode_entry_touch">触控</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"闪光模式"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"自动"</string>
@@ -123,6 +125,7 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"日光"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"荧光"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"阴天"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">阴天的日光</string>
     <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"色彩效果"</string>
     <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"无"</string>
     <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"单色"</string>
@@ -197,4 +200,40 @@
     <string name="pref_camera_autoexposure_entry_frameaverage">平均测光</string>
     <string name="pref_camera_autoexposure_entry_centerweighted">中心测光</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">点测光</string>
+
+    <!-- Settings screen, Capture mode title -->
+    <string name="pref_camera_capturemode_title">拍摄方式</string>
+
+    <!-- Settings screen, Capture mode dialog radio button choices -->
+    <string name="pref_camera_capturemode_entry_default">立即</string>
+    <string name="pref_camera_capturemode_entry_timer">计时</string>
+
+    <!-- Settings screen, Select contrast title -->
+    <string name="pref_camera_contrast_title">对比</string>
+
+    <!-- Settings screen, Select saturation title -->
+    <string name="pref_camera_saturation_title">饱和</string>
+
+    <!-- Settings screen, Select sharpness title -->
+    <string name="pref_camera_sharpness_title">锐利</string>
+
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">电源键快门</string>
+
+    <!-- More Settings screen, power button -->
+    <string name="pref_camera_power_shutter">电源键</string>
+    <string name="pref_camera_power_shutter_summary">按电源键拍摄照片/录像</string>
+
+    <!-- Other settings -->
+    <string name="pref_camera_other_settings_title">其他设置</string>
+    <string name="pref_camera_timer_duration">拍摄时长</string>
+    <string name="pref_camera_timer_duration_summary">选择相机拍摄计数时长</string>
+
+    <!-- Settings screen, Capture mode dialog entries -->
+    <string name="pref_camera_capturemode_entry_10">10秒</string>
+    <string name="pref_camera_capturemode_entry_20">20秒</string>
+    <string name="pref_camera_capturemode_entry_30">30秒</string>
+    <string name="pref_camera_capturemode_entry_40">40秒</string>
+    <string name="pref_camera_capturemode_entry_50">50秒</string>
+    <string name="pref_camera_capturemode_entry_60">60秒</string>
 </resources>
