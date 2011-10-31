@@ -16,9 +16,12 @@
 
 package com.android.camera;
 
+import com.android.camera.R;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.view.View;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 /**
@@ -52,9 +55,9 @@ public class PreviewFrameLayout extends RelativeLayout {
     }
 
     public void showBorder(boolean enabled) {
-        setActivated(enabled);
+        findViewById(R.id.preview_border).setVisibility(
+                enabled ? View.VISIBLE : View.INVISIBLE);
     }
-
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
