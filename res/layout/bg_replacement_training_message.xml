@@ -32,7 +32,7 @@
                 android:orientation="vertical"
                 android:background="@drawable/dialog_full_holo_dark">
             <TextView
-                    android:layout_width="300dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/bg_replacement_message"

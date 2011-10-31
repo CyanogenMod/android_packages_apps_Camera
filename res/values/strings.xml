@@ -146,9 +146,6 @@
     <string name="pref_camera_picturesize_entry_640x480">VGA</string>
     <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
 
-    <!-- Default focus mode setting.-->
-    <string name="pref_camera_focusmode_default" translatable="false">continuous-picture</string>
-
     <!-- Settings screen, Focus mode title -->
     <string name="pref_camera_focusmode_title">Focus mode</string>
 
@@ -310,7 +307,7 @@
     <string name="effect_backdropper_gallery">Choose your own</string>
 
     <!-- Message displayed in overlay during background replacement training [CHAR LIMIT=180]-->
-    <string name="bg_replacement_message">Place your device on a steady surface and be sure there\'s no movement behind you.\n\nThen step out of the camera\'s view.</string>
+    <string name="bg_replacement_message">Set your device down\nStep out of view for a moment</string>
 
     <!-- Toast after trying to select a setting that is not allowed to change in effect [CHAR LIMIT=50] -->
     <string name="not_selectable_in_effect">Not selectable when the effect is on.</string>

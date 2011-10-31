@@ -44,5 +44,6 @@
                 android:background="@drawable/bg_pressed"
                 android:visibility="gone"
                 android:onClick="onReviewPlayClicked" />
+        <include layout="@layout/first_hint_toast"/>
     </com.android.camera.PreviewFrameLayout>
 </RelativeLayout>

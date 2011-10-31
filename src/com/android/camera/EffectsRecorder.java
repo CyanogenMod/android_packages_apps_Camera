@@ -338,8 +338,7 @@ public class EffectsRecorder {
     }
 
     private void setRecordingOrientation() {
-        if ( (mState == STATE_CONFIGURE || mState == STATE_WAITING_FOR_SURFACE)
-                && mRunner != null ) {
+        if ( mState != STATE_RECORD && mRunner != null) {
             Point bl = new Point(0, 0);
             Point br = new Point(1, 0);
             Point tl = new Point(0, 1);

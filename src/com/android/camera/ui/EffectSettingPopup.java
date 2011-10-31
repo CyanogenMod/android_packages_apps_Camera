@@ -180,11 +180,19 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view,
             int index, long id) {
+        String value;
         if (parent == mSillyFacesGrid) {
-            String value = (String) mSillyFacesItem.get(index).get("value");
-            mPreference.setValue(value);
+            value = (String) mSillyFacesItem.get(index).get("value");
         } else if (parent == mBackgroundGrid) {
-            String value = (String) mBackgroundItem.get(index).get("value");
+            value = (String) mBackgroundItem.get(index).get("value");
+        } else {
+            return;
+        }
+
+        // Tapping the selected effect will deselect it (clear effects).
+        if (value.equals(mPreference.getValue())) {
+            mPreference.setValue(mNoEffect);
+        } else {
             mPreference.setValue(value);
         }
         reloadPreference();

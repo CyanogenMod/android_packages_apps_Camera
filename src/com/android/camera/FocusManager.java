@@ -68,7 +68,7 @@ public class FocusManager {
     private List<Area> mFocusArea; // focus area in driver format
     private List<Area> mMeteringArea; // metering area in driver format
     private String mFocusMode;
-    private String mDefaultFocusMode;
+    private String[] mDefaultFocusModes;
     private String mOverrideFocusMode;
     private Parameters mParameters;
     private ComboPreferences mPreferences;
@@ -97,9 +97,9 @@ public class FocusManager {
         }
     }
 
-    public FocusManager(ComboPreferences preferences, String defaultFocusMode) {
+    public FocusManager(ComboPreferences preferences, String[] defaultFocusModes) {
         mPreferences = preferences;
-        mDefaultFocusMode = defaultFocusMode;
+        mDefaultFocusModes = defaultFocusModes;
         mHandler = new MainHandler();
         mMatrix = new Matrix();
     }
@@ -378,6 +378,7 @@ public class FocusManager {
     // This can only be called after mParameters is initialized.
     public String getFocusMode() {
         if (mOverrideFocusMode != null) return mOverrideFocusMode;
+        List<String> supportedFocusModes = mParameters.getSupportedFocusModes();
 
         if (mInLongPress) {
             // Users long-press the shutter button in CAF. Change it to auto
@@ -389,9 +390,20 @@ public class FocusManager {
         } else {
             // The default is continuous autofocus.
             mFocusMode = mPreferences.getString(
-                    CameraSettings.KEY_FOCUS_MODE, mDefaultFocusMode);
+                    CameraSettings.KEY_FOCUS_MODE, null);
+
+            // Try to find a supported focus mode from the default list.
+            if (mFocusMode == null) {
+                for (int i = 0; i < mDefaultFocusModes.length; i++) {
+                    String mode = mDefaultFocusModes[i];
+                    if (isSupported(mode, supportedFocusModes)) {
+                        mFocusMode = mode;
+                        break;
+                    }
+                }
+            }
         }
-        if (!isSupported(mFocusMode, mParameters.getSupportedFocusModes())) {
+        if (!isSupported(mFocusMode, supportedFocusModes)) {
             // For some reasons, the driver does not support the current
             // focus mode. Fall back to auto.
             if (isSupported(Parameters.FOCUS_MODE_AUTO,
