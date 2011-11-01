@@ -82,7 +82,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
         SurfaceHolder.Callback, ModePicker.OnModeChangeListener,
         FaceDetectionListener, CameraPreference.OnPreferenceChangedListener,
-        LocationManager.Listener, ShutterButton.OnShutterButtonLongPressListener {
+        LocationManager.Listener {
 
     private static final String TAG = "camera";
 
@@ -370,7 +370,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Initialize shutter button.
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterButton.setOnShutterButtonListener(this);
-        mShutterButton.setOnShutterButtonLongPressListener(this);
         mShutterButton.setVisibility(View.VISIBLE);
 
         // Initialize focus UI.
@@ -1391,15 +1390,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mSnapshotOnIdle = false;
         mFocusManager.doSnap();
-    }
-
-    @Override
-    public void onShutterButtonLongPressed() {
-        if (mPausing || mCameraState == SNAPSHOT_IN_PROGRESS
-                || mCameraDevice == null || mPicturesRemaining <= 0) return;
-
-        Log.v(TAG, "onShutterButtonLongPressed");
-        mFocusManager.shutterLongPressed();
     }
 
     private OnScreenHint mStorageHint;
